@@ -1,0 +1,11 @@
+name: PIP Data Management
+apiVersion: v2
+home: https://github.com/hmcts/pip-data-management
+version: 0.0.2
+description: Publishing & Information Data Management
+maintainers:
+  - name: HMCTS PIP Team
+dependencies:
+  - name: java
+    version: 3.5.1
+    repository: '@hmctspublic'

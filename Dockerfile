@@ -1,11 +1,10 @@
 ARG APP_INSIGHTS_AGENT_VERSION=2.5.1
+FROM hmctspublic.azurecr.io/base/java:openjdk-11-distroless-1.4
 
-# Application image
+ENV APP pip-data-management.jar
 
-FROM hmctspublic.azurecr.io/base/java:openjdk-11-distroless-1.2
-
+COPY build/libs/$APP /opt/app/
 COPY lib/AI-Agent.xml /opt/app/
-COPY build/libs/spring-boot-template.jar /opt/app/
 
 EXPOSE 4550
-CMD [ "spring-boot-template.jar" ]
+CMD [ "pip-data-management.jar" ]
