@@ -32,8 +32,8 @@ public class RootController {
      * and parse exceptions into a standard format.
      * @return A ResponseEntity
      */
-    @GetMapping("/StoreFile")
-    public ResponseEntity<String> StoreFile() {
+    @GetMapping("/file")
+    public ResponseEntity<String> saveFile() {
         throw new DataStorageNotFoundException("File Storage has not been found");
     }
 }
