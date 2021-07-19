@@ -20,7 +20,7 @@ public class GlobalExceptionHandler {
      */
 
     @ExceptionHandler(DataStorageNotFoundException.class)
-    ResponseEntity<ExceptionResponse> handlePublicationNotFound(DataStorageNotFoundException ex, WebRequest request) {
+    ResponseEntity<ExceptionResponse> handleDataStorageNotFound(DataStorageNotFoundException ex, WebRequest request) {
 
         ExceptionResponse exceptionResponse = new ExceptionResponse();
         exceptionResponse.setMessage(ex.getMessage());
