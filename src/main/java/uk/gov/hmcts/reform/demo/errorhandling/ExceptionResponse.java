@@ -6,8 +6,10 @@ import java.time.LocalDateTime;
 public class ExceptionResponse {
 
     /*The error message to return*/
+
     private  String message;
 
     /*The timestamp when error occurs*/
+    
     private LocalDateTime timestamp;
 }
