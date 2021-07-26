@@ -6,5 +6,5 @@ ENV APP pip-data-management.jar
 COPY build/libs/$APP /opt/app/
 COPY lib/AI-Agent.xml /opt/app/
 
-EXPOSE 4550
+EXPOSE 8090
 CMD [ "pip-data-management.jar" ]
