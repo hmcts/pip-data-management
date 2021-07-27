@@ -13,7 +13,7 @@ public class SwaggerConfigurationTest {
 
     @Test
     @DisplayName("Test that a swagger docket is created, and contains the correct documentation type")
-    public void testApiCreation() {
+    public void testDocketCreation() {
         SwaggerConfiguration swaggerConfiguration = new SwaggerConfiguration();
 
         Docket docket = swaggerConfiguration.api();
