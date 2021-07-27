@@ -7,7 +7,11 @@ import org.springframework.http.ResponseEntity;
 import uk.gov.hmcts.reform.demo.controllers.RootController;
 import uk.gov.hmcts.reform.demo.errorhandling.DataStorageNotFoundException;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+
 
 public class RootControllerTest {
 
@@ -26,9 +30,10 @@ public class RootControllerTest {
     @DisplayName("Check that an exception is thrown when the saveFile method is called")
     public void testSaveFileReturnsExpectedException() {
         DataStorageNotFoundException dataStorageNotFoundException =
-            assertThrows(DataStorageNotFoundException.class, () -> rootController.saveFile());
+            assertThrows(DataStorageNotFoundException.class, () -> rootController.saveFile(),
+                         "DataStorageNotFoundException has been thrown");
 
-        assertNotNull(dataStorageNotFoundException.getMessage());
+        assertNotNull(dataStorageNotFoundException.getMessage(), "Exception contains a message");
     }
 
 }
