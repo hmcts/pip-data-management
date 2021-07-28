@@ -1,6 +1,6 @@
 java:
   aadIdentityName: pip
-  ingressHost: pip-data-management.{{ .Values.global.environment }}.platform.hmcts.net
+  ingressHost: pip-data-management-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
   applicationPort: 8090
   image: 'hmctspublic.azurecr.io/pip-data-management:latest'
 
