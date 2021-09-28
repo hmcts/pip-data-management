@@ -1,8 +1,8 @@
 name: pip-data-management
 apiVersion: v2
-appVersion: "0.0.1"
+appVersion: "1.0"
 home: https://github.com/hmcts/pip-data-management
-version: 0.0.3
+version: 0.0.4
 description: Publishing & Information Data Management
 maintainers:
   - name: HMCTS PIP Team
