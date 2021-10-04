@@ -1,23 +1,19 @@
-# Spring Boot application template
+# Publication and Information - Data Management
 
 [![Build Status](https://travis-ci.org/hmcts/spring-boot-template.svg?branch=master)](https://travis-ci.org/hmcts/spring-boot-template)
 
 ## Purpose
 
-The purpose of this template is to speed up the creation of new Spring applications within HMCTS
-and help keep the same standards across multiple teams. If you need to create a new app, you can
-simply use this one as a starting point and build on top of it.
+The purpose of this service is to provide the ability to manage data based on data governance, retention and
+security policies. Including providing Usage Data & MI to SDP
 
 ## What's inside
 
 The template is a working application with a minimal setup. It contains:
- * application skeleton
- * setup script to prepare project
  * common plugins and libraries
  * docker setup
  * swagger configuration for api documentation ([see how to publish your api documentation to shared repository](https://github.com/hmcts/reform-api-docs#publish-swagger-docs))
  * code quality tools already set up
- * integration with Travis CI
  * Hystrix circuit breaker enabled
  * MIT license and contribution information
  * Helm chart using chart-java.
@@ -88,9 +84,6 @@ The template contains the following plugins:
       ./gradlew dependencyUpdates -Drevision=release
     ```
 
-## Setup
-
-Located in `./bin/init.sh`. Simply run and follow the explanation how to execute it.
 
 ## Notes
 
@@ -204,3 +197,27 @@ Here are some other functionalities it provides:
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
 
+# API
+
+Numerous apis are set up to handle the data passing through P&I and will be built upon as the project progresses
+
+ - [Retrieving Courts and Hearings](#retrieving-courts-and-hearings)
+
+## Retrieving Courts and Hearings
+Api set up under the url `{root-url}/courts` to retrieve courts with their assosiated hearings, or `{root-url}
+/hearings`
+to get purely hearings
+
+ - /courts - Will return an array of all courts
+ - /courts/{courtName} - will search all courts for a matching court with that name and return its full court object
+ - /courts/filter - Takes in a body of an array of `filters` and `values` to search the court list for and return
+   matching courts that satisfy all params provided, can return empty list if none match
+
+example filter request:
+```
+{
+  "filters": ["location", "jurisdiction"],
+  "values": ["london", "manchester", "crown court"]
+}
+```
+NOTE: searching or filtering is not case-sensitive but requires exact match otherwise
