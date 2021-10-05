@@ -18,7 +18,7 @@ import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.CourtHelper.createMockCourtList;
 
 @SpringBootTest
-public class FilterServiceTest {
+class FilterServiceTest {
 
     @Autowired
     private FilterService filterService;
@@ -27,14 +27,14 @@ public class FilterServiceTest {
     private CourtService courtService;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         List<Court> allCourts = createMockCourtList();
 
         when(courtService.getAllCourts()).thenReturn(allCourts);
     }
 
     @Test
-    public void testFilterCourtsJurisdictionCrown() {
+    void testFilterCourtsJurisdictionCrown() {
         List<Court> filteredCourts = filterService.filterCourts("Crown Court",
                                                                 CourtMethods.JURISDICTION.methodName);
 
@@ -44,7 +44,7 @@ public class FilterServiceTest {
     }
 
     @Test
-    public void testFilterCourtsJurisdictionMag() {
+    void testFilterCourtsJurisdictionMag() {
         List<Court> filteredCourts = filterService.filterCourts("Magistrates Court",
                                                                 CourtMethods.JURISDICTION.methodName);
 
@@ -57,7 +57,7 @@ public class FilterServiceTest {
     }
 
     @Test
-    public void testFilterCourtsLocation() {
+    void testFilterCourtsLocation() {
         List<Court> filteredCourts = filterService.filterCourts("London", CourtMethods.LOCATION.methodName);
 
         assertEquals(2, filteredCourts.size(), "Filtered court size should be 2");
@@ -68,20 +68,20 @@ public class FilterServiceTest {
     }
 
     @Test
-    public void testFilterCourtsAnyCase() {
+    void testFilterCourtsAnyCase() {
         List<Court> filteredCourts = filterService.filterCourts("LoNdOn", CourtMethods.LOCATION.methodName);
 
         assertEquals(2, filteredCourts.size(), "Filtered court size should be 2");
     }
 
     @Test
-    public void testFilterCourtsReturnsNoMatches() {
+    void testFilterCourtsReturnsNoMatches() {
         List<Court> filteredCourts = filterService.filterCourts("moon", CourtMethods.LOCATION.methodName);
         assertEquals(0, filteredCourts.size(), "Should return empty list if no courts filtered");
     }
 
     @Test
-    public void testFilterCourtsReturnsListOverloaded() {
+    void testFilterCourtsReturnsListOverloaded() {
         List<Court> preFilteredCourts = filterService.filterCourts("Crown Court",
                                                                    CourtMethods.JURISDICTION.methodName);
         assertEquals(4, preFilteredCourts.size(), "pre-filtered courts size should be 4");
@@ -92,14 +92,14 @@ public class FilterServiceTest {
     }
 
     @Test
-    public void testEmptyOptionalUsesAllCourts() {
+    void testEmptyOptionalUsesAllCourts() {
         List<Court> filteredCourts = filterService.filterCourts("manchester", CourtMethods.LOCATION.methodName,
                                                                 Optional.empty());
         assertEquals(8, filteredCourts.size(), "Courts should be filtered down from full list");
     }
 
     @Test
-    public void testInvalidMethodNameThrowsReflectionException() {
+    void testInvalidMethodNameThrowsReflectionException() {
         assertThrows(ReflectionException.class, () ->
                          filterService.filterCourts("london", "InvalidMethod"),
                      "Expected filterCourts() to throw ReflectionException"

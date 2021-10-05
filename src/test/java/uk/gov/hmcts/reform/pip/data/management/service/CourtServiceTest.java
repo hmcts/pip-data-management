@@ -21,7 +21,7 @@ import static uk.gov.hmcts.reform.pip.data.management.helpers.CourtHelper.return
 import static uk.gov.hmcts.reform.pip.data.management.helpers.CourtHelper.returnFilteredCourtsWhereResultsShouldBe2;
 
 @SpringBootTest
-public class CourtServiceTest {
+class CourtServiceTest {
 
     private static final String ABERGAVENNY_MAGISTRATES_COURT = "Abergavenny Magistrates' Court";
     private static final String ACCRINGTON_MAGISTRATES_COURT = "Accrington Magistrates' Court";
@@ -43,7 +43,7 @@ public class CourtServiceTest {
     private CourtService courtService;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         filters = new ArrayList<>();
         values = new ArrayList<>();
 
@@ -67,7 +67,7 @@ public class CourtServiceTest {
     }
 
     @Test
-    public void testGetAllCourtsReturnsAlphabetised() {
+    void testGetAllCourtsReturnsAlphabetised() {
         assertEquals(ABERGAVENNY_MAGISTRATES_COURT, courts.get(0).getName(), SORTED_MESSAGE);
         assertEquals(ACCRINGTON_MAGISTRATES_COURT, courts.get(1).getName(), SORTED_MESSAGE);
         assertEquals(LESLEY_COUNTY_COURT, courts.get(2).getName(), SORTED_MESSAGE);
@@ -75,20 +75,20 @@ public class CourtServiceTest {
     }
 
     @Test
-    public void testHandleCourtSearchReturnsCourt() {
+    void testHandleCourtSearchReturnsCourt() {
         assertEquals(foundCourt.get(0), courtService.handleSearchCourt(LESLEY_COUNTY_COURT),
                      "Found court should match");
     }
 
     @Test
-    public void testHandleSearchCourtThrowsCourtNotFoundException() {
+    void testHandleSearchCourtThrowsCourtNotFoundException() {
         assertThrows(CourtNotFoundException.class, () ->
             courtService.handleSearchCourt(INVALID), "Expected CourtNotFoundException to be thrown"
         );
     }
 
     @Test
-    public void testHandleFilterRequestWith2FiltersAndValues() {
+    void testHandleFilterRequestWith2FiltersAndValues() {
         filters.add("location");
         filters.add("jurisdiction");
         values.add(MANCHESTER);
@@ -99,7 +99,7 @@ public class CourtServiceTest {
     }
 
     @Test
-    public void testHandleFilterRequestWith1Filter2Values() {
+    void testHandleFilterRequestWith1Filter2Values() {
         filters.add("location");
         values.add(MANCHESTER);
         values.add("hull");

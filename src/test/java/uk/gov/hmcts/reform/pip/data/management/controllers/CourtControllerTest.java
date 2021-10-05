@@ -2,13 +2,13 @@ package uk.gov.hmcts.reform.pip.data.management.controllers;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -26,10 +26,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.CourtHelper.createMockCourtList;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-public class CourtControllerTest {
+class CourtControllerTest {
 
     private List<Court> allCourts;
     private final List<String> filters = new ArrayList<>();
@@ -46,7 +46,7 @@ public class CourtControllerTest {
 
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
 
         allCourts = createMockCourtList();
@@ -64,7 +64,7 @@ public class CourtControllerTest {
     }
 
     @Test
-    public void testGetCourtListReturnsAllCourts() throws Exception {
+    void testGetCourtListReturnsAllCourts() throws Exception {
         mockMvc.perform(get("/courts"))
             .andExpect(status().isOk())
             .andExpect(content().string(containsString(allCourts.get(0).getName())))
@@ -72,20 +72,20 @@ public class CourtControllerTest {
     }
 
     @Test
-    public void testGetCourtReturnsOk() throws Exception {
+    void testGetCourtReturnsOk() throws Exception {
         mockMvc.perform(get("/courts/mock court 1"))
             .andExpect(status().isOk())
             .andExpect(content().string(containsString(allCourts.get(0).getName())));
     }
 
     @Test
-    public void testGetCourtNoResultsReturnsNotFound() throws Exception {
+    void testGetCourtNoResultsReturnsNotFound() throws Exception {
         mockMvc.perform(get("/courts/Invalid"))
             .andExpect(status().isNotFound());
     }
 
     @Test
-    public void testGetFilterCourtsReturnsOk() throws Exception {
+    void testGetFilterCourtsReturnsOk() throws Exception {
         mockMvc.perform(get("/courts/filter")
                             .content("{\"filters\": [\"location\", \"jurisdiction\"],"
                                          + "\"values\": [\"london\", \"manchester\"]}")

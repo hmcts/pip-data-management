@@ -25,29 +25,26 @@ public class CourtsAndHearings {
     private List<Hearing> listHearings;
     private List<LiveCaseStatus> listLiveCases;
 
-    public CourtsAndHearings() throws IOException {
+    public CourtsAndHearings() {
         ObjectMapper om = new ObjectMapper().setDateFormat(new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH));
-
-        InputStream fileHearings = this.getClass().getClassLoader().getResourceAsStream("mocks/hearingsList.json");
-        InputStream fileCourts = this.getClass().getClassLoader()
-            .getResourceAsStream("mocks/courtsAndHearingsCount.json");
-        InputStream liveCases = this.getClass().getClassLoader()
-            .getResourceAsStream("mocks/liveCaseStatusUpdates.json");
 
         Hearing[] list = new Hearing[0];
         Court[] courts = new Court[0];
         LiveCaseStatus[] liveCaseStatuses = new LiveCaseStatus[0];
-        try {
+        try (
+            InputStream fileHearings = this.getClass().getClassLoader()
+                .getResourceAsStream("mocks/hearingsList.json");
+            InputStream fileCourts = this.getClass().getClassLoader()
+                .getResourceAsStream("mocks/courtsAndHearingsCount.json");
+            InputStream liveCases = this.getClass().getClassLoader()
+                .getResourceAsStream("mocks/liveCaseStatusUpdates.json")) {
             list = om.readValue(fileHearings, Hearing[].class);
             courts = om.readValue(fileCourts, Court[].class);
             liveCaseStatuses = om.readValue(liveCases, LiveCaseStatus[].class);
         } catch (IOException e) {
             log.error(e.getMessage()); // avoiding handling with throw away solution
-        } finally {
-            fileCourts.close();
-            fileHearings.close();
-            liveCases.close();
         }
+
         this.listHearings = Arrays.asList(list);
         this.listCourts = Arrays.asList(courts);
         this.listLiveCases = Arrays.asList(liveCaseStatuses);

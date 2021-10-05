@@ -12,19 +12,19 @@ import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.NotFound
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class GlobalExceptionHandlerTest {
+class GlobalExceptionHandlerTest {
 
     private static final String TEST_MESSAGE = "This is a test message";
     private static final String ASSERTION_MESSAGE = "The message should match the message passed in";
     private static final String NOT_FOUND_ASSERTION = "Status code should be of type: Not Found";
-    public static final String ASSERTION_RESPONSE_BODY = "Response should contain a body";
+    static final String ASSERTION_RESPONSE_BODY = "Response should contain a body";
 
     private final GlobalExceptionHandler globalExceptionHandler = new GlobalExceptionHandler();
 
     @Test
     @DisplayName("Test that the response entity returned from the exception handler, "
         + "contains the expected status code and body")
-    public void testHandleSubscriptionNotFoundMethod() {
+    void testHandleSubscriptionNotFoundMethod() {
 
         DataStorageNotFoundException dataStorageNotFoundException
             = new DataStorageNotFoundException(TEST_MESSAGE);
@@ -39,7 +39,7 @@ public class GlobalExceptionHandlerTest {
     }
 
     @Test
-    public void testHandleNotFoundException() {
+    void testHandleNotFoundException() {
         NotFoundException notFoundException = new NotFoundException(TEST_MESSAGE);
 
         ResponseEntity<ExceptionResponse> responseEntity =
@@ -52,7 +52,7 @@ public class GlobalExceptionHandlerTest {
     }
 
     @Test
-    public void testHandleCourtNotFoundException() {
+    void testHandleCourtNotFoundException() {
         CourtNotFoundException courtNotFoundException = new CourtNotFoundException(TEST_MESSAGE);
 
         ResponseEntity<ExceptionResponse> responseEntity =
@@ -65,7 +65,7 @@ public class GlobalExceptionHandlerTest {
     }
 
     @Test
-    public void testHandleHearingNotFoundException() {
+    void testHandleHearingNotFoundException() {
         HearingNotFoundException hearingNotFoundException = new HearingNotFoundException(TEST_MESSAGE);
 
         ResponseEntity<ExceptionResponse> responseEntity =

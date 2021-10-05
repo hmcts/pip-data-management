@@ -9,18 +9,18 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
-public class HearingServiceTest {
+class HearingServiceTest {
 
     @Autowired
     private HearingService hearingService;
 
     @Test
-    public void testGetHearingsReturnsExpected() {
+    void testGetHearingsReturnsExpected() {
         assertEquals(3, hearingService.getHearings(1).size(), "Number of hearings should match");
     }
 
     @Test
-    public void testNoHearingsThrowsNotFoundException() {
+    void testNoHearingsThrowsNotFoundException() {
         Exception ex = assertThrows(HearingNotFoundException.class, () ->
                                         hearingService.getHearings(5), "Expect HearingNotFound to be thrown"
         );

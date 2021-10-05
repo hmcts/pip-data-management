@@ -50,7 +50,7 @@ public class CourtService {
         if (foundCourt.isEmpty()) {
             throw new CourtNotFoundException(String.format("No court found with the search: %s", input));
         } else {
-            return filterService.filterCourts(input, CourtMethods.NAME.methodName).get(0);
+            return foundCourt.get(0);
         }
     }
 

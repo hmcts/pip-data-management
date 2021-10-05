@@ -9,21 +9,21 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
-public class LiveCaseStatusServiceTest {
+class LiveCaseStatusServiceTest {
 
     @Autowired
     private LiveCaseStatusService liveCaseStatusService;
 
     @Test
-    public void testHandleLiveCaseRequest() {
+    void testHandleLiveCaseRequest() {
         assertEquals("Mutsu Court", liveCaseStatusService.handleLiveCaseRequest(1).get(0)
             .getCourtName(), "Court names should match");
     }
 
     @Test
-    public void testLiveCaseStatusExceptionThrown() {
+    void testLiveCaseStatusExceptionThrown() {
         LiveCaseStatusException ex = assertThrows(LiveCaseStatusException.class, () ->
             liveCaseStatusService.handleLiveCaseRequest(2), "Expected LiveCaseStatusException to be thrown");
-        assertEquals("No live cases found for court id: 2", ex.getMessage());
+        assertEquals("No live cases found for court id: 2", ex.getMessage(), "Messages should match");
     }
 }

@@ -2,12 +2,12 @@ package uk.gov.hmcts.reform.pip.data.management.api;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -19,10 +19,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-public class CourtApiTest {
+class CourtApiTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -31,33 +31,33 @@ public class CourtApiTest {
     private WebApplicationContext webApplicationContext;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
     }
 
     @Test
-    public void testGetAllCourtsReturnsSuccess() throws Exception {
+    void testGetAllCourtsReturnsSuccess() throws Exception {
         mockMvc.perform(get("/courts"))
             .andExpect(status().isOk())
             .andExpect(content().string(containsString("\"courtId\":1")));
     }
 
     @Test
-    public void testGetCourtByNameReturnsSuccess() throws Exception {
+    void testGetCourtByNameReturnsSuccess() throws Exception {
         mockMvc.perform(get("/courts/Manchester Family Court"))
             .andExpect(status().isOk())
             .andExpect(content().string(containsString("Manchester Family Court")));
     }
 
     @Test
-    public void testGetCourtByNameReturnsNotFound() throws Exception {
+    void testGetCourtByNameReturnsNotFound() throws Exception {
         mockMvc.perform(get("/courts/invalid"))
             .andExpect(status().isNotFound())
             .andExpect(content().string(containsString("No court found with the search: invalid")));
     }
 
     @Test
-    public void testFilterCourtsByLocation() throws Exception {
+    void testFilterCourtsByLocation() throws Exception {
         mockMvc.perform(get("/courts/filter").content("{\"filters\": [\"location\"],"
                                                           + "\"values\": [\"manchester\"]}")
                             .contentType(MediaType.APPLICATION_JSON))
@@ -66,7 +66,7 @@ public class CourtApiTest {
     }
 
     @Test
-    public void testFilterCourtsByLocationReturnsNoResults() throws Exception {
+    void testFilterCourtsByLocationReturnsNoResults() throws Exception {
         mockMvc.perform(get("/courts/filter").content("{\"filters\": [\"location\"],"
                                                           + "\"values\": [\"london\"]}")
                             .contentType(MediaType.APPLICATION_JSON))
@@ -75,7 +75,7 @@ public class CourtApiTest {
     }
 
     @Test
-    public void testFilterCourtsBy2Filters() throws Exception {
+    void testFilterCourtsBy2Filters() throws Exception {
         mockMvc.perform(get("/courts/filter").content("{\"filters\": [\"location\", \"jurisdiction\"],"
                                                           + "\"values\": [\"manchester\", \"magistrates court\"]}")
                             .contentType(MediaType.APPLICATION_JSON))
