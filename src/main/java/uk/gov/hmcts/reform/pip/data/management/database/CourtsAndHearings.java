@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.pip.data.management.models.Court;
 import uk.gov.hmcts.reform.pip.data.management.models.Hearing;
+import uk.gov.hmcts.reform.pip.data.management.models.lcsu.LiveCaseStatus;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,8 +22,8 @@ import java.util.stream.Collectors;
 public class CourtsAndHearings {
 
     private List<Court> listCourts;
-
     private List<Hearing> listHearings;
+    private List<LiveCaseStatus> listLiveCases;
 
     public CourtsAndHearings() throws IOException {
         ObjectMapper om = new ObjectMapper().setDateFormat(new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH));
@@ -30,20 +31,26 @@ public class CourtsAndHearings {
         InputStream fileHearings = this.getClass().getClassLoader().getResourceAsStream("mocks/hearingsList.json");
         InputStream fileCourts = this.getClass().getClassLoader()
             .getResourceAsStream("mocks/courtsAndHearingsCount.json");
+        InputStream liveCases = this.getClass().getClassLoader()
+            .getResourceAsStream("mocks/liveCaseStatusUpdates.json");
 
         Hearing[] list = new Hearing[0];
         Court[] courts = new Court[0];
+        LiveCaseStatus[] liveCaseStatuses = new LiveCaseStatus[0];
         try {
             list = om.readValue(fileHearings, Hearing[].class);
             courts = om.readValue(fileCourts, Court[].class);
+            liveCaseStatuses = om.readValue(liveCases, LiveCaseStatus[].class);
         } catch (IOException e) {
             log.error(e.getMessage()); // avoiding handling with throw away solution
         } finally {
             fileCourts.close();
             fileHearings.close();
+            liveCases.close();
         }
         this.listHearings = Arrays.asList(list);
         this.listCourts = Arrays.asList(courts);
+        this.listLiveCases = Arrays.asList(liveCaseStatuses);
         this.buildCourts();
     }
 
@@ -57,5 +64,9 @@ public class CourtsAndHearings {
             .collect(Collectors.toList());
     }
 
-
+    public List<LiveCaseStatus> getLiveCaseStatus(int courtId) {
+        return this.listLiveCases.stream()
+            .filter(lcsu -> lcsu.getCourtId().equals(courtId))
+            .collect(Collectors.toList());
+    }
 }
