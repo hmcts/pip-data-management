@@ -13,6 +13,8 @@ management:
 
 #If you use a database then uncomment below lines and update db properties accordingly
 spring:
+  jackson:
+    serialization.write_dates_as_timestamps: false
   config:
     import: "optional:configtree:/mnt/secrets/"
   application:
