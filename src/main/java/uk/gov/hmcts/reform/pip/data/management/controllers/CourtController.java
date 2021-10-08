@@ -39,10 +39,22 @@ public class CourtController {
 
     @ApiResponses({
         @ApiResponse(code = 200, message = "Court found"),
+        @ApiResponse(code = 404, message = "No court found with the id {courtId}")
+    })
+    @ApiOperation("Gets a court by searching by the court id and returning")
+    @GetMapping("/{courtId}")
+    public ResponseEntity<Court> getCourtById(@ApiParam(value = "The court Id to retrieve", required = true)
+                                                @PathVariable Integer courtId) {
+        return ResponseEntity.ok(courtService.handleSearchCourt(courtId));
+
+    }
+
+    @ApiResponses({
+        @ApiResponse(code = 200, message = "Court found"),
         @ApiResponse(code = 404, message = "No court found with the search {input}")
     })
     @ApiOperation("Gets a court by searching by the court name and returning")
-    @GetMapping("/{input}")
+    @GetMapping("/find/{input}")
     public ResponseEntity<Court> getCourtByName(@ApiParam(value = "The search input to retrieve", required = true)
                                                 @PathVariable String input) {
         return ResponseEntity.ok(courtService.handleSearchCourt(input));

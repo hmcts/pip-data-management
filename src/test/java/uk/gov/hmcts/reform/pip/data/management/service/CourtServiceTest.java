@@ -50,6 +50,9 @@ class CourtServiceTest {
         courts = courtService.getAllCourts();
         foundCourt = courts.stream().filter(court -> court.getCourtId().equals(2)).collect(Collectors.toList());
 
+        when(filterService.filterCourts("1", CourtMethods.COURT_ID.methodName)).thenReturn(foundCourt);
+        when(filterService.filterCourts("7", CourtMethods.COURT_ID.methodName))
+            .thenThrow(CourtNotFoundException.class);
         when(filterService.filterCourts(LESLEY_COUNTY_COURT, CourtMethods.NAME.methodName)).thenReturn(foundCourt);
         when(filterService.filterCourts(INVALID, CourtMethods.NAME.methodName)).thenThrow(CourtNotFoundException.class);
         when(filterService.filterCourts(MANCHESTER, CourtMethods.LOCATION.methodName, Optional.of(courts)))
@@ -72,6 +75,19 @@ class CourtServiceTest {
         assertEquals(ACCRINGTON_MAGISTRATES_COURT, courts.get(1).getName(), SORTED_MESSAGE);
         assertEquals(LESLEY_COUNTY_COURT, courts.get(2).getName(), SORTED_MESSAGE);
         assertEquals(MANCHESTER_FAMILY_COURT, courts.get(3).getName(), SORTED_MESSAGE);
+    }
+
+    @Test
+    void testHandleCourtIdSearchReturnsCourt() {
+        assertEquals(foundCourt.get(0), courtService.handleSearchCourt(1),
+                     "Found court should match");
+    }
+
+    @Test
+    void testHandleSearchCourtIdThrowsCourtNotFoundException() {
+        assertThrows(CourtNotFoundException.class, () ->
+            courtService.handleSearchCourt(INVALID), "Expected CourtNotFoundException to be thrown"
+        );
     }
 
     @Test

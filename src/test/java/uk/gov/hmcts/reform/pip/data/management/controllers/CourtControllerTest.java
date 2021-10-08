@@ -59,8 +59,10 @@ class CourtControllerTest {
 
         when(courtService.getAllCourts()).thenReturn(allCourts);
         when(courtService.handleSearchCourt("mock court 1")).thenReturn(allCourts.get(0));
+        when(courtService.handleSearchCourt(1)).thenReturn(allCourts.get(0));
         when(courtService.handleFilterRequest(filters, values)).thenReturn(allCourts);
         when(courtService.handleSearchCourt("Invalid")).thenThrow(CourtNotFoundException.class);
+        when(courtService.handleSearchCourt(7)).thenThrow(CourtNotFoundException.class);
     }
 
     @Test
@@ -72,15 +74,28 @@ class CourtControllerTest {
     }
 
     @Test
+    void testGetCourtIdReturnsOk() throws Exception {
+        mockMvc.perform(get("/courts/1"))
+            .andExpect(status().isOk())
+            .andExpect(content().string(containsString(allCourts.get(0).getName())));
+    }
+
+    @Test
+    void testGetCourtIdNoResultsReturnsNotFound() throws Exception {
+        mockMvc.perform(get("/courts/7"))
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
     void testGetCourtReturnsOk() throws Exception {
-        mockMvc.perform(get("/courts/mock court 1"))
+        mockMvc.perform(get("/courts/find/mock court 1"))
             .andExpect(status().isOk())
             .andExpect(content().string(containsString(allCourts.get(0).getName())));
     }
 
     @Test
     void testGetCourtNoResultsReturnsNotFound() throws Exception {
-        mockMvc.perform(get("/courts/Invalid"))
+        mockMvc.perform(get("/courts/find/Invalid"))
             .andExpect(status().isNotFound());
     }
 
