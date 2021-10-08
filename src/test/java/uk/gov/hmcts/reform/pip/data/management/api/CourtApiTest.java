@@ -43,15 +43,29 @@ class CourtApiTest {
     }
 
     @Test
+    void testGetCourtByIdReturnsSuccess() throws Exception {
+        mockMvc.perform(get("/courts/4"))
+            .andExpect(status().isOk())
+            .andExpect(content().string(containsString("Manchester Family Court")));
+    }
+
+    @Test
+    void testGetCourtByIdReturnsNotFound() throws Exception {
+        mockMvc.perform(get("/courts/7"))
+            .andExpect(status().isNotFound())
+            .andExpect(content().string(containsString("No court found with the id: 7")));
+    }
+
+    @Test
     void testGetCourtByNameReturnsSuccess() throws Exception {
-        mockMvc.perform(get("/courts/Manchester Family Court"))
+        mockMvc.perform(get("/courts/find/Manchester Family Court"))
             .andExpect(status().isOk())
             .andExpect(content().string(containsString("Manchester Family Court")));
     }
 
     @Test
     void testGetCourtByNameReturnsNotFound() throws Exception {
-        mockMvc.perform(get("/courts/invalid"))
+        mockMvc.perform(get("/courts/find/invalid"))
             .andExpect(status().isNotFound())
             .andExpect(content().string(containsString("No court found with the search: invalid")));
     }

@@ -39,6 +39,22 @@ public class CourtService {
     }
 
     /**
+     * Handles request to search for a court by court id.
+     *
+     * @param courtId the court name to search for
+     * @return Court of the found court
+     * @throws CourtNotFoundException when no court was found with the given search input
+     */
+    public Court handleSearchCourt(Integer courtId) {
+        List<Court> foundCourt = filterService.filterCourts(courtId.toString(), CourtMethods.COURT_ID.methodName);
+        if (foundCourt.isEmpty()) {
+            throw new CourtNotFoundException(String.format("No court found with the id: %s", courtId));
+        } else {
+            return foundCourt.get(0);
+        }
+    }
+
+    /**
      * Handles request to search for a court by the court name.
      *
      * @param input the court name to search for
