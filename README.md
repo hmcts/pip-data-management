@@ -209,7 +209,9 @@ Api set up under the url `{root-url}/courts` to retrieve courts with their assos
 to get purely hearings
 
  - /courts - Will return an array of all courts
- - /courts/{courtName} - will search all courts for a matching court with that name and return its full court object
+ - /courts/{courtId} - Will search courts for matching court Id and return full object
+ - /courts/find/{courtName} - will search all courts for a matching court with that name and return its full court
+   object
  - /courts/filter - Takes in a body of an array of `filters` and `values` to search the court list for and return
    matching courts that satisfy all params provided, can return empty list if none match
 
