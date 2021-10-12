@@ -18,7 +18,7 @@ public class LiveCaseStatusService {
         List<LiveCaseStatus> result = courtsAndHearings.getLiveCaseStatus(courtId);
 
         if (result.isEmpty()) {
-            throw new LiveCaseStatusException(String.format("No live cases found for court id: %o", courtId));
+            throw new LiveCaseStatusException(String.format("No live cases found for court id: %s", courtId));
         } else {
             return result;
         }
