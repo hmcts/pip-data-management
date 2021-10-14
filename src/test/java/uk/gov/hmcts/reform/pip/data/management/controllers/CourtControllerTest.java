@@ -2,53 +2,39 @@ package uk.gov.hmcts.reform.pip.data.management.controllers;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
+import org.springframework.http.HttpStatus;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CourtNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.models.Court;
+import uk.gov.hmcts.reform.pip.data.management.models.request.FilterRequest;
 import uk.gov.hmcts.reform.pip.data.management.service.CourtService;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.hamcrest.Matchers.containsString;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.CourtHelper.createMockCourtList;
 
-@ExtendWith(SpringExtension.class)
 @SpringBootTest
-@AutoConfigureMockMvc
 class CourtControllerTest {
 
     private List<Court> allCourts;
     private final List<String> filters = new ArrayList<>();
     private final List<String> values = new ArrayList<>();
 
-    @MockBean
+    @Mock
     private CourtService courtService;
 
-    @Autowired
-    private MockMvc mockMvc;
-
-    @Autowired
-    private WebApplicationContext webApplicationContext;
+    @InjectMocks
+    private CourtController courtController;
 
 
     @BeforeEach
     void setup() {
-        mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-
         allCourts = createMockCourtList();
 
         filters.add("location");
@@ -66,46 +52,60 @@ class CourtControllerTest {
     }
 
     @Test
-    void testGetCourtListReturnsAllCourts() throws Exception {
-        mockMvc.perform(get("/courts"))
-            .andExpect(status().isOk())
-            .andExpect(content().string(containsString(allCourts.get(0).getName())))
-            .andExpect(content().string(containsString(allCourts.get(1).getName())));
+    void testGetCourtListReturnsAllCourts() {
+        assertEquals(allCourts, courtController.getCourtList().getBody(), "Should contain all courts");
     }
 
     @Test
-    void testGetCourtIdReturnsOk() throws Exception {
-        mockMvc.perform(get("/courts/1"))
-            .andExpect(status().isOk())
-            .andExpect(content().string(containsString(allCourts.get(0).getName())));
+    void testGetCourtListReturnsOk() {
+        assertEquals(HttpStatus.OK, courtController.getCourtList().getStatusCode(), "Status code should match");
     }
 
     @Test
-    void testGetCourtIdNoResultsReturnsNotFound() throws Exception {
-        mockMvc.perform(get("/courts/7"))
-            .andExpect(status().isNotFound());
+    void testGetCourtIdReturnsCourt() {
+        assertEquals(allCourts.get(0), courtController.getCourtById(1).getBody(),
+                     "Returned Courts should match"
+        );
     }
 
     @Test
-    void testGetCourtReturnsOk() throws Exception {
-        mockMvc.perform(get("/courts/find/mock court 1"))
-            .andExpect(status().isOk())
-            .andExpect(content().string(containsString(allCourts.get(0).getName())));
+    void testGetCourtIdReturnsOK() {
+        assertEquals(HttpStatus.OK, courtController.getCourtById(1).getStatusCode(),
+                     "Status code should match"
+        );
     }
 
     @Test
-    void testGetCourtNoResultsReturnsNotFound() throws Exception {
-        mockMvc.perform(get("/courts/find/Invalid"))
-            .andExpect(status().isNotFound());
+    void testGetCourtIdNoResultsThrows() {
+        assertThrows(CourtNotFoundException.class, () ->
+            courtController.getCourtById(7));
     }
 
     @Test
-    void testGetFilterCourtsReturnsOk() throws Exception {
-        mockMvc.perform(get("/courts/filter")
-                            .content("{\"filters\": [\"location\", \"jurisdiction\"],"
-                                         + "\"values\": [\"london\", \"manchester\"]}")
-                            .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andExpect(content().string(containsString(allCourts.get(0).getName())));
+    void testGetCourtReturnsCourt() {
+        assertEquals(allCourts.get(0), courtController.getCourtByName("mock court 1").getBody(),
+                     "Courts should match"
+        );
+    }
+
+    @Test
+    void testGetCourtReturnsOk() {
+        assertEquals(HttpStatus.OK, courtController.getCourtByName("mock court 1").getStatusCode(),
+                     "Status code should match"
+        );
+    }
+
+    @Test
+    void testGetCourtNoResultsThrows() {
+        assertThrows(CourtNotFoundException.class, () ->
+            courtController.getCourtByName("Invalid"));
+    }
+
+    @Test
+    void testGetFilterCourtsReturnsCourts() {
+        FilterRequest filterRequest = new FilterRequest(filters, values);
+        assertEquals(allCourts, courtController.filterCourts(filterRequest).getBody(),
+                     "Courts should match"
+        );
     }
 }
