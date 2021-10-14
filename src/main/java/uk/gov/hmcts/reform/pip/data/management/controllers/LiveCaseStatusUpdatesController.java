@@ -19,7 +19,7 @@ import java.util.List;
 @RestController
 @Api(tags = "Data Management Live Case Status Updates (LCSU) API")
 @RequestMapping("/lcsu")
-public class LiveCaseStatusUpdates {
+public class LiveCaseStatusUpdatesController {
 
     @Autowired
     private LiveCaseStatusService liveCaseStatusService;
