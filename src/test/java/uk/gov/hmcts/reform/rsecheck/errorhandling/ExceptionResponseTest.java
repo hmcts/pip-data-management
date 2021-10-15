@@ -8,11 +8,11 @@ import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ExceptionResponseTest {
+class ExceptionResponseTest {
 
     @Test
     @DisplayName("Test that the creation of an ExceptionResponse, populates the expected fields")
-    public void testCreationOfExceptionResponse() {
+    void testCreationOfExceptionResponse() {
 
         ExceptionResponse exceptionResponse = new ExceptionResponse();
 
