@@ -2,7 +2,7 @@ package uk.gov.hmcts.reform.rsecheck.errorhandling.exceptions;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import uk.gov.hmcts.reform.demo.errorhandling.DataStorageNotFoundException;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.DataStorageNotFoundException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

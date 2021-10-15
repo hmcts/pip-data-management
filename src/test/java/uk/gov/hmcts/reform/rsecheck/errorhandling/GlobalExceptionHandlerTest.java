@@ -4,9 +4,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import uk.gov.hmcts.reform.demo.errorhandling.DataStorageNotFoundException;
-import uk.gov.hmcts.reform.demo.errorhandling.ExceptionResponse;
-import uk.gov.hmcts.reform.demo.errorhandling.GlobalExceptionHandler;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.DataStorageNotFoundException;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.ExceptionResponse;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.GlobalExceptionHandler;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
