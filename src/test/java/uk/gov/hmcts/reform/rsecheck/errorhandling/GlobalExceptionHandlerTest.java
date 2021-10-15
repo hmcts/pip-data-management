@@ -11,12 +11,12 @@ import uk.gov.hmcts.reform.demo.errorhandling.GlobalExceptionHandler;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class GlobalExceptionHandlerTest {
+class GlobalExceptionHandlerTest {
 
     @Test
     @DisplayName("Test that the response entity returned from the exception handler, "
         + "contains the expected status code and body")
-    public void testHandleSubscriptionNotFoundMethod() {
+    void testHandleSubscriptionNotFoundMethod() {
 
         GlobalExceptionHandler globalExceptionHandler = new GlobalExceptionHandler();
 

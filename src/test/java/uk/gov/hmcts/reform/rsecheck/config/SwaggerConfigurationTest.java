@@ -9,11 +9,11 @@ import uk.gov.hmcts.reform.demo.config.SwaggerConfiguration;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class SwaggerConfigurationTest {
+class SwaggerConfigurationTest {
 
     @Test
     @DisplayName("Test that a swagger docket is created, and contains the correct documentation type")
-    public void testDocketCreation() {
+    void testDocketCreation() {
         SwaggerConfiguration swaggerConfiguration = new SwaggerConfiguration();
 
         Docket docket = swaggerConfiguration.api();
