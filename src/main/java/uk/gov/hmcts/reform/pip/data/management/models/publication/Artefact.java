@@ -1,28 +1,21 @@
-package uk.gov.hmcts.reform.pip.data.management.models;
+package uk.gov.hmcts.reform.pip.data.management.models.publication;
 
+import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDateTime;
-import java.util.Map;
 
 /**
  * Class that presents the Inbound artifact that is being published
  */
 @Data
-public class Artifact {
-
-    public Artifact(Map<String, String> headers, String payload) {
-
-        this.artifactId = headers.get("x-artifact-id");
-        this.provenance = headers.get("x-provenance");
-        this.sourceArtifactId = headers.get("x-source-artifact-id");
-        this.payload = payload;
-    }
+@Builder
+public class Artefact {
 
     /**
      * Unique ID for publication.
      */
-    private String artifactId;
+    private String artefactId;
 
     /**
      * Name of source system.
@@ -32,22 +25,22 @@ public class Artifact {
     /**
      * Unique of ID of what publication is called by source system
      */
-    private String sourceArtifactId;
+    private String sourceArtefactId;
 
     /**
      * List / Outcome / Judgement / Status Update
      */
-    private String type;
+    private ArtefactType type;
 
     /**
      * Level of sensitivity of publication.
      */
-    private String sensitivity;
+    private Sensitivity sensitivity;
 
     /**
      * Language of publication.
      */
-    private String language;
+    private Language language;
 
     /**
      * Metadata that will be indexed for searching.

@@ -4,13 +4,17 @@ import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import springfox.documentation.annotations.ApiIgnore;
-import uk.gov.hmcts.reform.pip.data.management.models.Artifact;
+import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
+import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactType;
+import uk.gov.hmcts.reform.pip.data.management.models.publication.Language;
+import uk.gov.hmcts.reform.pip.data.management.models.publication.Sensitivity;
 import uk.gov.hmcts.reform.pip.data.management.service.PublicationService;
 
 import java.time.LocalDateTime;
-import java.util.Map;
 
+/**
+ * This class is the controller for creating new Publications
+ */
 @RestController
 @Api(tags = "Data Management Publications API")
 @RequestMapping("/publication")
@@ -18,33 +22,58 @@ public class PublicationController {
 
     private PublicationService publicationService;
 
+    /**
+     * Constructor for Publication controller.
+     * @param publicationService The PublicationService that contains the business logic to handle publications.
+     */
     @Autowired
     public PublicationController(PublicationService publicationService) {
         this.publicationService = publicationService;
     }
 
+    /**
+     * This endpoint takes in the Artefact, which is split over headers and also the payload body.
+     * @param artefactId Unique ID for the publication.
+     * @param provenance Name of the source system.
+     * @param sourceArtefactId Unique ID of what publication is called by source system.
+     * @param type List / Outcome / Judgement / Status Updates.
+     * @param sensitivity Level of sensitivity.
+     * @param language Language of publication.
+     * @param search Metadata that will be indexed for searching.
+     * @param displayFrom Date / Time from which the publication will be displayed.
+     * @param displayTo Date / Time until which the publication will be displayed.
+     * @param payload JSON Blob with key/value pairs of data to be published.
+     * @return The UUID of the created artefact.
+     */
     @ApiResponses({
         @ApiResponse(code = 200, message = "Publication has been created"),
-    })
-    @ApiImplicitParams({
-        @ApiImplicitParam(name = "x-artifact-id", required = true, paramType = "header", dataTypeClass = String.class, example = "1561-1511-1515-2131"),
-        @ApiImplicitParam(name = "x-provenance", required = true, paramType = "header", dataTypeClass = String.class, example = "CFT"),
-        @ApiImplicitParam(name = "x-source-artifact-id", required = true, paramType = "header", dataTypeClass = String.class, example = "daily-word"),
-        @ApiImplicitParam(name = "x-type", required = true, paramType = "header", dataTypeClass = String.class, example = "List"),
-        @ApiImplicitParam(name = "x-sensitivity", paramType = "header", dataTypeClass = String.class, example = "WARNED"),
-        @ApiImplicitParam(name = "x-language", paramType = "header", dataTypeClass = String.class, example = "English"),
-        @ApiImplicitParam(name = "x-search", paramType = "header", dataTypeClass = String.class),
-        @ApiImplicitParam(name = "x-display-from", paramType = "header", dataTypeClass = LocalDateTime.class, example = "2021-11-14T19:32"),
-        @ApiImplicitParam(name = "x-display-to", paramType = "header", dataTypeClass = LocalDateTime.class, example = "2021-11-14T19:32"),
     })
     @ApiOperation("Upload a new publication")
     @PutMapping
     public ResponseEntity<String> uploadPublication(
-        @ApiIgnore @RequestHeader Map<String, String> headers,
+        @RequestHeader("x-artefact-id") String artefactId,
+        @RequestHeader("x-provenance") String provenance,
+        @RequestHeader("x-source-artefact-id") String sourceArtefactId,
+        @RequestHeader("x-type") ArtefactType type,
+        @RequestHeader(value = "x-sensitivity", required = false) Sensitivity sensitivity,
+        @RequestHeader(value = "x-language", required = false) Language language,
+        @RequestHeader(value = "x-search", required = false) String search,
+        @RequestHeader(value = "x-display-from", required = false) LocalDateTime displayFrom,
+        @RequestHeader(value = "x-display-to", required = false) LocalDateTime displayTo,
         @RequestBody String payload) {
-        publicationService.createPublication(new Artifact(headers, payload));
-        return ResponseEntity.ok("Test Body");
 
+        Artefact artefact = Artefact.builder().artefactId(artefactId)
+            .provenance(provenance).sourceArtefactId(sourceArtefactId)
+            .type(type).sensitivity(sensitivity)
+            .language(language).search(search)
+            .displayFrom(displayFrom).displayTo(displayTo)
+            .payload(payload)
+            .build();
+
+        String createdItem = publicationService
+            .createPublication(artefact);
+
+        return ResponseEntity.ok(createdItem);
     }
 
 }

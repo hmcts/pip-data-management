@@ -15,6 +15,8 @@ management:
 spring:
   jackson:
     serialization.write_dates_as_timestamps: false
+    mapper:
+      accept_case_insensitive_enums: true
   config:
     import: "optional:configtree:/mnt/secrets/"
   application:
@@ -44,3 +46,6 @@ spring:
 azure:
   application-insights:
     instrumentation-key: ${rpe.AppInsightsInstrumentationKey:00000000-0000-0000-0000-000000000000}
+  table:
+    connection-string: ${CONNECTION_STRING}
+    table-name: artefact
