@@ -19,12 +19,12 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.CourtHelper.createHearing;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.CourtHelper.createMockCourtList;
+import static uk.gov.hmcts.reform.pip.data.management.helpers.TestConstants.HEARINGS_MATCH;
 
 @SpringBootTest
 class FilterServiceTest {
 
     private static final String CASE_NAME = "test name";
-    private static final String HEARING_MATCH = "Hearing should match";
 
     private List<Hearing> hearings;
 
@@ -148,7 +148,7 @@ class FilterServiceTest {
     @Test
     void testFindHearingByCaseNumber() {
         assertEquals(hearings.get(0), filterService.findHearingByCaseNumber("9999", hearings),
-                     HEARING_MATCH);
+                     HEARINGS_MATCH);
     }
 
     @Test
@@ -160,13 +160,13 @@ class FilterServiceTest {
     @Test
     void testFindHearingByCaseNumberCaseInsensitive() {
         assertEquals(hearings.get(1), filterService.findHearingByCaseNumber("av123", hearings),
-                     HEARING_MATCH);
+                     HEARINGS_MATCH);
     }
 
     @Test
     void testFindHearingByUrn() {
         assertEquals(hearings.get(0), filterService.findHearingByUrn("123", hearings),
-                     HEARING_MATCH);
+                     HEARINGS_MATCH);
     }
 
     @Test
@@ -178,7 +178,7 @@ class FilterServiceTest {
     @Test
     void testFindHearingByUrnCaseInsensitive() {
         assertEquals(hearings.get(1), filterService.findHearingByUrn("av123", hearings),
-                     HEARING_MATCH);
+                     HEARINGS_MATCH);
     }
 
 }

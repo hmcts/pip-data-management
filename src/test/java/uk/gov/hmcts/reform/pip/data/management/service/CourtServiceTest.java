@@ -19,6 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.CourtHelper.returnFilteredCourtsWhereResultsShouldBe1;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.CourtHelper.returnFilteredCourtsWhereResultsShouldBe2;
+import static uk.gov.hmcts.reform.pip.data.management.helpers.TestConstants.INVALID;
 
 @SpringBootTest
 class CourtServiceTest {
@@ -29,7 +30,6 @@ class CourtServiceTest {
     private static final String MANCHESTER_FAMILY_COURT = "Manchester Family Court";
     private static final String MANCHESTER = "Manchester";
     private static final String SORTED_MESSAGE = "Courts should be sorted";
-    private static final String INVALID = "invalid";
 
     private List<Court> courts;
     private List<Court> foundCourt;

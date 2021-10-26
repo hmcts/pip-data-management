@@ -64,7 +64,7 @@ public class HearingController {
         @ApiResponse(code = 200, message = "Hearing found"),
         @ApiResponse(code = 404, message = "No hearing found with the urn {urnNumber}")
     })
-    @ApiOperation("Gets a hearing pertaining to case number")
+    @ApiOperation("Gets a hearing pertaining to urn number")
     @GetMapping("/urn/{urnNumber}")
     public ResponseEntity<Hearing> getHearingByUrn(@ApiParam(value = "The case number to match", required = true)
                                                    @PathVariable String urnNumber) {

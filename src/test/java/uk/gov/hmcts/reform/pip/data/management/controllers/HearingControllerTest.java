@@ -17,6 +17,8 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
+import static uk.gov.hmcts.reform.pip.data.management.helpers.TestConstants.HEARINGS_MATCH;
+import static uk.gov.hmcts.reform.pip.data.management.helpers.TestConstants.STATUS_CODE_MATCH;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
@@ -25,7 +27,6 @@ class HearingControllerTest {
 
     private static final String CASE_NAME = "test case name";
     private static final String NUMBER = "123456";
-    private static final String STATUS_CODE_MATCH = "Status code should match";
 
     private final List<Hearing> hearingList = new ArrayList<>();
 
@@ -52,7 +53,7 @@ class HearingControllerTest {
     @Test
     void testGetHearings() {
         assertEquals(hearingList.get(0), hearingController.getHearing(1).getBody().get(0),
-                     "Hearings should match"
+                     HEARINGS_MATCH
         );
     }
 
@@ -66,19 +67,19 @@ class HearingControllerTest {
     @Test
     void testGetHearingsByName() {
         assertEquals(hearingList, hearingController.getHearingsByName(CASE_NAME).getBody(),
-                     "Hearings should match");
+                     HEARINGS_MATCH);
     }
 
     @Test
     void testGetHearingsByNameReturnsOk() {
         assertEquals(HttpStatus.OK, hearingController.getHearingsByName(CASE_NAME).getStatusCode(),
-                     "Status code should match");
+                     STATUS_CODE_MATCH);
     }
 
     @Test
     void testGetHearingByCaseNumber() {
         assertEquals(hearingList.get(0), hearingController.getHearingsByCaseNumber(NUMBER).getBody(),
-                     "Hearing should match");
+                     HEARINGS_MATCH);
     }
 
     @Test
@@ -90,7 +91,7 @@ class HearingControllerTest {
     @Test
     void testGetHearingByUrn() {
         assertEquals(hearingList.get(0), hearingController.getHearingByUrn(NUMBER).getBody(),
-                     "Hearing should match");
+                     HEARINGS_MATCH);
     }
 
     @Test

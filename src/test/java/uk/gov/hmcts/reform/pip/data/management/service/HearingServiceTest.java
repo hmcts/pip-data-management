@@ -17,14 +17,14 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.CourtHelper.createHearing;
+import static uk.gov.hmcts.reform.pip.data.management.helpers.TestConstants.INVALID;
+import static uk.gov.hmcts.reform.pip.data.management.helpers.TestConstants.MESSAGES_MATCH;
 
 @SpringBootTest
 class HearingServiceTest {
 
     private static final String CASE_NAME = "test";
     private static final String NUMBER = "123456";
-    private static final String INVALID = "invalid";
-    private static final String MESSAGES_MATCH = "Messages should match";
     private static final String EXCEPTION_THROWN = "Expect HearingNotFound to be thrown";
 
     private List<Hearing> mockHearings;
