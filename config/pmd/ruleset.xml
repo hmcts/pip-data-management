@@ -75,5 +75,10 @@
     <exclude name= "AvoidInstantiatingObjectsInLoops"/>
   </rule>
   <rule ref="category/java/security.xml"/>
+  <rule ref="category/java/design.xml/TooManyMethods">
+    <properties>
+      <property name="maxmethods" value="30" />
+    </properties>
+  </rule>
 
 </ruleset>
