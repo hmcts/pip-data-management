@@ -35,7 +35,7 @@ public class AzureTableService {
     private static final String SEARCH = "search";
     private static final String DISPLAY_FROM = "displayFrom";
     private static final String DISPLAY_TO = "displayTo";
-    private static final String PAYLOAD = "paylod";
+    private static final String PAYLOAD = "payload";
 
     @Autowired
     public AzureTableService(TableClient tableClient) {
