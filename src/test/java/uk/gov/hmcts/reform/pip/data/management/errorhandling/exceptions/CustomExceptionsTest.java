@@ -45,4 +45,16 @@ class CustomExceptionsTest {
         assertEquals(TEST_MESSAGE, notFoundException.getMessage(), ASSERTION_MESSAGE);
     }
 
+    @Test
+    void testCreationOfPublicationException() {
+        PublicationException publicationException = new PublicationException(TEST_MESSAGE);
+        assertEquals(TEST_MESSAGE, publicationException.getMessage(), ASSERTION_MESSAGE);
+    }
+
+    @Test
+    void testCreationOfDuplicatePublicationException() {
+        DuplicatePublicationException duplicatePublicationException = new DuplicatePublicationException(TEST_MESSAGE);
+        assertEquals(TEST_MESSAGE, duplicatePublicationException.getMessage(), ASSERTION_MESSAGE);
+    }
+
 }
