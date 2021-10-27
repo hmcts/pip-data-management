@@ -18,7 +18,7 @@ public final class CourtHelper {
         return court;
     }
 
-    private static List<Hearing> createHearing() {
+    public static List<Hearing> createHearing() {
         Hearing hearing1 = new Hearing();
         hearing1.setCourtId(2);
 

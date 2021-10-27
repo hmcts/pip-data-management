@@ -61,4 +61,10 @@ public class Hearing {
      */
     @JsonProperty
     private String caseName;
+
+    /**
+     * The URN of the case.
+     */
+    @JsonProperty
+    private String urn;
 }
