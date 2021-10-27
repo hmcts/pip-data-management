@@ -7,6 +7,7 @@ import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.LiveCase
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static uk.gov.hmcts.reform.pip.data.management.helpers.TestConstants.MESSAGES_MATCH;
 
 @SpringBootTest
 class LiveCaseStatusServiceTest {
@@ -24,6 +25,6 @@ class LiveCaseStatusServiceTest {
     void testLiveCaseStatusExceptionThrown() {
         LiveCaseStatusException ex = assertThrows(LiveCaseStatusException.class, () ->
             liveCaseStatusService.handleLiveCaseRequest(2), "Expected LiveCaseStatusException to be thrown");
-        assertEquals("No live cases found for court id: 2", ex.getMessage(), "Messages should match");
+        assertEquals("No live cases found for court id: 2", ex.getMessage(), MESSAGES_MATCH);
     }
 }
