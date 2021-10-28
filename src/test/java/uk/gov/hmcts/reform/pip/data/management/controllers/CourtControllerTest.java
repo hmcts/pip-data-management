@@ -123,6 +123,6 @@ class CourtControllerTest {
     @Test
     void testGetCourtEventStatusListReturnsOk() {
         assertEquals(HttpStatus.OK, courtController.getCourtEventStatusList().getStatusCode(),
-                     "Status code should match");
+                     "Event code should match");
     }
 }
