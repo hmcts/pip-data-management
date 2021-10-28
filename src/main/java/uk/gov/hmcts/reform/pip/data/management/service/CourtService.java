@@ -7,7 +7,6 @@ import uk.gov.hmcts.reform.pip.data.management.database.CourtsAndHearings;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CourtNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.models.Court;
 import uk.gov.hmcts.reform.pip.data.management.models.CourtMethods;
-import uk.gov.hmcts.reform.pip.data.management.models.lcsu.Event;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -98,10 +97,6 @@ public class CourtService {
             filteredList = valuesList.stream().flatMap(List::stream).collect(Collectors.toList());
         }
         return alphabetiseCourts(new ArrayList<>(new HashSet<>(filteredList)));
-    }
-
-    public List<Event> getAllCourtStatusEvents() {
-        return courtsAndHearings.getListCourtEvents();
     }
 
     /**

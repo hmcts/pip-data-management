@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.reform.pip.data.management.models.Court;
-import uk.gov.hmcts.reform.pip.data.management.models.lcsu.Event;
 import uk.gov.hmcts.reform.pip.data.management.models.request.FilterRequest;
 import uk.gov.hmcts.reform.pip.data.management.service.CourtService;
 
@@ -73,14 +72,5 @@ public class CourtController {
             filterRequest.getFilters(),
             filterRequest.getValues()
         ));
-    }
-
-    @ApiResponses({
-        @ApiResponse(code = 200, message = "All court event statuses returned"),
-    })
-    @ApiOperation("Get all courts event statuses with their description")
-    @GetMapping("/getCourtEventStatus")
-    public ResponseEntity<List<Event>> getCourtEventStatusList() {
-        return ResponseEntity.ok(courtService.getAllCourtStatusEvents());
     }
 }

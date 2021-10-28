@@ -96,11 +96,4 @@ class CourtApiTest {
             .andExpect(status().isOk())
             .andExpect(jsonPath("$", hasSize(1)));
     }
-
-    @Test
-    void testgetCourtEventStatusListReturnsSuccess() throws Exception {
-        mockMvc.perform(get("/courts/getCourtEventStatus"))
-            .andExpect(status().isOk())
-            .andExpect(content().string(containsString("\"eventId\":1")));
-    }
 }
