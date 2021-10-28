@@ -116,11 +116,13 @@ class CourtControllerTest {
 
     @Test
     void testGetCourtEventStatusListReturnsAllEventss() {
-        assertEquals(allEvents, courtController.getCourtEventStatusList().getBody(), "Should contain all court event statuses");
+        assertEquals(allEvents, courtController.getCourtEventStatusList().getBody(),
+                     "Should contain all court event statuses");
     }
 
     @Test
     void testGetCourtEventStatusListReturnsOk() {
-        assertEquals(HttpStatus.OK, courtController.getCourtEventStatusList().getStatusCode(), "Status code should match");
+        assertEquals(HttpStatus.OK, courtController.getCourtEventStatusList().getStatusCode(),
+                     "Status code should match");
     }
 }

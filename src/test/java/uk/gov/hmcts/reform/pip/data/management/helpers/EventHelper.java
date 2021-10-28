@@ -6,8 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class EventHelper {
-    public EventHelper(){
-    }
 
     public static Event createMockEvent(int eventId, String eventStatus, String eventName) {
         Event event = new Event();
