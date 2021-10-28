@@ -7,6 +7,9 @@ import java.util.List;
 
 public final class EventHelper {
 
+    private EventHelper() {
+    }
+
     public static Event createMockEvent(int eventId, String eventStatus, String eventName) {
         Event event = new Event();
         event.setEventId(eventId);
