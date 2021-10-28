@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.DataStorageNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.DuplicatePublicationException;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.InvalidPublicationException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.NotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.PublicationException;
 
@@ -53,6 +54,16 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(DuplicatePublicationException.class)
     public ResponseEntity<ExceptionResponse> handle(DuplicatePublicationException ex) {
+
+        ExceptionResponse exceptionResponse = new ExceptionResponse();
+        exceptionResponse.setMessage(ex.getMessage());
+        exceptionResponse.setTimestamp(LocalDateTime.now());
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionResponse);
+    }
+
+    @ExceptionHandler(InvalidPublicationException.class)
+    public ResponseEntity<ExceptionResponse> handle(InvalidPublicationException ex) {
 
         ExceptionResponse exceptionResponse = new ExceptionResponse();
         exceptionResponse.setMessage(ex.getMessage());

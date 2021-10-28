@@ -58,13 +58,17 @@ class PublicationTest {
 
     private static final String URL = "/publication";
     private static final String EXCEPTION_MESSAGE = "Error communicating with Azure";
+    private static final String VALIDATE_RESPONSE_MESSAGE = "Response should be present";
+    private static final String VALIDATE_RESPONSE_CONTENT = "Response should contain the correct error message";
 
     private static final String ARTEFACT_ID = "1234";
     private static final ArtefactType ARTEFACT_TYPE = ArtefactType.LIST;
     private static final Sensitivity SENSITIVITY = Sensitivity.PUBLIC;
     private static final String PROVENANCE = "provenance";
     private static final String PAYLOAD = "payload";
-    private static final String SEARCH = "search";
+    private static final String SEARCH = "CASE_ID=1234";
+    private static final String INVALID_SEARCH_ENUM = "CASE_ID2=1234";
+    private static final String INVALID_SEARCH_VALUE = "1234";
     private static final String SOURCE_ARTEFACT_ID = "sourceArtefactId";
     private static final LocalDateTime DISPLAY_TO = LocalDateTime.now();
     private static final LocalDateTime DISPLAY_FROM = LocalDateTime.now();
@@ -117,12 +121,12 @@ class PublicationTest {
         MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder).andExpect(
             status().isInternalServerError()).andReturn();
 
-        assertNotNull(response.getResponse().getContentAsString(), "Response should be present");
+        assertNotNull(response.getResponse().getContentAsString(), VALIDATE_RESPONSE_MESSAGE);
 
         String errorResponse = response.getResponse().getContentAsString();
         ExceptionResponse exceptionResponse = objectMapper.readValue(errorResponse, ExceptionResponse.class);
 
-        assertEquals(EXCEPTION_MESSAGE, exceptionResponse.getMessage(), "Response should contain the correct message");
+        assertEquals(EXCEPTION_MESSAGE, exceptionResponse.getMessage(), VALIDATE_RESPONSE_CONTENT);
     }
 
     @DisplayName("Should return an error response when the artefact already exists")
@@ -149,13 +153,13 @@ class PublicationTest {
         MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder).andExpect(
             status().isBadRequest()).andReturn();
 
-        assertNotNull(response.getResponse().getContentAsString(), "Response should be present");
+        assertNotNull(response.getResponse().getContentAsString(), VALIDATE_RESPONSE_MESSAGE);
 
         String errorResponse = response.getResponse().getContentAsString();
         ExceptionResponse exceptionResponse = objectMapper.readValue(errorResponse, ExceptionResponse.class);
 
         assertEquals(String.format("Duplicate publication found with ID %s", ARTEFACT_ID),
-                     exceptionResponse.getMessage(), "Response should contain the correct error message");
+                     exceptionResponse.getMessage(), VALIDATE_RESPONSE_CONTENT);
     }
 
     @DisplayName("Should return an error response when failing to connect with Azure")
@@ -166,12 +170,73 @@ class PublicationTest {
         MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder).andExpect(
             status().isInternalServerError()).andReturn();
 
-        assertNotNull(response.getResponse().getContentAsString(), "Response should be present");
+        assertNotNull(response.getResponse().getContentAsString(), VALIDATE_RESPONSE_MESSAGE);
 
         String errorResponse = response.getResponse().getContentAsString();
         ExceptionResponse exceptionResponse = objectMapper.readValue(errorResponse, ExceptionResponse.class);
 
-        assertEquals(EXCEPTION_MESSAGE, exceptionResponse.getMessage(), "Response should contain the correct message");
+        assertEquals(EXCEPTION_MESSAGE, exceptionResponse.getMessage(), VALIDATE_RESPONSE_CONTENT);
         reset(tableClient);
     }
+
+    @DisplayName("Should return an error response when submitting an artefact with an invalid search parameter")
+    @Test
+    void testErrorResponseWithInvalidSearchParameterEnum() throws Exception {
+
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+            .put(URL)
+            .header(PublicationConfiguration.ARTIFACT_ID_HEADER, ARTEFACT_ID)
+            .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
+            .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
+            .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
+            .header(PublicationConfiguration.SEARCH_HEADER, INVALID_SEARCH_ENUM)
+            .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
+            .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO)
+            .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
+            .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
+            .content(objectMapper.writeValueAsString(PAYLOAD))
+            .contentType(MediaType.APPLICATION_JSON);
+
+        MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder).andExpect(
+            status().isBadRequest()).andReturn();
+
+        assertNotNull(response.getResponse().getContentAsString(), VALIDATE_RESPONSE_MESSAGE);
+
+        String errorResponse = response.getResponse().getContentAsString();
+        ExceptionResponse exceptionResponse = objectMapper.readValue(errorResponse, ExceptionResponse.class);
+
+        assertEquals(String.format("Invalid search parameter provided %s", INVALID_SEARCH_ENUM),
+                     exceptionResponse.getMessage(), VALIDATE_RESPONSE_CONTENT);
+    }
+
+    @DisplayName("Should return an error response when submitting an artefact with an invalid search parameter")
+    @Test
+    void testErrorResponseWithInvalidSearchParameterValue() throws Exception {
+
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+            .put(URL)
+            .header(PublicationConfiguration.ARTIFACT_ID_HEADER, ARTEFACT_ID)
+            .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
+            .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
+            .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
+            .header(PublicationConfiguration.SEARCH_HEADER, INVALID_SEARCH_VALUE)
+            .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
+            .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO)
+            .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
+            .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
+            .content(objectMapper.writeValueAsString(PAYLOAD))
+            .contentType(MediaType.APPLICATION_JSON);
+
+        MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder).andExpect(
+            status().isBadRequest()).andReturn();
+
+        assertNotNull(response.getResponse().getContentAsString(), VALIDATE_RESPONSE_MESSAGE);
+
+        String errorResponse = response.getResponse().getContentAsString();
+        ExceptionResponse exceptionResponse = objectMapper.readValue(errorResponse, ExceptionResponse.class);
+
+        assertEquals(String.format("Invalid search parameter provided %s", INVALID_SEARCH_VALUE),
+                     exceptionResponse.getMessage(), VALIDATE_RESPONSE_CONTENT);
+    }
+
 }

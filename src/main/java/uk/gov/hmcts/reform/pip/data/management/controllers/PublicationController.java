@@ -1,5 +1,7 @@
 package uk.gov.hmcts.reform.pip.data.management.controllers;
 
+import com.google.common.base.Strings;
+import com.microsoft.applicationinsights.web.dependencies.apachecommons.lang3.EnumUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -13,9 +15,11 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.InvalidPublicationException;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Language;
+import uk.gov.hmcts.reform.pip.data.management.models.publication.SearchType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Sensitivity;
 import uk.gov.hmcts.reform.pip.data.management.service.PublicationService;
 
@@ -73,6 +77,7 @@ public class PublicationController {
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime displayTo,
         @RequestBody String payload) {
 
+        validateSearchType(search);
         Artefact artefact = Artefact.builder().artefactId(artefactId)
             .provenance(provenance).sourceArtefactId(sourceArtefactId)
             .type(type).sensitivity(sensitivity)
@@ -85,6 +90,20 @@ public class PublicationController {
             .createPublication(artefact);
 
         return ResponseEntity.ok(createdItem);
+    }
+
+    /**
+     * Validates the search parameter that is coming into the controller.
+     * @param search The search parameter that is passed into the controller.
+     */
+    private void validateSearchType(String search) {
+        if (!Strings.isNullOrEmpty(search)) {
+            String[] searchArray = search.split("=");
+
+            if (searchArray.length != 2 || !EnumUtils.isValidEnum(SearchType.class, searchArray[0])) {
+                throw new InvalidPublicationException(String.format("Invalid search parameter provided %s", search));
+            }
+        }
     }
 
 }
