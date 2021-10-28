@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.pip.data.management.helpers;
 
-import uk.gov.hmcts.reform.pip.data.management.models.Court;
 import uk.gov.hmcts.reform.pip.data.management.models.lcsu.Event;
 
 import java.util.ArrayList;
