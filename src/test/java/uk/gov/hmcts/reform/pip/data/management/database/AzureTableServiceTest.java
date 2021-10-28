@@ -189,6 +189,20 @@ class AzureTableServiceTest {
     }
 
     @Test
+    void testGetPublicationErrored() {
+
+        doThrow(new TableServiceException(EXCEPTION_MESSAGE, null)).when(tableClient).listEntities(any(), any(), any());
+
+        PublicationException publicationException = assertThrows(PublicationException.class, () -> {
+            azureTableService.getPublication(ARTEFACT_ID);
+        });
+
+        assertEquals(EXCEPTION_MESSAGE, publicationException.getMessage(),
+                     "The expected exception message is returned");
+
+    }
+
+    @Test
     void testGetPublicationNoOptionalFields() {
 
         when(tableClient.listEntities(any(), any(), any())).thenReturn(tableEntities);

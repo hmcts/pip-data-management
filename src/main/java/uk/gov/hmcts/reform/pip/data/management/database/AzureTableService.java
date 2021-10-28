@@ -14,6 +14,7 @@ import uk.gov.hmcts.reform.pip.data.management.models.publication.Language;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Sensitivity;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -68,8 +69,13 @@ public class AzureTableService {
         ListEntitiesOptions options = new ListEntitiesOptions()
             .setFilter(String.format("artefactId eq '%s'", artefactId));
 
-        List<TableEntity> returnedArtefacts =
-            tableClient.listEntities(options, null, null).stream().collect(Collectors.toList());
+        List<TableEntity> returnedArtefacts;
+        try {
+            returnedArtefacts = tableClient.listEntities(options, null, null)
+                .stream().collect(Collectors.toList());
+        } catch (TableServiceException tableServiceException) {
+            throw new PublicationException(tableServiceException.getMessage());
+        }
 
         if (returnedArtefacts.isEmpty()) {
             return Optional.empty();
@@ -101,12 +107,14 @@ public class AzureTableService {
 
             Object displayFrom = tableEntity.getProperty(PublicationConfiguration.DISPLAY_FROM_TABLE);
             if (displayFrom != null) {
-                artefactBuilder.displayFrom(LocalDateTime.parse(displayFrom.toString()));
+                artefactBuilder.displayFrom(LocalDateTime.parse(
+                    displayFrom.toString(), DateTimeFormatter.ISO_DATE_TIME));
             }
 
             Object displayTo = tableEntity.getProperty(PublicationConfiguration.DISPLAY_TO_TABLE);
             if (displayTo != null) {
-                artefactBuilder.displayTo(LocalDateTime.parse(displayTo.toString()));
+                artefactBuilder.displayTo(LocalDateTime.parse(
+                    displayTo.toString(), DateTimeFormatter.ISO_DATE_TIME));
             }
 
             Artefact artefact = artefactBuilder.build();

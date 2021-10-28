@@ -37,6 +37,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -155,5 +156,22 @@ class PublicationTest {
 
         assertEquals(String.format("Duplicate publication found with ID %s", ARTEFACT_ID),
                      exceptionResponse.getMessage(), "Response should contain the correct error message");
+    }
+
+    @DisplayName("Should return an error response when failing to connect with Azure")
+    @Test
+    void retrievingOfAnArtefactWhenErrorConnectingWithAzure() throws Exception {
+        doThrow(new TableServiceException(EXCEPTION_MESSAGE, null)).when(tableClient).listEntities(any(), any(), any());
+
+        MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder).andExpect(
+            status().isInternalServerError()).andReturn();
+
+        assertNotNull(response.getResponse().getContentAsString(), "Response should be present");
+
+        String errorResponse = response.getResponse().getContentAsString();
+        ExceptionResponse exceptionResponse = objectMapper.readValue(errorResponse, ExceptionResponse.class);
+
+        assertEquals(EXCEPTION_MESSAGE, exceptionResponse.getMessage(), "Response should contain the correct message");
+        reset(tableClient);
     }
 }
