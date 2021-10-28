@@ -11,11 +11,11 @@ import org.springframework.context.annotation.Profile;
 @Configuration
 public class AzureConfigurationClient {
 
-    private TableConfiguration tableConfiguration;
+    private final TableConfiguration tableConfiguration;
 
     @Autowired
     public AzureConfigurationClient(TableConfiguration tableConfiguration) {
-            this.tableConfiguration = tableConfiguration;
+        this.tableConfiguration = tableConfiguration;
     }
 
     @Bean

@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class PublicationServiceTest {
+class PublicationServiceTest {
 
     @Mock
     AzureTableService azureTableService;
@@ -39,7 +39,7 @@ public class PublicationServiceTest {
 
         String returnedUuid = publicationService.createPublication(artefact);
 
-        assertEquals(ROW_ID, returnedUuid);
+        assertEquals(ROW_ID, returnedUuid, "Row ID must match returned UUID");
     }
 
     @Test
@@ -55,7 +55,8 @@ public class PublicationServiceTest {
             assertThrows(DuplicatePublicationException.class, () -> publicationService.createPublication(artefact));
 
         assertEquals(String.format("Duplicate publication found with ID %s", ARTEFACT_ID),
-                     duplicatePublicationException.getMessage());
+                     duplicatePublicationException.getMessage(), "Exception message "
+                         + "must contain expected message");
     }
 
 }

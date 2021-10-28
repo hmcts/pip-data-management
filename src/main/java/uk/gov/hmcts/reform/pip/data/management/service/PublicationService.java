@@ -7,12 +7,12 @@ import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.Duplicat
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 
 /**
- * This class contains the business logic for handling of Publications
+ * This class contains the business logic for handling of Publications.
  */
 @Component
 public class PublicationService {
 
-    private AzureTableService azureTableService;
+    private final AzureTableService azureTableService;
 
     @Autowired
     public PublicationService(AzureTableService azureTableService) {

@@ -1,9 +1,17 @@
 package uk.gov.hmcts.reform.pip.data.management.controllers;
 
-import io.swagger.annotations.*;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Language;
@@ -13,14 +21,14 @@ import uk.gov.hmcts.reform.pip.data.management.service.PublicationService;
 import java.time.LocalDateTime;
 
 /**
- * This class is the controller for creating new Publications
+ * This class is the controller for creating new Publications.
  */
 @RestController
 @Api(tags = "Data Management Publications API")
 @RequestMapping("/publication")
 public class PublicationController {
 
-    private PublicationService publicationService;
+    private final PublicationService publicationService;
 
     /**
      * Constructor for Publication controller.
@@ -58,8 +66,10 @@ public class PublicationController {
         @RequestHeader(value = "x-sensitivity", required = false) Sensitivity sensitivity,
         @RequestHeader(value = "x-language", required = false) Language language,
         @RequestHeader(value = "x-search", required = false) String search,
-        @RequestHeader(value = "x-display-from", required = false) LocalDateTime displayFrom,
-        @RequestHeader(value = "x-display-to", required = false) LocalDateTime displayTo,
+        @RequestHeader(value = "x-display-from", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+            LocalDateTime displayFrom,
+        @RequestHeader(value = "x-display-to", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+            LocalDateTime displayTo,
         @RequestBody String payload) {
 
         Artefact artefact = Artefact.builder().artefactId(artefactId)

@@ -5,6 +5,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ActiveProfiles;
+import uk.gov.hmcts.reform.pip.data.management.Application;
+import uk.gov.hmcts.reform.pip.data.management.config.AzureConfigurationClientTest;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CourtNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.models.Court;
 import uk.gov.hmcts.reform.pip.data.management.models.CourtMethods;
@@ -21,7 +24,8 @@ import static uk.gov.hmcts.reform.pip.data.management.helpers.CourtHelper.return
 import static uk.gov.hmcts.reform.pip.data.management.helpers.CourtHelper.returnFilteredCourtsWhereResultsShouldBe2;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.TestConstants.INVALID;
 
-@SpringBootTest
+@SpringBootTest(classes = {AzureConfigurationClientTest.class, Application.class})
+@ActiveProfiles(profiles = "test")
 class CourtServiceTest {
 
     private static final String ABERGAVENNY_MAGISTRATES_COURT = "Abergavenny Magistrates' Court";

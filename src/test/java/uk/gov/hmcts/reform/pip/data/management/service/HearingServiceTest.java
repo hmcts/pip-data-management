@@ -5,6 +5,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ActiveProfiles;
+import uk.gov.hmcts.reform.pip.data.management.Application;
+import uk.gov.hmcts.reform.pip.data.management.config.AzureConfigurationClientTest;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.HearingNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.models.Hearing;
 
@@ -20,7 +23,8 @@ import static uk.gov.hmcts.reform.pip.data.management.helpers.CourtHelper.create
 import static uk.gov.hmcts.reform.pip.data.management.helpers.TestConstants.INVALID;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.TestConstants.MESSAGES_MATCH;
 
-@SpringBootTest
+@SpringBootTest(classes = {AzureConfigurationClientTest.class, Application.class})
+@ActiveProfiles(profiles = "test")
 class HearingServiceTest {
 
     private static final String CASE_NAME = "test";

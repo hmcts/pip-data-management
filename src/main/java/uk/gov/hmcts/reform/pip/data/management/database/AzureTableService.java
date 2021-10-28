@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 @Component
 public class AzureTableService {
 
-    private TableClient tableClient;
+    private final TableClient tableClient;
 
     private static final String ARTEFACT_ID = "artefactId";
     private static final String PROVENANCE = "provenance";
@@ -81,7 +81,7 @@ public class AzureTableService {
         List<TableEntity> returnedArtefacts =
             tableClient.listEntities(options, null, null).stream().collect(Collectors.toList());
 
-        if (returnedArtefacts.size() == 0) {
+        if (returnedArtefacts.isEmpty()) {
             return Optional.empty();
         } else {
             TableEntity tableEntity = returnedArtefacts.get(0);

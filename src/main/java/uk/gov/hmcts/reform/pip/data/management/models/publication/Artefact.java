@@ -6,7 +6,7 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 /**
- * Class that presents the Inbound artifact that is being published
+ * Class that presents the Inbound artifact that is being published.
  */
 @Data
 @Builder
@@ -23,12 +23,12 @@ public class Artefact {
     private String provenance;
 
     /**
-     * Unique of ID of what publication is called by source system
+     * Unique of ID of what publication is called by source system.
      */
     private String sourceArtefactId;
 
     /**
-     * List / Outcome / Judgement / Status Update
+     * List / Outcome / Judgement / Status Update.
      */
     private ArtefactType type;
 

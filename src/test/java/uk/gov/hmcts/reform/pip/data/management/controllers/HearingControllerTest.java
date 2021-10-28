@@ -8,7 +8,10 @@ import org.mockito.Mock;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import uk.gov.hmcts.reform.pip.data.management.Application;
+import uk.gov.hmcts.reform.pip.data.management.config.AzureConfigurationClientTest;
 import uk.gov.hmcts.reform.pip.data.management.models.Hearing;
 import uk.gov.hmcts.reform.pip.data.management.service.HearingService;
 
@@ -21,7 +24,8 @@ import static uk.gov.hmcts.reform.pip.data.management.helpers.TestConstants.HEAR
 import static uk.gov.hmcts.reform.pip.data.management.helpers.TestConstants.STATUS_CODE_MATCH;
 
 @ExtendWith(SpringExtension.class)
-@SpringBootTest
+@SpringBootTest(classes = {AzureConfigurationClientTest.class, Application.class})
+@ActiveProfiles(profiles = "test")
 @AutoConfigureMockMvc
 class HearingControllerTest {
 
