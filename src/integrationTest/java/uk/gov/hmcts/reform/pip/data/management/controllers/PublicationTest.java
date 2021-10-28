@@ -5,7 +5,9 @@ import com.azure.data.tables.TableClient;
 import com.azure.data.tables.implementation.ModelHelper;
 import com.azure.data.tables.models.TableEntity;
 import com.azure.data.tables.models.TableServiceException;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,7 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import uk.gov.hmcts.reform.pip.data.management.Application;
 import uk.gov.hmcts.reform.pip.data.management.config.AzureConfigurationClientTest;
+import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.ExceptionResponse;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Language;
@@ -66,26 +69,28 @@ class PublicationTest {
     private static final LocalDateTime DISPLAY_FROM = LocalDateTime.now();
     private static final Language LANGUAGE = Language.ENGLISH;
 
-    private static final String HEADER_ARTEFACT_ID = "x-artefact-id";
-    private static final String HEADER_SOURCE_ARTEFACT_ID = "x-source-artefact-id";
-    private static final String HEADER_DISPLAY_FROM = "x-display-from";
-    private static final String HEADER_DISPLAY_TO = "x-display-to";
-    private static final String HEADER_LANGUAGE = "x-language";
-    private static final String HEADER_PROVENANCE = "x-provenance";
-    private static final String HEADER_SEARCH = "x-search";
-    private static final String HEADER_SENSITIVITY = "x-sensitivity";
-    private static final String HEADER_ARTEFACT_TYPE = "x-type";
+    private static MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
+    private static ObjectMapper objectMapper;
 
-    private static final String TABLE_ARTEFACT_ID = "artefactId";
-    private static final String TABLE_PROVENANCE = "provenance";
-    private static final String TABLE_SOURCE_ARTEFACT_ID = "sourceArtefactId";
-    private static final String TABLE_TYPE = "type";
-    private static final String TABLE_SENSITIVITY = "sensitivity";
-    private static final String TABLE_LANGUAGE = "language";
-    private static final String TABLE_SEARCH = "search";
-    private static final String TABLE_DISPLAY_FROM = "displayFrom";
-    private static final String TABLE_DISPLAY_TO = "displayTo";
-    private static final String TABLE_PAYLOAD = "payload";
+    @BeforeAll
+    public static void setup() throws JsonProcessingException {
+        objectMapper = new ObjectMapper();
+        objectMapper.findAndRegisterModules();
+
+        mockHttpServletRequestBuilder = MockMvcRequestBuilders
+            .put(URL)
+            .header(PublicationConfiguration.ARTIFACT_ID_HEADER, ARTEFACT_ID)
+            .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
+            .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
+            .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
+            .header(PublicationConfiguration.SEARCH_HEADER, SEARCH)
+            .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
+            .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO)
+            .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
+            .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
+            .content(objectMapper.writeValueAsString(PAYLOAD))
+            .contentType(MediaType.APPLICATION_JSON);
+    }
 
     @DisplayName("Should create a valid artefact and return the UUID to the user")
     @Test
@@ -94,23 +99,6 @@ class PublicationTest {
         when(tableEntities.stream()).thenReturn(Stream.of());
 
         doNothing().when(tableClient).createEntity(any());
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.findAndRegisterModules();
-
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .put(URL)
-            .header(HEADER_ARTEFACT_ID, ARTEFACT_ID)
-            .header(HEADER_ARTEFACT_TYPE, ARTEFACT_TYPE)
-            .header(HEADER_SENSITIVITY, SENSITIVITY)
-            .header(HEADER_PROVENANCE, PROVENANCE)
-            .header(HEADER_SEARCH, SEARCH)
-            .header(HEADER_SOURCE_ARTEFACT_ID, SOURCE_ARTEFACT_ID)
-            .header(HEADER_DISPLAY_TO, DISPLAY_TO)
-            .header(HEADER_DISPLAY_FROM, DISPLAY_FROM)
-            .header(HEADER_LANGUAGE, LANGUAGE)
-            .content(objectMapper.writeValueAsString(PAYLOAD))
-            .contentType(MediaType.APPLICATION_JSON);
 
         MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isOk()).andReturn();
 
@@ -124,23 +112,6 @@ class PublicationTest {
         when(tableEntities.stream()).thenReturn(Stream.of());
 
         doThrow(new TableServiceException(EXCEPTION_MESSAGE, null)).when(tableClient).createEntity(any());
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.findAndRegisterModules();
-
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .put(URL)
-            .header(HEADER_ARTEFACT_ID, ARTEFACT_ID)
-            .header(HEADER_ARTEFACT_TYPE, ARTEFACT_TYPE)
-            .header(HEADER_SENSITIVITY, SENSITIVITY)
-            .header(HEADER_PROVENANCE, PROVENANCE)
-            .header(HEADER_SEARCH, SEARCH)
-            .header(HEADER_SOURCE_ARTEFACT_ID, SOURCE_ARTEFACT_ID)
-            .header(HEADER_DISPLAY_FROM, DISPLAY_TO)
-            .header(HEADER_DISPLAY_FROM, DISPLAY_FROM)
-            .header(HEADER_LANGUAGE, LANGUAGE)
-            .content(objectMapper.writeValueAsString(PAYLOAD))
-            .contentType(MediaType.APPLICATION_JSON);
 
         MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder).andExpect(
             status().isInternalServerError()).andReturn();
@@ -158,38 +129,21 @@ class PublicationTest {
     void creationOfAnArtefactThatAlreadyExists() throws Exception {
 
         Map<String, Object> entityProperties = new ConcurrentHashMap<>();
-        entityProperties.put(TABLE_ARTEFACT_ID, ARTEFACT_ID);
-        entityProperties.put(TABLE_PROVENANCE, PROVENANCE);
-        entityProperties.put(TABLE_SOURCE_ARTEFACT_ID, SOURCE_ARTEFACT_ID);
-        entityProperties.put(TABLE_TYPE, ARTEFACT_TYPE);
-        entityProperties.put(TABLE_PAYLOAD, PAYLOAD);
-        entityProperties.put(TABLE_SENSITIVITY, SENSITIVITY);
-        entityProperties.put(TABLE_LANGUAGE, LANGUAGE);
-        entityProperties.put(TABLE_SEARCH, SEARCH);
-        entityProperties.put(TABLE_DISPLAY_FROM, DISPLAY_FROM);
-        entityProperties.put(TABLE_DISPLAY_TO, DISPLAY_TO);
+        entityProperties.put(PublicationConfiguration.ARTIFACT_ID_TABLE, ARTEFACT_ID);
+        entityProperties.put(PublicationConfiguration.PROVENANCE_TABLE, PROVENANCE);
+        entityProperties.put(PublicationConfiguration.SOURCE_ARTEFACT_ID_TABLE, SOURCE_ARTEFACT_ID);
+        entityProperties.put(PublicationConfiguration.TYPE_TABLE, ARTEFACT_TYPE);
+        entityProperties.put(PublicationConfiguration.PAYLOAD_TABLE, PAYLOAD);
+        entityProperties.put(PublicationConfiguration.SENSITIVITY_TABLE, SENSITIVITY);
+        entityProperties.put(PublicationConfiguration.LANGUAGE_TABLE, LANGUAGE);
+        entityProperties.put(PublicationConfiguration.SEARCH_TABLE, SEARCH);
+        entityProperties.put(PublicationConfiguration.DISPLAY_FROM_TABLE, DISPLAY_FROM);
+        entityProperties.put(PublicationConfiguration.DISPLAY_TO_TABLE, DISPLAY_TO);
 
         TableEntity tableEntity = ModelHelper.createEntity(entityProperties);
 
         when(tableClient.listEntities(any(), any(), any())).thenReturn(tableEntities);
         when(tableEntities.stream()).thenReturn(Stream.of(tableEntity));
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.findAndRegisterModules();
-
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .put(URL)
-            .header(HEADER_ARTEFACT_ID, ARTEFACT_ID)
-            .header(HEADER_ARTEFACT_TYPE, ARTEFACT_TYPE)
-            .header(HEADER_SENSITIVITY, SENSITIVITY)
-            .header(HEADER_PROVENANCE, PROVENANCE)
-            .header(HEADER_SEARCH, SEARCH)
-            .header(HEADER_SOURCE_ARTEFACT_ID, SOURCE_ARTEFACT_ID)
-            .header(HEADER_DISPLAY_FROM, DISPLAY_TO)
-            .header(HEADER_DISPLAY_FROM, DISPLAY_FROM)
-            .header(HEADER_LANGUAGE, LANGUAGE)
-            .content(objectMapper.writeValueAsString(PAYLOAD))
-            .contentType(MediaType.APPLICATION_JSON);
 
         MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder).andExpect(
             status().isBadRequest()).andReturn();

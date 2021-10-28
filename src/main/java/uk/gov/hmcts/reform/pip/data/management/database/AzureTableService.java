@@ -6,6 +6,7 @@ import com.azure.data.tables.models.TableEntity;
 import com.azure.data.tables.models.TableServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.PublicationException;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactType;
@@ -26,17 +27,6 @@ public class AzureTableService {
 
     private final TableClient tableClient;
 
-    private static final String ARTEFACT_ID = "artefactId";
-    private static final String PROVENANCE = "provenance";
-    private static final String SOURCE_ARTEFACT_ID = "sourceArtefactId";
-    private static final String TYPE = "type";
-    private static final String SENSITIVITY = "sensitivity";
-    private static final String LANGUAGE = "language";
-    private static final String SEARCH = "search";
-    private static final String DISPLAY_FROM = "displayFrom";
-    private static final String DISPLAY_TO = "displayTo";
-    private static final String PAYLOAD = "payload";
-
     @Autowired
     public AzureTableService(TableClient tableClient) {
         this.tableClient = tableClient;
@@ -51,16 +41,16 @@ public class AzureTableService {
         try {
             String key = UUID.randomUUID().toString();
             TableEntity tableEntity = new TableEntity(key, key)
-                .addProperty(ARTEFACT_ID, artefact.getArtefactId())
-                .addProperty(PROVENANCE, artefact.getProvenance())
-                .addProperty(SOURCE_ARTEFACT_ID, artefact.getSourceArtefactId())
-                .addProperty(TYPE, artefact.getType())
-                .addProperty(SENSITIVITY, artefact.getSensitivity())
-                .addProperty(LANGUAGE, artefact.getLanguage())
-                .addProperty(SEARCH, artefact.getSearch())
-                .addProperty(DISPLAY_FROM, artefact.getDisplayFrom())
-                .addProperty(DISPLAY_TO, artefact.getDisplayTo())
-                .addProperty(PAYLOAD, artefact.getPayload());
+                .addProperty(PublicationConfiguration.ARTIFACT_ID_TABLE, artefact.getArtefactId())
+                .addProperty(PublicationConfiguration.PROVENANCE_TABLE, artefact.getProvenance())
+                .addProperty(PublicationConfiguration.SOURCE_ARTEFACT_ID_TABLE, artefact.getSourceArtefactId())
+                .addProperty(PublicationConfiguration.TYPE_TABLE, artefact.getType())
+                .addProperty(PublicationConfiguration.SENSITIVITY_TABLE, artefact.getSensitivity())
+                .addProperty(PublicationConfiguration.LANGUAGE_TABLE, artefact.getLanguage())
+                .addProperty(PublicationConfiguration.SEARCH_TABLE, artefact.getSearch())
+                .addProperty(PublicationConfiguration.DISPLAY_FROM_TABLE, artefact.getDisplayFrom())
+                .addProperty(PublicationConfiguration.DISPLAY_TO_TABLE, artefact.getDisplayTo())
+                .addProperty(PublicationConfiguration.PAYLOAD_TABLE, artefact.getPayload());
             tableClient.createEntity(tableEntity);
             return key;
         } catch (TableServiceException e) {
@@ -87,34 +77,34 @@ public class AzureTableService {
             TableEntity tableEntity = returnedArtefacts.get(0);
 
             Artefact.ArtefactBuilder artefactBuilder = Artefact.builder()
-                .artefactId(tableEntity.getProperty(ARTEFACT_ID).toString())
-                .provenance(tableEntity.getProperty(PROVENANCE).toString())
-                .sourceArtefactId(tableEntity.getProperty(SOURCE_ARTEFACT_ID).toString())
-                .type(ArtefactType.valueOf(tableEntity.getProperty(TYPE).toString()))
-                .payload(tableEntity.getProperty(PAYLOAD).toString());
+                .artefactId(tableEntity.getProperty(PublicationConfiguration.ARTIFACT_ID_TABLE).toString())
+                .provenance(tableEntity.getProperty(PublicationConfiguration.PROVENANCE_TABLE).toString())
+                .sourceArtefactId(tableEntity.getProperty(PublicationConfiguration.SOURCE_ARTEFACT_ID_TABLE).toString())
+                .type(ArtefactType.valueOf(tableEntity.getProperty(PublicationConfiguration.TYPE_TABLE).toString()))
+                .payload(tableEntity.getProperty(PublicationConfiguration.PAYLOAD_TABLE).toString());
 
 
-            Object sensitivity = tableEntity.getProperty(SENSITIVITY);
+            Object sensitivity = tableEntity.getProperty(PublicationConfiguration.SENSITIVITY_TABLE);
             if (sensitivity != null) {
                 artefactBuilder.sensitivity(Sensitivity.valueOf(sensitivity.toString()));
             }
 
-            Object language = tableEntity.getProperty(LANGUAGE);
+            Object language = tableEntity.getProperty(PublicationConfiguration.LANGUAGE_TABLE);
             if (language != null) {
                 artefactBuilder.language(Language.valueOf(language.toString()));
             }
 
-            Object search = tableEntity.getProperty(SEARCH);
+            Object search = tableEntity.getProperty(PublicationConfiguration.SEARCH_TABLE);
             if (search != null) {
                 artefactBuilder.search(search.toString());
             }
 
-            Object displayFrom = tableEntity.getProperty(DISPLAY_FROM);
+            Object displayFrom = tableEntity.getProperty(PublicationConfiguration.DISPLAY_FROM_TABLE);
             if (displayFrom != null) {
                 artefactBuilder.displayFrom(LocalDateTime.parse(displayFrom.toString()));
             }
 
-            Object displayTo = tableEntity.getProperty(DISPLAY_TO);
+            Object displayTo = tableEntity.getProperty(PublicationConfiguration.DISPLAY_TO_TABLE);
             if (displayTo != null) {
                 artefactBuilder.displayTo(LocalDateTime.parse(displayTo.toString()));
             }

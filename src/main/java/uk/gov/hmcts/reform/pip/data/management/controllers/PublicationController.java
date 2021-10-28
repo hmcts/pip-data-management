@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Language;
@@ -59,17 +60,17 @@ public class PublicationController {
     @ApiOperation("Upload a new publication")
     @PutMapping
     public ResponseEntity<String> uploadPublication(
-        @RequestHeader("x-artefact-id") String artefactId,
-        @RequestHeader("x-provenance") String provenance,
-        @RequestHeader("x-source-artefact-id") String sourceArtefactId,
-        @RequestHeader("x-type") ArtefactType type,
-        @RequestHeader(value = "x-sensitivity", required = false) Sensitivity sensitivity,
-        @RequestHeader(value = "x-language", required = false) Language language,
-        @RequestHeader(value = "x-search", required = false) String search,
-        @RequestHeader(value = "x-display-from", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-            LocalDateTime displayFrom,
-        @RequestHeader(value = "x-display-to", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-            LocalDateTime displayTo,
+        @RequestHeader(PublicationConfiguration.ARTIFACT_ID_HEADER) String artefactId,
+        @RequestHeader(PublicationConfiguration.PROVENANCE_HEADER) String provenance,
+        @RequestHeader(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER) String sourceArtefactId,
+        @RequestHeader(PublicationConfiguration.TYPE_HEADER) ArtefactType type,
+        @RequestHeader(value = PublicationConfiguration.SENSITIVITY_HEADER, required = false) Sensitivity sensitivity,
+        @RequestHeader(value = PublicationConfiguration.LANGUAGE_HEADER, required = false) Language language,
+        @RequestHeader(value = PublicationConfiguration.SEARCH_HEADER, required = false) String search,
+        @RequestHeader(value = PublicationConfiguration.DISPLAY_FROM_HEADER, required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime displayFrom,
+        @RequestHeader(value = PublicationConfiguration.DISPLAY_TO_HEADER, required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime displayTo,
         @RequestBody String payload) {
 
         Artefact artefact = Artefact.builder().artefactId(artefactId)
