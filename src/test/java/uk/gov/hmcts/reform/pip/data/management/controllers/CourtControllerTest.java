@@ -8,6 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CourtNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.models.Court;
+import uk.gov.hmcts.reform.pip.data.management.models.lcsu.Event;
 import uk.gov.hmcts.reform.pip.data.management.models.request.FilterRequest;
 import uk.gov.hmcts.reform.pip.data.management.service.CourtService;
 
@@ -18,11 +19,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.CourtHelper.createMockCourtList;
+import static uk.gov.hmcts.reform.pip.data.management.helpers.EventHelper.createMockEventList;
 
 @SpringBootTest
 class CourtControllerTest {
 
     private List<Court> allCourts;
+    private List<Event> allEvents;
     private final List<String> filters = new ArrayList<>();
     private final List<String> values = new ArrayList<>();
 
@@ -36,6 +39,7 @@ class CourtControllerTest {
     @BeforeEach
     void setup() {
         allCourts = createMockCourtList();
+        allEvents = createMockEventList();
 
         filters.add("location");
         filters.add("jurisdiction");
@@ -44,6 +48,7 @@ class CourtControllerTest {
         values.add("manchester");
 
         when(courtService.getAllCourts()).thenReturn(allCourts);
+        when(courtService.getAllCourtStatusEvents()).thenReturn(allEvents);
         when(courtService.handleSearchCourt("mock court 1")).thenReturn(allCourts.get(0));
         when(courtService.handleSearchCourt(1)).thenReturn(allCourts.get(0));
         when(courtService.handleFilterRequest(filters, values)).thenReturn(allCourts);
@@ -107,5 +112,15 @@ class CourtControllerTest {
         assertEquals(allCourts, courtController.filterCourts(filterRequest).getBody(),
                      "Courts should match"
         );
+    }
+
+    @Test
+    void testGetCourtEventStatusListReturnsAllEventss() {
+        assertEquals(allEvents, courtController.getCourtEventStatusList().getBody(), "Should contain all court event statuses");
+    }
+
+    @Test
+    void testGetCourtEventStatusListReturnsOk() {
+        assertEquals(HttpStatus.OK, courtController.getCourtEventStatusList().getStatusCode(), "Status code should match");
     }
 }
