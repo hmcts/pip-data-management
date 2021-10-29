@@ -187,8 +187,8 @@ dependencies {
 
   functionalTestImplementation sourceSets.main.runtimeClasspath
 
-  smokeTestImplementation sourceSets.main.runtimeClasspath
-  smokeTestImplementation sourceSets.test.runtimeClasspath
+  //smokeTestImplementation sourceSets.main.runtimeClasspath
+  //smokeTestImplementation sourceSets.test.runtimeClasspath
 }
 
 bootJar {
