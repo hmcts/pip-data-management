@@ -10,7 +10,6 @@ public final class PublicationConfiguration {
     public static final String TYPE_HEADER = "x-type";
     public static final String SENSITIVITY_HEADER = "x-sensitivity";
     public static final String LANGUAGE_HEADER = "x-language";
-    public static final String SEARCH_HEADER = "x-search";
     public static final String DISPLAY_FROM_HEADER = "x-display-from";
     public static final String DISPLAY_TO_HEADER = "x-display-to";
 

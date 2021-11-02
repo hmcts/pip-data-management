@@ -66,9 +66,6 @@ class PublicationTest {
     private static final Sensitivity SENSITIVITY = Sensitivity.PUBLIC;
     private static final String PROVENANCE = "provenance";
     private static final String PAYLOAD = "payload";
-    private static final String SEARCH = "CASE_ID=1234";
-    private static final String INVALID_SEARCH_ENUM = "CASE_ID2=1234";
-    private static final String INVALID_SEARCH_VALUE = "1234";
     private static final String SOURCE_ARTEFACT_ID = "sourceArtefactId";
     private static final LocalDateTime DISPLAY_TO = LocalDateTime.now();
     private static final LocalDateTime DISPLAY_FROM = LocalDateTime.now();
@@ -87,7 +84,6 @@ class PublicationTest {
             .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
             .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
             .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
-            .header(PublicationConfiguration.SEARCH_HEADER, SEARCH)
             .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
             .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO)
             .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
@@ -140,7 +136,6 @@ class PublicationTest {
         entityProperties.put(PublicationConfiguration.PAYLOAD_TABLE, PAYLOAD);
         entityProperties.put(PublicationConfiguration.SENSITIVITY_TABLE, SENSITIVITY);
         entityProperties.put(PublicationConfiguration.LANGUAGE_TABLE, LANGUAGE);
-        entityProperties.put(PublicationConfiguration.SEARCH_TABLE, SEARCH);
         entityProperties.put(PublicationConfiguration.DISPLAY_FROM_TABLE, DISPLAY_FROM);
         entityProperties.put(PublicationConfiguration.DISPLAY_TO_TABLE, DISPLAY_TO);
 
@@ -170,7 +165,6 @@ class PublicationTest {
         entityProperties.put(PublicationConfiguration.PAYLOAD_TABLE, PAYLOAD);
         entityProperties.put(PublicationConfiguration.SENSITIVITY_TABLE, SENSITIVITY);
         entityProperties.put(PublicationConfiguration.LANGUAGE_TABLE, LANGUAGE);
-        entityProperties.put(PublicationConfiguration.SEARCH_TABLE, SEARCH);
         entityProperties.put(PublicationConfiguration.DISPLAY_FROM_TABLE, DISPLAY_FROM);
         entityProperties.put(PublicationConfiguration.DISPLAY_TO_TABLE, DISPLAY_TO);
 
@@ -207,64 +201,6 @@ class PublicationTest {
 
         assertEquals(EXCEPTION_MESSAGE, exceptionResponse.getMessage(), VALIDATE_RESPONSE_CONTENT);
         reset(tableClient);
-    }
-
-    @DisplayName("Should return an error response when submitting an artefact with an invalid search parameter")
-    @Test
-    void testErrorResponseWithInvalidSearchParameterEnum() throws Exception {
-
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .put(URL)
-            .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
-            .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
-            .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
-            .header(PublicationConfiguration.SEARCH_HEADER, INVALID_SEARCH_ENUM)
-            .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
-            .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO)
-            .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
-            .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
-            .content(objectMapper.writeValueAsString(PAYLOAD))
-            .contentType(MediaType.APPLICATION_JSON);
-
-        MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder).andExpect(
-            status().isBadRequest()).andReturn();
-
-        assertNotNull(response.getResponse().getContentAsString(), VALIDATE_RESPONSE_MESSAGE);
-
-        String errorResponse = response.getResponse().getContentAsString();
-        ExceptionResponse exceptionResponse = objectMapper.readValue(errorResponse, ExceptionResponse.class);
-
-        assertEquals(String.format("Invalid search parameter provided %s", INVALID_SEARCH_ENUM),
-                     exceptionResponse.getMessage(), VALIDATE_RESPONSE_CONTENT);
-    }
-
-    @DisplayName("Should return an error response when submitting an artefact with an invalid search parameter")
-    @Test
-    void testErrorResponseWithInvalidSearchParameterValue() throws Exception {
-
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .put(URL)
-            .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
-            .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
-            .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
-            .header(PublicationConfiguration.SEARCH_HEADER, INVALID_SEARCH_VALUE)
-            .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
-            .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO)
-            .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
-            .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
-            .content(objectMapper.writeValueAsString(PAYLOAD))
-            .contentType(MediaType.APPLICATION_JSON);
-
-        MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder).andExpect(
-            status().isBadRequest()).andReturn();
-
-        assertNotNull(response.getResponse().getContentAsString(), VALIDATE_RESPONSE_MESSAGE);
-
-        String errorResponse = response.getResponse().getContentAsString();
-        ExceptionResponse exceptionResponse = objectMapper.readValue(errorResponse, ExceptionResponse.class);
-
-        assertEquals(String.format("Invalid search parameter provided %s", INVALID_SEARCH_VALUE),
-                     exceptionResponse.getMessage(), VALIDATE_RESPONSE_CONTENT);
     }
 
 }
