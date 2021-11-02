@@ -89,12 +89,14 @@ public class AzureTableService {
     /**
      * Method that handles the retrieval of a publication from the Azure Table service.
      * @param sourceArtefactId The source artefact ID to retrieve.
+     * @param provenance The source system the artefact came from.
      * @return The Optional of the Artefact. Empty if not found.
      */
-    public Optional<Artefact> getPublication(String sourceArtefactId) {
+    public Optional<Artefact> getPublication(String sourceArtefactId, String provenance) {
 
         ListEntitiesOptions options = new ListEntitiesOptions()
-            .setFilter(String.format("sourceArtefactId eq '%s'", sourceArtefactId));
+            .setFilter(String.format("sourceArtefactId eq '%1$s and provenance eq %2$s",
+                                     sourceArtefactId, provenance));
 
         try {
             List<TableEntity> returnedArtefacts = tableClient.listEntities(options, null, null)

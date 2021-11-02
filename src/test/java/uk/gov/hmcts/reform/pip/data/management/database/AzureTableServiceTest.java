@@ -211,7 +211,7 @@ class AzureTableServiceTest {
         when(tableClient.listEntities(any(), any(), any())).thenReturn(tableEntities);
         when(tableEntities.stream()).thenReturn(Stream.of(tableEntity));
 
-        Optional<Artefact> artefactOptional = azureTableService.getPublication(ARTEFACT_ID);
+        Optional<Artefact> artefactOptional = azureTableService.getPublication(ARTEFACT_ID, PROVENANCE);
 
         assertTrue(artefactOptional.isPresent(), "An artefact has been returned");
 
@@ -245,7 +245,7 @@ class AzureTableServiceTest {
         when(tableClient.listEntities(any(), any(), any())).thenReturn(tableEntities);
         when(tableEntities.stream()).thenReturn(Stream.of());
 
-        Optional<Artefact> artefactOptional = azureTableService.getPublication(ARTEFACT_ID);
+        Optional<Artefact> artefactOptional = azureTableService.getPublication(ARTEFACT_ID, PROVENANCE);
 
         assertFalse(artefactOptional.isPresent(), "No optional is returned");
     }
@@ -256,7 +256,7 @@ class AzureTableServiceTest {
         doThrow(new TableServiceException(EXCEPTION_MESSAGE, null)).when(tableClient).listEntities(any(), any(), any());
 
         AzureServerException publicationException = assertThrows(AzureServerException.class, () -> {
-            azureTableService.getPublication(ARTEFACT_ID);
+            azureTableService.getPublication(ARTEFACT_ID, PROVENANCE);
         });
 
         assertEquals(EXCEPTION_MESSAGE, publicationException.getMessage(),
@@ -270,7 +270,7 @@ class AzureTableServiceTest {
         when(tableClient.listEntities(any(), any(), any())).thenReturn(tableEntities);
         when(tableEntities.stream()).thenReturn(Stream.of(tableEntityNoOptionals));
 
-        Optional<Artefact> artefactOptional = azureTableService.getPublication(ARTEFACT_ID);
+        Optional<Artefact> artefactOptional = azureTableService.getPublication(ARTEFACT_ID, PROVENANCE);
 
         assertTrue(artefactOptional.isPresent(), "The returned artefact is present");
 

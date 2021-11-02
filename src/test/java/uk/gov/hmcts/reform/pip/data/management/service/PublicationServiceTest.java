@@ -23,6 +23,7 @@ class PublicationServiceTest {
     PublicationService publicationService;
 
     private static final String SOURCE_ARTEFACT_ID = "1234";
+    private static final String PROVENANCE = "provenance";
     private static final String ROW_ID = "1234-1234";
 
     @Test
@@ -30,9 +31,10 @@ class PublicationServiceTest {
 
         Artefact artefact = Artefact.builder()
             .sourceArtefactId(SOURCE_ARTEFACT_ID)
+            .provenance(PROVENANCE)
             .build();
 
-        when(azureTableService.getPublication(SOURCE_ARTEFACT_ID)).thenReturn(Optional.empty());
+        when(azureTableService.getPublication(SOURCE_ARTEFACT_ID, PROVENANCE)).thenReturn(Optional.empty());
         when(azureTableService.createPublication(artefact)).thenReturn(ROW_ID);
 
         String returnedUuid = publicationService.createPublication(artefact);
@@ -45,14 +47,17 @@ class PublicationServiceTest {
 
         Artefact artefact = Artefact.builder()
             .sourceArtefactId(SOURCE_ARTEFACT_ID)
+            .provenance(PROVENANCE)
             .build();
 
         Artefact existingArtefact = Artefact.builder()
             .artefactId(ROW_ID)
             .sourceArtefactId(SOURCE_ARTEFACT_ID)
+            .provenance(PROVENANCE)
             .build();
 
-        when(azureTableService.getPublication(SOURCE_ARTEFACT_ID)).thenReturn(Optional.of(existingArtefact));
+        when(azureTableService.getPublication(SOURCE_ARTEFACT_ID, PROVENANCE))
+            .thenReturn(Optional.of(existingArtefact));
         when(azureTableService.updatePublication(artefact, existingArtefact)).thenReturn(ROW_ID);
 
         String returnedUuid = publicationService.createPublication(artefact);

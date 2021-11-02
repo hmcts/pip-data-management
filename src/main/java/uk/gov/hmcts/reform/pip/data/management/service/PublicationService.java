@@ -27,7 +27,8 @@ public class PublicationService {
      */
     public String createPublication(Artefact artefact) {
 
-        Optional<Artefact> foundArtefact =  azureTableService.getPublication(artefact.getSourceArtefactId());
+        Optional<Artefact> foundArtefact =  azureTableService.getPublication(
+            artefact.getSourceArtefactId(), artefact.getProvenance());
 
         if (foundArtefact.isPresent()) {
             return azureTableService.updatePublication(artefact, foundArtefact.get());
