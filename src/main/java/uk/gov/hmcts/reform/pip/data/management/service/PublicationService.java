@@ -3,8 +3,9 @@ package uk.gov.hmcts.reform.pip.data.management.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.pip.data.management.database.AzureTableService;
-import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.DuplicatePublicationException;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
+
+import java.util.Optional;
 
 /**
  * This class contains the business logic for handling of Publications.
@@ -20,16 +21,17 @@ public class PublicationService {
     }
 
     /**
-     * Method that handles the creation of a new publication.
+     * Method that handles the creation or updating of a new publication.
      * @param artefact The artifact that needs to be created.
      * @return Returns the UUID of the artefact that was created.
      */
     public String createPublication(Artefact artefact) {
 
-        azureTableService.getPublication(artefact.getArtefactId()).ifPresent(foundArtefact -> {
-            throw new DuplicatePublicationException(String.format("Duplicate publication found with ID %s",
-                                                                  artefact.getArtefactId()));
-        });
+        Optional<Artefact> foundArtefact =  azureTableService.getPublication(artefact.getSourceArtefactId());
+
+        if (foundArtefact.isPresent()) {
+            return azureTableService.updatePublication(artefact, foundArtefact.get());
+        }
 
         return azureTableService.createPublication(artefact);
     }

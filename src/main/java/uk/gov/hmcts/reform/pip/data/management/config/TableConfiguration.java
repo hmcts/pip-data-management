@@ -12,7 +12,6 @@ import org.springframework.context.annotation.Configuration;
 public class TableConfiguration {
 
     private String connectionString;
-
     private String tableName;
 
 }

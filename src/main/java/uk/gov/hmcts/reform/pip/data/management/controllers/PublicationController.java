@@ -46,7 +46,6 @@ public class PublicationController {
 
     /**
      * This endpoint takes in the Artefact, which is split over headers and also the payload body.
-     * @param artefactId Unique ID for the publication.
      * @param provenance Name of the source system.
      * @param sourceArtefactId Unique ID of what publication is called by source system.
      * @param type List / Outcome / Judgement / Status Updates.
@@ -64,7 +63,6 @@ public class PublicationController {
     @ApiOperation("Upload a new publication")
     @PutMapping
     public ResponseEntity<String> uploadPublication(
-        @RequestHeader(PublicationConfiguration.ARTIFACT_ID_HEADER) String artefactId,
         @RequestHeader(PublicationConfiguration.PROVENANCE_HEADER) String provenance,
         @RequestHeader(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER) String sourceArtefactId,
         @RequestHeader(PublicationConfiguration.TYPE_HEADER) ArtefactType type,
@@ -78,7 +76,7 @@ public class PublicationController {
         @RequestBody String payload) {
 
         validateSearchType(search);
-        Artefact artefact = Artefact.builder().artefactId(artefactId)
+        Artefact artefact = Artefact.builder()
             .provenance(provenance).sourceArtefactId(sourceArtefactId)
             .type(type).sensitivity(sensitivity)
             .language(language).search(search)

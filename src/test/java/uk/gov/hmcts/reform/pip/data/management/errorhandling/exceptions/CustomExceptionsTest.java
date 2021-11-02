@@ -46,15 +46,15 @@ class CustomExceptionsTest {
     }
 
     @Test
-    void testCreationOfPublicationException() {
-        PublicationException publicationException = new PublicationException(TEST_MESSAGE);
-        assertEquals(TEST_MESSAGE, publicationException.getMessage(), ASSERTION_MESSAGE);
+    void testCreationOfAzureServerException() {
+        AzureServerException azureServerException = new AzureServerException(TEST_MESSAGE);
+        assertEquals(TEST_MESSAGE, azureServerException.getMessage(), ASSERTION_MESSAGE);
     }
 
     @Test
-    void testCreationOfDuplicatePublicationException() {
-        DuplicatePublicationException duplicatePublicationException = new DuplicatePublicationException(TEST_MESSAGE);
-        assertEquals(TEST_MESSAGE, duplicatePublicationException.getMessage(), ASSERTION_MESSAGE);
+    void testCreationOfInvalidPublicationException() {
+        InvalidPublicationException invalidPublicationException = new InvalidPublicationException(TEST_MESSAGE);
+        assertEquals(TEST_MESSAGE, invalidPublicationException.getMessage(), ASSERTION_MESSAGE);
     }
 
 }

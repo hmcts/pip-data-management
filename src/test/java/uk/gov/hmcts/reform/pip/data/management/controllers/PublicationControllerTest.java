@@ -30,7 +30,6 @@ class PublicationControllerTest {
     @InjectMocks
     private PublicationController publicationController;
 
-    private static final String ARTEFACT_ID = "artefactId";
     private static final String SOURCE_ARTEFACT_ID = "sourceArtefactId";
     private static final LocalDateTime DISPLAY_FROM = LocalDateTime.now();
     private static final LocalDateTime DISPLAY_TO = LocalDateTime.now();
@@ -45,11 +44,9 @@ class PublicationControllerTest {
 
     private static final String RETURN_ID = "1234";
 
-
     @Test
     void testCreationOfPublication() {
         Artefact artefact = Artefact.builder()
-            .artefactId(ARTEFACT_ID)
             .sourceArtefactId(SOURCE_ARTEFACT_ID)
             .displayFrom(DISPLAY_FROM)
             .displayTo(DISPLAY_TO)
@@ -64,7 +61,7 @@ class PublicationControllerTest {
         when(publicationService.createPublication(argThat(arg -> arg.equals(artefact)))).thenReturn(RETURN_ID);
 
         ResponseEntity<String> responseEntity = publicationController.uploadPublication(
-            ARTEFACT_ID, PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE,
+            PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE,
             SENSITIVITY, LANGUAGE, SEARCH, DISPLAY_FROM, DISPLAY_TO, PAYLOAD
         );
 
@@ -75,8 +72,7 @@ class PublicationControllerTest {
     @Test
     void testCreationWithInvalidSearchEnum() {
         Exception exception = assertThrows(InvalidPublicationException.class, () ->
-            publicationController.uploadPublication(
-            ARTEFACT_ID, PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE,
+            publicationController.uploadPublication(PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE,
             SENSITIVITY, LANGUAGE, INVALID_SEARCH_ENUM, DISPLAY_FROM, DISPLAY_TO, PAYLOAD
         ));
 
@@ -87,8 +83,7 @@ class PublicationControllerTest {
     @Test
     void testCreationWithInvalidSearchValue() {
         Exception exception = assertThrows(InvalidPublicationException.class, () ->
-            publicationController.uploadPublication(
-            ARTEFACT_ID, PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE,
+            publicationController.uploadPublication(PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE,
             SENSITIVITY, LANGUAGE, INVALID_SEARCH_VALUE, DISPLAY_FROM, DISPLAY_TO, PAYLOAD
         ));
 

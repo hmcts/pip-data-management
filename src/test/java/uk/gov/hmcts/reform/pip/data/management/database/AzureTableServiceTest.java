@@ -13,7 +13,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
-import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.PublicationException;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.AzureServerException;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Language;
@@ -27,6 +27,7 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -48,7 +49,8 @@ class AzureTableServiceTest {
     @InjectMocks
     AzureTableService azureTableService;
 
-    private static Artefact artefact;
+    private static Artefact newArtefact;
+    private static Artefact existingArtefact;
     private static TableEntity tableEntity;
     private static TableEntity tableEntityNoOptionals;
 
@@ -64,11 +66,21 @@ class AzureTableServiceTest {
     private static final Language LANGUAGE = Language.ENGLISH;
 
     private static final String EXCEPTION_MESSAGE = "Test Message";
+    private static final String VALIDATION_UUID = "A randomly generated UUID is returned";
+    private static final String VALIDATION_PROVENANCE = "The expected Provenance is returned";
+    private static final String VALIDATION_SOURCE_ARTEFACT_ID = "The expected source artefact ID is returned";
+    private static final String VALIDATION_ARTEFACT_TYPE = "The expected Artefact type is returned";
+    private static final String VALIDATION_SENSITIVITY = "The expected sensitivity is returned";
+    private static final String VALIDATION_LANGUAGE = "The expected language is returned";
+    private static final String VALIDATION_SEARCH = "The expected search parameter is returned";
+    private static final String VALIDATION_DISPLAY_FROM = "The expected display from date is returned";
+    private static final String VALIDATION_DISPLAY_TO = "The expected display to date is returned";
+    private static final String VALIDATION_PAYLOAD = "The expected payload is returned";
+    private static final String VALIDATION_ARTEFACT_ID = "The expected artefact ID is returned";
 
     @BeforeAll
     public static void setup() {
-        artefact = Artefact.builder()
-            .artefactId(ARTEFACT_ID)
+        newArtefact = Artefact.builder()
             .type(ARTEFACT_TYPE)
             .sensitivity(SENSITIVITY)
             .provenance(PROVENANCE)
@@ -78,6 +90,10 @@ class AzureTableServiceTest {
             .displayTo(DISPLAY_TO)
             .displayFrom(DISPLAY_FROM)
             .language(LANGUAGE)
+            .build();
+
+        existingArtefact = Artefact.builder()
+            .artefactId(ARTEFACT_ID)
             .build();
 
         Map<String, Object> entityProperties = new ConcurrentHashMap<>();
@@ -103,32 +119,32 @@ class AzureTableServiceTest {
 
         ArgumentCaptor<TableEntity> argumentCaptor = ArgumentCaptor.forClass(TableEntity.class);
 
-        azureTableService.createPublication(artefact);
+        azureTableService.createPublication(newArtefact);
 
         verify(tableClient, times(1)).createEntity(argumentCaptor.capture());
 
         TableEntity returnedTableEntity = argumentCaptor.getValue();
 
-        assertEquals(returnedTableEntity.getProperty(PublicationConfiguration.ARTIFACT_ID_TABLE), ARTEFACT_ID,
-                     "The expected Artefact ID is returned");
+        assertNotNull(returnedTableEntity.getProperty(PublicationConfiguration.ARTIFACT_ID_TABLE),
+                     VALIDATION_UUID);
         assertEquals(returnedTableEntity.getProperty(PublicationConfiguration.PROVENANCE_TABLE), PROVENANCE,
-                     "The expected Provenance is returned");
+                     VALIDATION_PROVENANCE);
         assertEquals(returnedTableEntity.getProperty(PublicationConfiguration.SOURCE_ARTEFACT_ID_TABLE),
-                     SOURCE_ARTEFACT_ID, "The expected source artefact ID is returned");
+                     SOURCE_ARTEFACT_ID, VALIDATION_SOURCE_ARTEFACT_ID);
         assertEquals(returnedTableEntity.getProperty(PublicationConfiguration.TYPE_TABLE), ARTEFACT_TYPE,
-                     "The expected Artefact type is returned");
+                     VALIDATION_ARTEFACT_TYPE);
         assertEquals(returnedTableEntity.getProperty(PublicationConfiguration.SENSITIVITY_TABLE), SENSITIVITY,
-                     "The expected sensitivity is returned");
+                     VALIDATION_SENSITIVITY);
         assertEquals(returnedTableEntity.getProperty(PublicationConfiguration.LANGUAGE_TABLE), LANGUAGE,
-                     "The expected language is returned");
+                     VALIDATION_LANGUAGE);
         assertEquals(returnedTableEntity.getProperty(PublicationConfiguration.SEARCH_TABLE), SEARCH,
-                     "The expected search parameter is returned");
+                     VALIDATION_SEARCH);
         assertEquals(returnedTableEntity.getProperty(PublicationConfiguration.DISPLAY_FROM_TABLE), DISPLAY_FROM,
-                     "The expected display from date is returned");
+                     VALIDATION_DISPLAY_FROM);
         assertEquals(returnedTableEntity.getProperty(PublicationConfiguration.DISPLAY_TO_TABLE), DISPLAY_TO,
-                     "The expected display to date is returned");
+                     VALIDATION_DISPLAY_TO);
         assertEquals(returnedTableEntity.getProperty(PublicationConfiguration.PAYLOAD_TABLE), PAYLOAD,
-                     "The expected payload is returned");
+                     VALIDATION_PAYLOAD);
     }
 
     @Test
@@ -136,8 +152,54 @@ class AzureTableServiceTest {
 
         doThrow(new TableServiceException(EXCEPTION_MESSAGE, null)).when(tableClient).createEntity(any());
 
-        PublicationException publicationException = assertThrows(PublicationException.class, () -> {
-            azureTableService.createPublication(artefact);
+        AzureServerException publicationException = assertThrows(AzureServerException.class, () -> {
+            azureTableService.createPublication(newArtefact);
+        });
+
+        assertEquals(EXCEPTION_MESSAGE, publicationException.getMessage(),
+                     "The expected exception message is returned");
+    }
+
+    @Test
+    void testUpdateOfValidArtefact() {
+
+        ArgumentCaptor<TableEntity> argumentCaptor = ArgumentCaptor.forClass(TableEntity.class);
+
+        azureTableService.updatePublication(newArtefact, existingArtefact);
+
+        verify(tableClient, times(1)).updateEntity(argumentCaptor.capture());
+
+        TableEntity returnedTableEntity = argumentCaptor.getValue();
+
+        assertEquals(ARTEFACT_ID, returnedTableEntity.getProperty(PublicationConfiguration.ARTIFACT_ID_TABLE),
+                      "The existing Artefact ID is used");
+        assertEquals(returnedTableEntity.getProperty(PublicationConfiguration.PROVENANCE_TABLE), PROVENANCE,
+                     VALIDATION_PROVENANCE);
+        assertEquals(returnedTableEntity.getProperty(PublicationConfiguration.SOURCE_ARTEFACT_ID_TABLE),
+                     SOURCE_ARTEFACT_ID, VALIDATION_SOURCE_ARTEFACT_ID);
+        assertEquals(returnedTableEntity.getProperty(PublicationConfiguration.TYPE_TABLE), ARTEFACT_TYPE,
+                     VALIDATION_ARTEFACT_TYPE);
+        assertEquals(returnedTableEntity.getProperty(PublicationConfiguration.SENSITIVITY_TABLE), SENSITIVITY,
+                     VALIDATION_SENSITIVITY);
+        assertEquals(returnedTableEntity.getProperty(PublicationConfiguration.LANGUAGE_TABLE), LANGUAGE,
+                     VALIDATION_LANGUAGE);
+        assertEquals(returnedTableEntity.getProperty(PublicationConfiguration.SEARCH_TABLE), SEARCH,
+                     VALIDATION_SEARCH);
+        assertEquals(returnedTableEntity.getProperty(PublicationConfiguration.DISPLAY_FROM_TABLE), DISPLAY_FROM,
+                     VALIDATION_DISPLAY_FROM);
+        assertEquals(returnedTableEntity.getProperty(PublicationConfiguration.DISPLAY_TO_TABLE), DISPLAY_TO,
+                     VALIDATION_DISPLAY_TO);
+        assertEquals(returnedTableEntity.getProperty(PublicationConfiguration.PAYLOAD_TABLE), PAYLOAD,
+                     VALIDATION_PAYLOAD);
+    }
+
+    @Test
+    void testUpdateOfErroredArtefact() {
+
+        doThrow(new TableServiceException(EXCEPTION_MESSAGE, null)).when(tableClient).updateEntity(any());
+
+        AzureServerException publicationException = assertThrows(AzureServerException.class, () -> {
+            azureTableService.updatePublication(newArtefact, existingArtefact);
         });
 
         assertEquals(EXCEPTION_MESSAGE, publicationException.getMessage(),
@@ -156,25 +218,25 @@ class AzureTableServiceTest {
         Artefact returnedArtefact = artefactOptional.get();
 
         assertEquals(tableEntity.getProperty(PublicationConfiguration.ARTIFACT_ID_TABLE),
-                     returnedArtefact.getArtefactId(), "The expected artefact ID is returned");
+                     returnedArtefact.getArtefactId(), VALIDATION_ARTEFACT_ID);
         assertEquals(tableEntity.getProperty(PublicationConfiguration.PROVENANCE_TABLE),
-                     returnedArtefact.getProvenance(), "The expected provenance is returned");
+                     returnedArtefact.getProvenance(), VALIDATION_PROVENANCE);
         assertEquals(tableEntity.getProperty(PublicationConfiguration.SOURCE_ARTEFACT_ID_TABLE),
-                     returnedArtefact.getSourceArtefactId(), "The expected source artefact ID is returned");
+                     returnedArtefact.getSourceArtefactId(), VALIDATION_SOURCE_ARTEFACT_ID);
         assertEquals(tableEntity.getProperty(PublicationConfiguration.TYPE_TABLE), returnedArtefact.getType(),
-                     "The expected artefact type is returned");
+                     VALIDATION_ARTEFACT_TYPE);
         assertEquals(tableEntity.getProperty(PublicationConfiguration.SENSITIVITY_TABLE),
-                     returnedArtefact.getSensitivity(), "The expected sensitivity is returned");
+                     returnedArtefact.getSensitivity(), VALIDATION_SENSITIVITY);
         assertEquals(tableEntity.getProperty(PublicationConfiguration.LANGUAGE_TABLE), returnedArtefact.getLanguage(),
-                     "The expected language is returned");
+                     VALIDATION_LANGUAGE);
         assertEquals(tableEntity.getProperty(PublicationConfiguration.SEARCH_TABLE), returnedArtefact.getSearch(),
-                     "The expected seearch paramter is returned");
+                     VALIDATION_SEARCH);
         assertEquals(tableEntity.getProperty(PublicationConfiguration.DISPLAY_FROM_TABLE),
-                     returnedArtefact.getDisplayFrom(), "The expected display from date is returned");
+                     returnedArtefact.getDisplayFrom(), VALIDATION_DISPLAY_FROM);
         assertEquals(tableEntity.getProperty(PublicationConfiguration.DISPLAY_TO_TABLE),
-                     returnedArtefact.getDisplayTo(), "The expected display to date is returned");
+                     returnedArtefact.getDisplayTo(), VALIDATION_DISPLAY_TO);
         assertEquals(tableEntity.getProperty(PublicationConfiguration.PAYLOAD_TABLE), returnedArtefact.getPayload(),
-                     "The expected payload is returned");
+                     VALIDATION_PAYLOAD);
     }
 
     @Test
@@ -193,7 +255,7 @@ class AzureTableServiceTest {
 
         doThrow(new TableServiceException(EXCEPTION_MESSAGE, null)).when(tableClient).listEntities(any(), any(), any());
 
-        PublicationException publicationException = assertThrows(PublicationException.class, () -> {
+        AzureServerException publicationException = assertThrows(AzureServerException.class, () -> {
             azureTableService.getPublication(ARTEFACT_ID);
         });
 
@@ -215,25 +277,25 @@ class AzureTableServiceTest {
         Artefact returnedArtefact = artefactOptional.get();
 
         assertEquals(tableEntity.getProperty(PublicationConfiguration.ARTIFACT_ID_TABLE),
-                     returnedArtefact.getArtefactId(), "The expected artefact ID is returned");
+                     returnedArtefact.getArtefactId(), VALIDATION_ARTEFACT_ID);
         assertEquals(tableEntity.getProperty(PublicationConfiguration.PROVENANCE_TABLE),
-                     returnedArtefact.getProvenance(), "The expected provenance is returned");
+                     returnedArtefact.getProvenance(), VALIDATION_PROVENANCE);
         assertEquals(tableEntity.getProperty(PublicationConfiguration.SOURCE_ARTEFACT_ID_TABLE),
-                     returnedArtefact.getSourceArtefactId(), "The expected source artefact ID is returned");
+                     returnedArtefact.getSourceArtefactId(), VALIDATION_SOURCE_ARTEFACT_ID);
         assertEquals(tableEntity.getProperty(PublicationConfiguration.TYPE_TABLE), returnedArtefact.getType(),
-                     "The expected artefact type is returned");
+                     VALIDATION_ARTEFACT_TYPE);
         assertNull(returnedArtefact.getSensitivity(),
-                   "The expected sensitivity is returned");
+                   VALIDATION_SENSITIVITY);
         assertNull(returnedArtefact.getLanguage(),
-                   "The expected language is returned");
+                   VALIDATION_LANGUAGE);
         assertNull(returnedArtefact.getSearch(),
-                   "The expected search parameter is returned");
+                   VALIDATION_SEARCH);
         assertNull(returnedArtefact.getDisplayFrom(),
-                   "The expected display from date is returned");
+                   VALIDATION_DISPLAY_FROM);
         assertNull(returnedArtefact.getDisplayTo(),
-                   "The expected display to date is returned");
+                   VALIDATION_DISPLAY_TO);
         assertEquals(tableEntity.getProperty(PublicationConfiguration.PAYLOAD_TABLE), returnedArtefact.getPayload(),
-                     "The expected payload is returned");
+                     VALIDATION_PAYLOAD);
     }
 
 }

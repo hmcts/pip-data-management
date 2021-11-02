@@ -4,12 +4,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.AzureServerException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CourtNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.DataStorageNotFoundException;
-import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.DuplicatePublicationException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.HearingNotFoundException;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.InvalidPublicationException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.NotFoundException;
-import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.PublicationException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -82,8 +82,8 @@ class GlobalExceptionHandlerTest {
     }
 
     @Test
-    void testHandlePublicationException() {
-        PublicationException publicationException = new PublicationException(TEST_MESSAGE);
+    void testHandleAzureServerException() {
+        AzureServerException publicationException = new AzureServerException(TEST_MESSAGE);
 
         ResponseEntity<ExceptionResponse> responseEntity =
             globalExceptionHandler.handle(publicationException);
@@ -96,10 +96,10 @@ class GlobalExceptionHandlerTest {
 
     @Test
     void testHandleDuplicatePublicationException() {
-        DuplicatePublicationException duplicatePublicationException = new DuplicatePublicationException(TEST_MESSAGE);
+        InvalidPublicationException invalidPublicationException = new InvalidPublicationException(TEST_MESSAGE);
 
         ResponseEntity<ExceptionResponse> responseEntity =
-            globalExceptionHandler.handle(duplicatePublicationException);
+            globalExceptionHandler.handle(invalidPublicationException);
 
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode(), DUPLICATE_PUBLICATION);
         assertNotNull(responseEntity.getBody(), ASSERTION_RESPONSE_BODY);

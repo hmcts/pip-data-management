@@ -5,7 +5,6 @@ package uk.gov.hmcts.reform.pip.data.management.config;
  */
 public final class PublicationConfiguration {
 
-    public static final String ARTIFACT_ID_HEADER = "x-artefact-id";
     public static final String PROVENANCE_HEADER = "x-provenance";
     public static final String SOURCE_ARTEFACT_ID_HEADER = "x-source-artefact-id";
     public static final String TYPE_HEADER = "x-type";

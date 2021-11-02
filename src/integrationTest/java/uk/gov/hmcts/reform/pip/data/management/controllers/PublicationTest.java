@@ -84,7 +84,6 @@ class PublicationTest {
 
         mockHttpServletRequestBuilder = MockMvcRequestBuilders
             .put(URL)
-            .header(PublicationConfiguration.ARTIFACT_ID_HEADER, ARTEFACT_ID)
             .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
             .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
             .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
@@ -110,7 +109,7 @@ class PublicationTest {
         assertNotNull(response.getResponse().getContentAsString(), "Response should contain a string");
     }
 
-    @DisplayName("Should return an error response when failing to connect with Azure")
+    @DisplayName("Should return an error response due to failing to connect with Azure - Creation")
     @Test
     void creationOfAnArtefactWhenErrorConnectingWithAzure() throws Exception {
         when(tableClient.listEntities(any(), any(), any())).thenReturn(tableEntities);
@@ -129,9 +128,9 @@ class PublicationTest {
         assertEquals(EXCEPTION_MESSAGE, exceptionResponse.getMessage(), VALIDATE_RESPONSE_CONTENT);
     }
 
-    @DisplayName("Should return an error response when the artefact already exists")
+    @DisplayName("Should update the artefact and return the same Artefact ID as the originally created one")
     @Test
-    void creationOfAnArtefactThatAlreadyExists() throws Exception {
+    void updatingOfAnArtefactThatAlreadyExists() throws Exception {
 
         Map<String, Object> entityProperties = new ConcurrentHashMap<>();
         entityProperties.put(PublicationConfiguration.ARTIFACT_ID_TABLE, ARTEFACT_ID);
@@ -150,16 +149,47 @@ class PublicationTest {
         when(tableClient.listEntities(any(), any(), any())).thenReturn(tableEntities);
         when(tableEntities.stream()).thenReturn(Stream.of(tableEntity));
 
+        doNothing().when(tableClient).updateEntity(any());
+
         MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder).andExpect(
-            status().isBadRequest()).andReturn();
+            status().isOk()).andReturn();
+
+        assertEquals(ARTEFACT_ID, response.getResponse().getContentAsString(), "The artefact ID being returned"
+            + "should be the same as the existing artefact");
+    }
+
+    @DisplayName("Should return an error due to failing to connect to azure - Updating")
+    @Test
+    void updatingOfAnArtefactWhenErrorConnectingWithAzure() throws Exception {
+
+        Map<String, Object> entityProperties = new ConcurrentHashMap<>();
+        entityProperties.put(PublicationConfiguration.ARTIFACT_ID_TABLE, ARTEFACT_ID);
+        entityProperties.put(PublicationConfiguration.PROVENANCE_TABLE, PROVENANCE);
+        entityProperties.put(PublicationConfiguration.SOURCE_ARTEFACT_ID_TABLE, SOURCE_ARTEFACT_ID);
+        entityProperties.put(PublicationConfiguration.TYPE_TABLE, ARTEFACT_TYPE);
+        entityProperties.put(PublicationConfiguration.PAYLOAD_TABLE, PAYLOAD);
+        entityProperties.put(PublicationConfiguration.SENSITIVITY_TABLE, SENSITIVITY);
+        entityProperties.put(PublicationConfiguration.LANGUAGE_TABLE, LANGUAGE);
+        entityProperties.put(PublicationConfiguration.SEARCH_TABLE, SEARCH);
+        entityProperties.put(PublicationConfiguration.DISPLAY_FROM_TABLE, DISPLAY_FROM);
+        entityProperties.put(PublicationConfiguration.DISPLAY_TO_TABLE, DISPLAY_TO);
+
+        TableEntity tableEntity = ModelHelper.createEntity(entityProperties);
+
+        when(tableClient.listEntities(any(), any(), any())).thenReturn(tableEntities);
+        when(tableEntities.stream()).thenReturn(Stream.of(tableEntity));
+
+        doThrow(new TableServiceException(EXCEPTION_MESSAGE, null)).when(tableClient).updateEntity(any());
+
+        MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder).andExpect(
+            status().isInternalServerError()).andReturn();
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATE_RESPONSE_MESSAGE);
 
         String errorResponse = response.getResponse().getContentAsString();
         ExceptionResponse exceptionResponse = objectMapper.readValue(errorResponse, ExceptionResponse.class);
 
-        assertEquals(String.format("Duplicate publication found with ID %s", ARTEFACT_ID),
-                     exceptionResponse.getMessage(), VALIDATE_RESPONSE_CONTENT);
+        assertEquals(EXCEPTION_MESSAGE, exceptionResponse.getMessage(), VALIDATE_RESPONSE_CONTENT);
     }
 
     @DisplayName("Should return an error response when failing to connect with Azure")
@@ -185,7 +215,6 @@ class PublicationTest {
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
             .put(URL)
-            .header(PublicationConfiguration.ARTIFACT_ID_HEADER, ARTEFACT_ID)
             .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
             .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
             .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
@@ -215,7 +244,6 @@ class PublicationTest {
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
             .put(URL)
-            .header(PublicationConfiguration.ARTIFACT_ID_HEADER, ARTEFACT_ID)
             .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
             .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
             .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
