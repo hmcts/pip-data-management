@@ -9,11 +9,10 @@ import uk.gov.hmcts.reform.pip.data.management.models.lcsu.Event;
 import java.util.List;
 
 /**
- * Service to handle the retrieval and filtering of courts.
+ * Service to handle the retrieval of courts events glossary.
  */
 @Service
 @Slf4j
-
 public class CourtEventGlossaryService {
     @Autowired
     private CourtsAndHearings courtsAndHearings;

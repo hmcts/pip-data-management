@@ -16,8 +16,7 @@ import java.util.List;
 
 @RestController
 @Api(tags = "Data Management Court Event Glossary API")
-@RequestMapping("/courteventglossary")
-
+@RequestMapping("/glossary")
 public class CourtEventGlossaryController {
 
     @Autowired

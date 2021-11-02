@@ -34,7 +34,7 @@ class CourtEventGlossaryTest {
 
     @Test
     void testGetCourtEventStatusListReturnsSuccess() throws Exception {
-        mockMvc.perform(get("/courteventglossary"))
+        mockMvc.perform(get("/glossary"))
             .andExpect(status().isOk())
             .andExpect(content().string(containsString("\"eventId\":1")));
     }
