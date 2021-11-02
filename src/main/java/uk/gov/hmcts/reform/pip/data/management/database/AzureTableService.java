@@ -4,6 +4,8 @@ import com.azure.data.tables.TableClient;
 import com.azure.data.tables.models.ListEntitiesOptions;
 import com.azure.data.tables.models.TableEntity;
 import com.azure.data.tables.models.TableServiceException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
@@ -25,6 +27,8 @@ import java.util.stream.Collectors;
  */
 @Component
 public class AzureTableService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AzureTableService.class);
 
     private final TableClient tableClient;
 
@@ -54,8 +58,9 @@ public class AzureTableService {
                 .addProperty(PublicationConfiguration.PAYLOAD_TABLE, artefact.getPayload());
             tableClient.createEntity(tableEntity);
             return key;
-        } catch (TableServiceException e) {
-            throw new AzureServerException(e.getMessage());
+        } catch (TableServiceException tableServiceException) {
+            LOGGER.error(tableServiceException.getMessage());
+            throw new AzureServerException("Server error while creating a publication in Azure");
         }
     }
 
@@ -81,8 +86,9 @@ public class AzureTableService {
                 .addProperty(PublicationConfiguration.PAYLOAD_TABLE, newArtefact.getPayload());
             tableClient.updateEntity(tableEntity);
             return existingArtefact.getArtefactId();
-        } catch (TableServiceException e) {
-            throw new AzureServerException(e.getMessage());
+        } catch (TableServiceException tableServiceException) {
+            LOGGER.error(tableServiceException.getMessage());
+            throw new AzureServerException("Server error while updating a publication in Azure");
         }
     }
 
@@ -95,7 +101,7 @@ public class AzureTableService {
     public Optional<Artefact> getPublication(String sourceArtefactId, String provenance) {
 
         ListEntitiesOptions options = new ListEntitiesOptions()
-            .setFilter(String.format("sourceArtefactId eq '%1$s and provenance eq %2$s",
+            .setFilter(String.format("sourceArtefactId eq '%1$s' and provenance eq '%2$s'",
                                      sourceArtefactId, provenance));
 
         try {
@@ -109,7 +115,8 @@ public class AzureTableService {
             return Optional.of(convertTableEntityToArtefact(returnedArtefacts.get(0)));
 
         } catch (TableServiceException tableServiceException) {
-            throw new AzureServerException(tableServiceException.getMessage());
+            LOGGER.error(tableServiceException.getMessage());
+            throw new AzureServerException("Server error while retrieving publications from Azure");
         }
     }
 

@@ -66,6 +66,9 @@ class AzureTableServiceTest {
     private static final Language LANGUAGE = Language.ENGLISH;
 
     private static final String EXCEPTION_MESSAGE = "Test Message";
+    private static final String EXCEPTION_MESSAGE_CREATE = "Server error while creating a publication in Azure";
+    private static final String EXCEPTION_MESSAGE_UPDATE = "Server error while updating a publication in Azure";
+    private static final String EXCEPTION_MESSAGE_RETREIVE = "Server error while retrieving publications from Azure";
     private static final String VALIDATION_UUID = "A randomly generated UUID is returned";
     private static final String VALIDATION_PROVENANCE = "The expected Provenance is returned";
     private static final String VALIDATION_SOURCE_ARTEFACT_ID = "The expected source artefact ID is returned";
@@ -156,7 +159,7 @@ class AzureTableServiceTest {
             azureTableService.createPublication(newArtefact);
         });
 
-        assertEquals(EXCEPTION_MESSAGE, publicationException.getMessage(),
+        assertEquals(EXCEPTION_MESSAGE_CREATE, publicationException.getMessage(),
                      "The expected exception message is returned");
     }
 
@@ -202,7 +205,7 @@ class AzureTableServiceTest {
             azureTableService.updatePublication(newArtefact, existingArtefact);
         });
 
-        assertEquals(EXCEPTION_MESSAGE, publicationException.getMessage(),
+        assertEquals(EXCEPTION_MESSAGE_UPDATE, publicationException.getMessage(),
                      "The expected exception message is returned");
     }
 
@@ -259,7 +262,7 @@ class AzureTableServiceTest {
             azureTableService.getPublication(ARTEFACT_ID, PROVENANCE);
         });
 
-        assertEquals(EXCEPTION_MESSAGE, publicationException.getMessage(),
+        assertEquals(EXCEPTION_MESSAGE_RETREIVE, publicationException.getMessage(),
                      "The expected exception message is returned");
 
     }

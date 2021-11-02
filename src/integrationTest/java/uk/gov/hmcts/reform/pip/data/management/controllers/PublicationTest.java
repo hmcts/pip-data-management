@@ -58,6 +58,9 @@ class PublicationTest {
 
     private static final String URL = "/publication";
     private static final String EXCEPTION_MESSAGE = "Error communicating with Azure";
+    private static final String EXCEPTION_MESSAGE_CREATE = "Server error while creating a publication in Azure";
+    private static final String EXCEPTION_MESSAGE_UPDATE = "Server error while updating a publication in Azure";
+    private static final String EXCEPTION_MESSAGE_RETRIEVE = "Server error while retrieving publications from Azure";
     private static final String VALIDATE_RESPONSE_MESSAGE = "Response should be present";
     private static final String VALIDATE_RESPONSE_CONTENT = "Response should contain the correct error message";
 
@@ -121,7 +124,7 @@ class PublicationTest {
         String errorResponse = response.getResponse().getContentAsString();
         ExceptionResponse exceptionResponse = objectMapper.readValue(errorResponse, ExceptionResponse.class);
 
-        assertEquals(EXCEPTION_MESSAGE, exceptionResponse.getMessage(), VALIDATE_RESPONSE_CONTENT);
+        assertEquals(EXCEPTION_MESSAGE_CREATE, exceptionResponse.getMessage(), VALIDATE_RESPONSE_CONTENT);
     }
 
     @DisplayName("Should update the artefact and return the same Artefact ID as the originally created one")
@@ -183,7 +186,7 @@ class PublicationTest {
         String errorResponse = response.getResponse().getContentAsString();
         ExceptionResponse exceptionResponse = objectMapper.readValue(errorResponse, ExceptionResponse.class);
 
-        assertEquals(EXCEPTION_MESSAGE, exceptionResponse.getMessage(), VALIDATE_RESPONSE_CONTENT);
+        assertEquals(EXCEPTION_MESSAGE_UPDATE, exceptionResponse.getMessage(), VALIDATE_RESPONSE_CONTENT);
     }
 
     @DisplayName("Should return an error response when failing to connect with Azure")
@@ -199,7 +202,7 @@ class PublicationTest {
         String errorResponse = response.getResponse().getContentAsString();
         ExceptionResponse exceptionResponse = objectMapper.readValue(errorResponse, ExceptionResponse.class);
 
-        assertEquals(EXCEPTION_MESSAGE, exceptionResponse.getMessage(), VALIDATE_RESPONSE_CONTENT);
+        assertEquals(EXCEPTION_MESSAGE_RETRIEVE, exceptionResponse.getMessage(), VALIDATE_RESPONSE_CONTENT);
         reset(tableClient);
     }
 
