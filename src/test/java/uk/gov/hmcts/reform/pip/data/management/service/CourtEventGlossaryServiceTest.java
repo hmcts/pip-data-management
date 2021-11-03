@@ -4,7 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import uk.gov.hmcts.reform.pip.data.management.models.lcsu.Event;
+import uk.gov.hmcts.reform.pip.data.management.models.lcsu.EventGlossary;
 
 import java.util.List;
 
@@ -18,7 +18,7 @@ class CourtEventGlossaryServiceTest {
     private static final String APPEAL_WITNESS_CONTINUES = "Appeal Witness continues";
     private static final String SUCCESS_MESSAGE = "Events should be returned";
 
-    private List<Event> courtEvents;
+    private List<EventGlossary> courtEvents;
 
     @Autowired
     private CourtEventGlossaryService courtEventGlossaryService;

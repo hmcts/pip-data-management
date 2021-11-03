@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import uk.gov.hmcts.reform.pip.data.management.models.lcsu.Event;
+import uk.gov.hmcts.reform.pip.data.management.models.lcsu.EventGlossary;
 import uk.gov.hmcts.reform.pip.data.management.service.CourtEventGlossaryService;
 
 import java.util.List;
@@ -27,7 +27,7 @@ public class CourtEventGlossaryController {
     })
     @ApiOperation("Get all courts event statuses with their description")
     @GetMapping
-    public ResponseEntity<List<Event>> getCourtEventStatusList() {
+    public ResponseEntity<List<EventGlossary>> getCourtEventStatusList() {
         return ResponseEntity.ok(courtEventGlossaryService.getAllCourtEventGlossary());
     }
 }

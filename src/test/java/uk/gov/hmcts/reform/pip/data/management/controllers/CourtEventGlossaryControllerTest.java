@@ -6,19 +6,19 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
-import uk.gov.hmcts.reform.pip.data.management.models.lcsu.Event;
+import uk.gov.hmcts.reform.pip.data.management.models.lcsu.EventGlossary;
 import uk.gov.hmcts.reform.pip.data.management.service.CourtEventGlossaryService;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
-import static uk.gov.hmcts.reform.pip.data.management.helpers.EventHelper.createMockEventList;
+import static uk.gov.hmcts.reform.pip.data.management.helpers.EventGlossaryHelper.createMockEventList;
 
 @SpringBootTest
 class CourtEventGlossaryControllerTest {
 
-    private List<Event> allEvents;
+    private List<EventGlossary> allEvents;
 
     @Mock
     private CourtEventGlossaryService courtEventGlossaryService;

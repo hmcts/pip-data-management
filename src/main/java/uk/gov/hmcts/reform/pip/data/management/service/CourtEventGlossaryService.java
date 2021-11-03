@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.pip.data.management.database.CourtsAndHearings;
-import uk.gov.hmcts.reform.pip.data.management.models.lcsu.Event;
+import uk.gov.hmcts.reform.pip.data.management.models.lcsu.EventGlossary;
 
 import java.util.List;
 
@@ -22,7 +22,7 @@ public class CourtEventGlossaryService {
      *
      * @return List of Court event glossary
      */
-    public List<Event> getAllCourtEventGlossary() {
+    public List<EventGlossary> getAllCourtEventGlossary() {
         return courtsAndHearings.getListCourtEvents();
     }
 }
