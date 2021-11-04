@@ -35,6 +35,7 @@ class CourtsAndHearingsTest {
 
     @Test
     void testGetListCourtEventGlossary() {
-        assertEquals(49, courtsAndHearings.getListCourtEvents().size(), "Court list event glossary size should match");
+        assertEquals(49, courtsAndHearings.getListCaseEventGlossary().size(),
+                     "Case list event glossary size should match");
     }
 }

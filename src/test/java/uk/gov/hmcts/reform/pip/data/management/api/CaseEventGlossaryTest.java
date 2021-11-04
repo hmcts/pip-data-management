@@ -19,7 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-class CourtEventGlossaryTest {
+class CaseEventGlossaryTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -33,9 +33,9 @@ class CourtEventGlossaryTest {
     }
 
     @Test
-    void testGetCourtEventStatusListReturnsSuccess() throws Exception {
+    void testGetCaseEventGlossaryReturnsSuccess() throws Exception {
         mockMvc.perform(get("/glossary"))
             .andExpect(status().isOk())
-            .andExpect(content().string(containsString("\"eventId\":1")));
+            .andExpect(content().string(containsString("\"id\":1")));
     }
 }

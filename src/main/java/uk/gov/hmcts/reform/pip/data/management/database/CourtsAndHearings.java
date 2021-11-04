@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.pip.data.management.models.Court;
 import uk.gov.hmcts.reform.pip.data.management.models.Hearing;
-import uk.gov.hmcts.reform.pip.data.management.models.lcsu.EventGlossary;
+import uk.gov.hmcts.reform.pip.data.management.models.lcsu.CaseEventGlossary;
 import uk.gov.hmcts.reform.pip.data.management.models.lcsu.LiveCaseStatus;
 
 import java.io.IOException;
@@ -25,7 +25,7 @@ public class CourtsAndHearings {
     private List<Court> listCourts;
     private List<Hearing> listHearings;
     private List<LiveCaseStatus> listLiveCases;
-    private List<EventGlossary> listCourtEvents;
+    private List<CaseEventGlossary> listCaseEventGlossary;
 
     public CourtsAndHearings() {
         ObjectMapper om = new ObjectMapper().setDateFormat(new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH));
@@ -33,7 +33,7 @@ public class CourtsAndHearings {
         Hearing[] list = new Hearing[0];
         Court[] courts = new Court[0];
         LiveCaseStatus[] liveCaseStatuses = new LiveCaseStatus[0];
-        EventGlossary[] courtStatusEvents = new EventGlossary[0];
+        CaseEventGlossary[] caseEventGlossaries = new CaseEventGlossary[0];
         try (
             InputStream fileHearings = this.getClass().getClassLoader()
                 .getResourceAsStream("mocks/hearingsList.json");
@@ -42,11 +42,11 @@ public class CourtsAndHearings {
             InputStream liveCases = this.getClass().getClassLoader()
                 .getResourceAsStream("mocks/liveCaseStatusUpdates.json");
             InputStream courtEventStatuses = this.getClass().getClassLoader()
-                .getResourceAsStream("mocks/CourtEventStatusDescription.json")) {
+                .getResourceAsStream("mocks/CaseEventGlossary.json")) {
             list = om.readValue(fileHearings, Hearing[].class);
             courts = om.readValue(fileCourts, Court[].class);
             liveCaseStatuses = om.readValue(liveCases, LiveCaseStatus[].class);
-            courtStatusEvents = om.readValue(courtEventStatuses, EventGlossary[].class);
+            caseEventGlossaries = om.readValue(courtEventStatuses, CaseEventGlossary[].class);
         } catch (IOException e) {
             log.error(e.getMessage()); // avoiding handling with throw away solution
         }
@@ -54,7 +54,7 @@ public class CourtsAndHearings {
         this.listHearings = Arrays.asList(list);
         this.listCourts = Arrays.asList(courts);
         this.listLiveCases = Arrays.asList(liveCaseStatuses);
-        this.listCourtEvents = Arrays.asList(courtStatusEvents);
+        this.listCaseEventGlossary = Arrays.asList(caseEventGlossaries);
 
         this.buildCourts();
     }

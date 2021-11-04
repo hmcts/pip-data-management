@@ -1,6 +1,6 @@
 package uk.gov.hmcts.reform.pip.data.management.helpers;
 
-import uk.gov.hmcts.reform.pip.data.management.models.lcsu.EventGlossary;
+import uk.gov.hmcts.reform.pip.data.management.models.lcsu.CaseEventGlossary;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,23 +10,23 @@ public final class EventGlossaryHelper {
     private EventGlossaryHelper() {
     }
 
-    public static EventGlossary createMockEvent(int eventId, String eventStatus, String eventName) {
-        EventGlossary event = new EventGlossary();
-        event.setEventId(eventId);
-        event.setEventName(eventName);
-        event.setEventStatus(eventStatus);
+    public static CaseEventGlossary createMockEvent(int id, String name, String description) {
+        CaseEventGlossary event = new CaseEventGlossary();
+        event.setId(id);
+        event.setName(name);
+        event.setDescription(description);
 
         return event;
     }
 
-    public static List<EventGlossary> createMockEventList() {
-        List<EventGlossary> events = new ArrayList<>();
+    public static List<CaseEventGlossary> createMockEventList() {
+        List<CaseEventGlossary> caseEventGlossaries = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
-            EventGlossary event = createMockEvent(i,
-                                          String.format("mock event status %o", i + 1),
-                                          String.format("mock event name %o", i + 1));
-            events.add(event);
+            CaseEventGlossary caseEventGlossary = createMockEvent(i,
+                                                      String.format("mock case event name %o", i + 1),
+                                                      String.format("mock case event description %o", i + 1));
+            caseEventGlossaries.add(caseEventGlossary);
         }
-        return events;
+        return caseEventGlossaries;
     }
 }

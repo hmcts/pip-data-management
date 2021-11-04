@@ -4,7 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import uk.gov.hmcts.reform.pip.data.management.models.lcsu.EventGlossary;
+import uk.gov.hmcts.reform.pip.data.management.models.lcsu.CaseEventGlossary;
 
 import java.util.List;
 
@@ -18,21 +18,21 @@ class CourtEventGlossaryServiceTest {
     private static final String APPEAL_WITNESS_CONTINUES = "Appeal Witness continues";
     private static final String SUCCESS_MESSAGE = "Events should be returned";
 
-    private List<EventGlossary> courtEvents;
+    private List<CaseEventGlossary> courtEventGlossaries;
 
     @Autowired
-    private CourtEventGlossaryService courtEventGlossaryService;
+    private CaseEventGlossaryService courtEventGlossaryService;
 
     @BeforeEach
     void setup() {
 
-        courtEvents = courtEventGlossaryService.getAllCourtEventGlossary();
+        courtEventGlossaries = courtEventGlossaryService.getAllCaseEventGlossary();
     }
 
     @Test
-    void testGetAllCourtsReturnsAlphabetised() {
-        assertEquals(ADJOURNED, courtEvents.get(0).getEventName(), SUCCESS_MESSAGE);
-        assertEquals(APPEAL_INTERPRETER_SWORN, courtEvents.get(1).getEventName(), SUCCESS_MESSAGE);
-        assertEquals(APPEAL_WITNESS_CONTINUES, courtEvents.get(2).getEventName(), SUCCESS_MESSAGE);
+    void testGetAllCaseEventGlossariesReturnsAlphabetised() {
+        assertEquals(ADJOURNED, courtEventGlossaries.get(0).getName(), SUCCESS_MESSAGE);
+        assertEquals(APPEAL_INTERPRETER_SWORN, courtEventGlossaries.get(1).getName(), SUCCESS_MESSAGE);
+        assertEquals(APPEAL_WITNESS_CONTINUES, courtEventGlossaries.get(2).getName(), SUCCESS_MESSAGE);
     }
 }
