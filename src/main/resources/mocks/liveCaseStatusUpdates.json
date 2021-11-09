@@ -1,7 +1,7 @@
 [
   {
-    "courtId": 1,
-    "courtName": "ALDERSHOT JUSTICE CENTRE",
+    "courtId": 10,
+    "courtName": "Aldershot Justice Centre",
     "lastUpdated": " 2021-10-04T10:26:45.187810",
     "courtUpdates": [
       {
@@ -52,7 +52,7 @@
   },
   {
     "courtId": 35,
-    "courtName": "BRISTOL CROWN COURT",
+    "courtName": "Bedford and Mid Beds Magistrates Court and Family Court",
     "lastUpdated": " 2021-10-04T16:26:45.187810",
     "courtUpdates": [
       {
@@ -103,7 +103,7 @@
   },
   {
     "courtId": 26,
-    "courtName": "SEFTON MAGISTRATES COURT",
+    "courtName": "Barnstaple Magistrates, County and Family Court",
     "lastUpdated": " 2021-10-02T09:00:00.187810",
     "courtUpdates": [
       {
@@ -154,7 +154,7 @@
   },
   {
     "courtId": 49,
-    "courtName": "CARDIFF MAGISTRATES COURT",
+    "courtName": "Blackburn County Court and Family Court",
     "lastUpdated": " 2021-10-01T09:26:45.187810",
     "courtUpdates": [
       {
@@ -204,8 +204,8 @@
     ]
   },
   {
-    "courtId": 34,
-    "courtName": "BRIGHTON MAGISTRATES COURT",
+    "courtId": 33,
+    "courtName": "Bath Magistrates, County and Family Court",
     "lastUpdated": " 2021-09-29T12:26:45.187810",
     "courtUpdates": [
       {
@@ -255,8 +255,8 @@
     ]
   },
   {
-    "courtId": 59,
-    "courtName": "CHESTER CROWN COURT",
+    "courtId": 54,
+    "courtName": "Blackwood Civil and Family Court",
     "lastUpdated": " 2021-09-29T12:26:45.187810",
     "courtUpdates": [
       {
@@ -366,8 +366,8 @@
     ]
   },
   {
-    "courtId": 86,
-    "courtName": "GREAT GRIMSBY COMBINED COURT CENTRE",
+    "courtId": 37,
+    "courtName": "Berwick Upon Tweed Magistrates Court",
     "lastUpdated": " 2021-10-04T11:49:31.187810",
     "courtUpdates": [
       {
@@ -466,8 +466,8 @@
     ]
   },
   {
-    "courtId": 123,
-    "courtName": "LEWES COMBINED COURT CENTRE",
+    "courtId": 22,
+    "courtName": "Barnet Civil and Family Courts Centre",
     "lastUpdated": " 2021-10-04T11:49:31.187810",
     "courtUpdates": [
       {
@@ -577,8 +577,8 @@
     ]
   },
   {
-    "courtId": 265,
-    "courtName": "NORWICH SOCIAL SECURITY AND CHILD SUPPORT TRIBUNAL",
+    "courtId": 39,
+    "courtName": "Bexley Magistrates Court",
     "lastUpdated": " 2021-10-04T11:49:31.187810",
     "courtUpdates": [
       {
@@ -698,8 +698,8 @@
     ]
   },
   {
-    "courtId": 303,
-    "courtName": "PLYMOUTH TRIBUNAL",
+    "courtId": 30,
+    "courtName": "Basildon Magistrates Court and Family Court",
     "lastUpdated": " 2021-10-04T11:49:31.187810",
     "courtUpdates": [
       {
@@ -817,8 +817,8 @@
     ]
   },
   {
-    "courtId": 304,
-    "courtName": "ABERDEEN TRIBUNAL HEARING CENTRE",
+    "courtId": 42,
+    "courtName": "Birkenhead County Court and Family Court",
     "lastUpdated": " 2021-10-04T11:49:31.187810",
     "courtUpdates": [
       {
