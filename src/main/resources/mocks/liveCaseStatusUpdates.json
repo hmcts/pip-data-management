@@ -1,7 +1,7 @@
 [
   {
-    "courtId": 10,
-    "courtName": "Aldershot Justice Centre",
+    "courtId": 44,
+    "courtName": "Birmingham Crown Court",
     "lastUpdated": " 2021-10-04T10:26:45.187810",
     "courtUpdates": [
       {
@@ -51,8 +51,8 @@
     ]
   },
   {
-    "courtId": 35,
-    "courtName": "Bedford and Mid Beds Magistrates Court and Family Court",
+    "courtId": 13,
+    "courtName": "Amersham Law Courts",
     "lastUpdated": " 2021-10-04T16:26:45.187810",
     "courtUpdates": [
       {
@@ -102,8 +102,8 @@
     ]
   },
   {
-    "courtId": 26,
-    "courtName": "Barnstaple Magistrates, County and Family Court",
+    "courtId": 45,
+    "courtName": "Birmingham Crown Court Annexe (4 Newton Street)",
     "lastUpdated": " 2021-10-02T09:00:00.187810",
     "courtUpdates": [
       {
@@ -153,8 +153,8 @@
     ]
   },
   {
-    "courtId": 49,
-    "courtName": "Blackburn County Court and Family Court",
+    "courtId": 59,
+    "courtName": "Bolton Combined Court",
     "lastUpdated": " 2021-10-01T09:26:45.187810",
     "courtUpdates": [
       {
@@ -204,8 +204,8 @@
     ]
   },
   {
-    "courtId": 33,
-    "courtName": "Bath Magistrates, County and Family Court",
+    "courtId": 64,
+    "courtName": "Bournemouth Combined Court",
     "lastUpdated": " 2021-09-29T12:26:45.187810",
     "courtUpdates": [
       {
@@ -255,8 +255,8 @@
     ]
   },
   {
-    "courtId": 54,
-    "courtName": "Blackwood Civil and Family Court",
+    "courtId": 82,
+    "courtName": "Bristol Crown Court",
     "lastUpdated": " 2021-09-29T12:26:45.187810",
     "courtUpdates": [
       {
@@ -264,10 +264,10 @@
         "caseNumber": "T21125732",
         "caseName": "Morley versus Steele",
         "event": {
-          "eventId": "2",
+          "eventId": 2,
           "eventStatus": "Committal for Sentence",
           "eventName": "Appeal Interpreter Sworn",
-          "eventTime": "9:14"
+          "eventTime": "09:14"
         }
       },
       {
@@ -284,10 +284,10 @@
         "caseNumber": "T61125734",
         "caseName": "Steele versus Coates",
         "event": {
-          "eventId": "3100",
+          "eventId": 3100,
           "eventStatus": "Trial (Part Heard)",
           "eventName": "Case adjourned until 12:00",
-          "eventTime": "9:16"
+          "eventTime": "09:16"
         }
       },
       {
@@ -295,7 +295,7 @@
         "caseNumber": "T81125735",
         "caseName": "Stone versus Watts",
         "event": {
-          "eventId": "3",
+          "eventId": 3,
           "eventStatus": "For Trial",
           "eventName": "Appeal Witness continues",
           "eventTime": "12:17"
@@ -315,7 +315,7 @@
         "caseNumber": "T61215242",
         "caseName": "Watts versus Tucker",
         "event": {
-          "eventId": "3",
+          "eventId": 3,
           "eventStatus": "For Trial",
           "eventName": "Appeal Witness continues",
           "eventTime": "10:19"
@@ -326,7 +326,7 @@
         "caseNumber": "T71415242",
         "caseName": "Byrd versus Maxwell",
         "event": {
-          "eventId": "2",
+          "eventId": 2,
           "eventStatus": "Committal for Sentence",
           "eventName": "Appeal Interpreter Sworn",
           "eventTime": "15:20"
@@ -337,7 +337,7 @@
         "caseNumber": "T81615242",
         "caseName": "Tucker versus Smith",
         "event": {
-          "eventId": "2",
+          "eventId": 2,
           "eventStatus": "Committal for Sentence",
           "eventName": "Appeal Interpreter Sworn",
           "eventTime": "11:21"
@@ -357,7 +357,7 @@
         "caseNumber": "T10201524",
         "caseName": "Smith versus Knight",
         "event": {
-          "eventId": "3100",
+          "eventId": 3100,
           "eventStatus": "Trial (Part Heard)",
           "eventName": "Case adjourned until 12:00",
           "eventTime": "10:23"
@@ -366,8 +366,8 @@
     ]
   },
   {
-    "courtId": 37,
-    "courtName": "Berwick Upon Tweed Magistrates Court",
+    "courtId": 86,
+    "courtName": "Burnley Combined Court Centre",
     "lastUpdated": " 2021-10-04T11:49:31.187810",
     "courtUpdates": [
       {
@@ -384,7 +384,7 @@
         "caseNumber": "T13161524",
         "caseName": "Steele versus Burke",
         "event": {
-          "eventId": "3",
+          "eventId": 3,
           "eventStatus": "For Trial",
           "eventName": "Appeal Witness continues",
           "eventTime": "13:26"
@@ -395,7 +395,7 @@
         "caseNumber": "T14181524",
         "caseName": "Stone versus Whittle",
         "event": {
-          "eventId": "2",
+          "eventId": 2,
           "eventStatus": "Committal for Sentence",
           "eventName": "Appeal Interpreter Sworn",
           "eventTime": "11:27"
@@ -415,7 +415,7 @@
         "caseNumber": "T16221524",
         "caseName": "Watts versus Huff",
         "event": {
-          "eventId": "3100",
+          "eventId": 3100,
           "eventStatus": "Trial (Part Heard)",
           "eventName": "Case adjourned until 12:00",
           "eventTime": "10:29"
@@ -426,7 +426,7 @@
         "caseNumber": "T17241524",
         "caseName": "Byrd versus Little",
         "event": {
-          "eventId": "3",
+          "eventId": 3,
           "eventStatus": "For Trial",
           "eventName": "Appeal Witness continues",
           "eventTime": "13:30"
@@ -437,7 +437,7 @@
         "caseNumber": "T18261524",
         "caseName": "Tucker versus Medina",
         "event": {
-          "eventId": "2",
+          "eventId": 2,
           "eventStatus": "Committal for Sentence",
           "eventName": "Appeal Interpreter Sworn",
           "eventTime": "12:31"
@@ -457,17 +457,17 @@
         "caseNumber": "T20301524",
         "caseName": "Smith versus Gibbons",
         "event": {
-          "eventId": "3100",
+          "eventId": 3100,
           "eventStatus": "Trial (Part Heard)",
           "eventName": "Case adjourned until 12:00",
-          "eventTime": "9:33"
+          "eventTime": "09:33"
         }
       }
     ]
   },
   {
-    "courtId": 22,
-    "courtName": "Barnet Civil and Family Courts Centre",
+    "courtId": 95,
+    "courtName": "Caernarfon Justice Centre",
     "lastUpdated": " 2021-10-04T11:49:31.187810",
     "courtUpdates": [
       {
@@ -475,7 +475,7 @@
         "caseNumber": "T21221524",
         "caseName": "Morley versus Ross",
         "event": {
-          "eventId": "3",
+          "eventId": 3,
           "eventStatus": "For Trial",
           "eventName": "Appeal Witness continues",
           "eventTime": "11:34"
@@ -495,7 +495,7 @@
         "caseNumber": "T23261524",
         "caseName": "Steele versus Wallace",
         "event": {
-          "eventId": "2",
+          "eventId": 2,
           "eventStatus": "Committal for Sentence",
           "eventName": "Appeal Interpreter Sworn",
           "eventTime": "10:36"
@@ -515,7 +515,7 @@
         "caseNumber": "T25301524",
         "caseName": "Coates versus Mccormick",
         "event": {
-          "eventId": "3100",
+          "eventId": 3100,
           "eventStatus": "Trial (Part Heard)",
           "eventName": "Case adjourned until 12:00",
           "eventTime": "10:38"
@@ -526,7 +526,7 @@
         "caseNumber": "T26321524",
         "caseName": "Watts versus Hopkins",
         "event": {
-          "eventId": "3",
+          "eventId": 3,
           "eventStatus": "For Trial",
           "eventName": "Appeal Witness continues",
           "eventTime": "14:39"
@@ -546,7 +546,7 @@
         "caseNumber": "T28361524",
         "caseName": "Tucker versus Nunez",
         "event": {
-          "eventId": "3",
+          "eventId": 3,
           "eventStatus": "For Trial",
           "eventName": "Appeal Witness continues",
           "eventTime": "10:41"
@@ -557,7 +557,7 @@
         "caseNumber": "T29381524",
         "caseName": "Maxwell versus Bush",
         "event": {
-          "eventId": "2",
+          "eventId": 2,
           "eventStatus": "Committal for Sentence",
           "eventName": "Appeal Interpreter Sworn",
           "eventTime": "15:42"
@@ -568,7 +568,7 @@
         "caseNumber": "T30401524",
         "caseName": "Smith versus Curry",
         "event": {
-          "eventId": "2",
+          "eventId": 2,
           "eventStatus": "Committal for Sentence",
           "eventName": "Appeal Interpreter Sworn",
           "eventTime": "12:43"
@@ -577,8 +577,8 @@
     ]
   },
   {
-    "courtId": 39,
-    "courtName": "Bexley Magistrates Court",
+    "courtId": 103,
+    "courtName": "Canterbury Combined Court Centre",
     "lastUpdated": " 2021-10-04T11:49:31.187810",
     "courtUpdates": [
       {
@@ -595,7 +595,7 @@
         "caseNumber": "T32341524",
         "caseName": "Owen versus Ferguson",
         "event": {
-          "eventId": "3100",
+          "eventId": 3100,
           "eventStatus": "Trial (Part Heard)",
           "eventName": "Case adjourned until 12:00",
           "eventTime": "11:45"
@@ -606,10 +606,10 @@
         "caseNumber": "T33361524",
         "caseName": "Steele versus West",
         "event": {
-          "eventId": "3",
+          "eventId": 3,
           "eventStatus": "For Trial",
           "eventName": "Appeal Witness continues",
-          "eventTime": "9:46"
+          "eventTime": "09:46"
         }
       },
       {
@@ -626,10 +626,10 @@
         "caseNumber": "T35401524",
         "caseName": "Coates versus Gilbert",
         "event": {
-          "eventId": "3",
+          "eventId": 3,
           "eventStatus": "For Trial",
           "eventName": "Appeal Witness continues",
-          "eventTime": "9:48"
+          "eventTime": "09:48"
         }
       },
       {
@@ -637,7 +637,7 @@
         "caseNumber": "T36421524",
         "caseName": "Watts versus Delgado",
         "event": {
-          "eventId": "2",
+          "eventId": 2,
           "eventStatus": "Committal for Sentence",
           "eventName": "Appeal Interpreter Sworn",
           "eventTime": "12:49"
@@ -657,10 +657,10 @@
         "caseNumber": "T38461524",
         "caseName": "Tucker versus Barnes",
         "event": {
-          "eventId": "3100",
+          "eventId": 3100,
           "eventStatus": "Trial (Part Heard)",
           "eventName": "Case adjourned until 12:00",
-          "eventTime": "9:51"
+          "eventTime": "09:51"
         }
       },
       {
@@ -668,7 +668,7 @@
         "caseNumber": "T39481524",
         "caseName": "Maxwell versus Haynes",
         "event": {
-          "eventId": "3",
+          "eventId": 3,
           "eventStatus": "For Trial",
           "eventName": "Appeal Witness continues",
           "eventTime": "13:52"
@@ -679,7 +679,7 @@
         "caseNumber": "T40501524",
         "caseName": "Smith versus Duncan",
         "event": {
-          "eventId": "2",
+          "eventId": 2,
           "eventStatus": "Committal for Sentence",
           "eventName": "Appeal Interpreter Sworn",
           "eventTime": "13:53"
@@ -688,8 +688,8 @@
     ]
   },
   {
-    "courtId": 30,
-    "courtName": "Basildon Magistrates Court and Family Court",
+    "courtId": 106,
+    "courtName": "Cardiff Crown Court",
     "lastUpdated": " 2021-10-04T11:49:31.187810",
     "courtUpdates": [
       {
@@ -706,7 +706,7 @@
         "caseNumber": "T42441524",
         "caseName": "Owen versus Ryan",
         "event": {
-          "eventId": "3100",
+          "eventId": 3100,
           "eventStatus": "Trial (Part Heard)",
           "eventName": "Case adjourned until 12:00",
           "eventTime": "11:55"
@@ -717,10 +717,10 @@
         "caseNumber": "T43461524",
         "caseName": "Steele versus Spencer",
         "event": {
-          "eventId": "3",
+          "eventId": 3,
           "eventStatus": "For Trial",
           "eventName": "Appeal Witness continues",
-          "eventTime": "9:56"
+          "eventTime": "09:56"
         }
       },
       {
@@ -737,7 +737,7 @@
         "caseNumber": "T45501524",
         "caseName": "Coates versus Ray",
         "event": {
-          "eventId": "2",
+          "eventId": 2,
           "eventStatus": "Committal for Sentence",
           "eventName": "Appeal Interpreter Sworn",
           "eventTime": "11:58"
@@ -757,7 +757,7 @@
         "caseNumber": "T47541524",
         "caseName": "Byrd versus Norris",
         "event": {
-          "eventId": "3100",
+          "eventId": 3100,
           "eventStatus": "Trial (Part Heard)",
           "eventName": "Case adjourned until 12:00",
           "eventTime": "11:00"
@@ -768,7 +768,7 @@
         "caseNumber": "T48561524",
         "caseName": "Tucker versus Valdez",
         "event": {
-          "eventId": "3",
+          "eventId": 3,
           "eventStatus": "For Trial",
           "eventName": "Appeal Witness continues",
           "eventTime": "13:01"
@@ -788,7 +788,7 @@
         "caseNumber": "T50601524",
         "caseName": "Smith versus Patton",
         "event": {
-          "eventId": "3",
+          "eventId": 3,
           "eventStatus": "For Trial",
           "eventName": "Appeal Witness continues",
           "eventTime": "12:03"
@@ -797,8 +797,8 @@
     ]
   },
   {
-    "courtId": 42,
-    "courtName": "Birkenhead County Court and Family Court",
+    "courtId": 112,
+    "courtName": "Central Criminal Court",
     "lastUpdated": " 2021-10-04T11:49:31.187810",
     "courtUpdates": [
       {
@@ -806,7 +806,7 @@
         "caseNumber": "T51521524",
         "caseName": "Morley versus Bernard",
         "event": {
-          "eventId": "2",
+          "eventId": 2,
           "eventStatus": "Committal for Sentence",
           "eventName": "Appeal Interpreter Sworn",
           "eventTime": "12:04"
@@ -817,7 +817,7 @@
         "caseNumber": "T52541524",
         "caseName": "Owen versus Turnbull",
         "event": {
-          "eventId": "2",
+          "eventId": 2,
           "eventStatus": "Committal for Sentence",
           "eventName": "Appeal Interpreter Sworn",
           "eventTime": "13:05"
@@ -837,7 +837,7 @@
         "caseNumber": "T54581524",
         "caseName": "Stone versus Murray",
         "event": {
-          "eventId": "3100",
+          "eventId": 3100,
           "eventStatus": "Trial (Part Heard)",
           "eventName": "Case adjourned until 12:00",
           "eventTime": "10:07"
@@ -848,7 +848,7 @@
         "caseNumber": "T55601524",
         "caseName": "Coates versus Luna",
         "event": {
-          "eventId": "3",
+          "eventId": 3,
           "eventStatus": "For Trial",
           "eventName": "Appeal Witness continues",
           "eventTime": "12:08"
@@ -868,7 +868,7 @@
         "caseNumber": "T57641524",
         "caseName": "Byrd versus Armstrong",
         "event": {
-          "eventId": "3",
+          "eventId": 3,
           "eventStatus": "For Trial",
           "eventName": "Appeal Witness continues",
           "eventTime": "13:10"
@@ -879,7 +879,7 @@
         "caseNumber": "T58661524",
         "caseName": "Tucker versus Vazquez",
         "event": {
-          "eventId": "2",
+          "eventId": 2,
           "eventStatus": "Committal for Sentence",
           "eventName": "Appeal Interpreter Sworn",
           "eventTime": "10:11"
@@ -899,7 +899,7 @@
         "caseNumber": "T60701524",
         "caseName": "Smith versus Wilkins",
         "event": {
-          "eventId": "3100",
+          "eventId": 3100,
           "eventStatus": "Trial (Part Heard)",
           "eventName": "Case adjourned until 12:00",
           "eventTime": "10:13"
