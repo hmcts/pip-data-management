@@ -271,7 +271,7 @@
         }
       },
       {
-        "courtRoom": "2",
+        "courtRoom": 2,
         "caseNumber": "",
         "caseName": "Owen versus Stone",
         "event": {
@@ -280,7 +280,7 @@
         }
       },
       {
-        "courtRoom": "3",
+        "courtRoom": 3,
         "caseNumber": "T61125734",
         "caseName": "Steele versus Coates",
         "event": {
@@ -291,7 +291,7 @@
         }
       },
       {
-        "courtRoom": "4",
+        "courtRoom": 4,
         "caseNumber": "T81125735",
         "caseName": "Stone versus Watts",
         "event": {
@@ -302,7 +302,7 @@
         }
       },
       {
-        "courtRoom": "5",
+        "courtRoom": 5,
         "caseNumber": "",
         "caseName": "Coates versus Byrd",
         "event": {
@@ -311,7 +311,7 @@
         }
       },
       {
-        "courtRoom": "6",
+        "courtRoom": 6,
         "caseNumber": "T61215242",
         "caseName": "Watts versus Tucker",
         "event": {
@@ -322,7 +322,7 @@
         }
       },
       {
-        "courtRoom": "7",
+        "courtRoom": 7,
         "caseNumber": "T71415242",
         "caseName": "Byrd versus Maxwell",
         "event": {
@@ -333,7 +333,7 @@
         }
       },
       {
-        "courtRoom": "8",
+        "courtRoom": 8,
         "caseNumber": "T81615242",
         "caseName": "Tucker versus Smith",
         "event": {
@@ -344,7 +344,7 @@
         }
       },
       {
-        "courtRoom": "9",
+        "courtRoom": 9,
         "caseNumber": "",
         "caseName": "Maxwell versus Woods",
         "event": {
@@ -353,7 +353,7 @@
         }
       },
       {
-        "courtRoom": "10",
+        "courtRoom": 10,
         "caseNumber": "T10201524",
         "caseName": "Smith versus Knight",
         "event": {
@@ -371,7 +371,7 @@
     "lastUpdated": " 2021-10-04T11:49:31.187810",
     "courtUpdates": [
       {
-        "courtRoom": "2",
+        "courtRoom": 2,
         "caseNumber": "",
         "caseName": "Owen versus Kelley",
         "event": {
@@ -380,7 +380,7 @@
         }
       },
       {
-        "courtRoom": "3",
+        "courtRoom": 3,
         "caseNumber": "T13161524",
         "caseName": "Steele versus Burke",
         "event": {
@@ -391,7 +391,7 @@
         }
       },
       {
-        "courtRoom": "4",
+        "courtRoom": 4,
         "caseNumber": "T14181524",
         "caseName": "Stone versus Whittle",
         "event": {
@@ -402,7 +402,7 @@
         }
       },
       {
-        "courtRoom": "5",
+        "courtRoom": 5,
         "caseNumber": "",
         "caseName": "Coates versus Hunt",
         "event": {
@@ -411,7 +411,7 @@
         }
       },
       {
-        "courtRoom": "6",
+        "courtRoom": 6,
         "caseNumber": "T16221524",
         "caseName": "Watts versus Huff",
         "event": {
@@ -422,7 +422,7 @@
         }
       },
       {
-        "courtRoom": "7",
+        "courtRoom": 7,
         "caseNumber": "T17241524",
         "caseName": "Byrd versus Little",
         "event": {
@@ -433,7 +433,7 @@
         }
       },
       {
-        "courtRoom": "8",
+        "courtRoom": 8,
         "caseNumber": "T18261524",
         "caseName": "Tucker versus Medina",
         "event": {
@@ -444,7 +444,7 @@
         }
       },
       {
-        "courtRoom": "9",
+        "courtRoom": 9,
         "caseNumber": "",
         "caseName": "Maxwell versus Strickland",
         "event": {
@@ -453,7 +453,7 @@
         }
       },
       {
-        "courtRoom": "10",
+        "courtRoom": 10,
         "caseNumber": "T20301524",
         "caseName": "Smith versus Gibbons",
         "event": {
@@ -471,7 +471,7 @@
     "lastUpdated": " 2021-10-04T11:49:31.187810",
     "courtUpdates": [
       {
-        "courtRoom": "1",
+        "courtRoom": 1,
         "caseNumber": "T21221524",
         "caseName": "Morley versus Ross",
         "event": {
@@ -482,7 +482,7 @@
         }
       },
       {
-        "courtRoom": "2",
+        "courtRoom": 2,
         "caseNumber": "",
         "caseName": "Owen versus Morrison",
         "event": {
@@ -491,7 +491,7 @@
         }
       },
       {
-        "courtRoom": "3",
+        "courtRoom": 3,
         "caseNumber": "T23261524",
         "caseName": "Steele versus Wallace",
         "event": {
@@ -502,7 +502,7 @@
         }
       },
       {
-        "courtRoom": "4",
+        "courtRoom": 4,
         "caseNumber": "",
         "caseName": "Stone versus King",
         "event": {
@@ -511,7 +511,7 @@
         }
       },
       {
-        "courtRoom": "5",
+        "courtRoom": 5,
         "caseNumber": "T25301524",
         "caseName": "Coates versus Mccormick",
         "event": {
@@ -522,7 +522,7 @@
         }
       },
       {
-        "courtRoom": "6",
+        "courtRoom": 6,
         "caseNumber": "T26321524",
         "caseName": "Watts versus Hopkins",
         "event": {
@@ -533,7 +533,7 @@
         }
       },
       {
-        "courtRoom": "7",
+        "courtRoom": 7,
         "caseNumber": "",
         "caseName": "Byrd versus Nelson",
         "event": {
@@ -542,7 +542,7 @@
         }
       },
       {
-        "courtRoom": "8",
+        "courtRoom": 8,
         "caseNumber": "T28361524",
         "caseName": "Tucker versus Nunez",
         "event": {
@@ -553,7 +553,7 @@
         }
       },
       {
-        "courtRoom": "9",
+        "courtRoom": 9,
         "caseNumber": "T29381524",
         "caseName": "Maxwell versus Bush",
         "event": {
@@ -564,7 +564,7 @@
         }
       },
       {
-        "courtRoom": "10",
+        "courtRoom": 10,
         "caseNumber": "T30401524",
         "caseName": "Smith versus Curry",
         "event": {
@@ -582,8 +582,7 @@
     "lastUpdated": " 2021-10-04T11:49:31.187810",
     "courtUpdates": [
       {
-        "Court ID": "265",
-        "courtRoom": "1",
+        "courtRoom": 1,
         "caseNumber": "",
         "caseName": "Morley versus Gibson",
         "event": {
@@ -592,8 +591,7 @@
         }
       },
       {
-        "Court ID": "265",
-        "courtRoom": "2",
+        "courtRoom": 2,
         "caseNumber": "T32341524",
         "caseName": "Owen versus Ferguson",
         "event": {
@@ -604,8 +602,7 @@
         }
       },
       {
-        "Court ID": "265",
-        "courtRoom": "3",
+        "courtRoom": 3,
         "caseNumber": "T33361524",
         "caseName": "Steele versus West",
         "event": {
@@ -616,8 +613,7 @@
         }
       },
       {
-        "Court ID": "265",
-        "courtRoom": "4",
+        "courtRoom": 4,
         "caseNumber": "",
         "caseName": "Stone versus Rodriquez",
         "event": {
@@ -626,8 +622,7 @@
         }
       },
       {
-        "Court ID": "265",
-        "courtRoom": "5",
+        "courtRoom": 5,
         "caseNumber": "T35401524",
         "caseName": "Coates versus Gilbert",
         "event": {
@@ -638,8 +633,7 @@
         }
       },
       {
-        "Court ID": "265",
-        "courtRoom": "6",
+        "courtRoom": 6,
         "caseNumber": "T36421524",
         "caseName": "Watts versus Delgado",
         "event": {
@@ -650,8 +644,7 @@
         }
       },
       {
-        "Court ID": "265",
-        "courtRoom": "7",
+        "courtRoom": 7,
         "caseNumber": "",
         "caseName": "Byrd versus Richardson",
         "event": {
@@ -660,8 +653,7 @@
         }
       },
       {
-        "Court ID": "265",
-        "courtRoom": "8",
+        "courtRoom": 8,
         "caseNumber": "T38461524",
         "caseName": "Tucker versus Barnes",
         "event": {
@@ -672,8 +664,7 @@
         }
       },
       {
-        "Court ID": "265",
-        "courtRoom": "9",
+        "courtRoom": 9,
         "caseNumber": "T39481524",
         "caseName": "Maxwell versus Haynes",
         "event": {
@@ -684,8 +675,7 @@
         }
       },
       {
-        "Court ID": "265",
-        "courtRoom": "10",
+        "courtRoom": 10,
         "caseNumber": "T40501524",
         "caseName": "Smith versus Duncan",
         "event": {
@@ -703,8 +693,7 @@
     "lastUpdated": " 2021-10-04T11:49:31.187810",
     "courtUpdates": [
       {
-        "Court ID": "305",
-        "courtRoom": "1",
+        "courtRoom": 1,
         "caseNumber": "",
         "caseName": "Morley versus Hodgson",
         "event": {
@@ -713,8 +702,7 @@
         }
       },
       {
-        "Court ID": "305",
-        "courtRoom": "2",
+        "courtRoom": 2,
         "caseNumber": "T42441524",
         "caseName": "Owen versus Ryan",
         "event": {
@@ -725,8 +713,7 @@
         }
       },
       {
-        "Court ID": "305",
-        "courtRoom": "3",
+        "courtRoom": 3,
         "caseNumber": "T43461524",
         "caseName": "Steele versus Spencer",
         "event": {
@@ -737,8 +724,7 @@
         }
       },
       {
-        "Court ID": "305",
-        "courtRoom": "4",
+        "courtRoom": 4,
         "caseNumber": "",
         "caseName": "Stone versus Yang",
         "event": {
@@ -747,8 +733,7 @@
         }
       },
       {
-        "Court ID": "305",
-        "courtRoom": "5",
+        "courtRoom": 5,
         "caseNumber": "T45501524",
         "caseName": "Coates versus Ray",
         "event": {
@@ -759,8 +744,7 @@
         }
       },
       {
-        "Court ID": "305",
-        "courtRoom": "6",
+        "courtRoom": 6,
         "caseNumber": "",
         "caseName": "Watts versus Goodwin",
         "event": {
@@ -769,8 +753,7 @@
         }
       },
       {
-        "Court ID": "305",
-        "courtRoom": "7",
+        "courtRoom": 7,
         "caseNumber": "T47541524",
         "caseName": "Byrd versus Norris",
         "event": {
@@ -781,8 +764,7 @@
         }
       },
       {
-        "Court ID": "305",
-        "courtRoom": "8",
+        "courtRoom": 8,
         "caseNumber": "T48561524",
         "caseName": "Tucker versus Valdez",
         "event": {
@@ -793,8 +775,7 @@
         }
       },
       {
-        "Court ID": "305",
-        "courtRoom": "9",
+        "courtRoom": 9,
         "caseNumber": "",
         "caseName": "Maxwell versus Scott",
         "event": {
@@ -803,8 +784,7 @@
         }
       },
       {
-        "Court ID": "305",
-        "courtRoom": "10",
+        "courtRoom": 10,
         "caseNumber": "T50601524",
         "caseName": "Smith versus Patton",
         "event": {
@@ -822,7 +802,7 @@
     "lastUpdated": " 2021-10-04T11:49:31.187810",
     "courtUpdates": [
       {
-        "courtRoom": "1",
+        "courtRoom": 1,
         "caseNumber": "T51521524",
         "caseName": "Morley versus Bernard",
         "event": {
@@ -833,7 +813,7 @@
         }
       },
       {
-        "courtRoom": "2",
+        "courtRoom": 2,
         "caseNumber": "T52541524",
         "caseName": "Owen versus Turnbull",
         "event": {
@@ -844,7 +824,7 @@
         }
       },
       {
-        "courtRoom": "3",
+        "courtRoom": 3,
         "caseNumber": "",
         "caseName": "Steele versus Stephens",
         "event": {
@@ -853,7 +833,7 @@
         }
       },
       {
-        "courtRoom": "4",
+        "courtRoom": 4,
         "caseNumber": "T54581524",
         "caseName": "Stone versus Murray",
         "event": {
@@ -864,7 +844,7 @@
         }
       },
       {
-        "courtRoom": "5",
+        "courtRoom": 5,
         "caseNumber": "T55601524",
         "caseName": "Coates versus Luna",
         "event": {
@@ -875,7 +855,7 @@
         }
       },
       {
-        "courtRoom": "6",
+        "courtRoom": 6,
         "caseNumber": "",
         "caseName": "Watts versus Thompson",
         "event": {
@@ -884,7 +864,7 @@
         }
       },
       {
-        "courtRoom": "7",
+        "courtRoom": 7,
         "caseNumber": "T57641524",
         "caseName": "Byrd versus Armstrong",
         "event": {
@@ -895,7 +875,7 @@
         }
       },
       {
-        "courtRoom": "8",
+        "courtRoom": 8,
         "caseNumber": "T58661524",
         "caseName": "Tucker versus Vazquez",
         "event": {
@@ -906,7 +886,7 @@
         }
       },
       {
-        "courtRoom": "9",
+        "courtRoom": 9,
         "caseNumber": "",
         "caseName": "Maxwell versus Mcgee",
         "event": {
@@ -915,7 +895,7 @@
         }
       },
       {
-        "courtRoom": "10",
+        "courtRoom": 10,
         "caseNumber": "T60701524",
         "caseName": "Smith versus Wilkins",
         "event": {
