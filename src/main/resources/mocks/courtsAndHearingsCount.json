@@ -27,7 +27,7 @@
     "courtId": 26,
     "location": "South West",
     "jurisdiction": "Magistrates' Court",
-    "name": "Barnstaple Magistrates, County and Family Court"
+    "name": "Barnstaple Magistrates', County and Family Court"
   },
   {
     "courtId": 27,
@@ -45,19 +45,19 @@
     "courtId": 30,
     "location": "South East",
     "jurisdiction": "Magistrates' Court",
-    "name": "Basildon Magistrates Court and Family Court"
+    "name": "Basildon Magistrates' Court and Family Court"
   },
   {
     "courtId": 33,
     "location": "South West",
     "jurisdiction": "Magistrates' Court",
-    "name": "Bath Magistrates, County and Family Court"
+    "name": "Bath Magistrates', County and Family Court"
   },
   {
     "courtId": 35,
     "location": "South East",
     "jurisdiction": "County Court",
-    "name": "Bedford and Mid Beds Magistrates Court and Family Court"
+    "name": "Bedford and Mid Beds Magistrates' Court and Family Court"
   },
   {
     "courtId": 36,
@@ -69,13 +69,13 @@
     "courtId": 37,
     "location": "North East",
     "jurisdiction": "Magistrates' Court",
-    "name": "Berwick Upon Tweed Magistrates Court"
+    "name": "Berwick Upon Tweed Magistrates' Court"
   },
   {
     "courtId": 39,
     "location": "London",
     "jurisdiction": "Magistrates' Court",
-    "name": "Bexley Magistrates Court"
+    "name": "Bexley Magistrates' Court"
   },
   {
     "courtId": 42,
@@ -105,7 +105,7 @@
     "courtId": 46,
     "location": "Midlands",
     "jurisdiction": "Magistrates' Court",
-    "name": "Birmingham Magistrates Court"
+    "name": "Birmingham Magistrates' Court"
   },
   {
     "courtId": 49,
@@ -117,7 +117,7 @@
     "courtId": 50,
     "location": "North West",
     "jurisdiction": "Magistrates' Court",
-    "name": "Blackburn Magistrates Court"
+    "name": "Blackburn Magistrates' Court"
   },
   {
     "courtId": 52,
@@ -129,7 +129,7 @@
     "courtId": 53,
     "location": "North West",
     "jurisdiction": "Magistrates' Court",
-    "name": "Blackpool Magistrates Court"
+    "name": "Blackpool Magistrates' Court"
   },
   {
     "courtId": 54,
@@ -153,7 +153,7 @@
     "courtId": 61,
     "location": "North West",
     "jurisdiction": "Magistrates' Court",
-    "name": "Sefton Magistrates Court"
+    "name": "Sefton Magistrates' Court"
   },
   {
     "courtId": 62,
@@ -177,13 +177,13 @@
     "courtId": 69,
     "location": "North East",
     "jurisdiction": "Magistrates' Court",
-    "name": "Bradford And Keighley Magistrates Court and Family Court"
+    "name": "Bradford And Keighley Magistrates' Court and Family Court"
   },
   {
     "courtId": 71,
     "location": "London",
     "jurisdiction": "Magistrates' Court",
-    "name": "Willesden Magistrates Court"
+    "name": "Willesden Magistrates' Court"
   },
   {
     "courtId": 72,
@@ -201,7 +201,7 @@
     "courtId": 80,
     "location": "South East",
     "jurisdiction": "Magistrates' Court",
-    "name": "Brighton Magistrates Court"
+    "name": "Brighton Magistrates' Court"
   },
   {
     "courtId": 82,
@@ -219,7 +219,7 @@
     "courtId": 85,
     "location": "London",
     "jurisdiction": "Magistrates' Court",
-    "name": "Bromley Magistrates Court"
+    "name": "Bromley Magistrates' Court"
   },
   {
     "courtId": 86,
@@ -231,7 +231,7 @@
     "courtId": 87,
     "location": "North West",
     "jurisdiction": "Magistrates' Court",
-    "name": "Burnley Magistrates Court"
+    "name": "Burnley Magistrates' Court"
   },
   {
     "courtId": 91,
@@ -255,13 +255,13 @@
     "courtId": 101,
     "location": "South East",
     "jurisdiction": "Magistrates' Court",
-    "name": "Cambridge Magistrates Court"
+    "name": "Cambridge Magistrates' Court"
   },
   {
     "courtId": 102,
     "location": "Midlands",
     "jurisdiction": "Magistrates' Court",
-    "name": "Cannock Magistrates Court"
+    "name": "Cannock Magistrates' Court"
   },
   {
     "courtId": 103,
@@ -273,7 +273,7 @@
     "courtId": 104,
     "location": "South East",
     "jurisdiction": "Magistrates' Court",
-    "name": "Canterbury Magistrates Court"
+    "name": "Canterbury Magistrates' Court"
   },
   {
     "courtId": 105,
@@ -291,7 +291,7 @@
     "courtId": 107,
     "location": "Wales",
     "jurisdiction": "Magistrates' Court",
-    "name": "Cardiff Magistrates Court"
+    "name": "Cardiff Magistrates' Court"
   },
   {
     "courtId": 109,
@@ -303,7 +303,7 @@
     "courtId": 110,
     "location": "North West",
     "jurisdiction": "Magistrates' Court",
-    "name": "Carlisle Magistrates Court"
+    "name": "Carlisle Magistrates' Court"
   },
   {
     "courtId": 112,
@@ -315,7 +315,7 @@
     "courtId": 115,
     "location": "South East",
     "jurisdiction": "Magistrates' Court",
-    "name": "Medway Magistrates Court and Family Court"
+    "name": "Medway Magistrates' Court and Family Court"
   },
   {
     "courtId": 116,
@@ -333,13 +333,13 @@
     "courtId": 118,
     "location": "South East",
     "jurisdiction": "Magistrates' Court",
-    "name": "Chelmsford Magistrates Court and Family Court"
+    "name": "Chelmsford Magistrates' Court and Family Court"
   },
   {
     "courtId": 119,
     "location": "South West",
     "jurisdiction": "Magistrates' Court",
-    "name": "Cheltenham Magistrates Court"
+    "name": "Cheltenham Magistrates' Court"
   },
   {
     "courtId": 122,
@@ -357,13 +357,13 @@
     "courtId": 124,
     "location": "North West",
     "jurisdiction": "Magistrates' Court",
-    "name": "Chester Magistrates Court"
+    "name": "Chester Magistrates' Court"
   },
   {
     "courtId": 134,
     "location": "London",
     "jurisdiction": "Magistrates' Court",
-    "name": "City of London Magistrates Court"
+    "name": "City of London Magistrates' Court"
   },
   {
     "courtId": 136,
@@ -375,7 +375,7 @@
     "courtId": 140,
     "location": "South East",
     "jurisdiction": "Magistrates' Court",
-    "name": "Colchester Magistrates Court and Family Court"
+    "name": "Colchester Magistrates' Court and Family Court"
   },
   {
     "courtId": 145,
@@ -387,19 +387,19 @@
     "courtId": 146,
     "location": "Midlands",
     "jurisdiction": "County Court",
-    "name": "Coventry Magistrates Court"
+    "name": "Coventry Magistrates' Court"
   },
   {
     "courtId": 147,
     "location": "South East",
     "jurisdiction": "Magistrates' Court",
-    "name": "Crawley Magistrates Court"
+    "name": "Crawley Magistrates' Court"
   },
   {
     "courtId": 148,
     "location": "North West",
     "jurisdiction": "County Court",
-    "name": "Crewe (South Cheshire) Magistrates Court"
+    "name": "Crewe (South Cheshire) Magistrates' Court"
   },
   {
     "courtId": 150,
@@ -411,13 +411,13 @@
     "courtId": 151,
     "location": "London",
     "jurisdiction": "County Court",
-    "name": "Croydon Magistrates Court"
+    "name": "Croydon Magistrates' Court"
   },
   {
     "courtId": 153,
     "location": "Wales",
     "jurisdiction": "Magistrates' Court",
-    "name": "Cwmbran Magistrates Court"
+    "name": "Cwmbran Magistrates' Court"
   },
   {
     "courtId": 154,
@@ -429,7 +429,7 @@
     "courtId": 155,
     "location": "North East",
     "jurisdiction": "Magistrates' Court",
-    "name": "Darlington Magistrates Court and Family Court"
+    "name": "Darlington Magistrates' Court and Family Court"
   },
   {
     "courtId": 156,
@@ -477,7 +477,7 @@
     "courtId": 172,
     "location": "London",
     "jurisdiction": "Magistrates' Court",
-    "name": "Ealing Magistrates Court"
+    "name": "Ealing Magistrates' Court"
   },
   {
     "courtId": 174,
@@ -489,13 +489,13 @@
     "courtId": 186,
     "location": "South East",
     "jurisdiction": "Magistrates' Court",
-    "name": "Folkestone Magistrates Court"
+    "name": "Folkestone Magistrates' Court"
   },
   {
     "courtId": 189,
     "location": "North East",
     "jurisdiction": "Magistrates' Court",
-    "name": "Gateshead Magistrates Court and Family Court"
+    "name": "Gateshead Magistrates' Court and Family Court"
   },
   {
     "courtId": 190,
@@ -519,13 +519,13 @@
     "courtId": 198,
     "location": "South East",
     "jurisdiction": "Magistrates' Court",
-    "name": "Great Yarmouth Magistrates Court and Family Court"
+    "name": "Great Yarmouth Magistrates' Court and Family Court"
   },
   {
     "courtId": 200,
     "location": "North East",
     "jurisdiction": "Magistrates' Court",
-    "name": "Grimsby Magistrates Court and Family Court"
+    "name": "Grimsby Magistrates' Court and Family Court"
   },
   {
     "courtId": 201,
@@ -537,7 +537,7 @@
     "courtId": 202,
     "location": "South East",
     "jurisdiction": "County Court",
-    "name": "Guildford Magistrates Court and Family Court"
+    "name": "Guildford Magistrates' Court and Family Court"
   },
   {
     "courtId": 211,
@@ -555,13 +555,13 @@
     "courtId": 216,
     "location": "South East",
     "jurisdiction": "County Court",
-    "name": "Hastings Magistrates Court"
+    "name": "Hastings Magistrates' Court"
   },
   {
     "courtId": 217,
     "location": "South East",
     "jurisdiction": "Magistrates' Court",
-    "name": "Hatfield Magistrates Court"
+    "name": "Hatfield Magistrates' Court"
   },
   {
     "courtId": 218,
@@ -573,13 +573,13 @@
     "courtId": 219,
     "location": "London",
     "jurisdiction": "Magistrates' Court",
-    "name": "Romford Magistrates Court (Formerly Havering Magistrates Court)"
+    "name": "Romford Magistrates' Court (Formerly Havering Magistrates' Court)"
   },
   {
     "courtId": 221,
     "location": "London",
     "jurisdiction": "Tribunal",
-    "name": "Hendon Magistrates Court"
+    "name": "Hendon Magistrates' Court"
   },
   {
     "courtId": 222,
@@ -603,13 +603,13 @@
     "courtId": 227,
     "location": "South East",
     "jurisdiction": "Magistrates' Court",
-    "name": "High Wycombe Magistrates Court and Family Court"
+    "name": "High Wycombe Magistrates' Court and Family Court"
   },
   {
     "courtId": 228,
     "location": "London",
     "jurisdiction": "Magistrates' Court",
-    "name": "Highbury Corner Magistrates Court"
+    "name": "Highbury Corner Magistrates' Court"
   },
   {
     "courtId": 233,
@@ -633,7 +633,7 @@
     "courtId": 237,
     "location": "North East",
     "jurisdiction": "Magistrates' Court",
-    "name": "Kirklees (Huddersfield) Magistrates Court and Family Court"
+    "name": "Kirklees (Huddersfield) Magistrates' Court and Family Court"
   },
   {
     "courtId": 239,
@@ -657,7 +657,7 @@
     "courtId": 247,
     "location": "South East",
     "jurisdiction": "Magistrates' Court",
-    "name": "Ipswich Magistrates Court"
+    "name": "Ipswich Magistrates' Court"
   },
   {
     "courtId": 249,
@@ -699,7 +699,7 @@
     "courtId": 266,
     "location": "North West",
     "jurisdiction": "County Court",
-    "name": "Lancaster Magistrates Court"
+    "name": "Lancaster Magistrates' Court"
   },
   {
     "courtId": 269,
@@ -717,7 +717,7 @@
     "courtId": 271,
     "location": "North East",
     "jurisdiction": "Magistrates' Court",
-    "name": "Leeds Magistrates Court and Family Court"
+    "name": "Leeds Magistrates' Court and Family Court"
   },
   {
     "courtId": 272,
@@ -729,7 +729,7 @@
     "courtId": 274,
     "location": "Midlands",
     "jurisdiction": "Magistrates' Court",
-    "name": "Leicester Magistrates Court"
+    "name": "Leicester Magistrates' Court"
   },
   {
     "courtId": 275,
@@ -759,7 +759,7 @@
     "courtId": 280,
     "location": "Midlands",
     "jurisdiction": "Magistrates' Court",
-    "name": "Lincoln Magistrates Court"
+    "name": "Lincoln Magistrates' Court"
   },
   {
     "courtId": 282,
@@ -777,13 +777,13 @@
     "courtId": 286,
     "location": "Wales",
     "jurisdiction": "Magistrates' Court",
-    "name": "Llandrindod Wells Magistrates and Family Court"
+    "name": "Llandrindod Wells Magistrates' and Family Court"
   },
   {
     "courtId": 287,
     "location": "Wales",
     "jurisdiction": "Magistrates' Court",
-    "name": "Llandudno Magistrates Court"
+    "name": "Llandudno Magistrates' Court"
   },
   {
     "courtId": 288,
@@ -813,7 +813,7 @@
     "courtId": 297,
     "location": "South East",
     "jurisdiction": "Magistrates' Court",
-    "name": "Luton And South Bedfordshire Magistrates Court and Family Court"
+    "name": "Luton And South Bedfordshire Magistrates' Court and Family Court"
   },
   {
     "courtId": 302,
@@ -825,7 +825,7 @@
     "courtId": 303,
     "location": "South East",
     "jurisdiction": "Magistrates' Court",
-    "name": "Maidstone Magistrates Court and Family Court"
+    "name": "Maidstone Magistrates' Court and Family Court"
   },
   {
     "courtId": 304,
@@ -849,13 +849,13 @@
     "courtId": 308,
     "location": "Midlands",
     "jurisdiction": "County Court",
-    "name": "Mansfield Magistrates and County Court"
+    "name": "Mansfield Magistrates' and County Court"
   },
   {
     "courtId": 310,
     "location": "South East",
     "jurisdiction": "Magistrates' Court",
-    "name": "Margate Magistrates Court"
+    "name": "Margate Magistrates' Court"
   },
   {
     "courtId": 313,
@@ -885,7 +885,7 @@
     "courtId": 321,
     "location": "South East",
     "jurisdiction": "Magistrates' Court",
-    "name": "Milton Keynes Magistrates Court and Family Court"
+    "name": "Milton Keynes Magistrates' Court and Family Court"
   },
   {
     "courtId": 323,
@@ -933,13 +933,13 @@
     "courtId": 338,
     "location": "South West",
     "jurisdiction": "Magistrates' Court",
-    "name": "Newton Abbot Magistrates Court"
+    "name": "Newton Abbot Magistrates' Court"
   },
   {
     "courtId": 339,
     "location": "North East",
     "jurisdiction": "Magistrates' Court",
-    "name": "Newton Aycliffe Magistrates Court and Family Court"
+    "name": "Newton Aycliffe Magistrates' Court and Family Court"
   },
   {
     "courtId": 341,
@@ -951,7 +951,7 @@
     "courtId": 342,
     "location": "North East",
     "jurisdiction": "Magistrates' Court",
-    "name": "North Tyneside Magistrates Court"
+    "name": "North Tyneside Magistrates' Court"
   },
   {
     "courtId": 344,
@@ -963,7 +963,7 @@
     "courtId": 345,
     "location": "Midlands",
     "jurisdiction": "Magistrates' Court",
-    "name": "Northampton Magistrates Court"
+    "name": "Northampton Magistrates' Court"
   },
   {
     "courtId": 347,
@@ -975,7 +975,7 @@
     "courtId": 348,
     "location": "South East",
     "jurisdiction": "Magistrates' Court",
-    "name": "Norwich Magistrates Court and Family Court"
+    "name": "Norwich Magistrates' Court and Family Court"
   },
   {
     "courtId": 349,
@@ -993,7 +993,7 @@
     "courtId": 356,
     "location": "South East",
     "jurisdiction": "Magistrates' Court",
-    "name": "Oxford and Southern Oxfordshire Magistrates Court"
+    "name": "Oxford and Southern Oxfordshire Magistrates' Court"
   },
   {
     "courtId": 360,
@@ -1005,13 +1005,13 @@
     "courtId": 361,
     "location": "South East",
     "jurisdiction": "Magistrates' Court",
-    "name": "Peterborough Magistrates Court"
+    "name": "Peterborough Magistrates' Court"
   },
   {
     "courtId": 362,
     "location": "North East",
     "jurisdiction": "Magistrates' Court",
-    "name": "Peterlee Magistrates Court"
+    "name": "Peterlee Magistrates' Court"
   },
   {
     "courtId": 363,
@@ -1023,7 +1023,7 @@
     "courtId": 364,
     "location": "South West",
     "jurisdiction": "County Court",
-    "name": "Plymouth Magistrates Court"
+    "name": "Plymouth Magistrates' Court"
   },
   {
     "courtId": 368,
@@ -1035,7 +1035,7 @@
     "courtId": 370,
     "location": "South West",
     "jurisdiction": "Magistrates' Court",
-    "name": "Poole Magistrates Court"
+    "name": "Poole Magistrates' Court"
   },
   {
     "courtId": 372,
@@ -1047,7 +1047,7 @@
     "courtId": 373,
     "location": "South West",
     "jurisdiction": "County Court",
-    "name": "Portsmouth Magistrates Court"
+    "name": "Portsmouth Magistrates' Court"
   },
   {
     "courtId": 374,
@@ -1059,7 +1059,7 @@
     "courtId": 377,
     "location": "North West",
     "jurisdiction": "County Court",
-    "name": "Preston Magistrates Court"
+    "name": "Preston Magistrates' Court"
   },
   {
     "courtId": 378,
@@ -1083,19 +1083,19 @@
     "courtId": 384,
     "location": "South East",
     "jurisdiction": "Magistrates' Court",
-    "name": "Reading Magistrates Court and Family Court"
+    "name": "Reading Magistrates' Court and Family Court"
   },
   {
     "courtId": 385,
     "location": "London",
     "jurisdiction": "Magistrates' Court",
-    "name": "Barkingside Magistrates Court"
+    "name": "Barkingside Magistrates' Court"
   },
   {
     "courtId": 389,
     "location": "North West",
     "jurisdiction": "County Court",
-    "name": "Reedley Magistrates Court and Family Court"
+    "name": "Reedley Magistrates' Court and Family Court"
   },
   {
     "courtId": 394,
@@ -1119,7 +1119,7 @@
     "courtId": 406,
     "location": "South East",
     "jurisdiction": "Magistrates' Court",
-    "name": "Sevenoaks Magistrates Court and Family Court"
+    "name": "Sevenoaks Magistrates' Court and Family Court"
   },
   {
     "courtId": 407,
@@ -1131,7 +1131,7 @@
     "courtId": 409,
     "location": "North East",
     "jurisdiction": "Magistrates' Court",
-    "name": "Sheffield Magistrates Court"
+    "name": "Sheffield Magistrates' Court"
   },
   {
     "courtId": 412,
@@ -1143,19 +1143,19 @@
     "courtId": 416,
     "location": "North East",
     "jurisdiction": "Magistrates' Court",
-    "name": "Skipton Magistrates and County Court"
+    "name": "Skipton Magistrates' and County Court"
   },
   {
     "courtId": 420,
     "location": "South West",
     "jurisdiction": "Magistrates' Court",
-    "name": "Yeovil County, Family and Magistrates Court"
+    "name": "Yeovil County, Family and Magistrates' Court"
   },
   {
     "courtId": 421,
     "location": "North East",
     "jurisdiction": "Magistrates' Court",
-    "name": "South Tyneside Magistrates Court and Family Court"
+    "name": "South Tyneside Magistrates' Court and Family Court"
   },
   {
     "courtId": 423,
@@ -1167,7 +1167,7 @@
     "courtId": 424,
     "location": "South West",
     "jurisdiction": "Magistrates' Court",
-    "name": "West Hampshire Magistrates Court"
+    "name": "West Hampshire Magistrates' Court"
   },
   {
     "courtId": 426,
@@ -1191,7 +1191,7 @@
     "courtId": 432,
     "location": "South East",
     "jurisdiction": "Magistrates' Court",
-    "name": "St Albans Magistrates Court"
+    "name": "St Albans Magistrates' Court"
   },
   {
     "courtId": 434,
@@ -1209,19 +1209,19 @@
     "courtId": 437,
     "location": "South East",
     "jurisdiction": "Magistrates' Court",
-    "name": "Staines Magistrates Court and Family Court"
+    "name": "Staines Magistrates' Court and Family Court"
   },
   {
     "courtId": 439,
     "location": "South East",
     "jurisdiction": "Magistrates' Court",
-    "name": "Stevenage Magistrates Court"
+    "name": "Stevenage Magistrates' Court"
   },
   {
     "courtId": 441,
     "location": "North West",
     "jurisdiction": "County Court",
-    "name": "Stockport Magistrates Court and Family Court"
+    "name": "Stockport Magistrates' Court and Family Court"
   },
   {
     "courtId": 442,
@@ -1233,13 +1233,13 @@
     "courtId": 445,
     "location": "London",
     "jurisdiction": "Magistrates' Court",
-    "name": "Stratford Magistrates Court"
+    "name": "Stratford Magistrates' Court"
   },
   {
     "courtId": 451,
     "location": "North East",
     "jurisdiction": "Tribunal",
-    "name": "Sunderland County, Family, Magistrates and Tribunal Hearings"
+    "name": "Sunderland County, Family, Magistrates' and Tribunal Hearings"
   },
   {
     "courtId": 456,
@@ -1257,7 +1257,7 @@
     "courtId": 459,
     "location": "Wales",
     "jurisdiction": "Magistrates' Court",
-    "name": "Swansea Magistrates Court"
+    "name": "Swansea Magistrates' Court"
   },
   {
     "courtId": 460,
@@ -1269,13 +1269,13 @@
     "courtId": 461,
     "location": "South West",
     "jurisdiction": "Magistrates' Court",
-    "name": "Swindon Magistrates Court"
+    "name": "Swindon Magistrates' Court"
   },
   {
     "courtId": 462,
     "location": "North West",
     "jurisdiction": "Magistrates' Court",
-    "name": "Tameside Magistrates Court"
+    "name": "Tameside Magistrates' Court"
   },
   {
     "courtId": 464,
@@ -1287,7 +1287,7 @@
     "courtId": 465,
     "location": "South West",
     "jurisdiction": "County Court",
-    "name": "Taunton Magistrates Court, Tribunals and Family Hearing Centre"
+    "name": "Taunton Magistrates' Court, Tribunals and Family Hearing Centre"
   },
   {
     "courtId": 467,
@@ -1305,13 +1305,13 @@
     "courtId": 470,
     "location": "Midlands",
     "jurisdiction": "County Court",
-    "name": "Telford Magistrates Court"
+    "name": "Telford Magistrates' Court"
   },
   {
     "courtId": 471,
     "location": "London",
     "jurisdiction": "Magistrates' Court",
-    "name": "Thames Magistrates Court"
+    "name": "Thames Magistrates' Court"
   },
   {
     "courtId": 473,
@@ -1329,7 +1329,7 @@
     "courtId": 481,
     "location": "South West",
     "jurisdiction": "Magistrates' Court",
-    "name": "Truro Magistrates Court"
+    "name": "Truro Magistrates' Court"
   },
   {
     "courtId": 484,
@@ -1341,7 +1341,7 @@
     "courtId": 485,
     "location": "London",
     "jurisdiction": "Magistrates' Court",
-    "name": "Uxbridge Magistrates Court"
+    "name": "Uxbridge Magistrates' Court"
   },
   {
     "courtId": 488,
@@ -1353,7 +1353,7 @@
     "courtId": 489,
     "location": "Midlands",
     "jurisdiction": "Magistrates' Court",
-    "name": "Walsall Magistrates Court"
+    "name": "Walsall Magistrates' Court"
   },
   {
     "courtId": 491,
@@ -1377,13 +1377,13 @@
     "courtId": 502,
     "location": "Midlands",
     "jurisdiction": "Magistrates' Court",
-    "name": "Wellingborough Magistrates Court"
+    "name": "Wellingborough Magistrates' Court"
   },
   {
     "courtId": 503,
     "location": "Wales",
     "jurisdiction": "Magistrates' Court",
-    "name": "Welshpool Magistrates Court"
+    "name": "Welshpool Magistrates' Court"
   },
   {
     "courtId": 509,
@@ -1401,7 +1401,7 @@
     "courtId": 514,
     "location": "North West",
     "jurisdiction": "County Court",
-    "name": "Wigan And Leigh Magistrates Court"
+    "name": "Wigan And Leigh Magistrates' Court"
   },
   {
     "courtId": 515,
@@ -1413,7 +1413,7 @@
     "courtId": 516,
     "location": "London",
     "jurisdiction": "Magistrates' Court",
-    "name": "Wimbledon Magistrates Court"
+    "name": "Wimbledon Magistrates' Court"
   },
   {
     "courtId": 518,
@@ -1425,13 +1425,13 @@
     "courtId": 519,
     "location": "North West",
     "jurisdiction": "Magistrates' Court",
-    "name": "Wirral Magistrates Court"
+    "name": "Wirral Magistrates' Court"
   },
   {
     "courtId": 525,
     "location": "Midlands",
     "jurisdiction": "County Court",
-    "name": "Wolverhampton Magistrates Court"
+    "name": "Wolverhampton Magistrates' Court"
   },
   {
     "courtId": 526,
@@ -1455,7 +1455,7 @@
     "courtId": 535,
     "location": "South East",
     "jurisdiction": "County Court",
-    "name": "Worthing Magistrates and County Court"
+    "name": "Worthing Magistrates' and County Court"
   },
   {
     "courtId": 537,
@@ -1479,13 +1479,13 @@
     "courtId": 542,
     "location": "North East",
     "jurisdiction": "Magistrates' Court",
-    "name": "York Magistrates Court and Family Court"
+    "name": "York Magistrates' Court and Family Court"
   },
   {
     "courtId": 545,
     "location": "London",
     "jurisdiction": "Magistrates' Court",
-    "name": "Westminster Magistrates Court"
+    "name": "Westminster Magistrates' Court"
   },
   {
     "courtId": 546,
@@ -1509,7 +1509,7 @@
     "courtId": 549,
     "location": "Wales",
     "jurisdiction": "Magistrates' Court",
-    "name": "Newport (South Wales) Magistrates Court"
+    "name": "Newport (South Wales) Magistrates' Court"
   },
   {
     "courtId": 550,
@@ -1689,7 +1689,7 @@
     "courtId": 603,
     "location": "Midlands",
     "jurisdiction": "Magistrates' Court",
-    "name": "Nottingham Magistrates Court"
+    "name": "Nottingham Magistrates' Court"
   },
   {
     "courtId": 605,
