@@ -108,6 +108,164 @@ class PublicationTest {
         assertNotNull(response.getResponse().getContentAsString(), "Response should contain a string");
     }
 
+    @DisplayName("Should return a 400 Bad Request if the artifact type header is missing")
+    @Test
+    void testMissingArtifactType() throws Exception {
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+            .put(URL)
+            .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
+            .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
+            .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
+            .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO)
+            .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
+            .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
+            .content(objectMapper.writeValueAsString(PAYLOAD))
+            .contentType(MediaType.APPLICATION_JSON);
+        
+        MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isBadRequest()).andReturn();
+
+        assertNotNull(response.getResponse().getContentAsString(), "Response should contain a string");
+    }
+
+    @DisplayName("Should return a 400 Bad Request if an invalid artifact type is provided")
+    @Test
+    void testInvalidArtifactType() throws Exception {
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+            .put(URL)
+            .header(PublicationConfiguration.TYPE_HEADER, "Test")
+            .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
+            .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
+            .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
+            .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO)
+            .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
+            .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
+            .content(objectMapper.writeValueAsString(PAYLOAD))
+            .contentType(MediaType.APPLICATION_JSON);
+
+        MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isBadRequest()).andReturn();
+
+        System.out.println("TEST" + response.getResponse().getContentAsString());
+        assertNotNull(response.getResponse().getContentAsString(), "Response should contain a string");
+    }
+
+    @DisplayName("Should return a 400 Bad Request if the provenance header is missing")
+    @Test
+    void testMissingProvenance() throws Exception {
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+            .put(URL)
+            .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
+            .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
+            .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
+            .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO)
+            .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
+            .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
+            .content(objectMapper.writeValueAsString(PAYLOAD))
+            .contentType(MediaType.APPLICATION_JSON);
+
+        MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isBadRequest()).andReturn();
+
+        assertNotNull(response.getResponse().getContentAsString(), "Response should contain a string");
+    }
+
+    @DisplayName("Should return a 400 Bad Request if the artifact id is missing")
+    @Test
+    void testMissingSourceArtifactId() throws Exception {
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+            .put(URL)
+            .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
+            .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
+            .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
+            .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO)
+            .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
+            .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
+            .content(objectMapper.writeValueAsString(PAYLOAD))
+            .contentType(MediaType.APPLICATION_JSON);
+
+        MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isBadRequest()).andReturn();
+
+        assertNotNull(response.getResponse().getContentAsString(), "Response should contain a string");
+    }
+
+    @DisplayName("Should return a 400 Bad Request if the artifact id is missing")
+    @Test
+    void testInvalidSourceArtifactId() throws Exception {
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+            .put(URL)
+            .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
+            .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
+            .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
+            .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, "Test")
+            .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO)
+            .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
+            .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
+            .content(objectMapper.writeValueAsString(PAYLOAD))
+            .contentType(MediaType.APPLICATION_JSON);
+
+        MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isBadRequest()).andReturn();
+
+        assertNotNull(response.getResponse().getContentAsString(), "Response should contain a string");
+    }
+
+    @DisplayName("Should return a 400 Bad Request if an invalid display to is provided")
+    @Test
+    void testInvalidDisplayTo() throws Exception {
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+            .put(URL)
+            .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
+            .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
+            .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
+            .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
+            .header(PublicationConfiguration.DISPLAY_TO_HEADER, "Test")
+            .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
+            .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
+            .content(objectMapper.writeValueAsString(PAYLOAD))
+            .contentType(MediaType.APPLICATION_JSON);
+
+        MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isBadRequest()).andReturn();
+
+        assertNotNull(response.getResponse().getContentAsString(), "Response should contain a string");
+    }
+
+    @DisplayName("Should return a 400 Bad Request if an invalid display from is provided")
+    @Test
+    void testInvalidDisplayFrom() throws Exception {
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+            .put(URL)
+            .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
+            .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
+            .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
+            .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
+            .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO)
+            .header(PublicationConfiguration.DISPLAY_FROM_HEADER, "Test")
+            .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
+            .content(objectMapper.writeValueAsString(PAYLOAD))
+            .contentType(MediaType.APPLICATION_JSON);
+
+        MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isBadRequest()).andReturn();
+
+        assertNotNull(response.getResponse().getContentAsString(), "Response should contain a string");
+    }
+
+    @DisplayName("Should return a 400 Bad Request if an invalid language is provided")
+    @Test
+    void testInvalidLanguageHeader() throws Exception {
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+            .put(URL)
+            .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
+            .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
+            .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
+            .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
+            .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO)
+            .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
+            .header(PublicationConfiguration.LANGUAGE_HEADER, "Test")
+            .content(objectMapper.writeValueAsString(PAYLOAD))
+            .contentType(MediaType.APPLICATION_JSON);
+
+        MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isBadRequest()).andReturn();
+
+        assertNotNull(response.getResponse().getContentAsString(), "Response should contain a string");
+    }
+
     @DisplayName("Should return an error response due to failing to connect with Azure - Creation")
     @Test
     void creationOfAnArtefactWhenErrorConnectingWithAzure() throws Exception {
