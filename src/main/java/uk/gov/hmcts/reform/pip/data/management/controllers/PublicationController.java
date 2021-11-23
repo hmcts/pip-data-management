@@ -50,14 +50,14 @@ public class PublicationController {
      * @param displayFrom Date / Time from which the publication will be displayed.
      * @param displayTo Date / Time until which the publication will be displayed.
      * @param payload JSON Blob with key/value pairs of data to be published.
-     * @return The UUID of the created artefact.
+     * @return The created artefact.
      */
     @ApiResponses({
         @ApiResponse(code = 200, message = "Publication has been created"),
     })
     @ApiOperation("Upload a new publication")
     @PutMapping
-    public ResponseEntity<String> uploadPublication(
+    public ResponseEntity<Artefact> uploadPublication(
         @RequestHeader(PublicationConfiguration.PROVENANCE_HEADER) String provenance,
         @RequestHeader(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER) String sourceArtefactId,
         @RequestHeader(PublicationConfiguration.TYPE_HEADER) ArtefactType type,
@@ -77,7 +77,7 @@ public class PublicationController {
             .payload(payload)
             .build();
 
-        String createdItem = publicationService
+        Artefact createdItem = publicationService
             .createPublication(artefact);
 
         return ResponseEntity.ok(createdItem);

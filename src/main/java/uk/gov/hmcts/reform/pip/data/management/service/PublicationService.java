@@ -2,7 +2,7 @@ package uk.gov.hmcts.reform.pip.data.management.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import uk.gov.hmcts.reform.pip.data.management.database.AzureTableService;
+import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 
 import java.util.Optional;
@@ -13,11 +13,11 @@ import java.util.Optional;
 @Component
 public class PublicationService {
 
-    private final AzureTableService azureTableService;
+    private final ArtefactRepository artefactRepository;
 
     @Autowired
-    public PublicationService(AzureTableService azureTableService) {
-        this.azureTableService = azureTableService;
+    public PublicationService(ArtefactRepository artefactRepository) {
+        this.artefactRepository = artefactRepository;
     }
 
     /**
@@ -25,15 +25,13 @@ public class PublicationService {
      * @param artefact The artifact that needs to be created.
      * @return Returns the UUID of the artefact that was created.
      */
-    public String createPublication(Artefact artefact) {
+    public Artefact createPublication(Artefact artefact) {
 
-        Optional<Artefact> foundArtefact =  azureTableService.getPublication(
-            artefact.getSourceArtefactId(), artefact.getProvenance());
+        Optional<Artefact> foundArtefact =  artefactRepository.
+            findBySourceArtefactIdAndProvenance(artefact.getSourceArtefactId(), artefact.getProvenance());
 
-        if (foundArtefact.isPresent()) {
-            return azureTableService.updatePublication(artefact, foundArtefact.get());
-        }
+        foundArtefact.ifPresent(value -> artefact.setArtefactId(value.getArtefactId()));
 
-        return azureTableService.createPublication(artefact);
+        return artefactRepository.save(artefact);
     }
 }
