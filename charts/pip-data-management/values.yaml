@@ -11,6 +11,14 @@ java:
       secrets:
         - name: pipsharedinfrasa-storageaccount-connection-string
           alias: CONNECTION_STRING
+        - name: pip-subscription-management-POSTGRES-DATABASE
+          alias: DB_NAME
+        - name: pip-subscription-management-POSTGRES-PASS
+          alias: DB_PASS
+        - name: pip-subscription-management-POSTGRES-PORT
+          alias: DB_PORT
+        - name: pip-subscription-management-POSTGRES-USER
+          alias: DB_USER
   #  Uncomment once the vault containing the app insights key has been set up
   #  keyVaults:
   #    rpe:

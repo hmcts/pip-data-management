@@ -104,6 +104,18 @@ To build the project execute the following command:
   ./gradlew build
 ```
 
+### Environment Variables
+
+The following environment variables are required to run the application
+
+Name | Value
+--- | ---
+CONNECTION_STRING | This is used to communicate with Azure
+DB_USER | The username to connect to the postgres DB
+DB_PASS | The password to connect to the postgres DB
+DB_PORT | The port to connect to the postgres DB
+DB_NAME | The name of the postgres DB to connect to
+
 ### Running the application
 
 Create the image of the application by executing the following command:
