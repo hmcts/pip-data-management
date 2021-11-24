@@ -4,9 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.AzureServerException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.DataStorageNotFoundException;
-import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.InvalidPublicationException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.NotFoundException;
 
 import java.time.LocalDateTime;
@@ -39,26 +37,6 @@ public class GlobalExceptionHandler {
         exceptionResponse.setTimestamp(LocalDateTime.now());
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exceptionResponse);
-    }
-
-    @ExceptionHandler(AzureServerException.class)
-    public ResponseEntity<ExceptionResponse> handle(AzureServerException ex) {
-
-        ExceptionResponse exceptionResponse = new ExceptionResponse();
-        exceptionResponse.setMessage(ex.getMessage());
-        exceptionResponse.setTimestamp(LocalDateTime.now());
-
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(exceptionResponse);
-    }
-
-    @ExceptionHandler(InvalidPublicationException.class)
-    public ResponseEntity<ExceptionResponse> handle(InvalidPublicationException ex) {
-
-        ExceptionResponse exceptionResponse = new ExceptionResponse();
-        exceptionResponse.setMessage(ex.getMessage());
-        exceptionResponse.setTimestamp(LocalDateTime.now());
-
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionResponse);
     }
 
 }

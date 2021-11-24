@@ -5,7 +5,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
+import uk.gov.hmcts.reform.pip.data.management.models.publication.Language;
 
 import java.util.Optional;
 
@@ -16,14 +18,14 @@ import static org.mockito.Mockito.when;
 class PublicationServiceTest {
 
     @Mock
-    AzureTableService azureTableService;
+    ArtefactRepository artefactRepository;
 
     @InjectMocks
     PublicationService publicationService;
 
+    private static final Long ARTEFACT_ID = 2L;
     private static final String SOURCE_ARTEFACT_ID = "1234";
     private static final String PROVENANCE = "provenance";
-    private static final String ROW_ID = "1234-1234";
 
     @Test
     void testCreationOfNewArtefact() {
@@ -33,12 +35,19 @@ class PublicationServiceTest {
             .provenance(PROVENANCE)
             .build();
 
-        when(azureTableService.getPublication(SOURCE_ARTEFACT_ID, PROVENANCE)).thenReturn(Optional.empty());
-        when(azureTableService.createPublication(artefact)).thenReturn(ROW_ID);
+        Artefact artefactWithId = Artefact.builder()
+            .artefactId(ARTEFACT_ID)
+            .sourceArtefactId(SOURCE_ARTEFACT_ID)
+            .provenance(PROVENANCE)
+            .build();
 
-        String returnedUuid = publicationService.createPublication(artefact);
+        when(artefactRepository.findBySourceArtefactIdAndProvenance(SOURCE_ARTEFACT_ID, PROVENANCE))
+            .thenReturn(Optional.empty());
+        when(artefactRepository.save(artefact)).thenReturn(artefactWithId);
 
-        assertEquals(ROW_ID, returnedUuid, "Row ID must match returned UUID");
+        Artefact returnedArtefact = publicationService.createPublication(artefact);
+
+        assertEquals(artefactWithId, returnedArtefact, "Row ID must match returned UUID");
     }
 
     @Test
@@ -47,21 +56,29 @@ class PublicationServiceTest {
         Artefact artefact = Artefact.builder()
             .sourceArtefactId(SOURCE_ARTEFACT_ID)
             .provenance(PROVENANCE)
+            .language(Language.ENGLISH)
             .build();
 
         Artefact existingArtefact = Artefact.builder()
-            .artefactId(ROW_ID)
+            .artefactId(ARTEFACT_ID)
             .sourceArtefactId(SOURCE_ARTEFACT_ID)
             .provenance(PROVENANCE)
             .build();
 
-        when(azureTableService.getPublication(SOURCE_ARTEFACT_ID, PROVENANCE))
+        Artefact newArtefactWithId = Artefact.builder()
+            .artefactId(ARTEFACT_ID)
+            .sourceArtefactId(SOURCE_ARTEFACT_ID)
+            .provenance(PROVENANCE)
+            .language(Language.ENGLISH)
+            .build();
+
+        when(artefactRepository.findBySourceArtefactIdAndProvenance(SOURCE_ARTEFACT_ID, PROVENANCE))
             .thenReturn(Optional.of(existingArtefact));
-        when(azureTableService.updatePublication(artefact, existingArtefact)).thenReturn(ROW_ID);
+        when(artefactRepository.save(newArtefactWithId)).thenReturn(newArtefactWithId);
 
-        String returnedUuid = publicationService.createPublication(artefact);
+        Artefact returnedArtefact = publicationService.createPublication(artefact);
 
-        assertEquals(ROW_ID, returnedUuid, "Row ID must match returned UUID");
+        assertEquals(newArtefactWithId, returnedArtefact, "Row ID must match returned UUID");
     }
 
 }

@@ -3,17 +3,18 @@ package uk.gov.hmcts.reform.pip.data.management.service;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pip.data.management.Application;
-import uk.gov.hmcts.reform.pip.data.management.config.AzureConfigurationClientTest;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.LiveCaseStatusException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.TestConstants.MESSAGES_MATCH;
 
-@SpringBootTest(classes = {AzureConfigurationClientTest.class, Application.class})
+@SpringBootTest(classes = {Application.class})
 @ActiveProfiles(profiles = "test")
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 class LiveCaseStatusServiceTest {
 
     @Autowired

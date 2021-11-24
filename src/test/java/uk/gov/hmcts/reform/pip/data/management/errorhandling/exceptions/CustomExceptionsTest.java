@@ -45,16 +45,4 @@ class CustomExceptionsTest {
         assertEquals(TEST_MESSAGE, notFoundException.getMessage(), ASSERTION_MESSAGE);
     }
 
-    @Test
-    void testCreationOfAzureServerException() {
-        AzureServerException azureServerException = new AzureServerException(TEST_MESSAGE);
-        assertEquals(TEST_MESSAGE, azureServerException.getMessage(), ASSERTION_MESSAGE);
-    }
-
-    @Test
-    void testCreationOfInvalidPublicationException() {
-        InvalidPublicationException invalidPublicationException = new InvalidPublicationException(TEST_MESSAGE);
-        assertEquals(TEST_MESSAGE, invalidPublicationException.getMessage(), ASSERTION_MESSAGE);
-    }
-
 }

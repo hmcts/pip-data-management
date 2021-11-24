@@ -28,6 +28,7 @@ class PublicationControllerTest {
     @InjectMocks
     private PublicationController publicationController;
 
+    private static final Long ARTEFACT_ID = 2L;
     private static final String SOURCE_ARTEFACT_ID = "sourceArtefactId";
     private static final LocalDateTime DISPLAY_FROM = LocalDateTime.now();
     private static final LocalDateTime DISPLAY_TO = LocalDateTime.now();
@@ -36,8 +37,6 @@ class PublicationControllerTest {
     private static final Sensitivity SENSITIVITY = Sensitivity.PUBLIC;
     private static final ArtefactType ARTEFACT_TYPE = ArtefactType.LIST;
     private static final String PAYLOAD = "payload";
-
-    private static final String RETURN_ID = "1234";
 
     @Test
     void testCreationOfPublication() {
@@ -52,14 +51,26 @@ class PublicationControllerTest {
             .payload(PAYLOAD)
             .build();
 
-        when(publicationService.createPublication(argThat(arg -> arg.equals(artefact)))).thenReturn(RETURN_ID);
+        Artefact artefactWithId = Artefact.builder()
+            .artefactId(ARTEFACT_ID)
+            .sourceArtefactId(SOURCE_ARTEFACT_ID)
+            .displayFrom(DISPLAY_FROM)
+            .displayTo(DISPLAY_TO)
+            .language(LANGUAGE)
+            .provenance(PROVENANCE)
+            .sensitivity(SENSITIVITY)
+            .type(ARTEFACT_TYPE)
+            .payload(PAYLOAD)
+            .build();
 
-        ResponseEntity<String> responseEntity = publicationController.uploadPublication(
+        when(publicationService.createPublication(argThat(arg -> arg.equals(artefact)))).thenReturn(artefactWithId);
+
+        ResponseEntity<Artefact> responseEntity = publicationController.uploadPublication(
             PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE,
             SENSITIVITY, LANGUAGE, DISPLAY_FROM, DISPLAY_TO, PAYLOAD
         );
 
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode(), "An OK status code is returned");
-        assertEquals(RETURN_ID, responseEntity.getBody(), "The expected return ID is returned");
+        assertEquals(artefactWithId, responseEntity.getBody(), "The expected return ID is returned");
     }
 }

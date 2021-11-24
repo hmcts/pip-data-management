@@ -1,21 +1,32 @@
 package uk.gov.hmcts.reform.pip.data.management.models.publication;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
 /**
  * Class that presents the Inbound artifact that is being published.
  */
+@Entity
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Artefact {
 
     /**
      * Unique ID for publication.
      */
-    private String artefactId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long artefactId;
 
     /**
      * Name of source system.

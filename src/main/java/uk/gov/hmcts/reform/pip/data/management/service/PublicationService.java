@@ -27,8 +27,8 @@ public class PublicationService {
      */
     public Artefact createPublication(Artefact artefact) {
 
-        Optional<Artefact> foundArtefact =  artefactRepository.
-            findBySourceArtefactIdAndProvenance(artefact.getSourceArtefactId(), artefact.getProvenance());
+        Optional<Artefact> foundArtefact =  artefactRepository
+            .findBySourceArtefactIdAndProvenance(artefact.getSourceArtefactId(), artefact.getProvenance());
 
         foundArtefact.ifPresent(value -> artefact.setArtefactId(value.getArtefactId()));
 
