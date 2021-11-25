@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.pip.data.management.config;
 
+import com.azure.storage.blob.BlobClient;
 import com.azure.storage.blob.BlobContainerClient;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -15,6 +16,9 @@ import org.springframework.context.annotation.Profile;
 public class AzureBlobConfigurationTest {
 
     @Mock
+    BlobClient blobClient;
+
+    @Mock
     BlobContainerClient blobContainerClient;
 
     public AzureBlobConfigurationTest() {
@@ -25,4 +29,10 @@ public class AzureBlobConfigurationTest {
     public BlobContainerClient blobContainerClient() {
         return blobContainerClient;
     }
+
+    @Bean
+    public BlobClient blobClient() {
+        return blobClient;
+    }
+
 }

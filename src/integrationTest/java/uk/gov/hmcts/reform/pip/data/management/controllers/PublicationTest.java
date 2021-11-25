@@ -1,5 +1,7 @@
 package uk.gov.hmcts.reform.pip.data.management.controllers;
 
+import com.azure.storage.blob.BlobClient;
+import com.azure.storage.blob.BlobContainerClient;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -25,6 +27,8 @@ import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(classes = {Application.class},
@@ -33,6 +37,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @ActiveProfiles(profiles = "test")
 class PublicationTest {
+
+    @Autowired
+    BlobContainerClient blobContainerClient;
+
+    @Autowired
+    BlobClient blobClient;
 
     @Autowired
     private MockMvc mockMvc;
@@ -47,6 +57,7 @@ class PublicationTest {
     private static final LocalDateTime DISPLAY_FROM = LocalDateTime.now();
     private static final Language LANGUAGE = Language.ENGLISH;
     private static final String TEST_VALUE = "test";
+    private static final String PAYLOAD_URL = "https://localhost";
 
     private static final String VALIDATION_EMPTY_RESPONSE = "Response should contain a Artefact";
 
@@ -74,6 +85,9 @@ class PublicationTest {
     @DisplayName("Should create a valid artefact and return the created artefact to the user")
     @Test
     void creationOfAValidArtefact() throws Exception {
+        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(blobContainerClient.getBlobContainerUrl()).thenReturn(PAYLOAD_URL);
+
         MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isOk()).andReturn();
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
@@ -89,7 +103,8 @@ class PublicationTest {
         assertEquals(artefact.getProvenance(), PROVENANCE, "Provenance does not match input provenance");
         assertEquals(artefact.getLanguage(), LANGUAGE, "Language does not match input language");
         assertEquals(artefact.getSensitivity(), SENSITIVITY, "Sensitivity does not match input sensitivity");
-        assertEquals(artefact.getPayload(), PAYLOAD, "Payload does not match input payload");
+        assertEquals(artefact.getPayload(), PAYLOAD_URL + "/" + SOURCE_ARTEFACT_ID + '-' + PROVENANCE,
+                     "Payload does not match input payload");
     }
 
     @DisplayName("Should return a 400 Bad Request if the artifact type header is missing")
@@ -239,6 +254,9 @@ class PublicationTest {
     @DisplayName("Should update the artefact and return the same Artefact ID as the originally created one")
     @Test
     void updatingOfAnArtefactThatAlreadyExists() throws Exception {
+        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(blobContainerClient.getBlobContainerUrl()).thenReturn(PAYLOAD_URL);
+
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
             .put(URL)
             .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
