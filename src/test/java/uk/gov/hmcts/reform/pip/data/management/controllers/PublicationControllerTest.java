@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -37,6 +38,7 @@ class PublicationControllerTest {
     private static final Sensitivity SENSITIVITY = Sensitivity.PUBLIC;
     private static final ArtefactType ARTEFACT_TYPE = ArtefactType.LIST;
     private static final String PAYLOAD = "payload";
+    private static final String PAYLOAD_URL = "This is a test payload";
 
     @Test
     void testCreationOfPublication() {
@@ -48,7 +50,6 @@ class PublicationControllerTest {
             .provenance(PROVENANCE)
             .sensitivity(SENSITIVITY)
             .type(ARTEFACT_TYPE)
-            .payload(PAYLOAD)
             .build();
 
         Artefact artefactWithId = Artefact.builder()
@@ -60,10 +61,11 @@ class PublicationControllerTest {
             .provenance(PROVENANCE)
             .sensitivity(SENSITIVITY)
             .type(ARTEFACT_TYPE)
-            .payload(PAYLOAD)
+            .payload(PAYLOAD_URL)
             .build();
 
-        when(publicationService.createPublication(argThat(arg -> arg.equals(artefact)))).thenReturn(artefactWithId);
+        when(publicationService.createPublication(argThat(arg -> arg.equals(artefact)), eq(PAYLOAD)))
+            .thenReturn(artefactWithId);
 
         ResponseEntity<Artefact> responseEntity = publicationController.uploadPublication(
             PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE,

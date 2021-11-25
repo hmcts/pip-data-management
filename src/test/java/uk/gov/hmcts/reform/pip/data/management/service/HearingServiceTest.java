@@ -8,6 +8,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pip.data.management.Application;
+import uk.gov.hmcts.reform.pip.data.management.config.AzureBlobConfigurationTest;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.HearingNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.models.Hearing;
 
@@ -23,7 +24,7 @@ import static uk.gov.hmcts.reform.pip.data.management.helpers.CourtHelper.create
 import static uk.gov.hmcts.reform.pip.data.management.helpers.TestConstants.INVALID;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.TestConstants.MESSAGES_MATCH;
 
-@SpringBootTest(classes = {Application.class})
+@SpringBootTest(classes = {Application.class, AzureBlobConfigurationTest.class})
 @ActiveProfiles(profiles = "test")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 class HearingServiceTest {

@@ -12,6 +12,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.gov.hmcts.reform.pip.data.management.Application;
+import uk.gov.hmcts.reform.pip.data.management.config.AzureBlobConfigurationTest;
 import uk.gov.hmcts.reform.pip.data.management.models.Hearing;
 import uk.gov.hmcts.reform.pip.data.management.service.HearingService;
 
@@ -24,7 +25,7 @@ import static uk.gov.hmcts.reform.pip.data.management.helpers.TestConstants.HEAR
 import static uk.gov.hmcts.reform.pip.data.management.helpers.TestConstants.STATUS_CODE_MATCH;
 
 @ExtendWith(SpringExtension.class)
-@SpringBootTest(classes = {Application.class})
+@SpringBootTest(classes = {Application.class, AzureBlobConfigurationTest.class})
 @ActiveProfiles(profiles = "test")
 @AutoConfigureMockMvc
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)

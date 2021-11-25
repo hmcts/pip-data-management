@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.pip.data.management.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
+import uk.gov.hmcts.reform.pip.data.management.database.AzureBlobService;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 
 import java.util.Optional;
@@ -15,22 +16,33 @@ public class PublicationService {
 
     private final ArtefactRepository artefactRepository;
 
+    private final AzureBlobService azureBlobService;
+
     @Autowired
-    public PublicationService(ArtefactRepository artefactRepository) {
+    public PublicationService(ArtefactRepository artefactRepository, AzureBlobService azureBlobService) {
         this.artefactRepository = artefactRepository;
+        this.azureBlobService = azureBlobService;
     }
 
     /**
      * Method that handles the creation or updating of a new publication.
      * @param artefact The artifact that needs to be created.
+     * @param payload The paylaod for the artefact that needs to be created.
      * @return Returns the UUID of the artefact that was created.
      */
-    public Artefact createPublication(Artefact artefact) {
+    public Artefact createPublication(Artefact artefact, String payload) {
 
         Optional<Artefact> foundArtefact =  artefactRepository
             .findBySourceArtefactIdAndProvenance(artefact.getSourceArtefactId(), artefact.getProvenance());
 
         foundArtefact.ifPresent(value -> artefact.setArtefactId(value.getArtefactId()));
+
+        String blobUrl = azureBlobService.createPayload(
+            artefact.getSourceArtefactId(),
+            artefact.getProvenance(),
+            payload);
+
+        artefact.setPayload(blobUrl);
 
         return artefactRepository.save(artefact);
     }

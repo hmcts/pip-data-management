@@ -69,7 +69,7 @@ public class Artefact {
     private LocalDateTime displayTo;
 
     /**
-     * JSON blob with Key/Value pairs of data to be published.
+     * The URL for the payload in the Azure Blob Service.
      */
     private String payload;
 

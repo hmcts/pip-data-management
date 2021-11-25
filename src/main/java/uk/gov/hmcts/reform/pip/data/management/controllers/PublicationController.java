@@ -74,11 +74,10 @@ public class PublicationController {
             .type(type).sensitivity(sensitivity)
             .language(language)
             .displayFrom(displayFrom).displayTo(displayTo)
-            .payload(payload)
             .build();
 
         Artefact createdItem = publicationService
-            .createPublication(artefact);
+            .createPublication(artefact, payload);
 
         return ResponseEntity.ok(createdItem);
     }

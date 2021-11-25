@@ -2,8 +2,11 @@ package uk.gov.hmcts.reform.pip.data.management;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import uk.gov.hmcts.reform.pip.data.management.config.AzureBlobConfigurationProperties;
 
 @SpringBootApplication
+@EnableConfigurationProperties(AzureBlobConfigurationProperties.class)
 @SuppressWarnings("HideUtilityClassConstructor") // Spring needs a constructor, its not a utility class
 public class Application {
 

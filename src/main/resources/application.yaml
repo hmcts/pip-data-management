@@ -51,6 +51,6 @@ spring:
 azure:
   application-insights:
     instrumentation-key: ${rpe.AppInsightsInstrumentationKey:00000000-0000-0000-0000-000000000000}
-  table:
+  blob:
     connection-string: ${CONNECTION_STRING}
-    table-name: artefact
+    container-name: artefact
