@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import java.io.ByteArrayInputStream;
 
 /**
- * Class with handles the interaction with the Azure Blob Service
+ * Class with handles the interaction with the Azure Blob Service.
  */
 @Component
 public class AzureBlobService {
@@ -21,7 +21,7 @@ public class AzureBlobService {
     }
 
     /**
-     * Creates the payload in the Azure blob service
+     * Creates the payload in the Azure blob service.
      * @param sourceArtefactId The source ID to call the blob.
      * @param provenance The provenance to call the blob.
      * @param payload The payload to create

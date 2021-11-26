@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class AzureBlobServiceTest {
+class AzureBlobServiceTest {
 
     private static final String SOURCE_ARTEFACT_ID = "1234";
     private static final String PROVENANCE = "abcd";
@@ -29,7 +29,7 @@ public class AzureBlobServiceTest {
     AzureBlobService azureBlobService;
 
     @Test
-    public void testCreationOfNewBlob() {
+    void testCreationOfNewBlob() {
         String blobName = SOURCE_ARTEFACT_ID + '-' + PROVENANCE;
 
         when(blobContainerClient.getBlobClient(blobName)).thenReturn(blobClient);
@@ -37,6 +37,7 @@ public class AzureBlobServiceTest {
 
         String blobUrl = azureBlobService.createPayload(SOURCE_ARTEFACT_ID, PROVENANCE, PAYLOAD);
 
-        assertEquals(CONTAINER_URL + "/" + blobName, blobUrl);
+        assertEquals(CONTAINER_URL + "/" + blobName, blobUrl, "Payload URL does not"
+            + "contain the correct value");
     }
 }

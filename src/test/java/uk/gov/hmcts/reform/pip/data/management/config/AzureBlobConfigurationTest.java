@@ -9,17 +9,17 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
 /**
- * Mock class for testing to mock out external calls to Azure;
+ * Mock class for testing to mock out external calls to Azure.
  */
 @Configuration
 @Profile("test")
 public class AzureBlobConfigurationTest {
 
     @Mock
-    BlobClient blobClient;
+    BlobClient blobClientMock;
 
     @Mock
-    BlobContainerClient blobContainerClient;
+    BlobContainerClient blobContainerClientMock;
 
     public AzureBlobConfigurationTest() {
         MockitoAnnotations.openMocks(this);
@@ -27,12 +27,12 @@ public class AzureBlobConfigurationTest {
 
     @Bean
     public BlobContainerClient blobContainerClient() {
-        return blobContainerClient;
+        return blobContainerClientMock;
     }
 
     @Bean
     public BlobClient blobClient() {
-        return blobClient;
+        return blobClientMock;
     }
 
 }
