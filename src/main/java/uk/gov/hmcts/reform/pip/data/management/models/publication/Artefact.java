@@ -1,15 +1,17 @@
 package uk.gov.hmcts.reform.pip.data.management.models.publication;
 
+import com.vladmihalcea.hibernate.type.json.JsonType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
 
 import java.time.LocalDateTime;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import java.util.List;
+import java.util.Map;
+import javax.persistence.*;
 
 /**
  * Class that presents the Inbound artifact that is being published.
@@ -19,6 +21,7 @@ import javax.persistence.Id;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@TypeDef(name = "json", typeClass = JsonType.class)
 public class Artefact {
 
     /**
@@ -56,7 +59,9 @@ public class Artefact {
     /**
      * Metadata that will be indexed for searching.
      */
-    private String search;
+    @Type(type = "json")
+    @Column(columnDefinition = "json")
+    private Map<String, List<Object>> search;
 
     /**
      * Date / Time from which the publication will be displayed.

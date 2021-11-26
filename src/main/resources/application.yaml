@@ -54,3 +54,13 @@ azure:
   blob:
     connection-string: ${CONNECTION_STRING}
     container-name: artefact
+
+payload:
+  json:
+    search-values:
+      case-id: "$['test'][*]['test1234']"
+      case-urn: "$['test1']"
+      court-name: "$['test2']"
+      court-id: "$['test3']"
+
+

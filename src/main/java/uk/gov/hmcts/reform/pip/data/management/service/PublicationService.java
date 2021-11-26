@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.AzureBlobService;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
+import uk.gov.hmcts.reform.pip.data.management.utils.PayloadExtractor;
 
 import java.util.Optional;
 
@@ -18,10 +19,15 @@ public class PublicationService {
 
     private final AzureBlobService azureBlobService;
 
+    private final PayloadExtractor payloadExtractor;
+
     @Autowired
-    public PublicationService(ArtefactRepository artefactRepository, AzureBlobService azureBlobService) {
+    public PublicationService(ArtefactRepository artefactRepository,
+                              AzureBlobService azureBlobService,
+                              PayloadExtractor payloadExtractor) {
         this.artefactRepository = artefactRepository;
         this.azureBlobService = azureBlobService;
+        this.payloadExtractor = payloadExtractor;
     }
 
     /**
@@ -43,6 +49,7 @@ public class PublicationService {
             payload);
 
         artefact.setPayload(blobUrl);
+        artefact.setSearch(payloadExtractor.extractSearchTerms(payload));
 
         return artefactRepository.save(artefact);
     }

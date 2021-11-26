@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.pip.data.management.service;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -9,7 +10,11 @@ import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.AzureBlobService;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Language;
+import uk.gov.hmcts.reform.pip.data.management.utils.PayloadExtractor;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -24,6 +29,9 @@ class PublicationServiceTest {
     @Mock
     AzureBlobService azureBlobService;
 
+    @Mock
+    PayloadExtractor payloadExtractor;
+
     @InjectMocks
     PublicationService publicationService;
 
@@ -32,6 +40,14 @@ class PublicationServiceTest {
     private static final String PROVENANCE = "provenance";
     private static final String PAYLOAD = "This is a payload";
     private static final String PAYLOAD_URL = "https://ThisIsATestPayload";
+    private static final String TEST_KEY = "TestKey";
+    private static final String TEST_VALUE = "TestValue";
+    private static final Map<String, List<Object>> SEARCH_VALUES = new HashMap<>();
+
+    @BeforeAll
+    public static void setup() {
+        SEARCH_VALUES.put(TEST_KEY, List.of(TEST_VALUE));
+    }
 
     @Test
     void testCreationOfNewArtefact() {
@@ -45,6 +61,7 @@ class PublicationServiceTest {
             .sourceArtefactId(SOURCE_ARTEFACT_ID)
             .provenance(PROVENANCE)
             .payload(PAYLOAD_URL)
+            .search(SEARCH_VALUES)
             .build();
 
         Artefact artefactWithIdAndPayloadUrl = Artefact.builder()
@@ -52,12 +69,14 @@ class PublicationServiceTest {
             .sourceArtefactId(SOURCE_ARTEFACT_ID)
             .provenance(PROVENANCE)
             .payload(PAYLOAD_URL)
+            .search(SEARCH_VALUES)
             .build();
 
         when(artefactRepository.findBySourceArtefactIdAndProvenance(SOURCE_ARTEFACT_ID, PROVENANCE))
             .thenReturn(Optional.empty());
         when(azureBlobService.createPayload(SOURCE_ARTEFACT_ID, PROVENANCE, PAYLOAD)).thenReturn(PAYLOAD_URL);
         when(artefactRepository.save(artefactWithPayloadUrl)).thenReturn(artefactWithIdAndPayloadUrl);
+        when(payloadExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
 
         Artefact returnedArtefact = publicationService.createPublication(artefact, PAYLOAD);
 
@@ -78,6 +97,7 @@ class PublicationServiceTest {
             .sourceArtefactId(SOURCE_ARTEFACT_ID)
             .provenance(PROVENANCE)
             .payload(PAYLOAD_URL)
+            .search(SEARCH_VALUES)
             .build();
 
         Artefact newArtefactWithId = Artefact.builder()
@@ -86,12 +106,14 @@ class PublicationServiceTest {
             .provenance(PROVENANCE)
             .language(Language.ENGLISH)
             .payload(PAYLOAD_URL)
+            .search(SEARCH_VALUES)
             .build();
 
         when(artefactRepository.findBySourceArtefactIdAndProvenance(SOURCE_ARTEFACT_ID, PROVENANCE))
             .thenReturn(Optional.of(existingArtefact));
         when(azureBlobService.createPayload(SOURCE_ARTEFACT_ID, PROVENANCE, PAYLOAD)).thenReturn(PAYLOAD_URL);
         when(artefactRepository.save(newArtefactWithId)).thenReturn(newArtefactWithId);
+        when(payloadExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
 
         Artefact returnedArtefact = publicationService.createPublication(artefact, PAYLOAD);
 
