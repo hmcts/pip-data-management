@@ -7,15 +7,17 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.hmcts.reform.pip.data.management.config.SearchConfiguration;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class JsonExtractorTest {
+class JsonExtractorTest {
 
     @Mock
     SearchConfiguration searchConfiguration;
@@ -30,8 +32,8 @@ public class JsonExtractorTest {
     private static final String SEARCH_TERM_NOT_FOUND = "$['test1']";
 
     @Test
-    public void testExtractSearchTerms() {
-        Map<String, String> searchValues = new HashMap<>();
+    void testExtractSearchTerms() {
+        Map<String, String> searchValues = new ConcurrentHashMap<>();
         searchValues.put(TEST_KEY, SEARCH_TERM_FOUND);
 
         when(searchConfiguration.getSearchValues()).thenReturn(searchValues);
@@ -41,12 +43,13 @@ public class JsonExtractorTest {
         assertTrue(searchTerms.containsKey(TEST_KEY), "Search term does not contain expected key");
         assertEquals(1, searchTerms.get(TEST_KEY).size(), "Search term does not "
             + "contain expected size of values");
-        assertEquals("test-1234", searchTerms.get(TEST_KEY).get(0));
+        assertEquals("test-1234", searchTerms.get(TEST_KEY).get(0), "The search term value"
+            + "does not contain expected result");
     }
 
     @Test
-    public void testExtractSearchTermWhereMissing() {
-        Map<String, String> searchValues = new HashMap<>();
+    void testExtractSearchTermWhereMissing() {
+        Map<String, String> searchValues = new ConcurrentHashMap<>();
         searchValues.put(TEST_KEY, SEARCH_TERM_FOUND);
         searchValues.put(TEST_KEY_NOT_FOUND, SEARCH_TERM_NOT_FOUND);
 
@@ -58,16 +61,17 @@ public class JsonExtractorTest {
         assertFalse(searchTerms.containsKey(TEST_KEY_NOT_FOUND), "Search term contains unexpected key");
         assertEquals(1, searchTerms.get(TEST_KEY).size(), "Search term does not "
             + "contain expected size of values");
-        assertEquals("test-1234", searchTerms.get(TEST_KEY).get(0));
+        assertEquals("test-1234", searchTerms.get(TEST_KEY).get(0), "The search term value"
+            + "does not contain expected result");
     }
 
     @Test
-    public void testIsAccepted() {
+    void testIsAccepted() {
         assertTrue(jsonExtractor.isAccepted(VALID_PAYLOAD), "Valid JSON string marked as not accepted");
     }
 
     @Test
-    public void testNotAccepted() {
+    void testNotAccepted() {
         assertFalse(jsonExtractor.isAccepted("invalid-test"), "Invalid JSON string marked as accepted");
     }
 }

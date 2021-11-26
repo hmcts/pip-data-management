@@ -10,10 +10,10 @@ import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.pip.data.management.config.SearchConfiguration;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 public class JsonExtractor implements Extractor {
@@ -28,11 +28,13 @@ public class JsonExtractor implements Extractor {
 
         jsonConfiguration = Configuration.defaultConfiguration()
             .addOptions(Option.DEFAULT_PATH_LEAF_TO_NULL)
+            .addOptions(Option.SUPPRESS_EXCEPTIONS)
             .addOptions(Option.ALWAYS_RETURN_LIST);
     }
 
+    @Override
     public Map<String, List<Object>> extractSearchTerms(String payload) {
-        Map<String, List<Object>> searchTermsMap = new HashMap<>();
+        Map<String, List<Object>> searchTermsMap = new ConcurrentHashMap<>();
         searchConfiguration.getSearchValues().forEach((key, value) -> {
 
             DocumentContext jsonPayload = JsonPath
@@ -48,6 +50,7 @@ public class JsonExtractor implements Extractor {
         return searchTermsMap;
     }
 
+    @Override
     public boolean isAccepted(String payload) {
         try {
             new ObjectMapper().readTree(payload);

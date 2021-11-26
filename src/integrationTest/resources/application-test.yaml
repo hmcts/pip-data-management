@@ -7,3 +7,9 @@ spring:
     embedded-directory: build
     jpa:
       spring.jpa.database-platform: org.hibernate.dialect.H2Dialect
+
+payload:
+  json:
+    search-values:
+      array-value: "$['root-value']['inner-value'][*]['array-value']"
+      case-urn: "$['unknown-attribute']"

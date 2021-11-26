@@ -12,10 +12,10 @@ import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Language;
 import uk.gov.hmcts.reform.pip.data.management.utils.PayloadExtractor;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
@@ -42,7 +42,7 @@ class PublicationServiceTest {
     private static final String PAYLOAD_URL = "https://ThisIsATestPayload";
     private static final String TEST_KEY = "TestKey";
     private static final String TEST_VALUE = "TestValue";
-    private static final Map<String, List<Object>> SEARCH_VALUES = new HashMap<>();
+    private static final Map<String, List<Object>> SEARCH_VALUES = new ConcurrentHashMap<>();
 
     @BeforeAll
     public static void setup() {

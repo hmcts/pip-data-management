@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.pip.data.management.controllers;
 import com.azure.storage.blob.BlobClient;
 import com.azure.storage.blob.BlobContainerClient;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.microsoft.applicationinsights.web.dependencies.apachecommons.io.IOUtils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,10 +24,16 @@ import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Language;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Sensitivity;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -51,13 +58,18 @@ class PublicationTest {
     private static final ArtefactType ARTEFACT_TYPE = ArtefactType.LIST;
     private static final Sensitivity SENSITIVITY = Sensitivity.PUBLIC;
     private static final String PROVENANCE = "provenance";
-    private static final String PAYLOAD = "payload";
+    private static String payload = "payload";
+    private static final String PAYLOAD_UNKNOWN = "Unknown-Payload";
     private static final String SOURCE_ARTEFACT_ID = "sourceArtefactId";
     private static final LocalDateTime DISPLAY_TO = LocalDateTime.now();
     private static final LocalDateTime DISPLAY_FROM = LocalDateTime.now();
     private static final Language LANGUAGE = Language.ENGLISH;
     private static final String TEST_VALUE = "test";
     private static final String PAYLOAD_URL = "https://localhost";
+    private static final String SEARCH_KEY_FOUND = "array-value";
+    private static final String SEARCH_KEY_NOT_FOUND = "case-urn";
+    private static final String SEARCH_VALUE_1 = "array-value-1";
+    private static final String SEARCH_VALUE_2 = "array-value-2";
 
     private static final String VALIDATION_EMPTY_RESPONSE = "Response should contain a Artefact";
 
@@ -65,7 +77,12 @@ class PublicationTest {
     private static ObjectMapper objectMapper;
 
     @BeforeAll
-    public static void setup() {
+    public static void setup() throws IOException {
+
+        payload = new String(IOUtils.toByteArray(
+            Objects.requireNonNull(PublicationTest.class.getClassLoader()
+                                       .getResourceAsStream("data/artefact.json"))));
+
         objectMapper = new ObjectMapper();
         objectMapper.findAndRegisterModules();
 
@@ -78,7 +95,7 @@ class PublicationTest {
             .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
             .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO)
             .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
-            .content(PAYLOAD)
+            .content(payload)
             .contentType(MediaType.APPLICATION_JSON);
     }
 
@@ -103,6 +120,18 @@ class PublicationTest {
         assertEquals(artefact.getProvenance(), PROVENANCE, "Provenance does not match input provenance");
         assertEquals(artefact.getLanguage(), LANGUAGE, "Language does not match input language");
         assertEquals(artefact.getSensitivity(), SENSITIVITY, "Sensitivity does not match input sensitivity");
+
+        Map<String, List<Object>> searchResult = artefact.getSearch();
+        assertTrue(searchResult.containsKey(SEARCH_KEY_FOUND),
+                   "Returned search result does not contain the correct key");
+        assertFalse(searchResult.containsKey(SEARCH_KEY_NOT_FOUND), "Returned search result contains "
+            + "key that does not exist");
+        assertEquals(SEARCH_VALUE_1, searchResult.get(SEARCH_KEY_FOUND).get(0),
+                     "Does not contain first value in the array");
+
+        assertEquals(SEARCH_VALUE_2, searchResult.get(SEARCH_KEY_FOUND).get(1),
+                     "Does not contain second value in the array");
+
         assertEquals(artefact.getPayload(), PAYLOAD_URL + "/" + SOURCE_ARTEFACT_ID + '-' + PROVENANCE,
                      "Payload does not match input payload");
     }
@@ -118,7 +147,7 @@ class PublicationTest {
             .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO)
             .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
-            .content(PAYLOAD)
+            .content(payload)
             .contentType(MediaType.APPLICATION_JSON);
 
         MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
@@ -139,7 +168,7 @@ class PublicationTest {
             .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO)
             .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
-            .content(PAYLOAD)
+            .content(payload)
             .contentType(MediaType.APPLICATION_JSON);
 
         MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
@@ -159,7 +188,7 @@ class PublicationTest {
             .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO)
             .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
-            .content(PAYLOAD)
+            .content(payload)
             .contentType(MediaType.APPLICATION_JSON);
 
         MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
@@ -179,7 +208,7 @@ class PublicationTest {
             .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO)
             .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
-            .content(PAYLOAD)
+            .content(payload)
             .contentType(MediaType.APPLICATION_JSON);
 
         MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
@@ -200,7 +229,7 @@ class PublicationTest {
             .header(PublicationConfiguration.DISPLAY_TO_HEADER, TEST_VALUE)
             .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
-            .content(PAYLOAD)
+            .content(payload)
             .contentType(MediaType.APPLICATION_JSON);
 
         MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
@@ -221,7 +250,7 @@ class PublicationTest {
             .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO)
             .header(PublicationConfiguration.DISPLAY_FROM_HEADER, TEST_VALUE)
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
-            .content(PAYLOAD)
+            .content(payload)
             .contentType(MediaType.APPLICATION_JSON);
 
         MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
@@ -242,7 +271,7 @@ class PublicationTest {
             .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO)
             .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
             .header(PublicationConfiguration.LANGUAGE_HEADER, TEST_VALUE)
-            .content(PAYLOAD)
+            .content(payload)
             .contentType(MediaType.APPLICATION_JSON);
 
         MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
@@ -265,7 +294,7 @@ class PublicationTest {
             .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
             .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO)
             .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
-            .content(PAYLOAD)
+            .content(payload)
             .contentType(MediaType.APPLICATION_JSON);
 
         MvcResult createResponse =
@@ -288,5 +317,32 @@ class PublicationTest {
 
         assertEquals(Language.BI_LINGUAL, updatedArtefact.getLanguage(), "The updated artefact does "
             + "not contain the new language");
+    }
+
+    @DisplayName("Should contain no search terms when payload is of an unknown type")
+    @Test
+    void creationOfAnArtefactWithAnUnknownSearchType() throws Exception {
+        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(blobContainerClient.getBlobContainerUrl()).thenReturn(PAYLOAD_URL);
+
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+            .put(URL)
+            .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
+            .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
+            .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
+            .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
+            .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO)
+            .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
+            .content(PAYLOAD_UNKNOWN)
+            .contentType(MediaType.APPLICATION_JSON);
+
+        MvcResult createResponse =
+            mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isOk()).andReturn();
+
+        Artefact createdArtefact = objectMapper.readValue(createResponse.getResponse().getContentAsString(),
+                                                          Artefact.class);
+
+        assertTrue(createdArtefact.getSearch().isEmpty(), "Artefact search criteria exists"
+            + "when payload is of an unknown type");
     }
 }

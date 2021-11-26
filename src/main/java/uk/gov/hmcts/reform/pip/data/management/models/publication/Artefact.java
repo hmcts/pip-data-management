@@ -11,7 +11,11 @@ import org.hibernate.annotations.TypeDef;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
 /**
  * Class that presents the Inbound artifact that is being published.

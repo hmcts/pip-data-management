@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Class that determines the extractor to use for the payload
+ * Class that determines the extractor to use for the payload.
  */
 @Component
 public class PayloadExtractor {
