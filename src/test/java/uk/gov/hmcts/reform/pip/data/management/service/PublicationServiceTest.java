@@ -15,6 +15,7 @@ import uk.gov.hmcts.reform.pip.data.management.utils.PayloadExtractor;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -35,7 +36,7 @@ class PublicationServiceTest {
     @InjectMocks
     PublicationService publicationService;
 
-    private static final Long ARTEFACT_ID = 2L;
+    private static final UUID ARTEFACT_ID = UUID.randomUUID();
     private static final String SOURCE_ARTEFACT_ID = "1234";
     private static final String PROVENANCE = "provenance";
     private static final String PAYLOAD = "This is a payload";

@@ -11,6 +11,7 @@ import org.hibernate.annotations.TypeDef;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -35,7 +36,9 @@ public class Artefact {
      */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long artefactId;
+    @Column(columnDefinition = "uuid", insertable = false, updatable = false, nullable = false)
+    @Type(type = "org.hibernate.type.PostgresUUIDType")
+    private UUID artefactId;
 
     /**
      * Name of source system.
