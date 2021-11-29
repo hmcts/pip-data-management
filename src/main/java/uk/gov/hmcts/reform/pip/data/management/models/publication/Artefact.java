@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.Map;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -48,16 +50,19 @@ public class Artefact {
     /**
      * List / Outcome / Judgement / Status Update.
      */
+    @Enumerated(EnumType.STRING)
     private ArtefactType type;
 
     /**
      * Level of sensitivity of publication.
      */
+    @Enumerated(EnumType.STRING)
     private Sensitivity sensitivity;
 
     /**
      * Language of publication.
      */
+    @Enumerated(EnumType.STRING)
     private Language language;
 
     /**

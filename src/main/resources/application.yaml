@@ -58,9 +58,9 @@ azure:
 payload:
   json:
     search-values:
-      case-id: "$['test'][*]['test1234']"
-      case-urn: "$['test1']"
-      court-name: "$['test2']"
-      court-id: "$['test3']"
+      case-id: "$['CourtList']['CourtList'][*]['courtroom']['sittings'][*]['Hearing']['Case']['caseNumber']"
+      case-urn: "$['CourtList']['CourtList'][*]['courtroom']['sittings'][*]['Hearing']['Case']['CaseURN']"
+      court-name: "$['CourtList']['CourtList'][*]['CourtHouse']['CourtHouseName']"
+      court-id: "$['CourtList']['CourtList'][*]['CourtHouse']['CourtHouseCode']"
 
 

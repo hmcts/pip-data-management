@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.EmptyRequestHeaderException;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Language;
@@ -68,6 +69,7 @@ public class PublicationController {
         @RequestHeader(value = PublicationConfiguration.DISPLAY_TO_HEADER, required = false)
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime displayTo,
         @RequestBody String payload) {
+        validateRequestHeaders(provenance, sourceArtefactId);
 
         Artefact artefact = Artefact.builder()
             .provenance(provenance).sourceArtefactId(sourceArtefactId)
@@ -80,5 +82,17 @@ public class PublicationController {
             .createPublication(artefact, payload);
 
         return ResponseEntity.ok(createdItem);
+    }
+
+    /**
+     * Validates the Provenance and Source Artefact ID headers to check they are not empty.
+     * due to Spring validation only checking if these are required.
+     */
+    private void validateRequestHeaders(String provenance, String sourceArtefactId) {
+        if (provenance.isEmpty()) {
+            throw new EmptyRequestHeaderException(PublicationConfiguration.PROVENANCE_HEADER);
+        } else if (sourceArtefactId.isEmpty()) {
+            throw new EmptyRequestHeaderException(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER);
+        }
     }
 }

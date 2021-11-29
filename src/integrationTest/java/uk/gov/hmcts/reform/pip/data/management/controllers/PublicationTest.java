@@ -19,6 +19,7 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import uk.gov.hmcts.reform.pip.data.management.Application;
 import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.ExceptionResponse;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Language;
@@ -70,8 +71,10 @@ class PublicationTest {
     private static final String SEARCH_KEY_NOT_FOUND = "case-urn";
     private static final String SEARCH_VALUE_1 = "array-value-1";
     private static final String SEARCH_VALUE_2 = "array-value-2";
+    private static final String EMPTY_VALUE = "";
 
     private static final String VALIDATION_EMPTY_RESPONSE = "Response should contain a Artefact";
+    private static final String VALIDATION_EXCEPTION_RESPONSE = "Exception response does not contain correct message";
 
     private static MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
     private static ObjectMapper objectMapper;
@@ -153,7 +156,36 @@ class PublicationTest {
         MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
             .andExpect(status().isBadRequest()).andReturn();
 
-        assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
+        assertFalse(response.getResponse().getContentAsString().isEmpty(), VALIDATION_EMPTY_RESPONSE);
+        ExceptionResponse exceptionResponse = objectMapper.readValue(response.getResponse().getContentAsString(),
+                                                                     ExceptionResponse.class);
+
+        assertTrue(exceptionResponse.getMessage().contains("x-type"), VALIDATION_EXCEPTION_RESPONSE);
+    }
+
+    @DisplayName("Should return a 400 Bad Request if the artifact type header is empty")
+    @Test
+    void testEmptyArtifactType() throws Exception {
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+            .put(URL)
+            .header(PublicationConfiguration.TYPE_HEADER, EMPTY_VALUE)
+            .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
+            .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
+            .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
+            .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO)
+            .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
+            .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
+            .content(payload)
+            .contentType(MediaType.APPLICATION_JSON);
+
+        MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
+            .andExpect(status().isBadRequest()).andReturn();
+
+        assertFalse(response.getResponse().getContentAsString().isEmpty(), VALIDATION_EMPTY_RESPONSE);
+        ExceptionResponse exceptionResponse = objectMapper.readValue(response.getResponse().getContentAsString(),
+                                                                     ExceptionResponse.class);
+
+        assertTrue(exceptionResponse.getMessage().contains("x-type"), VALIDATION_EXCEPTION_RESPONSE);
     }
 
     @DisplayName("Should return a 400 Bad Request if an invalid artifact type is provided")
@@ -174,7 +206,11 @@ class PublicationTest {
         MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
             .andExpect(status().isBadRequest()).andReturn();
 
-        assertNotNull(response.getResponse().getContentAsString(), "Response should contain a string");
+        assertFalse(response.getResponse().getContentAsString().isEmpty(), VALIDATION_EMPTY_RESPONSE);
+        ExceptionResponse exceptionResponse = objectMapper.readValue(response.getResponse().getContentAsString(),
+                                                                     ExceptionResponse.class);
+
+        assertTrue(exceptionResponse.getMessage().contains("Unable to parse x-type"), VALIDATION_EXCEPTION_RESPONSE);
     }
 
     @DisplayName("Should return a 400 Bad Request if the provenance header is missing")
@@ -194,7 +230,36 @@ class PublicationTest {
         MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
             .andExpect(status().isBadRequest()).andReturn();
 
-        assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
+        assertFalse(response.getResponse().getContentAsString().isEmpty(), VALIDATION_EMPTY_RESPONSE);
+        ExceptionResponse exceptionResponse = objectMapper.readValue(response.getResponse().getContentAsString(),
+                                                                     ExceptionResponse.class);
+
+        assertTrue(exceptionResponse.getMessage().contains("x-provenance"), VALIDATION_EXCEPTION_RESPONSE);
+    }
+
+    @DisplayName("Should return a 400 Bad Request if the provenance header is empty")
+    @Test
+    void testEmptyProvenance() throws Exception {
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+            .put(URL)
+            .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
+            .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
+            .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
+            .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO)
+            .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
+            .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
+            .header(PublicationConfiguration.PROVENANCE_HEADER, EMPTY_VALUE)
+            .content(payload)
+            .contentType(MediaType.APPLICATION_JSON);
+
+        MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
+            .andExpect(status().isBadRequest()).andReturn();
+
+        assertFalse(response.getResponse().getContentAsString().isEmpty(), VALIDATION_EMPTY_RESPONSE);
+        ExceptionResponse exceptionResponse = objectMapper.readValue(response.getResponse().getContentAsString(),
+                                                                     ExceptionResponse.class);
+
+        assertTrue(exceptionResponse.getMessage().contains("x-provenance"), VALIDATION_EXCEPTION_RESPONSE);
     }
 
     @DisplayName("Should return a 400 Bad Request if the source artifact id is missing")
@@ -214,7 +279,36 @@ class PublicationTest {
         MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
             .andExpect(status().isBadRequest()).andReturn();
 
-        assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
+        assertFalse(response.getResponse().getContentAsString().isEmpty(), VALIDATION_EMPTY_RESPONSE);
+        ExceptionResponse exceptionResponse = objectMapper.readValue(response.getResponse().getContentAsString(),
+                                                                     ExceptionResponse.class);
+
+        assertTrue(exceptionResponse.getMessage().contains("x-source-artefact-id"), VALIDATION_EXCEPTION_RESPONSE);
+    }
+
+    @DisplayName("Should return a 400 Bad Request if the source artifact id is missing")
+    @Test
+    void testEmptySourceArtifactId() throws Exception {
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+            .put(URL)
+            .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, EMPTY_VALUE)
+            .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
+            .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
+            .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
+            .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO)
+            .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
+            .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
+            .content(payload)
+            .contentType(MediaType.APPLICATION_JSON);
+
+        MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
+            .andExpect(status().isBadRequest()).andReturn();
+
+        assertFalse(response.getResponse().getContentAsString().isEmpty(), VALIDATION_EMPTY_RESPONSE);
+        ExceptionResponse exceptionResponse = objectMapper.readValue(response.getResponse().getContentAsString(),
+                                                                     ExceptionResponse.class);
+
+        assertTrue(exceptionResponse.getMessage().contains("x-source-artefact-id"), VALIDATION_EXCEPTION_RESPONSE);
     }
 
     @DisplayName("Should return a 400 Bad Request if an invalid display to is provided")
@@ -235,7 +329,12 @@ class PublicationTest {
         MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
             .andExpect(status().isBadRequest()).andReturn();
 
-        assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
+        assertFalse(response.getResponse().getContentAsString().isEmpty(), VALIDATION_EMPTY_RESPONSE);
+        ExceptionResponse exceptionResponse = objectMapper.readValue(response.getResponse().getContentAsString(),
+                                                                     ExceptionResponse.class);
+
+        assertTrue(exceptionResponse.getMessage().contains("Unable to parse x-display-to"),
+                   VALIDATION_EXCEPTION_RESPONSE);
     }
 
     @DisplayName("Should return a 400 Bad Request if an invalid display from is provided")
@@ -256,7 +355,12 @@ class PublicationTest {
         MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
             .andExpect(status().isBadRequest()).andReturn();
 
-        assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
+        assertFalse(response.getResponse().getContentAsString().isEmpty(), VALIDATION_EMPTY_RESPONSE);
+        ExceptionResponse exceptionResponse = objectMapper.readValue(response.getResponse().getContentAsString(),
+                                                                     ExceptionResponse.class);
+
+        assertTrue(exceptionResponse.getMessage().contains("Unable to parse x-display-from"),
+                   VALIDATION_EXCEPTION_RESPONSE);
     }
 
     @DisplayName("Should return a 400 Bad Request if an invalid language is provided")
@@ -271,6 +375,32 @@ class PublicationTest {
             .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO)
             .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
             .header(PublicationConfiguration.LANGUAGE_HEADER, TEST_VALUE)
+            .content(payload)
+            .contentType(MediaType.APPLICATION_JSON);
+
+        MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
+            .andExpect(status().isBadRequest()).andReturn();
+
+        assertFalse(response.getResponse().getContentAsString().isEmpty(), VALIDATION_EMPTY_RESPONSE);
+        ExceptionResponse exceptionResponse = objectMapper.readValue(response.getResponse().getContentAsString(),
+                                                                     ExceptionResponse.class);
+
+        assertTrue(exceptionResponse.getMessage().contains("Unable to parse x-language"),
+                   VALIDATION_EXCEPTION_RESPONSE);
+    }
+
+    @DisplayName("Should return a 400 Bad Request if an invalid sensitivity is provided")
+    @Test
+    void testInvalidSensitivityHeader() throws Exception {
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+            .put(URL)
+            .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
+            .header(PublicationConfiguration.SENSITIVITY_HEADER, TEST_VALUE)
+            .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
+            .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
+            .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO)
+            .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
+            .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
             .content(payload)
             .contentType(MediaType.APPLICATION_JSON);
 
