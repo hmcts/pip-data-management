@@ -1,3500 +1,1826 @@
 [
   {
-    "courtId": 1,
-    "name": "Abergavenny Magistrates' Court",
-    "jurisdiction": "Crown Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 2,
-    "name": "Accrington County Court",
-    "jurisdiction": "Crown Court",
-    "location": "Hull"
-  },
-  {
-    "courtId": 3,
-    "name": "Accrington Magistrates' Court",
-    "jurisdiction": "Crown",
-    "location": "Hull"
-  },
-  {
-    "courtId": 4,
-    "name": "Aldershot and Farnham County Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 5,
-    "name": "Aldershot Magistrates' Court",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 6,
-    "name": "Alton Magistrates' Court",
-    "jurisdiction": "Royal Court",
-    "location": "London"
-  },
-  {
-    "courtId": 7,
-    "name": "Altrincham County Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 8,
-    "name": "Andover Magistrates' Court",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 9,
-    "name": "Tameside Magistrates' Court",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
-  },
-  {
     "courtId": 10,
-    "name": "Aylesbury County Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 11,
-    "name": "Aylesbury Crown Court",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 12,
-    "name": "Aylesbury Magistrates' Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "London"
+    "location": "South West",
+    "jurisdiction": "County Court",
+    "name": "Aldershot Justice Centre"
   },
   {
     "courtId": 13,
-    "name": "Banbury County Court",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 14,
-    "name": "Banbury Magistrates' Court and Family Court",
+    "location": "South East",
     "jurisdiction": "Crown Court",
-    "location": "London"
-  },
-  {
-    "courtId": 15,
-    "name": "Caernarfon Probate Sub- Registry",
-    "jurisdiction": "Royal Court",
-    "location": "London"
-  },
-  {
-    "courtId": 16,
-    "name": "Barnet Civil and Family Courts Centre",
-    "jurisdiction": "Crown Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 17,
-    "name": "Barnsley Law Courts",
-    "jurisdiction": "Crown Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 18,
-    "name": "Barnstaple County Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 19,
-    "name": "Barnstaple Magistrates' Court - North and East Devon",
-    "jurisdiction": "Crown Court",
-    "location": "London"
-  },
-  {
-    "courtId": 20,
-    "name": "Barrow-in-Furness County Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "London"
-  },
-  {
-    "courtId": 21,
-    "name": "Barrow-in-Furness Magistrates' Court",
-    "jurisdiction": "Crown Court",
-    "location": "Bedford"
+    "name": "Amersham Law Courts"
   },
   {
     "courtId": 22,
-    "name": "Basildon Combined Court",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 23,
-    "name": "Basildon Magistrates' Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
+    "location": "London",
+    "jurisdiction": "County Court",
+    "name": "Barnet Civil and Family Courts Centre"
   },
   {
     "courtId": 24,
-    "name": "Basingstoke County Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 25,
-    "name": "Basingstoke Magistrates' Court",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
+    "location": "North East",
+    "jurisdiction": "Magistrates' Court",
+    "name": "Barnsley Law Courts"
   },
   {
     "courtId": 26,
-    "name": "Bath County Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
+    "location": "South West",
+    "jurisdiction": "Magistrates' Court",
+    "name": "Barnstaple Magistrates', County and Family Court"
   },
   {
     "courtId": 27,
-    "name": "Bath Magistrates' Court",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 28,
-    "name": "Bedford and Mid Beds Magistrates' Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "Bedford"
+    "location": "North West",
+    "jurisdiction": "County Court",
+    "name": "Barrow-In-Furness County Court and Family Court"
   },
   {
     "courtId": 29,
-    "name": "Belmarsh Magistrates' Court",
-    "jurisdiction": "Crown Court",
-    "location": "Bedford"
+    "location": "South East",
+    "jurisdiction": "County Court",
+    "name": "Basildon Combined Court"
   },
   {
     "courtId": 30,
-    "name": "Berwick upon Tweed Magistrates' Court",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 31,
-    "name": "Beverley Magistrates' Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "London"
-  },
-  {
-    "courtId": 32,
-    "name": "Bexley Magistrates' Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
+    "location": "South East",
+    "jurisdiction": "Magistrates' Court",
+    "name": "Basildon Magistrates' Court and Family Court"
   },
   {
     "courtId": 33,
-    "name": "Bicester Magistrates' Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "London"
-  },
-  {
-    "courtId": 34,
-    "name": "Birkenhead County Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
+    "location": "South West",
+    "jurisdiction": "Magistrates' Court",
+    "name": "Bath Magistrates', County and Family Court"
   },
   {
     "courtId": 35,
-    "name": "Birmingham Civil and Family Justice Centre",
-    "jurisdiction": "Crown Court",
-    "location": "London"
+    "location": "South East",
+    "jurisdiction": "County Court",
+    "name": "Bedford and Mid Beds Magistrates' Court and Family Court"
   },
   {
     "courtId": 36,
-    "name": "Birmingham Crown Court",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
+    "location": "North East",
+    "jurisdiction": "Magistrates' Court",
+    "name": "Mid and South East Northumberland Law Courts"
   },
   {
     "courtId": 37,
-    "name": "Birmingham District Probate Registry",
-    "jurisdiction": "Crown Court",
-    "location": "London"
-  },
-  {
-    "courtId": 38,
-    "name": "Birmingham Magistrates' Court",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
+    "location": "North East",
+    "jurisdiction": "Magistrates' Court",
+    "name": "Berwick Upon Tweed Magistrates' Court"
   },
   {
     "courtId": 39,
-    "name": "Birmingham Youth Court",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 40,
-    "name": "Blackburn County Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "London"
-  },
-  {
-    "courtId": 41,
-    "name": "Blackburn Magistrates' Court",
-    "jurisdiction": "Crown Court",
-    "location": "London"
+    "location": "London",
+    "jurisdiction": "Magistrates' Court",
+    "name": "Bexley Magistrates' Court"
   },
   {
     "courtId": 42,
-    "name": "Blackfriars Crown Court",
-    "jurisdiction": "Crown Court",
-    "location": "London"
+    "location": "North West",
+    "jurisdiction": "County Court",
+    "name": "Birkenhead County Court and Family Court"
   },
   {
     "courtId": 43,
-    "name": "Blackpool County Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "London"
+    "location": "Midlands",
+    "jurisdiction": "County Court",
+    "name": "Birmingham Civil and Family Justice Centre"
   },
   {
     "courtId": 44,
-    "name": "Blackpool Magistrates' Court",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
+    "location": "Midlands",
+    "jurisdiction": "Crown Court",
+    "name": "Birmingham Crown Court"
   },
   {
     "courtId": 45,
-    "name": "Blackwood Civil and Family Court",
+    "location": "Midlands",
     "jurisdiction": "Crown Court",
-    "location": "Manchester"
+    "name": "Birmingham Crown Court Annexe (4 Newton Street)"
   },
   {
     "courtId": 46,
-    "name": "Bodmin County Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 47,
-    "name": "Bodmin Magistrates' Court",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 48,
-    "name": "Bodmin Probate Sub-Registry",
-    "jurisdiction": "Royal Court",
-    "location": "London"
+    "location": "Midlands",
+    "jurisdiction": "Magistrates' Court",
+    "name": "Birmingham Magistrates' Court"
   },
   {
     "courtId": 49,
-    "name": "Bolton County Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
+    "location": "North West",
+    "jurisdiction": "County Court",
+    "name": "Blackburn County Court and Family Court"
   },
   {
     "courtId": 50,
-    "name": "Bolton Magistrates' Court",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 51,
-    "name": "Boston County Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
+    "location": "North West",
+    "jurisdiction": "Magistrates' Court",
+    "name": "Blackburn Magistrates' Court"
   },
   {
     "courtId": 52,
-    "name": "Boston Magistrates' Court",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
+    "location": "North West",
+    "jurisdiction": "County Court",
+    "name": "Blackpool County Court and Family Court"
   },
   {
     "courtId": 53,
-    "name": "Bournemouth and Poole County Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "London"
+    "location": "North West",
+    "jurisdiction": "Magistrates' Court",
+    "name": "Blackpool Magistrates' Court"
   },
   {
     "courtId": 54,
-    "name": "Bournemouth Crown Court",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 55,
-    "name": "Bournemouth Magistrates' Court",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 56,
-    "name": "Bow County Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 57,
-    "name": "East Berkshire Magistrates' Court",
-    "jurisdiction": "Royal Court",
-    "location": "London"
+    "location": "Wales",
+    "jurisdiction": "County Court",
+    "name": "Blackwood Civil and Family Court"
   },
   {
     "courtId": 58,
-    "name": "Bradford Combined Court Centre",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
+    "location": "South West",
+    "jurisdiction": "County Court",
+    "name": "Bodmin County Court and Family Court"
   },
   {
     "courtId": 59,
-    "name": "Bradford and Keighley Magistrates' Court and Family Court",
+    "location": "North West",
     "jurisdiction": "Crown Court",
-    "location": "London"
-  },
-  {
-    "courtId": 60,
-    "name": "Brecon Law Courts",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
+    "name": "Bolton Combined Court"
   },
   {
     "courtId": 61,
-    "name": "Willesden Magistrates' Court",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
+    "location": "North West",
+    "jurisdiction": "Magistrates' Court",
+    "name": "Sefton Magistrates' Court"
   },
   {
     "courtId": 62,
-    "name": "Brentford County Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 63,
-    "name": "Bridgend Law Courts",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
+    "location": "Midlands",
+    "jurisdiction": "County Court",
+    "name": "Boston County Court and Family Court"
   },
   {
     "courtId": 64,
-    "name": "Bridlington Magistrates' Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 65,
-    "name": "Brighton County Court",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 66,
-    "name": "Brighton District Probate Registry",
+    "location": "South West",
     "jurisdiction": "Crown Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 67,
-    "name": "Brighton Magistrates' Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
+    "name": "Bournemouth Combined Court"
   },
   {
     "courtId": 68,
-    "name": "Bristol Crown Court",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
+    "location": "North East",
+    "jurisdiction": "County Court",
+    "name": "Bradford Combined Court Centre"
   },
   {
     "courtId": 69,
-    "name": "Bristol Magistrates' Court",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 70,
-    "name": "Bromley County Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "London"
+    "location": "North East",
+    "jurisdiction": "Magistrates' Court",
+    "name": "Bradford And Keighley Magistrates' Court and Family Court"
   },
   {
     "courtId": 71,
-    "name": "Bromley Magistrates' Court",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
+    "location": "London",
+    "jurisdiction": "Magistrates' Court",
+    "name": "Willesden Magistrates' Court"
   },
   {
     "courtId": 72,
-    "name": "Burnley Combined Court Centre",
-    "jurisdiction": "Crown Court",
-    "location": "London"
-  },
-  {
-    "courtId": 73,
-    "name": "Burnley Magistrates' Court",
-    "jurisdiction": "Royal Court",
-    "location": "London"
-  },
-  {
-    "courtId": 74,
-    "name": "Burton-upon-Trent Magistrates' Court",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 75,
-    "name": "Bury County Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 76,
-    "name": "Bury and Rochdale Magistrates' Court",
-    "jurisdiction": "Crown Court",
-    "location": "London"
-  },
-  {
-    "courtId": 77,
-    "name": "Bury St Edmunds County Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 78,
-    "name": "Bury St Edmunds Crown Court",
-    "jurisdiction": "Crown Court",
-    "location": "Bedford"
+    "location": "London",
+    "jurisdiction": "County Court",
+    "name": "Brentford County Court and Family Court"
   },
   {
     "courtId": 79,
-    "name": "Bury St Edmunds Magistrates' Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
+    "location": "South East",
+    "jurisdiction": "County Court",
+    "name": "Brighton Hearing Centre"
   },
   {
     "courtId": 80,
-    "name": "Buxton County Court",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 81,
-    "name": "Buxton Magistrates' Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
+    "location": "South East",
+    "jurisdiction": "Magistrates' Court",
+    "name": "Brighton Magistrates' Court"
   },
   {
     "courtId": 82,
-    "name": "Caernarfon County Court and Family Court",
+    "location": "South West",
     "jurisdiction": "Crown Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 83,
-    "name": "Caernarfon Crown Court",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
+    "name": "Bristol Crown Court"
   },
   {
     "courtId": 84,
-    "name": "Caernarfon Magistrates' Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
+    "location": "London",
+    "jurisdiction": "County Court",
+    "name": "Bromley County Court and Family Court"
   },
   {
     "courtId": 85,
-    "name": "Caerphilly Magistrates' Court",
-    "jurisdiction": "Crown Court",
-    "location": "London"
+    "location": "London",
+    "jurisdiction": "Magistrates' Court",
+    "name": "Bromley Magistrates' Court"
   },
   {
     "courtId": 86,
-    "name": "Camberwell Green Magistrates' Court",
+    "location": "North West",
     "jurisdiction": "Crown Court",
-    "location": "Bedford"
+    "name": "Burnley Combined Court Centre"
   },
   {
     "courtId": 87,
-    "name": "Cambridge County Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 88,
-    "name": "Cambridge Crown Court",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 89,
-    "name": "Cambridge Magistrates' Court",
-    "jurisdiction": "Crown Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 90,
-    "name": "Cannock Magistrates' Court",
-    "jurisdiction": "Crown Court",
-    "location": "London"
+    "location": "North West",
+    "jurisdiction": "Magistrates' Court",
+    "name": "Burnley Magistrates' Court"
   },
   {
     "courtId": 91,
-    "name": "Canterbury Combined Court Centre",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 92,
-    "name": "Canterbury Magistrates' Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 93,
-    "name": "Cardiff Civil and Family Justice Centre",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 94,
-    "name": "Cardiff Crown Court",
-    "jurisdiction": "Crown Court",
-    "location": "London"
+    "location": "South East",
+    "jurisdiction": "County Court",
+    "name": "Bury St Edmunds County Court and Family Court"
   },
   {
     "courtId": 95,
-    "name": "Cardiff Magistrates' Court",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 96,
-    "name": "Cardiff Probate Registry of Wales",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 97,
-    "name": "Carlisle Combined Court",
+    "location": "Wales",
     "jurisdiction": "Crown Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 98,
-    "name": "Carlisle Magistrates' Court",
-    "jurisdiction": "Royal Court",
-    "location": "London"
+    "name": "Caernarfon Justice Centre"
   },
   {
     "courtId": 99,
-    "name": "Carlisle Probate Sub-Registry",
-    "jurisdiction": "Royal Court",
-    "location": "London"
-  },
-  {
-    "courtId": 100,
-    "name": "Carmarthen County Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "Bedford"
+    "location": "South East",
+    "jurisdiction": "County Court",
+    "name": "Cambridge County Court and Family Court"
   },
   {
     "courtId": 101,
-    "name": "Carmarthen Magistrates' Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
+    "location": "South East",
+    "jurisdiction": "Magistrates' Court",
+    "name": "Cambridge Magistrates' Court"
   },
   {
     "courtId": 102,
-    "name": "Carmarthen Probate Sub-Registry",
-    "jurisdiction": "Crown Court",
-    "location": "Bedford"
+    "location": "Midlands",
+    "jurisdiction": "Magistrates' Court",
+    "name": "Cannock Magistrates' Court"
   },
   {
     "courtId": 103,
-    "name": "London Collection and Compliance Centre",
+    "location": "South East",
     "jurisdiction": "Crown Court",
-    "location": "London"
+    "name": "Canterbury Combined Court Centre"
   },
   {
     "courtId": 104,
-    "name": "Central Buckinghamshire Magistrates' Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "London"
+    "location": "South East",
+    "jurisdiction": "Magistrates' Court",
+    "name": "Canterbury Magistrates' Court"
   },
   {
     "courtId": 105,
-    "name": "Central Criminal Court",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
+    "location": "Wales",
+    "jurisdiction": "County Court",
+    "name": "Cardiff Civil and Family Justice Centre"
   },
   {
     "courtId": 106,
-    "name": "North Yorkshire Magistrates' Courts Central Finance Unit",
+    "location": "Wales",
     "jurisdiction": "Crown Court",
-    "location": "Bedford"
+    "name": "Cardiff Crown Court"
   },
   {
     "courtId": 107,
-    "name": "Central London County Court",
-    "jurisdiction": "Royal Court",
-    "location": "London"
-  },
-  {
-    "courtId": 108,
-    "name": "Chatham Magistrates' Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
+    "location": "Wales",
+    "jurisdiction": "Magistrates' Court",
+    "name": "Cardiff Magistrates' Court"
   },
   {
     "courtId": 109,
-    "name": "Chelmsford Crown Court",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
+    "location": "North West",
+    "jurisdiction": "County Court",
+    "name": "Carlisle Combined Court"
   },
   {
     "courtId": 110,
-    "name": "Cheltenham Magistrates' Court",
-    "jurisdiction": "Royal Court",
-    "location": "London"
-  },
-  {
-    "courtId": 111,
-    "name": "Chester Civil and Family Justice Centre",
-    "jurisdiction": "Crown Court",
-    "location": "London"
+    "location": "North West",
+    "jurisdiction": "Magistrates' Court",
+    "name": "Carlisle Magistrates' Court"
   },
   {
     "courtId": 112,
-    "name": "Chester Crown Court",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 113,
-    "name": "Chester Probate Sub-Registry",
+    "location": "London",
     "jurisdiction": "Crown Court",
-    "location": "London"
-  },
-  {
-    "courtId": 114,
-    "name": "Chester Magistrates' Court",
-    "jurisdiction": "Crown Court",
-    "location": "London"
+    "name": "Central Criminal Court"
   },
   {
     "courtId": 115,
-    "name": "Chesterfield County Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "Bedford"
+    "location": "South East",
+    "jurisdiction": "Magistrates' Court",
+    "name": "Medway Magistrates' Court and Family Court"
   },
   {
     "courtId": 116,
-    "name": "Chesterfield Magistrates' Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
+    "location": "South East",
+    "jurisdiction": "County Court",
+    "name": "Chelmsford County and Family Court"
   },
   {
     "courtId": 117,
-    "name": "Chester-le-Street Magistrates' Court",
+    "location": "South East",
     "jurisdiction": "Crown Court",
-    "location": "Manchester"
+    "name": "Chelmsford Crown Court"
   },
   {
     "courtId": 118,
-    "name": "Chichester Combined Court Centre",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
+    "location": "South East",
+    "jurisdiction": "Magistrates' Court",
+    "name": "Chelmsford Magistrates' Court and Family Court"
   },
   {
     "courtId": 119,
-    "name": "Chichester Magistrates' Court",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 120,
-    "name": "Chippenham Magistrates' Court",
-    "jurisdiction": "Royal Court",
-    "location": "London"
-  },
-  {
-    "courtId": 121,
-    "name": "Chorley Magistrates' Court",
-    "jurisdiction": "Crown Court",
-    "location": "Bedford"
+    "location": "South West",
+    "jurisdiction": "Magistrates' Court",
+    "name": "Cheltenham Magistrates' Court"
   },
   {
     "courtId": 122,
-    "name": "City of London Magistrates' Court",
-    "jurisdiction": "Crown Court",
-    "location": "London"
+    "location": "North West",
+    "jurisdiction": "County Court",
+    "name": "Chester Civil and Family Justice Centre"
   },
   {
     "courtId": 123,
-    "name": "Clerkenwell and Shoreditch County Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
+    "location": "North West",
+    "jurisdiction": "Crown Court",
+    "name": "Chester Crown Court"
   },
   {
     "courtId": 124,
-    "name": "Colchester County Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 125,
-    "name": "Consett Magistrates' Court",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 126,
-    "name": "Conwy and Colwyn County Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 127,
-    "name": "Corby Magistrates' Court",
-    "jurisdiction": "Crown Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 128,
-    "name": "Coventry Combined Court Centre",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 129,
-    "name": "Coventry Magistrates' Court",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 130,
-    "name": "Crawley Magistrates' Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 131,
-    "name": "Crewe County Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "London"
-  },
-  {
-    "courtId": 132,
-    "name": "Croydon County Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 133,
-    "name": "Croydon Magistrates' Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
+    "location": "North West",
+    "jurisdiction": "Magistrates' Court",
+    "name": "Chester Magistrates' Court"
   },
   {
     "courtId": 134,
-    "name": "Cwmbran Magistrates' Court",
-    "jurisdiction": "Royal Court",
-    "location": "London"
-  },
-  {
-    "courtId": 135,
-    "name": "Darlington County Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
+    "location": "London",
+    "jurisdiction": "Magistrates' Court",
+    "name": "City of London Magistrates' Court"
   },
   {
     "courtId": 136,
-    "name": "Darlington Magistrates' Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "London"
-  },
-  {
-    "courtId": 137,
-    "name": "Dartford County Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 138,
-    "name": "Dartford Magistrates' Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 139,
-    "name": "Derby Combined Court Centre",
-    "jurisdiction": "Crown Court",
-    "location": "London"
+    "location": "London",
+    "jurisdiction": "County Court",
+    "name": "Clerkenwell And Shoreditch County Court and Family Court"
   },
   {
     "courtId": 140,
-    "name": "Derby Magistrates' Court",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 141,
-    "name": "Dolgellau Magistrates' Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "London"
-  },
-  {
-    "courtId": 142,
-    "name": "Doncaster County Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 143,
-    "name": "Doncaster Crown Court",
-    "jurisdiction": "Royal Court",
-    "location": "London"
-  },
-  {
-    "courtId": 144,
-    "name": "Doncaster Magistrates' Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "London"
+    "location": "South East",
+    "jurisdiction": "Magistrates' Court",
+    "name": "Colchester Magistrates' Court and Family Court"
   },
   {
     "courtId": 145,
-    "name": "Dorchester Crown Court",
-    "jurisdiction": "Royal Court",
-    "location": "London"
+    "location": "Midlands",
+    "jurisdiction": "County Court",
+    "name": "Coventry Combined Court Centre"
   },
   {
     "courtId": 146,
-    "name": "Dover Magistrates' Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
+    "location": "Midlands",
+    "jurisdiction": "County Court",
+    "name": "Coventry Magistrates' Court"
   },
   {
     "courtId": 147,
-    "name": "Dudley County Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "London"
+    "location": "South East",
+    "jurisdiction": "Magistrates' Court",
+    "name": "Crawley Magistrates' Court"
   },
   {
     "courtId": 148,
-    "name": "Dudley Magistrates' Court",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 149,
-    "name": "Durham Crown Court",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
+    "location": "North West",
+    "jurisdiction": "County Court",
+    "name": "Crewe (South Cheshire) Magistrates' Court"
   },
   {
     "courtId": 150,
-    "name": "Durham Magistrates' Court",
+    "location": "London",
     "jurisdiction": "Crown Court",
-    "location": "London"
+    "name": "Croydon County Court and Family Court"
   },
   {
     "courtId": 151,
-    "name": "Ealing Magistrates' Court",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 152,
-    "name": "East Berkshire Magistrates' Court",
-    "jurisdiction": "Crown Court",
-    "location": "Bedford"
+    "location": "London",
+    "jurisdiction": "County Court",
+    "name": "Croydon Magistrates' Court"
   },
   {
     "courtId": 153,
-    "name": "Eastbourne County Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "London"
+    "location": "Wales",
+    "jurisdiction": "Magistrates' Court",
+    "name": "Cwmbran Magistrates' Court"
   },
   {
     "courtId": 154,
-    "name": "Eastbourne Magistrates' Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
+    "location": "North East",
+    "jurisdiction": "County Court",
+    "name": "Darlington County Court and Family Court"
   },
   {
     "courtId": 155,
-    "name": "Edmonton County Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
+    "location": "North East",
+    "jurisdiction": "Magistrates' Court",
+    "name": "Darlington Magistrates' Court and Family Court"
   },
   {
     "courtId": 156,
-    "name": "Tottenham Magistrates' Court (formerly Enfield Magistrates' Court)",
-    "jurisdiction": "Royal Court",
-    "location": "London"
-  },
-  {
-    "courtId": 157,
-    "name": "Exeter Combined Court Centre",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 158,
-    "name": "Exeter Magistrates' Court - North and East Devon",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 159,
-    "name": "Exeter Probate Sub-Registry",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
+    "location": "South East",
+    "jurisdiction": "County Court",
+    "name": "Dartford County Court and Family Court"
   },
   {
     "courtId": 160,
-    "name": "Fareham Magistrates' Court",
-    "jurisdiction": "Crown Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 161,
-    "name": "Feltham Magistrates' Court",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 162,
-    "name": "Fleetwood Magistrates' Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 163,
-    "name": "Folkestone Magistrates' Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 164,
-    "name": "Furness Magistrates' Court",
-    "jurisdiction": "Crown Court",
-    "location": "London"
-  },
-  {
-    "courtId": 165,
-    "name": "Gateshead County Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
+    "location": "Midlands",
+    "jurisdiction": "County Court",
+    "name": "Derby Combined Court Centre"
   },
   {
     "courtId": 166,
-    "name": "Gateshead Magistrates' Court and Family Court",
+    "location": "North East",
     "jurisdiction": "Crown Court",
-    "location": "London"
+    "name": "Doncaster Justice Centre South"
   },
   {
     "courtId": 167,
-    "name": "Gloucester and Cheltenham County Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 168,
-    "name": "Gloucester Crown Court",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
+    "location": "North East",
+    "jurisdiction": "Magistrates' Court",
+    "name": "Doncaster Justice Centre North"
   },
   {
     "courtId": 169,
-    "name": "Gloucester Magistrates' Court",
-    "jurisdiction": "Crown Court",
-    "location": "London"
+    "location": "Midlands",
+    "jurisdiction": "Magistrates' Court",
+    "name": "Dudley County Court and Family Court"
   },
   {
     "courtId": 170,
-    "name": "Gloucester Probate Sub-Registry",
-    "jurisdiction": "Royal Court",
-    "location": "London"
+    "location": "North East",
+    "jurisdiction": "Crown Court",
+    "name": "Durham Crown Court"
   },
   {
     "courtId": 171,
-    "name": "Grantham Magistrates' Court",
-    "jurisdiction": "Crown Court",
-    "location": "Bedford"
+    "location": "North East",
+    "jurisdiction": "County Court",
+    "name": "Durham Justice Centre"
   },
   {
     "courtId": 172,
-    "name": "Great Grimsby Combined Court Centre",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 173,
-    "name": "Great Yarmouth Magistrates' Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "Bedford"
+    "location": "London",
+    "jurisdiction": "Magistrates' Court",
+    "name": "Ealing Magistrates' Court"
   },
   {
     "courtId": 174,
-    "name": "Greenwich Magistrates' Court",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 175,
-    "name": "Grimsby Magistrates' Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 176,
-    "name": "Guildford County Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 177,
-    "name": "Guildford Crown Court",
-    "jurisdiction": "Royal Court",
-    "location": "London"
-  },
-  {
-    "courtId": 178,
-    "name": "Guildford Magistrates' Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 179,
-    "name": "Halifax County Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 180,
-    "name": "Calderdale (Halifax) Magistrates' Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 181,
-    "name": "Runcorn (Halton) Magistrates' Court",
-    "jurisdiction": "Royal Court",
-    "location": "London"
-  },
-  {
-    "courtId": 182,
-    "name": "Harlow Social Security and Child Support Tribunal",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 183,
-    "name": "Harrogate County Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "London"
-  },
-  {
-    "courtId": 184,
-    "name": "Harrogate Magistrates' Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 185,
-    "name": "Harrow Crown Court",
-    "jurisdiction": "Crown Court",
-    "location": "London"
+    "location": "London",
+    "jurisdiction": "County Court",
+    "name": "Edmonton County Court and Family Court"
   },
   {
     "courtId": 186,
-    "name": "Hartlepool County Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 187,
-    "name": "Hartlepool Magistrates' Court and Family Hearing Court",
-    "jurisdiction": "Crown Court",
-    "location": "London"
-  },
-  {
-    "courtId": 188,
-    "name": "Hastings County Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "London"
+    "location": "South East",
+    "jurisdiction": "Magistrates' Court",
+    "name": "Folkestone Magistrates' Court"
   },
   {
     "courtId": 189,
-    "name": "Hastings Magistrates' Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
+    "location": "North East",
+    "jurisdiction": "Magistrates' Court",
+    "name": "Gateshead Magistrates' Court and Family Court"
   },
   {
     "courtId": 190,
-    "name": "Haverfordwest County Court and Family Court",
+    "location": "South West",
     "jurisdiction": "Crown Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 191,
-    "name": "Romford Magistrates' Court (formerly Havering Magistrates' Court)",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
+    "name": "Gloucester Crown Court"
   },
   {
     "courtId": 192,
-    "name": "Hendon Magistrates' Court",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 193,
-    "name": "Hereford County Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "London"
-  },
-  {
-    "courtId": 194,
-    "name": "Hereford Crown Court",
-    "jurisdiction": "Crown Court",
-    "location": "London"
-  },
-  {
-    "courtId": 195,
-    "name": "Hereford Magistrates' Court",
-    "jurisdiction": "Crown Court",
-    "location": "London"
-  },
-  {
-    "courtId": 196,
-    "name": "Hertford County Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "London"
+    "location": "South West",
+    "jurisdiction": "County Court",
+    "name": "Gloucester And Cheltenham County and Family Court"
   },
   {
     "courtId": 197,
-    "name": "Hertford Magistrates' Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
+    "location": "North East",
+    "jurisdiction": "Crown Court",
+    "name": "Great Grimsby Combined Court Centre"
   },
   {
     "courtId": 198,
-    "name": "High Wycombe County Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "London"
-  },
-  {
-    "courtId": 199,
-    "name": "High Wycombe Magistrates' Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
+    "location": "South East",
+    "jurisdiction": "Magistrates' Court",
+    "name": "Great Yarmouth Magistrates' Court and Family Court"
   },
   {
     "courtId": 200,
-    "name": "Highbury Corner Magistrates' Court",
-    "jurisdiction": "Crown Court",
-    "location": "London"
+    "location": "North East",
+    "jurisdiction": "Magistrates' Court",
+    "name": "Grimsby Magistrates' Court and Family Court"
   },
   {
     "courtId": 201,
-    "name": "Hinckley Magistrates' Court",
-    "jurisdiction": "Royal Court",
-    "location": "London"
+    "location": "South East",
+    "jurisdiction": "Crown Court",
+    "name": "Guildford Crown Court"
   },
   {
     "courtId": 202,
-    "name": "Holyhead Magistrates' Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "London"
-  },
-  {
-    "courtId": 203,
-    "name": "Horsham County Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 204,
-    "name": "Horsham Magistrates' Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "London"
-  },
-  {
-    "courtId": 205,
-    "name": "Hove Trial Centre",
-    "jurisdiction": "Crown Court",
-    "location": "London"
-  },
-  {
-    "courtId": 206,
-    "name": "Huddersfield County Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 207,
-    "name": "Kirklees Magistrates' Court and Family Court (formerly Huddersfield Magistrates' Court)",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 208,
-    "name": "Hull and Holderness Magistrates' Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 209,
-    "name": "Inner London Crown Court",
-    "jurisdiction": "Crown Court",
-    "location": "London"
-  },
-  {
-    "courtId": 210,
-    "name": "Ipswich County Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "London"
+    "location": "South East",
+    "jurisdiction": "County Court",
+    "name": "Guildford Magistrates' Court and Family Court"
   },
   {
     "courtId": 211,
-    "name": "Ipswich Crown Court",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
+    "location": "North East",
+    "jurisdiction": "County Court",
+    "name": "Harrogate Justice Centre"
   },
   {
     "courtId": 212,
-    "name": "Ipswich District Probate Registry",
+    "location": "London",
     "jurisdiction": "Crown Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 213,
-    "name": "Ipswich Magistrates' Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 214,
-    "name": "Isles of Scilly Magistrates' Court",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 215,
-    "name": "Isleworth Crown Court",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
+    "name": "Harrow Crown Court"
   },
   {
     "courtId": 216,
-    "name": "Kendal County Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "London"
+    "location": "South East",
+    "jurisdiction": "County Court",
+    "name": "Hastings Magistrates' Court"
   },
   {
     "courtId": 217,
-    "name": "Kendal Magistrates' Court",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
+    "location": "South East",
+    "jurisdiction": "Magistrates' Court",
+    "name": "Hatfield Magistrates' Court"
   },
   {
     "courtId": 218,
-    "name": "Kettering County Court",
-    "jurisdiction": "Royal Court",
-    "location": "London"
+    "location": "Wales",
+    "jurisdiction": "County Court",
+    "name": "Haverfordwest County Court and Family Court"
   },
   {
     "courtId": 219,
-    "name": "Kettering Magistrates' Court",
-    "jurisdiction": "Royal Court",
-    "location": "London"
-  },
-  {
-    "courtId": 220,
-    "name": "Kidderminster Magistrates' Court",
-    "jurisdiction": "Crown Court",
-    "location": "London"
+    "location": "London",
+    "jurisdiction": "Magistrates' Court",
+    "name": "Romford Magistrates' Court (Formerly Havering Magistrates' Court)"
   },
   {
     "courtId": 221,
-    "name": "King's Lynn County Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
+    "location": "London",
+    "jurisdiction": "Tribunal",
+    "name": "Hendon Magistrates' Court"
   },
   {
     "courtId": 222,
-    "name": "King's Lynn Crown Court",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
+    "location": "Midlands",
+    "jurisdiction": "County Court",
+    "name": "Hereford County Court and Family Court"
   },
   {
     "courtId": 223,
-    "name": "King's Lynn Magistrates' Court and Family Court",
+    "location": "Midlands",
     "jurisdiction": "Crown Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 224,
-    "name": "Kingston-upon-Hull Combined Court Centre",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 225,
-    "name": "Kingston-upon-Hull Magistrates' Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "Bedford"
+    "name": "Hereford Crown Court"
   },
   {
     "courtId": 226,
-    "name": "Kingston-upon-Thames County Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
+    "location": "South East",
+    "jurisdiction": "County Court",
+    "name": "Hertford County Court and Family Court"
   },
   {
     "courtId": 227,
-    "name": "Kingston-upon-Thames Crown Court",
-    "jurisdiction": "Crown Court",
-    "location": "Bedford"
+    "location": "South East",
+    "jurisdiction": "Magistrates' Court",
+    "name": "High Wycombe Magistrates' Court and Family Court"
   },
   {
     "courtId": 228,
-    "name": "Knutsford Crown Court",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 229,
-    "name": "Lambeth County Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 230,
-    "name": "Lancaster County Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "London"
-  },
-  {
-    "courtId": 231,
-    "name": "Lancaster Crown Court",
-    "jurisdiction": "Crown Court",
-    "location": "London"
-  },
-  {
-    "courtId": 232,
-    "name": "Lancaster Magistrates' Court",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
+    "location": "London",
+    "jurisdiction": "Magistrates' Court",
+    "name": "Highbury Corner Magistrates' Court"
   },
   {
     "courtId": 233,
-    "name": "Lancaster Probate Sub-Registry",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 234,
-    "name": "Leamington Spa Magistrates' Court",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
+    "location": "South East",
+    "jurisdiction": "County Court",
+    "name": "Horsham County Court and Family Court"
   },
   {
     "courtId": 235,
-    "name": "Leeds Combined Court Centre",
-    "jurisdiction": "Royal Court",
-    "location": "London"
+    "location": "South East",
+    "jurisdiction": "Crown Court",
+    "name": "Hove Trial Centre"
   },
   {
     "courtId": 236,
-    "name": "Leeds Magistrates' Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "Bedford"
+    "location": "North East",
+    "jurisdiction": "County Court",
+    "name": "Huddersfield County Court and Family Court"
   },
   {
     "courtId": 237,
-    "name": "Leicester County Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "London"
-  },
-  {
-    "courtId": 238,
-    "name": "Leicester Crown Court",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
+    "location": "North East",
+    "jurisdiction": "Magistrates' Court",
+    "name": "Kirklees (Huddersfield) Magistrates' Court and Family Court"
   },
   {
     "courtId": 239,
-    "name": "Leicester Magistrates' Court",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 240,
-    "name": "Lewes Combined Court Centre",
+    "location": "South East",
     "jurisdiction": "Crown Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 241,
-    "name": "Leyland Magistrates' Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
+    "name": "Huntingdon Law Courts"
   },
   {
     "courtId": 242,
-    "name": "Lincoln County Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 243,
-    "name": "Lincoln Crown Court",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 244,
-    "name": "Lincoln Magistrates' Court",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
+    "location": "London",
+    "jurisdiction": "Crown Court",
+    "name": "Inner London Crown Court"
   },
   {
     "courtId": 245,
-    "name": "Lincoln Probate Sub-Registry",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 246,
-    "name": "Liverpool Crown Court",
-    "jurisdiction": "Crown Court",
-    "location": "London"
+    "location": "South East",
+    "jurisdiction": "County Court",
+    "name": "Ipswich County Court and Family Hearing Centre"
   },
   {
     "courtId": 247,
-    "name": "Liverpool District Probate Registry",
-    "jurisdiction": "Crown Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 248,
-    "name": "Liverpool & Knowsley Magistrates Court",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
+    "location": "South East",
+    "jurisdiction": "Magistrates' Court",
+    "name": "Ipswich Magistrates' Court"
   },
   {
     "courtId": 249,
-    "name": "Llandudno Magistrates' Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "London"
-  },
-  {
-    "courtId": 250,
-    "name": "Llanelli County Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "London"
-  },
-  {
-    "courtId": 251,
-    "name": "Llangefni County Court and Family Court",
+    "location": "London",
     "jurisdiction": "Crown Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 252,
-    "name": "London Probate Department",
-    "jurisdiction": "Crown Court",
-    "location": "London"
-  },
-  {
-    "courtId": 253,
-    "name": "Lowestoft Magistrates' Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "London"
-  },
-  {
-    "courtId": 254,
-    "name": "Luton and South Bedfordshire Magistrates' Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 255,
-    "name": "Luton County Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "London"
+    "name": "Isleworth Crown Court"
   },
   {
     "courtId": 256,
-    "name": "Luton Crown Court",
-    "jurisdiction": "Royal Court",
-    "location": "London"
+    "location": "South East",
+    "jurisdiction": "Magistrates' Court",
+    "name": "Kings Lynn Crown Court"
   },
   {
     "courtId": 257,
-    "name": "Macclesfield County Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "London"
+    "location": "North East",
+    "jurisdiction": "County Court",
+    "name": "Kingston-Upon-Hull Combined Court Centre"
   },
   {
     "courtId": 258,
-    "name": "Macclesfield Magistrates' Court",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
+    "location": "London",
+    "jurisdiction": "County Court",
+    "name": "Kingston Upon Thames County Court and Family Court"
   },
   {
     "courtId": 259,
-    "name": "East Berkshire Magistrates' Court",
+    "location": "London",
     "jurisdiction": "Crown Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 260,
-    "name": "Maidstone Combined Court Centre",
-    "jurisdiction": "Crown Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 261,
-    "name": "Maidstone Magistrates' Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 262,
-    "name": "Maidstone Probate Sub-Registry",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 263,
-    "name": "Manchester and Salford Magistrates' Court",
-    "jurisdiction": "Crown Court",
-    "location": "London"
-  },
-  {
-    "courtId": 264,
-    "name": "Manchester Crown Court (Crown Square)",
-    "jurisdiction": "Crown Court",
-    "location": "London"
+    "name": "Kingston Upon Thames Crown Court"
   },
   {
     "courtId": 265,
-    "name": "Manchester Crown Court (Minshull St)",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
+    "location": "North West",
+    "jurisdiction": "Crown Court",
+    "name": "Lancaster Crown Court"
   },
   {
     "courtId": 266,
-    "name": "Margate Magistrates' Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "London"
-  },
-  {
-    "courtId": 267,
-    "name": "Mayor's and City of London Court",
-    "jurisdiction": "Crown Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 268,
-    "name": "Medway County Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "Bedford"
+    "location": "North West",
+    "jurisdiction": "County Court",
+    "name": "Lancaster Magistrates' Court"
   },
   {
     "courtId": 269,
-    "name": "Medway Magistrates' Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
+    "location": "North East",
+    "jurisdiction": "County Court",
+    "name": "Leeds Civil Hearing Centre"
   },
   {
     "courtId": 270,
-    "name": "Merthyr Tydfil Combined Court Centre",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
+    "location": "North East",
+    "jurisdiction": "County Court",
+    "name": "Leeds Combined Court Centre"
   },
   {
     "courtId": 271,
-    "name": "Middlesbrough County Court at Teesside Combined Court",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
+    "location": "North East",
+    "jurisdiction": "Magistrates' Court",
+    "name": "Leeds Magistrates' Court and Family Court"
   },
   {
     "courtId": 272,
-    "name": "Middlesbrough Probate Sub-Registry",
-    "jurisdiction": "Crown Court",
-    "location": "London"
-  },
-  {
-    "courtId": 273,
-    "name": "Milton Keynes County Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
+    "location": "Midlands",
+    "jurisdiction": "County Court",
+    "name": "Leicester Combined Court"
   },
   {
     "courtId": 274,
-    "name": "Milton Keynes Magistrates' Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
+    "location": "Midlands",
+    "jurisdiction": "Magistrates' Court",
+    "name": "Leicester Magistrates' Court"
   },
   {
     "courtId": 275,
-    "name": "Mold County Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 276,
-    "name": "Mold Crown Court",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
+    "location": "South East",
+    "jurisdiction": "County Court",
+    "name": "Lewes Combined Court Centre"
   },
   {
     "courtId": 277,
-    "name": "Mold Magistrates' Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
+    "location": "North West",
+    "jurisdiction": "County Court",
+    "name": "Leyland Family Court"
   },
   {
     "courtId": 278,
-    "name": "Morpeth and Berwick County Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
+    "location": "Midlands",
+    "jurisdiction": "County Court",
+    "name": "Lincoln County Court and Family Court"
   },
   {
     "courtId": 279,
-    "name": "Neath and Port Talbot County Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "London"
+    "location": "Midlands",
+    "jurisdiction": "Crown Court",
+    "name": "Lincoln Crown Court"
   },
   {
     "courtId": 280,
-    "name": "West Berkshire Magistrates' Court",
-    "jurisdiction": "Crown Court",
-    "location": "London"
-  },
-  {
-    "courtId": 281,
-    "name": "North Staffordshire Justice Centre",
-    "jurisdiction": "Crown Court",
-    "location": "Bedford"
+    "location": "Midlands",
+    "jurisdiction": "Magistrates' Court",
+    "name": "Lincoln Magistrates' Court"
   },
   {
     "courtId": 282,
-    "name": "Newcastle upon Tyne Combined Court Centre",
-    "jurisdiction": "Crown Court",
-    "location": "London"
+    "location": "North West",
+    "jurisdiction": "County Court",
+    "name": "Liverpool Civil and Family Court"
   },
   {
     "courtId": 283,
-    "name": "Newcastle District Probate Registry",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 284,
-    "name": "Newcastle upon Tyne Magistrates' Court",
+    "location": "North West",
     "jurisdiction": "Crown Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 285,
-    "name": "Newport (Gwent) Civil and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
+    "name": "Liverpool Crown Court"
   },
   {
     "courtId": 286,
-    "name": "Isle of Wight Combined Court",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
+    "location": "Wales",
+    "jurisdiction": "Magistrates' Court",
+    "name": "Llandrindod Wells Magistrates' and Family Court"
   },
   {
     "courtId": 287,
-    "name": "Newport (South Wales) Crown Court",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
+    "location": "Wales",
+    "jurisdiction": "Magistrates' Court",
+    "name": "Llandudno Magistrates' Court"
   },
   {
     "courtId": 288,
-    "name": "Newport Magistrates' Court",
-    "jurisdiction": "Crown Court",
-    "location": "London"
-  },
-  {
-    "courtId": 289,
-    "name": "Newton Abbot Magistrates' Court",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 290,
-    "name": "Newton Aycliffe Magistrates' Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 291,
-    "name": "North Avon Magistrates' Court",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
+    "location": "Wales",
+    "jurisdiction": "County Court",
+    "name": "Llanelli Justice Centre"
   },
   {
     "courtId": 292,
-    "name": "North Shields County Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "London"
-  },
-  {
-    "courtId": 293,
-    "name": "North Tyneside Magistrates' Court",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 294,
-    "name": "Northallerton Magistrates' Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "London"
+    "location": "Midlands",
+    "jurisdiction": "County Court",
+    "name": "Loughborough Court"
   },
   {
     "courtId": 295,
-    "name": "Northampton Crown Court",
-    "jurisdiction": "Crown Court",
-    "location": "London"
+    "location": "South East",
+    "jurisdiction": "County Court",
+    "name": "Luton County Court and Family Court"
   },
   {
     "courtId": 296,
-    "name": "high-court adoption bankruptcy children crime divorce domestic-violence housing-possession money-claims Northampton Magistrates' Court Office",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
+    "location": "South East",
+    "jurisdiction": "Crown Court",
+    "name": "Luton Crown Court"
   },
   {
     "courtId": 297,
-    "name": "Northampton Magistrates' Court",
-    "jurisdiction": "Crown Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 298,
-    "name": "Norwich Combined Court Centre",
-    "jurisdiction": "Crown Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 299,
-    "name": "Norwich Magistrates' Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 300,
-    "name": "Norwich Probate Sub-Registry",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 301,
-    "name": "Nottingham County Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "London"
+    "location": "South East",
+    "jurisdiction": "Magistrates' Court",
+    "name": "Luton And South Bedfordshire Magistrates' Court and Family Court"
   },
   {
     "courtId": 302,
-    "name": "Nottingham Crown Court",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
+    "location": "South East",
+    "jurisdiction": "County Court",
+    "name": "Maidstone Combined Court Centre"
   },
   {
     "courtId": 303,
-    "name": "Nottingham Magistrates' Court",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
+    "location": "South East",
+    "jurisdiction": "Magistrates' Court",
+    "name": "Maidstone Magistrates' Court and Family Court"
   },
   {
     "courtId": 304,
-    "name": "Nottingham Probate Sub-Registry",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
+    "location": "North West",
+    "jurisdiction": "County Court",
+    "name": "Manchester County and Family Court"
   },
   {
     "courtId": 305,
-    "name": "Nuneaton County Court",
-    "jurisdiction": "Royal Court",
-    "location": "London"
+    "location": "North West",
+    "jurisdiction": "Crown Court",
+    "name": "Manchester Crown Court (Minshull St)"
   },
   {
     "courtId": 306,
-    "name": "Nuneaton Magistrates' Court",
+    "location": "North West",
     "jurisdiction": "Crown Court",
-    "location": "London"
-  },
-  {
-    "courtId": 307,
-    "name": "Oldham County Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "Bedford"
+    "name": "Manchester Crown Court (Crown Square)"
   },
   {
     "courtId": 308,
-    "name": "Oldham Magistrates' Court",
-    "jurisdiction": "Crown Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 309,
-    "name": "Ormskirk Magistrates' Court",
-    "jurisdiction": "Crown Court",
-    "location": "London"
+    "location": "Midlands",
+    "jurisdiction": "County Court",
+    "name": "Mansfield Magistrates' and County Court"
   },
   {
     "courtId": 310,
-    "name": "Oxford Combined Court Centre",
-    "jurisdiction": "Royal Court",
-    "location": "London"
-  },
-  {
-    "courtId": 311,
-    "name": "Oxford District Probate Registry",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 312,
-    "name": "Oxford and Southern Oxfordshire Magistrates' Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "London"
+    "location": "South East",
+    "jurisdiction": "Magistrates' Court",
+    "name": "Margate Magistrates' Court"
   },
   {
     "courtId": 313,
-    "name": "Peterborough Combined Court Centre",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
+    "location": "London",
+    "jurisdiction": "County Court",
+    "name": "Mayors and City of London Court"
   },
   {
     "courtId": 314,
-    "name": "Peterborough Magistrates' Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 315,
-    "name": "Peterborough Probate Sub-Registry",
-    "jurisdiction": "Crown Court",
-    "location": "London"
-  },
-  {
-    "courtId": 316,
-    "name": "Peterlee Magistrates' Court",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
+    "location": "South East",
+    "jurisdiction": "County Court",
+    "name": "Medway County Court and Family Court"
   },
   {
     "courtId": 317,
-    "name": "Plymouth Combined Court",
-    "jurisdiction": "Royal Court",
-    "location": "London"
-  },
-  {
-    "courtId": 318,
-    "name": "Plymouth Magistrates' Court",
-    "jurisdiction": "Crown Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 319,
-    "name": "Pontypridd County Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
+    "location": "Wales",
+    "jurisdiction": "County Court",
+    "name": "Merthyr Tydfil Combined Court Centre"
   },
   {
     "courtId": 320,
-    "name": "Pontypridd Magistrates' Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "London"
+    "location": "South East",
+    "jurisdiction": "County Court",
+    "name": "Milton Keynes County Court and Family Court"
   },
   {
     "courtId": 321,
-    "name": "Poole Magistrates' Court",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 322,
-    "name": "Port Talbot Magistrates' Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
+    "location": "South East",
+    "jurisdiction": "Magistrates' Court",
+    "name": "Milton Keynes Magistrates' Court and Family Court"
   },
   {
     "courtId": 323,
-    "name": "Portsmouth Combined Court Centre",
-    "jurisdiction": "Crown Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 324,
-    "name": "Portsmouth Magistrates' Court",
-    "jurisdiction": "Royal Court",
-    "location": "London"
-  },
-  {
-    "courtId": 325,
-    "name": "Prestatyn Magistrates' Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "London"
-  },
-  {
-    "courtId": 326,
-    "name": "Preston Combined Court Centre",
-    "jurisdiction": "Royal Court",
-    "location": "London"
-  },
-  {
-    "courtId": 327,
-    "name": "Preston Magistrates' Court",
-    "jurisdiction": "Royal Court",
-    "location": "London"
-  },
-  {
-    "courtId": 328,
-    "name": "Reading County Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
+    "location": "Wales",
+    "jurisdiction": "County Court",
+    "name": "Meld Justice Centre"
   },
   {
     "courtId": 329,
-    "name": "Reading Crown Court",
-    "jurisdiction": "Royal Court",
-    "location": "London"
+    "location": "North East",
+    "jurisdiction": "Crown Court",
+    "name": "Newcastle Upon Tyne Combined Court Centre"
   },
   {
     "courtId": 330,
-    "name": "Reading Magistrates' Court and Family Court",
+    "location": "North East",
     "jurisdiction": "Crown Court",
-    "location": "London"
-  },
-  {
-    "courtId": 331,
-    "name": "Barkingside Magistrates' Court",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
+    "name": "Newcastle Moot Hall"
   },
   {
     "courtId": 332,
-    "name": "Redditch Magistrates' Court",
-    "jurisdiction": "Crown Court",
-    "location": "London"
+    "location": "Midlands",
+    "jurisdiction": "Magistrates' Court",
+    "name": "North Staffordshire Justice Centre"
   },
   {
     "courtId": 333,
-    "name": "Redhill Magistrates' Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
+    "location": "South West",
+    "jurisdiction": "Magistrates' Court",
+    "name": "Isle of Wight Combined Court"
   },
   {
     "courtId": 334,
-    "name": "Reedley Magistrates' Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
+    "location": "Wales",
+    "jurisdiction": "County Court",
+    "name": "Newport (South Wales) County Court and Family Court"
   },
   {
     "courtId": 335,
-    "name": "Reigate County Court and Family Court",
+    "location": "Wales",
     "jurisdiction": "Crown Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 336,
-    "name": "Rhyl County Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 337,
-    "name": "Richmond-upon-Thames Magistrates' Court",
-    "jurisdiction": "Royal Court",
-    "location": "London"
+    "name": "Newport (South Wales) Crown Court"
   },
   {
     "courtId": 338,
-    "name": "Romford County Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "London"
+    "location": "South West",
+    "jurisdiction": "Magistrates' Court",
+    "name": "Newton Abbot Magistrates' Court"
   },
   {
     "courtId": 339,
-    "name": "Rotherham County Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 340,
-    "name": "Rotherham Magistrates' Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
+    "location": "North East",
+    "jurisdiction": "Magistrates' Court",
+    "name": "Newton Aycliffe Magistrates' Court and Family Court"
   },
   {
     "courtId": 341,
-    "name": "Scarborough Justice Centre",
-    "jurisdiction": "Crown Court",
-    "location": "London"
+    "location": "North East",
+    "jurisdiction": "Tribunal",
+    "name": "North Shields County Court and Family Court"
   },
   {
     "courtId": 342,
-    "name": "Scunthorpe County Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "London"
-  },
-  {
-    "courtId": 343,
-    "name": "Scunthorpe Magistrates' Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "London"
+    "location": "North East",
+    "jurisdiction": "Magistrates' Court",
+    "name": "North Tyneside Magistrates' Court"
   },
   {
     "courtId": 344,
-    "name": "Sevenoaks Magistrates' Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
+    "location": "Midlands",
+    "jurisdiction": "County Court",
+    "name": "Northampton Crown Court, County Court and Family Court"
   },
   {
     "courtId": 345,
-    "name": "Sheffield Combined Court Centre",
-    "jurisdiction": "Crown Court",
-    "location": "London"
-  },
-  {
-    "courtId": 346,
-    "name": "Sheffield Magistrates' Court",
-    "jurisdiction": "Crown Court",
-    "location": "Bedford"
+    "location": "Midlands",
+    "jurisdiction": "Magistrates' Court",
+    "name": "Northampton Magistrates' Court"
   },
   {
     "courtId": 347,
-    "name": "Sheffield Probate Sub-Registry",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
+    "location": "South East",
+    "jurisdiction": "Crown Court",
+    "name": "Norwich Combined Court Centre"
   },
   {
     "courtId": 348,
-    "name": "Shrewsbury Crown Court",
-    "jurisdiction": "Royal Court",
-    "location": "London"
+    "location": "South East",
+    "jurisdiction": "Magistrates' Court",
+    "name": "Norwich Magistrates' Court and Family Court"
   },
   {
     "courtId": 349,
-    "name": "Shrewsbury Magistrates' Court",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 350,
-    "name": "Skegness Magistrates' Court",
+    "location": "Midlands",
     "jurisdiction": "Crown Court",
-    "location": "London"
-  },
-  {
-    "courtId": 351,
-    "name": "Skipton County Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 352,
-    "name": "Skipton Magistrates' Court",
-    "jurisdiction": "Crown Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 353,
-    "name": "Slough County Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "London"
-  },
-  {
-    "courtId": 354,
-    "name": "Snaresbrook Crown Court",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
+    "name": "Nottingham County Court and Family Court"
   },
   {
     "courtId": 355,
-    "name": "Solihull Magistrates' Court",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
+    "location": "South East",
+    "jurisdiction": "Crown Court",
+    "name": "Oxford Combined Court Centre"
   },
   {
     "courtId": 356,
-    "name": "Crewe (South Cheshire) Magistrates' Court",
-    "jurisdiction": "Royal Court",
-    "location": "London"
-  },
-  {
-    "courtId": 357,
-    "name": "Mid and South East Northumberland Magistrates' Court",
-    "jurisdiction": "Crown Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 358,
-    "name": "Sefton Magistrates' Court",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 359,
-    "name": "South Shields County Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "London"
+    "location": "South East",
+    "jurisdiction": "Magistrates' Court",
+    "name": "Oxford and Southern Oxfordshire Magistrates' Court"
   },
   {
     "courtId": 360,
-    "name": "Yeovil Magistrates' Court",
+    "location": "South East",
     "jurisdiction": "Crown Court",
-    "location": "Bedford"
+    "name": "Peterborough Combined Court Centre"
   },
   {
     "courtId": 361,
-    "name": "South Tyneside Magistrates' Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
+    "location": "South East",
+    "jurisdiction": "Magistrates' Court",
+    "name": "Peterborough Magistrates' Court"
   },
   {
     "courtId": 362,
-    "name": "Lavender Hill Magistrates' Court (formerly South Western Magistrates' Court)",
-    "jurisdiction": "Crown Court",
-    "location": "Bedford"
+    "location": "North East",
+    "jurisdiction": "Magistrates' Court",
+    "name": "Peterlee Magistrates' Court"
   },
   {
     "courtId": 363,
-    "name": "South Worcestershire Magistrates' Court",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
+    "location": "South West",
+    "jurisdiction": "County Court",
+    "name": "Plymouth Combined Court"
   },
   {
     "courtId": 364,
-    "name": "Southampton Combined Court Centre",
-    "jurisdiction": "Crown Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 365,
-    "name": "West Hampshire Magistrates' Court",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 366,
-    "name": "Southend County Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 367,
-    "name": "Southend Crown Court",
-    "jurisdiction": "Royal Court",
-    "location": "London"
+    "location": "South West",
+    "jurisdiction": "County Court",
+    "name": "Plymouth Magistrates' Court"
   },
   {
     "courtId": 368,
-    "name": "Southend Magistrates' Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "London"
-  },
-  {
-    "courtId": 369,
-    "name": "Southwark Crown Court",
-    "jurisdiction": "Crown Court",
-    "location": "London"
+    "location": "Wales",
+    "jurisdiction": "County Court",
+    "name": "Pontypridd County Court and Family Court"
   },
   {
     "courtId": 370,
-    "name": "Spalding Magistrates' Court",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 371,
-    "name": "St Albans County Court",
-    "jurisdiction": "Royal Court",
-    "location": "London"
+    "location": "South West",
+    "jurisdiction": "Magistrates' Court",
+    "name": "Poole Magistrates' Court"
   },
   {
     "courtId": 372,
-    "name": "St Albans Crown Court",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
+    "location": "South West",
+    "jurisdiction": "County Court",
+    "name": "Portsmouth Combined Court Centre"
   },
   {
     "courtId": 373,
-    "name": "St Albans Magistrates' Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
+    "location": "South West",
+    "jurisdiction": "County Court",
+    "name": "Portsmouth Magistrates' Court"
   },
   {
     "courtId": 374,
-    "name": "St Helens County Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 375,
-    "name": "St Helens Magistrates' Court",
-    "jurisdiction": "Crown Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 376,
-    "name": "Stafford Combined Court Centre",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
+    "location": "Wales",
+    "jurisdiction": "County Court",
+    "name": "Prestatyn Justice Centre"
   },
   {
     "courtId": 377,
-    "name": "Stafford Magistrates' Court",
-    "jurisdiction": "Royal Court",
-    "location": "London"
+    "location": "North West",
+    "jurisdiction": "County Court",
+    "name": "Preston Magistrates' Court"
   },
   {
     "courtId": 378,
-    "name": "Staffs Central Finance and Enforcement Unit",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 379,
-    "name": "Staines County Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 380,
-    "name": "Staines Magistrates' Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 381,
-    "name": "Stevenage Magistrates' Court",
-    "jurisdiction": "Crown Court",
-    "location": "Bedford"
+    "location": "London",
+    "jurisdiction": "County Court",
+    "name": "Central Family Court"
   },
   {
     "courtId": 382,
-    "name": "Stockport County Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
+    "location": "South East",
+    "jurisdiction": "County Court",
+    "name": "Reading County Court and Family Court"
   },
   {
     "courtId": 383,
-    "name": "Stoke-on-Trent Probate Sub-Registry",
+    "location": "South East",
     "jurisdiction": "Crown Court",
-    "location": "London"
+    "name": "Reading Crown Court"
   },
   {
     "courtId": 384,
-    "name": "Stoke-on-Trent Combined Court",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
+    "location": "South East",
+    "jurisdiction": "Magistrates' Court",
+    "name": "Reading Magistrates' Court and Family Court"
   },
   {
     "courtId": 385,
-    "name": "Stratford Magistrates' Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 386,
-    "name": "Stroud Magistrates' Court",
-    "jurisdiction": "Crown Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 387,
-    "name": "Sunderland County Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 388,
-    "name": "Sunderland Magistrates' Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
+    "location": "London",
+    "jurisdiction": "Magistrates' Court",
+    "name": "Barkingside Magistrates' Court"
   },
   {
     "courtId": 389,
-    "name": "Swansea Civil and Family Justice Centre",
-    "jurisdiction": "Crown Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 390,
-    "name": "Swansea Crown Court",
-    "jurisdiction": "Crown Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 391,
-    "name": "Swansea Magistrates' Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 392,
-    "name": "Swindon Combined Court",
-    "jurisdiction": "Royal Court",
-    "location": "London"
-  },
-  {
-    "courtId": 393,
-    "name": "Swindon Magistrates' Court",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
+    "location": "North West",
+    "jurisdiction": "County Court",
+    "name": "Reedley Magistrates' Court and Family Court"
   },
   {
     "courtId": 394,
-    "name": "Taunton County Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "London"
-  },
-  {
-    "courtId": 395,
-    "name": "Taunton Crown Court",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 396,
-    "name": "Taunton Magistrates' Court",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 397,
-    "name": "Teesside Combined Court Centre",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 398,
-    "name": "Teesside Magistrates' Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 399,
-    "name": "Telford County Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "London"
-  },
-  {
-    "courtId": 400,
-    "name": "Telford Magistrates' Court",
-    "jurisdiction": "Crown Court",
-    "location": "Bedford"
+    "location": "London",
+    "jurisdiction": "County Court",
+    "name": "Romford County Court and Family Court"
   },
   {
     "courtId": 401,
-    "name": "Thames Magistrates' Court",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 402,
-    "name": "Thanet County Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
+    "location": "South West",
+    "jurisdiction": "Crown Court",
+    "name": "Salisbury Law Courts"
   },
   {
     "courtId": 403,
-    "name": "Torquay and Newton Abbot County Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 404,
-    "name": "Torquay Magistrates' Court",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 405,
-    "name": "Trafford Magistrates' Court",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
+    "location": "North East",
+    "jurisdiction": "County Court",
+    "name": "Scarborough Justice Centre"
   },
   {
     "courtId": 406,
-    "name": "Truro County Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
+    "location": "South East",
+    "jurisdiction": "Magistrates' Court",
+    "name": "Sevenoaks Magistrates' Court and Family Court"
   },
   {
     "courtId": 407,
-    "name": "Truro Crown Court",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 408,
-    "name": "Truro Magistrates' Court",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
+    "location": "North East",
+    "jurisdiction": "Crown Court",
+    "name": "Sheffield Combined Court Centre"
   },
   {
     "courtId": 409,
-    "name": "Tunbridge Wells County Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 410,
-    "name": "Uxbridge County Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "London"
-  },
-  {
-    "courtId": 411,
-    "name": "Uxbridge Magistrates' Court",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
+    "location": "North East",
+    "jurisdiction": "Magistrates' Court",
+    "name": "Sheffield Magistrates' Court"
   },
   {
     "courtId": 412,
-    "name": "Vale of Glamorgan Magistrates' Court",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 413,
-    "name": "Wakefield & Pontefract Magistrates Court",
+    "location": "Midlands",
     "jurisdiction": "Crown Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 414,
-    "name": "Walsall Magistrates' Court",
-    "jurisdiction": "Crown Court",
-    "location": "London"
-  },
-  {
-    "courtId": 415,
-    "name": "Walsall County and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "London"
+    "name": "Shrewsbury Crown Court"
   },
   {
     "courtId": 416,
-    "name": "Waltham Forest Magistrates' Court",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 417,
-    "name": "Wandsworth County Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "London"
-  },
-  {
-    "courtId": 418,
-    "name": "Sandwell Magistrates' Court",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 419,
-    "name": "Warrington County Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
+    "location": "North East",
+    "jurisdiction": "Magistrates' Court",
+    "name": "Skipton Magistrates' and County Court"
   },
   {
     "courtId": 420,
-    "name": "Warrington Magistrates' Court",
-    "jurisdiction": "Crown Court",
-    "location": "London"
+    "location": "South West",
+    "jurisdiction": "Magistrates' Court",
+    "name": "Yeovil County, Family and Magistrates' Court"
   },
   {
     "courtId": 421,
-    "name": "Watford County Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 422,
-    "name": "Watford Magistrates' Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "Bedford"
+    "location": "North East",
+    "jurisdiction": "Magistrates' Court",
+    "name": "South Tyneside Magistrates' Court and Family Court"
   },
   {
     "courtId": 423,
-    "name": "Wellingborough Magistrates' Court",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
+    "location": "South West",
+    "jurisdiction": "Crown Court",
+    "name": "Southampton Combined Court Centre"
   },
   {
     "courtId": 424,
-    "name": "Welshpool and Newtown County Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 425,
-    "name": "Welshpool Magistrates' Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
+    "location": "South West",
+    "jurisdiction": "Magistrates' Court",
+    "name": "West Hampshire Magistrates' Court"
   },
   {
     "courtId": 426,
-    "name": "West London County Court",
-    "jurisdiction": "Crown Court",
-    "location": "London"
-  },
-  {
-    "courtId": 427,
-    "name": "Hammersmith Magistrates' Court",
-    "jurisdiction": "Crown Court",
-    "location": "London"
-  },
-  {
-    "courtId": 428,
-    "name": "West Somerset Magistrates' Court",
-    "jurisdiction": "Crown Court",
-    "location": "Bedford"
+    "location": "South East",
+    "jurisdiction": "Magistrates' Court",
+    "name": "Southend Crown Court"
   },
   {
     "courtId": 429,
-    "name": "Weston-Super-Mare County Court and Family Court",
+    "location": "London",
     "jurisdiction": "Crown Court",
-    "location": "London"
-  },
-  {
-    "courtId": 430,
-    "name": "North Somerset Magistrates' Court",
-    "jurisdiction": "Royal Court",
-    "location": "London"
+    "name": "Southwark Crown Court"
   },
   {
     "courtId": 431,
-    "name": "Weymouth and Dorchester Combined Court Centre",
+    "location": "South East",
     "jurisdiction": "Crown Court",
-    "location": "Manchester"
+    "name": "St Albans Crown Court"
   },
   {
     "courtId": 432,
-    "name": "Weymouth Magistrates' Court",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 433,
-    "name": "Wigan and Leigh Magistrates' Court",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
+    "location": "South East",
+    "jurisdiction": "Magistrates' Court",
+    "name": "St Albans Magistrates' Court"
   },
   {
     "courtId": 434,
-    "name": "Willesden County Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "London"
+    "location": "North West",
+    "jurisdiction": "Tribunal",
+    "name": "St Helens County Court and Family Court"
   },
   {
     "courtId": 435,
-    "name": "Wimbledon Magistrates' Court",
+    "location": "Midlands",
     "jurisdiction": "Crown Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 436,
-    "name": "Winchester Combined Court Centre",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
+    "name": "Stafford Combined Court Centre"
   },
   {
     "courtId": 437,
-    "name": "Winchester District Probate Registry",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 438,
-    "name": "Wirral Magistrates' Court",
-    "jurisdiction": "Crown Court",
-    "location": "Bedford"
+    "location": "South East",
+    "jurisdiction": "Magistrates' Court",
+    "name": "Staines Magistrates' Court and Family Court"
   },
   {
     "courtId": 439,
-    "name": "Wolverhampton Combined Court Centre",
-    "jurisdiction": "Royal Court",
-    "location": "London"
-  },
-  {
-    "courtId": 440,
-    "name": "Wolverhampton Magistrates' Court",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
+    "location": "South East",
+    "jurisdiction": "Magistrates' Court",
+    "name": "Stevenage Magistrates' Court"
   },
   {
     "courtId": 441,
-    "name": "Wood Green Crown Court",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
+    "location": "North West",
+    "jurisdiction": "County Court",
+    "name": "Stockport Magistrates' Court and Family Court"
   },
   {
     "courtId": 442,
-    "name": "Woolwich County Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 443,
-    "name": "Woolwich Crown Court",
-    "jurisdiction": "Crown Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 444,
-    "name": "Worcester Combined Court",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
+    "location": "Midlands",
+    "jurisdiction": "County Court",
+    "name": "Stoke-On-Trent Combined Court"
   },
   {
     "courtId": 445,
-    "name": "Worcester Magistrates' Court",
-    "jurisdiction": "Crown Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 446,
-    "name": "West Cumbria Court House",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 447,
-    "name": "Worksop Magistrates' Court",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 448,
-    "name": "Worthing County Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 449,
-    "name": "Worthing Magistrates' Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "London"
-  },
-  {
-    "courtId": 450,
-    "name": "Wrexham County Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
+    "location": "London",
+    "jurisdiction": "Magistrates' Court",
+    "name": "Stratford Magistrates' Court"
   },
   {
     "courtId": 451,
-    "name": "Yeovil County Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "London"
-  },
-  {
-    "courtId": 452,
-    "name": "York County Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "London"
-  },
-  {
-    "courtId": 453,
-    "name": "York Crown Court",
-    "jurisdiction": "Crown Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 454,
-    "name": "York Magistrates' Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 455,
-    "name": "York Probate Sub-Registry",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
+    "location": "North East",
+    "jurisdiction": "Tribunal",
+    "name": "Sunderland County, Family, Magistrates' and Tribunal Hearings"
   },
   {
     "courtId": 456,
-    "name": "Admiralty and Commercial Court",
-    "jurisdiction": "Crown Court",
-    "location": "London"
-  },
-  {
-    "courtId": 457,
-    "name": "Administrative Court",
-    "jurisdiction": "Crown Court",
-    "location": "London"
+    "location": "Wales",
+    "jurisdiction": "County Court",
+    "name": "Swansea Civil and Family Justice Centre"
   },
   {
     "courtId": 458,
-    "name": "Chancery Division",
+    "location": "Wales",
     "jurisdiction": "Crown Court",
-    "location": "London"
+    "name": "Swansea Crown Court"
   },
   {
     "courtId": 459,
-    "name": "Court of Appeal Civil Division",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
+    "location": "Wales",
+    "jurisdiction": "Magistrates' Court",
+    "name": "Swansea Magistrates' Court"
   },
   {
     "courtId": 460,
-    "name": "Court of Appeal Criminal Division",
+    "location": "South West",
     "jurisdiction": "Crown Court",
-    "location": "Manchester"
+    "name": "Swindon Combined Court"
   },
   {
     "courtId": 461,
-    "name": "Family Division",
-    "jurisdiction": "Royal Court",
-    "location": "London"
+    "location": "South West",
+    "jurisdiction": "Magistrates' Court",
+    "name": "Swindon Magistrates' Court"
   },
   {
     "courtId": 462,
-    "name": "Patents Court",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 463,
-    "name": "Queen's Bench Division",
-    "jurisdiction": "Crown Court",
-    "location": "London"
+    "location": "North West",
+    "jurisdiction": "Magistrates' Court",
+    "name": "Tameside Magistrates' Court"
   },
   {
     "courtId": 464,
-    "name": "Senior Courts Costs Office",
-    "jurisdiction": "Crown Court",
-    "location": "London"
+    "location": "South West",
+    "jurisdiction": "County Court",
+    "name": "Taunton Crown, County and Family Court"
   },
   {
     "courtId": 465,
-    "name": "Technology & Construction Court",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 466,
-    "name": "Bankruptcy Court (High Court)",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
+    "location": "South West",
+    "jurisdiction": "County Court",
+    "name": "Taunton Magistrates' Court, Tribunals and Family Hearing Centre"
   },
   {
     "courtId": 467,
-    "name": "Central Family Court",
+    "location": "North East",
     "jurisdiction": "Crown Court",
-    "location": "Bedford"
+    "name": "Teesside Combined Court Centre"
   },
   {
     "courtId": 468,
-    "name": "Centralised Attachment of Earnings Payments (CAPS)",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 469,
-    "name": "Money Claim Online (MCOL)",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
+    "location": "North East",
+    "jurisdiction": "Tribunal",
+    "name": "Teesside Justice Centre"
   },
   {
     "courtId": 470,
-    "name": "Traffic Enforcement Centre (TEC)",
-    "jurisdiction": "Royal Court",
-    "location": "London"
+    "location": "Midlands",
+    "jurisdiction": "County Court",
+    "name": "Telford Magistrates' Court"
   },
   {
     "courtId": 471,
-    "name": "Royal Courts of Justice",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 472,
-    "name": "Dolgellau Crown Court",
-    "jurisdiction": "Royal Court",
-    "location": "London"
+    "location": "London",
+    "jurisdiction": "Magistrates' Court",
+    "name": "Thames Magistrates' Court"
   },
   {
     "courtId": 473,
-    "name": "Llanelli Magistrates' Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 474,
-    "name": "Welshpool Crown Court",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 475,
-    "name": "Leicester Probate Sub Registry",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 476,
-    "name": "Brighton Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 477,
-    "name": "Croydon Crown Court",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 478,
-    "name": "Tameside County Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 479,
-    "name": "Haverfordwest Magistrates' Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "Bedford"
+    "location": "South West",
+    "jurisdiction": "County Court",
+    "name": "Torquay And Newton Abbot County Court and Family Court"
   },
   {
     "courtId": 480,
-    "name": "Carmarthen Crown Court",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
+    "location": "South West",
+    "jurisdiction": "County Court",
+    "name": "Truro Combined Court"
   },
   {
     "courtId": 481,
-    "name": "Aberystwyth Justice Centre",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 482,
-    "name": "Liverpool Civil and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "London"
-  },
-  {
-    "courtId": 483,
-    "name": "Avon and Somerset Central Accounts Department",
-    "jurisdiction": "Crown Court",
-    "location": "London"
+    "location": "South West",
+    "jurisdiction": "Magistrates' Court",
+    "name": "Truro Magistrates' Court"
   },
   {
     "courtId": 484,
-    "name": "High Peak Magistrates' Court",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
+    "location": "London",
+    "jurisdiction": "County Court",
+    "name": "Uxbridge County Court and Family Court"
   },
   {
     "courtId": 485,
-    "name": "London Mercantile Court",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 486,
-    "name": "Chelmsford County and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 487,
-    "name": "Huntingdon Law Courts & Employment Tribunal Centre",
-    "jurisdiction": "Royal Court",
-    "location": "London"
+    "location": "London",
+    "jurisdiction": "Magistrates' Court",
+    "name": "Uxbridge Magistrates' Court"
   },
   {
     "courtId": 488,
-    "name": "Manchester County Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "Bedford"
+    "location": "Midlands",
+    "jurisdiction": "County Court",
+    "name": "Walsall County and Family Court"
   },
   {
     "courtId": 489,
-    "name": "Manchester District Probate Registry",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 490,
-    "name": "Liverpool Youth Court",
-    "jurisdiction": "Crown Court",
-    "location": "Bedford"
+    "location": "Midlands",
+    "jurisdiction": "Magistrates' Court",
+    "name": "Walsall Magistrates' Court"
   },
   {
     "courtId": 491,
-    "name": "County Court Business Centre (CCBC)",
-    "jurisdiction": "Royal Court",
-    "location": "London"
-  },
-  {
-    "courtId": 492,
-    "name": "Loughborough Magistrates' Court",
-    "jurisdiction": "Royal Court",
-    "location": "London"
-  },
-  {
-    "courtId": 493,
-    "name": "Llandrindod Wells Magistrates' and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 494,
-    "name": "Durham County Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "London"
+    "location": "London",
+    "jurisdiction": "County Court",
+    "name": "Wandsworth County Court and Family Court"
   },
   {
     "courtId": 495,
-    "name": "Hatfield Magistrates' Court",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 496,
-    "name": "Wigan County Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 497,
-    "name": "Court of Protection",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 498,
-    "name": "Bedford County Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
+    "location": "North West",
+    "jurisdiction": "Magistrates' Court",
+    "name": "Warrington Combined Court"
   },
   {
     "courtId": 499,
-    "name": "Salisbury Law Courts",
-    "jurisdiction": "Crown Court",
-    "location": "London"
-  },
-  {
-    "courtId": 500,
-    "name": "Devon and Cornwall Central Finance Unit",
-    "jurisdiction": "Royal Court",
-    "location": "London"
-  },
-  {
-    "courtId": 501,
-    "name": "Greater Manchester Central Accounts and Enforcement Unit",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
+    "location": "South East",
+    "jurisdiction": "County Court",
+    "name": "Watford County Court and Family Court"
   },
   {
     "courtId": 502,
-    "name": "Bristol Civil and Family Justice Centre",
-    "jurisdiction": "Royal Court",
-    "location": "London"
+    "location": "Midlands",
+    "jurisdiction": "Magistrates' Court",
+    "name": "Wellingborough Magistrates' Court"
   },
   {
     "courtId": 503,
-    "name": "Bristol District Probate Registry",
-    "jurisdiction": "Royal Court",
-    "location": "London"
-  },
-  {
-    "courtId": 504,
-    "name": "Preston Crown Court & Family Court (Sessions House)",
-    "jurisdiction": "Royal Court",
-    "location": "London"
-  },
-  {
-    "courtId": 505,
-    "name": "Wales Enforcement and Accounts Office",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 506,
-    "name": "Wales Enforcement Contact and Compliance Centre",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 507,
-    "name": "Wales Fixed Penalty Office",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 508,
-    "name": "Warwick Combined Court",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
+    "location": "Wales",
+    "jurisdiction": "Magistrates' Court",
+    "name": "Welshpool Magistrates' Court"
   },
   {
     "courtId": 509,
-    "name": "Barnstaple Crown Court",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 510,
-    "name": "Leeds District Probate Registry",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
+    "location": "South West",
+    "jurisdiction": "County Court",
+    "name": "Weymouth Combined Court"
   },
   {
     "courtId": 511,
-    "name": "National Taxing Team Manchester Office",
-    "jurisdiction": "Crown Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 512,
-    "name": "National Taxing Team Birmingham Office",
-    "jurisdiction": "Royal Court",
-    "location": "London"
-  },
-  {
-    "courtId": 513,
-    "name": "Lowestoft County Court and Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
+    "location": "North West",
+    "jurisdiction": "Magistrates' Court",
+    "name": "West Cumbria Courthouse"
   },
   {
     "courtId": 514,
-    "name": "London Centralised Legal Aid Office",
-    "jurisdiction": "Crown Court",
-    "location": "London"
+    "location": "North West",
+    "jurisdiction": "County Court",
+    "name": "Wigan And Leigh Magistrates' Court"
   },
   {
     "courtId": 515,
-    "name": "Rolls Building",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
+    "location": "London",
+    "jurisdiction": "County Court",
+    "name": "Willesden County Court and Family Court"
   },
   {
     "courtId": 516,
-    "name": "South East Region Reciprocal Enforcement Unit",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 517,
-    "name": "Mansfield Magistrates' Court",
-    "jurisdiction": "Crown Court",
-    "location": "London"
+    "location": "London",
+    "jurisdiction": "Magistrates' Court",
+    "name": "Wimbledon Magistrates' Court"
   },
   {
     "courtId": 518,
-    "name": "high-court children crime divorce domestic-violence housing-possession money-claims Westminster Magistrates' Court",
-    "jurisdiction": "Royal Court",
-    "location": "London"
+    "location": "South West",
+    "jurisdiction": "Crown Court",
+    "name": "Winchester Combined Court Centre"
   },
   {
     "courtId": 519,
-    "name": "County Court Money Claims Centre (CCMCC)",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 520,
-    "name": "Colchester Magistrates' Court",
-    "jurisdiction": "Crown Court",
-    "location": "London"
-  },
-  {
-    "courtId": 521,
-    "name": "Chelmsford Magistrates' Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "London"
-  },
-  {
-    "courtId": 522,
-    "name": "Amersham Law Courts",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 523,
-    "name": "North Yorkshire Enforcement Office",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 524,
-    "name": "West Yorkshire Enforcement Office",
-    "jurisdiction": "Crown Court",
-    "location": "London"
+    "location": "North West",
+    "jurisdiction": "Magistrates' Court",
+    "name": "Wirral Magistrates' Court"
   },
   {
     "courtId": 525,
-    "name": "Bankruptcy Court (Central London)",
-    "jurisdiction": "Crown Court",
-    "location": "London"
+    "location": "Midlands",
+    "jurisdiction": "County Court",
+    "name": "Wolverhampton Magistrates' Court"
   },
   {
     "courtId": 526,
-    "name": "Wakefield Civil and Family Justice Centre",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 527,
-    "name": "Chippenham and Trowbridge Law Courts",
+    "location": "London",
     "jurisdiction": "Crown Court",
-    "location": "Bedford"
+    "name": "Wood Green Crown Court"
   },
   {
     "courtId": 528,
-    "name": "Cheshire and Merseyside Central Payment and Enforcement Centre",
-    "jurisdiction": "Royal Court",
-    "location": "London"
-  },
-  {
-    "courtId": 529,
-    "name": "Bolton Crown Court",
+    "location": "London",
     "jurisdiction": "Crown Court",
-    "location": "London"
+    "name": "Woolwich Crown Court"
   },
   {
     "courtId": 530,
-    "name": "Birmingham Employment Tribunal",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 531,
-    "name": "Croydon Employment Tribunal",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 532,
-    "name": "Newport Asylum and Immigration Tribunal",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 533,
-    "name": "Stoke on Trent Tribunal Hearing Centre",
-    "jurisdiction": "Crown Court",
-    "location": "London"
-  },
-  {
-    "courtId": 534,
-    "name": "Nottingham Employment Tribunal",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
+    "location": "Midlands",
+    "jurisdiction": "County Court",
+    "name": "Worcester Combined Court"
   },
   {
     "courtId": 535,
-    "name": "Wales Employment Tribunal",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 536,
-    "name": "Upper Tribunal (Lands Chamber)",
-    "jurisdiction": "Royal Court",
-    "location": "London"
+    "location": "South East",
+    "jurisdiction": "County Court",
+    "name": "Worthing Magistrates' and County Court"
   },
   {
     "courtId": 537,
-    "name": "Central London County Court (Bankruptcy)",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 538,
-    "name": "Bradford Tribunal Hearing Centre",
-    "jurisdiction": "Royal Court",
-    "location": "London"
-  },
-  {
-    "courtId": 539,
-    "name": "Newcastle Employment Tribunal",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
+    "location": "Wales",
+    "jurisdiction": "Magistrates' Court",
+    "name": "Wrexham Law Courts"
   },
   {
     "courtId": 540,
-    "name": "North Shields Immigration and Asylum Tribunal",
-    "jurisdiction": "Royal Court",
-    "location": "London"
+    "location": "North East",
+    "jurisdiction": "County Court",
+    "name": "York County Court and Family Court"
   },
   {
     "courtId": 541,
-    "name": "Newcastle Social Security and Child Support Tribunal",
+    "location": "North East",
     "jurisdiction": "Crown Court",
-    "location": "Bedford"
+    "name": "York Crown Court"
   },
   {
     "courtId": 542,
-    "name": "Leeds Social Security and Child Support Tribunal",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 543,
-    "name": "Wakefield Social Security and Child Support Tribunal",
-    "jurisdiction": "Crown Court",
-    "location": "London"
-  },
-  {
-    "courtId": 544,
-    "name": "Bury St Edmunds Employment Tribunal",
-    "jurisdiction": "Crown Court",
-    "location": "London"
+    "location": "North East",
+    "jurisdiction": "Magistrates' Court",
+    "name": "York Magistrates' Court and Family Court"
   },
   {
     "courtId": 545,
-    "name": "Norwich Employment Tribunal",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
+    "location": "London",
+    "jurisdiction": "Magistrates' Court",
+    "name": "Westminster Magistrates' Court"
   },
   {
     "courtId": 546,
-    "name": "Yarlswood Immigration and Asylum Hearing Centre",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
+    "location": "Wales",
+    "jurisdiction": "County Court",
+    "name": "Port Talbot Justice Centre"
   },
   {
     "courtId": 547,
-    "name": "Doncaster Social Security and Child Support Tribunal",
-    "jurisdiction": "Royal Court",
-    "location": "London"
+    "location": "Wales",
+    "jurisdiction": "County Court",
+    "name": "Carmarthen County Court and Family Court"
   },
   {
     "courtId": 548,
-    "name": "East London Tribunal Hearing Centre",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
+    "location": "North East",
+    "jurisdiction": "County Court",
+    "name": "Wakefield Civil and Family Justice Centre"
   },
   {
     "courtId": 549,
-    "name": "Derby Social Security and Child Support Tribunal",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
+    "location": "Wales",
+    "jurisdiction": "Magistrates' Court",
+    "name": "Newport (South Wales) Magistrates' Court"
   },
   {
     "courtId": 550,
-    "name": "Leicester Social Security and Child Support Tribunal",
-    "jurisdiction": "Crown Court",
-    "location": "London"
-  },
-  {
-    "courtId": 551,
-    "name": "Nottingham Social Security and Child Support Tribunal",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
+    "location": "North West",
+    "jurisdiction": "County Court",
+    "name": "Preston Combined Court Centre"
   },
   {
     "courtId": 552,
-    "name": "Bolton Social Security and Child Support Tribunal",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
+    "location": "London",
+    "jurisdiction": "County Court",
+    "name": "West London Family Court"
   },
   {
     "courtId": 553,
-    "name": "Manchester Employment Tribunal",
-    "jurisdiction": "Crown Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 554,
-    "name": "Central London Employment Tribunal",
-    "jurisdiction": "Crown Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 555,
-    "name": "Upper Tribunal Immigration and Asylum Chamber",
-    "jurisdiction": "Royal Court",
-    "location": "London"
+    "location": "London",
+    "jurisdiction": "County Court",
+    "name": "East London Family Court"
   },
   {
     "courtId": 556,
-    "name": "Aberdeen Tribunal Hearing Centre",
-    "jurisdiction": "Crown Court",
-    "location": "Bedford"
-  },
-  {
-    "courtId": 557,
-    "name": "Ayr Social Security and Child Support Tribunal",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
+    "location": "Scotland",
+    "jurisdiction": "Tribunal",
+    "name": "Dundee Tribunal Hearing Centre"
   },
   {
     "courtId": 558,
-    "name": "Dundee Tribunal Hearing Centre",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 559,
-    "name": "Edinburgh Employment Tribunal",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
+    "location": "Scotland",
+    "jurisdiction": "Tribunal",
+    "name": "Edinburgh Social Security and Child Support Tribunal"
   },
   {
     "courtId": 560,
-    "name": "Edinburgh Social Security and Child Support Tribunal",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 561,
-    "name": "Glasgow Tribunal Hearing Centre (Eagle Building)",
-    "jurisdiction": "Royal Court",
-    "location": "London"
+    "location": "Scotland",
+    "jurisdiction": "Tribunal",
+    "name": "Hamilton Social Security and Child Support Tribunal"
   },
   {
     "courtId": 562,
-    "name": "Glasgow Tribunal Hearing Centre (Wellington House)",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
+    "location": "Scotland",
+    "jurisdiction": "Tribunal",
+    "name": "Ayr Social Security and Child Support Tribunal"
   },
   {
     "courtId": 563,
-    "name": "Hamilton Social Security and Child Support Tribunal",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
+    "location": "Scotland",
+    "jurisdiction": "Tribunal",
+    "name": "Stirling Tribunal Hearing Centre"
   },
   {
     "courtId": 564,
-    "name": "Inverness Social Security and Child Support Tribunal",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
+    "location": "Scotland",
+    "jurisdiction": "Tribunal",
+    "name": "Inverness Social Security and Child Support Tribunal"
   },
   {
     "courtId": 565,
-    "name": "Stirling Tribunal Hearing Centre",
-    "jurisdiction": "Royal Court",
-    "location": "London"
-  },
-  {
-    "courtId": 566,
-    "name": "Aldershot Social Security and Child Support Tribunal",
-    "jurisdiction": "Crown Court",
-    "location": "Bedford"
+    "location": "South East",
+    "jurisdiction": "Tribunal",
+    "name": "Ashford Tribunal Hearing Centre"
   },
   {
     "courtId": 567,
-    "name": "Brighton Social Security and Child Support Tribunal",
-    "jurisdiction": "Crown Court",
-    "location": "London"
-  },
-  {
-    "courtId": 568,
-    "name": "Leicester Employment Tribunal",
-    "jurisdiction": "Royal Court",
-    "location": "London"
-  },
-  {
-    "courtId": 569,
-    "name": "Watford Employment Tribunal",
-    "jurisdiction": "Crown Court",
-    "location": "London"
+    "location": "South East",
+    "jurisdiction": "County Court",
+    "name": "Brighton Tribunal Hearing Centre"
   },
   {
     "courtId": 570,
-    "name": "Feltham Tribunal Hearing Centre",
-    "jurisdiction": "Royal Court",
-    "location": "London"
-  },
-  {
-    "courtId": 571,
-    "name": "Manchester Immigration and Asylum Chamber (First-tier Tribunal)",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
+    "location": "South East",
+    "jurisdiction": "Tribunal",
+    "name": "Reading Tribunal Hearing Centre"
   },
   {
     "courtId": 572,
-    "name": "Bristol Social Security and Child Support Tribunal",
-    "jurisdiction": "Royal Court",
-    "location": "London"
-  },
-  {
-    "courtId": 573,
-    "name": "Cardiff Social Security and Child Support Tribunal",
-    "jurisdiction": "Crown Court",
-    "location": "Bedford"
+    "location": "South East",
+    "jurisdiction": "Tribunal",
+    "name": "Norwich Social Security and Child Support Tribunal"
   },
   {
     "courtId": 574,
-    "name": "Pocock Street Tribunal Hearing Centre",
-    "jurisdiction": "Crown Court",
-    "location": "London"
+    "location": "South East",
+    "jurisdiction": "Tribunal",
+    "name": "Watford Tribunal Hearing Centre"
   },
   {
     "courtId": 575,
-    "name": "London",
-    "jurisdiction": "Royal Court",
-    "location": "Manchester"
+    "location": "South East",
+    "jurisdiction": "County Court",
+    "name": "Stevenage Offices (Bayley House)"
   },
   {
     "courtId": 576,
-    "name": "Taunton Tribunals Hearing Centre",
-    "jurisdiction": "Crown Court",
-    "location": "Bedford"
+    "location": "South East",
+    "jurisdiction": "Tribunal",
+    "name": "Yarls Wood Immigration and Asylum Hearing Centre"
   },
   {
     "courtId": 577,
-    "name": "Barnsley Social Security and Child Support Tribunal",
-    "jurisdiction": "Royal Court",
-    "location": "London"
+    "location": "North West",
+    "jurisdiction": "Tribunal",
+    "name": "Manchester Tribunal Hearing Centre"
   },
   {
     "courtId": 578,
-    "name": "Wrexham Magistrates' Court and Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "Bedford"
+    "location": "North West",
+    "jurisdiction": "Tribunal",
+    "name": "Bolton Social Security and Child Support Tribunal"
   },
   {
     "courtId": 579,
-    "name": "East London Family Court",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
+    "location": "North West",
+    "jurisdiction": "Tribunal",
+    "name": "Blackburn SSCS Soho Foundry"
   },
   {
     "courtId": 580,
-    "name": "West London Family Court",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
+    "location": "North West",
+    "jurisdiction": "Tribunal",
+    "name": "Burnley SSCS St James House"
   },
   {
     "courtId": 581,
-    "name": "Northumbria Central Enforcement Unit",
-    "jurisdiction": "Crown Court",
-    "location": "Manchester"
-  },
-  {
-    "courtId": 582,
-    "name": "Cleveland Central Enforcement Unit",
-    "jurisdiction": "Royal Court",
-    "location": "Bedford"
+    "location": "North West",
+    "jurisdiction": "Tribunal",
+    "name": "Liverpool Social Security and Child Support Tribunal"
   },
   {
     "courtId": 583,
-    "name": "Durham Central Enforcement UnitAbergavenny Magistrates' Court",
-    "jurisdiction": "Royal Court",
-    "location": "London"
+    "location": "North West",
+    "jurisdiction": "Tribunal",
+    "name": "Blackpool SSCS Prudential House"
+  },
+  {
+    "courtId": 585,
+    "location": "North West",
+    "jurisdiction": "Tribunal",
+    "name": "Rochdale SSCS, The Old Post Office"
+  },
+  {
+    "courtId": 587,
+    "location": "North East",
+    "jurisdiction": "Tribunal",
+    "name": "Leeds Employment Tribunal"
+  },
+  {
+    "courtId": 591,
+    "location": "North East",
+    "jurisdiction": "Tribunal",
+    "name": "Leeds Social Security and Child Support Tribunal"
+  },
+  {
+    "courtId": 594,
+    "location": "North East",
+    "jurisdiction": "Tribunal",
+    "name": "Bradford Tribunal Hearing Centre"
+  },
+  {
+    "courtId": 597,
+    "location": "North East",
+    "jurisdiction": "Tribunal",
+    "name": "Hull Tribunal Hearing Centre"
+  },
+  {
+    "courtId": 600,
+    "location": "Wales",
+    "jurisdiction": "Tribunal",
+    "name": "Cardiff Social Security and Child Support Tribunal"
+  },
+  {
+    "courtId": 601,
+    "location": "Wales",
+    "jurisdiction": "Tribunal",
+    "name": "Newport Tribunal Centre - Columbus House"
+  },
+  {
+    "courtId": 603,
+    "location": "Midlands",
+    "jurisdiction": "Magistrates' Court",
+    "name": "Nottingham Magistrates' Court"
+  },
+  {
+    "courtId": 605,
+    "location": "Midlands",
+    "jurisdiction": "Tribunal",
+    "name": "Leicester Tribunal Hearing Centre"
+  },
+  {
+    "courtId": 607,
+    "location": "Wales",
+    "jurisdiction": "County Court",
+    "name": "Aberystwyth Justice Centre"
+  },
+  {
+    "courtId": 608,
+    "location": "South West",
+    "jurisdiction": "Magistrates' Court",
+    "name": "Basingstoke County Court and Family Court"
+  },
+  {
+    "courtId": 609,
+    "location": "Midlands",
+    "jurisdiction": "Tribunal",
+    "name": "Wolverhampton Social Security and Child Support Tribunal"
+  },
+  {
+    "courtId": 610,
+    "location": "London",
+    "jurisdiction": "Tribunal",
+    "name": "London Property Tribunal"
+  },
+  {
+    "courtId": 611,
+    "location": "London",
+    "jurisdiction": "Tribunal",
+    "name": "East London Tribunal Hearing Centre"
+  },
+  {
+    "courtId": 612,
+    "location": "London",
+    "jurisdiction": "Tribunal",
+    "name": "Bexleyheath Social Security and Child Support Tribunal"
+  },
+  {
+    "courtId": 613,
+    "location": "London",
+    "jurisdiction": "Tribunal",
+    "name": "Harmondsworth Tribunal Hearing Centre"
+  },
+  {
+    "courtId": 614,
+    "location": "London",
+    "jurisdiction": "Tribunal",
+    "name": "Field House Tribunal Hearing Centre"
+  },
+  {
+    "courtId": 617,
+    "location": "London",
+    "jurisdiction": "Tribunal",
+    "name": "Hatton Cross Tribunal Hearing Centre"
+  },
+  {
+    "courtId": 618,
+    "location": "London",
+    "jurisdiction": "Tribunal",
+    "name": "Enfield Social Security and Child Support Tribunal"
+  },
+  {
+    "courtId": 619,
+    "location": "London",
+    "jurisdiction": "Tribunal",
+    "name": "War Pensions & Armed Forces Compensation Chamber"
+  },
+  {
+    "courtId": 620,
+    "location": "London",
+    "jurisdiction": "Tribunal",
+    "name": "Croydon Employment Tribunal"
+  },
+  {
+    "courtId": 622,
+    "location": "London",
+    "jurisdiction": "Tribunal",
+    "name": "Taylor House Tribunal Hearing Centre"
+  },
+  {
+    "courtId": 624,
+    "location": "London",
+    "jurisdiction": "Tribunal",
+    "name": "Central London Employment Tribunal"
+  },
+  {
+    "courtId": 625,
+    "location": "Midlands",
+    "jurisdiction": "Magistrates' Court",
+    "name": "Northampton Bulk Issue Centre"
+  },
+  {
+    "courtId": 627,
+    "location": "Midlands",
+    "jurisdiction": "Tribunal",
+    "name": "Midlands (West) Employment Tribunal"
+  },
+  {
+    "courtId": 630,
+    "location": "South West",
+    "jurisdiction": "Tribunal",
+    "name": "Keble House - Exeter Tribunal"
+  },
+  {
+    "courtId": 631,
+    "location": "South West",
+    "jurisdiction": "Tribunal",
+    "name": "Havant Justice Centre"
+  },
+  {
+    "courtId": 633,
+    "location": "London",
+    "jurisdiction": "Tribunal",
+    "name": "Sutton Social Security and Child Support Tribunal"
+  },
+  {
+    "courtId": 636,
+    "location": "South West",
+    "jurisdiction": "Tribunal",
+    "name": "Plymouth Tribunal"
+  },
+  {
+    "courtId": 643,
+    "location": "Scotland",
+    "jurisdiction": "Tribunal",
+    "name": "Aberdeen Tribunal Hearing Centre"
   }
 ]
