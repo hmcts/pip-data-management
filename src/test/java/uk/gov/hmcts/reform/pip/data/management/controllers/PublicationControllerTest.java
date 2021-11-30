@@ -44,6 +44,9 @@ class PublicationControllerTest {
     private static final String PAYLOAD_URL = "This is a test payload";
     private static final String EMPTY_FIELD = "";
 
+    private static final String VALIDATION_EXPECTED_MESSAGE =
+        "The expected exception does not contain the correct message";
+
     @Test
     void testCreationOfPublication() {
         Artefact artefact = Artefact.builder()
@@ -92,7 +95,7 @@ class PublicationControllerTest {
 
         assertEquals("x-provenance is mandatory however an empty value is provided",
                      emptyRequestHeaderException.getMessage(),
-                     "The expected exception does not contain the correct message");
+                     VALIDATION_EXPECTED_MESSAGE);
     }
 
     @Test
@@ -107,6 +110,21 @@ class PublicationControllerTest {
 
         assertEquals("x-source-artefact-id is mandatory however an empty value is provided",
                      emptyRequestHeaderException.getMessage(),
-                     "The expected exception does not contain the correct message");
+                     VALIDATION_EXPECTED_MESSAGE);
+    }
+
+    @Test
+    void testCreationOfPublicationEmptySourceArtefactIdAndEmptyProvenanceOnlyFirstIsShown() {
+        EmptyRequestHeaderException emptyRequestHeaderException =
+            assertThrows(EmptyRequestHeaderException.class, () -> {
+                publicationController.uploadPublication(
+                    EMPTY_FIELD, EMPTY_FIELD, ARTEFACT_TYPE,
+                    SENSITIVITY, LANGUAGE, DISPLAY_FROM, DISPLAY_TO, PAYLOAD
+                );
+            });
+
+        assertEquals("x-provenance is mandatory however an empty value is provided",
+                     emptyRequestHeaderException.getMessage(),
+                     VALIDATION_EXPECTED_MESSAGE);
     }
 }
