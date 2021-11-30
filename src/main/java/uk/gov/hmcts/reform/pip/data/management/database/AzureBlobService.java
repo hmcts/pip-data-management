@@ -29,7 +29,7 @@ public class AzureBlobService {
      */
     public String createPayload(String sourceArtefactId, String provenance, String payload) {
         String blobName = sourceArtefactId + '-' + provenance;
-        BlobClient blobClient = blobContainerClient.getBlobClient(sourceArtefactId + '-' + provenance);
+        BlobClient blobClient = blobContainerClient.getBlobClient(blobName);
 
         byte[] payloadBytes = payload.getBytes();
         blobClient.upload(new ByteArrayInputStream(payloadBytes), payloadBytes.length, true);

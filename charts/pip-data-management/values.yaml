@@ -4,20 +4,20 @@ java:
   applicationPort: 8090
   image: 'sdshmctspublic.azurecr.io/pip/data-management:latest'
   keyVaults:
-    pip-shared-kv:
+    pip-ss-kv:
       excludeEnvironmentSuffix: false
-      resourceGroup: pip-sharedservices-{{ .Values.global.environment }}-rg
+      resourceGroup: pip-ss-{{ .Values.global.environment }}-rg
       usePodIdentity: true
       secrets:
-        - name: pipsharedinfrasa-storageaccount-connection-string
+        - name: shared-storageaccount-connection-string
           alias: CONNECTION_STRING
-        - name: pip-subscription-management-POSTGRES-DATABASE
+        - name: pip-shared-POSTGRES-DATABASE
           alias: DB_NAME
-        - name: pip-subscription-management-POSTGRES-PASS
+        - name: pip-shared-POSTGRES-PASS
           alias: DB_PASS
-        - name: pip-subscription-management-POSTGRES-PORT
+        - name: pip-shared-POSTGRES-PORT
           alias: DB_PORT
-        - name: pip-subscription-management-POSTGRES-USER
+        - name: pip-shared-POSTGRES-USER
           alias: DB_USER
   #  Uncomment once the vault containing the app insights key has been set up
   #  keyVaults:

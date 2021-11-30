@@ -21,7 +21,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 /**
- * Class that presents the Inbound artifact that is being published.
+ * Class that represents the Inbound artifact that is being published.
  */
 @Entity
 @Data
