@@ -79,7 +79,7 @@ class PublicationControllerTest {
             SENSITIVITY, LANGUAGE, DISPLAY_FROM, DISPLAY_TO, PAYLOAD
         );
 
-        assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode(), "An OK status code is returned");
+        assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode(), "A created status code is returned");
         assertEquals(artefactWithId, responseEntity.getBody(), "The expected return ID is returned");
     }
 

@@ -55,7 +55,9 @@ public class PublicationController {
      * @return The created artefact.
      */
     @ApiResponses({
-        @ApiResponse(code = 201, message = "Publication has been created"),
+        @ApiResponse(code = 201,
+            message = "Artefact.class instance for the artefact that has been created",
+            response = Artefact.class),
     })
     @ApiOperation("Upload a new publication")
     @PutMapping
