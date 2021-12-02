@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -54,7 +55,7 @@ public class PublicationController {
      * @return The created artefact.
      */
     @ApiResponses({
-        @ApiResponse(code = 200, message = "Publication has been created"),
+        @ApiResponse(code = 201, message = "Publication has been created"),
     })
     @ApiOperation("Upload a new publication")
     @PutMapping
@@ -81,7 +82,7 @@ public class PublicationController {
         Artefact createdItem = publicationService
             .createPublication(artefact, payload);
 
-        return ResponseEntity.ok(createdItem);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdItem);
     }
 
     /**

@@ -108,7 +108,7 @@ class PublicationTest {
         when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
         when(blobContainerClient.getBlobContainerUrl()).thenReturn(PAYLOAD_URL);
 
-        MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isOk()).andReturn();
+        MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
 
@@ -428,7 +428,7 @@ class PublicationTest {
             .contentType(MediaType.APPLICATION_JSON);
 
         MvcResult createResponse =
-            mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isOk()).andReturn();
+            mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
 
         Artefact createdArtefact = objectMapper.readValue(createResponse.getResponse().getContentAsString(),
                                                           Artefact.class);
@@ -437,7 +437,7 @@ class PublicationTest {
                                              Language.BI_LINGUAL);
 
         MvcResult updatedResponse = mockMvc.perform(mockHttpServletRequestBuilder).andExpect(
-            status().isOk()).andReturn();
+            status().isCreated()).andReturn();
 
         Artefact updatedArtefact = objectMapper.readValue(updatedResponse.getResponse().getContentAsString(),
                                                           Artefact.class);
@@ -467,7 +467,7 @@ class PublicationTest {
             .contentType(MediaType.APPLICATION_JSON);
 
         MvcResult createResponse =
-            mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isOk()).andReturn();
+            mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
 
         Artefact createdArtefact = objectMapper.readValue(createResponse.getResponse().getContentAsString(),
                                                           Artefact.class);
