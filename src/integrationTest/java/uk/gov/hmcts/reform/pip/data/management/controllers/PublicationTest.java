@@ -118,6 +118,7 @@ class PublicationTest {
         assertNotNull(artefact.getArtefactId(), "Artefact ID is not populated");
         assertEquals(artefact.getSourceArtefactId(), SOURCE_ARTEFACT_ID, "Source artefact ID "
             + "does not match input source artefact id");
+        assertEquals(artefact.getType(), ARTEFACT_TYPE, "Artefact type does not match input artefact type");
         assertEquals(artefact.getDisplayFrom(), DISPLAY_FROM, "Display from does not match input display from");
         assertEquals(artefact.getDisplayTo(), DISPLAY_TO, "Display to does not match input display to");
         assertEquals(artefact.getProvenance(), PROVENANCE, "Provenance does not match input provenance");
@@ -137,6 +138,34 @@ class PublicationTest {
 
         assertEquals(artefact.getPayload(), PAYLOAD_URL + "/" + SOURCE_ARTEFACT_ID + '-' + PROVENANCE,
                      "Payload does not match input payload");
+    }
+
+    @DisplayName("Should create a valid artefact with only mandatory fields")
+    @Test
+    void creationOfAValidArtefactWithOnlyMandatoryFields() throws Exception {
+        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(blobContainerClient.getBlobContainerUrl()).thenReturn(PAYLOAD_URL);
+
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+            .put(URL)
+            .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
+            .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
+            .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
+            .content(payload)
+            .contentType(MediaType.APPLICATION_JSON);
+
+        MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
+            .andExpect(status().isCreated()).andReturn();
+
+        Artefact artefact = objectMapper.readValue(
+            response.getResponse().getContentAsString(), Artefact.class);
+
+        assertNotNull(artefact.getArtefactId(), "Artefact ID is not populated");
+        assertEquals(artefact.getType(), ARTEFACT_TYPE, "Artefact type does not match input artefact type");
+        assertEquals(artefact.getSourceArtefactId(), SOURCE_ARTEFACT_ID, "Source artefact ID "
+            + "does not match input source artefact id");
+
+        assertEquals(artefact.getProvenance(), PROVENANCE, "Provenance does not match input provenance");
     }
 
     @DisplayName("Should return a 400 Bad Request if the artifact type header is missing")
