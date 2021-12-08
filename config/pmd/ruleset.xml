@@ -43,10 +43,12 @@
     <exclude name="UseUtilityClass"/>
     <exclude name="LoosePackageCoupling"/>
     <exclude name="DataClass"/>
+    <exclude name="ExcessiveParameterList"/>
+    <exclude name="UseObjectForClearerAPI"/>
   </rule>
   <rule ref="category/java/design.xml/ExcessiveImports">
     <properties>
-      <property name="minimum" value="35"/><!-- should be reduced -->
+      <property name="minimum" value="40"/><!-- should be reduced -->
     </properties>
   </rule>
   <rule ref="category/java/design.xml/LawOfDemeter">
