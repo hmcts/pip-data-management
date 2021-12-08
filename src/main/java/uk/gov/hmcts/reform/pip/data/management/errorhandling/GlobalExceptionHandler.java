@@ -56,7 +56,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ExceptionResponse> handle(MethodArgumentTypeMismatchException ex) {
 
         ExceptionResponse exceptionResponse = new ExceptionResponse();
-        exceptionResponse.setMessage(String.format("Unable to parse %s. %s", ex.getName(), ex.getMessage()));
+        exceptionResponse.setMessage(String.format(
+            "Unable to parse %s. Please check that the value is of the correct format for the field "
+                + "(See Swagger documentation for correct formats)", ex.getName()));
         exceptionResponse.setTimestamp(LocalDateTime.now());
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionResponse);

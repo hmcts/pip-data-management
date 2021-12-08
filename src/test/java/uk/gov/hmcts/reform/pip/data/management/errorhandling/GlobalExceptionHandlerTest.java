@@ -118,8 +118,6 @@ class GlobalExceptionHandlerTest {
 
     @Test
     void testMethodArgumentTypeMismatchException() {
-
-        when(methodArgumentTypeMismatchException.getMessage()).thenReturn(TEST_MESSAGE);
         when(methodArgumentTypeMismatchException.getName()).thenReturn(TEST_NAME);
 
         ResponseEntity<ExceptionResponse> responseEntity =
@@ -127,10 +125,10 @@ class GlobalExceptionHandlerTest {
 
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode(), BAD_REQUEST_ASSERTION);
         assertNotNull(responseEntity.getBody(), ASSERTION_RESPONSE_BODY);
-        assertTrue(responseEntity.getBody().getMessage().contains(TEST_NAME),
+        assertTrue(responseEntity.getBody().getMessage().contains(
+            String.format("Unable to parse %s. Please check that the value is of the correct format for the field "
+            + "(See Swagger documentation for correct formats)", TEST_NAME)),
                    "The exception response should contain the name of the field");
-        assertTrue(responseEntity.getBody().getMessage().contains(TEST_MESSAGE),
-                   "The exception response should contain the message");
     }
 
     @Test

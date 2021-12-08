@@ -72,6 +72,8 @@ class PublicationTest {
     private static final String SEARCH_VALUE_1 = "array-value-1";
     private static final String SEARCH_VALUE_2 = "array-value-2";
     private static final String EMPTY_VALUE = "";
+    private static final String FORMAT_RESPONSE = "Please check that the value is of the correct format for the field "
+        + "(See Swagger documentation for correct formats)";
 
     private static final String VALIDATION_EMPTY_RESPONSE = "Response should contain a Artefact";
     private static final String VALIDATION_EXCEPTION_RESPONSE = "Exception response does not contain correct message";
@@ -239,7 +241,8 @@ class PublicationTest {
         ExceptionResponse exceptionResponse = objectMapper.readValue(response.getResponse().getContentAsString(),
                                                                      ExceptionResponse.class);
 
-        assertTrue(exceptionResponse.getMessage().contains("Unable to parse x-type"), VALIDATION_EXCEPTION_RESPONSE);
+        assertTrue(exceptionResponse.getMessage().contains(
+            String.format("Unable to parse x-type. %s", FORMAT_RESPONSE)), VALIDATION_EXCEPTION_RESPONSE);
     }
 
     @DisplayName("Should return a 400 Bad Request if the provenance header is missing")
@@ -362,8 +365,8 @@ class PublicationTest {
         ExceptionResponse exceptionResponse = objectMapper.readValue(response.getResponse().getContentAsString(),
                                                                      ExceptionResponse.class);
 
-        assertTrue(exceptionResponse.getMessage().contains("Unable to parse x-display-to"),
-                   VALIDATION_EXCEPTION_RESPONSE);
+        assertTrue(exceptionResponse.getMessage().contains(
+            String.format("Unable to parse x-display-to. %s", FORMAT_RESPONSE)), VALIDATION_EXCEPTION_RESPONSE);
     }
 
     @DisplayName("Should return a 400 Bad Request if an invalid display from is provided")
@@ -388,8 +391,8 @@ class PublicationTest {
         ExceptionResponse exceptionResponse = objectMapper.readValue(response.getResponse().getContentAsString(),
                                                                      ExceptionResponse.class);
 
-        assertTrue(exceptionResponse.getMessage().contains("Unable to parse x-display-from"),
-                   VALIDATION_EXCEPTION_RESPONSE);
+        assertTrue(exceptionResponse.getMessage().contains(
+            String.format("Unable to parse x-display-from. %s", FORMAT_RESPONSE)), VALIDATION_EXCEPTION_RESPONSE);
     }
 
     @DisplayName("Should return a 400 Bad Request if an invalid language is provided")
@@ -414,8 +417,8 @@ class PublicationTest {
         ExceptionResponse exceptionResponse = objectMapper.readValue(response.getResponse().getContentAsString(),
                                                                      ExceptionResponse.class);
 
-        assertTrue(exceptionResponse.getMessage().contains("Unable to parse x-language"),
-                   VALIDATION_EXCEPTION_RESPONSE);
+        assertTrue(exceptionResponse.getMessage().contains(
+            String.format("Unable to parse x-language. %s", FORMAT_RESPONSE)), VALIDATION_EXCEPTION_RESPONSE);
     }
 
     @DisplayName("Should return a 400 Bad Request if an invalid sensitivity is provided")
@@ -437,6 +440,12 @@ class PublicationTest {
             .andExpect(status().isBadRequest()).andReturn();
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
+
+        ExceptionResponse exceptionResponse = objectMapper.readValue(response.getResponse().getContentAsString(),
+                                                                     ExceptionResponse.class);
+
+        assertTrue(exceptionResponse.getMessage().contains(
+            String.format("Unable to parse x-sensitivity. %s", FORMAT_RESPONSE)), VALIDATION_EXCEPTION_RESPONSE);
     }
 
     @DisplayName("Should update the artefact and return the same Artefact ID as the originally created one")
