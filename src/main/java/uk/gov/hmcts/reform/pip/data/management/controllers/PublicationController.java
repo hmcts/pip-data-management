@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -22,6 +23,7 @@ import uk.gov.hmcts.reform.pip.data.management.models.publication.Sensitivity;
 import uk.gov.hmcts.reform.pip.data.management.service.PublicationService;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * This class is the controller for creating new Publications.
@@ -86,6 +88,38 @@ public class PublicationController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(createdItem);
     }
+
+    @ApiOperation("Get a series of publications")
+    @GetMapping
+    private ResponseEntity<List<Artefact>> findAllArtefacts(){
+
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(publicationService.findAllArtefacts());
+    }
+
+    @ApiOperation("Get a series of publications")
+    @GetMapping("/date")
+    private ResponseEntity<List<Artefact>> findAllArtefactsBetweenDates(){
+
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(publicationService.findAllArtefactsInDateRange());
+    }
+
+    @ApiOperation("Get a series of publications")
+    @GetMapping("/public")
+    private ResponseEntity<List<Artefact>> findAllArtefactsBetweenDatesAndPublic(){
+
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(publicationService
+                                                                   .findAllArtefactsInDateRangeAndPublic());
+    }
+
+    @ApiOperation("Get a series of publications matching a given input (e.g. courtid)")
+    @GetMapping("/test")
+    private ResponseEntity<List<Artefact>> getAllRelevantArtefacts(@RequestHeader Boolean verified,
+                                                                   @RequestHeader String searchValue) {
+        return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT)
+            .body(publicationService.findAllRelevantArtefacts(verified, searchValue));
+
+    }
+
 
     /**
      * Validates the Provenance and Source Artefact ID headers to check they are not empty.
