@@ -207,3 +207,5 @@ rootProject.tasks.named("processSmokeTestResources") {
 wrapper {
   distributionType = Wrapper.DistributionType.ALL
 }
+
+ext['log4j2.version'] = '2.15.0'
