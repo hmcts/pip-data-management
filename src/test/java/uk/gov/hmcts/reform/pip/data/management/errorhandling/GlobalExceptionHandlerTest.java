@@ -1,5 +1,7 @@
 package uk.gov.hmcts.reform.pip.data.management.errorhandling;
 
+import com.azure.storage.blob.models.BlobErrorCode;
+import com.azure.storage.blob.models.BlobStorageException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,6 +19,8 @@ import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.EmptyReq
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.HearingNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.NotFoundException;
 
+import java.net.http.HttpResponse;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -31,12 +35,16 @@ class GlobalExceptionHandlerTest {
     @Mock
     MethodArgumentTypeMismatchException methodArgumentTypeMismatchException;
 
+    @Mock
+    BlobStorageException blobStorageException;
+
     private static final String TEST_MESSAGE = "This is a test message";
     private static final String TEST_NAME = "TestName";
     private static final String ASSERTION_MESSAGE = "The message should match the message passed in";
     private static final String BAD_REQUEST_ASSERTION = "Status code should be of type: Not Found";
     private static final String NOT_FOUND_ASSERTION = "Status code should be of type: Bad Request";
     static final String ASSERTION_RESPONSE_BODY = "Response should contain a body";
+    private static final String BLOBSTORAGE_MESSAGE = "404: Unable to find a blob matching the given inputs";
 
     private final GlobalExceptionHandler globalExceptionHandler = new GlobalExceptionHandler();
 
@@ -60,7 +68,8 @@ class GlobalExceptionHandlerTest {
         assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode(), NOT_FOUND_ASSERTION);
         assertNotNull(responseEntity.getBody(), ASSERTION_RESPONSE_BODY);
         assertEquals(TEST_MESSAGE, responseEntity.getBody().getMessage(),
-                     ASSERTION_MESSAGE);
+                     ASSERTION_MESSAGE
+        );
     }
 
     @Test
@@ -73,7 +82,8 @@ class GlobalExceptionHandlerTest {
         assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode(), NOT_FOUND_ASSERTION);
         assertNotNull(responseEntity.getBody(), ASSERTION_RESPONSE_BODY);
         assertEquals(TEST_MESSAGE, responseEntity.getBody().getMessage(),
-                     ASSERTION_MESSAGE);
+                     ASSERTION_MESSAGE
+        );
     }
 
     @Test
@@ -86,7 +96,8 @@ class GlobalExceptionHandlerTest {
         assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode(), NOT_FOUND_ASSERTION);
         assertNotNull(responseEntity.getBody(), ASSERTION_RESPONSE_BODY);
         assertEquals(TEST_MESSAGE, responseEntity.getBody().getMessage(),
-                     ASSERTION_MESSAGE);
+                     ASSERTION_MESSAGE
+        );
     }
 
     @Test
@@ -99,7 +110,8 @@ class GlobalExceptionHandlerTest {
         assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode(), NOT_FOUND_ASSERTION);
         assertNotNull(responseEntity.getBody(), ASSERTION_RESPONSE_BODY);
         assertEquals(TEST_MESSAGE, responseEntity.getBody().getMessage(),
-                     ASSERTION_MESSAGE);
+                     ASSERTION_MESSAGE
+        );
     }
 
     @Test
@@ -113,7 +125,8 @@ class GlobalExceptionHandlerTest {
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode(), BAD_REQUEST_ASSERTION);
         assertNotNull(responseEntity.getBody(), ASSERTION_RESPONSE_BODY);
         assertEquals(TEST_MESSAGE, responseEntity.getBody().getMessage(),
-                     ASSERTION_MESSAGE);
+                     ASSERTION_MESSAGE
+        );
     }
 
     @Test
@@ -125,10 +138,12 @@ class GlobalExceptionHandlerTest {
 
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode(), BAD_REQUEST_ASSERTION);
         assertNotNull(responseEntity.getBody(), ASSERTION_RESPONSE_BODY);
-        assertTrue(responseEntity.getBody().getMessage().contains(
-            String.format("Unable to parse %s. Please check that the value is of the correct format for the field "
-            + "(See Swagger documentation for correct formats)", TEST_NAME)),
-                   "The exception response should contain the name of the field");
+        assertTrue(
+            responseEntity.getBody().getMessage().contains(
+                String.format("Unable to parse %s. Please check that the value is of the correct format for the field "
+                                  + "(See Swagger documentation for correct formats)", TEST_NAME)),
+            "The exception response should contain the name of the field"
+        );
     }
 
     @Test
@@ -142,8 +157,41 @@ class GlobalExceptionHandlerTest {
 
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode(), BAD_REQUEST_ASSERTION);
         assertNotNull(responseEntity.getBody(), ASSERTION_RESPONSE_BODY);
-        assertTrue(responseEntity.getBody().getMessage().contains(TEST_MESSAGE),
-                   "The exception response should contain the message");
+        assertTrue(
+            responseEntity.getBody().getMessage().contains(TEST_MESSAGE),
+            "The exception response should contain the message"
+        );
     }
 
+    @Test
+    void testBlobStorageException404() {
+        when(blobStorageException.getErrorCode()).thenReturn(BlobErrorCode.BLOB_NOT_FOUND);
+
+        ResponseEntity<ExceptionResponse> responseEntity =
+            globalExceptionHandler.handle(blobStorageException);
+
+        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode(), BAD_REQUEST_ASSERTION);
+        assertNotNull(responseEntity.getBody(),ASSERTION_RESPONSE_BODY);
+        assertTrue(
+            responseEntity.getBody().getMessage().contains(
+                BLOBSTORAGE_MESSAGE),
+                "The exception response should contain the name of the field"
+        );
+    }
+
+    @Test
+    void testBlobStorageExceptionOtherType() {
+        when(blobStorageException.getErrorCode()).thenReturn(BlobErrorCode.INVALID_OPERATION);
+
+        ResponseEntity<ExceptionResponse> responseEntity =
+            globalExceptionHandler.handle(blobStorageException);
+
+        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode(), BAD_REQUEST_ASSERTION);
+        assertNotNull(responseEntity.getBody(), "Exception body should not be null");
+        assertTrue(
+            responseEntity.getBody().getMessage().contains(
+                "InvalidOperation"),
+            "The exception response should contain the name of the field"
+        );
+    }
 }

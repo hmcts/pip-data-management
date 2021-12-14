@@ -14,8 +14,6 @@ import java.util.Optional;
 public interface ArtefactRepository extends JpaRepository<Artefact, Long> {
     Optional<Artefact> findBySourceArtefactIdAndProvenance(String sourceArtefactId, String provenance);
 
-    List<Artefact> findArtefactsByArtefactIdIsNotNull();
-
 
     @Query(value = "select * from Artefact where search->'court-id'->>0 = :searchVal and display_from < :curr_date "
         + "and display_to> :curr_date",

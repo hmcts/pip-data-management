@@ -58,9 +58,6 @@ public class PublicationService {
         return artefactRepository.save(artefact);
     }
 
-    public List<Artefact> findAllArtefacts() {
-        return artefactRepository.findArtefactsByArtefactIdIsNotNull();
-    }
 
     /**
      * Get all relevant artefacts relating to a given court ID.

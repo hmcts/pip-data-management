@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.pip.data.management.errorhandling;
 
+import com.azure.storage.blob.models.BlobStorageException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MissingRequestHeaderException;
@@ -11,6 +12,7 @@ import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.EmptyReq
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.NotFoundException;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -73,5 +75,19 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionResponse);
     }
+
+    @ExceptionHandler(BlobStorageException.class)
+        public ResponseEntity<ExceptionResponse> handle(BlobStorageException ex) {
+        ExceptionResponse exceptionResponse = new ExceptionResponse();
+        if(Objects.equals(ex.getErrorCode().toString(), "BlobNotFound")) {
+            exceptionResponse.setMessage("404: Unable to find a blob matching the given inputs");
+        }
+        else{
+            exceptionResponse.setMessage(ex.getErrorCode().toString());
+        }
+        exceptionResponse.setTimestamp(LocalDateTime.now());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionResponse);
+    }
+
 
 }

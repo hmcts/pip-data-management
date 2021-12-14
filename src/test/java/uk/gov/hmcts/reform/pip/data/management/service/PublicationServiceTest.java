@@ -12,6 +12,8 @@ import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Language;
 import uk.gov.hmcts.reform.pip.data.management.utils.PayloadExtractor;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -19,6 +21,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -120,5 +123,46 @@ class PublicationServiceTest {
 
         assertEquals(newArtefactWithId, returnedArtefact, "Row ID must match returned UUID");
     }
+
+    @Test
+    void testGetBlobFromAzureService() {
+        Artefact artefact = Artefact.builder()
+            .sourceArtefactId(SOURCE_ARTEFACT_ID)
+            .provenance(PROVENANCE)
+            .language(Language.ENGLISH)
+            .build();
+        when(azureBlobService.getBlobData(SOURCE_ARTEFACT_ID, PROVENANCE))
+            .thenReturn(String.valueOf(artefact));
+        assertEquals(artefact.toString(), publicationService.getFromBlobStorage(PROVENANCE, SOURCE_ARTEFACT_ID),
+                     "Artefacts do not match");
+    }
+
+    @Test
+    void testFindArtefactsFromPostgres() {
+        Artefact artefact = Artefact.builder()
+            .sourceArtefactId(SOURCE_ARTEFACT_ID)
+            .provenance(PROVENANCE)
+            .language(Language.ENGLISH)
+            .build();
+
+        Artefact artefact2 = Artefact.builder()
+            .sourceArtefactId(SOURCE_ARTEFACT_ID)
+            .provenance(PROVENANCE)
+            .language(Language.WELSH)
+            .build();
+
+        List<Artefact> artefactList = new ArrayList<>();
+        artefactList.add(artefact);
+        artefactList.add(artefact2);
+
+        when(artefactRepository.findArtefactsBySearchUnverified(any(), any()))
+            .thenReturn(artefactList);
+        when(artefactRepository.findArtefactsBySearchVerified(any(), any()))
+            .thenReturn(artefactList);
+
+        assertEquals(artefactList, publicationService.findAllWithSearch("abc", true));
+        assertEquals(artefactList, publicationService.findAllWithSearch("abc", false));
+    }
+
 
 }

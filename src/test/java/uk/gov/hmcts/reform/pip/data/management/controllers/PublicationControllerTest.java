@@ -22,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
+import static uk.gov.hmcts.reform.pip.data.management.helpers.TestConstants.STATUS_CODE_MATCH;
 
 @ExtendWith(MockitoExtension.class)
 class PublicationControllerTest {
@@ -126,5 +127,23 @@ class PublicationControllerTest {
         assertEquals("x-provenance is mandatory however an empty value is provided",
                      emptyRequestHeaderException.getMessage(),
                      VALIDATION_EXPECTED_MESSAGE);
+    }
+
+    @Test
+    void testBlobEndpointReturnsOk() {
+        assertEquals(HttpStatus.OK, publicationController.getBlobData(SOURCE_ARTEFACT_ID, PROVENANCE)
+            .getStatusCode(), STATUS_CODE_MATCH);
+    }
+
+    @Test
+    void testSearchEndpointReturnsOkWithTrue() {
+        assertEquals(HttpStatus.OK, publicationController.getAllRelevantArtefacts(EMPTY_FIELD, true)
+            .getStatusCode(), STATUS_CODE_MATCH);
+    }
+
+    @Test
+    void testSearchEndpointReturnsOkWithFalse() {
+        assertEquals(HttpStatus.OK, publicationController.getAllRelevantArtefacts(EMPTY_FIELD, false)
+            .getStatusCode(), STATUS_CODE_MATCH);
     }
 }

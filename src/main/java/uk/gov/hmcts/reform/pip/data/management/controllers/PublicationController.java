@@ -91,25 +91,18 @@ public class PublicationController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdItem);
     }
 
-    @ApiOperation("Get a series of publications")
-    @GetMapping
-    public ResponseEntity<List<Artefact>> findAllArtefacts() {
-
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(publicationService.findAllArtefacts());
-    }
-
     @ApiOperation("Get a series of publications matching a given input (e.g. courtid)")
     @GetMapping("/search")
     public ResponseEntity<List<Artefact>> getAllRelevantArtefacts(@RequestHeader String searchValue,
                                                                    @RequestHeader Boolean verification) {
-        return ResponseEntity.status(HttpStatus.ACCEPTED)
+        return ResponseEntity.status(HttpStatus.OK)
             .body(publicationService.findAllWithSearch(searchValue, verification));
     }
 
     @ApiOperation("Get the info from within a blob given source artefact id and provenance")
     @GetMapping("/blob")
     public ResponseEntity<String> getBlobData(@RequestHeader String sourceArtefactId, String provenance) {
-        return ResponseEntity.status(HttpStatus.ACCEPTED)
+        return ResponseEntity.status(HttpStatus.OK)
             .body(publicationService.getFromBlobStorage(provenance, sourceArtefactId));
     }
 
