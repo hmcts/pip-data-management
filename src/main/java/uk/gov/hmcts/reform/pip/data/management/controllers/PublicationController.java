@@ -4,7 +4,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import org.checkerframework.framework.qual.RequiresQualifier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -38,6 +37,7 @@ public class PublicationController {
 
     /**
      * Constructor for Publication controller.
+     *
      * @param publicationService The PublicationService that contains the business logic to handle publications.
      */
     @Autowired
@@ -47,14 +47,15 @@ public class PublicationController {
 
     /**
      * This endpoint takes in the Artefact, which is split over headers and also the payload body.
-     * @param provenance Name of the source system.
+     *
+     * @param provenance       Name of the source system.
      * @param sourceArtefactId Unique ID of what publication is called by source system.
-     * @param type List / Outcome / Judgement / Status Updates.
-     * @param sensitivity Level of sensitivity.
-     * @param language Language of publication.
-     * @param displayFrom Date / Time from which the publication will be displayed.
-     * @param displayTo Date / Time until which the publication will be displayed.
-     * @param payload JSON Blob with key/value pairs of data to be published.
+     * @param type             List / Outcome / Judgement / Status Updates.
+     * @param sensitivity      Level of sensitivity.
+     * @param language         Language of publication.
+     * @param displayFrom      Date / Time from which the publication will be displayed.
+     * @param displayTo        Date / Time until which the publication will be displayed.
+     * @param payload          JSON Blob with key/value pairs of data to be published.
      * @return The created artefact.
      */
     @ApiResponses({
@@ -71,9 +72,9 @@ public class PublicationController {
         @RequestHeader(value = PublicationConfiguration.SENSITIVITY_HEADER, required = false) Sensitivity sensitivity,
         @RequestHeader(value = PublicationConfiguration.LANGUAGE_HEADER, required = false) Language language,
         @RequestHeader(value = PublicationConfiguration.DISPLAY_FROM_HEADER, required = false)
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime displayFrom,
+        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime displayFrom,
         @RequestHeader(value = PublicationConfiguration.DISPLAY_TO_HEADER, required = false)
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime displayTo,
+        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime displayTo,
         @RequestBody String payload) {
         validateRequestHeaders(provenance, sourceArtefactId);
 
@@ -92,14 +93,14 @@ public class PublicationController {
 
     @ApiOperation("Get a series of publications")
     @GetMapping
-    private ResponseEntity<List<Artefact>> findAllArtefacts(){
+    public ResponseEntity<List<Artefact>> findAllArtefacts() {
 
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(publicationService.findAllArtefacts());
     }
 
     @ApiOperation("Get a series of publications matching a given input (e.g. courtid)")
-    @GetMapping("/getAllSearches")
-    private ResponseEntity<List<Artefact>> getAllRelevantArtefacts(@RequestHeader String searchValue,
+    @GetMapping("/search")
+    public ResponseEntity<List<Artefact>> getAllRelevantArtefacts(@RequestHeader String searchValue,
                                                                    @RequestHeader Boolean verification) {
         return ResponseEntity.status(HttpStatus.ACCEPTED)
             .body(publicationService.findAllWithSearch(searchValue, verification));
@@ -107,16 +108,9 @@ public class PublicationController {
 
     @ApiOperation("Get the info from within a blob given source artefact id and provenance")
     @GetMapping("/blob")
-    private  ResponseEntity<String> getBlobData(@RequestHeader String sourceArtefactId, String provenance) {
+    public ResponseEntity<String> getBlobData(@RequestHeader String sourceArtefactId, String provenance) {
         return ResponseEntity.status(HttpStatus.ACCEPTED)
             .body(publicationService.getFromBlobStorage(provenance, sourceArtefactId));
-    }
-
-    @ApiOperation("Get the info from within a blob given source artefact id and provenance")
-    @GetMapping("/bloburl")
-    private  ResponseEntity<String> getBlobDataFromUrl(@RequestHeader String url) {
-        return ResponseEntity.status(HttpStatus.ACCEPTED)
-            .body(publicationService.getFromBlobStorageUrl(url));
     }
 
 

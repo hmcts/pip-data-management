@@ -1,17 +1,14 @@
 package uk.gov.hmcts.reform.pip.data.management.service;
 
-import org.apache.tomcat.jni.Local;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.AzureBlobService;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
-import uk.gov.hmcts.reform.pip.data.management.models.publication.Sensitivity;
 import uk.gov.hmcts.reform.pip.data.management.utils.PayloadExtractor;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -65,25 +62,35 @@ public class PublicationService {
         return artefactRepository.findArtefactsByArtefactIdIsNotNull();
     }
 
+    /**
+     * Get all relevant artefacts relating to a given court ID.
+     *
+     * @param searchValue - represents the court ID in question being searched for
+     * @param verified    - represents the verification status of the user. Currently only verified/non-verified, but
+     *                    will include other verified user types in the future
+     * @return a list of all artefacts that fulfil the timing criteria, match the given court id and sensitivity
+     *                    associated with given verification status
+     */
     public List<Artefact> findAllWithSearch(String searchValue, Boolean verified) {
         LocalDateTime currDate = LocalDateTime.now();
-        if(verified){
+        if (verified) {
             return artefactRepository.findArtefactsBySearchVerified(searchValue, currDate);
-        }
-        else{
+        } else {
             return artefactRepository.findArtefactsBySearchUnverified(searchValue, currDate);
         }
 
     }
 
+    /**
+     * takes in provenance and artefact id and returns the data within the matching blob in string format.
+     *
+     * @param provenance represents the provenance component of the blob
+     * @param artefactId represents the artefact id component of the blob
+     * @return the data within the blob in string format
+     */
     public String getFromBlobStorage(String provenance, String artefactId) {
         return azureBlobService.getBlobData(artefactId, provenance);
     }
-
-    public String getFromBlobStorageUrl(String url) {
-        return azureBlobService.getBlobDataFromUrl(url);
-    }
-
 
 
 }
