@@ -39,6 +39,10 @@ public class AzureBlobService {
         return blobContainerClient.getBlobContainerUrl() + '/' + blobName;
     }
 
+    protected ByteArrayOutputStream createByteArrayOutputStream() {
+        return new ByteArrayOutputStream();
+    }
+
     /**
      * Gets the data held within a blob from the blob service.
      *
@@ -49,7 +53,7 @@ public class AzureBlobService {
     public String getBlobData(String sourceArtefactId, String provenance) {
         String blobName = sourceArtefactId + '-' + provenance;
         BlobClient blobClient = blobContainerClient.getBlobClient(blobName);
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        ByteArrayOutputStream stream = createByteArrayOutputStream();
         blobClient.downloadStream(stream);
         return stream.toString();
     }
