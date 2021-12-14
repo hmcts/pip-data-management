@@ -48,6 +48,7 @@ spring:
       # this ensures the db persists after spring boot connection drops.
       ddl-auto: update
 
+
 azure:
   application-insights:
     instrumentation-key: ${rpe.AppInsightsInstrumentationKey:00000000-0000-0000-0000-000000000000}
@@ -62,5 +63,3 @@ payload:
       case-urn: "$['CourtList']['CourtList'][*]['courtroom']['sittings'][*]['Hearing']['Case']['CaseURN']"
       court-name: "$['CourtList']['CourtList'][*]['CourtHouse']['CourtHouseName']"
       court-id: "$['CourtList']['CourtList'][*]['CourtHouse']['CourtHouseCode']"
-
-

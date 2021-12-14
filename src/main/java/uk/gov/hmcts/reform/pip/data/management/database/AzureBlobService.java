@@ -2,10 +2,13 @@ package uk.gov.hmcts.reform.pip.data.management.database;
 
 import com.azure.storage.blob.BlobClient;
 import com.azure.storage.blob.BlobContainerClient;
+import com.sun.xml.bind.api.impl.NameConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Class with handles the interaction with the Azure Blob Service.
@@ -35,6 +38,21 @@ public class AzureBlobService {
         blobClient.upload(new ByteArrayInputStream(payloadBytes), payloadBytes.length, true);
 
         return blobContainerClient.getBlobContainerUrl() + '/' + blobName;
+    }
+
+    public String getBlobData(String sourceArtefactId, String provenance) {
+        String blobName = sourceArtefactId + '-' + provenance;
+        BlobClient blobClient = blobContainerClient.getBlobClient(blobName);
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        blobClient.downloadStream(stream);
+        return stream.toString();
+    }
+
+    public String getBlobDataFromUrl(String url) {
+        BlobClient blobClient = blobContainerClient.getBlobClient(url);
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        blobClient.downloadStream(stream);
+        return stream.toString();
     }
 
 }

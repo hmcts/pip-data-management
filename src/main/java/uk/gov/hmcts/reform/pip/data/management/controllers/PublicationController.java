@@ -4,6 +4,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import org.checkerframework.framework.qual.RequiresQualifier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -96,28 +97,26 @@ public class PublicationController {
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(publicationService.findAllArtefacts());
     }
 
-    @ApiOperation("Get a series of publications")
-    @GetMapping("/date")
-    private ResponseEntity<List<Artefact>> findAllArtefactsBetweenDates(){
-
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(publicationService.findAllArtefactsInDateRange());
-    }
-
-    @ApiOperation("Get a series of publications")
-    @GetMapping("/public")
-    private ResponseEntity<List<Artefact>> findAllArtefactsBetweenDatesAndPublic(){
-
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(publicationService
-                                                                   .findAllArtefactsInDateRangeAndPublic());
-    }
-
     @ApiOperation("Get a series of publications matching a given input (e.g. courtid)")
-    @GetMapping("/test")
-    private ResponseEntity<List<Artefact>> getAllRelevantArtefacts(@RequestHeader Boolean verified,
-                                                                   @RequestHeader String searchValue) {
-        return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT)
-            .body(publicationService.findAllRelevantArtefacts(verified, searchValue));
+    @GetMapping("/getAllSearches")
+    private ResponseEntity<List<Artefact>> getAllRelevantArtefacts(@RequestHeader String searchValue,
+                                                                   @RequestHeader Boolean verification) {
+        return ResponseEntity.status(HttpStatus.ACCEPTED)
+            .body(publicationService.findAllWithSearch(searchValue, verification));
+    }
 
+    @ApiOperation("Get the info from within a blob given source artefact id and provenance")
+    @GetMapping("/blob")
+    private  ResponseEntity<String> getBlobData(@RequestHeader String sourceArtefactId, String provenance) {
+        return ResponseEntity.status(HttpStatus.ACCEPTED)
+            .body(publicationService.getFromBlobStorage(provenance, sourceArtefactId));
+    }
+
+    @ApiOperation("Get the info from within a blob given source artefact id and provenance")
+    @GetMapping("/bloburl")
+    private  ResponseEntity<String> getBlobDataFromUrl(@RequestHeader String url) {
+        return ResponseEntity.status(HttpStatus.ACCEPTED)
+            .body(publicationService.getFromBlobStorageUrl(url));
     }
 
 

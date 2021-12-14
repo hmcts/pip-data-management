@@ -11,6 +11,7 @@ import uk.gov.hmcts.reform.pip.data.management.utils.PayloadExtractor;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -64,28 +65,25 @@ public class PublicationService {
         return artefactRepository.findArtefactsByArtefactIdIsNotNull();
     }
 
-    public List<Artefact> findAllArtefactsInDateRange() {
-        LocalDateTime currentTime = LocalDateTime.now();
-        LocalDateTime currentTime2 = LocalDateTime.now();
-        return artefactRepository.findArtefactsByDisplayFromBeforeAndDisplayToAfter(currentTime, currentTime2);
-    }
-
-    public List<Artefact> findAllArtefactsInDateRangeAndPublic() {
-        LocalDateTime currentTime = LocalDateTime.now();
-        return artefactRepository
-            .findArtefactsByDisplayFromBeforeAndDisplayToAfterAndSensitivityEquals(
-                currentTime,
-                currentTime,
-                Sensitivity.PUBLIC
-            );
-    }
-
-    public List<Artefact> findAllRelevantArtefacts(Boolean verified, String searchValue) {
-        if (verified) {
-            return findAllArtefactsInDateRange();
-        } else {
-            return findAllArtefactsInDateRangeAndPublic();
+    public List<Artefact> findAllWithSearch(String searchValue, Boolean verified) {
+        LocalDateTime currDate = LocalDateTime.now();
+        if(verified){
+            return artefactRepository.findArtefactsBySearchVerified(searchValue, currDate);
         }
+        else{
+            return artefactRepository.findArtefactsBySearchUnverified(searchValue, currDate);
+        }
+
     }
+
+    public String getFromBlobStorage(String provenance, String artefactId) {
+        return azureBlobService.getBlobData(artefactId, provenance);
+    }
+
+    public String getFromBlobStorageUrl(String url) {
+        return azureBlobService.getBlobDataFromUrl(url);
+    }
+
+
 
 }
