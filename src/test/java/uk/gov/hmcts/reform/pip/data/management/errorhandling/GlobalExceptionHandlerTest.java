@@ -19,8 +19,6 @@ import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.EmptyReq
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.HearingNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.NotFoundException;
 
-import java.net.http.HttpResponse;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;

@@ -513,4 +513,5 @@ class PublicationTest {
         assertTrue(createdArtefact.getSearch().isEmpty(), "Artefact search criteria exists"
             + "when payload is of an unknown type");
     }
+
 }

@@ -20,6 +20,7 @@ public class GlobalExceptionHandler {
     /**
      * Template exception handler, that handles a custom DataStorageNotFoundException,
      * and returns a 404 in the standard format.
+     *
      * @param ex The exception that has been thrown.
      * @return The error response, modelled using the ExceptionResponse object.
      */
@@ -77,12 +78,11 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(BlobStorageException.class)
-        public ResponseEntity<ExceptionResponse> handle(BlobStorageException ex) {
+    public ResponseEntity<ExceptionResponse> handle(BlobStorageException ex) {
         ExceptionResponse exceptionResponse = new ExceptionResponse();
-        if(Objects.equals(ex.getErrorCode().toString(), "BlobNotFound")) {
+        if (Objects.equals(ex.getErrorCode().toString(), "BlobNotFound")) {
             exceptionResponse.setMessage("404: Unable to find a blob matching the given inputs");
-        }
-        else{
+        } else {
             exceptionResponse.setMessage(ex.getErrorCode().toString());
         }
         exceptionResponse.setTimestamp(LocalDateTime.now());

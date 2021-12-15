@@ -12,7 +12,6 @@ import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Language;
 import uk.gov.hmcts.reform.pip.data.management.utils.PayloadExtractor;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -160,8 +159,10 @@ class PublicationServiceTest {
         when(artefactRepository.findArtefactsBySearchVerified(any(), any()))
             .thenReturn(artefactList);
 
-        assertEquals(artefactList, publicationService.findAllWithSearch("abc", true));
-        assertEquals(artefactList, publicationService.findAllWithSearch("abc", false));
+        assertEquals(artefactList, publicationService.findAllWithSearch("abc", true),
+                     "Message");
+        assertEquals(artefactList, publicationService.findAllWithSearch("abc", false),
+                     "Message");
     }
 
 
