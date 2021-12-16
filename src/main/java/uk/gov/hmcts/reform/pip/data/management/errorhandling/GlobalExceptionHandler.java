@@ -82,11 +82,13 @@ public class GlobalExceptionHandler {
         ExceptionResponse exceptionResponse = new ExceptionResponse();
         if (Objects.equals(ex.getErrorCode().toString(), "BlobNotFound")) {
             exceptionResponse.setMessage("404: Unable to find a blob matching the given inputs");
+            exceptionResponse.setTimestamp(LocalDateTime.now());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exceptionResponse);
         } else {
             exceptionResponse.setMessage(ex.getErrorCode().toString());
+            exceptionResponse.setTimestamp(LocalDateTime.now());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionResponse);
         }
-        exceptionResponse.setTimestamp(LocalDateTime.now());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionResponse);
     }
 
 

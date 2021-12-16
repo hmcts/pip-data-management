@@ -139,6 +139,7 @@ class GlobalExceptionHandlerTest {
         assertTrue(
             responseEntity.getBody().getMessage().contains(
                 String.format("Unable to parse %s. Please check that the value is of the correct format for the field "
+
                                   + "(See Swagger documentation for correct formats)", TEST_NAME)),
             "The exception response should contain the name of the field"
         );
@@ -168,7 +169,7 @@ class GlobalExceptionHandlerTest {
         ResponseEntity<ExceptionResponse> responseEntity =
             globalExceptionHandler.handle(blobStorageException);
 
-        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode(), BAD_REQUEST_ASSERTION);
+        assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode(), BAD_REQUEST_ASSERTION);
         assertNotNull(responseEntity.getBody(),ASSERTION_RESPONSE_BODY);
         assertTrue(
             responseEntity.getBody().getMessage().contains(

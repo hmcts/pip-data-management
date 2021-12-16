@@ -55,5 +55,4 @@ class AzureBlobServiceTest {
         assertEquals(azureBlobService.getBlobData(SOURCE_ARTEFACT_ID, PROVENANCE), "",
                      "Wrong string detected");
     }
-
 }
