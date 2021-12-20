@@ -21,4 +21,11 @@ public interface Extractor {
      * @return A boolean determining if it is a valid type for the extractor.
      */
     boolean isAccepted(String payload);
+
+    /**
+     * Determines whether the payload is a valid against extractor criteria.
+     * @param payload The payload to validate.
+     * @return A list of errors message if it is not valid.
+     */
+    List<String> validate(String payload);
 }

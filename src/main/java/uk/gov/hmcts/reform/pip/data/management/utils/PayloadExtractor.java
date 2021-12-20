@@ -2,10 +2,12 @@ package uk.gov.hmcts.reform.pip.data.management.utils;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ValidationException;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Class that determines the extractor to use for the payload.
@@ -27,7 +29,13 @@ public class PayloadExtractor {
     public Map<String, List<Object>> extractSearchTerms(String payload) {
         for (Extractor extractor : extractors) {
             if (extractor.isAccepted(payload)) {
-                return extractor.extractSearchTerms(payload);
+                List<String> errors = extractor.validate(payload);
+                if (errors.isEmpty()) {
+                    return extractor.extractSearchTerms(payload);
+                }
+                else {
+                    throw new ValidationException(String.join(", ", errors));
+                }
             }
         }
         return new HashMap<>();
