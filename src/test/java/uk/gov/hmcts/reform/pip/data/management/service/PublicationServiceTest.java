@@ -130,9 +130,9 @@ class PublicationServiceTest {
             .provenance(PROVENANCE)
             .language(Language.ENGLISH)
             .build();
-        when(azureBlobService.getBlobData(SOURCE_ARTEFACT_ID, PROVENANCE))
+        when(azureBlobService.getBlobData(any(), any()))
             .thenReturn(String.valueOf(artefact));
-        assertEquals(artefact.toString(), publicationService.getFromBlobStorage(PROVENANCE, SOURCE_ARTEFACT_ID),
+        assertEquals(artefact.toString(), publicationService.getByArtefactId(ARTEFACT_ID),
                      "Artefacts do not match");
     }
 
@@ -159,9 +159,9 @@ class PublicationServiceTest {
         when(artefactRepository.findArtefactsBySearchVerified(any(), any()))
             .thenReturn(artefactList);
 
-        assertEquals(artefactList, publicationService.findAllWithSearch("abc", true),
+        assertEquals(artefactList, publicationService.findAllByCourtId("abc", true),
                      "Message");
-        assertEquals(artefactList, publicationService.findAllWithSearch("abc", false),
+        assertEquals(artefactList, publicationService.findAllByCourtId("abc", false),
                      "Message");
     }
 

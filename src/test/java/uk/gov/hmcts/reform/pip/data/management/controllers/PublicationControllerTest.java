@@ -131,7 +131,7 @@ class PublicationControllerTest {
 
     @Test
     void testBlobEndpointReturnsOk() {
-        assertEquals(HttpStatus.OK, publicationController.getBlobData(SOURCE_ARTEFACT_ID, PROVENANCE)
+        assertEquals(HttpStatus.OK, publicationController.getBlobData(ARTEFACT_ID)
             .getStatusCode(), STATUS_CODE_MATCH);
     }
 

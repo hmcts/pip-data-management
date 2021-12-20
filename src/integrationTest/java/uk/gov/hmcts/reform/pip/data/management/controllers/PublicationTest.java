@@ -4,8 +4,8 @@ import com.azure.storage.blob.BlobClient;
 import com.azure.storage.blob.BlobContainerClient;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microsoft.applicationinsights.web.dependencies.apachecommons.io.IOUtils;
-import org.junit.Ignore;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -555,7 +555,7 @@ class PublicationTest {
 
     @DisplayName("Verify that artefact is returned with given get")
     @Test
-    @Ignore
+    @Disabled
     void verifyThatArtefactsAreReturnedFromPostgres() throws Exception {
         when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders

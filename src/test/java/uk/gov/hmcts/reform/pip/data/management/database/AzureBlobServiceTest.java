@@ -50,9 +50,13 @@ class AzureBlobServiceTest {
         String blobName = SOURCE_ARTEFACT_ID + '-' + PROVENANCE;
         when(blobContainerClient.getBlobClient(blobName)).thenReturn(blobClient);
         doNothing().when(blobClient).downloadStream(any());
-        assertThat("Error Message", azureBlobService.getBlobData(SOURCE_ARTEFACT_ID, PROVENANCE),
-                   instanceOf(String.class));
+        assertThat(
+            "Wrong return type - should be string",
+            azureBlobService.getBlobData(SOURCE_ARTEFACT_ID, PROVENANCE),
+            instanceOf(String.class)
+        );
         assertEquals(azureBlobService.getBlobData(SOURCE_ARTEFACT_ID, PROVENANCE), "",
-                     "Wrong string detected");
+                     "Wrong string detected"
+        );
     }
 }
