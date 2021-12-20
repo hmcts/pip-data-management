@@ -7,7 +7,6 @@ import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.Validati
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Class that determines the extractor to use for the payload.
@@ -17,6 +16,7 @@ public class PayloadExtractor {
 
     private final List<? extends Extractor> extractors;
 
+    private boolean validAndAccepted = false;
     @Autowired
     public PayloadExtractor(List<? extends Extractor> extractors) {
         this.extractors = extractors;
@@ -28,16 +28,31 @@ public class PayloadExtractor {
      */
     public Map<String, List<Object>> extractSearchTerms(String payload) {
         for (Extractor extractor : extractors) {
+            if (validAndAccepted) {
+                    return extractor.extractSearchTerms(payload);
+                }
+            }
+
+        return new HashMap<>();
+    }
+
+    /**
+     * Method that determines if the payload is valid and acceptable based on the extractor.
+     * @return true or false.
+     */
+    public boolean acceptAndValidate(String payload) {
+        for (Extractor extractor : extractors) {
             if (extractor.isAccepted(payload)) {
                 List<String> errors = extractor.validate(payload);
                 if (errors.isEmpty()) {
-                    return extractor.extractSearchTerms(payload);
+                    validAndAccepted = true;
                 }
                 else {
                     throw new ValidationException(String.join(", ", errors));
                 }
             }
         }
-        return new HashMap<>();
+        return validAndAccepted;
     }
+
 }

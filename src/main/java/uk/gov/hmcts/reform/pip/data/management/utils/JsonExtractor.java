@@ -27,6 +27,10 @@ public class JsonExtractor implements Extractor {
 
     SearchConfiguration searchConfiguration;
 
+    JsonSchema schema;
+
+    final String SCHEMA_FILE_NAME = "schema3-draft.json";
+
     @Autowired
     public JsonExtractor(SearchConfiguration searchConfiguration) {
         this.searchConfiguration = searchConfiguration;
@@ -35,6 +39,11 @@ public class JsonExtractor implements Extractor {
             .addOptions(Option.DEFAULT_PATH_LEAF_TO_NULL)
             .addOptions(Option.SUPPRESS_EXCEPTIONS)
             .addOptions(Option.ALWAYS_RETURN_LIST);
+
+        InputStream schemaFile = this.getClass().getClassLoader()
+            .getResourceAsStream(SCHEMA_FILE_NAME);
+        JsonSchemaFactory schemaFactory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V7);
+        schema = schemaFactory.getSchema(schemaFile);
     }
 
     @Override
@@ -67,20 +76,12 @@ public class JsonExtractor implements Extractor {
         }
     }
 
-
-    public List<String> validate2(String payload) {
+    @Override
+    public List<String> validate(String payload) {
         List<String> errors = new ArrayList<>();
         try {
             JsonNode json = new ObjectMapper().readTree(payload);
-            ObjectMapper om = new ObjectMapper().setDateFormat(new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH));
-            InputStream schemaFile = this.getClass().getClassLoader()
-                .getResourceAsStream("schema3-draft.json");
-            InputStream inputFile = this.getClass().getClassLoader()
-                .getResourceAsStream("test.json");
-            JsonNode jsonMap = om.readTree(inputFile);
-            JsonSchemaFactory schemaFactory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V201909);
-            JsonSchema schema = schemaFactory.getSchema(schemaFile);
-            Set<ValidationMessage> validationResult = schema.validate(jsonMap);
+            Set<ValidationMessage> validationResult = schema.validate(json);
 
             if (!validationResult.isEmpty()) {
                 validationResult.forEach(vm ->  errors.add(vm.getMessage()));
@@ -89,26 +90,5 @@ public class JsonExtractor implements Extractor {
             errors.add(exception.getMessage());
         }
         return errors;
-    }
-
-    @Override
-    public List<String> validate(String payload) {
-        try {
-            //List<String> errors = new ArrayList<>();
-            ObjectMapper om = new ObjectMapper().setDateFormat(new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH));
-            InputStream schemaFile = this.getClass().getClassLoader()
-                .getResourceAsStream("schema3-draft.json");
-            InputStream inputFile = this.getClass().getClassLoader()
-                .getResourceAsStream("test.json");
-            JsonNode jsonMap = om.readTree(inputFile);
-            JsonSchemaFactory schemaFactory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V201909);
-            JsonSchema schema = schemaFactory.getSchema(schemaFile);
-            Set<ValidationMessage> validationResult = schema.validate(jsonMap);
-
-            return null;
-        } catch (Exception exception) {
-            System.out.println(exception.getMessage());
-        }
-        return null;
     }
 }

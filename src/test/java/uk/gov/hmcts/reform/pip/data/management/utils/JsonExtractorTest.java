@@ -7,6 +7,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.hmcts.reform.pip.data.management.config.SearchConfiguration;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -74,4 +77,22 @@ class JsonExtractorTest {
     void testNotAccepted() {
         assertFalse(jsonExtractor.isAccepted("invalid-test"), "Invalid JSON string marked as accepted");
     }
+
+    @Test
+    void testValidateWithErrors() {
+        try {
+            InputStream jsonInput = this.getClass().getClassLoader()
+                .getResourceAsStream("test.json");
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+            assertFalse(jsonExtractor.validate(text).isEmpty(), "Valid JSON string marked as not valid");
+        } catch (IOException exception) {
+            System.out.println(exception.getMessage());
+        }
+    }
+
+    @Test
+    void testValidateWithoutErrors() {
+        assertTrue(jsonExtractor.validate(VALID_PAYLOAD).isEmpty(), "Valid JSON string marked as valid");
+    }
+
 }

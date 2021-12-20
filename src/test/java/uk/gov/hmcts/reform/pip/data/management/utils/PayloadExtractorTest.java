@@ -49,4 +49,15 @@ class PayloadExtractorTest {
         assertTrue(searchTerms.isEmpty(), "Returned search terms is not empty when no extract found");
     }
 
+    @Test
+    void testPayloadValid() {
+        PayloadExtractor payloadExtractor = new PayloadExtractor(List.of(jsonExtractor));
+        assertTrue(payloadExtractor.acceptAndValidate(PAYLOAD), "Payload valid");
+    }
+
+    @Test
+    void testPayloadNotValid() {
+        PayloadExtractor payloadExtractor = new PayloadExtractor(List.of(jsonExtractor));
+        assertTrue(!payloadExtractor.acceptAndValidate(null), "Payload not valid");
+    }
 }
