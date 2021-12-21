@@ -62,5 +62,6 @@ payload:
       case-urn: "$['CourtList']['CourtList'][*]['courtroom']['sittings'][*]['Hearing']['Case']['CaseURN']"
       court-name: "$['CourtList']['CourtList'][*]['CourtHouse']['CourtHouseName']"
       court-id: "$['CourtList']['CourtList'][*]['CourtHouse']['CourtHouseCode']"
-
+validations:
+  schema-json-file: "schema3-draft.json"
 

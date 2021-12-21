@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.pip.data.management.config.SearchConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.config.ValidationConfiguration;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ValidationException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,25 +28,27 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 public class JsonExtractor implements Extractor {
 
-    private Configuration jsonConfiguration;
+    private final Configuration jsonConfiguration;
 
-    private SearchConfiguration searchConfiguration;
+    private final SearchConfiguration searchConfiguration;
 
-    private JsonSchema schema;
+    private final JsonSchema schema;
 
     @Autowired
-    public JsonExtractor(SearchConfiguration searchConfiguration) {
+    public JsonExtractor(SearchConfiguration searchConfiguration, ValidationConfiguration validationConfiguration) {
         this.searchConfiguration = searchConfiguration;
-
         jsonConfiguration = Configuration.defaultConfiguration()
             .addOptions(Option.DEFAULT_PATH_LEAF_TO_NULL)
             .addOptions(Option.SUPPRESS_EXCEPTIONS)
             .addOptions(Option.ALWAYS_RETURN_LIST);
+        try (InputStream schemaFile = this.getClass().getClassLoader()
+            .getResourceAsStream(validationConfiguration.schemaJsonFile);) {
+            JsonSchemaFactory schemaFactory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V7);
+            schema = schemaFactory.getSchema(schemaFile);
+        } catch (Exception exception) {
+            throw new ValidationException(String.join(exception.getMessage()));
+        }
 
-        InputStream schemaFile = this.getClass().getClassLoader()
-            .getResourceAsStream(ValidationConfiguration.SCHEMA_FILE_NAME);
-        JsonSchemaFactory schemaFactory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V7);
-        schema = schemaFactory.getSchema(schemaFile);
     }
 
     @Override

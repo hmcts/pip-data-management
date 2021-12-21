@@ -1,14 +1,18 @@
 package uk.gov.hmcts.reform.pip.data.management.config;
 
+
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+
 /**
  * This class centralises the static configuration for dealing with Validation.
  */
-public final class ValidationConfiguration {
+@ConfigurationProperties(prefix = "validations")
+@Getter
+@Setter
+public  class ValidationConfiguration {
 
-    public static final String SCHEMA_FILE_NAME = "schema3-draft.json";
-
-    private ValidationConfiguration() {
-        //Private constructor
-    }
+    public String schemaJsonFile;
 
 }

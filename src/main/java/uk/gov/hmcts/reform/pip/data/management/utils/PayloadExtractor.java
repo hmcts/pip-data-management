@@ -16,7 +16,7 @@ public class PayloadExtractor {
 
     private final List<? extends Extractor> extractors;
 
-    private boolean validAndAccepted = false;
+    private boolean validAndAccepted;
 
     @Autowired
     public PayloadExtractor(List<? extends Extractor> extractors) {
