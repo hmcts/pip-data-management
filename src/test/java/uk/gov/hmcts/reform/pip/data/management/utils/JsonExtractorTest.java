@@ -14,9 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -80,13 +78,15 @@ class JsonExtractorTest {
 
     @Test
     void testValidateWithErrors() {
-        try {
-            InputStream jsonInput = this.getClass().getClassLoader()
-                .getResourceAsStream("test.json");
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream("mocks/BadJsonPayload.json")) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
             assertFalse(jsonExtractor.validate(text).isEmpty(), "Valid JSON string marked as not valid");
         } catch (IOException exception) {
-            System.out.println(exception.getMessage());
+            assertThrows(IOException.class, () ->
+            {
+                this.getClass();
+            });
         }
     }
 
