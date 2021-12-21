@@ -13,6 +13,7 @@ import com.networknt.schema.ValidationMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.pip.data.management.config.SearchConfiguration;
+import uk.gov.hmcts.reform.pip.data.management.config.ValidationConfiguration;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,13 +27,11 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 public class JsonExtractor implements Extractor {
 
-    Configuration jsonConfiguration;
+    private Configuration jsonConfiguration;
 
-    SearchConfiguration searchConfiguration;
+    private SearchConfiguration searchConfiguration;
 
-    JsonSchema schema;
-
-    private final String schemaFilename = "schema3-draft.json";
+    private JsonSchema schema;
 
     @Autowired
     public JsonExtractor(SearchConfiguration searchConfiguration) {
@@ -44,7 +43,7 @@ public class JsonExtractor implements Extractor {
             .addOptions(Option.ALWAYS_RETURN_LIST);
 
         InputStream schemaFile = this.getClass().getClassLoader()
-            .getResourceAsStream(schemaFilename);
+            .getResourceAsStream(ValidationConfiguration.SCHEMA_FILE_NAME);
         JsonSchemaFactory schemaFactory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V7);
         schema = schemaFactory.getSchema(schemaFile);
     }
@@ -72,7 +71,6 @@ public class JsonExtractor implements Extractor {
         try {
             // test if the file is json format
             new ObjectMapper().readTree(payload);
-            // validate json file with JSON schema
             return true;
         } catch (IOException exception) {
             return false;

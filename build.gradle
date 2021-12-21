@@ -182,7 +182,7 @@ dependencies {
 
   implementation group: 'com.azure', name: 'azure-data-tables', version: '12.1.2'
 
-  implementation 'com.networknt:json-schema-validator:1.0.42'
+  implementation 'com.networknt:json-schema-validator:1.0.64'
   implementation 'org.springframework.boot:spring-boot-starter-data-jpa:2.5.5'
   implementation('org.postgresql:postgresql')
 
