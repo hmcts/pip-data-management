@@ -96,6 +96,8 @@ public class PublicationController {
     @ApiResponses({
         @ApiResponse(code = 200,
             message = "List of Artefacts matching the given courtId and verification parameters and date requirements"),
+        @ApiResponse(code = 404,
+            message = "No artefact found matching given parameters and date requirements"),
     })
     @ApiOperation("Get a series of publications matching a given input (e.g. courtid)")
     @GetMapping("/search/{searchValue}")
@@ -108,6 +110,8 @@ public class PublicationController {
         @ApiResponse(code = 200,
             message = "Blob data from the given request in text format.",
             response = String.class),
+        @ApiResponse(code = 404,
+            message = "No artefact found matching given parameters and date requirements"),
     })
     @ApiOperation("Get the info from within a blob given source artefact id and provenance")
     @GetMapping("/{artefactId}")

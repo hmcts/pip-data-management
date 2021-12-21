@@ -80,7 +80,7 @@ public class PublicationService {
     }
 
     /**
-     * takes in provenance and artefact id and returns the data within the matching blob in string format.
+     * takes in artefact id and returns the data within the matching blob in string format.
      * @param artefactId represents the artefact id which is then used to get an artefact to populate the inputs
      *                   for the blob request
      * @return the data within the blob in string format
