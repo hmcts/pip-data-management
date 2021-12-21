@@ -99,8 +99,8 @@ public class PublicationController {
     })
     @ApiOperation("Get a series of publications matching a given input (e.g. courtid)")
     @GetMapping("/search/{searchValue}")
-    public ResponseEntity<List<Artefact>> getAllRelevantArtefacts(@PathVariable String searchValue,
-                                                                   @RequestHeader Boolean verification) {
+    public ResponseEntity<List<Artefact>> getAllRelevantArtefactsByCourtId(@PathVariable String searchValue,
+                                                                           @RequestHeader Boolean verification) {
         return ResponseEntity.ok(publicationService.findAllByCourtId(searchValue, verification));
     }
 
@@ -110,11 +110,10 @@ public class PublicationController {
             response = String.class),
     })
     @ApiOperation("Get the info from within a blob given source artefact id and provenance")
-    @GetMapping("/")
-    public ResponseEntity<String> getBlobData(@RequestHeader UUID artefactId) {
+    @GetMapping("/{artefactId}")
+    public ResponseEntity<String> getBlobData(@PathVariable UUID artefactId) {
         return ResponseEntity.ok(publicationService.getByArtefactId(artefactId));
     }
-
 
     /**
      * Validates the Provenance and Source Artefact ID headers to check they are not empty.

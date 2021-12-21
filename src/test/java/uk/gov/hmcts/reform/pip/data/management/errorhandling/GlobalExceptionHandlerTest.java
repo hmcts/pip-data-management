@@ -42,7 +42,7 @@ class GlobalExceptionHandlerTest {
     private static final String BAD_REQUEST_ASSERTION = "Status code should be of type: Not Found";
     private static final String NOT_FOUND_ASSERTION = "Status code should be of type: Bad Request";
     static final String ASSERTION_RESPONSE_BODY = "Response should contain a body";
-    private static final String BLOBSTORAGE_MESSAGE = "404: Unable to find a blob matching the given inputs";
+    private static final String BLOBSTORAGE_MESSAGE = "Unable to find a blob matching the given inputs";
 
     private final GlobalExceptionHandler globalExceptionHandler = new GlobalExceptionHandler();
 

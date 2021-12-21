@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.pip.data.management.errorhandling;
 
+import com.azure.storage.blob.models.BlobErrorCode;
 import com.azure.storage.blob.models.BlobStorageException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -80,8 +81,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BlobStorageException.class)
     public ResponseEntity<ExceptionResponse> handle(BlobStorageException ex) {
         ExceptionResponse exceptionResponse = new ExceptionResponse();
-        if (Objects.equals(ex.getErrorCode().toString(), "BlobNotFound")) {
-            exceptionResponse.setMessage("404: Unable to find a blob matching the given inputs");
+        if (Objects.equals(ex.getErrorCode(), BlobErrorCode.BLOB_NOT_FOUND)) {
+            exceptionResponse.setMessage("Unable to find a blob matching the given inputs");
             exceptionResponse.setTimestamp(LocalDateTime.now());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exceptionResponse);
         } else {

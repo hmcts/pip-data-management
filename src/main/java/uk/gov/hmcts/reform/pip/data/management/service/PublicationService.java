@@ -94,7 +94,7 @@ public class PublicationService {
             String provenance = artefact.getProvenance();
             return azureBlobService.getBlobData(sourceArtefactId, provenance);
         } else {
-            return null;
+            return azureBlobService.getBlobData("", "");
         }
 
     }
