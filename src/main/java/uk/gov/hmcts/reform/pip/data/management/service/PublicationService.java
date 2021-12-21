@@ -53,8 +53,7 @@ public class PublicationService {
             artefact.setSearch(payloadExtractor.extractSearchTerms(payload));
 
             return artefactRepository.save(artefact);
-        }
-        else {
+        } else {
             return null;
         }
     }

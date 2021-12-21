@@ -16,8 +16,11 @@ import uk.gov.hmcts.reform.pip.data.management.config.SearchConfiguration;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component
@@ -29,7 +32,7 @@ public class JsonExtractor implements Extractor {
 
     JsonSchema schema;
 
-    final String SCHEMA_FILE_NAME = "schema3-draft.json";
+    private final String schemaFilename = "schema3-draft.json";
 
     @Autowired
     public JsonExtractor(SearchConfiguration searchConfiguration) {
@@ -41,7 +44,7 @@ public class JsonExtractor implements Extractor {
             .addOptions(Option.ALWAYS_RETURN_LIST);
 
         InputStream schemaFile = this.getClass().getClassLoader()
-            .getResourceAsStream(SCHEMA_FILE_NAME);
+            .getResourceAsStream(schemaFilename);
         JsonSchemaFactory schemaFactory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V7);
         schema = schemaFactory.getSchema(schemaFile);
     }
