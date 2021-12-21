@@ -8,7 +8,11 @@ import uk.gov.hmcts.reform.pip.data.management.config.SearchConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.config.ValidationConfiguration;
 
 @SpringBootApplication
-@EnableConfigurationProperties({AzureBlobConfigurationProperties.class, SearchConfiguration.class, ValidationConfiguration.class})
+@EnableConfigurationProperties({
+    AzureBlobConfigurationProperties.class,
+    SearchConfiguration.class,
+    ValidationConfiguration.class
+})
 @SuppressWarnings("HideUtilityClassConstructor") // Spring needs a constructor, its not a utility class
 public class Application {
 
