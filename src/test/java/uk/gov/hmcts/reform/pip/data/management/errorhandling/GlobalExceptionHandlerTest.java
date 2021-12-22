@@ -11,11 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CourtNotFoundException;
-import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.DataStorageNotFoundException;
-import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.EmptyRequestHeaderException;
-import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.HearingNotFoundException;
-import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.NotFoundException;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -139,6 +135,21 @@ class GlobalExceptionHandlerTest {
 
         ResponseEntity<ExceptionResponse> responseEntity =
             globalExceptionHandler.handle(emptyRequestHeaderException);
+
+        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode(), BAD_REQUEST_ASSERTION);
+        assertNotNull(responseEntity.getBody(), ASSERTION_RESPONSE_BODY);
+        assertTrue(responseEntity.getBody().getMessage().contains(TEST_MESSAGE),
+                   "The exception response should contain the message");
+    }
+
+    @Test
+    void testValidationException() {
+
+        ValidationException validationException =
+            new ValidationException(TEST_MESSAGE);
+
+        ResponseEntity<ExceptionResponse> responseEntity =
+            globalExceptionHandler.handle(validationException);
 
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode(), BAD_REQUEST_ASSERTION);
         assertNotNull(responseEntity.getBody(), ASSERTION_RESPONSE_BODY);
