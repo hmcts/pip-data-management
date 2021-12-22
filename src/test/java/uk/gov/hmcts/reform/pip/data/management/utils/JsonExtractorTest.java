@@ -1,72 +1,83 @@
 package uk.gov.hmcts.reform.pip.data.management.utils;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ActiveProfiles;
+import uk.gov.hmcts.reform.pip.data.management.Application;
+import uk.gov.hmcts.reform.pip.data.management.config.AzureBlobConfigurationTest;
 import uk.gov.hmcts.reform.pip.data.management.config.SearchConfiguration;
+import uk.gov.hmcts.reform.pip.data.management.config.ValidationConfiguration;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest(classes = {Application.class, AzureBlobConfigurationTest.class})
+@ActiveProfiles(profiles = "test")
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 class JsonExtractorTest {
 
     @Mock
     SearchConfiguration searchConfiguration;
 
-    @InjectMocks
+    @Mock
+    ValidationConfiguration validationConfiguration;
+
+    @Autowired
     JsonExtractor jsonExtractor;
 
     private static final String VALID_PAYLOAD = "{\"test\":\"test-1234\"}";
-    private static final String TEST_KEY = "test-id";
+    private static final String TEST_KEY = "case-id";
     private static final String TEST_KEY_NOT_FOUND = "test-id-not-found";
-    private static final String SEARCH_TERM_FOUND = "$['test']";
-    private static final String SEARCH_TERM_NOT_FOUND = "$['test1']";
 
     @Test
     void testExtractSearchTerms() {
-        Map<String, String> searchValues = new ConcurrentHashMap<>();
-        searchValues.put(TEST_KEY, SEARCH_TERM_FOUND);
+        try (InputStream mockFile = this.getClass().getClassLoader()
+            .getResourceAsStream("mocks/BadJsonPayload.json")) {
+            String textJson = new String(mockFile.readAllBytes(), StandardCharsets.UTF_8);
+            Map<String, List<Object>> searchTerms = jsonExtractor.extractSearchTerms(textJson);
 
-        when(searchConfiguration.getSearchValues()).thenReturn(searchValues);
+            assertTrue(searchTerms.containsKey(TEST_KEY), "Search term does not contain expected key");
+            assertEquals(1, searchTerms.get(TEST_KEY).size(), "Search term does not "
+                + "contain expected size of values");
+            assertEquals("CASE1234", searchTerms.get(TEST_KEY).get(0), "The search term value"
+                + "does not contain expected result");
+        } catch (IOException exception) {
+            assertThrows(IOException.class, () -> {
+                this.getClass();
+            });
+        }
 
-        Map<String, List<Object>> searchTerms = jsonExtractor.extractSearchTerms(VALID_PAYLOAD);
-
-        assertTrue(searchTerms.containsKey(TEST_KEY), "Search term does not contain expected key");
-        assertEquals(1, searchTerms.get(TEST_KEY).size(), "Search term does not "
-            + "contain expected size of values");
-        assertEquals("test-1234", searchTerms.get(TEST_KEY).get(0), "The search term value"
-            + "does not contain expected result");
     }
 
     @Test
     void testExtractSearchTermWhereMissing() {
-        Map<String, String> searchValues = new ConcurrentHashMap<>();
-        searchValues.put(TEST_KEY, SEARCH_TERM_FOUND);
-        searchValues.put(TEST_KEY_NOT_FOUND, SEARCH_TERM_NOT_FOUND);
+        try (InputStream mockFile = this.getClass().getClassLoader()
+            .getResourceAsStream("mocks/BadJsonPayload.json")) {
+            String textJson = new String(mockFile.readAllBytes(), StandardCharsets.UTF_8);
+            Map<String, List<Object>> searchTerms = jsonExtractor.extractSearchTerms(textJson);
 
-        when(searchConfiguration.getSearchValues()).thenReturn(searchValues);
-
-        Map<String, List<Object>> searchTerms = jsonExtractor.extractSearchTerms(VALID_PAYLOAD);
-
-        assertTrue(searchTerms.containsKey(TEST_KEY), "Search term does not contain expected key");
-        assertFalse(searchTerms.containsKey(TEST_KEY_NOT_FOUND), "Search term contains unexpected key");
-        assertEquals(1, searchTerms.get(TEST_KEY).size(), "Search term does not "
-            + "contain expected size of values");
-        assertEquals("test-1234", searchTerms.get(TEST_KEY).get(0), "The search term value"
-            + "does not contain expected result");
+            assertTrue(searchTerms.containsKey(TEST_KEY), "Search term does not contain expected key");
+            assertFalse(searchTerms.containsKey(TEST_KEY_NOT_FOUND), "Search term contains unexpected key");
+            assertEquals(1, searchTerms.get(TEST_KEY).size(), "Search term does not "
+                + "contain expected size of values");
+            assertEquals("CASE1234", searchTerms.get(TEST_KEY).get(0), "The search term value"
+                + "does not contain expected result");
+        } catch (IOException exception) {
+            assertThrows(IOException.class, () -> {
+                this.getClass();
+            });
+        }
     }
 
     @Test
@@ -94,7 +105,15 @@ class JsonExtractorTest {
 
     @Test
     void testValidateWithoutErrors() {
-        assertTrue(jsonExtractor.validate(VALID_PAYLOAD).isEmpty(), "Valid JSON string marked as valid");
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream("mocks/JsonPayload.json")) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+            assertTrue(jsonExtractor.validate(text).isEmpty(), "Valid JSON string marked as valid");
+        } catch (IOException exception) {
+            assertThrows(IOException.class, () -> {
+                this.getClass();
+            });
+        }
     }
 
 }

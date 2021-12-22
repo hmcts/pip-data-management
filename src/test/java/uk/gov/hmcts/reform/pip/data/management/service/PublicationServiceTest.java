@@ -78,6 +78,7 @@ class PublicationServiceTest {
         when(azureBlobService.createPayload(SOURCE_ARTEFACT_ID, PROVENANCE, PAYLOAD)).thenReturn(PAYLOAD_URL);
         when(artefactRepository.save(artefactWithPayloadUrl)).thenReturn(artefactWithIdAndPayloadUrl);
         when(payloadExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
+        when(payloadExtractor.acceptAndValidate(PAYLOAD)).thenReturn(true);
 
         Artefact returnedArtefact = publicationService.createPublication(artefact, PAYLOAD);
 
@@ -115,6 +116,7 @@ class PublicationServiceTest {
         when(azureBlobService.createPayload(SOURCE_ARTEFACT_ID, PROVENANCE, PAYLOAD)).thenReturn(PAYLOAD_URL);
         when(artefactRepository.save(newArtefactWithId)).thenReturn(newArtefactWithId);
         when(payloadExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
+        when(payloadExtractor.acceptAndValidate(PAYLOAD)).thenReturn(true);
 
         Artefact returnedArtefact = publicationService.createPublication(artefact, PAYLOAD);
 

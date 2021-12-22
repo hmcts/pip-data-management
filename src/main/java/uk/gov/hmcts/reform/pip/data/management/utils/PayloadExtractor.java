@@ -16,8 +16,6 @@ public class PayloadExtractor {
 
     private final List<? extends Extractor> extractors;
 
-    private boolean validAndAccepted;
-
     @Autowired
     public PayloadExtractor(List<? extends Extractor> extractors) {
         this.extractors = extractors;
@@ -29,7 +27,7 @@ public class PayloadExtractor {
      */
     public Map<String, List<Object>> extractSearchTerms(String payload) {
         for (Extractor extractor : extractors) {
-            if (validAndAccepted) {
+            if (this.acceptAndValidate(payload)) {
                 return extractor.extractSearchTerms(payload);
             }
         }
@@ -42,6 +40,7 @@ public class PayloadExtractor {
      * @return true or false.
      */
     public boolean acceptAndValidate(String payload) {
+        boolean validAndAccepted = false;
         for (Extractor extractor : extractors) {
             if (extractor.isAccepted(payload)) {
                 List<String> errors = extractor.validate(payload);

@@ -16,10 +16,10 @@
             {
               "sittingEnd": "",
               "channel": "VIDEO HEARING",
-              "judiciary": {
+              "judiciary": [{
                 "description": "If a separate or associated joh is required to be in attendance for sitting against a single case",
                 "title": "Judiciary"
-              },
+              }],
               "sittingSequence": 1,
               "hearing": {
                 "lcsu": {
@@ -62,10 +62,10 @@
               "sittingStart": ""
             },
             {
-              "judiciary": {
+              "judiciary": [{
                 "description": "If a separate or associated joh is required to be in attendance for sitting against a single case",
                 "title": "Judiciary"
-              },
+              }],
               "sittingStart": "",
               "sittingSequence": 2
             }

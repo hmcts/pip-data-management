@@ -75,7 +75,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionResponse);
     }
 
-    @ExceptionHandler(EmptyRequestHeaderException.class)
+    @ExceptionHandler(ValidationException.class)
     public ResponseEntity<ExceptionResponse> handle(ValidationException ex) {
 
         ExceptionResponse exceptionResponse = new ExceptionResponse();

@@ -42,7 +42,7 @@ public class JsonExtractor implements Extractor {
             .addOptions(Option.SUPPRESS_EXCEPTIONS)
             .addOptions(Option.ALWAYS_RETURN_LIST);
         try (InputStream schemaFile = this.getClass().getClassLoader()
-            .getResourceAsStream(validationConfiguration.schemaJsonFile);) {
+            .getResourceAsStream(validationConfiguration.schemaJsonFile)) {
             JsonSchemaFactory schemaFactory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V7);
             schema = schemaFactory.getSchema(schemaFile);
         } catch (Exception exception) {

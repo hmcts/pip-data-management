@@ -58,10 +58,10 @@ azure:
 payload:
   json:
     search-values:
-      case-id: "$['CourtList']['CourtList'][*]['courtroom']['sittings'][*]['Hearing']['Case']['caseNumber']"
-      case-urn: "$['CourtList']['CourtList'][*]['courtroom']['sittings'][*]['Hearing']['Case']['CaseURN']"
-      court-name: "$['CourtList']['CourtList'][*]['CourtHouse']['CourtHouseName']"
-      court-id: "$['CourtList']['CourtList'][*]['CourtHouse']['CourtHouseCode']"
+      case-id: "$['courtLists'][*]['courtRoom']['session']['sittings'][*]['hearing']['case']['caseNumber']"
+      case-urn: "$['courtLists'][*]['courtRoom']['session']['sittings'][*]['hearing']['case']['caseUrn']"
+      court-name: "$['courtLists'][*]['courtHouse']['courtHouseName']"
+      court-id: "$['courtLists'][*]['courtHouse']['courtHouseCode']"
 validations:
   schema-json-file: "schema3-draft.json"
 
