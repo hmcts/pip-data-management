@@ -130,6 +130,7 @@ class PublicationServiceTest {
             .provenance(PROVENANCE)
             .language(Language.ENGLISH)
             .build();
+        when(artefactRepository.findByArtefactId(any())).thenReturn(Optional.of(artefact));
         when(azureBlobService.getBlobData(any(), any()))
             .thenReturn(String.valueOf(artefact));
         assertEquals(artefact.toString(), publicationService.getByArtefactId(ARTEFACT_ID),

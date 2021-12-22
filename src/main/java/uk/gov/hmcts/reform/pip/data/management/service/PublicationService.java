@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.AzureBlobService;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.NotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.utils.PayloadExtractor;
 
@@ -81,6 +82,7 @@ public class PublicationService {
 
     /**
      * takes in artefact id and returns the data within the matching blob in string format.
+     *
      * @param artefactId represents the artefact id which is then used to get an artefact to populate the inputs
      *                   for the blob request
      * @return the data within the blob in string format
@@ -94,7 +96,7 @@ public class PublicationService {
             String provenance = artefact.getProvenance();
             return azureBlobService.getBlobData(sourceArtefactId, provenance);
         } else {
-            return azureBlobService.getBlobData("", "");
+            throw new NotFoundException("No artefact found by that name.");
         }
 
     }
