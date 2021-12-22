@@ -5,6 +5,7 @@ import com.azure.storage.blob.BlobContainerClient;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microsoft.applicationinsights.web.dependencies.apachecommons.io.IOUtils;
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
+import org.json.JSONArray;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
@@ -21,6 +22,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import springfox.documentation.spring.web.json.Json;
 import uk.gov.hmcts.reform.pip.data.management.Application;
 import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.ExceptionResponse;
@@ -31,9 +33,11 @@ import uk.gov.hmcts.reform.pip.data.management.models.publication.Sensitivity;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -560,7 +564,6 @@ class PublicationTest {
 
     @DisplayName("Verify that artefact is returned with given get")
     @Test
-    @Disabled
     void verifyThatArtefactsAreReturnedFromPostgres() throws Exception {
         when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
@@ -584,16 +587,16 @@ class PublicationTest {
         assertEquals(createdArtefact.getDisplayFrom(), DISPLAY_FROM.minusMonths(2), "test message goes here");
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 = MockMvcRequestBuilders
-            .get(SEARCH_URL)
-            .header("searchValue", "12345")
+            .get(SEARCH_URL + "/12345")
             .header("verification", "true");
         MvcResult getResponse =
             mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isOk()).andReturn();
-        Artefact retrievedArtefact = objectMapper.readValue(
-            getResponse.getResponse().getContentAsString(),
-            Artefact.class
-        );
 
-        assertEquals("1", retrievedArtefact.getSearch().get("court-id"), "test");
+        String jsonOutput = getResponse.getResponse().getContentAsString();
+        JSONArray jsonArray = new JSONArray(jsonOutput);
+        Artefact retrievedArtefact = objectMapper.readValue(
+            jsonArray.get(0).toString(), Artefact.class
+        );
+        assertEquals(List.of("12345"), retrievedArtefact.getSearch().get("court-id"), "test");
     }
 }
