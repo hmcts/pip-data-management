@@ -136,7 +136,8 @@ class PublicationServiceTest {
         when(azureBlobService.getBlobData(any(), any()))
             .thenReturn(String.valueOf(artefact));
         assertEquals(artefact.toString(), publicationService.getByArtefactId(ARTEFACT_ID, true),
-                     "Artefacts do not match");
+                     "Artefacts do not match"
+        );
     }
 
     @Test
@@ -163,17 +164,18 @@ class PublicationServiceTest {
             .thenReturn(artefactList);
 
         assertEquals(artefactList, publicationService.findAllByCourtId("abc", true),
-                     "Message");
+                     "Message"
+        );
         assertEquals(artefactList, publicationService.findAllByCourtId("abc", false),
-                     "Message");
+                     "Message"
+        );
     }
 
     @Test
     void checkForUnauthorised() {
-        UnauthorisedRequestException unauthorisedRequestException =
-            assertThrows(UnauthorisedRequestException.class, () -> {
-                publicationService.getByArtefactId(UUID.randomUUID(), false);
-            }, "Should throw an unauthorised request exception.");
+        assertThrows(UnauthorisedRequestException.class, () -> {
+            publicationService.getByArtefactId(UUID.randomUUID(), false);
+        }, "Should throw an unauthorised request exception.");
     }
 }
 
