@@ -115,8 +115,10 @@ public class PublicationController {
     })
     @ApiOperation("Get the info from within a blob given source artefact id and provenance")
     @GetMapping("/{artefactId}")
-    public ResponseEntity<String> getBlobData(@PathVariable UUID artefactId) {
-        return ResponseEntity.ok(publicationService.getByArtefactId(artefactId));
+    public ResponseEntity<String> getBlobData(@PathVariable UUID artefactId, @RequestHeader Boolean verification) {
+
+        return ResponseEntity.ok(publicationService.getByArtefactId(artefactId, verification));
+
     }
 
     /**

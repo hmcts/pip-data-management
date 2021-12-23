@@ -138,7 +138,7 @@ class PublicationControllerTest {
 
     @Test
     void testBlobEndpointReturnsOk() {
-        assertEquals(HttpStatus.OK, publicationController.getBlobData(ARTEFACT_ID)
+        assertEquals(HttpStatus.OK, publicationController.getBlobData(ARTEFACT_ID, true)
             .getStatusCode(), STATUS_CODE_MATCH);
     }
 
@@ -167,8 +167,8 @@ class PublicationControllerTest {
             .type(ARTEFACT_TYPE)
             .payload(PAYLOAD_URL)
             .build();
-        when(publicationService.getByArtefactId(any())).thenReturn(String.valueOf(artefactWithId));
-        ResponseEntity<String> unmappedBlob = publicationController.getBlobData(UUID.randomUUID());
+        when(publicationService.getByArtefactId(any(), any())).thenReturn(String.valueOf(artefactWithId));
+        ResponseEntity<String> unmappedBlob = publicationController.getBlobData(UUID.randomUUID(), true);
         assertEquals(HttpStatus.OK, unmappedBlob.getStatusCode(),
                      STATUS_CODE_MATCH
         );

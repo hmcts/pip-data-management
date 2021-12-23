@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.AzureBlobService;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.NotFoundException;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.UnauthorisedRequestException;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.utils.PayloadExtractor;
 
@@ -87,8 +88,12 @@ public class PublicationService {
      *                   for the blob request
      * @return the data within the blob in string format
      */
-    public String getByArtefactId(UUID artefactId) {
+    public String getByArtefactId(UUID artefactId, Boolean verification) {
+        if (!verification) {
+            throw new UnauthorisedRequestException("Unauthorised Request.");
+        }
         Optional<Artefact> optionalArtefact = artefactRepository.findByArtefactId(artefactId);
+
         if (optionalArtefact.isPresent()) {
             Artefact artefact;
             artefact = optionalArtefact.get();
