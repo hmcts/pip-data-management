@@ -7,6 +7,7 @@ import uk.gov.hmcts.reform.pip.data.management.database.AzureBlobService;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.NotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.UnauthorisedRequestException;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
+import uk.gov.hmcts.reform.pip.data.management.models.publication.Sensitivity;
 import uk.gov.hmcts.reform.pip.data.management.utils.PayloadExtractor;
 
 import java.time.LocalDateTime;
@@ -89,20 +90,20 @@ public class PublicationService {
      * @return the data within the blob in string format
      */
     public String getByArtefactId(UUID artefactId, Boolean verification) {
-        if (!verification) {
-            throw new UnauthorisedRequestException("Unauthorised Request.");
-        }
+
         Optional<Artefact> optionalArtefact = artefactRepository.findByArtefactId(artefactId);
 
         if (optionalArtefact.isPresent()) {
             Artefact artefact;
             artefact = optionalArtefact.get();
+            if (!verification && artefact.getSensitivity() != Sensitivity.PUBLIC) {
+                throw new UnauthorisedRequestException("Unauthorised Request.");
+            }
             String sourceArtefactId = artefact.getSourceArtefactId();
             String provenance = artefact.getProvenance();
             return azureBlobService.getBlobData(sourceArtefactId, provenance);
         } else {
             throw new NotFoundException("No artefact found by that name.");
         }
-
     }
 }

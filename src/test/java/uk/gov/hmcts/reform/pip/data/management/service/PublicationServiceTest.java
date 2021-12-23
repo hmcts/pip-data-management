@@ -11,6 +11,7 @@ import uk.gov.hmcts.reform.pip.data.management.database.AzureBlobService;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.UnauthorisedRequestException;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Language;
+import uk.gov.hmcts.reform.pip.data.management.models.publication.Sensitivity;
 import uk.gov.hmcts.reform.pip.data.management.utils.PayloadExtractor;
 
 import java.util.ArrayList;
@@ -173,6 +174,14 @@ class PublicationServiceTest {
 
     @Test
     void checkForUnauthorised() {
+        Artefact artefact = Artefact.builder()
+            .sourceArtefactId(SOURCE_ARTEFACT_ID)
+            .provenance(PROVENANCE)
+            .language(Language.ENGLISH)
+            .sensitivity(Sensitivity.CLASSIFIED)
+            .build();
+
+        when(artefactRepository.findByArtefactId(any())).thenReturn(Optional.of(artefact));
         assertThrows(UnauthorisedRequestException.class, () -> {
             publicationService.getByArtefactId(UUID.randomUUID(), false);
         }, "Should throw an unauthorised request exception.");
