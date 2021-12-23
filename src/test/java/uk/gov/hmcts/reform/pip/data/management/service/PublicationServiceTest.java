@@ -8,6 +8,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.AzureBlobService;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.UnauthorisedRequestException;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Language;
 import uk.gov.hmcts.reform.pip.data.management.utils.PayloadExtractor;
@@ -20,6 +21,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -166,5 +168,14 @@ class PublicationServiceTest {
                      "Message");
     }
 
-
+    @Test
+    void checkForUnauthorised() {
+        UnauthorisedRequestException unauthorisedRequestException =
+            assertThrows(UnauthorisedRequestException.class, () -> {
+                publicationService.getByArtefactId(UUID.randomUUID(), false);
+            }, "Should throw an unauthorised request exception.");
+    }
 }
+
+
+

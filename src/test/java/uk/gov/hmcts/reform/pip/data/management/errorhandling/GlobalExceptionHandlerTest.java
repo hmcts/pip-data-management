@@ -18,6 +18,7 @@ import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.DataStor
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.EmptyRequestHeaderException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.HearingNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.NotFoundException;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.UnauthorisedRequestException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -43,7 +44,7 @@ class GlobalExceptionHandlerTest {
     private static final String NOT_FOUND_ASSERTION = "Status code should be of type: Bad Request";
     static final String ASSERTION_RESPONSE_BODY = "Response should contain a body";
     private static final String BLOBSTORAGE_MESSAGE = "Unable to find a blob matching the given inputs";
-
+    private static final String NOT_NULL_MESSAGE = "Exception body should not be null";
     private final GlobalExceptionHandler globalExceptionHandler = new GlobalExceptionHandler();
 
     @BeforeAll
@@ -186,11 +187,25 @@ class GlobalExceptionHandlerTest {
             globalExceptionHandler.handle(blobStorageException);
 
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode(), BAD_REQUEST_ASSERTION);
-        assertNotNull(responseEntity.getBody(), "Exception body should not be null");
+        assertNotNull(responseEntity.getBody(), NOT_NULL_MESSAGE);
         assertTrue(
             responseEntity.getBody().getMessage().contains(
                 "InvalidOperation"),
             "The exception response should contain the name of the field"
         );
+    }
+
+    @Test
+    void testUnauthorisedRequestException() {
+        UnauthorisedRequestException unauthorisedRequestException = new UnauthorisedRequestException(TEST_MESSAGE);
+        ResponseEntity<ExceptionResponse> responseEntity =
+            globalExceptionHandler.handle(unauthorisedRequestException);
+        assertEquals(HttpStatus.UNAUTHORIZED, responseEntity.getStatusCode(),
+                     "Should be unauthorised exception");
+        assertNotNull(responseEntity.getBody(), NOT_NULL_MESSAGE);
+        assertTrue(responseEntity.getBody().getMessage().contains(TEST_MESSAGE),
+                   "Exception body doesn't match test message");
+
+
     }
 }
