@@ -20,6 +20,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import uk.gov.hmcts.reform.pip.data.management.Application;
 import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.ExceptionResponse;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ValidationException;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Language;
@@ -31,10 +32,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -50,7 +48,7 @@ class PublicationTest {
     BlobContainerClient blobContainerClient;
 
     @Autowired
-    BlobClient blobClient;
+    BlobClient  blobClient;
 
     @Autowired
     private MockMvc mockMvc;
@@ -504,13 +502,7 @@ class PublicationTest {
             .content(PAYLOAD_UNKNOWN)
             .contentType(MediaType.APPLICATION_JSON);
 
-        MvcResult createResponse =
-            mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
+        mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isBadRequest());
 
-        Artefact createdArtefact = objectMapper.readValue(createResponse.getResponse().getContentAsString(),
-                                                          Artefact.class);
-
-        assertTrue(createdArtefact.getSearch().isEmpty(), "Artefact search criteria exists"
-            + "when payload is of an unknown type");
     }
 }

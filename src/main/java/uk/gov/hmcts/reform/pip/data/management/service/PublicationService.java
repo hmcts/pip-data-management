@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.AzureBlobService;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ValidationException;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.utils.PayloadExtractor;
 
@@ -54,7 +55,7 @@ public class PublicationService {
 
             return artefactRepository.save(artefact);
         } else {
-            return null;
+            throw new ValidationException(String.join("Payload is not accepted or not valid."));
         }
     }
 }
