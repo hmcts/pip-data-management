@@ -55,7 +55,7 @@ public class PublicationService {
 
             return artefactRepository.save(artefact);
         } else {
-            throw new ValidationException(String.join("Payload is not accepted or not valid."));
+            throw new ValidationException("Payload is not accepted or not valid.");
         }
     }
 }
