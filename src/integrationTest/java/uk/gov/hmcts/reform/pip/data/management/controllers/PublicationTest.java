@@ -4,15 +4,20 @@ import com.azure.storage.blob.BlobClient;
 import com.azure.storage.blob.BlobContainerClient;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microsoft.applicationinsights.web.dependencies.apachecommons.io.IOUtils;
+import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
+import org.json.JSONArray;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
@@ -44,6 +49,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @ActiveProfiles(profiles = "test")
+@RunWith(SpringRunner.class)
+@SuppressWarnings("PMD.ExcessiveImports")
+@AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
 class PublicationTest {
 
     @Autowired
@@ -55,7 +63,8 @@ class PublicationTest {
     @Autowired
     private MockMvc mockMvc;
 
-    private static final String URL = "/publication";
+    private static final String PUT_URL = "/publication";
+    private static final String SEARCH_URL = "/publication/search";
     private static final ArtefactType ARTEFACT_TYPE = ArtefactType.LIST;
     private static final Sensitivity SENSITIVITY = Sensitivity.PUBLIC;
     private static final String PROVENANCE = "provenance";
@@ -67,6 +76,8 @@ class PublicationTest {
     private static final Language LANGUAGE = Language.ENGLISH;
     private static final String TEST_VALUE = "test";
     private static final String PAYLOAD_URL = "https://localhost";
+    private static final String JSON_PAYLOAD = "{\"CourtList\":{\"CourtList\":[{\"CourtHouse\":{\"CourtHouseCode"
+        + "\":\"12345\"}}]}}";
     private static final String SEARCH_KEY_FOUND = "array-value";
     private static final String SEARCH_KEY_NOT_FOUND = "case-urn";
     private static final String SEARCH_VALUE_1 = "array-value-1";
@@ -92,7 +103,7 @@ class PublicationTest {
         objectMapper.findAndRegisterModules();
 
         mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .put(URL)
+            .put(PUT_URL)
             .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
             .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
@@ -128,18 +139,23 @@ class PublicationTest {
         assertEquals(artefact.getSensitivity(), SENSITIVITY, "Sensitivity does not match input sensitivity");
 
         Map<String, List<Object>> searchResult = artefact.getSearch();
-        assertTrue(searchResult.containsKey(SEARCH_KEY_FOUND),
-                   "Returned search result does not contain the correct key");
+        assertTrue(
+            searchResult.containsKey(SEARCH_KEY_FOUND),
+            "Returned search result does not contain the correct key"
+        );
         assertFalse(searchResult.containsKey(SEARCH_KEY_NOT_FOUND), "Returned search result contains "
             + "key that does not exist");
         assertEquals(SEARCH_VALUE_1, searchResult.get(SEARCH_KEY_FOUND).get(0),
-                     "Does not contain first value in the array");
+                     "Does not contain first value in the array"
+        );
 
         assertEquals(SEARCH_VALUE_2, searchResult.get(SEARCH_KEY_FOUND).get(1),
-                     "Does not contain second value in the array");
+                     "Does not contain second value in the array"
+        );
 
         assertEquals(artefact.getPayload(), PAYLOAD_URL + "/" + SOURCE_ARTEFACT_ID + '-' + PROVENANCE,
-                     "Payload does not match input payload");
+                     "Payload does not match input payload"
+        );
     }
 
     @DisplayName("Should create a valid artefact with only mandatory fields")
@@ -149,7 +165,7 @@ class PublicationTest {
         when(blobContainerClient.getBlobContainerUrl()).thenReturn(PAYLOAD_URL);
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .put(URL)
+            .put(PUT_URL)
             .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
             .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
             .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
@@ -174,7 +190,7 @@ class PublicationTest {
     @Test
     void testMissingArtifactType() throws Exception {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .put(URL)
+            .put(PUT_URL)
             .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
             .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
             .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
@@ -188,8 +204,10 @@ class PublicationTest {
             .andExpect(status().isBadRequest()).andReturn();
 
         assertFalse(response.getResponse().getContentAsString().isEmpty(), VALIDATION_EMPTY_RESPONSE);
-        ExceptionResponse exceptionResponse = objectMapper.readValue(response.getResponse().getContentAsString(),
-                                                                     ExceptionResponse.class);
+        ExceptionResponse exceptionResponse = objectMapper.readValue(
+            response.getResponse().getContentAsString(),
+            ExceptionResponse.class
+        );
 
         assertTrue(exceptionResponse.getMessage().contains("x-type"), VALIDATION_EXCEPTION_RESPONSE);
     }
@@ -198,7 +216,7 @@ class PublicationTest {
     @Test
     void testEmptyArtifactType() throws Exception {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .put(URL)
+            .put(PUT_URL)
             .header(PublicationConfiguration.TYPE_HEADER, EMPTY_VALUE)
             .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
             .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
@@ -213,8 +231,10 @@ class PublicationTest {
             .andExpect(status().isBadRequest()).andReturn();
 
         assertFalse(response.getResponse().getContentAsString().isEmpty(), VALIDATION_EMPTY_RESPONSE);
-        ExceptionResponse exceptionResponse = objectMapper.readValue(response.getResponse().getContentAsString(),
-                                                                     ExceptionResponse.class);
+        ExceptionResponse exceptionResponse = objectMapper.readValue(
+            response.getResponse().getContentAsString(),
+            ExceptionResponse.class
+        );
 
         assertTrue(exceptionResponse.getMessage().contains("x-type"), VALIDATION_EXCEPTION_RESPONSE);
     }
@@ -223,7 +243,7 @@ class PublicationTest {
     @Test
     void testInvalidArtifactType() throws Exception {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .put(URL)
+            .put(PUT_URL)
             .header(PublicationConfiguration.TYPE_HEADER, TEST_VALUE)
             .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
             .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
@@ -238,8 +258,10 @@ class PublicationTest {
             .andExpect(status().isBadRequest()).andReturn();
 
         assertFalse(response.getResponse().getContentAsString().isEmpty(), VALIDATION_EMPTY_RESPONSE);
-        ExceptionResponse exceptionResponse = objectMapper.readValue(response.getResponse().getContentAsString(),
-                                                                     ExceptionResponse.class);
+        ExceptionResponse exceptionResponse = objectMapper.readValue(
+            response.getResponse().getContentAsString(),
+            ExceptionResponse.class
+        );
 
         assertTrue(exceptionResponse.getMessage().contains(
             String.format("Unable to parse x-type. %s", FORMAT_RESPONSE)), VALIDATION_EXCEPTION_RESPONSE);
@@ -249,7 +271,7 @@ class PublicationTest {
     @Test
     void testMissingProvenance() throws Exception {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .put(URL)
+            .put(PUT_URL)
             .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
             .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
             .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
@@ -263,8 +285,10 @@ class PublicationTest {
             .andExpect(status().isBadRequest()).andReturn();
 
         assertFalse(response.getResponse().getContentAsString().isEmpty(), VALIDATION_EMPTY_RESPONSE);
-        ExceptionResponse exceptionResponse = objectMapper.readValue(response.getResponse().getContentAsString(),
-                                                                     ExceptionResponse.class);
+        ExceptionResponse exceptionResponse = objectMapper.readValue(
+            response.getResponse().getContentAsString(),
+            ExceptionResponse.class
+        );
 
         assertTrue(exceptionResponse.getMessage().contains("x-provenance"), VALIDATION_EXCEPTION_RESPONSE);
     }
@@ -273,7 +297,7 @@ class PublicationTest {
     @Test
     void testEmptyProvenance() throws Exception {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .put(URL)
+            .put(PUT_URL)
             .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
             .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
             .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
@@ -288,8 +312,10 @@ class PublicationTest {
             .andExpect(status().isBadRequest()).andReturn();
 
         assertFalse(response.getResponse().getContentAsString().isEmpty(), VALIDATION_EMPTY_RESPONSE);
-        ExceptionResponse exceptionResponse = objectMapper.readValue(response.getResponse().getContentAsString(),
-                                                                     ExceptionResponse.class);
+        ExceptionResponse exceptionResponse = objectMapper.readValue(
+            response.getResponse().getContentAsString(),
+            ExceptionResponse.class
+        );
 
         assertTrue(exceptionResponse.getMessage().contains("x-provenance"), VALIDATION_EXCEPTION_RESPONSE);
     }
@@ -298,7 +324,7 @@ class PublicationTest {
     @Test
     void testMissingSourceArtifactId() throws Exception {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .put(URL)
+            .put(PUT_URL)
             .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
             .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
             .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
@@ -312,8 +338,10 @@ class PublicationTest {
             .andExpect(status().isBadRequest()).andReturn();
 
         assertFalse(response.getResponse().getContentAsString().isEmpty(), VALIDATION_EMPTY_RESPONSE);
-        ExceptionResponse exceptionResponse = objectMapper.readValue(response.getResponse().getContentAsString(),
-                                                                     ExceptionResponse.class);
+        ExceptionResponse exceptionResponse = objectMapper.readValue(
+            response.getResponse().getContentAsString(),
+            ExceptionResponse.class
+        );
 
         assertTrue(exceptionResponse.getMessage().contains("x-source-artefact-id"), VALIDATION_EXCEPTION_RESPONSE);
     }
@@ -322,7 +350,7 @@ class PublicationTest {
     @Test
     void testEmptySourceArtifactId() throws Exception {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .put(URL)
+            .put(PUT_URL)
             .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, EMPTY_VALUE)
             .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
             .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
@@ -337,8 +365,10 @@ class PublicationTest {
             .andExpect(status().isBadRequest()).andReturn();
 
         assertFalse(response.getResponse().getContentAsString().isEmpty(), VALIDATION_EMPTY_RESPONSE);
-        ExceptionResponse exceptionResponse = objectMapper.readValue(response.getResponse().getContentAsString(),
-                                                                     ExceptionResponse.class);
+        ExceptionResponse exceptionResponse = objectMapper.readValue(
+            response.getResponse().getContentAsString(),
+            ExceptionResponse.class
+        );
 
         assertTrue(exceptionResponse.getMessage().contains("x-source-artefact-id"), VALIDATION_EXCEPTION_RESPONSE);
     }
@@ -347,7 +377,7 @@ class PublicationTest {
     @Test
     void testInvalidDisplayTo() throws Exception {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .put(URL)
+            .put(PUT_URL)
             .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
             .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
             .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
@@ -362,8 +392,10 @@ class PublicationTest {
             .andExpect(status().isBadRequest()).andReturn();
 
         assertFalse(response.getResponse().getContentAsString().isEmpty(), VALIDATION_EMPTY_RESPONSE);
-        ExceptionResponse exceptionResponse = objectMapper.readValue(response.getResponse().getContentAsString(),
-                                                                     ExceptionResponse.class);
+        ExceptionResponse exceptionResponse = objectMapper.readValue(
+            response.getResponse().getContentAsString(),
+            ExceptionResponse.class
+        );
 
         assertTrue(exceptionResponse.getMessage().contains(
             String.format("Unable to parse x-display-to. %s", FORMAT_RESPONSE)), VALIDATION_EXCEPTION_RESPONSE);
@@ -373,7 +405,7 @@ class PublicationTest {
     @Test
     void testInvalidDisplayFrom() throws Exception {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .put(URL)
+            .put(PUT_URL)
             .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
             .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
             .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
@@ -388,8 +420,10 @@ class PublicationTest {
             .andExpect(status().isBadRequest()).andReturn();
 
         assertFalse(response.getResponse().getContentAsString().isEmpty(), VALIDATION_EMPTY_RESPONSE);
-        ExceptionResponse exceptionResponse = objectMapper.readValue(response.getResponse().getContentAsString(),
-                                                                     ExceptionResponse.class);
+        ExceptionResponse exceptionResponse = objectMapper.readValue(
+            response.getResponse().getContentAsString(),
+            ExceptionResponse.class
+        );
 
         assertTrue(exceptionResponse.getMessage().contains(
             String.format("Unable to parse x-display-from. %s", FORMAT_RESPONSE)), VALIDATION_EXCEPTION_RESPONSE);
@@ -399,7 +433,7 @@ class PublicationTest {
     @Test
     void testInvalidLanguageHeader() throws Exception {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .put(URL)
+            .put(PUT_URL)
             .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
             .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
             .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
@@ -414,8 +448,10 @@ class PublicationTest {
             .andExpect(status().isBadRequest()).andReturn();
 
         assertFalse(response.getResponse().getContentAsString().isEmpty(), VALIDATION_EMPTY_RESPONSE);
-        ExceptionResponse exceptionResponse = objectMapper.readValue(response.getResponse().getContentAsString(),
-                                                                     ExceptionResponse.class);
+        ExceptionResponse exceptionResponse = objectMapper.readValue(
+            response.getResponse().getContentAsString(),
+            ExceptionResponse.class
+        );
 
         assertTrue(exceptionResponse.getMessage().contains(
             String.format("Unable to parse x-language. %s", FORMAT_RESPONSE)), VALIDATION_EXCEPTION_RESPONSE);
@@ -425,7 +461,7 @@ class PublicationTest {
     @Test
     void testInvalidSensitivityHeader() throws Exception {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .put(URL)
+            .put(PUT_URL)
             .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
             .header(PublicationConfiguration.SENSITIVITY_HEADER, TEST_VALUE)
             .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
@@ -441,8 +477,10 @@ class PublicationTest {
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
 
-        ExceptionResponse exceptionResponse = objectMapper.readValue(response.getResponse().getContentAsString(),
-                                                                     ExceptionResponse.class);
+        ExceptionResponse exceptionResponse = objectMapper.readValue(
+            response.getResponse().getContentAsString(),
+            ExceptionResponse.class
+        );
 
         assertTrue(exceptionResponse.getMessage().contains(
             String.format("Unable to parse x-sensitivity. %s", FORMAT_RESPONSE)), VALIDATION_EXCEPTION_RESPONSE);
@@ -455,7 +493,7 @@ class PublicationTest {
         when(blobContainerClient.getBlobContainerUrl()).thenReturn(PAYLOAD_URL);
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .put(URL)
+            .put(PUT_URL)
             .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
             .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
             .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
@@ -468,17 +506,23 @@ class PublicationTest {
         MvcResult createResponse =
             mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
 
-        Artefact createdArtefact = objectMapper.readValue(createResponse.getResponse().getContentAsString(),
-                                                          Artefact.class);
+        Artefact createdArtefact = objectMapper.readValue(
+            createResponse.getResponse().getContentAsString(),
+            Artefact.class
+        );
 
-        mockHttpServletRequestBuilder.header(PublicationConfiguration.LANGUAGE_HEADER,
-                                             Language.BI_LINGUAL);
+        mockHttpServletRequestBuilder.header(
+            PublicationConfiguration.LANGUAGE_HEADER,
+            Language.BI_LINGUAL
+        );
 
         MvcResult updatedResponse = mockMvc.perform(mockHttpServletRequestBuilder).andExpect(
             status().isCreated()).andReturn();
 
-        Artefact updatedArtefact = objectMapper.readValue(updatedResponse.getResponse().getContentAsString(),
-                                                          Artefact.class);
+        Artefact updatedArtefact = objectMapper.readValue(
+            updatedResponse.getResponse().getContentAsString(),
+            Artefact.class
+        );
 
         assertEquals(createdArtefact.getArtefactId(), updatedArtefact.getArtefactId(), "A new artefact has "
             + "been created rather than it being updated");
@@ -494,7 +538,7 @@ class PublicationTest {
         when(blobContainerClient.getBlobContainerUrl()).thenReturn(PAYLOAD_URL);
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .put(URL)
+            .put(PUT_URL)
             .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
             .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
             .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
@@ -507,10 +551,51 @@ class PublicationTest {
         MvcResult createResponse =
             mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
 
-        Artefact createdArtefact = objectMapper.readValue(createResponse.getResponse().getContentAsString(),
-                                                          Artefact.class);
+        Artefact createdArtefact = objectMapper.readValue(
+            createResponse.getResponse().getContentAsString(),
+            Artefact.class
+        );
 
         assertTrue(createdArtefact.getSearch().isEmpty(), "Artefact search criteria exists"
             + "when payload is of an unknown type");
+    }
+
+    @DisplayName("Verify that artefact is returned with given get")
+    @Test
+    @Disabled
+    void verifyThatArtefactsAreReturnedFromPostgres() throws Exception {
+        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+            .put(PUT_URL)
+            .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
+            .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
+            .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
+            .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
+            .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO.plusMonths(1))
+            .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM.minusMonths(2))
+            .content(JSON_PAYLOAD)
+            .contentType(MediaType.APPLICATION_JSON);
+
+        MvcResult createResponse =
+            mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
+        Artefact createdArtefact = objectMapper.readValue(
+            createResponse.getResponse().getContentAsString(),
+            Artefact.class
+        );
+
+        assertEquals(createdArtefact.getDisplayFrom(), DISPLAY_FROM.minusMonths(2), "test message goes here");
+
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 = MockMvcRequestBuilders
+            .get(SEARCH_URL + "/12345")
+            .header("verification", "true");
+        MvcResult getResponse =
+            mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isOk()).andReturn();
+
+        String jsonOutput = getResponse.getResponse().getContentAsString();
+        JSONArray jsonArray = new JSONArray(jsonOutput);
+        Artefact retrievedArtefact = objectMapper.readValue(
+            jsonArray.get(0).toString(), Artefact.class
+        );
+        assertEquals(List.of("12345"), retrievedArtefact.getSearch().get("court-id"), "test");
     }
 }
