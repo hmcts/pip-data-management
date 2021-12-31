@@ -67,9 +67,9 @@ public class PublicationController {
         @RequestHeader(PublicationConfiguration.TYPE_HEADER) ArtefactType type,
         @RequestHeader(value = PublicationConfiguration.SENSITIVITY_HEADER, required = false) Sensitivity sensitivity,
         @RequestHeader(value = PublicationConfiguration.LANGUAGE_HEADER, required = false) Language language,
-        @RequestHeader(value = PublicationConfiguration.DISPLAY_FROM_HEADER, required = false)
+        @RequestHeader(value = PublicationConfiguration.DISPLAY_FROM_HEADER)
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime displayFrom,
-        @RequestHeader(value = PublicationConfiguration.DISPLAY_TO_HEADER, required = false)
+        @RequestHeader(value = PublicationConfiguration.DISPLAY_TO_HEADER)
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime displayTo,
         @RequestBody String payload) {
         validateRequestHeaders(provenance, sourceArtefactId);
