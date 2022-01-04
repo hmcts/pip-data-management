@@ -3,7 +3,22 @@ java:
   ingressHost: pip-data-management.{{ .Values.global.environment }}.platform.hmcts.net
   applicationPort: 8090
   image: 'sdshmctspublic.azurecr.io/pip/data-management:latest'
-
+  keyVaults:
+    pip-ss-kv:
+      excludeEnvironmentSuffix: false
+      resourceGroup: pip-ss-{{ .Values.global.environment }}-rg
+      usePodIdentity: true
+      secrets:
+        - name: shared-storageaccount-connection-string
+          alias: CONNECTION_STRING
+        - name: pip-shared-POSTGRES-DATABASE
+          alias: DB_NAME
+        - name: pip-shared-POSTGRES-PASS
+          alias: DB_PASS
+        - name: pip-shared-POSTGRES-PORT
+          alias: DB_PORT
+        - name: pip-shared-POSTGRES-USER
+          alias: DB_USER
   #  Uncomment once the vault containing the app insights key has been set up
   #  keyVaults:
   #    rpe:

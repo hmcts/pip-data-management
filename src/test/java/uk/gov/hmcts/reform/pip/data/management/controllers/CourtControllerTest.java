@@ -6,6 +6,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ActiveProfiles;
+import uk.gov.hmcts.reform.pip.data.management.Application;
+import uk.gov.hmcts.reform.pip.data.management.config.AzureBlobConfigurationTest;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CourtNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.models.Court;
 import uk.gov.hmcts.reform.pip.data.management.models.request.FilterRequest;
@@ -19,7 +23,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.CourtHelper.createMockCourtList;
 
-@SpringBootTest
+@SpringBootTest(classes = {Application.class, AzureBlobConfigurationTest.class})
+@ActiveProfiles(profiles = "test")
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 class CourtControllerTest {
 
     private List<Court> allCourts;

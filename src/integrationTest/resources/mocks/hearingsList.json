@@ -1,0 +1,112 @@
+[
+  {
+    "hearingId": 1,
+    "courtId": 1,
+    "courtNumber": 39,
+    "date": "27/08/2021 21:57:01",
+    "judge": "Blanche Challes",
+    "platform": "HMCTS",
+    "caseNumber": "636947292",
+    "caseName": "Livepath's hearings",
+    "urn": "12345678"
+  },
+  {
+    "hearingId": 2,
+    "courtId": 2,
+    "courtNumber": 21,
+    "date": "28/08/2021 14:56:55",
+    "judge": "Padriac Duckels",
+    "platform": "Teams",
+    "caseNumber": "564181275",
+    "caseName": "Meedoo's hearings",
+    "urn": "87654321"
+  },
+  {
+    "hearingId": 3,
+    "courtId": 3,
+    "courtNumber": 38,
+    "date": "20/10/2021 19:56:55",
+    "judge": "Harli Sonier",
+    "platform": "HMCTS",
+    "caseNumber": "487065515",
+    "caseName": "Flashset's hearings",
+    "urn": "12345678"
+  },
+  {
+    "hearingId": 4,
+    "courtId": 4,
+    "courtNumber": 37,
+    "date": "02/09/2021 14:57:06",
+    "judge": "Adaline Hubbucke",
+    "platform": "Skype",
+    "caseNumber": "325490996",
+    "caseName": "Fivespan's hearings",
+    "urn": "12345678"
+  },
+  {
+    "hearingId": 5,
+    "courtId": 1,
+    "courtNumber": 11,
+    "date": "21/10/2021 16:56:37",
+    "judge": "Mellisa Brownlee",
+    "platform": "HMCTS",
+    "caseNumber": "256793255",
+    "caseName": "Gabtype's hearings",
+    "urn": "12345678"
+  },
+  {
+    "hearingId": 6,
+    "courtId": 1,
+    "courtNumber": 17,
+    "date": "30/09/2021 21:57:36",
+    "judge": "Renault Demongeot",
+    "platform": "Teams",
+    "caseNumber": "271839197",
+    "caseName": "Photobug's hearings",
+    "urn": "12345678"
+  },
+  {
+    "hearingId": 7,
+    "courtId": 2,
+    "courtNumber": 22,
+    "date": "12/09/2021 22:57:15",
+    "judge": "Dody Brendeke",
+    "platform": "Teams",
+    "caseNumber": "023197519",
+    "caseName": "Photobug's hearings",
+    "urn": "12345678"
+  },
+  {
+    "hearingId": 8,
+    "courtId": 3,
+    "courtNumber": 14,
+    "date": "03/09/2021 19:56:51",
+    "judge": "Norton Synke",
+    "platform": "Teams",
+    "caseNumber": "331273053",
+    "caseName": "Mycat's hearings",
+    "urn": "12345678"
+  },
+  {
+    "hearingId": 9,
+    "courtId": 4,
+    "courtNumber": 36,
+    "date": "06/09/2021 15:57:25",
+    "judge": "Christel Beavis",
+    "platform": "Zoom",
+    "caseNumber": "453019012",
+    "caseName": "Fliptune's hearings",
+    "urn": "12345678"
+  },
+  {
+    "hearingId": 10,
+    "courtId": 4,
+    "courtNumber": 20,
+    "date": "21/10/2021 23:57:04",
+    "judge": "Salvador Fairbairn",
+    "platform": "Teams",
+    "caseNumber": "785017279",
+    "caseName": "LiveZ's hearings",
+    "urn": "12345678"
+  }
+]

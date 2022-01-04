@@ -1,0 +1,257 @@
+[
+  {
+    "courtId": 1,
+    "courtName": "Mutsu Court",
+    "lastUpdated": " 2021-10-04T10:26:45.187810",
+    "courtUpdates": [
+      {
+        "courtRoom": 1,
+        "caseNumber": "T20217099",
+        "caseName": "Mills LLC's Hearing",
+        "event": {
+          "eventId": 2,
+          "eventStatus": "Committal for Sentence",
+          "eventName": "Appeal Interpreter Sworn",
+          "eventTime": "12:25"
+        }
+      },
+      {
+        "courtRoom": 2,
+        "caseNumber": "",
+        "caseName": "",
+        "event": {
+          "eventId": 0,
+          "eventStatus": "",
+          "eventName": "",
+          "eventTime": ""
+        }
+      },
+      {
+        "courtRoom": 3,
+        "caseNumber": "T20217000",
+        "caseName": "Will-Muller",
+        "event": {
+          "eventId": 3100,
+          "eventStatus": "Trial (Part Heard)",
+          "eventName": "Case adjourned until 12:00",
+          "eventTime": "11:37"
+        }
+      },
+      {
+        "courtRoom": 4,
+        "caseNumber": "T20217010",
+        "caseName": "Wyman Inc Dispute",
+        "event": {
+          "eventId": 2,
+          "eventStatus": "For Trial",
+          "eventName": "Appeal Witness continues",
+          "eventTime": "14:11"
+        }
+      }
+    ]
+  },
+  {
+    "courtId": 35,
+    "courtName": "Baizhu Court",
+    "lastUpdated": " 2021-10-04T16:26:45.187810",
+    "courtUpdates": [
+      {
+        "courtRoom": 1,
+        "caseNumber": "T20217001",
+        "caseName": "Hansen-Trantow",
+        "event": {
+          "eventId": 2,
+          "eventStatus": "Committal for Sentence",
+          "eventName": "Appeal Interpreter Sworn",
+          "eventTime": "10:22"
+        }
+      },
+      {
+        "courtRoom": 2,
+        "caseNumber": "T20217002",
+        "caseName": "Collins LLC",
+        "event": {
+          "eventId": 1,
+          "eventStatus": "Trial (Part Heard)",
+          "eventName": "Case adjourned until 12:00",
+          "eventTime": "10:55"
+        }
+      },
+      {
+        "courtRoom": 3,
+        "caseNumber": "T20218000",
+        "caseName": "Reinger-Cremin",
+        "event": {
+          "eventId": 5,
+          "eventStatus": "Committal for Sentence",
+          "eventName": "Interpreter Sworn",
+          "eventTime": "11:54"
+        }
+      },
+      {
+        "courtRoom": 4,
+        "caseNumber": "T20218001",
+        "caseName": "Wilkinson, Ziemann and Hintz",
+        "event": {
+          "eventId": 23,
+          "eventStatus": "For Plea",
+          "eventName": "Hearing Finished for Wilkinson, Ziemann and Hintz",
+          "eventTime": "09:15"
+        }
+      }
+    ]
+  },
+  {
+    "courtId": 26,
+    "courtName": "Albertville Court",
+    "lastUpdated": " 2021-10-02T09:00:00.187810",
+    "courtUpdates": [
+      {
+        "courtRoom": 1,
+        "caseNumber": "T20218002",
+        "caseName": "Gerhold Inc",
+        "event": {
+          "eventId": 10,
+          "eventStatus": "Committal for Sentence",
+          "eventName": "Appeal Interpreter Sworn",
+          "eventTime": "09:54"
+        }
+      },
+      {
+        "courtRoom": 2,
+        "caseNumber": "",
+        "caseName": "",
+        "event": {
+          "eventId": 0,
+          "eventStatus": "",
+          "eventName": "",
+          "eventTime": ""
+        }
+      },
+      {
+        "courtRoom": 3,
+        "caseNumber": "T20218010",
+        "caseName": "Goldner-Mosciski",
+        "event": {
+          "eventId": 65,
+          "eventStatus": "For Plea",
+          "eventName": "Case Started",
+          "eventTime": "09:35"
+        }
+      },
+      {
+        "courtRoom": 4,
+        "caseNumber": "T20218078",
+        "caseName": "Lowe, Hickle and Carroll",
+        "event": {
+          "eventId": 17,
+          "eventStatus": "Part Heard",
+          "eventName": "Defendant Sworn",
+          "eventTime": "11:08"
+        }
+      }
+    ]
+  },
+  {
+    "courtId": 49,
+    "courtName": "Zaton Court",
+    "lastUpdated": " 2021-10-01T09:26:45.187810",
+    "courtUpdates": [
+      {
+        "courtRoom": 1,
+        "caseNumber": "T20218012",
+        "caseName": "Bahringer-Welch",
+        "event": {
+          "eventId": 10,
+          "eventStatus": "Trial (Part Heard)",
+          "eventName": "Witness Number 4 Sworn",
+          "eventTime": "11:13"
+        }
+      },
+      {
+        "courtRoom": 2,
+        "caseNumber": "T20218013",
+        "caseName": "Considine and Sons",
+        "event": {
+          "eventId": 23,
+          "eventStatus": "Legal Submissions",
+          "eventName": "Documents Submitted",
+          "eventTime": "11:30"
+        }
+      },
+      {
+        "courtRoom": 3,
+        "caseNumber": "T20218014",
+        "caseName": "Conn-Stehr",
+        "event": {
+          "eventId": 52,
+          "eventStatus": "Verdict",
+          "eventName": "Judge Presenting Verdict",
+          "eventTime": "12:45"
+        }
+      },
+      {
+        "courtRoom": 4,
+        "caseNumber": "",
+        "caseName": "",
+        "event": {
+          "eventId": 0,
+          "eventStatus": "",
+          "eventName": "",
+          "eventTime": ""
+        }
+      }
+    ]
+  },
+  {
+    "courtId": 34,
+    "courtName": "Aylesbury Crown Court",
+    "lastUpdated": " 2021-09-29T12:26:45.187810",
+    "courtUpdates": [
+      {
+        "courtRoom": 1,
+        "caseNumber": "T20218022",
+        "caseName": "Hilpert, Bartoletti and Lehner",
+        "event": {
+          "eventId": 44,
+          "eventStatus": "Respondent Case Closed",
+          "eventName": "Evidence Presented",
+          "eventTime": "09:27"
+        }
+      },
+      {
+        "courtRoom": 2,
+        "caseNumber": "",
+        "caseName": "",
+        "event": {
+          "eventId": 0,
+          "eventStatus": "",
+          "eventName": "",
+          "eventTime": ""
+        }
+      },
+      {
+        "courtRoom": 3,
+        "caseNumber": "T20218023",
+        "caseName": "Ward-Kunde's",
+        "event": {
+          "eventId": 1,
+          "eventStatus": "Verdict",
+          "eventName": "Verdict Reached",
+          "eventTime": "10:23"
+        }
+      },
+      {
+        "courtRoom": 4,
+        "caseNumber": "T20218024",
+        "caseName": "Stamm-Tromp",
+        "event": {
+          "eventId": 2,
+          "eventStatus": "Witness Evidence Concluded",
+          "eventName": "Witness Finished Giving Evidence",
+          "eventTime": "10:56"
+        }
+      }
+    ]
+  }
+]
