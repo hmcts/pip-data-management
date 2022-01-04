@@ -3,7 +3,7 @@ plugins {
   id 'checkstyle'
   id 'io.spring.dependency-management' version '1.0.11.RELEASE'
   id 'jacoco'
-  id 'org.springframework.boot' version '2.6.2'
+  id 'org.springframework.boot' version '2.5.8'
   id 'org.owasp.dependencycheck' version '6.0.3'
   id 'org.sonarqube' version '3.0'
   id 'pmd'
@@ -191,8 +191,6 @@ dependencies {
     exclude group: 'junit', module: 'junit'
     exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
   }
-
-  testImplementation 'org.apiguardian:apiguardian-api:1.1.2'
 
   integrationTestImplementation sourceSets.main.runtimeClasspath
   integrationTestImplementation sourceSets.test.runtimeClasspath
