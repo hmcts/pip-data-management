@@ -69,7 +69,7 @@ public class PublicationController {
         @RequestHeader(value = PublicationConfiguration.LANGUAGE_HEADER, required = false) Language language,
         @RequestHeader(PublicationConfiguration.DISPLAY_FROM_HEADER)
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime displayFrom,
-        @RequestHeader(PublicationConfiguration.DISPLAY_TO_HEADER)
+        @RequestHeader(value = PublicationConfiguration.DISPLAY_TO_HEADER, required = false)
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime displayTo,
         @RequestBody String payload) {
         validateRequestHeaders(provenance, sourceArtefactId);
