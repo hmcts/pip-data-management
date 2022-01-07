@@ -84,6 +84,7 @@ public class PublicationController {
         Artefact createdItem = publicationService
             .createPublication(artefact, payload);
 
+
         return ResponseEntity.status(HttpStatus.CREATED).body(createdItem);
     }
 
