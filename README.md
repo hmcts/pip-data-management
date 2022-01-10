@@ -91,6 +91,12 @@ Since Spring Boot 2.1 bean overriding is disabled. If you want to enable it you 
 
 JUnit 5 is now enabled by default in the project. Please refrain from using JUnit4 and use the next generation
 
+## Integration Testing
+
+To run integration tests (After PUB-1000 is merged), [Docker](https://www.docker.com) is now required to run integration tests.
+This is due to the use of [TestContainers](https://www.testcontainers.org) to stand up a local Postgres instance for testing.
+Previously we used H2 for this purpose, which did not require docker.
+
 ## Building and deploying the application
 
 ### Building the application

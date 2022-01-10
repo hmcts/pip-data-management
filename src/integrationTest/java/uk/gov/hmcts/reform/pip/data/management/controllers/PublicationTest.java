@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.mock.http.client.MockClientHttpRequest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
@@ -74,6 +75,8 @@ class PublicationTest {
     private static final String EMPTY_VALUE = "";
     private static final String FORMAT_RESPONSE = "Please check that the value is of the correct format for the field "
         + "(See Swagger documentation for correct formats)";
+    private static final String DISPLAY_FROM_RESPONSE = "Required request header 'x-display-from' for method "
+        + "parameter type LocalDateTime is not present";
 
     private static final String VALIDATION_EMPTY_RESPONSE = "Response should contain a Artefact";
     private static final String VALIDATION_EXCEPTION_RESPONSE = "Exception response does not contain correct message";
@@ -153,6 +156,7 @@ class PublicationTest {
             .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
             .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
             .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
+            .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
             .content(payload)
             .contentType(MediaType.APPLICATION_JSON);
 
@@ -218,6 +222,30 @@ class PublicationTest {
 
         assertTrue(exceptionResponse.getMessage().contains("x-type"), VALIDATION_EXCEPTION_RESPONSE);
     }
+
+    @DisplayName("Should return a 400 Bad Request if date from field is not populated")
+    @Test
+    void testDateFromField() throws Exception {
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+            .put(URL)
+            .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
+            .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
+            .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
+            .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
+            .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
+            .content(payload)
+            .contentType(MediaType.APPLICATION_JSON);
+
+        MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
+            .andExpect(status().isBadRequest()).andReturn();
+        assertFalse(response.getResponse().getContentAsString().isEmpty(), VALIDATION_EMPTY_RESPONSE);
+        ExceptionResponse exceptionResponse = objectMapper.readValue(response.getResponse().getContentAsString(),
+                                                                     ExceptionResponse.class);
+        assertTrue(exceptionResponse.getMessage().contains(
+            DISPLAY_FROM_RESPONSE), VALIDATION_EXCEPTION_RESPONSE);
+
+    }
+
 
     @DisplayName("Should return a 400 Bad Request if an invalid artifact type is provided")
     @Test
