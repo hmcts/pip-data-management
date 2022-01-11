@@ -111,7 +111,7 @@ public class PublicationController {
      * Enforces conditional mandatory fields based on the publication type. This is to ensure that status updates are
      * able to persist indefinitely if required.
      */
-    private boolean validateDateFromDateTo(LocalDateTime displayFrom, LocalDateTime displayTo, ArtefactType type) {
+    public boolean validateDateFromDateTo(LocalDateTime displayFrom, LocalDateTime displayTo, ArtefactType type) {
         if (type.equals(ArtefactType.LIST) || type.equals(ArtefactType.JUDGEMENT)
             || type.equals(ArtefactType.OUTCOME)) {
             if (displayFrom == null) {

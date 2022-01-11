@@ -19,7 +19,9 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
@@ -82,6 +84,22 @@ class PublicationControllerTest {
 
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode(), "A created status code is returned");
         assertEquals(artefactWithId, responseEntity.getBody(), "The expected return ID is returned");
+    }
+
+    @Test
+    void testValidationOfStatusUpdateTypeWithNoDateFrom() {
+        assertFalse(
+            publicationController.validateDateFromDateTo(null,
+                                                         LocalDateTime.now(), ArtefactType.STATUS_UPDATES
+            ),
+            VALIDATION_EXPECTED_MESSAGE
+        );
+
+        assertTrue(
+            publicationController.validateDateFromDateTo(DISPLAY_FROM, DISPLAY_TO, ArtefactType.STATUS_UPDATES),
+            VALIDATION_EXPECTED_MESSAGE
+        );
+
     }
 
     @Test
