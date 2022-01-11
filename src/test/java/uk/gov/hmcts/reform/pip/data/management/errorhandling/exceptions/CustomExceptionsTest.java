@@ -40,6 +40,12 @@ class CustomExceptionsTest {
     }
 
     @Test
+    void testCreationOfDateHeaderValidationException() {
+        DateHeaderValidationException dateHeaderValidationException = new DateHeaderValidationException(TEST_MESSAGE);
+        assertEquals(TEST_MESSAGE, dateHeaderValidationException.getMessage(), ASSERTION_MESSAGE);
+    }
+
+    @Test
     void testCreationOfNotFoundException() {
         NotFoundException notFoundException = new NotFoundException(TEST_MESSAGE);
         assertEquals(TEST_MESSAGE, notFoundException.getMessage(), ASSERTION_MESSAGE);

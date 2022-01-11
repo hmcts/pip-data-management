@@ -13,6 +13,7 @@ import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CourtNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.DataStorageNotFoundException;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.DateHeaderValidationException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.EmptyRequestHeaderException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.HearingNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.NotFoundException;
@@ -84,6 +85,19 @@ class GlobalExceptionHandlerTest {
             globalExceptionHandler.handle(courtNotFoundException);
 
         assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode(), NOT_FOUND_ASSERTION);
+        assertNotNull(responseEntity.getBody(), ASSERTION_RESPONSE_BODY);
+        assertEquals(TEST_MESSAGE, responseEntity.getBody().getMessage(),
+                     ASSERTION_MESSAGE);
+    }
+
+    @Test
+    void testHandleDateHeaderValidationException() {
+        DateHeaderValidationException dateHeaderValidationException = new DateHeaderValidationException(TEST_MESSAGE);
+
+        ResponseEntity<ExceptionResponse> responseEntity =
+            globalExceptionHandler.handle(dateHeaderValidationException);
+
+        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode(), BAD_REQUEST_ASSERTION);
         assertNotNull(responseEntity.getBody(), ASSERTION_RESPONSE_BODY);
         assertEquals(TEST_MESSAGE, responseEntity.getBody().getMessage(),
                      ASSERTION_MESSAGE);
