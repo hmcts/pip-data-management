@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.DateHeaderValidationException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.EmptyRequestHeaderException;
-import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.NotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Language;
@@ -76,13 +76,16 @@ public class PublicationController {
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime displayTo,
         @RequestBody String payload) {
         validateRequestHeaders(provenance, sourceArtefactId);
-        validateDateFromDateTo(displayFrom, displayTo, type);
-
+        LocalDateTime validatedDateFrom = displayFrom;
+        if (!validateDateFromDateTo(displayFrom, displayTo, type)) {
+            validatedDateFrom = LocalDateTime.now();
+        }
         Artefact artefact = Artefact.builder()
             .provenance(provenance).sourceArtefactId(sourceArtefactId)
             .type(type).sensitivity(sensitivity)
             .language(language)
-            .displayFrom(displayFrom).displayTo(displayTo)
+            .displayFrom(validatedDateFrom)
+            .displayTo(displayTo)
             .build();
 
         Artefact createdItem = publicationService
@@ -103,15 +106,21 @@ public class PublicationController {
         }
     }
 
-    private void validateDateFromDateTo(LocalDateTime displayFrom, LocalDateTime displayTo, ArtefactType type) {
-        if (type.equals(ArtefactType.LIST) || type.equals(ArtefactType.JUDGEMENT) || type.equals(ArtefactType.OUTCOME)) {
+
+    /**
+     * Enforces conditional mandatory fields based on the publication type. This is to ensure that status updates are
+     * able to persist indefinitely if required.
+     */
+    private boolean validateDateFromDateTo(LocalDateTime displayFrom, LocalDateTime displayTo, ArtefactType type) {
+        if (type.equals(ArtefactType.LIST) || type.equals(ArtefactType.JUDGEMENT)
+            || type.equals(ArtefactType.OUTCOME)) {
             if (displayFrom == null || displayTo == null) {
-                throw new NotFoundException("Date from/to fields are mandatory for this artefact type");
+                throw new DateHeaderValidationException("Date from/to fields are mandatory for this artefact type");
             }
-        } else if (type.equals(ArtefactType.STATUS_UPDATES)) {
-            if (displayFrom == null) {
-                throw new NotFoundException("Date from field is mandatory for the Status Update artefact type");
-            }
+        } else {
+            return !type.equals(ArtefactType.STATUS_UPDATES) || displayFrom != null;
         }
+
+        return true;
     }
 }
