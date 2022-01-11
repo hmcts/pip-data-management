@@ -114,8 +114,11 @@ public class PublicationController {
     private boolean validateDateFromDateTo(LocalDateTime displayFrom, LocalDateTime displayTo, ArtefactType type) {
         if (type.equals(ArtefactType.LIST) || type.equals(ArtefactType.JUDGEMENT)
             || type.equals(ArtefactType.OUTCOME)) {
-            if (displayFrom == null || displayTo == null) {
-                throw new DateHeaderValidationException("Date from/to fields are mandatory for this artefact type");
+            if (displayFrom == null) {
+                throw new DateHeaderValidationException("Date from field is mandatory for this artefact type");
+            }
+            if (displayTo == null) {
+                throw new DateHeaderValidationException("Date to field is mandatory for this artefact type");
             }
         } else {
             return !type.equals(ArtefactType.STATUS_UPDATES) || displayFrom != null;
