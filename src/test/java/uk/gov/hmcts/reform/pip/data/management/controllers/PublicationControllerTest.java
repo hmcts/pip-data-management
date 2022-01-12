@@ -173,7 +173,6 @@ class PublicationControllerTest {
                      STATUS_CODE_MATCH
         );
         assertEquals(artefactWithId.toString(), unmappedBlob.getBody(), VALIDATION_EXPECTED_MESSAGE);
-
     }
 
     @Test
