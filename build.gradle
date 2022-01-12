@@ -169,23 +169,16 @@ dependencies {
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-aop'
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-json'
-
   implementation group: 'com.azure', name: 'azure-storage-blob', version: '12.14.2'
   implementation group: 'com.jayway.jsonpath', name: 'json-path', version: '2.6.0'
   implementation group: 'com.vladmihalcea', name: 'hibernate-types-52', version: '2.14.0'
-
   implementation group: 'io.springfox', name: 'springfox-boot-starter', version: '3.0.0'
   implementation group: 'com.google.guava', name: 'guava', version: '31.0.1-jre'
-
   implementation group: 'com.github.hmcts.java-logging', name: 'logging', version: reformLoggingVersion
   implementation group: 'com.github.hmcts.java-logging', name: 'logging-appinsights', version: reformLoggingVersion
-
   implementation group: 'com.azure', name: 'azure-data-tables', version: '12.1.2'
-
   implementation 'org.springframework.boot:spring-boot-starter-data-jpa:2.5.5'
   implementation('org.postgresql:postgresql')
-
-
   testImplementation 'com.h2database:h2'
   testImplementation(platform('org.junit:junit-bom:5.8.1'))
   testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', {

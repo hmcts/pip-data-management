@@ -103,7 +103,7 @@ public class PublicationService {
             String provenance = artefact.getProvenance();
             return azureBlobService.getBlobData(sourceArtefactId, provenance);
         } else {
-            throw new NotFoundException("No artefact found by that name.");
+            throw new NotFoundException(String.format("No artefact found with the ID: %s", artefactId));
         }
     }
 }
