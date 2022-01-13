@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -23,6 +25,8 @@ import uk.gov.hmcts.reform.pip.data.management.models.publication.Sensitivity;
 import uk.gov.hmcts.reform.pip.data.management.service.PublicationService;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * This class is the controller for creating new Publications.
@@ -92,6 +96,34 @@ public class PublicationController {
             .createPublication(artefact, payload);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(createdItem);
+    }
+
+    @ApiResponses({
+        @ApiResponse(code = 200,
+            message = "List of Artefacts matching the given courtId and verification parameters and date requirements"),
+        @ApiResponse(code = 404,
+            message = "No artefact found matching given parameters and date requirements"),
+    })
+    @ApiOperation("Get a series of publications matching a given input (e.g. courtid)")
+    @GetMapping("/search/{searchValue}")
+    public ResponseEntity<List<Artefact>> getAllRelevantArtefactsByCourtId(@PathVariable String searchValue,
+                                                                           @RequestHeader Boolean verification) {
+        return ResponseEntity.ok(publicationService.findAllByCourtId(searchValue, verification));
+    }
+
+    @ApiResponses({
+        @ApiResponse(code = 200,
+            message = "Blob data from the given request in text format.",
+            response = String.class),
+        @ApiResponse(code = 404,
+            message = "No artefact found matching given parameters and date requirements"),
+    })
+    @ApiOperation("Get the info from within a blob given source artefact id and provenance")
+    @GetMapping("/{artefactId}")
+    public ResponseEntity<String> getBlobData(@PathVariable UUID artefactId, @RequestHeader Boolean verification) {
+
+        return ResponseEntity.ok(publicationService.getByArtefactId(artefactId, verification));
+
     }
 
     /**

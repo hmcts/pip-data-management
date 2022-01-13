@@ -8,7 +8,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -39,5 +43,20 @@ class AzureBlobServiceTest {
 
         assertEquals(CONTAINER_URL + "/" + blobName, blobUrl, "Payload URL does not"
             + "contain the correct value");
+    }
+
+    @Test
+    void testGetBlobData() {
+        String blobName = SOURCE_ARTEFACT_ID + '-' + PROVENANCE;
+        when(blobContainerClient.getBlobClient(blobName)).thenReturn(blobClient);
+        doNothing().when(blobClient).downloadStream(any());
+        assertThat(
+            "Wrong return type - should be string",
+            azureBlobService.getBlobData(SOURCE_ARTEFACT_ID, PROVENANCE),
+            instanceOf(String.class)
+        );
+        assertEquals(azureBlobService.getBlobData(SOURCE_ARTEFACT_ID, PROVENANCE), "",
+                     "Wrong string detected"
+        );
     }
 }
