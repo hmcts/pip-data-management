@@ -23,7 +23,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
@@ -157,7 +156,6 @@ class PublicationControllerTest {
     }
 
     @Test
-
     void testCreationOfPublicationListTypeAndEmptyDateFrom() {
         DateHeaderValidationException dateHeaderValidationException =
             assertThrows(DateHeaderValidationException.class, () -> {
@@ -233,7 +231,9 @@ class PublicationControllerTest {
         assertEquals("Date to field is mandatory for this artefact type",
                      dateHeaderValidationException.getMessage(), VALIDATION_EXPECTED_MESSAGE
         );
+    }
 
+    @Test
     void testBlobEndpointReturnsOk() {
         assertEquals(HttpStatus.OK, publicationController.getBlobData(ARTEFACT_ID, true)
             .getStatusCode(), STATUS_CODE_MATCH);

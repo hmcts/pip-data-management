@@ -215,7 +215,7 @@ class PublicationTest {
         when(blobContainerClient.getBlobContainerUrl()).thenReturn(PAYLOAD_URL);
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .put(URL)
+            .put(PUT_URL)
             .header(PublicationConfiguration.TYPE_HEADER, ArtefactType.STATUS_UPDATES)
             .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
             .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
@@ -239,7 +239,7 @@ class PublicationTest {
     @Test
     void testDateToAbsenceJudgement() throws Exception {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .put(URL)
+            .put(PUT_URL)
             .header(PublicationConfiguration.TYPE_HEADER, ArtefactType.JUDGEMENT)
             .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
             .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
@@ -264,7 +264,7 @@ class PublicationTest {
     @Test
     void testDateToAbsenceList() throws Exception {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .put(URL)
+            .put(PUT_URL)
             .header(PublicationConfiguration.TYPE_HEADER, ArtefactType.LIST)
             .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
             .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
@@ -288,7 +288,7 @@ class PublicationTest {
     @Test
     void testDateToAbsenceOutcome() throws Exception {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .put(URL)
+            .put(PUT_URL)
             .header(PublicationConfiguration.TYPE_HEADER, ArtefactType.OUTCOME)
             .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
             .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
@@ -312,7 +312,7 @@ class PublicationTest {
     @Test
     void testDateFromAbsenceJudgement() throws Exception {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .put(URL)
+            .put(PUT_URL)
             .header(PublicationConfiguration.TYPE_HEADER, ArtefactType.JUDGEMENT)
             .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
             .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
@@ -337,7 +337,7 @@ class PublicationTest {
     @Test
     void testDateFromAbsenceList() throws Exception {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .put(URL)
+            .put(PUT_URL)
             .header(PublicationConfiguration.TYPE_HEADER, ArtefactType.LIST)
             .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
             .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
@@ -361,7 +361,7 @@ class PublicationTest {
     @Test
     void testDateFromAbsenceOutcome() throws Exception {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .put(URL)
+            .put(PUT_URL)
             .header(PublicationConfiguration.TYPE_HEADER, ArtefactType.OUTCOME)
             .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
             .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
@@ -412,7 +412,7 @@ class PublicationTest {
     @Test
     void testDateFromField() throws Exception {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .put(URL)
+            .put(PUT_URL)
             .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
             .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
             .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
