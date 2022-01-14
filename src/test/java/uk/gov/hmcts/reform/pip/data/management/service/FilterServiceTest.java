@@ -1,10 +1,15 @@
 package uk.gov.hmcts.reform.pip.data.management.service;
 
+import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ActiveProfiles;
+import uk.gov.hmcts.reform.pip.data.management.Application;
+import uk.gov.hmcts.reform.pip.data.management.config.AzureBlobConfigurationTest;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ReflectionException;
 import uk.gov.hmcts.reform.pip.data.management.models.Court;
 import uk.gov.hmcts.reform.pip.data.management.models.CourtMethods;
@@ -21,7 +26,10 @@ import static uk.gov.hmcts.reform.pip.data.management.helpers.CourtHelper.create
 import static uk.gov.hmcts.reform.pip.data.management.helpers.CourtHelper.createMockCourtList;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.TestConstants.HEARINGS_MATCH;
 
-@SpringBootTest
+@SpringBootTest(classes = {Application.class, AzureBlobConfigurationTest.class})
+@ActiveProfiles(profiles = "test")
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
+@AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
 class FilterServiceTest {
 
     private static final String CASE_NAME = "test name";

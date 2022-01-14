@@ -1,0 +1,5 @@
+payload:
+  json:
+    search-values:
+      array-value: "$['root-value']['inner-value'][*]['array-value']"
+      case-urn: "$['unknown-attribute']"

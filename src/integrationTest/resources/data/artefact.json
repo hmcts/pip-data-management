@@ -1,0 +1,12 @@
+{
+  "root-value": {
+    "inner-value": [
+      {
+        "array-value": "array-value-1"
+      },
+      {
+        "array-value": "array-value-2"
+      }
+    ]
+  }
+}

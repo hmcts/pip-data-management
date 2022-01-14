@@ -1,0 +1,26 @@
+[
+  {
+    "courtId": 1,
+    "name": "Abergavenny Magistrates' Court",
+    "jurisdiction": "Crown Court",
+    "location": "Manchester"
+  },
+  {
+    "courtId": 2,
+    "name": "Lesley County Court",
+    "jurisdiction": "Crown Court",
+    "location": "Hull"
+  },
+  {
+    "courtId": 3,
+    "name": "Accrington Magistrates' Court",
+    "jurisdiction": "Crown Court",
+    "location": "Hull"
+  },
+  {
+    "courtId": 4,
+    "name": "Manchester Family Court",
+    "jurisdiction": "Magistrates Court",
+    "location": "Manchester"
+  }
+]
