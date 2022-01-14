@@ -1,5 +1,9 @@
 [
   {
+    "courtId": 0,
+    "name": "Single Justice Procedure (SJP)"
+  },
+  {
     "courtId": 10,
     "location": "South West",
     "jurisdiction": "County Court",
