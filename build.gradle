@@ -179,6 +179,8 @@ dependencies {
   implementation group: 'com.azure', name: 'azure-data-tables', version: '12.1.2'
   implementation 'org.springframework.boot:spring-boot-starter-data-jpa:2.5.5'
   implementation('org.postgresql:postgresql')
+
+  testCompile "io.zonky.test:embedded-database-spring-test:2.1.1"
   testImplementation 'com.h2database:h2'
   testImplementation(platform('org.junit:junit-bom:5.8.1'))
   testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', {
