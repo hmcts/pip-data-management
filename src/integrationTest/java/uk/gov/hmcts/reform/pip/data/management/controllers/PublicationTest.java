@@ -598,17 +598,7 @@ class PublicationTest {
             jsonArray.get(0).toString(), Artefact.class
         );
         assertEquals(List.of("12345"), retrievedArtefact.getSearch().get("court-id"), "test");
-            .get(SEARCH_URL)
-            .header("searchValue", "12345")
-            .header("verification", "true");
-        MvcResult getResponse =
-            mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isOk()).andReturn();
-        Artefact retrievedArtefact = objectMapper.readValue(
-            getResponse.getResponse().getContentAsString(),
-            Artefact.class
-        );
 
-        assertEquals("1", retrievedArtefact.getSearch().get("court-id"), "test");
 
     }
 }
