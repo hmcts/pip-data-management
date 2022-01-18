@@ -43,4 +43,11 @@
     <packageUrl regex="true">^pkg:maven/com.google.guava/guava@28.2-jre</packageUrl>
     <cve>CVE-2020-8908</cve>
   </suppress>
+  <suppress base="true">
+    <notes><![CDATA[
+         FP per #3889
+         ]]></notes>
+    <packageUrl regex="true">^pkg:maven/io\.netty/netty\-tcnative\-classes@.*$</packageUrl>
+    <cpe>cpe:/a:netty:netty</cpe>
+  </suppress>
 </suppressions>
