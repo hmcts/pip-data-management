@@ -5,9 +5,8 @@ package uk.gov.hmcts.reform.pip.data.management.config;
  */
 public final class PublicationConfiguration {
 
-    public static final String PROVENANCE_HEADER = "x-provenance is mandatory however an empty value is provided";
-    public static final String SOURCE_ARTEFACT_ID_HEADER = "x-source-artefact-id is mandatory however an empty value "
-        + "is provided";
+    public static final String PROVENANCE_HEADER = "x-provenance";
+    public static final String SOURCE_ARTEFACT_ID_HEADER = "x-source-artefact-id";
     public static final String TYPE_HEADER = "x-type";
     public static final String SENSITIVITY_HEADER = "x-sensitivity";
     public static final String LANGUAGE_HEADER = "x-language";

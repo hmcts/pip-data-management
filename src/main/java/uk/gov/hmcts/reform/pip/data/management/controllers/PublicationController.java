@@ -22,9 +22,12 @@ import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Language;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Sensitivity;
 import uk.gov.hmcts.reform.pip.data.management.service.PublicationService;
+import uk.gov.hmcts.reform.pip.data.management.service.ValidationService;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -36,6 +39,9 @@ import java.util.UUID;
 public class PublicationController {
 
     private final PublicationService publicationService;
+
+    @Autowired
+    private ValidationService validationService;
 
     /**
      * Constructor for Publication controller.
@@ -78,6 +84,18 @@ public class PublicationController {
         @RequestHeader(value = PublicationConfiguration.DISPLAY_TO_HEADER, required = false)
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime displayTo,
         @RequestBody String payload) {
+
+        Map<String, Object> headers = new HashMap<>();
+        headers.put(PublicationConfiguration.PROVENANCE_HEADER, provenance);
+        headers.put(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, sourceArtefactId);
+        headers.put(PublicationConfiguration.TYPE_HEADER, type);
+        headers.put(PublicationConfiguration.SENSITIVITY_HEADER, sensitivity);
+        headers.put(PublicationConfiguration.LANGUAGE_HEADER, language);
+        headers.put(PublicationConfiguration.DISPLAY_FROM_HEADER, displayFrom);
+        headers.put(PublicationConfiguration.DISPLAY_TO_HEADER, displayTo);
+
+        validationService.validateHeaders(headers);
+
         validateRequestHeaders(provenance, sourceArtefactId);
         LocalDateTime validatedDateFrom = displayFrom;
         if (!publicationService.validateDateFromDateTo(displayFrom, displayTo, type)) {
