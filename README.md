@@ -96,6 +96,7 @@ JUnit 5 is now enabled by default in the project. Please refrain from using JUni
 To run integration tests (After PUB-1000 is merged), [Docker](https://www.docker.com) is now required to run integration tests.
 This is due to the use of [TestContainers](https://www.testcontainers.org) to stand up a local Postgres instance for testing.
 Previously we used H2 for this purpose, which did not require docker.
+You do not have to install any particular containers manually, as testcontainers will do all the necessary work for you, as long as docker is running.
 
 ## Building and deploying the application
 
