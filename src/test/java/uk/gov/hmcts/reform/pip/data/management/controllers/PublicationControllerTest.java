@@ -7,8 +7,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.DateHeaderValidationException;
-import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.EmptyRequestHeaderException;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.HeaderValidationException;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Language;
@@ -20,9 +19,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
@@ -52,6 +49,7 @@ class PublicationControllerTest {
     private static final String VALIDATION_EXPECTED_MESSAGE =
         "The expected exception does not contain the correct message";
 
+
     @Test
     void testCreationOfPublication() {
         Artefact artefact = Artefact.builder()
@@ -79,6 +77,8 @@ class PublicationControllerTest {
         when(publicationService.createPublication(argThat(arg -> arg.equals(artefact)), eq(PAYLOAD)))
             .thenReturn(artefactWithId);
 
+        when(publicationService.validateDateFromDateTo(any(), any(), any())).thenReturn(true);
+
         ResponseEntity<Artefact> responseEntity = publicationController.uploadPublication(
             PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE,
             SENSITIVITY, LANGUAGE, DISPLAY_FROM, DISPLAY_TO, PAYLOAD
@@ -88,26 +88,11 @@ class PublicationControllerTest {
         assertEquals(artefactWithId, responseEntity.getBody(), "The expected return ID is returned");
     }
 
-    @Test
-    void testValidationOfStatusUpdateTypeWithNoDateFrom() {
-        assertFalse(
-            publicationController.validateDateFromDateTo(null,
-                                                         LocalDateTime.now(), ArtefactType.STATUS_UPDATES
-            ),
-            VALIDATION_EXPECTED_MESSAGE
-        );
-
-        assertTrue(
-            publicationController.validateDateFromDateTo(DISPLAY_FROM, DISPLAY_TO, ArtefactType.STATUS_UPDATES),
-            VALIDATION_EXPECTED_MESSAGE
-        );
-
-    }
 
     @Test
     void testCreationOfPublicationEmptyProvenance() {
-        EmptyRequestHeaderException emptyRequestHeaderException =
-            assertThrows(EmptyRequestHeaderException.class, () -> {
+        HeaderValidationException emptyRequestHeaderException =
+            assertThrows(HeaderValidationException.class, () -> {
                 publicationController.uploadPublication(
                     EMPTY_FIELD, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE,
                     SENSITIVITY, LANGUAGE, DISPLAY_FROM, DISPLAY_TO, PAYLOAD
@@ -123,8 +108,8 @@ class PublicationControllerTest {
 
     @Test
     void testCreationOfPublicationEmptySourceArtefactId() {
-        EmptyRequestHeaderException emptyRequestHeaderException =
-            assertThrows(EmptyRequestHeaderException.class, () -> {
+        HeaderValidationException emptyRequestHeaderException =
+            assertThrows(HeaderValidationException.class, () -> {
                 publicationController.uploadPublication(
                     PROVENANCE, EMPTY_FIELD, ARTEFACT_TYPE,
                     SENSITIVITY, LANGUAGE, DISPLAY_FROM, DISPLAY_TO, PAYLOAD
@@ -140,8 +125,8 @@ class PublicationControllerTest {
 
     @Test
     void testCreationOfPublicationEmptySourceArtefactIdAndEmptyProvenanceOnlyFirstIsShown() {
-        EmptyRequestHeaderException emptyRequestHeaderException =
-            assertThrows(EmptyRequestHeaderException.class, () -> {
+        HeaderValidationException emptyRequestHeaderException =
+            assertThrows(HeaderValidationException.class, () -> {
                 publicationController.uploadPublication(
                     EMPTY_FIELD, EMPTY_FIELD, ARTEFACT_TYPE,
                     SENSITIVITY, LANGUAGE, DISPLAY_FROM, DISPLAY_TO, PAYLOAD
@@ -155,83 +140,6 @@ class PublicationControllerTest {
         );
     }
 
-    @Test
-    void testCreationOfPublicationListTypeAndEmptyDateFrom() {
-        DateHeaderValidationException dateHeaderValidationException =
-            assertThrows(DateHeaderValidationException.class, () -> {
-                publicationController.uploadPublication(PROVENANCE, SOURCE_ARTEFACT_ID, ArtefactType.LIST,
-                                                        SENSITIVITY, LANGUAGE, null, DISPLAY_TO, PAYLOAD
-                );
-            });
-        assertEquals("Date from field is mandatory for this artefact type",
-                     dateHeaderValidationException.getMessage(), VALIDATION_EXPECTED_MESSAGE
-        );
-    }
-
-    @Test
-    void testCreationOfPublicationJudgementTypeAndEmptyDateFrom() {
-        DateHeaderValidationException dateHeaderValidationException =
-            assertThrows(DateHeaderValidationException.class, () -> {
-                publicationController.uploadPublication(PROVENANCE, SOURCE_ARTEFACT_ID, ArtefactType.JUDGEMENT,
-                                                        SENSITIVITY, LANGUAGE, null, DISPLAY_TO, PAYLOAD
-                );
-            });
-        assertEquals("Date from field is mandatory for this artefact type",
-                     dateHeaderValidationException.getMessage(), VALIDATION_EXPECTED_MESSAGE
-        );
-    }
-
-    @Test
-    void testCreationOfPublicationOutcomeTypeAndEmptyDateFrom() {
-        DateHeaderValidationException dateHeaderValidationException =
-            assertThrows(DateHeaderValidationException.class, () -> {
-                publicationController.uploadPublication(PROVENANCE, SOURCE_ARTEFACT_ID, ArtefactType.OUTCOME,
-                                                        SENSITIVITY, LANGUAGE, null, DISPLAY_TO, PAYLOAD
-                );
-            });
-        assertEquals("Date from field is mandatory for this artefact type",
-                     dateHeaderValidationException.getMessage(), VALIDATION_EXPECTED_MESSAGE
-        );
-    }
-
-    @Test
-    void testCreationOfPublicationOutcomeTypeAndEmptyDateTo() {
-        DateHeaderValidationException dateHeaderValidationException =
-            assertThrows(DateHeaderValidationException.class, () -> {
-                publicationController.uploadPublication(PROVENANCE, SOURCE_ARTEFACT_ID, ArtefactType.OUTCOME,
-                                                        SENSITIVITY, LANGUAGE, DISPLAY_FROM, null, PAYLOAD
-                );
-            });
-        assertEquals("Date to field is mandatory for this artefact type",
-                     dateHeaderValidationException.getMessage(), VALIDATION_EXPECTED_MESSAGE
-        );
-    }
-
-    @Test
-    void testCreationOfPublicationListTypeAndEmptyDateTo() {
-        DateHeaderValidationException dateHeaderValidationException =
-            assertThrows(DateHeaderValidationException.class, () -> {
-                publicationController.uploadPublication(PROVENANCE, SOURCE_ARTEFACT_ID, ArtefactType.LIST,
-                                                        SENSITIVITY, LANGUAGE, DISPLAY_FROM, null, PAYLOAD
-                );
-            });
-        assertEquals("Date to field is mandatory for this artefact type",
-                     dateHeaderValidationException.getMessage(), VALIDATION_EXPECTED_MESSAGE
-        );
-    }
-
-    @Test
-    void testCreationOfPublicationJudgementTypeAndEmptyDateTo() {
-        DateHeaderValidationException dateHeaderValidationException =
-            assertThrows(DateHeaderValidationException.class, () -> {
-                publicationController.uploadPublication(PROVENANCE, SOURCE_ARTEFACT_ID, ArtefactType.JUDGEMENT,
-                                                        SENSITIVITY, LANGUAGE, DISPLAY_FROM, null, PAYLOAD
-                );
-            });
-        assertEquals("Date to field is mandatory for this artefact type",
-                     dateHeaderValidationException.getMessage(), VALIDATION_EXPECTED_MESSAGE
-        );
-    }
 
     @Test
     void testBlobEndpointReturnsOk() {

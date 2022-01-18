@@ -16,8 +16,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
-import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.DateHeaderValidationException;
-import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.EmptyRequestHeaderException;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.HeaderValidationException;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Language;
@@ -81,9 +80,10 @@ public class PublicationController {
         @RequestBody String payload) {
         validateRequestHeaders(provenance, sourceArtefactId);
         LocalDateTime validatedDateFrom = displayFrom;
-        if (!validateDateFromDateTo(displayFrom, displayTo, type)) {
+        if (!publicationService.validateDateFromDateTo(displayFrom, displayTo, type)) {
             validatedDateFrom = LocalDateTime.now();
         }
+
         Artefact artefact = Artefact.builder()
             .provenance(provenance).sourceArtefactId(sourceArtefactId)
             .type(type).sensitivity(sensitivity)
@@ -132,30 +132,10 @@ public class PublicationController {
      */
     private void validateRequestHeaders(String provenance, String sourceArtefactId) {
         if (provenance.isEmpty()) {
-            throw new EmptyRequestHeaderException(PublicationConfiguration.PROVENANCE_HEADER);
+            throw new HeaderValidationException(PublicationConfiguration.PROVENANCE_HEADER);
         } else if (sourceArtefactId.isEmpty()) {
-            throw new EmptyRequestHeaderException(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER);
+            throw new HeaderValidationException(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER);
         }
     }
 
-
-    /**
-     * Enforces conditional mandatory fields based on the publication type. This is to ensure that status updates are
-     * able to persist indefinitely if required.
-     */
-    public boolean validateDateFromDateTo(LocalDateTime displayFrom, LocalDateTime displayTo, ArtefactType type) {
-        if (type.equals(ArtefactType.LIST) || type.equals(ArtefactType.JUDGEMENT)
-            || type.equals(ArtefactType.OUTCOME)) {
-            if (displayFrom == null) {
-                throw new DateHeaderValidationException("Date from field is mandatory for this artefact type");
-            }
-            if (displayTo == null) {
-                throw new DateHeaderValidationException("Date to field is mandatory for this artefact type");
-            }
-        } else {
-            return !type.equals(ArtefactType.STATUS_UPDATES) || displayFrom != null;
-        }
-
-        return true;
-    }
 }

@@ -8,12 +8,15 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.AzureBlobService;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.HeaderValidationException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.UnauthorisedRequestException;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
+import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Language;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Sensitivity;
 import uk.gov.hmcts.reform.pip.data.management.utils.PayloadExtractor;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +25,9 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -40,7 +45,10 @@ class PublicationServiceTest {
 
     @InjectMocks
     PublicationService publicationService;
-
+    private static final String VALIDATION_EXPECTED_MESSAGE =
+        "The expected exception does not contain the correct message";
+    private static final LocalDateTime DISPLAY_FROM = LocalDateTime.now();
+    private static final LocalDateTime DISPLAY_TO = LocalDateTime.now();
     private static final UUID ARTEFACT_ID = UUID.randomUUID();
     private static final String SOURCE_ARTEFACT_ID = "1234";
     private static final String PROVENANCE = "provenance";
@@ -185,6 +193,89 @@ class PublicationServiceTest {
         assertThrows(UnauthorisedRequestException.class, () -> {
             publicationService.getByArtefactId(UUID.randomUUID(), false);
         }, "Should throw an unauthorised request exception.");
+    }
+
+    @Test
+    void testCreationOfPublicationJudgementTypeAndEmptyDateTo() {
+        HeaderValidationException dateHeaderValidationException =
+            assertThrows(HeaderValidationException.class, () -> {
+                publicationService.validateDateFromDateTo(DISPLAY_FROM, null, ArtefactType.JUDGEMENT);
+            });
+        assertEquals("Date to field is mandatory for publication type JUDGEMENT",
+                     dateHeaderValidationException.getMessage(), VALIDATION_EXPECTED_MESSAGE
+        );
+    }
+
+    @Test
+    void testCreationOfPublicationListTypeAndEmptyDateTo() {
+        HeaderValidationException dateHeaderValidationException =
+            assertThrows(HeaderValidationException.class, () -> {
+                publicationService.validateDateFromDateTo(DISPLAY_FROM, null, ArtefactType.LIST);
+            });
+        assertEquals("Date to field is mandatory for publication type LIST",
+                     dateHeaderValidationException.getMessage(), VALIDATION_EXPECTED_MESSAGE
+        );
+    }
+
+    @Test
+    void testCreationOfPublicationOutcomeTypeAndEmptyDateTo() {
+        HeaderValidationException dateHeaderValidationException =
+            assertThrows(HeaderValidationException.class, () -> {
+                publicationService.validateDateFromDateTo(DISPLAY_FROM, null, ArtefactType.OUTCOME);
+            });
+        assertEquals("Date to field is mandatory for publication type OUTCOME",
+                     dateHeaderValidationException.getMessage(), VALIDATION_EXPECTED_MESSAGE
+        );
+    }
+
+    @Test
+    void testCreationOfPublicationListTypeAndEmptyDateFrom() {
+        HeaderValidationException dateHeaderValidationException =
+            assertThrows(HeaderValidationException.class, () -> {
+                publicationService.validateDateFromDateTo(null, DISPLAY_TO, ArtefactType.LIST);
+            });
+        assertEquals("Date from field is mandatory for publication type LIST",
+                     dateHeaderValidationException.getMessage(), VALIDATION_EXPECTED_MESSAGE
+        );
+    }
+
+    @Test
+    void testCreationOfPublicationJudgementTypeAndEmptyDateFrom() {
+        HeaderValidationException dateHeaderValidationException =
+            assertThrows(HeaderValidationException.class, () -> {
+                publicationService.validateDateFromDateTo(null, DISPLAY_TO, ArtefactType.JUDGEMENT);
+            });
+        assertEquals("Date from field is mandatory for publication type JUDGEMENT",
+                     dateHeaderValidationException.getMessage(), VALIDATION_EXPECTED_MESSAGE
+        );
+    }
+
+    @Test
+    void testCreationOfPublicationOutcomeTypeAndEmptyDateFrom() {
+        HeaderValidationException dateHeaderValidationException =
+            assertThrows(HeaderValidationException.class, () -> {
+                publicationService.validateDateFromDateTo(null, DISPLAY_TO, ArtefactType.OUTCOME);
+            });
+        assertEquals("Date from field is mandatory for publication type OUTCOME",
+                     dateHeaderValidationException.getMessage(), VALIDATION_EXPECTED_MESSAGE
+        );
+    }
+
+
+    @Test
+    void testValidationOfStatusUpdateTypeWithNoDateFrom() {
+        assertFalse(
+            publicationService.validateDateFromDateTo(null,
+                                                      LocalDateTime.now(), ArtefactType.STATUS_UPDATES
+            ),
+            VALIDATION_EXPECTED_MESSAGE
+        );
+
+        assertTrue(
+            publicationService.validateDateFromDateTo(DISPLAY_FROM, DISPLAY_TO, ArtefactType.STATUS_UPDATES),
+            VALIDATION_EXPECTED_MESSAGE
+        );
+
     }
 }
 

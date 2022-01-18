@@ -7,7 +7,6 @@ import com.microsoft.applicationinsights.web.dependencies.apachecommons.io.IOUti
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.json.JSONArray;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -85,8 +84,8 @@ class PublicationTest {
     private static final String EMPTY_VALUE = "";
     private static final String FORMAT_RESPONSE = "Please check that the value is of the correct format for the field "
         + "(See Swagger documentation for correct formats)";
-    private static final String DISPLAY_FROM_RESPONSE = "Date from field is mandatory for this artefact type";
-    private static final String DISPLAY_TO_RESPONSE = "Date to field is mandatory for this artefact type";
+    private static final String DISPLAY_FROM_RESPONSE = "Date from field is mandatory for publication type";
+    private static final String DISPLAY_TO_RESPONSE = "Date to field is mandatory for publication type";
     private static final String VALIDATION_EMPTY_RESPONSE = "Response should contain a Artefact";
     private static final String VALIDATION_EXCEPTION_RESPONSE = "Exception response does not contain correct message";
 
@@ -764,7 +763,6 @@ class PublicationTest {
 
     @DisplayName("Verify that artefact is returned with given get")
     @Test
-    @Disabled
     void verifyThatArtefactsAreReturnedFromPostgres() throws Exception {
         when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders

@@ -14,8 +14,7 @@ import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CourtNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.DataStorageNotFoundException;
-import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.DateHeaderValidationException;
-import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.EmptyRequestHeaderException;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.HeaderValidationException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.HearingNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.NotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.UnauthorisedRequestException;
@@ -99,16 +98,18 @@ class GlobalExceptionHandlerTest {
     }
 
     @Test
-    void testHandleDateHeaderValidationException() {
-        DateHeaderValidationException dateHeaderValidationException = new DateHeaderValidationException(TEST_MESSAGE);
+    void testHandleHeaderValidationException() {
+        HeaderValidationException headerValidationExceptionHeaderValidationException = new HeaderValidationException(
+            TEST_MESSAGE);
 
         ResponseEntity<ExceptionResponse> responseEntity =
-            globalExceptionHandler.handle(dateHeaderValidationException);
+            globalExceptionHandler.handle(headerValidationExceptionHeaderValidationException);
 
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode(), BAD_REQUEST_ASSERTION);
         assertNotNull(responseEntity.getBody(), ASSERTION_RESPONSE_BODY);
         assertEquals(TEST_MESSAGE, responseEntity.getBody().getMessage(),
-                     ASSERTION_MESSAGE);
+                     ASSERTION_MESSAGE
+        );
     }
 
     @Test
@@ -158,22 +159,6 @@ class GlobalExceptionHandlerTest {
         );
     }
 
-    @Test
-    void testEmptyRequestHandlerException() {
-
-        EmptyRequestHeaderException emptyRequestHeaderException =
-            new EmptyRequestHeaderException(TEST_MESSAGE);
-
-        ResponseEntity<ExceptionResponse> responseEntity =
-            globalExceptionHandler.handle(emptyRequestHeaderException);
-
-        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode(), BAD_REQUEST_ASSERTION);
-        assertNotNull(responseEntity.getBody(), ASSERTION_RESPONSE_BODY);
-        assertTrue(
-            responseEntity.getBody().getMessage().contains(TEST_MESSAGE),
-            "The exception response should contain the message"
-        );
-    }
 
     @Test
     void testBlobStorageException() {

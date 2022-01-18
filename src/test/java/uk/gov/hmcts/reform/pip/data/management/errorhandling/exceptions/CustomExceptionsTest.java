@@ -40,9 +40,9 @@ class CustomExceptionsTest {
     }
 
     @Test
-    void testCreationOfDateHeaderValidationException() {
-        DateHeaderValidationException dateHeaderValidationException = new DateHeaderValidationException(TEST_MESSAGE);
-        assertEquals(TEST_MESSAGE, dateHeaderValidationException.getMessage(), ASSERTION_MESSAGE);
+    void testCreationOfHeaderValidationException() {
+        HeaderValidationException headerValidationException = new HeaderValidationException(TEST_MESSAGE);
+        assertEquals(TEST_MESSAGE, headerValidationException.getMessage(), ASSERTION_MESSAGE);
     }
 
     @Test
