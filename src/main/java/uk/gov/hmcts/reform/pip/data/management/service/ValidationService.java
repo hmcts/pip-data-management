@@ -30,6 +30,7 @@ public class ValidationService {
 
     /**
      * Class that guides the validation process.
+     *
      * @param headers - a hashmap of all the headers taken in by the endpoint. Importantly, this may contain nulls (i.e.
      *                cannot be replaced with a ConcurrentHashMap.
      * @return Map(String, Object) - an amended version of the headers. If changes (i.e. conditional defaults)
@@ -44,19 +45,17 @@ public class ValidationService {
             }
         });
 
-        headers.put(PublicationConfiguration.DISPLAY_FROM_HEADER, handleDateValidation(
-            headers.get(PublicationConfiguration.DISPLAY_FROM_HEADER),
-            headers.get(PublicationConfiguration.DISPLAY_TO_HEADER),
-            headers.get(PublicationConfiguration.TYPE_HEADER)
-        ));
+        handleDateValidation();
+
         return this.headers;
     }
 
     /**
      * Null check class which produces tailored exceptions for required headers.
+     *
      * @param headerName - used for the error msg
-     * @param date - checked var
-     * @param type - used for error msg
+     * @param date       - checked var
+     * @param type       - used for error msg
      */
     private void validateRequiredDates(String headerName, Object date, Object type) {
         if (date == null) {
@@ -66,11 +65,11 @@ public class ValidationService {
         }
     }
 
-
     /**
      * Empty check for required headers.
+     *
      * @param headerName - for error msg.
-     * @param header - checked var.
+     * @param header     - checked var.
      */
     private void validateRequiredHeader(String headerName, Object header) {
         if (header.toString().isEmpty()) {
@@ -84,24 +83,22 @@ public class ValidationService {
     /**
      * Container class for all date from/to logic. OUTCOME, LIST, JUDGEMENT all require both to and from dates,
      * whereas STATUS_UPDATES doesn't require any, but produces a default from date if empty.
-     * @param displayFrom - display from date.
-     * @param displayTo - display to date.
-     * @param type - Publication type.
-     * @return LocalDateTime - to change the Date From field in case of status update/empty date. Otherwise, same as
-     *      displayFrom parameter.
      */
-    private LocalDateTime handleDateValidation(Object displayFrom, Object displayTo, Object type) {
+    private void handleDateValidation() {
+        LocalDateTime displayFrom = (LocalDateTime) headers.get(PublicationConfiguration.DISPLAY_FROM_HEADER);
+        LocalDateTime displayTo = (LocalDateTime) headers.get(PublicationConfiguration.DISPLAY_TO_HEADER);
+        ArtefactType type = (ArtefactType) headers.get(PublicationConfiguration.TYPE_HEADER);
         if (type.equals(ArtefactType.STATUS_UPDATES)) {
-            return checkAndReplaceDateWithDefault(displayFrom);
+            headers.put(PublicationConfiguration.DISPLAY_FROM_HEADER, checkAndReplaceDateWithDefault(displayFrom));
         } else {
             validateRequiredDates(PublicationConfiguration.DISPLAY_FROM_HEADER, displayFrom, type);
             validateRequiredDates(PublicationConfiguration.DISPLAY_TO_HEADER, displayTo, type);
         }
-        return (LocalDateTime) displayFrom;
     }
 
     /**
      * Null check class for creating default date objects if null.
+     *
      * @param date - LocalDateTime.
      * @return LocalDateTime representing either current date/time or an existing date.
      */
@@ -112,5 +109,4 @@ public class ValidationService {
             return (LocalDateTime) date;
         }
     }
-
 }

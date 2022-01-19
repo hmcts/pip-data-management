@@ -13,14 +13,15 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SuppressWarnings("PMD.UseConcurrentHashMap")
 class ValidationServiceTest {
-
-
     ValidationService validationService = new ValidationService();
 
+    private static final String DIFFERENT_SIZE_MAPS = "Hashmap has grown in the method when it should have remained "
+        + "the same size. Ensure you are overwriting rather than appending a new variable.";
     private static final String SOURCE_ARTEFACT_ID = "sourceArtefactId";
     private static final LocalDateTime DISPLAY_FROM = LocalDateTime.now();
     private static final LocalDateTime DISPLAY_TO = LocalDateTime.now();
@@ -101,7 +102,6 @@ class ValidationServiceTest {
             VALIDATION_EXPECTED_MESSAGE
         );
     }
-
 
     @Test
     void testCreationOfPublicationJudgementTypeAndEmptyDateTo() {
@@ -229,7 +229,34 @@ class ValidationServiceTest {
         headerMap.put(PublicationConfiguration.DISPLAY_FROM_HEADER, null);
         headerMap.put(PublicationConfiguration.DISPLAY_TO_HEADER, null);
 
-        assertNotNull(validationService.validateHeaders(headerMap).get(PublicationConfiguration.DISPLAY_FROM_HEADER),
-                      NOT_NULL_MESSAGE);
+        int initialLength = headerMap.size();
+
+        assertNotNull(
+            validationService.validateHeaders(headerMap).get(PublicationConfiguration.DISPLAY_FROM_HEADER),
+            NOT_NULL_MESSAGE
+        );
+
+        int afterLength = validationService.validateHeaders(headerMap).size();
+        assertEquals(initialLength, afterLength, DIFFERENT_SIZE_MAPS);
+    }
+
+    @Test
+    void testValidationOfStatusUpdateTypeWithNoDateTo() {
+        Map<String, Object> headerMap = new HashMap<>();
+        headerMap.put(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE);
+        headerMap.put(PublicationConfiguration.TYPE_HEADER, ArtefactType.STATUS_UPDATES);
+        headerMap.put(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID);
+        headerMap.put(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY);
+        headerMap.put(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE);
+        headerMap.put(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM);
+        headerMap.put(PublicationConfiguration.DISPLAY_TO_HEADER, null);
+
+        int initialLength = headerMap.size();
+        assertNull(
+            validationService.validateHeaders(headerMap).get(PublicationConfiguration.DISPLAY_TO_HEADER),
+            "The date to header should remain null"
+        );
+        int afterLength = validationService.validateHeaders(headerMap).size();
+        assertEquals(initialLength, afterLength, DIFFERENT_SIZE_MAPS);
     }
 }

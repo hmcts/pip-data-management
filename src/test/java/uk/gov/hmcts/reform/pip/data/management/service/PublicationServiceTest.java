@@ -185,8 +185,6 @@ class PublicationServiceTest {
             publicationService.getByArtefactId(UUID.randomUUID(), false);
         }, "Should throw an unauthorised request exception.");
     }
-
-
 }
 
 
