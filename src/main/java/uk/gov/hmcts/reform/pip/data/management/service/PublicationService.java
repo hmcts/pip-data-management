@@ -4,16 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.AzureBlobService;
-import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.HeaderValidationException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.NotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.UnauthorisedRequestException;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
-import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Sensitivity;
 import uk.gov.hmcts.reform.pip.data.management.utils.PayloadExtractor;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -110,30 +107,4 @@ public class PublicationService {
         }
     }
 
-    /**
-     * Enforces conditional mandatory fields based on the publication type. This is to ensure that status updates are
-     * able to persist indefinitely if required.
-     */
-    public boolean validateDateFromDateTo(LocalDateTime displayFrom, LocalDateTime displayTo, ArtefactType type) {
-
-        ArrayList<ArtefactType> mandatoryDateArtefactTypes = new ArrayList<>();
-        mandatoryDateArtefactTypes.add(ArtefactType.LIST);
-        mandatoryDateArtefactTypes.add(ArtefactType.OUTCOME);
-        mandatoryDateArtefactTypes.add(ArtefactType.JUDGEMENT);
-
-        if (mandatoryDateArtefactTypes.contains(type)) {
-            if (displayFrom == null) {
-                throw new HeaderValidationException(String.format("Date from field is mandatory for publication "
-                                                                      + "type %s", type));
-            }
-            if (displayTo == null) {
-                throw new HeaderValidationException(String.format("Date to field is mandatory for publication "
-                                                                      + "type %s", type));
-            }
-        } else {
-            return !type.equals(ArtefactType.STATUS_UPDATES) || displayFrom != null;
-        }
-
-        return true;
-    }
 }

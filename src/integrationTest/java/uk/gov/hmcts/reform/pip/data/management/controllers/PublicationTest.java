@@ -84,8 +84,8 @@ class PublicationTest {
     private static final String EMPTY_VALUE = "";
     private static final String FORMAT_RESPONSE = "Please check that the value is of the correct format for the field "
         + "(See Swagger documentation for correct formats)";
-    private static final String DISPLAY_FROM_RESPONSE = "Date from field is mandatory for publication type";
-    private static final String DISPLAY_TO_RESPONSE = "Date to field is mandatory for publication type";
+    private static final String DISPLAY_FROM_RESPONSE = "x-display-from Field is required for artefact type";
+    private static final String DISPLAY_TO_RESPONSE = "x-display-to Field is required for artefact type";
     private static final String VALIDATION_EMPTY_RESPONSE = "Response should contain a Artefact";
     private static final String VALIDATION_EXCEPTION_RESPONSE = "Exception response does not contain correct message";
 

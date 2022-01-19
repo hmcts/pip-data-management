@@ -7,19 +7,21 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.HeaderValidationException;
+import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Language;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Sensitivity;
 import uk.gov.hmcts.reform.pip.data.management.service.PublicationService;
+import uk.gov.hmcts.reform.pip.data.management.service.ValidationService;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
@@ -31,6 +33,9 @@ class PublicationControllerTest {
 
     @Mock
     private PublicationService publicationService;
+
+    @Mock
+    private ValidationService validationService;
 
     @InjectMocks
     private PublicationController publicationController;
@@ -51,7 +56,17 @@ class PublicationControllerTest {
 
 
     @Test
+    @SuppressWarnings("PMD.UseConcurrentHashMap")
     void testCreationOfPublication() {
+        Map<String, Object> headerMap = new HashMap<>();
+        headerMap.put(PublicationConfiguration.PROVENANCE_HEADER,PROVENANCE);
+        headerMap.put(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID);
+        headerMap.put(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE);
+        headerMap.put(PublicationConfiguration.SENSITIVITY_HEADER,SENSITIVITY);
+        headerMap.put(PublicationConfiguration.LANGUAGE_HEADER,LANGUAGE);
+        headerMap.put(PublicationConfiguration.DISPLAY_FROM_HEADER,DISPLAY_FROM);
+        headerMap.put(PublicationConfiguration.DISPLAY_TO_HEADER,DISPLAY_TO);
+
         Artefact artefact = Artefact.builder()
             .sourceArtefactId(SOURCE_ARTEFACT_ID)
             .displayFrom(DISPLAY_FROM)
@@ -74,10 +89,11 @@ class PublicationControllerTest {
             .payload(PAYLOAD_URL)
             .build();
 
+        when(validationService.validateHeaders(any())).thenReturn(headerMap);
         when(publicationService.createPublication(argThat(arg -> arg.equals(artefact)), eq(PAYLOAD)))
             .thenReturn(artefactWithId);
 
-        when(publicationService.validateDateFromDateTo(any(), any(), any())).thenReturn(true);
+
 
         ResponseEntity<Artefact> responseEntity = publicationController.uploadPublication(
             PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE,
@@ -89,56 +105,7 @@ class PublicationControllerTest {
     }
 
 
-    @Test
-    void testCreationOfPublicationEmptyProvenance() {
-        HeaderValidationException emptyRequestHeaderException =
-            assertThrows(HeaderValidationException.class, () -> {
-                publicationController.uploadPublication(
-                    EMPTY_FIELD, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE,
-                    SENSITIVITY, LANGUAGE, DISPLAY_FROM, DISPLAY_TO, PAYLOAD
-                );
-            });
 
-        assertEquals(
-            "x-provenance is mandatory however an empty value is provided",
-            emptyRequestHeaderException.getMessage(),
-            VALIDATION_EXPECTED_MESSAGE
-        );
-    }
-
-    @Test
-    void testCreationOfPublicationEmptySourceArtefactId() {
-        HeaderValidationException emptyRequestHeaderException =
-            assertThrows(HeaderValidationException.class, () -> {
-                publicationController.uploadPublication(
-                    PROVENANCE, EMPTY_FIELD, ARTEFACT_TYPE,
-                    SENSITIVITY, LANGUAGE, DISPLAY_FROM, DISPLAY_TO, PAYLOAD
-                );
-            });
-
-        assertEquals(
-            "x-source-artefact-id is mandatory however an empty value is provided",
-            emptyRequestHeaderException.getMessage(),
-            VALIDATION_EXPECTED_MESSAGE
-        );
-    }
-
-    @Test
-    void testCreationOfPublicationEmptySourceArtefactIdAndEmptyProvenanceOnlyFirstIsShown() {
-        HeaderValidationException emptyRequestHeaderException =
-            assertThrows(HeaderValidationException.class, () -> {
-                publicationController.uploadPublication(
-                    EMPTY_FIELD, EMPTY_FIELD, ARTEFACT_TYPE,
-                    SENSITIVITY, LANGUAGE, DISPLAY_FROM, DISPLAY_TO, PAYLOAD
-                );
-            });
-
-        assertEquals(
-            "x-provenance is mandatory however an empty value is provided",
-            emptyRequestHeaderException.getMessage(),
-            VALIDATION_EXPECTED_MESSAGE
-        );
-    }
 
 
     @Test

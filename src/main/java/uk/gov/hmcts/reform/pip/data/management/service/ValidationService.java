@@ -1,5 +1,7 @@
 package uk.gov.hmcts.reform.pip.data.management.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.DateValidationException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.EmptyRequiredHeaderException;
@@ -8,66 +10,107 @@ import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactType;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+@Service
 public class ValidationService {
 
-    private static final ArrayList<String> requiredHeaders = new ArrayList<>();
+    private final List<String> requiredHeaders;
     private Map<String, Object> headers;
 
+    @Autowired
     public ValidationService() {
         headers = new HashMap<>();
+        requiredHeaders = new ArrayList<>();
         requiredHeaders.add(PublicationConfiguration.PROVENANCE_HEADER);
         requiredHeaders.add(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER);
         requiredHeaders.add(PublicationConfiguration.TYPE_HEADER);
     }
 
+    /**
+     * Class that guides the validation process.
+     * @param headers - a hashmap of all the headers taken in by the endpoint. Importantly, this may contain nulls (i.e.
+     *                cannot be replaced with a ConcurrentHashMap.
+     * @return Map(String, Object) - an amended version of the headers. If changes (i.e. conditional defaults)
+     *      are created, ensure the logic affects the headers map within this class.
+     */
     public Map<String, Object> validateHeaders(Map<String, Object> headers) {
         this.headers = headers;
+
         headers.keySet().forEach(header -> {
             if (requiredHeaders.contains(header)) {
                 validateRequiredHeader(header, headers.get(header));
-        }});
+            }
+        });
 
-        handleDateValidation(headers);
-        
+        headers.put(PublicationConfiguration.DISPLAY_FROM_HEADER, handleDateValidation(
+            headers.get(PublicationConfiguration.DISPLAY_FROM_HEADER),
+            headers.get(PublicationConfiguration.DISPLAY_TO_HEADER),
+            headers.get(PublicationConfiguration.TYPE_HEADER)
+        ));
         return this.headers;
     }
-    
+
+    /**
+     * Null check class which produces tailored exceptions for required headers.
+     * @param headerName - used for the error msg
+     * @param date - checked var
+     * @param type - used for error msg
+     */
     private void validateRequiredDates(String headerName, Object date, Object type) {
         if (date == null) {
             throw new DateValidationException(String.format("%s Field is required for artefact type %s", headerName,
-                                                            type));
+                                                            type
+            ));
         }
     }
 
+
+    /**
+     * Empty check for required headers.
+     * @param headerName - for error msg.
+     * @param header - checked var.
+     */
     private void validateRequiredHeader(String headerName, Object header) {
-        if(header.toString().isEmpty()){
-            throw new EmptyRequiredHeaderException(String.format("%s is mandatory however an empty value is provided",
-                                                                 headerName));
+        if (header.toString().isEmpty()) {
+            throw new EmptyRequiredHeaderException(String.format(
+                "%s is mandatory however an empty value is provided",
+                headerName
+            ));
         }
     }
-    
-    private LocalDateTime handleDateValidation(Map<String, Object> headers) {
-        if (!headers.get(PublicationConfiguration.TYPE_HEADER).equals(ArtefactType.STATUS_UPDATES)){
-            validateRequiredDates(PublicationConfiguration.DISPLAY_FROM_HEADER,
-                                  headers.get(PublicationConfiguration.DISPLAY_FROM_HEADER),
-                                  headers.get(PublicationConfiguration.TYPE_HEADER));
 
-            validateRequiredDates(PublicationConfiguration.DISPLAY_TO_HEADER,
-                                  headers.get(PublicationConfiguration.DISPLAY_TO_HEADER),
-                                  headers.get(PublicationConfiguration.TYPE_HEADER));
+    /**
+     * Container class for all date from/to logic. OUTCOME, LIST, JUDGEMENT all require both to and from dates,
+     * whereas STATUS_UPDATES doesn't require any, but produces a default from date if empty.
+     * @param displayFrom - display from date.
+     * @param displayTo - display to date.
+     * @param type - Publication type.
+     * @return LocalDateTime - to change the Date From field in case of status update/empty date. Otherwise, same as
+     *      displayFrom parameter.
+     */
+    private LocalDateTime handleDateValidation(Object displayFrom, Object displayTo, Object type) {
+        if (type.equals(ArtefactType.STATUS_UPDATES)) {
+            return checkAndReplaceDateWithDefault(displayFrom);
         } else {
-            if (headers.get(PublicationConfiguration.DISPLAY_FROM_HEADER) == null) {
-                return setDefault(headers.get(PublicationConfiguration.DISPLAY_FROM_HEADER));
-            }
+            validateRequiredDates(PublicationConfiguration.DISPLAY_FROM_HEADER, displayFrom, type);
+            validateRequiredDates(PublicationConfiguration.DISPLAY_TO_HEADER, displayTo, type);
         }
-        return (LocalDateTime) headers.get(PublicationConfiguration.DISPLAY_FROM_HEADER);
+        return (LocalDateTime) displayFrom;
     }
-    
-    private LocalDateTime setDefault(Object date){
-        //set default logic here
-        return LocalDateTime.now();
+
+    /**
+     * Null check class for creating default date objects if null.
+     * @param date - LocalDateTime.
+     * @return LocalDateTime representing either current date/time or an existing date.
+     */
+    private LocalDateTime checkAndReplaceDateWithDefault(Object date) {
+        if (date == null) {
+            return LocalDateTime.now();
+        } else {
+            return (LocalDateTime) date;
+        }
     }
 
 }
