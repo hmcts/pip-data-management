@@ -40,9 +40,27 @@ class CustomExceptionsTest {
     }
 
     @Test
+    void testCreationOfHeaderValidationException() {
+        HeaderValidationException headerValidationException = new HeaderValidationException(TEST_MESSAGE);
+        assertEquals(TEST_MESSAGE, headerValidationException.getMessage(), ASSERTION_MESSAGE);
+    }
+
+    @Test
     void testCreationOfNotFoundException() {
         NotFoundException notFoundException = new NotFoundException(TEST_MESSAGE);
         assertEquals(TEST_MESSAGE, notFoundException.getMessage(), ASSERTION_MESSAGE);
+    }
+
+    @Test
+    void testCreationOfDateValidationException() {
+        DateValidationException dateValidationException = new DateValidationException(TEST_MESSAGE);
+        assertEquals(TEST_MESSAGE, dateValidationException.getMessage(), ASSERTION_MESSAGE);
+    }
+
+    @Test
+    void testCreationOfEmptyRequiredHeaderException() {
+        EmptyRequiredHeaderException emptyRequiredHeaderException = new EmptyRequiredHeaderException(TEST_MESSAGE);
+        assertEquals(TEST_MESSAGE,emptyRequiredHeaderException.getMessage(), ASSERTION_MESSAGE);
     }
 
 }
