@@ -12,6 +12,9 @@ public final class PublicationConfiguration {
     public static final String LANGUAGE_HEADER = "x-language";
     public static final String DISPLAY_FROM_HEADER = "x-display-from";
     public static final String DISPLAY_TO_HEADER = "x-display-to";
+    public static final String LIST_TYPE = "x-list-type";
+    public static final String COURT_ID = "x-court-id";
+    public static final String CONTENT_DATE = "x-content-date";
 
     private PublicationConfiguration() {
         //Private constructor

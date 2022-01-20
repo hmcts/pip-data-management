@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.pip.data.management.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.AzureBlobService;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.NotFoundException;
@@ -11,7 +12,9 @@ import uk.gov.hmcts.reform.pip.data.management.models.publication.Sensitivity;
 import uk.gov.hmcts.reform.pip.data.management.utils.PayloadExtractor;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -44,11 +47,7 @@ public class PublicationService {
      * @return Returns the UUID of the artefact that was created.
      */
     public Artefact createPublication(Artefact artefact, String payload) {
-
-        Optional<Artefact> foundArtefact = artefactRepository
-            .findBySourceArtefactIdAndProvenance(artefact.getSourceArtefactId(), artefact.getProvenance());
-
-        foundArtefact.ifPresent(value -> artefact.setArtefactId(value.getArtefactId()));
+        checkExisting(artefact);
 
         String blobUrl = azureBlobService.createPayload(
             artefact.getSourceArtefactId(),
@@ -60,6 +59,26 @@ public class PublicationService {
         artefact.setSearch(payloadExtractor.extractSearchTerms(payload));
 
         return artefactRepository.save(artefact);
+    }
+
+    public Artefact createPublication(Artefact artefact, MultipartFile file) {
+        checkExisting(artefact);
+
+        String blobUrl = azureBlobService.uploadFlatFile(
+            artefact.getSourceArtefactId(),
+            artefact.getProvenance(),
+            file
+        );
+        artefact.setPayload(blobUrl);
+
+        return artefactRepository.save(artefact);
+    }
+
+    private void checkExisting(Artefact artefact) {
+        Optional<Artefact> foundArtefact = artefactRepository
+            .findBySourceArtefactIdAndProvenance(artefact.getSourceArtefactId(), artefact.getProvenance());
+
+        foundArtefact.ifPresent(value -> artefact.setArtefactId(value.getArtefactId()));
     }
 
 
