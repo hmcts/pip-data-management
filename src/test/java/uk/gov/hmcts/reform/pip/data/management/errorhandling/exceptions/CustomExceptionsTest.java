@@ -63,4 +63,11 @@ class CustomExceptionsTest {
         assertEquals(TEST_MESSAGE,emptyRequiredHeaderException.getMessage(), ASSERTION_MESSAGE);
     }
 
+    @Test
+    void testCreationOfFlatFileIoException() {
+        FlatFileIoException flatFileIoException = new FlatFileIoException();
+        assertEquals("Could not parse provided file, please check supported file types and try again",
+                     flatFileIoException.getMessage(), ASSERTION_MESSAGE);
+    }
+
 }
