@@ -1,27 +1,22 @@
 package uk.gov.hmcts.reform.pip.data.management.service;
 
 import org.junit.jupiter.api.Test;
-import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.HeaderValidationException;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactType;
+import uk.gov.hmcts.reform.pip.data.management.models.publication.HeaderGroup;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Language;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Sensitivity;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@SuppressWarnings("PMD.UseConcurrentHashMap")
 class ValidationServiceTest {
     ValidationService validationService = new ValidationService();
 
-    private static final String DIFFERENT_SIZE_MAPS = "Hashmap has grown in the method when it should have remained "
-        + "the same size. Ensure you are overwriting rather than appending a new variable.";
     private static final String SOURCE_ARTEFACT_ID = "sourceArtefactId";
     private static final LocalDateTime DISPLAY_FROM = LocalDateTime.now();
     private static final LocalDateTime DISPLAY_TO = LocalDateTime.now();
@@ -37,18 +32,12 @@ class ValidationServiceTest {
 
     @Test
     void testCreationOfPublicationEmptySourceArtefactId() {
-        Map<String, Object> headerMap = new HashMap<>();
-        headerMap.put(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE);
-        headerMap.put(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE);
-        headerMap.put(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, EMPTY_FIELD);
-        headerMap.put(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY);
-        headerMap.put(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE);
-        headerMap.put(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM);
-        headerMap.put(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO);
-
+        HeaderGroup headerGroup = new HeaderGroup(PROVENANCE, EMPTY_FIELD, ARTEFACT_TYPE, SENSITIVITY, LANGUAGE,
+                                                  DISPLAY_FROM, DISPLAY_TO
+        );
         HeaderValidationException emptyRequestHeaderException =
             assertThrows(HeaderValidationException.class, () -> {
-                validationService.validateHeaders(headerMap);
+                validationService.validateHeaders(headerGroup);
             });
 
         assertEquals(
@@ -60,18 +49,12 @@ class ValidationServiceTest {
 
     @Test
     void testCreationOfPublicationEmptyProvenance() {
-        Map<String, Object> headerMap = new HashMap<>();
-        headerMap.put(PublicationConfiguration.PROVENANCE_HEADER, EMPTY_FIELD);
-        headerMap.put(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE);
-        headerMap.put(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID);
-        headerMap.put(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY);
-        headerMap.put(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE);
-        headerMap.put(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM);
-        headerMap.put(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO);
-
+        HeaderGroup headerGroup = new HeaderGroup(EMPTY_FIELD, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE, SENSITIVITY, LANGUAGE,
+                                                  DISPLAY_FROM, DISPLAY_TO
+        );
         HeaderValidationException emptyRequestHeaderException =
             assertThrows(HeaderValidationException.class, () -> {
-                validationService.validateHeaders(headerMap);
+                validationService.validateHeaders(headerGroup);
             });
 
         assertEquals(
@@ -83,17 +66,12 @@ class ValidationServiceTest {
 
     @Test
     void testCreationOfPublicationEmptySourceArtefactIdAndEmptyProvenanceOnlyFirstIsShown() {
-        Map<String, Object> headerMap = new HashMap<>();
-        headerMap.put(PublicationConfiguration.PROVENANCE_HEADER, EMPTY_FIELD);
-        headerMap.put(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE);
-        headerMap.put(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, EMPTY_FIELD);
-        headerMap.put(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY);
-        headerMap.put(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE);
-        headerMap.put(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM);
-        headerMap.put(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO);
+        HeaderGroup headerGroup = new HeaderGroup(EMPTY_FIELD, EMPTY_FIELD, ARTEFACT_TYPE, SENSITIVITY, LANGUAGE,
+                                                  DISPLAY_FROM, DISPLAY_TO
+        );
         HeaderValidationException emptyRequestHeaderException =
             assertThrows(HeaderValidationException.class, () -> {
-                validationService.validateHeaders(headerMap);
+                validationService.validateHeaders(headerGroup);
             });
 
         assertEquals(
@@ -105,17 +83,19 @@ class ValidationServiceTest {
 
     @Test
     void testCreationOfPublicationJudgementTypeAndEmptyDateTo() {
-        Map<String, Object> headerMap = new HashMap<>();
-        headerMap.put(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE);
-        headerMap.put(PublicationConfiguration.TYPE_HEADER, ArtefactType.JUDGEMENT);
-        headerMap.put(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID);
-        headerMap.put(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY);
-        headerMap.put(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE);
-        headerMap.put(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM);
-        headerMap.put(PublicationConfiguration.DISPLAY_TO_HEADER, null);
+
+        HeaderGroup headerGroup = new HeaderGroup(
+            PROVENANCE,
+            SOURCE_ARTEFACT_ID,
+            ArtefactType.JUDGEMENT,
+            SENSITIVITY,
+            LANGUAGE,
+            DISPLAY_FROM,
+            null
+        );
         HeaderValidationException dateHeaderValidationException =
             assertThrows(HeaderValidationException.class, () -> {
-                validationService.validateHeaders(headerMap);
+                validationService.validateHeaders(headerGroup);
             });
         assertEquals("x-display-to Field is required for artefact type JUDGEMENT",
                      dateHeaderValidationException.getMessage(), VALIDATION_EXPECTED_MESSAGE
@@ -124,17 +104,13 @@ class ValidationServiceTest {
 
     @Test
     void testCreationOfPublicationListTypeAndEmptyDateTo() {
-        Map<String, Object> headerMap = new HashMap<>();
-        headerMap.put(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE);
-        headerMap.put(PublicationConfiguration.TYPE_HEADER, ArtefactType.LIST);
-        headerMap.put(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID);
-        headerMap.put(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY);
-        headerMap.put(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE);
-        headerMap.put(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM);
-        headerMap.put(PublicationConfiguration.DISPLAY_TO_HEADER, null);
+        HeaderGroup headerGroup = new HeaderGroup(PROVENANCE, SOURCE_ARTEFACT_ID, ArtefactType.LIST, SENSITIVITY,
+                                                  LANGUAGE,
+                                                  DISPLAY_FROM, null
+        );
         HeaderValidationException dateHeaderValidationException =
             assertThrows(HeaderValidationException.class, () -> {
-                validationService.validateHeaders(headerMap);
+                validationService.validateHeaders(headerGroup);
             });
         assertEquals("x-display-to Field is required for artefact type LIST",
                      dateHeaderValidationException.getMessage(), VALIDATION_EXPECTED_MESSAGE
@@ -143,18 +119,13 @@ class ValidationServiceTest {
 
     @Test
     void testCreationOfPublicationOutcomeTypeAndEmptyDateTo() {
-
-        Map<String, Object> headerMap = new HashMap<>();
-        headerMap.put(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE);
-        headerMap.put(PublicationConfiguration.TYPE_HEADER, ArtefactType.OUTCOME);
-        headerMap.put(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID);
-        headerMap.put(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY);
-        headerMap.put(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE);
-        headerMap.put(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM);
-        headerMap.put(PublicationConfiguration.DISPLAY_TO_HEADER, null);
+        HeaderGroup headerGroup = new HeaderGroup(PROVENANCE, SOURCE_ARTEFACT_ID, ArtefactType.OUTCOME, SENSITIVITY,
+                                                  LANGUAGE,
+                                                  DISPLAY_FROM, null
+        );
         HeaderValidationException dateHeaderValidationException =
             assertThrows(HeaderValidationException.class, () -> {
-                validationService.validateHeaders(headerMap);
+                validationService.validateHeaders(headerGroup);
             });
         assertEquals("x-display-to Field is required for artefact type OUTCOME",
                      dateHeaderValidationException.getMessage(), VALIDATION_EXPECTED_MESSAGE
@@ -163,17 +134,12 @@ class ValidationServiceTest {
 
     @Test
     void testCreationOfPublicationListTypeAndEmptyDateFrom() {
-        Map<String, Object> headerMap = new HashMap<>();
-        headerMap.put(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE);
-        headerMap.put(PublicationConfiguration.TYPE_HEADER, ArtefactType.LIST);
-        headerMap.put(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID);
-        headerMap.put(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY);
-        headerMap.put(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE);
-        headerMap.put(PublicationConfiguration.DISPLAY_FROM_HEADER, null);
-        headerMap.put(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO);
+        HeaderGroup headerGroup = new HeaderGroup(PROVENANCE, SOURCE_ARTEFACT_ID, ArtefactType.LIST, SENSITIVITY,
+                                                  LANGUAGE, null, DISPLAY_TO
+        );
         HeaderValidationException dateHeaderValidationException =
             assertThrows(HeaderValidationException.class, () -> {
-                validationService.validateHeaders(headerMap);
+                validationService.validateHeaders(headerGroup);
             });
         assertEquals("x-display-from Field is required for artefact type LIST",
                      dateHeaderValidationException.getMessage(), VALIDATION_EXPECTED_MESSAGE
@@ -182,17 +148,12 @@ class ValidationServiceTest {
 
     @Test
     void testCreationOfPublicationJudgementTypeAndEmptyDateFrom() {
-        Map<String, Object> headerMap = new HashMap<>();
-        headerMap.put(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE);
-        headerMap.put(PublicationConfiguration.TYPE_HEADER, ArtefactType.JUDGEMENT);
-        headerMap.put(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID);
-        headerMap.put(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY);
-        headerMap.put(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE);
-        headerMap.put(PublicationConfiguration.DISPLAY_FROM_HEADER, null);
-        headerMap.put(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO);
+        HeaderGroup headerGroup = new HeaderGroup(PROVENANCE, SOURCE_ARTEFACT_ID, ArtefactType.JUDGEMENT, SENSITIVITY,
+                                                  LANGUAGE, null, DISPLAY_TO
+        );
         HeaderValidationException dateHeaderValidationException =
             assertThrows(HeaderValidationException.class, () -> {
-                validationService.validateHeaders(headerMap);
+                validationService.validateHeaders(headerGroup);
             });
         assertEquals("x-display-from Field is required for artefact type JUDGEMENT",
                      dateHeaderValidationException.getMessage(), VALIDATION_EXPECTED_MESSAGE
@@ -201,17 +162,12 @@ class ValidationServiceTest {
 
     @Test
     void testCreationOfPublicationOutcomeTypeAndEmptyDateFrom() {
-        Map<String, Object> headerMap = new HashMap<>();
-        headerMap.put(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE);
-        headerMap.put(PublicationConfiguration.TYPE_HEADER, ArtefactType.OUTCOME);
-        headerMap.put(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID);
-        headerMap.put(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY);
-        headerMap.put(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE);
-        headerMap.put(PublicationConfiguration.DISPLAY_FROM_HEADER, null);
-        headerMap.put(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO);
+        HeaderGroup headerGroup = new HeaderGroup(PROVENANCE, SOURCE_ARTEFACT_ID, ArtefactType.OUTCOME, SENSITIVITY,
+                                                  LANGUAGE, null, DISPLAY_TO
+        );
         HeaderValidationException dateHeaderValidationException =
             assertThrows(HeaderValidationException.class, () -> {
-                validationService.validateHeaders(headerMap);
+                validationService.validateHeaders(headerGroup);
             });
         assertEquals("x-display-from Field is required for artefact type OUTCOME",
                      dateHeaderValidationException.getMessage(), VALIDATION_EXPECTED_MESSAGE
@@ -220,43 +176,37 @@ class ValidationServiceTest {
 
     @Test
     void testValidationOfStatusUpdateTypeWithNoDateFrom() {
-        Map<String, Object> headerMap = new HashMap<>();
-        headerMap.put(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE);
-        headerMap.put(PublicationConfiguration.TYPE_HEADER, ArtefactType.STATUS_UPDATES);
-        headerMap.put(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID);
-        headerMap.put(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY);
-        headerMap.put(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE);
-        headerMap.put(PublicationConfiguration.DISPLAY_FROM_HEADER, null);
-        headerMap.put(PublicationConfiguration.DISPLAY_TO_HEADER, null);
-
-        int initialLength = headerMap.size();
+        HeaderGroup headerGroup = new HeaderGroup(
+            PROVENANCE,
+            SOURCE_ARTEFACT_ID,
+            ArtefactType.STATUS_UPDATES,
+            SENSITIVITY,
+            LANGUAGE,
+            null,
+            DISPLAY_TO
+        );
 
         assertNotNull(
-            validationService.validateHeaders(headerMap).get(PublicationConfiguration.DISPLAY_FROM_HEADER),
+            validationService.validateHeaders(headerGroup).getDisplayFrom(),
             NOT_NULL_MESSAGE
         );
 
-        int afterLength = validationService.validateHeaders(headerMap).size();
-        assertEquals(initialLength, afterLength, DIFFERENT_SIZE_MAPS);
     }
 
     @Test
     void testValidationOfStatusUpdateTypeWithNoDateTo() {
-        Map<String, Object> headerMap = new HashMap<>();
-        headerMap.put(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE);
-        headerMap.put(PublicationConfiguration.TYPE_HEADER, ArtefactType.STATUS_UPDATES);
-        headerMap.put(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID);
-        headerMap.put(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY);
-        headerMap.put(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE);
-        headerMap.put(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM);
-        headerMap.put(PublicationConfiguration.DISPLAY_TO_HEADER, null);
+        HeaderGroup headerGroup = new HeaderGroup(PROVENANCE,
+                                                  SOURCE_ARTEFACT_ID,
+                                                  ArtefactType.STATUS_UPDATES,
+                                                  SENSITIVITY,
+                                                  LANGUAGE,
+                                                 DISPLAY_FROM,
+                                                  null
+        );
 
-        int initialLength = headerMap.size();
         assertNull(
-            validationService.validateHeaders(headerMap).get(PublicationConfiguration.DISPLAY_TO_HEADER),
+            validationService.validateHeaders(headerGroup).getDisplayTo(),
             "The date to header should remain null"
         );
-        int afterLength = validationService.validateHeaders(headerMap).size();
-        assertEquals(initialLength, afterLength, DIFFERENT_SIZE_MAPS);
     }
 }

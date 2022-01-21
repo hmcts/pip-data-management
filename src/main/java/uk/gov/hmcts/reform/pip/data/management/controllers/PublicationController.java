@@ -18,15 +18,14 @@ import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactType;
+import uk.gov.hmcts.reform.pip.data.management.models.publication.HeaderGroup;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Language;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Sensitivity;
 import uk.gov.hmcts.reform.pip.data.management.service.PublicationService;
 import uk.gov.hmcts.reform.pip.data.management.service.ValidationService;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -88,25 +87,20 @@ public class PublicationController {
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime displayTo,
         @RequestBody String payload) {
 
-        Map<String, Object> headers = new HashMap<>();
-        headers.put(PublicationConfiguration.PROVENANCE_HEADER, provenance);
-        headers.put(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, sourceArtefactId);
-        headers.put(PublicationConfiguration.TYPE_HEADER, type);
-        headers.put(PublicationConfiguration.SENSITIVITY_HEADER, sensitivity);
-        headers.put(PublicationConfiguration.LANGUAGE_HEADER, language);
-        headers.put(PublicationConfiguration.DISPLAY_FROM_HEADER, displayFrom);
-        headers.put(PublicationConfiguration.DISPLAY_TO_HEADER, displayTo);
+        HeaderGroup initialHeaders = new HeaderGroup(provenance, sourceArtefactId, type, sensitivity, language,
+                                                     displayFrom, displayTo);
 
-        Map<String, Object> headerMap = validationService.validateHeaders(headers);
+
+        HeaderGroup headers = validationService.validateHeaders(initialHeaders);
 
         Artefact artefact = Artefact.builder()
-            .provenance((String) headerMap.get(PublicationConfiguration.PROVENANCE_HEADER))
-            .sourceArtefactId((String) headerMap.get(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER))
-            .type((ArtefactType) headerMap.get(PublicationConfiguration.TYPE_HEADER))
-            .sensitivity((Sensitivity) headerMap.get(PublicationConfiguration.SENSITIVITY_HEADER))
-            .language((Language) headerMap.get(PublicationConfiguration.LANGUAGE_HEADER))
-            .displayFrom((LocalDateTime) headerMap.get(PublicationConfiguration.DISPLAY_FROM_HEADER))
-            .displayTo((LocalDateTime) headerMap.get(PublicationConfiguration.DISPLAY_TO_HEADER))
+            .provenance(headers.getProvenance())
+            .sourceArtefactId(headers.getSourceArtefactId())
+            .type(headers.getType())
+            .sensitivity(headers.getSensitivity())
+            .language(headers.getLanguage())
+            .displayFrom(headers.getDisplayFrom())
+            .displayTo(headers.getDisplayTo())
             .build();
 
         Artefact createdItem = publicationService

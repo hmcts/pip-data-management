@@ -7,18 +7,16 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactType;
+import uk.gov.hmcts.reform.pip.data.management.models.publication.HeaderGroup;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Language;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Sensitivity;
 import uk.gov.hmcts.reform.pip.data.management.service.PublicationService;
 import uk.gov.hmcts.reform.pip.data.management.service.ValidationService;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -58,14 +56,9 @@ class PublicationControllerTest {
     @Test
     @SuppressWarnings("PMD.UseConcurrentHashMap")
     void testCreationOfPublication() {
-        Map<String, Object> headerMap = new HashMap<>();
-        headerMap.put(PublicationConfiguration.PROVENANCE_HEADER,PROVENANCE);
-        headerMap.put(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID);
-        headerMap.put(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE);
-        headerMap.put(PublicationConfiguration.SENSITIVITY_HEADER,SENSITIVITY);
-        headerMap.put(PublicationConfiguration.LANGUAGE_HEADER,LANGUAGE);
-        headerMap.put(PublicationConfiguration.DISPLAY_FROM_HEADER,DISPLAY_FROM);
-        headerMap.put(PublicationConfiguration.DISPLAY_TO_HEADER,DISPLAY_TO);
+        HeaderGroup headers = new HeaderGroup(PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE, SENSITIVITY, LANGUAGE,
+                                      DISPLAY_FROM,
+                                  DISPLAY_TO);
 
         Artefact artefact = Artefact.builder()
             .sourceArtefactId(SOURCE_ARTEFACT_ID)
@@ -89,7 +82,7 @@ class PublicationControllerTest {
             .payload(PAYLOAD_URL)
             .build();
 
-        when(validationService.validateHeaders(any())).thenReturn(headerMap);
+        when(validationService.validateHeaders(any())).thenReturn(headers);
         when(publicationService.createPublication(argThat(arg -> arg.equals(artefact)), eq(PAYLOAD)))
             .thenReturn(artefactWithId);
 
