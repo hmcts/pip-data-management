@@ -5,14 +5,11 @@ import com.azure.storage.blob.BlobContainerClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
-import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.FlatFileIOException;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.FlatFileIoException;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.util.Map;
 
 /**
  * Class with handles the interaction with the Azure Blob Service.
@@ -52,14 +49,14 @@ public class AzureBlobService {
      * @param file              The flat file to upload
      * @return The URL where the file was uploaded.
      */
-    public String uploadFlatFile(String sourceArtefactId, String provenance, MultipartFile file){
+    public String uploadFlatFile(String sourceArtefactId, String provenance, MultipartFile file) {
         String blobName = sourceArtefactId + '-' + provenance;
         BlobClient blobClient = blobContainerClient.getBlobClient(blobName);
 
         try {
             blobClient.upload(file.getInputStream(), file.getSize(), true);
         } catch (IOException e) {
-            throw new FlatFileIOException();
+            throw new FlatFileIoException();
         }
         return blobContainerClient.getBlobContainerUrl() + "/" + blobName;
     }

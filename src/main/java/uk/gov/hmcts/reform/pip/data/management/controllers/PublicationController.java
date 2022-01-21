@@ -12,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,6 +38,7 @@ import java.util.UUID;
  */
 @RestController
 @Api(tags = "Data Management Publications API")
+@SuppressWarnings("PMD.UseConcurrentHashMap")
 @RequestMapping("/publication")
 public class PublicationController {
 
@@ -80,8 +80,7 @@ public class PublicationController {
             response = Artefact.class),
     })
     @ApiOperation("Upload a new publication")
-    @SuppressWarnings("PMD.UseConcurrentHashMap")
-    @PutMapping
+    @PostMapping
     public ResponseEntity<Artefact> uploadPublication(
         @RequestHeader(PublicationConfiguration.PROVENANCE_HEADER) String provenance,
         @RequestHeader(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER) String sourceArtefactId,

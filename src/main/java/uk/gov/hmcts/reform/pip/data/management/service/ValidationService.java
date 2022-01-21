@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.DateValidationException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.EmptyRequiredHeaderException;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.HeaderValidationException;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactType;
 
 import java.time.LocalDateTime;
@@ -63,6 +64,8 @@ public class ValidationService {
             case GENERAL_PUBLICATION:
                 handleDateValidation(true);
                 break;
+            default:
+                throw new HeaderValidationException("Type was not of the defined values");
         }
     }
 

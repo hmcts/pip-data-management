@@ -86,23 +86,23 @@ public class Artefact {
     private LocalDateTime displayTo;
 
     /**
-     * DL / SL / WL / FL / PL
+     * DL / SL / WL / FL / PL.
      */
     @Enumerated(EnumType.STRING)
     private ListType listType;
 
     /**
-     * Court Id based on the source system (provenance)
+     * Court Id based on the source system (provenance).
      */
     private String courtId;
 
     /**
-     * Date / Time the publication is referring to
+     * Date / Time the publication is referring to.
      */
     private LocalDateTime contentDate;
 
     /**
-     * Bool to signal if the payload is a flat file or raw data
+     * Bool to signal if the payload is a flat file or raw data.
      */
     @Builder.Default
     private Boolean isFlatFile = false;

@@ -10,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactType;
@@ -30,10 +29,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.TestConstants.STATUS_CODE_MATCH;
 
+@SuppressWarnings("PMD.UseConcurrentHashMap")
 @ExtendWith(MockitoExtension.class)
 class PublicationControllerTest {
 
@@ -68,7 +67,6 @@ class PublicationControllerTest {
     private Artefact artefact;
     private Artefact artefactWithId;
 
-    @SuppressWarnings("PMD.UseConcurrentHashMap")
     @BeforeEach
     void setup() {
         headerMap = new HashMap<>();
