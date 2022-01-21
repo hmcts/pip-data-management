@@ -43,6 +43,7 @@ import java.util.UUID;
 public class PublicationController {
 
     private final PublicationService publicationService;
+    private Map<String, Object> headers;
 
     @Autowired
     private final ValidationService validationService;
@@ -91,9 +92,13 @@ public class PublicationController {
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime displayFrom,
         @RequestHeader(value = PublicationConfiguration.DISPLAY_TO_HEADER, required = false)
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime displayTo,
+        @RequestHeader(value = PublicationConfiguration.LIST_TYPE, required = false) ListType listType,
+        @RequestHeader(PublicationConfiguration.COURT_ID) String courtId,
+        @RequestHeader(value = PublicationConfiguration.CONTENT_DATE, required = false)
+        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime contentDate,
         @RequestBody String payload) {
 
-        Map<String, Object> headers = new HashMap<>();
+        headers = new HashMap<>();
         headers.put(PublicationConfiguration.PROVENANCE_HEADER, provenance);
         headers.put(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, sourceArtefactId);
         headers.put(PublicationConfiguration.TYPE_HEADER, type);
@@ -101,6 +106,9 @@ public class PublicationController {
         headers.put(PublicationConfiguration.LANGUAGE_HEADER, language);
         headers.put(PublicationConfiguration.DISPLAY_FROM_HEADER, displayFrom);
         headers.put(PublicationConfiguration.DISPLAY_TO_HEADER, displayTo);
+        headers.put(PublicationConfiguration.LIST_TYPE, listType);
+        headers.put(PublicationConfiguration.COURT_ID, courtId);
+        headers.put(PublicationConfiguration.CONTENT_DATE, contentDate);
 
         Map<String, Object> headerMap = validationService.validateHeaders(headers);
 
@@ -112,6 +120,9 @@ public class PublicationController {
             .language((Language) headerMap.get(PublicationConfiguration.LANGUAGE_HEADER))
             .displayFrom((LocalDateTime) headerMap.get(PublicationConfiguration.DISPLAY_FROM_HEADER))
             .displayTo((LocalDateTime) headerMap.get(PublicationConfiguration.DISPLAY_TO_HEADER))
+            .listType((ListType) headerMap.get(PublicationConfiguration.LIST_TYPE))
+            .courtId((String) headerMap.get(PublicationConfiguration.COURT_ID))
+            .contentDate((LocalDateTime) headerMap.get(PublicationConfiguration.CONTENT_DATE))
             .build();
 
         Artefact createdItem = publicationService
@@ -150,24 +161,41 @@ public class PublicationController {
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime displayFrom,
         @RequestHeader(value = PublicationConfiguration.DISPLAY_TO_HEADER, required = false)
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime displayTo,
-        @RequestHeader(PublicationConfiguration.LIST_TYPE) ListType listType,
+        @RequestHeader(value = PublicationConfiguration.LIST_TYPE, required = false) ListType listType,
         @RequestHeader(PublicationConfiguration.COURT_ID) String courtId,
         @RequestHeader(value = PublicationConfiguration.CONTENT_DATE, required = false)
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime contentDate,
         @RequestPart MultipartFile file) {
-        validateRequestHeaders(provenance, sourceArtefactId);
+
+        headers = new HashMap<>();
+        headers.put(PublicationConfiguration.PROVENANCE_HEADER, provenance);
+        headers.put(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, sourceArtefactId);
+        headers.put(PublicationConfiguration.TYPE_HEADER, type);
+        headers.put(PublicationConfiguration.SENSITIVITY_HEADER, sensitivity);
+        headers.put(PublicationConfiguration.LANGUAGE_HEADER, language);
+        headers.put(PublicationConfiguration.DISPLAY_FROM_HEADER, displayFrom);
+        headers.put(PublicationConfiguration.DISPLAY_TO_HEADER, displayTo);
+        headers.put(PublicationConfiguration.LIST_TYPE, listType);
+        headers.put(PublicationConfiguration.COURT_ID, courtId);
+        headers.put(PublicationConfiguration.CONTENT_DATE, contentDate);
+
+        Map<String, Object> headerMap = validationService.validateHeaders(headers);
 
         Map<String, List<Object>> search = new HashMap<>();
         search.put("court-id", List.of(courtId));
 
         Artefact artefact = Artefact.builder()
-            .provenance(provenance).sourceArtefactId(sourceArtefactId)
-            .type(type).sensitivity(sensitivity)
-            .language(language)
-            .displayFrom(displayFrom).displayTo(displayTo)
-            .listType(listType).courtId(courtId)
-            .contentDate(contentDate).isFlatFile(true)
-            .search(search)
+            .provenance((String) headerMap.get(PublicationConfiguration.PROVENANCE_HEADER))
+            .sourceArtefactId((String) headerMap.get(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER))
+            .type((ArtefactType) headerMap.get(PublicationConfiguration.TYPE_HEADER))
+            .sensitivity((Sensitivity) headerMap.get(PublicationConfiguration.SENSITIVITY_HEADER))
+            .language((Language) headerMap.get(PublicationConfiguration.LANGUAGE_HEADER))
+            .displayFrom((LocalDateTime) headerMap.get(PublicationConfiguration.DISPLAY_FROM_HEADER))
+            .displayTo((LocalDateTime) headerMap.get(PublicationConfiguration.DISPLAY_TO_HEADER))
+            .listType((ListType) headerMap.get(PublicationConfiguration.LIST_TYPE))
+            .courtId((String) headerMap.get(PublicationConfiguration.COURT_ID))
+            .contentDate((LocalDateTime) headerMap.get(PublicationConfiguration.CONTENT_DATE))
+            .isFlatFile(true).search(search)
             .build();
 
         return ResponseEntity.status(HttpStatus.CREATED).body(publicationService.createPublication(artefact, file));

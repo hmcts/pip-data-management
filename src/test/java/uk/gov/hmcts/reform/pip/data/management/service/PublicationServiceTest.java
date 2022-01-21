@@ -1,11 +1,14 @@
 package uk.gov.hmcts.reform.pip.data.management.service;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.AzureBlobService;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.UnauthorisedRequestException;
@@ -48,28 +51,32 @@ class PublicationServiceTest {
     private static final String TEST_KEY = "TestKey";
     private static final String TEST_VALUE = "TestValue";
     private static final Map<String, List<Object>> SEARCH_VALUES = new ConcurrentHashMap<>();
+    private static final MultipartFile FILE = new MockMultipartFile("test", (byte[]) null);
+
+    private Artefact artefact;
+    private Artefact artefactWithPayloadUrl;
+    private Artefact artefactWithIdAndPayloadUrl;
 
     @BeforeAll
-    public static void setup() {
+    public static void setupSearchValues() {
         SEARCH_VALUES.put(TEST_KEY, List.of(TEST_VALUE));
     }
 
-    @Test
-    void testCreationOfNewArtefact() {
-
-        Artefact artefact = Artefact.builder()
+    @BeforeEach
+    void setup() {
+        artefact = Artefact.builder()
             .sourceArtefactId(SOURCE_ARTEFACT_ID)
             .provenance(PROVENANCE)
             .build();
 
-        Artefact artefactWithPayloadUrl = Artefact.builder()
+        artefactWithPayloadUrl = Artefact.builder()
             .sourceArtefactId(SOURCE_ARTEFACT_ID)
             .provenance(PROVENANCE)
             .payload(PAYLOAD_URL)
             .search(SEARCH_VALUES)
             .build();
 
-        Artefact artefactWithIdAndPayloadUrl = Artefact.builder()
+        artefactWithIdAndPayloadUrl = Artefact.builder()
             .artefactId(ARTEFACT_ID)
             .sourceArtefactId(SOURCE_ARTEFACT_ID)
             .provenance(PROVENANCE)
@@ -79,8 +86,12 @@ class PublicationServiceTest {
 
         when(artefactRepository.findBySourceArtefactIdAndProvenance(SOURCE_ARTEFACT_ID, PROVENANCE))
             .thenReturn(Optional.empty());
-        when(azureBlobService.createPayload(SOURCE_ARTEFACT_ID, PROVENANCE, PAYLOAD)).thenReturn(PAYLOAD_URL);
         when(artefactRepository.save(artefactWithPayloadUrl)).thenReturn(artefactWithIdAndPayloadUrl);
+    }
+
+    @Test
+    void testCreationOfNewArtefact() {
+        when(azureBlobService.createPayload(SOURCE_ARTEFACT_ID, PROVENANCE, PAYLOAD)).thenReturn(PAYLOAD_URL);
         when(payloadExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
 
         Artefact returnedArtefact = publicationService.createPublication(artefact, PAYLOAD);
@@ -123,6 +134,16 @@ class PublicationServiceTest {
         Artefact returnedArtefact = publicationService.createPublication(artefact, PAYLOAD);
 
         assertEquals(newArtefactWithId, returnedArtefact, "Row ID must match returned UUID");
+    }
+
+    @Test
+    void testCreationOfNewArtefactWithFile() {
+        artefactWithPayloadUrl.setSearch(null);
+        when(azureBlobService.uploadFlatFile(SOURCE_ARTEFACT_ID, PROVENANCE, FILE)).thenReturn(PAYLOAD_URL);
+
+        Artefact returnedArtefact = publicationService.createPublication(artefact, FILE);
+
+        assertEquals(artefactWithIdAndPayloadUrl, returnedArtefact, "Returned artefacts should match");
     }
 
     @Test

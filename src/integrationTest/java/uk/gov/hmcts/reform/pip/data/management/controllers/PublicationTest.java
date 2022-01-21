@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -21,6 +22,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.Application;
 import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.ExceptionResponse;
@@ -68,6 +71,7 @@ class PublicationTest {
     private static final Sensitivity SENSITIVITY = Sensitivity.PUBLIC;
     private static final String PROVENANCE = "provenance";
     private static String payload = "payload";
+    private static MultipartFile file;
     private static final String PAYLOAD_UNKNOWN = "Unknown-Payload";
     private static final String SOURCE_ARTEFACT_ID = "sourceArtefactId";
     private static final LocalDateTime DISPLAY_TO = LocalDateTime.now();
@@ -94,6 +98,9 @@ class PublicationTest {
 
     @BeforeAll
     public static void setup() throws IOException {
+
+        file = new MockMultipartFile("testFile",
+                                     PublicationTest.class.getClassLoader().getResourceAsStream("data/testFile.pdf"));
 
         payload = new String(IOUtils.toByteArray(
             Objects.requireNonNull(PublicationTest.class.getClassLoader()
@@ -222,7 +229,7 @@ class PublicationTest {
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
             .put(PUT_URL)
-            .header(PublicationConfiguration.TYPE_HEADER, ArtefactType.STATUS_UPDATES)
+            .header(PublicationConfiguration.TYPE_HEADER, ArtefactType.GENERAL_PUBLICATION)
             .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
             .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
             .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
@@ -246,7 +253,7 @@ class PublicationTest {
     void testDateToAbsenceJudgement() throws Exception {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
             .put(PUT_URL)
-            .header(PublicationConfiguration.TYPE_HEADER, ArtefactType.JUDGEMENT)
+            .header(PublicationConfiguration.TYPE_HEADER, ArtefactType.JUDGEMENTS_AND_OUTCOMES)
             .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
             .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
             .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
@@ -290,36 +297,12 @@ class PublicationTest {
         assertTrue(exceptionResponse.getMessage().contains(DISPLAY_TO_RESPONSE), VALIDATION_EXCEPTION_RESPONSE);
     }
 
-    @DisplayName("Should return a 400 bad request if artefact type is outcome and date to is empty")
-    @Test
-    void testDateToAbsenceOutcome() throws Exception {
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .put(PUT_URL)
-            .header(PublicationConfiguration.TYPE_HEADER, ArtefactType.OUTCOME)
-            .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
-            .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
-            .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
-            .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
-            .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
-            .content(payload)
-            .contentType(MediaType.APPLICATION_JSON);
-        MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
-            .andExpect(status().isBadRequest()).andReturn();
-        assertFalse(response.getResponse().getContentAsString().isEmpty(), VALIDATION_EMPTY_RESPONSE);
-        ExceptionResponse exceptionResponse = objectMapper.readValue(
-            response.getResponse().getContentAsString(),
-            ExceptionResponse.class
-        );
-
-        assertTrue(exceptionResponse.getMessage().contains(DISPLAY_TO_RESPONSE), VALIDATION_EXCEPTION_RESPONSE);
-    }
-
     @DisplayName("Should return a 400 bad request if artefact type is judgement and date from is empty")
     @Test
     void testDateFromAbsenceJudgement() throws Exception {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
             .put(PUT_URL)
-            .header(PublicationConfiguration.TYPE_HEADER, ArtefactType.JUDGEMENT)
+            .header(PublicationConfiguration.TYPE_HEADER, ArtefactType.JUDGEMENTS_AND_OUTCOMES)
             .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
             .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
             .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
@@ -361,30 +344,6 @@ class PublicationTest {
         );
 
         assertTrue(exceptionResponse.getMessage().contains(DISPLAY_TO_RESPONSE), VALIDATION_EXCEPTION_RESPONSE);
-    }
-
-    @DisplayName("Should return a 400 bad request if artefact type is outcome and date from is empty")
-    @Test
-    void testDateFromAbsenceOutcome() throws Exception {
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .put(PUT_URL)
-            .header(PublicationConfiguration.TYPE_HEADER, ArtefactType.OUTCOME)
-            .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
-            .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
-            .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
-            .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
-            .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO)
-            .content(payload)
-            .contentType(MediaType.APPLICATION_JSON);
-        MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
-            .andExpect(status().isBadRequest()).andReturn();
-        assertFalse(response.getResponse().getContentAsString().isEmpty(), VALIDATION_EMPTY_RESPONSE);
-        ExceptionResponse exceptionResponse = objectMapper.readValue(
-            response.getResponse().getContentAsString(),
-            ExceptionResponse.class
-        );
-
-        assertTrue(exceptionResponse.getMessage().contains(DISPLAY_FROM_RESPONSE), VALIDATION_EXCEPTION_RESPONSE);
     }
 
     @DisplayName("Should return a 400 Bad Request if the artifact type header is empty")
@@ -547,7 +506,7 @@ class PublicationTest {
         assertTrue(exceptionResponse.getMessage().contains("x-source-artefact-id"), VALIDATION_EXCEPTION_RESPONSE);
     }
 
-    @DisplayName("Should return a 400 Bad Request if the source artifact id is missing")
+    @DisplayName("Should return a 400 Bad Request if the source artifact id is empty")
     @Test
     void testEmptySourceArtifactId() throws Exception {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
@@ -799,6 +758,7 @@ class PublicationTest {
         );
         assertEquals(List.of("12345"), retrievedArtefact.getSearch().get("court-id"), "test");
 
-
     }
+
+
 }
