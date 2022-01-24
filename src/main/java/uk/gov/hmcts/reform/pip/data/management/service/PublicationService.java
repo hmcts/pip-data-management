@@ -12,6 +12,7 @@ import uk.gov.hmcts.reform.pip.data.management.utils.PayloadExtractor;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -44,6 +45,9 @@ public class PublicationService {
      * @return Returns the UUID of the artefact that was created.
      */
     public Artefact createPublication(Artefact artefact, String payload) {
+        Map<String, List<Object>> extractedSearchTerms =
+            payloadExtractor.validateAndParsePayload(artefact, payload);
+
         Optional<Artefact> foundArtefact =  artefactRepository
             .findBySourceArtefactIdAndProvenance(artefact.getSourceArtefactId(), artefact.getProvenance());
 
@@ -55,7 +59,7 @@ public class PublicationService {
             payload);
 
         artefact.setPayload(blobUrl);
-        artefact.setSearch(payloadExtractor.extractSearchTerms(payload));
+        artefact.setSearch(extractedSearchTerms);
 
         return artefactRepository.save(artefact);
     }

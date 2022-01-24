@@ -15,6 +15,8 @@ import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.pip.data.management.config.SearchConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.config.ValidationConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ValidationException;
+import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
+import uk.gov.hmcts.reform.pip.data.management.models.publication.ListType;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,6 +26,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 @Component
 public class JsonExtractor implements Extractor {
@@ -32,7 +35,8 @@ public class JsonExtractor implements Extractor {
 
     private final SearchConfiguration searchConfiguration;
 
-    private final JsonSchema schema;
+    private final JsonSchema masterSchema;
+    private final JsonSchema dailyCauseListSchema;
 
     @Autowired
     public JsonExtractor(SearchConfiguration searchConfiguration, ValidationConfiguration validationConfiguration) {
@@ -41,10 +45,14 @@ public class JsonExtractor implements Extractor {
             .addOptions(Option.DEFAULT_PATH_LEAF_TO_NULL)
             .addOptions(Option.SUPPRESS_EXCEPTIONS)
             .addOptions(Option.ALWAYS_RETURN_LIST);
-        try (InputStream schemaFile = this.getClass().getClassLoader()
-            .getResourceAsStream(validationConfiguration.masterSchema)) {
+        try (InputStream masterFile = this.getClass().getClassLoader()
+            .getResourceAsStream(validationConfiguration.masterSchema);
+             InputStream dailyCauseListFile = this.getClass().getClassLoader()
+                 .getResourceAsStream(validationConfiguration.dailyCauseList);
+        ) {
             JsonSchemaFactory schemaFactory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V7);
-            schema = schemaFactory.getSchema(schemaFile);
+            masterSchema = schemaFactory.getSchema(masterFile);
+            dailyCauseListSchema = schemaFactory.getSchema(dailyCauseListFile);
         } catch (Exception exception) {
             throw new ValidationException(String.join(exception.getMessage()));
         }
@@ -61,8 +69,9 @@ public class JsonExtractor implements Extractor {
                 .parse(payload);
 
             List<Object> searchValues = jsonPayload.read(value);
-            if (!searchValues.stream().allMatch(Objects::isNull)) {
-                searchTermsMap.put(key, searchValues);
+            List<Object> objects = searchValues.stream().filter(Objects::nonNull).collect(Collectors.toList());
+            if (objects.size() != 0) {
+                searchTermsMap.put(key, objects);
             }
         });
 
@@ -81,15 +90,23 @@ public class JsonExtractor implements Extractor {
     }
 
     @Override
-    public List<String> validate(String payload) {
+    public List<String> validate(Artefact artefact, String payload) {
         List<String> errors = new ArrayList<>();
         try {
             JsonNode json = new ObjectMapper().readTree(payload);
-            Set<ValidationMessage> validationResult = schema.validate(json);
+            Set<ValidationMessage> masterResult = masterSchema.validate(json);
 
-            if (!validationResult.isEmpty()) {
-                validationResult.forEach(vm ->  errors.add(vm.getMessage()));
+            if (!masterResult.isEmpty()) {
+                masterResult.forEach(vm ->  errors.add(vm.getMessage()));
             }
+
+            if (artefact.getListType() != null && artefact.getListType().equals(ListType.CIVIL_DAILY_CAUSE_LIST)) {
+                Set<ValidationMessage> listResult = dailyCauseListSchema.validate(json);
+                if (!listResult.isEmpty()) {
+                    listResult.forEach(vm ->  errors.add(vm.getMessage()));
+                }
+            }
+
         } catch (IOException exception) {
             errors.add(exception.getMessage());
         }

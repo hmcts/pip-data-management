@@ -7,6 +7,8 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pip.data.management.Application;
 import uk.gov.hmcts.reform.pip.data.management.config.AzureBlobConfigurationTest;
+import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
+import uk.gov.hmcts.reform.pip.data.management.models.publication.ListType;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,6 +32,7 @@ class JsonExtractorTest {
     private static final String VALID_PAYLOAD = "{\"test\":\"test-1234\"}";
     private static final String TEST_KEY = "case-id";
     private static final String TEST_KEY_NOT_FOUND = "test-id-not-found";
+    private static final String UNKNOWN_EXCEPTION = "Unknown exception when opening the paylaod file";
 
     @Test
     void testExtractSearchTerms() {
@@ -44,7 +47,7 @@ class JsonExtractorTest {
             assertEquals("CASE1234", searchTerms.get(TEST_KEY).get(0), "The search term value"
                 + "does not contain expected result");
         } catch (IOException exception) {
-            fail("Unknown exception when opening the paylaod file");
+            fail(UNKNOWN_EXCEPTION);
         }
 
     }
@@ -63,7 +66,7 @@ class JsonExtractorTest {
             assertEquals("CASE1234", searchTerms.get(TEST_KEY).get(0), "The search term value"
                 + "does not contain expected result");
         } catch (IOException exception) {
-            fail("Unknown exception when opening the payload file");
+            fail(UNKNOWN_EXCEPTION);
         }
     }
 
@@ -82,9 +85,10 @@ class JsonExtractorTest {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream("mocks/BadJsonPayload.json")) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
-            assertFalse(jsonExtractor.validate(text).isEmpty(), "Valid JSON string marked as not valid");
+            assertFalse(jsonExtractor.validate(new Artefact(), text).isEmpty(),
+                        "Valid JSON string marked as not valid");
         } catch (IOException exception) {
-            fail("Unkown exception when opening the payload file");
+            fail(UNKNOWN_EXCEPTION);
         }
     }
 
@@ -93,9 +97,37 @@ class JsonExtractorTest {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream("mocks/JsonPayload.json")) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
-            assertTrue(jsonExtractor.validate(text).isEmpty(), "Valid JSON string marked as valid");
+            assertTrue(jsonExtractor.validate(new Artefact(), text).isEmpty(), "Valid JSON string marked as valid");
         } catch (IOException exception) {
-            fail("Unknown exception when opening the payload file");
+            fail(UNKNOWN_EXCEPTION);
+        }
+    }
+
+    @Test
+    void testValidateWithoutErrorsWhenArtefactIsDailyCauseList() {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream("mocks/dailyCauseList.json")) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            Artefact artefact = new Artefact();
+            artefact.setListType(ListType.CIVIL_DAILY_CAUSE_LIST);
+            assertTrue(jsonExtractor.validate(artefact, text).isEmpty(), "Valid JSON string marked as valid");
+        } catch (IOException exception) {
+            fail(UNKNOWN_EXCEPTION);
+        }
+    }
+
+    @Test
+    void testValidateWithErrorsWhenArtefactIsDailyCauseList() {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream("mocks/dailyCauseListInvalid.json")) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            Artefact artefact = new Artefact();
+            artefact.setListType(ListType.CIVIL_DAILY_CAUSE_LIST);
+            assertFalse(jsonExtractor.validate(artefact, text).isEmpty(), "Valid JSON string marked as valid");
+        } catch (IOException exception) {
+            fail(UNKNOWN_EXCEPTION);
         }
     }
 

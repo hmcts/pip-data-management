@@ -31,6 +31,7 @@ import uk.gov.hmcts.reform.pip.data.management.models.publication.ListType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Sensitivity;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -859,6 +860,76 @@ class PublicationTest {
         assertEquals(COURT_ID, retrievedArtefact.getCourtId(),
                      "Incorrect court ID has been retrieved from the database");
 
-
     }
+
+    @DisplayName("Should create a valid artefact and return the created artefact to the user")
+    @Test
+    void testCreationOfValidDailyCauseList() throws Exception {
+        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(blobContainerClient.getBlobContainerUrl()).thenReturn(PAYLOAD_URL);
+
+        try (InputStream mockFile = this.getClass().getClassLoader()
+            .getResourceAsStream("data/dailyCauseList.json")) {
+            MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .put(PUT_URL)
+                .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
+                .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
+                .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
+                .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
+                .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO)
+                .header(PublicationConfiguration.COURT_ID, COURT_ID)
+                .header(PublicationConfiguration.LIST_TYPE, ListType.CIVIL_DAILY_CAUSE_LIST)
+                .content(mockFile.readAllBytes())
+                .contentType(MediaType.APPLICATION_JSON);
+
+
+            MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
+                .andExpect(status().isCreated()).andReturn();
+
+            assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
+
+            Artefact artefact = objectMapper.readValue(
+                response.getResponse().getContentAsString(), Artefact.class);
+
+            assertNotNull(artefact.getArtefactId(), "Artefact ID is not populated");
+        }
+    }
+
+    @DisplayName("Should create a valid artefact and return the created artefact to the user")
+    @Test
+    void testCreationOfInvalidDailyCauseList() throws Exception {
+        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(blobContainerClient.getBlobContainerUrl()).thenReturn(PAYLOAD_URL);
+
+        try (InputStream mockFile = this.getClass().getClassLoader()
+            .getResourceAsStream("data/dailyCauseListInvalid.json")) {
+            MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .put(PUT_URL)
+                .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
+                .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
+                .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
+                .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
+                .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO)
+                .header(PublicationConfiguration.COURT_ID, COURT_ID)
+                .header(PublicationConfiguration.LIST_TYPE, ListType.CIVIL_DAILY_CAUSE_LIST)
+                .content(mockFile.readAllBytes())
+                .contentType(MediaType.APPLICATION_JSON);
+
+            MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
+                .andExpect(status().isBadRequest()).andReturn();
+
+            assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
+
+            ExceptionResponse exceptionResponse = objectMapper.readValue(
+                response.getResponse().getContentAsString(),
+                ExceptionResponse.class
+            );
+
+            assertTrue(
+                exceptionResponse.getMessage().contains("courtHouseName"),
+                "Court name is not displayed in the exception response"
+            );
+        }
+    }
+
 }

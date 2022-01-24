@@ -60,10 +60,8 @@ azure:
 payload:
   json:
     search-values:
-      case-id: "$['courtLists'][*]['courtRoom']['session']['sittings'][*]['hearing']['case']['caseNumber']"
-      case-urn: "$['courtLists'][*]['courtRoom']['session']['sittings'][*]['hearing']['case']['caseUrn']"
-      court-name: "$['courtLists'][*]['courtHouse']['courtHouseName']"
-      court-id: "$['courtLists'][*]['courtHouse']['courtHouseCode']"
+      case-id: "$['courtLists'][*]['courtHouse']['courtRoom'][*]['session'][*]['sittings'][*]['hearing'][*]['case'][*]['caseNumber']"
+      case-urn: "$['courtLists'][*]['courtHouse']['courtRoom'][*]['session'][*]['sittings'][*]['hearing'][*]'case][*]['caseUrn']"
 validations:
-  master-schema: "schema3-draft.json"
-  daily-cause-list: "schema3-draft.json"
+  master-schema: "schemas/master_schema.json"
+  daily-cause-list: "schemas/civil_daily_cause_list.json"
