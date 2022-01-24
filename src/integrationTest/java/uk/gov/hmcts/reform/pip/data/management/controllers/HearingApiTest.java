@@ -9,6 +9,9 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import uk.gov.hmcts.reform.pip.data.management.Application;
 
+import java.io.File;
+import java.nio.file.Files;
+
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
@@ -32,6 +35,15 @@ class HearingApiTest {
         mockMvc.perform(get("/hearings/1"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$", hasSize(3)));
+    }
+
+    @Test
+    void testGetHearingsResponse() throws Exception {
+        mockMvc.perform(get("/hearings/3"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$", hasSize(2)))
+            .andExpect(content().json(new String(Files.readAllBytes(
+                new File("src/integrationTest/resources/data/hearingResponse.json").toPath()))));
     }
 
     @Test

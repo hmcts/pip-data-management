@@ -6,25 +6,21 @@ import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.EmptyRequiredHeaderException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.HeaderValidationException;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactType;
+import uk.gov.hmcts.reform.pip.data.management.models.publication.HeaderGroup;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Language;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ListType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Sensitivity;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@SuppressWarnings("PMD.UseConcurrentHashMap")
 class ValidationServiceTest {
     ValidationService validationService = new ValidationService();
 
-    private static final String DIFFERENT_SIZE_MAPS = "Hashmap has grown in the method when it should have remained "
-        + "the same size. Ensure you are overwriting rather than appending a new variable.";
     private static final String SOURCE_ARTEFACT_ID = "sourceArtefactId";
     private static final LocalDateTime DISPLAY_FROM = LocalDateTime.now();
     private static final LocalDateTime DISPLAY_TO = LocalDateTime.now();
@@ -41,30 +37,20 @@ class ValidationServiceTest {
     private static final String NOT_NULL_MESSAGE = "The returned value is null, but was not expected to be.";
     private static final String REQUIRED_HEADER_EXCEPTION_MESSAGE = " is mandatory however an empty value is provided";
 
-    private Map<String, Object> headerMap;
+    private HeaderGroup headerGroup;
 
     @BeforeEach
     void setup() {
-        headerMap = new HashMap<>();
-        headerMap.put(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE);
-        headerMap.put(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE);
-        headerMap.put(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID);
-        headerMap.put(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY);
-        headerMap.put(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE);
-        headerMap.put(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM);
-        headerMap.put(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO);
-        headerMap.put(PublicationConfiguration.COURT_ID, COURT_ID);
-        headerMap.put(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE);
-        headerMap.put(PublicationConfiguration.LIST_TYPE, LIST_TYPE);
+        headerGroup = new HeaderGroup(PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE, SENSITIVITY, LANGUAGE,
+                                                  DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, COURT_ID, CONTENT_DATE);
     }
 
     @Test
     void testCreationOfPublicationEmptySourceArtefactId() {
-        headerMap.put(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, EMPTY_FIELD);
-
+        headerGroup.setSourceArtefactId(EMPTY_FIELD);
         HeaderValidationException emptyRequestHeaderException =
             assertThrows(HeaderValidationException.class, () -> {
-                validationService.validateHeaders(headerMap);
+                validationService.validateHeaders(headerGroup);
             });
 
         assertEquals(
@@ -76,11 +62,10 @@ class ValidationServiceTest {
 
     @Test
     void testCreationOfPublicationEmptyProvenance() {
-        headerMap.put(PublicationConfiguration.PROVENANCE_HEADER, EMPTY_FIELD);
-
+        headerGroup.setProvenance(EMPTY_FIELD);
         HeaderValidationException emptyRequestHeaderException =
             assertThrows(HeaderValidationException.class, () -> {
-                validationService.validateHeaders(headerMap);
+                validationService.validateHeaders(headerGroup);
             });
 
         assertEquals(
@@ -92,12 +77,12 @@ class ValidationServiceTest {
 
     @Test
     void testCreationOfPublicationEmptySourceArtefactIdAndEmptyProvenanceOnlyFirstIsShown() {
-        headerMap.put(PublicationConfiguration.PROVENANCE_HEADER, EMPTY_FIELD);
-        headerMap.put(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, EMPTY_FIELD);
+        headerGroup.setProvenance(EMPTY_FIELD);
+        headerGroup.setSourceArtefactId(EMPTY_FIELD);
 
         HeaderValidationException emptyRequestHeaderException =
             assertThrows(HeaderValidationException.class, () -> {
-                validationService.validateHeaders(headerMap);
+                validationService.validateHeaders(headerGroup);
             });
 
         assertEquals(
@@ -109,12 +94,11 @@ class ValidationServiceTest {
 
     @Test
     void testCreationOfPublicationJudgementTypeAndEmptyDateTo() {
-        headerMap.put(PublicationConfiguration.TYPE_HEADER, ArtefactType.JUDGEMENTS_AND_OUTCOMES);
-        headerMap.put(PublicationConfiguration.DISPLAY_TO_HEADER, null);
-
+        headerGroup.setType(ArtefactType.JUDGEMENTS_AND_OUTCOMES);
+        headerGroup.setDisplayTo(null);
         HeaderValidationException dateHeaderValidationException =
             assertThrows(HeaderValidationException.class, () -> {
-                validationService.validateHeaders(headerMap);
+                validationService.validateHeaders(headerGroup);
             });
         assertEquals("x-display-to Field is required for artefact type JUDGEMENTS_AND_OUTCOMES",
                      dateHeaderValidationException.getMessage(), VALIDATION_EXPECTED_MESSAGE
@@ -123,12 +107,12 @@ class ValidationServiceTest {
 
     @Test
     void testCreationOfPublicationListTypeAndEmptyDateTo() {
-        headerMap.put(PublicationConfiguration.TYPE_HEADER, ArtefactType.LIST);
-        headerMap.put(PublicationConfiguration.DISPLAY_TO_HEADER, null);
+        headerGroup.setType(ArtefactType.LIST);
+        headerGroup.setDisplayTo(null);
 
         HeaderValidationException dateHeaderValidationException =
             assertThrows(HeaderValidationException.class, () -> {
-                validationService.validateHeaders(headerMap);
+                validationService.validateHeaders(headerGroup);
             });
         assertEquals("x-display-to Field is required for artefact type LIST",
                      dateHeaderValidationException.getMessage(), VALIDATION_EXPECTED_MESSAGE
@@ -137,12 +121,11 @@ class ValidationServiceTest {
 
     @Test
     void testCreationOfPublicationListTypeAndEmptyDateFrom() {
-        headerMap.put(PublicationConfiguration.TYPE_HEADER, ArtefactType.LIST);
-        headerMap.put(PublicationConfiguration.DISPLAY_FROM_HEADER, null);
+        headerGroup.setDisplayFrom(null);
 
         HeaderValidationException dateHeaderValidationException =
             assertThrows(HeaderValidationException.class, () -> {
-                validationService.validateHeaders(headerMap);
+                validationService.validateHeaders(headerGroup);
             });
         assertEquals("x-display-from Field is required for artefact type LIST",
                      dateHeaderValidationException.getMessage(), VALIDATION_EXPECTED_MESSAGE
@@ -150,27 +133,13 @@ class ValidationServiceTest {
     }
 
     @Test
-    void testCreationOfPublicationJudgementTypeAndEmptyDateFrom() {
-        headerMap.put(PublicationConfiguration.TYPE_HEADER, ArtefactType.JUDGEMENTS_AND_OUTCOMES);
-        headerMap.put(PublicationConfiguration.DISPLAY_FROM_HEADER, null);
+    void testCreationOfPublicationJudgementAndOutcomeTypeAndEmptyDateFrom() {
+        headerGroup.setType(ArtefactType.JUDGEMENTS_AND_OUTCOMES);
+        headerGroup.setDisplayFrom(null);
 
         HeaderValidationException dateHeaderValidationException =
             assertThrows(HeaderValidationException.class, () -> {
-                validationService.validateHeaders(headerMap);
-            });
-        assertEquals("x-display-from Field is required for artefact type JUDGEMENTS_AND_OUTCOMES",
-                     dateHeaderValidationException.getMessage(), VALIDATION_EXPECTED_MESSAGE
-        );
-    }
-
-    @Test
-    void testCreationOfPublicationOutcomeTypeAndEmptyDateFrom() {
-        headerMap.put(PublicationConfiguration.TYPE_HEADER, ArtefactType.JUDGEMENTS_AND_OUTCOMES);
-        headerMap.put(PublicationConfiguration.DISPLAY_FROM_HEADER, null);
-
-        HeaderValidationException dateHeaderValidationException =
-            assertThrows(HeaderValidationException.class, () -> {
-                validationService.validateHeaders(headerMap);
+                validationService.validateHeaders(headerGroup);
             });
         assertEquals("x-display-from Field is required for artefact type JUDGEMENTS_AND_OUTCOMES",
                      dateHeaderValidationException.getMessage(), VALIDATION_EXPECTED_MESSAGE
@@ -179,103 +148,58 @@ class ValidationServiceTest {
 
     @Test
     void testValidationOfGeneralPublicationTypeWithNoDateFrom() {
-        headerMap.put(PublicationConfiguration.TYPE_HEADER, ArtefactType.GENERAL_PUBLICATION);
-        headerMap.put(PublicationConfiguration.DISPLAY_FROM_HEADER, null);
-        headerMap.put(PublicationConfiguration.DISPLAY_TO_HEADER, null);
-
-        int initialLength = headerMap.size();
+        headerGroup.setType(ArtefactType.GENERAL_PUBLICATION);
+        headerGroup.setDisplayFrom( null);
+        headerGroup.setDisplayTo(null);
 
         assertNotNull(
-            validationService.validateHeaders(headerMap).get(PublicationConfiguration.DISPLAY_FROM_HEADER),
+            validationService.validateHeaders(headerGroup).getDisplayFrom(),
             NOT_NULL_MESSAGE
         );
-
-        int afterLength = validationService.validateHeaders(headerMap).size();
-        assertEquals(initialLength, afterLength, DIFFERENT_SIZE_MAPS);
     }
 
     @Test
     void testValidationOfGeneralPublicationTypeWithNoDateTo() {
-        headerMap.put(PublicationConfiguration.TYPE_HEADER, ArtefactType.GENERAL_PUBLICATION);
-        headerMap.put(PublicationConfiguration.DISPLAY_TO_HEADER, null);
+        headerGroup.setType(ArtefactType.GENERAL_PUBLICATION);
+        headerGroup.setDisplayTo(null);
 
-        int initialLength = headerMap.size();
         assertNull(
-            validationService.validateHeaders(headerMap).get(PublicationConfiguration.DISPLAY_TO_HEADER),
+            validationService.validateHeaders(headerGroup).getDisplayTo(),
             "The date to header should remain null"
         );
-        int afterLength = validationService.validateHeaders(headerMap).size();
-        assertEquals(initialLength, afterLength, DIFFERENT_SIZE_MAPS);
-    }
-
-    @Test
-    void testEmptyContentDateForListThrows() {
-        headerMap.put(PublicationConfiguration.CONTENT_DATE, EMPTY_FIELD);
-
-        EmptyRequiredHeaderException ex = assertThrows(EmptyRequiredHeaderException.class, () -> {
-            validationService.validateHeaders(headerMap);
-        });
-
-        assertEquals(PublicationConfiguration.CONTENT_DATE + REQUIRED_HEADER_EXCEPTION_MESSAGE,
-                     ex.getMessage(), VALIDATION_EXPECTED_MESSAGE);
     }
 
     @Test
     void testNullContentDateForListThrows() {
-        headerMap.put(PublicationConfiguration.CONTENT_DATE, null);
+        headerGroup.setContentDate(null);
 
         EmptyRequiredHeaderException ex = assertThrows(EmptyRequiredHeaderException.class, () -> {
-            validationService.validateHeaders(headerMap);
+            validationService.validateHeaders(headerGroup);
         });
 
         assertEquals(PublicationConfiguration.CONTENT_DATE + REQUIRED_HEADER_EXCEPTION_MESSAGE,
-                     ex.getMessage(), VALIDATION_EXPECTED_MESSAGE);
-    }
-
-    @Test
-    void testEmptyListTypeForListThrows() {
-        headerMap.put(PublicationConfiguration.LIST_TYPE, EMPTY_FIELD);
-
-        EmptyRequiredHeaderException ex = assertThrows(EmptyRequiredHeaderException.class, () -> {
-            validationService.validateHeaders(headerMap);
-        });
-
-        assertEquals(PublicationConfiguration.LIST_TYPE + REQUIRED_HEADER_EXCEPTION_MESSAGE,
                      ex.getMessage(), VALIDATION_EXPECTED_MESSAGE);
     }
 
     @Test
     void testNullListTypeForListThrows() {
-        headerMap.put(PublicationConfiguration.LIST_TYPE, null);
+        headerGroup.setListType(null);
 
         EmptyRequiredHeaderException ex = assertThrows(EmptyRequiredHeaderException.class, () -> {
-            validationService.validateHeaders(headerMap);
+            validationService.validateHeaders(headerGroup);
         });
 
         assertEquals(PublicationConfiguration.LIST_TYPE + REQUIRED_HEADER_EXCEPTION_MESSAGE,
-                     ex.getMessage(), VALIDATION_EXPECTED_MESSAGE);
-    }
-
-    @Test
-    void testEmptyContentDateForJudgementOutcomeThrows() {
-        headerMap.put(PublicationConfiguration.TYPE_HEADER, ArtefactType.JUDGEMENTS_AND_OUTCOMES);
-        headerMap.put(PublicationConfiguration.CONTENT_DATE, EMPTY_FIELD);
-
-        EmptyRequiredHeaderException ex = assertThrows(EmptyRequiredHeaderException.class, () -> {
-            validationService.validateHeaders(headerMap);
-        });
-
-        assertEquals(PublicationConfiguration.CONTENT_DATE + REQUIRED_HEADER_EXCEPTION_MESSAGE,
                      ex.getMessage(), VALIDATION_EXPECTED_MESSAGE);
     }
 
     @Test
     void testNullContentDateForJudgementOutcomeThrows() {
-        headerMap.put(PublicationConfiguration.TYPE_HEADER, ArtefactType.JUDGEMENTS_AND_OUTCOMES);
-        headerMap.put(PublicationConfiguration.CONTENT_DATE, null);
+        headerGroup.setType(ArtefactType.JUDGEMENTS_AND_OUTCOMES);
+        headerGroup.setContentDate(null);
 
         EmptyRequiredHeaderException ex = assertThrows(EmptyRequiredHeaderException.class, () -> {
-            validationService.validateHeaders(headerMap);
+            validationService.validateHeaders(headerGroup);
         });
 
         assertEquals(PublicationConfiguration.CONTENT_DATE + REQUIRED_HEADER_EXCEPTION_MESSAGE,
@@ -283,25 +207,12 @@ class ValidationServiceTest {
     }
 
     @Test
-    void testEmptyListTypeForJudgementOutcomeThrows() {
-        headerMap.put(PublicationConfiguration.TYPE_HEADER, ArtefactType.JUDGEMENTS_AND_OUTCOMES);
-        headerMap.put(PublicationConfiguration.LIST_TYPE, EMPTY_FIELD);
-
-        EmptyRequiredHeaderException ex = assertThrows(EmptyRequiredHeaderException.class, () -> {
-            validationService.validateHeaders(headerMap);
-        });
-
-        assertEquals(PublicationConfiguration.LIST_TYPE + REQUIRED_HEADER_EXCEPTION_MESSAGE,
-                     ex.getMessage(), VALIDATION_EXPECTED_MESSAGE);
-    }
-
-    @Test
     void testNullListTypeForJudgementOutcomeThrows() {
-        headerMap.put(PublicationConfiguration.TYPE_HEADER, ArtefactType.JUDGEMENTS_AND_OUTCOMES);
-        headerMap.put(PublicationConfiguration.LIST_TYPE, null);
+        headerGroup.setType(ArtefactType.JUDGEMENTS_AND_OUTCOMES);
+        headerGroup.setListType(null);
 
         EmptyRequiredHeaderException ex = assertThrows(EmptyRequiredHeaderException.class, () -> {
-            validationService.validateHeaders(headerMap);
+            validationService.validateHeaders(headerGroup);
         });
 
         assertEquals(PublicationConfiguration.LIST_TYPE + REQUIRED_HEADER_EXCEPTION_MESSAGE,
@@ -310,11 +221,10 @@ class ValidationServiceTest {
 
     @Test
     void testListTypeAndContentDateNotNeededForGeneralPublication() {
-        headerMap.put(PublicationConfiguration.TYPE_HEADER, ArtefactType.GENERAL_PUBLICATION);
-        headerMap.put(PublicationConfiguration.LIST_TYPE, null);
-        headerMap.put(PublicationConfiguration.CONTENT_DATE, null);
+        headerGroup.setType(ArtefactType.GENERAL_PUBLICATION);
+        headerGroup.setListType(null);
+        headerGroup.setContentDate(null);
 
-        assertEquals(headerMap.size(), validationService.validateHeaders(headerMap).size(),
-                     DIFFERENT_SIZE_MAPS);
+        assertEquals(headerGroup, validationService.validateHeaders(headerGroup), "Header groups should match");
     }
 }

@@ -177,11 +177,11 @@ dependencies {
   implementation group: 'com.github.hmcts.java-logging', name: 'logging', version: reformLoggingVersion
   implementation group: 'com.github.hmcts.java-logging', name: 'logging-appinsights', version: reformLoggingVersion
   implementation group: 'com.azure', name: 'azure-data-tables', version: '12.1.2'
+  implementation 'org.postgresql:postgresql'
+  implementation 'org.springframework.boot:spring-boot-starter-validation'
   implementation 'org.springframework.boot:spring-boot-starter-data-jpa:2.5.5'
-  implementation('org.postgresql:postgresql')
 
   testImplementation "io.zonky.test:embedded-database-spring-test:2.1.1"
-  testImplementation 'com.h2database:h2'
   testImplementation(platform('org.junit:junit-bom:5.8.1'))
   testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', {
     exclude group: 'junit', module: 'junit'
@@ -210,6 +210,7 @@ rootProject.tasks.named("processSmokeTestResources") {
   duplicatesStrategy = 'include'
 }
 
+// Gradle 7.x issue, workaround from: https://github.com/gradle/gradle/issues/17236#issuecomment-894768083
 rootProject.tasks.named("processIntegrationTestResources") {
   duplicatesStrategy = 'include'
 }

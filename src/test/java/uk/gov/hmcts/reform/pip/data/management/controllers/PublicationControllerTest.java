@@ -10,9 +10,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
+
 import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactType;
+import uk.gov.hmcts.reform.pip.data.management.models.publication.HeaderGroup;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Language;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ListType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Sensitivity;
@@ -63,25 +65,18 @@ class PublicationControllerTest {
     private static final String COURT_ID = "123";
     private static final LocalDateTime CONTENT_DATE = LocalDateTime.now();
 
-    private Map<String, Object> headerMap;
     private Artefact artefact;
     private Artefact artefactWithId;
+    private HeaderGroup headers;
 
     @BeforeEach
     void setup() {
-        headerMap = new HashMap<>();
-        headerMap.put(PublicationConfiguration.PROVENANCE_HEADER,PROVENANCE);
-        headerMap.put(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID);
-        headerMap.put(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE);
-        headerMap.put(PublicationConfiguration.SENSITIVITY_HEADER,SENSITIVITY);
-        headerMap.put(PublicationConfiguration.LANGUAGE_HEADER,LANGUAGE);
-        headerMap.put(PublicationConfiguration.DISPLAY_FROM_HEADER,DISPLAY_FROM);
-        headerMap.put(PublicationConfiguration.DISPLAY_TO_HEADER,DISPLAY_TO);
-        headerMap.put(PublicationConfiguration.LIST_TYPE, LIST_TYPE);
-        headerMap.put(PublicationConfiguration.COURT_ID, COURT_ID);
-        headerMap.put(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE);
+        headers = new HeaderGroup(PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE, SENSITIVITY, LANGUAGE,
+                                              DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, COURT_ID, CONTENT_DATE);
+    }
 
-
+    @Test
+    void testCreationOfPublication() {
         artefact = Artefact.builder()
             .sourceArtefactId(SOURCE_ARTEFACT_ID)
             .displayFrom(DISPLAY_FROM)
@@ -109,12 +104,7 @@ class PublicationControllerTest {
             .courtId(COURT_ID)
             .contentDate(CONTENT_DATE)
             .build();
-    }
-
-
-    @Test
-    void testCreationOfPublication() {
-        when(validationService.validateHeaders(any())).thenReturn(headerMap);
+        when(validationService.validateHeaders(any())).thenReturn(headers);
         when(publicationService.createPublication(argThat(arg -> arg.equals(artefact)), eq(PAYLOAD)))
             .thenReturn(artefactWithId);
 
@@ -176,7 +166,7 @@ class PublicationControllerTest {
         artefactWithId.setIsFlatFile(true);
         artefactWithId.setSearch(search);
 
-        when(validationService.validateHeaders(any())).thenReturn(headerMap);
+        when(validationService.validateHeaders(any())).thenReturn(headers);
         when(publicationService.createPublication(artefact, FILE)).thenReturn(artefactWithId);
 
         ResponseEntity<Artefact> responseEntity = publicationController.uploadPublication(
