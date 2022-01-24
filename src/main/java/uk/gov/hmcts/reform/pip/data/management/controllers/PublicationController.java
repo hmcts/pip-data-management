@@ -16,12 +16,13 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
-import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.EmptyRequestHeaderException;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactType;
+import uk.gov.hmcts.reform.pip.data.management.models.publication.HeaderGroup;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Language;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Sensitivity;
 import uk.gov.hmcts.reform.pip.data.management.service.PublicationService;
+import uk.gov.hmcts.reform.pip.data.management.service.ValidationService;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -37,18 +38,24 @@ public class PublicationController {
 
     private final PublicationService publicationService;
 
+    @Autowired
+    private final ValidationService validationService;
+
     /**
      * Constructor for Publication controller.
      *
      * @param publicationService The PublicationService that contains the business logic to handle publications.
      */
     @Autowired
-    public PublicationController(PublicationService publicationService) {
+    public PublicationController(PublicationService publicationService, ValidationService validationService) {
         this.publicationService = publicationService;
+        this.validationService = validationService;
     }
 
     /**
      * This endpoint takes in the Artefact, which is split over headers and also the payload body.
+     * The suppression of concurrentHashMap warnings is because we require the ability to use nulls (say, if a date
+     * is left blank), and Hashmap provides this whereas concurrentHashMap does not.
      *
      * @param provenance       Name of the source system.
      * @param sourceArtefactId Unique ID of what publication is called by source system.
@@ -66,6 +73,7 @@ public class PublicationController {
             response = Artefact.class),
     })
     @ApiOperation("Upload a new publication")
+    @SuppressWarnings("PMD.UseConcurrentHashMap")
     @PutMapping
     public ResponseEntity<Artefact> uploadPublication(
         @RequestHeader(PublicationConfiguration.PROVENANCE_HEADER) String provenance,
@@ -78,13 +86,21 @@ public class PublicationController {
         @RequestHeader(value = PublicationConfiguration.DISPLAY_TO_HEADER, required = false)
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime displayTo,
         @RequestBody String payload) {
-        validateRequestHeaders(provenance, sourceArtefactId);
+
+        HeaderGroup initialHeaders = new HeaderGroup(provenance, sourceArtefactId, type, sensitivity, language,
+                                                     displayFrom, displayTo);
+
+
+        HeaderGroup headers = validationService.validateHeaders(initialHeaders);
 
         Artefact artefact = Artefact.builder()
-            .provenance(provenance).sourceArtefactId(sourceArtefactId)
-            .type(type).sensitivity(sensitivity)
-            .language(language)
-            .displayFrom(displayFrom).displayTo(displayTo)
+            .provenance(headers.getProvenance())
+            .sourceArtefactId(headers.getSourceArtefactId())
+            .type(headers.getType())
+            .sensitivity(headers.getSensitivity())
+            .language(headers.getLanguage())
+            .displayFrom(headers.getDisplayFrom())
+            .displayTo(headers.getDisplayTo())
             .build();
 
         Artefact createdItem = publicationService
@@ -121,15 +137,4 @@ public class PublicationController {
 
     }
 
-    /**
-     * Validates the Provenance and Source Artefact ID headers to check they are not empty.
-     * due to Spring validation only checking if these are required.
-     */
-    private void validateRequestHeaders(String provenance, String sourceArtefactId) {
-        if (provenance.isEmpty()) {
-            throw new EmptyRequestHeaderException(PublicationConfiguration.PROVENANCE_HEADER);
-        } else if (sourceArtefactId.isEmpty()) {
-            throw new EmptyRequestHeaderException(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER);
-        }
-    }
 }

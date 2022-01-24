@@ -40,7 +40,6 @@ class PublicationServiceTest {
 
     @InjectMocks
     PublicationService publicationService;
-
     private static final UUID ARTEFACT_ID = UUID.randomUUID();
     private static final String SOURCE_ARTEFACT_ID = "1234";
     private static final String PROVENANCE = "provenance";
