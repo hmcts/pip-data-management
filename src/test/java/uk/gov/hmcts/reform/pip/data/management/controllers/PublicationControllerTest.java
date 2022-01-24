@@ -54,7 +54,6 @@ class PublicationControllerTest {
 
 
     @Test
-    @SuppressWarnings("PMD.UseConcurrentHashMap")
     void testCreationOfPublication() {
         HeaderGroup headers = new HeaderGroup(PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE, SENSITIVITY, LANGUAGE,
                                       DISPLAY_FROM,
