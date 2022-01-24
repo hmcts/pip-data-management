@@ -5,13 +5,14 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ValidationException;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
@@ -34,6 +35,7 @@ class PayloadExtractorTest {
         PayloadExtractor payloadExtractor = new PayloadExtractor(List.of(jsonExtractor));
 
         when(jsonExtractor.isAccepted(PAYLOAD)).thenReturn(true);
+        when(jsonExtractor.validate(PAYLOAD)).thenReturn(List.of());
         when(jsonExtractor.extractSearchTerms(PAYLOAD)).thenReturn(TEST_MAP);
 
         Map<String, List<Object>> searchTerms = payloadExtractor.extractSearchTerms(PAYLOAD);
@@ -43,7 +45,6 @@ class PayloadExtractorTest {
     @Test
     void testNoExtractorFound() {
         PayloadExtractor payloadExtractor = new PayloadExtractor(List.of(jsonExtractor));
-
         when(jsonExtractor.isAccepted(PAYLOAD)).thenReturn(false);
 
         Map<String, List<Object>> searchTerms = payloadExtractor.extractSearchTerms(PAYLOAD);
@@ -51,16 +52,18 @@ class PayloadExtractorTest {
     }
 
     @Test
-    void testPayloadValid() {
+    void testExtractorFoundButInvalid() {
+        final String invalidPayload = "Payload invalid";
         PayloadExtractor payloadExtractor = new PayloadExtractor(List.of(jsonExtractor));
+
         when(jsonExtractor.isAccepted(PAYLOAD)).thenReturn(true);
-        when(jsonExtractor.validate(PAYLOAD)).thenReturn(new ArrayList<>());
-        assertTrue(payloadExtractor.acceptAndValidate(PAYLOAD), "Payload valid");
+        when(jsonExtractor.validate(PAYLOAD)).thenReturn(List.of(invalidPayload));
+
+        ValidationException validationException =
+            assertThrows(ValidationException.class, () -> payloadExtractor.extractSearchTerms(PAYLOAD));
+
+        assertTrue(validationException.getMessage().contains(invalidPayload),
+                   "Invalid error message is thrown");
     }
 
-    @Test
-    void testPayloadNotValid() {
-        PayloadExtractor payloadExtractor = new PayloadExtractor(List.of(jsonExtractor));
-        assertTrue(!payloadExtractor.acceptAndValidate(null), "Payload not valid");
-    }
 }

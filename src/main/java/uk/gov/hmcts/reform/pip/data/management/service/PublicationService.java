@@ -6,7 +6,6 @@ import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.AzureBlobService;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.NotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.UnauthorisedRequestException;
-import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ValidationException;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Sensitivity;
 import uk.gov.hmcts.reform.pip.data.management.utils.PayloadExtractor;
@@ -45,25 +44,20 @@ public class PublicationService {
      * @return Returns the UUID of the artefact that was created.
      */
     public Artefact createPublication(Artefact artefact, String payload) {
-        boolean payloadValidAndAccepted = payloadExtractor.acceptAndValidate(payload);
-        if (payloadValidAndAccepted) {
-            Optional<Artefact> foundArtefact =  artefactRepository
-                .findBySourceArtefactIdAndProvenance(artefact.getSourceArtefactId(), artefact.getProvenance());
+        Optional<Artefact> foundArtefact =  artefactRepository
+            .findBySourceArtefactIdAndProvenance(artefact.getSourceArtefactId(), artefact.getProvenance());
 
-            foundArtefact.ifPresent(value -> artefact.setArtefactId(value.getArtefactId()));
+        foundArtefact.ifPresent(value -> artefact.setArtefactId(value.getArtefactId()));
 
-            String blobUrl = azureBlobService.createPayload(
-                artefact.getSourceArtefactId(),
-                artefact.getProvenance(),
-                payload);
+        String blobUrl = azureBlobService.createPayload(
+            artefact.getSourceArtefactId(),
+            artefact.getProvenance(),
+            payload);
 
-            artefact.setPayload(blobUrl);
-            artefact.setSearch(payloadExtractor.extractSearchTerms(payload));
+        artefact.setPayload(blobUrl);
+        artefact.setSearch(payloadExtractor.extractSearchTerms(payload));
 
-            return artefactRepository.save(artefact);
-        } else {
-            throw new ValidationException("Payload is not accepted or not valid.");
-        }
+        return artefactRepository.save(artefact);
     }
 
 

@@ -20,6 +20,7 @@ import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.HeaderGroup;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Language;
+import uk.gov.hmcts.reform.pip.data.management.models.publication.ListType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Sensitivity;
 import uk.gov.hmcts.reform.pip.data.management.service.PublicationService;
 import uk.gov.hmcts.reform.pip.data.management.service.ValidationService;
@@ -64,6 +65,9 @@ public class PublicationController {
      * @param language         Language of publication.
      * @param displayFrom      Date / Time from which the publication will be displayed.
      * @param displayTo        Date / Time until which the publication will be displayed.
+     * @param listType         The type of list, if Artefact type = LIST.
+     * @param courtId          The ID of the court, from the source system.
+     * @param contentDate      The date the publication is for.
      * @param payload          JSON Blob with key/value pairs of data to be published.
      * @return The created artefact.
      */
@@ -85,10 +89,14 @@ public class PublicationController {
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime displayFrom,
         @RequestHeader(value = PublicationConfiguration.DISPLAY_TO_HEADER, required = false)
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime displayTo,
+        @RequestHeader(value = PublicationConfiguration.LIST_TYPE, required = false) ListType listType,
+        @RequestHeader(PublicationConfiguration.COURT_ID) String courtId,
+        @RequestHeader(value = PublicationConfiguration.CONTENT_DATE, required = false)
+        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime contentDate,
         @RequestBody String payload) {
 
         HeaderGroup initialHeaders = new HeaderGroup(provenance, sourceArtefactId, type, sensitivity, language,
-                                                     displayFrom, displayTo);
+                                                     displayFrom, displayTo, listType, courtId, contentDate);
 
 
         HeaderGroup headers = validationService.validateHeaders(initialHeaders);
@@ -101,6 +109,9 @@ public class PublicationController {
             .language(headers.getLanguage())
             .displayFrom(headers.getDisplayFrom())
             .displayTo(headers.getDisplayTo())
+            .listType(headers.getListType())
+            .courtId(headers.getCourtId())
+            .contentDate(headers.getContentDate())
             .build();
 
         Artefact createdItem = publicationService

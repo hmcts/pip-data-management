@@ -1,15 +1,12 @@
 package uk.gov.hmcts.reform.pip.data.management.utils;
 
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pip.data.management.Application;
 import uk.gov.hmcts.reform.pip.data.management.config.AzureBlobConfigurationTest;
-import uk.gov.hmcts.reform.pip.data.management.config.SearchConfiguration;
-import uk.gov.hmcts.reform.pip.data.management.config.ValidationConfiguration;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,19 +16,13 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 @SpringBootTest(classes = {Application.class, AzureBlobConfigurationTest.class})
 @ActiveProfiles(profiles = "test")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 class JsonExtractorTest {
-
-    @Mock
-    SearchConfiguration searchConfiguration;
-
-    @Mock
-    ValidationConfiguration validationConfiguration;
 
     @Autowired
     JsonExtractor jsonExtractor;
@@ -43,7 +34,7 @@ class JsonExtractorTest {
     @Test
     void testExtractSearchTerms() {
         try (InputStream mockFile = this.getClass().getClassLoader()
-            .getResourceAsStream("mocks/BadJsonPayload.json")) {
+            .getResourceAsStream("mocks/jsonPayload.json")) {
             String textJson = new String(mockFile.readAllBytes(), StandardCharsets.UTF_8);
             Map<String, List<Object>> searchTerms = jsonExtractor.extractSearchTerms(textJson);
 
@@ -53,9 +44,7 @@ class JsonExtractorTest {
             assertEquals("CASE1234", searchTerms.get(TEST_KEY).get(0), "The search term value"
                 + "does not contain expected result");
         } catch (IOException exception) {
-            assertThrows(IOException.class, () -> {
-                this.getClass();
-            });
+            fail("Unknown exception when opening the paylaod file");
         }
 
     }
@@ -63,7 +52,7 @@ class JsonExtractorTest {
     @Test
     void testExtractSearchTermWhereMissing() {
         try (InputStream mockFile = this.getClass().getClassLoader()
-            .getResourceAsStream("mocks/BadJsonPayload.json")) {
+            .getResourceAsStream("mocks/jsonPayload.json")) {
             String textJson = new String(mockFile.readAllBytes(), StandardCharsets.UTF_8);
             Map<String, List<Object>> searchTerms = jsonExtractor.extractSearchTerms(textJson);
 
@@ -74,9 +63,7 @@ class JsonExtractorTest {
             assertEquals("CASE1234", searchTerms.get(TEST_KEY).get(0), "The search term value"
                 + "does not contain expected result");
         } catch (IOException exception) {
-            assertThrows(IOException.class, () -> {
-                this.getClass();
-            });
+            fail("Unknown exception when opening the payload file");
         }
     }
 
@@ -97,9 +84,7 @@ class JsonExtractorTest {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
             assertFalse(jsonExtractor.validate(text).isEmpty(), "Valid JSON string marked as not valid");
         } catch (IOException exception) {
-            assertThrows(IOException.class, () -> {
-                this.getClass();
-            });
+            fail("Unkown exception when opening the payload file");
         }
     }
 
@@ -110,9 +95,7 @@ class JsonExtractorTest {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
             assertTrue(jsonExtractor.validate(text).isEmpty(), "Valid JSON string marked as valid");
         } catch (IOException exception) {
-            assertThrows(IOException.class, () -> {
-                this.getClass();
-            });
+            fail("Unknown exception when opening the payload file");
         }
     }
 

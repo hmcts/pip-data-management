@@ -27,6 +27,7 @@ import uk.gov.hmcts.reform.pip.data.management.errorhandling.ExceptionResponse;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Language;
+import uk.gov.hmcts.reform.pip.data.management.models.publication.ListType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Sensitivity;
 
 import java.io.IOException;
@@ -75,8 +76,9 @@ class PublicationTest {
     private static final Language LANGUAGE = Language.ENGLISH;
     private static final String TEST_VALUE = "test";
     private static final String PAYLOAD_URL = "https://localhost";
-    private static final String JSON_PAYLOAD = "{\"CourtList\":{\"CourtList\":[{\"CourtHouse\":{\"CourtHouseCode"
-        + "\":\"12345\"}}]}}";
+    private static final ListType LIST_TYPE = ListType.CIVIL_DAILY_CAUSE_LIST;
+    private static final String COURT_ID = "12345";
+    private static final LocalDateTime CONTENT_DATE = LocalDateTime.now();
     private static final String SEARCH_KEY_FOUND = "array-value";
     private static final String SEARCH_KEY_NOT_FOUND = "case-urn";
     private static final String SEARCH_VALUE_1 = "array-value-1";
@@ -111,6 +113,10 @@ class PublicationTest {
             .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
             .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO)
             .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
+            .header(PublicationConfiguration.LIST_TYPE, LIST_TYPE)
+            .header(PublicationConfiguration.COURT_ID, COURT_ID)
+            .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
+
             .content(payload)
             .contentType(MediaType.APPLICATION_JSON);
     }
@@ -137,6 +143,9 @@ class PublicationTest {
         assertEquals(artefact.getProvenance(), PROVENANCE, "Provenance does not match input provenance");
         assertEquals(artefact.getLanguage(), LANGUAGE, "Language does not match input language");
         assertEquals(artefact.getSensitivity(), SENSITIVITY, "Sensitivity does not match input sensitivity");
+        assertEquals(artefact.getListType(), LIST_TYPE, "List type does not match expected list type");
+        assertEquals(artefact.getCourtId(), COURT_ID, "Court ID does not match expected court ID");
+        assertEquals(artefact.getContentDate(), CONTENT_DATE, "Content Date does not match expected content");
 
         Map<String, List<Object>> searchResult = artefact.getSearch();
         assertTrue(
@@ -171,6 +180,7 @@ class PublicationTest {
             .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
             .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
             .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO)
+            .header(PublicationConfiguration.COURT_ID, COURT_ID)
             .content(payload)
             .contentType(MediaType.APPLICATION_JSON);
 
@@ -199,6 +209,7 @@ class PublicationTest {
             .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO)
             .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
+            .header(PublicationConfiguration.COURT_ID, COURT_ID)
             .content(payload)
             .contentType(MediaType.APPLICATION_JSON);
 
@@ -227,6 +238,7 @@ class PublicationTest {
             .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
             .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
+            .header(PublicationConfiguration.COURT_ID, COURT_ID)
             .content(payload)
             .contentType(MediaType.APPLICATION_JSON);
         MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
@@ -252,6 +264,7 @@ class PublicationTest {
             .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
             .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
+            .header(PublicationConfiguration.COURT_ID, COURT_ID)
             .content(payload)
             .contentType(MediaType.APPLICATION_JSON);
         MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
@@ -277,6 +290,7 @@ class PublicationTest {
             .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
             .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
+            .header(PublicationConfiguration.COURT_ID, COURT_ID)
             .content(payload)
             .contentType(MediaType.APPLICATION_JSON);
         MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
@@ -301,6 +315,7 @@ class PublicationTest {
             .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
             .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
+            .header(PublicationConfiguration.COURT_ID, COURT_ID)
             .content(payload)
             .contentType(MediaType.APPLICATION_JSON);
         MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
@@ -325,6 +340,7 @@ class PublicationTest {
             .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
             .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO)
+            .header(PublicationConfiguration.COURT_ID, COURT_ID)
             .content(payload)
             .contentType(MediaType.APPLICATION_JSON);
         MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
@@ -350,6 +366,7 @@ class PublicationTest {
             .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
             .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
+            .header(PublicationConfiguration.COURT_ID, COURT_ID)
             .content(payload)
             .contentType(MediaType.APPLICATION_JSON);
         MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
@@ -374,6 +391,7 @@ class PublicationTest {
             .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
             .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO)
+            .header(PublicationConfiguration.COURT_ID, COURT_ID)
             .content(payload)
             .contentType(MediaType.APPLICATION_JSON);
         MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
@@ -399,6 +417,7 @@ class PublicationTest {
             .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO)
             .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
+            .header(PublicationConfiguration.COURT_ID, COURT_ID)
             .content(payload)
             .contentType(MediaType.APPLICATION_JSON);
 
@@ -424,6 +443,7 @@ class PublicationTest {
             .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
             .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
+            .header(PublicationConfiguration.COURT_ID, COURT_ID)
             .content(payload)
             .contentType(MediaType.APPLICATION_JSON);
 
@@ -452,6 +472,7 @@ class PublicationTest {
             .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO)
             .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
+            .header(PublicationConfiguration.COURT_ID, COURT_ID)
             .content(payload)
             .contentType(MediaType.APPLICATION_JSON);
 
@@ -479,6 +500,7 @@ class PublicationTest {
             .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO)
             .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
+            .header(PublicationConfiguration.COURT_ID, COURT_ID)
             .content(payload)
             .contentType(MediaType.APPLICATION_JSON);
 
@@ -506,6 +528,7 @@ class PublicationTest {
             .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
             .header(PublicationConfiguration.PROVENANCE_HEADER, EMPTY_VALUE)
+            .header(PublicationConfiguration.COURT_ID, COURT_ID)
             .content(payload)
             .contentType(MediaType.APPLICATION_JSON);
 
@@ -532,6 +555,7 @@ class PublicationTest {
             .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO)
             .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
+            .header(PublicationConfiguration.COURT_ID, COURT_ID)
             .content(payload)
             .contentType(MediaType.APPLICATION_JSON);
 
@@ -559,6 +583,7 @@ class PublicationTest {
             .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO)
             .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
+            .header(PublicationConfiguration.COURT_ID, COURT_ID)
             .content(payload)
             .contentType(MediaType.APPLICATION_JSON);
 
@@ -586,6 +611,7 @@ class PublicationTest {
             .header(PublicationConfiguration.DISPLAY_TO_HEADER, TEST_VALUE)
             .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
+            .header(PublicationConfiguration.COURT_ID, COURT_ID)
             .content(payload)
             .contentType(MediaType.APPLICATION_JSON);
 
@@ -614,6 +640,7 @@ class PublicationTest {
             .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO)
             .header(PublicationConfiguration.DISPLAY_FROM_HEADER, TEST_VALUE)
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
+            .header(PublicationConfiguration.COURT_ID, COURT_ID)
             .content(payload)
             .contentType(MediaType.APPLICATION_JSON);
 
@@ -642,6 +669,7 @@ class PublicationTest {
             .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO)
             .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
             .header(PublicationConfiguration.LANGUAGE_HEADER, TEST_VALUE)
+            .header(PublicationConfiguration.COURT_ID, COURT_ID)
             .content(payload)
             .contentType(MediaType.APPLICATION_JSON);
 
@@ -670,6 +698,7 @@ class PublicationTest {
             .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO)
             .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
+            .header(PublicationConfiguration.COURT_ID, COURT_ID)
             .content(payload)
             .contentType(MediaType.APPLICATION_JSON);
 
@@ -701,6 +730,7 @@ class PublicationTest {
             .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
             .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO)
             .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
+            .header(PublicationConfiguration.COURT_ID, COURT_ID)
             .content(payload)
             .contentType(MediaType.APPLICATION_JSON);
 
@@ -746,6 +776,7 @@ class PublicationTest {
             .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
             .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO)
             .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
+            .header(PublicationConfiguration.COURT_ID, COURT_ID)
             .content(PAYLOAD_UNKNOWN)
             .contentType(MediaType.APPLICATION_JSON);
 
@@ -773,7 +804,8 @@ class PublicationTest {
             .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
             .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO.plusMonths(1))
             .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM.minusMonths(2))
-            .content(JSON_PAYLOAD)
+            .header(PublicationConfiguration.COURT_ID, COURT_ID)
+            .content(payload)
             .contentType(MediaType.APPLICATION_JSON);
 
         MvcResult createResponse =
@@ -797,7 +829,8 @@ class PublicationTest {
         Artefact retrievedArtefact = objectMapper.readValue(
             jsonArray.get(0).toString(), Artefact.class
         );
-        assertEquals(List.of("12345"), retrievedArtefact.getSearch().get("court-id"), "test");
+        assertEquals(COURT_ID, retrievedArtefact.getCourtId(),
+                     "Incorrect court ID has been retrieved from the database");
 
 
     }

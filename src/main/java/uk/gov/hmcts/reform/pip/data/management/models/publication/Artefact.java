@@ -86,6 +86,22 @@ public class Artefact {
     private LocalDateTime displayTo;
 
     /**
+     * The type of list.
+     */
+    @Enumerated(EnumType.STRING)
+    private ListType listType;
+
+    /**
+     * Court Id based on the source system (provenance).
+     */
+    private String courtId;
+
+    /**
+     * Date / Time the publication is referring to.
+     */
+    private LocalDateTime contentDate;
+
+    /**
      * The URL for the payload in the Azure Blob Service.
      */
     private String payload;

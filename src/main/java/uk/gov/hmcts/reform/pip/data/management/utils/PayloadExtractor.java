@@ -27,7 +27,7 @@ public class PayloadExtractor {
      */
     public Map<String, List<Object>> extractSearchTerms(String payload) {
         for (Extractor extractor : extractors) {
-            if (this.acceptAndValidate(payload)) {
+            if (acceptAndValidate(extractor, payload)) {
                 return extractor.extractSearchTerms(payload);
             }
         }
@@ -39,19 +39,16 @@ public class PayloadExtractor {
      * Method that determines if the payload is valid and acceptable based on the extractor.
      * @return true or false.
      */
-    public boolean acceptAndValidate(String payload) {
-        boolean validAndAccepted = false;
-        for (Extractor extractor : extractors) {
-            if (extractor.isAccepted(payload)) {
-                List<String> errors = extractor.validate(payload);
-                if (errors.isEmpty()) {
-                    validAndAccepted = true;
-                } else {
-                    throw new ValidationException(String.join(", ", errors));
-                }
+    private boolean acceptAndValidate(Extractor extractor, String payload) {
+        if (extractor.isAccepted(payload)) {
+            List<String> errors = extractor.validate(payload);
+            if (errors.isEmpty()) {
+                return true;
+            } else {
+                throw new ValidationException(String.join(", ", errors));
             }
         }
-        return validAndAccepted;
+        return false;
     }
 
 }

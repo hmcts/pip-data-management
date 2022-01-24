@@ -5,6 +5,7 @@ import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.HeaderVa
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.HeaderGroup;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Language;
+import uk.gov.hmcts.reform.pip.data.management.models.publication.ListType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Sensitivity;
 
 import java.time.LocalDateTime;
@@ -24,6 +25,9 @@ class ValidationServiceTest {
     private static final String PROVENANCE = "provenance";
     private static final Sensitivity SENSITIVITY = Sensitivity.PUBLIC;
     private static final ArtefactType ARTEFACT_TYPE = ArtefactType.LIST;
+    private static final String COURT_ID = "123";
+    private static final ListType LIST_TYPE = ListType.CIVIL_DAILY_CAUSE_LIST;
+    private static final LocalDateTime CONTENT_DATE = LocalDateTime.now();
     private static final String EMPTY_FIELD = "";
     private static final String VALIDATION_EXPECTED_MESSAGE =
         "The expected exception does not contain the correct message";
@@ -33,7 +37,7 @@ class ValidationServiceTest {
     @Test
     void testCreationOfPublicationEmptySourceArtefactId() {
         HeaderGroup headerGroup = new HeaderGroup(PROVENANCE, EMPTY_FIELD, ARTEFACT_TYPE, SENSITIVITY, LANGUAGE,
-                                                  DISPLAY_FROM, DISPLAY_TO
+                                                  DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, COURT_ID, CONTENT_DATE
         );
         HeaderValidationException emptyRequestHeaderException =
             assertThrows(HeaderValidationException.class, () -> {
@@ -50,7 +54,7 @@ class ValidationServiceTest {
     @Test
     void testCreationOfPublicationEmptyProvenance() {
         HeaderGroup headerGroup = new HeaderGroup(EMPTY_FIELD, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE, SENSITIVITY, LANGUAGE,
-                                                  DISPLAY_FROM, DISPLAY_TO
+                                                  DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, COURT_ID, CONTENT_DATE
         );
         HeaderValidationException emptyRequestHeaderException =
             assertThrows(HeaderValidationException.class, () -> {
@@ -67,7 +71,7 @@ class ValidationServiceTest {
     @Test
     void testCreationOfPublicationEmptySourceArtefactIdAndEmptyProvenanceOnlyFirstIsShown() {
         HeaderGroup headerGroup = new HeaderGroup(EMPTY_FIELD, EMPTY_FIELD, ARTEFACT_TYPE, SENSITIVITY, LANGUAGE,
-                                                  DISPLAY_FROM, DISPLAY_TO
+                                                  DISPLAY_FROM, DISPLAY_TO,  LIST_TYPE, COURT_ID, CONTENT_DATE
         );
         HeaderValidationException emptyRequestHeaderException =
             assertThrows(HeaderValidationException.class, () -> {
@@ -91,7 +95,10 @@ class ValidationServiceTest {
             SENSITIVITY,
             LANGUAGE,
             DISPLAY_FROM,
-            null
+            null,
+            LIST_TYPE,
+            COURT_ID,
+            CONTENT_DATE
         );
         HeaderValidationException dateHeaderValidationException =
             assertThrows(HeaderValidationException.class, () -> {
@@ -106,7 +113,7 @@ class ValidationServiceTest {
     void testCreationOfPublicationListTypeAndEmptyDateTo() {
         HeaderGroup headerGroup = new HeaderGroup(PROVENANCE, SOURCE_ARTEFACT_ID, ArtefactType.LIST, SENSITIVITY,
                                                   LANGUAGE,
-                                                  DISPLAY_FROM, null
+                                                  DISPLAY_FROM, null,  LIST_TYPE, COURT_ID, CONTENT_DATE
         );
         HeaderValidationException dateHeaderValidationException =
             assertThrows(HeaderValidationException.class, () -> {
@@ -121,7 +128,7 @@ class ValidationServiceTest {
     void testCreationOfPublicationOutcomeTypeAndEmptyDateTo() {
         HeaderGroup headerGroup = new HeaderGroup(PROVENANCE, SOURCE_ARTEFACT_ID, ArtefactType.OUTCOME, SENSITIVITY,
                                                   LANGUAGE,
-                                                  DISPLAY_FROM, null
+                                                  DISPLAY_FROM, null,  LIST_TYPE, COURT_ID, CONTENT_DATE
         );
         HeaderValidationException dateHeaderValidationException =
             assertThrows(HeaderValidationException.class, () -> {
@@ -135,7 +142,7 @@ class ValidationServiceTest {
     @Test
     void testCreationOfPublicationListTypeAndEmptyDateFrom() {
         HeaderGroup headerGroup = new HeaderGroup(PROVENANCE, SOURCE_ARTEFACT_ID, ArtefactType.LIST, SENSITIVITY,
-                                                  LANGUAGE, null, DISPLAY_TO
+                                                  LANGUAGE, null, DISPLAY_TO,  LIST_TYPE, COURT_ID, CONTENT_DATE
         );
         HeaderValidationException dateHeaderValidationException =
             assertThrows(HeaderValidationException.class, () -> {
@@ -149,7 +156,7 @@ class ValidationServiceTest {
     @Test
     void testCreationOfPublicationJudgementTypeAndEmptyDateFrom() {
         HeaderGroup headerGroup = new HeaderGroup(PROVENANCE, SOURCE_ARTEFACT_ID, ArtefactType.JUDGEMENT, SENSITIVITY,
-                                                  LANGUAGE, null, DISPLAY_TO
+                                                  LANGUAGE, null, DISPLAY_TO, LIST_TYPE, COURT_ID, CONTENT_DATE
         );
         HeaderValidationException dateHeaderValidationException =
             assertThrows(HeaderValidationException.class, () -> {
@@ -163,7 +170,7 @@ class ValidationServiceTest {
     @Test
     void testCreationOfPublicationOutcomeTypeAndEmptyDateFrom() {
         HeaderGroup headerGroup = new HeaderGroup(PROVENANCE, SOURCE_ARTEFACT_ID, ArtefactType.OUTCOME, SENSITIVITY,
-                                                  LANGUAGE, null, DISPLAY_TO
+                                                  LANGUAGE, null, DISPLAY_TO, LIST_TYPE, COURT_ID, CONTENT_DATE
         );
         HeaderValidationException dateHeaderValidationException =
             assertThrows(HeaderValidationException.class, () -> {
@@ -183,7 +190,10 @@ class ValidationServiceTest {
             SENSITIVITY,
             LANGUAGE,
             null,
-            DISPLAY_TO
+            DISPLAY_TO,
+            LIST_TYPE,
+            COURT_ID,
+            CONTENT_DATE
         );
 
         assertNotNull(
@@ -201,7 +211,10 @@ class ValidationServiceTest {
                                                   SENSITIVITY,
                                                   LANGUAGE,
                                                  DISPLAY_FROM,
-                                                  null
+                                                  null,
+                                                  LIST_TYPE,
+                                                  COURT_ID,
+                                                  CONTENT_DATE
         );
 
         assertNull(

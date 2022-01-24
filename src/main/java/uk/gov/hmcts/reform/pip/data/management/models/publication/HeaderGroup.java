@@ -26,5 +26,11 @@ public class HeaderGroup {
 
     private LocalDateTime displayTo;
 
+    private ListType listType;
+
+    private String courtId;
+
+    private LocalDateTime contentDate;
+
 
 }

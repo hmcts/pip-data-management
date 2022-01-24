@@ -11,6 +11,7 @@ import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.HeaderGroup;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Language;
+import uk.gov.hmcts.reform.pip.data.management.models.publication.ListType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Sensitivity;
 import uk.gov.hmcts.reform.pip.data.management.service.PublicationService;
 import uk.gov.hmcts.reform.pip.data.management.service.ValidationService;
@@ -46,6 +47,9 @@ class PublicationControllerTest {
     private static final String PROVENANCE = "provenance";
     private static final Sensitivity SENSITIVITY = Sensitivity.PUBLIC;
     private static final ArtefactType ARTEFACT_TYPE = ArtefactType.LIST;
+    private static final ListType LIST_TYPE = ListType.CIVIL_DAILY_CAUSE_LIST;
+    private static final String COURT_ID = "123";
+    private static final LocalDateTime CONTENT_DATE = LocalDateTime.now();
     private static final String PAYLOAD = "payload";
     private static final String PAYLOAD_URL = "This is a test payload";
     private static final String EMPTY_FIELD = "";
@@ -58,7 +62,7 @@ class PublicationControllerTest {
     void testCreationOfPublication() {
         HeaderGroup headers = new HeaderGroup(PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE, SENSITIVITY, LANGUAGE,
                                       DISPLAY_FROM,
-                                  DISPLAY_TO);
+                                  DISPLAY_TO, LIST_TYPE, COURT_ID, CONTENT_DATE);
 
         Artefact artefact = Artefact.builder()
             .sourceArtefactId(SOURCE_ARTEFACT_ID)
@@ -68,6 +72,9 @@ class PublicationControllerTest {
             .provenance(PROVENANCE)
             .sensitivity(SENSITIVITY)
             .type(ARTEFACT_TYPE)
+            .listType(LIST_TYPE)
+            .courtId(COURT_ID)
+            .contentDate(CONTENT_DATE)
             .build();
 
         Artefact artefactWithId = Artefact.builder()
@@ -80,26 +87,23 @@ class PublicationControllerTest {
             .sensitivity(SENSITIVITY)
             .type(ARTEFACT_TYPE)
             .payload(PAYLOAD_URL)
+            .listType(LIST_TYPE)
+            .courtId(COURT_ID)
+            .contentDate(CONTENT_DATE)
             .build();
 
         when(validationService.validateHeaders(any())).thenReturn(headers);
         when(publicationService.createPublication(argThat(arg -> arg.equals(artefact)), eq(PAYLOAD)))
             .thenReturn(artefactWithId);
 
-
-
         ResponseEntity<Artefact> responseEntity = publicationController.uploadPublication(
             PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE,
-            SENSITIVITY, LANGUAGE, DISPLAY_FROM, DISPLAY_TO, PAYLOAD
+            SENSITIVITY, LANGUAGE, DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, COURT_ID, CONTENT_DATE, PAYLOAD
         );
 
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode(), "A created status code is returned");
         assertEquals(artefactWithId, responseEntity.getBody(), "The expected return ID is returned");
     }
-
-
-
-
 
     @Test
     void testBlobEndpointReturnsOk() {
@@ -130,6 +134,9 @@ class PublicationControllerTest {
             .provenance(PROVENANCE)
             .sensitivity(SENSITIVITY)
             .type(ARTEFACT_TYPE)
+            .listType(LIST_TYPE)
+            .courtId(COURT_ID)
+            .contentDate(CONTENT_DATE)
             .payload(PAYLOAD_URL)
             .build();
         when(publicationService.getByArtefactId(any(), any())).thenReturn(String.valueOf(artefactWithId));
@@ -151,6 +158,9 @@ class PublicationControllerTest {
             .provenance(PROVENANCE)
             .sensitivity(SENSITIVITY)
             .type(ARTEFACT_TYPE)
+            .listType(LIST_TYPE)
+            .courtId(COURT_ID)
+            .contentDate(CONTENT_DATE)
             .payload(PAYLOAD_URL)
             .build();
         List<Artefact> artefactList = List.of(artefactWithId);
