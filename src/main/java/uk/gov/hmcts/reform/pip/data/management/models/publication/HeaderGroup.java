@@ -63,14 +63,23 @@ public class HeaderGroup {
     @Valid
     private LocalDateTime displayTo;
 
+    /**
+     * DL / SL / WL / FL / PL / SJP.
+     */
     @Enumerated
     private ListType listType;
 
+    /**
+     * The court id from the source system.
+     */
     @Valid
     @NotNull
     @NotBlank
     private String courtId;
 
+    /**
+     * The local date time the publication is referring to.
+     */
     @Valid
     private LocalDateTime contentDate;
 

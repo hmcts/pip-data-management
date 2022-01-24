@@ -10,8 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
-
-import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.HeaderGroup;
@@ -73,10 +71,6 @@ class PublicationControllerTest {
     void setup() {
         headers = new HeaderGroup(PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE, SENSITIVITY, LANGUAGE,
                                               DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, COURT_ID, CONTENT_DATE);
-    }
-
-    @Test
-    void testCreationOfPublication() {
         artefact = Artefact.builder()
             .sourceArtefactId(SOURCE_ARTEFACT_ID)
             .displayFrom(DISPLAY_FROM)
@@ -104,6 +98,10 @@ class PublicationControllerTest {
             .courtId(COURT_ID)
             .contentDate(CONTENT_DATE)
             .build();
+    }
+
+    @Test
+    void testCreationOfPublication() {
         when(validationService.validateHeaders(any())).thenReturn(headers);
         when(publicationService.createPublication(argThat(arg -> arg.equals(artefact)), eq(PAYLOAD)))
             .thenReturn(artefactWithId);

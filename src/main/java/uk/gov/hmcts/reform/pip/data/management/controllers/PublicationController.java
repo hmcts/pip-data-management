@@ -29,10 +29,10 @@ import uk.gov.hmcts.reform.pip.data.management.service.PublicationService;
 import uk.gov.hmcts.reform.pip.data.management.service.ValidationService;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import javax.validation.Valid;
 
 /**
@@ -169,7 +169,7 @@ public class PublicationController {
 
         HeaderGroup headers = validationService.validateHeaders(initialHeaders);
 
-        Map<String, List<Object>> search = new HashMap<>();
+        Map<String, List<Object>> search = new ConcurrentHashMap<>();
         search.put("court-id", List.of(courtId));
 
         Artefact artefact = Artefact.builder()

@@ -75,7 +75,8 @@ public class PublicationService {
     /**
      * Checks if the artefact already exists based on source artefact id and provenance, if so it applies the
      * existing artefact ID to update.
-     * @param artefact
+     *
+     * @param artefact The artefact to check existing on
      */
     private void applyExistingArtefact(Artefact artefact) {
         Optional<Artefact> foundArtefact = artefactRepository

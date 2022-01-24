@@ -1,7 +1,6 @@
 package uk.gov.hmcts.reform.pip.data.management.service;
 
 import org.springframework.stereotype.Service;
-
 import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.DateValidationException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.EmptyRequiredHeaderException;

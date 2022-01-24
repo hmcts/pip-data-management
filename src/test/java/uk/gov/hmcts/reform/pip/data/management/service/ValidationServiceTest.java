@@ -149,7 +149,7 @@ class ValidationServiceTest {
     @Test
     void testValidationOfGeneralPublicationTypeWithNoDateFrom() {
         headerGroup.setType(ArtefactType.GENERAL_PUBLICATION);
-        headerGroup.setDisplayFrom( null);
+        headerGroup.setDisplayFrom(null);
         headerGroup.setDisplayTo(null);
 
         assertNotNull(
