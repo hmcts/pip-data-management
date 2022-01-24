@@ -9,7 +9,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 /**
- * Class that represents a group of headers to be validated in the ValidationService
+ * Class that represents a group of headers to be validated in the ValidationService.
  */
 @Data
 @AllArgsConstructor
@@ -29,7 +29,7 @@ public class HeaderGroup {
     @NotNull
     private String sourceArtefactId;
 
-     /**
+    /**
      * List / Outcome / Judgement / Status Update.
      */
     @Enumerated
