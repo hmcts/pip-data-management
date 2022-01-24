@@ -65,4 +65,5 @@ payload:
       court-name: "$['courtLists'][*]['courtHouse']['courtHouseName']"
       court-id: "$['courtLists'][*]['courtHouse']['courtHouseCode']"
 validations:
-  schema-json-file: "schema3-draft.json"
+  master-schema: "schema3-draft.json"
+  daily-cause-list: "schema3-draft.json"

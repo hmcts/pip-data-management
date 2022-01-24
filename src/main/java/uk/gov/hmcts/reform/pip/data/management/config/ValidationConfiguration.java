@@ -13,6 +13,14 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @Setter
 public  class ValidationConfiguration {
 
-    public String schemaJsonFile;
+    /**
+     * Config option for the master schema file.
+     */
+    public String masterSchema;
+
+    /**
+     *  Config option for the daily cause list.
+     */
+    public String dailyCauseList;
 
 }

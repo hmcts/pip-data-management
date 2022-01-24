@@ -5,7 +5,7 @@ package uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions;
  */
 public class ValidationException extends RuntimeException {
 
-    private static final long serialVersionUID = -5431906982662313298L;
+    private static final long serialVersionUID = -7073660693904036960L;
 
     /**
      * Constructor for the Exception.

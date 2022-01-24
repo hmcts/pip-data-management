@@ -749,7 +749,16 @@ class PublicationTest {
             .content(PAYLOAD_UNKNOWN)
             .contentType(MediaType.APPLICATION_JSON);
 
-        mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
+        MvcResult createResponse =
+            mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
+
+        Artefact createdArtefact = objectMapper.readValue(
+            createResponse.getResponse().getContentAsString(),
+            Artefact.class
+        );
+
+        assertTrue(createdArtefact.getSearch().isEmpty(), "Artefact search criteria exists"
+            + "when payload is of an unknown type");
     }
 
     @DisplayName("Verify that artefact is returned with given get")
