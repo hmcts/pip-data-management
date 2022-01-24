@@ -571,6 +571,33 @@ class PublicationTest {
         assertTrue(exceptionResponse.getMessage().contains("x-source-artefact-id"), VALIDATION_EXCEPTION_RESPONSE);
     }
 
+    @DisplayName("Should return a 400 Bad Request if the source court id is missing")
+    @Test
+    void testMissingCourtId() throws Exception {
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+            .put(PUT_URL)
+            .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
+            .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
+            .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
+            .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
+            .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO)
+            .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
+            .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
+            .content(payload)
+            .contentType(MediaType.APPLICATION_JSON);
+
+        MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
+            .andExpect(status().isBadRequest()).andReturn();
+
+        assertFalse(response.getResponse().getContentAsString().isEmpty(), VALIDATION_EMPTY_RESPONSE);
+        ExceptionResponse exceptionResponse = objectMapper.readValue(
+            response.getResponse().getContentAsString(),
+            ExceptionResponse.class
+        );
+
+        assertTrue(exceptionResponse.getMessage().contains("x-court-id"), VALIDATION_EXCEPTION_RESPONSE);
+    }
+
     @DisplayName("Should return a 400 Bad Request if the source artifact id is missing")
     @Test
     void testEmptySourceArtifactId() throws Exception {
