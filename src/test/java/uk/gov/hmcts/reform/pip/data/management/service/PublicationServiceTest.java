@@ -8,10 +8,13 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.AzureBlobService;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.UnauthorisedRequestException;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Language;
+import uk.gov.hmcts.reform.pip.data.management.models.publication.Sensitivity;
 import uk.gov.hmcts.reform.pip.data.management.utils.PayloadExtractor;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -19,6 +22,8 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -123,4 +128,67 @@ class PublicationServiceTest {
         assertEquals(newArtefactWithId, returnedArtefact, "Row ID must match returned UUID");
     }
 
+    @Test
+    void testGetBlobFromAzureService() {
+        Artefact artefact = Artefact.builder()
+            .sourceArtefactId(SOURCE_ARTEFACT_ID)
+            .provenance(PROVENANCE)
+            .language(Language.ENGLISH)
+            .build();
+        when(artefactRepository.findByArtefactId(any())).thenReturn(Optional.of(artefact));
+        when(azureBlobService.getBlobData(any(), any()))
+            .thenReturn(String.valueOf(artefact));
+        assertEquals(artefact.toString(), publicationService.getByArtefactId(ARTEFACT_ID, true),
+                     "Artefacts do not match"
+        );
+    }
+
+    @Test
+    void testFindArtefactsFromPostgres() {
+        Artefact artefact = Artefact.builder()
+            .sourceArtefactId(SOURCE_ARTEFACT_ID)
+            .provenance(PROVENANCE)
+            .language(Language.ENGLISH)
+            .build();
+
+        Artefact artefact2 = Artefact.builder()
+            .sourceArtefactId(SOURCE_ARTEFACT_ID)
+            .provenance(PROVENANCE)
+            .language(Language.WELSH)
+            .build();
+
+        List<Artefact> artefactList = new ArrayList<>();
+        artefactList.add(artefact);
+        artefactList.add(artefact2);
+
+        when(artefactRepository.findArtefactsBySearchUnverified(any(), any()))
+            .thenReturn(artefactList);
+        when(artefactRepository.findArtefactsBySearchVerified(any(), any()))
+            .thenReturn(artefactList);
+
+        assertEquals(artefactList, publicationService.findAllByCourtId("abc", true),
+                     "Message"
+        );
+        assertEquals(artefactList, publicationService.findAllByCourtId("abc", false),
+                     "Message"
+        );
+    }
+
+    @Test
+    void checkForUnauthorised() {
+        Artefact artefact = Artefact.builder()
+            .sourceArtefactId(SOURCE_ARTEFACT_ID)
+            .provenance(PROVENANCE)
+            .language(Language.ENGLISH)
+            .sensitivity(Sensitivity.CLASSIFIED)
+            .build();
+
+        when(artefactRepository.findByArtefactId(any())).thenReturn(Optional.of(artefact));
+        assertThrows(UnauthorisedRequestException.class, () -> {
+            publicationService.getByArtefactId(UUID.randomUUID(), false);
+        }, "Should throw an unauthorised request exception.");
+    }
 }
+
+
+

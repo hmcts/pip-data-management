@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.pip.data.management.controllers;
 
+import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,6 +18,7 @@ import uk.gov.hmcts.reform.pip.data.management.models.Hearing;
 import uk.gov.hmcts.reform.pip.data.management.service.HearingService;
 
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -29,6 +31,7 @@ import static uk.gov.hmcts.reform.pip.data.management.helpers.TestConstants.STAT
 @ActiveProfiles(profiles = "test")
 @AutoConfigureMockMvc
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
+@AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
 class HearingControllerTest {
 
     private static final String CASE_NAME = "test case name";
@@ -48,6 +51,7 @@ class HearingControllerTest {
         hearing.setCourtId(1);
         hearing.setHearingId(2);
         hearing.setCaseName(CASE_NAME);
+        hearing.setDate(new GregorianCalendar(2021, 8, 27, 21, 57, 01).getTime());
         hearingList.add(hearing);
 
         when(hearingService.getHearings(1)).thenReturn(hearingList);
