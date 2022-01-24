@@ -64,7 +64,7 @@ class PublicationTest {
     @Autowired
     private MockMvc mockMvc;
 
-    private static final String PUT_URL = "/publication";
+    private static final String POST_URL = "/publication";
     private static final String SEARCH_URL = "/publication/search";
     private static final ArtefactType ARTEFACT_TYPE = ArtefactType.LIST;
     private static final Sensitivity SENSITIVITY = Sensitivity.PUBLIC;
@@ -106,7 +106,7 @@ class PublicationTest {
         objectMapper.findAndRegisterModules();
 
         mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .put(PUT_URL)
+            .post(POST_URL)
             .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
             .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
@@ -175,7 +175,7 @@ class PublicationTest {
         when(blobContainerClient.getBlobContainerUrl()).thenReturn(PAYLOAD_URL);
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .put(PUT_URL)
+            .post(POST_URL)
             .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
             .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
             .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
@@ -203,7 +203,7 @@ class PublicationTest {
     @Test
     void testMissingArtifactType() throws Exception {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .put(PUT_URL)
+            .post(POST_URL)
             .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
             .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
             .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
@@ -233,7 +233,7 @@ class PublicationTest {
         when(blobContainerClient.getBlobContainerUrl()).thenReturn(PAYLOAD_URL);
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .put(PUT_URL)
+            .post(POST_URL)
             .header(PublicationConfiguration.TYPE_HEADER, ArtefactType.STATUS_UPDATES)
             .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
             .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
@@ -258,7 +258,7 @@ class PublicationTest {
     @Test
     void testDateToAbsenceJudgement() throws Exception {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .put(PUT_URL)
+            .post(POST_URL)
             .header(PublicationConfiguration.TYPE_HEADER, ArtefactType.JUDGEMENT)
             .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
             .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
@@ -284,7 +284,7 @@ class PublicationTest {
     @Test
     void testDateToAbsenceList() throws Exception {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .put(PUT_URL)
+            .post(POST_URL)
             .header(PublicationConfiguration.TYPE_HEADER, ArtefactType.LIST)
             .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
             .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
@@ -309,7 +309,7 @@ class PublicationTest {
     @Test
     void testDateToAbsenceOutcome() throws Exception {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .put(PUT_URL)
+            .post(POST_URL)
             .header(PublicationConfiguration.TYPE_HEADER, ArtefactType.OUTCOME)
             .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
             .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
@@ -334,7 +334,7 @@ class PublicationTest {
     @Test
     void testDateFromAbsenceJudgement() throws Exception {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .put(PUT_URL)
+            .post(POST_URL)
             .header(PublicationConfiguration.TYPE_HEADER, ArtefactType.JUDGEMENT)
             .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
             .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
@@ -360,7 +360,7 @@ class PublicationTest {
     @Test
     void testDateFromAbsenceList() throws Exception {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .put(PUT_URL)
+            .post(POST_URL)
             .header(PublicationConfiguration.TYPE_HEADER, ArtefactType.LIST)
             .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
             .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
@@ -385,7 +385,7 @@ class PublicationTest {
     @Test
     void testDateFromAbsenceOutcome() throws Exception {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .put(PUT_URL)
+            .post(POST_URL)
             .header(PublicationConfiguration.TYPE_HEADER, ArtefactType.OUTCOME)
             .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
             .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
@@ -410,7 +410,7 @@ class PublicationTest {
     @Test
     void testEmptyArtifactType() throws Exception {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .put(PUT_URL)
+            .post(POST_URL)
             .header(PublicationConfiguration.TYPE_HEADER, EMPTY_VALUE)
             .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
             .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
@@ -438,7 +438,7 @@ class PublicationTest {
     @Test
     void testDateFromField() throws Exception {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .put(PUT_URL)
+            .post(POST_URL)
             .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
             .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
             .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
@@ -465,7 +465,7 @@ class PublicationTest {
     @Test
     void testInvalidArtifactType() throws Exception {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .put(PUT_URL)
+            .post(POST_URL)
             .header(PublicationConfiguration.TYPE_HEADER, TEST_VALUE)
             .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
             .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
@@ -494,7 +494,7 @@ class PublicationTest {
     @Test
     void testMissingProvenance() throws Exception {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .put(PUT_URL)
+            .post(POST_URL)
             .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
             .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
             .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
@@ -521,7 +521,7 @@ class PublicationTest {
     @Test
     void testEmptyProvenance() throws Exception {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .put(PUT_URL)
+            .post(POST_URL)
             .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
             .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
             .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
@@ -549,7 +549,7 @@ class PublicationTest {
     @Test
     void testMissingSourceArtifactId() throws Exception {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .put(PUT_URL)
+            .post(POST_URL)
             .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
             .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
             .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
@@ -576,7 +576,7 @@ class PublicationTest {
     @Test
     void testMissingCourtId() throws Exception {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .put(PUT_URL)
+            .post(POST_URL)
             .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
             .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
             .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
@@ -603,7 +603,7 @@ class PublicationTest {
     @Test
     void testEmptySourceArtifactId() throws Exception {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .put(PUT_URL)
+            .post(POST_URL)
             .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, EMPTY_VALUE)
             .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
             .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
@@ -631,7 +631,7 @@ class PublicationTest {
     @Test
     void testInvalidDisplayTo() throws Exception {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .put(PUT_URL)
+            .post(POST_URL)
             .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
             .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
             .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
@@ -660,7 +660,7 @@ class PublicationTest {
     @Test
     void testInvalidDisplayFrom() throws Exception {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .put(PUT_URL)
+            .post(POST_URL)
             .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
             .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
             .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
@@ -689,7 +689,7 @@ class PublicationTest {
     @Test
     void testInvalidLanguageHeader() throws Exception {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .put(PUT_URL)
+            .post(POST_URL)
             .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
             .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
             .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
@@ -718,7 +718,7 @@ class PublicationTest {
     @Test
     void testInvalidSensitivityHeader() throws Exception {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .put(PUT_URL)
+            .post(POST_URL)
             .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
             .header(PublicationConfiguration.SENSITIVITY_HEADER, TEST_VALUE)
             .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
@@ -751,7 +751,7 @@ class PublicationTest {
         when(blobContainerClient.getBlobContainerUrl()).thenReturn(PAYLOAD_URL);
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .put(PUT_URL)
+            .post(POST_URL)
             .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
             .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
             .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
@@ -797,7 +797,7 @@ class PublicationTest {
         when(blobContainerClient.getBlobContainerUrl()).thenReturn(PAYLOAD_URL);
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .put(PUT_URL)
+            .post(POST_URL)
             .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
             .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
             .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
@@ -825,7 +825,7 @@ class PublicationTest {
     void verifyThatArtefactsAreReturnedFromPostgres() throws Exception {
         when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .put(PUT_URL)
+            .post(POST_URL)
             .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
             .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
             .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
@@ -871,7 +871,7 @@ class PublicationTest {
         try (InputStream mockFile = this.getClass().getClassLoader()
             .getResourceAsStream("data/dailyCauseList.json")) {
             MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-                .put(PUT_URL)
+                .post(POST_URL)
                 .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
                 .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
                 .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
@@ -904,7 +904,7 @@ class PublicationTest {
         try (InputStream mockFile = this.getClass().getClassLoader()
             .getResourceAsStream("data/dailyCauseListInvalid.json")) {
             MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-                .put(PUT_URL)
+                .post(POST_URL)
                 .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
                 .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
                 .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
