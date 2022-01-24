@@ -45,7 +45,7 @@ public class PublicationService {
      * @return Returns the UUID of the artefact that was created.
      */
     public Artefact createPublication(Artefact artefact, String payload) {
-        checkExisting(artefact);
+        applyExistingArtefact(artefact);
 
         String blobUrl = azureBlobService.createPayload(
             artefact.getSourceArtefactId(),
@@ -60,7 +60,7 @@ public class PublicationService {
     }
 
     public Artefact createPublication(Artefact artefact, MultipartFile file) {
-        checkExisting(artefact);
+        applyExistingArtefact(artefact);
 
         String blobUrl = azureBlobService.uploadFlatFile(
             artefact.getSourceArtefactId(),
@@ -72,7 +72,12 @@ public class PublicationService {
         return artefactRepository.save(artefact);
     }
 
-    private void checkExisting(Artefact artefact) {
+    /**
+     * Checks if the artefact already exists based on source artefact id and provenance, if so it applies the
+     * existing artefact ID to update.
+     * @param artefact
+     */
+    private void applyExistingArtefact(Artefact artefact) {
         Optional<Artefact> foundArtefact = artefactRepository
             .findBySourceArtefactIdAndProvenance(artefact.getSourceArtefactId(), artefact.getProvenance());
 

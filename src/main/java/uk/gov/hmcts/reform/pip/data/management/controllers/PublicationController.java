@@ -71,6 +71,9 @@ public class PublicationController {
      * @param language         Language of publication.
      * @param displayFrom      Date / Time from which the publication will be displayed.
      * @param displayTo        Date / Time until which the publication will be displayed.
+     * @param listType         DL / SL / PL / WL / SJP / FL.
+     * @param courtId          Source systems court id.
+     * @param contentDate      Local date time for when the publication is referring to start.
      * @param payload          JSON Blob with key/value pairs of data to be published.
      * @return The created artefact.
      */
@@ -140,6 +143,9 @@ public class PublicationController {
      * @param language         Language of publication.
      * @param displayFrom      Date / Time from which the publication will be displayed.
      * @param displayTo        Date / Time until which the publication will be displayed.
+     * @param listType         DL / SL / PL / WL / SJP / FL.
+     * @param courtId          Source systems court id.
+     * @param contentDate      Local date time for when the publication is referring to start.
      * @param file             The flat file that is to be uploaded and associated with the Artefact.
      * @return The created artefact.
      */
