@@ -83,7 +83,7 @@ class JsonExtractorTest {
     @Test
     void testValidateWithErrors() {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream("mocks/BadJsonPayload.json")) {
+            .getResourceAsStream("mocks/badJsonPayload.json")) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
             assertFalse(jsonExtractor.validate(new Artefact(), text).isEmpty(),
                         "Valid JSON string marked as not valid");
@@ -95,7 +95,7 @@ class JsonExtractorTest {
     @Test
     void testValidateWithoutErrors() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream("mocks/JsonPayload.json")) {
+            .getResourceAsStream("mocks/jsonPayload.json")) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
             assertTrue(jsonExtractor.validate(new Artefact(), text).isEmpty(), "Valid JSON string marked as valid");
         }
