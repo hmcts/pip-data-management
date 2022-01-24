@@ -93,18 +93,16 @@ class JsonExtractorTest {
     }
 
     @Test
-    void testValidateWithoutErrors() {
+    void testValidateWithoutErrors() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream("mocks/JsonPayload.json")) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
             assertTrue(jsonExtractor.validate(new Artefact(), text).isEmpty(), "Valid JSON string marked as valid");
-        } catch (IOException exception) {
-            fail(UNKNOWN_EXCEPTION);
         }
     }
 
     @Test
-    void testValidateWithoutErrorsWhenArtefactIsDailyCauseList() {
+    void testValidateWithoutErrorsWhenArtefactIsDailyCauseList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream("mocks/dailyCauseList.json")) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
@@ -112,13 +110,11 @@ class JsonExtractorTest {
             Artefact artefact = new Artefact();
             artefact.setListType(ListType.CIVIL_DAILY_CAUSE_LIST);
             assertTrue(jsonExtractor.validate(artefact, text).isEmpty(), "Valid JSON string marked as valid");
-        } catch (IOException exception) {
-            fail(UNKNOWN_EXCEPTION);
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenArtefactIsDailyCauseList() {
+    void testValidateWithErrorsWhenArtefactIsDailyCauseList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream("mocks/dailyCauseListInvalid.json")) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
@@ -126,8 +122,6 @@ class JsonExtractorTest {
             Artefact artefact = new Artefact();
             artefact.setListType(ListType.CIVIL_DAILY_CAUSE_LIST);
             assertFalse(jsonExtractor.validate(artefact, text).isEmpty(), "Valid JSON string marked as valid");
-        } catch (IOException exception) {
-            fail(UNKNOWN_EXCEPTION);
         }
     }
 

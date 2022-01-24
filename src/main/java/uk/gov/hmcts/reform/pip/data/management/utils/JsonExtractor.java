@@ -63,7 +63,6 @@ public class JsonExtractor implements Extractor {
     public Map<String, List<Object>> extractSearchTerms(String payload) {
         Map<String, List<Object>> searchTermsMap = new ConcurrentHashMap<>();
         searchConfiguration.getSearchValues().forEach((key, value) -> {
-
             DocumentContext jsonPayload = JsonPath
                 .using(jsonConfiguration)
                 .parse(payload);
