@@ -46,10 +46,10 @@ public class JsonExtractor implements Extractor {
             .addOptions(Option.ALWAYS_RETURN_LIST);
 
         try (InputStream masterFile = this.getClass().getClassLoader()
-            .getResourceAsStream(validationConfiguration.masterSchema);
+            .getResourceAsStream(validationConfiguration.getMasterSchema());
 
              InputStream dailyCauseListFile = this.getClass().getClassLoader()
-                 .getResourceAsStream(validationConfiguration.dailyCauseList)) {
+                 .getResourceAsStream(validationConfiguration.getDailyCauseList())) {
 
             JsonSchemaFactory schemaFactory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V7);
             masterSchema = schemaFactory.getSchema(masterFile);
@@ -71,7 +71,7 @@ public class JsonExtractor implements Extractor {
 
             List<Object> searchValues = jsonPayload.read(value);
             List<Object> objects = searchValues.stream().filter(Objects::nonNull).collect(Collectors.toList());
-            if (objects.size() != 0) {
+            if (!objects.isEmpty()) {
                 searchTermsMap.put(key, objects);
             }
         });

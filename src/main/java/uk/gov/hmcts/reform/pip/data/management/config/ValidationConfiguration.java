@@ -16,11 +16,11 @@ public  class ValidationConfiguration {
     /**
      * Config option for the master schema file.
      */
-    public String masterSchema;
+    private String masterSchema;
 
     /**
      *  Config option for the daily cause list.
      */
-    public String dailyCauseList;
+    private String dailyCauseList;
 
 }
