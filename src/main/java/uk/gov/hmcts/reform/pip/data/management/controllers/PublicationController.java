@@ -28,6 +28,7 @@ import uk.gov.hmcts.reform.pip.data.management.service.ValidationService;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
+import javax.validation.Valid;
 
 /**
  * This class is the controller for creating new Publications.
@@ -77,8 +78,8 @@ public class PublicationController {
             response = Artefact.class),
     })
     @ApiOperation("Upload a new publication")
-    @SuppressWarnings("PMD.UseConcurrentHashMap")
     @PostMapping
+    @Valid
     public ResponseEntity<Artefact> uploadPublication(
         @RequestHeader(PublicationConfiguration.PROVENANCE_HEADER) String provenance,
         @RequestHeader(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER) String sourceArtefactId,
