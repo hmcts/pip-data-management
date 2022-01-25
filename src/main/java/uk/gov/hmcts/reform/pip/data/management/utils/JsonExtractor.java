@@ -9,7 +9,6 @@ import com.jayway.jsonpath.Option;
 import com.networknt.schema.JsonSchema;
 import com.networknt.schema.JsonSchemaFactory;
 import com.networknt.schema.SpecVersion;
-import com.networknt.schema.ValidationMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.pip.data.management.config.SearchConfiguration;
@@ -24,7 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
@@ -41,18 +39,22 @@ public class JsonExtractor implements Extractor {
     @Autowired
     public JsonExtractor(SearchConfiguration searchConfiguration, ValidationConfiguration validationConfiguration) {
         this.searchConfiguration = searchConfiguration;
+
         jsonConfiguration = Configuration.defaultConfiguration()
             .addOptions(Option.DEFAULT_PATH_LEAF_TO_NULL)
             .addOptions(Option.SUPPRESS_EXCEPTIONS)
             .addOptions(Option.ALWAYS_RETURN_LIST);
+
         try (InputStream masterFile = this.getClass().getClassLoader()
             .getResourceAsStream(validationConfiguration.masterSchema);
+
              InputStream dailyCauseListFile = this.getClass().getClassLoader()
-                 .getResourceAsStream(validationConfiguration.dailyCauseList);
-        ) {
+                 .getResourceAsStream(validationConfiguration.dailyCauseList)) {
+
             JsonSchemaFactory schemaFactory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V7);
             masterSchema = schemaFactory.getSchema(masterFile);
             dailyCauseListSchema = schemaFactory.getSchema(dailyCauseListFile);
+
         } catch (Exception exception) {
             throw new ValidationException(String.join(exception.getMessage()));
         }
@@ -90,25 +92,21 @@ public class JsonExtractor implements Extractor {
 
     @Override
     public List<String> validate(Artefact artefact, String payload) {
-        List<String> errors = new ArrayList<>();
         try {
-            JsonNode json = new ObjectMapper().readTree(payload);
-            Set<ValidationMessage> masterResult = masterSchema.validate(json);
+            List<String> errors = new ArrayList<>();
 
-            if (!masterResult.isEmpty()) {
-                masterResult.forEach(vm ->  errors.add(vm.getMessage()));
-            }
+            JsonNode json = new ObjectMapper().readTree(payload);
+            masterSchema.validate(json).forEach(vm ->  errors.add(vm.getMessage()));
 
             if (artefact.getListType() != null && artefact.getListType().equals(ListType.CIVIL_DAILY_CAUSE_LIST)) {
-                Set<ValidationMessage> listResult = dailyCauseListSchema.validate(json);
-                if (!listResult.isEmpty()) {
-                    listResult.forEach(vm ->  errors.add(vm.getMessage()));
-                }
+                dailyCauseListSchema.validate(json).forEach(vm ->  errors.add(vm.getMessage()));
             }
 
+            return errors;
+
         } catch (IOException exception) {
-            errors.add(exception.getMessage());
+            throw new ValidationException("Error while reading JSON Payload");
         }
-        return errors;
     }
+
 }

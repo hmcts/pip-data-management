@@ -15,6 +15,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -25,6 +27,9 @@ class PayloadExtractorTest {
 
     @Mock
     JsonExtractor jsonExtractor;
+
+    @Mock
+    JsonExtractor jsonExtractorOther;
 
     @BeforeAll
     public static void setup() {
@@ -41,6 +46,22 @@ class PayloadExtractorTest {
         when(jsonExtractor.extractSearchTerms(PAYLOAD)).thenReturn(TEST_MAP);
 
         Map<String, List<Object>> searchTerms = payloadExtractor.validateAndParsePayload(artefact, PAYLOAD);
+        assertEquals(TEST_MAP, searchTerms, "Returned search terms does not match expected terms");
+    }
+
+    @Test
+    void testMultipleExtractorsCalledTwice() {
+        PayloadExtractor payloadExtractor = new PayloadExtractor(List.of(jsonExtractorOther, jsonExtractor));
+
+        Artefact artefact = new Artefact();
+        when(jsonExtractor.isAccepted(PAYLOAD)).thenReturn(true);
+        when(jsonExtractor.validate(artefact, PAYLOAD)).thenReturn(List.of());
+        when(jsonExtractor.extractSearchTerms(PAYLOAD)).thenReturn(TEST_MAP);
+
+        when(jsonExtractorOther.isAccepted(PAYLOAD)).thenReturn(false);
+
+        Map<String, List<Object>> searchTerms = payloadExtractor.validateAndParsePayload(artefact, PAYLOAD);
+        verify(jsonExtractorOther, times(1)).isAccepted(PAYLOAD);
         assertEquals(TEST_MAP, searchTerms, "Returned search terms does not match expected terms");
     }
 

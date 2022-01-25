@@ -1,7 +1,7 @@
 package uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions;
 
 /**
- * Exception that captures when an input is not validate against the criteria.
+ * Exception that captures when an input is not validated against the criteria.
  */
 public class ValidationException extends RuntimeException {
 
