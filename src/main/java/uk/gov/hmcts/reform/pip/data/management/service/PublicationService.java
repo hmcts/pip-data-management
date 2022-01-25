@@ -48,7 +48,7 @@ public class PublicationService {
         Map<String, List<Object>> extractedSearchTerms =
             payloadExtractor.validateAndParsePayload(artefact, payload);
 
-        Optional<Artefact> foundArtefact =  artefactRepository
+        Optional<Artefact> foundArtefact = artefactRepository
             .findBySourceArtefactIdAndProvenance(artefact.getSourceArtefactId(), artefact.getProvenance());
 
         foundArtefact.ifPresent(value -> artefact.setArtefactId(value.getArtefactId()));

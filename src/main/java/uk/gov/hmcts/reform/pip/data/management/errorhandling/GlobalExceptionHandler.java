@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.DataStorageNotFoundException;
-import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.HeaderValidationException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.NotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.UnauthorisedRequestException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ValidationException;
@@ -63,16 +62,6 @@ public class GlobalExceptionHandler {
         exceptionResponse.setMessage(String.format(
             "Unable to parse %s. Please check that the value is of the correct format for the field "
                 + "(See Swagger documentation for correct formats)", ex.getName()));
-        exceptionResponse.setTimestamp(LocalDateTime.now());
-
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionResponse);
-    }
-
-    @ExceptionHandler(HeaderValidationException.class)
-    public ResponseEntity<ExceptionResponse> handle(HeaderValidationException ex) {
-
-        ExceptionResponse exceptionResponse = new ExceptionResponse();
-        exceptionResponse.setMessage(ex.getMessage());
         exceptionResponse.setTimestamp(LocalDateTime.now());
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionResponse);

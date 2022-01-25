@@ -5,7 +5,7 @@ package uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions;
  * Custom exception which handles all header validation issues.
  */
 
-public class HeaderValidationException extends RuntimeException {
+public class HeaderValidationException extends ValidationException {
     private static final long serialVersionUID = 6994056611414432079L;
 
     /**
