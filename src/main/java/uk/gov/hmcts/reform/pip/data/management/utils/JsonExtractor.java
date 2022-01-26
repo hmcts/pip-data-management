@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.pip.data.management.config.SearchConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.config.ValidationConfiguration;
-import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ValidationException;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.PayloadValidationException;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ListType;
 
@@ -56,7 +56,7 @@ public class JsonExtractor implements Extractor {
             dailyCauseListSchema = schemaFactory.getSchema(dailyCauseListFile);
 
         } catch (Exception exception) {
-            throw new ValidationException(String.join(exception.getMessage()));
+            throw new PayloadValidationException(String.join(exception.getMessage()));
         }
 
     }
@@ -105,7 +105,7 @@ public class JsonExtractor implements Extractor {
             return errors;
 
         } catch (IOException exception) {
-            throw new ValidationException("Error while reading JSON Payload");
+            throw new PayloadValidationException("Error while reading JSON Payload");
         }
     }
 

@@ -23,7 +23,7 @@ public interface ArtefactRepository extends JpaRepository<Artefact, Long> {
     List<Artefact> findArtefactsBySearchVerified(@Param("searchVal") String searchVal,
                                          @Param("curr_date") LocalDateTime currentDate);
 
-    @Query(value = "select * from Artefact where court_id :searchVal and sensitivity = 'PUBLIC' "
+    @Query(value = "select * from Artefact where court_id = :searchVal and sensitivity = 'PUBLIC' "
         + "and display_from < :curr_date and display_to> :curr_date",
         nativeQuery = true)
     List<Artefact> findArtefactsBySearchUnverified(@Param("searchVal") String searchVal,

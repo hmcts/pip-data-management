@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ValidationException;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.PayloadValidationException;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 
 import java.util.List;
@@ -84,11 +84,13 @@ class PayloadExtractorTest {
         when(jsonExtractor.isAccepted(PAYLOAD)).thenReturn(true);
         when(jsonExtractor.validate(artefact, PAYLOAD)).thenReturn(List.of(invalidPayload));
 
-        ValidationException validationException =
-            assertThrows(ValidationException.class, () -> payloadExtractor.validateAndParsePayload(artefact, PAYLOAD));
+        PayloadValidationException payloadValidationException =
+            assertThrows(PayloadValidationException.class, () ->
+                payloadExtractor.validateAndParsePayload(artefact, PAYLOAD));
 
-        assertTrue(validationException.getMessage().contains(invalidPayload),
-                   "Invalid error message is thrown");
+        assertTrue(
+            payloadValidationException.getMessage().contains(invalidPayload),
+            "Invalid error message is thrown");
     }
 
 }

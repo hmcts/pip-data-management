@@ -8,7 +8,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pip.data.management.Application;
 import uk.gov.hmcts.reform.pip.data.management.config.AzureBlobConfigurationTest;
-import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ValidationException;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.PayloadValidationException;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ListType;
 
@@ -134,11 +134,11 @@ class JsonExtractorTest {
         Artefact artefact = new Artefact();
         artefact.setListType(ListType.CIVIL_DAILY_CAUSE_LIST);
 
-        ValidationException validationException = assertThrows(ValidationException.class, () ->
+        PayloadValidationException payloadValidationException = assertThrows(PayloadValidationException.class, () ->
             jsonExtractor.validate(artefact, "abcd"), "Validation exception not thrown "
             + "when value not JSON");
 
-        assertEquals("Error while reading JSON Payload", validationException.getMessage(),
+        assertEquals("Error while reading JSON Payload", payloadValidationException.getMessage(),
                      "JSON Payload message does not match expected exception");
 
     }

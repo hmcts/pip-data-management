@@ -1,9 +1,9 @@
 package uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions;
 
 /**
- * Exception that captures when an input is not validated against the criteria.
+ * Exception that captures when an payload is not validated against the criteria.
  */
-public class ValidationException extends RuntimeException {
+public class PayloadValidationException extends RuntimeException {
 
     private static final long serialVersionUID = -7073660693904036960L;
 
@@ -11,7 +11,7 @@ public class ValidationException extends RuntimeException {
      * Constructor for the Exception.
      * @param message The message to return to the end user
      */
-    public ValidationException(String message) {
+    public PayloadValidationException(String message) {
         super(message);
     }
 }

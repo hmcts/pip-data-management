@@ -2,7 +2,7 @@ package uk.gov.hmcts.reform.pip.data.management.utils;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ValidationException;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.PayloadValidationException;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 
 import java.util.HashMap;
@@ -46,7 +46,7 @@ public class PayloadExtractor {
             if (errors.isEmpty()) {
                 return true;
             } else {
-                throw new ValidationException(String.join(", ", errors));
+                throw new PayloadValidationException(String.join(", ", errors));
             }
         }
         return false;
