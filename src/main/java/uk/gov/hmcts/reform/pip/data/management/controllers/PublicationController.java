@@ -170,7 +170,7 @@ public class PublicationController {
         HeaderGroup headers = validationService.validateHeaders(initialHeaders);
 
         Map<String, List<Object>> search = new ConcurrentHashMap<>();
-        search.put("court-id", List.of(courtId));
+        search.put("court-id", List.of(headers.getCourtId()));
 
         Artefact artefact = Artefact.builder()
             .provenance(headers.getProvenance())

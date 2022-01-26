@@ -7,6 +7,7 @@ import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.EmptyReq
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.HeaderValidationException;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.HeaderGroup;
+import uk.gov.hmcts.reform.pip.data.management.models.publication.ListType;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -80,6 +81,17 @@ public class ValidationService {
     private void handleRequiredJudgementOutcomeHeaders(HeaderGroup headers) {
         validateRequiredHeader(PublicationConfiguration.LIST_TYPE, headers.getListType());
         validateRequiredHeader(PublicationConfiguration.CONTENT_DATE, headers.getContentDate());
+        handleSjpCourt(headers);
+    }
+
+    /**
+     * Sets court id to 0 if list type is SJP to conform to our handling of an SJP.
+     * @param headers headers to check against.
+     */
+    private void handleSjpCourt(HeaderGroup headers) {
+        if (headers.getListType().equals(ListType.SJP)) {
+            headers.setCourtId("0");
+        }
     }
 
     /**

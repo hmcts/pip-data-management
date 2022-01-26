@@ -227,4 +227,12 @@ class ValidationServiceTest {
 
         assertEquals(headerGroup, validationService.validateHeaders(headerGroup), "Header groups should match");
     }
+
+    @Test
+    void testSjpSetsCourtId() {
+        headerGroup.setListType(ListType.SJP);
+        headerGroup.setCourtId("1");
+
+        assertEquals("0", validationService.validateHeaders(headerGroup).getCourtId(), "Court Id should match");
+    }
 }
