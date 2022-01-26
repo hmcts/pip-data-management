@@ -51,7 +51,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @ActiveProfiles(profiles = "test")
 @RunWith(SpringRunner.class)
-@SuppressWarnings("PMD.ExcessiveImports")
+@SuppressWarnings({"PMD.ExcessiveImports", "PMD.ExcessiveClassLength"})
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
 class PublicationTest {
 
@@ -85,12 +85,15 @@ class PublicationTest {
     private static final String SEARCH_VALUE_1 = "array-value-1";
     private static final String SEARCH_VALUE_2 = "array-value-2";
     private static final String EMPTY_VALUE = "";
+    private static final String VERIFICATION_HEADER = "verification";
+
     private static final String FORMAT_RESPONSE = "Please check that the value is of the correct format for the field "
         + "(See Swagger documentation for correct formats)";
     private static final String DISPLAY_FROM_RESPONSE = "x-display-from Field is required for artefact type";
     private static final String DISPLAY_TO_RESPONSE = "x-display-to Field is required for artefact type";
     private static final String VALIDATION_EMPTY_RESPONSE = "Response should contain a Artefact";
     private static final String VALIDATION_EXCEPTION_RESPONSE = "Exception response does not contain correct message";
+    private static final String VALIDATION_DISPLAY_FROM = "The expected Display From has not been returned";
 
     private static MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
     private static ObjectMapper objectMapper;
@@ -820,9 +823,9 @@ class PublicationTest {
             + "when payload is of an unknown type");
     }
 
-    @DisplayName("Verify that artefact is returned with given get")
+    @DisplayName("Verify that artefact is returned when user is verified and sensitivity is public")
     @Test
-    void verifyThatArtefactsAreReturnedFromPostgres() throws Exception {
+    void verifyThatArtefactsAreReturnedForVerifiedUserWhenPublic() throws Exception {
         when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
             .post(POST_URL)
@@ -843,12 +846,13 @@ class PublicationTest {
             Artefact.class
         );
 
-        assertEquals(createdArtefact.getDisplayFrom(), DISPLAY_FROM.minusMonths(2), "test message goes here");
+        assertEquals(createdArtefact.getDisplayFrom(), DISPLAY_FROM.minusMonths(2),
+                     VALIDATION_DISPLAY_FROM);
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 = MockMvcRequestBuilders
 
-            .get(SEARCH_URL + "/12345")
-            .header("verification", "true");
+            .get(SEARCH_URL + "/" + COURT_ID)
+            .header(VERIFICATION_HEADER, "true");
         MvcResult getResponse =
             mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isOk()).andReturn();
 
@@ -859,6 +863,128 @@ class PublicationTest {
         );
         assertEquals(COURT_ID, retrievedArtefact.getCourtId(),
                      "Incorrect court ID has been retrieved from the database");
+    }
+
+    @DisplayName("Verify that artefact is returned when user is unverified and sensitivity is public")
+    @Test
+    void verifyThatArtefactsAreReturnedForUnverifiedUserWhenPublic() throws Exception {
+        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+            .post(POST_URL)
+            .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
+            .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
+            .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
+            .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
+            .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO.plusMonths(1))
+            .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM.minusMonths(2))
+            .header(PublicationConfiguration.COURT_ID, COURT_ID)
+            .content(payload)
+            .contentType(MediaType.APPLICATION_JSON);
+
+        MvcResult createResponse =
+            mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
+        Artefact createdArtefact = objectMapper.readValue(
+            createResponse.getResponse().getContentAsString(),
+            Artefact.class
+        );
+
+        assertEquals(createdArtefact.getDisplayFrom(), DISPLAY_FROM.minusMonths(2),
+                     VALIDATION_DISPLAY_FROM);
+
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 = MockMvcRequestBuilders
+
+            .get(SEARCH_URL + "/" + COURT_ID)
+            .header(VERIFICATION_HEADER, "false");
+        MvcResult getResponse =
+            mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isOk()).andReturn();
+
+        String jsonOutput = getResponse.getResponse().getContentAsString();
+        JSONArray jsonArray = new JSONArray(jsonOutput);
+        Artefact retrievedArtefact = objectMapper.readValue(
+            jsonArray.get(0).toString(), Artefact.class
+        );
+        assertEquals(COURT_ID, retrievedArtefact.getCourtId(),
+                     "Incorrect court ID has been retrieved from the database");
+
+    }
+
+    @DisplayName("Verify that artefact is not returned when user is unverified and artefact is classified")
+    @Test
+    void verifyThatArtefactsAreNotReturnedForUnverifiedUserWhenClassified() throws Exception {
+        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+            .post(POST_URL)
+            .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
+            .header(PublicationConfiguration.SENSITIVITY_HEADER, Sensitivity.CLASSIFIED)
+            .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
+            .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
+            .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO.plusMonths(1))
+            .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM.minusMonths(2))
+            .header(PublicationConfiguration.COURT_ID, COURT_ID)
+            .content(payload)
+            .contentType(MediaType.APPLICATION_JSON);
+
+        MvcResult createResponse =
+            mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
+        Artefact createdArtefact = objectMapper.readValue(
+            createResponse.getResponse().getContentAsString(),
+            Artefact.class
+        );
+
+        assertEquals(createdArtefact.getDisplayFrom(), DISPLAY_FROM.minusMonths(2),
+                     VALIDATION_DISPLAY_FROM);
+
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 = MockMvcRequestBuilders
+
+            .get(SEARCH_URL + "/" + COURT_ID)
+            .header(VERIFICATION_HEADER, "false");
+        MvcResult getResponse =
+            mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isOk()).andReturn();
+
+        String jsonOutput = getResponse.getResponse().getContentAsString();
+        JSONArray jsonArray = new JSONArray(jsonOutput);
+        assertEquals(0, jsonArray.length(),
+                     "Unknown artefacts have been returned from the database");
+
+    }
+
+    @DisplayName("Verify that artefact is not returned when user is unverified and artefact is private")
+    @Test
+    void verifyThatArtefactsAreNotReturnedForUnverifiedUserWhenPrivate() throws Exception {
+        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+            .post(POST_URL)
+            .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
+            .header(PublicationConfiguration.SENSITIVITY_HEADER, Sensitivity.CLASSIFIED)
+            .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
+            .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
+            .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO.plusMonths(1))
+            .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM.minusMonths(2))
+            .header(PublicationConfiguration.COURT_ID, COURT_ID)
+            .content(payload)
+            .contentType(MediaType.APPLICATION_JSON);
+
+        MvcResult createResponse =
+            mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
+        Artefact createdArtefact = objectMapper.readValue(
+            createResponse.getResponse().getContentAsString(),
+            Artefact.class
+        );
+
+        assertEquals(createdArtefact.getDisplayFrom(), DISPLAY_FROM.minusMonths(2),
+                     VALIDATION_DISPLAY_FROM);
+
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 = MockMvcRequestBuilders
+
+            .get(SEARCH_URL + "/" + COURT_ID)
+            .header(VERIFICATION_HEADER, "false");
+        MvcResult getResponse =
+            mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isOk()).andReturn();
+
+        String jsonOutput = getResponse.getResponse().getContentAsString();
+        JSONArray jsonArray = new JSONArray(jsonOutput);
+        assertEquals(0, jsonArray.length(),
+                     "Unknown artefacts have been returned from the database");
 
     }
 
