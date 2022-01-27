@@ -18,6 +18,26 @@
 						"pattern": "^.*$"
 					}
 				},
+				"town": {
+					"title": "Town", 
+					"description": "The town for the address",
+					"type": "string",
+					"default": "",
+					"examples": [
+						"PR1 2LL"
+					],
+					"pattern": "^.*$"
+				},
+				"county": {
+					"title": "County",
+					"description": "The county for the address",
+					"type": "string",
+					"default": "",
+					"examples": [
+						"PR1 2LL"
+					],
+					"pattern": "^.*$"
+				},
 				"postCode": {
 					"title": "Address Postcode", 
 					"type": "string",
@@ -113,6 +133,15 @@
 						"Standard List FINAL V4"
 					],
 					"pattern": "^.*$"
+				},
+				"publicationDate": {
+					"$id": "#root/document/publicationDate",
+					"title": "Publication date",
+					"description": "The date + time the list was published",
+					"type": "string",
+					"examples": [
+						"2016-09-13T23:30:52.123Z"
+					]
 				},
 				"version": {
 					"$id": "#root/document/version", 
@@ -240,7 +269,7 @@
 														"$id": "#root/courtLists/courtRoom/session/judiciary",
 														"type": "array",
 														"description": "Judiciary for the session", 
-														"title": "Judiciary", 
+														"title": "Judiciary",
 														"items":{
 															"type": "object",
 															"$ref": "#/definitions/judiciary"	
