@@ -166,6 +166,7 @@ public class PublicationController {
 
         HeaderGroup initialHeaders = new HeaderGroup(provenance, sourceArtefactId, type, sensitivity, language,
                                                      displayFrom, displayTo, listType, courtId, contentDate);
+        validationService.validateBody(file);
 
         HeaderGroup headers = validationService.validateHeaders(initialHeaders);
 

@@ -2,8 +2,10 @@ package uk.gov.hmcts.reform.pip.data.management.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.mock.web.MockMultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.EmptyRequiredHeaderException;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.FlatFileException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.HeaderValidationException;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.HeaderGroup;
@@ -234,5 +236,15 @@ class ValidationServiceTest {
         headerGroup.setCourtId("1");
 
         assertEquals("0", validationService.validateHeaders(headerGroup).getCourtId(), "Court Id should match");
+    }
+
+    @Test
+    void testEmptyFileThrows() {
+        FlatFileException ex = assertThrows(FlatFileException.class, () -> {
+            validationService.validateBody(new MockMultipartFile("test", (byte[]) null));
+        });
+
+        assertEquals("Empty file provided, please provide a valid file", ex.getMessage(),
+                     VALIDATION_EXPECTED_MESSAGE);
     }
 }

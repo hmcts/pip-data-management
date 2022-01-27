@@ -5,7 +5,7 @@ import com.azure.storage.blob.BlobContainerClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
-import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.FlatFileIoException;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.FlatFileException;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -56,7 +56,8 @@ public class AzureBlobService {
         try {
             blobClient.upload(file.getInputStream(), file.getSize(), true);
         } catch (IOException e) {
-            throw new FlatFileIoException();
+            throw new
+                FlatFileException("Could not parse provided file, please check supported file types and try again");
         }
         return blobContainerClient.getBlobContainerUrl() + "/" + blobName;
     }
