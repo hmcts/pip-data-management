@@ -18,13 +18,13 @@ public interface ArtefactRepository extends JpaRepository<Artefact, Long> {
     Optional<Artefact> findByArtefactId(UUID artefactId);
 
     @Query(value = "select * from Artefact where search->'court-id'->>0 = :searchVal and display_from < "
-        + ":curr_date and display_to> :curr_date",
+        + ":curr_date and (display_to> :curr_date or display_to is null)",
         nativeQuery = true)
     List<Artefact> findArtefactsBySearchVerified(@Param("searchVal") String searchVal,
                                          @Param("curr_date") LocalDateTime currentDate);
 
     @Query(value = "select * from Artefact where search->'court-id'->>0 = :searchVal and sensitivity = 'PUBLIC' "
-        + "and display_from < :curr_date and display_to> :curr_date",
+        + "and display_from < :curr_date and (display_to> :curr_date or display_to is null)",
         nativeQuery = true)
     List<Artefact> findArtefactsBySearchUnverified(@Param("searchVal") String searchVal,
                                                  @Param("curr_date") LocalDateTime currentDate);
