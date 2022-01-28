@@ -6,6 +6,7 @@ import lombok.Data;
 import java.time.LocalDateTime;
 import javax.persistence.Enumerated;
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -20,6 +21,7 @@ public class HeaderGroup {
      */
     @Valid
     @NotNull
+    @NotBlank
     private String provenance;
 
     /**
@@ -27,12 +29,14 @@ public class HeaderGroup {
      */
     @Valid
     @NotNull
+    @NotBlank
     private String sourceArtefactId;
 
     /**
      * List / Outcome / Judgement / Status Update.
      */
     @Enumerated
+    @NotBlank
     private ArtefactType type;
 
     /**
@@ -59,5 +63,24 @@ public class HeaderGroup {
     @Valid
     private LocalDateTime displayTo;
 
+    /**
+     * DL / SL / WL / FL / PL / SJP.
+     */
+    @Enumerated
+    private ListType listType;
+
+    /**
+     * The court id from the source system.
+     */
+    @Valid
+    @NotNull
+    @NotBlank
+    private String courtId;
+
+    /**
+     * The local date time the publication is referring to.
+     */
+    @Valid
+    private LocalDateTime contentDate;
 
 }

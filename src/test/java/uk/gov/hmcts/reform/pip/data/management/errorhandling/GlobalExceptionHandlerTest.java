@@ -14,6 +14,7 @@ import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CourtNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.DataStorageNotFoundException;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.FlatFileException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.HeaderValidationException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.HearingNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.NotFoundException;
@@ -189,7 +190,21 @@ class GlobalExceptionHandlerTest {
             responseEntity.getBody().getMessage().contains(TEST_MESSAGE),
             "Exception body doesn't match test message"
         );
+    }
 
-
+    @Test
+    void testFlatFileIoException() {
+        FlatFileException flatFileException = new FlatFileException(TEST_MESSAGE);
+        ResponseEntity<ExceptionResponse> responseEntity =
+            globalExceptionHandler.handle(flatFileException);
+        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode(),
+                     "Should be unauthorised exception"
+        );
+        assertNotNull(responseEntity.getBody(), NOT_NULL_MESSAGE);
+        assertTrue(
+            responseEntity.getBody().getMessage()
+                .contains(TEST_MESSAGE),
+            "Exception body doesn't match test message"
+        );
     }
 }

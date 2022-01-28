@@ -7,6 +7,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
@@ -22,6 +24,7 @@ class AzureBlobServiceTest {
     private static final String PROVENANCE = "abcd";
     private static final String PAYLOAD = "test-payload";
     private static final String CONTAINER_URL = "https://localhost";
+    private static final MultipartFile FILE = new MockMultipartFile("test", (byte[]) null);
 
     @Mock
     BlobContainerClient blobContainerClient;
@@ -55,8 +58,21 @@ class AzureBlobServiceTest {
             azureBlobService.getBlobData(SOURCE_ARTEFACT_ID, PROVENANCE),
             instanceOf(String.class)
         );
-        assertEquals(azureBlobService.getBlobData(SOURCE_ARTEFACT_ID, PROVENANCE), "",
+        assertEquals("", azureBlobService.getBlobData(SOURCE_ARTEFACT_ID, PROVENANCE),
                      "Wrong string detected"
         );
+    }
+
+    @Test
+    void testCreationOfNewBlobViaFile() {
+        String blobName = SOURCE_ARTEFACT_ID + '-' + PROVENANCE;
+
+        when(blobContainerClient.getBlobClient(blobName)).thenReturn(blobClient);
+        when(blobContainerClient.getBlobContainerUrl()).thenReturn(CONTAINER_URL);
+
+        String blobUrl = azureBlobService.uploadFlatFile(SOURCE_ARTEFACT_ID, PROVENANCE, FILE);
+
+        assertEquals(CONTAINER_URL + "/" + blobName, blobUrl, "Payload URL does not"
+            + "contain the correct value");
     }
 }

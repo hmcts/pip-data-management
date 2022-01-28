@@ -63,4 +63,10 @@ class CustomExceptionsTest {
         assertEquals(TEST_MESSAGE,emptyRequiredHeaderException.getMessage(), ASSERTION_MESSAGE);
     }
 
+    @Test
+    void testCreationOfFlatFileIoException() {
+        FlatFileException flatFileException = new FlatFileException(TEST_MESSAGE);
+        assertEquals(TEST_MESSAGE,
+                     flatFileException.getMessage(), ASSERTION_MESSAGE);
+    }
 }

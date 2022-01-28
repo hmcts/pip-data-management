@@ -1,15 +1,18 @@
 package uk.gov.hmcts.reform.pip.data.management.service;
 
-
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.DateValidationException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.EmptyRequiredHeaderException;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.FlatFileException;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.HeaderValidationException;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.HeaderGroup;
+import uk.gov.hmcts.reform.pip.data.management.models.publication.ListType;
 
 import java.time.LocalDateTime;
-
+import java.util.Objects;
 
 @Service
 public class ValidationService {
@@ -23,19 +26,81 @@ public class ValidationService {
      *      are created, ensure the logic affects the headers map within this class.
      */
     public HeaderGroup validateHeaders(HeaderGroup headers) {
-        validateRequiredHeader(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, headers.getSourceArtefactId());
-        validateRequiredHeader(PublicationConfiguration.TYPE_HEADER, headers.getType());
-        validateRequiredHeader(PublicationConfiguration.PROVENANCE_HEADER, headers.getProvenance());
+        handleAlwaysRequired(headers);
+        handleTypeConditionalRequired(headers);
 
-        return handleDateValidation(headers);
+        return headers;
+    }
+
+    private void handleAlwaysRequired(HeaderGroup headers) {
+        validateRequiredHeader(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, headers.getSourceArtefactId());
+        validateRequiredHeader(PublicationConfiguration.PROVENANCE_HEADER, headers.getProvenance());
+        validateRequiredHeader(PublicationConfiguration.TYPE_HEADER, headers.getType());
+        validateRequiredHeader(PublicationConfiguration.COURT_ID, headers.getCourtId());
+    }
+
+    /**
+     * Some fields are required only conditionally, based on the TYPE (LIST, JUDGEMENTS_AND_OUTCOMES and
+     * GENERAL_PUBLICATION), this method handles the different required headers validation.
+     */
+    private void handleTypeConditionalRequired(HeaderGroup headers) {
+        switch (headers.getType()) {
+            case LIST:
+            case JUDGEMENTS_AND_OUTCOMES:
+                handleDateValidation(false, headers);
+                handleRequiredJudgementOutcomeHeaders(headers);
+                break;
+            case GENERAL_PUBLICATION:
+                handleDateValidation(true, headers);
+                break;
+            default:
+                throw new HeaderValidationException("Type was not of the defined values");
+        }
+    }
+
+    /**
+     * Container class for all date from/to logic. LIST and JUDGEMENTS_AND_OUTCOMES both require both to and from dates,
+     * whereas GENERAL_PUBLICATION doesn't require any, but produces a default from date if empty.
+     *
+     * @param isDefaultNeeded bool to determine if a default is needed, true will set default to today and false will
+     *                       mean required date
+     */
+    private void handleDateValidation(boolean isDefaultNeeded, HeaderGroup headers) {
+        LocalDateTime displayFrom = headers.getDisplayFrom();
+        LocalDateTime displayTo = headers.getDisplayTo();
+        if (isDefaultNeeded) {
+            headers.setDisplayFrom(checkAndReplaceDateWithDefault(displayFrom));
+        } else {
+            validateRequiredDates(PublicationConfiguration.DISPLAY_FROM_HEADER, displayFrom, headers.getType());
+            validateRequiredDates(PublicationConfiguration.DISPLAY_TO_HEADER, displayTo, headers.getType());
+        }
+    }
+
+    /**
+     * Adds headers that are required for the type JUDGEMENTS_AND_OUTCOMES.
+     */
+    private void handleRequiredJudgementOutcomeHeaders(HeaderGroup headers) {
+        validateRequiredHeader(PublicationConfiguration.LIST_TYPE, headers.getListType());
+        validateRequiredHeader(PublicationConfiguration.CONTENT_DATE, headers.getContentDate());
+        handleSjpCourt(headers);
+    }
+
+    /**
+     * Sets court id to 0 if list type is SJP to conform to our handling of an SJP.
+     * @param headers headers to check against.
+     */
+    private void handleSjpCourt(HeaderGroup headers) {
+        if (headers.getListType().equals(ListType.SJP)) {
+            headers.setCourtId("0");
+        }
     }
 
     /**
      * Null check class which produces tailored exceptions for required headers.
      *
-     * @param headerName - used for the error msg
-     * @param date       - checked var
-     * @param type       - used for error msg
+     * @param headerName  used for the error msg
+     * @param date        checked var
+     * @param type        used for error msg
      */
     private void validateRequiredDates(String headerName, LocalDateTime date, ArtefactType type) {
         if (date == null) {
@@ -52,7 +117,7 @@ public class ValidationService {
      * @param header     - checked var.
      */
     private void validateRequiredHeader(String headerName, Object header) {
-        if (header.toString().isEmpty()) {
+        if (isNullOrEmpty(header)) {
             throw new EmptyRequiredHeaderException(String.format(
                 "%s is mandatory however an empty value is provided",
                 headerName
@@ -61,33 +126,22 @@ public class ValidationService {
     }
 
     /**
-     * Container class for all date from/to logic. OUTCOME, LIST, JUDGEMENT all require both to and from dates,
-     * whereas STATUS_UPDATES doesn't require any, but produces a default from date if empty.
-     */
-    private HeaderGroup handleDateValidation(HeaderGroup headerGroup) {
-        LocalDateTime displayFrom = headerGroup.getDisplayFrom();
-        LocalDateTime displayTo = headerGroup.getDisplayTo();
-        ArtefactType type = headerGroup.getType();
-        if (type.equals(ArtefactType.STATUS_UPDATES)) {
-            headerGroup.setDisplayFrom(checkAndReplaceDateWithDefault(displayFrom));
-        } else {
-            validateRequiredDates(PublicationConfiguration.DISPLAY_FROM_HEADER, displayFrom, type);
-            validateRequiredDates(PublicationConfiguration.DISPLAY_TO_HEADER, displayTo, type);
-        }
-        return headerGroup;
-    }
-
-    /**
      * Null check class for creating default date objects if null.
      *
-     * @param date - LocalDateTime.
+     * @param date  LocalDateTime.
      * @return LocalDateTime representing either current date/time or an existing date.
      */
     private LocalDateTime checkAndReplaceDateWithDefault(LocalDateTime date) {
-        if (date == null) {
-            return LocalDateTime.now();
-        } else {
-            return date;
+        return Objects.requireNonNullElseGet(date, LocalDateTime::now);
+    }
+
+    private static boolean isNullOrEmpty(Object header) {
+        return header == null || header.toString().isEmpty();
+    }
+
+    public void validateBody(MultipartFile file) {
+        if (file.isEmpty()) {
+            throw new FlatFileException("Empty file provided, please provide a valid file");
         }
     }
 }
