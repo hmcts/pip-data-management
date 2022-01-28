@@ -7,7 +7,6 @@ import com.microsoft.applicationinsights.web.dependencies.apachecommons.io.IOUti
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.json.JSONArray;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -85,7 +84,8 @@ class PublicationTest {
     private static final String EMPTY_VALUE = "";
     private static final String FORMAT_RESPONSE = "Please check that the value is of the correct format for the field "
         + "(See Swagger documentation for correct formats)";
-
+    private static final String DISPLAY_FROM_RESPONSE = "x-display-from Field is required for artefact type";
+    private static final String DISPLAY_TO_RESPONSE = "x-display-to Field is required for artefact type";
     private static final String VALIDATION_EMPTY_RESPONSE = "Response should contain a Artefact";
     private static final String VALIDATION_EXCEPTION_RESPONSE = "Exception response does not contain correct message";
 
@@ -169,6 +169,8 @@ class PublicationTest {
             .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
             .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
             .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
+            .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
+            .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO)
             .content(payload)
             .contentType(MediaType.APPLICATION_JSON);
 
@@ -212,6 +214,179 @@ class PublicationTest {
         assertTrue(exceptionResponse.getMessage().contains("x-type"), VALIDATION_EXCEPTION_RESPONSE);
     }
 
+    @DisplayName("Should populate the datefrom field if it's empty and the type is Status_Update")
+    @Test
+    void testPopulateDefaultDateFrom() throws Exception {
+        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(blobContainerClient.getBlobContainerUrl()).thenReturn(PAYLOAD_URL);
+
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+            .put(PUT_URL)
+            .header(PublicationConfiguration.TYPE_HEADER, ArtefactType.STATUS_UPDATES)
+            .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
+            .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
+            .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
+            .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
+            .content(payload)
+            .contentType(MediaType.APPLICATION_JSON);
+        MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
+            .andExpect(status().isCreated()).andReturn();
+        Artefact createdArtefact = objectMapper.readValue(
+            response.getResponse().getContentAsString(),
+            Artefact.class
+        );
+
+        assertNotNull(createdArtefact.getDisplayFrom(), "Artefact date from criteria exists"
+            + "when none is provided and status update is type");
+
+    }
+
+    @DisplayName("Should return a 400 bad request if artefact type is judgement and date to is empty")
+    @Test
+    void testDateToAbsenceJudgement() throws Exception {
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+            .put(PUT_URL)
+            .header(PublicationConfiguration.TYPE_HEADER, ArtefactType.JUDGEMENT)
+            .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
+            .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
+            .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
+            .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
+            .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
+            .content(payload)
+            .contentType(MediaType.APPLICATION_JSON);
+        MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
+            .andExpect(status().isBadRequest()).andReturn();
+        assertFalse(response.getResponse().getContentAsString().isEmpty(), VALIDATION_EMPTY_RESPONSE);
+        ExceptionResponse exceptionResponse = objectMapper.readValue(
+            response.getResponse().getContentAsString(),
+            ExceptionResponse.class
+        );
+
+        assertTrue(exceptionResponse.getMessage().contains(DISPLAY_TO_RESPONSE), VALIDATION_EXCEPTION_RESPONSE);
+    }
+
+
+    @DisplayName("Should return a 400 bad request if artefact type is list and date to is empty")
+    @Test
+    void testDateToAbsenceList() throws Exception {
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+            .put(PUT_URL)
+            .header(PublicationConfiguration.TYPE_HEADER, ArtefactType.LIST)
+            .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
+            .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
+            .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
+            .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
+            .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
+            .content(payload)
+            .contentType(MediaType.APPLICATION_JSON);
+        MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
+            .andExpect(status().isBadRequest()).andReturn();
+        assertFalse(response.getResponse().getContentAsString().isEmpty(), VALIDATION_EMPTY_RESPONSE);
+        ExceptionResponse exceptionResponse = objectMapper.readValue(
+            response.getResponse().getContentAsString(),
+            ExceptionResponse.class
+        );
+
+        assertTrue(exceptionResponse.getMessage().contains(DISPLAY_TO_RESPONSE), VALIDATION_EXCEPTION_RESPONSE);
+    }
+
+    @DisplayName("Should return a 400 bad request if artefact type is outcome and date to is empty")
+    @Test
+    void testDateToAbsenceOutcome() throws Exception {
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+            .put(PUT_URL)
+            .header(PublicationConfiguration.TYPE_HEADER, ArtefactType.OUTCOME)
+            .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
+            .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
+            .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
+            .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
+            .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
+            .content(payload)
+            .contentType(MediaType.APPLICATION_JSON);
+        MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
+            .andExpect(status().isBadRequest()).andReturn();
+        assertFalse(response.getResponse().getContentAsString().isEmpty(), VALIDATION_EMPTY_RESPONSE);
+        ExceptionResponse exceptionResponse = objectMapper.readValue(
+            response.getResponse().getContentAsString(),
+            ExceptionResponse.class
+        );
+
+        assertTrue(exceptionResponse.getMessage().contains(DISPLAY_TO_RESPONSE), VALIDATION_EXCEPTION_RESPONSE);
+    }
+
+    @DisplayName("Should return a 400 bad request if artefact type is judgement and date from is empty")
+    @Test
+    void testDateFromAbsenceJudgement() throws Exception {
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+            .put(PUT_URL)
+            .header(PublicationConfiguration.TYPE_HEADER, ArtefactType.JUDGEMENT)
+            .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
+            .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
+            .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
+            .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
+            .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO)
+            .content(payload)
+            .contentType(MediaType.APPLICATION_JSON);
+        MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
+            .andExpect(status().isBadRequest()).andReturn();
+        assertFalse(response.getResponse().getContentAsString().isEmpty(), VALIDATION_EMPTY_RESPONSE);
+        ExceptionResponse exceptionResponse = objectMapper.readValue(
+            response.getResponse().getContentAsString(),
+            ExceptionResponse.class
+        );
+
+        assertTrue(exceptionResponse.getMessage().contains(DISPLAY_FROM_RESPONSE), VALIDATION_EXCEPTION_RESPONSE);
+    }
+
+
+    @DisplayName("Should return a 400 bad request if artefact type is list and date from is empty")
+    @Test
+    void testDateFromAbsenceList() throws Exception {
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+            .put(PUT_URL)
+            .header(PublicationConfiguration.TYPE_HEADER, ArtefactType.LIST)
+            .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
+            .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
+            .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
+            .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
+            .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
+            .content(payload)
+            .contentType(MediaType.APPLICATION_JSON);
+        MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
+            .andExpect(status().isBadRequest()).andReturn();
+        assertFalse(response.getResponse().getContentAsString().isEmpty(), VALIDATION_EMPTY_RESPONSE);
+        ExceptionResponse exceptionResponse = objectMapper.readValue(
+            response.getResponse().getContentAsString(),
+            ExceptionResponse.class
+        );
+
+        assertTrue(exceptionResponse.getMessage().contains(DISPLAY_TO_RESPONSE), VALIDATION_EXCEPTION_RESPONSE);
+    }
+
+    @DisplayName("Should return a 400 bad request if artefact type is outcome and date from is empty")
+    @Test
+    void testDateFromAbsenceOutcome() throws Exception {
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+            .put(PUT_URL)
+            .header(PublicationConfiguration.TYPE_HEADER, ArtefactType.OUTCOME)
+            .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
+            .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
+            .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
+            .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
+            .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO)
+            .content(payload)
+            .contentType(MediaType.APPLICATION_JSON);
+        MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
+            .andExpect(status().isBadRequest()).andReturn();
+        assertFalse(response.getResponse().getContentAsString().isEmpty(), VALIDATION_EMPTY_RESPONSE);
+        ExceptionResponse exceptionResponse = objectMapper.readValue(
+            response.getResponse().getContentAsString(),
+            ExceptionResponse.class
+        );
+
+        assertTrue(exceptionResponse.getMessage().contains(DISPLAY_FROM_RESPONSE), VALIDATION_EXCEPTION_RESPONSE);
+    }
+
     @DisplayName("Should return a 400 Bad Request if the artifact type header is empty")
     @Test
     void testEmptyArtifactType() throws Exception {
@@ -238,6 +413,32 @@ class PublicationTest {
 
         assertTrue(exceptionResponse.getMessage().contains("x-type"), VALIDATION_EXCEPTION_RESPONSE);
     }
+
+    @DisplayName("Should return a 400 Bad Request if date from field is not populated on a list")
+    @Test
+    void testDateFromField() throws Exception {
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+            .put(PUT_URL)
+            .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
+            .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
+            .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
+            .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
+            .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
+            .content(payload)
+            .contentType(MediaType.APPLICATION_JSON);
+
+        MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
+            .andExpect(status().isBadRequest()).andReturn();
+        assertFalse(response.getResponse().getContentAsString().isEmpty(), VALIDATION_EMPTY_RESPONSE);
+        ExceptionResponse exceptionResponse = objectMapper.readValue(
+            response.getResponse().getContentAsString(),
+            ExceptionResponse.class
+        );
+        assertTrue(exceptionResponse.getMessage().contains(
+            DISPLAY_FROM_RESPONSE), VALIDATION_EXCEPTION_RESPONSE);
+
+    }
+
 
     @DisplayName("Should return a 400 Bad Request if an invalid artifact type is provided")
     @Test
@@ -562,7 +763,6 @@ class PublicationTest {
 
     @DisplayName("Verify that artefact is returned with given get")
     @Test
-    @Disabled
     void verifyThatArtefactsAreReturnedFromPostgres() throws Exception {
         when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
@@ -600,5 +800,38 @@ class PublicationTest {
         assertEquals(List.of("12345"), retrievedArtefact.getSearch().get("court-id"), "test");
 
 
+    }
+
+
+    @DisplayName("Check that null date for status_option still allows us to return the relevant artefact")
+    @Test
+    void checkStatusUpdatesWithNullDateTo() throws Exception {
+        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+            .put(PUT_URL)
+            .header(PublicationConfiguration.TYPE_HEADER, ArtefactType.STATUS_UPDATES)
+            .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
+            .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
+            .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
+            .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM.minusMonths(2))
+            .content(JSON_PAYLOAD)
+            .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
+
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 = MockMvcRequestBuilders
+            .get(SEARCH_URL + "/12345")
+            .header("verification", "true");
+        MvcResult getResponse =
+            mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isOk()).andReturn();
+
+        String jsonOutput = getResponse.getResponse().getContentAsString();
+        JSONArray jsonArray = new JSONArray(jsonOutput);
+        Artefact retrievedArtefact = objectMapper.readValue(
+            jsonArray.get(0).toString(), Artefact.class
+        );
+
+        assertEquals(List.of("12345"), retrievedArtefact.getSearch().get("court-id"), "Artefact not found.");
     }
 }

@@ -7,19 +7,19 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.EmptyRequestHeaderException;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactType;
+import uk.gov.hmcts.reform.pip.data.management.models.publication.HeaderGroup;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Language;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Sensitivity;
 import uk.gov.hmcts.reform.pip.data.management.service.PublicationService;
+import uk.gov.hmcts.reform.pip.data.management.service.ValidationService;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
@@ -31,6 +31,9 @@ class PublicationControllerTest {
 
     @Mock
     private PublicationService publicationService;
+
+    @Mock
+    private ValidationService validationService;
 
     @InjectMocks
     private PublicationController publicationController;
@@ -49,8 +52,13 @@ class PublicationControllerTest {
     private static final String VALIDATION_EXPECTED_MESSAGE =
         "The expected exception does not contain the correct message";
 
+
     @Test
     void testCreationOfPublication() {
+        HeaderGroup headers = new HeaderGroup(PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE, SENSITIVITY, LANGUAGE,
+                                      DISPLAY_FROM,
+                                  DISPLAY_TO);
+
         Artefact artefact = Artefact.builder()
             .sourceArtefactId(SOURCE_ARTEFACT_ID)
             .displayFrom(DISPLAY_FROM)
@@ -73,8 +81,11 @@ class PublicationControllerTest {
             .payload(PAYLOAD_URL)
             .build();
 
+        when(validationService.validateHeaders(any())).thenReturn(headers);
         when(publicationService.createPublication(argThat(arg -> arg.equals(artefact)), eq(PAYLOAD)))
             .thenReturn(artefactWithId);
+
+
 
         ResponseEntity<Artefact> responseEntity = publicationController.uploadPublication(
             PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE,
@@ -85,56 +96,9 @@ class PublicationControllerTest {
         assertEquals(artefactWithId, responseEntity.getBody(), "The expected return ID is returned");
     }
 
-    @Test
-    void testCreationOfPublicationEmptyProvenance() {
-        EmptyRequestHeaderException emptyRequestHeaderException =
-            assertThrows(EmptyRequestHeaderException.class, () -> {
-                publicationController.uploadPublication(
-                    EMPTY_FIELD, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE,
-                    SENSITIVITY, LANGUAGE, DISPLAY_FROM, DISPLAY_TO, PAYLOAD
-                );
-            });
 
-        assertEquals(
-            "x-provenance is mandatory however an empty value is provided",
-            emptyRequestHeaderException.getMessage(),
-            VALIDATION_EXPECTED_MESSAGE
-        );
-    }
 
-    @Test
-    void testCreationOfPublicationEmptySourceArtefactId() {
-        EmptyRequestHeaderException emptyRequestHeaderException =
-            assertThrows(EmptyRequestHeaderException.class, () -> {
-                publicationController.uploadPublication(
-                    PROVENANCE, EMPTY_FIELD, ARTEFACT_TYPE,
-                    SENSITIVITY, LANGUAGE, DISPLAY_FROM, DISPLAY_TO, PAYLOAD
-                );
-            });
 
-        assertEquals(
-            "x-source-artefact-id is mandatory however an empty value is provided",
-            emptyRequestHeaderException.getMessage(),
-            VALIDATION_EXPECTED_MESSAGE
-        );
-    }
-
-    @Test
-    void testCreationOfPublicationEmptySourceArtefactIdAndEmptyProvenanceOnlyFirstIsShown() {
-        EmptyRequestHeaderException emptyRequestHeaderException =
-            assertThrows(EmptyRequestHeaderException.class, () -> {
-                publicationController.uploadPublication(
-                    EMPTY_FIELD, EMPTY_FIELD, ARTEFACT_TYPE,
-                    SENSITIVITY, LANGUAGE, DISPLAY_FROM, DISPLAY_TO, PAYLOAD
-                );
-            });
-
-        assertEquals(
-            "x-provenance is mandatory however an empty value is provided",
-            emptyRequestHeaderException.getMessage(),
-            VALIDATION_EXPECTED_MESSAGE
-        );
-    }
 
     @Test
     void testBlobEndpointReturnsOk() {
@@ -195,6 +159,7 @@ class PublicationControllerTest {
             .getAllRelevantArtefactsByCourtId(EMPTY_FIELD, true);
         assertEquals(unmappedArtefact.getBody(), artefactList, VALIDATION_EXPECTED_MESSAGE);
         assertEquals(unmappedArtefact.getStatusCode(), HttpStatus.OK, STATUS_CODE_MATCH);
+
     }
 
 }

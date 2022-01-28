@@ -70,7 +70,7 @@ public class PublicationService {
      * @param verified    - represents the verification status of the user. Currently only verified/non-verified, but
      *                    will include other verified user types in the future
      * @return a list of all artefacts that fulfil the timing criteria, match the given court id and sensitivity
-     *                    associated with given verification status
+     *                     associated with given verification status
      */
     public List<Artefact> findAllByCourtId(String searchValue, Boolean verified) {
         LocalDateTime currDate = LocalDateTime.now();
@@ -106,4 +106,5 @@ public class PublicationService {
             throw new NotFoundException(String.format("No artefact found with the ID: %s", artefactId));
         }
     }
+
 }
