@@ -98,6 +98,7 @@ class ValidationServiceTest {
     void testCreationOfPublicationJudgementTypeAndEmptyDateTo() {
         headerGroup.setType(ArtefactType.JUDGEMENTS_AND_OUTCOMES);
         headerGroup.setDisplayTo(null);
+
         HeaderValidationException dateHeaderValidationException =
             assertThrows(HeaderValidationException.class, () -> {
                 validationService.validateHeaders(headerGroup);

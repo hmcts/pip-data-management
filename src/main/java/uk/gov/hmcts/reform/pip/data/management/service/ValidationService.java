@@ -14,7 +14,6 @@ import uk.gov.hmcts.reform.pip.data.management.models.publication.ListType;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-
 @Service
 public class ValidationService {
 

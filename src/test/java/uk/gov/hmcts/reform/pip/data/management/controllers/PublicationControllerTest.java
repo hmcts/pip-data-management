@@ -106,6 +106,8 @@ class PublicationControllerTest {
         when(publicationService.createPublication(argThat(arg -> arg.equals(artefact)), eq(PAYLOAD)))
             .thenReturn(artefactWithId);
 
+
+
         ResponseEntity<Artefact> responseEntity = publicationController.uploadPublication(
             PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE,
             SENSITIVITY, LANGUAGE, DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, COURT_ID, CONTENT_DATE, PAYLOAD

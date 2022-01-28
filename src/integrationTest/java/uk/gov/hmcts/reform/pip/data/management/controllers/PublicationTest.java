@@ -892,4 +892,40 @@ class PublicationTest {
         );
         assertEquals(List.of("12345"), retrievedArtefact.getSearch().get("court-id"), "test");
     }
+
+
+    @DisplayName("Check that null date for general_publication still allows us to return the relevant artefact")
+    @Test
+    void checkStatusUpdatesWithNullDateTo() throws Exception {
+        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+            .post(POST_URL)
+            .header(PublicationConfiguration.TYPE_HEADER, ArtefactType.GENERAL_PUBLICATION)
+            .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
+            .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
+            .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
+            .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM.minusMonths(2))
+            .header(PublicationConfiguration.LIST_TYPE, LIST_TYPE)
+            .header(PublicationConfiguration.COURT_ID, COURT_ID)
+            .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
+            .content(JSON_PAYLOAD)
+            .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
+
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 = MockMvcRequestBuilders
+            .get(SEARCH_URL + "/12345")
+            .header("verification", "true");
+        MvcResult getResponse =
+            mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isOk()).andReturn();
+
+        String jsonOutput = getResponse.getResponse().getContentAsString();
+        JSONArray jsonArray = new JSONArray(jsonOutput);
+        Artefact retrievedArtefact = objectMapper.readValue(
+            jsonArray.get(0).toString(), Artefact.class
+        );
+
+        assertEquals(List.of("12345"), retrievedArtefact.getSearch().get("court-id"), "Artefact not found.");
+    }
 }
