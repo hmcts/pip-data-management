@@ -172,6 +172,7 @@ class ValidationServiceTest {
         assertEquals("x-display-from Field is required for artefact type OUTCOME",
                      dateHeaderValidationException.getMessage(), VALIDATION_EXPECTED_MESSAGE
         );
+
     }
 
     @Test
