@@ -13,7 +13,6 @@ import uk.gov.hmcts.reform.pip.data.management.utils.PayloadExtractor;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -46,9 +45,6 @@ public class PublicationService {
      * @return Returns the UUID of the artefact that was created.
      */
     public Artefact createPublication(Artefact artefact, String payload) {
-        Map<String, List<Object>> extractedSearchTerms =
-            payloadExtractor.validateAndParsePayload(artefact, payload);
-
         applyExistingArtefact(artefact);
 
         String blobUrl = azureBlobService.createPayload(
@@ -57,7 +53,7 @@ public class PublicationService {
             payload);
 
         artefact.setPayload(blobUrl);
-        artefact.setSearch(extractedSearchTerms);
+        artefact.setSearch(payloadExtractor.extractSearchTerms(payload));
 
         return artefactRepository.save(artefact);
     }

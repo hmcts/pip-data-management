@@ -1,24 +1,60 @@
 package uk.gov.hmcts.reform.pip.data.management.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.networknt.schema.JsonSchema;
+import com.networknt.schema.JsonSchemaFactory;
+import com.networknt.schema.SpecVersion;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
+import uk.gov.hmcts.reform.pip.data.management.config.ValidationConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.DateValidationException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.EmptyRequiredHeaderException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.FlatFileException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.HeaderValidationException;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.PayloadValidationException;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.HeaderGroup;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ListType;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
+/**
+ * Class that guides the validation process.
+ */
 @Service
 public class ValidationService {
 
+    private final JsonSchema masterSchema;
+    private final JsonSchema dailyCauseListSchema;
+
+    @Autowired
+    public ValidationService(ValidationConfiguration validationConfiguration) {
+        try (InputStream masterFile = this.getClass().getClassLoader()
+            .getResourceAsStream(validationConfiguration.getMasterSchema());
+
+             InputStream dailyCauseListFile = this.getClass().getClassLoader()
+                 .getResourceAsStream(validationConfiguration.getDailyCauseList())) {
+
+            JsonSchemaFactory schemaFactory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V7);
+            masterSchema = schemaFactory.getSchema(masterFile);
+            dailyCauseListSchema = schemaFactory.getSchema(dailyCauseListFile);
+
+        } catch (Exception exception) {
+            throw new PayloadValidationException(String.join(exception.getMessage()));
+        }
+
+    }
+
     /**
-     * Class that guides the validation process.
+     * Method that validates the headers of the inbound request.
      *
      * @param headers - a hashmap of all the headers taken in by the endpoint. Importantly, this may contain nulls (i.e.
      *                cannot be replaced with a ConcurrentHashMap.
@@ -138,9 +174,39 @@ public class ValidationService {
         return header == null || header.toString().isEmpty();
     }
 
+    /**
+     * Validates a Multipart File body.
+     *
+     * @param file The file to validate.
+     */
     public void validateBody(MultipartFile file) {
         if (file.isEmpty()) {
             throw new FlatFileException("Empty file provided, please provide a valid file");
+        }
+    }
+
+    /**
+     * Validates a JSON body.
+     *
+     * @param jsonPayload The JSON body to validate.
+     */
+    public void validateBody(String jsonPayload, ListType listType) {
+        try {
+            List<String> errors = new ArrayList<>();
+
+            JsonNode json = new ObjectMapper().readTree(jsonPayload);
+            masterSchema.validate(json).forEach(vm ->  errors.add(vm.getMessage()));
+
+            if (listType != null && listType.equals(ListType.CIVIL_DAILY_CAUSE_LIST)) {
+                dailyCauseListSchema.validate(json).forEach(vm ->  errors.add(vm.getMessage()));
+            }
+
+            if (!errors.isEmpty()) {
+                throw new PayloadValidationException(String.join(", ", errors));
+            }
+
+        } catch (IOException exception) {
+            throw new PayloadValidationException("Error while parsing JSON Payload");
         }
     }
 }

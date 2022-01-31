@@ -13,6 +13,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @Setter
 public  class ValidationConfiguration {
 
+
     /**
      * Config option for the master schema file.
      */

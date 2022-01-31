@@ -8,9 +8,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pip.data.management.Application;
 import uk.gov.hmcts.reform.pip.data.management.config.AzureBlobConfigurationTest;
-import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.PayloadValidationException;
-import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
-import uk.gov.hmcts.reform.pip.data.management.models.publication.ListType;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,7 +17,6 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -84,63 +80,8 @@ class JsonExtractorTest {
         assertFalse(jsonExtractor.isAccepted("invalid-test"), "Invalid JSON string marked as accepted");
     }
 
-    @Test
-    void testValidateMasterSchemaWithErrors() {
-        try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream("mocks/badJsonPayload.json")) {
-            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
-            assertFalse(jsonExtractor.validate(new Artefact(), text).isEmpty(),
-                        "Valid JSON string marked as not valid");
-        } catch (IOException exception) {
-            fail(UNKNOWN_EXCEPTION);
-        }
-    }
 
-    @Test
-    void testValidateMasterSchemaWithoutErrors() throws IOException {
-        try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream("mocks/jsonPayload.json")) {
-            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
-            assertTrue(jsonExtractor.validate(new Artefact(), text).isEmpty(), "Valid JSON string marked as valid");
-        }
-    }
 
-    @Test
-    void testValidateWithoutErrorsWhenArtefactIsDailyCauseList() throws IOException {
-        try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream("mocks/dailyCauseList.json")) {
-            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
-            Artefact artefact = new Artefact();
-            artefact.setListType(ListType.CIVIL_DAILY_CAUSE_LIST);
-            assertTrue(jsonExtractor.validate(artefact, text).isEmpty(), "Valid JSON string marked as valid");
-        }
-    }
-
-    @Test
-    void testValidateWithErrorsWhenArtefactIsDailyCauseList() throws IOException {
-        try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream("mocks/dailyCauseListInvalid.json")) {
-            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
-
-            Artefact artefact = new Artefact();
-            artefact.setListType(ListType.CIVIL_DAILY_CAUSE_LIST);
-            assertFalse(jsonExtractor.validate(artefact, text).isEmpty(), "Valid JSON string marked as valid");
-        }
-    }
-
-    @Test
-    void testExceptionWhenValidatingPayload() {
-        Artefact artefact = new Artefact();
-        artefact.setListType(ListType.CIVIL_DAILY_CAUSE_LIST);
-
-        PayloadValidationException payloadValidationException = assertThrows(PayloadValidationException.class, () ->
-            jsonExtractor.validate(artefact, "abcd"), "Validation exception not thrown "
-            + "when value not JSON");
-
-        assertEquals("Error while reading JSON Payload", payloadValidationException.getMessage(),
-                     "JSON Payload message does not match expected exception");
-
-    }
 
 }

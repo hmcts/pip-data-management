@@ -1,7 +1,5 @@
 package uk.gov.hmcts.reform.pip.data.management.utils;
 
-import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
-
 import java.util.List;
 import java.util.Map;
 
@@ -24,11 +22,4 @@ public interface Extractor {
      */
     boolean isAccepted(String payload);
 
-    /**
-     * Determines whether the payload is a valid against extractor criteria.
-     * @param artefact The artefact to validate.
-     * @param payload The payload to validate.
-     * @return A list of errors message if it is not valid.
-     */
-    List<String> validate(Artefact artefact, String payload);
 }

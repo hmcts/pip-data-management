@@ -105,6 +105,7 @@ public class PublicationController {
                                                      displayFrom, displayTo, listType, courtId, contentDate);
 
         HeaderGroup headers = validationService.validateHeaders(initialHeaders);
+        validationService.validateBody(payload, initialHeaders.getListType());
 
         Artefact artefact = Artefact.builder()
             .provenance(headers.getProvenance())
