@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.pip.data.management.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.AzureBlobService;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.NotFoundException;
@@ -48,10 +49,7 @@ public class PublicationService {
         Map<String, List<Object>> extractedSearchTerms =
             payloadExtractor.validateAndParsePayload(artefact, payload);
 
-        Optional<Artefact> foundArtefact = artefactRepository
-            .findBySourceArtefactIdAndProvenance(artefact.getSourceArtefactId(), artefact.getProvenance());
-
-        foundArtefact.ifPresent(value -> artefact.setArtefactId(value.getArtefactId()));
+        applyExistingArtefact(artefact);
 
         String blobUrl = azureBlobService.createPayload(
             artefact.getSourceArtefactId(),
@@ -62,6 +60,32 @@ public class PublicationService {
         artefact.setSearch(extractedSearchTerms);
 
         return artefactRepository.save(artefact);
+    }
+
+    public Artefact createPublication(Artefact artefact, MultipartFile file) {
+        applyExistingArtefact(artefact);
+
+        String blobUrl = azureBlobService.uploadFlatFile(
+            artefact.getSourceArtefactId(),
+            artefact.getProvenance(),
+            file
+        );
+        artefact.setPayload(blobUrl);
+
+        return artefactRepository.save(artefact);
+    }
+
+    /**
+     * Checks if the artefact already exists based on source artefact id and provenance, if so it applies the
+     * existing artefact ID to update.
+     *
+     * @param artefact The artefact to check existing on
+     */
+    private void applyExistingArtefact(Artefact artefact) {
+        Optional<Artefact> foundArtefact = artefactRepository
+            .findBySourceArtefactIdAndProvenance(artefact.getSourceArtefactId(), artefact.getProvenance());
+
+        foundArtefact.ifPresent(value -> artefact.setArtefactId(value.getArtefactId()));
     }
 
 

@@ -102,6 +102,12 @@ public class Artefact {
     private LocalDateTime contentDate;
 
     /**
+     * Bool to signal if the payload is a flat file or raw data.
+     */
+    @Builder.Default
+    private Boolean isFlatFile = false;
+
+    /**
      * The URL for the payload in the Azure Blob Service.
      */
     private String payload;

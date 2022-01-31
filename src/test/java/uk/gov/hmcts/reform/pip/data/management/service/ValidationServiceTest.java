@@ -1,6 +1,11 @@
 package uk.gov.hmcts.reform.pip.data.management.service;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.mock.web.MockMultipartFile;
+import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.EmptyRequiredHeaderException;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.FlatFileException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.HeaderValidationException;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.HeaderGroup;
@@ -32,20 +37,26 @@ class ValidationServiceTest {
     private static final String VALIDATION_EXPECTED_MESSAGE =
         "The expected exception does not contain the correct message";
     private static final String NOT_NULL_MESSAGE = "The returned value is null, but was not expected to be.";
+    private static final String REQUIRED_HEADER_EXCEPTION_MESSAGE = " is mandatory however an empty value is provided";
 
+    private HeaderGroup headerGroup;
+
+    @BeforeEach
+    void setup() {
+        headerGroup = new HeaderGroup(PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE, SENSITIVITY, LANGUAGE,
+                                      DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, COURT_ID, CONTENT_DATE);
+    }
 
     @Test
     void testCreationOfPublicationEmptySourceArtefactId() {
-        HeaderGroup headerGroup = new HeaderGroup(PROVENANCE, EMPTY_FIELD, ARTEFACT_TYPE, SENSITIVITY, LANGUAGE,
-                                                  DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, COURT_ID, CONTENT_DATE
-        );
+        headerGroup.setSourceArtefactId(EMPTY_FIELD);
         HeaderValidationException emptyRequestHeaderException =
             assertThrows(HeaderValidationException.class, () -> {
                 validationService.validateHeaders(headerGroup);
             });
 
         assertEquals(
-            "x-source-artefact-id is mandatory however an empty value is provided",
+            "x-source-artefact-id" + REQUIRED_HEADER_EXCEPTION_MESSAGE,
             emptyRequestHeaderException.getMessage(),
             VALIDATION_EXPECTED_MESSAGE
         );
@@ -53,16 +64,14 @@ class ValidationServiceTest {
 
     @Test
     void testCreationOfPublicationEmptyProvenance() {
-        HeaderGroup headerGroup = new HeaderGroup(EMPTY_FIELD, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE, SENSITIVITY, LANGUAGE,
-                                                  DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, COURT_ID, CONTENT_DATE
-        );
+        headerGroup.setProvenance(EMPTY_FIELD);
         HeaderValidationException emptyRequestHeaderException =
             assertThrows(HeaderValidationException.class, () -> {
                 validationService.validateHeaders(headerGroup);
             });
 
         assertEquals(
-            "x-provenance is mandatory however an empty value is provided",
+            "x-provenance" + REQUIRED_HEADER_EXCEPTION_MESSAGE,
             emptyRequestHeaderException.getMessage(),
             VALIDATION_EXPECTED_MESSAGE
         );
@@ -70,16 +79,16 @@ class ValidationServiceTest {
 
     @Test
     void testCreationOfPublicationEmptySourceArtefactIdAndEmptyProvenanceOnlyFirstIsShown() {
-        HeaderGroup headerGroup = new HeaderGroup(EMPTY_FIELD, EMPTY_FIELD, ARTEFACT_TYPE, SENSITIVITY, LANGUAGE,
-                                                  DISPLAY_FROM, DISPLAY_TO,  LIST_TYPE, COURT_ID, CONTENT_DATE
-        );
+        headerGroup.setProvenance(EMPTY_FIELD);
+        headerGroup.setSourceArtefactId(EMPTY_FIELD);
+
         HeaderValidationException emptyRequestHeaderException =
             assertThrows(HeaderValidationException.class, () -> {
                 validationService.validateHeaders(headerGroup);
             });
 
         assertEquals(
-            "x-source-artefact-id is mandatory however an empty value is provided",
+            "x-source-artefact-id" + REQUIRED_HEADER_EXCEPTION_MESSAGE,
             emptyRequestHeaderException.getMessage(),
             VALIDATION_EXPECTED_MESSAGE
         );
@@ -87,34 +96,23 @@ class ValidationServiceTest {
 
     @Test
     void testCreationOfPublicationJudgementTypeAndEmptyDateTo() {
+        headerGroup.setType(ArtefactType.JUDGEMENTS_AND_OUTCOMES);
+        headerGroup.setDisplayTo(null);
 
-        HeaderGroup headerGroup = new HeaderGroup(
-            PROVENANCE,
-            SOURCE_ARTEFACT_ID,
-            ArtefactType.JUDGEMENT,
-            SENSITIVITY,
-            LANGUAGE,
-            DISPLAY_FROM,
-            null,
-            LIST_TYPE,
-            COURT_ID,
-            CONTENT_DATE
-        );
         HeaderValidationException dateHeaderValidationException =
             assertThrows(HeaderValidationException.class, () -> {
                 validationService.validateHeaders(headerGroup);
             });
-        assertEquals("x-display-to Field is required for artefact type JUDGEMENT",
+        assertEquals("x-display-to Field is required for artefact type JUDGEMENTS_AND_OUTCOMES",
                      dateHeaderValidationException.getMessage(), VALIDATION_EXPECTED_MESSAGE
         );
     }
 
     @Test
     void testCreationOfPublicationListTypeAndEmptyDateTo() {
-        HeaderGroup headerGroup = new HeaderGroup(PROVENANCE, SOURCE_ARTEFACT_ID, ArtefactType.LIST, SENSITIVITY,
-                                                  LANGUAGE,
-                                                  DISPLAY_FROM, null,  LIST_TYPE, COURT_ID, CONTENT_DATE
-        );
+        headerGroup.setType(ArtefactType.LIST);
+        headerGroup.setDisplayTo(null);
+
         HeaderValidationException dateHeaderValidationException =
             assertThrows(HeaderValidationException.class, () -> {
                 validationService.validateHeaders(headerGroup);
@@ -125,25 +123,9 @@ class ValidationServiceTest {
     }
 
     @Test
-    void testCreationOfPublicationOutcomeTypeAndEmptyDateTo() {
-        HeaderGroup headerGroup = new HeaderGroup(PROVENANCE, SOURCE_ARTEFACT_ID, ArtefactType.OUTCOME, SENSITIVITY,
-                                                  LANGUAGE,
-                                                  DISPLAY_FROM, null,  LIST_TYPE, COURT_ID, CONTENT_DATE
-        );
-        HeaderValidationException dateHeaderValidationException =
-            assertThrows(HeaderValidationException.class, () -> {
-                validationService.validateHeaders(headerGroup);
-            });
-        assertEquals("x-display-to Field is required for artefact type OUTCOME",
-                     dateHeaderValidationException.getMessage(), VALIDATION_EXPECTED_MESSAGE
-        );
-    }
-
-    @Test
     void testCreationOfPublicationListTypeAndEmptyDateFrom() {
-        HeaderGroup headerGroup = new HeaderGroup(PROVENANCE, SOURCE_ARTEFACT_ID, ArtefactType.LIST, SENSITIVITY,
-                                                  LANGUAGE, null, DISPLAY_TO,  LIST_TYPE, COURT_ID, CONTENT_DATE
-        );
+        headerGroup.setDisplayFrom(null);
+
         HeaderValidationException dateHeaderValidationException =
             assertThrows(HeaderValidationException.class, () -> {
                 validationService.validateHeaders(headerGroup);
@@ -154,72 +136,116 @@ class ValidationServiceTest {
     }
 
     @Test
-    void testCreationOfPublicationJudgementTypeAndEmptyDateFrom() {
-        HeaderGroup headerGroup = new HeaderGroup(PROVENANCE, SOURCE_ARTEFACT_ID, ArtefactType.JUDGEMENT, SENSITIVITY,
-                                                  LANGUAGE, null, DISPLAY_TO, LIST_TYPE, COURT_ID, CONTENT_DATE
-        );
+    void testCreationOfPublicationJudgementAndOutcomeTypeAndEmptyDateFrom() {
+        headerGroup.setType(ArtefactType.JUDGEMENTS_AND_OUTCOMES);
+        headerGroup.setDisplayFrom(null);
+
         HeaderValidationException dateHeaderValidationException =
             assertThrows(HeaderValidationException.class, () -> {
                 validationService.validateHeaders(headerGroup);
             });
-        assertEquals("x-display-from Field is required for artefact type JUDGEMENT",
+        assertEquals("x-display-from Field is required for artefact type JUDGEMENTS_AND_OUTCOMES",
                      dateHeaderValidationException.getMessage(), VALIDATION_EXPECTED_MESSAGE
         );
     }
 
     @Test
-    void testCreationOfPublicationOutcomeTypeAndEmptyDateFrom() {
-        HeaderGroup headerGroup = new HeaderGroup(PROVENANCE, SOURCE_ARTEFACT_ID, ArtefactType.OUTCOME, SENSITIVITY,
-                                                  LANGUAGE, null, DISPLAY_TO, LIST_TYPE, COURT_ID, CONTENT_DATE
-        );
-        HeaderValidationException dateHeaderValidationException =
-            assertThrows(HeaderValidationException.class, () -> {
-                validationService.validateHeaders(headerGroup);
-            });
-        assertEquals("x-display-from Field is required for artefact type OUTCOME",
-                     dateHeaderValidationException.getMessage(), VALIDATION_EXPECTED_MESSAGE
-        );
-    }
-
-    @Test
-    void testValidationOfStatusUpdateTypeWithNoDateFrom() {
-        HeaderGroup headerGroup = new HeaderGroup(
-            PROVENANCE,
-            SOURCE_ARTEFACT_ID,
-            ArtefactType.STATUS_UPDATES,
-            SENSITIVITY,
-            LANGUAGE,
-            null,
-            DISPLAY_TO,
-            LIST_TYPE,
-            COURT_ID,
-            CONTENT_DATE
-        );
+    void testValidationOfGeneralPublicationTypeWithNoDateFrom() {
+        headerGroup.setType(ArtefactType.GENERAL_PUBLICATION);
+        headerGroup.setDisplayFrom(null);
+        headerGroup.setDisplayTo(null);
 
         assertNotNull(
             validationService.validateHeaders(headerGroup).getDisplayFrom(),
             NOT_NULL_MESSAGE
         );
-
     }
 
     @Test
-    void testValidationOfStatusUpdateTypeWithNoDateTo() {
-        HeaderGroup headerGroup = new HeaderGroup(PROVENANCE,
-                                                  SOURCE_ARTEFACT_ID,
-                                                  ArtefactType.STATUS_UPDATES,
-                                                  SENSITIVITY,
-                                                  LANGUAGE,
-                                                 DISPLAY_FROM,
-                                                  null,
-                                                  LIST_TYPE,
-                                                  COURT_ID,
-                                                  CONTENT_DATE
-        );
+    void testValidationOfGeneralPublicationTypeWithNoDateTo() {
+        headerGroup.setType(ArtefactType.GENERAL_PUBLICATION);
+        headerGroup.setDisplayTo(null);
 
         assertNull(
             validationService.validateHeaders(headerGroup).getDisplayTo(),
             "The date to header should remain null"
         );
+    }
+
+    @Test
+    void testNullContentDateForListThrows() {
+        headerGroup.setContentDate(null);
+
+        EmptyRequiredHeaderException ex = assertThrows(EmptyRequiredHeaderException.class, () -> {
+            validationService.validateHeaders(headerGroup);
+        });
+
+        assertEquals(PublicationConfiguration.CONTENT_DATE + REQUIRED_HEADER_EXCEPTION_MESSAGE,
+                     ex.getMessage(), VALIDATION_EXPECTED_MESSAGE);
+    }
+
+    @Test
+    void testNullListTypeForListThrows() {
+        headerGroup.setListType(null);
+
+        EmptyRequiredHeaderException ex = assertThrows(EmptyRequiredHeaderException.class, () -> {
+            validationService.validateHeaders(headerGroup);
+        });
+
+        assertEquals(PublicationConfiguration.LIST_TYPE + REQUIRED_HEADER_EXCEPTION_MESSAGE,
+                     ex.getMessage(), VALIDATION_EXPECTED_MESSAGE);
+    }
+
+    @Test
+    void testNullContentDateForJudgementOutcomeThrows() {
+        headerGroup.setType(ArtefactType.JUDGEMENTS_AND_OUTCOMES);
+        headerGroup.setContentDate(null);
+
+        EmptyRequiredHeaderException ex = assertThrows(EmptyRequiredHeaderException.class, () -> {
+            validationService.validateHeaders(headerGroup);
+        });
+
+        assertEquals(PublicationConfiguration.CONTENT_DATE + REQUIRED_HEADER_EXCEPTION_MESSAGE,
+                     ex.getMessage(), VALIDATION_EXPECTED_MESSAGE);
+    }
+
+    @Test
+    void testNullListTypeForJudgementOutcomeThrows() {
+        headerGroup.setType(ArtefactType.JUDGEMENTS_AND_OUTCOMES);
+        headerGroup.setListType(null);
+
+        EmptyRequiredHeaderException ex = assertThrows(EmptyRequiredHeaderException.class, () -> {
+            validationService.validateHeaders(headerGroup);
+        });
+
+        assertEquals(PublicationConfiguration.LIST_TYPE + REQUIRED_HEADER_EXCEPTION_MESSAGE,
+                     ex.getMessage(), VALIDATION_EXPECTED_MESSAGE);
+    }
+
+    @Test
+    void testListTypeAndContentDateNotNeededForGeneralPublication() {
+        headerGroup.setType(ArtefactType.GENERAL_PUBLICATION);
+        headerGroup.setListType(null);
+        headerGroup.setContentDate(null);
+
+        assertEquals(headerGroup, validationService.validateHeaders(headerGroup), "Header groups should match");
+    }
+
+    @Test
+    void testSjpSetsCourtId() {
+        headerGroup.setListType(ListType.SJP);
+        headerGroup.setCourtId("1");
+
+        assertEquals("0", validationService.validateHeaders(headerGroup).getCourtId(), "Court Id should match");
+    }
+
+    @Test
+    void testEmptyFileThrows() {
+        FlatFileException ex = assertThrows(FlatFileException.class, () -> {
+            validationService.validateBody(new MockMultipartFile("test", (byte[]) null));
+        });
+
+        assertEquals("Empty file provided, please provide a valid file", ex.getMessage(),
+                     VALIDATION_EXPECTED_MESSAGE);
     }
 }
