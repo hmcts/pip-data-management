@@ -822,7 +822,7 @@ class PublicationTest {
             + "not contain the new language");
     }
 
-    @DisplayName("Should contain no search terms when payload is of an unknown type")
+    @DisplayName("Should throw a 400 bad request when payload is not of JSON through the JSON endpoint")
     @Test
     void creationOfAnArtefactWithAnUnknownSearchType() throws Exception {
         when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
@@ -842,16 +842,8 @@ class PublicationTest {
             .content(PAYLOAD_UNKNOWN)
             .contentType(MediaType.APPLICATION_JSON);
 
-        MvcResult createResponse =
-            mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
 
-        Artefact createdArtefact = objectMapper.readValue(
-            createResponse.getResponse().getContentAsString(),
-            Artefact.class
-        );
-
-        assertTrue(createdArtefact.getSearch().isEmpty(), "Artefact search criteria exists"
-            + "when payload is of an unknown type");
+        mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isBadRequest()).andReturn();
     }
 
 
