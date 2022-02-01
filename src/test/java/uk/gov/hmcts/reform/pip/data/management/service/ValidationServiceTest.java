@@ -254,7 +254,7 @@ class ValidationServiceTest {
 
     @Test
     void testSjpSetsCourtId() {
-        headerGroup.setListType(ListType.SJP);
+        headerGroup.setListType(ListType.SJP_PRESS_LIST);
         headerGroup.setCourtId("1");
 
         assertEquals("0", validationService.validateHeaders(headerGroup).getCourtId(), "Court Id should match");
@@ -275,7 +275,8 @@ class ValidationServiceTest {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream("mocks/badJsonPayload.json")) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
-            assertThrows(PayloadValidationException.class, () -> validationService.validateBody(text, ListType.SJP),
+            assertThrows(PayloadValidationException.class, () ->
+                             validationService.validateBody(text, ListType.MAGS_PUBLIC_LIST),
                                "Valid JSON string marked as not valid");
         } catch (IOException exception) {
             fail(UNKNOWN_EXCEPTION);
@@ -312,7 +313,7 @@ class ValidationServiceTest {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream("mocks/jsonPayload.json")) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
-            assertDoesNotThrow(() -> validationService.validateBody(text, ListType.DAILY_LIST),
+            assertDoesNotThrow(() -> validationService.validateBody(text, ListType.MAGS_PUBLIC_LIST),
                                "Valid JSON string marked as valid");
         }
     }
@@ -325,7 +326,7 @@ class ValidationServiceTest {
 
             Artefact artefact = new Artefact();
             artefact.setListType(ListType.CIVIL_DAILY_CAUSE_LIST);
-            assertDoesNotThrow(() -> validationService.validateBody(text, ListType.DAILY_LIST),
+            assertDoesNotThrow(() -> validationService.validateBody(text, ListType.MAGS_PUBLIC_LIST),
                                "Valid JSON string marked as valid");
         }
     }

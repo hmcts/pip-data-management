@@ -126,7 +126,7 @@ public class ValidationService {
      * @param headers headers to check against.
      */
     private void handleSjpCourt(HeaderGroup headers) {
-        if (headers.getListType().equals(ListType.SJP)) {
+        if (headers.getListType().isSjp()) {
             headers.setCourtId("0");
         }
     }
