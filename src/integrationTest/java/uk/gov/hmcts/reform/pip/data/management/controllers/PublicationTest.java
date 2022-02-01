@@ -824,7 +824,7 @@ class PublicationTest {
 
     @DisplayName("Should throw a 400 bad request when payload is not of JSON through the JSON endpoint")
     @Test
-    void creationOfAnArtefactWithAnUnknownSearchType() throws Exception {
+    void creationOfAJsonArtefactThatIsNotJson() throws Exception {
         when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
         when(blobContainerClient.getBlobContainerUrl()).thenReturn(PAYLOAD_URL);
 

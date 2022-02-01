@@ -79,9 +79,4 @@ class JsonExtractorTest {
     void testNotAccepted() {
         assertFalse(jsonExtractor.isAccepted("invalid-test"), "Invalid JSON string marked as accepted");
     }
-
-
-
-
-
 }
