@@ -180,9 +180,9 @@ class PublicationServiceTest {
         artefactList.add(artefact);
         artefactList.add(artefact2);
 
-        when(artefactRepository.findArtefactsBySearchUnverified(any(), any()))
+        when(artefactRepository.findArtefactsByCourtIdVerified(any(), any()))
             .thenReturn(artefactList);
-        when(artefactRepository.findArtefactsBySearchVerified(any(), any()))
+        when(artefactRepository.findArtefactsByCourtIdUnverified(any(), any()))
             .thenReturn(artefactList);
 
         assertEquals(artefactList, publicationService.findAllByCourtId("abc", true),

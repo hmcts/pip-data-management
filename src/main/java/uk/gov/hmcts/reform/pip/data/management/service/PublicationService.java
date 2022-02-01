@@ -98,9 +98,9 @@ public class PublicationService {
     public List<Artefact> findAllByCourtId(String searchValue, Boolean verified) {
         LocalDateTime currDate = LocalDateTime.now();
         if (verified) {
-            return artefactRepository.findArtefactsBySearchVerified(searchValue, currDate);
+            return artefactRepository.findArtefactsByCourtIdVerified(searchValue, currDate);
         } else {
-            return artefactRepository.findArtefactsBySearchUnverified(searchValue, currDate);
+            return artefactRepository.findArtefactsByCourtIdUnverified(searchValue, currDate);
         }
 
     }
