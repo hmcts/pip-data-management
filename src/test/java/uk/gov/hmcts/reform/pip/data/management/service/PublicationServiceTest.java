@@ -11,10 +11,9 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.AzureBlobService;
-import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.UnauthorisedRequestException;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.NotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Language;
-import uk.gov.hmcts.reform.pip.data.management.models.publication.Sensitivity;
 import uk.gov.hmcts.reform.pip.data.management.utils.PayloadExtractor;
 
 import java.util.ArrayList;
@@ -53,6 +52,7 @@ class PublicationServiceTest {
     private static final String TEST_VALUE = "TestValue";
     private static final Map<String, List<Object>> SEARCH_VALUES = new ConcurrentHashMap<>();
     private static final MultipartFile FILE = new MockMultipartFile("test", (byte[]) null);
+    private static final String VALIDATION_ARTEFACT_NOT_MATCH = "Artefacts do not match";
 
     private Artefact artefact;
     private Artefact artefactWithPayloadUrl;
@@ -148,22 +148,81 @@ class PublicationServiceTest {
     }
 
     @Test
-    void testGetBlobFromAzureService() {
+    void testArtefactContentFromAzureWhenAuthorized() {
         Artefact artefact = Artefact.builder()
             .sourceArtefactId(SOURCE_ARTEFACT_ID)
             .provenance(PROVENANCE)
             .language(Language.ENGLISH)
             .build();
-        when(artefactRepository.findByArtefactId(any())).thenReturn(Optional.of(artefact));
+        when(artefactRepository.findByArtefactIdVerified(any(), any())).thenReturn(Optional.of(artefact));
         when(azureBlobService.getBlobData(any(), any()))
             .thenReturn(String.valueOf(artefact));
-        assertEquals(artefact.toString(), publicationService.getByArtefactId(ARTEFACT_ID, true),
-                     "Artefacts do not match"
+        assertEquals(artefact.toString(), publicationService.getPayloadByArtefactId(ARTEFACT_ID, true),
+                     VALIDATION_ARTEFACT_NOT_MATCH
         );
     }
 
     @Test
-    void testFindArtefactsFromPostgres() {
+    void testArtefactContentFromAzureWhenUnauthorized() {
+        Artefact artefact = Artefact.builder()
+            .sourceArtefactId(SOURCE_ARTEFACT_ID)
+            .provenance(PROVENANCE)
+            .language(Language.ENGLISH)
+            .build();
+        when(artefactRepository.findByArtefactIdUnverified(any(), any())).thenReturn(Optional.of(artefact));
+        when(azureBlobService.getBlobData(any(), any()))
+            .thenReturn(String.valueOf(artefact));
+        assertEquals(artefact.toString(), publicationService.getPayloadByArtefactId(ARTEFACT_ID, false),
+                     VALIDATION_ARTEFACT_NOT_MATCH
+        );
+    }
+
+    @Test
+    void testArtefactContentFromAzureWhenDoesNotExist() {
+        when(artefactRepository.findByArtefactIdVerified(any(), any())).thenReturn(Optional.empty());
+        assertThrows(NotFoundException.class, ()
+            -> publicationService.getPayloadByArtefactId(ARTEFACT_ID, true),
+                      "Not Found exception has not been thrown when artefact does not exist"
+        );
+    }
+
+    @Test
+    void testArtefactMetadataFromAzureWhenAuthorized() {
+        Artefact artefact = Artefact.builder()
+            .sourceArtefactId(SOURCE_ARTEFACT_ID)
+            .provenance(PROVENANCE)
+            .language(Language.ENGLISH)
+            .build();
+        when(artefactRepository.findByArtefactIdVerified(any(), any())).thenReturn(Optional.of(artefact));
+        assertEquals(artefact, publicationService.getMetadataByArtefactId(ARTEFACT_ID, true),
+                     VALIDATION_ARTEFACT_NOT_MATCH
+        );
+    }
+
+    @Test
+    void testArtefactMetadataFromAzureWhenUnauthorized() {
+        Artefact artefact = Artefact.builder()
+            .sourceArtefactId(SOURCE_ARTEFACT_ID)
+            .provenance(PROVENANCE)
+            .language(Language.ENGLISH)
+            .build();
+        when(artefactRepository.findByArtefactIdUnverified(any(), any())).thenReturn(Optional.of(artefact));
+        assertEquals(artefact, publicationService.getMetadataByArtefactId(ARTEFACT_ID, false),
+                     VALIDATION_ARTEFACT_NOT_MATCH
+        );
+    }
+
+    @Test
+    void testArtefactMetadataFromAzureWhenDoesNotExist() {
+        when(artefactRepository.findByArtefactIdVerified(any(), any())).thenReturn(Optional.empty());
+        assertThrows(NotFoundException.class, ()
+            -> publicationService.getPayloadByArtefactId(ARTEFACT_ID, true),
+                     "Not Found exception has not been thrown when artefact does not exist"
+        );
+    }
+
+    @Test
+    void testFindByCourtIdFromPostgres() {
         Artefact artefact = Artefact.builder()
             .sourceArtefactId(SOURCE_ARTEFACT_ID)
             .provenance(PROVENANCE)
@@ -191,21 +250,6 @@ class PublicationServiceTest {
         assertEquals(artefactList, publicationService.findAllByCourtId("abc", false),
                      "Message"
         );
-    }
-
-    @Test
-    void checkForUnauthorised() {
-        Artefact artefact = Artefact.builder()
-            .sourceArtefactId(SOURCE_ARTEFACT_ID)
-            .provenance(PROVENANCE)
-            .language(Language.ENGLISH)
-            .sensitivity(Sensitivity.CLASSIFIED)
-            .build();
-
-        when(artefactRepository.findByArtefactId(any())).thenReturn(Optional.of(artefact));
-        assertThrows(UnauthorisedRequestException.class, () -> {
-            publicationService.getByArtefactId(UUID.randomUUID(), false);
-        }, "Should throw an unauthorised request exception.");
     }
 }
 

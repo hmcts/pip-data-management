@@ -118,8 +118,14 @@ class PublicationControllerTest {
     }
 
     @Test
-    void testBlobEndpointReturnsOk() {
-        assertEquals(HttpStatus.OK, publicationController.getBlobData(ARTEFACT_ID, true)
+    void testGetMetadataEndpointReturnsOk() {
+        assertEquals(HttpStatus.OK, publicationController.getArtefactMetadata(ARTEFACT_ID, true)
+            .getStatusCode(), STATUS_CODE_MATCH);
+    }
+
+    @Test
+    void testGetPayloadEndpointReturnsOk() {
+        assertEquals(HttpStatus.OK, publicationController.getArtefactPayload(ARTEFACT_ID, true)
             .getStatusCode(), STATUS_CODE_MATCH);
     }
 
@@ -136,9 +142,19 @@ class PublicationControllerTest {
     }
 
     @Test
-    void checkBodyBlobs() {
-        when(publicationService.getByArtefactId(any(), any())).thenReturn(String.valueOf(artefactWithId));
-        ResponseEntity<String> unmappedBlob = publicationController.getBlobData(UUID.randomUUID(), true);
+    void checkGetMetadataContentReturns() {
+        when(publicationService.getMetadataByArtefactId(any(), any())).thenReturn(artefactWithId);
+        ResponseEntity<Artefact> unmappedBlob = publicationController.getArtefactMetadata(UUID.randomUUID(), true);
+        assertEquals(HttpStatus.OK, unmappedBlob.getStatusCode(),
+                     STATUS_CODE_MATCH
+        );
+        assertEquals(artefactWithId, unmappedBlob.getBody(), VALIDATION_EXPECTED_MESSAGE);
+    }
+
+    @Test
+    void checkGetPayloadContentReturns() {
+        when(publicationService.getPayloadByArtefactId(any(), any())).thenReturn(String.valueOf(artefactWithId));
+        ResponseEntity<String> unmappedBlob = publicationController.getArtefactPayload(UUID.randomUUID(), true);
         assertEquals(HttpStatus.OK, unmappedBlob.getStatusCode(),
                      STATUS_CODE_MATCH
         );
@@ -146,7 +162,7 @@ class PublicationControllerTest {
     }
 
     @Test
-    void checkBodyArtefacts() {
+    void checkGetByCourtReturnsOk() {
         List<Artefact> artefactList = List.of(artefactWithId);
 
         when(publicationService.findAllByCourtId(any(), any())).thenReturn(artefactList);
@@ -154,7 +170,6 @@ class PublicationControllerTest {
             .getAllRelevantArtefactsByCourtId(EMPTY_FIELD, true);
         assertEquals(artefactList, unmappedArtefact.getBody(), VALIDATION_EXPECTED_MESSAGE);
         assertEquals(HttpStatus.OK, unmappedArtefact.getStatusCode(), STATUS_CODE_MATCH);
-
     }
 
     @Test
