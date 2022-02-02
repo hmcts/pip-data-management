@@ -209,7 +209,7 @@ public class PublicationController {
         @ApiResponse(code = 404,
             message = "No artefact found matching given parameters and date requirements"),
     })
-    @ApiOperation("Get the info from within a blob given source artefact id and provenance")
+    @ApiOperation("GGets the metadata for the blob, given a specific artefact id")
     @GetMapping("/{artefactId}")
     public ResponseEntity<Artefact> getArtefactMetadata(
         @PathVariable UUID artefactId, @RequestHeader Boolean verification) {
@@ -225,7 +225,7 @@ public class PublicationController {
         @ApiResponse(code = 404,
             message = "No artefact found matching given parameters and date requirements"),
     })
-    @ApiOperation("Get the info from within a blob given source artefact id and provenance")
+    @ApiOperation("Gets the the payload for the blob, given a specific artefact ID")
     @GetMapping("/{artefactId}/payload")
     public ResponseEntity<String> getArtefactPayload(
         @PathVariable UUID artefactId, @RequestHeader Boolean verification) {
