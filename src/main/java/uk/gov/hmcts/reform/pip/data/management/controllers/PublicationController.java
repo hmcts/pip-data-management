@@ -210,7 +210,7 @@ public class PublicationController {
         @ApiResponse(code = 404,
             message = "No artefact found matching given parameters and date requirements"),
     })
-    @ApiOperation("GGets the metadata for the blob, given a specific artefact id")
+    @ApiOperation("Gets the metadata for the blob, given a specific artefact id")
     @GetMapping("/{artefactId}")
     public ResponseEntity<Artefact> getArtefactMetadata(
         @PathVariable UUID artefactId, @RequestHeader Boolean verification) {
