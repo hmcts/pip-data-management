@@ -42,7 +42,10 @@ class PublicationControllerTest {
     @Mock
     private ValidationService validationService;
 
+    @InjectMocks
     private PublicationController publicationController;
+
+    private static final UUID ARTEFACT_ID = UUID.randomUUID();
     private static final String SOURCE_ARTEFACT_ID = "sourceArtefactId";
     private static final LocalDateTime DISPLAY_FROM = LocalDateTime.now();
     private static final LocalDateTime DISPLAY_TO = LocalDateTime.now();

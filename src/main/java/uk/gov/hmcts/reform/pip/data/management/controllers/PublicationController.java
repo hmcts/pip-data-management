@@ -59,6 +59,7 @@ public class PublicationController {
         this.validationService = validationService;
     }
 
+    /**
      * This endpoint takes in the Artefact, which is split over headers and also the payload body.
      * The suppression of concurrentHashMap warnings is because we require the ability to use nulls (say, if a date
      * is left blank), and Hashmap provides this whereas concurrentHashMap does not.

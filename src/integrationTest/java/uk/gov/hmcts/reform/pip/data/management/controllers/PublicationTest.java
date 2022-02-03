@@ -986,11 +986,12 @@ class PublicationTest {
             .header(PublicationConfiguration.LIST_TYPE, LIST_TYPE)
             .header(PublicationConfiguration.COURT_ID, COURT_ID)
             .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
-            .content(JSON_PAYLOAD)
-            .contentType(MediaType.APPLICATION_JSON);
+            .contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
         MvcResult createResponse =
             mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
         Artefact createdArtefact = objectMapper.readValue(
+            createResponse.getResponse().getContentAsString(),
+            Artefact.class
         );
 
         assertEquals(createdArtefact.getDisplayFrom(), DISPLAY_FROM.minusMonths(2),
