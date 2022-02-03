@@ -1,0 +1,101 @@
+{
+  "document": {
+    "version": ""
+  },
+  "venue": {
+    "venueName": "PRESTON",
+    "venueContact": {},
+    "venueAddress": {
+      "line": [
+        "THE LAW COURTS"
+      ],
+      "postCode": ""
+    }
+  },
+  "@schemaLocation": "",
+  "courtLists": [
+    {
+      "courtHouse": {
+        "courtRoom": [
+          {
+            "courtRoomName": "1",
+            "session": [
+              {
+                "sessionStartTime": "",
+                "sessionChannel": [
+                  "VIDEO HEARING",
+                  ""
+                ],
+                "sittings": [
+                  {
+                    "sittingStart": "",
+                    "sittingEnd": "",
+                    "hearing": [
+                      {
+                        "hearingType": "",
+                        "case": [
+                          {
+                            "caseName": "",
+                            "caseNumber": "45684548"
+                          }
+                        ]
+                      },
+                      {
+                        "hearingType": "mda",
+                        "case": [
+                          {
+                            "caseName": "A Vs B",
+                            "caseNumber": ""
+                          }
+                        ]
+                      }
+                    ],
+                    "channel": [
+                      ""
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "courtRoomName": "1",
+            "session": [
+              {
+                "sessionStartTime": "",
+                "sessionChannel": [
+                  ""
+                ],
+                "sittings": [
+                  {
+                    "sittingStart": "",
+                    "sittingEnd": "",
+                    "hearing": [
+                      {
+                        "hearingType": "",
+                        "case": [
+                          {
+                            "caseName": "",
+                            "caseNumber": "45684548"
+                          },
+                          {
+                            "caseName": "",
+                            "caseNumber": ""
+                          }
+                        ]
+                      }
+                    ],
+                    "channel": [
+                      "",
+                      "VIDEO HEARING"
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

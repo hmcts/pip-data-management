@@ -1,0 +1,1134 @@
+{
+  "definitions": {
+    "address": {
+      "title": "Address Details",
+      "type": "object",
+      "properties": {
+        "line": {
+          "title": "Address Line",
+          "type": "array",
+          "default": [],
+          "items":{
+            "title": "Items",
+            "type": "string",
+            "default": "",
+            "examples": [
+              "THE LAW COURTS"
+            ],
+            "pattern": "^.*$"
+          }
+        },
+        "postCode": {
+          "title": "Address Postcode",
+          "type": "string",
+          "default": "",
+          "examples": [
+            "PR1 2LL"
+          ],
+          "pattern": "^.*$"
+        }
+      }
+    },
+    "venueContact": {
+      "title": "Contact Details for a venue",
+      "type": "object",
+      "properties": {
+        "venueTelephone": {
+          "description": "Telephone number for the venue",
+          "title": "Venue Telephone",
+          "type": "string",
+          "default": "",
+          "examples": [
+            "01772 844700"
+          ],
+          "pattern": "^.*$"
+        },
+        "venueEmail": {
+          "description": "Email for the venue",
+          "title": "Venue Email",
+          "type": "string",
+          "default": "",
+          "examples": [
+            "court1@moj.gov.uk"
+          ],
+          "pattern": "^.*$"
+        },
+        "primaryContactName": {
+          "description": "Name for contact of court",
+          "title": "Primary Contact Name",
+          "type": "string",
+          "default": "",
+          "examples": [
+            "Name"
+          ],
+          "pattern": "^.*$"
+        },
+        "venueSupport": {
+          "description": "National contact number for MOJ Courts and Venues",
+          "title": "Venue Support",
+          "type": "string",
+          "default": "",
+          "examples": [
+            "0330 566 5561"
+          ],
+          "pattern": "^.*$"
+        }
+      }
+    },
+    "judiciary": {
+      "title": "Judiciary",
+      "description": "Can be an array of objects as such will be a collective and use plurals for object arrays (clerks and scribes etc included)",
+      "type": "object",
+      "properties": {
+        "johTitle": {
+          "description": "The title for the judiciary",
+          "title": "Judiciary Title",
+          "type": "string",
+          "enum": ["Mr", "Mrs", "Miss", "Other"],
+          "default": ""
+        },
+        "johNameSurname": {
+          "description": "First and Surname of the JOH",
+          "title": "JOH Name",
+          "type": "string",
+          "examples": [
+            "John Smith"
+          ],
+          "default": "",
+          "pattern": "^.*$"
+        },
+        "role": {
+          "description": "Role of the judiciary",
+          "title": "Role",
+          "type": "string",
+          "enum": ["judge", "magistrate", "clerk"],
+          "default": ""
+        },
+        "johKnownAs": {
+          "description": "Name and salutations, titles to be presented on publications",
+          "title": "JOH Known As",
+          "type": "string",
+          "examples": [
+            "judge"
+          ],
+          "default": "",
+          "pattern": "^.*$"
+        }
+      }
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://example.com/object1638794581.json",
+  "title": "Root",
+  "type": "object",
+  "properties": {
+    "@schemaLocation": {
+      "$id": "#root/@schemaLocation",
+      "title": "@schemalocation",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "http://json-schema.org/draft-07/schema#"
+      ],
+      "pattern": "^.*$"
+    },
+    "document": {
+      "$id": "#root/document",
+      "title": "document",
+      "type": "object",
+      "properties": {
+        "documentName": {
+          "$id": "#root/document/documentName",
+          "description": "Defined for the title of a publications",
+          "title": "Document Name",
+          "type": "string",
+          "default": "",
+          "examples": [
+            "Standard List FINAL V4"
+          ],
+          "pattern": "^.*$"
+        },
+        "version": {
+          "$id": "#root/document/version",
+          "title": "Version",
+          "type": "string",
+          "default": "",
+          "examples": [
+            "1.0"
+          ],
+          "pattern": "^.*$"
+        }
+      }
+    },
+    "venue": {
+      "$id": "#root/venue",
+      "title": "venue",
+      "type": "object",
+      "properties": {
+        "venueType": {
+          "$id": "#root/venue/venueType",
+          "description": "Defines the courts or building being associated to a publication",
+          "title": "Venue Type",
+          "type": "string",
+          "default": "",
+          "examples": [
+            "Crown Court"
+          ],
+          "pattern": "^.*$"
+        },
+        "venueCode": {
+          "$id": "#root/venue/venueCode",
+          "description": "Ref data code for court",
+          "title": "Venue Code",
+          "type": "object",
+          "properties": {
+            "@venueShortName": {
+              "$id": "#root/venue/venueCode/@venueShortName",
+              "description": "Short name fo the venue",
+              "title": "@venueshortname",
+              "type": "string",
+              "default": "",
+              "examples": [
+                "PREST"
+              ],
+              "pattern": "^.*$"
+            },
+            "venueId": {
+              "$id": "#root/venue/venueCode/venueId",
+              "title": "Venue ID",
+              "description": "OU or EPIMS id of the venue used for reference data lookup (future need)",
+              "type": "string",
+              "default": "",
+              "examples": [
+                "448"
+              ],
+              "pattern": "^.*$"
+            }
+          }
+        },
+        "venueName": {
+          "$id": "#root/venue/venueName",
+          "description": "Full venue name",
+          "title": "Venue Name",
+          "type": "string",
+          "default": "",
+          "examples": [
+            "PRESTON"
+          ],
+          "pattern": "^.*$"
+        },
+        "welshVenueName": {
+          "$id": "#root/venue/welshVenueName",
+          "description": "Welsh Full venue name",
+          "title": "Welsh Venue Name",
+          "type": "string",
+          "default": "",
+          "examples": [
+            "PRESTON"
+          ],
+          "pattern": "^.*$"
+        },
+        "venueAddress": {
+          "description": "Full venue address",
+          "$id": "#root/venue/venueAddress",
+          "$ref": "#/definitions/address"
+        },
+        "venueDX": {
+          "$id": "#root/venue/venueDX",
+          "title": "venuedx",
+          "type": "string",
+          "default": "",
+          "examples": [
+            "702640  PRESTON 4"
+          ],
+          "pattern": "^.*$"
+        },
+        "venueContact": {
+          "$id": "#root/venue/venueContact",
+          "description": "Contact details for the venue",
+          "title": "Venue Contact",
+          "$ref": "#/definitions/venueContact"
+        }
+      }
+    },
+    "courtLists": {
+      "$id": "#root/courtLists",
+      "title": "Court Lists",
+      "type": "array",
+      "items": {
+        "$id": "#root/courtLists/courtList",
+        "title": "Court list",
+        "type": "object",
+        "properties": {
+          "courtHouse": {
+            "$id": "#root/courtLists/courtHouse",
+            "title": "Court House",
+            "description": "The court house that owns the court rooms",
+            "type": "object",
+            "properties": {
+              "courtHouseType": {
+                "$id": "#root/courtLists/courtList/courtHouse/courtHouseType",
+                "description": "Specifies the type of court",
+                "title": "Court House Type",
+                "type": "string",
+                "enum": ["crown", "magistrate"]
+              },
+              "courtHouseCode": {
+                "$id": "#root/courtLists/courtList/courtHouse/courtHouseCode",
+                "description": "Links to the court that is responsible for the courtrooms",
+                "title": "Court House Code",
+                "type": "string",
+                "default": "",
+                "examples": [
+                  "448"
+                ],
+                "pattern": "^.*$"
+              },
+              "courtHouseName": {
+                "$id": "#root/courtLists/courtList/courtHouse/courtHouseName",
+                "description": "Name of the court house",
+                "title": "Court House Name",
+                "type": "string",
+                "default": "",
+                "examples": [
+                  "PRESTON"
+                ],
+                "pattern": "^.*$"
+              },
+              "welshCourtHouseName": {
+                "$id": "#root/courtLists/courtList/courtHouse/welshCourtHouseName",
+                "description": "Name of the court house",
+                "title": "Welsh Court House Name",
+                "type": "string",
+                "default": "",
+                "examples": [
+                  "PRESTON"
+                ],
+                "pattern": "^.*$"
+              },
+              "courtHouseDescription": {
+                "$id": "#root/courtLists/courtList/courtHouse/courtHouseDescription",
+                "description": "Description of the court",
+                "title": "Court House Description",
+                "type": "string",
+                "default": "",
+                "examples": [
+                  "CROWN COURT"
+                ],
+                "pattern": "^.*$"
+              },
+              "courtRoom": {
+                "$id": "#root/courtLists/courtRoom",
+                "type": "array",
+                "items": {
+                  "title": "Court Room",
+                  "description": "The court room that owns the court rooms",
+                  "type": "object",
+                  "properties": {
+                    "courtRoomNumber": {
+                      "$id": "#root/courtLists/courtRoom/courtRoomNumber",
+                      "description": "Court room number in court",
+                      "title": "Court Room Number",
+                      "type": "integer",
+                      "default": "",
+                      "examples": [
+                        "1"
+                      ]
+                    },
+                    "courtRoomId": {
+                      "$id": "#root/courtLists/courtRoom/courtRoomId",
+                      "description": "Ref data id (EPIMS or OU Court id)",
+                      "title": "Court Room ID",
+                      "type": "integer",
+                      "default": "",
+                      "examples": [
+                        "1"
+                      ]
+                    },
+                    "courtRoomName": {
+                      "$id": "#root/courtLists/courtRoom/courtRoomName",
+                      "description": "Name for the court room",
+                      "title": "Court Room Name",
+                      "type": "string",
+                      "default": "",
+                      "examples": [
+                        "1"
+                      ]
+                    },
+                    "venueContact": {
+                      "$id": "#root/courtLists/courtRoom/venueContact",
+                      "description": "Contact details for the venue",
+                      "title": "Venue Contact",
+                      "$ref": "#/definitions/venueContact"
+                    },
+                    "session": {
+                      "$id": "#root/courtLists/courtRoom/session",
+                      "type": "array",
+                      "items": {
+                        "title": "Session",
+                        "description": "Session associated with the court in the publication",
+                        "type": "object",
+                        "properties": {
+                          "sessionId": {
+                            "$id": "#root/courtLists/courtRoom/session/sessionId",
+                            "description": "ID for the session",
+                            "title": "Session ID",
+                            "type": "string",
+                            "default": "",
+                            "examples": [
+                              "0023"
+                            ],
+                            "pattern": "^.*$"
+                          },
+                          "sessionType": {
+                            "$id": "#root/courtLists/courtRoom/session/sessionType",
+                            "description": "Type of session (cases that can be heard in the session are associated to a sessiontype)",
+                            "title": "Session Type",
+                            "type": "string",
+                            "enum": ["TBC","specific to sessions recorded in Listassist"],
+                            "default": ""
+                          },
+                          "sessionChannel": {
+                            "$id": "#root/courtLists/courtRoom/session/sessionChannel",
+                            "type": "array",
+                            "items": {
+                              "description": "Requested to ensure we host the type of hearing channel in the session",
+                              "title": "Session Channel",
+                              "type": "string",
+                              "examples": [
+                                "VIDEO HEARING"
+                              ],
+                              "default": "",
+                              "pattern": "^.*$"
+                            }
+                          },
+                          "sessionStartTime": {
+                            "$id": "#root/courtLists/courtRoom/session/sessionStartTime",
+                            "description": "Session start time rfc3999",
+                            "title": "Session start time",
+                            "type": "string",
+                            "examples": [
+                              "2021-09-09t16:41:07.394"
+                            ],
+                            "default": "",
+                            "pattern": "^.*$"
+                          },
+                          "sessionSequenceNumber": {
+                            "$id": "#root/courtLists/courtRoom/session/sessionSequenceNumber",
+                            "description": "Sessions order (if more than one then they will be a sequence)",
+                            "title": "Sessions order",
+                            "type": "integer",
+                            "examples": [
+                              "3"
+                            ],
+                            "default": "",
+                            "pattern": "^.*$"
+                          },
+                          "judiciary": {
+                            "$id": "#root/courtLists/courtRoom/session/judiciary",
+                            "type": "array",
+                            "description": "Judiciary for the session",
+                            "title": "Judiciary",
+                            "items":{
+                              "type": "object",
+                              "$ref": "#/definitions/judiciary"
+                            }
+                          },
+                          "sittings": {
+                            "$id": "#root/courtLists/courtList/courtRoom/session/sittings",
+                            "title": "Sittings",
+                            "type": "array",
+                            "default": [],
+                            "items":{
+                              "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items",
+                              "type": "object",
+                              "properties": {
+                                "sittingSequence": {
+                                  "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/sittingSequence",
+                                  "description": "Sitting Sequence Number",
+                                  "title": "Sitting sequence",
+                                  "type": "integer",
+                                  "default": "",
+                                  "examples": [
+                                    "1"
+                                  ]
+                                },
+                                "sittingStart": {
+                                  "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/sittingStart",
+                                  "description": "Sitting Start Time",
+                                  "title": "Sitting Start",
+                                  "type": "string",
+                                  "default": "",
+                                  "examples": []
+                                },
+                                "sittingEnd": {
+                                  "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/sittingEnd",
+                                  "description": "Sitting End Time",
+                                  "title": "Sitting End",
+                                  "type": "string",
+                                  "default": "",
+                                  "examples": []
+                                },
+                                "hearing": {
+                                  "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing",
+                                  "type": "array",
+                                  "items": {
+                                    "type": "object",
+                                    "description": "Hearing details of the case and associated details for the sitting",
+                                    "title": "Hearing",
+                                    "properties": {
+                                      "hearingId": {
+                                        "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/hearingId",
+                                        "description": "Id of the hearing associated with the scheduling system",
+                                        "title": "Hearing ID",
+                                        "type": "string",
+                                        "examples": [
+                                          "1234564"
+                                        ],
+                                        "default": "",
+                                        "pattern": "^.*$"
+                                      },
+                                      "hearingType": {
+                                        "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/hearingType",
+                                        "description": "Type of hearing being presented",
+                                        "title": "Hearing Type",
+                                        "type": "string",
+                                        "examples": [
+                                          "mda"
+                                        ],
+                                        "default": "",
+                                        "pattern": "^.*$"
+                                      },
+                                      "hearingDescription": {
+                                        "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/hearingDescription",
+                                        "description": "Description associated to the hearing",
+                                        "title": "Hearing Description",
+                                        "type": "string",
+                                        "default": "",
+                                        "examples": [
+                                          "For Application for Bail"
+                                        ],
+                                        "pattern": "^.*$"
+                                      },
+                                      "listNote": {
+                                        "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/listNote",
+                                        "description": "Will always be required but can be null",
+                                        "title": "List Note",
+                                        "type": "string",
+                                        "default": "",
+                                        "examples": [
+                                          "reserved – defendant in custody"
+                                        ],
+                                        "pattern": "^.*$"
+                                      },
+                                      "hearingSequence": {
+                                        "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/hearingSequence",
+                                        "description": "Order of which hearing is to be heard",
+                                        "title": "Hearing Sequence",
+                                        "type": "integer",
+                                        "default": "",
+                                        "examples": [
+                                          "3"
+                                        ]
+                                      },
+                                      "case": {
+                                        "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case",
+                                        "type": "array",
+                                        "items": {
+                                          "type": "object",
+                                          "title": "Case",
+                                          "description": "Case Details",
+                                          "properties": {
+                                            "caseUrn": {
+                                              "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/caseUrn",
+                                              "title": "Case Number",
+                                              "description": "Unique reference number of case",
+                                              "type": "string",
+                                              "default": "",
+                                              "examples": [
+                                                "offg35484"
+                                              ],
+                                              "pattern": "^.*$"
+                                            },
+                                            "caseName": {
+                                              "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/caseName",
+                                              "title": "Case Name",
+                                              "description": "Case name is not always present but should be where available displayed",
+                                              "type": "string",
+                                              "default": "",
+                                              "examples": [
+                                                "A Vs B"
+                                              ],
+                                              "pattern": "^.*$"
+                                            },
+                                            "reportingRestriction": {
+                                              "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/reportingRestriction",
+                                              "title": "Reporting Restriction",
+                                              "description": "Any reporting restrictions posed to the case",
+                                              "type": "boolean",
+                                              "default": "",
+                                              "examples": [
+                                                "true"
+                                              ],
+                                              "pattern": "^.*$"
+                                            },
+                                            "caseJurisdictionET": {
+                                              "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/caseJurisdictionET",
+                                              "title": "Case Jurisdiction ET",
+                                              "type": "string",
+                                              "default": "",
+                                              "examples": [],
+                                              "pattern": "^.*$"
+                                            },
+                                            "caseNumber": {
+                                              "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/caseNumber",
+                                              "title": "Case Number",
+                                              "description": "Some systems hold two instances, i.e. it is duplicated across systems (xhibit, cp.. and a second ref number is required",
+                                              "type": "string",
+                                              "default": "",
+                                              "examples": [
+                                                "45684548"
+                                              ],
+                                              "pattern": "^.*$"
+                                            },
+                                            "informant": {
+                                              "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/informant",
+                                              "description": "Object representing an informant",
+                                              "title": "Informant",
+                                              "type":"object",
+                                              "properties": {
+                                                "prosecutionAuthorityRef": {
+                                                  "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/informant/prosecutionAuthorityRef",
+                                                  "title": "Prosecution Authority Ref",
+                                                  "type": "string",
+                                                  "default" : "",
+                                                  "examples": [
+                                                    ""
+                                                  ],
+                                                  "pattern": "^.*$"
+                                                },
+                                                "prosecutionAuthorityId":{
+                                                  "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/informant/prosecutionAuthorityId",
+                                                  "title": "Prosecution Authority Id",
+                                                  "type": "string",
+                                                  "default" : "",
+                                                  "examples": [
+                                                    ""
+                                                  ],
+                                                  "pattern": "^.*$"
+                                                },
+                                                "prosecutionAuthorityCode":{
+                                                  "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/informant/prosecutionAuthorityCode",
+                                                  "title": "Prosecution Authority Code",
+                                                  "type": "string",
+                                                  "default" : "",
+                                                  "examples": [
+                                                    ""
+                                                  ],
+                                                  "pattern": "^.*$"
+
+                                                }
+                                              }
+                                            },
+                                            "numberOfDefendants": {
+                                              "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/numberOfDefendants",
+                                              "title": "Number of defendants",
+                                              "description": "Number of defendants",
+                                              "type": "integer",
+                                              "default": "",
+                                              "examples": [
+                                                "1"
+                                              ]
+                                            },
+                                            "youthCourt": {
+                                              "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/youthCourt",
+                                              "title": "Youth Court",
+                                              "description": "If the case is to be held or is held in a youth court",
+                                              "type": "boolean",
+                                              "default": "",
+                                              "examples": [
+                                                "true"
+                                              ]
+                                            },
+                                            "listComment": {
+                                              "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/listComment",
+                                              "title": "List Comment",
+                                              "description": "Comment for the listing",
+                                              "type": "string",
+                                              "default": "",
+                                              "examples": [
+                                                "defendant to be produced"
+                                              ],
+                                              "pattern": "^.*$"
+                                            },
+                                            "committingCourt": {
+                                              "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/committingCourt",
+                                              "title": "Committing Court",
+                                              "description": "Court the case is registered at. owning court",
+                                              "type": "object",
+                                              "properties": {
+                                                "courtHouseName": {
+                                                  "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/committingCourt/courtHouseName",
+                                                  "title": "Court House Name",
+                                                  "description": "Court House name of committing/owning court",
+                                                  "type": "string",
+                                                  "default": "",
+                                                  "examples": [
+                                                    "lancashiremagistrates court"
+                                                  ],
+                                                  "pattern": "^.*$"
+                                                },
+                                                "courtHouseAddress": {
+                                                  "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/committingCourt/courtHouseAddress",
+                                                  "title": "Court House Address",
+                                                  "description": "Address of commiting/owning court",
+                                                  "$ref": "#/definitions/address"
+                                                },
+                                                "courtHouseContact": {
+                                                  "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/committingCourt/courtHouseContact",
+                                                  "title": "Court House Contact",
+                                                  "description": "Contact and name for commiting/owning court",
+                                                  "$ref": "#/definitions/venueContact"
+                                                }
+                                              }
+                                            },
+                                            "result":{
+                                              "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/result",
+                                              "title": "Result",
+                                              "description": "Sjo media requirement for the cases that result in a financial penalty, uplift or charges",
+                                              "type":"object",
+                                              "properties": {
+                                                "resultTitle1":{"type":"string"},
+                                                "value1":{"type":"string"},
+                                                "resultTitle2":{"type":"string"},
+                                                "value2":{"type":"string"},
+                                                "resultTitle3":{"type":"string"},
+                                                "value3":{"type":"string"},
+                                                "resultTitle4":{"type":"string"},
+                                                "value4":{"type":"string"},
+                                                "resultTitle5":{"type":"string"},
+                                                "value5":{"type":"string"},
+                                                "resultTitle6":{"type":"string"},
+                                                "value6":{"type":"string"},
+                                                "resultTitle7":{"type":"string"},
+                                                "value7":{"type":"string"}
+                                              }
+                                            }
+                                          }
+                                        }
+                                      },
+                                      "party": {
+                                        "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/party",
+                                        "title": "Party",
+                                        "description": "Parties involved in the case (defence, prosecution)",
+                                        "type": "array",
+                                        "items": {
+                                          "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items",
+                                          "title": "Party",
+                                          "description": "A party",
+                                          "type": "object",
+                                          "properties": {
+                                            "partyRole": {
+                                              "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items/partyRole",
+                                              "description": "Role of the party, selectable list of roles, i.e. prosecution, solicitor defence etc",
+                                              "title": "Party Role",
+                                              "type": "string",
+                                              "examples": [
+                                                "def"
+                                              ],
+                                              "default": "",
+                                              "pattern": "^.*$"
+                                            },
+                                            "individualDetails": {
+                                              "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items/individualDetails",
+                                              "title": "Individual Details",
+                                              "description": "Individual Details",
+                                              "type": "object",
+                                              "properties": {
+                                                "title": {
+                                                  "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items/individualDetails/title",
+                                                  "description": "Title of individual. Must be one of Mr, Mrs, Miss, Master, Other",
+                                                  "title": "Title",
+                                                  "type": "string",
+                                                  "enum": ["Mr", "Mrs", "Miss", "Master", "Other"],
+                                                  "examples": [
+                                                    "Mr"
+                                                  ],
+                                                  "default": ""
+                                                },
+                                                "individualForenames": {
+                                                  "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items/individualDetails/individualForenames",
+                                                  "description": "Forename of party",
+                                                  "title": "Individual Forenames",
+                                                  "type": "string",
+                                                  "examples": [
+                                                    "John Smith"
+                                                  ],
+                                                  "default": "",
+                                                  "pattern": "^.*$"
+                                                },
+                                                "individualMiddleName": {
+                                                  "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items/individualDetails/individualMiddleName",
+                                                  "description": "Middle name of the individual",
+                                                  "title": "Individual Middle Name",
+                                                  "type": "string",
+                                                  "examples": [
+                                                    "MiddleName"
+                                                  ],
+                                                  "default": "",
+                                                  "pattern": "^.*$"
+                                                },
+                                                "individualSurname": {
+                                                  "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items/individualDetails/individualSurname",
+                                                  "description": "Surname of party",
+                                                  "title": "Individual Surname",
+                                                  "type": "string",
+                                                  "examples": [
+                                                    "Surname"
+                                                  ],
+                                                  "default": "",
+                                                  "pattern": "^.*$"
+                                                },
+                                                "isMasked": {
+                                                  "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items/individualDetails/isMasked",
+                                                  "description": "If the name needs to be masked or hidden from view",
+                                                  "title": "Is Masked",
+                                                  "type": "boolean",
+                                                  "examples": [
+                                                    "true"
+                                                  ],
+                                                  "default": ""
+                                                },
+                                                "dateOfBirth": {
+                                                  "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items/individualDetails/dateOfBirth",
+                                                  "description": "Date of birth for user (not mandated for all parties)",
+                                                  "title": "Date Of Birth",
+                                                  "type": "string",
+                                                  "examples": [
+                                                    "01-01-1901"
+                                                  ],
+                                                  "default": ""
+                                                },
+                                                "address": {
+                                                  "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items/individualDetails/address",
+                                                  "title": "Address",
+                                                  "description": "Party Address",
+                                                  "$ref": "#/definitions/address"
+                                                },
+                                                "inCustody": {
+                                                  "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items/individualDetails/inCustody",
+                                                  "description": "If party is in custody or not",
+                                                  "title": "In Custody",
+                                                  "type": "boolean",
+                                                  "examples": [
+                                                    "true"
+                                                  ],
+                                                  "default": ""
+                                                },
+                                                "asns": {
+                                                  "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items/individualDetails/asns",
+                                                  "description": "Arrest Numbers",
+                                                  "title": "ASNS",
+                                                  "type": "array",
+                                                  "items": {
+                                                    "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items/individualDetails/asns/items",
+                                                    "description": "An ASN",
+                                                    "title": "ASN",
+                                                    "type": "string",
+                                                    "examples": [
+                                                      "3213546543215"
+                                                    ],
+                                                    "default": "",
+                                                    "pattern": "^.*$"
+                                                  }
+                                                },
+                                                "nationality": {
+                                                  "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items/individualDetails/nationality",
+                                                  "description": "Nationality of party not always required for all parties",
+                                                  "title": "Nationality",
+                                                  "type": "string",
+                                                  "examples": [
+                                                    "british"
+                                                  ],
+                                                  "default": "",
+                                                  "pattern": "^.*$"
+                                                },
+                                                "plea": {
+                                                  "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items/individualDetails/plea",
+                                                  "description": "If a plea has been received",
+                                                  "title": "Plea",
+                                                  "type": "string",
+                                                  "enum": ["GUILTY","NOT_GUILTY","NONE"]
+                                                },
+                                                "prosecutionNumber": {
+                                                  "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items/individualDetails/prosecutionNumber",
+                                                  "title": "Prosecution Number",
+                                                  "type": "string",
+                                                  "default": "",
+                                                  "pattern": "^.*$"
+                                                }
+                                              }
+                                            },
+                                            "organisationDetails": {
+                                              "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items/organisationDetails",
+                                              "title": "Organisation Details",
+                                              "description": "Organisation Details",
+                                              "type": "object",
+                                              "properties": {
+                                                "organisationName": {
+                                                  "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items/organisationDetails/organisationName",
+                                                  "description": "Party name of organisation",
+                                                  "title": "Organisation Name",
+                                                  "type": "string",
+                                                  "examples": [
+                                                    "A & B Solicitors"
+                                                  ],
+                                                  "default": "",
+                                                  "pattern": "^.*$"
+                                                },
+                                                "organisationAddress": {
+                                                  "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items/organisationDetails/organisationAddress",
+                                                  "description": "Address for organisation",
+                                                  "title": "Organisation Address",
+                                                  "$ref": "#/definitions/address"
+                                                },
+                                                "organisationContact": {
+                                                  "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items/organisationDetails/organisationContact",
+                                                  "title": "Organisation Contact",
+                                                  "description": "Contact for Organisation",
+                                                  "type": "object",
+                                                  "properties": {
+                                                    "telephoneNumber": {
+                                                      "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items/organisationDetails/organisationContact/telephoneNumber",
+                                                      "description": "Telephone number for organisation",
+                                                      "title": "Tel",
+                                                      "type": "string",
+                                                      "examples": [
+                                                        "+44 01234 123123"
+                                                      ],
+                                                      "default": "",
+                                                      "pattern": "^.*$"
+                                                    },
+                                                    "email": {
+                                                      "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items/organisationDetails/organisationContact/email",
+                                                      "description": "Email for organisation",
+                                                      "title": "Email",
+                                                      "type": "string",
+                                                      "examples": [
+                                                        "a@b.com"
+                                                      ],
+                                                      "default": "",
+                                                      "pattern": "^.*$"
+                                                    }
+                                                  }
+                                                },
+                                                "organisationContactName": {
+                                                  "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items/organisationDetails/organisationContactName",
+                                                  "title": "Organisation Contact Name",
+                                                  "description": "Contact name for organisation",
+                                                  "type": "object",
+                                                  "properties": {
+                                                    "title": {
+                                                      "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items/organisationDetails/organisationContactName/title",
+                                                      "description": "Title",
+                                                      "title": "Title",
+                                                      "type": "string",
+                                                      "examples": [
+                                                        "Other"
+                                                      ],
+                                                      "default": "",
+                                                      "pattern": "^.*$"
+                                                    },
+                                                    "forename": {
+                                                      "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items/organisationDetails/organisationContactName/forename",
+                                                      "description": "Forenames",
+                                                      "title": "Forename",
+                                                      "type": "string",
+                                                      "examples": [
+                                                        "John A"
+                                                      ],
+                                                      "default": "",
+                                                      "pattern": "^.*$"
+                                                    },
+                                                    "surname": {
+                                                      "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items/organisationDetails/organisationContactName/surname",
+                                                      "description": "Surname",
+                                                      "title": "Surname",
+                                                      "type": "string",
+                                                      "examples": [
+                                                        "Smith"
+                                                      ],
+                                                      "default": "",
+                                                      "pattern": "^.*$"
+                                                    }
+                                                  }
+                                                },
+                                                "organisationIncorporationNumber": {
+                                                  "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items/organisationDetails/organisationIncorporationNumber",
+                                                  "description": "Incorporation Number of organisation",
+                                                  "title": "Organisation Incorporation Number",
+                                                  "type": "string",
+                                                  "examples": [],
+                                                  "default": "",
+                                                  "pattern": "^.*$"
+                                                },
+                                                "organisationCharityNumber": {
+                                                  "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items/organisationDetails/organisationCharityNumber",
+                                                  "description": "Charity Number of organisation",
+                                                  "title": "Organisation Charity Number",
+                                                  "type": "string",
+                                                  "examples": [],
+                                                  "default": "",
+                                                  "pattern": "^.*$"
+                                                }
+                                              }
+                                            }
+                                          }
+
+                                        }
+                                      },
+                                      "offence":{
+                                        "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/offence",
+                                        "title": "Offence",
+                                        "type": "object",
+                                        "properties": {
+                                          "offenceCode":{
+                                            "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/offence/offenceCode",
+                                            "description": "Offence unique code",
+                                            "title": "Offence code",
+                                            "type": "string",
+                                            "default": "",
+                                            "examples": [
+                                              "dd01-01"
+                                            ],
+                                            "pattern": "^.*$"
+                                          },
+                                          "offenceTitle":{
+                                            "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/offence/offenceTitle",
+                                            "description": "Short description of offence",
+                                            "title": "Offence title",
+                                            "type": "string",
+                                            "default": "",
+                                            "examples": [
+                                              "drink driving"
+                                            ],
+                                            "pattern": "^.*$"
+                                          },
+                                          "offenceWording":{
+                                            "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/offence/offenceWording",
+                                            "description": "Long description of offence",
+                                            "title": "Offence wording",
+                                            "type":"string",
+                                            "default": "",
+                                            "examples": [
+                                              "driving whilst under the influence of alcohol"
+                                            ],
+                                            "pattern": "^.*$"
+                                          },
+                                          "offenceMaxPen":{
+                                            "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/offence/offenceMaxPenalty",
+                                            "description": "Maximum penalty if found guilty",
+                                            "title": "Offence Max Penalty",
+                                            "type":"string",
+                                            "default" : "",
+                                            "examples": [
+                                              "10yrs"
+                                            ]
+                                          },
+                                          "reportingRestriction": {
+                                            "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/offence/reportingRestriction",
+                                            "title": "Reporting Restriction",
+                                            "description": "Any reporting restrictions posed to the offence",
+                                            "type": "boolean",
+                                            "default": "",
+                                            "examples": [
+                                              "true"
+                                            ],
+                                            "pattern": "^.*$"
+                                          }
+                                        }
+                                      },
+                                      "lcsu": {
+                                        "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/lcsu",
+                                        "title": "LCSU",
+                                        "description": "If any updates on the case as it is heard",
+                                        "type": "object",
+                                        "properties": {
+                                          "lcsuCode": {
+                                            "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/lcsu/lcsuCode",
+                                            "description": "Code identifying the lcsu from system performing the updates",
+                                            "title": "LCSU Code",
+                                            "type":"string",
+                                            "default": "",
+                                            "examples": [
+                                              "ddsc"
+                                            ],
+                                            "pattern": "^.*$"
+                                          },
+                                          "lcsuDescription": {
+                                            "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/lcsu/lcsuDescription",
+                                            "description": "Description of update",
+                                            "title": "Description of LCSU",
+                                            "type":"string",
+                                            "default": "",
+                                            "examples": [
+                                              "court in session"
+                                            ],
+                                            "pattern": "^.*$"
+                                          },
+                                          "lcsuDateTime": {
+                                            "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/lcsu/lcsuDateTime",
+                                            "description": "",
+                                            "title": "Time of lcsu rfc3999",
+                                            "type":"string",
+                                            "default": "",
+                                            "examples": [
+                                              "10:30 22nd July 2021"
+                                            ],
+                                            "pattern": "^.*$"
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                },
+                                "judiciary": {
+                                  "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/judiciary",
+                                  "type": "array",
+                                  "title": "Judiciary",
+                                  "description": "If a separate or associated joh is required to be in attendance for sitting against a single case",
+                                  "items":{
+                                    "type": "object",
+                                    "$ref": "#/definitions/judiciary"
+                                  }
+                                },
+                                "channel": {
+                                  "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/channel",
+                                  "type": "array",
+                                  "items": {
+                                    "type": "object",
+                                    "description": "Channel if different from in court",
+                                    "title": "Sitting Channel",
+                                    "type": "string",
+                                    "examples": [
+                                      "VIDEO HEARING"
+                                    ],
+                                    "default": ""
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

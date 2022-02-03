@@ -60,6 +60,8 @@ public class PublicationController {
     }
 
      * This endpoint takes in the Artefact, which is split over headers and also the payload body.
+     * The suppression of concurrentHashMap warnings is because we require the ability to use nulls (say, if a date
+     * is left blank), and Hashmap provides this whereas concurrentHashMap does not.
      *
      * @param provenance       Name of the source system.
      * @param sensitivity      Level of sensitivity.
@@ -100,6 +102,7 @@ public class PublicationController {
                                                      displayFrom, displayTo, listType, courtId, contentDate);
 
         HeaderGroup headers = validationService.validateHeaders(initialHeaders);
+        validationService.validateBody(payload, initialHeaders.getListType());
 
         Artefact artefact = Artefact.builder()
             .provenance(headers.getProvenance())
