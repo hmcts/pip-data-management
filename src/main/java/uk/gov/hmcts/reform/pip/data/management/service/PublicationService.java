@@ -129,5 +129,4 @@ public class PublicationService {
             throw new NotFoundException(String.format("No artefact found with the ID: %s", artefactId));
         }
     }
-
 }

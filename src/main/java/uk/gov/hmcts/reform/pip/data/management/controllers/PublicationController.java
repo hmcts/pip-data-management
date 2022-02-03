@@ -59,12 +59,9 @@ public class PublicationController {
         this.validationService = validationService;
     }
 
-    /**
      * This endpoint takes in the Artefact, which is split over headers and also the payload body.
      *
      * @param provenance       Name of the source system.
-     * @param sourceArtefactId Unique ID of what publication is called by source system.
-     * @param type             List / Outcome / Judgement / Status Updates.
      * @param sensitivity      Level of sensitivity.
      * @param language         Language of publication.
      * @param displayFrom      Date / Time from which the publication will be displayed.

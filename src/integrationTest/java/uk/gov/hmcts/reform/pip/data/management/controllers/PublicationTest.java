@@ -868,12 +868,9 @@ class PublicationTest {
             .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
             .content(JSON_PAYLOAD)
             .contentType(MediaType.APPLICATION_JSON);
-
         MvcResult createResponse =
             mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
         Artefact createdArtefact = objectMapper.readValue(
-            createResponse.getResponse().getContentAsString(),
-            Artefact.class
         );
 
         assertEquals(createdArtefact.getDisplayFrom(), DISPLAY_FROM.minusMonths(2), "test message goes here");
