@@ -1,0 +1,24 @@
+[
+  {
+    "hearingId": 3,
+    "courtId": 3,
+    "courtNumber": 38,
+    "date": "20/10/2021 19:56:55",
+    "judge": "Harli Sonier",
+    "platform": "HMCTS",
+    "caseNumber": "487065515",
+    "caseName": "Flashset's hearings",
+    "urn": "12345678"
+  },
+  {
+    "hearingId": 8,
+    "courtId": 3,
+    "courtNumber": 14,
+    "date": "03/09/2021 19:56:51",
+    "judge": "Norton Synke",
+    "platform": "Teams",
+    "caseNumber": "331273053",
+    "caseName": "Mycat's hearings",
+    "urn": "12345678"
+  }
+]

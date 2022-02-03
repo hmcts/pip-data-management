@@ -14,13 +14,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 @Component
 public class JsonExtractor implements Extractor {
 
-    Configuration jsonConfiguration;
+    private final Configuration jsonConfiguration;
 
-    SearchConfiguration searchConfiguration;
+    private final SearchConfiguration searchConfiguration;
 
     @Autowired
     public JsonExtractor(SearchConfiguration searchConfiguration) {
@@ -30,20 +31,21 @@ public class JsonExtractor implements Extractor {
             .addOptions(Option.DEFAULT_PATH_LEAF_TO_NULL)
             .addOptions(Option.SUPPRESS_EXCEPTIONS)
             .addOptions(Option.ALWAYS_RETURN_LIST);
+
     }
 
     @Override
     public Map<String, List<Object>> extractSearchTerms(String payload) {
         Map<String, List<Object>> searchTermsMap = new ConcurrentHashMap<>();
         searchConfiguration.getSearchValues().forEach((key, value) -> {
-
             DocumentContext jsonPayload = JsonPath
                 .using(jsonConfiguration)
                 .parse(payload);
 
             List<Object> searchValues = jsonPayload.read(value);
-            if (!searchValues.stream().allMatch(Objects::isNull)) {
-                searchTermsMap.put(key, searchValues);
+            List<Object> objects = searchValues.stream().filter(Objects::nonNull).collect(Collectors.toList());
+            if (!objects.isEmpty()) {
+                searchTermsMap.put(key, objects);
             }
         });
 
@@ -53,10 +55,12 @@ public class JsonExtractor implements Extractor {
     @Override
     public boolean isAccepted(String payload) {
         try {
+            // test if the file is json format
             new ObjectMapper().readTree(payload);
             return true;
         } catch (IOException exception) {
             return false;
         }
     }
+
 }

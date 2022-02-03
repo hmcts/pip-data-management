@@ -34,7 +34,7 @@ public class Hearing {
      * The date of the hearing.
      */
     @JsonProperty
-    @JsonFormat(pattern = "dd/MM/yyyy hh:mm:ss")
+    @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     private Date date;
 
 

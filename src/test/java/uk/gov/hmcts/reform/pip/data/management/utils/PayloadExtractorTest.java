@@ -12,6 +12,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -22,6 +24,9 @@ class PayloadExtractorTest {
 
     @Mock
     JsonExtractor jsonExtractor;
+
+    @Mock
+    JsonExtractor jsonExtractorOther;
 
     @BeforeAll
     public static void setup() {
@@ -40,13 +45,27 @@ class PayloadExtractorTest {
     }
 
     @Test
-    void testNoExtractorFound() {
-        PayloadExtractor payloadExtractor = new PayloadExtractor(List.of(jsonExtractor));
+    void testMultipleExtractorsCalledTwice() {
+        PayloadExtractor payloadExtractor = new PayloadExtractor(List.of(jsonExtractorOther, jsonExtractor));
 
-        when(jsonExtractor.isAccepted(PAYLOAD)).thenReturn(false);
+        when(jsonExtractor.isAccepted(PAYLOAD)).thenReturn(true);
+        when(jsonExtractor.extractSearchTerms(PAYLOAD)).thenReturn(TEST_MAP);
+
+        when(jsonExtractorOther.isAccepted(PAYLOAD)).thenReturn(false);
 
         Map<String, List<Object>> searchTerms = payloadExtractor.extractSearchTerms(PAYLOAD);
-        assertTrue(searchTerms.isEmpty(), "Returned search terms is not empty when no extract found");
+        verify(jsonExtractorOther, times(1)).isAccepted(PAYLOAD);
+        assertEquals(TEST_MAP, searchTerms, "Returned search terms does not match expected terms");
+    }
+
+    @Test
+    void testNoExtractorFound() {
+        PayloadExtractor payloadExtractor = new PayloadExtractor(List.of(jsonExtractor));
+        when(jsonExtractor.isAccepted(PAYLOAD)).thenReturn(false);
+
+
+        assertTrue(payloadExtractor.extractSearchTerms(PAYLOAD).isEmpty(),
+             "Returned search terms is not empty when no extract found");
     }
 
 }
