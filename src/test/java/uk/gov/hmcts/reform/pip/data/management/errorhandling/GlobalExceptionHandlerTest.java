@@ -18,6 +18,7 @@ import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.FlatFile
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.HeaderValidationException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.HearingNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.NotFoundException;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.PayloadValidationException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.UnauthorisedRequestException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -99,12 +100,27 @@ class GlobalExceptionHandlerTest {
     }
 
     @Test
-    void testHandleHeaderValidationException() {
-        HeaderValidationException headerValidationExceptionHeaderValidationException = new HeaderValidationException(
+    void testHandlePayloadValidationException() {
+        PayloadValidationException payloadValidationException = new PayloadValidationException(
             TEST_MESSAGE);
 
         ResponseEntity<ExceptionResponse> responseEntity =
-            globalExceptionHandler.handle(headerValidationExceptionHeaderValidationException);
+            globalExceptionHandler.handle(payloadValidationException);
+
+        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode(), BAD_REQUEST_ASSERTION);
+        assertNotNull(responseEntity.getBody(), ASSERTION_RESPONSE_BODY);
+        assertEquals(TEST_MESSAGE, responseEntity.getBody().getMessage(),
+                     ASSERTION_MESSAGE
+        );
+    }
+
+    @Test
+    void testHandleHeaderValidationException() {
+        HeaderValidationException headerValidationException = new HeaderValidationException(
+            TEST_MESSAGE);
+
+        ResponseEntity<ExceptionResponse> responseEntity =
+            globalExceptionHandler.handle(headerValidationException);
 
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode(), BAD_REQUEST_ASSERTION);
         assertNotNull(responseEntity.getBody(), ASSERTION_RESPONSE_BODY);
@@ -159,7 +175,6 @@ class GlobalExceptionHandlerTest {
             "The exception response should contain the name of the field"
         );
     }
-
 
     @Test
     void testBlobStorageException() {

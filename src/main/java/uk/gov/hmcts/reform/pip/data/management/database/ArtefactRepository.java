@@ -31,13 +31,14 @@ public interface ArtefactRepository extends JpaRepository<Artefact, Long> {
     Optional<Artefact> findByArtefactIdUnverified(@Param(ARTEFACT_ID_PARAM) String artefactId,
                                                   @Param(CURRENT_DATE_PARAM) LocalDateTime currentDate);
 
-    @Query(value = "select * from Artefact where search->'court-id'->>0 = :searchVal and display_from < "
+
+    @Query(value = "select * from Artefact where court_id = :searchVal and display_from < "
         + ":curr_date and (display_to> :curr_date or display_to is null)",
         nativeQuery = true)
     List<Artefact> findArtefactsBySearchVerified(@Param(SEARCH_VAL_PARAM) String searchVal,
                                                  @Param(CURRENT_DATE_PARAM) LocalDateTime currentDate);
 
-    @Query(value = "select * from Artefact where search->'court-id'->>0 = :searchVal and sensitivity = 'PUBLIC' "
+    @Query(value = "select * from Artefact where court_id = :searchVal and sensitivity = 'PUBLIC' "
         + "and display_from < :curr_date and (display_to> :curr_date or display_to is null)",
         nativeQuery = true)
     List<Artefact> findArtefactsBySearchUnverified(@Param(SEARCH_VAL_PARAM) String searchVal,

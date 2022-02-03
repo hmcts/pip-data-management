@@ -1,7 +1,7 @@
 package uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions;
 
 /**
- * Custom exception which handles all header validation issues.
+ * Custom exception which handles date header validation issues.
  */
 public class DateValidationException extends HeaderValidationException {
     private static final long serialVersionUID = 3910456611414432879L;

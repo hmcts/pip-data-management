@@ -69,4 +69,5 @@ class CustomExceptionsTest {
         assertEquals(TEST_MESSAGE,
                      flatFileException.getMessage(), ASSERTION_MESSAGE);
     }
+
 }

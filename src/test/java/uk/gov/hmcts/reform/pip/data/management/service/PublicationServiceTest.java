@@ -93,6 +93,7 @@ class PublicationServiceTest {
     @Test
     void testCreationOfNewArtefact() {
         when(azureBlobService.createPayload(SOURCE_ARTEFACT_ID, PROVENANCE, PAYLOAD)).thenReturn(PAYLOAD_URL);
+        when(artefactRepository.save(artefactWithPayloadUrl)).thenReturn(artefactWithIdAndPayloadUrl);
         when(payloadExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
 
         Artefact returnedArtefact = publicationService.createPublication(artefact, PAYLOAD);

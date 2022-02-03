@@ -53,15 +53,15 @@ class PublicationControllerTest {
     private static final String PROVENANCE = "provenance";
     private static final Sensitivity SENSITIVITY = Sensitivity.PUBLIC;
     private static final ArtefactType ARTEFACT_TYPE = ArtefactType.LIST;
+    private static final ListType LIST_TYPE = ListType.CIVIL_DAILY_CAUSE_LIST;
+    private static final String COURT_ID = "123";
+    private static final LocalDateTime CONTENT_DATE = LocalDateTime.now();
     private static final String PAYLOAD = "payload";
     private static final MultipartFile FILE = new MockMultipartFile("test", (byte[]) null);
     private static final String PAYLOAD_URL = "This is a test payload";
     private static final String EMPTY_FIELD = "";
     private static final String VALIDATION_EXPECTED_MESSAGE =
         "The expected exception does not contain the correct message";
-    private static final ListType LIST_TYPE = ListType.DL;
-    private static final String COURT_ID = "123";
-    private static final LocalDateTime CONTENT_DATE = LocalDateTime.now();
 
     private Artefact artefact;
     private Artefact artefactWithId;
@@ -168,6 +168,7 @@ class PublicationControllerTest {
         when(publicationService.findAllByCourtId(any(), any())).thenReturn(artefactList);
         ResponseEntity<List<Artefact>> unmappedArtefact = publicationController
             .getAllRelevantArtefactsByCourtId(EMPTY_FIELD, true);
+
         assertEquals(artefactList, unmappedArtefact.getBody(), VALIDATION_EXPECTED_MESSAGE);
         assertEquals(HttpStatus.OK, unmappedArtefact.getStatusCode(), STATUS_CODE_MATCH);
     }

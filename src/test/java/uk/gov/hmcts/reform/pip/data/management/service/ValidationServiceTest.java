@@ -1,27 +1,47 @@
 package uk.gov.hmcts.reform.pip.data.management.service;
 
+import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ActiveProfiles;
+import uk.gov.hmcts.reform.pip.data.management.Application;
+import uk.gov.hmcts.reform.pip.data.management.config.AzureBlobConfigurationTest;
 import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.EmptyRequiredHeaderException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.FlatFileException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.HeaderValidationException;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.PayloadValidationException;
+import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.HeaderGroup;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Language;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ListType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Sensitivity;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
 
+@SpringBootTest(classes = {Application.class, AzureBlobConfigurationTest.class})
+@ActiveProfiles(profiles = "test")
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
+@AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
 class ValidationServiceTest {
-    ValidationService validationService = new ValidationService();
+
+    @Autowired
+    ValidationService validationService;
 
     private static final String SOURCE_ARTEFACT_ID = "sourceArtefactId";
     private static final LocalDateTime DISPLAY_FROM = LocalDateTime.now();
@@ -31,20 +51,21 @@ class ValidationServiceTest {
     private static final Sensitivity SENSITIVITY = Sensitivity.PUBLIC;
     private static final ArtefactType ARTEFACT_TYPE = ArtefactType.LIST;
     private static final String COURT_ID = "123";
-    private static final ListType LIST_TYPE = ListType.DL;
+    private static final ListType LIST_TYPE = ListType.CIVIL_DAILY_CAUSE_LIST;
     private static final LocalDateTime CONTENT_DATE = LocalDateTime.now();
     private static final String EMPTY_FIELD = "";
     private static final String VALIDATION_EXPECTED_MESSAGE =
         "The expected exception does not contain the correct message";
     private static final String NOT_NULL_MESSAGE = "The returned value is null, but was not expected to be.";
     private static final String REQUIRED_HEADER_EXCEPTION_MESSAGE = " is mandatory however an empty value is provided";
+    private static final String UNKNOWN_EXCEPTION = "Unknown exception when opening the paylaod file";
 
     private HeaderGroup headerGroup;
 
     @BeforeEach
     void setup() {
         headerGroup = new HeaderGroup(PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE, SENSITIVITY, LANGUAGE,
-                                                  DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, COURT_ID, CONTENT_DATE);
+                                      DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, COURT_ID, CONTENT_DATE);
     }
 
     @Test
@@ -233,7 +254,7 @@ class ValidationServiceTest {
 
     @Test
     void testSjpSetsCourtId() {
-        headerGroup.setListType(ListType.SJP);
+        headerGroup.setListType(ListType.SJP_PRESS_LIST);
         headerGroup.setCourtId("1");
 
         assertEquals("0", validationService.validateHeaders(headerGroup).getCourtId(), "Court Id should match");
@@ -248,4 +269,66 @@ class ValidationServiceTest {
         assertEquals("Empty file provided, please provide a valid file", ex.getMessage(),
                      VALIDATION_EXPECTED_MESSAGE);
     }
+
+    @Test
+    void testValidateMasterSchemaWithErrors() {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream("mocks/badJsonPayload.json")) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+            assertThrows(PayloadValidationException.class, () ->
+                             validationService.validateBody(text, ListType.MAGS_PUBLIC_LIST),
+                               "Valid JSON string marked as not valid");
+        } catch (IOException exception) {
+            fail(UNKNOWN_EXCEPTION);
+        }
+    }
+
+    @Test
+    void testExceptionWhenValidatingPayload() {
+        PayloadValidationException payloadValidationException = assertThrows(PayloadValidationException.class, () ->
+            validationService.validateBody("abcd", ListType.CIVIL_DAILY_CAUSE_LIST), "Validation exception not thrown "
+                                                                                 + "when value not JSON");
+
+        assertEquals("Error while parsing JSON Payload", payloadValidationException.getMessage(),
+                     "JSON Payload message does not match expected exception");
+
+    }
+
+    @Test
+    void testValidateWithErrorsWhenArtefactIsDailyCauseList() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream("mocks/dailyCauseListInvalid.json")) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            Artefact artefact = new Artefact();
+            artefact.setListType(ListType.CIVIL_DAILY_CAUSE_LIST);
+            assertThrows(PayloadValidationException.class, () ->
+                             validationService.validateBody(text, ListType.CIVIL_DAILY_CAUSE_LIST),
+                "Valid JSON string marked as valid");
+        }
+    }
+
+    @Test
+    void testValidateMasterSchemaWithoutErrors() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream("mocks/jsonPayload.json")) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+            assertDoesNotThrow(() -> validationService.validateBody(text, ListType.MAGS_PUBLIC_LIST),
+                               "Valid JSON string marked as valid");
+        }
+    }
+
+    @Test
+    void testValidateWithoutErrorsWhenArtefactIsDailyCauseList() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream("mocks/dailyCauseList.json")) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            Artefact artefact = new Artefact();
+            artefact.setListType(ListType.CIVIL_DAILY_CAUSE_LIST);
+            assertDoesNotThrow(() -> validationService.validateBody(text, ListType.MAGS_PUBLIC_LIST),
+                               "Valid JSON string marked as valid");
+        }
+    }
+
 }

@@ -48,8 +48,7 @@ public class PublicationService {
         String blobUrl = azureBlobService.createPayload(
             artefact.getSourceArtefactId(),
             artefact.getProvenance(),
-            payload
-        );
+            payload);
 
         artefact.setPayload(blobUrl);
         artefact.setSearch(payloadExtractor.extractSearchTerms(payload));
