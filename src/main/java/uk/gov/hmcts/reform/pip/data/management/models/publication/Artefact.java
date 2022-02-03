@@ -86,7 +86,7 @@ public class Artefact {
     private LocalDateTime displayTo;
 
     /**
-     * DL / SL / WL / FL / PL.
+     * The type of list.
      */
     @Enumerated(EnumType.STRING)
     private ListType listType;

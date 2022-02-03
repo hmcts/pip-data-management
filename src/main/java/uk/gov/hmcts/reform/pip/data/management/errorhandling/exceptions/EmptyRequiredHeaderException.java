@@ -1,7 +1,7 @@
 package uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions;
 
 /**
- * Custom exception which handles all header validation issues.
+ * Custom exception which handles empty header validation issues.
  */
 public class EmptyRequiredHeaderException extends HeaderValidationException {
     private static final long serialVersionUID = 2810432611414432879L;

@@ -34,6 +34,7 @@ import uk.gov.hmcts.reform.pip.data.management.models.publication.ListType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Sensitivity;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -54,7 +55,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @ActiveProfiles(profiles = "test")
 @RunWith(SpringRunner.class)
-@SuppressWarnings("PMD.ExcessiveImports")
+@SuppressWarnings({"PMD.ExcessiveImports",  "PMD.ExcessiveClassLength", "PMD.CyclomaticComplexity"})
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
 class PublicationTest {
 
@@ -82,9 +83,7 @@ class PublicationTest {
     private static final Language LANGUAGE = Language.ENGLISH;
     private static final String TEST_VALUE = "test";
     private static final String PAYLOAD_URL = "https://localhost";
-    private static final String JSON_PAYLOAD = "{\"CourtList\":{\"CourtList\":[{\"CourtHouse\":{\"CourtHouseCode"
-        + "\":\"12345\"}}]}}";
-    private static final ListType LIST_TYPE = ListType.DL;
+    private static final ListType LIST_TYPE = ListType.CIVIL_DAILY_CAUSE_LIST;
     private static final String COURT_ID = "123";
     private static final LocalDateTime CONTENT_DATE = LocalDateTime.now();
     private static final String SEARCH_KEY_FOUND = "array-value";
@@ -93,12 +92,16 @@ class PublicationTest {
     private static final String SEARCH_VALUE_2 = "array-value-2";
     private static final String COURT_ID_SEARCH_KEY = "court-id";
     private static final String EMPTY_VALUE = "";
+    private static final String VERIFICATION_HEADER = "verification";
+
+
     private static final String FORMAT_RESPONSE = "Please check that the value is of the correct format for the field "
         + "(See Swagger documentation for correct formats)";
     private static final String DISPLAY_FROM_RESPONSE = "x-display-from Field is required for artefact type";
     private static final String DISPLAY_TO_RESPONSE = "x-display-to Field is required for artefact type";
     private static final String VALIDATION_EMPTY_RESPONSE = "Response should contain a Artefact";
     private static final String VALIDATION_EXCEPTION_RESPONSE = "Exception response does not contain correct message";
+    private static final String VALIDATION_DISPLAY_FROM = "The expected Display From has not been returned";
 
     private static MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
     private static ObjectMapper objectMapper;
@@ -819,9 +822,9 @@ class PublicationTest {
             + "not contain the new language");
     }
 
-    @DisplayName("Should contain no search terms when payload is of an unknown type")
+    @DisplayName("Should throw a 400 bad request when payload is not of JSON through the JSON endpoint")
     @Test
-    void creationOfAnArtefactWithAnUnknownSearchType() throws Exception {
+    void creationOfAJsonArtefactThatIsNotJson() throws Exception {
         when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
         when(blobContainerClient.getBlobContainerUrl()).thenReturn(PAYLOAD_URL);
 
@@ -839,24 +842,141 @@ class PublicationTest {
             .content(PAYLOAD_UNKNOWN)
             .contentType(MediaType.APPLICATION_JSON);
 
-        MvcResult createResponse =
-            mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
 
-        Artefact createdArtefact = objectMapper.readValue(
-            createResponse.getResponse().getContentAsString(),
-            Artefact.class
-        );
-
-        assertTrue(createdArtefact.getSearch().isEmpty(), "Artefact search criteria exists"
-            + "when payload is of an unknown type");
+        mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isBadRequest()).andReturn();
     }
 
-    @DisplayName("Verify that artefact is returned with given get")
-    @Test
-    void verifyThatArtefactsAreReturnedFromPostgres() throws Exception {
+
+    @DisplayName("Check that null date for general_publication still allows us to return the relevant artefact")
+    @ParameterizedTest
+    @ValueSource(booleans = {true, false})
+    void checkStatusUpdatesWithNullDateTo(boolean isJson) throws Exception {
         when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .post(POST_URL)
+
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
+
+        if (isJson) {
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(POST_URL).content(payload);
+        } else {
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(POST_URL).file(file);
+        }
+
+        mockHttpServletRequestBuilder
+            .header(PublicationConfiguration.TYPE_HEADER, ArtefactType.GENERAL_PUBLICATION)
+            .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
+            .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
+            .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
+            .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM.minusMonths(2))
+            .header(PublicationConfiguration.LIST_TYPE, LIST_TYPE)
+            .header(PublicationConfiguration.COURT_ID, COURT_ID)
+            .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
+            .contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
+
+        mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
+
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 = MockMvcRequestBuilders
+            .get(SEARCH_URL + "/" + COURT_ID)
+            .header(VERIFICATION_HEADER, "true");
+        MvcResult getResponse =
+            mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isOk()).andReturn();
+
+        String jsonOutput = getResponse.getResponse().getContentAsString();
+        JSONArray jsonArray = new JSONArray(jsonOutput);
+        Artefact retrievedArtefact = objectMapper.readValue(
+            jsonArray.get(0).toString(), Artefact.class
+        );
+
+        assertEquals(COURT_ID, retrievedArtefact.getCourtId(), "Artefact not found.");
+    }
+
+    @DisplayName("Should create a valid artefact and return the created artefact to the user")
+    @Test
+    void testCreationOfInvalidDailyCauseList() throws Exception {
+        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(blobContainerClient.getBlobContainerUrl()).thenReturn(PAYLOAD_URL);
+
+        try (InputStream mockFile = this.getClass().getClassLoader()
+            .getResourceAsStream("data/dailyCauseListInvalid.json")) {
+            MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .post(POST_URL)
+                .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
+                .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
+                .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
+                .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
+                .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO)
+                .header(PublicationConfiguration.COURT_ID, COURT_ID)
+                .header(PublicationConfiguration.LIST_TYPE, ListType.CIVIL_DAILY_CAUSE_LIST)
+                .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
+                .content(mockFile.readAllBytes())
+                .contentType(MediaType.APPLICATION_JSON);
+
+            MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
+                .andExpect(status().isBadRequest()).andReturn();
+
+            assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
+
+            ExceptionResponse exceptionResponse = objectMapper.readValue(
+                response.getResponse().getContentAsString(),
+                ExceptionResponse.class
+            );
+
+            assertTrue(
+                exceptionResponse.getMessage().contains("courtHouseName"),
+                "Court name is not displayed in the exception response"
+            );
+        }
+    }
+
+    @DisplayName("Should create a valid artefact and return the created artefact to the user")
+    @Test
+    void testCreationOfValidDailyCauseList() throws Exception {
+        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(blobContainerClient.getBlobContainerUrl()).thenReturn(PAYLOAD_URL);
+
+        try (InputStream mockFile = this.getClass().getClassLoader()
+            .getResourceAsStream("data/dailyCauseList.json")) {
+
+            MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .post(POST_URL)
+                .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
+                .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
+                .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
+                .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
+                .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO)
+                .header(PublicationConfiguration.COURT_ID, COURT_ID)
+                .header(PublicationConfiguration.LIST_TYPE, ListType.CIVIL_DAILY_CAUSE_LIST)
+                .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
+                .content(mockFile.readAllBytes())
+                .contentType(MediaType.APPLICATION_JSON);
+
+
+            MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
+                .andExpect(status().isCreated()).andReturn();
+
+            assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
+
+            Artefact artefact = objectMapper.readValue(
+                response.getResponse().getContentAsString(), Artefact.class);
+
+            assertNotNull(artefact.getArtefactId(), "Artefact ID is not populated");
+        }
+    }
+
+    @DisplayName("Verify that artefact is returned when user is verified and sensitivity is public")
+    @ParameterizedTest
+    @ValueSource(booleans = {true, false})
+    void verifyThatArtefactsAreReturnedForVerifiedUserWhenPublic(boolean isJson) throws Exception {
+        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
+
+        if (isJson) {
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(POST_URL).content(payload);
+        } else {
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(POST_URL).file(file);
+        }
+
+        mockHttpServletRequestBuilder
             .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
             .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
             .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
@@ -866,8 +986,7 @@ class PublicationTest {
             .header(PublicationConfiguration.LIST_TYPE, LIST_TYPE)
             .header(PublicationConfiguration.COURT_ID, COURT_ID)
             .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
-            .content(JSON_PAYLOAD)
-            .contentType(MediaType.APPLICATION_JSON);
+            .contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
 
         MvcResult createResponse =
             mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
@@ -876,12 +995,13 @@ class PublicationTest {
             Artefact.class
         );
 
-        assertEquals(createdArtefact.getDisplayFrom(), DISPLAY_FROM.minusMonths(2), "test message goes here");
+        assertEquals(createdArtefact.getDisplayFrom(), DISPLAY_FROM.minusMonths(2),
+                     VALIDATION_DISPLAY_FROM);
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 = MockMvcRequestBuilders
 
-            .get(SEARCH_URL + "/12345")
-            .header("verification", "true");
+            .get(SEARCH_URL + "/" + COURT_ID)
+            .header(VERIFICATION_HEADER, "true");
         MvcResult getResponse =
             mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isOk()).andReturn();
 
@@ -890,33 +1010,50 @@ class PublicationTest {
         Artefact retrievedArtefact = objectMapper.readValue(
             jsonArray.get(0).toString(), Artefact.class
         );
-        assertEquals(List.of("12345"), retrievedArtefact.getSearch().get("court-id"), "test");
+        assertEquals(COURT_ID, retrievedArtefact.getCourtId(),
+                     "Incorrect court ID has been retrieved from the database");
     }
 
-
-    @DisplayName("Check that null date for general_publication still allows us to return the relevant artefact")
-    @Test
-    void checkStatusUpdatesWithNullDateTo() throws Exception {
+    @DisplayName("Verify that artefact is returned when user is unverified and sensitivity is public")
+    @ParameterizedTest
+    @ValueSource(booleans = {true, false})
+    void verifyThatArtefactsAreReturnedForUnverifiedUserWhenPublic(boolean isJson) throws Exception {
         when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
 
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .post(POST_URL)
-            .header(PublicationConfiguration.TYPE_HEADER, ArtefactType.GENERAL_PUBLICATION)
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
+
+        if (isJson) {
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(POST_URL).content(payload);
+        } else {
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(POST_URL).file(file);
+        }
+
+        mockHttpServletRequestBuilder
+            .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
             .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
             .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
             .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
+            .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO.plusMonths(1))
             .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM.minusMonths(2))
             .header(PublicationConfiguration.LIST_TYPE, LIST_TYPE)
             .header(PublicationConfiguration.COURT_ID, COURT_ID)
             .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
-            .content(JSON_PAYLOAD)
-            .contentType(MediaType.APPLICATION_JSON);
+            .contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
 
-        mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
+        MvcResult createResponse =
+            mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
+        Artefact createdArtefact = objectMapper.readValue(
+            createResponse.getResponse().getContentAsString(),
+            Artefact.class
+        );
+
+        assertEquals(createdArtefact.getDisplayFrom(), DISPLAY_FROM.minusMonths(2),
+                     VALIDATION_DISPLAY_FROM);
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 = MockMvcRequestBuilders
-            .get(SEARCH_URL + "/12345")
-            .header("verification", "true");
+
+            .get(SEARCH_URL + "/" + COURT_ID)
+            .header(VERIFICATION_HEADER, "false");
         MvcResult getResponse =
             mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isOk()).andReturn();
 
@@ -925,7 +1062,110 @@ class PublicationTest {
         Artefact retrievedArtefact = objectMapper.readValue(
             jsonArray.get(0).toString(), Artefact.class
         );
+        assertEquals(COURT_ID, retrievedArtefact.getCourtId(),
+                     "Incorrect court ID has been retrieved from the database");
 
-        assertEquals(List.of("12345"), retrievedArtefact.getSearch().get("court-id"), "Artefact not found.");
     }
+
+    @DisplayName("Verify that artefact is not returned when user is unverified and artefact is classified")
+    @ParameterizedTest
+    @ValueSource(booleans = {true, false})
+    void verifyThatArtefactsAreNotReturnedForUnverifiedUserWhenClassified(boolean isJson) throws Exception {
+        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
+
+        if (isJson) {
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(POST_URL).content(payload);
+        } else {
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(POST_URL).file(file);
+        }
+
+        mockHttpServletRequestBuilder
+            .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
+            .header(PublicationConfiguration.SENSITIVITY_HEADER, Sensitivity.CLASSIFIED)
+            .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
+            .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
+            .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO.plusMonths(1))
+            .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM.minusMonths(2))
+            .header(PublicationConfiguration.LIST_TYPE, LIST_TYPE)
+            .header(PublicationConfiguration.COURT_ID, COURT_ID)
+            .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
+            .contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
+
+        MvcResult createResponse =
+            mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
+        Artefact createdArtefact = objectMapper.readValue(
+            createResponse.getResponse().getContentAsString(),
+            Artefact.class
+        );
+
+        assertEquals(createdArtefact.getDisplayFrom(), DISPLAY_FROM.minusMonths(2),
+                     VALIDATION_DISPLAY_FROM);
+
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 = MockMvcRequestBuilders
+
+            .get(SEARCH_URL + "/" + COURT_ID)
+            .header(VERIFICATION_HEADER, "false");
+        MvcResult getResponse =
+            mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isOk()).andReturn();
+
+        String jsonOutput = getResponse.getResponse().getContentAsString();
+        JSONArray jsonArray = new JSONArray(jsonOutput);
+        assertEquals(0, jsonArray.length(),
+                     "Unknown artefacts have been returned from the database");
+
+    }
+
+    @DisplayName("Verify that artefact is not returned when user is unverified and artefact is private")
+    @ParameterizedTest
+    @ValueSource(booleans = {true, false})
+    void verifyThatArtefactsAreNotReturnedForUnverifiedUserWhenPrivate(boolean isJson) throws Exception {
+        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
+
+        if (isJson) {
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(POST_URL).content(payload);
+        } else {
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(POST_URL).file(file);
+        }
+
+        mockHttpServletRequestBuilder
+            .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
+            .header(PublicationConfiguration.SENSITIVITY_HEADER, Sensitivity.CLASSIFIED)
+            .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
+            .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
+            .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO.plusMonths(1))
+            .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM.minusMonths(2))
+            .header(PublicationConfiguration.LIST_TYPE, LIST_TYPE)
+            .header(PublicationConfiguration.COURT_ID, COURT_ID)
+            .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
+            .contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
+
+        MvcResult createResponse =
+            mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
+        Artefact createdArtefact = objectMapper.readValue(
+            createResponse.getResponse().getContentAsString(),
+            Artefact.class
+        );
+
+        assertEquals(createdArtefact.getDisplayFrom(), DISPLAY_FROM.minusMonths(2),
+                     VALIDATION_DISPLAY_FROM);
+
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 = MockMvcRequestBuilders
+
+            .get(SEARCH_URL + "/" + COURT_ID)
+            .header(VERIFICATION_HEADER, "false");
+        MvcResult getResponse =
+            mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isOk()).andReturn();
+
+        String jsonOutput = getResponse.getResponse().getContentAsString();
+        JSONArray jsonArray = new JSONArray(jsonOutput);
+        assertEquals(0, jsonArray.length(),
+                     "Unknown artefacts have been returned from the database");
+
+    }
+
+
 }
