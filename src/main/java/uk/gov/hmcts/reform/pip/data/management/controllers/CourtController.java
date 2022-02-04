@@ -1,5 +1,8 @@
 package uk.gov.hmcts.reform.pip.data.management.controllers;
 
+import com.opencsv.bean.ColumnPositionMappingStrategy;
+import com.opencsv.bean.CsvToBean;
+import com.opencsv.bean.CsvToBeanBuilder;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -7,16 +10,20 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.models.Court;
+import uk.gov.hmcts.reform.pip.data.management.models.court.CourtCsv;
 import uk.gov.hmcts.reform.pip.data.management.models.request.FilterRequest;
 import uk.gov.hmcts.reform.pip.data.management.service.CourtService;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.nio.file.Files;
 import java.util.List;
 
 @RestController
@@ -73,4 +80,23 @@ public class CourtController {
             filterRequest.getValues()
         ));
     }
+
+    @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<List<CourtCsv>> uploadCourts(@RequestPart MultipartFile courtList) throws IOException {
+        Reader reader = new BufferedReader(new InputStreamReader(courtList.getInputStream()));
+        CsvToBean<CourtCsv> csvToBean = new CsvToBeanBuilder<CourtCsv>(reader)
+            .withType(CourtCsv.class)
+            .build();
+
+        List<CourtCsv> courtCsv = csvToBean.parse();
+
+
+
+
+        return ResponseEntity.ok(csvToBean.parse());
+
+
+    }
+
+
 }
