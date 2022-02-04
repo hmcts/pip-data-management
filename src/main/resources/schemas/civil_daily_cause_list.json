@@ -1,15 +1,15 @@
 {
 	"definitions": {
 		"address": {
-			"title": "Address Details", 
+			"title": "Address Details",
 			"type": "object",
 			"properties": {
 				"line": {
-					"title": "Address Line", 
+					"title": "Address Line",
 					"type": "array",
 					"default": [],
 					"items":{
-						"title": "Items", 
+						"title": "Items",
 						"type": "string",
 						"default": "",
 						"examples": [
@@ -19,7 +19,7 @@
 					}
 				},
 				"town": {
-					"title": "Town", 
+					"title": "Town",
 					"description": "The town for the address",
 					"type": "string",
 					"default": "",
@@ -39,7 +39,7 @@
 					"pattern": "^.*$"
 				},
 				"postCode": {
-					"title": "Address Postcode", 
+					"title": "Address Postcode",
 					"type": "string",
 					"default": "",
 					"examples": [
@@ -52,37 +52,34 @@
 		"judiciary": {
 			"title": "Judiciary",
 			"description": "Can be an array of objects as such will be a collective and use plurals for object arrays (clerks and scribes etc included)",
-			"type": "array",
-			"items": {
-				"type": "object",
-				"properties": {
-					"johTitle": {
-						"description": "The title for the judiciary",
-						"title": "Judiciary Title",
-						"type": "string",
-						"enum": ["Mr", "Mrs", "Miss", "Other"],
-						"default": ""
-					},
-					"johNameSurname": {
-						"description": "First and Surname of the JOH",
-						"title": "JOH Name",
-						"type": "string",
-						"examples": [
-							"John Smith"
-						],
-						"default": "",
-						"pattern": "^.*$"
-					}
-				}
+			"type": "object",
+      "properties": {
+        "johTitle": {
+          "description": "The title for the judiciary",
+          "title": "Judiciary Title",
+          "type": "string",
+          "enum": ["Mr", "Mrs", "Miss", "Other"],
+          "default": ""
+        },
+        "johNameSurname": {
+          "description": "First and Surname of the JOH",
+          "title": "JOH Name",
+          "type": "string",
+          "examples": [
+            "John Smith"
+          ],
+          "default": "",
+          "pattern": "^.*$"
+        }
 			}
 		},
 		"venueContact": {
-			"title": "Contact Details for a venue", 
+			"title": "Contact Details for a venue",
 			"type": "object",
 			"properties": {
 				"venueTelephone": {
 					"description": "Telephone number for the venue",
-					"title": "Venue Telephone", 
+					"title": "Venue Telephone",
 					"type": "string",
 					"default": "",
 					"examples": [
@@ -92,7 +89,7 @@
 				},
 				"venueEmail": {
 					"description": "Email for the venue",
-					"title": "Venue Email", 
+					"title": "Venue Email",
 					"type": "string",
 					"default": "",
 					"examples": [
@@ -103,13 +100,13 @@
 			}
 		}
 	},
-	"$schema": "http://json-schema.org/draft-07/schema#", 
-	"title": "Root", 
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"title": "Root",
 	"type": "object",
 	"properties": {
 		"@schemaLocation": {
-			"$id": "#root/@schemaLocation", 
-			"title": "@schemalocation", 
+			"$id": "#root/@schemaLocation",
+			"title": "@schemalocation",
 			"type": "string",
 			"default": "",
 			"examples": [
@@ -118,14 +115,14 @@
 			"pattern": "^.*$"
 		},
 		"document": {
-			"$id": "#root/document", 
-			"title": "document", 
+			"$id": "#root/document",
+			"title": "document",
 			"type": "object",
 			"properties": {
 				"documentName": {
-					"$id": "#root/document/documentName", 
+					"$id": "#root/document/documentName",
 					"description": "Defined for the title of a publications",
-					"title": "Document Name", 
+					"title": "Document Name",
 					"type": "string",
 					"default": "",
 					"examples": [
@@ -143,8 +140,8 @@
 					]
 				},
 				"version": {
-					"$id": "#root/document/version", 
-					"title": "Version", 
+					"$id": "#root/document/version",
+					"title": "Version",
 					"type": "string",
 					"default": "",
 					"examples": [
@@ -155,15 +152,15 @@
 			}
 		},
 		"venue": {
-			"$id": "#root/venue", 
-			"title": "venue", 
+			"$id": "#root/venue",
+			"title": "venue",
 			"type": "object",
 			"required": ["venueName", "venueContact", "venueAddress"],
 			"properties": {
 				"venueName": {
-					"$id": "#root/venue/venueName", 
+					"$id": "#root/venue/venueName",
 					"description": "Full venue name",
-					"title": "Venue Name", 
+					"title": "Venue Name",
 					"type": "string",
 					"default": "",
 					"examples": [
@@ -173,37 +170,37 @@
 				},
 				"venueAddress": {
 					"description": "Full venue address",
-					"$id": "#root/venue/venueAddress", 
+					"$id": "#root/venue/venueAddress",
 					"$ref": "#/definitions/address"
 				},
 				"venueContact": {
 					"$id": "#root/venue/venueContact",
-					"description": "Contact details for the venue", 
-					"title": "Venue Contact", 
+					"description": "Contact details for the venue",
+					"title": "Venue Contact",
 					"$ref": "#/definitions/venueContact"
 				}
 			}
 		},
 		"courtLists": {
-			"$id": "#root/courtLists", 
-			"title": "Court Lists", 
+			"$id": "#root/courtLists",
+			"title": "Court Lists",
 			"type": "array",
 			"items": {
-				"$id": "#root/courtLists/courtList", 
-				"title": "Court list", 
+				"$id": "#root/courtLists/courtList",
+				"title": "Court list",
 				"type": "object",
 				"properties": {
 					"courtHouse": {
-						"$id": "#root/courtLists/courtHouse", 
+						"$id": "#root/courtLists/courtHouse",
 						"title": "Court House",
 						"description": "The court house that owns the court rooms",
 						"type": "object",
 						"required": ["courtHouseName", "courtRoom"],
 						"properties": {
 							"courtHouseName": {
-								"$id": "#root/courtLists/courtList/courtHouse/courtHouseName", 
+								"$id": "#root/courtLists/courtList/courtHouse/courtHouseName",
 								"description": "Name of the court house",
-								"title": "Court House Name", 
+								"title": "Court House Name",
 								"type": "string",
 								"default": "",
 								"examples": [
@@ -212,7 +209,7 @@
 								"pattern": "^.*$"
 							},
 							"courtRoom": {
-								"$id": "#root/courtLists/courtRoom", 
+								"$id": "#root/courtLists/courtRoom",
 								"type": "array",
 								"items": {
 									"title": "Court Room",
@@ -222,8 +219,8 @@
 									"properties": {
 										"courtRoomName": {
 											"$id": "#root/courtLists/courtRoom/courtRoomName",
-											"description": "Name for the court room", 
-											"title": "Court Room Name", 
+											"description": "Name for the court room",
+											"title": "Court Room Name",
 											"type": "string",
 											"default": "",
 											"examples": [
@@ -267,16 +264,16 @@
 													"judiciary": {
 														"$id": "#root/courtLists/courtRoom/session/judiciary",
 														"type": "array",
-														"description": "Judiciary for the session", 
+														"description": "Judiciary for the session",
 														"title": "Judiciary",
 														"items":{
 															"type": "object",
-															"$ref": "#/definitions/judiciary"	
+															"$ref": "#/definitions/judiciary"
 														}
 													},
 													"sittings": {
-														"$id": "#root/courtLists/courtList/courtRoom/session/sittings", 
-														"title": "Sittings", 
+														"$id": "#root/courtLists/courtList/courtRoom/session/sittings",
+														"title": "Sittings",
 														"type": "array",
 														"default": [],
 														"items":{
@@ -287,7 +284,7 @@
 																"sittingStart": {
 																	"$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/sittingStart",
 																	"description": "Sitting Start Time",
-																	"title": "Sitting Start", 
+																	"title": "Sitting Start",
 																	"type": "string",
 																	"default": "",
 																	"examples": []
@@ -295,7 +292,7 @@
 																"sittingEnd": {
 																	"$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/sittingEnd",
 																	"description": "Sitting End Time",
-																	"title": "Sitting End", 
+																	"title": "Sitting End",
 																	"type": "string",
 																	"default": "",
 																	"examples": []
