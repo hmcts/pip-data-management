@@ -1,19 +1,25 @@
 package uk.gov.hmcts.reform.pip.data.management.service;
 
+import com.opencsv.bean.CsvToBean;
+import com.opencsv.bean.CsvToBeanBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import uk.gov.hmcts.reform.pip.data.management.database.CourtRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.CourtsAndHearings;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CourtNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.models.Court;
 import uk.gov.hmcts.reform.pip.data.management.models.CourtMethods;
+import uk.gov.hmcts.reform.pip.data.management.models.court.CourtCsv;
+import uk.gov.hmcts.reform.pip.data.management.models.court.CourtReference;
+import uk.gov.hmcts.reform.pip.data.management.models.court.NewCourt;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -25,6 +31,9 @@ public class CourtService {
 
     @Autowired
     private CourtsAndHearings courtsAndHearings;
+
+    @Autowired
+    private CourtRepository courtRepository;
 
     @Autowired
     private FilterService filterService;
@@ -106,5 +115,29 @@ public class CourtService {
      */
     private List<Court> alphabetiseCourts(List<Court> list) {
         return list.stream().sorted(Comparator.comparing(Court::getName)).collect(Collectors.toList());
+    }
+
+    public Collection<NewCourt> uploadCourts(MultipartFile courtList) throws IOException {
+        Reader reader = new BufferedReader(new InputStreamReader(courtList.getInputStream()));
+        CsvToBean<CourtCsv> csvToBean = new CsvToBeanBuilder<CourtCsv>(reader)
+            .withType(CourtCsv.class)
+            .build();
+
+        List<CourtCsv> courtCsvList = csvToBean.parse();
+
+        Map<Integer, NewCourt> courtCsvMap = new HashMap<>();
+        for (CourtCsv courtCsv : courtCsvList) {
+            if (courtCsvMap.containsKey(courtCsv.getUniqueId())) {
+                NewCourt newCourt = courtCsvMap.get(courtCsv.getUniqueId());
+                newCourt.addCourtReference(new CourtReference(courtCsv.getProvenance(), courtCsv.getProvenanceId()));
+            } else {
+                NewCourt newCourt = new NewCourt(courtCsv);
+                courtCsvMap.put(courtCsv.getUniqueId(), newCourt);
+            }
+        }
+
+        courtCsvMap.forEach((key, value) -> courtRepository.save(value));
+
+        return courtCsvMap.values();
     }
 }

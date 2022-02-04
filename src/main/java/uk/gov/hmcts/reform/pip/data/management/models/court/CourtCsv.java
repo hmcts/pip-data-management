@@ -10,10 +10,10 @@ import lombok.Data;
 public class CourtCsv {
 
     @CsvBindByName(column = "P&I ID")
-    private int uniqueId;
+    private Integer uniqueId;
 
     @CsvBindByName(column = "Court Desc")
-    private String courtDescription;
+    private String courtName;
 
     @CsvBindByName(column = "Region")
     private String region;
