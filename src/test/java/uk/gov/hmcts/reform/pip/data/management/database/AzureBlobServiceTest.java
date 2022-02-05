@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.pip.data.management.database;
 import com.azure.core.util.BinaryData;
 import com.azure.storage.blob.BlobClient;
 import com.azure.storage.blob.BlobContainerClient;
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -53,7 +54,7 @@ class AzureBlobServiceTest {
 
         String blobData = azureBlobService.getBlobData(SOURCE_ARTEFACT_ID, PROVENANCE);
 
-        assertEquals("TestString", blobData, "Wrong string detected");
+        assertEquals(Base64.encodeBase64String("TestString".getBytes()), blobData, "Wrong string detected");
     }
 
     @Test

@@ -6,6 +6,7 @@ import com.azure.storage.blob.BlobContainerClient;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microsoft.applicationinsights.web.dependencies.apachecommons.io.IOUtils;
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.json.JSONArray;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -1212,7 +1213,8 @@ class PublicationTest {
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
 
-        assertEquals(isJson ? payload : new String(file.getBytes()),
+        assertEquals(isJson ? Base64.encodeBase64String(payload.getBytes()) :
+                         Base64.encodeBase64String(file.getBytes()),
                      response.getResponse().getContentAsString(), "Payload does not match expected content");
     }
 

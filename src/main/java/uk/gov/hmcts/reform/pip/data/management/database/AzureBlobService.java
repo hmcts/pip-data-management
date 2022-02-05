@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.pip.data.management.database;
 
 import com.azure.storage.blob.BlobClient;
 import com.azure.storage.blob.BlobContainerClient;
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -71,7 +72,8 @@ public class AzureBlobService {
     public String getBlobData(String sourceArtefactId, String provenance) {
         String blobName = sourceArtefactId + '-' + provenance;
         BlobClient blobClient = blobContainerClient.getBlobClient(blobName);
-        return blobClient.downloadContent().toString();
+        byte[] data = blobClient.downloadContent().toBytes();
+        return Base64.encodeBase64String(data);
     }
 
 }
