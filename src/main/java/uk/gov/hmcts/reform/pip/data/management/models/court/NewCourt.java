@@ -1,13 +1,18 @@
 package uk.gov.hmcts.reform.pip.data.management.models.court;
 
+import com.vladmihalcea.hibernate.type.array.ListArrayType;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apache.commons.text.CaseUtils;
+import org.apache.commons.text.WordUtils;
 import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * This class captures the Court Data, which will be persisted in the database.
@@ -16,6 +21,10 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @Table(name = "court")
+@TypeDef(
+    name = "list-array",
+    typeClass = ListArrayType.class
+)
 public class NewCourt {
 
     @Id
@@ -28,16 +37,19 @@ public class NewCourt {
 
     private String region;
 
-    private String jurisdiction;
+    @Type(type = "list-array")
+    @Column(name = "jurisdiction", columnDefinition = "text[]")
+    private List<String> jurisdiction;
 
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "new_court_id")
+    @JoinColumn(name = "court_id")
     private List<CourtReference> courtReferenceList = new ArrayList<>();
 
     public NewCourt(CourtCsv courtCsv) {
-        this.courtName = courtCsv.getCourtName();
-        this.region = courtCsv.getRegion();
-        this.jurisdiction = courtCsv.getJurisdiction();
+        this.courtName = WordUtils.capitalizeFully(courtCsv.getCourtName());
+        this.region = WordUtils.capitalizeFully(courtCsv.getRegion());
+        this.jurisdiction = courtCsv.getJurisdiction().stream().map(WordUtils::capitalizeFully)
+            .collect(Collectors.toList());
 
         CourtReference courtReference = new CourtReference(courtCsv.getProvenance(), courtCsv.getProvenanceId());
         this.courtReferenceList.add(courtReference);

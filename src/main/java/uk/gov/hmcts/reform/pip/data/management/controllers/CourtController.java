@@ -24,10 +24,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @Api(tags = "Data Management Court list API")
@@ -43,7 +40,7 @@ public class CourtController {
     })
     @ApiOperation("Get all courts with their hearings")
     @GetMapping
-    public ResponseEntity<List<Court>> getCourtList() {
+    public ResponseEntity<List<NewCourt>> getCourtList() {
         return ResponseEntity.ok(courtService.getAllCourts());
     }
 
@@ -53,9 +50,9 @@ public class CourtController {
     })
     @ApiOperation("Gets a court by searching by the court id and returning")
     @GetMapping("/{courtId}")
-    public ResponseEntity<Court> getCourtById(@ApiParam(value = "The court Id to retrieve", required = true)
-                                                @PathVariable Integer courtId) {
-        return ResponseEntity.ok(courtService.handleSearchCourt(courtId));
+    public ResponseEntity<NewCourt> getCourtById(@ApiParam(value = "The court Id to retrieve", required = true)
+                                                @PathVariable UUID courtId) {
+        return ResponseEntity.ok(courtService.getCourtById(courtId));
 
     }
 
@@ -64,28 +61,26 @@ public class CourtController {
         @ApiResponse(code = 404, message = "No court found with the search {input}")
     })
     @ApiOperation("Gets a court by searching by the court name and returning")
-    @GetMapping("/find/{input}")
-    public ResponseEntity<Court> getCourtByName(@ApiParam(value = "The search input to retrieve", required = true)
-                                                @PathVariable String input) {
-        return ResponseEntity.ok(courtService.handleSearchCourt(input));
+    @GetMapping("/find/{courtName}")
+    public ResponseEntity<NewCourt> getCourtByName(@ApiParam(value = "The search input to retrieve", required = true)
+                                                @PathVariable String courtName) {
+        return ResponseEntity.ok(courtService.getCourtByName(courtName));
 
     }
 
     @ApiResponses({
         @ApiResponse(code = 200, message = "Filtered courts")
     })
-    @ApiOperation("Filters list of courts by court attribues and values")
-    @ApiImplicitParam(name = "filterRequest", example = "{\n filters: ['location'], \n values: ['london']}")
+    @ApiOperation("Filters list of courts by region or jurisdiction")
     @GetMapping("/filter")
-    public ResponseEntity<List<Court>> filterCourts(@RequestBody FilterRequest filterRequest) {
-        return ResponseEntity.ok(courtService.handleFilterRequest(
-            filterRequest.getFilters(),
-            filterRequest.getValues()
-        ));
+    public ResponseEntity<List<NewCourt>> searchByRegionAndJurisdiction(@RequestParam(required = false) String[] regions,
+                                                       @RequestParam(required = false) String[] jurisdictions) {
+
+        return ResponseEntity.ok(courtService.searchByRegionAndJurisdiction(regions, jurisdictions));
     }
 
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Collection<NewCourt>> uploadCourts(@RequestPart MultipartFile courtList) throws IOException {
+    public ResponseEntity<Collection<NewCourt>> uploadCourts(@RequestPart MultipartFile courtList) {
         return ResponseEntity.ok(courtService.uploadCourts(courtList));
     }
 

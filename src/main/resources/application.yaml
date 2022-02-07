@@ -48,6 +48,8 @@ spring:
     hibernate:
       # this ensures the db persists after spring boot connection drops.
       ddl-auto: update
+    show-sql: true
+
 
 
 azure:
@@ -65,3 +67,9 @@ payload:
 validations:
   master-schema: "schemas/master_schema.json"
   daily-cause-list: "schemas/civil_daily_cause_list.json"
+
+logging:
+  level:
+    org:
+      hibernate:
+        type: TRACE
