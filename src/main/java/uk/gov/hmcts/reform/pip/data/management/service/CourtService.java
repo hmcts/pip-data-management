@@ -83,9 +83,9 @@ public class CourtService {
      * @param jurisdictions The list of jurisdictions to filter against.
      * @return List of Court objects, can return empty List
      */
-    public List<NewCourt> searchByRegionAndJurisdiction(String[] regions, String[] jurisdictions) {
+    public List<NewCourt> searchByRegionAndJurisdiction(List<String> regions, List<String> jurisdictions) {
         return courtRepository.findByRegionAndJurisdictionOrderByName(
-            List.of(regions), StringUtils.join(jurisdictions, ','));
+            regions, StringUtils.join(jurisdictions, ','));
     }
 
     /**
@@ -117,7 +117,7 @@ public class CourtService {
             courtCsvMap.forEach((key, value) -> courtRepository.save(value));
             return courtCsvMap.values();
 
-        } catch (IOException exception) {
+        } catch (Exception exception) {
             throw new CsvParseException(exception.getMessage());
         }
 

@@ -4,6 +4,7 @@ import com.opencsv.bean.CsvBindAndSplitByName;
 import com.opencsv.bean.CsvBindByName;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,7 +23,7 @@ public class CourtCsv {
     private String region;
 
     @CsvBindAndSplitByName(elementType = String.class, splitOn =";(\\s)?")
-    private List<String> jurisdiction;
+    private List<String> jurisdiction = new ArrayList<>();
 
     @CsvBindByName(column = "Provenance")
     private String provenance;

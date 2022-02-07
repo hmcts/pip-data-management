@@ -39,9 +39,6 @@ class FilterServiceTest {
     @Autowired
     private FilterService filterService;
 
-    @MockBean
-    private CourtService courtService;
-
     @BeforeEach
     void setup() {
         hearings = createHearing();
@@ -51,82 +48,6 @@ class FilterServiceTest {
         hearings.get(1).setCaseName("invalid");
         hearings.get(1).setCaseNumber("Av123");
         hearings.get(1).setUrn("Av123");
-
-        List<Court> allCourts = createMockCourtList();
-        when(courtService.getAllCourts()).thenReturn(allCourts);
-    }
-
-    @Test
-    void testFilterCourtsJurisdictionCrown() {
-        List<Court> filteredCourts = filterService.filterCourts("Crown Court",
-                                                                CourtMethods.JURISDICTION.methodName);
-
-        assertEquals(4, filteredCourts.size(), "Filtered courts size should be 4");
-        assertEquals("mock court 7", filteredCourts.get(0).getName(),
-                     "Filtered court name should match");
-    }
-
-    @Test
-    void testFilterCourtsJurisdictionMag() {
-        List<Court> filteredCourts = filterService.filterCourts("Magistrates Court",
-                                                                CourtMethods.JURISDICTION.methodName);
-
-        assertEquals(6, filteredCourts.size(),
-                     "Filtered courts size should be 6 when searching only jurisdiction for Crown Court"
-        );
-        assertEquals("mock court 1", filteredCourts.get(0).getName(),
-                     "Filtered court name should match"
-        );
-    }
-
-    @Test
-    void testFilterCourtsLocation() {
-        List<Court> filteredCourts = filterService.filterCourts("London", CourtMethods.LOCATION.methodName);
-
-        assertEquals(2, filteredCourts.size(), "Filtered court size should be 2");
-        assertEquals("mock court 11", filteredCourts.get(0).getName(),
-                     "Filtered court name should match"
-        );
-
-    }
-
-    @Test
-    void testFilterCourtsAnyCase() {
-        List<Court> filteredCourts = filterService.filterCourts("LoNdOn", CourtMethods.LOCATION.methodName);
-
-        assertEquals(2, filteredCourts.size(), "Filtered court size should be 2");
-    }
-
-    @Test
-    void testFilterCourtsReturnsNoMatches() {
-        List<Court> filteredCourts = filterService.filterCourts("moon", CourtMethods.LOCATION.methodName);
-        assertEquals(0, filteredCourts.size(), "Should return empty list if no courts filtered");
-    }
-
-    @Test
-    void testFilterCourtsReturnsListOverloaded() {
-        List<Court> preFilteredCourts = filterService.filterCourts("Crown Court",
-                                                                   CourtMethods.JURISDICTION.methodName);
-        assertEquals(4, preFilteredCourts.size(), "pre-filtered courts size should be 4");
-
-        List<Court> filteredCourts = filterService.filterCourts("manchester", CourtMethods.LOCATION.methodName,
-                                                                Optional.of(preFilteredCourts));
-        assertEquals(2, filteredCourts.size(), "Courts should be filtered down from filtered list");
-    }
-
-    @Test
-    void testEmptyOptionalUsesAllCourts() {
-        List<Court> filteredCourts = filterService.filterCourts("manchester", CourtMethods.LOCATION.methodName,
-                                                                Optional.empty());
-        assertEquals(8, filteredCourts.size(), "Courts should be filtered down from full list");
-    }
-
-    @Test
-    void testInvalidMethodNameThrowsReflectionException() {
-        assertThrows(ReflectionException.class, () ->
-                         filterService.filterCourts("london", "InvalidMethod"),
-                     "Expected filterCourts() to throw ReflectionException"
-        );
     }
 
     @Test

@@ -73,8 +73,8 @@ public class CourtController {
     })
     @ApiOperation("Filters list of courts by region or jurisdiction")
     @GetMapping("/filter")
-    public ResponseEntity<List<NewCourt>> searchByRegionAndJurisdiction(@RequestParam(required = false) String[] regions,
-                                                       @RequestParam(required = false) String[] jurisdictions) {
+    public ResponseEntity<List<NewCourt>> searchByRegionAndJurisdiction(@RequestParam(required = false) List<String> regions,
+                                                       @RequestParam(required = false) List<String> jurisdictions) {
 
         return ResponseEntity.ok(courtService.searchByRegionAndJurisdiction(regions, jurisdictions));
     }

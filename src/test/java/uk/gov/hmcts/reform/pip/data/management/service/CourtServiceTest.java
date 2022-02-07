@@ -1,135 +1,199 @@
 package uk.gov.hmcts.reform.pip.data.management.service;
 
-import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.ActiveProfiles;
-import uk.gov.hmcts.reform.pip.data.management.Application;
-import uk.gov.hmcts.reform.pip.data.management.config.AzureBlobConfigurationTest;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
+import org.testcontainers.shaded.org.apache.commons.io.IOUtils;
+import uk.gov.hmcts.reform.pip.data.management.database.CourtRepository;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CourtNotFoundException;
-import uk.gov.hmcts.reform.pip.data.management.models.Court;
-import uk.gov.hmcts.reform.pip.data.management.models.CourtMethods;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CsvParseException;
+import uk.gov.hmcts.reform.pip.data.management.models.court.CourtCsv;
+import uk.gov.hmcts.reform.pip.data.management.models.court.CourtReference;
+import uk.gov.hmcts.reform.pip.data.management.models.court.NewCourt;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.*;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.when;
-import static uk.gov.hmcts.reform.pip.data.management.helpers.CourtHelper.returnFilteredCourtsWhereResultsShouldBe1;
-import static uk.gov.hmcts.reform.pip.data.management.helpers.CourtHelper.returnFilteredCourtsWhereResultsShouldBe2;
-import static uk.gov.hmcts.reform.pip.data.management.helpers.TestConstants.INVALID;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
-@SpringBootTest(classes = {Application.class, AzureBlobConfigurationTest.class})
-@ActiveProfiles(profiles = "test")
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
-@AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
+@ExtendWith(MockitoExtension.class)
 class CourtServiceTest {
 
-    private static final String ABERGAVENNY_MAGISTRATES_COURT = "Abergavenny Magistrates' Court";
-    private static final String ACCRINGTON_MAGISTRATES_COURT = "Accrington Magistrates' Court";
-    private static final String LESLEY_COUNTY_COURT = "Lesley County Court";
-    private static final String MANCHESTER_FAMILY_COURT = "Manchester Family Court";
-    private static final String MANCHESTER = "Manchester";
-    private static final String SORTED_MESSAGE = "Courts should be sorted";
+    @Mock
+    private CourtRepository courtRepository;
 
-    private List<Court> courts;
-    private List<Court> foundCourt;
-    private List<String> filters;
-    private List<String> values;
-
-    @MockBean
-    private FilterService filterService;
-
-    @Autowired
+    @InjectMocks
     private CourtService courtService;
+
+    NewCourt newCourtFirstExample;
+    NewCourt newCourtSecondExample;
 
     @BeforeEach
     void setup() {
-        filters = new ArrayList<>();
-        values = new ArrayList<>();
+        CourtCsv courtCsvFirstExample = new CourtCsv();
+        courtCsvFirstExample.setCourtName("Court Name First Example");
+        newCourtFirstExample = new NewCourt(courtCsvFirstExample);
+        newCourtFirstExample.setCourtId(UUID.randomUUID());
 
-        courts = courtService.getAllCourts();
-        foundCourt = courts.stream().filter(court -> court.getCourtId().equals(2)).collect(Collectors.toList());
-
-        when(filterService.filterCourts("1", CourtMethods.COURT_ID.methodName)).thenReturn(foundCourt);
-        when(filterService.filterCourts("7", CourtMethods.COURT_ID.methodName))
-            .thenThrow(CourtNotFoundException.class);
-        when(filterService.filterCourts(LESLEY_COUNTY_COURT, CourtMethods.NAME.methodName)).thenReturn(foundCourt);
-        when(filterService.filterCourts(INVALID, CourtMethods.NAME.methodName)).thenThrow(CourtNotFoundException.class);
-        when(filterService.filterCourts(MANCHESTER, CourtMethods.LOCATION.methodName, Optional.of(courts)))
-            .thenReturn(returnFilteredCourtsWhereResultsShouldBe2(1));
-        when(filterService.filterCourts("magistrates court", CourtMethods.LOCATION.methodName, Optional.of(courts)))
-            .thenReturn(new ArrayList<>());
-        when(filterService.filterCourts(MANCHESTER, CourtMethods.JURISDICTION.methodName,
-                                        Optional.of(returnFilteredCourtsWhereResultsShouldBe2(1))))
-            .thenReturn(new ArrayList<>());
-        when(filterService.filterCourts("magistrates court", CourtMethods.JURISDICTION.methodName,
-                                        Optional.of(returnFilteredCourtsWhereResultsShouldBe2(1))))
-            .thenReturn(returnFilteredCourtsWhereResultsShouldBe1());
-        when(filterService.filterCourts("hull", CourtMethods.LOCATION.methodName, Optional.of(courts)))
-            .thenReturn(returnFilteredCourtsWhereResultsShouldBe2(3));
+        CourtCsv courtCsvSecondExample = new CourtCsv();
+        courtCsvSecondExample.setCourtName("Court Name Second Example");
+        newCourtSecondExample = new NewCourt(courtCsvSecondExample);
     }
 
     @Test
-    void testGetAllCourtsReturnsAlphabetised() {
-        assertEquals(ABERGAVENNY_MAGISTRATES_COURT, courts.get(0).getName(), SORTED_MESSAGE);
-        assertEquals(ACCRINGTON_MAGISTRATES_COURT, courts.get(1).getName(), SORTED_MESSAGE);
-        assertEquals(LESLEY_COUNTY_COURT, courts.get(2).getName(), SORTED_MESSAGE);
-        assertEquals(MANCHESTER_FAMILY_COURT, courts.get(3).getName(), SORTED_MESSAGE);
+    void testGetAllCourtsCallsTheCourtRepository() {
+        when(courtRepository.findAll()).thenReturn(List.of(newCourtFirstExample, newCourtSecondExample));
+        List<NewCourt> returnedCourts = courtService.getAllCourts();
+
+        assertTrue(returnedCourts.contains(newCourtFirstExample),
+                     "First example court not contained in first array");
+
+        assertTrue(returnedCourts.contains(newCourtSecondExample),
+                   "First example court not contained in first array");
     }
 
     @Test
     void testHandleCourtIdSearchReturnsCourt() {
-        assertEquals(foundCourt.get(0), courtService.handleSearchCourt(1),
-                     "Found court should match");
+        when(courtRepository.getNewCourtByCourtId(newCourtFirstExample.getCourtId()))
+            .thenReturn(Optional.of(newCourtFirstExample));
+
+        NewCourt newCourt = courtService.getCourtById(newCourtFirstExample.getCourtId());
+
+        assertEquals(newCourt, newCourtFirstExample, "Unknown court has been returned");
     }
 
     @Test
     void testHandleSearchCourtIdThrowsCourtNotFoundException() {
-        assertThrows(CourtNotFoundException.class, () ->
-            courtService.handleSearchCourt(INVALID), "Expected CourtNotFoundException to be thrown"
+        UUID unknownId = UUID.randomUUID();
+
+        CourtNotFoundException courtNotFoundException = assertThrows(CourtNotFoundException.class, () ->
+            courtService.getCourtById(unknownId), "Expected CourtNotFoundException to be thrown"
         );
+
+        assertTrue(courtNotFoundException.getMessage().contains(unknownId.toString()),
+                   "Court not found exception does not contain the expected uuid");
     }
 
     @Test
-    void testHandleCourtSearchReturnsCourt() {
-        assertEquals(foundCourt.get(0), courtService.handleSearchCourt(LESLEY_COUNTY_COURT),
-                     "Found court should match");
+    void testHandleCourtNameSearchReturnsCourt() {
+        when(courtRepository.getNewCourtByCourtName(newCourtFirstExample.getCourtName()))
+            .thenReturn(Optional.of(newCourtFirstExample));
+
+        NewCourt newCourt = courtService.getCourtByName(newCourtFirstExample.getCourtName());
+
+        assertEquals(newCourt, newCourtFirstExample, "Unknown court has been returned");
     }
 
     @Test
-    void testHandleSearchCourtThrowsCourtNotFoundException() {
-        assertThrows(CourtNotFoundException.class, () ->
-            courtService.handleSearchCourt(INVALID), "Expected CourtNotFoundException to be thrown"
+    void testHandleSearchCourtNameThrowsCourtNotFoundException() {
+        String unknownName = "UnknownName";
+
+        CourtNotFoundException courtNotFoundException = assertThrows(CourtNotFoundException.class, () ->
+            courtService.getCourtByName(unknownName), "Expected CourtNotFoundException to be thrown"
         );
+
+        assertTrue(courtNotFoundException.getMessage().contains(unknownName),
+                   "Court not found exception does not contain the expected name");
     }
 
     @Test
-    void testHandleFilterRequestWith2FiltersAndValues() {
-        filters.add("location");
-        filters.add("jurisdiction");
-        values.add(MANCHESTER);
-        values.add("magistrates court");
+    void testHandleCourtSearchByRegionAndJurisdiction() {
 
-        assertEquals(1, courtService.handleFilterRequest(filters, values).size(),
-                     "Court list should have been filtered to 1 court");
+        List<String> regions = List.of("North West", "South West");
+        List<String> jurisdictions = List.of("Magistrates Court", "Family Court");
+
+        String expectedString = "Magistrates Court,Family Court";
+
+        when(courtRepository.findByRegionAndJurisdictionOrderByName(regions, expectedString))
+            .thenReturn(List.of(newCourtFirstExample, newCourtSecondExample));
+
+        List<NewCourt> returnedCourts = courtService.searchByRegionAndJurisdiction(regions, jurisdictions);
+
+        assertTrue(returnedCourts.contains(newCourtFirstExample),
+                     "First court has not been found");
+
+        assertTrue(returnedCourts.contains(newCourtSecondExample),
+                   "Second court has not been found");
     }
 
     @Test
-    void testHandleFilterRequestWith1Filter2Values() {
-        filters.add("location");
-        values.add(MANCHESTER);
-        values.add("hull");
+    void testHandleUploadCourtsOk() throws IOException {
+        InputStream inputStream = this.getClass().getClassLoader()
+            .getResourceAsStream("csv/ValidCsv.csv");
 
-        assertEquals(4, courtService.handleFilterRequest(filters, values).size(),
-                     "Court list should have been filtered to 4 courts");
+        MultipartFile multipartFile = new MockMultipartFile("file",
+                              "TestFileName", "text/plain", IOUtils.toByteArray(inputStream));
+
+        List<NewCourt> newCourts = new ArrayList<>(courtService.uploadCourts(multipartFile));
+
+        assertEquals(2, newCourts.size(), "Unknown number of courts returned from parser");
+
+        NewCourt firstCourt = newCourts.get(0);
+        assertEquals("Test Court", firstCourt.getCourtName(), "Court name does not match in first court");
+        assertEquals("North West", firstCourt.getRegion(), "Court region does not match in first court");
+        List<String> firstCourtJurisdiction = firstCourt.getJurisdiction();
+        assertEquals(2, firstCourtJurisdiction.size(), "Unexpected number of jurisdictions");
+        assertTrue(firstCourtJurisdiction.contains("Magistrates Court"), "Jurisdiction does not have expected value");
+        assertTrue(firstCourtJurisdiction.contains("Family Court"), "Jurisdiction does not have expected value");
+
+        NewCourt secondCourt = newCourts.get(1);
+        assertEquals("Test Court Other", secondCourt.getCourtName(), "Court name does not match in second court");
+        assertEquals("South West", secondCourt.getRegion(), "Court region does not match in second court");
+        List<String> secondCourtJurisdiction = secondCourt.getJurisdiction();
+        assertEquals(1, secondCourtJurisdiction.size(), "Unexpected number of jurisdictions");
+        assertTrue(firstCourtJurisdiction.contains("Family Court"), "Jurisdiction does not have expected value");
     }
+
+    @Test
+    void testHandleUploadReferencesOk() throws IOException {
+        InputStream inputStream = this.getClass().getClassLoader()
+            .getResourceAsStream("csv/ValidCsv.csv");
+
+        MultipartFile multipartFile = new MockMultipartFile("file",
+                                                            "TestFileName", "text/plain", IOUtils.toByteArray(inputStream));
+
+        List<NewCourt> newCourts = new ArrayList<>(courtService.uploadCourts(multipartFile));
+
+        assertEquals(2, newCourts.size(), "Unknown number of courts returned from parser");
+
+        NewCourt firstCourt = newCourts.get(0);
+        List<CourtReference> firstCourtReferences = firstCourt.getCourtReferenceList();
+        assertEquals(2, firstCourtReferences.size(), "Unknown number of references for first court");
+        CourtReference firstCourtReferenceOne = firstCourtReferences.get(0);
+        assertEquals("TestProvenance", firstCourtReferenceOne.getProvenance(), "Provenance is not as expected");
+        assertEquals("1", firstCourtReferenceOne.getProvenanceId(), "Provenance ID is not as expected");
+        CourtReference firstCourtReferenceTwo = firstCourtReferences.get(1);
+        assertEquals("TestProvenanceOther", firstCourtReferenceTwo.getProvenance(), "Provenance is not as expected");
+        assertEquals("2", firstCourtReferenceTwo.getProvenanceId(), "Provenance ID is not as expected");
+
+
+        NewCourt secondCourt = newCourts.get(1);
+        List<CourtReference> secondCourtReferences = secondCourt.getCourtReferenceList();
+        assertEquals(1, secondCourtReferences.size(), "Unknown number of references for second court");
+        CourtReference secondCourtReferenceOne = secondCourtReferences.get(0);
+        assertEquals("TestProvenance", secondCourtReferenceOne.getProvenance(), "Provenance is not as expected");
+        assertEquals("1", secondCourtReferenceOne.getProvenanceId(), "Provenance ID is not as expected");
+
+    }
+
+    @Test
+    void testHandleUploadInvalidCsv() throws IOException {
+        InputStream inputStream = this.getClass().getClassLoader()
+            .getResourceAsStream("csv/InvalidCsv.txt");
+
+        MultipartFile multipartFile = new MockMultipartFile("file",
+                                                            "TestFileName", "text/plain", IOUtils.toByteArray(inputStream));
+
+
+        assertThrows(CsvParseException.class, () -> courtService.uploadCourts(multipartFile));
+    }
+
 }
 

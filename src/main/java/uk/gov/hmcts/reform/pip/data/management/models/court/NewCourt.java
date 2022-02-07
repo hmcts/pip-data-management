@@ -39,7 +39,7 @@ public class NewCourt {
 
     @Type(type = "list-array")
     @Column(name = "jurisdiction", columnDefinition = "text[]")
-    private List<String> jurisdiction;
+    private List<String> jurisdiction = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "court_id")
