@@ -1207,13 +1207,54 @@ class PublicationTest {
 
         response = mockMvc.perform(MockMvcRequestBuilders
                                        .get(POST_URL + "/" + artefact.getArtefactId() + "/payload")
-                                       .header("verification", VERIFICATION_TRUE))
+                                       .header(VERIFICATION_HEADER, VERIFICATION_TRUE))
                                        .andExpect(status().isOk()).andReturn();
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
 
         assertEquals(isJson ? payload : new String(file.getBytes()),
                      response.getResponse().getContentAsString(), "Payload does not match expected content");
+    }
+
+    @ParameterizedTest
+    @ValueSource(booleans = {true, false})
+    @DisplayName("Payload endpoint should return the payload when artefact exists")
+    void retrievePayloadOfAnArtefactWhereOutOfDateRange(boolean isJson) throws Exception {
+        if (isJson) {
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(POST_URL).content(payload);
+        } else {
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(POST_URL).file(file);
+        }
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE);
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY);
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE);
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE);
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID);
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO.plusMonths(2));
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM.plusMonths(1));
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.LIST_TYPE, LIST_TYPE);
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.COURT_ID, COURT_ID);
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE);
+        mockHttpServletRequestBuilder.contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
+
+        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(blobContainerClient.getBlobContainerUrl()).thenReturn(PAYLOAD_URL);
+
+        MvcResult response =
+            mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
+
+        assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
+
+        Artefact artefact = objectMapper.readValue(
+            response.getResponse().getContentAsString(), Artefact.class);
+
+        when(blobClient.downloadContent()).thenReturn(
+            BinaryData.fromString(isJson ? payload : new String(file.getBytes())));
+
+        mockMvc.perform(MockMvcRequestBuilders
+                                       .get(POST_URL + "/" + artefact.getArtefactId() + "/payload")
+                                       .header(VERIFICATION_HEADER, VERIFICATION_TRUE))
+            .andExpect(status().isNotFound()).andReturn();
     }
 
     @ParameterizedTest
@@ -1250,7 +1291,7 @@ class PublicationTest {
 
         mockMvc.perform(MockMvcRequestBuilders
                                        .get(POST_URL + "/" + artefact.getArtefactId() + "/payload")
-                                       .header("verification", VERIFICATION_FALSE))
+                                       .header(VERIFICATION_HEADER, VERIFICATION_FALSE))
             .andExpect(status().isNotFound()).andReturn();
     }
 
@@ -1312,6 +1353,47 @@ class PublicationTest {
 
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
+    @DisplayName("Metadata endpoint should return the artefact when artefact exists")
+    void retrieveMetadataOfAnArtefactWhereOutOfDateRange(boolean isJson) throws Exception {
+        if (isJson) {
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(POST_URL).content(payload);
+        } else {
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(POST_URL).file(file);
+        }
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE);
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY);
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE);
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE);
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID);
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO.plusMonths(2));
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM.plusMonths(1));
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.LIST_TYPE, LIST_TYPE);
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.COURT_ID, COURT_ID);
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE);
+        mockHttpServletRequestBuilder.contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
+
+        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(blobContainerClient.getBlobContainerUrl()).thenReturn(PAYLOAD_URL);
+
+        MvcResult response =
+            mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
+
+        assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
+
+        Artefact artefact = objectMapper.readValue(
+            response.getResponse().getContentAsString(), Artefact.class);
+
+        when(blobClient.downloadContent()).thenReturn(
+            BinaryData.fromString(isJson ? payload : new String(file.getBytes())));
+
+        mockMvc.perform(MockMvcRequestBuilders
+                                       .get(POST_URL + "/" + artefact.getArtefactId())
+                                       .header(VERIFICATION_HEADER, VERIFICATION_TRUE))
+            .andExpect(status().isNotFound()).andReturn();
+    }
+
+    @ParameterizedTest
+    @ValueSource(booleans = {true, false})
     @DisplayName("Metadata endpoint should not return the artefact when not authorized")
     void retrieveMetadataOfAnArtefactWhereNotAuthorized(boolean isJson) throws Exception {
         if (isJson) {
@@ -1355,6 +1437,34 @@ class PublicationTest {
                             .get("/publication/7d734e8d-ba1d-4730-bd8b-09a970be00cc")
                             .header(VERIFICATION_HEADER, VERIFICATION_TRUE))
             .andExpect(status().isNotFound()).andReturn();
+    }
+
+    @Test
+    @DisplayName("Metadata endpoint where verification not set should display a 400")
+    void retrieveMetadataWhenVerificationEndpointNotSet() throws Exception {
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
+                            .get("/publication/7d734e8d-ba1d-4730-bd8b-09a970be00cc"))
+            .andExpect(status().isBadRequest()).andReturn();
+
+        ExceptionResponse exceptionResponse =
+            objectMapper.readValue(mvcResult.getResponse().getContentAsString(), ExceptionResponse.class);
+
+        assertTrue(exceptionResponse.getMessage().contains(VERIFICATION_HEADER),
+                   "Verification error not shown in error message");
+    }
+
+    @Test
+    @DisplayName("Payload endpoint where verification not set should display a 400")
+    void retrievePayloadWhenVerificationEndpointNotSet() throws Exception {
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
+                                                  .get("/publication/7d734e8d-ba1d-4730-bd8b-09a970be00cc/payload"))
+            .andExpect(status().isBadRequest()).andReturn();
+
+        ExceptionResponse exceptionResponse =
+            objectMapper.readValue(mvcResult.getResponse().getContentAsString(), ExceptionResponse.class);
+
+        assertTrue(exceptionResponse.getMessage().contains(VERIFICATION_HEADER),
+                   "Verification error not shown in error message");
     }
 
 }
