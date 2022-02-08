@@ -1,20 +1,32 @@
 package uk.gov.hmcts.reform.pip.data.management.controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import uk.gov.hmcts.reform.pip.data.management.Application;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.ExceptionResponse;
+import uk.gov.hmcts.reform.pip.data.management.models.court.Court;
+import uk.gov.hmcts.reform.pip.data.management.models.court.CourtReference;
 
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.hasSize;
+import java.io.InputStream;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.springframework.test.annotation.DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(classes = {Application.class},
@@ -22,70 +34,312 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @ActiveProfiles(profiles = "test")
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
+@DirtiesContext(classMode = BEFORE_EACH_TEST_METHOD)
 class CourtApiTest {
 
     @Autowired
     private MockMvc mockMvc;
 
+    private static ObjectMapper objectMapper;
+
+    private static final String GET_ALL_COURTS_ENDPOINT = "/courts";
+    private static final String GET_COURT_BY_ID_ENDPOINT = "/courts/";
+    private static final String GET_COURT_BY_NAME_ENDPOINT = "/courts/name/";
+    private static final String GET_COURT_BY_FILTER_ENDPOINT = "/courts/filter";
+
+    private static final String REGIONS_PARAM = "regions";
+    private static final String JURISDICTIONS_PARAM = "jurisdictions";
+
+    private static final String VALIDATION_UNKNOWN_COURT = "Unexpected court has been returned";
+    private static final String VALIDATION_UNEXPECTED_NUMBER_OF_COURTS =
+        "Unexpected number of courts has been returned";
+
+    @BeforeAll
+    public static void setup() {
+        objectMapper = new ObjectMapper();
+        objectMapper.findAndRegisterModules();
+    }
+
+    private List<Court> createCourts() throws Exception {
+
+        try (InputStream csvInputStream = this.getClass().getClassLoader()
+            .getResourceAsStream("courts/ValidCsv.csv")) {
+            MockMultipartFile csvFile
+                = new MockMultipartFile("courtList", csvInputStream);
+
+            MvcResult mvcResult = mockMvc.perform(multipart("/courts/upload").file(csvFile))
+                .andExpect(status().isOk()).andReturn();
+
+            return Arrays.asList(
+                objectMapper.readValue(mvcResult.getResponse().getContentAsString(), Court[].class));
+        }
+    }
+
     @Test
-    void testGetAllCourtsReturnsSuccess() throws Exception {
-        mockMvc.perform(get("/courts"))
+    void testGetAllCourtsReturnsCorrectCourts() throws Exception {
+        List<Court> courts = createCourts();
+
+        MvcResult mvcResult = mockMvc.perform(get(GET_ALL_COURTS_ENDPOINT))
             .andExpect(status().isOk())
-            .andExpect(content().string(containsString("\"courtId\":1")));
+            .andReturn();
+
+        Court[] arrayCourts =
+            objectMapper.readValue(mvcResult.getResponse().getContentAsString(), Court[].class);
+
+        List<Court> returnedCourts = Arrays.asList(arrayCourts);
+
+        assertEquals(courts.size(), returnedCourts.size(), VALIDATION_UNEXPECTED_NUMBER_OF_COURTS);
+
+        for (Court court : courts) {
+            assertTrue(returnedCourts.contains(court), "Expected court not displayed in list");
+        }
+
     }
 
     @Test
     void testGetCourtByIdReturnsSuccess() throws Exception {
-        mockMvc.perform(get("/courts/4"))
+        List<Court> courts = createCourts();
+
+        Court court = courts.get(0);
+
+        MvcResult mvcResult = mockMvc.perform(get(GET_COURT_BY_ID_ENDPOINT + court.getCourtId()))
             .andExpect(status().isOk())
-            .andExpect(content().string(containsString("Manchester Family Court")));
+            .andReturn();
+
+        Court returnedCourt =
+            objectMapper.readValue(mvcResult.getResponse().getContentAsString(), Court.class);
+
+        assertEquals(court, returnedCourt, "Returned court matches expected court");
     }
 
     @Test
     void testGetCourtByIdReturnsNotFound() throws Exception {
-        mockMvc.perform(get("/courts/7"))
+        UUID randomUuid = UUID.randomUUID();
+
+        MvcResult mvcResult = mockMvc.perform(get(GET_COURT_BY_ID_ENDPOINT + randomUuid))
             .andExpect(status().isNotFound())
-            .andExpect(content().string(containsString("No court found with the id: 7")));
+            .andReturn();
+
+        ExceptionResponse exceptionResponse = objectMapper.readValue(
+            mvcResult.getResponse().getContentAsString(), ExceptionResponse.class);
+
+        assertEquals("No court found with the id: " + randomUuid, exceptionResponse.getMessage(),
+                     "Unexpected error message returned when court by ID not found");
     }
 
     @Test
     void testGetCourtByNameReturnsSuccess() throws Exception {
-        mockMvc.perform(get("/courts/find/Manchester Family Court"))
+        List<Court> courts = createCourts();
+
+        Court court = courts.get(0);
+
+        MvcResult mvcResult = mockMvc.perform(get(GET_COURT_BY_NAME_ENDPOINT + court.getCourtName()))
             .andExpect(status().isOk())
-            .andExpect(content().string(containsString("Manchester Family Court")));
+            .andReturn();
+
+        Court returnedCourt = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), Court.class);
+
+        assertEquals(court, returnedCourt, VALIDATION_UNKNOWN_COURT);
     }
 
     @Test
     void testGetCourtByNameReturnsNotFound() throws Exception {
-        mockMvc.perform(get("/courts/find/invalid"))
+        String invalidName = "invalid";
+
+        MvcResult mvcResult = mockMvc.perform(get(GET_COURT_BY_NAME_ENDPOINT + invalidName))
             .andExpect(status().isNotFound())
-            .andExpect(content().string(containsString("No court found with the search: invalid")));
+            .andReturn();
+
+        ExceptionResponse exceptionResponse =
+            objectMapper.readValue(mvcResult.getResponse().getContentAsString(), ExceptionResponse.class);
+
+        assertEquals("No court found with the name: " + invalidName, exceptionResponse.getMessage(),
+                     "Unexpected error message returned when court by name not found");
     }
 
     @Test
-    void testFilterCourtsByLocation() throws Exception {
-        mockMvc.perform(get("/courts/filter").content("{\"filters\": [\"location\"],"
-                                                          + "\"values\": [\"manchester\"]}")
-                            .contentType(MediaType.APPLICATION_JSON))
+    void testFilterCourtsByRegionReturnsNoResults() throws Exception {
+        createCourts();
+
+        MvcResult mvcResult = mockMvc.perform(get(GET_COURT_BY_FILTER_ENDPOINT)
+                                                  .param("regions", "North South"))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$", hasSize(2)));
+            .andReturn();
+
+        List<Court> returnedCourts =
+            Arrays.asList(objectMapper.readValue(mvcResult.getResponse().getContentAsString(), Court[].class));
+
+        assertEquals(0, returnedCourts.size(), "Court has been returned when not expected");
     }
 
     @Test
-    void testFilterCourtsByLocationReturnsNoResults() throws Exception {
-        mockMvc.perform(get("/courts/filter").content("{\"filters\": [\"location\"],"
-                                                          + "\"values\": [\"london\"]}")
-                            .contentType(MediaType.APPLICATION_JSON))
+    void testFilterCourtsByJurisdictionReturnsNoResults() throws Exception {
+        createCourts();
+
+        MvcResult mvcResult = mockMvc.perform(get(GET_COURT_BY_FILTER_ENDPOINT)
+                                                  .param("jurisdictions", "Test Jurisdiction"))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$", hasSize(0)));
+            .andReturn();
+
+        List<Court> returnedCourts =
+            Arrays.asList(objectMapper.readValue(mvcResult.getResponse().getContentAsString(), Court[].class));
+
+        assertEquals(0, returnedCourts.size(), "Court has been returned when not expected");
+    }
+
+
+    @Test
+    void testFilterCourtsByJurisdictionAndRegion() throws Exception {
+        List<Court> courts = createCourts();
+
+        MvcResult mvcResult = mockMvc.perform(get(GET_COURT_BY_FILTER_ENDPOINT)
+                            .param(REGIONS_PARAM, "North West")
+                            .param(JURISDICTIONS_PARAM, "Magistrates Court"))
+            .andExpect(status().isOk())
+            .andReturn();
+
+        List<Court> returnedCourts =
+            Arrays.asList(objectMapper.readValue(mvcResult.getResponse().getContentAsString(), Court[].class));
+
+        assertEquals(1, returnedCourts.size(), VALIDATION_UNEXPECTED_NUMBER_OF_COURTS);
+
+        assertEquals(courts.get(0), returnedCourts.get(0), VALIDATION_UNKNOWN_COURT);
     }
 
     @Test
-    void testFilterCourtsBy2Filters() throws Exception {
-        mockMvc.perform(get("/courts/filter").content("{\"filters\": [\"location\", \"jurisdiction\"],"
-                                                          + "\"values\": [\"manchester\", \"magistrates court\"]}")
-                            .contentType(MediaType.APPLICATION_JSON))
+    void testFilterByOnlyRegion() throws Exception {
+        List<Court> courts = createCourts();
+
+        MvcResult mvcResult = mockMvc.perform(get(GET_COURT_BY_FILTER_ENDPOINT)
+                                                  .param(REGIONS_PARAM, "South West"))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$", hasSize(1)));
+            .andReturn();
+
+        List<Court> returnedCourts =
+            Arrays.asList(objectMapper.readValue(mvcResult.getResponse().getContentAsString(), Court[].class));
+
+        assertEquals(1, returnedCourts.size(), VALIDATION_UNEXPECTED_NUMBER_OF_COURTS);
+
+        assertEquals(courts.get(1), returnedCourts.get(0), VALIDATION_UNKNOWN_COURT);
     }
+
+    @Test
+    void testFilterByMultipleRegions() throws Exception {
+        List<Court> courts = createCourts();
+
+        MvcResult mvcResult = mockMvc.perform(get(GET_COURT_BY_FILTER_ENDPOINT)
+                                                  .param(REGIONS_PARAM, "South West,North West"))
+            .andExpect(status().isOk())
+            .andReturn();
+
+        List<Court> returnedCourts =
+            Arrays.asList(objectMapper.readValue(mvcResult.getResponse().getContentAsString(), Court[].class));
+
+        assertEquals(2, returnedCourts.size(), VALIDATION_UNEXPECTED_NUMBER_OF_COURTS);
+
+        assertEquals(courts.get(0), returnedCourts.get(0), VALIDATION_UNKNOWN_COURT);
+        assertEquals(courts.get(1), returnedCourts.get(1), VALIDATION_UNKNOWN_COURT);
+    }
+
+    @Test
+    void testFilterByOnlyJurisdiction() throws Exception {
+        List<Court> courts = createCourts();
+
+        MvcResult mvcResult = mockMvc.perform(get(GET_COURT_BY_FILTER_ENDPOINT)
+                                                  .param(JURISDICTIONS_PARAM, "Magistrates Court"))
+            .andExpect(status().isOk())
+            .andReturn();
+
+        List<Court> returnedCourts =
+            Arrays.asList(objectMapper.readValue(mvcResult.getResponse().getContentAsString(), Court[].class));
+
+        assertEquals(1, returnedCourts.size(), VALIDATION_UNEXPECTED_NUMBER_OF_COURTS);
+
+        assertEquals(courts.get(0), returnedCourts.get(0), VALIDATION_UNKNOWN_COURT);
+    }
+
+    @Test
+    void testFilterByMultipleJurisdictions() throws Exception {
+        List<Court> courts = createCourts();
+
+        MvcResult mvcResult = mockMvc.perform(get(GET_COURT_BY_FILTER_ENDPOINT)
+                                                  .param(JURISDICTIONS_PARAM, "Magistrates Court,Family Court"))
+            .andExpect(status().isOk())
+            .andReturn();
+
+        List<Court> returnedCourts =
+            Arrays.asList(objectMapper.readValue(mvcResult.getResponse().getContentAsString(), Court[].class));
+
+        assertEquals(2, returnedCourts.size(), VALIDATION_UNEXPECTED_NUMBER_OF_COURTS);
+
+        assertEquals(courts.get(0), returnedCourts.get(0), VALIDATION_UNKNOWN_COURT);
+        assertEquals(courts.get(1), returnedCourts.get(1), VALIDATION_UNKNOWN_COURT);
+    }
+
+    @Test
+    void testFilterByNoRegionOrJurisdiction() throws Exception {
+        List<Court> courts = createCourts();
+
+        MvcResult mvcResult = mockMvc.perform(get(GET_COURT_BY_FILTER_ENDPOINT))
+            .andExpect(status().isOk())
+            .andReturn();
+
+        List<Court> returnedCourts =
+            Arrays.asList(objectMapper.readValue(mvcResult.getResponse().getContentAsString(), Court[].class));
+
+        assertEquals(3, returnedCourts.size(), VALIDATION_UNEXPECTED_NUMBER_OF_COURTS);
+
+        assertEquals(courts.get(0), returnedCourts.get(0), VALIDATION_UNKNOWN_COURT);
+        assertEquals(courts.get(1), returnedCourts.get(1), VALIDATION_UNKNOWN_COURT);
+        assertEquals(courts.get(2), returnedCourts.get(2), VALIDATION_UNKNOWN_COURT);
+    }
+
+    @Test
+    void testCreateCourtsCoreData() throws Exception {
+        List<Court> createdCourts = createCourts();
+
+        assertEquals(3, createdCourts.size(), VALIDATION_UNEXPECTED_NUMBER_OF_COURTS);
+
+        Court courtA = createdCourts.get(0);
+        assertEquals("Test Court", courtA.getCourtName(), "Court name is not as expected");
+        assertEquals("North West", courtA.getRegion(), "Court region is not as expected");
+
+        List<String> jurisdictions = courtA.getJurisdiction();
+        assertEquals(2, jurisdictions.size(), "Unexpected number of jurisdictions returned");
+        assertTrue(jurisdictions.contains("Magistrates Court"), "Magistrates Court not within jurisdiction field");
+        assertTrue(jurisdictions.contains("Family Court"), "Family Court not within jurisdiction field");
+    }
+
+    @Test
+    void testCreateCourtsReferenceData() throws Exception {
+        List<Court> createdCourts = createCourts();
+
+        assertEquals(3, createdCourts.size(), VALIDATION_UNEXPECTED_NUMBER_OF_COURTS);
+
+        Court courtA = createdCourts.get(0);
+        List<CourtReference> courtReferenceList = courtA.getCourtReferenceList();
+
+        assertEquals(2, courtReferenceList.size(), "Unexpected number of court references returned");
+
+        CourtReference courtReferenceOne = courtReferenceList.get(0);
+        assertEquals("TestProvenance", courtReferenceOne.getProvenance(), "Unexpected provenance name returned");
+        assertEquals("1", courtReferenceOne.getProvenanceId(), "Unexpected provenance id returned");
+
+        CourtReference courtReferenceTwo = courtReferenceList.get(1);
+        assertEquals("TestProvenanceOther", courtReferenceTwo.getProvenance(), "Unexpected provenance name returned");
+        assertEquals("2", courtReferenceTwo.getProvenanceId(), "Unexpected provenance id returned");
+    }
+
+    @Test
+    void testInvalidCsv() throws Exception {
+        try (InputStream csvInputStream = this.getClass().getClassLoader()
+            .getResourceAsStream("courts/InvalidCsv.txt")) {
+            MockMultipartFile csvFile
+                = new MockMultipartFile("courtList", csvInputStream);
+
+            mockMvc.perform(multipart("/courts/upload").file(csvFile))
+                .andExpect(status().isBadRequest()).andReturn();
+        }
+    }
+
 }

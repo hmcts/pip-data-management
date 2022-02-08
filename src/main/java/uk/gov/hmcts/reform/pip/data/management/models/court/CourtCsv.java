@@ -22,7 +22,7 @@ public class CourtCsv {
     @CsvBindByName(column = "Region")
     private String region;
 
-    @CsvBindAndSplitByName(elementType = String.class, splitOn =";(\\s)?")
+    @CsvBindAndSplitByName(elementType = String.class, splitOn = ";(\\s)?")
     private List<String> jurisdiction = new ArrayList<>();
 
     @CsvBindByName(column = "Provenance")

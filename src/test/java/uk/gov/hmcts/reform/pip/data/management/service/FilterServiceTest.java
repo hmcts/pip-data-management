@@ -5,25 +5,17 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pip.data.management.Application;
 import uk.gov.hmcts.reform.pip.data.management.config.AzureBlobConfigurationTest;
-import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ReflectionException;
-import uk.gov.hmcts.reform.pip.data.management.models.Court;
-import uk.gov.hmcts.reform.pip.data.management.models.CourtMethods;
 import uk.gov.hmcts.reform.pip.data.management.models.Hearing;
 
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.CourtHelper.createHearing;
-import static uk.gov.hmcts.reform.pip.data.management.helpers.CourtHelper.createMockCourtList;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.TestConstants.HEARINGS_MATCH;
 
 @SpringBootTest(classes = {Application.class, AzureBlobConfigurationTest.class})

@@ -8,22 +8,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.database.CourtRepository;
-import uk.gov.hmcts.reform.pip.data.management.database.CourtsAndHearings;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CourtNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CsvParseException;
-import uk.gov.hmcts.reform.pip.data.management.models.Court;
-import uk.gov.hmcts.reform.pip.data.management.models.CourtMethods;
+import uk.gov.hmcts.reform.pip.data.management.models.court.Court;
 import uk.gov.hmcts.reform.pip.data.management.models.court.CourtCsv;
 import uk.gov.hmcts.reform.pip.data.management.models.court.CourtReference;
-import uk.gov.hmcts.reform.pip.data.management.models.court.NewCourt;
-import uk.gov.hmcts.reform.pip.data.management.models.request.FilterRequest;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Service to handle the retrieval and filtering of courts.
@@ -40,7 +39,7 @@ public class CourtService {
 
      * @return List of Courts
      */
-    public List<NewCourt> getAllCourts() {
+    public List<Court> getAllCourts() {
         return courtRepository.findAll();
     }
 
@@ -51,8 +50,8 @@ public class CourtService {
      * @return Court of the found court
      * @throws CourtNotFoundException when no court was found with the given court ID.
      */
-    public NewCourt getCourtById(UUID courtId) {
-        Optional<NewCourt> foundCourt = courtRepository.getNewCourtByCourtId(courtId);
+    public Court getCourtById(UUID courtId) {
+        Optional<Court> foundCourt = courtRepository.getNewCourtByCourtId(courtId);
         if (foundCourt.isEmpty()) {
             throw new CourtNotFoundException(String.format("No court found with the id: %s", courtId));
         } else {
@@ -67,10 +66,10 @@ public class CourtService {
      * @return Court of the found court.
      * @throws CourtNotFoundException when no court was found with the given search input.
      */
-    public NewCourt getCourtByName(String courtName) {
-        Optional<NewCourt> foundCourt = courtRepository.getNewCourtByCourtName(courtName);
+    public Court getCourtByName(String courtName) {
+        Optional<Court> foundCourt = courtRepository.getNewCourtByCourtName(courtName);
         if (foundCourt.isEmpty()) {
-            throw new CourtNotFoundException(String.format("No court found with the search: %s", courtName));
+            throw new CourtNotFoundException(String.format("No court found with the name: %s", courtName));
         } else {
             return foundCourt.get();
         }
@@ -83,9 +82,10 @@ public class CourtService {
      * @param jurisdictions The list of jurisdictions to filter against.
      * @return List of Court objects, can return empty List
      */
-    public List<NewCourt> searchByRegionAndJurisdiction(List<String> regions, List<String> jurisdictions) {
+    public List<Court> searchByRegionAndJurisdiction(List<String> regions, List<String> jurisdictions) {
         return courtRepository.findByRegionAndJurisdictionOrderByName(
-            regions, StringUtils.join(jurisdictions, ','));
+            regions == null ? "" : StringUtils.join(regions, ','),
+            jurisdictions == null ? "" : StringUtils.join(jurisdictions, ','));
     }
 
     /**
@@ -93,24 +93,24 @@ public class CourtService {
      * @param courtList The court list file to upload.
      * @return The collection of new courts that have been created.
      */
-    public Collection<NewCourt> uploadCourts(MultipartFile courtList) {
+    public Collection<Court> uploadCourts(MultipartFile courtList) {
 
-        try {
-            Reader reader = new BufferedReader(new InputStreamReader(courtList.getInputStream()));
+        try (InputStreamReader inputStreamReader = new InputStreamReader(courtList.getInputStream());
+             Reader reader = new BufferedReader(inputStreamReader)) {
             CsvToBean<CourtCsv> csvToBean = new CsvToBeanBuilder<CourtCsv>(reader)
                 .withType(CourtCsv.class)
                 .build();
 
             List<CourtCsv> courtCsvList = csvToBean.parse();
 
-            Map<Integer, NewCourt> courtCsvMap = new HashMap<>();
+            Map<Integer, Court> courtCsvMap = new ConcurrentHashMap<>();
             for (CourtCsv courtCsv : courtCsvList) {
                 if (courtCsvMap.containsKey(courtCsv.getUniqueId())) {
-                    NewCourt newCourt = courtCsvMap.get(courtCsv.getUniqueId());
-                    newCourt.addCourtReference(new CourtReference(courtCsv.getProvenance(), courtCsv.getProvenanceId()));
+                    Court court = courtCsvMap.get(courtCsv.getUniqueId());
+                    court.addCourtReference(new CourtReference(courtCsv.getProvenance(), courtCsv.getProvenanceId()));
                 } else {
-                    NewCourt newCourt = new NewCourt(courtCsv);
-                    courtCsvMap.put(courtCsv.getUniqueId(), newCourt);
+                    Court court = new Court(courtCsv);
+                    courtCsvMap.put(courtCsv.getUniqueId(), court);
                 }
             }
 
