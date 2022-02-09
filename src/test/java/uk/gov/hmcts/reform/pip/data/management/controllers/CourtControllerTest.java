@@ -100,18 +100,18 @@ class CourtControllerTest {
 
     @Test
     void testGetCourtByNameReturnsCourt() {
-        when(courtService.getCourtByName(secondCourt.getCourtName())).thenReturn(secondCourt);
+        when(courtService.getCourtByName(secondCourt.getName())).thenReturn(secondCourt);
 
-        assertEquals(secondCourt, courtController.getCourtByName(secondCourt.getCourtName()).getBody(),
+        assertEquals(secondCourt, courtController.getCourtByName(secondCourt.getName()).getBody(),
                      "Returned court does not match expected court"
         );
     }
 
     @Test
     void testGetCourtByNameReturnsOk() {
-        when(courtService.getCourtByName(secondCourt.getCourtName())).thenReturn(secondCourt);
+        when(courtService.getCourtByName(secondCourt.getName())).thenReturn(secondCourt);
 
-        assertEquals(HttpStatus.OK, courtController.getCourtByName(secondCourt.getCourtName()).getStatusCode(),
+        assertEquals(HttpStatus.OK, courtController.getCourtByName(secondCourt.getName()).getStatusCode(),
                      "Court Name search has not returned OK"
         );
     }

@@ -133,7 +133,7 @@ class CourtApiTest {
 
         Court court = courts.get(0);
 
-        MvcResult mvcResult = mockMvc.perform(get(GET_COURT_BY_NAME_ENDPOINT + court.getCourtName()))
+        MvcResult mvcResult = mockMvc.perform(get(GET_COURT_BY_NAME_ENDPOINT + court.getName()))
             .andExpect(status().isOk())
             .andReturn();
 
@@ -301,7 +301,7 @@ class CourtApiTest {
         assertEquals(3, createdCourts.size(), VALIDATION_UNEXPECTED_NUMBER_OF_COURTS);
 
         Court courtA = createdCourts.get(0);
-        assertEquals("Test Court", courtA.getCourtName(), "Court name is not as expected");
+        assertEquals("Test Court", courtA.getName(), "Court name is not as expected");
         assertEquals("North West", courtA.getRegion(), "Court region is not as expected");
 
         List<String> jurisdictions = courtA.getJurisdiction();

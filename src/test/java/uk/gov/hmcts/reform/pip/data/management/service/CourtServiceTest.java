@@ -69,7 +69,7 @@ class CourtServiceTest {
 
     @Test
     void testHandleCourtIdSearchReturnsCourt() {
-        when(courtRepository.getNewCourtByCourtId(courtFirstExample.getCourtId()))
+        when(courtRepository.getCourtByCourtId(courtFirstExample.getCourtId()))
             .thenReturn(Optional.of(courtFirstExample));
 
         Court court = courtService.getCourtById(courtFirstExample.getCourtId());
@@ -91,10 +91,10 @@ class CourtServiceTest {
 
     @Test
     void testHandleCourtNameSearchReturnsCourt() {
-        when(courtRepository.getNewCourtByCourtName(courtFirstExample.getCourtName()))
+        when(courtRepository.getCourtByName(courtFirstExample.getName()))
             .thenReturn(Optional.of(courtFirstExample));
 
-        Court court = courtService.getCourtByName(courtFirstExample.getCourtName());
+        Court court = courtService.getCourtByName(courtFirstExample.getName());
 
         assertEquals(court, courtFirstExample, "Unknown court has been returned");
     }
@@ -192,7 +192,7 @@ class CourtServiceTest {
             assertEquals(2, courts.size(), "Unknown number of courts returned from parser");
 
             Court firstCourt = courts.get(0);
-            assertEquals("Test Court", firstCourt.getCourtName(), "Court name does not match in first court");
+            assertEquals("Test Court", firstCourt.getName(), "Court name does not match in first court");
             assertEquals("North West", firstCourt.getRegion(), "Court region does not match in first court");
             List<String> firstCourtJurisdiction = firstCourt.getJurisdiction();
             assertEquals(2, firstCourtJurisdiction.size(), "Unexpected number of jurisdictions");
@@ -200,7 +200,7 @@ class CourtServiceTest {
             assertTrue(firstCourtJurisdiction.contains(FAMILY_COURT), "Jurisdiction does not have expected value");
 
             Court secondCourt = courts.get(1);
-            assertEquals("Test Court Other", secondCourt.getCourtName(), "Court name does not match in second court");
+            assertEquals("Test Court Other", secondCourt.getName(), "Court name does not match in second court");
             assertEquals("South West", secondCourt.getRegion(), "Court region does not match in second court");
             List<String> secondCourtJurisdiction = secondCourt.getJurisdiction();
             assertEquals(1, secondCourtJurisdiction.size(), "Unexpected number of jurisdictions");

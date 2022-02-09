@@ -51,7 +51,7 @@ public class CourtService {
      * @throws CourtNotFoundException when no court was found with the given court ID.
      */
     public Court getCourtById(UUID courtId) {
-        Optional<Court> foundCourt = courtRepository.getNewCourtByCourtId(courtId);
+        Optional<Court> foundCourt = courtRepository.getCourtByCourtId(courtId);
         if (foundCourt.isEmpty()) {
             throw new CourtNotFoundException(String.format("No court found with the id: %s", courtId));
         } else {
@@ -67,7 +67,7 @@ public class CourtService {
      * @throws CourtNotFoundException when no court was found with the given search input.
      */
     public Court getCourtByName(String courtName) {
-        Optional<Court> foundCourt = courtRepository.getNewCourtByCourtName(courtName);
+        Optional<Court> foundCourt = courtRepository.getCourtByName(courtName);
         if (foundCourt.isEmpty()) {
             throw new CourtNotFoundException(String.format("No court found with the name: %s", courtName));
         } else {

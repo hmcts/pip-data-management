@@ -40,7 +40,7 @@ public class Court {
     @Type(type = "org.hibernate.type.PostgresUUIDType")
     private UUID courtId;
 
-    private String courtName;
+    private String name;
 
     private String region;
 
@@ -53,7 +53,7 @@ public class Court {
     private List<CourtReference> courtReferenceList = new ArrayList<>();
 
     public Court(CourtCsv courtCsv) {
-        this.courtName = WordUtils.capitalizeFully(courtCsv.getCourtName());
+        this.name = WordUtils.capitalizeFully(courtCsv.getCourtName());
         this.region = WordUtils.capitalizeFully(courtCsv.getRegion());
         this.jurisdiction = courtCsv.getJurisdiction().stream().map(WordUtils::capitalizeFully)
             .collect(Collectors.toList());

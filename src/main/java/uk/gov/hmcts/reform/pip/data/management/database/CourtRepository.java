@@ -13,14 +13,14 @@ import java.util.UUID;
 @Repository
 public interface CourtRepository extends JpaRepository<Court, Long> {
 
-    Optional<Court> getNewCourtByCourtId(UUID courtId);
+    Optional<Court> getCourtByCourtId(UUID courtId);
 
-    Optional<Court> getNewCourtByCourtName(String courtName);
+    Optional<Court> getCourtByName(String courtName);
 
     @Query(value = "select * from court "
         + "WHERE (:regions = '' OR court.region = ANY(string_to_array(:regions, ','))) "
         + "AND (:jurisdictions = '' OR court.jurisdiction && string_to_array(:jurisdictions, ',')) "
-        + "ORDER BY court.court_name",
+        + "ORDER BY court.name",
         nativeQuery = true)
     List<Court> findByRegionAndJurisdictionOrderByName(@Param("regions") String regions,
                                                        @Param("jurisdictions") String jurisdictions);
