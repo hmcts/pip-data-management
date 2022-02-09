@@ -8,12 +8,11 @@ import uk.gov.hmcts.reform.pip.data.management.models.court.Court;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Repository
-public interface CourtRepository extends JpaRepository<Court, Long> {
+public interface CourtRepository extends JpaRepository<Court, Integer> {
 
-    Optional<Court> getCourtByCourtId(UUID courtId);
+    Optional<Court> getCourtByCourtId(Integer courtId);
 
     Optional<Court> getCourtByName(String courtName);
 
@@ -24,6 +23,5 @@ public interface CourtRepository extends JpaRepository<Court, Long> {
         nativeQuery = true)
     List<Court> findByRegionAndJurisdictionOrderByName(@Param("regions") String regions,
                                                        @Param("jurisdictions") String jurisdictions);
-
 
 }

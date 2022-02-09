@@ -21,8 +21,6 @@ import uk.gov.hmcts.reform.pip.data.management.service.CourtService;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.UUID;
-
 
 @RestController
 @Api(tags = "Data Management Court list API")
@@ -49,7 +47,7 @@ public class CourtController {
     @ApiOperation("Gets a court by searching by the court id and returning")
     @GetMapping("/{courtId}")
     public ResponseEntity<Court> getCourtById(@ApiParam(value = "The court Id to retrieve", required = true)
-                                                @PathVariable UUID courtId) {
+                                                @PathVariable Integer courtId) {
         return ResponseEntity.ok(courtService.getCourtById(courtId));
 
     }

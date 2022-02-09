@@ -20,7 +20,6 @@ import uk.gov.hmcts.reform.pip.data.management.models.court.CourtReference;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -114,16 +113,16 @@ class CourtApiTest {
 
     @Test
     void testGetCourtByIdReturnsNotFound() throws Exception {
-        UUID randomUuid = UUID.randomUUID();
+        int unknownID = 1234;
 
-        MvcResult mvcResult = mockMvc.perform(get(GET_COURT_BY_ID_ENDPOINT + randomUuid))
+        MvcResult mvcResult = mockMvc.perform(get(GET_COURT_BY_ID_ENDPOINT + unknownID))
             .andExpect(status().isNotFound())
             .andReturn();
 
         ExceptionResponse exceptionResponse = objectMapper.readValue(
             mvcResult.getResponse().getContentAsString(), ExceptionResponse.class);
 
-        assertEquals("No court found with the id: " + randomUuid, exceptionResponse.getMessage(),
+        assertEquals("No court found with the id: " + unknownID, exceptionResponse.getMessage(),
                      "Unexpected error message returned when court by ID not found");
     }
 

@@ -9,7 +9,6 @@ import org.hibernate.annotations.TypeDef;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -36,9 +35,7 @@ public class Court {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(columnDefinition = "uuid", insertable = false, updatable = false, nullable = false)
-    @Type(type = "org.hibernate.type.PostgresUUIDType")
-    private UUID courtId;
+    private Integer courtId;
 
     private String name;
 

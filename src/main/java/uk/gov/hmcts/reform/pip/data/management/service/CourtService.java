@@ -21,7 +21,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -50,7 +49,7 @@ public class CourtService {
      * @return Court of the found court
      * @throws CourtNotFoundException when no court was found with the given court ID.
      */
-    public Court getCourtById(UUID courtId) {
+    public Court getCourtById(Integer courtId) {
         Optional<Court> foundCourt = courtRepository.getCourtByCourtId(courtId);
         if (foundCourt.isEmpty()) {
             throw new CourtNotFoundException(String.format("No court found with the id: %s", courtId));

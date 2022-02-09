@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -80,20 +79,20 @@ class CourtControllerTest {
 
     @Test
     void testGetCourtIdReturnsCourt() {
-        UUID uuid = UUID.randomUUID();
-        when(courtService.getCourtById(uuid)).thenReturn(firstCourt);
+        int id = 1;
+        when(courtService.getCourtById(id)).thenReturn(firstCourt);
 
-        assertEquals(firstCourt, courtController.getCourtById(uuid).getBody(),
+        assertEquals(firstCourt, courtController.getCourtById(id).getBody(),
                      "Returned court does not match expected court"
         );
     }
 
     @Test
     void testGetCourtIdReturnsOK() {
-        UUID uuid = UUID.randomUUID();
-        when(courtService.getCourtById(uuid)).thenReturn(firstCourt);
+        int id = 1;
+        when(courtService.getCourtById(id)).thenReturn(firstCourt);
 
-        assertEquals(HttpStatus.OK, courtController.getCourtById(uuid).getStatusCode(),
+        assertEquals(HttpStatus.OK, courtController.getCourtById(id).getStatusCode(),
                      "Court ID search has not returned OK"
         );
     }

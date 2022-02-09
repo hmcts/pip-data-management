@@ -21,7 +21,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -48,7 +47,7 @@ class CourtServiceTest {
         CourtCsv courtCsvFirstExample = new CourtCsv();
         courtCsvFirstExample.setCourtName("Court Name First Example");
         courtFirstExample = new Court(courtCsvFirstExample);
-        courtFirstExample.setCourtId(UUID.randomUUID());
+        courtFirstExample.setCourtId(1);
 
         CourtCsv courtCsvSecondExample = new CourtCsv();
         courtCsvSecondExample.setCourtName("Court Name Second Example");
@@ -79,13 +78,13 @@ class CourtServiceTest {
 
     @Test
     void testHandleSearchCourtIdThrowsCourtNotFoundException() {
-        UUID unknownId = UUID.randomUUID();
+        int unknownId = 1234;
 
         CourtNotFoundException courtNotFoundException = assertThrows(CourtNotFoundException.class, () ->
             courtService.getCourtById(unknownId), "Expected CourtNotFoundException to be thrown"
         );
 
-        assertTrue(courtNotFoundException.getMessage().contains(unknownId.toString()),
+        assertTrue(courtNotFoundException.getMessage().contains(String.valueOf(unknownId)),
                    "Court not found exception does not contain the expected uuid");
     }
 
