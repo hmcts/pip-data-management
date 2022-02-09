@@ -32,7 +32,6 @@ import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Language;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ListType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Sensitivity;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -55,7 +54,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @ActiveProfiles(profiles = "test")
 @RunWith(SpringRunner.class)
-@SuppressWarnings({"PMD.ExcessiveImports",  "PMD.ExcessiveClassLength", "PMD.CyclomaticComplexity"})
+@SuppressWarnings({"PMD.ExcessiveImports", "PMD.ExcessiveClassLength", "PMD.CyclomaticComplexity"})
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
 class PublicationTest {
 
@@ -70,6 +69,7 @@ class PublicationTest {
 
     private static final String POST_URL = "/publication";
     private static final String SEARCH_URL = "/publication/search";
+    private static final String SEARCH_COURT_URL = "/publication/courtId";
     private static final ArtefactType ARTEFACT_TYPE = ArtefactType.LIST;
     private static final ArtefactType ARTEFACT_TYPE_GENERAL = ArtefactType.GENERAL_PUBLICATION;
     private static final Sensitivity SENSITIVITY = Sensitivity.PUBLIC;
@@ -93,7 +93,7 @@ class PublicationTest {
     private static final String COURT_ID_SEARCH_KEY = "court-id";
     private static final String EMPTY_VALUE = "";
     private static final String VERIFICATION_HEADER = "verification";
-
+    private static final String VALID_CASE_ID_SEARCH = "/CASE_ID/45684548";
 
     private static final String FORMAT_RESPONSE = "Please check that the value is of the correct format for the field "
         + "(See Swagger documentation for correct formats)";
@@ -116,6 +116,32 @@ class PublicationTest {
 
         objectMapper = new ObjectMapper();
         objectMapper.findAndRegisterModules();
+    }
+
+    Artefact createDailyList(Sensitivity sensitivity) throws Exception {
+        try (InputStream mockFile = this.getClass().getClassLoader()
+            .getResourceAsStream("data/dailyCauseList.json")) {
+
+            MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .post(POST_URL)
+                .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
+                .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
+                .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
+                .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
+                .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO.plusMonths(1))
+                .header(PublicationConfiguration.COURT_ID, COURT_ID)
+                .header(PublicationConfiguration.LIST_TYPE, ListType.CIVIL_DAILY_CAUSE_LIST)
+                .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
+                .header(PublicationConfiguration.SENSITIVITY_HEADER, sensitivity)
+                .content(mockFile.readAllBytes())
+                .contentType(MediaType.APPLICATION_JSON);
+
+            MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
+                .andExpect(status().isCreated()).andReturn();
+
+            return objectMapper.readValue(
+                response.getResponse().getContentAsString(), Artefact.class);
+        }
     }
 
     @ParameterizedTest
@@ -875,7 +901,7 @@ class PublicationTest {
         mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 = MockMvcRequestBuilders
-            .get(SEARCH_URL + "/" + COURT_ID)
+            .get(SEARCH_COURT_URL + "/" + COURT_ID)
             .header(VERIFICATION_HEADER, "true");
         MvcResult getResponse =
             mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isOk()).andReturn();
@@ -999,7 +1025,7 @@ class PublicationTest {
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 = MockMvcRequestBuilders
 
-            .get(SEARCH_URL + "/" + COURT_ID)
+            .get(SEARCH_COURT_URL + "/" + COURT_ID)
             .header(VERIFICATION_HEADER, "true");
         MvcResult getResponse =
             mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isOk()).andReturn();
@@ -1051,7 +1077,7 @@ class PublicationTest {
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 = MockMvcRequestBuilders
 
-            .get(SEARCH_URL + "/" + COURT_ID)
+            .get(SEARCH_COURT_URL + "/" + COURT_ID)
             .header(VERIFICATION_HEADER, "false");
         MvcResult getResponse =
             mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isOk()).andReturn();
@@ -1104,7 +1130,7 @@ class PublicationTest {
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 = MockMvcRequestBuilders
 
-            .get(SEARCH_URL + "/" + COURT_ID)
+            .get(SEARCH_COURT_URL + "/" + COURT_ID)
             .header(VERIFICATION_HEADER, "false");
         MvcResult getResponse =
             mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isOk()).andReturn();
@@ -1154,7 +1180,7 @@ class PublicationTest {
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 = MockMvcRequestBuilders
 
-            .get(SEARCH_URL + "/" + COURT_ID)
+            .get(SEARCH_COURT_URL + "/" + COURT_ID)
             .header(VERIFICATION_HEADER, "false");
         MvcResult getResponse =
             mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isOk()).andReturn();
@@ -1166,5 +1192,46 @@ class PublicationTest {
 
     }
 
+    @Test
+    void testGetArtefactBySearchVerified() throws Exception {
+        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(blobContainerClient.getBlobContainerUrl()).thenReturn(PAYLOAD_URL);
 
+        Artefact artefact = createDailyList(Sensitivity.PRIVATE);
+
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 =
+            MockMvcRequestBuilders.get(SEARCH_URL + VALID_CASE_ID_SEARCH);
+
+        mockHttpServletRequestBuilder1
+            .header(VERIFICATION_HEADER, "true");
+
+        MvcResult getResponse =
+            mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isOk()).andReturn();
+
+        assertTrue(
+            getResponse.getResponse().getContentAsString().contains(artefact.getArtefactId().toString()),
+            "Should return expected artefact");
+    }
+
+    @Test
+    void testGetArtefactBySearchUnverified() throws Exception {
+        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(blobContainerClient.getBlobContainerUrl()).thenReturn(PAYLOAD_URL);
+
+        Artefact artefact = createDailyList(Sensitivity.PUBLIC);
+
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 =
+            MockMvcRequestBuilders.get(SEARCH_URL + VALID_CASE_ID_SEARCH);
+
+        mockHttpServletRequestBuilder1
+            .header(VERIFICATION_HEADER, "false");
+
+        MvcResult getResponse =
+            mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isOk()).andReturn();
+
+        assertTrue(
+            getResponse.getResponse().getContentAsString().contains(artefact.getArtefactId().toString()),
+            "Should return expected artefact");
+    }
 }
+

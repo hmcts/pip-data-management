@@ -5,10 +5,12 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.AzureBlobService;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ArtefactNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.NotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.UnauthorisedRequestException;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Sensitivity;
+import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
 import uk.gov.hmcts.reform.pip.data.management.utils.PayloadExtractor;
 
 import java.time.LocalDateTime;
@@ -97,11 +99,30 @@ public class PublicationService {
     public List<Artefact> findAllByCourtId(String searchValue, Boolean verified) {
         LocalDateTime currDate = LocalDateTime.now();
         if (verified) {
-            return artefactRepository.findArtefactsBySearchVerified(searchValue, currDate);
+            return artefactRepository.findArtefactsByCourtIdVerified(searchValue, currDate);
         } else {
-            return artefactRepository.findArtefactsBySearchUnverified(searchValue, currDate);
+            return artefactRepository.findArtefactsByCourtIdUnverified(searchValue, currDate);
         }
+    }
 
+    /**
+     * Get all relevant Artefacts based on search values stored in the Artefact.
+     *
+     * @param searchTerm the search term checking against, eg. CASE_ID or CASE_URN
+     * @param searchValue the search value to look for
+     * @param verified bool for the user being verified or not restricting the results
+     * @return list of Artefacts
+     */
+    public List<Artefact> findAllBySearch(CaseSearchTerm searchTerm, String searchValue, boolean verified) {
+        LocalDateTime currDate = LocalDateTime.now();
+        List<Artefact> artefacts = verified ? artefactRepository.findArtefactBySearchVerified(searchTerm.dbValue,
+                                                                                             searchValue, currDate) :
+            artefactRepository.findArtefactBySearchUnverified(searchTerm.dbValue, searchValue, currDate);
+        if (artefacts.isEmpty()) {
+            throw new ArtefactNotFoundException(String.format("No Artefacts found with for %s with the value: %s",
+                                                              searchTerm, searchValue));
+        }
+        return artefacts;
     }
 
     /**

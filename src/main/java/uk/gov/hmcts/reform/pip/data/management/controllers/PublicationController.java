@@ -27,6 +27,7 @@ import uk.gov.hmcts.reform.pip.data.management.models.publication.ListType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Sensitivity;
 import uk.gov.hmcts.reform.pip.data.management.service.PublicationService;
 import uk.gov.hmcts.reform.pip.data.management.service.ValidationService;
+import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -196,11 +197,25 @@ public class PublicationController {
         @ApiResponse(code = 404,
             message = "No artefact found matching given parameters and date requirements"),
     })
-    @ApiOperation("Get a series of publications matching a given input (e.g. courtid)")
-    @GetMapping("/search/{searchValue}")
-    public ResponseEntity<List<Artefact>> getAllRelevantArtefactsByCourtId(@PathVariable String searchValue,
+    @ApiOperation("Get a series of publications matching a given courtId (e.g. courtid)")
+    @GetMapping("/courtId/{courtId}")
+    public ResponseEntity<List<Artefact>> getAllRelevantArtefactsByCourtId(@PathVariable String courtId,
                                                                            @RequestHeader Boolean verification) {
-        return ResponseEntity.ok(publicationService.findAllByCourtId(searchValue, verification));
+        return ResponseEntity.ok(publicationService.findAllByCourtId(courtId, verification));
+    }
+
+    @ApiResponses({
+        @ApiResponse(code = 200,
+            message = "List of Artefacts matching a given case value, verification parameters and date requirements"),
+        @ApiResponse(code = 404,
+            message = "No artefact found matching given parameters and date requirements"),
+    })
+    @ApiOperation("Get a series of publications matching a given case search value (e.g. CASE_URN / CASE_ID)")
+    @GetMapping("/search/{searchTerm}/{searchValue}")
+    public ResponseEntity<List<Artefact>> getAllRelevantArtefactsBySearchValue(@PathVariable CaseSearchTerm searchTerm,
+                                                                           @PathVariable String searchValue,
+                                                                           @RequestHeader Boolean verification) {
+        return ResponseEntity.ok(publicationService.findAllBySearch(searchTerm, searchValue, verification));
     }
 
     @ApiResponses({

@@ -18,6 +18,7 @@ import uk.gov.hmcts.reform.pip.data.management.models.publication.ListType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Sensitivity;
 import uk.gov.hmcts.reform.pip.data.management.service.PublicationService;
 import uk.gov.hmcts.reform.pip.data.management.service.ValidationService;
+import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -59,7 +60,9 @@ class PublicationControllerTest {
     private static final String PAYLOAD = "payload";
     private static final MultipartFile FILE = new MockMultipartFile("test", (byte[]) null);
     private static final String PAYLOAD_URL = "This is a test payload";
+    private static final CaseSearchTerm SEARCH_TERM = CaseSearchTerm.CASE_ID;
     private static final String EMPTY_FIELD = "";
+    private static final String TEST_STRING = "test";
     private static final String VALIDATION_EXPECTED_MESSAGE =
         "The expected exception does not contain the correct message";
 
@@ -176,6 +179,14 @@ class PublicationControllerTest {
 
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode(), STATUS_CODE_MATCH);
         assertEquals(artefactWithId, responseEntity.getBody(), "Artefacts should match");
+    }
+
+    @Test
+    void testGetArtefactsBySearchReturnsOk() {
+        when(publicationService.findAllBySearch(SEARCH_TERM, TEST_STRING, true)).thenReturn(List.of(artefactWithId));
+        assertEquals(HttpStatus.OK, publicationController.getAllRelevantArtefactsBySearchValue(SEARCH_TERM, TEST_STRING,
+                                                                                               true).getStatusCode(),
+                     STATUS_CODE_MATCH);
     }
 
 }
