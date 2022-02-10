@@ -1,11 +1,13 @@
 package uk.gov.hmcts.reform.pip.data.management.controllers;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.models.court.Court;
+import uk.gov.hmcts.reform.pip.data.management.models.court.CourtViews;
 import uk.gov.hmcts.reform.pip.data.management.service.CourtService;
 
 import java.util.Collection;
@@ -30,14 +33,14 @@ public class CourtController {
     @Autowired
     private CourtService courtService;
 
-
     @ApiResponses({
         @ApiResponse(code = 200, message = "All courts returned"),
     })
     @ApiOperation("Get all courts with their hearings")
-    @GetMapping
+    @GetMapping(produces = "application/json")
+    @JsonView(CourtViews.BaseView.class)
     public ResponseEntity<List<Court>> getCourtList() {
-        return ResponseEntity.ok(courtService.getAllCourts());
+        return new ResponseEntity<>(courtService.getAllCourts(), HttpStatus.OK);
     }
 
     @ApiResponses({
@@ -69,6 +72,7 @@ public class CourtController {
     })
     @ApiOperation("Filters list of courts by region or jurisdiction")
     @GetMapping("/filter")
+    @JsonView(CourtViews.BaseView.class)
     public ResponseEntity<List<Court>> searchByRegionAndJurisdiction(
         @RequestParam(required = false) List<String> regions,
         @RequestParam(required = false) List<String> jurisdictions) {

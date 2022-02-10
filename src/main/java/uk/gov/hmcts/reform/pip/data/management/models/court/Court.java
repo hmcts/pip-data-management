@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.pip.data.management.models.court;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.vladmihalcea.hibernate.type.array.ListArrayType;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -35,18 +36,23 @@ public class Court {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @JsonView(CourtViews.BaseView.class)
     private Integer courtId;
 
+    @JsonView(CourtViews.BaseView.class)
     private String name;
 
+    @JsonView(CourtViews.BaseView.class)
     private String region;
 
     @Type(type = "list-array")
     @Column(name = "jurisdiction", columnDefinition = "text[]")
+    @JsonView(CourtViews.BaseView.class)
     private List<String> jurisdiction;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "court_id")
+    @JsonView(CourtViews.ReferenceView.class)
     private List<CourtReference> courtReferenceList = new ArrayList<>();
 
     public Court(CourtCsv courtCsv) {

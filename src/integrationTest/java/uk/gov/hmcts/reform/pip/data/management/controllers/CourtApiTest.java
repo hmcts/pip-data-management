@@ -20,6 +20,7 @@ import uk.gov.hmcts.reform.pip.data.management.models.court.CourtReference;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.BiPredicate;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -52,6 +53,12 @@ class CourtApiTest {
     private static final String VALIDATION_UNKNOWN_COURT = "Unexpected court has been returned";
     private static final String VALIDATION_UNEXPECTED_NUMBER_OF_COURTS =
         "Unexpected number of courts has been returned";
+
+    private final BiPredicate<Court, Court> compareCourtWithoutReference = (court, otherCourt) ->
+        court.getCourtId().equals(otherCourt.getCourtId())
+            && court.getName().equals(otherCourt.getName())
+            && court.getRegion().equals(otherCourt.getRegion())
+            && court.getJurisdiction().equals(otherCourt.getJurisdiction());
 
     @BeforeAll
     public static void setup() {
@@ -90,7 +97,8 @@ class CourtApiTest {
         assertEquals(courts.size(), returnedCourts.size(), VALIDATION_UNEXPECTED_NUMBER_OF_COURTS);
 
         for (Court court : courts) {
-            assertTrue(returnedCourts.contains(court), "Expected court not displayed in list");
+            assertTrue(returnedCourts.stream().anyMatch(x -> compareCourtWithoutReference.test(x, court)),
+                       "Expected court not displayed in list");
         }
 
     }
@@ -202,7 +210,7 @@ class CourtApiTest {
 
         assertEquals(1, returnedCourts.size(), VALIDATION_UNEXPECTED_NUMBER_OF_COURTS);
 
-        assertEquals(courts.get(0), returnedCourts.get(0), VALIDATION_UNKNOWN_COURT);
+        assertTrue(compareCourtWithoutReference.test(courts.get(0), returnedCourts.get(0)), VALIDATION_UNKNOWN_COURT);
     }
 
     @Test
@@ -219,7 +227,7 @@ class CourtApiTest {
 
         assertEquals(1, returnedCourts.size(), VALIDATION_UNEXPECTED_NUMBER_OF_COURTS);
 
-        assertEquals(courts.get(1), returnedCourts.get(0), VALIDATION_UNKNOWN_COURT);
+        assertTrue(compareCourtWithoutReference.test(courts.get(1), returnedCourts.get(0)), VALIDATION_UNKNOWN_COURT);
     }
 
     @Test
@@ -236,8 +244,8 @@ class CourtApiTest {
 
         assertEquals(2, returnedCourts.size(), VALIDATION_UNEXPECTED_NUMBER_OF_COURTS);
 
-        assertEquals(courts.get(0), returnedCourts.get(0), VALIDATION_UNKNOWN_COURT);
-        assertEquals(courts.get(1), returnedCourts.get(1), VALIDATION_UNKNOWN_COURT);
+        assertTrue(compareCourtWithoutReference.test(courts.get(0), returnedCourts.get(0)), VALIDATION_UNKNOWN_COURT);
+        assertTrue(compareCourtWithoutReference.test(courts.get(1), returnedCourts.get(1)), VALIDATION_UNKNOWN_COURT);
     }
 
     @Test
@@ -254,7 +262,7 @@ class CourtApiTest {
 
         assertEquals(1, returnedCourts.size(), VALIDATION_UNEXPECTED_NUMBER_OF_COURTS);
 
-        assertEquals(courts.get(0), returnedCourts.get(0), VALIDATION_UNKNOWN_COURT);
+        assertTrue(compareCourtWithoutReference.test(courts.get(0), returnedCourts.get(0)), VALIDATION_UNKNOWN_COURT);
     }
 
     @Test
@@ -271,8 +279,8 @@ class CourtApiTest {
 
         assertEquals(2, returnedCourts.size(), VALIDATION_UNEXPECTED_NUMBER_OF_COURTS);
 
-        assertEquals(courts.get(0), returnedCourts.get(0), VALIDATION_UNKNOWN_COURT);
-        assertEquals(courts.get(1), returnedCourts.get(1), VALIDATION_UNKNOWN_COURT);
+        assertTrue(compareCourtWithoutReference.test(courts.get(0), returnedCourts.get(0)), VALIDATION_UNKNOWN_COURT);
+        assertTrue(compareCourtWithoutReference.test(courts.get(1), returnedCourts.get(1)), VALIDATION_UNKNOWN_COURT);
     }
 
     @Test
@@ -288,9 +296,9 @@ class CourtApiTest {
 
         assertEquals(3, returnedCourts.size(), VALIDATION_UNEXPECTED_NUMBER_OF_COURTS);
 
-        assertEquals(courts.get(0), returnedCourts.get(0), VALIDATION_UNKNOWN_COURT);
-        assertEquals(courts.get(1), returnedCourts.get(1), VALIDATION_UNKNOWN_COURT);
-        assertEquals(courts.get(2), returnedCourts.get(2), VALIDATION_UNKNOWN_COURT);
+        assertTrue(compareCourtWithoutReference.test(courts.get(0), returnedCourts.get(0)), VALIDATION_UNKNOWN_COURT);
+        assertTrue(compareCourtWithoutReference.test(courts.get(1), returnedCourts.get(1)), VALIDATION_UNKNOWN_COURT);
+        assertTrue(compareCourtWithoutReference.test(courts.get(2), returnedCourts.get(2)), VALIDATION_UNKNOWN_COURT);
     }
 
     @Test
