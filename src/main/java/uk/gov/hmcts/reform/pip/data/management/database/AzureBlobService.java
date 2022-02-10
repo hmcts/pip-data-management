@@ -10,6 +10,7 @@ import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.FlatFile
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Class with handles the interaction with the Azure Blob Service.
@@ -73,7 +74,8 @@ public class AzureBlobService {
         String blobName = sourceArtefactId + '-' + provenance;
         BlobClient blobClient = blobContainerClient.getBlobClient(blobName);
         byte[] data = blobClient.downloadContent().toBytes();
-        return Base64.encodeBase64String(data);
+        String ourString = new String(data, StandardCharsets.ISO_8859_1);
+        return ourString;
     }
 
 }
