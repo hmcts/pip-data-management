@@ -19,7 +19,6 @@ import uk.gov.hmcts.reform.pip.data.management.models.publication.Sensitivity;
 import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
 import uk.gov.hmcts.reform.pip.data.management.utils.PayloadExtractor;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -58,6 +57,7 @@ class PublicationServiceTest {
     private static final String TEST_VALUE = "TestValue";
     private static final String SEARCH_TERM_VALUE = "case-id";
     private static final CaseSearchTerm SEARCH_TERM = CaseSearchTerm.CASE_ID;
+    private static final CaseSearchTerm SEARCH_TERM_CASE_NAME = CaseSearchTerm.CASE_NAME;
     private static final Map<String, List<Object>> SEARCH_VALUES = new ConcurrentHashMap<>();
     private static final MultipartFile FILE = new MockMultipartFile("test", (byte[]) null);
     private static final String ARTEFACT_MATCH_MESSAGE = "Returned Artefacts should match";
@@ -110,6 +110,12 @@ class PublicationServiceTest {
             .thenReturn(List.of(artefactWithIdAndPayloadUrl));
         lenient()
             .when(artefactRepository.findArtefactBySearchUnverified(eq(SEARCH_TERM_VALUE), eq(TEST_VALUE), any()))
+            .thenReturn(List.of(artefactWithId));
+        lenient()
+            .when(artefactRepository.findArtefactByCaseNameVerified(eq(TEST_VALUE), any()))
+            .thenReturn(List.of(artefactWithIdAndPayloadUrl));
+        lenient()
+            .when(artefactRepository.findArtefactByCaseNameUnverified(eq(TEST_VALUE), any()))
             .thenReturn(List.of(artefactWithId));
     }
 
@@ -249,10 +255,33 @@ class PublicationServiceTest {
     @Test
     void testNoArtefactsThrowsNotFound() {
         ArtefactNotFoundException ex = assertThrows(ArtefactNotFoundException.class, () ->
-           publicationService.findAllBySearch(SEARCH_TERM, "not found", true)
+            publicationService.findAllBySearch(SEARCH_TERM, "not found", true)
         );
         assertEquals("No Artefacts found with for CASE_ID with the value: not found",
-                     ex.getMessage(), MESSAGES_MATCH);
+                     ex.getMessage(), MESSAGES_MATCH
+        );
+    }
+
+    @Test
+    void testFindAllBySearchNameVerified() {
+        assertEquals(
+            artefactWithIdAndPayloadUrl,
+            publicationService.findAllBySearch(SEARCH_TERM_CASE_NAME, TEST_VALUE, true).get(0),
+            ARTEFACT_MATCH_MESSAGE
+        );
+    }
+
+    @Test
+    void testFindAllBySearchNameUnverified() {
+        assertEquals(artefactWithIdAndPayloadUrl,
+                     publicationService.findAllBySearch(SEARCH_TERM_CASE_NAME, TEST_VALUE, false).get(0),
+                     ARTEFACT_MATCH_MESSAGE);
+    }
+
+    @Test
+    void testInvalidEnumTypeThrows() {
+        assertThrows(IllegalArgumentException.class, () ->
+            publicationService.findAllBySearch(CaseSearchTerm.valueOf("invalid"), TEST_VALUE, true));
     }
 }
 

@@ -61,7 +61,8 @@ payload:
   json:
     search-values:
       case-id: "$['courtLists'][*]['courtHouse']['courtRoom'][*]['session'][*]['sittings'][*]['hearing'][*]['case'][*]['caseNumber']"
-      case-urn: "$['courtLists'][*]['courtHouse']['courtRoom'][*]['session'][*]['sittings'][*]['hearing'][*]'case][*]['caseUrn']"
+      case-urn: "$['courtLists'][*]['courtHouse']['courtRoom'][*]['session'][*]['sittings'][*]['hearing'][*]'case'][*]['caseUrn']"
+      case-name: "$['courtLists'][*]['courtHouse']['courtRoom'][*]['session'][*]['sittings'][*]['hearing'][*]['case'][*]['caseName']"
 validations:
   master-schema: "schemas/master_schema.json"
   daily-cause-list: "schemas/civil_daily_cause_list.json"

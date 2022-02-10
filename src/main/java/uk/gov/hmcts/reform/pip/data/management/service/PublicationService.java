@@ -115,9 +115,22 @@ public class PublicationService {
      */
     public List<Artefact> findAllBySearch(CaseSearchTerm searchTerm, String searchValue, boolean verified) {
         LocalDateTime currDate = LocalDateTime.now();
-        List<Artefact> artefacts = verified ? artefactRepository.findArtefactBySearchVerified(searchTerm.dbValue,
-                                                                                             searchValue, currDate) :
-            artefactRepository.findArtefactBySearchUnverified(searchTerm.dbValue, searchValue, currDate);
+        List<Artefact> artefacts;
+        switch (searchTerm) {
+            case CASE_ID:
+            case CASE_URN:
+                artefacts = verified ? artefactRepository.findArtefactBySearchVerified(searchTerm.dbValue,
+                                                                                       searchValue, currDate) :
+                    artefactRepository.findArtefactBySearchUnverified(searchTerm.dbValue, searchValue, currDate);
+                break;
+            case CASE_NAME:
+                artefacts = verified ? artefactRepository.findArtefactByCaseNameVerified(searchValue, currDate) :
+                    artefactRepository.findArtefactByCaseNameUnverified(searchValue, currDate);
+                break;
+            default:
+                throw new IllegalArgumentException(String.format("Invalid search term: %s", searchTerm));
+        }
+
         if (artefacts.isEmpty()) {
             throw new ArtefactNotFoundException(String.format("No Artefacts found with for %s with the value: %s",
                                                               searchTerm, searchValue));

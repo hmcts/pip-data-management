@@ -210,7 +210,7 @@ public class PublicationController {
         @ApiResponse(code = 404,
             message = "No artefact found matching given parameters and date requirements"),
     })
-    @ApiOperation("Get a series of publications matching a given case search value (e.g. CASE_URN / CASE_ID)")
+    @ApiOperation("Get a series of publications matching a given case search value (e.g. CASE_URN/CASE_ID/CASE_NAME)")
     @GetMapping("/search/{searchTerm}/{searchValue}")
     public ResponseEntity<List<Artefact>> getAllRelevantArtefactsBySearchValue(@PathVariable CaseSearchTerm searchTerm,
                                                                            @PathVariable String searchValue,
