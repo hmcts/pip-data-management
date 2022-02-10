@@ -5,7 +5,10 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +31,8 @@ import uk.gov.hmcts.reform.pip.data.management.models.publication.Sensitivity;
 import uk.gov.hmcts.reform.pip.data.management.service.PublicationService;
 import uk.gov.hmcts.reform.pip.data.management.service.ValidationService;
 
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -232,7 +237,18 @@ public class PublicationController {
         @PathVariable UUID artefactId, @RequestHeader Boolean verification) {
 
         return ResponseEntity.ok(publicationService.getPayloadByArtefactId(artefactId, verification));
-
     }
 
+    @GetMapping(value = "/{artefactId}/file", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    public ResponseEntity<Resource> getArtefactFile(@PathVariable UUID artefactId,
+                                                    @RequestHeader Boolean verification) {
+        Resource file = publicationService.getFlatFileByArtefactID(artefactId, verification);
+        Artefact metadata = publicationService.getMetadataByArtefactId(artefactId, verification);
+        String fileType = metadata.getSourceArtefactId();
+
+        return ResponseEntity.ok()
+            .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_VALUE)
+            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename="+fileType)
+            .body(file);
+    }
 }

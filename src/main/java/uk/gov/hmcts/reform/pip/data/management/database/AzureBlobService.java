@@ -4,12 +4,16 @@ import com.azure.storage.blob.BlobClient;
 import com.azure.storage.blob.BlobContainerClient;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.FlatFileException;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 
 /**
@@ -45,9 +49,10 @@ public class AzureBlobService {
 
     /**
      * Uploads the flat file in the Azure blob service.
-     * @param sourceArtefactId  The source ID to call the blob.
-     * @param provenance        The provenance to call the blob.
-     * @param file              The flat file to upload
+     *
+     * @param sourceArtefactId The source ID to call the blob.
+     * @param provenance       The provenance to call the blob.
+     * @param file             The flat file to upload
      * @return The URL where the file was uploaded.
      */
     public String uploadFlatFile(String sourceArtefactId, String provenance, MultipartFile file) {
@@ -77,4 +82,10 @@ public class AzureBlobService {
         return new String(data, StandardCharsets.ISO_8859_1);
     }
 
+    public Resource getBlobFile(String sourceArtefactId, String provenance) {
+        String blobName = sourceArtefactId + '-' + provenance;
+        BlobClient blobClient = blobContainerClient.getBlobClient(blobName);
+        byte[] data = blobClient.downloadContent().toBytes();
+        return new ByteArrayResource(data);
+    }
 }

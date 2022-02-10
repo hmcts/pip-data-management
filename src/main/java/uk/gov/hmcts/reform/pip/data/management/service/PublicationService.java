@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.pip.data.management.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
@@ -9,6 +10,7 @@ import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.NotFound
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.utils.PayloadExtractor;
 
+import java.io.OutputStream;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -144,6 +146,14 @@ public class PublicationService {
         String provenance = artefact.getProvenance();
 
         return azureBlobService.getBlobData(sourceArtefactId, provenance);
+    }
+
+    public Resource getFlatFileByArtefactID(UUID artefactId, Boolean verification) {
+        Artefact artefact = this.getMetadataByArtefactId(artefactId, verification);
+
+        String sourceArtefactId = artefact.getSourceArtefactId();
+        String provenance = artefact.getProvenance();
+        return azureBlobService.getBlobFile(sourceArtefactId, provenance);
     }
 
 }
