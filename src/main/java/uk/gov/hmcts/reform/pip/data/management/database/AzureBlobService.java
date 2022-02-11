@@ -75,9 +75,7 @@ public class AzureBlobService {
     public String getBlobData(String sourceArtefactId, String provenance) {
         String blobName = sourceArtefactId + '-' + provenance;
         BlobClient blobClient = blobContainerClient.getBlobClient(blobName);
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        blobClient.downloadStream(stream);
-        return stream.toString();
+        return blobClient.downloadContent().toString();
     }
 
     public Resource getBlobFile(String sourceArtefactId, String provenance) {

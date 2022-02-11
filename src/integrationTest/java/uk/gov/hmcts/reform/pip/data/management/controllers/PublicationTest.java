@@ -6,7 +6,6 @@ import com.azure.storage.blob.BlobContainerClient;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microsoft.applicationinsights.web.dependencies.apachecommons.io.IOUtils;
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
-import org.apache.tomcat.util.codec.binary.Base64;
 import org.json.JSONArray;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -1173,6 +1172,100 @@ class PublicationTest {
 
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
+    @DisplayName("File endpoint should return the file when artefact exists")
+    void retrieveFileFromAnArtefactWhereFound(boolean isJson) throws Exception {
+        if (isJson) {
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(POST_URL).content(payload);
+        } else {
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(POST_URL).file(file);
+        }
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE);
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY);
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE);
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE);
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID);
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO.plusMonths(1));
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM);
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.LIST_TYPE, LIST_TYPE);
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.COURT_ID, COURT_ID);
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE);
+        mockHttpServletRequestBuilder.contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
+
+        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(blobContainerClient.getBlobContainerUrl()).thenReturn(PAYLOAD_URL);
+
+        MvcResult response =
+            mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
+
+        assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
+
+        Artefact artefact = objectMapper.readValue(
+            response.getResponse().getContentAsString(), Artefact.class);
+
+        when(blobClient.downloadContent()).thenReturn(
+            BinaryData.fromString(isJson ? payload : new String(file.getBytes())));
+
+        response = mockMvc.perform(MockMvcRequestBuilders
+                                       .get(POST_URL + "/" + artefact.getArtefactId() + "/file")
+                                       .header("verification", VERIFICATION_TRUE))
+            .andExpect(status().isOk()).andReturn();
+
+        assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
+
+        assertEquals(isJson ? payload : new String(file.getBytes()),
+                     response.getResponse().getContentAsString(), "File does not match expected content");
+
+    }
+
+    @ParameterizedTest
+    @ValueSource(booleans = {true, false})
+    @DisplayName("File endpoint should not return the payload when not authorized")
+    void retrieveFileOfAnArtefactWhereNotAuthorized(boolean isJson) throws Exception {
+        if (isJson) {
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(POST_URL).content(payload);
+        } else {
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(POST_URL).file(file);
+        }
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE);
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.SENSITIVITY_HEADER, Sensitivity.CLASSIFIED);
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE);
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE);
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID);
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO.plusMonths(1));
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM);
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.LIST_TYPE, LIST_TYPE);
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.COURT_ID, COURT_ID);
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE);
+        mockHttpServletRequestBuilder.contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
+
+        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(blobContainerClient.getBlobContainerUrl()).thenReturn(PAYLOAD_URL);
+
+        MvcResult response =
+            mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
+
+        assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
+
+        Artefact artefact = objectMapper.readValue(
+            response.getResponse().getContentAsString(), Artefact.class);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                            .get(POST_URL + "/" + artefact.getArtefactId() + "/file")
+                            .header("verification", VERIFICATION_FALSE))
+            .andExpect(status().isNotFound()).andReturn();
+    }
+
+    @Test
+    @DisplayName("File endpoint should return 404 when artefact does not exist")
+    void retrieveFileOfAnArtefactWhereNotFound() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders
+                            .get("/publication/7d734e8d-ba1d-4730-bd8b-09a970be00cc/file")
+                            .header(VERIFICATION_HEADER, VERIFICATION_TRUE))
+            .andExpect(status().isNotFound()).andReturn();
+    }
+
+    @ParameterizedTest
+    @ValueSource(booleans = {true, false})
     @DisplayName("Payload endpoint should return the payload when artefact exists")
     void retrievePayloadOfAnArtefactWhereFound(boolean isJson) throws Exception {
         if (isJson) {
@@ -1213,8 +1306,7 @@ class PublicationTest {
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
 
-        assertEquals(isJson ? Base64.encodeBase64String(payload.getBytes()) :
-                         Base64.encodeBase64String(file.getBytes()),
+        assertEquals(isJson ? payload : new String(file.getBytes()),
                      response.getResponse().getContentAsString(), "Payload does not match expected content");
     }
 
