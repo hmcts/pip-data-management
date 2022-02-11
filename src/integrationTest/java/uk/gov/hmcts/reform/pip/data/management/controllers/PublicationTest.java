@@ -1000,7 +1000,8 @@ class PublicationTest {
         );
 
         assertEquals(createdArtefact.getDisplayFrom(), DISPLAY_FROM.minusMonths(2),
-                     VALIDATION_DISPLAY_FROM);
+                     VALIDATION_DISPLAY_FROM
+        );
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 = MockMvcRequestBuilders
 
@@ -1015,7 +1016,8 @@ class PublicationTest {
             jsonArray.get(0).toString(), Artefact.class
         );
         assertEquals(COURT_ID, retrievedArtefact.getCourtId(),
-                     "Incorrect court ID has been retrieved from the database");
+                     "Incorrect court ID has been retrieved from the database"
+        );
     }
 
     @DisplayName("Verify that artefact is returned when user is unverified and sensitivity is public")
@@ -1052,7 +1054,8 @@ class PublicationTest {
         );
 
         assertEquals(createdArtefact.getDisplayFrom(), DISPLAY_FROM.minusMonths(2),
-                     VALIDATION_DISPLAY_FROM);
+                     VALIDATION_DISPLAY_FROM
+        );
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 = MockMvcRequestBuilders
             .get(SEARCH_URL + "/" + COURT_ID)
@@ -1067,7 +1070,8 @@ class PublicationTest {
             jsonArray.get(0).toString(), Artefact.class
         );
         assertEquals(COURT_ID, retrievedArtefact.getCourtId(),
-                     "Incorrect court ID has been retrieved from the database");
+                     "Incorrect court ID has been retrieved from the database"
+        );
 
     }
 
@@ -1105,7 +1109,8 @@ class PublicationTest {
         );
 
         assertEquals(createdArtefact.getDisplayFrom(), DISPLAY_FROM.minusMonths(2),
-                     VALIDATION_DISPLAY_FROM);
+                     VALIDATION_DISPLAY_FROM
+        );
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 = MockMvcRequestBuilders
             .get(SEARCH_URL + "/" + COURT_ID)
@@ -1116,7 +1121,8 @@ class PublicationTest {
         String jsonOutput = getResponse.getResponse().getContentAsString();
         JSONArray jsonArray = new JSONArray(jsonOutput);
         assertEquals(0, jsonArray.length(),
-                     "Unknown artefacts have been returned from the database");
+                     "Unknown artefacts have been returned from the database"
+        );
 
     }
 
@@ -1154,7 +1160,8 @@ class PublicationTest {
         );
 
         assertEquals(createdArtefact.getDisplayFrom(), DISPLAY_FROM.minusMonths(2),
-                     VALIDATION_DISPLAY_FROM);
+                     VALIDATION_DISPLAY_FROM
+        );
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 = MockMvcRequestBuilders
 
@@ -1166,7 +1173,8 @@ class PublicationTest {
         String jsonOutput = getResponse.getResponse().getContentAsString();
         JSONArray jsonArray = new JSONArray(jsonOutput);
         assertEquals(0, jsonArray.length(),
-                     "Unknown artefacts have been returned from the database");
+                     "Unknown artefacts have been returned from the database"
+        );
 
     }
 
@@ -1207,13 +1215,14 @@ class PublicationTest {
 
         response = mockMvc.perform(MockMvcRequestBuilders
                                        .get(POST_URL + "/" + artefact.getArtefactId() + "/file")
-                                       .header("verification", VERIFICATION_TRUE))
+                                       .header(VERIFICATION_HEADER, VERIFICATION_TRUE))
             .andExpect(status().isOk()).andReturn();
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
 
         assertEquals(isJson ? payload : new String(file.getBytes()),
-                     response.getResponse().getContentAsString(), "File does not match expected content");
+                     response.getResponse().getContentAsString(), "File does not match expected content"
+        );
 
     }
 
@@ -1251,7 +1260,7 @@ class PublicationTest {
 
         mockMvc.perform(MockMvcRequestBuilders
                             .get(POST_URL + "/" + artefact.getArtefactId() + "/file")
-                            .header("verification", VERIFICATION_FALSE))
+                            .header(VERIFICATION_HEADER, VERIFICATION_FALSE))
             .andExpect(status().isNotFound()).andReturn();
     }
 
@@ -1301,13 +1310,14 @@ class PublicationTest {
 
         response = mockMvc.perform(MockMvcRequestBuilders
                                        .get(POST_URL + "/" + artefact.getArtefactId() + "/payload")
-                                       .header("verification", VERIFICATION_TRUE))
-                                       .andExpect(status().isOk()).andReturn();
+                                       .header(VERIFICATION_HEADER, VERIFICATION_TRUE))
+            .andExpect(status().isOk()).andReturn();
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
 
         assertEquals(isJson ? payload : new String(file.getBytes()),
-                     response.getResponse().getContentAsString(), "Payload does not match expected content");
+                     response.getResponse().getContentAsString(), "Payload does not match expected content"
+        );
     }
 
     @ParameterizedTest
@@ -1343,8 +1353,8 @@ class PublicationTest {
             response.getResponse().getContentAsString(), Artefact.class);
 
         mockMvc.perform(MockMvcRequestBuilders
-                                       .get(POST_URL + "/" + artefact.getArtefactId() + "/payload")
-                                       .header("verification", VERIFICATION_FALSE))
+                            .get(POST_URL + "/" + artefact.getArtefactId() + "/payload")
+                            .header(VERIFICATION_HEADER, VERIFICATION_FALSE))
             .andExpect(status().isNotFound()).andReturn();
     }
 
@@ -1352,8 +1362,8 @@ class PublicationTest {
     @DisplayName("Payload endpoint should return 404 when artefact does not exist")
     void retrievePayloadOfAnArtefactWhereNotFound() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders
-                                       .get("/publication/7d734e8d-ba1d-4730-bd8b-09a970be00cc/payload")
-                                       .header(VERIFICATION_HEADER, VERIFICATION_TRUE))
+                            .get("/publication/7d734e8d-ba1d-4730-bd8b-09a970be00cc/payload")
+                            .header(VERIFICATION_HEADER, VERIFICATION_TRUE))
             .andExpect(status().isNotFound()).andReturn();
     }
 
@@ -1399,9 +1409,11 @@ class PublicationTest {
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
 
-        assertEquals(artefact,
-                     objectMapper.readValue(response.getResponse().getContentAsString(), Artefact.class),
-                     "Metadata does not match expected artefact");
+        assertEquals(
+            artefact,
+            objectMapper.readValue(response.getResponse().getContentAsString(), Artefact.class),
+            "Metadata does not match expected artefact"
+        );
     }
 
     @ParameterizedTest
@@ -1437,8 +1449,8 @@ class PublicationTest {
             response.getResponse().getContentAsString(), Artefact.class);
 
         mockMvc.perform(MockMvcRequestBuilders
-                                       .get(POST_URL + "/" + artefact.getArtefactId())
-                                       .header(VERIFICATION_HEADER, VERIFICATION_FALSE))
+                            .get(POST_URL + "/" + artefact.getArtefactId())
+                            .header(VERIFICATION_HEADER, VERIFICATION_FALSE))
             .andExpect(status().isNotFound()).andReturn();
     }
 

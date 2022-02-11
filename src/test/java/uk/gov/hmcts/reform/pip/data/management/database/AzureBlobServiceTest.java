@@ -13,13 +13,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -57,20 +51,16 @@ class AzureBlobServiceTest {
     void testGetBlobData() {
         String blobName = SOURCE_ARTEFACT_ID + '-' + PROVENANCE;
         when(blobContainerClient.getBlobClient(blobName)).thenReturn(blobClient);
-        doNothing().when(blobClient).downloadStream(any());
-        assertThat(
-            "Wrong return type - should be string",
-            azureBlobService.getBlobData(SOURCE_ARTEFACT_ID, PROVENANCE),
-            instanceOf(String.class)
-        );
-        assertEquals("", azureBlobService.getBlobData(SOURCE_ARTEFACT_ID, PROVENANCE),
-                     "Wrong string detected"
-        );
+        when(blobClient.downloadContent()).thenReturn(BinaryData.fromString("TestString"));
+
+        String blobData = azureBlobService.getBlobData(SOURCE_ARTEFACT_ID, PROVENANCE);
+
+        assertEquals("TestString", blobData, "Wrong string detected");
     }
 
 
     @Test
-    void testGetBlobFile() throws IOException {
+    void testGetBlobFile() {
         String blobName = SOURCE_ARTEFACT_ID + '-' + PROVENANCE;
         BinaryData binaryData = BinaryData.fromString("TestString");
         when(blobContainerClient.getBlobClient(blobName)).thenReturn(blobClient);
