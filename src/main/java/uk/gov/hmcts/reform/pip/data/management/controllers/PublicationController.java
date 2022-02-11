@@ -234,5 +234,4 @@ public class PublicationController {
         return ResponseEntity.ok(publicationService.getPayloadByArtefactId(artefactId, verification));
 
     }
-
 }
