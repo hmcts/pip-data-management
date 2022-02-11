@@ -2,7 +2,6 @@ package uk.gov.hmcts.reform.pip.data.management.database;
 
 import com.azure.storage.blob.BlobClient;
 import com.azure.storage.blob.BlobContainerClient;
-import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
@@ -13,8 +12,6 @@ import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.FlatFile
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.charset.StandardCharsets;
 
 /**
  * Class with handles the interaction with the Azure Blob Service.
@@ -78,8 +75,9 @@ public class AzureBlobService {
     public String getBlobData(String sourceArtefactId, String provenance) {
         String blobName = sourceArtefactId + '-' + provenance;
         BlobClient blobClient = blobContainerClient.getBlobClient(blobName);
-        byte[] data = blobClient.downloadContent().toBytes();
-        return new String(data, StandardCharsets.ISO_8859_1);
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        blobClient.downloadStream(stream);
+        return stream.toString();
     }
 
     public Resource getBlobFile(String sourceArtefactId, String provenance) {
