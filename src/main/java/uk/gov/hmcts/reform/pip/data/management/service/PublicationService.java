@@ -6,9 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.AzureBlobService;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.NotFoundException;
-import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.UnauthorisedRequestException;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
-import uk.gov.hmcts.reform.pip.data.management.models.publication.Sensitivity;
 import uk.gov.hmcts.reform.pip.data.management.utils.PayloadExtractor;
 
 import java.time.LocalDateTime;
@@ -105,27 +103,47 @@ public class PublicationService {
     }
 
     /**
-     * takes in artefact id and returns the data within the matching blob in string format.
+     * Takes in artefact id and returns the metadata for the artefact.
      *
      * @param artefactId represents the artefact id which is then used to get an artefact to populate the inputs
-     *                   for the blob request
-     * @return the data within the blob in string format
+     *                   for the blob request.
+     * @param verification Whether the user is verified.
+     * @return The metadata for the found artefact.
      */
-    public String getByArtefactId(UUID artefactId, Boolean verification) {
+    public Artefact getMetadataByArtefactId(UUID artefactId, Boolean verification) {
 
-        Optional<Artefact> optionalArtefact = artefactRepository.findByArtefactId(artefactId);
+        Optional<Artefact> optionalArtefact;
+        LocalDateTime currentDate = LocalDateTime.now();
+        if (verification) {
+            optionalArtefact = artefactRepository.findByArtefactIdVerified(artefactId.toString(),
+                                                                           currentDate);
+        } else {
+            optionalArtefact = artefactRepository.findByArtefactIdUnverified(artefactId.toString(),
+                                                                             currentDate);
+        }
 
         if (optionalArtefact.isPresent()) {
-            Artefact artefact;
-            artefact = optionalArtefact.get();
-            if (!verification && artefact.getSensitivity() != Sensitivity.PUBLIC) {
-                throw new UnauthorisedRequestException("Unauthorised Request.");
-            }
-            String sourceArtefactId = artefact.getSourceArtefactId();
-            String provenance = artefact.getProvenance();
-            return azureBlobService.getBlobData(sourceArtefactId, provenance);
+            return optionalArtefact.get();
         } else {
             throw new NotFoundException(String.format("No artefact found with the ID: %s", artefactId));
         }
     }
+
+    /**
+     * Takes in artefact id and returns the payload within the matching blob in string format.
+     *
+     * @param artefactId represents the artefact id which is then used to get an artefact to populate the inputs
+     *                   for the blob request.
+     * @param verification Whether the user is verified.
+     * @return The data within the blob in string format.
+     */
+    public String getPayloadByArtefactId(UUID artefactId, Boolean verification) {
+        Artefact artefact = this.getMetadataByArtefactId(artefactId, verification);
+
+        String sourceArtefactId = artefact.getSourceArtefactId();
+        String provenance = artefact.getProvenance();
+
+        return azureBlobService.getBlobData(sourceArtefactId, provenance);
+    }
+
 }
