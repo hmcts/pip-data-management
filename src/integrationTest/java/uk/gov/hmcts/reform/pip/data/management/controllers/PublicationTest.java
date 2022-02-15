@@ -1746,7 +1746,7 @@ class PublicationTest {
     @DisplayName("Metadata endpoint where verification not set should display a 400")
     void retrieveMetadataWhenVerificationEndpointNotSet() throws Exception {
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
-                                                  .get("/publication/7d734e8d-ba1d-4730-bd8b-09a970be00cc"))
+                            .get("/publication/7d734e8d-ba1d-4730-bd8b-09a970be00cc"))
             .andExpect(status().isBadRequest()).andReturn();
 
         ExceptionResponse exceptionResponse =

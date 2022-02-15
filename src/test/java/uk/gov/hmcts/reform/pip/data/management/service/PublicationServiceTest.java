@@ -195,7 +195,6 @@ class PublicationServiceTest {
         );
     }
 
-
     @Test
     void testArtefactFileFromAzureWhenUnauthorized() {
         String string = "Hello";
@@ -257,7 +256,9 @@ class PublicationServiceTest {
     @Test
     void testArtefactMetadataFromAzureWhenDoesNotExist() {
         when(artefactRepository.findByArtefactIdVerified(any(), any())).thenReturn(Optional.empty());
-        assertThrows(NotFoundException.class, () -> publicationService.getPayloadByArtefactId(ARTEFACT_ID, true),
+
+        assertThrows(NotFoundException.class, ()
+            -> publicationService.getPayloadByArtefactId(ARTEFACT_ID, true),
                      "Not Found exception has not been thrown when artefact does not exist"
         );
     }

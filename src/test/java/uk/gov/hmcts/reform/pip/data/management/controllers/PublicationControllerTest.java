@@ -149,6 +149,7 @@ class PublicationControllerTest {
     void checkGetMetadataContentReturns() {
         when(publicationService.getMetadataByArtefactId(any(), any())).thenReturn(artefactWithId);
         ResponseEntity<Artefact> unmappedBlob = publicationController.getArtefactMetadata(UUID.randomUUID(), true);
+
         assertEquals(HttpStatus.OK, unmappedBlob.getStatusCode(),
                      STATUS_CODE_MATCH
         );
