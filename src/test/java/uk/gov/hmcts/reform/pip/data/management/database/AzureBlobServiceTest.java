@@ -49,7 +49,6 @@ class AzureBlobServiceTest {
     void testGetBlobData() {
         String blobName = SOURCE_ARTEFACT_ID + '-' + PROVENANCE;
         when(blobContainerClient.getBlobClient(blobName)).thenReturn(blobClient);
-
         when(blobClient.downloadContent()).thenReturn(BinaryData.fromString("TestString"));
 
         String blobData = azureBlobService.getBlobData(SOURCE_ARTEFACT_ID, PROVENANCE);

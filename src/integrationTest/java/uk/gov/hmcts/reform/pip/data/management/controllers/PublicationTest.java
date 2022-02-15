@@ -1308,8 +1308,6 @@ class PublicationTest {
     @ValueSource(booleans = {true, false})
     @DisplayName("Payload endpoint should not return the payload when artefact out of range and user unverified")
     void retrievePayloadOfAnArtefactWhereOutOfDateRangeWhenUnverified(boolean isJson) throws Exception {
-        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
-
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
 
         if (isJson) {
@@ -1317,7 +1315,6 @@ class PublicationTest {
         } else {
             mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(POST_URL).file(file);
         }
-
         mockHttpServletRequestBuilder.header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE);
         mockHttpServletRequestBuilder.header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY);
         mockHttpServletRequestBuilder.header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE);

@@ -184,6 +184,8 @@ dependencies {
   implementation 'org.springframework.boot:spring-boot-starter-data-jpa:2.5.5'
   implementation 'org.apache.tomcat.embed:tomcat-embed-core:9.0.58'
   implementation 'org.apache.tomcat.embed:tomcat-embed-websocket:9.0.58'
+  implementation 'com.opencsv:opencsv:5.5.2'
+  implementation 'com.vladmihalcea:hibernate-types-52:2.14.0'
 
   testImplementation "io.zonky.test:embedded-database-spring-test:2.1.1"
   testImplementation(platform('org.junit:junit-bom:5.8.1'))

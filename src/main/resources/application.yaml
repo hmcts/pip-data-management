@@ -49,7 +49,6 @@ spring:
       # this ensures the db persists after spring boot connection drops.
       ddl-auto: update
 
-
 azure:
   application-insights:
     instrumentation-key: ${rpe.AppInsightsInstrumentationKey:00000000-0000-0000-0000-000000000000}
