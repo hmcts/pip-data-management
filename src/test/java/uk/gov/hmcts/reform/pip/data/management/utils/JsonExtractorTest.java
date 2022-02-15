@@ -30,7 +30,7 @@ class JsonExtractorTest {
     JsonExtractor jsonExtractor;
 
     private static final String VALID_PAYLOAD = "{\"test\":\"test-1234\"}";
-    private static final String TEST_KEY = "case-id";
+    private static final String TEST_KEY = "case";
     private static final String TEST_KEY_NOT_FOUND = "test-id-not-found";
     private static final String UNKNOWN_EXCEPTION = "Unknown exception when opening the paylaod file";
 
@@ -44,8 +44,8 @@ class JsonExtractorTest {
             assertTrue(searchTerms.containsKey(TEST_KEY), "Search term does not contain expected key");
             assertEquals(1, searchTerms.get(TEST_KEY).size(), "Search term does not "
                 + "contain expected size of values");
-            assertEquals("CASE1234", searchTerms.get(TEST_KEY).get(0), "The search term value"
-                + "does not contain expected result");
+            assertEquals("{caseNumber=CASE1234, caseName=, caseUrn=null}", searchTerms.get(TEST_KEY).get(0).toString(),
+                         "The search term value does not contain expected result");
         } catch (IOException exception) {
             fail(UNKNOWN_EXCEPTION);
         }
@@ -58,13 +58,14 @@ class JsonExtractorTest {
             .getResourceAsStream("mocks/jsonPayload.json")) {
             String textJson = new String(mockFile.readAllBytes(), StandardCharsets.UTF_8);
             Map<String, List<Object>> searchTerms = jsonExtractor.extractSearchTerms(textJson);
+            System.out.println("searchTerms = " + searchTerms);
 
             assertTrue(searchTerms.containsKey(TEST_KEY), "Search term does not contain expected key");
             assertFalse(searchTerms.containsKey(TEST_KEY_NOT_FOUND), "Search term contains unexpected key");
             assertEquals(1, searchTerms.get(TEST_KEY).size(), "Search term does not "
                 + "contain expected size of values");
-            assertEquals("CASE1234", searchTerms.get(TEST_KEY).get(0), "The search term value"
-                + "does not contain expected result");
+            assertEquals("{caseNumber=CASE1234, caseName=, caseUrn=null}", searchTerms.get(TEST_KEY).get(0).toString(),
+                         "The search term value does not contain expected result");
         } catch (IOException exception) {
             fail(UNKNOWN_EXCEPTION);
         }

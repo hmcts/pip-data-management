@@ -48,7 +48,13 @@ spring:
     hibernate:
       # this ensures the db persists after spring boot connection drops.
       ddl-auto: update
+    show-sql: true
 
+logging:
+  level:
+    org:
+      hibernate:
+        type: TRACE
 
 azure:
   application-insights:
@@ -60,9 +66,7 @@ azure:
 payload:
   json:
     search-values:
-      case-id: "$['courtLists'][*]['courtHouse']['courtRoom'][*]['session'][*]['sittings'][*]['hearing'][*]['case'][*]['caseNumber']"
-      case-urn: "$['courtLists'][*]['courtHouse']['courtRoom'][*]['session'][*]['sittings'][*]['hearing'][*]'case'][*]['caseUrn']"
-      case-name: "$['courtLists'][*]['courtHouse']['courtRoom'][*]['session'][*]['sittings'][*]['hearing'][*]['case'][*]['caseName']"
+      case: "$['courtLists'][*]['courtHouse']['courtRoom'][*]['session'][*]['sittings'][*]['hearing'][*]['case'][*]['caseNumber', 'caseName', 'caseUrn']"
 validations:
   master-schema: "schemas/master_schema.json"
   daily-cause-list: "schemas/civil_daily_cause_list.json"

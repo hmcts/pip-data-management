@@ -2,9 +2,9 @@ package uk.gov.hmcts.reform.pip.data.management.utils;
 
 public enum CaseSearchTerm {
 
-    CASE_URN("case-urn"),
-    CASE_ID("case-id"),
-    CASE_NAME("case-name");
+    CASE_URN("caseUrn"),
+    CASE_ID("caseNumber"),
+    CASE_NAME("caseName");
 
     public final String dbValue;
 
