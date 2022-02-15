@@ -21,4 +21,5 @@ public interface Extractor {
      * @return A boolean determining if it is a valid type for the extractor.
      */
     boolean isAccepted(String payload);
+
 }
