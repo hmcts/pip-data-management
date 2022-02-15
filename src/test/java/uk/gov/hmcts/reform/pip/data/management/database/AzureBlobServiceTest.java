@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.pip.data.management.database;
 
+import com.azure.core.util.BinaryData;
 import com.azure.storage.blob.BlobClient;
 import com.azure.storage.blob.BlobContainerClient;
 import org.junit.jupiter.api.Test;
@@ -10,11 +11,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -52,15 +49,12 @@ class AzureBlobServiceTest {
     void testGetBlobData() {
         String blobName = SOURCE_ARTEFACT_ID + '-' + PROVENANCE;
         when(blobContainerClient.getBlobClient(blobName)).thenReturn(blobClient);
-        doNothing().when(blobClient).downloadStream(any());
-        assertThat(
-            "Wrong return type - should be string",
-            azureBlobService.getBlobData(SOURCE_ARTEFACT_ID, PROVENANCE),
-            instanceOf(String.class)
-        );
-        assertEquals("", azureBlobService.getBlobData(SOURCE_ARTEFACT_ID, PROVENANCE),
-                     "Wrong string detected"
-        );
+
+        when(blobClient.downloadContent()).thenReturn(BinaryData.fromString("TestString"));
+
+        String blobData = azureBlobService.getBlobData(SOURCE_ARTEFACT_ID, PROVENANCE);
+
+        assertEquals("TestString", blobData, "Wrong string detected");
     }
 
     @Test
