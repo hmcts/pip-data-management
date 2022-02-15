@@ -84,7 +84,6 @@
           "description": "The title for the judiciary",
           "title": "Judiciary Title",
           "type": "string",
-          "enum": ["Mr", "Mrs", "Miss", "Other"],
           "default": ""
         },
         "johNameSurname": {
@@ -747,10 +746,9 @@
                                               "properties": {
                                                 "title": {
                                                   "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items/individualDetails/title",
-                                                  "description": "Title of individual. Must be one of Mr, Mrs, Miss, Master, Other",
+                                                  "description": "Title of individual",
                                                   "title": "Title",
                                                   "type": "string",
-                                                  "enum": ["Mr", "Mrs", "Miss", "Master", "Other"],
                                                   "examples": [
                                                     "Mr"
                                                   ],
