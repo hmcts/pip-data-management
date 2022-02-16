@@ -15,7 +15,7 @@ public interface ArtefactRepository extends JpaRepository<Artefact, Long> {
 
     String INITIAL_SELECT =
          "SELECT DISTINCT on (artefact.artefact_id) artefact.* FROM ARTEFACT INNER JOIN (SELECT "
-         + "artefact_id, json_array_elements(search -> 'case') caseDetails FROM artefact) searchDetails ON artefact"
+         + "artefact_id, json_array_elements(search -> 'cases') caseDetails FROM artefact) searchDetails ON artefact"
          + ".artefact_id = searchDetails.artefact_id";
 
     String SEARCH_TERM_PARAM = "searchTerm";

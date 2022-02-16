@@ -30,7 +30,7 @@ class JsonExtractorTest {
     JsonExtractor jsonExtractor;
 
     private static final String VALID_PAYLOAD = "{\"test\":\"test-1234\"}";
-    private static final String TEST_KEY = "case";
+    private static final String TEST_KEY = "cases";
     private static final String TEST_KEY_NOT_FOUND = "test-id-not-found";
     private static final String UNKNOWN_EXCEPTION = "Unknown exception when opening the paylaod file";
 
