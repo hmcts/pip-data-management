@@ -162,6 +162,16 @@ class PublicationControllerTest {
         assertEquals(HttpStatus.OK, unmappedBlob.getStatusCode(),
                      STATUS_CODE_MATCH
         );
+        assertEquals(artefactWithId, unmappedBlob.getBody(), VALIDATION_EXPECTED_MESSAGE);
+    }
+
+    @Test
+    void checkGetPayloadContentReturns() {
+        when(publicationService.getPayloadByArtefactId(any(), any())).thenReturn(String.valueOf(artefactWithId));
+        ResponseEntity<String> unmappedBlob = publicationController.getArtefactPayload(UUID.randomUUID(), true);
+        assertEquals(HttpStatus.OK, unmappedBlob.getStatusCode(),
+                     STATUS_CODE_MATCH
+        );
         assertEquals(artefactWithId.toString(), unmappedBlob.getBody(), NOT_EQUAL_MESSAGE);
     }
 

@@ -230,6 +230,7 @@ public class PublicationController {
             response = String.class),
         @ApiResponse(code = 404,
             message = NOT_FOUND_TEXT),
+
     })
     @ApiOperation("Gets the the payload for the blob, given a specific artefact ID")
     @GetMapping("/{artefactId}/payload")
@@ -258,5 +259,6 @@ public class PublicationController {
             .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_VALUE)
             .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileType)
             .body(file);
+
     }
 }
