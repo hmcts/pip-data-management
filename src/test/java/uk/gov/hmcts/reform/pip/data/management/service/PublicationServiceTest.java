@@ -195,7 +195,7 @@ class PublicationServiceTest {
         );
     }
 
-  @Test
+    @Test
     void testArtefactFileFromAzureWhenUnauthorized() {
         String string = "Hello";
         byte[] testData = string.getBytes();
