@@ -145,6 +145,22 @@ class PublicationControllerTest {
     }
 
     @Test
+    void testGetArtefactsBySearchReturnsWhenTrue() {
+        when(publicationService.findAllBySearch(SEARCH_TERM, TEST_STRING, true)).thenReturn(List.of(artefactWithId));
+        assertEquals(HttpStatus.OK, publicationController.getAllRelevantArtefactsBySearchValue(SEARCH_TERM, TEST_STRING,
+                                                                                               true).getStatusCode(),
+                     STATUS_CODE_MATCH);
+    }
+
+    @Test
+    void testGetArtefactsBySearchReturnsWhenFalse() {
+        when(publicationService.findAllBySearch(SEARCH_TERM, TEST_STRING, false)).thenReturn(List.of(artefactWithId));
+        assertEquals(HttpStatus.OK, publicationController.getAllRelevantArtefactsBySearchValue(SEARCH_TERM, TEST_STRING,
+                                                                                               false).getStatusCode(),
+                     STATUS_CODE_MATCH);
+    }
+
+    @Test
     void checkGetMetadataContentReturns() {
         when(publicationService.getMetadataByArtefactId(any(), any())).thenReturn(artefactWithId);
         ResponseEntity<Artefact> unmappedBlob = publicationController.getArtefactMetadata(UUID.randomUUID(), true);
@@ -165,12 +181,24 @@ class PublicationControllerTest {
     }
 
     @Test
-    void checkGetByCourtReturnsOk() {
+    void checkGetArtefactsByCourtIdReturnsWhenTrue() {
         List<Artefact> artefactList = List.of(artefactWithId);
 
-        when(publicationService.findAllByCourtId(any(), any())).thenReturn(artefactList);
+        when(publicationService.findAllByCourtId(EMPTY_FIELD, true)).thenReturn(artefactList);
         ResponseEntity<List<Artefact>> unmappedArtefact = publicationController
             .getAllRelevantArtefactsByCourtId(EMPTY_FIELD, true);
+
+        assertEquals(artefactList, unmappedArtefact.getBody(), VALIDATION_EXPECTED_MESSAGE);
+        assertEquals(HttpStatus.OK, unmappedArtefact.getStatusCode(), STATUS_CODE_MATCH);
+    }
+
+    @Test
+    void checkGetArtefactsByCourtIdReturnsOKWhenFalse() {
+        List<Artefact> artefactList = List.of(artefactWithId);
+
+        when(publicationService.findAllByCourtId(EMPTY_FIELD, false)).thenReturn(artefactList);
+        ResponseEntity<List<Artefact>> unmappedArtefact = publicationController
+            .getAllRelevantArtefactsByCourtId(EMPTY_FIELD, false);
 
         assertEquals(artefactList, unmappedArtefact.getBody(), VALIDATION_EXPECTED_MESSAGE);
         assertEquals(HttpStatus.OK, unmappedArtefact.getStatusCode(), STATUS_CODE_MATCH);
@@ -194,14 +222,6 @@ class PublicationControllerTest {
 
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode(), STATUS_CODE_MATCH);
         assertEquals(artefactWithId, responseEntity.getBody(), "Artefacts should match");
-    }
-
-    @Test
-    void testGetArtefactsBySearchReturnsOk() {
-        when(publicationService.findAllBySearch(SEARCH_TERM, TEST_STRING, true)).thenReturn(List.of(artefactWithId));
-        assertEquals(HttpStatus.OK, publicationController.getAllRelevantArtefactsBySearchValue(SEARCH_TERM, TEST_STRING,
-                                                                                               true).getStatusCode(),
-                     STATUS_CODE_MATCH);
     }
 
 }
