@@ -44,6 +44,9 @@ import javax.validation.Valid;
 @RequestMapping("/publication")
 public class PublicationController {
 
+    private static final String NOT_FOUND_DESCRIPTION =
+        "No artefact found matching given parameters and date requirements";
+
     private final PublicationService publicationService;
 
     @Autowired
@@ -195,7 +198,7 @@ public class PublicationController {
         @ApiResponse(code = 200,
             message = "List of Artefacts matching the given courtId and verification parameters and date requirements"),
         @ApiResponse(code = 404,
-            message = "No artefact found matching given parameters and date requirements"),
+            message = NOT_FOUND_DESCRIPTION),
     })
     @ApiOperation("Get a series of publications matching a given courtId (e.g. courtid)")
     @GetMapping("/courtId/{courtId}")
@@ -208,7 +211,7 @@ public class PublicationController {
         @ApiResponse(code = 200,
             message = "List of Artefacts matching a given case value, verification parameters and date requirements"),
         @ApiResponse(code = 404,
-            message = "No artefact found matching given parameters and date requirements"),
+            message = NOT_FOUND_DESCRIPTION),
     })
     @ApiOperation("Get a series of publications matching a given case search value (e.g. CASE_URN/CASE_ID/CASE_NAME)")
     @GetMapping("/search/{searchTerm}/{searchValue}")
@@ -223,7 +226,7 @@ public class PublicationController {
             message = "Gets the artefact metadata",
             response = Artefact.class),
         @ApiResponse(code = 404,
-            message = "No artefact found matching given parameters and date requirements"),
+            message = NOT_FOUND_DESCRIPTION),
     })
     @ApiOperation("Gets the metadata for the blob, given a specific artefact id")
     @GetMapping("/{artefactId}")
@@ -239,7 +242,7 @@ public class PublicationController {
             message = "Blob data from the given request in text format.",
             response = String.class),
         @ApiResponse(code = 404,
-            message = "No artefact found matching given parameters and date requirements"),
+            message = NOT_FOUND_DESCRIPTION),
     })
     @ApiOperation("Gets the the payload for the blob, given a specific artefact ID")
     @GetMapping("/{artefactId}/payload")

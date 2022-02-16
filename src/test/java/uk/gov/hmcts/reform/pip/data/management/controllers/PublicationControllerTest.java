@@ -193,7 +193,7 @@ class PublicationControllerTest {
     }
 
     @Test
-    void checkGetArtefactsByCourtIdReturnsOKWhenFalse() {
+    void checkGetArtefactsByCourtIdReturnsOkWhenFalse() {
         List<Artefact> artefactList = List.of(artefactWithId);
 
         when(publicationService.findAllByCourtId(EMPTY_FIELD, false)).thenReturn(artefactList);

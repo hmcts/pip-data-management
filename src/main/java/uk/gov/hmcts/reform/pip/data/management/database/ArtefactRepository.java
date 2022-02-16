@@ -13,6 +13,11 @@ import java.util.Optional;
 @Repository
 public interface ArtefactRepository extends JpaRepository<Artefact, Long> {
 
+    String INITIAL_SELECT =
+         "SELECT DISTINCT on (artefact.artefact_id) artefact.* FROM ARTEFACT INNER JOIN (SELECT "
+         + "artefact_id, json_array_elements(search -> 'case') caseDetails FROM artefact) searchDetails ON artefact"
+         + ".artefact_id = searchDetails.artefact_id";
+
     String SEARCH_TERM_PARAM = "searchTerm";
     String ARTEFACT_ID_PARAM = "artefact_id";
     String CURRENT_DATE_PARAM = "curr_date";
@@ -46,34 +51,26 @@ public interface ArtefactRepository extends JpaRepository<Artefact, Long> {
     List<Artefact> findArtefactsByCourtIdUnverified(@Param(COURT_ID_PARAM) String courtId,
                                                     @Param(CURRENT_DATE_PARAM) LocalDateTime currentDate);
 
-    @Query(value = "SELECT DISTINCT on (artefact.artefact_id) artefact.* FROM ARTEFACT INNER JOIN (SELECT "
-        + "artefact_id, json_array_elements(search -> 'case') caseDetails FROM artefact) searchDetails ON artefact "
-        + ".artefact_id = searchDetails.artefact_id WHERE LOWER(searchDetails.caseDetails ->> 'caseName') LIKE LOWER" +
-        "('%' || :caseName || '%') and display_from < :curr_date and (display_to > :curr_date or display_to is null)",
+    @Query(value = INITIAL_SELECT + "WHERE LOWER(searchDetails.caseDetails ->> 'caseName') LIKE LOWER"
+        + "('%' || :caseName || '%') and display_from < :curr_date and (display_to > :curr_date or display_to is null)",
         nativeQuery = true)
     List<Artefact> findArtefactByCaseNameVerified(@Param(CASE_NAME_PARAM) String caseName,
                                                   @Param(CURRENT_DATE_PARAM) LocalDateTime currentDate);
 
-    @Query(value = "SELECT DISTINCT on (artefact.artefact_id) artefact.* FROM ARTEFACT INNER JOIN (SELECT "
-        + "artefact_id, json_array_elements(search -> 'case') caseDetails FROM artefact) searchDetails ON artefact "
-        + ".artefact_id = searchDetails.artefact_id WHERE LOWER(searchDetails.caseDetails ->> 'caseName') LIKE "
+    @Query(value = INITIAL_SELECT + "WHERE LOWER(searchDetails.caseDetails ->> 'caseName') LIKE "
         + "LOWER('%' || :caseName || '%') and display_from < :curr_date and (display_to > :curr_date or display_to "
         + "is null) and sensitivity = 'PUBLIC'", nativeQuery = true)
     List<Artefact> findArtefactByCaseNameUnverified(@Param(CASE_NAME_PARAM) String caseName,
                                                     @Param(CURRENT_DATE_PARAM) LocalDateTime currentDate);
 
 
-    @Query(value = "SELECT DISTINCT on (artefact.artefact_id) artefact.* FROM ARTEFACT INNER JOIN (SELECT "
-        + "artefact_id, json_array_elements(search -> 'case') caseDetails FROM artefact) searchDetails ON artefact"
-        + ".artefact_id = searchDetails.artefact_id WHERE searchDetails.caseDetails ->> :searchTerm = :searchValue and "
+    @Query(value = INITIAL_SELECT + "WHERE searchDetails.caseDetails ->> :searchTerm = :searchValue and "
         + "display_from < :curr_date and (display_to > :curr_date or display_to is null)", nativeQuery = true)
     List<Artefact> findArtefactBySearchVerified(@Param(SEARCH_TERM_PARAM) String searchTerm,
                                                 @Param(SEARCH_VAL_PARAM) String searchVal,
                                                 @Param(CURRENT_DATE_PARAM) LocalDateTime currentDate);
 
-    @Query(value = "SELECT DISTINCT on (artefact.artefact_id) artefact.* FROM ARTEFACT INNER JOIN (SELECT "
-        + "artefact_id, json_array_elements(search -> 'case') caseDetails FROM artefact) searchDetails ON artefact "
-        + ".artefact_id = searchDetails.artefact_id WHERE searchDetails.caseDetails ->> :searchTerm = :searchValue "
+    @Query(value = INITIAL_SELECT + "WHERE searchDetails.caseDetails ->> :searchTerm = :searchValue "
         + "and display_from < :curr_date and (display_to > :curr_date or display_to is null) and sensitivity = "
         + "'PUBLIC'",
         nativeQuery = true)

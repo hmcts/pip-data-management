@@ -58,7 +58,6 @@ class JsonExtractorTest {
             .getResourceAsStream("mocks/jsonPayload.json")) {
             String textJson = new String(mockFile.readAllBytes(), StandardCharsets.UTF_8);
             Map<String, List<Object>> searchTerms = jsonExtractor.extractSearchTerms(textJson);
-            System.out.println("searchTerms = " + searchTerms);
 
             assertTrue(searchTerms.containsKey(TEST_KEY), "Search term does not contain expected key");
             assertFalse(searchTerms.containsKey(TEST_KEY_NOT_FOUND), "Search term contains unexpected key");
