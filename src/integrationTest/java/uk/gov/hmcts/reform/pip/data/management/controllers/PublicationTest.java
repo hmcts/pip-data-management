@@ -1721,6 +1721,23 @@ class PublicationTest {
     }
 
     @Test
+    void testGetArtefactByCaseIdSearchUnverifiedNotFound() throws Exception {
+        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(blobContainerClient.getBlobContainerUrl()).thenReturn(PAYLOAD_URL);
+
+        createDailyList(Sensitivity.CLASSIFIED);
+
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 =
+            MockMvcRequestBuilders.get(SEARCH_URL + VALID_CASE_ID_SEARCH);
+
+        mockHttpServletRequestBuilder1
+            .header(VERIFICATION_HEADER, FALSE);
+
+        mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isNotFound()).andReturn();
+
+    }
+
+    @Test
     void testGetArtefactByCaseNameSearchVerified() throws Exception {
         when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
         when(blobContainerClient.getBlobContainerUrl()).thenReturn(PAYLOAD_URL);
@@ -1761,5 +1778,22 @@ class PublicationTest {
             getResponse.getResponse().getContentAsString().contains(artefact.getArtefactId().toString()),
             "SHOULD_RETURN_EXPECTED_ARTEFACT");
     }
+
+    @Test
+    void testGetArtefactByCaseNameSearchUnverifiedNotFound() throws Exception {
+        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(blobContainerClient.getBlobContainerUrl()).thenReturn(PAYLOAD_URL);
+
+        createDailyList(Sensitivity.CLASSIFIED);
+
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 =
+            MockMvcRequestBuilders.get(SEARCH_URL + VALID_CASE_NAME_SEARCH);
+
+        mockHttpServletRequestBuilder1
+            .header(VERIFICATION_HEADER, FALSE);
+
+        mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isNotFound()).andReturn();
+    }
+
 }
 
