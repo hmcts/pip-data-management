@@ -231,15 +231,13 @@ class GlobalExceptionHandlerTest {
 
         ResponseEntity<ExceptionResponse> responseEntity =
             globalExceptionHandler.handle(csvParseException);
+
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode(),
-                     "Should be unauthorised exception"
+                     "Should be bad request exception"
         );
         assertNotNull(responseEntity.getBody(), NOT_NULL_MESSAGE);
         assertTrue(
             responseEntity.getBody().getMessage()
-                .contains(TEST_MESSAGE),
-            EXCEPTION_BODY_NOT_MATCH
-        );
+                .contains(TEST_MESSAGE), EXCEPTION_BODY_NOT_MATCH);
     }
-
 }
