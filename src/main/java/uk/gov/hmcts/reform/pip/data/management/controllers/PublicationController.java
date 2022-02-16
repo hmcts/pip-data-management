@@ -220,17 +220,33 @@ public class PublicationController {
 
     @ApiResponses({
         @ApiResponse(code = 200,
+            message = "Gets the artefact metadata",
+            response = Artefact.class),
+        @ApiResponse(code = 404,
+            message = "No artefact found matching given parameters and date requirements"),
+    })
+    @ApiOperation("Gets the metadata for the blob, given a specific artefact id")
+    @GetMapping("/{artefactId}")
+    public ResponseEntity<Artefact> getArtefactMetadata(
+        @PathVariable UUID artefactId, @RequestHeader Boolean verification) {
+
+        return ResponseEntity.ok(publicationService.getMetadataByArtefactId(artefactId, verification));
+
+    }
+
+    @ApiResponses({
+        @ApiResponse(code = 200,
             message = "Blob data from the given request in text format.",
             response = String.class),
         @ApiResponse(code = 404,
             message = "No artefact found matching given parameters and date requirements"),
     })
-    @ApiOperation("Get the info from within a blob given source artefact id and provenance")
-    @GetMapping("/{artefactId}")
-    public ResponseEntity<String> getBlobData(@PathVariable UUID artefactId, @RequestHeader Boolean verification) {
+    @ApiOperation("Gets the the payload for the blob, given a specific artefact ID")
+    @GetMapping("/{artefactId}/payload")
+    public ResponseEntity<String> getArtefactPayload(
+        @PathVariable UUID artefactId, @RequestHeader Boolean verification) {
 
-        return ResponseEntity.ok(publicationService.getByArtefactId(artefactId, verification));
+        return ResponseEntity.ok(publicationService.getPayloadByArtefactId(artefactId, verification));
 
     }
-
 }
