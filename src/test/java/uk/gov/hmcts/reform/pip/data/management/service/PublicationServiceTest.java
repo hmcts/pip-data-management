@@ -12,9 +12,11 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.AzureBlobService;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ArtefactNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.NotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Language;
+import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
 import uk.gov.hmcts.reform.pip.data.management.utils.PayloadExtractor;
 
 import java.util.ArrayList;
@@ -27,8 +29,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
+import static uk.gov.hmcts.reform.pip.data.management.helpers.TestConstants.MESSAGES_MATCH;
 
 @ExtendWith(MockitoExtension.class)
 class PublicationServiceTest {
@@ -51,6 +55,9 @@ class PublicationServiceTest {
     private static final String PAYLOAD_URL = "https://ThisIsATestPayload";
     private static final String TEST_KEY = "TestKey";
     private static final String TEST_VALUE = "TestValue";
+    private static final CaseSearchTerm SEARCH_TERM_CASE_ID = CaseSearchTerm.CASE_ID;
+    private static final CaseSearchTerm SEARCH_TERM_CASE_NAME = CaseSearchTerm.CASE_NAME;
+    private static final CaseSearchTerm SEARCH_TERM_CASE_URN = CaseSearchTerm.CASE_URN;
     private static final Map<String, List<Object>> SEARCH_VALUES = new ConcurrentHashMap<>();
     private static final MultipartFile FILE = new MockMultipartFile("test", (byte[]) null);
     private static final String VALIDATION_ARTEFACT_NOT_MATCH = "Artefacts do not match";
@@ -58,6 +65,7 @@ class PublicationServiceTest {
     private Artefact artefact;
     private Artefact artefactWithPayloadUrl;
     private Artefact artefactWithIdAndPayloadUrl;
+    private Artefact artefactWithId;
 
     @BeforeAll
     public static void setupSearchValues() {
@@ -79,6 +87,14 @@ class PublicationServiceTest {
             .build();
 
         artefactWithIdAndPayloadUrl = Artefact.builder()
+            .artefactId(ARTEFACT_ID)
+            .sourceArtefactId(SOURCE_ARTEFACT_ID)
+            .provenance(PROVENANCE)
+            .payload(PAYLOAD_URL)
+            .search(SEARCH_VALUES)
+            .build();
+
+        artefactWithId = Artefact.builder()
             .artefactId(ARTEFACT_ID)
             .sourceArtefactId(SOURCE_ARTEFACT_ID)
             .provenance(PROVENANCE)
@@ -146,11 +162,11 @@ class PublicationServiceTest {
 
         Artefact returnedArtefact = publicationService.createPublication(artefact, FILE);
 
-        assertEquals(artefactWithIdAndPayloadUrl, returnedArtefact, "Returned artefacts should match");
+        assertEquals(artefactWithIdAndPayloadUrl, returnedArtefact, VALIDATION_ARTEFACT_NOT_MATCH);
     }
 
     @Test
-    void testArtefactContentFromAzureWhenAuthorized() {
+    void testArtefactPayloadFromAzureWhenAuthorized() {
         Artefact artefact = Artefact.builder()
             .sourceArtefactId(SOURCE_ARTEFACT_ID)
             .provenance(PROVENANCE)
@@ -181,7 +197,7 @@ class PublicationServiceTest {
     }
 
     @Test
-    void testArtefactContentFromAzureWhenUnauthorized() {
+    void testArtefactPayloadFromAzureWhenUnauthorized() {
         Artefact artefact = Artefact.builder()
             .sourceArtefactId(SOURCE_ARTEFACT_ID)
             .provenance(PROVENANCE)
@@ -209,7 +225,7 @@ class PublicationServiceTest {
     }
 
     @Test
-    void testArtefactContentFromAzureWhenDoesNotExist() {
+    void testArtefactPayloadFromAzureWhenDoesNotExist() {
         when(artefactRepository.findByArtefactIdVerified(any(), any())).thenReturn(Optional.empty());
         assertThrows(NotFoundException.class, () -> publicationService.getPayloadByArtefactId(ARTEFACT_ID, true),
                      "Not Found exception has not been thrown when artefact does not exist"
@@ -264,7 +280,7 @@ class PublicationServiceTest {
     }
 
     @Test
-    void testFindByCourtIdFromPostgres() {
+    void testFindByCourtIdWhenVerified() {
         Artefact artefact = Artefact.builder()
             .sourceArtefactId(SOURCE_ARTEFACT_ID)
             .provenance(PROVENANCE)
@@ -281,18 +297,120 @@ class PublicationServiceTest {
         artefactList.add(artefact);
         artefactList.add(artefact2);
 
-        when(artefactRepository.findArtefactsBySearchUnverified(any(), any()))
-            .thenReturn(artefactList);
-        when(artefactRepository.findArtefactsBySearchVerified(any(), any()))
+        when(artefactRepository.findArtefactsByCourtIdVerified(any(), any()))
             .thenReturn(artefactList);
 
         assertEquals(artefactList, publicationService.findAllByCourtId("abc", true),
-                     "Message"
-        );
-        assertEquals(artefactList, publicationService.findAllByCourtId("abc", false),
-                     "Message"
+                     VALIDATION_ARTEFACT_NOT_MATCH
         );
     }
+
+    @Test
+    void testFindByCourtIdWhenUnverified() {
+        Artefact artefact = Artefact.builder()
+            .sourceArtefactId(SOURCE_ARTEFACT_ID)
+            .provenance(PROVENANCE)
+            .language(Language.ENGLISH)
+            .build();
+
+        Artefact artefact2 = Artefact.builder()
+            .sourceArtefactId(SOURCE_ARTEFACT_ID)
+            .provenance(PROVENANCE)
+            .language(Language.WELSH)
+            .build();
+
+        List<Artefact> artefactList = new ArrayList<>();
+        artefactList.add(artefact);
+        artefactList.add(artefact2);
+
+        when(artefactRepository.findArtefactsByCourtIdUnverified(any(), any()))
+            .thenReturn(artefactList);
+
+        assertEquals(artefactList, publicationService.findAllByCourtId("abc", false),
+                     VALIDATION_ARTEFACT_NOT_MATCH
+        );
+    }
+
+    @Test
+    void testFindAllBySearchCaseIdVerified() {
+        when(artefactRepository.findArtefactBySearchVerified(eq(SEARCH_TERM_CASE_ID.dbValue), eq(TEST_VALUE), any()))
+            .thenReturn(List.of(artefactWithIdAndPayloadUrl));
+
+        assertEquals(artefactWithIdAndPayloadUrl,
+                     publicationService.findAllBySearch(SEARCH_TERM_CASE_ID, TEST_VALUE, true).get(0),
+                     VALIDATION_ARTEFACT_NOT_MATCH);
+    }
+
+    @Test
+    void testFindAllBySearchCaseIdUnverified() {
+        when(artefactRepository.findArtefactBySearchUnverified(eq(SEARCH_TERM_CASE_ID.dbValue), eq(TEST_VALUE), any()))
+            .thenReturn(List.of(artefactWithIdAndPayloadUrl));
+
+        assertEquals(artefactWithId,
+                     publicationService.findAllBySearch(SEARCH_TERM_CASE_ID, TEST_VALUE, false).get(0),
+                     VALIDATION_ARTEFACT_NOT_MATCH);
+    }
+
+    @Test
+    void testFindAllNoArtefactsThrowsNotFound() {
+        ArtefactNotFoundException ex = assertThrows(ArtefactNotFoundException.class, () ->
+            publicationService.findAllBySearch(SEARCH_TERM_CASE_ID, "not found", true)
+        );
+        assertEquals("No Artefacts found with for CASE_ID with the value: not found",
+                     ex.getMessage(), MESSAGES_MATCH
+        );
+    }
+
+    @Test
+    void testFindAllByCaseNameVerified() {
+        when(artefactRepository.findArtefactByCaseNameVerified(eq(TEST_VALUE), any()))
+            .thenReturn(List.of(artefactWithIdAndPayloadUrl));
+
+        assertEquals(
+            artefactWithIdAndPayloadUrl,
+            publicationService.findAllBySearch(SEARCH_TERM_CASE_NAME, TEST_VALUE, true).get(0),
+            VALIDATION_ARTEFACT_NOT_MATCH
+        );
+    }
+
+    @Test
+    void testFindAllByCaseNameUnverified() {
+        when(artefactRepository.findArtefactByCaseNameUnverified(eq(TEST_VALUE), any()))
+            .thenReturn(List.of(artefactWithIdAndPayloadUrl));
+
+        assertEquals(artefactWithIdAndPayloadUrl,
+                     publicationService.findAllBySearch(SEARCH_TERM_CASE_NAME, TEST_VALUE, false).get(0),
+                     VALIDATION_ARTEFACT_NOT_MATCH);
+    }
+
+    @Test
+    void testFindAllByCaseUrnVerified() {
+        when(artefactRepository.findArtefactBySearchVerified(eq(SEARCH_TERM_CASE_URN.dbValue), eq(TEST_VALUE), any()))
+            .thenReturn(List.of(artefactWithIdAndPayloadUrl));
+
+        assertEquals(
+            artefactWithIdAndPayloadUrl,
+            publicationService.findAllBySearch(SEARCH_TERM_CASE_URN, TEST_VALUE, true).get(0),
+            VALIDATION_ARTEFACT_NOT_MATCH
+        );
+    }
+
+    @Test
+    void testFindAllByCaseUrnUnverified() {
+        when(artefactRepository.findArtefactBySearchUnverified(eq(SEARCH_TERM_CASE_URN.dbValue), eq(TEST_VALUE), any()))
+            .thenReturn(List.of(artefactWithIdAndPayloadUrl));
+
+        assertEquals(artefactWithIdAndPayloadUrl,
+                     publicationService.findAllBySearch(SEARCH_TERM_CASE_URN, TEST_VALUE, false).get(0),
+                     VALIDATION_ARTEFACT_NOT_MATCH);
+    }
+
+    @Test
+    void testInvalidEnumTypeThrows() {
+        assertThrows(IllegalArgumentException.class, () ->
+            publicationService.findAllBySearch(CaseSearchTerm.valueOf("invalid"), TEST_VALUE, true));
+    }
+
 }
 
 

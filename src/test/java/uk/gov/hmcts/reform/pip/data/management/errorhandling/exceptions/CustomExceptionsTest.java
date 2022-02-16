@@ -70,4 +70,10 @@ class CustomExceptionsTest {
                      flatFileException.getMessage(), ASSERTION_MESSAGE);
     }
 
+    @Test
+    void testCreationOfArtefactNotFoundException() {
+        ArtefactNotFoundException artefactNotFoundException = new ArtefactNotFoundException(TEST_MESSAGE);
+        assertEquals(TEST_MESSAGE, artefactNotFoundException.getMessage(), ASSERTION_MESSAGE);
+    }
+
 }

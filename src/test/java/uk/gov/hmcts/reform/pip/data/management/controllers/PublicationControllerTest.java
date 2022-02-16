@@ -20,6 +20,7 @@ import uk.gov.hmcts.reform.pip.data.management.models.publication.ListType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Sensitivity;
 import uk.gov.hmcts.reform.pip.data.management.service.PublicationService;
 import uk.gov.hmcts.reform.pip.data.management.service.ValidationService;
+import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -62,7 +63,9 @@ class PublicationControllerTest {
     private static final String PAYLOAD = "payload";
     private static final MultipartFile FILE = new MockMultipartFile("test", (byte[]) null);
     private static final String PAYLOAD_URL = "This is a test payload";
+    private static final CaseSearchTerm SEARCH_TERM = CaseSearchTerm.CASE_ID;
     private static final String EMPTY_FIELD = "";
+    private static final String TEST_STRING = "test";
     private static final String VALIDATION_EXPECTED_MESSAGE =
         "The expected exception does not contain the correct message";
     private static final String NOT_EQUAL_MESSAGE = "The expected strings are not the same";
@@ -146,6 +149,22 @@ class PublicationControllerTest {
     }
 
     @Test
+    void testGetArtefactsBySearchReturnsWhenTrue() {
+        when(publicationService.findAllBySearch(SEARCH_TERM, TEST_STRING, true)).thenReturn(List.of(artefactWithId));
+        assertEquals(HttpStatus.OK, publicationController.getAllRelevantArtefactsBySearchValue(SEARCH_TERM, TEST_STRING,
+                                                                                               true).getStatusCode(),
+                     STATUS_CODE_MATCH);
+    }
+
+    @Test
+    void testGetArtefactsBySearchReturnsWhenFalse() {
+        when(publicationService.findAllBySearch(SEARCH_TERM, TEST_STRING, false)).thenReturn(List.of(artefactWithId));
+        assertEquals(HttpStatus.OK, publicationController.getAllRelevantArtefactsBySearchValue(SEARCH_TERM, TEST_STRING,
+                                                                                               false).getStatusCode(),
+                     STATUS_CODE_MATCH);
+    }
+
+    @Test
     void checkGetMetadataContentReturns() {
         when(publicationService.getMetadataByArtefactId(any(), any())).thenReturn(artefactWithId);
         ResponseEntity<Artefact> unmappedBlob = publicationController.getArtefactMetadata(UUID.randomUUID(), true);
@@ -184,12 +203,24 @@ class PublicationControllerTest {
     }
 
     @Test
-    void checkGetByCourtReturnsOk() {
+    void checkGetArtefactsByCourtIdReturnsWhenTrue() {
         List<Artefact> artefactList = List.of(artefactWithId);
 
-        when(publicationService.findAllByCourtId(any(), any())).thenReturn(artefactList);
+        when(publicationService.findAllByCourtId(EMPTY_FIELD, true)).thenReturn(artefactList);
         ResponseEntity<List<Artefact>> unmappedArtefact = publicationController
             .getAllRelevantArtefactsByCourtId(EMPTY_FIELD, true);
+
+        assertEquals(artefactList, unmappedArtefact.getBody(), VALIDATION_EXPECTED_MESSAGE);
+        assertEquals(HttpStatus.OK, unmappedArtefact.getStatusCode(), STATUS_CODE_MATCH);
+    }
+
+    @Test
+    void checkGetArtefactsByCourtIdReturnsOkWhenFalse() {
+        List<Artefact> artefactList = List.of(artefactWithId);
+
+        when(publicationService.findAllByCourtId(EMPTY_FIELD, false)).thenReturn(artefactList);
+        ResponseEntity<List<Artefact>> unmappedArtefact = publicationController
+            .getAllRelevantArtefactsByCourtId(EMPTY_FIELD, false);
 
         assertEquals(artefactList, unmappedArtefact.getBody(), VALIDATION_EXPECTED_MESSAGE);
         assertEquals(HttpStatus.OK, unmappedArtefact.getStatusCode(), STATUS_CODE_MATCH);
