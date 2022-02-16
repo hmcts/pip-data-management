@@ -16,12 +16,12 @@ public interface ArtefactRepository extends JpaRepository<Artefact, Long> {
     String INITIAL_SELECT =
          "SELECT DISTINCT on (artefact.artefact_id) artefact.* FROM ARTEFACT INNER JOIN (SELECT "
          + "artefact_id, json_array_elements(search -> 'cases') caseDetails FROM artefact) searchDetails ON artefact"
-         + ".artefact_id = searchDetails.artefact_id";
+         + ".artefact_id = searchDetails.artefact_id ";
 
     String SEARCH_TERM_PARAM = "searchTerm";
     String ARTEFACT_ID_PARAM = "artefact_id";
     String CURRENT_DATE_PARAM = "curr_date";
-    String SEARCH_VAL_PARAM = "searchVal";
+    String SEARCH_VAL_PARAM = "searchValue";
     String COURT_ID_PARAM = "courtId";
     String CASE_NAME_PARAM = "caseName";
 
