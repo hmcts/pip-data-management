@@ -7,22 +7,25 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.web.multipart.MultipartFile;
+import org.testcontainers.shaded.org.apache.commons.io.IOUtils;
 import uk.gov.hmcts.reform.pip.data.management.Application;
 import uk.gov.hmcts.reform.pip.data.management.config.AzureBlobConfigurationTest;
-import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CourtNotFoundException;
-import uk.gov.hmcts.reform.pip.data.management.models.Court;
-import uk.gov.hmcts.reform.pip.data.management.models.request.FilterRequest;
+import uk.gov.hmcts.reform.pip.data.management.models.court.Court;
+import uk.gov.hmcts.reform.pip.data.management.models.court.CourtCsv;
 import uk.gov.hmcts.reform.pip.data.management.service.CourtService;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
-import static uk.gov.hmcts.reform.pip.data.management.helpers.CourtHelper.createMockCourtList;
 
 @SpringBootTest(classes = {Application.class, AzureBlobConfigurationTest.class})
 @ActiveProfiles(profiles = "test")
@@ -30,90 +33,153 @@ import static uk.gov.hmcts.reform.pip.data.management.helpers.CourtHelper.create
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
 class CourtControllerTest {
 
-    private List<Court> allCourts;
-    private final List<String> filters = new ArrayList<>();
-    private final List<String> values = new ArrayList<>();
-
     @Mock
     private CourtService courtService;
 
     @InjectMocks
     private CourtController courtController;
 
+    Court firstCourt;
+    Court secondCourt;
 
     @BeforeEach
     void setup() {
-        allCourts = createMockCourtList();
 
-        filters.add("location");
-        filters.add("jurisdiction");
+        CourtCsv firstCourtCsv = new CourtCsv();
+        firstCourtCsv.setCourtName("Court Name A");
+        firstCourtCsv.setProvenance("Court Provenance A");
+        firstCourtCsv.setRegion("Court Region A");
+        firstCourt = new Court(firstCourtCsv);
 
-        values.add("london");
-        values.add("manchester");
-
-        when(courtService.getAllCourts()).thenReturn(allCourts);
-        when(courtService.handleSearchCourt("mock court 1")).thenReturn(allCourts.get(0));
-        when(courtService.handleSearchCourt(1)).thenReturn(allCourts.get(0));
-        when(courtService.handleFilterRequest(filters, values)).thenReturn(allCourts);
-        when(courtService.handleSearchCourt("Invalid")).thenThrow(CourtNotFoundException.class);
-        when(courtService.handleSearchCourt(7)).thenThrow(CourtNotFoundException.class);
+        CourtCsv secondCourtCsv = new CourtCsv();
+        secondCourtCsv.setCourtName("Court Name B");
+        secondCourtCsv.setProvenance("Court Provenance B");
+        secondCourtCsv.setRegion("Court Region B");
+        secondCourt = new Court(secondCourtCsv);
     }
 
     @Test
     void testGetCourtListReturnsAllCourts() {
-        assertEquals(allCourts, courtController.getCourtList().getBody(), "Should contain all courts");
+
+        when(courtService.getAllCourts()).thenReturn(List.of(firstCourt, secondCourt));
+
+        List<Court> returnedCourts = courtController.getCourtList().getBody();
+
+        assertEquals(2, returnedCourts.size(), "Unexpected number of courts returned");
+        assertTrue(returnedCourts.contains(firstCourt), "First court not contained within list");
+        assertTrue(returnedCourts.contains(secondCourt), "Second court not contained within list");
     }
 
     @Test
     void testGetCourtListReturnsOk() {
-        assertEquals(HttpStatus.OK, courtController.getCourtList().getStatusCode(), "Status code should match");
+        when(courtService.getAllCourts()).thenReturn(List.of(firstCourt, secondCourt));
+        assertEquals(HttpStatus.OK, courtController.getCourtList().getStatusCode(),
+                     "Court list has not returned OK");
     }
 
     @Test
     void testGetCourtIdReturnsCourt() {
-        assertEquals(allCourts.get(0), courtController.getCourtById(1).getBody(),
-                     "Returned Courts should match"
+        int id = 1;
+        when(courtService.getCourtById(id)).thenReturn(firstCourt);
+
+        assertEquals(firstCourt, courtController.getCourtById(id).getBody(),
+                     "Returned court does not match expected court"
         );
     }
 
     @Test
     void testGetCourtIdReturnsOK() {
-        assertEquals(HttpStatus.OK, courtController.getCourtById(1).getStatusCode(),
-                     "Status code should match"
+        int id = 1;
+        when(courtService.getCourtById(id)).thenReturn(firstCourt);
+
+        assertEquals(HttpStatus.OK, courtController.getCourtById(id).getStatusCode(),
+                     "Court ID search has not returned OK"
         );
     }
 
     @Test
-    void testGetCourtIdNoResultsThrows() {
-        assertThrows(CourtNotFoundException.class, () ->
-            courtController.getCourtById(7));
-    }
+    void testGetCourtByNameReturnsCourt() {
+        when(courtService.getCourtByName(secondCourt.getName())).thenReturn(secondCourt);
 
-    @Test
-    void testGetCourtReturnsCourt() {
-        assertEquals(allCourts.get(0), courtController.getCourtByName("mock court 1").getBody(),
-                     "Courts should match"
+        assertEquals(secondCourt, courtController.getCourtByName(secondCourt.getName()).getBody(),
+                     "Returned court does not match expected court"
         );
     }
 
     @Test
-    void testGetCourtReturnsOk() {
-        assertEquals(HttpStatus.OK, courtController.getCourtByName("mock court 1").getStatusCode(),
-                     "Status code should match"
-        );
-    }
+    void testGetCourtByNameReturnsOk() {
+        when(courtService.getCourtByName(secondCourt.getName())).thenReturn(secondCourt);
 
-    @Test
-    void testGetCourtNoResultsThrows() {
-        assertThrows(CourtNotFoundException.class, () ->
-            courtController.getCourtByName("Invalid"));
+        assertEquals(HttpStatus.OK, courtController.getCourtByName(secondCourt.getName()).getStatusCode(),
+                     "Court Name search has not returned OK"
+        );
     }
 
     @Test
     void testGetFilterCourtsReturnsCourts() {
-        FilterRequest filterRequest = new FilterRequest(filters, values);
-        assertEquals(allCourts, courtController.filterCourts(filterRequest).getBody(),
-                     "Courts should match"
-        );
+        List<String> regions = List.of("Region A", "Region B");
+        List<String> jurisdictions = List.of("Jurisdiction A", "Jurisdiction B");
+
+        when(courtService.searchByRegionAndJurisdiction(regions, jurisdictions))
+            .thenReturn(List.of(firstCourt, secondCourt));
+
+        List<Court> courts = courtController.searchByRegionAndJurisdiction(regions, jurisdictions).getBody();
+
+
+        assertEquals(2, courts.size(), "Unexpected number of courts have been returned");
+        assertTrue(courts.contains(firstCourt), "First court not contained within list");
+        assertTrue(courts.contains(secondCourt), "Second court not contained within list");
+    }
+
+    @Test
+    void testGetByRegionAndJurisdictionReturnsOk() {
+        List<String> regions = List.of("Region A", "Region B");
+        List<String> jurisdictions = List.of("Jurisdiction A", "Jurisdiction B");
+
+        when(courtService.searchByRegionAndJurisdiction(regions, jurisdictions))
+            .thenReturn(List.of(firstCourt, secondCourt));
+
+        assertEquals(HttpStatus.OK,
+                     courtController.searchByRegionAndJurisdiction(regions, jurisdictions).getStatusCode(),
+                     "Court region and jurisdiction search has not returned OK");
+    }
+
+    @Test
+    void testUploadCourtsReturnsNewCourts() throws IOException {
+
+        try (InputStream inputStream = this.getClass().getClassLoader()
+            .getResourceAsStream("csv/ValidCsv.csv")) {
+
+            MultipartFile multipartFile = new MockMultipartFile("file",
+                                                                "TestFileName", "text/plain",
+                                                                IOUtils.toByteArray(inputStream));
+
+            when(courtService.uploadCourts(multipartFile)).thenReturn(List.of(firstCourt, secondCourt));
+
+            List<Court> returnedCourts = new ArrayList<>(courtController.uploadCourts(multipartFile).getBody());
+
+            assertEquals(2, returnedCourts.size(), "Unexpected number of courts have been returned");
+            assertTrue(returnedCourts.contains(firstCourt), "First court not contained within list");
+            assertTrue(returnedCourts.contains(secondCourt), "Second court not contained within list");
+        }
+
+    }
+
+    @Test
+    void testUploadCourtsReturnsOk() throws IOException {
+
+        try (InputStream inputStream = this.getClass().getClassLoader()
+            .getResourceAsStream("csv/ValidCsv.csv")) {
+
+            MultipartFile multipartFile = new MockMultipartFile("file",
+                                                                "TestFileName", "text/plain",
+                                                                IOUtils.toByteArray(inputStream));
+
+            when(courtService.uploadCourts(multipartFile)).thenReturn(List.of(firstCourt, secondCourt));
+
+            assertEquals(HttpStatus.OK, courtController.uploadCourts(multipartFile).getStatusCode(),
+                         "Upload courts endpoint has not returned OK");
+        }
+
     }
 }

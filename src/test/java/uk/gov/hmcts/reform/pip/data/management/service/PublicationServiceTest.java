@@ -7,6 +7,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
@@ -180,7 +181,27 @@ class PublicationServiceTest {
     }
 
     @Test
+<<<<<<< HEAD
     void testArtefactPayloadFromAzureWhenUnauthorized() {
+=======
+    void testArtefactFileFromAzureWhenAuthorized() {
+        String string = "Hello";
+        byte[] testData = string.getBytes();
+        when(artefactRepository.findByArtefactIdVerified(any(), any())).thenReturn(Optional.of(artefact));
+        when(azureBlobService.getBlobFile(any(), any()))
+            .thenReturn(new ByteArrayResource(testData));
+
+        assertEquals(new ByteArrayResource(testData), publicationService.getFlatFileByArtefactID(
+                         ARTEFACT_ID,
+                         true
+                     ),
+                     VALIDATION_ARTEFACT_NOT_MATCH
+        );
+    }
+
+    @Test
+    void testArtefactContentFromAzureWhenUnauthorized() {
+>>>>>>> 3ad5cc4df28b3efdb6d372f73f47aac4688f49b3
         Artefact artefact = Artefact.builder()
             .sourceArtefactId(SOURCE_ARTEFACT_ID)
             .provenance(PROVENANCE)
@@ -195,11 +216,39 @@ class PublicationServiceTest {
     }
 
     @Test
+<<<<<<< HEAD
     void testArtefactPayloadFromAzureWhenDoesNotExist() {
+=======
+    void testArtefactFileFromAzureWhenUnauthorized() {
+        String string = "Hello";
+        byte[] testData = string.getBytes();
+        when(artefactRepository.findByArtefactIdUnverified(any(), any())).thenReturn(Optional.of(artefact));
+        when(azureBlobService.getBlobFile(any(), any()))
+            .thenReturn(new ByteArrayResource(testData));
+
+        assertEquals(new ByteArrayResource(testData), publicationService.getFlatFileByArtefactID(ARTEFACT_ID, false),
+                     VALIDATION_ARTEFACT_NOT_MATCH
+        );
+    }
+
+    @Test
+    void testArtefactContentFromAzureWhenDoesNotExist() {
+>>>>>>> 3ad5cc4df28b3efdb6d372f73f47aac4688f49b3
         when(artefactRepository.findByArtefactIdVerified(any(), any())).thenReturn(Optional.empty());
-        assertThrows(NotFoundException.class, ()
-            -> publicationService.getPayloadByArtefactId(ARTEFACT_ID, true),
-                      "Not Found exception has not been thrown when artefact does not exist"
+        assertThrows(NotFoundException.class, () -> publicationService.getPayloadByArtefactId(ARTEFACT_ID, true),
+                     "Not Found exception has not been thrown when artefact does not exist"
+        );
+    }
+
+    @Test
+    void testArtefactFileFromAzureWhenDoesNotExist() {
+        when(artefactRepository.findByArtefactIdVerified(any(), any())).thenReturn(Optional.empty());
+        assertThrows(
+            NotFoundException.class,
+            ()
+                -> publicationService.getFlatFileByArtefactID(ARTEFACT_ID, true),
+            "Not Found exception has not been thrown when artefact does not exist"
+
         );
     }
 
@@ -232,8 +281,8 @@ class PublicationServiceTest {
     @Test
     void testArtefactMetadataFromAzureWhenDoesNotExist() {
         when(artefactRepository.findByArtefactIdVerified(any(), any())).thenReturn(Optional.empty());
-        assertThrows(NotFoundException.class, ()
-            -> publicationService.getPayloadByArtefactId(ARTEFACT_ID, true),
+        assertThrows(NotFoundException.class, () -> publicationService.getPayloadByArtefactId(ARTEFACT_ID, true),
+
                      "Not Found exception has not been thrown when artefact does not exist"
         );
     }
