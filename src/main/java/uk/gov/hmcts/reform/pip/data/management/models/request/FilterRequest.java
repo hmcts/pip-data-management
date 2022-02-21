@@ -9,6 +9,6 @@ import java.util.List;
 @Data
 public class FilterRequest {
 
-    List<String> filters;
-    List<String> values;
+    List<String> jurisdictions;
+    List<String> regions;
 }
