@@ -5,7 +5,9 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -38,11 +40,12 @@ import javax.validation.Valid;
 /**
  * This class is the controller for creating new Publications.
  */
+
 @RestController
 @Api(tags = "Data Management Publications API")
 @RequestMapping("/publication")
 public class PublicationController {
-
+    private static final String NOT_FOUND_TEXT = "No artefact found matching given parameters and date requirements";
     private final PublicationService publicationService;
 
     @Autowired
@@ -64,15 +67,15 @@ public class PublicationController {
      * The suppression of concurrentHashMap warnings is because we require the ability to use nulls (say, if a date
      * is left blank), and Hashmap provides this whereas concurrentHashMap does not.
      *
-     * @param provenance       Name of the source system.
-     * @param sensitivity      Level of sensitivity.
-     * @param language         Language of publication.
-     * @param displayFrom      Date / Time from which the publication will be displayed.
-     * @param displayTo        Date / Time until which the publication will be displayed.
-     * @param listType         DL / SL / PL / WL / SJP / FL.
-     * @param courtId          Source systems court id.
-     * @param contentDate      Local date time for when the publication is referring to start.
-     * @param payload          JSON Blob with key/value pairs of data to be published.
+     * @param provenance  Name of the source system.
+     * @param sensitivity Level of sensitivity.
+     * @param language    Language of publication.
+     * @param displayFrom Date / Time from which the publication will be displayed.
+     * @param displayTo   Date / Time until which the publication will be displayed.
+     * @param listType    DL / SL / PL / WL / SJP / FL.
+     * @param courtId     Source systems court id.
+     * @param contentDate Local date time for when the publication is referring to start.
+     * @param payload     JSON Blob with key/value pairs of data to be published.
      * @return The created artefact.
      */
     @ApiResponses({
@@ -100,7 +103,8 @@ public class PublicationController {
         @RequestBody String payload) {
 
         HeaderGroup initialHeaders = new HeaderGroup(provenance, sourceArtefactId, type, sensitivity, language,
-                                                     displayFrom, displayTo, listType, courtId, contentDate);
+                                                     displayFrom, displayTo, listType, courtId, contentDate
+        );
 
         HeaderGroup headers = validationService.validateHeaders(initialHeaders);
         validationService.validateBody(payload, initialHeaders.getListType());
@@ -164,7 +168,8 @@ public class PublicationController {
         @RequestPart MultipartFile file) {
 
         HeaderGroup initialHeaders = new HeaderGroup(provenance, sourceArtefactId, type, sensitivity, language,
-                                                     displayFrom, displayTo, listType, courtId, contentDate);
+                                                     displayFrom, displayTo, listType, courtId, contentDate
+        );
         validationService.validateBody(file);
 
         HeaderGroup headers = validationService.validateHeaders(initialHeaders);
@@ -194,7 +199,7 @@ public class PublicationController {
         @ApiResponse(code = 200,
             message = "List of Artefacts matching the given courtId and verification parameters and date requirements"),
         @ApiResponse(code = 404,
-            message = "No artefact found matching given parameters and date requirements"),
+            message = NOT_FOUND_TEXT),
     })
     @ApiOperation("Get a series of publications matching a given input (e.g. courtid)")
     @GetMapping("/search/{searchValue}")
@@ -208,7 +213,7 @@ public class PublicationController {
             message = "Gets the artefact metadata",
             response = Artefact.class),
         @ApiResponse(code = 404,
-            message = "No artefact found matching given parameters and date requirements"),
+            message = NOT_FOUND_TEXT),
     })
     @ApiOperation("Gets the metadata for the blob, given a specific artefact id")
     @GetMapping("/{artefactId}")
@@ -224,7 +229,8 @@ public class PublicationController {
             message = "Blob data from the given request in text format.",
             response = String.class),
         @ApiResponse(code = 404,
-            message = "No artefact found matching given parameters and date requirements"),
+            message = NOT_FOUND_TEXT),
+
     })
     @ApiOperation("Gets the the payload for the blob, given a specific artefact ID")
     @GetMapping("/{artefactId}/payload")
@@ -232,6 +238,27 @@ public class PublicationController {
         @PathVariable UUID artefactId, @RequestHeader Boolean verification) {
 
         return ResponseEntity.ok(publicationService.getPayloadByArtefactId(artefactId, verification));
+    }
+
+    @ApiResponses({
+        @ApiResponse(code = 200,
+            message = "Blob data from the given request as a file.",
+            response = String.class),
+        @ApiResponse(code = 404,
+            message = NOT_FOUND_TEXT),
+    })
+    @ApiOperation("Gets the the payload for the blob, given a specific artefact ID")
+    @GetMapping(value = "/{artefactId}/file", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    public ResponseEntity<Resource> getArtefactFile(@PathVariable UUID artefactId,
+                                                    @RequestHeader Boolean verification) {
+        Resource file = publicationService.getFlatFileByArtefactID(artefactId, verification);
+        Artefact metadata = publicationService.getMetadataByArtefactId(artefactId, verification);
+        String fileType = metadata.getSourceArtefactId();
+
+        return ResponseEntity.ok()
+            .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_VALUE)
+            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileType)
+            .body(file);
 
     }
 
