@@ -181,9 +181,6 @@ class PublicationServiceTest {
     }
 
     @Test
-<<<<<<< HEAD
-    void testArtefactPayloadFromAzureWhenUnauthorized() {
-=======
     void testArtefactFileFromAzureWhenAuthorized() {
         String string = "Hello";
         byte[] testData = string.getBytes();
@@ -201,7 +198,6 @@ class PublicationServiceTest {
 
     @Test
     void testArtefactContentFromAzureWhenUnauthorized() {
->>>>>>> 3ad5cc4df28b3efdb6d372f73f47aac4688f49b3
         Artefact artefact = Artefact.builder()
             .sourceArtefactId(SOURCE_ARTEFACT_ID)
             .provenance(PROVENANCE)
@@ -216,9 +212,6 @@ class PublicationServiceTest {
     }
 
     @Test
-<<<<<<< HEAD
-    void testArtefactPayloadFromAzureWhenDoesNotExist() {
-=======
     void testArtefactFileFromAzureWhenUnauthorized() {
         String string = "Hello";
         byte[] testData = string.getBytes();
@@ -233,7 +226,6 @@ class PublicationServiceTest {
 
     @Test
     void testArtefactContentFromAzureWhenDoesNotExist() {
->>>>>>> 3ad5cc4df28b3efdb6d372f73f47aac4688f49b3
         when(artefactRepository.findByArtefactIdVerified(any(), any())).thenReturn(Optional.empty());
         assertThrows(NotFoundException.class, () -> publicationService.getPayloadByArtefactId(ARTEFACT_ID, true),
                      "Not Found exception has not been thrown when artefact does not exist"

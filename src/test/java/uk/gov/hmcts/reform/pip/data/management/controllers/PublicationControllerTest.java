@@ -185,9 +185,6 @@ class PublicationControllerTest {
     }
 
     @Test
-<<<<<<< HEAD
-    void checkGetArtefactsByCourtIdReturnsWhenTrue() {
-=======
     void checkGetFileContentReturns() {
         String string = "Hello";
         byte[] testData = string.getBytes();
@@ -204,8 +201,7 @@ class PublicationControllerTest {
     }
 
     @Test
-    void checkGetByCourtReturnsOk() {
->>>>>>> 3ad5cc4df28b3efdb6d372f73f47aac4688f49b3
+    void checkGetArtefactsByCourtIdReturnsWhenTrue() {
         List<Artefact> artefactList = List.of(artefactWithId);
 
         when(publicationService.findAllByCourtId(EMPTY_FIELD, true)).thenReturn(artefactList);
