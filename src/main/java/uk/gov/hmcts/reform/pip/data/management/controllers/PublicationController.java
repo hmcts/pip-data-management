@@ -26,6 +26,7 @@ import uk.gov.hmcts.reform.pip.data.management.models.publication.Language;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ListType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Sensitivity;
 import uk.gov.hmcts.reform.pip.data.management.service.PublicationService;
+import uk.gov.hmcts.reform.pip.data.management.service.SubscriptionManagementService;
 import uk.gov.hmcts.reform.pip.data.management.service.ValidationService;
 
 import java.time.LocalDateTime;
@@ -42,6 +43,9 @@ import javax.validation.Valid;
 @Api(tags = "Data Management Publications API")
 @RequestMapping("/publication")
 public class PublicationController {
+
+    @Autowired
+    private SubscriptionManagementService subscriptionManagementService;
 
     private final PublicationService publicationService;
 
@@ -120,6 +124,8 @@ public class PublicationController {
 
         Artefact createdItem = publicationService
             .createPublication(artefact, payload);
+        System.out.println();
+        subscriptionManagementService.sendSubTrigger(createdItem);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(createdItem);
     }
@@ -186,6 +192,8 @@ public class PublicationController {
             .isFlatFile(true)
             .search(search)
             .build();
+
+        subscriptionManagementService.sendSubTrigger(artefact);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(publicationService.createPublication(artefact, file));
     }
