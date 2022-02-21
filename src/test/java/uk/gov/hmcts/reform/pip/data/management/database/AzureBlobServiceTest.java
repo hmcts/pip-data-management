@@ -8,6 +8,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -54,6 +56,18 @@ class AzureBlobServiceTest {
         String blobData = azureBlobService.getBlobData(SOURCE_ARTEFACT_ID, PROVENANCE);
 
         assertEquals("TestString", blobData, "Wrong string detected");
+    }
+
+
+    @Test
+    void testGetBlobFile() {
+        String blobName = SOURCE_ARTEFACT_ID + '-' + PROVENANCE;
+        BinaryData binaryData = BinaryData.fromString("TestString");
+        when(blobContainerClient.getBlobClient(blobName)).thenReturn(blobClient);
+        when(blobClient.downloadContent()).thenReturn(binaryData);
+        Resource blobFile = azureBlobService.getBlobFile(SOURCE_ARTEFACT_ID, PROVENANCE);
+        byte[] data = binaryData.toBytes();
+        assertEquals(blobFile, new ByteArrayResource(data), "Wrong data returned.");
     }
 
     @Test
