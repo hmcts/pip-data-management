@@ -1515,8 +1515,8 @@ class PublicationTest {
             response.getResponse().getContentAsString(), Artefact.class);
 
         mockMvc.perform(MockMvcRequestBuilders
-                            .get(POST_URL + "/" + artefact.getArtefactId() + PAYLOAD_URL)
-                            .header(VERIFICATION_HEADER, VERIFICATION_FALSE))
+                                       .get(POST_URL + "/" + artefact.getArtefactId() + PAYLOAD_URL)
+                                       .header(VERIFICATION_HEADER, VERIFICATION_FALSE))
             .andExpect(status().isNotFound()).andReturn();
     }
 

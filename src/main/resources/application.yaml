@@ -48,7 +48,6 @@ spring:
     hibernate:
       # this ensures the db persists after spring boot connection drops.
       ddl-auto: update
-    show-sql: true
 
 azure:
   application-insights:
