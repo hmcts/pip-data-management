@@ -219,7 +219,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 # API
 
-Numerous apis are set up to handle the data passing through P&I and will be built upon as the project progresses
+Numerous apis are set up to handle the data passing through P&I and will be built upon as the project progresses.
 
  - [Retrieving Courts and Hearings](#retrieving-courts-and-hearings)
 
