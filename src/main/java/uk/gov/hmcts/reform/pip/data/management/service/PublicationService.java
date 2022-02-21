@@ -188,5 +188,4 @@ public class PublicationService {
         String provenance = artefact.getProvenance();
         return azureBlobService.getBlobFile(sourceArtefactId, provenance);
     }
-
 }

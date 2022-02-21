@@ -1440,6 +1440,7 @@ class PublicationTest {
 
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
+
     @DisplayName("Payload endpoint should not return the payload when artefact out of range and user unverified")
     void retrievePayloadOfAnArtefactWhereOutOfDateRangeWhenUnverified(boolean isJson) throws Exception {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
@@ -1586,11 +1587,9 @@ class PublicationTest {
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
 
-        assertEquals(
-            artefact,
-            objectMapper.readValue(response.getResponse().getContentAsString(), Artefact.class),
-            "Metadata does not match expected artefact"
-        );
+        assertEquals(artefact,
+                     objectMapper.readValue(response.getResponse().getContentAsString(), Artefact.class),
+                     "Metadata does not match expected artefact");
     }
 
     @ParameterizedTest
