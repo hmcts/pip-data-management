@@ -277,5 +277,4 @@ public class PublicationController {
             .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileType)
             .body(file);
     }
-
 }

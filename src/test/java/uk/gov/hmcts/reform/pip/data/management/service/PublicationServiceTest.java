@@ -61,6 +61,8 @@ class PublicationServiceTest {
     private static final Map<String, List<Object>> SEARCH_VALUES = new ConcurrentHashMap<>();
     private static final MultipartFile FILE = new MockMultipartFile("test", (byte[]) null);
     private static final String VALIDATION_ARTEFACT_NOT_MATCH = "Artefacts do not match";
+    private static final String VALIDATION_NOT_FOUND_EXCEPTION =
+        "Not Found exception has not been thrown when artefact does not exist";
 
     private Artefact artefact;
     private Artefact artefactWithPayloadUrl;
@@ -212,6 +214,15 @@ class PublicationServiceTest {
     }
 
     @Test
+    void testArtefactContentFromAzureWhenDoesNotExist() {
+        when(artefactRepository.findByArtefactIdVerified(any(), any())).thenReturn(Optional.empty());
+        assertThrows(NotFoundException.class, ()
+            -> publicationService.getPayloadByArtefactId(ARTEFACT_ID, true),
+                     VALIDATION_NOT_FOUND_EXCEPTION);
+
+    }
+
+    @Test
     void testArtefactFileFromAzureWhenUnauthorized() {
         String string = "Hello";
         byte[] testData = string.getBytes();
@@ -228,7 +239,7 @@ class PublicationServiceTest {
     void testArtefactPayloadFromAzureWhenDoesNotExist() {
         when(artefactRepository.findByArtefactIdVerified(any(), any())).thenReturn(Optional.empty());
         assertThrows(NotFoundException.class, () -> publicationService.getPayloadByArtefactId(ARTEFACT_ID, true),
-                     "Not Found exception has not been thrown when artefact does not exist"
+                     VALIDATION_NOT_FOUND_EXCEPTION
         );
     }
 
@@ -239,7 +250,7 @@ class PublicationServiceTest {
             NotFoundException.class,
             ()
                 -> publicationService.getFlatFileByArtefactID(ARTEFACT_ID, true),
-            "Not Found exception has not been thrown when artefact does not exist"
+            VALIDATION_NOT_FOUND_EXCEPTION
         );
     }
 
@@ -274,7 +285,7 @@ class PublicationServiceTest {
         when(artefactRepository.findByArtefactIdVerified(any(), any())).thenReturn(Optional.empty());
         assertThrows(NotFoundException.class, ()
             -> publicationService.getPayloadByArtefactId(ARTEFACT_ID, true),
-                     "Not Found exception has not been thrown when artefact does not exist"
+                     VALIDATION_NOT_FOUND_EXCEPTION
         );
     }
 
