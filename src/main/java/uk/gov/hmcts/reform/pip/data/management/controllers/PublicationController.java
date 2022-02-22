@@ -46,6 +46,7 @@ import javax.validation.Valid;
 @Api(tags = "Data Management Publications API")
 @RequestMapping("/publication")
 public class PublicationController {
+
     private static final String NOT_FOUND_DESCRIPTION =
         "No artefact found matching given parameters and date requirements";
 
