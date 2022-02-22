@@ -48,13 +48,7 @@ spring:
     hibernate:
       # this ensures the db persists after spring boot connection drops.
       ddl-auto: update
-    show-sql: true
 
-logging:
-  level:
-    org:
-      hibernate:
-        type: TRACE
 azure:
   application-insights:
     instrumentation-key: ${rpe.AppInsightsInstrumentationKey:00000000-0000-0000-0000-000000000000}

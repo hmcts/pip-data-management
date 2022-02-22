@@ -68,6 +68,12 @@
                 "sessionChannel": [
                   ""
                 ],
+                "judiciary": [
+                  {
+                    "johNameSurname": "Test Name",
+                    "johTitle": "District Judge"
+                  }
+                ],
                 "sittings": [
                   {
                     "sittingStart": "",
