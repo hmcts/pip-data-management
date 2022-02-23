@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CourtNotFoundException;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CsvParseException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.DataStorageNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.FlatFileException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.HeaderValidationException;
@@ -43,6 +44,7 @@ class GlobalExceptionHandlerTest {
     private static final String ASSERTION_MESSAGE = "The message should match the message passed in";
     private static final String BAD_REQUEST_ASSERTION = "Status code should be of type: Not Found";
     private static final String NOT_FOUND_ASSERTION = "Status code should be of type: Bad Request";
+    private static final String EXCEPTION_BODY_NOT_MATCH = "Exception body doesn't match test message";
     static final String ASSERTION_RESPONSE_BODY = "Response should contain a body";
     private static final String NOT_NULL_MESSAGE = "Exception body should not be null";
     private final GlobalExceptionHandler globalExceptionHandler = new GlobalExceptionHandler();
@@ -187,7 +189,7 @@ class GlobalExceptionHandlerTest {
         assertNotNull(responseEntity.getBody(), ASSERTION_RESPONSE_BODY);
         assertTrue(
             responseEntity.getBody().getMessage().contains(TEST_MESSAGE),
-            "Exception body doesn't match test message"
+            EXCEPTION_BODY_NOT_MATCH
         );
 
     }
@@ -203,7 +205,7 @@ class GlobalExceptionHandlerTest {
         assertNotNull(responseEntity.getBody(), NOT_NULL_MESSAGE);
         assertTrue(
             responseEntity.getBody().getMessage().contains(TEST_MESSAGE),
-            "Exception body doesn't match test message"
+            EXCEPTION_BODY_NOT_MATCH
         );
     }
 
@@ -219,7 +221,23 @@ class GlobalExceptionHandlerTest {
         assertTrue(
             responseEntity.getBody().getMessage()
                 .contains(TEST_MESSAGE),
-            "Exception body doesn't match test message"
+            EXCEPTION_BODY_NOT_MATCH
         );
+    }
+
+    @Test
+    void testCsvParseException() {
+        CsvParseException csvParseException = new CsvParseException(TEST_MESSAGE);
+
+        ResponseEntity<ExceptionResponse> responseEntity =
+            globalExceptionHandler.handle(csvParseException);
+
+        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode(),
+                     "Should be bad request exception"
+        );
+        assertNotNull(responseEntity.getBody(), NOT_NULL_MESSAGE);
+        assertTrue(
+            responseEntity.getBody().getMessage()
+                .contains(TEST_MESSAGE), EXCEPTION_BODY_NOT_MATCH);
     }
 }

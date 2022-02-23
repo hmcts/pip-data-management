@@ -6,6 +6,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
@@ -26,6 +28,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
@@ -62,6 +65,7 @@ class PublicationControllerTest {
     private static final String EMPTY_FIELD = "";
     private static final String VALIDATION_EXPECTED_MESSAGE =
         "The expected exception does not contain the correct message";
+    private static final String NOT_EQUAL_MESSAGE = "The expected strings are not the same";
 
     private Artefact artefact;
     private Artefact artefactWithId;
@@ -70,7 +74,8 @@ class PublicationControllerTest {
     @BeforeEach
     void setup() {
         headers = new HeaderGroup(PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE, SENSITIVITY, LANGUAGE,
-                                              DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, COURT_ID, CONTENT_DATE);
+                                  DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, COURT_ID, CONTENT_DATE
+        );
         artefact = Artefact.builder()
             .sourceArtefactId(SOURCE_ARTEFACT_ID)
             .displayFrom(DISPLAY_FROM)
@@ -105,7 +110,6 @@ class PublicationControllerTest {
         when(validationService.validateHeaders(any())).thenReturn(headers);
         when(publicationService.createPublication(argThat(arg -> arg.equals(artefact)), eq(PAYLOAD)))
             .thenReturn(artefactWithId);
-
 
 
         ResponseEntity<Artefact> responseEntity = publicationController.uploadPublication(
@@ -162,6 +166,22 @@ class PublicationControllerTest {
     }
 
     @Test
+    void checkGetFileContentReturns() {
+        String string = "Hello";
+        byte[] testData = string.getBytes();
+        when(publicationService.getFlatFileByArtefactID(any(), any())).thenReturn(new ByteArrayResource(testData));
+        when(publicationService.getMetadataByArtefactId(any(), any())).thenReturn(artefactWithId);
+        ResponseEntity<Resource> flatFileBlob = publicationController.getArtefactFile(
+            UUID.randomUUID(),
+            true
+        );
+        assertEquals(HttpStatus.OK, flatFileBlob.getStatusCode(), STATUS_CODE_MATCH);
+        assertEquals(new ByteArrayResource(testData), flatFileBlob.getBody(), NOT_EQUAL_MESSAGE);
+        String filename = flatFileBlob.getHeaders().get("Content-Disposition").toString();
+        assertTrue(filename.contains(artefactWithId.getSourceArtefactId()), NOT_EQUAL_MESSAGE);
+    }
+
+    @Test
     void checkGetByCourtReturnsOk() {
         List<Artefact> artefactList = List.of(artefactWithId);
 
@@ -187,7 +207,8 @@ class PublicationControllerTest {
 
         ResponseEntity<Artefact> responseEntity = publicationController.uploadPublication(
             PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE,
-            SENSITIVITY, LANGUAGE, DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, COURT_ID, CONTENT_DATE, FILE);
+            SENSITIVITY, LANGUAGE, DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, COURT_ID, CONTENT_DATE, FILE
+        );
 
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode(), STATUS_CODE_MATCH);
         assertEquals(artefactWithId, responseEntity.getBody(), "Artefacts should match");

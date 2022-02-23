@@ -182,6 +182,8 @@ dependencies {
   implementation 'org.springframework.boot:spring-boot-starter-validation'
   implementation 'org.springframework.boot:spring-boot-starter-jdbc'
   implementation 'org.springframework.boot:spring-boot-starter-data-jpa:2.5.5'
+  implementation 'com.opencsv:opencsv:5.5.2'
+  implementation 'com.vladmihalcea:hibernate-types-52:2.14.0'
   implementation 'org.apache.tomcat.embed:tomcat-embed-core:9.0.58'
   implementation 'org.apache.tomcat.embed:tomcat-embed-websocket:9.0.58'
   implementation 'org.springframework.boot:spring-boot-starter-webflux'
