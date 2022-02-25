@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.pip.data.management.service;
 
-import com.azure.core.exception.HttpResponseException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -8,6 +7,7 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientException;
 import uk.gov.hmcts.reform.pip.data.management.models.external.Subscription;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 
@@ -37,7 +37,7 @@ public class SubscriptionManagementService {
                 .retrieve().bodyToMono(new ParameterizedTypeReference<List<Subscription>>() {
                 }).block();
 
-        } catch (HttpResponseException | URISyntaxException ex) {
+        } catch (WebClientException | URISyntaxException ex) {
             log.error(String.format("Request failed with error message: %s", ex.getMessage()
             ));
             return Collections.emptyList();

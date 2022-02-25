@@ -14,12 +14,15 @@ import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.AzureBlobService;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ArtefactNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.NotFoundException;
+import uk.gov.hmcts.reform.pip.data.management.models.external.Subscription;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Language;
 import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
 import uk.gov.hmcts.reform.pip.data.management.utils.PayloadExtractor;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -51,6 +54,7 @@ class PublicationServiceTest {
 
     @InjectMocks
     PublicationService publicationService;
+
     private static final UUID ARTEFACT_ID = UUID.randomUUID();
     private static final String SOURCE_ARTEFACT_ID = "1234";
     private static final String PROVENANCE = "provenance";
@@ -64,11 +68,15 @@ class PublicationServiceTest {
     private static final Map<String, List<Object>> SEARCH_VALUES = new ConcurrentHashMap<>();
     private static final MultipartFile FILE = new MockMultipartFile("test", (byte[]) null);
     private static final String VALIDATION_ARTEFACT_NOT_MATCH = "Artefacts do not match";
+    private static final List<Subscription> SUBSCRIPTION_LIST = List.of(new Subscription());
 
     private Artefact artefact;
     private Artefact artefactWithPayloadUrl;
     private Artefact artefactWithIdAndPayloadUrl;
     private Artefact artefactWithId;
+    private Artefact artefactInTheFuture;
+    private Artefact artefactFromThePast;
+    private Artefact artefactFromNow;
 
     @BeforeAll
     public static void setupSearchValues() {
@@ -105,10 +113,37 @@ class PublicationServiceTest {
             .search(SEARCH_VALUES)
             .build();
 
+        artefactInTheFuture = Artefact.builder()
+            .artefactId(ARTEFACT_ID)
+            .sourceArtefactId(SOURCE_ARTEFACT_ID)
+            .provenance(PROVENANCE)
+            .payload(PAYLOAD_URL)
+            .search(SEARCH_VALUES)
+            .displayFrom(LocalDateTime.now().plusDays(100))
+            .build();
+
+        artefactFromThePast = Artefact.builder()
+            .artefactId(ARTEFACT_ID)
+            .sourceArtefactId(SOURCE_ARTEFACT_ID)
+            .provenance(PROVENANCE)
+            .payload(PAYLOAD_URL)
+            .search(SEARCH_VALUES)
+            .displayFrom(LocalDateTime.now().minusDays(1))
+            .build();
+
+        artefactFromNow = Artefact.builder()
+            .artefactId(ARTEFACT_ID)
+            .sourceArtefactId(SOURCE_ARTEFACT_ID)
+            .provenance(PROVENANCE)
+            .payload(PAYLOAD_URL)
+            .search(SEARCH_VALUES)
+            .displayFrom(LocalDateTime.now())
+            .build();
+
+
         lenient().when(artefactRepository.findBySourceArtefactIdAndProvenance(SOURCE_ARTEFACT_ID, PROVENANCE))
             .thenReturn(Optional.empty());
         lenient().when(artefactRepository.save(artefactWithPayloadUrl)).thenReturn(artefactWithIdAndPayloadUrl);
-        lenient().when(subscriptionManagementService.sendSubTrigger(any())).thenReturn(null);
     }
 
     @Test
@@ -218,9 +253,12 @@ class PublicationServiceTest {
     @Test
     void testArtefactContentFromAzureWhenDoesNotExist() {
         when(artefactRepository.findByArtefactIdVerified(any(), any())).thenReturn(Optional.empty());
-        assertThrows(NotFoundException.class, ()
-            -> publicationService.getPayloadByArtefactId(ARTEFACT_ID, true),
-                      "Not Found exception has not been thrown when artefact does not exist");
+        assertThrows(
+            NotFoundException.class,
+            ()
+                -> publicationService.getPayloadByArtefactId(ARTEFACT_ID, true),
+            "Not Found exception has not been thrown when artefact does not exist"
+        );
 
     }
 
@@ -277,9 +315,10 @@ class PublicationServiceTest {
     @Test
     void testArtefactMetadataFromAzureWhenDoesNotExist() {
         when(artefactRepository.findByArtefactIdVerified(any(), any())).thenReturn(Optional.empty());
-        assertThrows(NotFoundException.class, ()
-            -> publicationService.getPayloadByArtefactId(ARTEFACT_ID, true),
-                     "Not Found exception has not been thrown when artefact does not exist"
+        assertThrows(
+            NotFoundException.class,
+            () -> publicationService.getPayloadByArtefactId(ARTEFACT_ID, true),
+            "Not Found exception has not been thrown when artefact does not exist"
         );
     }
 
@@ -340,9 +379,11 @@ class PublicationServiceTest {
         when(artefactRepository.findArtefactBySearchVerified(eq(SEARCH_TERM_CASE_ID.dbValue), eq(TEST_VALUE), any()))
             .thenReturn(List.of(artefactWithIdAndPayloadUrl));
 
-        assertEquals(artefactWithIdAndPayloadUrl,
-                     publicationService.findAllBySearch(SEARCH_TERM_CASE_ID, TEST_VALUE, true).get(0),
-                     VALIDATION_ARTEFACT_NOT_MATCH);
+        assertEquals(
+            artefactWithIdAndPayloadUrl,
+            publicationService.findAllBySearch(SEARCH_TERM_CASE_ID, TEST_VALUE, true).get(0),
+            VALIDATION_ARTEFACT_NOT_MATCH
+        );
     }
 
     @Test
@@ -350,9 +391,11 @@ class PublicationServiceTest {
         when(artefactRepository.findArtefactBySearchUnverified(eq(SEARCH_TERM_CASE_ID.dbValue), eq(TEST_VALUE), any()))
             .thenReturn(List.of(artefactWithIdAndPayloadUrl));
 
-        assertEquals(artefactWithId,
-                     publicationService.findAllBySearch(SEARCH_TERM_CASE_ID, TEST_VALUE, false).get(0),
-                     VALIDATION_ARTEFACT_NOT_MATCH);
+        assertEquals(
+            artefactWithId,
+            publicationService.findAllBySearch(SEARCH_TERM_CASE_ID, TEST_VALUE, false).get(0),
+            VALIDATION_ARTEFACT_NOT_MATCH
+        );
     }
 
     @Test
@@ -382,9 +425,11 @@ class PublicationServiceTest {
         when(artefactRepository.findArtefactByCaseNameUnverified(eq(TEST_VALUE), any()))
             .thenReturn(List.of(artefactWithIdAndPayloadUrl));
 
-        assertEquals(artefactWithIdAndPayloadUrl,
-                     publicationService.findAllBySearch(SEARCH_TERM_CASE_NAME, TEST_VALUE, false).get(0),
-                     VALIDATION_ARTEFACT_NOT_MATCH);
+        assertEquals(
+            artefactWithIdAndPayloadUrl,
+            publicationService.findAllBySearch(SEARCH_TERM_CASE_NAME, TEST_VALUE, false).get(0),
+            VALIDATION_ARTEFACT_NOT_MATCH
+        );
     }
 
     @Test
@@ -404,15 +449,40 @@ class PublicationServiceTest {
         when(artefactRepository.findArtefactBySearchUnverified(eq(SEARCH_TERM_CASE_URN.dbValue), eq(TEST_VALUE), any()))
             .thenReturn(List.of(artefactWithIdAndPayloadUrl));
 
-        assertEquals(artefactWithIdAndPayloadUrl,
-                     publicationService.findAllBySearch(SEARCH_TERM_CASE_URN, TEST_VALUE, false).get(0),
-                     VALIDATION_ARTEFACT_NOT_MATCH);
+        assertEquals(
+            artefactWithIdAndPayloadUrl,
+            publicationService.findAllBySearch(SEARCH_TERM_CASE_URN, TEST_VALUE, false).get(0),
+            VALIDATION_ARTEFACT_NOT_MATCH
+        );
     }
 
     @Test
     void testInvalidEnumTypeThrows() {
         assertThrows(IllegalArgumentException.class, () ->
             publicationService.findAllBySearch(CaseSearchTerm.valueOf("invalid"), TEST_VALUE, true));
+    }
+
+    @Test
+    void testTriggerIfDateIsFuture() {
+        assertEquals(
+            Collections.emptyList(),
+            publicationService.checkAndTriggerSubscriptionManagement(artefactInTheFuture),
+            "Should have returned an empty list"
+        );
+    }
+
+    @Test
+    void testTriggerIfDateIsNow() {
+        when(subscriptionManagementService.sendSubTrigger(artefactFromNow)).thenReturn(SUBSCRIPTION_LIST);
+        assertEquals(SUBSCRIPTION_LIST, publicationService.checkAndTriggerSubscriptionManagement(artefactFromNow),
+                     "should have returned the Subscription List");
+    }
+
+    @Test
+    void testTriggerIfDateIsPast() {
+        when(subscriptionManagementService.sendSubTrigger(artefactFromThePast)).thenReturn(SUBSCRIPTION_LIST);
+        assertEquals(SUBSCRIPTION_LIST, publicationService.checkAndTriggerSubscriptionManagement(artefactFromThePast),
+                     "Should have returned the subscription list");
     }
 
 }

@@ -14,6 +14,7 @@ import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
 import uk.gov.hmcts.reform.pip.data.management.utils.PayloadExtractor;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -85,7 +86,7 @@ public class PublicationService {
         if (artefact.getDisplayFrom().isBefore(LocalDateTime.now().plusDays(1))) {
             return subscriptionManagementService.sendSubTrigger(artefact);
         } else {
-            return null;
+            return Collections.emptyList();
         }
     }
 
