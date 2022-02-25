@@ -166,30 +166,6 @@
                         "hearingSequence": 2,
                         "case": [
                           {
-                            "youthCourt": false,
-                            "informant": {
-                              "prosecutionAuthorityId": "",
-                              "prosecutionAuthorityCode": "",
-                              "prosecutionAuthorityRef": ""
-                            },
-                            "committingCourt": {
-                              "courtHouseAddress": {
-                                "title": "Court House Address",
-                                "description": "Address of commiting/owning court"
-                              },
-                              "courtHouseContact": {
-                                "primaryContactName": "Name",
-                                "venueTelephone": "",
-                                "venueEmail": "court1@moj.gov.uk",
-                                "venueSupport": ""
-                              },
-                              "courtHouseName": "lancashiremagistrates court"
-                            },
-                            "listComment": "defendant to be produced",
-                            "reportingRestriction": false,
-                            "caseJurisdictionET": ""
-                          },
-                          {
                             "reportingRestriction": true,
                             "youthCourt": false,
                             "caseJurisdictionET": "",

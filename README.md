@@ -233,7 +233,7 @@ to get purely hearings
  - /courts/find/{courtName} - will search all courts for a matching court with that name and return its full court
    object
  - /courts/filter - Takes in a body of an array of `filters` and `values` to search the court list for and return
-   matching courts that satisfy all params provided, can return empty list if none match
+   matching courts that satisfy all params provided, can return empty list if none match.
 
 example filter request:
 ```

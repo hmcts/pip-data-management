@@ -30,6 +30,7 @@ import uk.gov.hmcts.reform.pip.data.management.models.publication.ListType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Sensitivity;
 import uk.gov.hmcts.reform.pip.data.management.service.PublicationService;
 import uk.gov.hmcts.reform.pip.data.management.service.ValidationService;
+import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -46,7 +47,10 @@ import javax.validation.Valid;
 @Api(tags = "Data Management Publications API")
 @RequestMapping("/publication")
 public class PublicationController {
-    private static final String NOT_FOUND_TEXT = "No artefact found matching given parameters and date requirements";
+
+    private static final String NOT_FOUND_DESCRIPTION =
+        "No artefact found matching given parameters and date requirements";
+
     private final PublicationService publicationService;
     @Autowired
     private final ValidationService validationService;
@@ -209,13 +213,27 @@ public class PublicationController {
         @ApiResponse(code = 200,
             message = "List of Artefacts matching the given courtId and verification parameters and date requirements"),
         @ApiResponse(code = 404,
-            message = NOT_FOUND_TEXT),
+            message = NOT_FOUND_DESCRIPTION),
     })
-    @ApiOperation("Get a series of publications matching a given input (e.g. courtid)")
-    @GetMapping("/search/{searchValue}")
-    public ResponseEntity<List<Artefact>> getAllRelevantArtefactsByCourtId(@PathVariable String searchValue,
+    @ApiOperation("Get a series of publications matching a given courtId (e.g. courtid)")
+    @GetMapping("/courtId/{courtId}")
+    public ResponseEntity<List<Artefact>> getAllRelevantArtefactsByCourtId(@PathVariable String courtId,
                                                                            @RequestHeader Boolean verification) {
-        return ResponseEntity.ok(publicationService.findAllByCourtId(searchValue, verification));
+        return ResponseEntity.ok(publicationService.findAllByCourtId(courtId, verification));
+    }
+
+    @ApiResponses({
+        @ApiResponse(code = 200,
+            message = "List of Artefacts matching a given case value, verification parameters and date requirements"),
+        @ApiResponse(code = 404,
+            message = NOT_FOUND_DESCRIPTION),
+    })
+    @ApiOperation("Get a series of publications matching a given case search value (e.g. CASE_URN/CASE_ID/CASE_NAME)")
+    @GetMapping("/search/{searchTerm}/{searchValue}")
+    public ResponseEntity<List<Artefact>> getAllRelevantArtefactsBySearchValue(@PathVariable CaseSearchTerm searchTerm,
+                                                                           @PathVariable String searchValue,
+                                                                           @RequestHeader Boolean verification) {
+        return ResponseEntity.ok(publicationService.findAllBySearch(searchTerm, searchValue, verification));
     }
 
     @ApiResponses({
@@ -223,7 +241,7 @@ public class PublicationController {
             message = "Gets the artefact metadata",
             response = Artefact.class),
         @ApiResponse(code = 404,
-            message = NOT_FOUND_TEXT),
+            message = NOT_FOUND_DESCRIPTION),
     })
     @ApiOperation("Gets the metadata for the blob, given a specific artefact id")
     @GetMapping("/{artefactId}")
@@ -237,7 +255,7 @@ public class PublicationController {
             message = "Blob data from the given request in text format.",
             response = String.class),
         @ApiResponse(code = 404,
-            message = NOT_FOUND_TEXT),
+            message = NOT_FOUND_DESCRIPTION),
     })
     @ApiOperation("Gets the the payload for the blob, given a specific artefact ID")
     @GetMapping("/{artefactId}/payload")
@@ -252,7 +270,7 @@ public class PublicationController {
             message = "Blob data from the given request as a file.",
             response = String.class),
         @ApiResponse(code = 404,
-            message = NOT_FOUND_TEXT),
+            message = NOT_FOUND_DESCRIPTION),
     })
     @ApiOperation("Gets the the payload for the blob, given a specific artefact ID")
     @GetMapping(value = "/{artefactId}/file", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
@@ -266,7 +284,5 @@ public class PublicationController {
             .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_VALUE)
             .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileType)
             .body(file);
-
     }
-
 }
