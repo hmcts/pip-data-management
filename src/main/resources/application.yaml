@@ -48,8 +48,6 @@ spring:
     hibernate:
       # this ensures the db persists after spring boot connection drops.
       ddl-auto: update
-  service-to-service:
-    subscription-management: aiaiwfiawfiaw
 
 azure:
   application-insights:
@@ -59,7 +57,7 @@ azure:
     container-name: artefact
 
 service-to-service:
-  subscription-management: ${SUBSCRIPTION_MANAGEMENT_URL:https://pip-subscription-management.staging.platform.hmcts.net}
+  subscription-management: ${SUBSCRIPTION_MANAGEMENT_URL:https://pip-subscription-management.staging.platform.hmcts.net/}
 
 payload:
   json:

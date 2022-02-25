@@ -42,6 +42,9 @@ class PublicationServiceTest {
     @Mock
     PayloadExtractor payloadExtractor;
 
+    @Mock
+    SubscriptionManagementService subscriptionManagementService;
+
     @InjectMocks
     PublicationService publicationService;
     private static final UUID ARTEFACT_ID = UUID.randomUUID();
@@ -89,6 +92,7 @@ class PublicationServiceTest {
         lenient().when(artefactRepository.findBySourceArtefactIdAndProvenance(SOURCE_ARTEFACT_ID, PROVENANCE))
             .thenReturn(Optional.empty());
         lenient().when(artefactRepository.save(artefactWithPayloadUrl)).thenReturn(artefactWithIdAndPayloadUrl);
+        lenient().when(subscriptionManagementService.sendSubTrigger(any())).thenReturn(null);
     }
 
     @Test

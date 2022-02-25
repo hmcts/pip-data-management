@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
+import uk.gov.hmcts.reform.pip.data.management.models.external.Subscription;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.HeaderGroup;
@@ -28,7 +29,6 @@ import uk.gov.hmcts.reform.pip.data.management.models.publication.Language;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ListType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Sensitivity;
 import uk.gov.hmcts.reform.pip.data.management.service.PublicationService;
-import uk.gov.hmcts.reform.pip.data.management.service.SubscriptionManagementService;
 import uk.gov.hmcts.reform.pip.data.management.service.ValidationService;
 
 import java.time.LocalDateTime;
@@ -46,9 +46,6 @@ import javax.validation.Valid;
 @Api(tags = "Data Management Publications API")
 @RequestMapping("/publication")
 public class PublicationController {
-
-    @Autowired
-    private SubscriptionManagementService subscriptionManagementService;
 
     private static final String NOT_FOUND_TEXT = "No artefact found matching given parameters and date requirements";
     private final PublicationService publicationService;
@@ -129,7 +126,11 @@ public class PublicationController {
 
         Artefact createdItem = publicationService
             .createPublication(artefact, payload);
-        subscriptionManagementService.sendSubTrigger(createdItem);
+
+        //TODO handle the below in some way
+        @SuppressWarnings("PMD.PrematureDeclaration")
+        List<Subscription> unusedListOfEligibleSubscribers =
+            publicationService.checkAndTriggerSubscriptionManagement(artefact);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(createdItem);
     }
@@ -198,7 +199,10 @@ public class PublicationController {
             .search(search)
             .build();
 
-        subscriptionManagementService.sendSubTrigger(artefact);
+        //TODO handle the below in some way
+        @SuppressWarnings("PMD.PrematureDeclaration")
+        List<Subscription> unusedListOfEligibleSubscribers =
+            publicationService.checkAndTriggerSubscriptionManagement(artefact);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(publicationService.createPublication(artefact, file));
     }

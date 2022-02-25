@@ -7,6 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.AzureBlobService;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.NotFoundException;
+import uk.gov.hmcts.reform.pip.data.management.models.external.Subscription;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.utils.PayloadExtractor;
 
@@ -27,13 +28,17 @@ public class PublicationService {
 
     private final PayloadExtractor payloadExtractor;
 
+    private final SubscriptionManagementService subscriptionManagementService;
+
     @Autowired
     public PublicationService(ArtefactRepository artefactRepository,
                               AzureBlobService azureBlobService,
-                              PayloadExtractor payloadExtractor) {
+                              PayloadExtractor payloadExtractor,
+                              SubscriptionManagementService subscriptionManagementService) {
         this.artefactRepository = artefactRepository;
         this.azureBlobService = azureBlobService;
         this.payloadExtractor = payloadExtractor;
+        this.subscriptionManagementService = subscriptionManagementService;
     }
 
     /**
@@ -49,11 +54,11 @@ public class PublicationService {
         String blobUrl = azureBlobService.createPayload(
             artefact.getSourceArtefactId(),
             artefact.getProvenance(),
-            payload);
+            payload
+        );
 
         artefact.setPayload(blobUrl);
         artefact.setSearch(payloadExtractor.extractSearchTerms(payload));
-
         return artefactRepository.save(artefact);
     }
 
@@ -66,8 +71,20 @@ public class PublicationService {
             file
         );
         artefact.setPayload(blobUrl);
-
         return artefactRepository.save(artefact);
+    }
+
+
+    /**
+     * Checks if the artefact has a display from date of today or previous then triggers the sub fulfilment
+     * process on subscription-management if appropriate.
+     */
+    public List<Subscription> checkAndTriggerSubscriptionManagement(Artefact artefact) {
+        if (artefact.getDisplayFrom().isBefore(LocalDateTime.now().plusDays(1))) {
+            return subscriptionManagementService.sendSubTrigger(artefact);
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -90,8 +107,8 @@ public class PublicationService {
      * @param searchValue - represents the court ID in question being searched for
      * @param verified    - represents the verification status of the user. Currently only verified/non-verified, but
      *                    will include other verified user types in the future
-     * @return a list of all artefacts that fulfil the timing criteria, match the given court id and sensitivity
-     *                     associated with given verification status
+     * @return a list of all artefacts that fulfil the timing criteria, match the given court id and
+     *                    sensitivity associated with given verification status.
      */
     public List<Artefact> findAllByCourtId(String searchValue, Boolean verified) {
         LocalDateTime currDate = LocalDateTime.now();
@@ -106,8 +123,8 @@ public class PublicationService {
     /**
      * Takes in artefact id and returns the metadata for the artefact.
      *
-     * @param artefactId represents the artefact id which is then used to get an artefact to populate the inputs
-     *                   for the blob request.
+     * @param artefactId   represents the artefact id which is then used to get an artefact to populate the inputs
+     *                     for the blob request.
      * @param verification Whether the user is verified.
      * @return The metadata for the found artefact.
      */
@@ -116,11 +133,15 @@ public class PublicationService {
         Optional<Artefact> optionalArtefact;
         LocalDateTime currentDate = LocalDateTime.now();
         if (verification) {
-            optionalArtefact = artefactRepository.findByArtefactIdVerified(artefactId.toString(),
-                                                                           currentDate);
+            optionalArtefact = artefactRepository.findByArtefactIdVerified(
+                artefactId.toString(),
+                currentDate
+            );
         } else {
-            optionalArtefact = artefactRepository.findByArtefactIdUnverified(artefactId.toString(),
-                                                                             currentDate);
+            optionalArtefact = artefactRepository.findByArtefactIdUnverified(
+                artefactId.toString(),
+                currentDate
+            );
         }
 
         if (optionalArtefact.isPresent()) {
@@ -133,8 +154,8 @@ public class PublicationService {
     /**
      * Takes in artefact id and returns the payload within the matching blob in string format.
      *
-     * @param artefactId represents the artefact id which is then used to get an artefact to populate the inputs
-     *                   for the blob request.
+     * @param artefactId   represents the artefact id which is then used to get an artefact to populate the inputs
+     *                     for the blob request.
      * @param verification Whether the user is verified.
      * @return The data within the blob in string format.
      */
