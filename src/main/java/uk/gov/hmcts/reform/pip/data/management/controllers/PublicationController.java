@@ -46,10 +46,8 @@ import javax.validation.Valid;
 @Api(tags = "Data Management Publications API")
 @RequestMapping("/publication")
 public class PublicationController {
-
     private static final String NOT_FOUND_TEXT = "No artefact found matching given parameters and date requirements";
     private final PublicationService publicationService;
-
     @Autowired
     private final ValidationService validationService;
 
@@ -231,9 +229,7 @@ public class PublicationController {
     @GetMapping("/{artefactId}")
     public ResponseEntity<Artefact> getArtefactMetadata(
         @PathVariable UUID artefactId, @RequestHeader Boolean verification) {
-
         return ResponseEntity.ok(publicationService.getMetadataByArtefactId(artefactId, verification));
-
     }
 
     @ApiResponses({
@@ -242,7 +238,6 @@ public class PublicationController {
             response = String.class),
         @ApiResponse(code = 404,
             message = NOT_FOUND_TEXT),
-
     })
     @ApiOperation("Gets the the payload for the blob, given a specific artefact ID")
     @GetMapping("/{artefactId}/payload")

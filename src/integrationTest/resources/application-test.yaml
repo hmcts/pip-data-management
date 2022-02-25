@@ -4,4 +4,4 @@ payload:
       array-value: "$['root-value']['inner-value'][*]['array-value']"
       case-urn: "$['unknown-attribute']"
 service-to-service:
-  subscription-management: http://localhost:4550
+  subscription-management: ${SUBSCRIPTION_MANAGEMENT_URL:https://pip-subscription-management.staging.platform.hmcts.net/}

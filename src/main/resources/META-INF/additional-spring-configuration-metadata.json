@@ -1,8 +1,0 @@
-{
-  "properties": [
-    {
-      "name": "service-to-service.subscription-management",
-      "type": "java.lang.String",
-      "description": "Description for service-to-service.subscription-management."
-  }
-] }
