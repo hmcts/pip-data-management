@@ -297,14 +297,14 @@ class ValidationServiceTest {
     @Test
     void testValidateWithErrorsWhenArtefactIsDailyCauseList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream("mocks/dailyCauseListInvalid.json")) {
+            .getResourceAsStream("mocks/civil-daily-cause/dailyCauseListInvalid.json")) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             Artefact artefact = new Artefact();
             artefact.setListType(ListType.CIVIL_DAILY_CAUSE_LIST);
             assertThrows(PayloadValidationException.class, () ->
                              validationService.validateBody(text, ListType.CIVIL_DAILY_CAUSE_LIST),
-                "Valid JSON string marked as valid");
+                "Invalid daily cause list marked as valid");
         }
     }
 
@@ -314,20 +314,74 @@ class ValidationServiceTest {
             .getResourceAsStream("mocks/jsonPayload.json")) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
             assertDoesNotThrow(() -> validationService.validateBody(text, ListType.MAGS_PUBLIC_LIST),
-                               "Valid JSON string marked as valid");
+                               "Valid master schema marked as invalid");
         }
     }
 
     @Test
     void testValidateWithoutErrorsWhenArtefactIsDailyCauseList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream("mocks/dailyCauseList.json")) {
+            .getResourceAsStream("mocks/civil-daily-cause/dailyCauseList.json")) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             Artefact artefact = new Artefact();
             artefact.setListType(ListType.CIVIL_DAILY_CAUSE_LIST);
             assertDoesNotThrow(() -> validationService.validateBody(text, ListType.MAGS_PUBLIC_LIST),
-                               "Valid JSON string marked as valid");
+                               "Valid daily cause list marked as invalid");
+        }
+    }
+
+    @Test
+    void testValidateWithoutErrorsWhenArtefactIsSjpPublicList() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream("mocks/sjp-public/sjpPublicList.json")) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            Artefact artefact = new Artefact();
+            artefact.setListType(ListType.SJP_PUBLIC_LIST);
+            assertDoesNotThrow(() -> validationService.validateBody(text, ListType.MAGS_PUBLIC_LIST),
+                               "Valid sjp public list marked as invalid");
+        }
+    }
+
+    @Test
+    void testValidateWithErrorsWhenArtefactIsSjpPublicList() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream("mocks/sjp-public/sjpPublicList.json")) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            Artefact artefact = new Artefact();
+            artefact.setListType(ListType.SJP_PUBLIC_LIST);
+            assertThrows(PayloadValidationException.class, () ->
+                             validationService.validateBody(text, ListType.CIVIL_DAILY_CAUSE_LIST),
+                         "Invalid sjp public list marked as valid");
+        }
+    }
+
+    @Test
+    void testValidateWithoutErrorsWhenArtefactIsSjpPressList() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream("mocks/sjp-press/sjpPressList.json")) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            Artefact artefact = new Artefact();
+            artefact.setListType(ListType.SJP_PRESS_LIST);
+            assertDoesNotThrow(() -> validationService.validateBody(text, ListType.MAGS_PUBLIC_LIST),
+                               "Valid sjp press list marked as valid");
+        }
+    }
+
+    @Test
+    void testValidateWithErrorsWhenArtefactIsSjpPressList() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream("mocks/sjp-public/sjpPublicList.json")) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            Artefact artefact = new Artefact();
+            artefact.setListType(ListType.SJP_PRESS_LIST);
+            assertThrows(PayloadValidationException.class, () ->
+                             validationService.validateBody(text, ListType.CIVIL_DAILY_CAUSE_LIST),
+                         "Invalid sjp press list marked as valid");
         }
     }
 

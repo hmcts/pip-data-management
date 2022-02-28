@@ -131,7 +131,7 @@ class PublicationTest {
 
     Artefact createDailyList(Sensitivity sensitivity) throws Exception {
         try (InputStream mockFile = this.getClass().getClassLoader()
-            .getResourceAsStream("data/dailyCauseList.json")) {
+            .getResourceAsStream("data/daily-cause-list/dailyCauseList.json")) {
 
             MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
                 .post(POST_URL)
@@ -933,7 +933,7 @@ class PublicationTest {
         when(blobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
 
         try (InputStream mockFile = this.getClass().getClassLoader()
-            .getResourceAsStream("data/dailyCauseListInvalid.json")) {
+            .getResourceAsStream("data/daily-cause-list/dailyCauseListInvalid.json")) {
             MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
                 .post(POST_URL)
                 .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
@@ -971,7 +971,7 @@ class PublicationTest {
         when(blobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
 
         try (InputStream mockFile = this.getClass().getClassLoader()
-            .getResourceAsStream("data/dailyCauseList.json")) {
+            .getResourceAsStream("data/daily-cause-list/dailyCauseList.json")) {
 
             MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
                 .post(POST_URL)
