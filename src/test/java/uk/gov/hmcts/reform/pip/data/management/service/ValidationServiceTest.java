@@ -15,7 +15,6 @@ import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.EmptyReq
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.FlatFileException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.HeaderValidationException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.PayloadValidationException;
-import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.HeaderGroup;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Language;
