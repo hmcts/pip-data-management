@@ -300,8 +300,6 @@ class ValidationServiceTest {
             .getResourceAsStream("mocks/civil-daily-cause/dailyCauseListInvalid.json")) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
-            Artefact artefact = new Artefact();
-            artefact.setListType(ListType.CIVIL_DAILY_CAUSE_LIST);
             assertThrows(PayloadValidationException.class, () ->
                              validationService.validateBody(text, ListType.CIVIL_DAILY_CAUSE_LIST),
                 "Invalid daily cause list marked as valid");
@@ -324,9 +322,7 @@ class ValidationServiceTest {
             .getResourceAsStream("mocks/civil-daily-cause/dailyCauseList.json")) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
-            Artefact artefact = new Artefact();
-            artefact.setListType(ListType.CIVIL_DAILY_CAUSE_LIST);
-            assertDoesNotThrow(() -> validationService.validateBody(text, ListType.MAGS_PUBLIC_LIST),
+            assertDoesNotThrow(() -> validationService.validateBody(text, ListType.CIVIL_DAILY_CAUSE_LIST),
                                "Valid daily cause list marked as invalid");
         }
     }
@@ -337,9 +333,7 @@ class ValidationServiceTest {
             .getResourceAsStream("mocks/sjp-public/sjpPublicList.json")) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
-            Artefact artefact = new Artefact();
-            artefact.setListType(ListType.SJP_PUBLIC_LIST);
-            assertDoesNotThrow(() -> validationService.validateBody(text, ListType.MAGS_PUBLIC_LIST),
+            assertDoesNotThrow(() -> validationService.validateBody(text, ListType.SJP_PUBLIC_LIST),
                                "Valid sjp public list marked as invalid");
         }
     }
@@ -347,13 +341,11 @@ class ValidationServiceTest {
     @Test
     void testValidateWithErrorsWhenArtefactIsSjpPublicList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream("mocks/sjp-public/sjpPublicList.json")) {
+            .getResourceAsStream("mocks/sjp-public/sjpPublicListInvalid.json")) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
-            Artefact artefact = new Artefact();
-            artefact.setListType(ListType.SJP_PUBLIC_LIST);
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(text, ListType.CIVIL_DAILY_CAUSE_LIST),
+                             validationService.validateBody(text, ListType.SJP_PUBLIC_LIST),
                          "Invalid sjp public list marked as valid");
         }
     }
@@ -364,9 +356,7 @@ class ValidationServiceTest {
             .getResourceAsStream("mocks/sjp-press/sjpPressList.json")) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
-            Artefact artefact = new Artefact();
-            artefact.setListType(ListType.SJP_PRESS_LIST);
-            assertDoesNotThrow(() -> validationService.validateBody(text, ListType.MAGS_PUBLIC_LIST),
+            assertDoesNotThrow(() -> validationService.validateBody(text, ListType.SJP_PRESS_LIST),
                                "Valid sjp press list marked as valid");
         }
     }
@@ -374,13 +364,11 @@ class ValidationServiceTest {
     @Test
     void testValidateWithErrorsWhenArtefactIsSjpPressList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream("mocks/sjp-public/sjpPublicList.json")) {
+            .getResourceAsStream("mocks/sjp-press/sjpPressListInvalid.json")) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
-            Artefact artefact = new Artefact();
-            artefact.setListType(ListType.SJP_PRESS_LIST);
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(text, ListType.CIVIL_DAILY_CAUSE_LIST),
+                             validationService.validateBody(text, ListType.SJP_PRESS_LIST),
                          "Invalid sjp press list marked as valid");
         }
     }
