@@ -42,7 +42,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles(profiles = "test")
 @RunWith(SpringRunner.class)
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
-public class PublicationSjpPublicTest {
+class PublicationSjpPublicTest {
 
     @Autowired
     BlobContainerClient blobContainerClient;
