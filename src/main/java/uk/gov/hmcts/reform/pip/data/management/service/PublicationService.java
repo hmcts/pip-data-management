@@ -1,17 +1,21 @@
 package uk.gov.hmcts.reform.pip.data.management.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
-import org.springframework.stereotype.Component;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.AzureBlobService;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ArtefactNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.NotFoundException;
+import uk.gov.hmcts.reform.pip.data.management.models.external.Subscription;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
 import uk.gov.hmcts.reform.pip.data.management.utils.PayloadExtractor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -20,7 +24,8 @@ import java.util.UUID;
 /**
  * This class contains the business logic for handling of Publications.
  */
-@Component
+@Slf4j
+@Service
 public class PublicationService {
 
     private final ArtefactRepository artefactRepository;
@@ -29,13 +34,17 @@ public class PublicationService {
 
     private final PayloadExtractor payloadExtractor;
 
+    private final SubscriptionManagementService subscriptionManagementService;
+
     @Autowired
     public PublicationService(ArtefactRepository artefactRepository,
                               AzureBlobService azureBlobService,
-                              PayloadExtractor payloadExtractor) {
+                              PayloadExtractor payloadExtractor,
+                              SubscriptionManagementService subscriptionManagementService) {
         this.artefactRepository = artefactRepository;
         this.azureBlobService = azureBlobService;
         this.payloadExtractor = payloadExtractor;
+        this.subscriptionManagementService = subscriptionManagementService;
     }
 
     /**
@@ -187,6 +196,22 @@ public class PublicationService {
         String sourceArtefactId = artefact.getSourceArtefactId();
         String provenance = artefact.getProvenance();
         return azureBlobService.getBlobFile(sourceArtefactId, provenance);
+    }
+
+    /**
+     * Scheduled method that checks daily for newly dated from artefacts.
+     */
+    @Scheduled(cron = "${cron.daily-display-from}")
+    public void checkNewlyActiveArtefacts() {
+        log.info(subscriptionManagementService.getSubscribersToArtefact(new Artefact()).toString());
+        List<Artefact> newArtefactsToday = artefactRepository.findArtefactsByDisplayFrom(LocalDate.now());
+        newArtefactsToday.forEach(artefact -> log.info(handleArtefactSubscribers(artefact)));
+    }
+
+    public String handleArtefactSubscribers(Artefact artefact) {
+        List<Subscription> subscriptions = subscriptionManagementService.getSubscribersToArtefact(artefact);
+        //TODO: PUB 1001 check which subscribers are valid here
+        return String.format("%s subscriptions handled", subscriptions.size());
     }
 
 }

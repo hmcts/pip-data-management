@@ -14,12 +14,14 @@ import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.AzureBlobService;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ArtefactNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.NotFoundException;
+import uk.gov.hmcts.reform.pip.data.management.models.external.Subscription;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Language;
 import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
 import uk.gov.hmcts.reform.pip.data.management.utils.PayloadExtractor;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -45,6 +47,9 @@ class PublicationServiceTest {
 
     @Mock
     PayloadExtractor payloadExtractor;
+
+    @Mock
+    SubscriptionManagementService subscriptionManagementService;
 
     @InjectMocks
     PublicationService publicationService;
@@ -409,6 +414,22 @@ class PublicationServiceTest {
     void testInvalidEnumTypeThrows() {
         assertThrows(IllegalArgumentException.class, () ->
             publicationService.findAllBySearch(CaseSearchTerm.valueOf("invalid"), TEST_VALUE, true));
+    }
+
+    @Test
+    void testHandleArtefactSubscribers() {
+        Subscription returnedSubscription = new Subscription();
+        when(subscriptionManagementService.getSubscribersToArtefact(artefact))
+            .thenReturn(List.of(returnedSubscription));
+        assertEquals("1 subscriptions handled", publicationService.handleArtefactSubscribers(artefact),
+                     MESSAGES_MATCH);
+    }
+
+    @Test
+    void testHandleArtefactSubscribersWithNoResults() {
+        when(subscriptionManagementService.getSubscribersToArtefact(artefact)).thenReturn(Collections.emptyList());
+        assertEquals("0 subscriptions handled", publicationService.handleArtefactSubscribers(artefact),
+                     MESSAGES_MATCH);
     }
 
 }
