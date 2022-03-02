@@ -21,6 +21,7 @@ import uk.gov.hmcts.reform.pip.data.management.models.publication.Language;
 import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
 import uk.gov.hmcts.reform.pip.data.management.utils.PayloadExtractor;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -434,12 +435,16 @@ class PublicationServiceTest {
     }
 
     @Test
-    void testCheckNewlyActiveArtefactsLogs() {
-        LogCaptor logCaptor = LogCaptor.forClass(PublicationService.class);
-        when(artefactRepository.findArtefactsByDisplayFrom(any())).thenReturn(List.of(new Artefact()));
-        publicationService.checkNewlyActiveArtefacts();
-        assertEquals("0 subscriptions handled", logCaptor.getInfoLogs().get(0),
-                     "Info logs should match");
+    void testCheckNewlyActiveArtefactsLogs() throws IOException {
+        try (LogCaptor logCaptor = LogCaptor.forClass(PublicationService.class)) {
+            when(artefactRepository.findArtefactsByDisplayFrom(any())).thenReturn(List.of(new Artefact()));
+            publicationService.checkNewlyActiveArtefacts();
+            assertEquals("0 subscriptions handled", logCaptor.getInfoLogs().get(0),
+                         "Info logs should match"
+            );
+        } catch (Exception ex) {
+            throw new IOException(ex.getMessage());
+        }
     }
 }
 
