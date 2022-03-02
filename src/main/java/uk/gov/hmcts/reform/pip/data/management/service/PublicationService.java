@@ -203,7 +203,6 @@ public class PublicationService {
      */
     @Scheduled(cron = "${cron.daily-display-from}")
     public void checkNewlyActiveArtefacts() {
-        log.info(subscriptionManagementService.getSubscribersToArtefact(new Artefact()).toString());
         List<Artefact> newArtefactsToday = artefactRepository.findArtefactsByDisplayFrom(LocalDate.now());
         newArtefactsToday.forEach(artefact -> log.info(handleArtefactSubscribers(artefact)));
     }

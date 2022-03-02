@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.pip.data.management.service;
 
+import nl.altindag.log.LogCaptor;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -432,6 +433,14 @@ class PublicationServiceTest {
                      MESSAGES_MATCH);
     }
 
+    @Test
+    void testCheckNewlyActiveArtefactsLogs() {
+        LogCaptor logCaptor = LogCaptor.forClass(PublicationService.class);
+        when(artefactRepository.findArtefactsByDisplayFrom(any())).thenReturn(List.of(new Artefact()));
+        publicationService.checkNewlyActiveArtefacts();
+        assertEquals("0 subscriptions handled", logCaptor.getInfoLogs().get(0),
+                     "Info logs should match");
+    }
 }
 
 
