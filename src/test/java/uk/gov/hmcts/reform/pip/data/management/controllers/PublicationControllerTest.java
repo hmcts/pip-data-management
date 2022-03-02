@@ -138,13 +138,13 @@ class PublicationControllerTest {
 
     @Test
     void testSearchEndpointReturnsOkWithTrue() {
-        assertEquals(HttpStatus.OK, publicationController.getAllRelevantArtefactsByCourtId(EMPTY_FIELD, true)
+        assertEquals(HttpStatus.OK, publicationController.getAllRelevantArtefactsByCourtId(EMPTY_FIELD, true, true)
             .getStatusCode(), STATUS_CODE_MATCH);
     }
 
     @Test
     void testSearchEndpointReturnsOkWithFalse() {
-        assertEquals(HttpStatus.OK, publicationController.getAllRelevantArtefactsByCourtId(EMPTY_FIELD, false)
+        assertEquals(HttpStatus.OK, publicationController.getAllRelevantArtefactsByCourtId(EMPTY_FIELD, false, false)
             .getStatusCode(), STATUS_CODE_MATCH);
     }
 
@@ -204,9 +204,9 @@ class PublicationControllerTest {
     void checkGetArtefactsByCourtIdReturnsWhenTrue() {
         List<Artefact> artefactList = List.of(artefactWithId);
 
-        when(publicationService.findAllByCourtId(EMPTY_FIELD, true)).thenReturn(artefactList);
+        when(publicationService.findAllByCourtIdAdmin(EMPTY_FIELD, true, true)).thenReturn(artefactList);
         ResponseEntity<List<Artefact>> unmappedArtefact = publicationController
-            .getAllRelevantArtefactsByCourtId(EMPTY_FIELD, true);
+            .getAllRelevantArtefactsByCourtId(EMPTY_FIELD, true, true);
 
         assertEquals(artefactList, unmappedArtefact.getBody(), VALIDATION_EXPECTED_MESSAGE);
         assertEquals(HttpStatus.OK, unmappedArtefact.getStatusCode(), STATUS_CODE_MATCH);
@@ -216,9 +216,9 @@ class PublicationControllerTest {
     void checkGetArtefactsByCourtIdReturnsOkWhenFalse() {
         List<Artefact> artefactList = List.of(artefactWithId);
 
-        when(publicationService.findAllByCourtId(EMPTY_FIELD, false)).thenReturn(artefactList);
+        when(publicationService.findAllByCourtIdAdmin(EMPTY_FIELD, false, false)).thenReturn(artefactList);
         ResponseEntity<List<Artefact>> unmappedArtefact = publicationController
-            .getAllRelevantArtefactsByCourtId(EMPTY_FIELD, false);
+            .getAllRelevantArtefactsByCourtId(EMPTY_FIELD, false, false);
 
         assertEquals(artefactList, unmappedArtefact.getBody(), VALIDATION_EXPECTED_MESSAGE);
         assertEquals(HttpStatus.OK, unmappedArtefact.getStatusCode(), STATUS_CODE_MATCH);

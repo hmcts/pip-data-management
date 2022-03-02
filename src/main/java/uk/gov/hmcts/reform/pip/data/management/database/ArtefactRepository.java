@@ -78,4 +78,8 @@ public interface ArtefactRepository extends JpaRepository<Artefact, Long> {
                                                   @Param(SEARCH_VAL_PARAM) String searchVal,
                                                   @Param(CURRENT_DATE_PARAM) LocalDateTime currentDate);
 
+    @Query(value = "select * from Artefact where court_id = :courtId",
+        nativeQuery = true)
+    List<Artefact> findArtefactsByCourtIdAdmin(@Param(COURT_ID_PARAM) String courtId);
+
 }

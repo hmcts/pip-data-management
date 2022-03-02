@@ -101,12 +101,11 @@ class PublicationTest {
     private static final String VALID_CASE_NAME_SEARCH = "/CASE_NAME/Smith";
     private static final String TRUE = "true";
     private static final String FALSE = "false";
+    private static final String ADMIN_HEADER = "x-admin";
 
     private static final String FORMAT_RESPONSE = "Please check that the value is of the correct format for the field "
         + "(See Swagger documentation for correct formats)";
 
-    private static final String VERIFICATION_TRUE = "true";
-    private static final String VERIFICATION_FALSE = "false";
     private static final String DISPLAY_FROM_RESPONSE = "x-display-from Field is required for artefact type";
     private static final String DISPLAY_TO_RESPONSE = "x-display-to Field is required for artefact type";
     private static final String VALIDATION_EMPTY_RESPONSE = "Response should contain a Artefact";
@@ -130,6 +129,10 @@ class PublicationTest {
     }
 
     Artefact createDailyList(Sensitivity sensitivity) throws Exception {
+        return createDailyList(sensitivity, DISPLAY_FROM.minusMonths(2), SOURCE_ARTEFACT_ID);
+    }
+
+    Artefact createDailyList(Sensitivity sensitivity, LocalDateTime displayFrom, String sourceArtefactID) throws Exception {
         try (InputStream mockFile = this.getClass().getClassLoader()
             .getResourceAsStream("data/dailyCauseList.json")) {
 
@@ -137,8 +140,8 @@ class PublicationTest {
                 .post(POST_URL)
                 .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
                 .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
-                .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
-                .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
+                .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, sourceArtefactID)
+                .header(PublicationConfiguration.DISPLAY_FROM_HEADER, displayFrom)
                 .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO.plusMonths(1))
                 .header(PublicationConfiguration.COURT_ID, COURT_ID)
                 .header(PublicationConfiguration.LIST_TYPE, ListType.CIVIL_DAILY_CAUSE_LIST)
@@ -1091,7 +1094,7 @@ class PublicationTest {
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 = MockMvcRequestBuilders
             .get(SEARCH_COURT_URL + "/" + COURT_ID)
-            .header(VERIFICATION_HEADER, VERIFICATION_FALSE);
+            .header(VERIFICATION_HEADER, FALSE);
         MvcResult getResponse =
             mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isOk()).andReturn();
 
@@ -1145,7 +1148,7 @@ class PublicationTest {
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 = MockMvcRequestBuilders
             .get(SEARCH_COURT_URL + "/" + COURT_ID)
-            .header(VERIFICATION_HEADER, VERIFICATION_FALSE);
+            .header(VERIFICATION_HEADER, FALSE);
         MvcResult getResponse =
             mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isOk()).andReturn();
 
@@ -1245,7 +1248,7 @@ class PublicationTest {
 
         response = mockMvc.perform(MockMvcRequestBuilders
                                        .get(POST_URL + "/" + artefact.getArtefactId() + "/file")
-                                       .header(VERIFICATION_HEADER, VERIFICATION_TRUE))
+                                       .header(VERIFICATION_HEADER, TRUE))
             .andExpect(status().isOk()).andReturn();
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
@@ -1290,7 +1293,7 @@ class PublicationTest {
 
         mockMvc.perform(MockMvcRequestBuilders
                             .get(POST_URL + "/" + artefact.getArtefactId() + "/file")
-                            .header(VERIFICATION_HEADER, VERIFICATION_FALSE))
+                            .header(VERIFICATION_HEADER, FALSE))
             .andExpect(status().isNotFound()).andReturn();
     }
 
@@ -1299,7 +1302,7 @@ class PublicationTest {
     void retrieveFileOfAnArtefactWhereNotFound() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders
                             .get("/publication/7d734e8d-ba1d-4730-bd8b-09a970be00cc/file")
-                            .header(VERIFICATION_HEADER, VERIFICATION_TRUE))
+                            .header(VERIFICATION_HEADER, TRUE))
             .andExpect(status().isNotFound()).andReturn();
     }
 
@@ -1340,7 +1343,7 @@ class PublicationTest {
 
         response = mockMvc.perform(MockMvcRequestBuilders
                                        .get(POST_URL + "/" + artefact.getArtefactId() + PAYLOAD_URL)
-                                       .header(VERIFICATION_HEADER, VERIFICATION_TRUE))
+                                       .header(VERIFICATION_HEADER, TRUE))
                                        .andExpect(status().isOk()).andReturn();
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
@@ -1386,7 +1389,7 @@ class PublicationTest {
 
         mockMvc.perform(MockMvcRequestBuilders
                                        .get(POST_URL + "/" + artefact.getArtefactId() + PAYLOAD_URL)
-                                       .header(VERIFICATION_HEADER, VERIFICATION_TRUE))
+                                       .header(VERIFICATION_HEADER, TRUE))
             .andExpect(status().isNotFound()).andReturn();
     }
 
@@ -1424,7 +1427,7 @@ class PublicationTest {
 
         mockMvc.perform(MockMvcRequestBuilders
                                        .get(POST_URL + "/" + artefact.getArtefactId() + PAYLOAD_URL)
-                                       .header(VERIFICATION_HEADER, VERIFICATION_FALSE))
+                                       .header(VERIFICATION_HEADER, FALSE))
             .andExpect(status().isNotFound()).andReturn();
     }
 
@@ -1479,7 +1482,7 @@ class PublicationTest {
 
         response = mockMvc.perform(MockMvcRequestBuilders
                                        .get(POST_URL + "/" + artefact.getArtefactId() + PAYLOAD_URL)
-                                       .header(VERIFICATION_HEADER, VERIFICATION_FALSE))
+                                       .header(VERIFICATION_HEADER, FALSE))
             .andExpect(status().isOk()).andReturn();
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
@@ -1530,7 +1533,7 @@ class PublicationTest {
 
         mockMvc.perform(MockMvcRequestBuilders
                             .get(POST_URL + "/" + artefact.getArtefactId() + PAYLOAD_URL)
-                            .header(VERIFICATION_HEADER, VERIFICATION_FALSE))
+                            .header(VERIFICATION_HEADER, FALSE))
             .andExpect(status().isNotFound()).andReturn();
     }
 
@@ -1539,7 +1542,7 @@ class PublicationTest {
     void retrievePayloadOfAnArtefactWhereNotFound() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders
                                        .get("/publication/7d734e8d-ba1d-4730-bd8b-09a970be00cc/payload")
-                                       .header(VERIFICATION_HEADER, VERIFICATION_TRUE))
+                                       .header(VERIFICATION_HEADER, TRUE))
             .andExpect(status().isNotFound()).andReturn();
     }
 
@@ -1580,7 +1583,7 @@ class PublicationTest {
 
         response = mockMvc.perform(MockMvcRequestBuilders
                                        .get(POST_URL + "/" + artefact.getArtefactId())
-                                       .header(VERIFICATION_HEADER, VERIFICATION_TRUE))
+                                       .header(VERIFICATION_HEADER, TRUE))
             .andExpect(status().isOk()).andReturn();
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
@@ -1627,7 +1630,7 @@ class PublicationTest {
 
         response = mockMvc.perform(MockMvcRequestBuilders
                                        .get(POST_URL + "/" + artefact.getArtefactId())
-                                       .header(VERIFICATION_HEADER, VERIFICATION_FALSE))
+                                       .header(VERIFICATION_HEADER, FALSE))
             .andExpect(status().isOk()).andReturn();
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
@@ -1674,7 +1677,7 @@ class PublicationTest {
 
         mockMvc.perform(MockMvcRequestBuilders
                             .get(POST_URL + "/" + artefact.getArtefactId())
-                            .header(VERIFICATION_HEADER, VERIFICATION_TRUE))
+                            .header(VERIFICATION_HEADER, TRUE))
             .andExpect(status().isNotFound()).andReturn();
     }
 
@@ -1715,7 +1718,7 @@ class PublicationTest {
 
         mockMvc.perform(MockMvcRequestBuilders
                             .get(POST_URL + "/" + artefact.getArtefactId())
-                            .header(VERIFICATION_HEADER, VERIFICATION_FALSE))
+                            .header(VERIFICATION_HEADER, FALSE))
             .andExpect(status().isNotFound()).andReturn();
     }
 
@@ -1753,7 +1756,7 @@ class PublicationTest {
 
         mockMvc.perform(MockMvcRequestBuilders
                             .get(POST_URL + "/" + artefact.getArtefactId())
-                            .header(VERIFICATION_HEADER, VERIFICATION_FALSE))
+                            .header(VERIFICATION_HEADER, FALSE))
             .andExpect(status().isNotFound()).andReturn();
     }
 
@@ -1762,7 +1765,7 @@ class PublicationTest {
     void retrieveMetadataOfAnArtefactWhereNotFound() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders
                             .get("/publication/7d734e8d-ba1d-4730-bd8b-09a970be00cc")
-                            .header(VERIFICATION_HEADER, VERIFICATION_TRUE))
+                            .header(VERIFICATION_HEADER, TRUE))
             .andExpect(status().isNotFound()).andReturn();
     }
 
@@ -1896,6 +1899,102 @@ class PublicationTest {
             .header(VERIFICATION_HEADER, FALSE);
 
         mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isNotFound()).andReturn();
+    }
+
+    @Test
+    void testGetCourtByIdShowsAllCourtsForAdmin1() throws Exception {
+        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(blobContainerClient.getBlobContainerUrl()).thenReturn(PAYLOAD_URL);
+
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder3 =
+            MockMvcRequestBuilders.post(POST_URL).content(payload)
+            .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
+            .header(PublicationConfiguration.SENSITIVITY_HEADER, Sensitivity.PUBLIC)
+            .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
+            .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
+            .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO.plusMonths(1))
+            .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM.minusMonths(2))
+            .header(PublicationConfiguration.LIST_TYPE, LIST_TYPE)
+            .header(PublicationConfiguration.COURT_ID, COURT_ID)
+            .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
+            .contentType(MediaType.APPLICATION_JSON);
+
+        //mockMvc.perform(mockHttpServletRequestBuilder3).andExpect(status().isCreated()).andReturn();
+        //
+        //Artefact inDateArtefact = createDailyList(Sensitivity.PRIVATE);
+        ////Artefact futureArtefact = createDailyList(Sensitivity.PRIVATE, LocalDateTime.now().plusMonths(1));
+        //
+        //System.out.println("inDateArtefact = " + inDateArtefact);
+        //System.out.println("futureArtefact = " + futureArtefact);
+        //
+        //MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
+        //    MockMvcRequestBuilders.get(SEARCH_COURT_URL + "/" + COURT_ID)
+        //        .header(VERIFICATION_HEADER, TRUE)
+        //        .header(ADMIN_HEADER, FALSE);
+        //
+        //MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 =
+        //    MockMvcRequestBuilders.get(SEARCH_COURT_URL + "/" + COURT_ID)
+        //        .header(VERIFICATION_HEADER, TRUE)
+        //        .header(ADMIN_HEADER, TRUE);
+        //
+        //MvcResult nonAdminResponse =
+        //    mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isOk()).andReturn();
+        //
+        //MvcResult adminResponse =
+        //    mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isOk()).andReturn();
+        //
+        //System.out.println("nonAdminResponse = " + nonAdminResponse.getResponse().getContentAsString());
+        //System.out.println("adminResponse = " + adminResponse.getResponse().getContentAsString());
+        ////String jsonOutput = nonAdminResponse.getResponse().getContentAsString();
+        ////JSONArray jsonArray = new JSONArray(jsonOutput);
+        ////
+        ////System.out.println("jsonArray = " + jsonArray);
+        ////Artefact[] retrievedArtefact = objectMapper.readValue(
+        ////    jsonArray.get(0).toString(), Artefact[].class
+        ////);
+        ////System.out.println("retrievedArtefact = " + retrievedArtefact);
+        //
+        //Artefact[] nonAdminResults = objectMapper.readValue(nonAdminResponse.getResponse().getContentAsString(),
+        //                                                    Artefact[].class);
+        //Artefact[] adminResults = objectMapper.readValue(adminResponse.getResponse().getContentAsString(),
+        //                                                 Artefact[].class);
+        //assertEquals(1, nonAdminResults.length, "Should only return 1 result for non admin");
+        //assertEquals(2, adminResults.length, "Should return 2 results for admin");
+    }
+
+    @Test
+    void testGetCourtByIdShowsAllCourtsForAdmin() throws Exception {
+        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+
+        Artefact inDateArtefact = createDailyList(Sensitivity.PUBLIC);
+        Artefact futureArtefact = createDailyList(Sensitivity.PUBLIC, DISPLAY_FROM.plusMonths(1), "733");
+
+        assertEquals(inDateArtefact.getDisplayFrom(), DISPLAY_FROM.minusMonths(2),
+                     VALIDATION_DISPLAY_FROM);
+        assertEquals(futureArtefact.getDisplayFrom(), DISPLAY_FROM.plusMonths(1),
+                     VALIDATION_DISPLAY_FROM);
+
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+            .get(SEARCH_COURT_URL + "/" + COURT_ID)
+            .header(VERIFICATION_HEADER, FALSE)
+            .header(ADMIN_HEADER, FALSE);
+
+        MvcResult nonAdminResponse =
+            mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isOk()).andReturn();
+
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 = MockMvcRequestBuilders
+            .get(SEARCH_COURT_URL + "/" + COURT_ID)
+            .header(VERIFICATION_HEADER, FALSE)
+            .header(ADMIN_HEADER, TRUE);
+
+        MvcResult adminResponse =
+            mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isOk()).andReturn();
+
+        JSONArray nonAdminResults = new JSONArray(nonAdminResponse.getResponse().getContentAsString());
+        JSONArray adminResults = new JSONArray(adminResponse.getResponse().getContentAsString());
+        assertEquals(1, nonAdminResults.length(), "Should return 1 artefact for non admin");
+        assertEquals(2, adminResults.length(), "Should return 2 artefacts for admins");
+
     }
 
 }

@@ -411,6 +411,20 @@ class PublicationServiceTest {
             publicationService.findAllBySearch(CaseSearchTerm.valueOf("invalid"), TEST_VALUE, true));
     }
 
+    @Test
+    void testFindAllByCourtIdAdmin() {
+        when(artefactRepository.findArtefactsByCourtIdAdmin(TEST_VALUE)).thenReturn(List.of(artefact));
+        assertEquals(List.of(artefact), publicationService.findAllByCourtIdAdmin(TEST_VALUE, true, true),
+                     VALIDATION_ARTEFACT_NOT_MATCH);
+    }
+
+    @Test
+    void testFindAllByCourtIdAdminNotAdmin() {
+        when(artefactRepository.findArtefactsByCourtIdVerified(any(), any())).thenReturn(List.of(artefact));
+        assertEquals(List.of(artefact), publicationService.findAllByCourtIdAdmin(TEST_VALUE, true, false),
+                     VALIDATION_ARTEFACT_NOT_MATCH);
+    }
+
 }
 
 

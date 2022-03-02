@@ -105,6 +105,19 @@ public class PublicationService {
     }
 
     /**
+     * Get all artefacts for admin actions.
+     *
+     * @param courtId The court id to search for.
+     * @param verified represents the verification status of the user. Currently only verified/non-verified, but
+     *                 will include other verified user types in the future.
+     * @param isAdmin bool to check whether admin search is needed, if not will default to findAllByCourtId().
+     * @return list of matching artefacts.
+     */
+    public List<Artefact> findAllByCourtIdAdmin(String courtId, Boolean verified, boolean isAdmin) {
+        return isAdmin ? artefactRepository.findArtefactsByCourtIdAdmin(courtId) : findAllByCourtId(courtId, verified);
+    }
+
+    /**
      * Get all relevant Artefacts based on search values stored in the Artefact.
      *
      * @param searchTerm the search term checking against, eg. CASE_ID or CASE_URN

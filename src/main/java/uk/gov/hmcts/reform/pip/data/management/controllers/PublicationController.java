@@ -208,8 +208,12 @@ public class PublicationController {
     @ApiOperation("Get a series of publications matching a given courtId (e.g. courtid)")
     @GetMapping("/courtId/{courtId}")
     public ResponseEntity<List<Artefact>> getAllRelevantArtefactsByCourtId(@PathVariable String courtId,
-                                                                           @RequestHeader Boolean verification) {
-        return ResponseEntity.ok(publicationService.findAllByCourtId(courtId, verification));
+                                                                           @RequestHeader Boolean verification,
+                                                                           @RequestHeader(value = "x-admin",
+                                                                               defaultValue = "false",
+                                                                               required = false) Boolean isAdmin) {
+        System.out.println("isAdmin = " + isAdmin);
+        return ResponseEntity.ok(publicationService.findAllByCourtIdAdmin(courtId, verification, isAdmin));
     }
 
     @ApiResponses({
