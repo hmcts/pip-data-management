@@ -15,7 +15,6 @@ import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.AzureBlobService;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ArtefactNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.NotFoundException;
-import uk.gov.hmcts.reform.pip.data.management.models.external.Subscription;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Language;
 import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
@@ -23,7 +22,6 @@ import uk.gov.hmcts.reform.pip.data.management.utils.PayloadExtractor;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -68,6 +66,7 @@ class PublicationServiceTest {
     private static final Map<String, List<Object>> SEARCH_VALUES = new ConcurrentHashMap<>();
     private static final MultipartFile FILE = new MockMultipartFile("test", (byte[]) null);
     private static final String VALIDATION_ARTEFACT_NOT_MATCH = "Artefacts do not match";
+    private static final String SUCCESS = "Success";
 
     private Artefact artefact;
     private Artefact artefactWithPayloadUrl;
@@ -419,18 +418,10 @@ class PublicationServiceTest {
     }
 
     @Test
-    void testHandleArtefactSubscribers() {
-        Subscription returnedSubscription = new Subscription();
+    void testSendArtefactForSubscription() {
         when(subscriptionManagementService.getSubscribersToArtefact(artefact))
-            .thenReturn(List.of(returnedSubscription));
-        assertEquals("1 subscriptions handled", publicationService.handleArtefactSubscribers(artefact),
-                     MESSAGES_MATCH);
-    }
-
-    @Test
-    void testHandleArtefactSubscribersWithNoResults() {
-        when(subscriptionManagementService.getSubscribersToArtefact(artefact)).thenReturn(Collections.emptyList());
-        assertEquals("0 subscriptions handled", publicationService.handleArtefactSubscribers(artefact),
+            .thenReturn(SUCCESS);
+        assertEquals(SUCCESS, publicationService.sendArtefactForSubscription(artefact),
                      MESSAGES_MATCH);
     }
 
@@ -438,8 +429,9 @@ class PublicationServiceTest {
     void testCheckNewlyActiveArtefactsLogs() throws IOException {
         try (LogCaptor logCaptor = LogCaptor.forClass(PublicationService.class)) {
             when(artefactRepository.findArtefactsByDisplayFrom(any())).thenReturn(List.of(new Artefact()));
+            when(subscriptionManagementService.getSubscribersToArtefact(any())).thenReturn(SUCCESS);
             publicationService.checkNewlyActiveArtefacts();
-            assertEquals("0 subscriptions handled", logCaptor.getInfoLogs().get(0),
+            assertEquals(SUCCESS, logCaptor.getInfoLogs().get(0),
                          "Info logs should match"
             );
         } catch (Exception ex) {

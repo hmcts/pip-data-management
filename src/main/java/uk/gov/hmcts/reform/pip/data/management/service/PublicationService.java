@@ -10,7 +10,6 @@ import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.AzureBlobService;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ArtefactNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.NotFoundException;
-import uk.gov.hmcts.reform.pip.data.management.models.external.Subscription;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
 import uk.gov.hmcts.reform.pip.data.management.utils.PayloadExtractor;
@@ -204,13 +203,12 @@ public class PublicationService {
     @Scheduled(cron = "${cron.daily-display-from}")
     public void checkNewlyActiveArtefacts() {
         List<Artefact> newArtefactsToday = artefactRepository.findArtefactsByDisplayFrom(LocalDate.now());
-        newArtefactsToday.forEach(artefact -> log.info(handleArtefactSubscribers(artefact)));
+        newArtefactsToday.forEach(artefact -> log.info(sendArtefactForSubscription(artefact)));
     }
 
-    public String handleArtefactSubscribers(Artefact artefact) {
-        List<Subscription> subscriptions = subscriptionManagementService.getSubscribersToArtefact(artefact);
+    public String sendArtefactForSubscription(Artefact artefact) {
         //TODO: PUB 1001 check which subscribers are valid here
-        return String.format("%s subscriptions handled", subscriptions.size());
+        return subscriptionManagementService.getSubscribersToArtefact(artefact);
     }
 
 }

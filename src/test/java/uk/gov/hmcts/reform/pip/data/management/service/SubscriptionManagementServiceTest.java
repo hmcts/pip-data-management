@@ -11,16 +11,15 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 import uk.gov.hmcts.reform.pip.data.management.Application;
 import uk.gov.hmcts.reform.pip.data.management.config.AzureBlobConfigurationTest;
 import uk.gov.hmcts.reform.pip.data.management.config.RestTemplateConfigurationTest;
-import uk.gov.hmcts.reform.pip.data.management.models.external.Subscription;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 
-import java.util.Collections;
-import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -36,13 +35,15 @@ class SubscriptionManagementServiceTest {
     @Autowired
     RestTemplate restTemplate;
 
+    private static final String SUCCESS = "Success";
+    private static final UUID ARTEFACT_ID = UUID.randomUUID();
     private static final String SHOULD_MATCH = "Lists should match";
-    private static final String SUBSCRIPTION_URL = "testUrl/subscription/artefact-recipients/{courtId}/{searchTerms}";
+    private static final String SUBSCRIPTION_URL = "testUrl/subscription/artefact-recipients";
     private final Artefact artefact = Artefact.builder()
         .courtId("1")
+        .artefactId(ARTEFACT_ID)
         .search(new ConcurrentHashMap<>())
         .build();
-    private Subscription subscription;
 
     @InjectMocks
     @Autowired
@@ -50,40 +51,39 @@ class SubscriptionManagementServiceTest {
 
     @BeforeEach
     void setup() {
-        subscription = new Subscription();
-        subscription.setCaseName("test");
-        Subscription[] subscriptions = new Subscription[1];
-        subscriptions[0] = subscription;
-        when(restTemplate.getForEntity(SUBSCRIPTION_URL, Subscription[].class, artefact.getCourtId(),
-                                       artefact.getSearch().toString())).thenReturn(ResponseEntity.ok(subscriptions));
+        when(restTemplate.postForEntity(SUBSCRIPTION_URL, artefact, String.class))
+            .thenReturn(ResponseEntity.ok(SUCCESS));
     }
 
     @Test
     void testSuccessReturnsList() {
-        assertEquals(List.of(subscription), subscriptionManagementService.getSubscribersToArtefact(artefact),
+        assertEquals(SUCCESS, subscriptionManagementService.getSubscribersToArtefact(artefact),
                      SHOULD_MATCH);
     }
 
     @Test
-    void testSuccessReturnsEmptyList() {
-        artefact.setCourtId("2");
-        when(restTemplate.getForEntity(SUBSCRIPTION_URL, Subscription[].class, artefact.getCourtId(),
-                                                                artefact.getSearch().toString()))
-            .thenReturn(ResponseEntity.ok(new Subscription[0]));
-        assertEquals(Collections.emptyList(), subscriptionManagementService.getSubscribersToArtefact(artefact),
-                     SHOULD_MATCH
-        );
-    }
-
-    @Test
     void testEmptyListReturnedOnError() {
-        artefact.setCourtId("3");
+        artefact.setCourtId("2");
+
         HttpServerErrorException httpServerErrorException =
             new HttpServerErrorException(HttpStatus.BAD_GATEWAY, "Bad Gateway", null, null);
         doThrow(httpServerErrorException).when(restTemplate)
-            .getForEntity(SUBSCRIPTION_URL, Subscription[].class, artefact.getCourtId(),
-                          artefact.getSearch().toString());
-        assertEquals(Collections.emptyList(), subscriptionManagementService.getSubscribersToArtefact(artefact),
+            .postForEntity(SUBSCRIPTION_URL, artefact, String.class);
+
+        assertEquals("Subscription trigger unsuccessful for artefact: " + ARTEFACT_ID,
+                     subscriptionManagementService.getSubscribersToArtefact(artefact),
+                     SHOULD_MATCH);
+    }
+
+    @Test
+    void testErrorMessageOnError() {
+        artefact.setCourtId("3");
+        HttpClientErrorException httpClientErrorException =
+            new HttpClientErrorException(HttpStatus.BAD_GATEWAY, "Bad Gateway", null, null);
+        doThrow(httpClientErrorException).when(restTemplate)
+            .postForEntity(SUBSCRIPTION_URL, artefact, String.class);
+        assertEquals("Subscription trigger unsuccessful for artefact: " + ARTEFACT_ID,
+                     subscriptionManagementService.getSubscribersToArtefact(artefact),
                      SHOULD_MATCH);
     }
 }
