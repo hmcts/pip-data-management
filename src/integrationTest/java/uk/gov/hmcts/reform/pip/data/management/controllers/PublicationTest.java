@@ -132,7 +132,8 @@ class PublicationTest {
         return createDailyList(sensitivity, DISPLAY_FROM.minusMonths(2), SOURCE_ARTEFACT_ID);
     }
 
-    Artefact createDailyList(Sensitivity sensitivity, LocalDateTime displayFrom, String sourceArtefactID) throws Exception {
+    Artefact createDailyList(Sensitivity sensitivity, LocalDateTime displayFrom, String sourceArtefactID)
+        throws Exception {
         try (InputStream mockFile = this.getClass().getClassLoader()
             .getResourceAsStream("data/dailyCauseList.json")) {
 
@@ -1899,67 +1900,6 @@ class PublicationTest {
             .header(VERIFICATION_HEADER, FALSE);
 
         mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isNotFound()).andReturn();
-    }
-
-    @Test
-    void testGetCourtByIdShowsAllCourtsForAdmin1() throws Exception {
-        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
-        when(blobContainerClient.getBlobContainerUrl()).thenReturn(PAYLOAD_URL);
-
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder3 =
-            MockMvcRequestBuilders.post(POST_URL).content(payload)
-            .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
-            .header(PublicationConfiguration.SENSITIVITY_HEADER, Sensitivity.PUBLIC)
-            .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
-            .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
-            .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO.plusMonths(1))
-            .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM.minusMonths(2))
-            .header(PublicationConfiguration.LIST_TYPE, LIST_TYPE)
-            .header(PublicationConfiguration.COURT_ID, COURT_ID)
-            .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
-            .contentType(MediaType.APPLICATION_JSON);
-
-        //mockMvc.perform(mockHttpServletRequestBuilder3).andExpect(status().isCreated()).andReturn();
-        //
-        //Artefact inDateArtefact = createDailyList(Sensitivity.PRIVATE);
-        ////Artefact futureArtefact = createDailyList(Sensitivity.PRIVATE, LocalDateTime.now().plusMonths(1));
-        //
-        //System.out.println("inDateArtefact = " + inDateArtefact);
-        //System.out.println("futureArtefact = " + futureArtefact);
-        //
-        //MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
-        //    MockMvcRequestBuilders.get(SEARCH_COURT_URL + "/" + COURT_ID)
-        //        .header(VERIFICATION_HEADER, TRUE)
-        //        .header(ADMIN_HEADER, FALSE);
-        //
-        //MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 =
-        //    MockMvcRequestBuilders.get(SEARCH_COURT_URL + "/" + COURT_ID)
-        //        .header(VERIFICATION_HEADER, TRUE)
-        //        .header(ADMIN_HEADER, TRUE);
-        //
-        //MvcResult nonAdminResponse =
-        //    mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isOk()).andReturn();
-        //
-        //MvcResult adminResponse =
-        //    mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isOk()).andReturn();
-        //
-        //System.out.println("nonAdminResponse = " + nonAdminResponse.getResponse().getContentAsString());
-        //System.out.println("adminResponse = " + adminResponse.getResponse().getContentAsString());
-        ////String jsonOutput = nonAdminResponse.getResponse().getContentAsString();
-        ////JSONArray jsonArray = new JSONArray(jsonOutput);
-        ////
-        ////System.out.println("jsonArray = " + jsonArray);
-        ////Artefact[] retrievedArtefact = objectMapper.readValue(
-        ////    jsonArray.get(0).toString(), Artefact[].class
-        ////);
-        ////System.out.println("retrievedArtefact = " + retrievedArtefact);
-        //
-        //Artefact[] nonAdminResults = objectMapper.readValue(nonAdminResponse.getResponse().getContentAsString(),
-        //                                                    Artefact[].class);
-        //Artefact[] adminResults = objectMapper.readValue(adminResponse.getResponse().getContentAsString(),
-        //                                                 Artefact[].class);
-        //assertEquals(1, nonAdminResults.length, "Should only return 1 result for non admin");
-        //assertEquals(2, adminResults.length, "Should return 2 results for admin");
     }
 
     @Test

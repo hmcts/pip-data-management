@@ -212,7 +212,6 @@ public class PublicationController {
                                                                            @RequestHeader(value = "x-admin",
                                                                                defaultValue = "false",
                                                                                required = false) Boolean isAdmin) {
-        System.out.println("isAdmin = " + isAdmin);
         return ResponseEntity.ok(publicationService.findAllByCourtIdAdmin(courtId, verification, isAdmin));
     }
 
