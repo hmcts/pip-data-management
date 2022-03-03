@@ -14,7 +14,6 @@ import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.AzureBlobService;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ArtefactNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.NotFoundException;
-import uk.gov.hmcts.reform.pip.data.management.models.external.Subscription;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Language;
 import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
@@ -22,7 +21,6 @@ import uk.gov.hmcts.reform.pip.data.management.utils.PayloadExtractor;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -68,7 +66,8 @@ class PublicationServiceTest {
     private static final Map<String, List<Object>> SEARCH_VALUES = new ConcurrentHashMap<>();
     private static final MultipartFile FILE = new MockMultipartFile("test", (byte[]) null);
     private static final String VALIDATION_ARTEFACT_NOT_MATCH = "Artefacts do not match";
-    private static final List<Subscription> SUBSCRIPTION_LIST = List.of(new Subscription());
+    private static final String SUCCESSFUL_TRIGGER = "success - subscription sent";
+    private static final String UNSUCCESSFUL_TRIGGER = "invalid publication, no trigger sent";
 
     private Artefact artefact;
     private Artefact artefactWithPayloadUrl;
@@ -119,7 +118,8 @@ class PublicationServiceTest {
             .provenance(PROVENANCE)
             .payload(PAYLOAD_URL)
             .search(SEARCH_VALUES)
-            .displayFrom(LocalDateTime.now().plusDays(100))
+            .displayFrom(LocalDateTime.now().plusDays(1))
+            .displayTo(LocalDateTime.now().plusDays(2))
             .build();
 
         artefactFromThePast = Artefact.builder()
@@ -129,6 +129,7 @@ class PublicationServiceTest {
             .payload(PAYLOAD_URL)
             .search(SEARCH_VALUES)
             .displayFrom(LocalDateTime.now().minusDays(1))
+            .displayTo(LocalDateTime.now().plusDays(1))
             .build();
 
         artefactFromNow = Artefact.builder()
@@ -138,6 +139,7 @@ class PublicationServiceTest {
             .payload(PAYLOAD_URL)
             .search(SEARCH_VALUES)
             .displayFrom(LocalDateTime.now())
+            .displayTo(LocalDateTime.now().plusHours(3))
             .build();
 
 
@@ -465,24 +467,26 @@ class PublicationServiceTest {
     @Test
     void testTriggerIfDateIsFuture() {
         assertEquals(
-            Collections.emptyList(),
+            UNSUCCESSFUL_TRIGGER,
             publicationService.checkAndTriggerSubscriptionManagement(artefactInTheFuture),
-            "Should have returned an empty list"
+            "Should have returned an invalid trigger string"
         );
     }
 
     @Test
     void testTriggerIfDateIsNow() {
-        when(subscriptionManagementService.sendSubTrigger(artefactFromNow)).thenReturn(SUBSCRIPTION_LIST);
-        assertEquals(SUBSCRIPTION_LIST, publicationService.checkAndTriggerSubscriptionManagement(artefactFromNow),
-                     "should have returned the Subscription List");
+        when(subscriptionManagementService.sendSubTrigger(artefactFromNow)).thenReturn(SUCCESSFUL_TRIGGER);
+        assertEquals(SUCCESSFUL_TRIGGER, publicationService.checkAndTriggerSubscriptionManagement(artefactFromNow),
+                     "should have returned the Subscription List"
+        );
     }
 
     @Test
     void testTriggerIfDateIsPast() {
-        when(subscriptionManagementService.sendSubTrigger(artefactFromThePast)).thenReturn(SUBSCRIPTION_LIST);
-        assertEquals(SUBSCRIPTION_LIST, publicationService.checkAndTriggerSubscriptionManagement(artefactFromThePast),
-                     "Should have returned the subscription list");
+        when(subscriptionManagementService.sendSubTrigger(artefactFromThePast)).thenReturn(SUCCESSFUL_TRIGGER);
+        assertEquals(SUCCESSFUL_TRIGGER, publicationService.checkAndTriggerSubscriptionManagement(artefactFromThePast),
+                     "Should have returned the subscription list"
+        );
     }
 
 }

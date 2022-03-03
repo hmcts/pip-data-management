@@ -10,7 +10,6 @@ import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 
 import java.io.IOException;
-import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -34,16 +33,15 @@ class SubscriptionManagementServiceTest {
         mockSubscriptionManagementEndpoint = new MockWebServer();
         mockSubscriptionManagementEndpoint.start(4550);
         mockSubscriptionManagementEndpoint.enqueue(new MockResponse()
-                                                       .addHeader("Content-Type", "application/json")
-                                                       .setBody("[]"));
-        assertEquals(Collections.emptyList(), subscriptionManagementService.sendSubTrigger(ARTEFACT),
+                                                       .setBody("Trigger not sent"));
+        assertEquals("Trigger not sent", subscriptionManagementService.sendSubTrigger(ARTEFACT),
                      "Trigger is not being sent");
         mockSubscriptionManagementEndpoint.shutdown();
     }
 
     @Test
     void testFailedSend() {
-        assertEquals(subscriptionManagementService.sendSubTrigger(ARTEFACT),Collections.emptyList(),
+        assertEquals(subscriptionManagementService.sendSubTrigger(ARTEFACT), "Request failed",
                      "Trigger failed to send and failed to give a warning");
 
     }

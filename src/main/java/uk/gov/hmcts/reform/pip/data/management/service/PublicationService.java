@@ -8,13 +8,11 @@ import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.AzureBlobService;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ArtefactNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.NotFoundException;
-import uk.gov.hmcts.reform.pip.data.management.models.external.Subscription;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
 import uk.gov.hmcts.reform.pip.data.management.utils.PayloadExtractor;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -82,11 +80,13 @@ public class PublicationService {
      * Checks if the artefact has a display from date of today or previous then triggers the sub fulfilment
      * process on subscription-management if appropriate.
      */
-    public List<Subscription> checkAndTriggerSubscriptionManagement(Artefact artefact) {
-        if (artefact.getDisplayFrom().isBefore(LocalDateTime.now().plusDays(1))) {
+    public String checkAndTriggerSubscriptionManagement(Artefact artefact) {
+
+        if (artefact.getDisplayFrom().isBefore(LocalDateTime.now())
+            && (artefact.getDisplayTo() == null || artefact.getDisplayTo().isAfter(LocalDateTime.now()))) {
             return subscriptionManagementService.sendSubTrigger(artefact);
         } else {
-            return Collections.emptyList();
+            return "invalid publication, no trigger sent";
         }
     }
 

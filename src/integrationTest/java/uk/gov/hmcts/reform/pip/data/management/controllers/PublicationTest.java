@@ -283,7 +283,7 @@ class PublicationTest {
         assertTrue(exceptionResponse.getMessage().contains("x-type"), VALIDATION_EXCEPTION_RESPONSE);
     }
 
-    @DisplayName("Should populate the datefrom field if it's empty and the type is Status_Update")
+    @DisplayName("Should populate the datefrom field if it's empty and the type is GENERAL_PUBLICATION")
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
     void testPopulateDefaultDateFrom(boolean isJson) throws Exception {

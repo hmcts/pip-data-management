@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
-import uk.gov.hmcts.reform.pip.data.management.models.external.Subscription;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.HeaderGroup;
@@ -129,10 +128,7 @@ public class PublicationController {
         Artefact createdItem = publicationService
             .createPublication(artefact, payload);
 
-        //TODO handle the below in some way
-        @SuppressWarnings("PMD.PrematureDeclaration")
-        List<Subscription> unusedListOfEligibleSubscribers =
-            publicationService.checkAndTriggerSubscriptionManagement(artefact);
+        publicationService.checkAndTriggerSubscriptionManagement(createdItem);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(createdItem);
     }
@@ -201,10 +197,8 @@ public class PublicationController {
             .search(search)
             .build();
 
-        //TODO handle the below in some way
-        @SuppressWarnings("PMD.PrematureDeclaration")
-        List<Subscription> unusedListOfEligibleSubscribers =
-            publicationService.checkAndTriggerSubscriptionManagement(artefact);
+
+        publicationService.checkAndTriggerSubscriptionManagement(artefact);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(publicationService.createPublication(artefact, file));
     }
