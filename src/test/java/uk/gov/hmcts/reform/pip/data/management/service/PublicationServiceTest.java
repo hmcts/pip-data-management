@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.pip.data.management.service;
 
+import nl.altindag.log.LogCaptor;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,6 +20,7 @@ import uk.gov.hmcts.reform.pip.data.management.models.publication.Language;
 import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
 import uk.gov.hmcts.reform.pip.data.management.utils.PayloadExtractor;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -46,6 +48,9 @@ class PublicationServiceTest {
     @Mock
     PayloadExtractor payloadExtractor;
 
+    @Mock
+    SubscriptionManagementService subscriptionManagementService;
+
     @InjectMocks
     PublicationService publicationService;
     private static final UUID ARTEFACT_ID = UUID.randomUUID();
@@ -61,6 +66,7 @@ class PublicationServiceTest {
     private static final Map<String, List<Object>> SEARCH_VALUES = new ConcurrentHashMap<>();
     private static final MultipartFile FILE = new MockMultipartFile("test", (byte[]) null);
     private static final String VALIDATION_ARTEFACT_NOT_MATCH = "Artefacts do not match";
+    private static final String SUCCESS = "Success";
 
     private Artefact artefact;
     private Artefact artefactWithPayloadUrl;
@@ -411,6 +417,27 @@ class PublicationServiceTest {
             publicationService.findAllBySearch(CaseSearchTerm.valueOf("invalid"), TEST_VALUE, true));
     }
 
+    @Test
+    void testSendArtefactForSubscription() {
+        when(subscriptionManagementService.getSubscribersToArtefact(artefact))
+            .thenReturn(SUCCESS);
+        assertEquals(SUCCESS, publicationService.sendArtefactForSubscription(artefact),
+                     MESSAGES_MATCH);
+    }
+
+    @Test
+    void testCheckNewlyActiveArtefactsLogs() throws IOException {
+        try (LogCaptor logCaptor = LogCaptor.forClass(PublicationService.class)) {
+            when(artefactRepository.findArtefactsByDisplayFrom(any())).thenReturn(List.of(new Artefact()));
+            when(subscriptionManagementService.getSubscribersToArtefact(any())).thenReturn(SUCCESS);
+            publicationService.checkNewlyActiveArtefacts();
+            assertEquals(SUCCESS, logCaptor.getInfoLogs().get(0),
+                         "Info logs should match"
+            );
+        } catch (Exception ex) {
+            throw new IOException(ex.getMessage());
+        }
+    }
 }
 
 
