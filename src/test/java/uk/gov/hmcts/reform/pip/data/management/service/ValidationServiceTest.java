@@ -296,7 +296,7 @@ class ValidationServiceTest {
     @Test
     void testValidateWithErrorsWhenArtefactIsDailyCauseList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream("mocks/civil-daily-cause/dailyCauseListInvalid.json")) {
+            .getResourceAsStream("mocks/daily-cause-list/dailyCauseListInvalid.json")) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             assertThrows(PayloadValidationException.class, () ->
@@ -318,7 +318,7 @@ class ValidationServiceTest {
     @Test
     void testValidateWithoutErrorsWhenArtefactIsDailyCauseList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream("mocks/civil-daily-cause/dailyCauseList.json")) {
+            .getResourceAsStream("mocks/daily-cause-list/dailyCauseList.json")) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             assertDoesNotThrow(() -> validationService.validateBody(text, ListType.CIVIL_DAILY_CAUSE_LIST),
@@ -329,7 +329,7 @@ class ValidationServiceTest {
     @Test
     void testValidateWithoutErrorsWhenArtefactIsSjpPublicList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream("mocks/sjp-public/sjpPublicList.json")) {
+            .getResourceAsStream("mocks/sjp-public-list/sjpPublicList.json")) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             assertDoesNotThrow(() -> validationService.validateBody(text, ListType.SJP_PUBLIC_LIST),
@@ -340,7 +340,7 @@ class ValidationServiceTest {
     @Test
     void testValidateWithErrorsWhenArtefactIsSjpPublicList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream("mocks/sjp-public/sjpPublicListInvalid.json")) {
+            .getResourceAsStream("mocks/sjp-public-list/sjpPublicListInvalid.json")) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             assertThrows(PayloadValidationException.class, () ->
@@ -352,7 +352,7 @@ class ValidationServiceTest {
     @Test
     void testValidateWithoutErrorsWhenArtefactIsSjpPressList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream("mocks/sjp-press/sjpPressList.json")) {
+            .getResourceAsStream("mocks/sjp-press-list/sjpPressList.json")) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             assertDoesNotThrow(() -> validationService.validateBody(text, ListType.SJP_PRESS_LIST),
@@ -363,7 +363,7 @@ class ValidationServiceTest {
     @Test
     void testValidateWithErrorsWhenArtefactIsSjpPressList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream("mocks/sjp-press/sjpPressListInvalid.json")) {
+            .getResourceAsStream("mocks/sjp-press-list/sjpPressListInvalid.json")) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             assertThrows(PayloadValidationException.class, () ->
