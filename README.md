@@ -243,6 +243,7 @@ example filter request:
 }
 ```
 
+
 - /hearings/{courtId} - returns all hearings for particular court id
 - /hearings/case-name/{caseName} returns all matched and partial match hearings
 - /hearings/case-number/{caseNumber} returns single hearing for matched case number
