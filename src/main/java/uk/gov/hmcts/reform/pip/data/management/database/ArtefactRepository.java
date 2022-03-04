@@ -82,4 +82,7 @@ public interface ArtefactRepository extends JpaRepository<Artefact, Long> {
         nativeQuery = true)
     List<Artefact> findArtefactsByCourtIdAdmin(@Param(COURT_ID_PARAM) String courtId);
 
+    @Query(value = "select * from Artefact where artefact_id = CAST(:artefact_id AS uuid)", nativeQuery = true)
+    Optional<Artefact> findArtefactByArtefactId(@Param(ARTEFACT_ID_PARAM) String artefactId);
+
 }

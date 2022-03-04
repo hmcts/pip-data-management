@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.pip.data.management.database;
 
 import com.azure.storage.blob.BlobClient;
 import com.azure.storage.blob.BlobContainerClient;
+import com.azure.storage.blob.models.BlobStorageException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
@@ -19,6 +20,8 @@ import java.io.IOException;
 public class AzureBlobService {
 
     private final BlobContainerClient blobContainerClient;
+
+    private static final String DELETE_MESSAGE = "Blob: %s successfully deleted.";
 
     @Autowired
     public AzureBlobService(BlobContainerClient blobContainerClient) {
@@ -82,5 +85,12 @@ public class AzureBlobService {
         BlobClient blobClient = blobContainerClient.getBlobClient(blobName);
         byte[] data = blobClient.downloadContent().toBytes();
         return new ByteArrayResource(data);
+    }
+
+    public String deleteBlob(String sourceArtefactId, String provenance) {
+        String blobName = sourceArtefactId + '-' + provenance;
+        BlobClient blobClient = blobContainerClient.getBlobClient(blobName);
+        blobClient.delete();
+        return String.format(DELETE_MESSAGE, blobName);
     }
 }

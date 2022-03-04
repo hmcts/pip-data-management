@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.pip.data.management.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
@@ -11,15 +12,18 @@ import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.NotFound
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
 import uk.gov.hmcts.reform.pip.data.management.utils.PayloadExtractor;
-
+import uk.gov.hmcts.reform.pip.model.enums.UserActions;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
+
 /**
  * This class contains the business logic for handling of Publications.
  */
+@Slf4j
 @Component
 public class PublicationService {
 
@@ -200,6 +204,19 @@ public class PublicationService {
         String sourceArtefactId = artefact.getSourceArtefactId();
         String provenance = artefact.getProvenance();
         return azureBlobService.getBlobFile(sourceArtefactId, provenance);
+    }
+
+    public void deleteArtefactById(String artefactId, String issuerEmail) {
+        Optional<Artefact> artefactToDelete = artefactRepository.findArtefactByArtefactId(artefactId);
+        if (artefactToDelete.isPresent()) {
+            log.info(azureBlobService.deleteBlob(
+                artefactToDelete.get().getSourceArtefactId(),
+                artefactToDelete.get().getProvenance()));
+            artefactRepository.delete(artefactToDelete.get());
+            log.info(writeLog(issuerEmail, UserActions.REMOVE, artefactId));
+        } else {
+            throw new ArtefactNotFoundException("No artefact found with the ID: " + artefactId);
+        }
     }
 
 }
