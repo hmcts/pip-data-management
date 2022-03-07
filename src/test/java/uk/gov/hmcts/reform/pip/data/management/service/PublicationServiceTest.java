@@ -69,7 +69,7 @@ class PublicationServiceTest {
     private static final MultipartFile FILE = new MockMultipartFile("test", (byte[]) null);
     private static final String VALIDATION_ARTEFACT_NOT_MATCH = "Artefacts do not match";
     private static final String SUCCESSFUL_TRIGGER = "success - subscription sent";
-    private static final String UNSUCCESSFUL_TRIGGER = "invalid publication, no trigger sent";
+    private static final String UNSUCCESSFUL_TRIGGER = "Publication not within range, no trigger sent";
     private static final String SUCCESS = "Success";
 
     private Artefact artefact;
@@ -471,7 +471,7 @@ class PublicationServiceTest {
             publicationService.checkAndTriggerSubscriptionManagement(artefactInTheFuture);
             assertEquals(
                 UNSUCCESSFUL_TRIGGER,
-                logCaptor.getErrorLogs().get(0),
+                logCaptor.getInfoLogs().get(0),
                 "Should have returned an invalid trigger string"
             );
         } catch (Exception ex) {
