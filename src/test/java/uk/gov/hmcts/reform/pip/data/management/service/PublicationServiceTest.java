@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.pip.data.management.service;
 
+import nl.altindag.log.LogCaptor;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,6 +20,7 @@ import uk.gov.hmcts.reform.pip.data.management.models.publication.Language;
 import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
 import uk.gov.hmcts.reform.pip.data.management.utils.PayloadExtractor;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -465,28 +467,43 @@ class PublicationServiceTest {
     }
 
     @Test
-    void testTriggerIfDateIsFuture() {
-        assertEquals(
-            UNSUCCESSFUL_TRIGGER,
-            publicationService.checkAndTriggerSubscriptionManagement(artefactInTheFuture),
-            "Should have returned an invalid trigger string"
-        );
+    void testTriggerIfDateIsFuture() throws IOException {
+        try (LogCaptor logCaptor = LogCaptor.forClass(PublicationService.class)) {
+            publicationService.checkAndTriggerSubscriptionManagement(artefactInTheFuture);
+            assertEquals(
+                UNSUCCESSFUL_TRIGGER,
+                logCaptor.getErrorLogs().get(0),
+                "Should have returned an invalid trigger string"
+            );
+        } catch (Exception ex) {
+            throw new IOException(ex.getMessage());
+        }
+
     }
 
     @Test
     void testTriggerIfDateIsNow() {
-        when(subscriptionManagementService.sendSubTrigger(artefactFromNow)).thenReturn(SUCCESSFUL_TRIGGER);
-        assertEquals(SUCCESSFUL_TRIGGER, publicationService.checkAndTriggerSubscriptionManagement(artefactFromNow),
-                     "should have returned the Subscription List"
-        );
+        when(subscriptionManagementService.sendArtefactForSubscription(artefactFromNow)).thenReturn(SUCCESSFUL_TRIGGER);
+        try (LogCaptor logCaptor = LogCaptor.forClass(PublicationService.class)) {
+            publicationService.checkAndTriggerSubscriptionManagement(artefactFromNow);
+            assertEquals(SUCCESSFUL_TRIGGER, logCaptor.getInfoLogs().get(0),
+                         "should have returned the Subscription List"
+            );
+        }
+
     }
 
     @Test
     void testTriggerIfDateIsPast() {
-        when(subscriptionManagementService.sendSubTrigger(artefactFromThePast)).thenReturn(SUCCESSFUL_TRIGGER);
-        assertEquals(SUCCESSFUL_TRIGGER, publicationService.checkAndTriggerSubscriptionManagement(artefactFromThePast),
-                     "Should have returned the subscription list"
-        );
+        when(subscriptionManagementService.sendArtefactForSubscription(artefactFromThePast)).thenReturn(
+            SUCCESSFUL_TRIGGER);
+        try (LogCaptor logCaptor = LogCaptor.forClass(PublicationService.class)) {
+            publicationService.checkAndTriggerSubscriptionManagement(artefactFromThePast);
+            assertEquals(SUCCESSFUL_TRIGGER, logCaptor.getInfoLogs().get(0),
+                         "Should have returned the subscription list"
+            );
+        }
+
     }
 
 }

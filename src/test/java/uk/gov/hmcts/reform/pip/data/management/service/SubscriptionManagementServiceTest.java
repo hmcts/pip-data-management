@@ -34,14 +34,14 @@ class SubscriptionManagementServiceTest {
         mockSubscriptionManagementEndpoint.start(4550);
         mockSubscriptionManagementEndpoint.enqueue(new MockResponse()
                                                        .setBody("Trigger not sent"));
-        assertEquals("Trigger not sent", subscriptionManagementService.sendSubTrigger(ARTEFACT),
+        assertEquals("Trigger not sent", subscriptionManagementService.sendArtefactForSubscription(ARTEFACT),
                      "Trigger is not being sent");
         mockSubscriptionManagementEndpoint.shutdown();
     }
 
     @Test
     void testFailedSend() {
-        assertEquals(subscriptionManagementService.sendSubTrigger(ARTEFACT), "Request failed",
+        assertEquals(subscriptionManagementService.sendArtefactForSubscription(ARTEFACT), "Request failed",
                      "Trigger failed to send and failed to give a warning");
 
     }

@@ -22,7 +22,7 @@ public class SubscriptionManagementService {
         this.url = url;
     }
 
-    public String sendSubTrigger(Artefact artefact) {
+    public String sendArtefactForSubscription(Artefact artefact) {
         WebClient webClient = WebClient.create();
         log.info("Attempting to send trigger to " + url);
         try {

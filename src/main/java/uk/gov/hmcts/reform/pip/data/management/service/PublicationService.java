@@ -1,8 +1,9 @@
 package uk.gov.hmcts.reform.pip.data.management.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.AzureBlobService;
@@ -20,7 +21,8 @@ import java.util.UUID;
 /**
  * This class contains the business logic for handling of Publications.
  */
-@Component
+@Service
+@Slf4j
 public class PublicationService {
 
     private final ArtefactRepository artefactRepository;
@@ -80,14 +82,20 @@ public class PublicationService {
      * Checks if the artefact has a display from date of today or previous then triggers the sub fulfilment
      * process on subscription-management if appropriate.
      */
-    public String checkAndTriggerSubscriptionManagement(Artefact artefact) {
+    public void checkAndTriggerSubscriptionManagement(Artefact artefact) {
 
         if (artefact.getDisplayFrom().isBefore(LocalDateTime.now())
             && (artefact.getDisplayTo() == null || artefact.getDisplayTo().isAfter(LocalDateTime.now()))) {
-            return subscriptionManagementService.sendSubTrigger(artefact);
+            log.info(sendArtefactForSubscription(artefact));
         } else {
-            return "invalid publication, no trigger sent";
+            log.error("invalid publication, no trigger sent");
         }
+    }
+
+
+    public String sendArtefactForSubscription(Artefact artefact) {
+        //TODO: PUB 1001 check which subscribers are valid here
+        return subscriptionManagementService.sendArtefactForSubscription(artefact);
     }
 
     /**
