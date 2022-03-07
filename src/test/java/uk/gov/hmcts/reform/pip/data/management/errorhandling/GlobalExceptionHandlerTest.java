@@ -22,8 +22,6 @@ import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.NotFound
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.PayloadValidationException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.UnauthorisedRequestException;
 
-import java.util.Set;
-import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

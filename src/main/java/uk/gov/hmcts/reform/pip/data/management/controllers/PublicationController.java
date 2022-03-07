@@ -287,7 +287,7 @@ public class PublicationController {
 
     @ApiResponses({
         @ApiResponse(code = 200, message = "Successfully deleted artefact: {artefactId}"),
-        @ApiResponse(code = 404, message = "No artefact found for id: {artefactId}"),
+        @ApiResponse(code = 404, message = "No artefact found with the ID: {artefactId}"),
     })
     @ApiOperation("Delete a artefact and its list from P&I")
     @DeleteMapping("/{artefactId}")
