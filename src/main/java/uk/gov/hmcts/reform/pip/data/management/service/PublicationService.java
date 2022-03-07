@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.pip.data.management.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
@@ -22,8 +23,10 @@ import java.util.UUID;
 /**
  * This class contains the business logic for handling of Publications.
  */
-@Service
+
 @Slf4j
+@Service
+
 public class PublicationService {
 
     private final ArtefactRepository artefactRepository;
@@ -221,4 +224,12 @@ public class PublicationService {
         return azureBlobService.getBlobFile(sourceArtefactId, provenance);
     }
 
+    /**
+     * Scheduled method that checks daily for newly dated from artefacts.
+     */
+    @Scheduled(cron = "${cron.daily-display-from}")
+    public void checkNewlyActiveArtefacts() {
+        List<Artefact> newArtefactsToday = artefactRepository.findArtefactsByDisplayFrom(LocalDate.now());
+        newArtefactsToday.forEach(artefact -> log.info(sendArtefactForSubscription(artefact)));
+    }
 }

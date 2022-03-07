@@ -66,3 +66,6 @@ payload:
 validations:
   master-schema: "schemas/master_schema.json"
   daily-cause-list: "schemas/civil_daily_cause_list.json"
+
+cron:
+  daily-display-from: "0 0 0 * * *"

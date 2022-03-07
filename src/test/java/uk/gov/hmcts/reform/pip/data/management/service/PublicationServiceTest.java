@@ -70,6 +70,7 @@ class PublicationServiceTest {
     private static final String VALIDATION_ARTEFACT_NOT_MATCH = "Artefacts do not match";
     private static final String SUCCESSFUL_TRIGGER = "success - subscription sent";
     private static final String UNSUCCESSFUL_TRIGGER = "invalid publication, no trigger sent";
+    private static final String SUCCESS = "Success";
 
     private Artefact artefact;
     private Artefact artefactWithPayloadUrl;
@@ -506,6 +507,27 @@ class PublicationServiceTest {
 
     }
 
+    @Test
+    void testSendArtefactForSubscription() {
+        when(subscriptionManagementService.sendArtefactForSubscription(artefact))
+            .thenReturn(SUCCESS);
+        assertEquals(SUCCESS, publicationService.sendArtefactForSubscription(artefact),
+                     MESSAGES_MATCH);
+    }
+
+    @Test
+    void testCheckNewlyActiveArtefactsLogs() throws IOException {
+        try (LogCaptor logCaptor = LogCaptor.forClass(PublicationService.class)) {
+            when(artefactRepository.findArtefactsByDisplayFrom(any())).thenReturn(List.of(new Artefact()));
+            when(subscriptionManagementService.sendArtefactForSubscription(any())).thenReturn(SUCCESS);
+            publicationService.checkNewlyActiveArtefacts();
+            assertEquals(SUCCESS, logCaptor.getInfoLogs().get(0),
+                         "Info logs should match"
+            );
+        } catch (Exception ex) {
+            throw new IOException(ex.getMessage());
+        }
+    }
 }
 
 
