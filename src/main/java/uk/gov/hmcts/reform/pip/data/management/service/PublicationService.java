@@ -82,25 +82,6 @@ public class PublicationService {
     }
 
     /**
-     * Checks if the artefact has a display from date of today or previous then triggers the sub fulfilment
-     * process on subscription-management if appropriate.
-     */
-    public void checkAndTriggerSubscriptionManagement(Artefact artefact) {
-        //TODO: fully switch this logic to localdates once artefact model changes
-        if (artefact.getDisplayFrom().toLocalDate().isBefore(LocalDate.now().plusDays(1))
-            && (artefact.getDisplayTo() == null
-            || artefact.getDisplayTo().toLocalDate().isAfter(LocalDate.now().minusDays(1)))) {
-            log.info(sendArtefactForSubscription(artefact));
-        } else {
-            log.error("invalid publication, no trigger sent");
-        }
-    }
-
-    public String sendArtefactForSubscription(Artefact artefact) {
-        return subscriptionManagementService.sendArtefactForSubscription(artefact);
-    }
-
-    /**
      * Checks if the artefact already exists based on source artefact id and provenance, if so it applies the
      * existing artefact ID to update.
      *
@@ -121,7 +102,7 @@ public class PublicationService {
      * @param verified    - represents the verification status of the user. Currently only verified/non-verified, but
      *                    will include other verified user types in the future
      * @return a list of all artefacts that fulfil the timing criteria, match the given court id and
-     *                    sensitivity associated with given verification status.
+     * sensitivity associated with given verification status.
      */
     public List<Artefact> findAllByCourtId(String searchValue, Boolean verified) {
         LocalDateTime currDate = LocalDateTime.now();
@@ -135,9 +116,9 @@ public class PublicationService {
     /**
      * Get all relevant Artefacts based on search values stored in the Artefact.
      *
-     * @param searchTerm the search term checking against, eg. CASE_ID or CASE_URN
+     * @param searchTerm  the search term checking against, eg. CASE_ID or CASE_URN
      * @param searchValue the search value to look for
-     * @param verified bool for the user being verified or not restricting the results
+     * @param verified    bool for the user being verified or not restricting the results
      * @return list of Artefacts
      */
     public List<Artefact> findAllBySearch(CaseSearchTerm searchTerm, String searchValue, boolean verified) {
@@ -147,7 +128,8 @@ public class PublicationService {
             case CASE_ID:
             case CASE_URN:
                 artefacts = verified ? artefactRepository.findArtefactBySearchVerified(searchTerm.dbValue,
-                                                                                       searchValue, currDate) :
+                                                                                       searchValue, currDate
+                ) :
                     artefactRepository.findArtefactBySearchUnverified(searchTerm.dbValue, searchValue, currDate);
                 break;
             case CASE_NAME:
@@ -160,7 +142,8 @@ public class PublicationService {
 
         if (artefacts.isEmpty()) {
             throw new ArtefactNotFoundException(String.format("No Artefacts found with for %s with the value: %s",
-                                                              searchTerm, searchValue));
+                                                              searchTerm, searchValue
+            ));
         }
         return artefacts;
     }
@@ -219,6 +202,25 @@ public class PublicationService {
         String sourceArtefactId = artefact.getSourceArtefactId();
         String provenance = artefact.getProvenance();
         return azureBlobService.getBlobFile(sourceArtefactId, provenance);
+    }
+
+    /**
+     * Checks if the artefact has a display from date of today or previous then triggers the sub fulfilment
+     * process on subscription-management if appropriate.
+     */
+    public void checkAndTriggerSubscriptionManagement(Artefact artefact) {
+        //TODO: fully switch this logic to localdates once artefact model changes
+        if (artefact.getDisplayFrom().toLocalDate().isBefore(LocalDate.now().plusDays(1))
+            && (artefact.getDisplayTo() == null
+            || artefact.getDisplayTo().toLocalDate().isAfter(LocalDate.now().minusDays(1)))) {
+            log.info(sendArtefactForSubscription(artefact));
+        } else {
+            log.error("invalid publication, no trigger sent");
+        }
+    }
+
+    public String sendArtefactForSubscription(Artefact artefact) {
+        return subscriptionManagementService.sendArtefactForSubscription(artefact);
     }
 
     /**

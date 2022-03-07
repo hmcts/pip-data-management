@@ -145,7 +145,6 @@ class PublicationServiceTest {
             .displayTo(LocalDateTime.now().plusHours(3))
             .build();
 
-
         lenient().when(artefactRepository.findBySourceArtefactIdAndProvenance(SOURCE_ARTEFACT_ID, PROVENANCE))
             .thenReturn(Optional.empty());
         lenient().when(artefactRepository.save(artefactWithPayloadUrl)).thenReturn(artefactWithIdAndPayloadUrl);
@@ -264,7 +263,6 @@ class PublicationServiceTest {
                 -> publicationService.getPayloadByArtefactId(ARTEFACT_ID, true),
             "Not Found exception has not been thrown when artefact does not exist"
         );
-
     }
 
     @Test
@@ -479,7 +477,6 @@ class PublicationServiceTest {
         } catch (Exception ex) {
             throw new IOException(ex.getMessage());
         }
-
     }
 
     @Test
@@ -491,7 +488,6 @@ class PublicationServiceTest {
                          "should have returned the Subscription List"
             );
         }
-
     }
 
     @Test
@@ -504,7 +500,6 @@ class PublicationServiceTest {
                          "Should have returned the subscription list"
             );
         }
-
     }
 
     @Test
