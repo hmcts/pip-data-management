@@ -1,0 +1,2 @@
+service-to-service:
+  subscription-management: localhost:4550

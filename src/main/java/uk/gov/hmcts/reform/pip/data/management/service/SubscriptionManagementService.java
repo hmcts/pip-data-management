@@ -16,11 +16,7 @@ import java.net.URISyntaxException;
 public class SubscriptionManagementService {
 
     @Value("${service-to-service.subscription-management}")
-    private final String url;
-
-    public SubscriptionManagementService(@Value("${service-to-service.subscription-management}") String url) {
-        this.url = url;
-    }
+    private String url;
 
     public String sendArtefactForSubscription(Artefact artefact) {
         WebClient webClient = WebClient.create();
@@ -29,7 +25,6 @@ public class SubscriptionManagementService {
             return webClient.post().uri(new URI(url + "/subscription/artefact-recipients"))
                 .body(BodyInserters.fromValue(artefact))
                 .retrieve().bodyToMono(String.class).block();
-
         } catch (WebClientException | URISyntaxException ex) {
             log.error(String.format("Request failed with error message: %s", ex.getMessage()
             ));
