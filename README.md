@@ -269,7 +269,6 @@ These are defined by the [schemas](src/main/resources/schemas).
 - GET `/publication/{artefactId}/file` used to get payload file for the artefact.
 - DELETE - `/publication/{artefactId}` used to delete an artefact and its payload from P&I
 
-
 ## Headers
 ### Upload headers
 headers for uploading an artefact:
