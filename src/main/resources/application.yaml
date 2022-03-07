@@ -57,7 +57,7 @@ azure:
     container-name: artefact
 
 service-to-service:
-  subscription-management: ${SUBSCRIPTION_MANAGEMENT_URL:https://pip-subscription-management.staging.platform.hmcts.net/}
+  subscription-management: ${SUBSCRIPTION_MANAGEMENT_URL:https://pip-subscription-management.staging.platform.hmcts.net}
 
 payload:
   json:

@@ -28,7 +28,7 @@ public class SubscriptionManagementService {
         } catch (WebClientException | URISyntaxException ex) {
             log.error(String.format("Request failed with error message: %s", ex.getMessage()
             ));
-            return "Request failed";
+            return "Artefact failed to send: " + artefact.getArtefactId();
         }
     }
 }

@@ -97,7 +97,6 @@ public class PublicationService {
     }
 
     public String sendArtefactForSubscription(Artefact artefact) {
-        //TODO: PUB 1001 check which subscribers are valid here
         return subscriptionManagementService.sendArtefactForSubscription(artefact);
     }
 
