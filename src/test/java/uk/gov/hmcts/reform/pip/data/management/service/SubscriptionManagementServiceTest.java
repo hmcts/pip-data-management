@@ -50,5 +50,4 @@ class SubscriptionManagementServiceTest {
         assertEquals(subscriptionManagementService.sendArtefactForSubscription(ARTEFACT), "Request failed",
                      "Trigger failed to send.");
     }
-
 }

@@ -3,4 +3,3 @@ service-to-service:
 
 cron:
   daily-display-from: "*/10 * * * * *"
-

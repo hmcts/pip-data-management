@@ -81,7 +81,6 @@ public class PublicationService {
         return artefactRepository.save(artefact);
     }
 
-
     /**
      * Checks if the artefact has a display from date of today or previous then triggers the sub fulfilment
      * process on subscription-management if appropriate.
@@ -96,7 +95,6 @@ public class PublicationService {
             log.error("invalid publication, no trigger sent");
         }
     }
-
 
     public String sendArtefactForSubscription(Artefact artefact) {
         //TODO: PUB 1001 check which subscribers are valid here

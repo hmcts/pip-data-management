@@ -529,6 +529,3 @@ class PublicationServiceTest {
         }
     }
 }
-
-
-
