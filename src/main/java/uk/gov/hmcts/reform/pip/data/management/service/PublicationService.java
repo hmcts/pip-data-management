@@ -13,6 +13,7 @@ import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
 import uk.gov.hmcts.reform.pip.data.management.utils.PayloadExtractor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -83,9 +84,10 @@ public class PublicationService {
      * process on subscription-management if appropriate.
      */
     public void checkAndTriggerSubscriptionManagement(Artefact artefact) {
-
-        if (artefact.getDisplayFrom().isBefore(LocalDateTime.now())
-            && (artefact.getDisplayTo() == null || artefact.getDisplayTo().isAfter(LocalDateTime.now()))) {
+        //TODO: fully switch this logic to localdates once artefact model changes
+        if (artefact.getDisplayFrom().toLocalDate().isBefore(LocalDate.now().plusDays(1))
+            && (artefact.getDisplayTo() == null
+            || artefact.getDisplayTo().toLocalDate().isAfter(LocalDate.now().minusDays(1)))) {
             log.info(sendArtefactForSubscription(artefact));
         } else {
             log.error("invalid publication, no trigger sent");
