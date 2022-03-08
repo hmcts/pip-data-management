@@ -78,6 +78,8 @@ class PublicationServiceTest {
     private Artefact artefactInTheFuture;
     private Artefact artefactFromThePast;
     private Artefact artefactFromNow;
+    private Artefact artefactWithNullDateTo;
+    private Artefact artefactWithSameDateFromAndTo;
 
     @BeforeAll
     public static void setupSearchValues() {
@@ -142,6 +144,26 @@ class PublicationServiceTest {
             .search(SEARCH_VALUES)
             .displayFrom(LocalDateTime.now())
             .displayTo(LocalDateTime.now().plusHours(3))
+            .build();
+
+        artefactWithNullDateTo = Artefact.builder()
+            .artefactId(ARTEFACT_ID)
+            .sourceArtefactId(SOURCE_ARTEFACT_ID)
+            .provenance(PROVENANCE)
+            .payload(PAYLOAD_URL)
+            .search(SEARCH_VALUES)
+            .displayFrom(LocalDateTime.now())
+            .displayTo(null)
+            .build();
+
+        artefactWithSameDateFromAndTo = Artefact.builder()
+            .artefactId(ARTEFACT_ID)
+            .sourceArtefactId(SOURCE_ARTEFACT_ID)
+            .provenance(PROVENANCE)
+            .payload(PAYLOAD_URL)
+            .search(SEARCH_VALUES)
+            .displayFrom(LocalDateTime.now())
+            .displayTo(LocalDateTime.now())
             .build();
 
         lenient().when(artefactRepository.findBySourceArtefactIdAndProvenance(SOURCE_ARTEFACT_ID, PROVENANCE))
@@ -495,6 +517,30 @@ class PublicationServiceTest {
             SUCCESSFUL_TRIGGER);
         try (LogCaptor logCaptor = LogCaptor.forClass(PublicationService.class)) {
             publicationService.checkAndTriggerSubscriptionManagement(artefactFromThePast);
+            assertEquals(SUCCESSFUL_TRIGGER, logCaptor.getInfoLogs().get(0),
+                         "Should have returned the subscription list"
+            );
+        }
+    }
+
+    @Test
+    void testTriggerIfDateToNull() {
+        when(subscriptionManagementService.sendArtefactForSubscription(artefactWithNullDateTo)).thenReturn(
+            SUCCESSFUL_TRIGGER);
+        try (LogCaptor logCaptor = LogCaptor.forClass(PublicationService.class)) {
+            publicationService.checkAndTriggerSubscriptionManagement(artefactWithNullDateTo);
+            assertEquals(SUCCESSFUL_TRIGGER, logCaptor.getInfoLogs().get(0),
+                         "Should have returned the subscription list"
+            );
+        }
+    }
+
+    @Test
+    void testTriggerIfSameDateFromTo() {
+        when(subscriptionManagementService.sendArtefactForSubscription(artefactWithSameDateFromAndTo)).thenReturn(
+            SUCCESSFUL_TRIGGER);
+        try (LogCaptor logCaptor = LogCaptor.forClass(PublicationService.class)) {
+            publicationService.checkAndTriggerSubscriptionManagement(artefactWithSameDateFromAndTo);
             assertEquals(SUCCESSFUL_TRIGGER, logCaptor.getInfoLogs().get(0),
                          "Should have returned the subscription list"
             );
