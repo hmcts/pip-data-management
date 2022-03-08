@@ -58,6 +58,7 @@
       "$id": "#root/document",
       "title": "document",
       "type": "object",
+      "required": ["publicationDate"],
       "properties": {
         "documentName": {
           "$id": "#root/document/documentName",
@@ -275,7 +276,12 @@
                                                   "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items/individualDetails/address",
                                                   "title": "Address",
                                                   "description": "Party Address",
-                                                  "$ref": "#/definitions/address"
+                                                  "$ref": "#/definitions/address",
+                                                  "required": [
+                                                    "town",
+                                                    "county",
+                                                    "postCode"
+                                                  ]
                                                 }
                                               }
                                             },
