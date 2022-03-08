@@ -65,3 +65,9 @@ validations:
   daily-cause-list: "schemas/civil_daily_cause_list.json"
   sjp-public-list: "schemas/single_justice_procedure_public.json"
   sjp-press-list: "schemas/single_justice_procedure_press.json"
+
+cron:
+  daily-display-from: "0 0 0 * * *"
+
+service-to-service:
+  subscription-management: ${SUBSCRIPTION_MANAGEMENT_URL:https://pip-subscription-management.staging.platform.hmcts.net}
