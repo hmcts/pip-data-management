@@ -24,8 +24,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @SpringBootTest(classes = {Application.class})
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
 class SubscriptionManagementServiceTest {
-    @Value("${service-to-service.subscription-management}")
-    String url;
 
     private static final Artefact ARTEFACT = Artefact.builder()
         .sourceArtefactId("TEST")
