@@ -214,8 +214,6 @@ public class PublicationService {
             && (artefact.getDisplayTo() == null
             || artefact.getDisplayTo().toLocalDate().isAfter(LocalDate.now().minusDays(1)))) {
             log.info(sendArtefactForSubscription(artefact));
-        } else {
-            log.info("Publication not within range, no trigger sent");
         }
     }
 

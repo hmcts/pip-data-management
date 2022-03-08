@@ -69,7 +69,6 @@ class PublicationServiceTest {
     private static final MultipartFile FILE = new MockMultipartFile("test", (byte[]) null);
     private static final String VALIDATION_ARTEFACT_NOT_MATCH = "Artefacts do not match";
     private static final String SUCCESSFUL_TRIGGER = "success - subscription sent";
-    private static final String UNSUCCESSFUL_TRIGGER = "Publication not within range, no trigger sent";
     private static final String SUCCESS = "Success";
 
     private Artefact artefact;
@@ -470,9 +469,9 @@ class PublicationServiceTest {
         try (LogCaptor logCaptor = LogCaptor.forClass(PublicationService.class)) {
             publicationService.checkAndTriggerSubscriptionManagement(artefactInTheFuture);
             assertEquals(
-                UNSUCCESSFUL_TRIGGER,
-                logCaptor.getInfoLogs().get(0),
-                "Should have returned an invalid trigger string"
+                0,
+                logCaptor.getInfoLogs().size(),
+                "Should not have returned a log as no trigger was sent."
             );
         } catch (Exception ex) {
             throw new IOException(ex.getMessage());
@@ -485,7 +484,7 @@ class PublicationServiceTest {
         try (LogCaptor logCaptor = LogCaptor.forClass(PublicationService.class)) {
             publicationService.checkAndTriggerSubscriptionManagement(artefactFromNow);
             assertEquals(SUCCESSFUL_TRIGGER, logCaptor.getInfoLogs().get(0),
-                         "should have returned the Subscription List"
+                         "should have returned the Subscription List."
             );
         }
     }
