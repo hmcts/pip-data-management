@@ -1,0 +1,91 @@
+{
+  "@schemaLocation": "http://json-schema.org/draft-07/schema#",
+  "venue": {
+    "venueName": "Preston Court",
+    "venueContact": {
+      "venueTelephone": "+4412341234",
+      "venueEmail": "a@b.com"
+    },
+    "venueAddress": {
+      "line": [
+        "Line 1",
+        "Line 2"
+      ],
+      "town": "Cambridge",
+      "county": "Cambridgeshire",
+      "postCode": "AA1 AA1"
+    }
+  },
+  "document": {
+    "publicationDate": "2016-09-13T23:30:52.123Z",
+    "version": "1.0",
+    "documentName": "This is a document name"
+  },
+  "courtLists": [
+    {
+      "courtHouse": {
+        "courtHouseName": "Preston Court",
+        "courtHouseDescription": "Civil and Family Court",
+        "courtRoom": [
+          {
+            "courtRoomName": "This is a court room name",
+            "session": [
+              {
+                "sessionType": "This is a session type",
+                "sessionChannel": [
+                  "Video"
+                ],
+                "sessionStartTime": "2021-09-09t16:41:07.394",
+                "judiciary": [
+                  {
+                    "johTitle": "Judge",
+                    "johNameSurname": "Judge Name",
+                    "role": "JUDGE",
+                    "isPresiding": true
+                  },
+                  {
+                    "johTitle": "Magistrate",
+                    "johNameSurname": "Magistrate Name",
+                    "role": "MAGISTRATE",
+                    "isPresiding": false
+                  }
+                ],
+                "sittings": [
+                  {
+                    "hearing": [
+                      {
+                        "hearingType": "Hearing Type",
+                        "case": [
+                          {
+                            "caseName": "This is a case name",
+                            "caseJurisdictionET": "Family",
+                            "caseNumber": "12341234",
+                            "priority": "NORMAL"
+                          }
+                        ],
+                        "party": [
+                          {
+                            "partyRole": "RESPONDENT",
+                            "attendanceTime": "2016-09-13T23:30:52.123Z",
+                            "individualDetails": {
+                              "title": "Mr",
+                              "individualForenames": "Test",
+                              "individualSurname": "Name"
+                            }
+                          }
+                        ]
+                      }
+                    ],
+                    "channel": [
+                      "This is an alternative channel"
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
