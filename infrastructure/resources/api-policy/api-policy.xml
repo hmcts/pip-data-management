@@ -1,0 +1,41 @@
+<policies>
+    <inbound>
+        <base />
+        <validate-jwt header-name="Authorization" failed-validation-httpcode="401" failed-validation-error-message="Access denied due to invalid OAuth information">
+            <openid-config url="https://sts.windows.net/531ff96d-0ae9-462a-8d2d-bec7c0b42082/.well-known/openid-configuration" />
+            <audiences>
+                <audience>api://8f078ffa-b701-4441-9f30-41e4982be505</audience>
+            </audiences>
+            <issuers>
+                <issuer>https://sts.windows.net/531ff96d-0ae9-462a-8d2d-bec7c0b42082/</issuer>
+            </issuers>
+            <required-claims>
+                <claim name="roles" match="all">
+                    <value>pipGateway</value>
+                </claim>
+            </required-claims>
+        </validate-jwt>
+        <cors>
+            <allowed-origins>
+                <origin>*</origin>
+            </allowed-origins>
+            <allowed-methods>
+                <method>GET</method>
+                <method>POST</method>
+            </allowed-methods>
+        </cors>
+        <!-- set a header to enable mocks -->
+        <set-header name="_EnableMocks" exists-action="override">
+            <value>true</value>
+        </set-header>
+    </inbound>
+    <backend>
+        <base />
+    </backend>
+    <outbound>
+        <base />
+    </outbound>
+    <on-error>
+        <base />
+    </on-error>
+</policies>
