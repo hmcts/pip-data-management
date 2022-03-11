@@ -31,12 +31,12 @@
                 "hearingDescription": "For Application for Bail",
                 "listNote": "reserved – defendant in custody",
                 "hearingType": "",
-                "offence": {
+                "offence": [{
                   "offenceTitle": "",
                   "offenceMaxPen": "10yrs",
                   "offenceWording": "",
                   "offenceCode": ""
-                },
+                }],
                 "hearingId": "",
                 "case": {
                   "result": {
