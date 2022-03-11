@@ -30,8 +30,10 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.TestConstants.MESSAGES_MATCH;
@@ -67,6 +69,7 @@ class PublicationServiceTest {
     private static final MultipartFile FILE = new MockMultipartFile("test", (byte[]) null);
     private static final String VALIDATION_ARTEFACT_NOT_MATCH = "Artefacts do not match";
     private static final String SUCCESS = "Success";
+    private static final String DELETION_TRACK_LOG_MESSAGE = "Track: TestValue, Removed %s, at ";
 
     private Artefact artefact;
     private Artefact artefactWithPayloadUrl;
@@ -418,6 +421,20 @@ class PublicationServiceTest {
     }
 
     @Test
+    void testFindAllByCourtIdAdmin() {
+        when(artefactRepository.findArtefactsByCourtIdAdmin(TEST_VALUE)).thenReturn(List.of(artefact));
+        assertEquals(List.of(artefact), publicationService.findAllByCourtIdAdmin(TEST_VALUE, true, true),
+                     VALIDATION_ARTEFACT_NOT_MATCH);
+    }
+
+    @Test
+    void testFindAllByCourtIdAdminNotAdmin() {
+        when(artefactRepository.findArtefactsByCourtIdVerified(any(), any())).thenReturn(List.of(artefact));
+        assertEquals(List.of(artefact), publicationService.findAllByCourtIdAdmin(TEST_VALUE, true, false),
+                     VALIDATION_ARTEFACT_NOT_MATCH);
+    }
+
+    @Test
     void testSendArtefactForSubscription() {
         when(subscriptionManagementService.getSubscribersToArtefact(artefact))
             .thenReturn(SUCCESS);
@@ -432,12 +449,39 @@ class PublicationServiceTest {
             when(subscriptionManagementService.getSubscribersToArtefact(any())).thenReturn(SUCCESS);
             publicationService.checkNewlyActiveArtefacts();
             assertEquals(SUCCESS, logCaptor.getInfoLogs().get(0),
-                         "Info logs should match"
+                         MESSAGES_MATCH
             );
         } catch (Exception ex) {
             throw new IOException(ex.getMessage());
         }
     }
+
+    @Test
+    void testDeleteArtefactById() throws IOException {
+        try (LogCaptor logCaptor = LogCaptor.forClass(PublicationService.class)) {
+            when(artefactRepository.findArtefactByArtefactId(ARTEFACT_ID.toString())).thenReturn(Optional.of(artefact));
+            when(azureBlobService.deleteBlob(SOURCE_ARTEFACT_ID, PROVENANCE)).thenReturn(SUCCESS);
+            doNothing().when(artefactRepository).delete(artefact);
+
+            publicationService.deleteArtefactById(ARTEFACT_ID.toString(), TEST_VALUE);
+            assertEquals(SUCCESS, logCaptor.getInfoLogs().get(0), MESSAGES_MATCH);
+            assertTrue(logCaptor.getInfoLogs().get(1).contains(String.format(DELETION_TRACK_LOG_MESSAGE, ARTEFACT_ID)),
+                       MESSAGES_MATCH);
+        } catch (Exception ex) {
+            throw new IOException(ex.getMessage());
+        }
+    }
+
+    @Test
+    void testDeleteArtefactByIdThrows() {
+        ArtefactNotFoundException ex = assertThrows(ArtefactNotFoundException.class, () ->
+            publicationService.deleteArtefactById(TEST_VALUE, TEST_VALUE),
+                                                    "ArtefactNotFoundException should be thrown");
+
+        assertEquals("No artefact found with the ID: " + TEST_VALUE, ex.getMessage(),
+                     MESSAGES_MATCH);
+    }
+
 }
 
 

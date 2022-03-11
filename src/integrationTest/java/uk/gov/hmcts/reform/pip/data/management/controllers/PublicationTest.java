@@ -12,7 +12,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,7 +19,6 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
@@ -41,6 +39,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -55,7 +54,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @ActiveProfiles(profiles = "test")
-@RunWith(SpringRunner.class)
 @SuppressWarnings({"PMD.ExcessiveImports", "PMD.ExcessiveClassLength",
     "PMD.CyclomaticComplexity", "PMD.TooManyMethods"})
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
@@ -70,7 +68,7 @@ class PublicationTest {
     @Autowired
     private MockMvc mockMvc;
 
-    private static final String POST_URL = "/publication";
+    private static final String PUBLICATION_URL = "/publication";
     private static final String SEARCH_URL = "/publication/search";
     private static final String SEARCH_COURT_URL = "/publication/courtId";
     private static final String PAYLOAD_URL = "/payload";
@@ -101,12 +99,13 @@ class PublicationTest {
     private static final String VALID_CASE_NAME_SEARCH = "/CASE_NAME/Smith";
     private static final String TRUE = "true";
     private static final String FALSE = "false";
+    private static final String ADMIN_HEADER = "x-admin";
+    private static final String ISSUER_HEADER = "x-issuer-email";
+    private static final String EMAIL = "test@email.com";
 
     private static final String FORMAT_RESPONSE = "Please check that the value is of the correct format for the field "
         + "(See Swagger documentation for correct formats)";
 
-    private static final String VERIFICATION_TRUE = "true";
-    private static final String VERIFICATION_FALSE = "false";
     private static final String DISPLAY_FROM_RESPONSE = "x-display-from Field is required for artefact type";
     private static final String DISPLAY_TO_RESPONSE = "x-display-to Field is required for artefact type";
     private static final String VALIDATION_EMPTY_RESPONSE = "Response should contain a Artefact";
@@ -130,15 +129,20 @@ class PublicationTest {
     }
 
     Artefact createDailyList(Sensitivity sensitivity) throws Exception {
+        return createDailyList(sensitivity, DISPLAY_FROM.minusMonths(2), SOURCE_ARTEFACT_ID);
+    }
+
+    Artefact createDailyList(Sensitivity sensitivity, LocalDateTime displayFrom, String sourceArtefactID)
+        throws Exception {
         try (InputStream mockFile = this.getClass().getClassLoader()
-            .getResourceAsStream("data/dailyCauseList.json")) {
+            .getResourceAsStream("data/daily-cause-list/dailyCauseList.json")) {
 
             MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-                .post(POST_URL)
+                .post(PUBLICATION_URL)
                 .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
                 .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
-                .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
-                .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
+                .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, sourceArtefactID)
+                .header(PublicationConfiguration.DISPLAY_FROM_HEADER, displayFrom)
                 .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO.plusMonths(1))
                 .header(PublicationConfiguration.COURT_ID, COURT_ID)
                 .header(PublicationConfiguration.LIST_TYPE, ListType.CIVIL_DAILY_CAUSE_LIST)
@@ -160,9 +164,9 @@ class PublicationTest {
     @DisplayName("Should create a valid artefact and return the created artefact to the user")
     void creationOfAValidArtefact(boolean isJson) throws Exception {
         if (isJson) {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(POST_URL).content(payload);
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
         } else {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(POST_URL).file(file);
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(PUBLICATION_URL).file(file);
         }
         mockHttpServletRequestBuilder.header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE);
         mockHttpServletRequestBuilder.header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY);
@@ -228,9 +232,9 @@ class PublicationTest {
         when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
         when(blobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
         if (isJson) {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(POST_URL).content(payload);
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
         } else {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(POST_URL).file(file);
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(PUBLICATION_URL).file(file);
         }
         mockHttpServletRequestBuilder.header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE_GENERAL);
         mockHttpServletRequestBuilder.header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE);
@@ -259,9 +263,9 @@ class PublicationTest {
     @ValueSource(booleans = {true, false})
     void testMissingArtifactType(boolean isJson) throws Exception {
         if (isJson) {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(POST_URL).content(payload);
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
         } else {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(POST_URL).file(file);
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(PUBLICATION_URL).file(file);
         }
         mockHttpServletRequestBuilder.header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY);
         mockHttpServletRequestBuilder.header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE);
@@ -290,9 +294,9 @@ class PublicationTest {
         when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
         when(blobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
         if (isJson) {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(POST_URL).content(payload);
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
         } else {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(POST_URL).file(file);
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(PUBLICATION_URL).file(file);
         }
         mockHttpServletRequestBuilder.header(PublicationConfiguration.TYPE_HEADER, ArtefactType.GENERAL_PUBLICATION);
         mockHttpServletRequestBuilder.header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY);
@@ -318,9 +322,9 @@ class PublicationTest {
     @ValueSource(booleans = {true, false})
     void testDateToAbsenceJudgement(boolean isJson) throws Exception {
         if (isJson) {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(POST_URL).content(payload);
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
         } else {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(POST_URL).file(file);
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(PUBLICATION_URL).file(file);
         }
         mockHttpServletRequestBuilder.header(
             PublicationConfiguration.TYPE_HEADER,
@@ -352,9 +356,9 @@ class PublicationTest {
     @ValueSource(booleans = {true, false})
     void testDateToAbsenceList(boolean isJson) throws Exception {
         if (isJson) {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(POST_URL).content(payload);
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
         } else {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(POST_URL).file(file);
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(PUBLICATION_URL).file(file);
         }
         mockHttpServletRequestBuilder.header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE);
         mockHttpServletRequestBuilder.header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY);
@@ -382,9 +386,9 @@ class PublicationTest {
     @ValueSource(booleans = {true, false})
     void testDateFromAbsenceJudgement(boolean isJson) throws Exception {
         if (isJson) {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(POST_URL).content(payload);
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
         } else {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(POST_URL).file(file);
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(PUBLICATION_URL).file(file);
         }
         mockHttpServletRequestBuilder.header(
             PublicationConfiguration.TYPE_HEADER,
@@ -416,9 +420,9 @@ class PublicationTest {
     @ValueSource(booleans = {true, false})
     void testDateFromAbsenceList(boolean isJson) throws Exception {
         if (isJson) {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(POST_URL).content(payload);
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
         } else {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(POST_URL).file(file);
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(PUBLICATION_URL).file(file);
         }
         mockHttpServletRequestBuilder.header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE);
         mockHttpServletRequestBuilder.header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY);
@@ -446,9 +450,9 @@ class PublicationTest {
     @ValueSource(booleans = {true, false})
     void testEmptyArtifactType(boolean isJson) throws Exception {
         if (isJson) {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(POST_URL).content(payload);
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
         } else {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(POST_URL).file(file);
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(PUBLICATION_URL).file(file);
         }
         mockHttpServletRequestBuilder.header(PublicationConfiguration.TYPE_HEADER, EMPTY_VALUE);
         mockHttpServletRequestBuilder.header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY);
@@ -479,9 +483,9 @@ class PublicationTest {
     @ValueSource(booleans = {true, false})
     void testDateFromField(boolean isJson) throws Exception {
         if (isJson) {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(POST_URL).content(payload);
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
         } else {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(POST_URL).file(file);
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(PUBLICATION_URL).file(file);
         }
         mockHttpServletRequestBuilder.header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY);
         mockHttpServletRequestBuilder.header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE);
@@ -511,9 +515,9 @@ class PublicationTest {
     @ValueSource(booleans = {true, false})
     void testInvalidArtifactType(boolean isJson) throws Exception {
         if (isJson) {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(POST_URL).content(payload);
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
         } else {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(POST_URL).file(file);
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(PUBLICATION_URL).file(file);
         }
         mockHttpServletRequestBuilder.header(PublicationConfiguration.TYPE_HEADER, TEST_VALUE);
         mockHttpServletRequestBuilder.header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY);
@@ -545,9 +549,9 @@ class PublicationTest {
     @ValueSource(booleans = {true, false})
     void testMissingProvenance(boolean isJson) throws Exception {
         if (isJson) {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(POST_URL).content(payload);
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
         } else {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(POST_URL).file(file);
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(PUBLICATION_URL).file(file);
         }
         mockHttpServletRequestBuilder.header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE);
         mockHttpServletRequestBuilder.header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY);
@@ -577,9 +581,9 @@ class PublicationTest {
     @ValueSource(booleans = {true, false})
     void testEmptyProvenance(boolean isJson) throws Exception {
         if (isJson) {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(POST_URL).content(payload);
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
         } else {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(POST_URL).file(file);
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(PUBLICATION_URL).file(file);
         }
         mockHttpServletRequestBuilder.header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE);
         mockHttpServletRequestBuilder.header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY);
@@ -610,9 +614,9 @@ class PublicationTest {
     @ValueSource(booleans = {true, false})
     void testMissingSourceArtifactId(boolean isJson) throws Exception {
         if (isJson) {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(POST_URL).content(payload);
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
         } else {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(POST_URL).file(file);
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(PUBLICATION_URL).file(file);
         }
         mockHttpServletRequestBuilder.header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE);
         mockHttpServletRequestBuilder.header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY);
@@ -642,9 +646,9 @@ class PublicationTest {
     @ValueSource(booleans = {true, false})
     void testEmptySourceArtifactId(boolean isJson) throws Exception {
         if (isJson) {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(POST_URL).content(payload);
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
         } else {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(POST_URL).file(file);
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(PUBLICATION_URL).file(file);
         }
         mockHttpServletRequestBuilder.header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, EMPTY_VALUE);
         mockHttpServletRequestBuilder.header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE);
@@ -675,9 +679,9 @@ class PublicationTest {
     @ValueSource(booleans = {true, false})
     void testInvalidDisplayTo(boolean isJson) throws Exception {
         if (isJson) {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(POST_URL).content(payload);
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
         } else {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(POST_URL).file(file);
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(PUBLICATION_URL).file(file);
         }
         mockHttpServletRequestBuilder.header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE);
         mockHttpServletRequestBuilder.header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY);
@@ -709,9 +713,9 @@ class PublicationTest {
     @ValueSource(booleans = {true, false})
     void testInvalidDisplayFrom(boolean isJson) throws Exception {
         if (isJson) {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(POST_URL).content(payload);
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
         } else {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(POST_URL).file(file);
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(PUBLICATION_URL).file(file);
         }
         mockHttpServletRequestBuilder.header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE);
         mockHttpServletRequestBuilder.header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY);
@@ -743,9 +747,9 @@ class PublicationTest {
     @ValueSource(booleans = {true, false})
     void testInvalidLanguageHeader(boolean isJson) throws Exception {
         if (isJson) {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(POST_URL).content(payload);
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
         } else {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(POST_URL).file(file);
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(PUBLICATION_URL).file(file);
         }
         mockHttpServletRequestBuilder.header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE);
         mockHttpServletRequestBuilder.header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY);
@@ -778,9 +782,9 @@ class PublicationTest {
     @ValueSource(booleans = {true, false})
     void testInvalidSensitivityHeader(boolean isJson) throws Exception {
         if (isJson) {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(POST_URL).content(payload);
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
         } else {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(POST_URL).file(file);
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(PUBLICATION_URL).file(file);
         }
         mockHttpServletRequestBuilder.header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE);
         mockHttpServletRequestBuilder.header(PublicationConfiguration.SENSITIVITY_HEADER, TEST_VALUE);
@@ -816,9 +820,9 @@ class PublicationTest {
         when(blobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
 
         if (isJson) {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(POST_URL).content(payload);
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
         } else {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(POST_URL).file(file);
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(PUBLICATION_URL).file(file);
         }
         mockHttpServletRequestBuilder.header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE);
         mockHttpServletRequestBuilder.header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY);
@@ -866,7 +870,7 @@ class PublicationTest {
         when(blobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .post(POST_URL)
+            .post(PUBLICATION_URL)
             .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
             .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
             .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
@@ -893,9 +897,9 @@ class PublicationTest {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
 
         if (isJson) {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(POST_URL).content(payload);
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
         } else {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(POST_URL).file(file);
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(PUBLICATION_URL).file(file);
         }
 
         mockHttpServletRequestBuilder
@@ -933,9 +937,9 @@ class PublicationTest {
         when(blobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
 
         try (InputStream mockFile = this.getClass().getClassLoader()
-            .getResourceAsStream("data/dailyCauseListInvalid.json")) {
+            .getResourceAsStream("data/daily-cause-list/dailyCauseListInvalid.json")) {
             MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-                .post(POST_URL)
+                .post(PUBLICATION_URL)
                 .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
                 .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
                 .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
@@ -971,10 +975,10 @@ class PublicationTest {
         when(blobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
 
         try (InputStream mockFile = this.getClass().getClassLoader()
-            .getResourceAsStream("data/dailyCauseList.json")) {
+            .getResourceAsStream("data/daily-cause-list/dailyCauseList.json")) {
 
             MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-                .post(POST_URL)
+                .post(PUBLICATION_URL)
                 .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
                 .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
                 .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
@@ -1008,9 +1012,9 @@ class PublicationTest {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
 
         if (isJson) {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(POST_URL).content(payload);
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
         } else {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(POST_URL).file(file);
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(PUBLICATION_URL).file(file);
         }
 
         mockHttpServletRequestBuilder
@@ -1061,9 +1065,9 @@ class PublicationTest {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
 
         if (isJson) {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(POST_URL).content(payload);
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
         } else {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(POST_URL).file(file);
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(PUBLICATION_URL).file(file);
         }
 
         mockHttpServletRequestBuilder
@@ -1091,7 +1095,7 @@ class PublicationTest {
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 = MockMvcRequestBuilders
             .get(SEARCH_COURT_URL + "/" + COURT_ID)
-            .header(VERIFICATION_HEADER, VERIFICATION_FALSE);
+            .header(VERIFICATION_HEADER, FALSE);
         MvcResult getResponse =
             mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isOk()).andReturn();
 
@@ -1115,9 +1119,9 @@ class PublicationTest {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
 
         if (isJson) {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(POST_URL).content(payload);
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
         } else {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(POST_URL).file(file);
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(PUBLICATION_URL).file(file);
         }
 
         mockHttpServletRequestBuilder
@@ -1145,7 +1149,7 @@ class PublicationTest {
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 = MockMvcRequestBuilders
             .get(SEARCH_COURT_URL + "/" + COURT_ID)
-            .header(VERIFICATION_HEADER, VERIFICATION_FALSE);
+            .header(VERIFICATION_HEADER, FALSE);
         MvcResult getResponse =
             mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isOk()).andReturn();
 
@@ -1166,9 +1170,9 @@ class PublicationTest {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
 
         if (isJson) {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(POST_URL).content(payload);
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
         } else {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(POST_URL).file(file);
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(PUBLICATION_URL).file(file);
         }
 
         mockHttpServletRequestBuilder
@@ -1213,9 +1217,9 @@ class PublicationTest {
     @DisplayName("File endpoint should return the file when artefact exists")
     void retrieveFileFromAnArtefactWhereFound(boolean isJson) throws Exception {
         if (isJson) {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(POST_URL).content(payload);
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
         } else {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(POST_URL).file(file);
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(PUBLICATION_URL).file(file);
         }
         mockHttpServletRequestBuilder.header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE);
         mockHttpServletRequestBuilder.header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY);
@@ -1244,8 +1248,8 @@ class PublicationTest {
             BinaryData.fromString(isJson ? payload : new String(file.getBytes())));
 
         response = mockMvc.perform(MockMvcRequestBuilders
-                                       .get(POST_URL + "/" + artefact.getArtefactId() + "/file")
-                                       .header(VERIFICATION_HEADER, VERIFICATION_TRUE))
+                                       .get(PUBLICATION_URL + "/" + artefact.getArtefactId() + "/file")
+                                       .header(VERIFICATION_HEADER, TRUE))
             .andExpect(status().isOk()).andReturn();
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
@@ -1261,9 +1265,9 @@ class PublicationTest {
     @DisplayName("File endpoint should not return the payload when not authorized")
     void retrieveFileOfAnArtefactWhereNotAuthorized(boolean isJson) throws Exception {
         if (isJson) {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(POST_URL).content(payload);
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
         } else {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(POST_URL).file(file);
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(PUBLICATION_URL).file(file);
         }
         mockHttpServletRequestBuilder.header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE);
         mockHttpServletRequestBuilder.header(PublicationConfiguration.SENSITIVITY_HEADER, Sensitivity.CLASSIFIED);
@@ -1289,8 +1293,8 @@ class PublicationTest {
             response.getResponse().getContentAsString(), Artefact.class);
 
         mockMvc.perform(MockMvcRequestBuilders
-                            .get(POST_URL + "/" + artefact.getArtefactId() + "/file")
-                            .header(VERIFICATION_HEADER, VERIFICATION_FALSE))
+                            .get(PUBLICATION_URL + "/" + artefact.getArtefactId() + "/file")
+                            .header(VERIFICATION_HEADER, FALSE))
             .andExpect(status().isNotFound()).andReturn();
     }
 
@@ -1299,7 +1303,7 @@ class PublicationTest {
     void retrieveFileOfAnArtefactWhereNotFound() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders
                             .get("/publication/7d734e8d-ba1d-4730-bd8b-09a970be00cc/file")
-                            .header(VERIFICATION_HEADER, VERIFICATION_TRUE))
+                            .header(VERIFICATION_HEADER, TRUE))
             .andExpect(status().isNotFound()).andReturn();
     }
 
@@ -1308,9 +1312,9 @@ class PublicationTest {
     @DisplayName("Payload endpoint should return the payload when artefact exists when verified")
     void retrievePayloadOfAnArtefactWhereFoundWhenVerified(boolean isJson) throws Exception {
         if (isJson) {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(POST_URL).content(payload);
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
         } else {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(POST_URL).file(file);
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(PUBLICATION_URL).file(file);
         }
         mockHttpServletRequestBuilder.header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE);
         mockHttpServletRequestBuilder.header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY);
@@ -1339,8 +1343,8 @@ class PublicationTest {
             BinaryData.fromString(isJson ? payload : new String(file.getBytes())));
 
         response = mockMvc.perform(MockMvcRequestBuilders
-                                       .get(POST_URL + "/" + artefact.getArtefactId() + PAYLOAD_URL)
-                                       .header(VERIFICATION_HEADER, VERIFICATION_TRUE))
+                                       .get(PUBLICATION_URL + "/" + artefact.getArtefactId() + PAYLOAD_URL)
+                                       .header(VERIFICATION_HEADER, TRUE))
                                        .andExpect(status().isOk()).andReturn();
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
@@ -1354,9 +1358,9 @@ class PublicationTest {
     @DisplayName("Payload endpoint should not return the payload when artefact out of range and user verified")
     void retrievePayloadOfAnArtefactWhereOutOfDateRangeWhenVerified(boolean isJson) throws Exception {
         if (isJson) {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(POST_URL).content(payload);
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
         } else {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(POST_URL).file(file);
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(PUBLICATION_URL).file(file);
         }
         mockHttpServletRequestBuilder.header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE);
         mockHttpServletRequestBuilder.header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY);
@@ -1385,8 +1389,8 @@ class PublicationTest {
             BinaryData.fromString(isJson ? payload : new String(file.getBytes())));
 
         mockMvc.perform(MockMvcRequestBuilders
-                                       .get(POST_URL + "/" + artefact.getArtefactId() + PAYLOAD_URL)
-                                       .header(VERIFICATION_HEADER, VERIFICATION_TRUE))
+                                       .get(PUBLICATION_URL + "/" + artefact.getArtefactId() + PAYLOAD_URL)
+                                       .header(VERIFICATION_HEADER, TRUE))
             .andExpect(status().isNotFound()).andReturn();
     }
 
@@ -1395,9 +1399,9 @@ class PublicationTest {
     @DisplayName("Payload endpoint should not return the payload when not authorized")
     void retrievePayloadOfAnArtefactWhereNotAuthorized(boolean isJson) throws Exception {
         if (isJson) {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(POST_URL).content(payload);
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
         } else {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(POST_URL).file(file);
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(PUBLICATION_URL).file(file);
         }
         mockHttpServletRequestBuilder.header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE);
         mockHttpServletRequestBuilder.header(PublicationConfiguration.SENSITIVITY_HEADER, Sensitivity.CLASSIFIED);
@@ -1423,8 +1427,8 @@ class PublicationTest {
             response.getResponse().getContentAsString(), Artefact.class);
 
         mockMvc.perform(MockMvcRequestBuilders
-                                       .get(POST_URL + "/" + artefact.getArtefactId() + PAYLOAD_URL)
-                                       .header(VERIFICATION_HEADER, VERIFICATION_FALSE))
+                                       .get(PUBLICATION_URL + "/" + artefact.getArtefactId() + PAYLOAD_URL)
+                                       .header(VERIFICATION_HEADER, FALSE))
             .andExpect(status().isNotFound()).andReturn();
     }
 
@@ -1447,9 +1451,9 @@ class PublicationTest {
     @DisplayName("Payload endpoint should return the payload when artefact exists when unverified")
     void retrievePayloadOfAnArtefactWhereFoundWhenUnverified(boolean isJson) throws Exception {
         if (isJson) {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(POST_URL).content(payload);
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
         } else {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(POST_URL).file(file);
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(PUBLICATION_URL).file(file);
         }
         mockHttpServletRequestBuilder.header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE);
         mockHttpServletRequestBuilder.header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY);
@@ -1478,8 +1482,8 @@ class PublicationTest {
             BinaryData.fromString(isJson ? payload : new String(file.getBytes())));
 
         response = mockMvc.perform(MockMvcRequestBuilders
-                                       .get(POST_URL + "/" + artefact.getArtefactId() + PAYLOAD_URL)
-                                       .header(VERIFICATION_HEADER, VERIFICATION_FALSE))
+                                       .get(PUBLICATION_URL + "/" + artefact.getArtefactId() + PAYLOAD_URL)
+                                       .header(VERIFICATION_HEADER, FALSE))
             .andExpect(status().isOk()).andReturn();
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
@@ -1497,9 +1501,9 @@ class PublicationTest {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
 
         if (isJson) {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(POST_URL).content(payload);
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
         } else {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(POST_URL).file(file);
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(PUBLICATION_URL).file(file);
         }
 
         mockHttpServletRequestBuilder.header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE);
@@ -1529,8 +1533,8 @@ class PublicationTest {
             BinaryData.fromString(isJson ? payload : new String(file.getBytes())));
 
         mockMvc.perform(MockMvcRequestBuilders
-                            .get(POST_URL + "/" + artefact.getArtefactId() + PAYLOAD_URL)
-                            .header(VERIFICATION_HEADER, VERIFICATION_FALSE))
+                            .get(PUBLICATION_URL + "/" + artefact.getArtefactId() + PAYLOAD_URL)
+                            .header(VERIFICATION_HEADER, FALSE))
             .andExpect(status().isNotFound()).andReturn();
     }
 
@@ -1539,7 +1543,7 @@ class PublicationTest {
     void retrievePayloadOfAnArtefactWhereNotFound() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders
                                        .get("/publication/7d734e8d-ba1d-4730-bd8b-09a970be00cc/payload")
-                                       .header(VERIFICATION_HEADER, VERIFICATION_TRUE))
+                                       .header(VERIFICATION_HEADER, TRUE))
             .andExpect(status().isNotFound()).andReturn();
     }
 
@@ -1548,9 +1552,9 @@ class PublicationTest {
     @DisplayName("Metadata endpoint should return the artefact when artefact exists")
     void retrieveMetadataOfAnArtefactWhereFoundWhenVerified(boolean isJson) throws Exception {
         if (isJson) {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(POST_URL).content(payload);
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
         } else {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(POST_URL).file(file);
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(PUBLICATION_URL).file(file);
         }
         mockHttpServletRequestBuilder.header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE);
         mockHttpServletRequestBuilder.header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY);
@@ -1579,8 +1583,8 @@ class PublicationTest {
             BinaryData.fromString(isJson ? payload : new String(file.getBytes())));
 
         response = mockMvc.perform(MockMvcRequestBuilders
-                                       .get(POST_URL + "/" + artefact.getArtefactId())
-                                       .header(VERIFICATION_HEADER, VERIFICATION_TRUE))
+                                       .get(PUBLICATION_URL + "/" + artefact.getArtefactId())
+                                       .header(VERIFICATION_HEADER, TRUE))
             .andExpect(status().isOk()).andReturn();
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
@@ -1595,9 +1599,9 @@ class PublicationTest {
     @DisplayName("Metadata endpoint should return the artefact when artefact exists when unverified")
     void retrieveMetadataOfAnArtefactWhereFoundWhenUnverified(boolean isJson) throws Exception {
         if (isJson) {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(POST_URL).content(payload);
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
         } else {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(POST_URL).file(file);
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(PUBLICATION_URL).file(file);
         }
         mockHttpServletRequestBuilder.header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE);
         mockHttpServletRequestBuilder.header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY);
@@ -1626,8 +1630,8 @@ class PublicationTest {
             BinaryData.fromString(isJson ? payload : new String(file.getBytes())));
 
         response = mockMvc.perform(MockMvcRequestBuilders
-                                       .get(POST_URL + "/" + artefact.getArtefactId())
-                                       .header(VERIFICATION_HEADER, VERIFICATION_FALSE))
+                                       .get(PUBLICATION_URL + "/" + artefact.getArtefactId())
+                                       .header(VERIFICATION_HEADER, FALSE))
             .andExpect(status().isOk()).andReturn();
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
@@ -1642,9 +1646,9 @@ class PublicationTest {
     @DisplayName("Metadata endpoint should return the artefact when artefact exists")
     void retrieveMetadataOfAnArtefactWhereOutOfDateRangeAndVerified(boolean isJson) throws Exception {
         if (isJson) {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(POST_URL).content(payload);
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
         } else {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(POST_URL).file(file);
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(PUBLICATION_URL).file(file);
         }
         mockHttpServletRequestBuilder.header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE);
         mockHttpServletRequestBuilder.header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY);
@@ -1673,8 +1677,8 @@ class PublicationTest {
             BinaryData.fromString(isJson ? payload : new String(file.getBytes())));
 
         mockMvc.perform(MockMvcRequestBuilders
-                            .get(POST_URL + "/" + artefact.getArtefactId())
-                            .header(VERIFICATION_HEADER, VERIFICATION_TRUE))
+                            .get(PUBLICATION_URL + "/" + artefact.getArtefactId())
+                            .header(VERIFICATION_HEADER, TRUE))
             .andExpect(status().isNotFound()).andReturn();
     }
 
@@ -1683,9 +1687,9 @@ class PublicationTest {
     @DisplayName("Metadata endpoint should return the artefact when artefact exists")
     void retrieveMetadataOfAnArtefactWhereOutOfDateRangeAndUnverified(boolean isJson) throws Exception {
         if (isJson) {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(POST_URL).content(payload);
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
         } else {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(POST_URL).file(file);
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(PUBLICATION_URL).file(file);
         }
         mockHttpServletRequestBuilder.header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE);
         mockHttpServletRequestBuilder.header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY);
@@ -1714,8 +1718,8 @@ class PublicationTest {
             BinaryData.fromString(isJson ? payload : new String(file.getBytes())));
 
         mockMvc.perform(MockMvcRequestBuilders
-                            .get(POST_URL + "/" + artefact.getArtefactId())
-                            .header(VERIFICATION_HEADER, VERIFICATION_FALSE))
+                            .get(PUBLICATION_URL + "/" + artefact.getArtefactId())
+                            .header(VERIFICATION_HEADER, FALSE))
             .andExpect(status().isNotFound()).andReturn();
     }
 
@@ -1724,9 +1728,9 @@ class PublicationTest {
     @DisplayName("Metadata endpoint should not return the artefact when not authorized")
     void retrieveMetadataOfAnArtefactWhereNotAuthorized(boolean isJson) throws Exception {
         if (isJson) {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(POST_URL).content(payload);
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
         } else {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(POST_URL).file(file);
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(PUBLICATION_URL).file(file);
         }
         mockHttpServletRequestBuilder.header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE);
         mockHttpServletRequestBuilder.header(PublicationConfiguration.SENSITIVITY_HEADER, Sensitivity.CLASSIFIED);
@@ -1752,8 +1756,8 @@ class PublicationTest {
             response.getResponse().getContentAsString(), Artefact.class);
 
         mockMvc.perform(MockMvcRequestBuilders
-                            .get(POST_URL + "/" + artefact.getArtefactId())
-                            .header(VERIFICATION_HEADER, VERIFICATION_FALSE))
+                            .get(PUBLICATION_URL + "/" + artefact.getArtefactId())
+                            .header(VERIFICATION_HEADER, FALSE))
             .andExpect(status().isNotFound()).andReturn();
     }
 
@@ -1762,7 +1766,7 @@ class PublicationTest {
     void retrieveMetadataOfAnArtefactWhereNotFound() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders
                             .get("/publication/7d734e8d-ba1d-4730-bd8b-09a970be00cc")
-                            .header(VERIFICATION_HEADER, VERIFICATION_TRUE))
+                            .header(VERIFICATION_HEADER, TRUE))
             .andExpect(status().isNotFound()).andReturn();
     }
 
@@ -1896,6 +1900,98 @@ class PublicationTest {
             .header(VERIFICATION_HEADER, FALSE);
 
         mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isNotFound()).andReturn();
+    }
+
+    @Test
+    void testGetCourtByIdShowsAllCourtsForAdmin() throws Exception {
+        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+
+        Artefact inDateArtefact = createDailyList(Sensitivity.PUBLIC);
+        Artefact futureArtefact = createDailyList(Sensitivity.PUBLIC, DISPLAY_FROM.plusMonths(1), "733");
+
+        assertEquals(inDateArtefact.getDisplayFrom(), DISPLAY_FROM.minusMonths(2),
+                     VALIDATION_DISPLAY_FROM);
+        assertEquals(futureArtefact.getDisplayFrom(), DISPLAY_FROM.plusMonths(1),
+                     VALIDATION_DISPLAY_FROM);
+
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+            .get(SEARCH_COURT_URL + "/" + COURT_ID)
+            .header(VERIFICATION_HEADER, FALSE)
+            .header(ADMIN_HEADER, FALSE);
+
+        MvcResult nonAdminResponse =
+            mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isOk()).andReturn();
+
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 = MockMvcRequestBuilders
+            .get(SEARCH_COURT_URL + "/" + COURT_ID)
+            .header(VERIFICATION_HEADER, FALSE)
+            .header(ADMIN_HEADER, TRUE);
+
+        MvcResult adminResponse =
+            mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isOk()).andReturn();
+
+        JSONArray nonAdminResults = new JSONArray(nonAdminResponse.getResponse().getContentAsString());
+        JSONArray adminResults = new JSONArray(adminResponse.getResponse().getContentAsString());
+        assertEquals(1, nonAdminResults.length(), "Should return 1 artefact for non admin");
+        assertEquals(2, adminResults.length(), "Should return 2 artefacts for admins");
+
+    }
+
+    @Test
+    void testDeleteArtefactByIdSuccess() throws Exception {
+        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        Artefact artefactToDelete = createDailyList(Sensitivity.PUBLIC);
+
+        MockHttpServletRequestBuilder preDeleteRequest = MockMvcRequestBuilders
+            .get(PUBLICATION_URL + "/" + artefactToDelete.getArtefactId())
+            .header(VERIFICATION_HEADER, TRUE);
+
+        mockMvc.perform(preDeleteRequest).andExpect(status().isOk());
+
+        MockHttpServletRequestBuilder deleteRequest = MockMvcRequestBuilders
+            .delete(PUBLICATION_URL + "/" + artefactToDelete.getArtefactId())
+            .header(ISSUER_HEADER, EMAIL);
+
+        MvcResult deleteResponse = mockMvc.perform(deleteRequest).andExpect(status().isOk()).andReturn();
+
+        assertEquals("Successfully deleted artefact: " + artefactToDelete.getArtefactId(),
+                     deleteResponse.getResponse().getContentAsString(), "Should successfully delete artefact");
+
+    }
+
+    @Test
+    void testDeleteArtefactByIdArtefactIdNotFound() throws Exception {
+        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+
+        String invalidId = UUID.randomUUID().toString();
+
+        MockHttpServletRequestBuilder deleteRequest = MockMvcRequestBuilders
+            .delete(PUBLICATION_URL + "/" + invalidId)
+            .header(ISSUER_HEADER, EMAIL);
+
+        MvcResult deleteResponse = mockMvc.perform(deleteRequest).andExpect(status().isNotFound()).andReturn();
+
+        assertTrue(deleteResponse.getResponse().getContentAsString()
+                       .contains("No artefact found with the ID: " + invalidId),
+                   "Should return 404 for artefact not found");
+
+    }
+
+    @Test
+    void testDeleteArtefactByIdArtefactIdInvalidIssuerEmail() throws Exception {
+        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+
+        String invalidId = UUID.randomUUID().toString();
+
+        MockHttpServletRequestBuilder deleteRequest = MockMvcRequestBuilders
+            .delete(PUBLICATION_URL + "/" + invalidId)
+            .header(ISSUER_HEADER, TEST_VALUE);
+
+        MvcResult deleteResponse = mockMvc.perform(deleteRequest).andExpect(status().isBadRequest()).andReturn();
+
+        assertTrue(deleteResponse.getResponse().getContentAsString().contains("must be a well-formed email address"),
+                   "Should return 400 for invalid email");
+
     }
 
 }
