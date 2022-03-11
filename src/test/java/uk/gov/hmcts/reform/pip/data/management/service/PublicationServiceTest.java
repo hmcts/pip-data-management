@@ -40,6 +40,7 @@ import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.TestConstants.MESSAGES_MATCH;
 
 @ExtendWith(MockitoExtension.class)
+@SuppressWarnings("PMD.TooManyMethods")
 class PublicationServiceTest {
 
     @Mock
@@ -490,7 +491,6 @@ class PublicationServiceTest {
     }
 
     @Test
-
     void testTriggerIfDateIsFuture() throws IOException {
         try (LogCaptor logCaptor = LogCaptor.forClass(PublicationService.class)) {
             publicationService.checkAndTriggerSubscriptionManagement(artefactInTheFuture);
@@ -549,7 +549,9 @@ class PublicationServiceTest {
                          "Should have returned the subscription list"
             );
         }
+    }
 
+    @Test
     void testFindAllByCourtIdAdmin() {
         when(artefactRepository.findArtefactsByCourtIdAdmin(TEST_VALUE)).thenReturn(List.of(artefact));
         assertEquals(List.of(artefact), publicationService.findAllByCourtIdAdmin(TEST_VALUE, true, true),

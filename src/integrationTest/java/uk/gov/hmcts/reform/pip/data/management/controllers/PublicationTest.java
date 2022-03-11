@@ -1343,8 +1343,8 @@ class PublicationTest {
             BinaryData.fromString(isJson ? payload : new String(file.getBytes())));
 
         response = mockMvc.perform(MockMvcRequestBuilders
-                                       .get(POST_URL + "/" + artefact.getArtefactId() + PAYLOAD_URL)
-                                       .header(VERIFICATION_HEADER, VERIFICATION_TRUE))
+                                       .get(PUBLICATION_URL + "/" + artefact.getArtefactId() + PAYLOAD_URL)
+                                       .header(VERIFICATION_HEADER, TRUE))
             .andExpect(status().isOk()).andReturn();
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
