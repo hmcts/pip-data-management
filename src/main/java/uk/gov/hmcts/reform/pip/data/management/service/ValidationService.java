@@ -34,6 +34,8 @@ public class ValidationService {
 
     private final JsonSchema masterSchema;
     private final JsonSchema dailyCauseListSchema;
+    private final JsonSchema sjpPublicListSchema;
+    private final JsonSchema sjpPressListSchema;
 
     @Autowired
     public ValidationService(ValidationConfiguration validationConfiguration) {
@@ -41,11 +43,20 @@ public class ValidationService {
             .getResourceAsStream(validationConfiguration.getMasterSchema());
 
              InputStream dailyCauseListFile = this.getClass().getClassLoader()
-                 .getResourceAsStream(validationConfiguration.getDailyCauseList())) {
+                 .getResourceAsStream(validationConfiguration.getDailyCauseList());
+
+             InputStream sjpPublicListFile = this.getClass().getClassLoader()
+                .getResourceAsStream(validationConfiguration.getSjpPublicList());
+
+             InputStream sjpPressListFile = this.getClass().getClassLoader()
+                 .getResourceAsStream(validationConfiguration.getSjpPressList())) {
 
             JsonSchemaFactory schemaFactory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V7);
             masterSchema = schemaFactory.getSchema(masterFile);
             dailyCauseListSchema = schemaFactory.getSchema(dailyCauseListFile);
+            sjpPublicListSchema = schemaFactory.getSchema(sjpPublicListFile);
+            sjpPressListSchema = schemaFactory.getSchema(sjpPressListFile);
+
 
         } catch (Exception exception) {
             throw new PayloadValidationException(String.join(exception.getMessage()));
@@ -197,8 +208,20 @@ public class ValidationService {
             JsonNode json = new ObjectMapper().readTree(jsonPayload);
             masterSchema.validate(json).forEach(vm ->  errors.add(vm.getMessage()));
 
-            if (listType != null && listType.equals(ListType.CIVIL_DAILY_CAUSE_LIST)) {
-                dailyCauseListSchema.validate(json).forEach(vm ->  errors.add(vm.getMessage()));
+            if (listType != null) {
+                switch (listType) {
+                    case CIVIL_DAILY_CAUSE_LIST:
+                        dailyCauseListSchema.validate(json).forEach(vm ->  errors.add(vm.getMessage()));
+                        break;
+                    case SJP_PUBLIC_LIST:
+                        sjpPublicListSchema.validate(json).forEach(vm ->  errors.add(vm.getMessage()));
+                        break;
+                    case SJP_PRESS_LIST:
+                        sjpPressListSchema.validate(json).forEach(vm ->  errors.add(vm.getMessage()));
+                        break;
+                    default:
+                        break;
+                }
             }
 
             if (!errors.isEmpty()) {

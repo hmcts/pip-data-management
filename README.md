@@ -221,11 +221,12 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 Numerous apis are set up to handle the data passing through P&I and will be built upon as the project progresses.
 
- - [Retrieving Courts and Hearings](#retrieving-courts-and-hearings)
+ - [Retrieving Courts and Hearings (Deprecating)](#retrieving-courts-and-hearings)
+ - [Retrieving and uploading artefacts](#uploading-and-retrieving-artefacts)
 
 ## Retrieving Courts and Hearings
 Api set up under the url `{root-url}/courts` to retrieve courts with their assosiated hearings, or `{root-url}
-/hearings`
+/hearings`. The /courts and /hearings API's are on their way to deprecation to be replaced by [publications](#uploading-and-retrieving-artefacts)
 to get purely hearings
 
  - /courts - Will return an array of all courts
@@ -233,7 +234,7 @@ to get purely hearings
  - /courts/find/{courtName} - will search all courts for a matching court with that name and return its full court
    object
  - /courts/filter - Takes in a body of an array of `filters` and `values` to search the court list for and return
-   matching courts that satisfy all params provided, can return empty list if none match.
+   matching courts that satisfy all params provided, can return empty list if none match
 
 example filter request:
 ```
@@ -248,3 +249,40 @@ example filter request:
 - /hearings/case-number/{caseNumber} returns single hearing for matched case number
 - /hearings/urn/{urnNumber} returns single hearing for matched urn number
 NOTE: searching or filtering is not case-sensitive but requires exact match otherwise
+
+## Uploading and retrieving artefacts
+Artefacts are created by uploading blobs of raw data or flat files.
+These are defined by the [schemas](src/main/resources/schemas).
+
+- POST `/publication` used to upload a blob and create an artefact in the P&I database, must include series of
+  headers defined in the [upload headers section](#upload-headers). NOTE: providing the content type as json and
+  including raw json in the body will upload blob as raw data to be processed by P&I, providing the content type as
+  multipart form data and uploading a file as the body will upload a flat file to the artefact where no P&I
+  processing will be done on the contents of the file.
+
+- GET `/publication/courtId/{courtId}` used to get a series of publications matching the courtId.
+- GET `publication/search/{searchTerm}/{searchValue}` used to get a series of publications matching a given case
+  search value, eg. (CASE_URN/CASE_ID/CASE_NAME)
+
+- GET `/publication/{artefactId}` used to get the metadata for the artefact.
+- GET `/publication/{artefactId}/payload` used to get the payload for the artefact.
+- GET `/publication/{artefactId}/file` used to get payload file for the artefact.
+- DELETE - `/publication/{artefactId}` used to delete an artefact and its payload from P&I
+
+## Headers
+### Upload headers
+headers for uploading an artefact:
+```json
+{
+  "x-provenance":  "String of the provenance the upload is coming from",
+  "x-source-artefact-id": "String of the artefact id as labelled in the source system",
+  "x-type":  "ENUM of the type of artefact",
+  "x-sensitivity": "ENUM of the sensitvity of the artefact",
+  "x-language":  "ENUM of the language the data is in",
+  "x-display-from": "Local date of when the list can be displayed from",
+  "x-display-to":  "Local date of when the list should be displayed to",
+  "x-list-type": "ENUM of the different list types available",
+  "x-court-id":  "String of the court id the list is linked to",
+  "x-content-date": "Local date of when the earliest case in the list refers to"
+}
+```

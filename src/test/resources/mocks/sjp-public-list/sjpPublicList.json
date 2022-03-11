@@ -1,0 +1,57 @@
+{
+  "document": {
+    "version": "This is a version",
+    "documentName": "This is a document name",
+    "publicationDate": "2016-09-13T23:30:52.123Z"
+  },
+  "courtLists": [
+    {
+      "courtHouse": {
+        "courtRoom": [
+          {
+            "session": [
+              {
+                "sittings": [
+                  {
+                    "hearing": [
+                      {
+                        "party": [
+                          {
+                            "partyRole": "ACCUSED",
+                            "individualDetails": {
+                              "individualForenames": "This is a forename",
+                              "individualSurname": "This is a surname",
+                              "address": {
+                                "county": "This is a county",
+                                "town": "This is a town",
+                                "postCode": "This is a postcode"
+                              },
+                              "title": "This is a title",
+                              "individualMiddleName": "This is a middle name"
+                            }
+                          },
+                          {
+                            "partyRole": "PROSECUTOR",
+                            "organisationDetails": {
+                              "organisationName": "This is an organisation"
+                            }
+                          }
+                        ],
+                        "offence": [
+                          {
+                          "offenceTitle": "This is an offence title",
+                          "reportingRestriction": false
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
