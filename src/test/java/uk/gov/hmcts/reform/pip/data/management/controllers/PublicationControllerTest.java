@@ -33,7 +33,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
+import static uk.gov.hmcts.reform.pip.data.management.helpers.TestConstants.MESSAGES_MATCH;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.TestConstants.STATUS_CODE_MATCH;
 
 @SuppressWarnings("PMD.UseConcurrentHashMap")
@@ -69,6 +71,7 @@ class PublicationControllerTest {
     private static final String VALIDATION_EXPECTED_MESSAGE =
         "The expected exception does not contain the correct message";
     private static final String NOT_EQUAL_MESSAGE = "The expected strings are not the same";
+    private static final String DELETED_MESSAGE = "Successfully deleted artefact: ";
 
     private Artefact artefact;
     private Artefact artefactWithId;
@@ -138,13 +141,13 @@ class PublicationControllerTest {
 
     @Test
     void testSearchEndpointReturnsOkWithTrue() {
-        assertEquals(HttpStatus.OK, publicationController.getAllRelevantArtefactsByCourtId(EMPTY_FIELD, true)
+        assertEquals(HttpStatus.OK, publicationController.getAllRelevantArtefactsByCourtId(EMPTY_FIELD, true, true)
             .getStatusCode(), STATUS_CODE_MATCH);
     }
 
     @Test
     void testSearchEndpointReturnsOkWithFalse() {
-        assertEquals(HttpStatus.OK, publicationController.getAllRelevantArtefactsByCourtId(EMPTY_FIELD, false)
+        assertEquals(HttpStatus.OK, publicationController.getAllRelevantArtefactsByCourtId(EMPTY_FIELD, false, false)
             .getStatusCode(), STATUS_CODE_MATCH);
     }
 
@@ -204,9 +207,9 @@ class PublicationControllerTest {
     void checkGetArtefactsByCourtIdReturnsWhenTrue() {
         List<Artefact> artefactList = List.of(artefactWithId);
 
-        when(publicationService.findAllByCourtId(EMPTY_FIELD, true)).thenReturn(artefactList);
+        when(publicationService.findAllByCourtIdAdmin(EMPTY_FIELD, true, true)).thenReturn(artefactList);
         ResponseEntity<List<Artefact>> unmappedArtefact = publicationController
-            .getAllRelevantArtefactsByCourtId(EMPTY_FIELD, true);
+            .getAllRelevantArtefactsByCourtId(EMPTY_FIELD, true, true);
 
         assertEquals(artefactList, unmappedArtefact.getBody(), VALIDATION_EXPECTED_MESSAGE);
         assertEquals(HttpStatus.OK, unmappedArtefact.getStatusCode(), STATUS_CODE_MATCH);
@@ -216,9 +219,9 @@ class PublicationControllerTest {
     void checkGetArtefactsByCourtIdReturnsOkWhenFalse() {
         List<Artefact> artefactList = List.of(artefactWithId);
 
-        when(publicationService.findAllByCourtId(EMPTY_FIELD, false)).thenReturn(artefactList);
+        when(publicationService.findAllByCourtIdAdmin(EMPTY_FIELD, false, false)).thenReturn(artefactList);
         ResponseEntity<List<Artefact>> unmappedArtefact = publicationController
-            .getAllRelevantArtefactsByCourtId(EMPTY_FIELD, false);
+            .getAllRelevantArtefactsByCourtId(EMPTY_FIELD, false, false);
 
         assertEquals(artefactList, unmappedArtefact.getBody(), VALIDATION_EXPECTED_MESSAGE);
         assertEquals(HttpStatus.OK, unmappedArtefact.getStatusCode(), STATUS_CODE_MATCH);
@@ -243,6 +246,16 @@ class PublicationControllerTest {
 
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode(), STATUS_CODE_MATCH);
         assertEquals(artefactWithId, responseEntity.getBody(), "Artefacts should match");
+    }
+
+    @Test
+    void testDeleteArtefactReturnsOk() {
+        doNothing().when(publicationService).deleteArtefactById(any(), any());
+        assertEquals(HttpStatus.OK, publicationController.deleteArtefact(TEST_STRING, TEST_STRING).getStatusCode(),
+                     STATUS_CODE_MATCH);
+        assertEquals(DELETED_MESSAGE + TEST_STRING,
+                     publicationController.deleteArtefact(TEST_STRING, TEST_STRING).getBody(),
+                     MESSAGES_MATCH);
     }
 
 }

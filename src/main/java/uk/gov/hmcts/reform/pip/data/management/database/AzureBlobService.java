@@ -20,6 +20,8 @@ public class AzureBlobService {
 
     private final BlobContainerClient blobContainerClient;
 
+    private static final String DELETE_MESSAGE = "Blob: %s successfully deleted.";
+
     @Autowired
     public AzureBlobService(BlobContainerClient blobContainerClient) {
         this.blobContainerClient = blobContainerClient;
@@ -82,5 +84,12 @@ public class AzureBlobService {
         BlobClient blobClient = blobContainerClient.getBlobClient(blobName);
         byte[] data = blobClient.downloadContent().toBytes();
         return new ByteArrayResource(data);
+    }
+
+    public String deleteBlob(String sourceArtefactId, String provenance) {
+        String blobName = sourceArtefactId + '-' + provenance;
+        BlobClient blobClient = blobContainerClient.getBlobClient(blobName);
+        blobClient.delete();
+        return String.format(DELETE_MESSAGE, blobName);
     }
 }
