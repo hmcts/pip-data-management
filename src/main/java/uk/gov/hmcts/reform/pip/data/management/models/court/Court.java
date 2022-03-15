@@ -9,6 +9,7 @@ import org.hibernate.annotations.TypeDef;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -54,7 +55,10 @@ public class Court {
     private List<CourtReference> courtReferenceList = new ArrayList<>();
 
     public Court(CourtCsv courtCsv) {
-
+        this.name = courtCsv.getCourtName();
+        this.region = courtCsv.getRegion();
+        this.jurisdiction = courtCsv.getJurisdiction().stream()
+            .collect(Collectors.toList());
         CourtReference courtReference = new CourtReference(courtCsv.getProvenance(), courtCsv.getProvenanceId());
         this.courtReferenceList.add(courtReference);
     }
