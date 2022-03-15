@@ -287,7 +287,7 @@ class PublicationTest {
         assertTrue(exceptionResponse.getMessage().contains("x-type"), VALIDATION_EXCEPTION_RESPONSE);
     }
 
-    @DisplayName("Should populate the datefrom field if it's empty and the type is Status_Update")
+    @DisplayName("Should populate the datefrom field if it's empty and the type is GENERAL_PUBLICATION")
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
     void testPopulateDefaultDateFrom(boolean isJson) throws Exception {
@@ -1345,12 +1345,13 @@ class PublicationTest {
         response = mockMvc.perform(MockMvcRequestBuilders
                                        .get(PUBLICATION_URL + "/" + artefact.getArtefactId() + PAYLOAD_URL)
                                        .header(VERIFICATION_HEADER, TRUE))
-                                       .andExpect(status().isOk()).andReturn();
+            .andExpect(status().isOk()).andReturn();
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
 
         assertEquals(isJson ? payload : new String(file.getBytes()),
-                     response.getResponse().getContentAsString(), "Payload does not match expected content");
+                     response.getResponse().getContentAsString(), "Payload does not match expected content"
+        );
     }
 
     @ParameterizedTest
@@ -1589,6 +1590,7 @@ class PublicationTest {
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
 
+
         assertEquals(artefact,
                      objectMapper.readValue(response.getResponse().getContentAsString(), Artefact.class),
                      "Metadata does not match expected artefact");
@@ -1636,9 +1638,11 @@ class PublicationTest {
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
 
-        assertEquals(artefact,
-                     objectMapper.readValue(response.getResponse().getContentAsString(), Artefact.class),
-                     "Metadata does not match expected artefact");
+        assertEquals(
+            artefact,
+            objectMapper.readValue(response.getResponse().getContentAsString(), Artefact.class),
+            "Metadata does not match expected artefact"
+        );
     }
 
     @ParameterizedTest
@@ -1747,6 +1751,7 @@ class PublicationTest {
         when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
         when(blobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
 
+
         MvcResult response =
             mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
 
@@ -1774,12 +1779,11 @@ class PublicationTest {
     @DisplayName("Metadata endpoint where verification not set should display a 400")
     void retrieveMetadataWhenVerificationEndpointNotSet() throws Exception {
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
-                            .get("/publication/7d734e8d-ba1d-4730-bd8b-09a970be00cc"))
+                                                  .get("/publication/7d734e8d-ba1d-4730-bd8b-09a970be00cc"))
             .andExpect(status().isBadRequest()).andReturn();
 
         ExceptionResponse exceptionResponse =
             objectMapper.readValue(mvcResult.getResponse().getContentAsString(), ExceptionResponse.class);
-
         assertTrue(exceptionResponse.getMessage().contains(VERIFICATION_HEADER),
                    "Verification error not shown in error message");
     }

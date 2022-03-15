@@ -1,5 +1,5 @@
 service-to-service:
-  subscription-management: testUrl
+  subscription-management: localhost:4550
 
 cron:
   daily-display-from: "*/10 * * * * *"

@@ -55,7 +55,6 @@ public class PublicationController {
         "No artefact found matching given parameters and date requirements";
 
     private final PublicationService publicationService;
-
     @Autowired
     private final ValidationService validationService;
 
@@ -133,6 +132,8 @@ public class PublicationController {
         Artefact createdItem = publicationService
             .createPublication(artefact, payload);
 
+        publicationService.checkAndTriggerSubscriptionManagement(createdItem);
+
         return ResponseEntity.status(HttpStatus.CREATED).body(createdItem);
     }
 
@@ -200,6 +201,9 @@ public class PublicationController {
             .search(search)
             .build();
 
+
+        publicationService.checkAndTriggerSubscriptionManagement(artefact);
+
         return ResponseEntity.status(HttpStatus.CREATED).body(publicationService.createPublication(artefact, file));
     }
 
@@ -244,9 +248,7 @@ public class PublicationController {
     @GetMapping("/{artefactId}")
     public ResponseEntity<Artefact> getArtefactMetadata(
         @PathVariable UUID artefactId, @RequestHeader Boolean verification) {
-
         return ResponseEntity.ok(publicationService.getMetadataByArtefactId(artefactId, verification));
-
     }
 
     @ApiResponses({
