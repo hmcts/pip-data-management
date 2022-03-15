@@ -56,10 +56,6 @@ public class Court {
     private List<CourtReference> courtReferenceList = new ArrayList<>();
 
     public Court(CourtCsv courtCsv) {
-        this.name = WordUtils.capitalizeFully(courtCsv.getCourtName());
-        this.region = WordUtils.capitalizeFully(courtCsv.getRegion());
-        this.jurisdiction = courtCsv.getJurisdiction().stream().map(WordUtils::capitalizeFully)
-            .collect(Collectors.toList());
 
         CourtReference courtReference = new CourtReference(courtCsv.getProvenance(), courtCsv.getProvenanceId());
         this.courtReferenceList.add(courtReference);
