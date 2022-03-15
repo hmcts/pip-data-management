@@ -4,13 +4,11 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.vladmihalcea.hibernate.type.array.ListArrayType;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.apache.commons.text.WordUtils;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
