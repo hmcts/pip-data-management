@@ -1,5 +1,5 @@
 locals {
-  api_operations_files = fileset(path.module, "./infrastructure/resources/operation-policies/*.xml")
+  api_operations_files = fileset(path.module, "./resources/operation-policies/*.xml")
   api_operations = {
     for api_operations_file in local.api_operations_files :
     basename(api_operations_file) => {
@@ -34,7 +34,7 @@ module "apim_api" {
   protocols      = ["https"]
   revision       = "1"
   service_url    = var.service_url
-  swagger_url    = file("./infrastructure/resources/swagger/api-swagger.json")
+  swagger_url    = file("./resources/swagger/api-swagger.json")
   content_format = "swagger-json"
 }
 
