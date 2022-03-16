@@ -44,6 +44,10 @@ module "apim_api_policy" {
   api_mgmt_rg            = local.apim_rg
   api_name               = local.api_name
   api_policy_xml_content = file("./resources/api-policy/api-policy.xml")
+
+  depends_on = [
+    module.apim_api
+  ]
 }
 
 resource "azurerm_api_management_api_operation_policy" "apim_api_operation_policy" {
@@ -53,4 +57,8 @@ resource "azurerm_api_management_api_operation_policy" "apim_api_operation_polic
   api_management_name = local.apim_name
   resource_group_name = local.apim_rg
   xml_content         = each.value.xml_content
+
+  depends_on = [
+    module.apim_api
+  ]
 }
