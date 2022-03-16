@@ -1,17 +1,15 @@
 {
-  "openapi": "3.0.1",
+  "swagger": "2.0",
   "info": {
     "title": "pip-data-management-health-api",
     "description": "Publication and Information Data Management APIM API",
     "version": "1.0"
   },
-  "servers": [
-    {
-      "url": "http://sds-api-mgmt.sandbox.platform.hmcts.net/pip-data-management-health"
-    },
-    {
-      "url": "https://sds-api-mgmt.sandbox.platform.hmcts.net/pip-data-management-health"
-    }
+  "host": "sds-api-mgmt.sandbox.platform.hmcts.net",
+  "basePath": "/pip/data-management",
+  "schemes": [
+    "http",
+    "https"
   ],
   "paths": {
     "/publications": {
@@ -30,7 +28,6 @@
       }
     }
   },
-  "components": {},
   "tags": [
     {
       "name": "publications",
