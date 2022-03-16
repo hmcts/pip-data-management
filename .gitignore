@@ -26,4 +26,4 @@ bin/main/application.yaml
 .terraform
 .idea/
 *terraform.lock.hcl
-**/**/override.tf
+**/override.tf
