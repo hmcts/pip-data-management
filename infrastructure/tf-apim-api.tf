@@ -16,7 +16,7 @@ module "apim_api" {
   product_id     = data.azurerm_api_management_product.apim_product.product_id
   protocols      = ["https"]
   revision       = "1"
-  service_url    = var.service_url
+  service_url    = "https://pip-data-management.${local.env_long_name}.platform.hmcts.net"
   swagger_url    = file("./resources/swagger/api-swagger.json")
   content_format = "swagger-json"
 }
