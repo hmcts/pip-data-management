@@ -97,10 +97,12 @@
                       },
                       {
                         "hearingDescription": "For Application for Bail",
-                        "offence": {
-                          "reportingRestriction": true,
-                          "offenceMaxPen": "10yrs"
-                        },
+                        "offence": [
+                          {
+                            "reportingRestriction": true,
+                            "offenceMaxPen": "10yrs"
+                          }
+                        ],
                         "hearingId": "",
                         "hearingType": "mda",
                         "listNote": "",

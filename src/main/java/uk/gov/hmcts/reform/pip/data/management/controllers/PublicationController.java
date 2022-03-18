@@ -11,6 +11,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,11 +39,13 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.validation.Valid;
+import javax.validation.constraints.Email;
 
 /**
  * This class is the controller for creating new Publications.
  */
 
+@Validated
 @RestController
 @Api(tags = "Data Management Publications API")
 @RequestMapping("/publication")
@@ -51,7 +55,6 @@ public class PublicationController {
         "No artefact found matching given parameters and date requirements";
 
     private final PublicationService publicationService;
-
     @Autowired
     private final ValidationService validationService;
 
@@ -129,6 +132,8 @@ public class PublicationController {
         Artefact createdItem = publicationService
             .createPublication(artefact, payload);
 
+        publicationService.checkAndTriggerSubscriptionManagement(createdItem);
+
         return ResponseEntity.status(HttpStatus.CREATED).body(createdItem);
     }
 
@@ -196,6 +201,9 @@ public class PublicationController {
             .search(search)
             .build();
 
+
+        publicationService.checkAndTriggerSubscriptionManagement(artefact);
+
         return ResponseEntity.status(HttpStatus.CREATED).body(publicationService.createPublication(artefact, file));
     }
 
@@ -208,8 +216,11 @@ public class PublicationController {
     @ApiOperation("Get a series of publications matching a given courtId (e.g. courtid)")
     @GetMapping("/courtId/{courtId}")
     public ResponseEntity<List<Artefact>> getAllRelevantArtefactsByCourtId(@PathVariable String courtId,
-                                                                           @RequestHeader Boolean verification) {
-        return ResponseEntity.ok(publicationService.findAllByCourtId(courtId, verification));
+                                                                           @RequestHeader Boolean verification,
+                                                                           @RequestHeader(value = "x-admin",
+                                                                               defaultValue = "false",
+                                                                               required = false) Boolean isAdmin) {
+        return ResponseEntity.ok(publicationService.findAllByCourtIdAdmin(courtId, verification, isAdmin));
     }
 
     @ApiResponses({
@@ -237,9 +248,7 @@ public class PublicationController {
     @GetMapping("/{artefactId}")
     public ResponseEntity<Artefact> getArtefactMetadata(
         @PathVariable UUID artefactId, @RequestHeader Boolean verification) {
-
         return ResponseEntity.ok(publicationService.getMetadataByArtefactId(artefactId, verification));
-
     }
 
     @ApiResponses({
@@ -276,5 +285,17 @@ public class PublicationController {
             .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_VALUE)
             .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileType)
             .body(file);
+    }
+
+    @ApiResponses({
+        @ApiResponse(code = 200, message = "Successfully deleted artefact: {artefactId}"),
+        @ApiResponse(code = 404, message = "No artefact found with the ID: {artefactId}"),
+    })
+    @ApiOperation("Delete a artefact and its list from P&I")
+    @DeleteMapping("/{artefactId}")
+    public ResponseEntity<String> deleteArtefact(@RequestHeader("x-issuer-email") @Email String issuerEmail,
+        @PathVariable String artefactId) {
+        publicationService.deleteArtefactById(artefactId, issuerEmail);
+        return ResponseEntity.ok("Successfully deleted artefact: " + artefactId);
     }
 }
