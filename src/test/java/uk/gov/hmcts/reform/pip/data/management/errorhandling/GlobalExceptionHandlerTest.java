@@ -22,6 +22,8 @@ import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.NotFound
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.PayloadValidationException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.UnauthorisedRequestException;
 
+import javax.validation.ConstraintViolationException;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -241,5 +243,18 @@ class GlobalExceptionHandlerTest {
                 .contains(TEST_MESSAGE),
             EXCEPTION_BODY_NOT_MATCH
         );
+    }
+
+    @Test
+    void testConstrainViolationException() {
+        ConstraintViolationException constraintViolationException =
+            new ConstraintViolationException(TEST_MESSAGE, null);
+
+        ResponseEntity<ExceptionResponse> responseEntity = globalExceptionHandler.handle(constraintViolationException);
+
+        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode(),
+                     "Should be bad request exception");
+        assertNotNull(responseEntity.getBody(), NOT_NULL_MESSAGE);
+        assertTrue(responseEntity.getBody().getMessage().contains(TEST_MESSAGE), EXCEPTION_BODY_NOT_MATCH);
     }
 }

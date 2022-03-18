@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.vladmihalcea.hibernate.type.array.ListArrayType;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.apache.commons.text.WordUtils;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 
@@ -56,11 +55,10 @@ public class Court {
     private List<CourtReference> courtReferenceList = new ArrayList<>();
 
     public Court(CourtCsv courtCsv) {
-        this.name = WordUtils.capitalizeFully(courtCsv.getCourtName());
-        this.region = WordUtils.capitalizeFully(courtCsv.getRegion());
-        this.jurisdiction = courtCsv.getJurisdiction().stream().map(WordUtils::capitalizeFully)
+        this.name = courtCsv.getCourtName();
+        this.region = courtCsv.getRegion();
+        this.jurisdiction = courtCsv.getJurisdiction().stream()
             .collect(Collectors.toList());
-
         CourtReference courtReference = new CourtReference(courtCsv.getProvenance(), courtCsv.getProvenanceId());
         this.courtReferenceList.add(courtReference);
     }

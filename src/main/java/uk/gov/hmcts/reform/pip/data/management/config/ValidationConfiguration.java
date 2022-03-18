@@ -11,7 +11,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "validations")
 @Getter
 @Setter
-public  class ValidationConfiguration {
+public class ValidationConfiguration {
 
 
     /**
@@ -23,5 +23,15 @@ public  class ValidationConfiguration {
      *  Config option for the daily cause list.
      */
     private String dailyCauseList;
+
+    /**
+     *  Config option for the sjp public list.
+     */
+    private String sjpPublicList;
+
+    /**
+     *  Config option for the sjp public list.
+     */
+    private String sjpPressList;
 
 }

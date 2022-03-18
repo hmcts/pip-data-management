@@ -6,6 +6,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -77,5 +78,15 @@ public interface ArtefactRepository extends JpaRepository<Artefact, Long> {
     List<Artefact> findArtefactBySearchUnverified(@Param(SEARCH_TERM_PARAM) String searchTerm,
                                                   @Param(SEARCH_VAL_PARAM) String searchVal,
                                                   @Param(CURRENT_DATE_PARAM) LocalDateTime currentDate);
+
+    @Query(value = "select * from Artefact where court_id = :courtId",
+        nativeQuery = true)
+    List<Artefact> findArtefactsByCourtIdAdmin(@Param(COURT_ID_PARAM) String courtId);
+
+    @Query(value = "select * from Artefact where artefact_id = CAST(:artefact_id AS uuid)", nativeQuery = true)
+    Optional<Artefact> findArtefactByArtefactId(@Param(ARTEFACT_ID_PARAM) String artefactId);
+
+    @Query(value = "SELECT * FROM Artefact WHERE DATE(display_from) = :curr_date", nativeQuery = true)
+    List<Artefact> findArtefactsByDisplayFrom(@Param(CURRENT_DATE_PARAM) LocalDate today);
 
 }
