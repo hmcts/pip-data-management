@@ -24,9 +24,3 @@ variable "team_name" {
 variable "team_contact" {
   default = "#vh-devops"
 }
-
-variable "service_url" {
-  type        = string
-  description = "Service URL"
-  default     = ""
-}
