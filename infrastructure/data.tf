@@ -1,6 +1,7 @@
 locals {
 
   b2c_key_vault_name = "${var.product}-ss-apim-kv-${var.env}"
+  auto_secret_prefix = "auto-${var.product}-${local.env}"
 }
 
 data "azurerm_api_management_product" "apim_product" {
@@ -19,6 +20,6 @@ data "azurerm_key_vault_secret" "b2c_tenant_id" {
   key_vault_id = data.azurerm_key_vault.b2c.id
 }
 data "azurerm_key_vault_secret" "b2c_client_id" {
-  name         = "${var.product}-apim-data-managment-${var.env}"
+  name         = "${local.auto_secret_prefix}-${var.product}-apim-data-managment-${local.env}-id"
   key_vault_id = data.azurerm_key_vault.b2c.id
 }
