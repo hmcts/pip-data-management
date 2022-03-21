@@ -1,6 +1,6 @@
 locals {
 
-  b2c_key_vault_name = "${var.product}-ss-kv-${var.env}"
+  key_vault_name = "${var.product}-ss-kv-${var.env}"
   auto_secret_prefix = "auto-${var.product}-${local.env}"
 }
 

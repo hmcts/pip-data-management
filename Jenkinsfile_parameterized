@@ -12,7 +12,7 @@ withParameterizedPipeline(type, product, component, 'sbox', 'sbox') {
   enableSlackNotifications('#pip-build-notices')
 
    def branchName = env.CHANGE_BRANCH ?: env.BRANCH_NAME
-   before('test') {
+   before('build') {
     sh "echo 'Validate Swaggr'"
     sh swaggerValidate(branchName)
   }
