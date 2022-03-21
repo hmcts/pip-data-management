@@ -1784,6 +1784,11 @@ class PublicationTest {
 
         ExceptionResponse exceptionResponse =
             objectMapper.readValue(mvcResult.getResponse().getContentAsString(), ExceptionResponse.class);
+
+        assertTrue(
+            exceptionResponse.getMessage().contains(VERIFICATION_HEADER),
+            "Verification error not shown in error message"
+        );
         assertTrue(exceptionResponse.getMessage().contains(VERIFICATION_HEADER),
                    "Verification error not shown in error message");
     }
@@ -2005,12 +2010,12 @@ class PublicationTest {
 
         MockHttpServletRequestBuilder expectedFailRequest = MockMvcRequestBuilders
             .get(PUBLICATION_URL + "/" + artefactToFind.getArtefactId())
-            .header("verification", true);
+            .header(VERIFICATION_HEADER, true);
         mockMvc.perform(expectedFailRequest).andExpect(status().isNotFound());
 
         MockHttpServletRequestBuilder adminRequest = MockMvcRequestBuilders
             .get(PUBLICATION_URL + "/" + artefactToFind.getArtefactId())
-            .header("verification", true)
+            .header(VERIFICATION_HEADER, true)
             .header("x-admin", true);
         MvcResult response = mockMvc.perform(adminRequest).andExpect(status().isOk()).andReturn();
 
@@ -2025,10 +2030,11 @@ class PublicationTest {
         when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
         MockHttpServletRequestBuilder adminRequest = MockMvcRequestBuilders
             .get(PUBLICATION_URL + "/" + UUID.randomUUID())
-            .header("verification", true)
+            .header(VERIFICATION_HEADER, true)
             .header("x-admin", true);
         mockMvc.perform(adminRequest).andExpect(status().isNotFound());
 
     }
+
 }
 

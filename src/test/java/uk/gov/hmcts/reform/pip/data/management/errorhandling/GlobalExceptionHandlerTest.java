@@ -240,7 +240,9 @@ class GlobalExceptionHandlerTest {
         assertNotNull(responseEntity.getBody(), NOT_NULL_MESSAGE);
         assertTrue(
             responseEntity.getBody().getMessage()
-                .contains(TEST_MESSAGE), EXCEPTION_BODY_NOT_MATCH);
+                .contains(TEST_MESSAGE),
+            EXCEPTION_BODY_NOT_MATCH
+        );
     }
 
     @Test
