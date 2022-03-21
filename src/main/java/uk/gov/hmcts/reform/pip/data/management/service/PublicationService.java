@@ -8,8 +8,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.AzureBlobService;
+import uk.gov.hmcts.reform.pip.data.management.database.CourtRepository;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ArtefactNotFoundException;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CourtNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.NotFoundException;
+import uk.gov.hmcts.reform.pip.data.management.models.court.Court;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
 import uk.gov.hmcts.reform.pip.data.management.utils.PayloadExtractor;
@@ -40,15 +43,19 @@ public class PublicationService {
 
     private final SubscriptionManagementService subscriptionManagementService;
 
+    private final CourtRepository courtRepository;
+
     @Autowired
     public PublicationService(ArtefactRepository artefactRepository,
                               AzureBlobService azureBlobService,
                               PayloadExtractor payloadExtractor,
-                              SubscriptionManagementService subscriptionManagementService) {
+                              SubscriptionManagementService subscriptionManagementService,
+                              CourtRepository courtRepository) {
         this.artefactRepository = artefactRepository;
         this.azureBlobService = azureBlobService;
         this.payloadExtractor = payloadExtractor;
         this.subscriptionManagementService = subscriptionManagementService;
+        this.courtRepository = courtRepository;
     }
 
     /**
@@ -67,6 +74,8 @@ public class PublicationService {
             payload
         );
 
+        this.findByCourtIdByProvenanceAndUpdate(artefact);
+
         artefact.setPayload(blobUrl);
         artefact.setSearch(payloadExtractor.extractSearchTerms(payload));
         return artefactRepository.save(artefact);
@@ -80,6 +89,9 @@ public class PublicationService {
             artefact.getProvenance(),
             file
         );
+
+        this.findByCourtIdByProvenanceAndUpdate(artefact);
+
         artefact.setPayload(blobUrl);
         return artefactRepository.save(artefact);
     }
@@ -257,5 +269,14 @@ public class PublicationService {
     public void checkNewlyActiveArtefacts() {
         List<Artefact> newArtefactsToday = artefactRepository.findArtefactsByDisplayFrom(LocalDate.now());
         newArtefactsToday.forEach(artefact -> log.info(sendArtefactForSubscription(artefact)));
+    }
+
+    public void findByCourtIdByProvenanceAndUpdate(Artefact artefact) {
+        Optional<Court> court = courtRepository.findByCourtIdByProvenance(artefact.getProvenance(), artefact.getCourtId());
+        if (!court.isEmpty()) {
+            artefact.setCourtId(court.get().getCourtId().toString());
+        } else {
+            throw new CourtNotFoundException(String.format("NoMatch: %s", artefact.getCourtId()));
+        }
     }
 }

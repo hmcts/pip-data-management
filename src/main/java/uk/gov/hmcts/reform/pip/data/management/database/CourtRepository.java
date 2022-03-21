@@ -24,4 +24,12 @@ public interface CourtRepository extends JpaRepository<Court, Integer> {
     List<Court> findByRegionAndJurisdictionOrderByName(@Param("regions") String regions,
                                                        @Param("jurisdictions") String jurisdictions);
 
+    @Query(value = "select court.* from court_reference "
+        + "inner join court on court_reference.court_id = court.court_id "
+        + "WHERE (court_reference.provenance = :provenance) "
+        + "AND (court_reference.provenance_id = :provenance_id) ",
+        nativeQuery = true)
+    Optional<Court> findByCourtIdByProvenance(@Param("provenance") String provenance,
+                                    @Param("provenance_id") String provenance_id);
+
 }

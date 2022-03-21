@@ -13,8 +13,12 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.AzureBlobService;
+import uk.gov.hmcts.reform.pip.data.management.database.CourtRepository;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ArtefactNotFoundException;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CourtNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.NotFoundException;
+import uk.gov.hmcts.reform.pip.data.management.models.court.Court;
+import uk.gov.hmcts.reform.pip.data.management.models.court.CourtCsv;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Language;
 import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
@@ -47,6 +51,9 @@ class PublicationServiceTest {
     ArtefactRepository artefactRepository;
 
     @Mock
+    CourtRepository courtRepository;
+
+    @Mock
     AzureBlobService azureBlobService;
 
     @Mock
@@ -61,6 +68,7 @@ class PublicationServiceTest {
     private static final UUID ARTEFACT_ID = UUID.randomUUID();
     private static final String SOURCE_ARTEFACT_ID = "1234";
     private static final String PROVENANCE = "provenance";
+    private static final String PROVENANCE_ID = "1234";
     private static final String PAYLOAD = "This is a payload";
     private static final String PAYLOAD_URL = "https://ThisIsATestPayload";
     private static final String TEST_KEY = "TestKey";
@@ -85,6 +93,8 @@ class PublicationServiceTest {
     private Artefact artefactWithNullDateTo;
     private Artefact artefactWithSameDateFromAndTo;
 
+    Court court;
+
     @BeforeAll
     public static void setupSearchValues() {
         SEARCH_VALUES.put(TEST_KEY, List.of(TEST_VALUE));
@@ -95,6 +105,7 @@ class PublicationServiceTest {
         artefact = Artefact.builder()
             .sourceArtefactId(SOURCE_ARTEFACT_ID)
             .provenance(PROVENANCE)
+            .courtId(PROVENANCE_ID)
             .build();
 
         artefactWithPayloadUrl = Artefact.builder()
@@ -170,14 +181,24 @@ class PublicationServiceTest {
             .displayTo(LocalDateTime.now())
             .build();
 
+        CourtCsv courtCsvFirstExample = new CourtCsv();
+        courtCsvFirstExample.setCourtName("Court Name First Example");
+        court = new Court(courtCsvFirstExample);
+        court.setCourtId(1234);
+
         lenient().when(artefactRepository.findBySourceArtefactIdAndProvenance(SOURCE_ARTEFACT_ID, PROVENANCE))
             .thenReturn(Optional.empty());
         lenient().when(artefactRepository.save(artefactWithPayloadUrl)).thenReturn(artefactWithIdAndPayloadUrl);
+        lenient().when(courtRepository.findByCourtIdByProvenance(PROVENANCE, PROVENANCE_ID))
+            .thenReturn(Optional.of(court));
     }
 
     @Test
     void testCreationOfNewArtefact() {
+        artefactWithPayloadUrl.setCourtId(PROVENANCE_ID);
         when(azureBlobService.createPayload(SOURCE_ARTEFACT_ID, PROVENANCE, PAYLOAD)).thenReturn(PAYLOAD_URL);
+        when(artefactRepository.findBySourceArtefactIdAndProvenance(SOURCE_ARTEFACT_ID, PROVENANCE))
+            .thenReturn(Optional.empty());
         when(artefactRepository.save(artefactWithPayloadUrl)).thenReturn(artefactWithIdAndPayloadUrl);
         when(payloadExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
 
@@ -192,6 +213,7 @@ class PublicationServiceTest {
         Artefact artefact = Artefact.builder()
             .sourceArtefactId(SOURCE_ARTEFACT_ID)
             .provenance(PROVENANCE)
+            .courtId(PROVENANCE_ID)
             .language(Language.ENGLISH)
             .build();
 
@@ -207,6 +229,7 @@ class PublicationServiceTest {
             .artefactId(ARTEFACT_ID)
             .sourceArtefactId(SOURCE_ARTEFACT_ID)
             .provenance(PROVENANCE)
+            .courtId(PROVENANCE_ID)
             .language(Language.ENGLISH)
             .payload(PAYLOAD_URL)
             .search(SEARCH_VALUES)
@@ -214,6 +237,8 @@ class PublicationServiceTest {
 
         when(artefactRepository.findBySourceArtefactIdAndProvenance(SOURCE_ARTEFACT_ID, PROVENANCE))
             .thenReturn(Optional.of(existingArtefact));
+        when(courtRepository.findByCourtIdByProvenance(PROVENANCE, PROVENANCE_ID))
+            .thenReturn(Optional.of(court));
         when(azureBlobService.createPayload(SOURCE_ARTEFACT_ID, PROVENANCE, PAYLOAD)).thenReturn(PAYLOAD_URL);
         when(artefactRepository.save(newArtefactWithId)).thenReturn(newArtefactWithId);
         when(payloadExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
@@ -226,8 +251,10 @@ class PublicationServiceTest {
     @Test
     void testCreationOfNewArtefactWithFile() {
         artefactWithPayloadUrl.setSearch(null);
+        artefactWithPayloadUrl.setCourtId(PROVENANCE_ID);
         when(azureBlobService.uploadFlatFile(SOURCE_ARTEFACT_ID, PROVENANCE, FILE)).thenReturn(PAYLOAD_URL);
-
+        when(courtRepository.findByCourtIdByProvenance(PROVENANCE, PROVENANCE_ID))
+            .thenReturn(Optional.of(court));
         Artefact returnedArtefact = publicationService.createPublication(artefact, FILE);
 
         assertEquals(artefactWithIdAndPayloadUrl, returnedArtefact, VALIDATION_ARTEFACT_NOT_MATCH);
@@ -276,6 +303,17 @@ class PublicationServiceTest {
             .thenReturn(String.valueOf(artefact));
         assertEquals(artefact.toString(), publicationService.getPayloadByArtefactId(ARTEFACT_ID, false),
                      VALIDATION_ARTEFACT_NOT_MATCH
+        );
+    }
+
+    @Test
+    void testArtefactGetProvenanceIdWhenDoesNotExist() {
+        when(courtRepository.findByCourtIdByProvenance(any(), any())).thenReturn(Optional.empty());
+        assertThrows(
+            CourtNotFoundException.class,
+            ()
+                -> publicationService.findByCourtIdByProvenanceAndUpdate(artefact),
+            "NoMatch:"
         );
     }
 
