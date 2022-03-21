@@ -20,7 +20,7 @@ withParameterizedPipeline(type, product, component, 'sbox', 'sbox') {
 static String swaggerValidate(){
   def swaggerPath = "infrastructure/resources/swagger/api-swagger.json"
   def branchName = env.BRANCH_NAME
-  def script = "url=\"https://raw.githubusercontent.com/hmcts/${product}-${component}/${branchName}/${swaggerPath}\";" +
+  def script = "url=\"https://raw.githubusercontent.com/hmcts/" + product + "-" + component + "/" + branchName + "/" + swaggerPath + "\";" +
       "CHECK=$(curl -X \"GET\" \"https://validator.swagger.io/validator/debug?url=\${url}\" --silent);" +
       "if [[ \$CHECK != \"{}\" ]]; then" +
       "  echo -e \"\\nSorry this is an invalid Swagger:\\n\$CHECK\\n\";" +
