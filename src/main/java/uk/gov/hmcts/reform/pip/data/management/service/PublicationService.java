@@ -164,6 +164,14 @@ public class PublicationService {
         return artefacts;
     }
 
+    public Artefact getMetadataByArtefactIdAdmin(UUID artefactId, boolean verification, boolean isAdmin) {
+        return isAdmin ?
+            artefactRepository.findArtefactByArtefactId(artefactId.toString())
+                .orElseThrow(() -> new NotFoundException(String.format("No artefact found with the ID: %s",
+                                                                       artefactId))) :
+            getMetadataByArtefactId(artefactId, verification);
+    }
+
     /**
      * Takes in artefact id and returns the metadata for the artefact.
      *

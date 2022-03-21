@@ -27,10 +27,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
@@ -108,6 +110,7 @@ class PublicationControllerTest {
             .listType(LIST_TYPE)
             .courtId(COURT_ID)
             .contentDate(CONTENT_DATE)
+            .search(new ConcurrentHashMap<>())
             .build();
     }
 
@@ -129,7 +132,7 @@ class PublicationControllerTest {
 
     @Test
     void testGetMetadataEndpointReturnsOk() {
-        assertEquals(HttpStatus.OK, publicationController.getArtefactMetadata(ARTEFACT_ID, true)
+        assertEquals(HttpStatus.OK, publicationController.getArtefactMetadata(ARTEFACT_ID, true, false)
             .getStatusCode(), STATUS_CODE_MATCH);
     }
 
@@ -169,8 +172,8 @@ class PublicationControllerTest {
 
     @Test
     void checkGetMetadataContentReturns() {
-        when(publicationService.getMetadataByArtefactId(any(), any())).thenReturn(artefactWithId);
-        ResponseEntity<Artefact> unmappedBlob = publicationController.getArtefactMetadata(UUID.randomUUID(), true);
+        when(publicationService.getMetadataByArtefactIdAdmin(any(), anyBoolean(), anyBoolean())).thenReturn(artefactWithId);
+        ResponseEntity<Artefact> unmappedBlob = publicationController.getArtefactMetadata(UUID.randomUUID(), true, false);
         assertEquals(HttpStatus.OK, unmappedBlob.getStatusCode(),
                      STATUS_CODE_MATCH
         );

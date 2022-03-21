@@ -351,6 +351,31 @@ class PublicationServiceTest {
     }
 
     @Test
+    void testGetArtefactMetadataForAdmin() {
+        when(artefactRepository.findArtefactByArtefactId(ARTEFACT_ID.toString())).thenReturn(Optional.of(artefactWithId));
+        assertEquals(artefactWithId, publicationService.getMetadataByArtefactIdAdmin(ARTEFACT_ID, true, true),
+                     VALIDATION_ARTEFACT_NOT_MATCH);
+    }
+
+    @Test
+    void testGetArtefactMetadataForAdminThrows() {
+        when(artefactRepository.findArtefactByArtefactId(ARTEFACT_ID.toString())).thenReturn(Optional.empty());
+        NotFoundException ex = assertThrows(NotFoundException.class, () ->
+            publicationService.getMetadataByArtefactIdAdmin(ARTEFACT_ID, true, true),
+                                            "Not found exception should be thrown"
+        );
+        assertEquals("No artefact found with the ID: " + ARTEFACT_ID, ex.getMessage(),
+                     MESSAGES_MATCH);
+    }
+
+    @Test
+    void testGetArtefactMetadataCallsNonAdmin() {
+        when(artefactRepository.findByArtefactIdVerified(any(), any())).thenReturn(Optional.of(artefactWithId));
+        assertEquals(artefactWithId, publicationService.getMetadataByArtefactIdAdmin(ARTEFACT_ID, true, false),
+                     VALIDATION_ARTEFACT_NOT_MATCH);
+    }
+
+    @Test
     void testFindByCourtIdWhenVerified() {
         Artefact artefact = Artefact.builder()
             .sourceArtefactId(SOURCE_ARTEFACT_ID)

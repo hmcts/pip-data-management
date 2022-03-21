@@ -247,8 +247,9 @@ public class PublicationController {
     @ApiOperation("Gets the metadata for the blob, given a specific artefact id")
     @GetMapping("/{artefactId}")
     public ResponseEntity<Artefact> getArtefactMetadata(
-        @PathVariable UUID artefactId, @RequestHeader Boolean verification) {
-        return ResponseEntity.ok(publicationService.getMetadataByArtefactId(artefactId, verification));
+        @PathVariable UUID artefactId, @RequestHeader Boolean verification, @RequestHeader(value = "x-admin",
+        required = false, defaultValue = "false") Boolean isAdmin) {
+        return ResponseEntity.ok(publicationService.getMetadataByArtefactIdAdmin(artefactId, verification, isAdmin));
     }
 
     @ApiResponses({
