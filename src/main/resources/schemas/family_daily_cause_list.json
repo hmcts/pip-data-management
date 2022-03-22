@@ -172,7 +172,7 @@
       "$id": "#root/venue",
       "title": "venue",
       "type": "object",
-      "required": ["venueName"],
+      "required": ["venueName", "venueAddress", "venueContact"],
       "properties": {
         "venueName": {
           "$id": "#root/venue/venueName",
@@ -214,7 +214,7 @@
             "title": "Court House",
             "description": "The court house that owns the court rooms",
             "type": "object",
-            "required": ["courtHouseName", "courtHouseDescription", "courtRoom"],
+            "required": ["courtHouseName", "courtHouseContact", "courtHouseAddress", "courtRoom"],
             "properties": {
               "courtHouseName": {
                 "$id": "#root/courtLists/courtList/courtHouse/courtHouseName",
@@ -227,16 +227,19 @@
                 ],
                 "pattern": "^.*$"
               },
-              "courtHouseDescription": {
-                "$id": "#root/courtLists/courtList/courtHouse/courtHouseDescription",
-                "description": "Description of the court",
-                "title": "Court House Description",
-                "type": "string",
-                "default": "",
-                "examples": [
-                  "CROWN COURT"
-                ],
-                "pattern": "^.*$"
+              "courtHouseContact": {
+                "$id": "#root/courtLists/courtList/courtHouse/courtHouseContact",
+                "description": "The contact for the court house",
+                "title": "Court House Contact",
+                "$ref": "#/definitions/venueContact",
+                "required": ["venueTelephone", "venueEmail"]
+              },
+              "courtHouseAddress": {
+                "$id": "#root/courtLists/courtList/courtHouse/courtHouseAddress",
+                "description": "The address for the court house",
+                "title": "Court House Address",
+                "$ref": "#/definitions/address",
+                "required": ["line", "town", "county", "postCode"]
               },
               "courtRoom": {
                 "$id": "#root/courtLists/courtRoom",
@@ -264,40 +267,8 @@
                         "title": "Session",
                         "description": "Session associated with the court in the publication",
                         "type": "object",
-                        "required": ["sessionType", "sessionChannel", "sessionStartTime", "judiciary", "sittings"],
+                        "required": ["sittings"],
                         "properties": {
-                          "sessionType": {
-                            "$id": "#root/courtLists/courtRoom/session/sessionType",
-                            "description": "Type of session (cases that can be heard in the session are associated to a sessiontype)",
-                            "title": "Session Type",
-                            "type": "string",
-                            "default": ""
-                          },
-                          "sessionChannel": {
-                            "$id": "#root/courtLists/courtRoom/session/sessionChannel",
-                            "type": "array",
-                            "items": {
-                              "description": "Requested to ensure we host the type of hearing channel in the session",
-                              "title": "Session Channel",
-                              "type": "string",
-                              "examples": [
-                                "VIDEO HEARING"
-                              ],
-                              "default": "",
-                              "pattern": "^.*$"
-                            }
-                          },
-                          "sessionStartTime": {
-                            "$id": "#root/courtLists/courtRoom/session/sessionStartTime",
-                            "description": "Session start time rfc3999",
-                            "title": "Session start time",
-                            "type": "string",
-                            "examples": [
-                              "2021-09-09t16:41:07.394"
-                            ],
-                            "default": "",
-                            "pattern": "^.*$"
-                          },
                           "judiciary": {
                             "$id": "#root/courtLists/courtRoom/session/judiciary",
                             "type": "array",
@@ -317,8 +288,24 @@
                             "items":{
                               "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items",
                               "type": "object",
-                              "required": ["hearing"],
+                              "required": ["sittingStart", "sittingEnd", "hearing"],
                               "properties": {
+                                "sittingStart": {
+                                  "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/sittingStart",
+                                  "description": "Sitting Start Time",
+                                  "title": "Sitting Start",
+                                  "type": "string",
+                                  "default": "",
+                                  "examples": []
+                                },
+                                "sittingEnd": {
+                                  "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/sittingEnd",
+                                  "description": "Sitting End Time",
+                                  "title": "Sitting End",
+                                  "type": "string",
+                                  "default": "",
+                                  "examples": []
+                                },
                                 "hearing": {
                                   "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing",
                                   "type": "array",
@@ -326,7 +313,7 @@
                                     "type": "object",
                                     "description": "Hearing details of the case and associated details for the sitting",
                                     "title": "Hearing",
-                                    "required": ["hearingType", "case", "party"],
+                                    "required": ["hearingType", "case"],
                                     "properties": {
                                       "hearingType": {
                                         "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/hearingType",
@@ -346,7 +333,7 @@
                                           "type": "object",
                                           "title": "Case",
                                           "description": "Case Details",
-                                          "required": ["caseName", "caseJurisdictionET", "caseNumber", "priority"],
+                                          "required": ["caseName", "caseNumber"],
                                           "properties": {
                                             "caseName": {
                                               "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/caseName",
@@ -378,14 +365,14 @@
                                               ],
                                               "pattern": "^.*$"
                                             },
-                                            "priority": {
-                                              "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/priority",
-                                              "title": "Case Priority",
-                                              "description": "The priority for the case. Current values in S&L are normal, high, critical and pending",
+                                            "caseSequenceIndicator": {
+                                              "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/caseSequenceIndicator",
+                                              "title": "Case Sequence Indicator",
+                                              "description": "The case sequence indicator",
                                               "type": "string",
                                               "default": "",
                                               "examples": [
-                                                "normal"
+                                                "[2 of 3]"
                                               ],
                                               "pattern": "^.*$"
                                             }
@@ -402,7 +389,7 @@
                                           "title": "Party",
                                           "description": "A party",
                                           "type": "object",
-                                          "required": ["partyRole", "attendanceMethod", "attendanceTime", "individualDetails"],
+                                          "required": ["partyRole", "individualDetails"],
                                           "properties": {
                                             "partyRole": {
                                               "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items/partyRole",
@@ -415,34 +402,12 @@
                                               "default": "",
                                               "pattern": "^.*$"
                                             },
-                                            "attendanceMethod": {
-                                              "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items/attendanceMethod",
-                                              "description": "The method of attendance for the party",
-                                              "title": "Attendance Method",
-                                              "type": "string",
-                                              "examples": [
-                                                ""
-                                              ],
-                                              "default": "",
-                                              "pattern": "^.*$"
-                                            },
-                                            "attendanceTime": {
-                                              "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items/attendanceTime",
-                                              "description": "The attendance time for the party",
-                                              "title": "Attendance time",
-                                              "type": "string",
-                                              "examples": [
-                                                "2016-09-13T23:30:52.123Z"
-                                              ],
-                                              "default": "",
-                                              "pattern": "^.*$"
-                                            },
                                             "individualDetails": {
                                               "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items/individualDetails",
                                               "title": "Individual Details",
                                               "description": "Individual Details",
                                               "type": "object",
-                                              "required": ["title", "individualForenames", "individualSurname"],
+                                              "required": ["individualSurname"],
                                               "properties": {
                                                 "title": {
                                                   "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items/individualDetails/title",

@@ -1,85 +1,116 @@
 {
-  "@schemaLocation": "http://json-schema.org/draft-07/schema#",
+  "document": {
+    "publicationDate": "20-02-2020T20:00.001Z",
+    "documentName": "This is a document name",
+    "version": "This is a document version"
+  },
   "venue": {
-    "venueName": "Preston Court",
-    "venueContact": {
-      "venueTelephone": "+4412341234",
-      "venueEmail": "a@b.com"
-    },
+    "venueName": "This is the venue name",
     "venueAddress": {
       "line": [
-        "Line 1",
-        "Line 2"
+        "Address Line 1"
       ],
-      "town": "Cambridge",
-      "county": "Cambridgeshire",
+      "town": "Venue Town",
+      "county": "Venue County",
       "postCode": "AA1 AA1"
+
+
+    },
+    "venueContact": {
+      "venueTelephone": "01234 123 123",
+      "venueEmail": "a@b.com"
     }
-  },
-  "document": {
-    "publicationDate": "2016-09-13T23:30:52.123Z",
-    "version": "1.0",
-    "documentName": "This is a document name"
   },
   "courtLists": [
     {
       "courtHouse": {
-        "courtHouseName": "Preston Court",
-        "courtHouseDescription": "Civil and Family Court",
+        "courtHouseName": "This is the site name",
+        "courtHouseContact": {
+          "venueTelephone": "01234 123 123",
+          "venueEmail": "a@b.com"
+        },
+        "courtHouseAddress": {
+          "line": [
+            "Address Line 1"
+          ],
+          "town": "Venue Town",
+          "county": "Venue County",
+          "postCode": "AA1 AA1"
+        },
         "courtRoom": [
           {
-            "courtRoomName": "This is a court room name",
+            "courtRoomName": "This is the court room name",
             "session": [
               {
-                "sessionType": "This is a session type",
-                "sessionChannel": [
-                  "Video"
-                ],
-                "sessionStartTime": "2021-09-09t16:41:07.394",
-                "judiciary": [
-                  {
-                    "johTitle": "Judge",
-                    "johNameSurname": "Judge Name",
-                    "role": "JUDGE",
-                    "isPresiding": true
-                  },
-                  {
-                    "johTitle": "Magistrate",
-                    "johNameSurname": "Magistrate Name",
-                    "role": "MAGISTRATE",
-                    "isPresiding": false
-                  }
-                ],
                 "sittings": [
                   {
+                    "sittingStart": "20-02-2020T20:00.001Z",
+                    "sittingEnd": "20-02-2020T20:00.001Z",
                     "hearing": [
                       {
-                        "hearingType": "Hearing Type",
+                        "hearingType": "Directions",
                         "case": [
                           {
                             "caseName": "This is a case name",
-                            "caseJurisdictionET": "Family",
                             "caseNumber": "12341234",
-                            "priority": "NORMAL"
+                            "caseJurisdictionET": "Family Law",
+                            "caseSequenceIndicator": "[2 of 3]"
                           }
                         ],
                         "party": [
                           {
-                            "partyRole": "RESPONDENT",
-                            "attendanceMethod": "Video",
-                            "attendanceTime": "2016-09-13T23:30:52.123Z",
+                            "partyRole": "APPLICANT_PETITIONER",
                             "individualDetails": {
-                              "title": "Mr",
-                              "individualForenames": "Test",
-                              "individualSurname": "Name"
+                              "individualSurname": "Surname"
+                            }
+                          },
+                          {
+                            "partyRole": "RESPONDANT",
+                            "individualDetails": {
+                              "individualSurname": "Surname"
+                            }
+                          },
+                          {
+                            "partyRole": "APPLICANT_PETITIONER_REPRESENTATIVE",
+                            "friendlyRoleName": "Legal Advisor",
+                            "individualDetails": {
+                              "individualForenames": "Individual Forenames",
+                              "individualMiddleName": "Individual Middlename",
+                              "individualSurname": "Individual Surname",
+                              "title": "Mr"
+                            }
+                          },
+                          {
+                            "partyRole": "RESPONDANT_REPRESENTATIVE",
+                            "friendlyRoleName": "Legal Advisor",
+                            "individualDetails": {
+                              "individualForenames": "Individual Forenames",
+                              "individualMiddleName": "Individual Middlename",
+                              "individualSurname": "Individual Surname",
+                              "title": "Mr"
                             }
                           }
                         ]
                       }
                     ],
                     "channel": [
-                      "This is an alternative channel"
+                      "Teams",
+                      "Attended"
                     ]
+                  }
+                ],
+                "judiciary": [
+                  {
+                    "johTitle": "Judge",
+                    "johNameSurname": "Test Name",
+                    "role": "JUDGE",
+                    "isPresiding": true
+                  },
+                  {
+                    "johTitle": "Magistrate",
+                    "johNameSurname": "Test Name",
+                    "role": "MAGISTRATE",
+                    "isPresiding": false
                   }
                 ]
               }

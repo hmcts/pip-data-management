@@ -321,6 +321,18 @@
                 ],
                 "pattern": "^.*$"
               },
+              "courtHouseContact": {
+                "$id": "#root/courtLists/courtList/courtHouse/courtHouseContact",
+                "description": "The contact for the court house",
+                "title": "Court House Contact",
+                "$ref": "#/definitions/venueContact"
+              },
+              "courtHouseAddress": {
+                "$id": "#root/courtLists/courtList/courtHouse/courtHouseAddress",
+                "description": "The address for the court house",
+                "title": "Court House Address",
+                "$ref": "#/definitions/address"
+              },
               "courtHouseDescription": {
                 "$id": "#root/courtLists/courtList/courtHouse/courtHouseDescription",
                 "description": "Description of the court",
@@ -605,6 +617,17 @@
                                               ],
                                               "pattern": "^.*$"
                                             },
+                                            "caseSequenceIndicator": {
+                                              "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/caseSequenceIndicator",
+                                              "title": "Case Sequence Indicator",
+                                              "description": "The case sequence indicator",
+                                              "type": "string",
+                                              "default": "",
+                                              "examples": [
+                                                "[2 of 3]"
+                                              ],
+                                              "pattern": "^.*$"
+                                            },
                                             "informant": {
                                               "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/informant",
                                               "description": "Object representing an informant",
@@ -760,6 +783,17 @@
                                               "type": "string",
                                               "examples": [
                                                 "ACCUSED", "PROSECUTOR"
+                                              ],
+                                              "default": "",
+                                              "pattern": "^.*$"
+                                            },
+                                            "friendlyRoleName": {
+                                              "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items/friendlyRoleName",
+                                              "description": "The descriptive version of the role. E.g a party role of APPLICANT_REPRESENTATIVE, might  have a more descriptive role name (e.g Legal Advisor) that you would want to display",
+                                              "title": "Friendly Role Name",
+                                              "type": "string",
+                                              "examples": [
+                                                "Legal Advisor"
                                               ],
                                               "default": "",
                                               "pattern": "^.*$"

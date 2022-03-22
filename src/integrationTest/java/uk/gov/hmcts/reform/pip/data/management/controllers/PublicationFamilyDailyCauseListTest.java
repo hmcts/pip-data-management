@@ -131,8 +131,8 @@ class PublicationFamilyDailyCauseListTest {
             );
 
             assertTrue(
-                exceptionResponse.getMessage().contains("attendanceMethod"),
-                "Attendance Method is not displayed in the exception response"
+                exceptionResponse.getMessage().contains("caseNumber"),
+                "Case Number is not displayed in the exception response"
             );
         }
     }
