@@ -27,9 +27,9 @@ public interface CourtRepository extends JpaRepository<Court, Integer> {
     @Query(value = "select court.* from court_reference "
         + "inner join court on court_reference.court_id = court.court_id "
         + "WHERE (court_reference.provenance = :provenance) "
-        + "AND (court_reference.provenance_id = :provenance_id) ",
+        + "AND (court_reference.provenance_id = :provenanceId) ",
         nativeQuery = true)
     Optional<Court> findByCourtIdByProvenance(@Param("provenance") String provenance,
-                                    @Param("provenance_id") String provenance_id);
+                                    @Param("provenanceId") String provenanceId);
 
 }
