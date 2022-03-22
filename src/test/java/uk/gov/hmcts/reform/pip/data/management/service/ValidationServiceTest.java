@@ -10,8 +10,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pip.data.management.Application;
 import uk.gov.hmcts.reform.pip.data.management.config.AzureBlobConfigurationTest;
-import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
-import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.EmptyRequiredHeaderException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.FlatFileException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.HeaderValidationException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.PayloadValidationException;
@@ -52,11 +50,9 @@ class ValidationServiceTest {
     private static final String COURT_ID = "123";
     private static final ListType LIST_TYPE = ListType.CIVIL_DAILY_CAUSE_LIST;
     private static final LocalDateTime CONTENT_DATE = LocalDateTime.now();
-    private static final String EMPTY_FIELD = "";
     private static final String VALIDATION_EXPECTED_MESSAGE =
         "The expected exception does not contain the correct message";
     private static final String NOT_NULL_MESSAGE = "The returned value is null, but was not expected to be.";
-    private static final String REQUIRED_HEADER_EXCEPTION_MESSAGE = " is mandatory however an empty value is provided";
     private static final String UNKNOWN_EXCEPTION = "Unknown exception when opening the paylaod file";
 
     private HeaderGroup headerGroup;
@@ -65,53 +61,6 @@ class ValidationServiceTest {
     void setup() {
         headerGroup = new HeaderGroup(PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE, SENSITIVITY, LANGUAGE,
                                       DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, COURT_ID, CONTENT_DATE);
-    }
-
-    @Test
-    void testCreationOfPublicationEmptySourceArtefactId() {
-        headerGroup.setSourceArtefactId(EMPTY_FIELD);
-        HeaderValidationException emptyRequestHeaderException =
-            assertThrows(HeaderValidationException.class, () -> {
-                validationService.validateHeaders(headerGroup);
-            });
-
-        assertEquals(
-            "x-source-artefact-id" + REQUIRED_HEADER_EXCEPTION_MESSAGE,
-            emptyRequestHeaderException.getMessage(),
-            VALIDATION_EXPECTED_MESSAGE
-        );
-    }
-
-    @Test
-    void testCreationOfPublicationEmptyProvenance() {
-        headerGroup.setProvenance(EMPTY_FIELD);
-        HeaderValidationException emptyRequestHeaderException =
-            assertThrows(HeaderValidationException.class, () -> {
-                validationService.validateHeaders(headerGroup);
-            });
-
-        assertEquals(
-            "x-provenance" + REQUIRED_HEADER_EXCEPTION_MESSAGE,
-            emptyRequestHeaderException.getMessage(),
-            VALIDATION_EXPECTED_MESSAGE
-        );
-    }
-
-    @Test
-    void testCreationOfPublicationEmptySourceArtefactIdAndEmptyProvenanceOnlyFirstIsShown() {
-        headerGroup.setProvenance(EMPTY_FIELD);
-        headerGroup.setSourceArtefactId(EMPTY_FIELD);
-
-        HeaderValidationException emptyRequestHeaderException =
-            assertThrows(HeaderValidationException.class, () -> {
-                validationService.validateHeaders(headerGroup);
-            });
-
-        assertEquals(
-            "x-source-artefact-id" + REQUIRED_HEADER_EXCEPTION_MESSAGE,
-            emptyRequestHeaderException.getMessage(),
-            VALIDATION_EXPECTED_MESSAGE
-        );
     }
 
     @Test
@@ -193,62 +142,17 @@ class ValidationServiceTest {
     }
 
     @Test
-    void testNullContentDateForListThrows() {
-        headerGroup.setContentDate(null);
+    void testDefaultSensitivity() {
+        headerGroup.setSensitivity(null);
 
-        EmptyRequiredHeaderException ex = assertThrows(EmptyRequiredHeaderException.class, () -> {
-            validationService.validateHeaders(headerGroup);
-        });
-
-        assertEquals(PublicationConfiguration.CONTENT_DATE + REQUIRED_HEADER_EXCEPTION_MESSAGE,
-                     ex.getMessage(), VALIDATION_EXPECTED_MESSAGE);
+        assertEquals(SENSITIVITY, validationService.validateHeaders(headerGroup).getSensitivity(), "Sensitivity should match");
     }
 
     @Test
-    void testNullListTypeForListThrows() {
-        headerGroup.setListType(null);
+    void testDefaultSensitivityIsNotOverwritten() {
+        headerGroup.setSensitivity(Sensitivity.PRIVATE);
 
-        EmptyRequiredHeaderException ex = assertThrows(EmptyRequiredHeaderException.class, () -> {
-            validationService.validateHeaders(headerGroup);
-        });
-
-        assertEquals(PublicationConfiguration.LIST_TYPE + REQUIRED_HEADER_EXCEPTION_MESSAGE,
-                     ex.getMessage(), VALIDATION_EXPECTED_MESSAGE);
-    }
-
-    @Test
-    void testNullContentDateForJudgementOutcomeThrows() {
-        headerGroup.setType(ArtefactType.JUDGEMENTS_AND_OUTCOMES);
-        headerGroup.setContentDate(null);
-
-        EmptyRequiredHeaderException ex = assertThrows(EmptyRequiredHeaderException.class, () -> {
-            validationService.validateHeaders(headerGroup);
-        });
-
-        assertEquals(PublicationConfiguration.CONTENT_DATE + REQUIRED_HEADER_EXCEPTION_MESSAGE,
-                     ex.getMessage(), VALIDATION_EXPECTED_MESSAGE);
-    }
-
-    @Test
-    void testNullListTypeForJudgementOutcomeThrows() {
-        headerGroup.setType(ArtefactType.JUDGEMENTS_AND_OUTCOMES);
-        headerGroup.setListType(null);
-
-        EmptyRequiredHeaderException ex = assertThrows(EmptyRequiredHeaderException.class, () -> {
-            validationService.validateHeaders(headerGroup);
-        });
-
-        assertEquals(PublicationConfiguration.LIST_TYPE + REQUIRED_HEADER_EXCEPTION_MESSAGE,
-                     ex.getMessage(), VALIDATION_EXPECTED_MESSAGE);
-    }
-
-    @Test
-    void testListTypeAndContentDateNotNeededForGeneralPublication() {
-        headerGroup.setType(ArtefactType.GENERAL_PUBLICATION);
-        headerGroup.setListType(null);
-        headerGroup.setContentDate(null);
-
-        assertEquals(headerGroup, validationService.validateHeaders(headerGroup), "Header groups should match");
+        assertEquals(Sensitivity.PRIVATE, validationService.validateHeaders(headerGroup).getSensitivity(), "Sensitivity should match");
     }
 
     @Test
@@ -257,6 +161,13 @@ class ValidationServiceTest {
         headerGroup.setCourtId("1");
 
         assertEquals("0", validationService.validateHeaders(headerGroup).getCourtId(), "Court Id should match");
+    }
+
+    @Test
+    void testNonSjpDoesNotOverwriteCourt() {
+        headerGroup.setCourtId("1");
+
+        assertEquals("1", validationService.validateHeaders(headerGroup).getCourtId(), "Court Id should match");
     }
 
     @Test
