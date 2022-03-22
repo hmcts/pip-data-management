@@ -24,20 +24,19 @@ withPipeline(type, product, component) {
 
    before('test') {
     sh "echo 'Validate Swaggr'"
-    sh swaggerValidate()
+    sh swaggerValidate(branchName)
   }
 }
 
-
-static String swaggerValidate(){
+static String swaggerValidate(String branchName){
+  def repoName = "pip-data-management"
   def swaggerPath = "infrastructure/resources/swagger/api-swagger.json"
-  def branchName = env.BRANCH_NAME
-  def script = "url='https://raw.githubusercontent.com/hmcts/" + product + "-" + component + "/" + branchName + "/" + swaggerPath + "';" +
-  "CHECK=$(curl -X \"GET\" \"https://validator.swagger.io/validator/debug?url=\${url}\" --silent);" +
-  "if [[ \$CHECK != \"{}\" ]]; then" +
-  "  echo -e \"\\nSorry this is an invalid Swagger:\\n\$CHECK\\n\";" +
-  "  exit 1;" +
-  "fi;"
+  def script = 'url="https://raw.githubusercontent.com/hmcts/' + repoName + '/' + branchName + '/' + swaggerPath + '";' + 
+  'CHECK=$(curl -X "GET" "https://validator.swagger.io/validator/debug?url=\${url}" --silent);' +
+  'if [[ "\$CHECK" != "{}" ]]; then' +
+  '  echo -e "\\nSorry this is an invalid Swagger:\\n\$CHECK\\n";' +
+  '  exit 1;' +
+  'fi;'
 
   return script;
 }
