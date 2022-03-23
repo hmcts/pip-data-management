@@ -13,7 +13,6 @@ import uk.gov.hmcts.reform.pip.data.management.config.ValidationConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.DateValidationException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.EmptyRequiredHeaderException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.FlatFileException;
-import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.HeaderValidationException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.PayloadValidationException;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.HeaderGroup;
@@ -74,6 +73,7 @@ public class ValidationService {
      *      are created, ensure the logic affects the headers map within this class.
      */
     public HeaderGroup validateHeaders(HeaderGroup headers) {
+        handleStringValidation(headers);
         handleDateValidation(headers);
         handleSjpCourt(headers);
         handleDefaultSensitivity(headers);
@@ -82,19 +82,29 @@ public class ValidationService {
     }
 
     /**
-     * Container method for all date from/to logic. LIST and JUDGEMENTS_AND_OUTCOMES both require both to and from dates,
+     * By default, spring does not validate empty strings using the required flags in the @RequestHeader. Therefore
+     * this check is required to validate that they are not empty
+     * @param headers The headers to validate.
+     */
+    private void handleStringValidation(HeaderGroup headers) {
+        validateRequiredHeader(PublicationConfiguration.PROVENANCE_HEADER, headers.getProvenance());
+        validateRequiredHeader(PublicationConfiguration.COURT_ID, headers.getCourtId());
+    }
+
+    /**
+     * Container class for all date from/to logic. LIST and JUDGEMENTS_AND_OUTCOMES both require both to and from dates,
      * whereas GENERAL_PUBLICATION doesn't require any, but produces a default from date if empty.
      *
-     * @param headers - The header group to update.
+     * @param headers The group of headers to validate
      */
     private void handleDateValidation(HeaderGroup headers) {
         LocalDateTime displayFrom = headers.getDisplayFrom();
         LocalDateTime displayTo = headers.getDisplayTo();
-        if (!headers.getType().equals(ArtefactType.GENERAL_PUBLICATION)) {
+        if (headers.getType().equals(ArtefactType.GENERAL_PUBLICATION)) {
+            headers.setDisplayFrom(checkAndReplaceDateWithDefault(displayFrom));
+        } else {
             validateRequiredDates(PublicationConfiguration.DISPLAY_FROM_HEADER, displayFrom, headers.getType());
             validateRequiredDates(PublicationConfiguration.DISPLAY_TO_HEADER, displayTo, headers.getType());
-        } else if (headers.getDisplayFrom() == null) {
-            headers.setDisplayFrom(LocalDateTime.now());
         }
     }
 
@@ -109,7 +119,7 @@ public class ValidationService {
     }
 
     /**
-     * Sets the default sensitivity to PUBLIC, if no sensitivity has been provided
+     * Sets the default sensitivity to PUBLIC, if no sensitivity has been provided.
      * @param headers headers to check and update.
      */
     private void handleDefaultSensitivity(HeaderGroup headers) {
@@ -178,5 +188,34 @@ public class ValidationService {
         } catch (IOException exception) {
             throw new PayloadValidationException("Error while parsing JSON Payload");
         }
+    }
+
+    /**
+     * Empty check for headers.
+     *
+     * @param headerName - for error msg.
+     * @param header     - checked var.
+     */
+    private void validateRequiredHeader(String headerName, Object header) {
+        if (isNullOrEmpty(header)) {
+            throw new EmptyRequiredHeaderException(String.format(
+                "%s is mandatory however an empty value is provided",
+                headerName
+            ));
+        }
+    }
+
+    /**
+     * Null check class for creating default date objects if null.
+     *
+     * @param date  LocalDateTime.
+     * @return LocalDateTime representing either current date/time or an existing date.
+     */
+    private LocalDateTime checkAndReplaceDateWithDefault(LocalDateTime date) {
+        return Objects.requireNonNullElseGet(date, LocalDateTime::now);
+    }
+
+    private static boolean isNullOrEmpty(Object header) {
+        return header == null || header.toString().isEmpty();
     }
 }

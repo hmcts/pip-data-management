@@ -95,7 +95,8 @@ public class PublicationController {
     @Valid
     public ResponseEntity<Artefact> uploadPublication(
         @RequestHeader(PublicationConfiguration.PROVENANCE_HEADER) String provenance,
-        @RequestHeader(value = PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, required = false) String sourceArtefactId,
+        @RequestHeader(value = PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, required = false)
+            String sourceArtefactId,
         @RequestHeader(PublicationConfiguration.TYPE_HEADER) ArtefactType type,
         @RequestHeader(value = PublicationConfiguration.SENSITIVITY_HEADER, required = false) Sensitivity sensitivity,
         @RequestHeader(PublicationConfiguration.LANGUAGE_HEADER) Language language,
@@ -162,7 +163,8 @@ public class PublicationController {
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Artefact> uploadPublication(
         @RequestHeader(PublicationConfiguration.PROVENANCE_HEADER) String provenance,
-        @RequestHeader(value = PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, required = false) String sourceArtefactId,
+        @RequestHeader(value = PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, required = false)
+            String sourceArtefactId,
         @RequestHeader(PublicationConfiguration.TYPE_HEADER) ArtefactType type,
         @RequestHeader(value = PublicationConfiguration.SENSITIVITY_HEADER, required = false) Sensitivity sensitivity,
         @RequestHeader(PublicationConfiguration.LANGUAGE_HEADER) Language language,

@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.pip.data.management.controllers;
+package uk.gov.hmcts.reform.pip.data.management.controllers.lists;
 
 import com.azure.storage.blob.BlobClient;
 import com.azure.storage.blob.BlobContainerClient;
@@ -23,6 +23,7 @@ import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.ExceptionResponse;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactType;
+import uk.gov.hmcts.reform.pip.data.management.models.publication.Language;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ListType;
 
 import java.io.InputStream;
@@ -84,6 +85,7 @@ class PublicationSjpPressTest {
                 .header(PublicationConfiguration.COURT_ID, 1)
                 .header(PublicationConfiguration.LIST_TYPE, ListType.SJP_PRESS_LIST)
                 .header(PublicationConfiguration.CONTENT_DATE, LocalDateTime.now())
+                .header(PublicationConfiguration.LANGUAGE_HEADER, Language.ENGLISH)
                 .content(mockFile.readAllBytes())
                 .contentType(MediaType.APPLICATION_JSON);
 
@@ -116,6 +118,7 @@ class PublicationSjpPressTest {
                 .header(PublicationConfiguration.COURT_ID, 1)
                 .header(PublicationConfiguration.LIST_TYPE, ListType.SJP_PRESS_LIST)
                 .header(PublicationConfiguration.CONTENT_DATE, LocalDateTime.now())
+                .header(PublicationConfiguration.LANGUAGE_HEADER, Language.ENGLISH)
                 .content(mockFile.readAllBytes())
                 .contentType(MediaType.APPLICATION_JSON);
 

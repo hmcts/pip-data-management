@@ -64,6 +64,58 @@ class ValidationServiceTest {
     }
 
     @Test
+    void testCreationOfPublicationEmptyProvenance() {
+        headerGroup.setProvenance("");
+
+        HeaderValidationException dateHeaderValidationException =
+            assertThrows(HeaderValidationException.class, () -> {
+                validationService.validateHeaders(headerGroup);
+            });
+        assertEquals("x-provenance is mandatory however an empty value is provided",
+                     dateHeaderValidationException.getMessage(), VALIDATION_EXPECTED_MESSAGE
+        );
+    }
+
+    @Test
+    void testCreationOfPublicationNullProvenance() {
+        headerGroup.setProvenance(null);
+
+        HeaderValidationException dateHeaderValidationException =
+            assertThrows(HeaderValidationException.class, () -> {
+                validationService.validateHeaders(headerGroup);
+            });
+        assertEquals("x-provenance is mandatory however an empty value is provided",
+                     dateHeaderValidationException.getMessage(), VALIDATION_EXPECTED_MESSAGE
+        );
+    }
+
+    @Test
+    void testCreationOfPublicationEmptyCourtId() {
+        headerGroup.setCourtId("");
+
+        HeaderValidationException dateHeaderValidationException =
+            assertThrows(HeaderValidationException.class, () -> {
+                validationService.validateHeaders(headerGroup);
+            });
+        assertEquals("x-court-id is mandatory however an empty value is provided",
+                     dateHeaderValidationException.getMessage(), VALIDATION_EXPECTED_MESSAGE
+        );
+    }
+
+    @Test
+    void testCreationOfPublicationNullCourtId() {
+        headerGroup.setCourtId(null);
+
+        HeaderValidationException dateHeaderValidationException =
+            assertThrows(HeaderValidationException.class, () -> {
+                validationService.validateHeaders(headerGroup);
+            });
+        assertEquals("x-court-id is mandatory however an empty value is provided",
+                     dateHeaderValidationException.getMessage(), VALIDATION_EXPECTED_MESSAGE
+        );
+    }
+
+    @Test
     void testCreationOfPublicationJudgementTypeAndEmptyDateTo() {
         headerGroup.setType(ArtefactType.JUDGEMENTS_AND_OUTCOMES);
         headerGroup.setDisplayTo(null);
@@ -145,14 +197,16 @@ class ValidationServiceTest {
     void testDefaultSensitivity() {
         headerGroup.setSensitivity(null);
 
-        assertEquals(SENSITIVITY, validationService.validateHeaders(headerGroup).getSensitivity(), "Sensitivity should match");
+        assertEquals(SENSITIVITY, validationService.validateHeaders(headerGroup).getSensitivity(),
+                     "Sensitivity should match");
     }
 
     @Test
     void testDefaultSensitivityIsNotOverwritten() {
         headerGroup.setSensitivity(Sensitivity.PRIVATE);
 
-        assertEquals(Sensitivity.PRIVATE, validationService.validateHeaders(headerGroup).getSensitivity(), "Sensitivity should match");
+        assertEquals(Sensitivity.PRIVATE, validationService.validateHeaders(headerGroup).getSensitivity(),
+                     "Sensitivity should match");
     }
 
     @Test
