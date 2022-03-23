@@ -10,7 +10,6 @@ import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.AzureBlobService;
 import uk.gov.hmcts.reform.pip.data.management.database.CourtRepository;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ArtefactNotFoundException;
-import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CourtNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.NotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.models.court.Court;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
@@ -275,7 +274,7 @@ public class PublicationService {
         Optional<Court> court = courtRepository.findByCourtIdByProvenance(artefact.getProvenance(),
                                                                           artefact.getCourtId());
         if (court.isEmpty()) {
-            throw new CourtNotFoundException(String.format("NoMatch: %s", artefact.getCourtId()));
+            artefact.setCourtId(String.format("NoMatch%s", artefact.getCourtId()));
         } else {
             artefact.setCourtId(court.get().getCourtId().toString());
         }
