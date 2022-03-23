@@ -1784,8 +1784,11 @@ class PublicationTest {
 
         ExceptionResponse exceptionResponse =
             objectMapper.readValue(mvcResult.getResponse().getContentAsString(), ExceptionResponse.class);
-        assertTrue(exceptionResponse.getMessage().contains(VERIFICATION_HEADER),
-                   "Verification error not shown in error message");
+
+        assertTrue(
+            exceptionResponse.getMessage().contains(VERIFICATION_HEADER),
+            "Verification error not shown in error message"
+        );
     }
 
     @Test
