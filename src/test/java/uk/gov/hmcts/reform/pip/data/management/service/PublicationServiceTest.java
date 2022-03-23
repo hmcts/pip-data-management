@@ -364,7 +364,7 @@ class PublicationServiceTest {
     void testGetArtefactMetadataForAdmin() {
         when(artefactRepository.findArtefactByArtefactId(ARTEFACT_ID.toString()))
             .thenReturn(Optional.of(artefactWithId));
-        assertEquals(artefactWithId, publicationService.getMetadataByArtefactIdAdmin(ARTEFACT_ID, true, true),
+        assertEquals(artefactWithId, publicationService.getMetadataByArtefactId(ARTEFACT_ID),
                      VALIDATION_ARTEFACT_NOT_MATCH);
     }
 
@@ -372,7 +372,7 @@ class PublicationServiceTest {
     void testGetArtefactMetadataForAdminThrows() {
         when(artefactRepository.findArtefactByArtefactId(ARTEFACT_ID.toString())).thenReturn(Optional.empty());
         NotFoundException ex = assertThrows(NotFoundException.class, () ->
-            publicationService.getMetadataByArtefactIdAdmin(ARTEFACT_ID, true, true),
+            publicationService.getMetadataByArtefactId(ARTEFACT_ID),
                                             "Not found exception should be thrown"
         );
         assertEquals("No artefact found with the ID: " + ARTEFACT_ID, ex.getMessage(),
@@ -382,7 +382,7 @@ class PublicationServiceTest {
     @Test
     void testGetArtefactMetadataCallsNonAdmin() {
         when(artefactRepository.findByArtefactIdVerified(any(), any())).thenReturn(Optional.of(artefactWithId));
-        assertEquals(artefactWithId, publicationService.getMetadataByArtefactIdAdmin(ARTEFACT_ID, true, false),
+        assertEquals(artefactWithId, publicationService.getMetadataByArtefactId(ARTEFACT_ID, true),
                      VALIDATION_ARTEFACT_NOT_MATCH);
     }
 

@@ -172,10 +172,23 @@ class PublicationControllerTest {
 
     @Test
     void checkGetMetadataContentReturns() {
-        when(publicationService.getMetadataByArtefactIdAdmin(any(), anyBoolean(), anyBoolean()))
+        when(publicationService.getMetadataByArtefactId(any(), anyBoolean()))
             .thenReturn(artefactWithId);
         ResponseEntity<Artefact> unmappedBlob = publicationController
             .getArtefactMetadata(UUID.randomUUID(), true, false);
+
+        assertEquals(HttpStatus.OK, unmappedBlob.getStatusCode(),
+                     STATUS_CODE_MATCH
+        );
+        assertEquals(artefactWithId, unmappedBlob.getBody(), VALIDATION_EXPECTED_MESSAGE);
+    }
+
+    @Test
+    void checkGetMetadataContentReturnsAdmin() {
+        when(publicationService.getMetadataByArtefactId(any()))
+            .thenReturn(artefactWithId);
+        ResponseEntity<Artefact> unmappedBlob = publicationController
+            .getArtefactMetadata(UUID.randomUUID(), true, true);
 
         assertEquals(HttpStatus.OK, unmappedBlob.getStatusCode(),
                      STATUS_CODE_MATCH

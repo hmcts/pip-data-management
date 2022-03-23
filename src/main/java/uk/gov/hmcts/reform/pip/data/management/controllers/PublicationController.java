@@ -249,7 +249,8 @@ public class PublicationController {
     public ResponseEntity<Artefact> getArtefactMetadata(
         @PathVariable UUID artefactId, @RequestHeader Boolean verification, @RequestHeader(value = "x-admin",
         required = false, defaultValue = "false") Boolean isAdmin) {
-        return ResponseEntity.ok(publicationService.getMetadataByArtefactIdAdmin(artefactId, verification, isAdmin));
+        return ResponseEntity.ok(isAdmin ? publicationService.getMetadataByArtefactId(artefactId) :
+                                     publicationService.getMetadataByArtefactId(artefactId, verification));
     }
 
     @ApiResponses({
