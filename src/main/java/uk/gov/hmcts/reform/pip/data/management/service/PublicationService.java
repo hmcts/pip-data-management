@@ -270,7 +270,7 @@ public class PublicationService {
         newArtefactsToday.forEach(artefact -> log.info(sendArtefactForSubscription(artefact)));
     }
 
-    public void findByCourtIdByProvenanceAndUpdate(Artefact artefact) {
+    private void findByCourtIdByProvenanceAndUpdate(Artefact artefact) {
         Optional<Court> court = courtRepository.findByCourtIdByProvenance(artefact.getProvenance(),
                                                                           artefact.getCourtId());
         if (court.isEmpty()) {

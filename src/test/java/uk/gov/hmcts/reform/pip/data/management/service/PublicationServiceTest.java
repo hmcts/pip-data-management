@@ -43,7 +43,8 @@ import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.TestConstants.MESSAGES_MATCH;
 
 @ExtendWith(MockitoExtension.class)
-@SuppressWarnings("PMD")
+@SuppressWarnings({"PMD.ExcessiveImports",
+    "PMD.TooManyMethods", "PMD.TooManyFields"})
 class PublicationServiceTest {
 
     @Mock
@@ -83,8 +84,10 @@ class PublicationServiceTest {
     private static final String SUCCESSFUL_TRIGGER = "success - subscription sent";
     private static final String SUCCESS = "Success";
     private static final String DELETION_TRACK_LOG_MESSAGE = "Track: TestValue, Removed %s, at ";
+    private static final String ROWID_RETURNS_UUID = "Row ID must match returned UUID";
 
     private static final String NO_COURT_EXISTS_IN_REFERENCE_DATA = "NoMatch1234";
+
 
     private Artefact artefact;
     private Artefact artefactWithPayloadUrl;
@@ -209,7 +212,7 @@ class PublicationServiceTest {
 
         Artefact returnedArtefact = publicationService.createPublication(artefact, PAYLOAD);
 
-        assertEquals(artefactWithIdAndPayloadUrl, returnedArtefact, "Row ID must match returned UUID");
+        assertEquals(artefactWithIdAndPayloadUrl, returnedArtefact, ROWID_RETURNS_UUID);
     }
 
     @Test
@@ -225,7 +228,7 @@ class PublicationServiceTest {
 
         Artefact returnedArtefact = publicationService.createPublication(artefact, PAYLOAD);
 
-        assertEquals(artefactWithIdAndPayloadUrl, returnedArtefact, "Row ID must match returned UUID");
+        assertEquals(artefactWithIdAndPayloadUrl, returnedArtefact, ROWID_RETURNS_UUID);
     }
 
     @Test
@@ -266,7 +269,7 @@ class PublicationServiceTest {
 
         Artefact returnedArtefact = publicationService.createPublication(artefact, PAYLOAD);
 
-        assertEquals(newArtefactWithId, returnedArtefact, "Row ID must match returned UUID");
+        assertEquals(newArtefactWithId, returnedArtefact, ROWID_RETURNS_UUID);
     }
 
     @Test
@@ -307,7 +310,7 @@ class PublicationServiceTest {
 
         Artefact returnedArtefact = publicationService.createPublication(artefact, PAYLOAD);
 
-        assertEquals(newArtefactWithId, returnedArtefact, "Row ID must match returned UUID");
+        assertEquals(newArtefactWithId, returnedArtefact, ROWID_RETURNS_UUID);
     }
 
     @Test
