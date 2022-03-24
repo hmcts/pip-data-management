@@ -64,7 +64,7 @@
                             }
                           },
                           {
-                            "partyRole": "RESPONDANT",
+                            "partyRole": "RESPONDENT",
                             "individualDetails": {
                               "individualSurname": "Surname"
                             }
@@ -80,7 +80,7 @@
                             }
                           },
                           {
-                            "partyRole": "RESPONDANT_REPRESENTATIVE",
+                            "partyRole": "RESPONDENT_REPRESENTATIVE",
                             "friendlyRoleName": "Legal Advisor",
                             "individualDetails": {
                               "individualForenames": "Individual Forenames",

@@ -214,7 +214,7 @@
             "title": "Court House",
             "description": "The court house that owns the court rooms",
             "type": "object",
-            "required": ["courtHouseName", "courtHouseContact", "courtHouseAddress", "courtRoom"],
+            "required": ["courtRoom"],
             "properties": {
               "courtHouseName": {
                 "$id": "#root/courtLists/courtList/courtHouse/courtHouseName",
@@ -276,8 +276,7 @@
                             "title": "Judiciary",
                             "items":{
                               "type": "object",
-                              "$ref": "#/definitions/judiciary",
-                              "required": ["johTitle", "johNameSurname", "role", "isPresiding"]
+                              "$ref": "#/definitions/judiciary"
                             }
                           },
                           "sittings": {
