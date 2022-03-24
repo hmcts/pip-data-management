@@ -56,6 +56,9 @@ azure:
     connection-string: ${CONNECTION_STRING}
     container-name: artefact
 
+service-to-service:
+  subscription-management: ${SUBSCRIPTION_MANAGEMENT_URL:https://pip-subscription-management.staging.platform.hmcts.net}
+
 payload:
   json:
     search-values:
@@ -69,6 +72,3 @@ validations:
 
 cron:
   daily-display-from: "0 0 0 * * *"
-
-service-to-service:
-  subscription-management: ${SUBSCRIPTION_MANAGEMENT_URL:https://pip-subscription-management.staging.platform.hmcts.net}
