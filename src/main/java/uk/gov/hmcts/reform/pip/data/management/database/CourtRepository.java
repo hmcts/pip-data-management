@@ -29,7 +29,7 @@ public interface CourtRepository extends JpaRepository<Court, Integer> {
         + "WHERE (court_reference.provenance = :provenance) "
         + "AND (court_reference.provenance_id = :provenanceId) ",
         nativeQuery = true)
-    Optional<Court> findByCourtIdByProvenance(@Param("provenance") String provenance,
+    Optional<List<Court>> findByCourtIdByProvenance(@Param("provenance") String provenance,
                                     @Param("provenanceId") String provenanceId);
 
 }

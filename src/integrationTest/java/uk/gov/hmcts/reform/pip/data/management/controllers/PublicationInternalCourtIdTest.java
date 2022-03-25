@@ -125,7 +125,7 @@ class PublicationInternalCourtIdTest {
     }
 
     @ParameterizedTest
-    @ValueSource(booleans = {true})
+    @ValueSource(booleans = {true, false})
     @DisplayName("Should create a valid artefact, updated court Id with internal "
         + "court Id and return the created artefact to the user")
     void creationOfAValidArtefactAndUpdateCourtId(boolean isJson) throws Exception {
@@ -197,7 +197,7 @@ class PublicationInternalCourtIdTest {
     }
 
     @ParameterizedTest
-    @ValueSource(booleans = {true})
+    @ValueSource(booleans = {true, false})
     @DisplayName("Should create a valid artefact, unable to find "
         + "internal court Id and return the created artefact to the user")
     void creationOfAValidArtefactAndUpdateCourtIdWithNoMatch(boolean isJson) throws Exception {

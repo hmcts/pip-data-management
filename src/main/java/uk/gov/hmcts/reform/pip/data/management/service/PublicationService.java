@@ -271,12 +271,12 @@ public class PublicationService {
     }
 
     private void findByCourtIdByProvenanceAndUpdate(Artefact artefact) {
-        Optional<Court> court = courtRepository.findByCourtIdByProvenance(artefact.getProvenance(),
+        Optional<List<Court>> courts = courtRepository.findByCourtIdByProvenance(artefact.getProvenance(),
                                                                           artefact.getCourtId());
-        if (court.isEmpty()) {
+        if (courts.isEmpty()) {
             artefact.setCourtId(String.format("NoMatch%s", artefact.getCourtId()));
         } else {
-            artefact.setCourtId(court.get().getCourtId().toString());
+            artefact.setCourtId(courts.get().get(0).getCourtId().toString());
         }
     }
 }
