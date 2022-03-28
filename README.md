@@ -248,7 +248,7 @@ example filter request:
 - /hearings/case-name/{caseName} returns all matched and partial match hearings
 - /hearings/case-number/{caseNumber} returns single hearing for matched case number
 - /hearings/urn/{urnNumber} returns single hearing for matched urn number
-NOTE: searching or filtering is not case-sensitive but requires exact match otherwise.
+NOTE: searching or filtering is not case-sensitive but requires exact match otherwise
 
 ## Uploading and retrieving artefacts
 Artefacts are created by uploading blobs of raw data or flat files.
