@@ -267,7 +267,7 @@ These are defined by the [schemas](src/main/resources/schemas).
 - GET `/publication/{artefactId}` used to get the metadata for the artefact.
 - GET `/publication/{artefactId}/payload` used to get the payload for the artefact.
 - GET `/publication/{artefactId}/file` used to get payload file for the artefact.
-- DELETE  `/publication/{artefactId}` used to delete an artefact and its payload from P&I
+- DELETE  `/publication/{artefactId}` used to delete an artefact and its payload from P&I.
 
 ## Headers
 ### Upload headers
