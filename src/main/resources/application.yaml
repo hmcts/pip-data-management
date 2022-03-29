@@ -38,7 +38,7 @@ spring:
       connectionTimeout: 30000
   flyway:
     baselineOnMigrate: true
-    baseline-version: 0
+    baselineVersion: 0
   jpa:
     properties:
       hibernate:
