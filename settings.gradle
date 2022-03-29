@@ -1,7 +1,7 @@
 pluginManagement {
   repositories {
     maven {
-      url 'https://repo.maven.apache.org/maven2/'
+      url 'https://plugins.gradle.org/m2/'
     }
   }
 }
