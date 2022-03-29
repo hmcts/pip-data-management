@@ -26,6 +26,13 @@ allprojects {
   targetCompatibility = '11'
 }
 
+task listrepos {
+  doLast {
+    println "Repositories:"
+    project.repositories.each { println "Name: " + it.name + "; url: " + it.url }
+  }
+}
+
 repositories {
   mavenLocal()
   mavenCentral()

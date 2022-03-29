@@ -1,7 +1,7 @@
 pluginManagement {
   repositories {
     maven {
-      url 'https://artifactory.platform.hmcts.net/artifactory/maven-remotes'
+      url 'https://repo.maven.apache.org/maven2/'
     }
   }
 }
