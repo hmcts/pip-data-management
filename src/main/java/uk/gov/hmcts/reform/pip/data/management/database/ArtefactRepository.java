@@ -89,4 +89,7 @@ public interface ArtefactRepository extends JpaRepository<Artefact, Long> {
     @Query(value = "SELECT * FROM Artefact WHERE DATE(display_from) = :curr_date", nativeQuery = true)
     List<Artefact> findArtefactsByDisplayFrom(@Param(CURRENT_DATE_PARAM) LocalDate today);
 
+    @Query(value = "SELECT * FROM Artefact WHERE DATE(display_to) < current_date", nativeQuery = true)
+    List<Artefact> findOutdatedArtefacts();
+
 }
