@@ -120,7 +120,7 @@
           "description": "Role of the judiciary",
           "title": "Role",
           "type": "string",
-          "enum": ["judge", "magistrate", "clerk"],
+          "enum": ["JUDGE", "MAGISTRATE", "CLERK"],
           "default": ""
         },
         "johKnownAs": {
@@ -129,6 +129,16 @@
           "type": "string",
           "examples": [
             "judge"
+          ],
+          "default": "",
+          "pattern": "^.*$"
+        },
+        "isPresiding": {
+          "description": "A flag to indicate whether a judiciary is presiding",
+          "title": "Is Presiding",
+          "type": "boolean",
+          "examples": [
+            true
           ],
           "default": "",
           "pattern": "^.*$"
@@ -310,6 +320,18 @@
                   "PRESTON"
                 ],
                 "pattern": "^.*$"
+              },
+              "courtHouseContact": {
+                "$id": "#root/courtLists/courtList/courtHouse/courtHouseContact",
+                "description": "The contact for the court house",
+                "title": "Court House Contact",
+                "$ref": "#/definitions/venueContact"
+              },
+              "courtHouseAddress": {
+                "$id": "#root/courtLists/courtList/courtHouse/courtHouseAddress",
+                "description": "The address for the court house",
+                "title": "Court House Address",
+                "$ref": "#/definitions/address"
               },
               "courtHouseDescription": {
                 "$id": "#root/courtLists/courtList/courtHouse/courtHouseDescription",
@@ -595,6 +617,17 @@
                                               ],
                                               "pattern": "^.*$"
                                             },
+                                            "caseSequenceIndicator": {
+                                              "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/caseSequenceIndicator",
+                                              "title": "Case Sequence Indicator",
+                                              "description": "The case sequence indicator",
+                                              "type": "string",
+                                              "default": "",
+                                              "examples": [
+                                                "[2 of 3]"
+                                              ],
+                                              "pattern": "^.*$"
+                                            },
                                             "informant": {
                                               "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/informant",
                                               "description": "Object representing an informant",
@@ -696,6 +729,17 @@
                                                 }
                                               }
                                             },
+                                            "priority": {
+                                              "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/priority",
+                                              "title": "Case Priority",
+                                              "description": "The priority for the case. Current values in S&L are normal, high, critical and pending",
+                                              "type": "string",
+                                              "default": "",
+                                              "examples": [
+                                                "normal"
+                                              ],
+                                              "pattern": "^.*$"
+                                            },
                                             "result":{
                                               "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/result",
                                               "title": "Result",
@@ -739,6 +783,39 @@
                                               "type": "string",
                                               "examples": [
                                                 "ACCUSED", "PROSECUTOR"
+                                              ],
+                                              "default": "",
+                                              "pattern": "^.*$"
+                                            },
+                                            "friendlyRoleName": {
+                                              "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items/friendlyRoleName",
+                                              "description": "The descriptive version of the role. E.g a party role of APPLICANT_REPRESENTATIVE, might  have a more descriptive role name (e.g Legal Advisor) that you would want to display",
+                                              "title": "Friendly Role Name",
+                                              "type": "string",
+                                              "examples": [
+                                                "Legal Advisor"
+                                              ],
+                                              "default": "",
+                                              "pattern": "^.*$"
+                                            },
+                                            "attendanceMethod": {
+                                              "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items/attendanceMethod",
+                                              "description": "The method of attendance for the party",
+                                              "title": "Attendance Method",
+                                              "type": "string",
+                                              "examples": [
+                                                ""
+                                              ],
+                                              "default": "",
+                                              "pattern": "^.*$"
+                                            },
+                                            "attendanceTime": {
+                                              "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items/attendanceTime",
+                                              "description": "The attendance time for the party",
+                                              "title": "Attendance time",
+                                              "type": "string",
+                                              "examples": [
+                                                "2016-09-13T23:30:52.123Z"
                                               ],
                                               "default": "",
                                               "pattern": "^.*$"
