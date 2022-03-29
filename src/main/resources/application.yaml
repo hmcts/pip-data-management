@@ -36,8 +36,6 @@ spring:
       poolName: ConnectionPool
       maxLifetime: 7200000
       connectionTimeout: 30000
-  flyway:
-    baselineOnMigrate: true
   jpa:
     properties:
       hibernate:
