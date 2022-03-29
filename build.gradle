@@ -2,7 +2,6 @@
 plugins {
   id 'application'
   id 'checkstyle'
-  id 'io.spring.dependency-management' version '1.0.11.RELEASE'
   id 'jacoco'
   id 'org.springframework.boot' version '2.5.8'
   id 'org.owasp.dependencycheck' version '6.0.3'
@@ -11,6 +10,7 @@ plugins {
   id 'io.freefair.lombok' version '6.0.0-m2'
   id 'org.jetbrains.kotlin.jvm' version '1.6.10'
   id 'org.flywaydb.flyway' version '8.5.4'
+  id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 }
 
 
