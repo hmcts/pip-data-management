@@ -65,7 +65,8 @@ payload:
       cases: "$['courtLists'][*]['courtHouse']['courtRoom'][*]['session'][*]['sittings'][*]['hearing'][*]['case'][*]['caseNumber', 'caseName', 'caseUrn']"
 validations:
   master-schema: "schemas/master_schema.json"
-  daily-cause-list: "schemas/civil_daily_cause_list.json"
+  civil-daily-cause-list: "schemas/civil_daily_cause_list.json"
+  family-daily-cause-list: "schemas/family_daily_cause_list.json"
   sjp-public-list: "schemas/single_justice_procedure_public.json"
   sjp-press-list: "schemas/single_justice_procedure_press.json"
 
