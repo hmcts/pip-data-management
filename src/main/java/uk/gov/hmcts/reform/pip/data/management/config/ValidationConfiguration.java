@@ -20,9 +20,14 @@ public class ValidationConfiguration {
     private String masterSchema;
 
     /**
-     *  Config option for the daily cause list.
+     *  Config option for the civil daily cause list.
      */
-    private String dailyCauseList;
+    private String civilDailyCauseList;
+
+    /**
+     *  Config option for the family daily cause list.
+     */
+    private String familyDailyCauseList;
 
     /**
      *  Config option for the sjp public list.
@@ -30,7 +35,7 @@ public class ValidationConfiguration {
     private String sjpPublicList;
 
     /**
-     *  Config option for the sjp public list.
+     *  Config option for the sjp press list.
      */
     private String sjpPressList;
 

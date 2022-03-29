@@ -74,8 +74,6 @@ class PublicationServiceTest {
     private static final Map<String, List<Object>> SEARCH_VALUES = new ConcurrentHashMap<>();
     private static final MultipartFile FILE = new MockMultipartFile("test", (byte[]) null);
     private static final String VALIDATION_ARTEFACT_NOT_MATCH = "Artefacts do not match";
-    private static final String VALIDATION_NOT_FOUND_EXCEPTION =
-        "Not Found exception has not been thrown when artefact does not exist";
     private static final String SUCCESSFUL_TRIGGER = "success - subscription sent";
     private static final String SUCCESS = "Success";
     private static final String DELETION_TRACK_LOG_MESSAGE = "Track: TestValue, Removed %s, at ";
@@ -256,8 +254,8 @@ class PublicationServiceTest {
             .thenReturn(new ByteArrayResource(testData));
 
         assertEquals(new ByteArrayResource(testData), publicationService.getFlatFileByArtefactID(
-                         ARTEFACT_ID,
-                         true
+            ARTEFACT_ID,
+            true
                      ),
                      VALIDATION_ARTEFACT_NOT_MATCH
         );
@@ -300,21 +298,13 @@ class PublicationServiceTest {
     }
 
     @Test
-    void testArtefactPayloadFromAzureWhenDoesNotExist() {
-        when(artefactRepository.findByArtefactIdVerified(any(), any())).thenReturn(Optional.empty());
-        assertThrows(NotFoundException.class, () -> publicationService.getPayloadByArtefactId(ARTEFACT_ID, true),
-                     VALIDATION_NOT_FOUND_EXCEPTION
-        );
-    }
-
-    @Test
     void testArtefactFileFromAzureWhenDoesNotExist() {
         when(artefactRepository.findByArtefactIdVerified(any(), any())).thenReturn(Optional.empty());
         assertThrows(
             NotFoundException.class,
             ()
                 -> publicationService.getFlatFileByArtefactID(ARTEFACT_ID, true),
-            VALIDATION_NOT_FOUND_EXCEPTION
+            "Not Found exception has not been thrown when artefact does not exist"
         );
     }
 
@@ -612,7 +602,7 @@ class PublicationServiceTest {
     @Test
     void testDeleteArtefactByIdThrows() {
         ArtefactNotFoundException ex = assertThrows(ArtefactNotFoundException.class, () ->
-            publicationService.deleteArtefactById(TEST_VALUE, TEST_VALUE),
+                                                        publicationService.deleteArtefactById(TEST_VALUE, TEST_VALUE),
                                                     "ArtefactNotFoundException should be thrown");
 
         assertEquals("No artefact found with the ID: " + TEST_VALUE, ex.getMessage(),

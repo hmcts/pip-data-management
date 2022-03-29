@@ -261,8 +261,9 @@ These are defined by the [schemas](src/main/resources/schemas).
   processing will be done on the contents of the file.
 
 - GET `/publication/courtId/{courtId}` used to get a series of publications matching the courtId.
-- GET `publication/search/{searchTerm}/{searchValue}` used to get a series of publications matching a given case.
-  search value, eg. (CASE_URN/CASE_ID/CASE_NAME)
+- GET `publication/search/{searchTerm}/{searchValue}` used to get a series of publications matching a given case
+  search value, e.g. (CASE_URN/CASE_ID/CASE_NAME)
+
 
 - GET `/publication/{artefactId}` used to get the metadata for the artefact.
 - GET `/publication/{artefactId}/payload` used to get the payload for the artefact.
