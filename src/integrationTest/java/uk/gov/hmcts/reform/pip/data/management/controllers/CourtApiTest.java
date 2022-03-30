@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.function.BiPredicate;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.annotation.DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -53,6 +54,7 @@ class CourtApiTest {
     private static final String VALIDATION_UNKNOWN_COURT = "Unexpected court has been returned";
     private static final String VALIDATION_UNEXPECTED_NUMBER_OF_COURTS =
         "Unexpected number of courts has been returned";
+    private static final int ALL_COURTS = 4;
 
     private final BiPredicate<Court, Court> compareCourtWithoutReference = (court, otherCourt) ->
         court.getCourtId().equals(otherCourt.getCourtId())
@@ -94,7 +96,7 @@ class CourtApiTest {
 
         List<Court> returnedCourts = Arrays.asList(arrayCourts);
 
-        assertEquals(courts.size(), returnedCourts.size(), VALIDATION_UNEXPECTED_NUMBER_OF_COURTS);
+        assertEquals(ALL_COURTS, returnedCourts.size(), VALIDATION_UNEXPECTED_NUMBER_OF_COURTS);
 
         for (Court court : courts) {
             assertTrue(returnedCourts.stream().anyMatch(x -> compareCourtWithoutReference.test(x, court)),
@@ -285,7 +287,7 @@ class CourtApiTest {
 
     @Test
     void testFilterByNoRegionOrJurisdiction() throws Exception {
-        List<Court> courts = createCourts();
+        final List<Court> courts = createCourts();
 
         MvcResult mvcResult = mockMvc.perform(get(GET_COURT_BY_FILTER_ENDPOINT))
             .andExpect(status().isOk())
@@ -294,11 +296,16 @@ class CourtApiTest {
         List<Court> returnedCourts =
             Arrays.asList(objectMapper.readValue(mvcResult.getResponse().getContentAsString(), Court[].class));
 
-        assertEquals(3, returnedCourts.size(), VALIDATION_UNEXPECTED_NUMBER_OF_COURTS);
+        assertEquals(ALL_COURTS, returnedCourts.size(), VALIDATION_UNEXPECTED_NUMBER_OF_COURTS);
 
-        assertTrue(compareCourtWithoutReference.test(courts.get(0), returnedCourts.get(0)), VALIDATION_UNKNOWN_COURT);
-        assertTrue(compareCourtWithoutReference.test(courts.get(1), returnedCourts.get(1)), VALIDATION_UNKNOWN_COURT);
-        assertTrue(compareCourtWithoutReference.test(courts.get(2), returnedCourts.get(2)), VALIDATION_UNKNOWN_COURT);
+        Court sjpCourt = returnedCourts.get(0);
+        assertEquals("Single Justice Procedure (SJP)", sjpCourt.getName(), VALIDATION_UNKNOWN_COURT);
+        assertEquals(0, sjpCourt.getJurisdiction().size(), "Unexpected number of jurisdictions received");
+        assertNull(sjpCourt.getRegion(), "Region has not come through as null for SJP");
+
+        assertTrue(compareCourtWithoutReference.test(courts.get(0), returnedCourts.get(1)), VALIDATION_UNKNOWN_COURT);
+        assertTrue(compareCourtWithoutReference.test(courts.get(1), returnedCourts.get(2)), VALIDATION_UNKNOWN_COURT);
+        assertTrue(compareCourtWithoutReference.test(courts.get(2), returnedCourts.get(3)), VALIDATION_UNKNOWN_COURT);
     }
 
     @Test
