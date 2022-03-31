@@ -2026,5 +2026,38 @@ class PublicationTest {
 
     }
 
+    @Test
+    void testGetArtefactMetadataAdmin() throws Exception {
+        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        Artefact artefactToFind = createDailyList(Sensitivity.PUBLIC, DISPLAY_FROM.plusMonths(1), SOURCE_ARTEFACT_ID);
+
+        MockHttpServletRequestBuilder expectedFailRequest = MockMvcRequestBuilders
+            .get(PUBLICATION_URL + "/" + artefactToFind.getArtefactId())
+            .header(VERIFICATION_HEADER, true);
+        mockMvc.perform(expectedFailRequest).andExpect(status().isNotFound());
+
+        MockHttpServletRequestBuilder adminRequest = MockMvcRequestBuilders
+            .get(PUBLICATION_URL + "/" + artefactToFind.getArtefactId())
+            .header(VERIFICATION_HEADER, true)
+            .header("x-admin", true);
+        MvcResult response = mockMvc.perform(adminRequest).andExpect(status().isOk()).andReturn();
+
+        Artefact artefact = objectMapper.readValue(
+            response.getResponse().getContentAsString(), Artefact.class);
+
+        assertEquals(artefactToFind, artefact, SHOULD_RETURN_EXPECTED_ARTEFACT);
+    }
+
+    @Test
+    void testGetArtefactMetadataReturnsNotFound() throws Exception {
+        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        MockHttpServletRequestBuilder adminRequest = MockMvcRequestBuilders
+            .get(PUBLICATION_URL + "/" + UUID.randomUUID())
+            .header(VERIFICATION_HEADER, true)
+            .header("x-admin", true);
+        mockMvc.perform(adminRequest).andExpect(status().isNotFound());
+
+    }
+
 }
 
