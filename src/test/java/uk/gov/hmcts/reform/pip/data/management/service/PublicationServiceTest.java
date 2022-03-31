@@ -631,8 +631,15 @@ class PublicationServiceTest {
     }
 
     @Test
-    void testDeleteExpiredBlobsWithNoBlobsFound() {
-
+    void testDeleteExpiredBlobsWithNoBlobsFound() throws IOException {
+        when(artefactRepository.findOutdatedArtefacts()).thenReturn(List.of());
+        try (LogCaptor logCaptor = LogCaptor.forClass(PublicationService.class)) {
+            publicationService.deleteExpiredBlobs();
+            assertEquals("0 outdated artefacts found and deleted for before " + LocalDate.now(),
+                         logCaptor.getInfoLogs().get(0), MESSAGES_MATCH);
+        } catch (Exception ex) {
+            throw new IOException(ex.getMessage());
+        }
     }
 
 }
