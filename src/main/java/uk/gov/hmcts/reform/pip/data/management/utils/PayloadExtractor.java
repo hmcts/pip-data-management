@@ -30,7 +30,6 @@ public class PayloadExtractor {
                 return extractor.extractSearchTerms(payload);
             }
         }
-
         return new HashMap<>();
     }
 

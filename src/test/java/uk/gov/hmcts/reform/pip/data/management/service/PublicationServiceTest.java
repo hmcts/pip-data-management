@@ -257,8 +257,8 @@ class PublicationServiceTest {
             .thenReturn(new ByteArrayResource(testData));
 
         assertEquals(new ByteArrayResource(testData), publicationService.getFlatFileByArtefactID(
-                         ARTEFACT_ID,
-                         true
+            ARTEFACT_ID,
+            true
                      ),
                      VALIDATION_ARTEFACT_NOT_MATCH
         );
@@ -348,6 +348,32 @@ class PublicationServiceTest {
             () -> publicationService.getPayloadByArtefactId(ARTEFACT_ID, true),
             "Not Found exception has not been thrown when artefact does not exist"
         );
+    }
+
+    @Test
+    void testGetArtefactMetadataForAdmin() {
+        when(artefactRepository.findArtefactByArtefactId(ARTEFACT_ID.toString()))
+            .thenReturn(Optional.of(artefactWithId));
+        assertEquals(artefactWithId, publicationService.getMetadataByArtefactId(ARTEFACT_ID),
+                     VALIDATION_ARTEFACT_NOT_MATCH);
+    }
+
+    @Test
+    void testGetArtefactMetadataForAdminThrows() {
+        when(artefactRepository.findArtefactByArtefactId(ARTEFACT_ID.toString())).thenReturn(Optional.empty());
+        NotFoundException ex = assertThrows(NotFoundException.class, () ->
+            publicationService.getMetadataByArtefactId(ARTEFACT_ID),
+                                            "Not found exception should be thrown"
+        );
+        assertEquals("No artefact found with the ID: " + ARTEFACT_ID, ex.getMessage(),
+                     MESSAGES_MATCH);
+    }
+
+    @Test
+    void testGetArtefactMetadataCallsNonAdmin() {
+        when(artefactRepository.findByArtefactIdVerified(any(), any())).thenReturn(Optional.of(artefactWithId));
+        assertEquals(artefactWithId, publicationService.getMetadataByArtefactId(ARTEFACT_ID, true),
+                     VALIDATION_ARTEFACT_NOT_MATCH);
     }
 
     @Test
@@ -607,7 +633,7 @@ class PublicationServiceTest {
     @Test
     void testDeleteArtefactByIdThrows() {
         ArtefactNotFoundException ex = assertThrows(ArtefactNotFoundException.class, () ->
-            publicationService.deleteArtefactById(TEST_VALUE, TEST_VALUE),
+                                                        publicationService.deleteArtefactById(TEST_VALUE, TEST_VALUE),
                                                     "ArtefactNotFoundException should be thrown");
 
         assertEquals("No artefact found with the ID: " + TEST_VALUE, ex.getMessage(),
