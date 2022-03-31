@@ -271,6 +271,9 @@ public class PublicationService {
     }
 
     private void findByCourtIdByProvenanceAndUpdate(Artefact artefact) {
+        if ("MANUAL_UPLOAD".equalsIgnoreCase(artefact.getProvenance())) {
+            return;
+        }
         Optional<List<Court>> courts = courtRepository.findByCourtIdByProvenance(artefact.getProvenance(),
                                                                           artefact.getCourtId());
         if (courts.isEmpty()) {
