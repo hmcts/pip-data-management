@@ -265,7 +265,7 @@ public class PublicationService {
     }
 
     /**
-     * Scheduled method that checks daily for newly outdated artefacts based on a yesterday or older display to date
+     * Scheduled method that checks daily for newly outdated artefacts based on a yesterday or older display to date.
      */
     @Scheduled(cron = "${cron.daily-start-of-day}")
     public void deleteExpiredBlobs() {
