@@ -2029,7 +2029,8 @@ class PublicationTest {
     @Test
     void testGetArtefactMetadataAdmin() throws Exception {
         when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
-        Artefact artefactToFind = createDailyList(Sensitivity.PUBLIC, DISPLAY_FROM.plusMonths(1), SOURCE_ARTEFACT_ID);
+        Artefact artefactToFind = createDailyList(Sensitivity.PUBLIC, DISPLAY_FROM.plusMonths(1),
+                                                  CONTENT_DATE.plusDays(1));
 
         MockHttpServletRequestBuilder expectedFailRequest = MockMvcRequestBuilders
             .get(PUBLICATION_URL + "/" + artefactToFind.getArtefactId())

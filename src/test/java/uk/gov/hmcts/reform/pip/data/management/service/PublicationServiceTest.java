@@ -347,8 +347,8 @@ class PublicationServiceTest {
     @Test
     void testGetArtefactMetadataForAdmin() {
         when(artefactRepository.findArtefactByArtefactId(ARTEFACT_ID.toString()))
-            .thenReturn(Optional.of(artefactWithId));
-        assertEquals(artefactWithId, publicationService.getMetadataByArtefactId(ARTEFACT_ID),
+            .thenReturn(Optional.of(artefactWithIdAndPayloadUrl));
+        assertEquals(artefactWithIdAndPayloadUrl, publicationService.getMetadataByArtefactId(ARTEFACT_ID),
                      VALIDATION_ARTEFACT_NOT_MATCH);
     }
 
@@ -365,8 +365,9 @@ class PublicationServiceTest {
 
     @Test
     void testGetArtefactMetadataCallsNonAdmin() {
-        when(artefactRepository.findByArtefactIdVerified(any(), any())).thenReturn(Optional.of(artefactWithId));
-        assertEquals(artefactWithId, publicationService.getMetadataByArtefactId(ARTEFACT_ID, true),
+        when(artefactRepository.findByArtefactIdVerified(any(), any()))
+            .thenReturn(Optional.of(artefactWithIdAndPayloadUrl));
+        assertEquals(artefactWithIdAndPayloadUrl, publicationService.getMetadataByArtefactId(ARTEFACT_ID, true),
                      VALIDATION_ARTEFACT_NOT_MATCH);
     }
 
