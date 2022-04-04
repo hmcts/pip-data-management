@@ -2,8 +2,8 @@ locals {
   api_name       = "${var.product}-data-management-api"
   api_policy_raw = file("./resources/api-policy/api-policy.xml")
   api_policy = replace(replace(local.api_policy_raw
-    , "{TENANT_ID}", data.azurerm_key_vault_secret.b2c_tenant_id.value)
-  , "{APP_CLIENT_ID}", data.azurerm_key_vault_secret.b2c_client_id.value)
+    , "{TENANT_ID}", "")
+  , "{APP_CLIENT_ID}", "")
 }
 module "apim_api" {
   source = "git@github.com:hmcts/cnp-module-api-mgmt-api?ref=master"
