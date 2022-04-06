@@ -360,11 +360,11 @@ class PublicationTest {
         mockHttpServletRequestBuilder.header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE);
         mockHttpServletRequestBuilder.header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID);
         mockHttpServletRequestBuilder.header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO);
-        mockHttpServletRequestBuilder.header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM);
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM.plusMonths(1));
         mockHttpServletRequestBuilder.header(PublicationConfiguration.LIST_TYPE, LIST_TYPE);
         mockHttpServletRequestBuilder.header(PublicationConfiguration.COURT_ID, COURT_ID);
         mockHttpServletRequestBuilder.header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE);
-        mockHttpServletRequestBuilder.header(PublicationConfiguration.LANGUAGE_HEADER, Language.BI_LINGUAL);
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE);
         mockHttpServletRequestBuilder.contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
 
         final MvcResult updatedResponse = mockMvc.perform(mockHttpServletRequestBuilder).andExpect(
@@ -383,8 +383,8 @@ class PublicationTest {
         assertEquals(createdArtefact.getArtefactId(), updatedArtefact.getArtefactId(), "A new artefact has "
             + "been created rather than it being updated");
 
-        assertEquals(Language.BI_LINGUAL, updatedArtefact.getLanguage(), "The updated artefact does "
-            + "not contain the new language");
+        assertEquals(DISPLAY_FROM.plusMonths(1), updatedArtefact.getDisplayFrom(), "The updated artefact does "
+            + "not contain the new display from");
     }
 
     @DisplayName("Should throw a 400 bad request when payload is not of JSON through the JSON endpoint")
