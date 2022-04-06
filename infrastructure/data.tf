@@ -1,10 +1,11 @@
 locals {
 
-  key_vault_name = "${var.product}-ss-kv-${var.env}"
+  key_vault_name     = "${var.product}-ss-kv-${var.env}"
   auto_secret_prefix = "auto-${var.product}-${local.env}"
 }
 
 data "azurerm_api_management_product" "apim_product" {
+  count               = local.deploy_apim
   product_id          = "${var.product}-product-${local.env}"
   resource_group_name = local.apim_rg
   api_management_name = local.apim_name
