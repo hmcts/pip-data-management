@@ -24,6 +24,7 @@ withPipeline(type, product, component) {
   disableLegacyDeployment()
   enableApiGatewayTest()
 
+   def branchName = env.CHANGE_BRANCH ?: env.BRANCH_NAME
    before('test') {
     sh "echo 'Validate Swaggr'"
     sh swaggerValidate(branchName)
