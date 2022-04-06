@@ -14,6 +14,8 @@ import org.springframework.core.io.Resource;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.UUID;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.TestConstants.MESSAGES_MATCH;
@@ -21,12 +23,10 @@ import static uk.gov.hmcts.reform.pip.data.management.helpers.TestConstants.MESS
 @ExtendWith(MockitoExtension.class)
 class AzureBlobServiceTest {
 
-    private static final String SOURCE_ARTEFACT_ID = "1234";
-    private static final String PROVENANCE = "abcd";
     private static final String PAYLOAD = "test-payload";
     private static final String CONTAINER_URL = "https://localhost";
     private static final MultipartFile FILE = new MockMultipartFile("test", (byte[]) null);
-    private static final String BLOB_NAME = SOURCE_ARTEFACT_ID + "-" + PROVENANCE;
+    private static final String BLOB_NAME = UUID.randomUUID().toString();
 
     @Mock
     BlobContainerClient blobContainerClient;
@@ -46,7 +46,7 @@ class AzureBlobServiceTest {
     void testCreationOfNewBlob() {
         when(blobContainerClient.getBlobContainerUrl()).thenReturn(CONTAINER_URL);
 
-        String blobUrl = azureBlobService.createPayload(SOURCE_ARTEFACT_ID, PROVENANCE, PAYLOAD);
+        String blobUrl = azureBlobService.createPayload(BLOB_NAME, PAYLOAD);
 
         assertEquals(CONTAINER_URL + "/" + BLOB_NAME, blobUrl, "Payload URL does not"
             + "contain the correct value");
@@ -56,7 +56,7 @@ class AzureBlobServiceTest {
     void testGetBlobData() {
         when(blobClient.downloadContent()).thenReturn(BinaryData.fromString("TestString"));
 
-        String blobData = azureBlobService.getBlobData(SOURCE_ARTEFACT_ID, PROVENANCE);
+        String blobData = azureBlobService.getBlobData(BLOB_NAME);
 
         assertEquals("TestString", blobData, "Wrong string detected");
     }
@@ -66,7 +66,7 @@ class AzureBlobServiceTest {
     void testGetBlobFile() {
         BinaryData binaryData = BinaryData.fromString("TestString");
         when(blobClient.downloadContent()).thenReturn(binaryData);
-        Resource blobFile = azureBlobService.getBlobFile(SOURCE_ARTEFACT_ID, PROVENANCE);
+        Resource blobFile = azureBlobService.getBlobFile(BLOB_NAME);
         byte[] data = binaryData.toBytes();
         assertEquals(blobFile, new ByteArrayResource(data), "Wrong data returned.");
     }
@@ -75,7 +75,7 @@ class AzureBlobServiceTest {
     void testCreationOfNewBlobViaFile() {
         when(blobContainerClient.getBlobContainerUrl()).thenReturn(CONTAINER_URL);
 
-        String blobUrl = azureBlobService.uploadFlatFile(SOURCE_ARTEFACT_ID, PROVENANCE, FILE);
+        String blobUrl = azureBlobService.uploadFlatFile(BLOB_NAME, FILE);
 
         assertEquals(CONTAINER_URL + "/" + BLOB_NAME, blobUrl, "Payload URL does not"
             + "contain the correct value");
@@ -84,7 +84,7 @@ class AzureBlobServiceTest {
     @Test
     void testDeleteBlob() {
         assertEquals(String.format("Blob: %s successfully deleted.", BLOB_NAME),
-                     azureBlobService.deleteBlob(SOURCE_ARTEFACT_ID, PROVENANCE),
+                     azureBlobService.deleteBlob(BLOB_NAME),
                      MESSAGES_MATCH);
     }
 }
