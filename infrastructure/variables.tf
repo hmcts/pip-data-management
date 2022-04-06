@@ -18,9 +18,3 @@ variable "deployment_namespace" {
 variable "common_tags" {
   type = map(string)
 }
-variable "team_name" {
-  default = "PIP DevOps"
-}
-variable "team_contact" {
-  default = "#vh-devops"
-}

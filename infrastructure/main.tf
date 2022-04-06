@@ -5,3 +5,4 @@ locals {
   apim_rg       = "ss-${local.env}-network-rg"
   env_long_name = var.env == "sbox" ? "sandbox" : var.env == "stg" ? "staging" : var.env
 }
+
