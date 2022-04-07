@@ -150,14 +150,15 @@ class GlobalExceptionHandlerTest {
     @Test
     void testMissingRequestHeaderException() {
 
-        when(missingRequestHeaderException.getMessage()).thenReturn(TEST_MESSAGE);
+        when(missingRequestHeaderException.getHeaderName()).thenReturn(TEST_MESSAGE);
 
         ResponseEntity<ExceptionResponse> responseEntity =
             globalExceptionHandler.handle(missingRequestHeaderException);
 
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode(), BAD_REQUEST_ASSERTION);
         assertNotNull(responseEntity.getBody(), ASSERTION_RESPONSE_BODY);
-        assertEquals(TEST_MESSAGE, responseEntity.getBody().getMessage(),
+        assertEquals(TEST_MESSAGE + " is mandatory however an empty value is provided",
+                     responseEntity.getBody().getMessage(),
                      ASSERTION_MESSAGE
         );
     }

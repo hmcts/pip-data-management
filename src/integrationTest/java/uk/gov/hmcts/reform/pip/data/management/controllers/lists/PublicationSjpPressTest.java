@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.pip.data.management.controllers;
+package uk.gov.hmcts.reform.pip.data.management.controllers.lists;
 
 import com.azure.storage.blob.BlobClient;
 import com.azure.storage.blob.BlobContainerClient;
@@ -23,6 +23,7 @@ import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.ExceptionResponse;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactType;
+import uk.gov.hmcts.reform.pip.data.management.models.publication.Language;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ListType;
 
 import java.io.InputStream;
@@ -40,13 +41,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @ActiveProfiles(profiles = "test")
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
-class PublicationFamilyDailyCauseListTest {
+class PublicationSjpPressTest {
 
     @Autowired
-    BlobContainerClient blobContainerClient;
+    private BlobContainerClient blobContainerClient;
 
     @Autowired
-    BlobClient blobClient;
+    private BlobClient blobClient;
 
     @Autowired
     private MockMvc mockMvc;
@@ -70,9 +71,9 @@ class PublicationFamilyDailyCauseListTest {
 
     @DisplayName("Should create a valid artefact and return the created artefact to the user")
     @Test
-    void testCreationOfValidFamilyDailyCauseList() throws Exception {
+    void testCreationOfValidSjpPressList() throws Exception {
         try (InputStream mockFile = this.getClass().getClassLoader()
-            .getResourceAsStream("data/family-daily-cause-list/familyDailyCauseList.json")) {
+            .getResourceAsStream("data/sjp-press-list/sjpPressList.json")) {
 
             MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
                 .post(POST_URL)
@@ -82,8 +83,9 @@ class PublicationFamilyDailyCauseListTest {
                 .header(PublicationConfiguration.DISPLAY_FROM_HEADER, LocalDateTime.now())
                 .header(PublicationConfiguration.DISPLAY_TO_HEADER, LocalDateTime.now().plusMonths(1))
                 .header(PublicationConfiguration.COURT_ID, 1)
-                .header(PublicationConfiguration.LIST_TYPE, ListType.FAMILY_DAILY_CAUSE_LIST)
+                .header(PublicationConfiguration.LIST_TYPE, ListType.SJP_PRESS_LIST)
                 .header(PublicationConfiguration.CONTENT_DATE, LocalDateTime.now())
+                .header(PublicationConfiguration.LANGUAGE_HEADER, Language.ENGLISH)
                 .content(mockFile.readAllBytes())
                 .contentType(MediaType.APPLICATION_JSON);
 
@@ -102,9 +104,9 @@ class PublicationFamilyDailyCauseListTest {
 
     @DisplayName("Should return an error message back to the user when creating an invalid blob")
     @Test
-    void testCreationOfInvalidFamilyDailyCauseListList() throws Exception {
+    void testCreationOfInvalidSjpPressList() throws Exception {
         try (InputStream mockFile = this.getClass().getClassLoader()
-            .getResourceAsStream("data/family-daily-cause-list/familyDailyCauseListInvalid.json")) {
+            .getResourceAsStream("data/sjp-press-list/sjpPressListInvalid.json")) {
 
             MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
                 .post(POST_URL)
@@ -114,8 +116,9 @@ class PublicationFamilyDailyCauseListTest {
                 .header(PublicationConfiguration.DISPLAY_FROM_HEADER, LocalDateTime.now())
                 .header(PublicationConfiguration.DISPLAY_TO_HEADER, LocalDateTime.now().plusMonths(1))
                 .header(PublicationConfiguration.COURT_ID, 1)
-                .header(PublicationConfiguration.LIST_TYPE, ListType.FAMILY_DAILY_CAUSE_LIST)
+                .header(PublicationConfiguration.LIST_TYPE, ListType.SJP_PRESS_LIST)
                 .header(PublicationConfiguration.CONTENT_DATE, LocalDateTime.now())
+                .header(PublicationConfiguration.LANGUAGE_HEADER, Language.ENGLISH)
                 .content(mockFile.readAllBytes())
                 .contentType(MediaType.APPLICATION_JSON);
 
@@ -131,8 +134,8 @@ class PublicationFamilyDailyCauseListTest {
             );
 
             assertTrue(
-                exceptionResponse.getMessage().contains("caseNumber"),
-                "Case Number is not displayed in the exception response"
+                exceptionResponse.getMessage().contains("individualSurname"),
+                "Individual Surname is not displayed in the exception response"
             );
         }
     }
