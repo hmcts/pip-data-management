@@ -3,6 +3,7 @@
     "address": {
       "title": "Address Details",
       "type": "object",
+      "required": ["line", "town", "postCode"],
       "properties": {
         "line": {
           "title": "Address Line",
@@ -75,6 +76,7 @@
     "venueContact": {
       "title": "Contact Details for a venue",
       "type": "object",
+      "required": ["venueTelephone", "venueEmail"],
       "properties": {
         "venueTelephone": {
           "description": "Telephone number for the venue",
@@ -102,6 +104,7 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Root",
   "type": "object",
+  "required": ["courtLists", "venue"],
   "properties": {
     "@schemaLocation": {
       "$id": "#root/@schemaLocation",
@@ -117,6 +120,7 @@
       "$id": "#root/document",
       "title": "document",
       "type": "object",
+      "required": ["publicationDate"],
       "properties": {
         "documentName": {
           "$id": "#root/document/documentName",
@@ -188,6 +192,7 @@
         "$id": "#root/courtLists/courtList",
         "title": "Court list",
         "type": "object",
+        "required": ["courtHouse"],
         "properties": {
           "courtHouse": {
             "$id": "#root/courtLists/courtHouse",
