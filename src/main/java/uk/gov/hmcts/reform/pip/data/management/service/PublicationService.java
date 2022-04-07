@@ -58,42 +58,56 @@ public class PublicationService {
      * @return Returns the UUID of the artefact that was created.
      */
     public Artefact createPublication(Artefact artefact, String payload) {
-        applyExistingArtefact(artefact);
+        boolean isExisting = applyExistingArtefact(artefact);
 
         String blobUrl = azureBlobService.createPayload(
-            artefact.getSourceArtefactId(),
-            artefact.getProvenance(),
+            isExisting ? getUuidFromUrl(artefact.getPayload()) : UUID.randomUUID().toString(),
             payload
         );
 
-        artefact.setPayload(blobUrl);
+        if (!isExisting) {
+            artefact.setPayload(blobUrl);
+        }
         artefact.setSearch(payloadExtractor.extractSearchTerms(payload));
         return artefactRepository.save(artefact);
     }
 
     public Artefact createPublication(Artefact artefact, MultipartFile file) {
-        applyExistingArtefact(artefact);
+        boolean isExisting = applyExistingArtefact(artefact);
 
         String blobUrl = azureBlobService.uploadFlatFile(
-            artefact.getSourceArtefactId(),
-            artefact.getProvenance(),
+            isExisting ? getUuidFromUrl(artefact.getPayload()) : UUID.randomUUID().toString(),
             file
         );
-        artefact.setPayload(blobUrl);
+        if (!isExisting) {
+            artefact.setPayload(blobUrl);
+        }
         return artefactRepository.save(artefact);
     }
 
     /**
-     * Checks if the artefact already exists based on source artefact id and provenance, if so it applies the
+     * Checks if the artefact already exists based on payloadId, if so it applies the
      * existing artefact ID to update.
      *
      * @param artefact The artefact to check existing on
      */
-    private void applyExistingArtefact(Artefact artefact) {
-        Optional<Artefact> foundArtefact = artefactRepository
-            .findBySourceArtefactIdAndProvenance(artefact.getSourceArtefactId(), artefact.getProvenance());
+    private boolean applyExistingArtefact(Artefact artefact) {
+        Optional<Artefact> foundArtefact = artefactRepository.findArtefactByUpdateLogic(
+            artefact.getCourtId(),
+            artefact.getContentDate(),
+            artefact.getLanguage().name(),
+            artefact.getListType().name(),
+            artefact.getProvenance());
 
-        foundArtefact.ifPresent(value -> artefact.setArtefactId(value.getArtefactId()));
+        foundArtefact.ifPresent(value -> {
+            artefact.setArtefactId(value.getArtefactId());
+            artefact.setPayload(value.getPayload());
+        });
+        return foundArtefact.isPresent();
+    }
+
+    private String getUuidFromUrl(String payloadUrl) {
+        return payloadUrl.substring(payloadUrl.lastIndexOf('/') + 1);
     }
 
 
@@ -209,28 +223,21 @@ public class PublicationService {
      * @return The data within the blob in string format.
      */
     public String getPayloadByArtefactId(UUID artefactId, Boolean verification) {
-        Artefact artefact = this.getMetadataByArtefactId(artefactId, verification);
+        Artefact artefact = getMetadataByArtefactId(artefactId, verification);
 
-        String sourceArtefactId = artefact.getSourceArtefactId();
-        String provenance = artefact.getProvenance();
-
-        return azureBlobService.getBlobData(sourceArtefactId, provenance);
+        return azureBlobService.getBlobData(getUuidFromUrl(artefact.getPayload()));
     }
 
     public Resource getFlatFileByArtefactID(UUID artefactId, Boolean verification) {
-        Artefact artefact = this.getMetadataByArtefactId(artefactId, verification);
+        Artefact artefact = getMetadataByArtefactId(artefactId, verification);
 
-        String sourceArtefactId = artefact.getSourceArtefactId();
-        String provenance = artefact.getProvenance();
-        return azureBlobService.getBlobFile(sourceArtefactId, provenance);
+        return azureBlobService.getBlobFile(getUuidFromUrl(artefact.getPayload()));
     }
 
     public void deleteArtefactById(String artefactId, String issuerEmail) {
         Optional<Artefact> artefactToDelete = artefactRepository.findArtefactByArtefactId(artefactId);
         if (artefactToDelete.isPresent()) {
-            log.info(azureBlobService.deleteBlob(
-                artefactToDelete.get().getSourceArtefactId(),
-                artefactToDelete.get().getProvenance()));
+            log.info(azureBlobService.deleteBlob(getUuidFromUrl(artefactToDelete.get().getPayload())));
             artefactRepository.delete(artefactToDelete.get());
             log.info(writeLog(issuerEmail, UserActions.REMOVE, artefactId));
         } else {

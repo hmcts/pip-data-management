@@ -215,7 +215,7 @@ Here are some other functionalities it provides:
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 # API
 Numerous apis are set up to handle the data passing through P&I and will be built upon as the project progresses.
@@ -262,6 +262,7 @@ These are defined by the [schemas](src/main/resources/schemas).
 - GET `/publication/courtId/{courtId}` used to get a series of publications matching the courtId.
 - GET `publication/search/{searchTerm}/{searchValue}` used to get a series of publications matching a given case
   search value, e.g. (CASE_URN/CASE_ID/CASE_NAME)
+
 
 - GET `/publication/{artefactId}` used to get the metadata for the artefact.
 - GET `/publication/{artefactId}/payload` used to get the payload for the artefact.

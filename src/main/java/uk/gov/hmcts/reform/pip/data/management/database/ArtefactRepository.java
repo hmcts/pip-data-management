@@ -25,8 +25,18 @@ public interface ArtefactRepository extends JpaRepository<Artefact, Long> {
     String SEARCH_VAL_PARAM = "searchValue";
     String COURT_ID_PARAM = "courtId";
     String CASE_NAME_PARAM = "caseName";
+    String CONTENT_DATE_PARAM = "content_date";
+    String LANGUAGE_PARAM = "language";
+    String LIST_TYPE_PARAM = "list_type";
+    String PROVENANCE_PARAM = "provenance";
 
-    Optional<Artefact> findBySourceArtefactIdAndProvenance(String sourceArtefactId, String provenance);
+    @Query(value = "SELECT * FROM Artefact WHERE court_id = :courtId AND content_date = :content_date AND "
+        + "language = :language AND list_type = :list_type AND provenance = :provenance", nativeQuery = true)
+    Optional<Artefact> findArtefactByUpdateLogic(@Param(COURT_ID_PARAM) String courtId,
+                                                 @Param(CONTENT_DATE_PARAM) LocalDateTime contentDate,
+                                                 @Param(LANGUAGE_PARAM) String language,
+                                                 @Param(LIST_TYPE_PARAM) String listType,
+                                                 @Param(PROVENANCE_PARAM) String provenance);
 
     @Query(value = "select * from Artefact where artefact_id = CAST(:artefact_id AS uuid) and display_from < "
         + ":curr_date and (display_to> :curr_date or display_to is null)",
