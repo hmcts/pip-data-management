@@ -19,7 +19,7 @@ module "apim_api" {
   revision       = "1"
   service_url    = "https://pip-data-management.${local.env_long_name}.platform.hmcts.net"
   swagger_url    = file("./resources/swagger/api-swagger.json")
-  content_format = "swagger-json"
+  content_format = "openapi+json"
 }
 
 module "apim_api_policy" {
