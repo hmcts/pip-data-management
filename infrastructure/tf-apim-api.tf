@@ -26,7 +26,7 @@ module "apim_api" {
 module "apim_api_policy" {
   count                  = local.deploy_apim
   source                 = "git@github.com:hmcts/cnp-module-api-mgmt-api-policy?ref=master"
-  api_mgmt_name          = local.apim_name
+  api_mgmt_name          = module.apim_api.name
   api_mgmt_rg            = local.apim_rg
   api_name               = local.api_name
   api_policy_xml_content = local.api_policy
