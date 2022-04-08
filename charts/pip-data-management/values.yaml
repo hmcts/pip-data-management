@@ -11,19 +11,16 @@ java:
       secrets:
         - name: shared-storageaccount-connection-string
           alias: CONNECTION_STRING
-        - name: pip-shared-POSTGRES-DATABASE
+
+        - name: data-management-POSTGRES-DATABASE
           alias: DB_NAME
-        - name: pip-shared-POSTGRES-PASS
+        - name: data-management-POSTGRES-PASS
           alias: DB_PASS
-        - name: pip-shared-POSTGRES-PORT
+        - name: data-management-POSTGRES-PORT
           alias: DB_PORT
-        - name: pip-shared-POSTGRES-USER
+        - name: data-management-POSTGRES-USER
           alias: DB_USER
-  #  Uncomment once the vault containing the app insights key has been set up
-  #  keyVaults:
-  #    rpe:
-  #      secrets:
-  #        - name: AppInsightsInstrumentationKey
-  #          alias: azure.application-insights.instrumentation-key
+        - name: data-management-POSTGRES-HOST
+          alias: DB_HOST
   environment:
     RUN_DB_MIGRATION_ON_STARTUP: false
