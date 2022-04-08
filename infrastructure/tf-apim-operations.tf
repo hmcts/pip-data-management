@@ -1,10 +1,12 @@
 locals {
+  base_url             = "${var.component}.${local.env_long_name}.platform.hmcts.net"
   api_operations_files = fileset(path.module, "./resources/operation-policies/*.xml")
   api_operations = {
     for api_operations_file in local.api_operations_files :
     basename(api_operations_file) => {
       operation_id = replace(basename(api_operations_file), ".xml", "")
-      xml_content  = file("${path.module}/${api_operations_file}")
+      xml_content = replace(file("${path.module}/${api_operations_file}"),
+      "#{BASE_URL}#", local.base_url)
     }
   }
 
