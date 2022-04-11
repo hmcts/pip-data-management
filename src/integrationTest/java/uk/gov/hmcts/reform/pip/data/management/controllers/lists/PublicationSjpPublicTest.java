@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.pip.data.management.controllers;
+package uk.gov.hmcts.reform.pip.data.management.controllers.lists;
 
 import com.azure.storage.blob.BlobClient;
 import com.azure.storage.blob.BlobContainerClient;
@@ -118,6 +118,7 @@ class PublicationSjpPublicTest {
                 .header(PublicationConfiguration.COURT_ID, 1)
                 .header(PublicationConfiguration.LIST_TYPE, ListType.SJP_PUBLIC_LIST)
                 .header(PublicationConfiguration.CONTENT_DATE, LocalDateTime.now())
+                .header(PublicationConfiguration.LANGUAGE_HEADER, Language.ENGLISH)
                 .content(mockFile.readAllBytes())
                 .contentType(MediaType.APPLICATION_JSON);
 
