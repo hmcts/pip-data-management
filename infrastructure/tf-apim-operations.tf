@@ -13,7 +13,7 @@ locals {
 
 resource "azurerm_api_management_api_operation_policy" "apim_api_operation_policy" {
   for_each            = { for operation in local.operation_policies : operation.operation_id => operation }
-  operation_id        = each.value.operation_id
+  operation_id        = "/subscriptions/${data.azurerm_client_config.current.subscription_id}/resourceGroups/${local.apim_rg}/providers/Microsoft.ApiManagement/service/${local.apim_name}/apis/${local.apim_name}/operations/${each.value.operation_id}"
   api_name            = local.apim_name
   api_management_name = local.apim_name
   resource_group_name = local.apim_rg
