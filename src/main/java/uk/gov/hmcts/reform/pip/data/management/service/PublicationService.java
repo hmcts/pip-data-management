@@ -29,7 +29,6 @@ import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
 
 @Slf4j
 @Service
-
 public class PublicationService {
 
     private final ArtefactRepository artefactRepository;
