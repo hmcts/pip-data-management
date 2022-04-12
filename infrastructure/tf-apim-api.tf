@@ -33,8 +33,4 @@ module "apim_api" {
   depends_on = [
     module.apim_api
   ]
-<<<<<<< HEAD
-}
-=======
 } */
->>>>>>> master
