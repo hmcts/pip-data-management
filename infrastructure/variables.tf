@@ -3,7 +3,7 @@ variable "product" {
   default = "pip"
 }
 variable "component" {
-  default = "sds"
+  default = "data-management"
 }
 variable "location" {
   default = "UK South"
