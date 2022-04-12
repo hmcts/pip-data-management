@@ -1,6 +1,7 @@
 <policies>
     <inbound>
         <base />
+        <set-backend-service base-url="https://{BASE_URL}/publication" />
     </inbound>
     <backend>
         <base />
