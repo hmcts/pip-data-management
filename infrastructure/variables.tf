@@ -3,11 +3,7 @@ variable "product" {
   default = "pip"
 }
 variable "component" {
-<<<<<<< HEAD
   default = "data-management"
-=======
-  default = "pip-data-management"
->>>>>>> master
 }
 variable "location" {
   default = "UK South"
