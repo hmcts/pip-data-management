@@ -10,11 +10,11 @@ locals {
   }
 
 }
-/* 
+ 
 resource "azurerm_api_management_api_operation_policy" "apim_api_operation_policy" {
   for_each            = { for operation in local.operation_policies : operation.operation_id => operation }
   operation_id        = each.value.operation_id
-  api_name            = local.apim_name
+  api_name            = local.apim_api_name
   api_management_name = local.apim_name
   resource_group_name = local.apim_rg
   xml_content         = each.value.xml_content
@@ -22,4 +22,4 @@ resource "azurerm_api_management_api_operation_policy" "apim_api_operation_polic
   depends_on = [
     module.apim_api
   ]
-} */
+}
