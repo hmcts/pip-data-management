@@ -19,7 +19,7 @@ java:
           alias: DB_PORT
         - name: data-management-POSTGRES-USER
           alias: DB_USER
-        - name: data-management-POSTGRES-HOST
-          alias: DB_HOST
+        #- name: data-management-POSTGRES-HOST
+        #  alias: DB_HOST
   environment:
     RUN_DB_MIGRATION_ON_STARTUP: false
