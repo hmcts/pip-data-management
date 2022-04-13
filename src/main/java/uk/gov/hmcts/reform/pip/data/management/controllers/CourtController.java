@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.models.court.Court;
 import uk.gov.hmcts.reform.pip.data.management.models.court.CourtViews;
 import uk.gov.hmcts.reform.pip.data.management.service.CourtService;
+import uk.gov.hmcts.reform.pip.data.management.service.FeatureToggleService;
 
 import java.util.Collection;
 import java.util.List;
@@ -32,6 +33,22 @@ public class CourtController {
 
     @Autowired
     private CourtService courtService;
+    private FeatureToggleService toggleService;
+
+    public CourtController(FeatureToggleService toggleService) {
+        this.toggleService = toggleService;
+    }
+
+    @ApiResponse(code = 200, message = "Feature toggle status returned")
+    @ApiOperation("Get Toggle Status Response")
+    @GetMapping("/toggle")
+    public ResponseEntity getToggleResponse() {
+        if (toggleService.isFeatureEnabled("feature-poc")) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.BAD_GATEWAY);
+        }
+    }
 
     @ApiResponses({
         @ApiResponse(code = 200, message = "All courts returned"),
@@ -42,6 +59,7 @@ public class CourtController {
     public ResponseEntity<List<Court>> getCourtList() {
         return new ResponseEntity<>(courtService.getAllCourts(), HttpStatus.OK);
     }
+
 
     @ApiResponses({
         @ApiResponse(code = 200, message = "Court found"),
