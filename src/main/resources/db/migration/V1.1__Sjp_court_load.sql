@@ -6,5 +6,5 @@ CREATE TABLE IF NOT EXISTS court (
 );
 
 INSERT INTO court(court_id, jurisdiction, name)
-VALUES(0, '{}', 'Single Justice Procedure (SJP)')
+VALUES(0, '{}', 'Single Justice Procedure')
 ON CONFLICT (court_id) DO NOTHING;

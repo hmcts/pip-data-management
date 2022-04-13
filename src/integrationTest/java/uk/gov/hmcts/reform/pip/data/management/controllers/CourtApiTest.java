@@ -94,7 +94,8 @@ class CourtApiTest {
 
         List<Court> returnedCourts = Arrays.asList(arrayCourts);
 
-        assertEquals(courts.size(), returnedCourts.size(), VALIDATION_UNEXPECTED_NUMBER_OF_COURTS);
+        //Plus 1 to courts as SJP is added at runtime from db script, can be removed once SJP isnt forced into db
+        assertEquals(courts.size() + 1, returnedCourts.size(), VALIDATION_UNEXPECTED_NUMBER_OF_COURTS);
 
         for (Court court : courts) {
             assertTrue(returnedCourts.stream().anyMatch(x -> compareCourtWithoutReference.test(x, court)),
@@ -294,11 +295,11 @@ class CourtApiTest {
         List<Court> returnedCourts =
             Arrays.asList(objectMapper.readValue(mvcResult.getResponse().getContentAsString(), Court[].class));
 
-        assertEquals(3, returnedCourts.size(), VALIDATION_UNEXPECTED_NUMBER_OF_COURTS);
+        assertEquals(4, returnedCourts.size(), VALIDATION_UNEXPECTED_NUMBER_OF_COURTS);
 
-        assertTrue(compareCourtWithoutReference.test(courts.get(0), returnedCourts.get(0)), VALIDATION_UNKNOWN_COURT);
-        assertTrue(compareCourtWithoutReference.test(courts.get(1), returnedCourts.get(1)), VALIDATION_UNKNOWN_COURT);
-        assertTrue(compareCourtWithoutReference.test(courts.get(2), returnedCourts.get(2)), VALIDATION_UNKNOWN_COURT);
+        assertTrue(compareCourtWithoutReference.test(courts.get(0), returnedCourts.get(1)), VALIDATION_UNKNOWN_COURT);
+        assertTrue(compareCourtWithoutReference.test(courts.get(1), returnedCourts.get(2)), VALIDATION_UNKNOWN_COURT);
+        assertTrue(compareCourtWithoutReference.test(courts.get(2), returnedCourts.get(3)), VALIDATION_UNKNOWN_COURT);
     }
 
     @Test
