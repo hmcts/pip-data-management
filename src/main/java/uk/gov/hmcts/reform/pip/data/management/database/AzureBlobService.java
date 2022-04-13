@@ -79,9 +79,10 @@ public class AzureBlobService {
         return new ByteArrayResource(data);
     }
 
-    public String deleteBlob(String payloadId) {
-        BlobClient blobClient = blobContainerClient.getBlobClient(payloadId);
+    public String deleteBlob(String sourceArtefactId, String provenance) {
+        String blobName = sourceArtefactId + '-' + provenance;
+        BlobClient blobClient = blobContainerClient.getBlobClient(blobName);
         blobClient.delete();
-        return String.format(DELETE_MESSAGE, payloadId);
+        return String.format(DELETE_MESSAGE, blobName);
     }
 }

@@ -39,4 +39,14 @@ public class ValidationConfiguration {
      */
     private String sjpPressList;
 
+    /**
+     *  Config option for the sjp public list.
+     */
+    private String sjpPublicList;
+
+    /**
+     *  Config option for the sjp public list.
+     */
+    private String sjpPressList;
+
 }

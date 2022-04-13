@@ -129,19 +129,19 @@ class PublicationTest {
     }
 
     Artefact createDailyList(Sensitivity sensitivity) throws Exception {
-        return createDailyList(sensitivity, DISPLAY_FROM.minusMonths(2), CONTENT_DATE);
+        return createDailyList(sensitivity, DISPLAY_FROM.minusMonths(2), SOURCE_ARTEFACT_ID);
     }
 
-    Artefact createDailyList(Sensitivity sensitivity, LocalDateTime displayFrom, LocalDateTime contentDate)
+    Artefact createDailyList(Sensitivity sensitivity, LocalDateTime displayFrom, String sourceArtefactID)
         throws Exception {
         try (InputStream mockFile = this.getClass().getClassLoader()
-            .getResourceAsStream("data/civil-daily-cause-list/civilDailyCauseList.json")) {
+            .getResourceAsStream("data/daily-cause-list/dailyCauseList.json")) {
 
             MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
                 .post(PUBLICATION_URL)
                 .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
                 .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
-                .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
+                .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, sourceArtefactID)
                 .header(PublicationConfiguration.DISPLAY_FROM_HEADER, displayFrom)
                 .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO.plusMonths(1))
                 .header(PublicationConfiguration.COURT_ID, COURT_ID)
@@ -942,7 +942,7 @@ class PublicationTest {
         when(blobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
 
         try (InputStream mockFile = this.getClass().getClassLoader()
-            .getResourceAsStream("data/civil-daily-cause-list/civilDailyCauseListInvalid.json")) {
+            .getResourceAsStream("data/daily-cause-list/dailyCauseListInvalid.json")) {
             MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
                 .post(PUBLICATION_URL)
                 .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
@@ -980,7 +980,7 @@ class PublicationTest {
         when(blobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
 
         try (InputStream mockFile = this.getClass().getClassLoader()
-            .getResourceAsStream("data/civil-daily-cause-list/civilDailyCauseList.json")) {
+            .getResourceAsStream("data/daily-cause-list/dailyCauseList.json")) {
 
             MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
                 .post(PUBLICATION_URL)
@@ -1358,7 +1358,7 @@ class PublicationTest {
         response = mockMvc.perform(MockMvcRequestBuilders
                                        .get(PUBLICATION_URL + "/" + artefact.getArtefactId() + PAYLOAD_URL)
                                        .header(VERIFICATION_HEADER, TRUE))
-                                       .andExpect(status().isOk()).andReturn();
+            .andExpect(status().isOk()).andReturn();
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
 
@@ -1806,11 +1806,6 @@ class PublicationTest {
 
         ExceptionResponse exceptionResponse =
             objectMapper.readValue(mvcResult.getResponse().getContentAsString(), ExceptionResponse.class);
-
-        assertTrue(
-            exceptionResponse.getMessage().contains(VERIFICATION_HEADER),
-            "Verification error not shown in error message"
-        );
         assertTrue(exceptionResponse.getMessage().contains(VERIFICATION_HEADER),
                    "Verification error not shown in error message");
     }
@@ -1938,8 +1933,7 @@ class PublicationTest {
         when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
 
         Artefact inDateArtefact = createDailyList(Sensitivity.PUBLIC);
-        Artefact futureArtefact = createDailyList(Sensitivity.PUBLIC, DISPLAY_FROM.plusMonths(1),
-                                                  CONTENT_DATE.plusDays(1));
+        Artefact futureArtefact = createDailyList(Sensitivity.PUBLIC, DISPLAY_FROM.plusMonths(1), "733");
 
         assertEquals(inDateArtefact.getDisplayFrom(), DISPLAY_FROM.minusMonths(2),
                      VALIDATION_DISPLAY_FROM);
@@ -2023,40 +2017,6 @@ class PublicationTest {
 
         assertTrue(deleteResponse.getResponse().getContentAsString().contains("must be a well-formed email address"),
                    "Should return 400 for invalid email");
-
-    }
-
-    @Test
-    void testGetArtefactMetadataAdmin() throws Exception {
-        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
-        Artefact artefactToFind = createDailyList(Sensitivity.PUBLIC, DISPLAY_FROM.plusMonths(1),
-                                                  CONTENT_DATE.plusDays(1));
-
-        MockHttpServletRequestBuilder expectedFailRequest = MockMvcRequestBuilders
-            .get(PUBLICATION_URL + "/" + artefactToFind.getArtefactId())
-            .header(VERIFICATION_HEADER, true);
-        mockMvc.perform(expectedFailRequest).andExpect(status().isNotFound());
-
-        MockHttpServletRequestBuilder adminRequest = MockMvcRequestBuilders
-            .get(PUBLICATION_URL + "/" + artefactToFind.getArtefactId())
-            .header(VERIFICATION_HEADER, true)
-            .header("x-admin", true);
-        MvcResult response = mockMvc.perform(adminRequest).andExpect(status().isOk()).andReturn();
-
-        Artefact artefact = objectMapper.readValue(
-            response.getResponse().getContentAsString(), Artefact.class);
-
-        assertEquals(artefactToFind, artefact, SHOULD_RETURN_EXPECTED_ARTEFACT);
-    }
-
-    @Test
-    void testGetArtefactMetadataReturnsNotFound() throws Exception {
-        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
-        MockHttpServletRequestBuilder adminRequest = MockMvcRequestBuilders
-            .get(PUBLICATION_URL + "/" + UUID.randomUUID())
-            .header(VERIFICATION_HEADER, true)
-            .header("x-admin", true);
-        mockMvc.perform(adminRequest).andExpect(status().isNotFound());
 
     }
 

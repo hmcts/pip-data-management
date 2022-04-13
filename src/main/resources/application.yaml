@@ -24,7 +24,7 @@ spring:
   datasource:
     driver-class-name: org.postgresql.Driver
 
-    url: jdbc:postgresql://${DB_NAME}.postgres.database.azure.com:${DB_PORT}/postgres
+    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}
     username: ${DB_USER}
     password: ${DB_PASS}
     properties:
@@ -65,10 +65,14 @@ payload:
       cases: "$['courtLists'][*]['courtHouse']['courtRoom'][*]['session'][*]['sittings'][*]['hearing'][*]['case'][*]['caseNumber', 'caseName', 'caseUrn']"
 validations:
   master-schema: "schemas/master_schema.json"
-  civil-daily-cause-list: "schemas/civil_daily_cause_list.json"
-  family-daily-cause-list: "schemas/family_daily_cause_list.json"
+  daily-cause-list: "schemas/civil_daily_cause_list.json"
   sjp-public-list: "schemas/single_justice_procedure_public.json"
   sjp-press-list: "schemas/single_justice_procedure_press.json"
 
 cron:
   daily-display-from: "0 0 0 * * *"
+
+dbMigration:
+  # When true, the app will run DB migration on startup.
+  # Otherwise, it will just check if all migrations have been applied (and fail to start if not).
+  runOnStartup: ${RUN_DB_MIGRATION_ON_STARTUP:true}
