@@ -200,8 +200,8 @@ class CourtApiTest {
         List<Court> courts = createCourts();
 
         MvcResult mvcResult = mockMvc.perform(get(GET_COURT_BY_FILTER_ENDPOINT)
-                            .param(REGIONS_PARAM, "North West")
-                            .param(JURISDICTIONS_PARAM, "Magistrates Court"))
+                                                  .param(REGIONS_PARAM, "North West")
+                                                  .param(JURISDICTIONS_PARAM, "Magistrates Court"))
             .andExpect(status().isOk())
             .andReturn();
 

@@ -629,7 +629,7 @@ class PublicationServiceTest {
     @Test
     void testDeleteArtefactByIdThrows() {
         ArtefactNotFoundException ex = assertThrows(ArtefactNotFoundException.class, () ->
-                                                        publicationService.deleteArtefactById(TEST_VALUE, TEST_VALUE),
+            publicationService.deleteArtefactById(TEST_VALUE, TEST_VALUE),
                                                     "ArtefactNotFoundException should be thrown");
 
         assertEquals("No artefact found with the ID: " + TEST_VALUE, ex.getMessage(),

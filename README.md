@@ -248,7 +248,7 @@ example filter request:
 - /hearings/case-name/{caseName} returns all matched and partial match hearings
 - /hearings/case-number/{caseNumber} returns single hearing for matched case number
 - /hearings/urn/{urnNumber} returns single hearing for matched urn number
-NOTE: searching or filtering is not case-sensitive but requires exact match otherwise.
+NOTE: searching or filtering is not case-sensitive but requires exact match otherwise
 
 ## Uploading and retrieving artefacts
 Artefacts are created by uploading blobs of raw data or flat files.
@@ -262,13 +262,13 @@ These are defined by the [schemas](src/main/resources/schemas).
 
 - GET `/publication/courtId/{courtId}` used to get a series of publications matching the courtId.
 - GET `publication/search/{searchTerm}/{searchValue}` used to get a series of publications matching a given case
-  search value, e.g. (CASE_URN/CASE_ID/CASE_NAME)
+  search value, eg. (CASE_URN/CASE_ID/CASE_NAME)
 
 
 - GET `/publication/{artefactId}` used to get the metadata for the artefact.
 - GET `/publication/{artefactId}/payload` used to get the payload for the artefact.
 - GET `/publication/{artefactId}/file` used to get payload file for the artefact.
-- DELETE  `/publication/{artefactId}` used to delete an artefact and its payload from P&I.
+- DELETE - `/publication/{artefactId}` used to delete an artefact and its payload from P&I
 
 ## Headers
 ### Upload headers

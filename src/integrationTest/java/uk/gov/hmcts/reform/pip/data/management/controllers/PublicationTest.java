@@ -135,7 +135,7 @@ class PublicationTest {
     Artefact createDailyList(Sensitivity sensitivity, LocalDateTime displayFrom, LocalDateTime contentDate)
         throws Exception {
         try (InputStream mockFile = this.getClass().getClassLoader()
-            .getResourceAsStream("data/civil-daily-cause-list/civilDailyCauseList.json")) {
+            .getResourceAsStream("data/daily-cause-list/dailyCauseList.json")) {
 
             MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
                 .post(PUBLICATION_URL)
@@ -942,7 +942,7 @@ class PublicationTest {
         when(blobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
 
         try (InputStream mockFile = this.getClass().getClassLoader()
-            .getResourceAsStream("data/civil-daily-cause-list/civilDailyCauseListInvalid.json")) {
+            .getResourceAsStream("data/daily-cause-list/dailyCauseListInvalid.json")) {
             MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
                 .post(PUBLICATION_URL)
                 .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
@@ -980,7 +980,7 @@ class PublicationTest {
         when(blobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
 
         try (InputStream mockFile = this.getClass().getClassLoader()
-            .getResourceAsStream("data/civil-daily-cause-list/civilDailyCauseList.json")) {
+            .getResourceAsStream("data/daily-cause-list/dailyCauseList.json")) {
 
             MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
                 .post(PUBLICATION_URL)
@@ -1358,7 +1358,7 @@ class PublicationTest {
         response = mockMvc.perform(MockMvcRequestBuilders
                                        .get(PUBLICATION_URL + "/" + artefact.getArtefactId() + PAYLOAD_URL)
                                        .header(VERIFICATION_HEADER, TRUE))
-                                       .andExpect(status().isOk()).andReturn();
+            .andExpect(status().isOk()).andReturn();
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
 
@@ -1806,11 +1806,6 @@ class PublicationTest {
 
         ExceptionResponse exceptionResponse =
             objectMapper.readValue(mvcResult.getResponse().getContentAsString(), ExceptionResponse.class);
-
-        assertTrue(
-            exceptionResponse.getMessage().contains(VERIFICATION_HEADER),
-            "Verification error not shown in error message"
-        );
         assertTrue(exceptionResponse.getMessage().contains(VERIFICATION_HEADER),
                    "Verification error not shown in error message");
     }
@@ -2059,6 +2054,5 @@ class PublicationTest {
         mockMvc.perform(adminRequest).andExpect(status().isNotFound());
 
     }
-
 }
 
