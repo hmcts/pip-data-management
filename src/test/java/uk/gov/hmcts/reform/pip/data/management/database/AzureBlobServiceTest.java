@@ -26,7 +26,7 @@ class AzureBlobServiceTest {
     private static final String PAYLOAD = "test-payload";
     private static final String CONTAINER_URL = "https://localhost";
     private static final MultipartFile FILE = new MockMultipartFile("test", (byte[]) null);
-    private static final String BLOB_NAME = SOURCE_ARTEFACT_ID + "-" + PROVENANCE;
+    private static final String BLOB_NAME = UUID.randomUUID().toString();
 
     @Mock
     BlobContainerClient blobContainerClient;
@@ -84,7 +84,7 @@ class AzureBlobServiceTest {
     @Test
     void testDeleteBlob() {
         assertEquals(String.format("Blob: %s successfully deleted.", BLOB_NAME),
-                     azureBlobService.deleteBlob(SOURCE_ARTEFACT_ID, PROVENANCE),
+                     azureBlobService.deleteBlob(BLOB_NAME),
                      MESSAGES_MATCH);
     }
 }

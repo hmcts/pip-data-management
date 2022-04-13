@@ -62,8 +62,7 @@ public class PublicationService {
         boolean isExisting = applyExistingArtefact(artefact);
 
         String blobUrl = azureBlobService.createPayload(
-            artefact.getSourceArtefactId(),
-            artefact.getProvenance(),
+            isExisting ? getUuidFromUrl(artefact.getPayload()) : UUID.randomUUID().toString(),
             payload
         );
 
@@ -81,7 +80,9 @@ public class PublicationService {
             isExisting ? getUuidFromUrl(artefact.getPayload()) : UUID.randomUUID().toString(),
             file
         );
-        artefact.setPayload(blobUrl);
+        if (!isExisting) {
+            artefact.setPayload(blobUrl);
+        }
         return artefactRepository.save(artefact);
     }
 
@@ -237,9 +238,7 @@ public class PublicationService {
     public void deleteArtefactById(String artefactId, String issuerEmail) {
         Optional<Artefact> artefactToDelete = artefactRepository.findArtefactByArtefactId(artefactId);
         if (artefactToDelete.isPresent()) {
-            log.info(azureBlobService.deleteBlob(
-                artefactToDelete.get().getSourceArtefactId(),
-                artefactToDelete.get().getProvenance()));
+            log.info(azureBlobService.deleteBlob(getUuidFromUrl(artefactToDelete.get().getPayload())));
             artefactRepository.delete(artefactToDelete.get());
             log.info(writeLog(issuerEmail, UserActions.REMOVE, artefactId));
         } else {

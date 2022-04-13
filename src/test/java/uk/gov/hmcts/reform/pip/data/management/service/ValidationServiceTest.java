@@ -296,7 +296,7 @@ class ValidationServiceTest {
     @Test
     void testValidateWithErrorsWhenArtefactIsCivilDailyCauseList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream("mocks/daily-cause-list/dailyCauseListInvalid.json")) {
+            .getResourceAsStream("mocks/civil-daily-cause-list/civilDailyCauseListInvalid.json")) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             assertThrows(PayloadValidationException.class, () ->
@@ -318,11 +318,34 @@ class ValidationServiceTest {
     @Test
     void testValidateWithoutErrorsWhenArtefactIsCivilDailyCauseList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream("mocks/daily-cause-list/dailyCauseList.json")) {
+            .getResourceAsStream("mocks/civil-daily-cause-list/civilDailyCauseList.json")) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             assertDoesNotThrow(() -> validationService.validateBody(text, ListType.CIVIL_DAILY_CAUSE_LIST),
                                "Valid daily cause list marked as invalid");
+        }
+    }
+
+    @Test
+    void testValidateWithoutErrorsWhenArtefactIsFamilyDailyCauseList() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream("mocks/family-daily-cause-list/familyDailyCauseList.json")) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            assertDoesNotThrow(() -> validationService.validateBody(text, ListType.FAMILY_DAILY_CAUSE_LIST),
+                               "Valid daily cause list marked as invalid");
+        }
+    }
+
+    @Test
+    void testValidateWithErrorsWhenArtefactIsFamilyDailyCauseList() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream("mocks/family-daily-cause-list/familyDailyCauseListInvalid.json")) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            assertThrows(PayloadValidationException.class, () ->
+                             validationService.validateBody(text, ListType.FAMILY_DAILY_CAUSE_LIST),
+                         "Invalid daily cause list marked as valid");
         }
     }
 

@@ -35,17 +35,21 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ValidationService {
 
     private final JsonSchema masterSchema;
-    private final JsonSchema dailyCauseListSchema;
-    private final JsonSchema sjpPublicListSchema;
-    private final JsonSchema sjpPressListSchema;
+
+    Map<ListType, JsonSchema> validationSchemas = new ConcurrentHashMap<>();
+
 
     @Autowired
     public ValidationService(ValidationConfiguration validationConfiguration) {
         try (InputStream masterFile = this.getClass().getClassLoader()
             .getResourceAsStream(validationConfiguration.getMasterSchema());
 
-             InputStream dailyCauseListFile = this.getClass().getClassLoader()
-                 .getResourceAsStream(validationConfiguration.getDailyCauseList());
+             InputStream civilDailyCauseListFile = this.getClass().getClassLoader()
+                 .getResourceAsStream(validationConfiguration.getCivilDailyCauseList());
+
+             InputStream familyDailyCauseListFile = this.getClass().getClassLoader()
+                 .getResourceAsStream(validationConfiguration.getFamilyDailyCauseList());
+
 
              InputStream sjpPublicListFile = this.getClass().getClassLoader()
                 .getResourceAsStream(validationConfiguration.getSjpPublicList());
@@ -55,10 +59,11 @@ public class ValidationService {
 
             JsonSchemaFactory schemaFactory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V7);
             masterSchema = schemaFactory.getSchema(masterFile);
-            dailyCauseListSchema = schemaFactory.getSchema(dailyCauseListFile);
-            sjpPublicListSchema = schemaFactory.getSchema(sjpPublicListFile);
-            sjpPressListSchema = schemaFactory.getSchema(sjpPressListFile);
 
+            validationSchemas.put(ListType.CIVIL_DAILY_CAUSE_LIST, schemaFactory.getSchema(civilDailyCauseListFile));
+            validationSchemas.put(ListType.FAMILY_DAILY_CAUSE_LIST, schemaFactory.getSchema(familyDailyCauseListFile));
+            validationSchemas.put(ListType.SJP_PUBLIC_LIST, schemaFactory.getSchema(sjpPublicListFile));
+            validationSchemas.put(ListType.SJP_PRESS_LIST, schemaFactory.getSchema(sjpPressListFile));
 
         } catch (Exception exception) {
             throw new PayloadValidationException(String.join(exception.getMessage()));
@@ -210,21 +215,11 @@ public class ValidationService {
             JsonNode json = new ObjectMapper().readTree(jsonPayload);
             masterSchema.validate(json).forEach(vm ->  errors.add(vm.getMessage()));
 
-            if (listType != null) {
-                switch (listType) {
-                    case CIVIL_DAILY_CAUSE_LIST:
-                        dailyCauseListSchema.validate(json).forEach(vm ->  errors.add(vm.getMessage()));
-                        break;
-                    case SJP_PUBLIC_LIST:
-                        sjpPublicListSchema.validate(json).forEach(vm ->  errors.add(vm.getMessage()));
-                        break;
-                    case SJP_PRESS_LIST:
-                        sjpPressListSchema.validate(json).forEach(vm ->  errors.add(vm.getMessage()));
-                        break;
-                    default:
-                        break;
+            validationSchemas.forEach((type, schema) -> {
+                if (type.equals(listType)) {
+                    schema.validate(json).forEach(vm ->  errors.add(vm.getMessage()));
                 }
-            }
+            });
 
             if (!errors.isEmpty()) {
                 throw new PayloadValidationException(String.join(", ", errors));

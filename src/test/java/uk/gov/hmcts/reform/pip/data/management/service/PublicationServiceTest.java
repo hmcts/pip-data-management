@@ -77,11 +77,11 @@ class PublicationServiceTest {
     private static final String SUCCESSFUL_TRIGGER = "success - subscription sent";
     private static final String SUCCESS = "Success";
     private static final String DELETION_TRACK_LOG_MESSAGE = "Track: TestValue, Removed %s, at ";
+    private static final LocalDateTime CONTENT_DATE = LocalDateTime.now();
 
     private Artefact artefact;
     private Artefact artefactWithPayloadUrl;
     private Artefact artefactWithIdAndPayloadUrl;
-    private Artefact artefactWithId;
     private Artefact artefactInTheFuture;
     private Artefact artefactFromThePast;
     private Artefact artefactFromNow;
@@ -137,16 +137,6 @@ class PublicationServiceTest {
             .displayTo(LocalDateTime.now().plusDays(2))
             .build();
 
-        artefactInTheFuture = Artefact.builder()
-            .artefactId(ARTEFACT_ID)
-            .sourceArtefactId(SOURCE_ARTEFACT_ID)
-            .provenance(PROVENANCE)
-            .payload(PAYLOAD_URL)
-            .search(SEARCH_VALUES)
-            .displayFrom(LocalDateTime.now().plusDays(1))
-            .displayTo(LocalDateTime.now().plusDays(2))
-            .build();
-
         artefactFromThePast = Artefact.builder()
             .artefactId(ARTEFACT_ID)
             .sourceArtefactId(SOURCE_ARTEFACT_ID)
@@ -187,7 +177,10 @@ class PublicationServiceTest {
             .displayTo(LocalDateTime.now())
             .build();
 
-        lenient().when(artefactRepository.findBySourceArtefactIdAndProvenance(SOURCE_ARTEFACT_ID, PROVENANCE))
+        lenient().when(artefactRepository.findArtefactByUpdateLogic(artefact.getCourtId(),artefact.getContentDate(),
+                                                                    artefact.getLanguage().name(),
+                                                                    artefact.getListType().name(),
+                                                                    artefact.getProvenance()))
             .thenReturn(Optional.empty());
         lenient().when(artefactRepository.save(artefactWithPayloadUrl)).thenReturn(artefactWithIdAndPayloadUrl);
     }
@@ -448,7 +441,7 @@ class PublicationServiceTest {
             .thenReturn(List.of(artefactWithIdAndPayloadUrl));
 
         assertEquals(
-            artefactWithId,
+            artefactWithIdAndPayloadUrl,
             publicationService.findAllBySearch(SEARCH_TERM_CASE_ID, TEST_VALUE, false).get(0),
             VALIDATION_ARTEFACT_NOT_MATCH
         );
@@ -619,9 +612,10 @@ class PublicationServiceTest {
     @Test
     void testDeleteArtefactById() throws IOException {
         try (LogCaptor logCaptor = LogCaptor.forClass(PublicationService.class)) {
-            when(artefactRepository.findArtefactByArtefactId(ARTEFACT_ID.toString())).thenReturn(Optional.of(artefact));
-            when(azureBlobService.deleteBlob(SOURCE_ARTEFACT_ID, PROVENANCE)).thenReturn(SUCCESS);
-            doNothing().when(artefactRepository).delete(artefact);
+            when(artefactRepository.findArtefactByArtefactId(ARTEFACT_ID.toString()))
+                .thenReturn(Optional.of(artefactWithPayloadUrl));
+            when(azureBlobService.deleteBlob(PAYLOAD_STRIPPED)).thenReturn(SUCCESS);
+            doNothing().when(artefactRepository).delete(artefactWithPayloadUrl);
 
             publicationService.deleteArtefactById(ARTEFACT_ID.toString(), TEST_VALUE);
             assertEquals(SUCCESS, logCaptor.getInfoLogs().get(0), MESSAGES_MATCH);
