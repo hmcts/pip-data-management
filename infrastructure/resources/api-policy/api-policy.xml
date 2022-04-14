@@ -1,14 +1,14 @@
 <policies>
     <inbound>
         <base />
-       <!-- <validate-jwt header-name="Authorization" failed-validation-httpcode="401" failed-validation-error-message="Unauthorized. Access token is missing or invalid.">
+        <validate-jwt header-name="Authorization" failed-validation-httpcode="401" failed-validation-error-message="Unauthorized. Access token is missing or invalid.">
             <openid-config url="https://login.microsoftonline.com/{TENANT_ID}/v2.0/.well-known/openid-configuration" />
             <required-claims>
-                <claim name="aud">
-                    <value>{APP_CLIENT_ID}</value>
+                <claim name="roles" match="any">
+                    <value>apim.request.admin</value>
                 </claim>
             </required-claims>
-        </validate-jwt>-->
+        </validate-jwt>
         <cors>
             <allowed-origins>
                 <origin>*</origin>
