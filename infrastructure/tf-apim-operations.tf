@@ -12,6 +12,7 @@ locals {
 }
 
 resource "azurerm_api_management_api_operation_policy" "apim_api_operation_policy" {
+  count  = local.deploy_apim
   for_each            = { for operation in local.operation_policies : operation.operation_id => operation }
   operation_id        = each.value.operation_id
   api_name            = local.apim_api_name
