@@ -1,6 +1,6 @@
 locals {
   operation_policies_files = fileset(path.module, "./resources/operation-policies/*.xml")
-  operation_policies = {
+  operation_policies = local.deploy_apim == 0 ? {} : {
     for operation_policies_file in local.operation_policies_files :
     basename(operation_policies_file) => {
       operation_id = replace(basename(operation_policies_file), ".xml", "")
