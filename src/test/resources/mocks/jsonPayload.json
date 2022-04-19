@@ -63,7 +63,7 @@
                       },
                       {
                         "johTitle": "Other",
-                        "role": "judge",
+                        "role": "JUDGE",
                         "johNameSurname": "",
                         "johKnownAs": ""
                       }
