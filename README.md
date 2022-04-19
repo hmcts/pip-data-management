@@ -5,7 +5,7 @@
 ## Purpose
 
 The purpose of this service is to provide the ability to manage data based on data governance, retention and
-security policies. Including providing Usage Data & MI to SDP
+security policies. Including providing Usage Data & MI to SDP.
 
 ## What's inside
 
