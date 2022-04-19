@@ -1,5 +1,5 @@
 locals {
-  apim_api_name       = "${var.product}-data-management-api"
+  apim_api_name  = "${var.product}-data-management-api"
   api_policy_raw = file("./resources/api-policy/api-policy.xml")
   api_policy = replace(replace(local.api_policy_raw
     , "{TENANT_ID}", "")
@@ -15,7 +15,7 @@ module "apim_api" {
   name                  = local.apim_api_name
   path                  = "${var.product}/data-management"
   product_id            = data.azurerm_api_management_product.apim_product[0].product_id
-  protocols             = ["https"]
+  protocols             = ["http", "https"]
   revision              = "1"
   service_url           = "https://${local.base_url}"
   swagger_url           = file("./resources/swagger/api-swagger.json")
