@@ -8,3 +8,5 @@ CREATE TABLE IF NOT EXISTS court (
 INSERT INTO court(court_id, jurisdiction, name)
 VALUES(0, '{}', 'Single Justice Procedure (SJP)')
 ON CONFLICT (court_id) DO NOTHING;
+
+UPDATE court SET name = 'Single Justice Procedure' WHERE court_id = 0;
