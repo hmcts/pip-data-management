@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
@@ -33,6 +34,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(classes = {Application.class},
@@ -41,6 +43,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @ActiveProfiles(profiles = "test")
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
+@WithMockUser(username = "admin", authorities = { "APPROLE_api.request.admin" })
 class PublicationSjpPressTest {
 
     @Autowired
@@ -90,7 +93,7 @@ class PublicationSjpPressTest {
                 .contentType(MediaType.APPLICATION_JSON);
 
 
-            MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
+            MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder.with(csrf()))
                 .andExpect(status().isCreated()).andReturn();
 
             assertNotNull(response.getResponse().getContentAsString(), "Response should contain a Artefact");
@@ -123,7 +126,7 @@ class PublicationSjpPressTest {
                 .contentType(MediaType.APPLICATION_JSON);
 
 
-            MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
+            MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder.with(csrf()))
                 .andExpect(status().isBadRequest()).andReturn();
 
             assertNotNull(response.getResponse().getContentAsString(), "Response should contain a Artefact");

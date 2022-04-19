@@ -13,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -32,6 +33,7 @@ import java.time.LocalDateTime;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(classes = {Application.class},
@@ -40,6 +42,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles(profiles = "test")
 @SuppressWarnings("PMD.LawOfDemeter")
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
+@WithMockUser(username = "admin", authorities = { "APPROLE_api.request.admin" })
 class PublicationInvalidHeadersTest {
 
     @Autowired
@@ -109,7 +112,7 @@ class PublicationInvalidHeadersTest {
         mockHttpServletRequestBuilder.headers(httpHeaders);
         mockHttpServletRequestBuilder.contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
 
-        MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
+        MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder.with(csrf()))
             .andExpect(status().isBadRequest()).andReturn();
 
         assertFalse(response.getResponse().getContentAsString().isEmpty(), VALIDATION_EMPTY_RESPONSE);
@@ -136,7 +139,7 @@ class PublicationInvalidHeadersTest {
         mockHttpServletRequestBuilder.headers(httpHeaders);
         mockHttpServletRequestBuilder.contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
 
-        MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
+        MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder.with(csrf()))
             .andExpect(status().isBadRequest()).andReturn();
 
         assertFalse(response.getResponse().getContentAsString().isEmpty(), VALIDATION_EMPTY_RESPONSE);
@@ -163,7 +166,7 @@ class PublicationInvalidHeadersTest {
         mockHttpServletRequestBuilder.headers(httpHeaders);
         mockHttpServletRequestBuilder.contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
 
-        MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
+        MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder.with(csrf()))
             .andExpect(status().isBadRequest()).andReturn();
 
         assertFalse(response.getResponse().getContentAsString().isEmpty(), VALIDATION_EMPTY_RESPONSE);
@@ -190,7 +193,7 @@ class PublicationInvalidHeadersTest {
         mockHttpServletRequestBuilder.headers(httpHeaders);
         mockHttpServletRequestBuilder.contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
 
-        MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
+        MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder.with(csrf()))
             .andExpect(status().isBadRequest()).andReturn();
 
         assertFalse(response.getResponse().getContentAsString().isEmpty(), VALIDATION_EMPTY_RESPONSE);
@@ -218,7 +221,7 @@ class PublicationInvalidHeadersTest {
         mockHttpServletRequestBuilder.contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
         mockHttpServletRequestBuilder.content(payload);
 
-        MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
+        MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder.with(csrf()))
             .andExpect(status().isBadRequest()).andReturn();
 
         assertFalse(response.getResponse().getContentAsString().isEmpty(), VALIDATION_EMPTY_RESPONSE);
@@ -245,7 +248,7 @@ class PublicationInvalidHeadersTest {
         mockHttpServletRequestBuilder.headers(httpHeaders);
         mockHttpServletRequestBuilder.contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
 
-        MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
+        MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder.with(csrf()))
             .andExpect(status().isBadRequest()).andReturn();
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);

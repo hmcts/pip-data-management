@@ -17,6 +17,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
@@ -47,6 +48,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(classes = {Application.class},
@@ -57,6 +59,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SuppressWarnings({"PMD.ExcessiveImports", "PMD.ExcessiveClassLength",
     "PMD.CyclomaticComplexity", "PMD.TooManyMethods"})
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
+@WithMockUser(username = "admin", authorities = { "APPROLE_api.request.admin" })
 class PublicationTest {
 
     @Autowired
@@ -144,7 +147,7 @@ class PublicationTest {
                 .content(mockFile.readAllBytes())
                 .contentType(MediaType.APPLICATION_JSON);
 
-            MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
+            MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder.with(csrf()))
                 .andExpect(status().isCreated()).andReturn();
 
             return objectMapper.readValue(
@@ -177,7 +180,8 @@ class PublicationTest {
         when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
         when(blobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
 
-        MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
+        MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder.with(csrf()))
+            .andExpect(status().isCreated()).andReturn();
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
 
@@ -238,7 +242,7 @@ class PublicationTest {
 
         mockHttpServletRequestBuilder.contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
 
-        MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
+        MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder.with(csrf()))
             .andExpect(status().isCreated()).andReturn();
 
         Artefact artefact = objectMapper.readValue(
@@ -276,7 +280,7 @@ class PublicationTest {
         mockHttpServletRequestBuilder.header(PublicationConfiguration.LIST_TYPE, ListType.CIVIL_DAILY_CAUSE_LIST);
         mockHttpServletRequestBuilder.header(PublicationConfiguration.COURT_ID, COURT_ID);
         mockHttpServletRequestBuilder.contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
-        MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
+        MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder.with(csrf()))
             .andExpect(status().isCreated()).andReturn();
         Artefact createdArtefact = objectMapper.readValue(
             response.getResponse().getContentAsString(),
@@ -309,7 +313,7 @@ class PublicationTest {
         mockHttpServletRequestBuilder.header(PublicationConfiguration.COURT_ID, COURT_ID);
         mockHttpServletRequestBuilder.header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE);
         mockHttpServletRequestBuilder.contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
-        MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
+        MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder.with(csrf()))
             .andExpect(status().isCreated()).andReturn();
         Artefact createdArtefact = objectMapper.readValue(
             response.getResponse().getContentAsString(),
@@ -347,7 +351,7 @@ class PublicationTest {
         mockHttpServletRequestBuilder.contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
 
         final MvcResult createResponse =
-            mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
+            mockMvc.perform(mockHttpServletRequestBuilder.with(csrf())).andExpect(status().isCreated()).andReturn();
 
         if (isJson) {
             mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
@@ -367,7 +371,7 @@ class PublicationTest {
         mockHttpServletRequestBuilder.header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE);
         mockHttpServletRequestBuilder.contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
 
-        final MvcResult updatedResponse = mockMvc.perform(mockHttpServletRequestBuilder).andExpect(
+        final MvcResult updatedResponse = mockMvc.perform(mockHttpServletRequestBuilder.with(csrf())).andExpect(
             status().isCreated()).andReturn();
 
         Artefact createdArtefact = objectMapper.readValue(
@@ -409,7 +413,7 @@ class PublicationTest {
             .contentType(MediaType.APPLICATION_JSON);
 
 
-        mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isBadRequest()).andReturn();
+        mockMvc.perform(mockHttpServletRequestBuilder.with(csrf())).andExpect(status().isBadRequest()).andReturn();
     }
 
 
@@ -439,13 +443,13 @@ class PublicationTest {
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
             .contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
 
-        mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
+        mockMvc.perform(mockHttpServletRequestBuilder.with(csrf())).andExpect(status().isCreated()).andReturn();
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 = MockMvcRequestBuilders
             .get(SEARCH_COURT_URL + "/" + COURT_ID)
             .header(VERIFICATION_HEADER, TRUE);
         MvcResult getResponse =
-            mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isOk()).andReturn();
+            mockMvc.perform(mockHttpServletRequestBuilder1.with(csrf())).andExpect(status().isOk()).andReturn();
 
         String jsonOutput = getResponse.getResponse().getContentAsString();
         JSONArray jsonArray = new JSONArray(jsonOutput);
@@ -478,7 +482,7 @@ class PublicationTest {
                 .content(mockFile.readAllBytes())
                 .contentType(MediaType.APPLICATION_JSON);
 
-            MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
+            MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder.with(csrf()))
                 .andExpect(status().isBadRequest()).andReturn();
 
             assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
@@ -519,7 +523,7 @@ class PublicationTest {
                 .contentType(MediaType.APPLICATION_JSON);
 
 
-            MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
+            MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder.with(csrf()))
                 .andExpect(status().isCreated()).andReturn();
 
             assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
@@ -558,7 +562,7 @@ class PublicationTest {
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
             .contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
         MvcResult createResponse =
-            mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
+            mockMvc.perform(mockHttpServletRequestBuilder.with(csrf())).andExpect(status().isCreated()).andReturn();
         Artefact createdArtefact = objectMapper.readValue(
             createResponse.getResponse().getContentAsString(),
             Artefact.class
@@ -573,7 +577,7 @@ class PublicationTest {
             .get(SEARCH_COURT_URL + "/" + COURT_ID)
             .header(VERIFICATION_HEADER, TRUE);
         MvcResult getResponse =
-            mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isOk()).andReturn();
+            mockMvc.perform(mockHttpServletRequestBuilder1.with(csrf())).andExpect(status().isOk()).andReturn();
 
         String jsonOutput = getResponse.getResponse().getContentAsString();
         JSONArray jsonArray = new JSONArray(jsonOutput);
@@ -613,7 +617,7 @@ class PublicationTest {
             .contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
 
         MvcResult createResponse =
-            mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
+            mockMvc.perform(mockHttpServletRequestBuilder.with(csrf())).andExpect(status().isCreated()).andReturn();
         Artefact createdArtefact = objectMapper.readValue(
             createResponse.getResponse().getContentAsString(),
             Artefact.class
@@ -627,7 +631,7 @@ class PublicationTest {
             .get(SEARCH_COURT_URL + "/" + COURT_ID)
             .header(VERIFICATION_HEADER, FALSE);
         MvcResult getResponse =
-            mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isOk()).andReturn();
+            mockMvc.perform(mockHttpServletRequestBuilder1.with(csrf())).andExpect(status().isOk()).andReturn();
 
         String jsonOutput = getResponse.getResponse().getContentAsString();
         JSONArray jsonArray = new JSONArray(jsonOutput);
@@ -668,7 +672,7 @@ class PublicationTest {
             .contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
 
         MvcResult createResponse =
-            mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
+            mockMvc.perform(mockHttpServletRequestBuilder.with(csrf())).andExpect(status().isCreated()).andReturn();
         Artefact createdArtefact = objectMapper.readValue(
             createResponse.getResponse().getContentAsString(),
             Artefact.class
@@ -682,7 +686,7 @@ class PublicationTest {
             .get(SEARCH_COURT_URL + "/" + COURT_ID)
             .header(VERIFICATION_HEADER, FALSE);
         MvcResult getResponse =
-            mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isOk()).andReturn();
+            mockMvc.perform(mockHttpServletRequestBuilder1.with(csrf())).andExpect(status().isOk()).andReturn();
 
         String jsonOutput = getResponse.getResponse().getContentAsString();
         JSONArray jsonArray = new JSONArray(jsonOutput);
@@ -721,7 +725,7 @@ class PublicationTest {
             .contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
 
         MvcResult createResponse =
-            mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
+            mockMvc.perform(mockHttpServletRequestBuilder.with(csrf())).andExpect(status().isCreated()).andReturn();
         Artefact createdArtefact = objectMapper.readValue(
             createResponse.getResponse().getContentAsString(),
             Artefact.class
@@ -735,7 +739,7 @@ class PublicationTest {
             .get(SEARCH_COURT_URL + "/" + COURT_ID)
             .header(VERIFICATION_HEADER, FALSE);
         MvcResult getResponse =
-            mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isOk()).andReturn();
+            mockMvc.perform(mockHttpServletRequestBuilder1.with(csrf())).andExpect(status().isOk()).andReturn();
 
         String jsonOutput = getResponse.getResponse().getContentAsString();
         JSONArray jsonArray = new JSONArray(jsonOutput);
@@ -771,7 +775,7 @@ class PublicationTest {
         when(blobContainerClient.getBlobContainerUrl()).thenReturn(PAYLOAD_URL);
 
         MvcResult response =
-            mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
+            mockMvc.perform(mockHttpServletRequestBuilder.with(csrf())).andExpect(status().isCreated()).andReturn();
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
 
@@ -783,7 +787,7 @@ class PublicationTest {
 
         response = mockMvc.perform(MockMvcRequestBuilders
                                        .get(PUBLICATION_URL + "/" + artefact.getArtefactId() + "/file")
-                                       .header(VERIFICATION_HEADER, TRUE))
+                                       .header(VERIFICATION_HEADER, TRUE).with(csrf()))
             .andExpect(status().isOk()).andReturn();
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
@@ -820,7 +824,7 @@ class PublicationTest {
         when(blobContainerClient.getBlobContainerUrl()).thenReturn(PAYLOAD_URL);
 
         MvcResult response =
-            mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
+            mockMvc.perform(mockHttpServletRequestBuilder.with(csrf())).andExpect(status().isCreated()).andReturn();
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
 
@@ -829,7 +833,7 @@ class PublicationTest {
 
         mockMvc.perform(MockMvcRequestBuilders
                             .get(PUBLICATION_URL + "/" + artefact.getArtefactId() + "/file")
-                            .header(VERIFICATION_HEADER, FALSE))
+                            .header(VERIFICATION_HEADER, FALSE).with(csrf()))
             .andExpect(status().isNotFound()).andReturn();
     }
 
@@ -838,7 +842,7 @@ class PublicationTest {
     void retrieveFileOfAnArtefactWhereNotFound() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders
                             .get("/publication/7d734e8d-ba1d-4730-bd8b-09a970be00cc/file")
-                            .header(VERIFICATION_HEADER, TRUE))
+                            .header(VERIFICATION_HEADER, TRUE).with(csrf()))
             .andExpect(status().isNotFound()).andReturn();
     }
 
@@ -868,7 +872,7 @@ class PublicationTest {
         when(blobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
 
         MvcResult response =
-            mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
+            mockMvc.perform(mockHttpServletRequestBuilder.with(csrf())).andExpect(status().isCreated()).andReturn();
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
 
@@ -880,7 +884,7 @@ class PublicationTest {
 
         response = mockMvc.perform(MockMvcRequestBuilders
                                        .get(PUBLICATION_URL + "/" + artefact.getArtefactId() + PAYLOAD_URL)
-                                       .header(VERIFICATION_HEADER, TRUE))
+                                       .header(VERIFICATION_HEADER, TRUE).with(csrf()))
                                        .andExpect(status().isOk()).andReturn();
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
@@ -916,7 +920,7 @@ class PublicationTest {
         when(blobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
 
         MvcResult response =
-            mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
+            mockMvc.perform(mockHttpServletRequestBuilder.with(csrf())).andExpect(status().isCreated()).andReturn();
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
 
@@ -928,7 +932,7 @@ class PublicationTest {
 
         mockMvc.perform(MockMvcRequestBuilders
                                        .get(PUBLICATION_URL + "/" + artefact.getArtefactId() + PAYLOAD_URL)
-                                       .header(VERIFICATION_HEADER, TRUE))
+                                       .header(VERIFICATION_HEADER, TRUE).with(csrf()))
             .andExpect(status().isNotFound()).andReturn();
     }
 
@@ -958,7 +962,7 @@ class PublicationTest {
         when(blobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
 
         MvcResult response =
-            mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
+            mockMvc.perform(mockHttpServletRequestBuilder.with(csrf())).andExpect(status().isCreated()).andReturn();
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
 
@@ -967,7 +971,7 @@ class PublicationTest {
 
         mockMvc.perform(MockMvcRequestBuilders
                                        .get(PUBLICATION_URL + "/" + artefact.getArtefactId() + PAYLOAD_URL)
-                                       .header(VERIFICATION_HEADER, FALSE))
+                                       .header(VERIFICATION_HEADER, FALSE).with(csrf()))
             .andExpect(status().isNotFound()).andReturn();
     }
 
@@ -975,7 +979,8 @@ class PublicationTest {
     @DisplayName("Payload endpoint where verification not set should display a 400")
     void retrievePayloadWhenVerificationEndpointNotSet() throws Exception {
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
-                                                  .get("/publication/7d734e8d-ba1d-4730-bd8b-09a970be00cc/payload"))
+                                                  .get("/publication/7d734e8d-ba1d-4730-bd8b-09a970be00cc/payload")
+                                                  .with(csrf()))
             .andExpect(status().isBadRequest()).andReturn();
 
         ExceptionResponse exceptionResponse =
@@ -1011,7 +1016,7 @@ class PublicationTest {
         when(blobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
 
         MvcResult response =
-            mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
+            mockMvc.perform(mockHttpServletRequestBuilder.with(csrf())).andExpect(status().isCreated()).andReturn();
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
 
@@ -1023,7 +1028,7 @@ class PublicationTest {
 
         response = mockMvc.perform(MockMvcRequestBuilders
                                        .get(PUBLICATION_URL + "/" + artefact.getArtefactId() + PAYLOAD_URL)
-                                       .header(VERIFICATION_HEADER, FALSE))
+                                       .header(VERIFICATION_HEADER, FALSE).with(csrf()))
             .andExpect(status().isOk()).andReturn();
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
@@ -1063,7 +1068,7 @@ class PublicationTest {
         when(blobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
 
         MvcResult response =
-            mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
+            mockMvc.perform(mockHttpServletRequestBuilder.with(csrf())).andExpect(status().isCreated()).andReturn();
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
 
@@ -1075,7 +1080,7 @@ class PublicationTest {
 
         mockMvc.perform(MockMvcRequestBuilders
                             .get(PUBLICATION_URL + "/" + artefact.getArtefactId() + PAYLOAD_URL)
-                            .header(VERIFICATION_HEADER, FALSE))
+                            .header(VERIFICATION_HEADER, FALSE).with(csrf()))
             .andExpect(status().isNotFound()).andReturn();
     }
 
@@ -1084,7 +1089,7 @@ class PublicationTest {
     void retrievePayloadOfAnArtefactWhereNotFound() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders
                                        .get("/publication/7d734e8d-ba1d-4730-bd8b-09a970be00cc/payload")
-                                       .header(VERIFICATION_HEADER, TRUE))
+                                       .header(VERIFICATION_HEADER, TRUE).with(csrf()))
             .andExpect(status().isNotFound()).andReturn();
     }
 
@@ -1114,7 +1119,7 @@ class PublicationTest {
         when(blobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
 
         MvcResult response =
-            mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
+            mockMvc.perform(mockHttpServletRequestBuilder.with(csrf())).andExpect(status().isCreated()).andReturn();
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
 
@@ -1126,7 +1131,7 @@ class PublicationTest {
 
         response = mockMvc.perform(MockMvcRequestBuilders
                                        .get(PUBLICATION_URL + "/" + artefact.getArtefactId())
-                                       .header(VERIFICATION_HEADER, TRUE))
+                                       .header(VERIFICATION_HEADER, TRUE).with(csrf()))
             .andExpect(status().isOk()).andReturn();
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
@@ -1163,7 +1168,7 @@ class PublicationTest {
         when(blobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
 
         MvcResult response =
-            mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
+            mockMvc.perform(mockHttpServletRequestBuilder.with(csrf())).andExpect(status().isCreated()).andReturn();
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
 
@@ -1175,7 +1180,7 @@ class PublicationTest {
 
         response = mockMvc.perform(MockMvcRequestBuilders
                                        .get(PUBLICATION_URL + "/" + artefact.getArtefactId())
-                                       .header(VERIFICATION_HEADER, FALSE))
+                                       .header(VERIFICATION_HEADER, FALSE).with(csrf()))
             .andExpect(status().isOk()).andReturn();
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
@@ -1213,7 +1218,7 @@ class PublicationTest {
         when(blobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
 
         MvcResult response =
-            mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
+            mockMvc.perform(mockHttpServletRequestBuilder.with(csrf())).andExpect(status().isCreated()).andReturn();
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
 
@@ -1225,7 +1230,7 @@ class PublicationTest {
 
         mockMvc.perform(MockMvcRequestBuilders
                             .get(PUBLICATION_URL + "/" + artefact.getArtefactId())
-                            .header(VERIFICATION_HEADER, TRUE))
+                            .header(VERIFICATION_HEADER, TRUE).with(csrf()))
             .andExpect(status().isNotFound()).andReturn();
     }
 
@@ -1255,7 +1260,7 @@ class PublicationTest {
         when(blobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
 
         MvcResult response =
-            mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
+            mockMvc.perform(mockHttpServletRequestBuilder.with(csrf())).andExpect(status().isCreated()).andReturn();
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
 
@@ -1267,7 +1272,7 @@ class PublicationTest {
 
         mockMvc.perform(MockMvcRequestBuilders
                             .get(PUBLICATION_URL + "/" + artefact.getArtefactId())
-                            .header(VERIFICATION_HEADER, FALSE))
+                            .header(VERIFICATION_HEADER, FALSE).with(csrf()))
             .andExpect(status().isNotFound()).andReturn();
     }
 
@@ -1298,7 +1303,7 @@ class PublicationTest {
 
 
         MvcResult response =
-            mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
+            mockMvc.perform(mockHttpServletRequestBuilder.with(csrf())).andExpect(status().isCreated()).andReturn();
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
 
@@ -1307,7 +1312,7 @@ class PublicationTest {
 
         mockMvc.perform(MockMvcRequestBuilders
                             .get(PUBLICATION_URL + "/" + artefact.getArtefactId())
-                            .header(VERIFICATION_HEADER, FALSE))
+                            .header(VERIFICATION_HEADER, FALSE).with(csrf()))
             .andExpect(status().isNotFound()).andReturn();
     }
 
@@ -1316,7 +1321,7 @@ class PublicationTest {
     void retrieveMetadataOfAnArtefactWhereNotFound() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders
                             .get("/publication/7d734e8d-ba1d-4730-bd8b-09a970be00cc")
-                            .header(VERIFICATION_HEADER, TRUE))
+                            .header(VERIFICATION_HEADER, TRUE).with(csrf()))
             .andExpect(status().isNotFound()).andReturn();
     }
 
@@ -1324,7 +1329,8 @@ class PublicationTest {
     @DisplayName("Metadata endpoint where verification not set should display a 400")
     void retrieveMetadataWhenVerificationEndpointNotSet() throws Exception {
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
-                                                  .get("/publication/7d734e8d-ba1d-4730-bd8b-09a970be00cc"))
+                                                  .get("/publication/7d734e8d-ba1d-4730-bd8b-09a970be00cc")
+                                                  .with(csrf()))
             .andExpect(status().isBadRequest()).andReturn();
 
         ExceptionResponse exceptionResponse =
@@ -1352,7 +1358,7 @@ class PublicationTest {
             .header(VERIFICATION_HEADER, TRUE);
 
         MvcResult getResponse =
-            mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isOk()).andReturn();
+            mockMvc.perform(mockHttpServletRequestBuilder1.with(csrf())).andExpect(status().isOk()).andReturn();
 
         assertTrue(
             getResponse.getResponse().getContentAsString().contains(artefact.getArtefactId().toString()),
@@ -1374,7 +1380,7 @@ class PublicationTest {
             .header(VERIFICATION_HEADER, FALSE);
 
         MvcResult getResponse =
-            mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isOk()).andReturn();
+            mockMvc.perform(mockHttpServletRequestBuilder1.with(csrf())).andExpect(status().isOk()).andReturn();
 
         assertTrue(
             getResponse.getResponse().getContentAsString().contains(artefact.getArtefactId().toString()),
@@ -1394,7 +1400,7 @@ class PublicationTest {
         mockHttpServletRequestBuilder1
             .header(VERIFICATION_HEADER, FALSE);
 
-        mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isNotFound()).andReturn();
+        mockMvc.perform(mockHttpServletRequestBuilder1.with(csrf())).andExpect(status().isNotFound()).andReturn();
 
     }
 
@@ -1412,7 +1418,7 @@ class PublicationTest {
             .header(VERIFICATION_HEADER, TRUE);
 
         MvcResult getResponse =
-            mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isOk()).andReturn();
+            mockMvc.perform(mockHttpServletRequestBuilder1.with(csrf())).andExpect(status().isOk()).andReturn();
 
         assertTrue(
             getResponse.getResponse().getContentAsString().contains(artefact.getArtefactId().toString()),
@@ -1433,7 +1439,7 @@ class PublicationTest {
             .header(VERIFICATION_HEADER, FALSE);
 
         MvcResult getResponse =
-            mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isOk()).andReturn();
+            mockMvc.perform(mockHttpServletRequestBuilder1.with(csrf())).andExpect(status().isOk()).andReturn();
 
         assertTrue(
             getResponse.getResponse().getContentAsString().contains(artefact.getArtefactId().toString()),
@@ -1453,7 +1459,7 @@ class PublicationTest {
         mockHttpServletRequestBuilder1
             .header(VERIFICATION_HEADER, FALSE);
 
-        mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isNotFound()).andReturn();
+        mockMvc.perform(mockHttpServletRequestBuilder1.with(csrf())).andExpect(status().isNotFound()).andReturn();
     }
 
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
@@ -1476,7 +1482,7 @@ class PublicationTest {
             .header(ADMIN_HEADER, FALSE);
 
         MvcResult nonAdminResponse =
-            mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isOk()).andReturn();
+            mockMvc.perform(mockHttpServletRequestBuilder.with(csrf())).andExpect(status().isOk()).andReturn();
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 = MockMvcRequestBuilders
             .get(SEARCH_COURT_URL + "/" + COURT_ID)
@@ -1484,7 +1490,7 @@ class PublicationTest {
             .header(ADMIN_HEADER, TRUE);
 
         MvcResult adminResponse =
-            mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isOk()).andReturn();
+            mockMvc.perform(mockHttpServletRequestBuilder1.with(csrf())).andExpect(status().isOk()).andReturn();
 
         JSONArray nonAdminResults = new JSONArray(nonAdminResponse.getResponse().getContentAsString());
         JSONArray adminResults = new JSONArray(adminResponse.getResponse().getContentAsString());
@@ -1502,13 +1508,13 @@ class PublicationTest {
             .get(PUBLICATION_URL + "/" + artefactToDelete.getArtefactId())
             .header(VERIFICATION_HEADER, TRUE);
 
-        mockMvc.perform(preDeleteRequest).andExpect(status().isOk());
+        mockMvc.perform(preDeleteRequest.with(csrf())).andExpect(status().isOk());
 
         MockHttpServletRequestBuilder deleteRequest = MockMvcRequestBuilders
             .delete(PUBLICATION_URL + "/" + artefactToDelete.getArtefactId())
             .header(ISSUER_HEADER, EMAIL);
 
-        MvcResult deleteResponse = mockMvc.perform(deleteRequest).andExpect(status().isOk()).andReturn();
+        MvcResult deleteResponse = mockMvc.perform(deleteRequest.with(csrf())).andExpect(status().isOk()).andReturn();
 
         assertEquals("Successfully deleted artefact: " + artefactToDelete.getArtefactId(),
                      deleteResponse.getResponse().getContentAsString(), "Should successfully delete artefact");
@@ -1525,7 +1531,8 @@ class PublicationTest {
             .delete(PUBLICATION_URL + "/" + invalidId)
             .header(ISSUER_HEADER, EMAIL);
 
-        MvcResult deleteResponse = mockMvc.perform(deleteRequest).andExpect(status().isNotFound()).andReturn();
+        MvcResult deleteResponse = mockMvc.perform(deleteRequest.with(csrf()))
+            .andExpect(status().isNotFound()).andReturn();
 
         assertTrue(deleteResponse.getResponse().getContentAsString()
                        .contains("No artefact found with the ID: " + invalidId),
@@ -1543,7 +1550,8 @@ class PublicationTest {
             .delete(PUBLICATION_URL + "/" + invalidId)
             .header(ISSUER_HEADER, TEST_VALUE);
 
-        MvcResult deleteResponse = mockMvc.perform(deleteRequest).andExpect(status().isBadRequest()).andReturn();
+        MvcResult deleteResponse = mockMvc.perform(deleteRequest.with(csrf()))
+            .andExpect(status().isBadRequest()).andReturn();
 
         assertTrue(deleteResponse.getResponse().getContentAsString().contains("must be a well-formed email address"),
                    "Should return 400 for invalid email");
@@ -1559,13 +1567,13 @@ class PublicationTest {
         MockHttpServletRequestBuilder expectedFailRequest = MockMvcRequestBuilders
             .get(PUBLICATION_URL + "/" + artefactToFind.getArtefactId())
             .header(VERIFICATION_HEADER, true);
-        mockMvc.perform(expectedFailRequest).andExpect(status().isNotFound());
+        mockMvc.perform(expectedFailRequest.with(csrf())).andExpect(status().isNotFound());
 
         MockHttpServletRequestBuilder adminRequest = MockMvcRequestBuilders
             .get(PUBLICATION_URL + "/" + artefactToFind.getArtefactId())
             .header(VERIFICATION_HEADER, true)
             .header("x-admin", true);
-        MvcResult response = mockMvc.perform(adminRequest).andExpect(status().isOk()).andReturn();
+        MvcResult response = mockMvc.perform(adminRequest.with(csrf())).andExpect(status().isOk()).andReturn();
 
         Artefact artefact = objectMapper.readValue(
             response.getResponse().getContentAsString(), Artefact.class);
@@ -1580,7 +1588,7 @@ class PublicationTest {
             .get(PUBLICATION_URL + "/" + UUID.randomUUID())
             .header(VERIFICATION_HEADER, true)
             .header("x-admin", true);
-        mockMvc.perform(adminRequest).andExpect(status().isNotFound());
+        mockMvc.perform(adminRequest.with(csrf())).andExpect(status().isNotFound());
 
     }
 

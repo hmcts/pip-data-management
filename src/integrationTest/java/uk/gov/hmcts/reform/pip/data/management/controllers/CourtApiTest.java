@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
@@ -24,6 +25,7 @@ import java.util.function.BiPredicate;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.annotation.DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
@@ -35,6 +37,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles(profiles = "test")
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
 @DirtiesContext(classMode = BEFORE_EACH_TEST_METHOD)
+@WithMockUser(username = "admin", authorities = { "APPROLE_api.request.admin" })
 class CourtApiTest {
 
     @Autowired
@@ -73,7 +76,7 @@ class CourtApiTest {
             MockMultipartFile csvFile
                 = new MockMultipartFile("courtList", csvInputStream);
 
-            MvcResult mvcResult = mockMvc.perform(multipart("/courts/upload").file(csvFile))
+            MvcResult mvcResult = mockMvc.perform(multipart("/courts/upload").file(csvFile).with(csrf()))
                 .andExpect(status().isOk()).andReturn();
 
             return Arrays.asList(
@@ -344,8 +347,21 @@ class CourtApiTest {
             MockMultipartFile csvFile
                 = new MockMultipartFile("courtList", csvInputStream);
 
-            mockMvc.perform(multipart("/courts/upload").file(csvFile))
+            mockMvc.perform(multipart("/courts/upload").file(csvFile).with(csrf()))
                 .andExpect(status().isBadRequest()).andReturn();
+        }
+    }
+
+    @Test
+    @WithMockUser(username = "unauthorized_isAuthorized", authorities = { "APPROLE_unknown.authorized" })
+    void testUnauthorizedCsvUpload() throws Exception {
+        try (InputStream csvInputStream = this.getClass().getClassLoader()
+            .getResourceAsStream("courts/ValidCsv.csv")) {
+            MockMultipartFile csvFile
+                = new MockMultipartFile("courtList", csvInputStream);
+
+            mockMvc.perform(multipart("/courts/upload").file(csvFile).with(csrf()))
+                .andExpect(status().isForbidden()).andReturn();
         }
     }
 
