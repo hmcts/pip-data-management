@@ -20,6 +20,7 @@ import uk.gov.hmcts.reform.pip.data.management.models.court.Court;
 import uk.gov.hmcts.reform.pip.data.management.models.court.CourtCsv;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Language;
+import uk.gov.hmcts.reform.pip.data.management.models.publication.ListType;
 import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
 import uk.gov.hmcts.reform.pip.data.management.utils.PayloadExtractor;
 
@@ -72,6 +73,8 @@ class PublicationServiceTest {
     private static final String MANUAL_UPLOAD_PROVENANCE = "MANUAL_UPLOAD";
     private static final String PAYLOAD = "This is a payload";
     private static final String PAYLOAD_URL = "https://ThisIsATestPayload";
+    private static final String PAYLOAD_STRIPPED = "ThisIsATestPayload";
+    private static final String COURT_ID = "123";
     private static final String TEST_KEY = "TestKey";
     private static final String TEST_VALUE = "TestValue";
     private static final CaseSearchTerm SEARCH_TERM_CASE_ID = CaseSearchTerm.CASE_ID;
@@ -87,11 +90,11 @@ class PublicationServiceTest {
 
     private static final String NO_COURT_EXISTS_IN_REFERENCE_DATA = "NoMatch1234";
 
+    private static final LocalDateTime CONTENT_DATE = LocalDateTime.now();
 
     private Artefact artefact;
     private Artefact artefactWithPayloadUrl;
     private Artefact artefactWithIdAndPayloadUrl;
-    private Artefact artefactWithId;
     private Artefact artefactInTheFuture;
     private Artefact artefactFromThePast;
     private Artefact artefactFromNow;
@@ -112,6 +115,9 @@ class PublicationServiceTest {
             .sourceArtefactId(SOURCE_ARTEFACT_ID)
             .provenance(PROVENANCE)
             .courtId(PROVENANCE_ID)
+            .contentDate(CONTENT_DATE)
+            .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
+            .language(Language.ENGLISH)
             .build();
 
         artefactWithPayloadUrl = Artefact.builder()
@@ -119,6 +125,10 @@ class PublicationServiceTest {
             .provenance(PROVENANCE)
             .payload(PAYLOAD_URL)
             .search(SEARCH_VALUES)
+            .courtId(COURT_ID)
+            .contentDate(CONTENT_DATE)
+            .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
+            .language(Language.ENGLISH)
             .build();
 
         artefactWithIdAndPayloadUrl = Artefact.builder()
@@ -127,14 +137,10 @@ class PublicationServiceTest {
             .provenance(PROVENANCE)
             .payload(PAYLOAD_URL)
             .search(SEARCH_VALUES)
-            .build();
-
-        artefactWithId = Artefact.builder()
-            .artefactId(ARTEFACT_ID)
-            .sourceArtefactId(SOURCE_ARTEFACT_ID)
-            .provenance(PROVENANCE)
-            .payload(PAYLOAD_URL)
-            .search(SEARCH_VALUES)
+            .courtId(COURT_ID)
+            .contentDate(CONTENT_DATE)
+            .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
+            .language(Language.ENGLISH)
             .build();
 
         artefactInTheFuture = Artefact.builder()
@@ -202,6 +208,10 @@ class PublicationServiceTest {
         courts.add(court);
 
         lenient().when(artefactRepository.findBySourceArtefactIdAndProvenance(SOURCE_ARTEFACT_ID, PROVENANCE))
+        lenient().when(artefactRepository.findArtefactByUpdateLogic(artefact.getCourtId(),artefact.getContentDate(),
+                                                                    artefact.getLanguage().name(),
+                                                                    artefact.getListType().name(),
+                                                                    artefact.getProvenance()))
             .thenReturn(Optional.empty());
         lenient().when(artefactRepository.save(artefactWithPayloadUrl)).thenReturn(artefactWithIdAndPayloadUrl);
         lenient().when(courtRepository.findByCourtIdByProvenance(PROVENANCE, PROVENANCE_ID))
@@ -227,12 +237,12 @@ class PublicationServiceTest {
     @Test
     void testCreationOfNewArtefactWhenCourtDoesNotExists() {
         artefactWithPayloadUrl.setCourtId(NO_COURT_EXISTS_IN_REFERENCE_DATA);
-        when(azureBlobService.createPayload(SOURCE_ARTEFACT_ID, PROVENANCE, PAYLOAD)).thenReturn(PAYLOAD_URL);
         when(courtRepository.findByCourtIdByProvenance(PROVENANCE, PROVENANCE_ID))
             .thenReturn(Optional.empty());
         when(artefactRepository.findBySourceArtefactIdAndProvenance(SOURCE_ARTEFACT_ID, PROVENANCE))
             .thenReturn(Optional.empty());
         when(artefactRepository.save(artefactWithPayloadUrl)).thenReturn(artefactWithIdAndPayloadUrl);
+        when(azureBlobService.createPayload(any(), eq(PAYLOAD))).thenReturn(PAYLOAD_URL);
         when(payloadExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
 
         Artefact returnedArtefact = publicationService.createPublication(artefact, PAYLOAD);
@@ -361,31 +371,38 @@ class PublicationServiceTest {
             .sourceArtefactId(SOURCE_ARTEFACT_ID)
             .provenance(PROVENANCE)
             .courtId(NO_COURT_EXISTS_IN_REFERENCE_DATA)
+            .contentDate(CONTENT_DATE)
+            .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
             .language(Language.ENGLISH)
-            .payload(PAYLOAD_URL)
-            .search(SEARCH_VALUES)
             .build();
 
-        when(artefactRepository.findBySourceArtefactIdAndProvenance(SOURCE_ARTEFACT_ID, PROVENANCE))
+        when(artefactRepository.findArtefactByUpdateLogic(artefact.getCourtId(),artefact.getContentDate(),
+                                                                    artefact.getLanguage().name(),
+                                                                    artefact.getListType().name(),
+                                                                    artefact.getProvenance()))
             .thenReturn(Optional.of(existingArtefact));
+
         when(courtRepository.findByCourtIdByProvenance(PROVENANCE, PROVENANCE_ID))
             .thenReturn(Optional.empty());
-        when(azureBlobService.createPayload(SOURCE_ARTEFACT_ID, PROVENANCE, PAYLOAD)).thenReturn(PAYLOAD_URL);
         when(artefactRepository.save(newArtefactWithId)).thenReturn(newArtefactWithId);
+        when(azureBlobService.createPayload(PAYLOAD_STRIPPED, PAYLOAD)).thenReturn(PAYLOAD_URL);
+        when(artefactRepository.save(existingArtefact)).thenReturn(existingArtefact);
         when(payloadExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
 
         Artefact returnedArtefact = publicationService.createPublication(artefact, PAYLOAD);
 
         assertEquals(newArtefactWithId, returnedArtefact, ROWID_RETURNS_UUID);
+        assertEquals(existingArtefact, returnedArtefact, "Row ID must match returned UUID");
     }
 
     @Test
     void testCreationOfNewArtefactWithFile() {
         artefactWithPayloadUrl.setSearch(null);
         artefactWithPayloadUrl.setCourtId(NO_COURT_EXISTS_IN_REFERENCE_DATA);
-        when(azureBlobService.uploadFlatFile(SOURCE_ARTEFACT_ID, PROVENANCE, FILE)).thenReturn(PAYLOAD_URL);
+        when(azureBlobService.uploadFlatFile(any(), eq(FILE))).thenReturn(PAYLOAD_URL);
         when(courtRepository.findByCourtIdByProvenance(PROVENANCE, PROVENANCE_ID))
             .thenReturn(Optional.empty());
+        when(artefactRepository.save(artefact)).thenReturn(artefactWithIdAndPayloadUrl);
         Artefact returnedArtefact = publicationService.createPublication(artefact, FILE);
 
         assertEquals(artefactWithIdAndPayloadUrl, returnedArtefact, VALIDATION_ARTEFACT_NOT_MATCH);
@@ -418,15 +435,10 @@ class PublicationServiceTest {
 
     @Test
     void testArtefactPayloadFromAzureWhenAuthorized() {
-        Artefact artefact = Artefact.builder()
-            .sourceArtefactId(SOURCE_ARTEFACT_ID)
-            .provenance(PROVENANCE)
-            .language(Language.ENGLISH)
-            .build();
-        when(artefactRepository.findByArtefactIdVerified(any(), any())).thenReturn(Optional.of(artefact));
-        when(azureBlobService.getBlobData(any(), any()))
-            .thenReturn(String.valueOf(artefact));
-        assertEquals(artefact.toString(), publicationService.getPayloadByArtefactId(ARTEFACT_ID, true),
+        when(artefactRepository.findByArtefactIdVerified(any(), any())).thenReturn(Optional.of(artefactWithPayloadUrl));
+        when(azureBlobService.getBlobData(any()))
+            .thenReturn(PAYLOAD);
+        assertEquals(PAYLOAD, publicationService.getPayloadByArtefactId(ARTEFACT_ID, true),
                      VALIDATION_ARTEFACT_NOT_MATCH
         );
     }
@@ -435,8 +447,8 @@ class PublicationServiceTest {
     void testArtefactFileFromAzureWhenAuthorized() {
         String string = "Hello";
         byte[] testData = string.getBytes();
-        when(artefactRepository.findByArtefactIdVerified(any(), any())).thenReturn(Optional.of(artefact));
-        when(azureBlobService.getBlobFile(any(), any()))
+        when(artefactRepository.findByArtefactIdVerified(any(), any())).thenReturn(Optional.of(artefactWithPayloadUrl));
+        when(azureBlobService.getBlobFile(any()))
             .thenReturn(new ByteArrayResource(testData));
 
         assertEquals(new ByteArrayResource(testData), publicationService.getFlatFileByArtefactID(
@@ -448,16 +460,12 @@ class PublicationServiceTest {
     }
 
     @Test
-    void testArtefactContentFromAzureWhenUnauthorized() {
-        Artefact artefact = Artefact.builder()
-            .sourceArtefactId(SOURCE_ARTEFACT_ID)
-            .provenance(PROVENANCE)
-            .language(Language.ENGLISH)
-            .build();
-        when(artefactRepository.findByArtefactIdUnverified(any(), any())).thenReturn(Optional.of(artefact));
-        when(azureBlobService.getBlobData(any(), any()))
-            .thenReturn(String.valueOf(artefact));
-        assertEquals(artefact.toString(), publicationService.getPayloadByArtefactId(ARTEFACT_ID, false),
+    void testArtefactPayloadFromAzureWhenUnauthorized() {
+        when(artefactRepository.findByArtefactIdUnverified(any(), any()))
+            .thenReturn(Optional.of(artefactWithPayloadUrl));
+        when(azureBlobService.getBlobData(any()))
+            .thenReturn(PAYLOAD);
+        assertEquals(PAYLOAD, publicationService.getPayloadByArtefactId(ARTEFACT_ID, false),
                      VALIDATION_ARTEFACT_NOT_MATCH
         );
     }
@@ -477,8 +485,9 @@ class PublicationServiceTest {
     void testArtefactFileFromAzureWhenUnauthorized() {
         String string = "Hello";
         byte[] testData = string.getBytes();
-        when(artefactRepository.findByArtefactIdUnverified(any(), any())).thenReturn(Optional.of(artefact));
-        when(azureBlobService.getBlobFile(any(), any()))
+        when(artefactRepository.findByArtefactIdUnverified(any(), any()))
+            .thenReturn(Optional.of(artefactWithPayloadUrl));
+        when(azureBlobService.getBlobFile(any()))
             .thenReturn(new ByteArrayResource(testData));
 
         assertEquals(new ByteArrayResource(testData), publicationService.getFlatFileByArtefactID(ARTEFACT_ID, false),
@@ -538,6 +547,8 @@ class PublicationServiceTest {
         when(artefactRepository.findArtefactByArtefactId(ARTEFACT_ID.toString()))
             .thenReturn(Optional.of(artefactWithId));
         assertEquals(artefactWithId, publicationService.getMetadataByArtefactId(ARTEFACT_ID),
+            .thenReturn(Optional.of(artefactWithIdAndPayloadUrl));
+        assertEquals(artefactWithIdAndPayloadUrl, publicationService.getMetadataByArtefactId(ARTEFACT_ID),
                      VALIDATION_ARTEFACT_NOT_MATCH);
     }
 
@@ -556,6 +567,9 @@ class PublicationServiceTest {
     void testGetArtefactMetadataCallsNonAdmin() {
         when(artefactRepository.findByArtefactIdVerified(any(), any())).thenReturn(Optional.of(artefactWithId));
         assertEquals(artefactWithId, publicationService.getMetadataByArtefactId(ARTEFACT_ID, true),
+        when(artefactRepository.findByArtefactIdVerified(any(), any()))
+            .thenReturn(Optional.of(artefactWithIdAndPayloadUrl));
+        assertEquals(artefactWithIdAndPayloadUrl, publicationService.getMetadataByArtefactId(ARTEFACT_ID, true),
                      VALIDATION_ARTEFACT_NOT_MATCH);
     }
 
@@ -629,7 +643,7 @@ class PublicationServiceTest {
             .thenReturn(List.of(artefactWithIdAndPayloadUrl));
 
         assertEquals(
-            artefactWithId,
+            artefactWithIdAndPayloadUrl,
             publicationService.findAllBySearch(SEARCH_TERM_CASE_ID, TEST_VALUE, false).get(0),
             VALIDATION_ARTEFACT_NOT_MATCH
         );
@@ -800,9 +814,10 @@ class PublicationServiceTest {
     @Test
     void testDeleteArtefactById() throws IOException {
         try (LogCaptor logCaptor = LogCaptor.forClass(PublicationService.class)) {
-            when(artefactRepository.findArtefactByArtefactId(ARTEFACT_ID.toString())).thenReturn(Optional.of(artefact));
-            when(azureBlobService.deleteBlob(SOURCE_ARTEFACT_ID, PROVENANCE)).thenReturn(SUCCESS);
-            doNothing().when(artefactRepository).delete(artefact);
+            when(artefactRepository.findArtefactByArtefactId(ARTEFACT_ID.toString()))
+                .thenReturn(Optional.of(artefactWithPayloadUrl));
+            when(azureBlobService.deleteBlob(PAYLOAD_STRIPPED)).thenReturn(SUCCESS);
+            doNothing().when(artefactRepository).delete(artefactWithPayloadUrl);
 
             publicationService.deleteArtefactById(ARTEFACT_ID.toString(), TEST_VALUE);
             assertEquals(SUCCESS, logCaptor.getInfoLogs().get(0), MESSAGES_MATCH);
