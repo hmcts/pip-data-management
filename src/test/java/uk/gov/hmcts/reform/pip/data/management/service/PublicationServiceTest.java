@@ -103,6 +103,7 @@ class PublicationServiceTest {
     private Artefact artefactManualUpload;
 
     private List<Court> courts;
+    private List<Court> emptyCourts;
 
     @BeforeAll
     public static void setupSearchValues() {
@@ -214,6 +215,8 @@ class PublicationServiceTest {
 
         courts = new ArrayList<>();
         courts.add(court);
+
+        emptyCourts = new ArrayList<>();
     }
 
     private void intialiseManualUploadArtefact() {
@@ -245,7 +248,7 @@ class PublicationServiceTest {
     void testCreationOfNewArtefactWhenCourtDoesNotExists() {
         artefactWithPayloadUrl.setCourtId(NO_COURT_EXISTS_IN_REFERENCE_DATA);
         when(courtRepository.findByCourtIdByProvenance(PROVENANCE, PROVENANCE_ID))
-            .thenReturn(Optional.empty());
+            .thenReturn(Optional.of(emptyCourts));
         when(artefactRepository.save(artefactWithPayloadUrl)).thenReturn(artefactWithIdAndPayloadUrl);
         when(azureBlobService.createPayload(any(), eq(PAYLOAD))).thenReturn(PAYLOAD_URL);
         when(payloadExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
@@ -382,7 +385,7 @@ class PublicationServiceTest {
             .thenReturn(Optional.of(existingArtefact));
 
         when(courtRepository.findByCourtIdByProvenance(PROVENANCE, PROVENANCE_ID))
-            .thenReturn(Optional.empty());
+            .thenReturn(Optional.of(emptyCourts));
         when(artefactRepository.save(newArtefactWithId)).thenReturn(newArtefactWithId);
         when(azureBlobService.createPayload(PAYLOAD_STRIPPED, PAYLOAD)).thenReturn(PAYLOAD_URL);
         when(artefactRepository.save(existingArtefact)).thenReturn(existingArtefact);
@@ -399,7 +402,7 @@ class PublicationServiceTest {
         artefactWithPayloadUrl.setCourtId(NO_COURT_EXISTS_IN_REFERENCE_DATA);
         when(azureBlobService.uploadFlatFile(any(), eq(FILE))).thenReturn(PAYLOAD_URL);
         when(courtRepository.findByCourtIdByProvenance(PROVENANCE, PROVENANCE_ID))
-            .thenReturn(Optional.empty());
+            .thenReturn(Optional.of(courts));
         when(artefactRepository.save(artefact)).thenReturn(artefactWithIdAndPayloadUrl);
         Artefact returnedArtefact = publicationService.createPublication(artefact, FILE);
 
