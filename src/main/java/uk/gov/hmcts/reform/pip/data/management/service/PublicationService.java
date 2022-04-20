@@ -294,10 +294,11 @@ public class PublicationService {
         }
         Optional<List<Court>> courts = courtRepository.findByCourtIdByProvenance(artefact.getProvenance(),
                                                                           artefact.getCourtId());
-        if (courts.get().isEmpty()) {
-            artefact.setCourtId(String.format("NoMatch%s", artefact.getCourtId()));
-        } else {
+        int courtsCount = courts.stream().mapToInt(i -> i.size()).sum();
+        if (courtsCount > 0) {
             artefact.setCourtId(courts.get().get(0).getCourtId().toString());
+        } else {
+            artefact.setCourtId(String.format("NoMatch%s", artefact.getCourtId()));
         }
     }
 }
