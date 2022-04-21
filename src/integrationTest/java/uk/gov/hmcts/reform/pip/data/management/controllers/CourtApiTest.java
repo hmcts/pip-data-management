@@ -26,7 +26,6 @@ import java.util.function.BiPredicate;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.annotation.DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
@@ -78,7 +77,7 @@ class CourtApiTest {
             MockMultipartFile csvFile
                 = new MockMultipartFile("courtList", csvInputStream);
 
-            MvcResult mvcResult = mockMvc.perform(multipart("/courts/upload").file(csvFile).with(csrf()))
+            MvcResult mvcResult = mockMvc.perform(multipart("/courts/upload").file(csvFile))
                 .andExpect(status().isOk()).andReturn();
 
             return Arrays.asList(
@@ -354,7 +353,7 @@ class CourtApiTest {
             MockMultipartFile csvFile
                 = new MockMultipartFile("courtList", csvInputStream);
 
-            mockMvc.perform(multipart("/courts/upload").file(csvFile).with(csrf()))
+            mockMvc.perform(multipart("/courts/upload").file(csvFile))
                 .andExpect(status().isBadRequest()).andReturn();
         }
     }
@@ -367,7 +366,7 @@ class CourtApiTest {
             MockMultipartFile csvFile
                 = new MockMultipartFile("courtList", csvInputStream);
 
-            mockMvc.perform(multipart("/courts/upload").file(csvFile).with(csrf()))
+            mockMvc.perform(multipart("/courts/upload").file(csvFile))
                 .andExpect(status().isForbidden()).andReturn();
         }
     }
