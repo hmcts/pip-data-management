@@ -22,7 +22,6 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(classes = {Application.class},
@@ -61,7 +60,7 @@ class PublicationUnauthorizedTest {
                 .contentType(MediaType.APPLICATION_JSON);
 
 
-            mockMvc.perform(mockHttpServletRequestBuilder.with(csrf()))
+            mockMvc.perform(mockHttpServletRequestBuilder)
                 .andExpect(status().isForbidden()).andReturn();
         }
     }
@@ -88,7 +87,7 @@ class PublicationUnauthorizedTest {
 
             .contentType(MediaType.MULTIPART_FORM_DATA);
 
-        mockMvc.perform(mockHttpServletRequestBuilder.with(csrf()))
+        mockMvc.perform(mockHttpServletRequestBuilder)
             .andExpect(status().isForbidden()).andReturn();
 
     }
@@ -99,7 +98,7 @@ class PublicationUnauthorizedTest {
             .get("/publication/courtId/1")
             .header(VERIFICATION_HEADER, VERIFICATION_TRUE);
 
-        mockMvc.perform(mockHttpServletRequestBuilder.with(csrf())).andExpect(status().isForbidden()).andReturn();
+        mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isForbidden()).andReturn();
     }
 
     @Test
@@ -108,7 +107,7 @@ class PublicationUnauthorizedTest {
             .get("/publication/search/CASE_URN/1234")
             .header(VERIFICATION_HEADER, VERIFICATION_TRUE);
 
-        mockMvc.perform(mockHttpServletRequestBuilder.with(csrf())).andExpect(status().isForbidden()).andReturn();
+        mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isForbidden()).andReturn();
     }
 
     @Test
@@ -117,7 +116,7 @@ class PublicationUnauthorizedTest {
             .get("/publication/2dde8f1e-bfb6-11ec-9d64-0242ac120002")
             .header(VERIFICATION_HEADER, VERIFICATION_TRUE);
 
-        mockMvc.perform(mockHttpServletRequestBuilder.with(csrf())).andExpect(status().isForbidden()).andReturn();
+        mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isForbidden()).andReturn();
     }
 
     @Test
@@ -126,7 +125,7 @@ class PublicationUnauthorizedTest {
             .get("/publication/2dde8f1e-bfb6-11ec-9d64-0242ac120002/payload")
             .header(VERIFICATION_HEADER, VERIFICATION_TRUE);
 
-        mockMvc.perform(mockHttpServletRequestBuilder.with(csrf())).andExpect(status().isForbidden()).andReturn();
+        mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isForbidden()).andReturn();
     }
 
     @Test
@@ -135,7 +134,7 @@ class PublicationUnauthorizedTest {
             .get("/publication/2dde8f1e-bfb6-11ec-9d64-0242ac120002/file")
             .header(VERIFICATION_HEADER, VERIFICATION_TRUE);
 
-        mockMvc.perform(mockHttpServletRequestBuilder.with(csrf())).andExpect(status().isForbidden()).andReturn();
+        mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isForbidden()).andReturn();
     }
 
     @Test
@@ -144,7 +143,7 @@ class PublicationUnauthorizedTest {
             .delete("/publication/2dde8f1e-bfb6-11ec-9d64-0242ac120002")
             .header("x-issuer-email", "a@b.com");
 
-        mockMvc.perform(mockHttpServletRequestBuilder.with(csrf())).andExpect(status().isForbidden()).andReturn();
+        mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isForbidden()).andReturn();
     }
 
 }

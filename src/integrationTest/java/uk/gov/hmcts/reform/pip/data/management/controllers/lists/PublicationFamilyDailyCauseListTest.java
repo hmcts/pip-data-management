@@ -34,7 +34,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(classes = {Application.class},
@@ -92,8 +91,7 @@ class PublicationFamilyDailyCauseListTest {
                 .content(mockFile.readAllBytes())
                 .contentType(MediaType.APPLICATION_JSON);
 
-
-            MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder.with(csrf()))
+            MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
                 .andExpect(status().isCreated()).andReturn();
 
             assertNotNull(response.getResponse().getContentAsString(), "Response should contain a Artefact");
@@ -125,8 +123,7 @@ class PublicationFamilyDailyCauseListTest {
                 .content(mockFile.readAllBytes())
                 .contentType(MediaType.APPLICATION_JSON);
 
-
-            MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder.with(csrf()))
+            MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
                 .andExpect(status().isBadRequest()).andReturn();
 
             assertNotNull(response.getResponse().getContentAsString(), "Response should contain a Artefact");
