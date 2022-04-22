@@ -4,6 +4,7 @@ import com.launchdarkly.sdk.LDUser;
 import com.launchdarkly.sdk.server.interfaces.LDClientInterface;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -16,10 +17,9 @@ public class FeatureToggleService {
     private final String environment;
 
     @Autowired
-    public FeatureToggleService(LDClientInterface internalClient) {
+    public FeatureToggleService(LDClientInterface internalClient, @Value("${launch-darkly.env}") String environment) {
         this.internalClient = internalClient;
-        this.environment = "Test";
-        //this.close();
+        this.environment = environment;
     }
 
     public boolean isFeatureEnabled(String feature) {
@@ -30,13 +30,5 @@ public class FeatureToggleService {
         return new LDUser.Builder("pip-user")
             .custom("timestamp", String.valueOf(System.currentTimeMillis()))
             .custom("environment", environment);
-    }
-
-    private void close() {
-        try {
-            internalClient.close();
-        } catch (IOException e) {
-            log.error("Error in closing the Launchdarkly client::", e);
-        }
     }
 }

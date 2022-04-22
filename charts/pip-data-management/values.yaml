@@ -19,6 +19,8 @@ java:
           alias: DB_PORT
         - name: pip-shared-POSTGRES-USER
           alias: DB_USER
+        - name: ld-key
+          alias: LD_KEY
   #  Uncomment once the vault containing the app insights key has been set up
   #  keyVaults:
   #    rpe:

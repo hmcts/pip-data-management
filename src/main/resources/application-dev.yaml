@@ -6,3 +6,8 @@ spring:
     password: ${DB_PASS}
     properties:
       charSet: UTF-8
+
+launch-darkly:
+  sdk-key: ${LD_KEY}
+  env: "Test"
+  offline-mode: false

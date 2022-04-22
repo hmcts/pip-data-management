@@ -72,3 +72,7 @@ validations:
 
 cron:
   daily-display-from: "0 0 0 * * *"
+
+launch-darkly:
+  sdk-key: ${LD_KEY}
+  env: "Test"
