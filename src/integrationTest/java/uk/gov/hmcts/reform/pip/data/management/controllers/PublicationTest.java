@@ -76,7 +76,7 @@ class PublicationTest {
     private static final String PAYLOAD_URL = "/payload";
     private static final ArtefactType ARTEFACT_TYPE = ArtefactType.LIST;
     private static final Sensitivity SENSITIVITY = Sensitivity.PUBLIC;
-    private static final String PROVENANCE = "provenance";
+    private static final String PROVENANCE = "MANUAL_UPLOAD";
     private static String payload = "payload";
     private static MockMultipartFile file;
     private static final String PAYLOAD_UNKNOWN = "Unknown-Payload";
