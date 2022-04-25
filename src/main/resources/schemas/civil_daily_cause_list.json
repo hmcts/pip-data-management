@@ -3,6 +3,7 @@
     "address": {
       "title": "Address Details",
       "type": "object",
+      "required": ["line", "town", "postCode"],
       "properties": {
         "line": {
           "title": "Address Line",
@@ -75,6 +76,7 @@
     "venueContact": {
       "title": "Contact Details for a venue",
       "type": "object",
+      "required": ["venueTelephone", "venueEmail"],
       "properties": {
         "venueTelephone": {
           "description": "Telephone number for the venue",
@@ -102,6 +104,7 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Root",
   "type": "object",
+  "required": ["document", "venue", "courtLists"],
   "properties": {
     "@schemaLocation": {
       "$id": "#root/@schemaLocation",
@@ -117,6 +120,7 @@
       "$id": "#root/document",
       "title": "document",
       "type": "object",
+      "required": ["publicationDate"],
       "properties": {
         "documentName": {
           "$id": "#root/document/documentName",
@@ -188,6 +192,7 @@
         "$id": "#root/courtLists/courtList",
         "title": "Court list",
         "type": "object",
+        "required": ["courtHouse"],
         "properties": {
           "courtHouse": {
             "$id": "#root/courtLists/courtHouse",
@@ -233,19 +238,8 @@
                         "title": "Session",
                         "description": "Session associated with the court in the publication",
                         "type": "object",
-                        "required": ["sessionStartTime", "sessionChannel", "sittings"],
+                        "required": ["sessionChannel", "sittings"],
                         "properties": {
-                          "sessionStartTime": {
-                            "$id": "#root/courtLists/courtRoom/session/sessionStartTime",
-                            "description": "Session start time rfc3999",
-                            "title": "Session start time",
-                            "type": "string",
-                            "examples": [
-                              "2021-09-09t16:41:07.394"
-                            ],
-                            "default": "",
-                            "pattern": "^.*$"
-                          },
                           "sessionChannel": {
                             "$id": "#root/courtLists/courtRoom/session/sessionChannel",
                             "type": "array",
@@ -344,6 +338,17 @@
                                               "default": "",
                                               "examples": [
                                                 "45684548"
+                                              ],
+                                              "pattern": "^.*$"
+                                            },
+                                            "caseSequenceIndicator": {
+                                              "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/caseSequenceIndicator",
+                                              "title": "Case Sequence Indicator",
+                                              "description": "The case sequence indicator",
+                                              "type": "string",
+                                              "default": "",
+                                              "examples": [
+                                                "[2 of 3]"
                                               ],
                                               "pattern": "^.*$"
                                             }
