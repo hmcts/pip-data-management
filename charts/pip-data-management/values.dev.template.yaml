@@ -2,3 +2,14 @@ java:
   # Don't modify below here
   image: ${IMAGE_NAME}
   ingressHost: ${SERVICE_FQDN}
+  environment:
+    RUN_DB_MIGRATION_ON_STARTUP: true
+    DB_HOST: "{{ .Release.Name }}-postgresql"
+    DB_NAME: "{{ .Values.postgresql.postgresqlDatabase}}"
+    DB_USER: "{{ .Values.postgresql.postgresqlUsername}}"
+    DB_PASS: "{{ .Values.postgresql.postgresqlPassword}}"
+    DB_PORT: "5432"
+  #disableKeyVaults: true
+  postgresql:
+    enabled: true
+    

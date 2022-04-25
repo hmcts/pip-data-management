@@ -5,6 +5,7 @@
 def type = "java"
 def product = "pip"
 def component = "data-management"
+def kv = product + '-ss-kv'
 
 static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
   [ $class: 'AzureKeyVaultSecret',
@@ -17,8 +18,29 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
 
 withPipeline(type, product, component) {
 
+  enableDbMigration(kv)
   enableSlackNotifications('#pip-build-notices')
   enableAksStagingDeployment()
   disableLegacyDeployment()
   enableApiGatewayTest()
+
+   def branchName = env.CHANGE_BRANCH ?: env.BRANCH_NAME
+   before('test') {
+    sh "echo 'Validate Swaggr'"
+    sh swaggerValidate(branchName)
+  }
+}
+
+static String swaggerValidate(String branchName){
+  def repoName = "pip-data-management"
+  def swaggerPath = "infrastructure/resources/swagger/api-swagger.json"
+  def script = 'url="https://raw.githubusercontent.com/hmcts/' + repoName + '/' + branchName + '/' + swaggerPath + '";' + 
+  'CHECK=$(curl -X "GET" "https://validator.swagger.io/validator/debug?url=\${url}" --silent);' +
+  'if [[ "\$CHECK" != "{}" ]]; then' +
+  '  echo -e "\\nSorry this is an invalid Swagger:\\n\$CHECK\\n";' +
+  '  exit 1;' +
+  'fi;'
+
+  return script;
+
 }

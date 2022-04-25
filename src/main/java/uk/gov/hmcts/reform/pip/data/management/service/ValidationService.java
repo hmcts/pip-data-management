@@ -38,7 +38,6 @@ public class ValidationService {
 
     Map<ListType, JsonSchema> validationSchemas = new ConcurrentHashMap<>();
 
-
     @Autowired
     public ValidationService(ValidationConfiguration validationConfiguration) {
         try (InputStream masterFile = this.getClass().getClassLoader()
@@ -49,7 +48,6 @@ public class ValidationService {
 
              InputStream familyDailyCauseListFile = this.getClass().getClassLoader()
                  .getResourceAsStream(validationConfiguration.getFamilyDailyCauseList());
-
 
              InputStream sjpPublicListFile = this.getClass().getClassLoader()
                 .getResourceAsStream(validationConfiguration.getSjpPublicList());
