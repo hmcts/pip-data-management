@@ -379,9 +379,9 @@ class PublicationServiceTest {
             .build();
 
         when(artefactRepository.findArtefactByUpdateLogic(artefact.getCourtId(),artefact.getContentDate(),
-                                                                    artefact.getLanguage().name(),
-                                                                    artefact.getListType().name(),
-                                                                    artefact.getProvenance()))
+                                                          artefact.getLanguage().name(),
+                                                          artefact.getListType().name(),
+                                                          artefact.getProvenance()))
             .thenReturn(Optional.of(existingArtefact));
 
         when(courtRepository.findByCourtIdByProvenance(PROVENANCE, PROVENANCE_ID))
@@ -554,7 +554,7 @@ class PublicationServiceTest {
     void testGetArtefactMetadataForAdminThrows() {
         when(artefactRepository.findArtefactByArtefactId(ARTEFACT_ID.toString())).thenReturn(Optional.empty());
         NotFoundException ex = assertThrows(NotFoundException.class, () ->
-            publicationService.getMetadataByArtefactId(ARTEFACT_ID),
+                                                publicationService.getMetadataByArtefactId(ARTEFACT_ID),
                                             "Not found exception should be thrown"
         );
         assertEquals("No artefact found with the ID: " + ARTEFACT_ID, ex.getMessage(),
