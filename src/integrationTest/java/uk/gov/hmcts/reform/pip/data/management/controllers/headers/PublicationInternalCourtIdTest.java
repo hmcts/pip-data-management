@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.pip.data.management.controllers;
+package uk.gov.hmcts.reform.pip.data.management.controllers.headers;
 
 import com.azure.storage.blob.BlobClient;
 import com.azure.storage.blob.BlobContainerClient;
@@ -102,7 +102,7 @@ class PublicationInternalCourtIdTest {
         file = new MockMultipartFile("file", "test123.pdf", MediaType.APPLICATION_PDF_VALUE, "test content123".getBytes(
             StandardCharsets.UTF_8));
         payload = new String(IOUtils.toByteArray(
-            Objects.requireNonNull(PublicationTest.class.getClassLoader()
+            Objects.requireNonNull(PublicationInternalCourtIdTest.class.getClassLoader()
                                        .getResourceAsStream("data/artefact.json"))));
 
         objectMapper = new ObjectMapper();
@@ -191,9 +191,7 @@ class PublicationInternalCourtIdTest {
             );
         }
 
-        assertEquals(artefact.getPayload(), BLOB_PAYLOAD_URL + "/" + SOURCE_ARTEFACT_ID + '-' + PROVENANCE,
-                     "Payload does not match input payload"
-        );
+        assertTrue(artefact.getPayload().startsWith(BLOB_PAYLOAD_URL), "Payload is not as expected");
     }
 
     @ParameterizedTest
@@ -263,8 +261,6 @@ class PublicationInternalCourtIdTest {
             );
         }
 
-        assertEquals(artefact.getPayload(), BLOB_PAYLOAD_URL + "/" + SOURCE_ARTEFACT_ID + '-' + PROVENANCE,
-                     "Payload does not match input payload"
-        );
+        assertTrue(artefact.getPayload().startsWith(BLOB_PAYLOAD_URL), "Payload is not as expected");
     }
 }

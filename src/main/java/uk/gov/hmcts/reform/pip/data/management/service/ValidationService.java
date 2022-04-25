@@ -35,6 +35,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ValidationService {
 
     private final JsonSchema masterSchema;
+
     Map<ListType, JsonSchema> validationSchemas = new ConcurrentHashMap<>();
 
     @Autowired
