@@ -6,6 +6,7 @@
             <required-claims>
                 <claim name="roles" match="any">
                     <value>api.publisher.user</value>
+                    <value>api.publisher.admin</value>
                 </claim>
             </required-claims>
         </validate-jwt>
