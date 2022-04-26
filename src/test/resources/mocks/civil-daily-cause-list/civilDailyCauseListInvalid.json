@@ -16,13 +16,11 @@
   "courtLists": [
     {
       "courtHouse": {
-        "courtHouseName": "PRESTON",
         "courtRoom": [
           {
             "courtRoomName": "1",
             "session": [
               {
-                "sessionStartTime": "",
                 "sessionChannel": [
                   "VIDEO HEARING",
                   ""
@@ -63,7 +61,6 @@
             "courtRoomName": "1",
             "session": [
               {
-                "sessionStartTime": "",
                 "sessionChannel": [
                   ""
                 ],
@@ -81,7 +78,8 @@
                           },
                           {
                             "caseName": "",
-                            "caseNumber": ""
+                            "caseNumber": "",
+                            "caseSequenceIndicator": "[2 of 3]"
                           }
                         ]
                       }

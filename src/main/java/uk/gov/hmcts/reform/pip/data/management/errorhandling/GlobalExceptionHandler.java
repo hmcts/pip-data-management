@@ -53,7 +53,8 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ExceptionResponse> handle(MissingRequestHeaderException ex) {
 
         ExceptionResponse exceptionResponse = new ExceptionResponse();
-        exceptionResponse.setMessage(ex.getMessage());
+        exceptionResponse.setMessage(
+            String.format("%s is mandatory however an empty value is provided", ex.getHeaderName()));
         exceptionResponse.setTimestamp(LocalDateTime.now());
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionResponse);
