@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
@@ -37,7 +36,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles(profiles = "test")
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
 @DirtiesContext(classMode = AFTER_EACH_TEST_METHOD)
-@WithMockUser(username = "admin", authorities = { "APPROLE_api.request.admin" })
 class CourtApiTest {
 
     @Autowired
@@ -357,18 +355,4 @@ class CourtApiTest {
                 .andExpect(status().isBadRequest()).andReturn();
         }
     }
-
-    @Test
-    @WithMockUser(username = "unauthorized_isAuthorized", authorities = { "APPROLE_unknown.authorized" })
-    void testUnauthorizedCsvUpload() throws Exception {
-        try (InputStream csvInputStream = this.getClass().getClassLoader()
-            .getResourceAsStream("courts/ValidCsv.csv")) {
-            MockMultipartFile csvFile
-                = new MockMultipartFile("courtList", csvInputStream);
-
-            mockMvc.perform(multipart("/courts/upload").file(csvFile))
-                .andExpect(status().isForbidden()).andReturn();
-        }
-    }
-
 }

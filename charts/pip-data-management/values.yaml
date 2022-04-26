@@ -21,5 +21,15 @@ java:
           alias: DB_USER
         - name: data-management-POSTGRES-HOST
           alias: DB_HOST
+        - name: app-pip-data-management-stg-id
+          alias: CLIENT_ID
+        - name: app-pip-data-management-stg-pwd
+          alias: CLIENT_SECRET
+        - name: app-tenant-id
+          alias: TENANT_ID
+        - name: app-pip-data-management-stg-api-id
+          alias: APP_URI
+        - name: app-pip-subscription-management-stg-api-id
+          alias: SUBSCRIPTION_MANAGEMENT_AZ_API
   environment:
     RUN_DB_MIGRATION_ON_STARTUP: false

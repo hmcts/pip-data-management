@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import uk.gov.hmcts.reform.pip.data.management.authentication.roles.IsAdmin;
 import uk.gov.hmcts.reform.pip.data.management.models.court.Court;
 import uk.gov.hmcts.reform.pip.data.management.models.court.CourtViews;
 import uk.gov.hmcts.reform.pip.data.management.service.CourtService;
@@ -86,7 +85,6 @@ public class CourtController {
         @ApiResponse(code = 403, message = "User has not been authorized")
     })
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @IsAdmin
     public ResponseEntity<Collection<Court>> uploadCourts(@RequestPart MultipartFile courtList) {
         return ResponseEntity.ok(courtService.uploadCourts(courtList));
     }

@@ -16,6 +16,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 public class WebClientConfiguration {
 
     @Bean
+    @Profile("!dev")
     WebClient webClient(ClientRegistrationRepository clientRegistrations,
                         OAuth2AuthorizedClientRepository authorizedClients) {
         ServletOAuth2AuthorizedClientExchangeFilterFunction oauth2 =
@@ -23,6 +24,12 @@ public class WebClientConfiguration {
             clientRegistrations, authorizedClients);
         oauth2.setDefaultClientRegistrationId("subscriptionManagementApi");
         return WebClient.builder().apply(oauth2.oauth2Configuration()).build();
+    }
+
+    @Bean
+    @Profile("dev")
+    WebClient webClientInsecure() {
+        return WebClient.builder().build();
     }
 
 }
