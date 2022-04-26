@@ -1,15 +1,19 @@
 {
   "document": {
     "version": "",
-    "publicationDate": "2016-09-13T23:30:52.123Z"
+    "publicationDate": "2022-02-13T09:30:52.123Z"
   },
   "venue": {
     "venueName": "PRESTON",
-    "venueContact": {},
+    "venueContact": {
+      "venueTelephone": "01772 844700",
+      "venueEmail": "court1@moj.gov.uk"
+    },
     "venueAddress": {
       "line": [
         "THE LAW COURTS"
       ],
+      "town": "town name",
       "postCode": ""
     }
   },
@@ -23,7 +27,6 @@
             "courtRoomName": "1",
             "session": [
               {
-                "sessionStartTime": "",
                 "sessionChannel": [
                   "VIDEO HEARING",
                   ""
@@ -64,15 +67,8 @@
             "courtRoomName": "1",
             "session": [
               {
-                "sessionStartTime": "",
                 "sessionChannel": [
                   ""
-                ],
-                "judiciary": [
-                  {
-                    "johNameSurname": "Test Name",
-                    "johTitle": "District Judge"
-                  }
                 ],
                 "sittings": [
                   {
@@ -83,12 +79,13 @@
                         "hearingType": "",
                         "case": [
                           {
-                            "caseName": "John Smith v Jane Doe",
+                            "caseName": "",
                             "caseNumber": "45684548"
                           },
                           {
                             "caseName": "",
-                            "caseNumber": ""
+                            "caseNumber": "",
+                            "caseSequenceIndicator": "[2 of 3]"
                           }
                         ]
                       }

@@ -18,6 +18,26 @@
             "pattern": "^.*$"
           }
         },
+        "town": {
+          "title": "Town",
+          "description": "The town for the address",
+          "type": "string",
+          "default": "",
+          "examples": [
+            "Cambridge"
+          ],
+          "pattern": "^.*$"
+        },
+        "county": {
+          "title": "County",
+          "description": "The county for the address",
+          "type": "string",
+          "default": "",
+          "examples": [
+            "Cambridgeshire"
+          ],
+          "pattern": "^.*$"
+        },
         "postCode": {
           "title": "Address Postcode",
           "type": "string",
@@ -100,7 +120,7 @@
           "description": "Role of the judiciary",
           "title": "Role",
           "type": "string",
-          "enum": ["judge", "magistrate", "clerk"],
+          "enum": ["JUDGE", "MAGISTRATE", "CLERK"],
           "default": ""
         },
         "johKnownAs": {
@@ -112,12 +132,21 @@
           ],
           "default": "",
           "pattern": "^.*$"
+        },
+        "isPresiding": {
+          "description": "A flag to indicate whether a judiciary is presiding",
+          "title": "Is Presiding",
+          "type": "boolean",
+          "examples": [
+            true
+          ],
+          "default": "",
+          "pattern": "^.*$"
         }
       }
     }
   },
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://example.com/object1638794581.json",
   "title": "Root",
   "type": "object",
   "properties": {
@@ -146,6 +175,15 @@
             "Standard List FINAL V4"
           ],
           "pattern": "^.*$"
+        },
+        "publicationDate": {
+          "$id": "#root/document/publicationDate",
+          "title": "Publication date",
+          "description": "The date + time the list was published",
+          "type": "string",
+          "examples": [
+            "2016-09-13T23:30:52.123Z"
+          ]
         },
         "version": {
           "$id": "#root/document/version",
@@ -212,18 +250,7 @@
           "type": "string",
           "default": "",
           "examples": [
-            "PRESTON"
-          ],
-          "pattern": "^.*$"
-        },
-        "welshVenueName": {
-          "$id": "#root/venue/welshVenueName",
-          "description": "Welsh Full venue name",
-          "title": "Welsh Venue Name",
-          "type": "string",
-          "default": "",
-          "examples": [
-            "PRESTON"
+            "Preston"
           ],
           "pattern": "^.*$"
         },
@@ -294,16 +321,17 @@
                 ],
                 "pattern": "^.*$"
               },
-              "welshCourtHouseName": {
-                "$id": "#root/courtLists/courtList/courtHouse/welshCourtHouseName",
-                "description": "Name of the court house",
-                "title": "Welsh Court House Name",
-                "type": "string",
-                "default": "",
-                "examples": [
-                  "PRESTON"
-                ],
-                "pattern": "^.*$"
+              "courtHouseContact": {
+                "$id": "#root/courtLists/courtList/courtHouse/courtHouseContact",
+                "description": "The contact for the court house",
+                "title": "Court House Contact",
+                "$ref": "#/definitions/venueContact"
+              },
+              "courtHouseAddress": {
+                "$id": "#root/courtLists/courtList/courtHouse/courtHouseAddress",
+                "description": "The address for the court house",
+                "title": "Court House Address",
+                "$ref": "#/definitions/address"
               },
               "courtHouseDescription": {
                 "$id": "#root/courtLists/courtList/courtHouse/courtHouseDescription",
@@ -351,7 +379,7 @@
                       "type": "string",
                       "default": "",
                       "examples": [
-                        "1"
+                        "Room 1"
                       ]
                     },
                     "venueContact": {
@@ -384,7 +412,6 @@
                             "description": "Type of session (cases that can be heard in the session are associated to a sessiontype)",
                             "title": "Session Type",
                             "type": "string",
-                            "enum": ["TBC","specific to sessions recorded in Listassist"],
                             "default": ""
                           },
                           "sessionChannel": {
@@ -590,6 +617,17 @@
                                               ],
                                               "pattern": "^.*$"
                                             },
+                                            "caseSequenceIndicator": {
+                                              "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/caseSequenceIndicator",
+                                              "title": "Case Sequence Indicator",
+                                              "description": "The case sequence indicator",
+                                              "type": "string",
+                                              "default": "",
+                                              "examples": [
+                                                "[2 of 3]"
+                                              ],
+                                              "pattern": "^.*$"
+                                            },
                                             "informant": {
                                               "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/informant",
                                               "description": "Object representing an informant",
@@ -691,6 +729,17 @@
                                                 }
                                               }
                                             },
+                                            "priority": {
+                                              "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/priority",
+                                              "title": "Case Priority",
+                                              "description": "The priority for the case. Current values in S&L are normal, high, critical and pending",
+                                              "type": "string",
+                                              "default": "",
+                                              "examples": [
+                                                "normal"
+                                              ],
+                                              "pattern": "^.*$"
+                                            },
                                             "result":{
                                               "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/result",
                                               "title": "Result",
@@ -733,7 +782,40 @@
                                               "title": "Party Role",
                                               "type": "string",
                                               "examples": [
-                                                "def"
+                                                "ACCUSED", "PROSECUTOR"
+                                              ],
+                                              "default": "",
+                                              "pattern": "^.*$"
+                                            },
+                                            "friendlyRoleName": {
+                                              "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items/friendlyRoleName",
+                                              "description": "The descriptive version of the role. E.g a party role of APPLICANT_REPRESENTATIVE, might  have a more descriptive role name (e.g Legal Advisor) that you would want to display",
+                                              "title": "Friendly Role Name",
+                                              "type": "string",
+                                              "examples": [
+                                                "Legal Advisor"
+                                              ],
+                                              "default": "",
+                                              "pattern": "^.*$"
+                                            },
+                                            "attendanceMethod": {
+                                              "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items/attendanceMethod",
+                                              "description": "The method of attendance for the party",
+                                              "title": "Attendance Method",
+                                              "type": "string",
+                                              "examples": [
+                                                ""
+                                              ],
+                                              "default": "",
+                                              "pattern": "^.*$"
+                                            },
+                                            "attendanceTime": {
+                                              "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items/attendanceTime",
+                                              "description": "The attendance time for the party",
+                                              "title": "Attendance time",
+                                              "type": "string",
+                                              "examples": [
+                                                "2016-09-13T23:30:52.123Z"
                                               ],
                                               "default": "",
                                               "pattern": "^.*$"
@@ -1066,17 +1148,6 @@
                                         "description": "If any updates on the case as it is heard",
                                         "type": "object",
                                         "properties": {
-                                          "lcsuCode": {
-                                            "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/lcsu/lcsuCode",
-                                            "description": "Code identifying the lcsu from system performing the updates",
-                                            "title": "LCSU Code",
-                                            "type":"string",
-                                            "default": "",
-                                            "examples": [
-                                              "ddsc"
-                                            ],
-                                            "pattern": "^.*$"
-                                          },
                                           "lcsuDescription": {
                                             "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/lcsu/lcsuDescription",
                                             "description": "Description of update",

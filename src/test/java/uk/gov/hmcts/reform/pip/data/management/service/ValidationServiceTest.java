@@ -10,8 +10,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pip.data.management.Application;
 import uk.gov.hmcts.reform.pip.data.management.config.AzureBlobConfigurationTest;
-import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
-import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.EmptyRequiredHeaderException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.FlatFileException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.HeaderValidationException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.PayloadValidationException;
@@ -52,11 +50,9 @@ class ValidationServiceTest {
     private static final String COURT_ID = "123";
     private static final ListType LIST_TYPE = ListType.CIVIL_DAILY_CAUSE_LIST;
     private static final LocalDateTime CONTENT_DATE = LocalDateTime.now();
-    private static final String EMPTY_FIELD = "";
     private static final String VALIDATION_EXPECTED_MESSAGE =
         "The expected exception does not contain the correct message";
     private static final String NOT_NULL_MESSAGE = "The returned value is null, but was not expected to be.";
-    private static final String REQUIRED_HEADER_EXCEPTION_MESSAGE = " is mandatory however an empty value is provided";
     private static final String UNKNOWN_EXCEPTION = "Unknown exception when opening the paylaod file";
 
     private HeaderGroup headerGroup;
@@ -68,49 +64,54 @@ class ValidationServiceTest {
     }
 
     @Test
-    void testCreationOfPublicationEmptySourceArtefactId() {
-        headerGroup.setSourceArtefactId(EMPTY_FIELD);
-        HeaderValidationException emptyRequestHeaderException =
-            assertThrows(HeaderValidationException.class, () -> {
-                validationService.validateHeaders(headerGroup);
-            });
-
-        assertEquals(
-            "x-source-artefact-id" + REQUIRED_HEADER_EXCEPTION_MESSAGE,
-            emptyRequestHeaderException.getMessage(),
-            VALIDATION_EXPECTED_MESSAGE
-        );
-    }
-
-    @Test
     void testCreationOfPublicationEmptyProvenance() {
-        headerGroup.setProvenance(EMPTY_FIELD);
-        HeaderValidationException emptyRequestHeaderException =
+        headerGroup.setProvenance("");
+
+        HeaderValidationException dateHeaderValidationException =
             assertThrows(HeaderValidationException.class, () -> {
                 validationService.validateHeaders(headerGroup);
             });
-
-        assertEquals(
-            "x-provenance" + REQUIRED_HEADER_EXCEPTION_MESSAGE,
-            emptyRequestHeaderException.getMessage(),
-            VALIDATION_EXPECTED_MESSAGE
+        assertEquals("x-provenance is mandatory however an empty value is provided",
+                     dateHeaderValidationException.getMessage(), VALIDATION_EXPECTED_MESSAGE
         );
     }
 
     @Test
-    void testCreationOfPublicationEmptySourceArtefactIdAndEmptyProvenanceOnlyFirstIsShown() {
-        headerGroup.setProvenance(EMPTY_FIELD);
-        headerGroup.setSourceArtefactId(EMPTY_FIELD);
+    void testCreationOfPublicationNullProvenance() {
+        headerGroup.setProvenance(null);
 
-        HeaderValidationException emptyRequestHeaderException =
+        HeaderValidationException dateHeaderValidationException =
             assertThrows(HeaderValidationException.class, () -> {
                 validationService.validateHeaders(headerGroup);
             });
+        assertEquals("x-provenance is mandatory however an empty value is provided",
+                     dateHeaderValidationException.getMessage(), VALIDATION_EXPECTED_MESSAGE
+        );
+    }
 
-        assertEquals(
-            "x-source-artefact-id" + REQUIRED_HEADER_EXCEPTION_MESSAGE,
-            emptyRequestHeaderException.getMessage(),
-            VALIDATION_EXPECTED_MESSAGE
+    @Test
+    void testCreationOfPublicationEmptyCourtId() {
+        headerGroup.setCourtId("");
+
+        HeaderValidationException dateHeaderValidationException =
+            assertThrows(HeaderValidationException.class, () -> {
+                validationService.validateHeaders(headerGroup);
+            });
+        assertEquals("x-court-id is mandatory however an empty value is provided",
+                     dateHeaderValidationException.getMessage(), VALIDATION_EXPECTED_MESSAGE
+        );
+    }
+
+    @Test
+    void testCreationOfPublicationNullCourtId() {
+        headerGroup.setCourtId(null);
+
+        HeaderValidationException dateHeaderValidationException =
+            assertThrows(HeaderValidationException.class, () -> {
+                validationService.validateHeaders(headerGroup);
+            });
+        assertEquals("x-court-id is mandatory however an empty value is provided",
+                     dateHeaderValidationException.getMessage(), VALIDATION_EXPECTED_MESSAGE
         );
     }
 
@@ -193,62 +194,19 @@ class ValidationServiceTest {
     }
 
     @Test
-    void testNullContentDateForListThrows() {
-        headerGroup.setContentDate(null);
+    void testDefaultSensitivity() {
+        headerGroup.setSensitivity(null);
 
-        EmptyRequiredHeaderException ex = assertThrows(EmptyRequiredHeaderException.class, () -> {
-            validationService.validateHeaders(headerGroup);
-        });
-
-        assertEquals(PublicationConfiguration.CONTENT_DATE + REQUIRED_HEADER_EXCEPTION_MESSAGE,
-                     ex.getMessage(), VALIDATION_EXPECTED_MESSAGE);
+        assertEquals(SENSITIVITY, validationService.validateHeaders(headerGroup).getSensitivity(),
+                     "Sensitivity should match");
     }
 
     @Test
-    void testNullListTypeForListThrows() {
-        headerGroup.setListType(null);
+    void testDefaultSensitivityIsNotOverwritten() {
+        headerGroup.setSensitivity(Sensitivity.PRIVATE);
 
-        EmptyRequiredHeaderException ex = assertThrows(EmptyRequiredHeaderException.class, () -> {
-            validationService.validateHeaders(headerGroup);
-        });
-
-        assertEquals(PublicationConfiguration.LIST_TYPE + REQUIRED_HEADER_EXCEPTION_MESSAGE,
-                     ex.getMessage(), VALIDATION_EXPECTED_MESSAGE);
-    }
-
-    @Test
-    void testNullContentDateForJudgementOutcomeThrows() {
-        headerGroup.setType(ArtefactType.JUDGEMENTS_AND_OUTCOMES);
-        headerGroup.setContentDate(null);
-
-        EmptyRequiredHeaderException ex = assertThrows(EmptyRequiredHeaderException.class, () -> {
-            validationService.validateHeaders(headerGroup);
-        });
-
-        assertEquals(PublicationConfiguration.CONTENT_DATE + REQUIRED_HEADER_EXCEPTION_MESSAGE,
-                     ex.getMessage(), VALIDATION_EXPECTED_MESSAGE);
-    }
-
-    @Test
-    void testNullListTypeForJudgementOutcomeThrows() {
-        headerGroup.setType(ArtefactType.JUDGEMENTS_AND_OUTCOMES);
-        headerGroup.setListType(null);
-
-        EmptyRequiredHeaderException ex = assertThrows(EmptyRequiredHeaderException.class, () -> {
-            validationService.validateHeaders(headerGroup);
-        });
-
-        assertEquals(PublicationConfiguration.LIST_TYPE + REQUIRED_HEADER_EXCEPTION_MESSAGE,
-                     ex.getMessage(), VALIDATION_EXPECTED_MESSAGE);
-    }
-
-    @Test
-    void testListTypeAndContentDateNotNeededForGeneralPublication() {
-        headerGroup.setType(ArtefactType.GENERAL_PUBLICATION);
-        headerGroup.setListType(null);
-        headerGroup.setContentDate(null);
-
-        assertEquals(headerGroup, validationService.validateHeaders(headerGroup), "Header groups should match");
+        assertEquals(Sensitivity.PRIVATE, validationService.validateHeaders(headerGroup).getSensitivity(),
+                     "Sensitivity should match");
     }
 
     @Test
@@ -257,6 +215,13 @@ class ValidationServiceTest {
         headerGroup.setCourtId("1");
 
         assertEquals("0", validationService.validateHeaders(headerGroup).getCourtId(), "Court Id should match");
+    }
+
+    @Test
+    void testNonSjpDoesNotOverwriteCourt() {
+        headerGroup.setCourtId("1");
+
+        assertEquals("1", validationService.validateHeaders(headerGroup).getCourtId(), "Court Id should match");
     }
 
     @Test
@@ -294,9 +259,9 @@ class ValidationServiceTest {
     }
 
     @Test
-    void testValidateWithErrorsWhenArtefactIsDailyCauseList() throws IOException {
+    void testValidateWithErrorsWhenArtefactIsCivilDailyCauseList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream("mocks/daily-cause-list/dailyCauseListInvalid.json")) {
+            .getResourceAsStream("mocks/civil-daily-cause-list/civilDailyCauseListInvalid.json")) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             assertThrows(PayloadValidationException.class, () ->
@@ -316,13 +281,36 @@ class ValidationServiceTest {
     }
 
     @Test
-    void testValidateWithoutErrorsWhenArtefactIsDailyCauseList() throws IOException {
+    void testValidateWithoutErrorsWhenArtefactIsCivilDailyCauseList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream("mocks/daily-cause-list/dailyCauseList.json")) {
+            .getResourceAsStream("mocks/civil-daily-cause-list/civilDailyCauseList.json")) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             assertDoesNotThrow(() -> validationService.validateBody(text, ListType.CIVIL_DAILY_CAUSE_LIST),
                                "Valid daily cause list marked as invalid");
+        }
+    }
+
+    @Test
+    void testValidateWithoutErrorsWhenArtefactIsFamilyDailyCauseList() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream("mocks/family-daily-cause-list/familyDailyCauseList.json")) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            assertDoesNotThrow(() -> validationService.validateBody(text, ListType.FAMILY_DAILY_CAUSE_LIST),
+                               "Valid daily cause list marked as invalid");
+        }
+    }
+
+    @Test
+    void testValidateWithErrorsWhenArtefactIsFamilyDailyCauseList() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream("mocks/family-daily-cause-list/familyDailyCauseListInvalid.json")) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            assertThrows(PayloadValidationException.class, () ->
+                             validationService.validateBody(text, ListType.FAMILY_DAILY_CAUSE_LIST),
+                         "Invalid daily cause list marked as valid");
         }
     }
 

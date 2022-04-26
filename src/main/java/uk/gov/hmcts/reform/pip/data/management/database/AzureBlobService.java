@@ -30,32 +30,28 @@ public class AzureBlobService {
     /**
      * Creates the payload in the Azure blob service.
      *
-     * @param sourceArtefactId The source ID to call the blob.
-     * @param provenance       The provenance to call the blob.
+     * @param payloadId         The identifier of the payload
      * @param payload          The payload to create
      * @return The URL to where the payload has been created
      */
-    public String createPayload(String sourceArtefactId, String provenance, String payload) {
-        String blobName = sourceArtefactId + '-' + provenance;
-        BlobClient blobClient = blobContainerClient.getBlobClient(blobName);
+    public String createPayload(String payloadId, String payload) {
+        BlobClient blobClient = blobContainerClient.getBlobClient(payloadId);
 
         byte[] payloadBytes = payload.getBytes();
         blobClient.upload(new ByteArrayInputStream(payloadBytes), payloadBytes.length, true);
 
-        return blobContainerClient.getBlobContainerUrl() + '/' + blobName;
+        return blobContainerClient.getBlobContainerUrl() + '/' + payloadId;
     }
 
     /**
      * Uploads the flat file in the Azure blob service.
      *
-     * @param sourceArtefactId The source ID to call the blob.
-     * @param provenance       The provenance to call the blob.
+     * @param payloadId         The identifier of the payload
      * @param file             The flat file to upload
      * @return The URL where the file was uploaded.
      */
-    public String uploadFlatFile(String sourceArtefactId, String provenance, MultipartFile file) {
-        String blobName = sourceArtefactId + '-' + provenance;
-        BlobClient blobClient = blobContainerClient.getBlobClient(blobName);
+    public String uploadFlatFile(String payloadId, MultipartFile file) {
+        BlobClient blobClient = blobContainerClient.getBlobClient(payloadId);
 
         try {
             blobClient.upload(file.getInputStream(), file.getSize(), true);
@@ -63,33 +59,29 @@ public class AzureBlobService {
             throw new
                 FlatFileException("Could not parse provided file, please check supported file types and try again");
         }
-        return blobContainerClient.getBlobContainerUrl() + "/" + blobName;
+        return blobContainerClient.getBlobContainerUrl() + "/" + payloadId;
     }
 
     /**
      * Gets the data held within a blob from the blob service.
      *
-     * @param sourceArtefactId The provenance with which to retrieve the blob data
-     * @param provenance       The artifact ID with which to retrieve the blob data
+     * @param payloadid the identifier of the payload
      * @return the data contained within the blob in String format.
      */
-    public String getBlobData(String sourceArtefactId, String provenance) {
-        String blobName = sourceArtefactId + '-' + provenance;
-        BlobClient blobClient = blobContainerClient.getBlobClient(blobName);
+    public String getBlobData(String payloadid) {
+        BlobClient blobClient = blobContainerClient.getBlobClient(payloadid);
         return blobClient.downloadContent().toString();
     }
 
-    public Resource getBlobFile(String sourceArtefactId, String provenance) {
-        String blobName = sourceArtefactId + '-' + provenance;
-        BlobClient blobClient = blobContainerClient.getBlobClient(blobName);
+    public Resource getBlobFile(String payloadId) {
+        BlobClient blobClient = blobContainerClient.getBlobClient(payloadId);
         byte[] data = blobClient.downloadContent().toBytes();
         return new ByteArrayResource(data);
     }
 
-    public String deleteBlob(String sourceArtefactId, String provenance) {
-        String blobName = sourceArtefactId + '-' + provenance;
-        BlobClient blobClient = blobContainerClient.getBlobClient(blobName);
+    public String deleteBlob(String payloadId) {
+        BlobClient blobClient = blobContainerClient.getBlobClient(payloadId);
         blobClient.delete();
-        return String.format(DELETE_MESSAGE, blobName);
+        return String.format(DELETE_MESSAGE, payloadId);
     }
 }

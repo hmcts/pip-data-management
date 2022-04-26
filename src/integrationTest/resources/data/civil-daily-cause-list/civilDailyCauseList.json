@@ -17,12 +17,12 @@
   "courtLists": [
     {
       "courtHouse": {
+        "courtHouseName": "PRESTON",
         "courtRoom": [
           {
             "courtRoomName": "1",
             "session": [
               {
-                "sessionStartTime": "",
                 "sessionChannel": [
                   "VIDEO HEARING",
                   ""
@@ -46,7 +46,8 @@
                         "case": [
                           {
                             "caseName": "A Vs B",
-                            "caseNumber": ""
+                            "caseNumber": "",
+                            "caseSequenceIndicator": "[2 of 3]"
                           }
                         ]
                       }
@@ -63,9 +64,14 @@
             "courtRoomName": "1",
             "session": [
               {
-                "sessionStartTime": "",
                 "sessionChannel": [
                   ""
+                ],
+                "judiciary": [
+                  {
+                    "johNameSurname": "Test Name",
+                    "johTitle": "District Judge"
+                  }
                 ],
                 "sittings": [
                   {
@@ -76,7 +82,7 @@
                         "hearingType": "",
                         "case": [
                           {
-                            "caseName": "",
+                            "caseName": "John Smith v Jane Doe",
                             "caseNumber": "45684548"
                           },
                           {

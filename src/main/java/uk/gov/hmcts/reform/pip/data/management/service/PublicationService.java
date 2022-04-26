@@ -8,8 +8,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.AzureBlobService;
+import uk.gov.hmcts.reform.pip.data.management.database.CourtRepository;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ArtefactNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.NotFoundException;
+import uk.gov.hmcts.reform.pip.data.management.models.court.Court;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
 import uk.gov.hmcts.reform.pip.data.management.utils.PayloadExtractor;
@@ -29,7 +31,6 @@ import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
 
 @Slf4j
 @Service
-
 public class PublicationService {
 
     private final ArtefactRepository artefactRepository;
@@ -40,15 +41,19 @@ public class PublicationService {
 
     private final SubscriptionManagementService subscriptionManagementService;
 
+    private final CourtRepository courtRepository;
+
     @Autowired
     public PublicationService(ArtefactRepository artefactRepository,
                               AzureBlobService azureBlobService,
                               PayloadExtractor payloadExtractor,
-                              SubscriptionManagementService subscriptionManagementService) {
+                              SubscriptionManagementService subscriptionManagementService,
+                              CourtRepository courtRepository) {
         this.artefactRepository = artefactRepository;
         this.azureBlobService = azureBlobService;
         this.payloadExtractor = payloadExtractor;
         this.subscriptionManagementService = subscriptionManagementService;
+        this.courtRepository = courtRepository;
     }
 
     /**
@@ -59,42 +64,67 @@ public class PublicationService {
      * @return Returns the UUID of the artefact that was created.
      */
     public Artefact createPublication(Artefact artefact, String payload) {
-        applyExistingArtefact(artefact);
+        boolean isExisting = applyExistingArtefact(artefact);
 
         String blobUrl = azureBlobService.createPayload(
-            artefact.getSourceArtefactId(),
-            artefact.getProvenance(),
+            isExisting ? getUuidFromUrl(artefact.getPayload()) : UUID.randomUUID().toString(),
             payload
         );
 
+        this.findByCourtIdByProvenanceAndUpdate(artefact);
+
         artefact.setPayload(blobUrl);
+
+        if (!isExisting) {
+            artefact.setPayload(blobUrl);
+        }
+
         artefact.setSearch(payloadExtractor.extractSearchTerms(payload));
         return artefactRepository.save(artefact);
     }
 
     public Artefact createPublication(Artefact artefact, MultipartFile file) {
-        applyExistingArtefact(artefact);
+        boolean isExisting = applyExistingArtefact(artefact);
 
         String blobUrl = azureBlobService.uploadFlatFile(
-            artefact.getSourceArtefactId(),
-            artefact.getProvenance(),
+            isExisting ? getUuidFromUrl(artefact.getPayload()) : UUID.randomUUID().toString(),
             file
         );
+
+        this.findByCourtIdByProvenanceAndUpdate(artefact);
+
         artefact.setPayload(blobUrl);
+
+        if (!isExisting) {
+            artefact.setPayload(blobUrl);
+        }
+
         return artefactRepository.save(artefact);
     }
 
     /**
-     * Checks if the artefact already exists based on source artefact id and provenance, if so it applies the
+     * Checks if the artefact already exists based on payloadId, if so it applies the
      * existing artefact ID to update.
      *
      * @param artefact The artefact to check existing on
      */
-    private void applyExistingArtefact(Artefact artefact) {
-        Optional<Artefact> foundArtefact = artefactRepository
-            .findBySourceArtefactIdAndProvenance(artefact.getSourceArtefactId(), artefact.getProvenance());
+    private boolean applyExistingArtefact(Artefact artefact) {
+        Optional<Artefact> foundArtefact = artefactRepository.findArtefactByUpdateLogic(
+            artefact.getCourtId(),
+            artefact.getContentDate(),
+            artefact.getLanguage().name(),
+            artefact.getListType().name(),
+            artefact.getProvenance());
 
-        foundArtefact.ifPresent(value -> artefact.setArtefactId(value.getArtefactId()));
+        foundArtefact.ifPresent(value -> {
+            artefact.setArtefactId(value.getArtefactId());
+            artefact.setPayload(value.getPayload());
+        });
+        return foundArtefact.isPresent();
+    }
+
+    private String getUuidFromUrl(String payloadUrl) {
+        return payloadUrl.substring(payloadUrl.lastIndexOf('/') + 1);
     }
 
 
@@ -164,6 +194,12 @@ public class PublicationService {
         return artefacts;
     }
 
+    public Artefact getMetadataByArtefactId(UUID artefactId) {
+        return artefactRepository.findArtefactByArtefactId(artefactId.toString())
+                .orElseThrow(() -> new NotFoundException(String.format("No artefact found with the ID: %s",
+                                                                       artefactId)));
+    }
+
     /**
      * Takes in artefact id and returns the metadata for the artefact.
      *
@@ -204,28 +240,21 @@ public class PublicationService {
      * @return The data within the blob in string format.
      */
     public String getPayloadByArtefactId(UUID artefactId, Boolean verification) {
-        Artefact artefact = this.getMetadataByArtefactId(artefactId, verification);
+        Artefact artefact = getMetadataByArtefactId(artefactId, verification);
 
-        String sourceArtefactId = artefact.getSourceArtefactId();
-        String provenance = artefact.getProvenance();
-
-        return azureBlobService.getBlobData(sourceArtefactId, provenance);
+        return azureBlobService.getBlobData(getUuidFromUrl(artefact.getPayload()));
     }
 
     public Resource getFlatFileByArtefactID(UUID artefactId, Boolean verification) {
-        Artefact artefact = this.getMetadataByArtefactId(artefactId, verification);
+        Artefact artefact = getMetadataByArtefactId(artefactId, verification);
 
-        String sourceArtefactId = artefact.getSourceArtefactId();
-        String provenance = artefact.getProvenance();
-        return azureBlobService.getBlobFile(sourceArtefactId, provenance);
+        return azureBlobService.getBlobFile(getUuidFromUrl(artefact.getPayload()));
     }
 
     public void deleteArtefactById(String artefactId, String issuerEmail) {
         Optional<Artefact> artefactToDelete = artefactRepository.findArtefactByArtefactId(artefactId);
         if (artefactToDelete.isPresent()) {
-            log.info(azureBlobService.deleteBlob(
-                artefactToDelete.get().getSourceArtefactId(),
-                artefactToDelete.get().getProvenance()));
+            log.info(azureBlobService.deleteBlob(getUuidFromUrl(artefactToDelete.get().getPayload())));
             artefactRepository.delete(artefactToDelete.get());
             log.info(writeLog(issuerEmail, UserActions.REMOVE, artefactId));
         } else {
@@ -257,5 +286,21 @@ public class PublicationService {
     public void checkNewlyActiveArtefacts() {
         List<Artefact> newArtefactsToday = artefactRepository.findArtefactsByDisplayFrom(LocalDate.now());
         newArtefactsToday.forEach(artefact -> log.info(sendArtefactForSubscription(artefact)));
+    }
+
+    private void findByCourtIdByProvenanceAndUpdate(Artefact artefact) {
+        if ("MANUAL_UPLOAD".equalsIgnoreCase(artefact.getProvenance())) {
+            return;
+        }
+        Optional<List<Court>> courts = courtRepository.findByCourtIdByProvenance(artefact.getProvenance(),
+                                                                          artefact.getCourtId());
+        int courtsCount = courts.stream().mapToInt(i -> i.size()).sum();
+        if (courtsCount > 0) {
+            if (!courts.isEmpty()) {
+                artefact.setCourtId(courts.get().get(0).getCourtId().toString());
+            }
+        } else {
+            artefact.setCourtId(String.format("NoMatch%s", artefact.getCourtId()));
+        }
     }
 }

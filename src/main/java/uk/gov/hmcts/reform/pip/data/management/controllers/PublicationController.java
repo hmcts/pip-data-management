@@ -95,17 +95,18 @@ public class PublicationController {
     @Valid
     public ResponseEntity<Artefact> uploadPublication(
         @RequestHeader(PublicationConfiguration.PROVENANCE_HEADER) String provenance,
-        @RequestHeader(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER) String sourceArtefactId,
+        @RequestHeader(value = PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, required = false)
+            String sourceArtefactId,
         @RequestHeader(PublicationConfiguration.TYPE_HEADER) ArtefactType type,
         @RequestHeader(value = PublicationConfiguration.SENSITIVITY_HEADER, required = false) Sensitivity sensitivity,
-        @RequestHeader(value = PublicationConfiguration.LANGUAGE_HEADER, required = false) Language language,
+        @RequestHeader(PublicationConfiguration.LANGUAGE_HEADER) Language language,
         @RequestHeader(value = PublicationConfiguration.DISPLAY_FROM_HEADER, required = false)
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime displayFrom,
         @RequestHeader(value = PublicationConfiguration.DISPLAY_TO_HEADER, required = false)
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime displayTo,
-        @RequestHeader(value = PublicationConfiguration.LIST_TYPE, required = false) ListType listType,
+        @RequestHeader(PublicationConfiguration.LIST_TYPE) ListType listType,
         @RequestHeader(PublicationConfiguration.COURT_ID) String courtId,
-        @RequestHeader(value = PublicationConfiguration.CONTENT_DATE, required = false)
+        @RequestHeader(PublicationConfiguration.CONTENT_DATE)
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime contentDate,
         @RequestBody String payload) {
 
@@ -162,17 +163,18 @@ public class PublicationController {
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Artefact> uploadPublication(
         @RequestHeader(PublicationConfiguration.PROVENANCE_HEADER) String provenance,
-        @RequestHeader(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER) String sourceArtefactId,
+        @RequestHeader(value = PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, required = false)
+            String sourceArtefactId,
         @RequestHeader(PublicationConfiguration.TYPE_HEADER) ArtefactType type,
         @RequestHeader(value = PublicationConfiguration.SENSITIVITY_HEADER, required = false) Sensitivity sensitivity,
-        @RequestHeader(value = PublicationConfiguration.LANGUAGE_HEADER, required = false) Language language,
+        @RequestHeader(PublicationConfiguration.LANGUAGE_HEADER) Language language,
         @RequestHeader(value = PublicationConfiguration.DISPLAY_FROM_HEADER, required = false)
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime displayFrom,
         @RequestHeader(value = PublicationConfiguration.DISPLAY_TO_HEADER, required = false)
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime displayTo,
-        @RequestHeader(value = PublicationConfiguration.LIST_TYPE, required = false) ListType listType,
+        @RequestHeader(PublicationConfiguration.LIST_TYPE) ListType listType,
         @RequestHeader(PublicationConfiguration.COURT_ID) String courtId,
-        @RequestHeader(value = PublicationConfiguration.CONTENT_DATE, required = false)
+        @RequestHeader(PublicationConfiguration.CONTENT_DATE)
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime contentDate,
         @RequestPart MultipartFile file) {
 
@@ -247,8 +249,10 @@ public class PublicationController {
     @ApiOperation("Gets the metadata for the blob, given a specific artefact id")
     @GetMapping("/{artefactId}")
     public ResponseEntity<Artefact> getArtefactMetadata(
-        @PathVariable UUID artefactId, @RequestHeader Boolean verification) {
-        return ResponseEntity.ok(publicationService.getMetadataByArtefactId(artefactId, verification));
+        @PathVariable UUID artefactId, @RequestHeader Boolean verification, @RequestHeader(value = "x-admin",
+        required = false, defaultValue = "false") Boolean isAdmin) {
+        return ResponseEntity.ok(isAdmin ? publicationService.getMetadataByArtefactId(artefactId) :
+                                     publicationService.getMetadataByArtefactId(artefactId, verification));
     }
 
     @ApiResponses({

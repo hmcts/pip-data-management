@@ -1,6 +1,7 @@
 {
   "document": {
-    "version": ""
+    "version": "",
+    "publicationDate": "2016-09-13T23:30:52.123Z"
   },
   "venue": {
     "venueName": "PRESTON",
@@ -21,7 +22,6 @@
             "courtRoomName": "1",
             "session": [
               {
-                "sessionStartTime": "",
                 "sessionChannel": [
                   "VIDEO HEARING",
                   ""
@@ -62,7 +62,6 @@
             "courtRoomName": "1",
             "session": [
               {
-                "sessionStartTime": "",
                 "sessionChannel": [
                   ""
                 ],
@@ -80,7 +79,8 @@
                           },
                           {
                             "caseName": "",
-                            "caseNumber": ""
+                            "caseNumber": "",
+                            "caseSequenceIndicator": "[2 of 3]"
                           }
                         ]
                       }
