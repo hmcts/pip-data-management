@@ -1,9 +1,8 @@
 locals {
   apim_api_name  = "${var.product}-data-management-api"
   api_policy_raw = file("./resources/api-policy/api-policy.xml")
-  api_policy = replace(replace(local.api_policy_raw
-    , "{TENANT_ID}", "")
-  , "{APP_CLIENT_ID}", "")
+  api_policy = replace(local.api_policy_raw
+    , "{TENANT_ID}", data.azurerm_client_config.current.tenant_id)
 }
 module "apim_api" {
   count  = local.deploy_apim
