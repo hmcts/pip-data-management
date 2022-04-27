@@ -27,9 +27,9 @@ java:
           alias: CLIENT_SECRET
         - name: app-tenant-id
           alias: TENANT_ID
-        - name: app-pip-data-management-api-id
+        - name: app-pip-data-management-scope
           alias: APP_URI
-        - name: app-pip-subscription-management-api-id
+        - name: app-pip-subscription-management-scope
           alias: SUBSCRIPTION_MANAGEMENT_AZ_API
   environment:
     RUN_DB_MIGRATION_ON_STARTUP: false
