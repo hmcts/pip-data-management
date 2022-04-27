@@ -5,7 +5,7 @@ locals {
     basename(operation_policies_file) => {
       operation_id = replace(basename(operation_policies_file), ".xml", "")
       xml_content = replace(replace(file("${path.module}/${operation_policies_file}"),
-      "{BASE_URL}", local.base_url),
+        "{BASE_URL}", local.base_url),
       "{TENANT_ID}", data.azurerm_client_config.current.tenant_id)
     }
   }

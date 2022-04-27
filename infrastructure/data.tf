@@ -28,14 +28,17 @@ data "azurerm_api_management_product" "apim_product" {
 }
 
 data "azurerm_key_vault_secret" "data_client_pwd" {
+  count        = local.deploy_apim
   name         = "app-pip-data-management-${var.env}-pwd"
   key_vault_id = data.azurerm_key_vault.kv.id
 }
 data "azurerm_key_vault_secret" "data_client_id" {
+  count        = local.deploy_apim
   name         = "app-pip-data-management-${var.env}-id"
   key_vault_id = data.azurerm_key_vault.kv.id
-} 
+}
 data "azurerm_key_vault_secret" "data_client_app_url" {
+  count        = local.deploy_apim
   name         = "app-pip-data-management-${var.env}-app-id"
   key_vault_id = data.azurerm_key_vault.kv.id
 } 
