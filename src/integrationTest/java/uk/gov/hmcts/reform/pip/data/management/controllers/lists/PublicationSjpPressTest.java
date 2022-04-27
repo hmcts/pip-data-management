@@ -84,7 +84,6 @@ class PublicationSjpPressTest {
                 .header(PublicationConfiguration.DISPLAY_TO_HEADER, LocalDateTime.now().plusMonths(1))
                 .header(PublicationConfiguration.COURT_ID, 1)
                 .header(PublicationConfiguration.LIST_TYPE, ListType.SJP_PRESS_LIST)
-                .header(PublicationConfiguration.LANGUAGE_HEADER, Language.ENGLISH)
                 .header(PublicationConfiguration.CONTENT_DATE, LocalDateTime.now())
                 .header(PublicationConfiguration.LANGUAGE_HEADER, Language.ENGLISH)
                 .content(mockFile.readAllBytes())

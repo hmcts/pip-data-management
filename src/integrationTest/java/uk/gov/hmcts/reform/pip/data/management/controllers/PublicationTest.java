@@ -74,7 +74,7 @@ class PublicationTest {
     private static final String PAYLOAD_URL = "/payload";
     private static final ArtefactType ARTEFACT_TYPE = ArtefactType.LIST;
     private static final Sensitivity SENSITIVITY = Sensitivity.PUBLIC;
-    private static final String PROVENANCE = "provenance";
+    private static final String PROVENANCE = "MANUAL_UPLOAD";
     private static String payload = "payload";
     private static MockMultipartFile file;
     private static final String PAYLOAD_UNKNOWN = "Unknown-Payload";
@@ -881,7 +881,7 @@ class PublicationTest {
         response = mockMvc.perform(MockMvcRequestBuilders
                                        .get(PUBLICATION_URL + "/" + artefact.getArtefactId() + PAYLOAD_URL)
                                        .header(VERIFICATION_HEADER, TRUE))
-                                       .andExpect(status().isOk()).andReturn();
+            .andExpect(status().isOk()).andReturn();
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
 
@@ -927,8 +927,8 @@ class PublicationTest {
             BinaryData.fromString(isJson ? payload : new String(file.getBytes())));
 
         mockMvc.perform(MockMvcRequestBuilders
-                                       .get(PUBLICATION_URL + "/" + artefact.getArtefactId() + PAYLOAD_URL)
-                                       .header(VERIFICATION_HEADER, TRUE))
+                            .get(PUBLICATION_URL + "/" + artefact.getArtefactId() + PAYLOAD_URL)
+                            .header(VERIFICATION_HEADER, TRUE))
             .andExpect(status().isNotFound()).andReturn();
     }
 
@@ -966,8 +966,8 @@ class PublicationTest {
             response.getResponse().getContentAsString(), Artefact.class);
 
         mockMvc.perform(MockMvcRequestBuilders
-                                       .get(PUBLICATION_URL + "/" + artefact.getArtefactId() + PAYLOAD_URL)
-                                       .header(VERIFICATION_HEADER, FALSE))
+                            .get(PUBLICATION_URL + "/" + artefact.getArtefactId() + PAYLOAD_URL)
+                            .header(VERIFICATION_HEADER, FALSE))
             .andExpect(status().isNotFound()).andReturn();
     }
 
@@ -1083,8 +1083,8 @@ class PublicationTest {
     @DisplayName("Payload endpoint should return 404 when artefact does not exist")
     void retrievePayloadOfAnArtefactWhereNotFound() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders
-                                       .get("/publication/7d734e8d-ba1d-4730-bd8b-09a970be00cc/payload")
-                                       .header(VERIFICATION_HEADER, TRUE))
+                            .get("/publication/7d734e8d-ba1d-4730-bd8b-09a970be00cc/payload")
+                            .header(VERIFICATION_HEADER, TRUE))
             .andExpect(status().isNotFound()).andReturn();
     }
 
@@ -1585,4 +1585,3 @@ class PublicationTest {
     }
 
 }
-
