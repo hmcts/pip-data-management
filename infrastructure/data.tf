@@ -39,6 +39,6 @@ data "azurerm_key_vault_secret" "data_client_id" {
 }
 data "azurerm_key_vault_secret" "data_client_app_url" {
   count        = local.deploy_apim
-  name         = "app-pip-data-management-${var.env}-app-id"
+  name         = "app-pip-data-management-${var.env}-api-id"
   key_vault_id = data.azurerm_key_vault.kv.id
 } 
