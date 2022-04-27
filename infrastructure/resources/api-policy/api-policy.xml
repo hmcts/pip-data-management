@@ -29,7 +29,7 @@
                         <value>application/x-www-form-urlencoded</value>
                     </set-header>
                     <set-body>@{
-                        return "client_id={CLIENT_ID}&scope={CLIENT_APP_URL}/.default&client_secret={CLIENT_PWD}&grant_type=client_credentials";
+                        return "client_id={CLIENT_ID}&scope={CLIENT_SCOPE}/.default&client_secret={CLIENT_PWD}&grant_type=client_credentials";
                     }</set-body>
                 </send-request>
                 <cache-store-value key="pipAuth" value="@("Bearer " + (String)((IResponse)context.Variables["bearerToken"]).Body.As<JObject>()["access_token"])" duration="2700" />

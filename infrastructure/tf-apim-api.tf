@@ -5,7 +5,7 @@ locals {
     , "{TENANT_ID}", data.azurerm_client_config.current.tenant_id)
     , "{CLIENT_ID}", data.azurerm_key_vault_secret.data_client_id[0].value)
     , "{CLIENT_PWD}", data.azurerm_key_vault_secret.data_client_pwd[0].value)
-  , "{CLIENT_APP_URL}", data.azurerm_key_vault_secret.data_client_app_url[0].value)
+  , "{CLIENT_SCOPE}", data.azurerm_key_vault_secret.data_client_scope[0].value)
 }
 module "apim_api" {
   count  = local.deploy_apim
