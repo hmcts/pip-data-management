@@ -1,9 +1,11 @@
 locals {
   apim_api_name  = "${var.product}-data-management-api"
   api_policy_raw = file("./resources/api-policy/api-policy.xml")
-  api_policy = replace(replace(local.api_policy_raw
-    , "{TENANT_ID}", "")
-  , "{APP_CLIENT_ID}", "")
+  api_policy = replace(replace(replace(replace(local.api_policy_raw
+    , "{TENANT_ID}", data.azurerm_client_config.current.tenant_id)
+    , "{CLIENT_ID}", data.azurerm_key_vault_secret.data_client_id[0].value)
+    , "{CLIENT_PWD}", data.azurerm_key_vault_secret.data_client_pwd[0].value)
+  , "{CLIENT_SCOPE}", data.azurerm_key_vault_secret.data_client_scope[0].value)
 }
 module "apim_api" {
   count  = local.deploy_apim
