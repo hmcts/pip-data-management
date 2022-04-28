@@ -25,7 +25,8 @@ module "apim_api" {
   subscription_required = false
 }
 
-/* module "apim_api_policy" {
+module "apim_api_policy" {
+  count  = local.deploy_apim
   source                 = "git@github.com:hmcts/cnp-module-api-mgmt-api-policy?ref=master"
   api_mgmt_name          = module.apim_api[0].name
   api_mgmt_rg            = local.apim_rg
@@ -35,4 +36,4 @@ module "apim_api" {
   depends_on = [
     module.apim_api
   ]
-} */
+} 
