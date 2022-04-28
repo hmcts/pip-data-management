@@ -27,16 +27,18 @@ data "azurerm_api_management_product" "apim_product" {
   api_management_name = local.apim_name
 }
 
-/* data "azurerm_key_vault" "b2c" {
-  name                = local.key_vault_name
-  resource_group_name = "${var.product}-ss-${local.env}-rg"
+data "azurerm_key_vault_secret" "data_client_pwd" {
+  count        = local.deploy_apim
+  name         = "app-pip-data-management-pwd"
+  key_vault_id = data.azurerm_key_vault.kv.id
 }
-
-data "azurerm_key_vault_secret" "b2c_tenant_id" {
-  name         = "b2c-tenant-id"
-  key_vault_id = data.azurerm_key_vault.b2c.id
+data "azurerm_key_vault_secret" "data_client_id" {
+  count        = local.deploy_apim
+  name         = "app-pip-data-management-id"
+  key_vault_id = data.azurerm_key_vault.kv.id
 }
-data "azurerm_key_vault_secret" "b2c_client_id" {
-  name         = "${local.auto_secret_prefix}-data-managment-${local.env}-id"
-  key_vault_id = data.azurerm_key_vault.b2c.id
-} */
+data "azurerm_key_vault_secret" "data_client_scope" {
+  count        = local.deploy_apim
+  name         = "app-pip-data-management-scope"
+  key_vault_id = data.azurerm_key_vault.kv.id
+} 
