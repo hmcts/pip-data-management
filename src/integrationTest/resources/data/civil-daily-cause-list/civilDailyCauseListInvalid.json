@@ -21,6 +21,12 @@
   "courtLists": [
     {
       "courtHouse": {
+        "courtHouseAddress": {
+          "line": [
+            "Address Line 1"
+          ],
+          "postCode": "AA1 AA1"
+        },
         "courtRoom": [
           {
             "courtRoomName": "1",

@@ -119,6 +119,7 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Root",
   "type": "object",
+  "required": ["document", "venue", "courtLists"],
   "properties": {
     "@schemaLocation": {
       "$id": "#root/@schemaLocation",
@@ -189,7 +190,7 @@
           "description": "Full venue address",
           "$id": "#root/venue/venueAddress",
           "$ref": "#/definitions/address",
-          "required": ["line", "town", "county", "postCode"]
+          "required": ["line", "postCode"]
         },
         "venueContact": {
           "$id": "#root/venue/venueContact",
@@ -208,13 +209,14 @@
         "$id": "#root/courtLists/courtList",
         "title": "Court list",
         "type": "object",
+        "required": ["courtHouse"],
         "properties": {
           "courtHouse": {
             "$id": "#root/courtLists/courtHouse",
             "title": "Court House",
             "description": "The court house that owns the court rooms",
             "type": "object",
-            "required": ["courtRoom"],
+            "required": ["courtRoom", "courtHouseName", "courtHouseAddress"],
             "properties": {
               "courtHouseName": {
                 "$id": "#root/courtLists/courtList/courtHouse/courtHouseName",
@@ -239,7 +241,7 @@
                 "description": "The address for the court house",
                 "title": "Court House Address",
                 "$ref": "#/definitions/address",
-                "required": ["line", "town", "county", "postCode"]
+                "required": ["line", "postCode"]
               },
               "courtRoom": {
                 "$id": "#root/courtLists/courtRoom",
