@@ -278,7 +278,6 @@ class PublicationServiceTest {
 
     @Test
     void testUpdatingOfExistingArtefact() {
-
         Artefact artefact = Artefact.builder()
             .sourceArtefactId(SOURCE_ARTEFACT_ID)
             .provenance(PROVENANCE)
