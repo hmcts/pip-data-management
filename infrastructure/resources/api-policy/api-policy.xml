@@ -54,7 +54,7 @@
 						</set-header>
 						<set-body>@{
 						return new JObject(
-							new JProperty("message", "Successfully autheticated by HMI, however target system failed to autheticate. Please try again.")
+							new JProperty("message", "Successfully autheticated by SDS PIP APIM, however target system failed to autheticate. Please try again.")
 						    ).ToString();
 						}
 					</set-body>
@@ -69,7 +69,7 @@
 						</set-header>
 						<set-body>@{
 						return new JObject(
-							new JProperty("message", "Successfully authorized by HMI, however target system failed to authorize. Please try again.")
+							new JProperty("message", "Successfully authorized by SDS PIP APIM, however target system failed to authorize. Please try again.")
 						    ).ToString();
 						}
 					</set-body>
