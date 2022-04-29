@@ -276,7 +276,7 @@ public class PublicationService {
      */
     @Scheduled(cron = "${cron.daily-start-of-day}")
     public void deleteExpiredBlobs() {
-        List<Artefact> outdatedArtefacts = artefactRepository.findOutdatedArtefacts();
+        List<Artefact> outdatedArtefacts = artefactRepository.findOutdatedArtefacts(LocalDate.now());
         outdatedArtefacts.forEach(artefact -> log.info(azureBlobService.deleteBlob(getUuidFromUrl(artefact.getPayload()))));
         artefactRepository.deleteAll(outdatedArtefacts);
         log.info("{} outdated artefacts found and deleted for before {}", outdatedArtefacts.size(), LocalDate.now());

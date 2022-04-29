@@ -639,7 +639,7 @@ class PublicationServiceTest {
 
     @Test
     void testDeleteExpiredBlob() throws IOException {
-        when(artefactRepository.findOutdatedArtefacts()).thenReturn(List.of(artefactWithPayloadUrl));
+        when(artefactRepository.findOutdatedArtefacts(LocalDate.now())).thenReturn(List.of(artefactWithPayloadUrl));
         when(azureBlobService.deleteBlob(any())).thenReturn("Success");
         lenient().doNothing().when(artefactRepository).deleteAll(List.of(artefact));
         try (LogCaptor logCaptor = LogCaptor.forClass(PublicationService.class)) {
@@ -654,7 +654,7 @@ class PublicationServiceTest {
 
     @Test
     void testDeleteExpiredBlobsWithNoBlobsFound() throws IOException {
-        when(artefactRepository.findOutdatedArtefacts()).thenReturn(List.of());
+        when(artefactRepository.findOutdatedArtefacts(LocalDate.now())).thenReturn(List.of());
         try (LogCaptor logCaptor = LogCaptor.forClass(PublicationService.class)) {
             publicationService.deleteExpiredBlobs();
             assertEquals("0 outdated artefacts found and deleted for before " + LocalDate.now(),
