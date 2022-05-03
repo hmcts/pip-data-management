@@ -35,6 +35,7 @@
                     }</set-body>
                 </send-request>
                 <cache-store-value key="pipAuth" value="@("Bearer " + (String)((IResponse)context.Variables["bearerToken"]).Body.As<JObject>()["access_token"])" duration="2700" />
+                <cache-lookup-value key="pipAuth" variable-name="pipAuthToken" />
             </when>
         </choose>
         <set-header name="Authorization" exists-action="override">
