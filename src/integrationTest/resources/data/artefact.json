@@ -1,4 +1,114 @@
 {
+  "document": {
+    "version": "",
+    "publicationDate": "2016-09-13T23:30:52.123Z"
+  },
+  "venue": {
+    "venueName": "PRESTON",
+    "venueContact": {
+      "venueTelephone": "01772 844700",
+      "venueEmail": "court1@moj.gov.uk"
+    },
+    "venueAddress": {
+      "line": [
+        "THE LAW COURTS"
+      ],
+      "town": "town name",
+      "postCode": ""
+    }
+  },
+  "@schemaLocation": "",
+  "courtLists": [
+    {
+      "courtHouse": {
+        "courtHouseName": "PRESTON",
+        "courtRoom": [
+          {
+            "courtRoomName": "1",
+            "session": [
+              {
+                "sessionChannel": [
+                  "VIDEO HEARING",
+                  ""
+                ],
+                "sittings": [
+                  {
+                    "sittingStart": "",
+                    "sittingEnd": "",
+                    "hearing": [
+                      {
+                        "hearingType": "",
+                        "case": [
+                          {
+                            "caseName": "",
+                            "caseNumber": "45684548"
+                          }
+                        ]
+                      },
+                      {
+                        "hearingType": "mda",
+                        "case": [
+                          {
+                            "caseName": "A Vs B",
+                            "caseNumber": "",
+                            "caseSequenceIndicator": "[2 of 3]"
+                          }
+                        ]
+                      }
+                    ],
+                    "channel": [
+                      ""
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "courtRoomName": "1",
+            "session": [
+              {
+                "sessionChannel": [
+                  ""
+                ],
+                "judiciary": [
+                  {
+                    "johNameSurname": "Test Name",
+                    "johTitle": "District Judge"
+                  }
+                ],
+                "sittings": [
+                  {
+                    "sittingStart": "",
+                    "sittingEnd": "",
+                    "hearing": [
+                      {
+                        "hearingType": "",
+                        "case": [
+                          {
+                            "caseName": "John Smith v Jane Doe",
+                            "caseNumber": "45684548"
+                          },
+                          {
+                            "caseName": "",
+                            "caseNumber": ""
+                          }
+                        ]
+                      }
+                    ],
+                    "channel": [
+                      "",
+                      "VIDEO HEARING"
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
   "root-value": {
     "inner-value": [
       {

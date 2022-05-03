@@ -5,11 +5,15 @@
   },
   "venue": {
     "venueName": "PRESTON",
-    "venueContact": {},
+    "venueContact": {
+      "venueTelephone": "01772 844700",
+      "venueEmail": "court1@moj.gov.uk"
+    },
     "venueAddress": {
       "line": [
         "THE LAW COURTS"
       ],
+      "town": "town name",
       "postCode": ""
     }
   },
