@@ -5,11 +5,15 @@
   },
   "venue": {
     "venueName": "PRESTON",
-    "venueContact": {},
+    "venueContact": {
+      "venueTelephone": "01772 844700",
+      "venueEmail": "court1@moj.gov.uk"
+    },
     "venueAddress": {
       "line": [
         "THE LAW COURTS"
       ],
+      "town": "town name",
       "postCode": ""
     }
   },
@@ -22,7 +26,6 @@
             "courtRoomName": "1",
             "session": [
               {
-                "sessionStartTime": "",
                 "sessionChannel": [
                   "VIDEO HEARING",
                   ""
@@ -63,7 +66,6 @@
             "courtRoomName": "1",
             "session": [
               {
-                "sessionStartTime": "",
                 "sessionChannel": [
                   ""
                 ],
@@ -81,7 +83,8 @@
                           },
                           {
                             "caseName": "",
-                            "caseNumber": ""
+                            "caseNumber": "",
+                            "caseSequenceIndicator": "[2 of 3]"
                           }
                         ]
                       }
