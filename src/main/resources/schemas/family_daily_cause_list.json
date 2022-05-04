@@ -216,7 +216,7 @@
             "title": "Court House",
             "description": "The court house that owns the court rooms",
             "type": "object",
-            "required": ["courtRoom", "courtHouseName", "courtHouseAddress"],
+            "required": ["courtRoom", "courtHouseName"],
             "properties": {
               "courtHouseName": {
                 "$id": "#root/courtLists/courtList/courtHouse/courtHouseName",
@@ -240,8 +240,7 @@
                 "$id": "#root/courtLists/courtList/courtHouse/courtHouseAddress",
                 "description": "The address for the court house",
                 "title": "Court House Address",
-                "$ref": "#/definitions/address",
-                "required": ["line", "postCode"]
+                "$ref": "#/definitions/address"
               },
               "courtRoom": {
                 "$id": "#root/courtLists/courtRoom",
