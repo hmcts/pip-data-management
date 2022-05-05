@@ -80,6 +80,10 @@ public class CourtController {
         return ResponseEntity.ok(courtService.searchByRegionAndJurisdiction(regions, jurisdictions));
     }
 
+    @ApiResponses({
+        @ApiResponse(code = 200, message = "Uploaded courts"),
+        @ApiResponse(code = 403, message = "User has not been authorized")
+    })
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Collection<Court>> uploadCourts(@RequestPart MultipartFile courtList) {
         return ResponseEntity.ok(courtService.uploadCourts(courtList));
