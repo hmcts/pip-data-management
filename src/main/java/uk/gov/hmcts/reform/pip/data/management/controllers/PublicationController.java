@@ -22,6 +22,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import uk.gov.hmcts.reform.pip.data.management.authentication.roles.IsAdmin;
+import uk.gov.hmcts.reform.pip.data.management.authentication.roles.IsPublisher;
 import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactType;
@@ -49,7 +51,10 @@ import javax.validation.constraints.Email;
 @RestController
 @Api(tags = "Data Management Publications API")
 @RequestMapping("/publication")
+@SuppressWarnings({"PMD.ExcessiveImports"})
 public class PublicationController {
+
+    private static final String UNAUTHORIZED_DESCRIPTION = "User has not been authorized";
 
     private static final String NOT_FOUND_DESCRIPTION =
         "No artefact found matching given parameters and date requirements";
@@ -89,10 +94,12 @@ public class PublicationController {
         @ApiResponse(code = 201,
             message = "Artefact.class instance for the artefact that has been created",
             response = Artefact.class),
+        @ApiResponse(code = 403, message = UNAUTHORIZED_DESCRIPTION)
     })
     @ApiOperation("Upload a new publication")
     @PostMapping
     @Valid
+    @IsPublisher
     public ResponseEntity<Artefact> uploadPublication(
         @RequestHeader(PublicationConfiguration.PROVENANCE_HEADER) String provenance,
         @RequestHeader(value = PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, required = false)
@@ -158,9 +165,11 @@ public class PublicationController {
         @ApiResponse(code = 201,
             message = "Artefact.class instance for the artefact that has been created",
             response = Artefact.class),
+        @ApiResponse(code = 403, message = UNAUTHORIZED_DESCRIPTION)
     })
     @ApiOperation("Upload a new publication")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @IsPublisher
     public ResponseEntity<Artefact> uploadPublication(
         @RequestHeader(PublicationConfiguration.PROVENANCE_HEADER) String provenance,
         @RequestHeader(value = PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, required = false)
@@ -212,11 +221,13 @@ public class PublicationController {
     @ApiResponses({
         @ApiResponse(code = 200,
             message = "List of Artefacts matching the given courtId and verification parameters and date requirements"),
+        @ApiResponse(code = 403, message = UNAUTHORIZED_DESCRIPTION),
         @ApiResponse(code = 404,
             message = NOT_FOUND_DESCRIPTION),
     })
     @ApiOperation("Get a series of publications matching a given courtId (e.g. courtid)")
     @GetMapping("/courtId/{courtId}")
+    @IsAdmin
     public ResponseEntity<List<Artefact>> getAllRelevantArtefactsByCourtId(@PathVariable String courtId,
                                                                            @RequestHeader Boolean verification,
                                                                            @RequestHeader(value = "x-admin",
@@ -228,11 +239,13 @@ public class PublicationController {
     @ApiResponses({
         @ApiResponse(code = 200,
             message = "List of Artefacts matching a given case value, verification parameters and date requirements"),
+        @ApiResponse(code = 403, message = UNAUTHORIZED_DESCRIPTION),
         @ApiResponse(code = 404,
             message = NOT_FOUND_DESCRIPTION),
     })
     @ApiOperation("Get a series of publications matching a given case search value (e.g. CASE_URN/CASE_ID/CASE_NAME)")
     @GetMapping("/search/{searchTerm}/{searchValue}")
+    @IsAdmin
     public ResponseEntity<List<Artefact>> getAllRelevantArtefactsBySearchValue(@PathVariable CaseSearchTerm searchTerm,
                                                                            @PathVariable String searchValue,
                                                                            @RequestHeader Boolean verification) {
@@ -243,11 +256,13 @@ public class PublicationController {
         @ApiResponse(code = 200,
             message = "Gets the artefact metadata",
             response = Artefact.class),
+        @ApiResponse(code = 403, message = UNAUTHORIZED_DESCRIPTION),
         @ApiResponse(code = 404,
             message = NOT_FOUND_DESCRIPTION),
     })
     @ApiOperation("Gets the metadata for the blob, given a specific artefact id")
     @GetMapping("/{artefactId}")
+    @IsAdmin
     public ResponseEntity<Artefact> getArtefactMetadata(
         @PathVariable UUID artefactId, @RequestHeader Boolean verification, @RequestHeader(value = "x-admin",
         required = false, defaultValue = "false") Boolean isAdmin) {
@@ -259,11 +274,13 @@ public class PublicationController {
         @ApiResponse(code = 200,
             message = "Blob data from the given request in text format.",
             response = String.class),
+        @ApiResponse(code = 403, message = UNAUTHORIZED_DESCRIPTION),
         @ApiResponse(code = 404,
             message = NOT_FOUND_DESCRIPTION),
     })
     @ApiOperation("Gets the the payload for the blob, given a specific artefact ID")
     @GetMapping("/{artefactId}/payload")
+    @IsAdmin
     public ResponseEntity<String> getArtefactPayload(
         @PathVariable UUID artefactId, @RequestHeader Boolean verification) {
 
@@ -274,11 +291,13 @@ public class PublicationController {
         @ApiResponse(code = 200,
             message = "Blob data from the given request as a file.",
             response = String.class),
+        @ApiResponse(code = 403, message = UNAUTHORIZED_DESCRIPTION),
         @ApiResponse(code = 404,
             message = NOT_FOUND_DESCRIPTION),
     })
     @ApiOperation("Gets the the payload for the blob, given a specific artefact ID")
     @GetMapping(value = "/{artefactId}/file", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    @IsAdmin
     public ResponseEntity<Resource> getArtefactFile(@PathVariable UUID artefactId,
                                                     @RequestHeader Boolean verification) {
         Resource file = publicationService.getFlatFileByArtefactID(artefactId, verification);
@@ -293,10 +312,12 @@ public class PublicationController {
 
     @ApiResponses({
         @ApiResponse(code = 200, message = "Successfully deleted artefact: {artefactId}"),
+        @ApiResponse(code = 403, message = UNAUTHORIZED_DESCRIPTION),
         @ApiResponse(code = 404, message = "No artefact found with the ID: {artefactId}"),
     })
     @ApiOperation("Delete a artefact and its list from P&I")
     @DeleteMapping("/{artefactId}")
+    @IsAdmin
     public ResponseEntity<String> deleteArtefact(@RequestHeader("x-issuer-email") @Email String issuerEmail,
         @PathVariable String artefactId) {
         publicationService.deleteArtefactById(artefactId, issuerEmail);

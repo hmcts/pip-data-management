@@ -13,6 +13,21 @@ management:
 
 #If you use a database then uncomment below lines and update db properties accordingly
 spring:
+  cloud:
+    azure:
+      active-directory:
+        enabled: true
+        profile:
+          tenant-id: ${TENANT_ID}
+        credential:
+          client-id: ${CLIENT_ID}
+          client-secret: ${CLIENT_SECRET}
+        app-id-uri: ${APP_URI}
+        authorization-clients:
+          subscriptionManagementApi:
+            authorization-grant-type: client_credentials
+            scopes:
+              - ${SUBSCRIPTION_MANAGEMENT_AZ_API}/.default
   jackson:
     serialization.write_dates_as_timestamps: false
     mapper:
@@ -71,7 +86,7 @@ validations:
   sjp-press-list: "schemas/single_justice_procedure_press.json"
 
 cron:
-  daily-display-from: "0 0 0 * * *"
+  daily-start-of-day: "0 0 0 * * *"
 
 dbMigration:
   # When true, the app will run DB migration on startup.

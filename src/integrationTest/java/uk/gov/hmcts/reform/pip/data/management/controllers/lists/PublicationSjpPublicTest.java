@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
@@ -41,6 +42,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @ActiveProfiles(profiles = "test")
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
+@WithMockUser(username = "admin", authorities = { "APPROLE_api.request.admin" })
 class PublicationSjpPublicTest {
 
     @Autowired
@@ -89,7 +91,6 @@ class PublicationSjpPublicTest {
                 .content(mockFile.readAllBytes())
                 .contentType(MediaType.APPLICATION_JSON);
 
-
             MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
                 .andExpect(status().isCreated()).andReturn();
 
@@ -121,7 +122,6 @@ class PublicationSjpPublicTest {
                 .header(PublicationConfiguration.LANGUAGE_HEADER, Language.ENGLISH)
                 .content(mockFile.readAllBytes())
                 .contentType(MediaType.APPLICATION_JSON);
-
 
             MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
                 .andExpect(status().isBadRequest()).andReturn();
