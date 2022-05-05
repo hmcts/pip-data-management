@@ -218,7 +218,6 @@ Here are some other functionalities it provides:
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 # API
-
 Numerous apis are set up to handle the data passing through P&I and will be built upon as the project progresses.
 
  - [Retrieving Courts and Hearings (Deprecating)](#retrieving-courts-and-hearings)

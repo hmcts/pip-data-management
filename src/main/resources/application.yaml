@@ -86,7 +86,7 @@ validations:
   sjp-press-list: "schemas/single_justice_procedure_press.json"
 
 cron:
-  daily-display-from: "0 0 0 * * *"
+  daily-start-of-day: "0 0 0 * * *"
 
 dbMigration:
   # When true, the app will run DB migration on startup.
