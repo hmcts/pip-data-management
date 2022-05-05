@@ -24,8 +24,14 @@ class SchedulerTest {
     private PublicationService publicationService;
 
     @Test
-    void testSchedulerRuns() {
+    void testSchedulerNewlyActiveArtefactRuns() {
         await().atMost(Duration.TEN_SECONDS).untilAsserted(() -> verify(publicationService, times(1))
             .checkNewlyActiveArtefacts());
+    }
+
+    @Test
+    void testSchedulerDeleteExpiredBlobsRuns() {
+        await().atMost(Duration.TEN_SECONDS).untilAsserted(() -> verify(publicationService, times(1))
+            .deleteExpiredBlobs());
     }
 }
