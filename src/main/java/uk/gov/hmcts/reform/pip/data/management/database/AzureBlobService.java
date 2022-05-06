@@ -65,11 +65,11 @@ public class AzureBlobService {
     /**
      * Gets the data held within a blob from the blob service.
      *
-     * @param payloadid the identifier of the payload
+     * @param payloadId the identifier of the payload
      * @return the data contained within the blob in String format.
      */
-    public String getBlobData(String payloadid) {
-        BlobClient blobClient = blobContainerClient.getBlobClient(payloadid);
+    public String getBlobData(String payloadId) {
+        BlobClient blobClient = blobContainerClient.getBlobClient(payloadId);
         return blobClient.downloadContent().toString();
     }
 

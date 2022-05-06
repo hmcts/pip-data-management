@@ -25,6 +25,7 @@ import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
 import uk.gov.hmcts.reform.pip.data.management.utils.PayloadExtractor;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -278,7 +279,6 @@ class PublicationServiceTest {
 
     @Test
     void testUpdatingOfExistingArtefact() {
-
         Artefact artefact = Artefact.builder()
             .sourceArtefactId(SOURCE_ARTEFACT_ID)
             .provenance(PROVENANCE)
@@ -832,6 +832,33 @@ class PublicationServiceTest {
 
         assertEquals("No artefact found with the ID: " + TEST_VALUE, ex.getMessage(),
                      MESSAGES_MATCH);
+    }
+
+    @Test
+    void testDeleteExpiredBlob() throws IOException {
+        when(artefactRepository.findOutdatedArtefacts(LocalDate.now())).thenReturn(List.of(artefactWithPayloadUrl));
+        when(azureBlobService.deleteBlob(any())).thenReturn("Success");
+        lenient().doNothing().when(artefactRepository).deleteAll(List.of(artefact));
+        try (LogCaptor logCaptor = LogCaptor.forClass(PublicationService.class)) {
+            publicationService.deleteExpiredBlobs();
+            assertEquals(SUCCESS, logCaptor.getInfoLogs().get(0), MESSAGES_MATCH);
+            assertEquals("1 outdated artefacts found and deleted for before " + LocalDate.now(),
+                         logCaptor.getInfoLogs().get(1), MESSAGES_MATCH);
+        } catch (Exception ex) {
+            throw new IOException(ex.getMessage());
+        }
+    }
+
+    @Test
+    void testDeleteExpiredBlobsWithNoBlobsFound() throws IOException {
+        when(artefactRepository.findOutdatedArtefacts(LocalDate.now())).thenReturn(List.of());
+        try (LogCaptor logCaptor = LogCaptor.forClass(PublicationService.class)) {
+            publicationService.deleteExpiredBlobs();
+            assertEquals("0 outdated artefacts found and deleted for before " + LocalDate.now(),
+                         logCaptor.getInfoLogs().get(0), MESSAGES_MATCH);
+        } catch (Exception ex) {
+            throw new IOException(ex.getMessage());
+        }
     }
 
 }

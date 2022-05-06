@@ -355,5 +355,4 @@ class CourtApiTest {
                 .andExpect(status().isBadRequest()).andReturn();
         }
     }
-
 }

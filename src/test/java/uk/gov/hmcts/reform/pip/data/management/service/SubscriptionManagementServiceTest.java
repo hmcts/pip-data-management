@@ -9,6 +9,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pip.data.management.Application;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
@@ -18,6 +19,7 @@ import java.io.IOException;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@SuppressWarnings("PMD.LawOfDemeter")
 @ExtendWith({MockitoExtension.class})
 @ActiveProfiles("test")
 @SpringBootTest(classes = {Application.class})
@@ -48,7 +50,11 @@ class SubscriptionManagementServiceTest {
     }
 
     @Test
-    void testFailedSend() {
+    void testFailedSend() throws IOException {
+        mockSubscriptionManagementEndpoint = new MockWebServer();
+        mockSubscriptionManagementEndpoint.start(4550);
+        mockSubscriptionManagementEndpoint.enqueue(new MockResponse()
+                                                       .setResponseCode(HttpStatus.BAD_REQUEST.value()));
         assertEquals(
             subscriptionManagementService.sendArtefactForSubscription(ARTEFACT),
             "Artefact failed to send: " + ARTEFACT.getArtefactId(),
