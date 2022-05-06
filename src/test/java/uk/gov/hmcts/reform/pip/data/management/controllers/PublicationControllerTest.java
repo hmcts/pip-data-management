@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.pip.data.management.controllers;
 
+import nl.altindag.log.LogCaptor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,6 +23,7 @@ import uk.gov.hmcts.reform.pip.data.management.service.PublicationService;
 import uk.gov.hmcts.reform.pip.data.management.service.ValidationService;
 import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -123,7 +125,7 @@ class PublicationControllerTest {
 
         ResponseEntity<Artefact> responseEntity = publicationController.uploadPublication(
             PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE,
-            SENSITIVITY, LANGUAGE, DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, COURT_ID, CONTENT_DATE, PAYLOAD
+            SENSITIVITY, LANGUAGE, DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, COURT_ID, CONTENT_DATE, TEST_STRING, PAYLOAD
         );
 
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode(), STATUS_CODE_MATCH);
@@ -261,7 +263,7 @@ class PublicationControllerTest {
 
         ResponseEntity<Artefact> responseEntity = publicationController.uploadPublication(
             PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE,
-            SENSITIVITY, LANGUAGE, DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, COURT_ID, CONTENT_DATE, FILE
+            SENSITIVITY, LANGUAGE, DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, COURT_ID, CONTENT_DATE, TEST_STRING, FILE
         );
 
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode(), STATUS_CODE_MATCH);
@@ -276,6 +278,24 @@ class PublicationControllerTest {
         assertEquals(DELETED_MESSAGE + TEST_STRING,
                      publicationController.deleteArtefact(TEST_STRING, TEST_STRING).getBody(),
                      MESSAGES_MATCH);
+    }
+
+    @Test
+    void testCreatePublicationLogsWhenHeaderIsPresent() throws IOException {
+        when(validationService.validateHeaders(any())).thenReturn(headers);
+        when(publicationService.createPublication(argThat(arg -> arg.equals(artefact)), eq(PAYLOAD)))
+            .thenReturn(artefactWithId);
+
+
+        try(LogCaptor logCaptor = LogCaptor.forClass(PublicationController.class)) {
+            publicationController.uploadPublication(
+                PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE,
+                SENSITIVITY, LANGUAGE, DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, COURT_ID, CONTENT_DATE, TEST_STRING, PAYLOAD
+            );
+            assertEquals(1, logCaptor.getInfoLogs().size(), "Should have logged upload");
+        } catch (Exception ex) {
+            throw new IOException(ex.getMessage());
+        }
     }
 
 }
