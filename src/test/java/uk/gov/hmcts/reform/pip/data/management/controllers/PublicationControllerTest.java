@@ -287,7 +287,7 @@ class PublicationControllerTest {
             .thenReturn(artefactWithId);
 
 
-        try(LogCaptor logCaptor = LogCaptor.forClass(PublicationController.class)) {
+        try (LogCaptor logCaptor = LogCaptor.forClass(PublicationController.class)) {
             publicationController.uploadPublication(
                 PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE,
                 SENSITIVITY, LANGUAGE, DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, COURT_ID, CONTENT_DATE, TEST_STRING, PAYLOAD
