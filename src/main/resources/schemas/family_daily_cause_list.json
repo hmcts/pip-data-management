@@ -216,7 +216,7 @@
             "title": "Court House",
             "description": "The court house that owns the court rooms",
             "type": "object",
-            "required": ["courtHouseName", "courtRoom"],
+            "required": ["courtRoom", "courtHouseName"],
             "properties": {
               "courtHouseName": {
                 "$id": "#root/courtLists/courtList/courtHouse/courtHouseName",
