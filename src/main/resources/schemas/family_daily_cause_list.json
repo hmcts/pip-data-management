@@ -119,6 +119,7 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Root",
   "type": "object",
+  "required": ["document", "venue", "courtLists"],
   "properties": {
     "@schemaLocation": {
       "$id": "#root/@schemaLocation",
@@ -189,7 +190,7 @@
           "description": "Full venue address",
           "$id": "#root/venue/venueAddress",
           "$ref": "#/definitions/address",
-          "required": ["line", "town", "county", "postCode"]
+          "required": ["line", "postCode"]
         },
         "venueContact": {
           "$id": "#root/venue/venueContact",
@@ -208,13 +209,14 @@
         "$id": "#root/courtLists/courtList",
         "title": "Court list",
         "type": "object",
+        "required": ["courtHouse"],
         "properties": {
           "courtHouse": {
             "$id": "#root/courtLists/courtHouse",
             "title": "Court House",
             "description": "The court house that owns the court rooms",
             "type": "object",
-            "required": ["courtRoom"],
+            "required": ["courtHouseName", "courtRoom"],
             "properties": {
               "courtHouseName": {
                 "$id": "#root/courtLists/courtList/courtHouse/courtHouseName",
@@ -231,15 +233,13 @@
                 "$id": "#root/courtLists/courtList/courtHouse/courtHouseContact",
                 "description": "The contact for the court house",
                 "title": "Court House Contact",
-                "$ref": "#/definitions/venueContact",
-                "required": ["venueTelephone", "venueEmail"]
+                "$ref": "#/definitions/venueContact"
               },
               "courtHouseAddress": {
                 "$id": "#root/courtLists/courtList/courtHouse/courtHouseAddress",
                 "description": "The address for the court house",
                 "title": "Court House Address",
-                "$ref": "#/definitions/address",
-                "required": ["line", "town", "county", "postCode"]
+                "$ref": "#/definitions/address"
               },
               "courtRoom": {
                 "$id": "#root/courtLists/courtRoom",
@@ -388,7 +388,6 @@
                                           "title": "Party",
                                           "description": "A party",
                                           "type": "object",
-                                          "required": ["partyRole", "individualDetails"],
                                           "properties": {
                                             "partyRole": {
                                               "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items/partyRole",
@@ -417,7 +416,6 @@
                                               "title": "Individual Details",
                                               "description": "Individual Details",
                                               "type": "object",
-                                              "required": ["individualSurname"],
                                               "properties": {
                                                 "title": {
                                                   "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items/individualDetails/title",
