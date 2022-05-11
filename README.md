@@ -10,7 +10,7 @@ security policies. Including providing Usage Data & MI to SDP.
 ## What's inside
 
 The template is a working application with a minimal setup. It contains:
- * common plugins and libraries
+ * common plugins and libraries.
  * docker setup
  * swagger configuration for api documentation ([see how to publish your api documentation to shared repository](https://github.com/hmcts/reform-api-docs#publish-swagger-docs))
  * code quality tools already set up
