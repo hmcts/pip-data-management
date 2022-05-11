@@ -22,16 +22,30 @@
                               "individualForenames": "This is a forename",
                               "individualSurname": "This is a surname",
                               "address": {
-                                "county": "This is a county",
                                 "town": "This is a town",
-                                "postCode": "This is a postcode"
+                                "postCode": "This is a postcode",
+                                "country": "This is a country"
                               },
                               "title": "This is a title",
                               "individualMiddleName": "This is a middle name"
+                            },
+                            "organisationDetails": {
+                              "organisationName": "This is an organisation"
                             }
                           },
                           {
                             "partyRole": "PROSECUTOR",
+                            "individualDetails": {
+                              "individualForenames": "This is a forename",
+                              "individualSurname": "This is a surname",
+                              "address": {
+                                "town": "This is a town",
+                                "postCode": "This is a postcode",
+                                "country": "This is a country"
+                              },
+                              "title": "This is a title",
+                              "individualMiddleName": "This is a middle name"
+                            },
                             "organisationDetails": {
                               "organisationName": "This is an organisation"
                             }
