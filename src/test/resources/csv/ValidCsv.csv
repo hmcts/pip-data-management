@@ -1,4 +1,4 @@
-P&I ID,Court Desc,Region,Jurisdiction,Provenance,ProvenanceID
-1,Test Court,North West,Magistrates Court;Family Court,TestProvenance,1
-1,Test Court,North West,Magistrates Court;Family Court,TestProvenanceOther,2
-2,Test Court Other,South West,Family Court,TestProvenance,1
+P&I ID,Court Desc,Region,Jurisdiction,Provenance,Provenance Location ID, Provenance Location Type
+1,Test Location,North West,Magistrates Location;Family Location,TestProvenance,1, venue
+1,Test Location,North West,Magistrates Location;Family Location,TestProvenanceOther,2, venue
+2,Test Location Other,South West,Family Location,TestProvenance,1, venue

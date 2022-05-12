@@ -23,8 +23,8 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import uk.gov.hmcts.reform.pip.data.management.Application;
 import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
-import uk.gov.hmcts.reform.pip.data.management.database.CourtRepository;
-import uk.gov.hmcts.reform.pip.data.management.models.court.Court;
+import uk.gov.hmcts.reform.pip.data.management.database.LocationRepository;
+import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Language;
@@ -67,7 +67,7 @@ class PublicationInternalCourtIdTest {
     BlobClient blobClient;
 
     @Autowired
-    CourtRepository courtRepository;
+    LocationRepository locationRepository;
 
     @Autowired
     private MockMvc mockMvc;
@@ -111,10 +111,10 @@ class PublicationInternalCourtIdTest {
         objectMapper.findAndRegisterModules();
     }
 
-    private List<Court> createCourts() throws Exception {
+    private List<Location> createCourts() throws Exception {
 
         try (InputStream csvInputStream = this.getClass().getClassLoader()
-            .getResourceAsStream("courts/ValidReferenceData.csv")) {
+            .getResourceAsStream("location/ValidReferenceData.csv")) {
             MockMultipartFile csvFile
                 = new MockMultipartFile("courtList", csvInputStream);
 
@@ -122,7 +122,7 @@ class PublicationInternalCourtIdTest {
                 .andExpect(status().isOk()).andReturn();
 
             return Arrays.asList(
-                objectMapper.readValue(mvcResult.getResponse().getContentAsString(), Court[].class));
+                objectMapper.readValue(mvcResult.getResponse().getContentAsString(), Location[].class));
         }
     }
 
