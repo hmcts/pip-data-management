@@ -19,7 +19,7 @@ public enum ListType {
     FAMILY_DAILY_CAUSE_LIST(LocationType.VENUE);
 
     /**
-     * Flag that represents whether the list type is SJP.
+     * Flag that represents the Location Type level the list displays at.
      */
     private final LocationType listLocationLevel;
 

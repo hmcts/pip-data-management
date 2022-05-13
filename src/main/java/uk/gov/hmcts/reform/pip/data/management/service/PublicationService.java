@@ -13,9 +13,11 @@ import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.Artefact
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.NotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
+import uk.gov.hmcts.reform.pip.data.management.models.publication.ListType;
 import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
 import uk.gov.hmcts.reform.pip.data.management.utils.PayloadExtractor;
 import uk.gov.hmcts.reform.pip.model.enums.UserActions;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -109,7 +111,7 @@ public class PublicationService {
      */
     private boolean applyExistingArtefact(Artefact artefact) {
         Optional<Artefact> foundArtefact = artefactRepository.findArtefactByUpdateLogic(
-            artefact.getCourtId(),
+            artefact.getLocationId(),
             artefact.getContentDate(),
             artefact.getLanguage().name(),
             artefact.getListType().name(),
@@ -304,14 +306,19 @@ public class PublicationService {
         if ("MANUAL_UPLOAD".equalsIgnoreCase(artefact.getProvenance())) {
             return;
         }
-        Optional<Location> courts = locationRepository.findByCourtIdByProvenance(artefact.getProvenance(),
-                                                                                       artefact.getCourtId(),
-                                                                                       artefact.getListType().getListLocationLevel().name());
-        if (courts.isPresent()) {
-            artefact.setCourtId(courts.get().getLocationId().toString());
+        Optional<Location> location = locationRepository.findByCourtIdByProvenance(artefact.getProvenance(),
+                                                                                       artefact.getLocationId(),
+                                                                                       artefact.getListType()
+                                                                                       .getListLocationLevel().name());
+        if (location.isPresent()) {
+            artefact.setLocationId(location.get().getLocationId().toString());
 
         } else {
-            artefact.setCourtId(String.format("NoMatch%s", artefact.getCourtId()));
+            artefact.setLocationId(String.format("NoMatch%s", artefact.getLocationId()));
         }
+    }
+
+    public String getLocationType(ListType listType) {
+        return listType.getListLocationLevel().name();
     }
 }

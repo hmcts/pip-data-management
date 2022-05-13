@@ -133,7 +133,7 @@ public class PublicationController {
             .displayFrom(headers.getDisplayFrom())
             .displayTo(headers.getDisplayTo())
             .listType(headers.getListType())
-            .courtId(headers.getCourtId())
+            .locationId(headers.getCourtId())
             .contentDate(headers.getContentDate())
             .build();
 
@@ -195,7 +195,7 @@ public class PublicationController {
         HeaderGroup headers = validationService.validateHeaders(initialHeaders);
 
         Map<String, List<Object>> search = new ConcurrentHashMap<>();
-        search.put("court-id", List.of(headers.getCourtId()));
+        search.put("location-id", List.of(headers.getCourtId()));
 
         Artefact artefact = Artefact.builder()
             .provenance(headers.getProvenance())
@@ -206,7 +206,7 @@ public class PublicationController {
             .displayFrom(headers.getDisplayFrom())
             .displayTo(headers.getDisplayTo())
             .listType(headers.getListType())
-            .courtId(headers.getCourtId())
+            .locationId(headers.getCourtId())
             .contentDate(headers.getContentDate())
             .isFlatFile(true)
             .search(search)
@@ -220,20 +220,21 @@ public class PublicationController {
 
     @ApiResponses({
         @ApiResponse(code = 200,
-            message = "List of Artefacts matching the given courtId and verification parameters and date requirements"),
+            message =
+                "List of Artefacts matching the given locationId and verification parameters and date requirements"),
         @ApiResponse(code = 403, message = UNAUTHORIZED_DESCRIPTION),
         @ApiResponse(code = 404,
             message = NOT_FOUND_DESCRIPTION),
     })
-    @ApiOperation("Get a series of publications matching a given courtId (e.g. courtid)")
-    @GetMapping("/courtId/{courtId}")
+    @ApiOperation("Get a series of publications matching a given locationId (e.g. locationId)")
+    @GetMapping("/locationId/{locationId}")
     @IsAdmin
-    public ResponseEntity<List<Artefact>> getAllRelevantArtefactsByCourtId(@PathVariable String courtId,
+    public ResponseEntity<List<Artefact>> getAllRelevantArtefactsByCourtId(@PathVariable String locationId,
                                                                            @RequestHeader Boolean verification,
                                                                            @RequestHeader(value = "x-admin",
                                                                                defaultValue = "false",
                                                                                required = false) Boolean isAdmin) {
-        return ResponseEntity.ok(publicationService.findAllByCourtIdAdmin(courtId, verification, isAdmin));
+        return ResponseEntity.ok(publicationService.findAllByCourtIdAdmin(locationId, verification, isAdmin));
     }
 
     @ApiResponses({
@@ -322,5 +323,14 @@ public class PublicationController {
         @PathVariable String artefactId) {
         publicationService.deleteArtefactById(artefactId, issuerEmail);
         return ResponseEntity.ok("Successfully deleted artefact: " + artefactId);
+    }
+
+    @ApiResponses({
+        @ApiResponse(code = 200, message = "{Location type associated with given list type}")
+    })
+    @ApiOperation("Return the Location type associated with a given list type")
+    @GetMapping("/location-type/{listType}")
+    public ResponseEntity<String> getLocationType(@PathVariable ListType listType) {
+        return ResponseEntity.ok(publicationService.getLocationType(listType));
     }
 }

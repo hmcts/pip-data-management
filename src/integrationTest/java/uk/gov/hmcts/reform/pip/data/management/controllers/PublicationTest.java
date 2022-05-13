@@ -27,6 +27,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import uk.gov.hmcts.reform.pip.data.management.Application;
 import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.ExceptionResponse;
+import uk.gov.hmcts.reform.pip.data.management.models.location.LocationType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Language;
@@ -72,8 +73,9 @@ class PublicationTest {
 
     private static final String PUBLICATION_URL = "/publication";
     private static final String SEARCH_URL = "/publication/search";
-    private static final String SEARCH_COURT_URL = "/publication/courtId";
+    private static final String SEARCH_COURT_URL = "/publication/locationId";
     private static final String PAYLOAD_URL = "/payload";
+    private static final String LOCATION_TYPE_URL = PUBLICATION_URL + "/location-type/";
     private static final ArtefactType ARTEFACT_TYPE = ArtefactType.LIST;
     private static final Sensitivity SENSITIVITY = Sensitivity.PUBLIC;
     private static final String PROVENANCE = "MANUAL_UPLOAD";
@@ -93,7 +95,7 @@ class PublicationTest {
     private static final String SEARCH_KEY_NOT_FOUND = "case-urn";
     private static final String SEARCH_VALUE_1 = "array-value-1";
     private static final String SEARCH_VALUE_2 = "array-value-2";
-    private static final String COURT_ID_SEARCH_KEY = "court-id";
+    private static final String LOCATION_ID_SEARCH_KEY = "location-id";
     private static final String VERIFICATION_HEADER = "verification";
     private static final String VALID_CASE_ID_SEARCH = "/CASE_ID/45684548";
     private static final String VALID_CASE_NAME_SEARCH = "/CASE_NAME/Smith";
@@ -199,14 +201,14 @@ class PublicationTest {
 
         Map<String, List<Object>> searchResult = artefact.getSearch();
         assertTrue(
-            searchResult.containsKey(isJson ? SEARCH_KEY_FOUND : COURT_ID_SEARCH_KEY),
+            searchResult.containsKey(isJson ? SEARCH_KEY_FOUND : LOCATION_ID_SEARCH_KEY),
             "Returned search result does not contain the correct key"
         );
         assertFalse(searchResult.containsKey(SEARCH_KEY_NOT_FOUND), "Returned search result contains "
             + "key that does not exist");
         assertEquals(
             isJson ? SEARCH_VALUE_1 : COURT_ID,
-            searchResult.get(isJson ? SEARCH_KEY_FOUND : COURT_ID_SEARCH_KEY).get(0),
+            searchResult.get(isJson ? SEARCH_KEY_FOUND : LOCATION_ID_SEARCH_KEY).get(0),
             "Does not contain first value in the array"
         );
 
@@ -251,7 +253,7 @@ class PublicationTest {
         assertEquals(artefact.getProvenance(), PROVENANCE, "Provenance does not match input provenance");
         assertEquals(artefact.getDisplayFrom(), DISPLAY_FROM, "Display from does not match input display from");
         assertEquals(artefact.getDisplayTo(), DISPLAY_TO, "Display to does not match input display to");
-        assertEquals(artefact.getCourtId(), COURT_ID, "Court id does not match input court id");
+        assertEquals(artefact.getLocationId(), COURT_ID, "Court id does not match input court id");
         assertEquals(artefact.getListType(), LIST_TYPE, "List type does not match input list type");
         assertEquals(artefact.getContentDate(), CONTENT_DATE, "Content date does not match input content date");
         assertEquals(artefact.getLanguage(), LANGUAGE, "Language does not match input language");
@@ -455,7 +457,7 @@ class PublicationTest {
             jsonArray.get(0).toString(), Artefact.class
         );
 
-        assertEquals(COURT_ID, retrievedArtefact.getCourtId(), "Artefact not found.");
+        assertEquals(COURT_ID, retrievedArtefact.getLocationId(), "Artefact not found.");
     }
 
     @DisplayName("Should create a valid artefact and return the created artefact to the user")
@@ -582,7 +584,7 @@ class PublicationTest {
         Artefact retrievedArtefact = objectMapper.readValue(
             jsonArray.get(0).toString(), Artefact.class
         );
-        assertEquals(COURT_ID, retrievedArtefact.getCourtId(),
+        assertEquals(COURT_ID, retrievedArtefact.getLocationId(),
                      "Incorrect court ID has been retrieved from the database"
         );
     }
@@ -636,7 +638,7 @@ class PublicationTest {
         Artefact retrievedArtefact = objectMapper.readValue(
             jsonArray.get(0).toString(), Artefact.class
         );
-        assertEquals(COURT_ID, retrievedArtefact.getCourtId(),
+        assertEquals(COURT_ID, retrievedArtefact.getLocationId(),
                      "Incorrect court ID has been retrieved from the database"
         );
 
@@ -1584,6 +1586,23 @@ class PublicationTest {
             .header("x-admin", true);
         mockMvc.perform(adminRequest).andExpect(status().isNotFound());
 
+    }
+
+    @Test
+    void testGetLocationTypeReturns() throws Exception {
+        mockHttpServletRequestBuilder = MockMvcRequestBuilders.get(LOCATION_TYPE_URL + ListType.CIVIL_DAILY_CAUSE_LIST);
+
+        MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isOk()).andReturn();
+
+        assertEquals(LocationType.VENUE.name(), response.getResponse().getContentAsString(),
+                     "Location types should match");
+    }
+
+    @Test
+    void testGetLocationTypeReturnsBadRequest() throws Exception {
+        mockHttpServletRequestBuilder = MockMvcRequestBuilders.get(LOCATION_TYPE_URL + "invalid");
+
+        mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isBadRequest());
     }
 
 }
