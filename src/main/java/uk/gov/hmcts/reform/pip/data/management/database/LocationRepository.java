@@ -27,9 +27,11 @@ public interface LocationRepository extends JpaRepository<Location, Integer> {
     @Query(value = "select location.* from location_reference "
         + "inner join location on location_reference.location_id = location.location_id "
         + "WHERE (location_reference.provenance = :provenance) "
-        + "AND (location_reference.provenance_location_id = :provenanceLocationId) ",
+        + "AND (location_reference.provenance_location_id = :provenanceLocationId) "
+        + "AND (location_reference.provenance_location_type = :provenanceLocationType)",
         nativeQuery = true)
-    Optional<List<Location>> findByCourtIdByProvenance(@Param("provenance") String provenance,
-                                                       @Param("provenanceLocationId") String provenanceLocationId);
+    Optional<Location> findByCourtIdByProvenance(@Param("provenance") String provenance,
+                                                       @Param("provenanceLocationId") String provenanceLocationId,
+                                                       @Param("provenanceLocationType") String provenanceLocationType);
 
 }
