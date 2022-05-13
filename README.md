@@ -260,12 +260,13 @@ These are defined by the [schemas](src/main/resources/schemas).
   multipart form data and uploading a file as the body will upload a flat file to the artefact where no P&I
   processing will be done on the contents of the file.
 
-- GET `/publication/courtId/{courtId}` used to get a series of publications matching the courtId.
+- GET `/publication/locationId/{courtId}` used to get a series of publications matching the courtId.
 - GET `publication/search/{searchTerm}/{searchValue}` used to get a series of publications matching a given case
   search value, e.g. (CASE_URN/CASE_ID/CASE_NAME)
 - GET `/publication/{artefactId}` used to get the metadata for the artefact.
 - GET `/publication/{artefactId}/payload` used to get the payload for the artefact.
 - GET `/publication/{artefactId}/file` used to get payload file for the artefact.
+- GET `/publication/location-type/{listType}` used to get the location type from a list type.
 - DELETE  `/publication/{artefactId}` used to delete an artefact and its payload from P&I.
 
 ## Headers
