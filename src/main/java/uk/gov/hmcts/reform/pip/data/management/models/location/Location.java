@@ -76,8 +76,8 @@ public class Location {
     }
 
     /**
-     * Adds a new CourtReference to the reference table.
-     * @param locationReference The court reference object to add.
+     * Adds a new LocationReference to the reference table.
+     * @param locationReference The location reference object to add.
      */
     public void addLocationReference(LocationReference locationReference) {
         locationReferenceList.add(locationReference);
