@@ -2,4 +2,4 @@ service-to-service:
   subscription-management: localhost:4550
 
 cron:
-  daily-display-from: "*/10 * * * * *"
+  daily-start-of-day: "*/10 * * * * *"

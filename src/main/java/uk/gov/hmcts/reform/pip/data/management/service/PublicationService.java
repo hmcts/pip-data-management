@@ -282,11 +282,24 @@ public class PublicationService {
     /**
      * Scheduled method that checks daily for newly dated from artefacts.
      */
-    @Scheduled(cron = "${cron.daily-display-from}")
+    @Scheduled(cron = "${cron.daily-start-of-day}")
     public void checkNewlyActiveArtefacts() {
         List<Artefact> newArtefactsToday = artefactRepository.findArtefactsByDisplayFrom(LocalDate.now());
         newArtefactsToday.forEach(artefact -> log.info(sendArtefactForSubscription(artefact)));
     }
+
+    /**
+     * Scheduled method that checks daily for newly outdated artefacts based on a yesterday or older display to date.
+     */
+    @Scheduled(cron = "${cron.daily-start-of-day}")
+    public void deleteExpiredBlobs() {
+        List<Artefact> outdatedArtefacts = artefactRepository.findOutdatedArtefacts(LocalDate.now());
+        outdatedArtefacts.forEach(artefact ->
+                                      log.info(azureBlobService.deleteBlob(getUuidFromUrl(artefact.getPayload()))));
+        artefactRepository.deleteAll(outdatedArtefacts);
+        log.info("{} outdated artefacts found and deleted for before {}", outdatedArtefacts.size(), LocalDate.now());
+    }
+
 
     private void findByCourtIdByProvenanceAndUpdate(Artefact artefact) {
         if ("MANUAL_UPLOAD".equalsIgnoreCase(artefact.getProvenance())) {

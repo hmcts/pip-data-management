@@ -200,6 +200,9 @@ dependencies {
   implementation 'org.springframework.boot:spring-boot-starter-validation'
   implementation 'org.springframework.boot:spring-boot-starter-jdbc'
   implementation 'org.springframework.boot:spring-boot-starter-data-jpa:2.5.5'
+  implementation 'com.azure.spring:spring-cloud-azure-starter-active-directory:4.0.0'
+  implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+  implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
   implementation 'com.opencsv:opencsv:5.5.2'
   implementation 'org.apache.tomcat.embed:tomcat-embed-core:9.0.58'
   implementation 'org.apache.tomcat.embed:tomcat-embed-websocket:9.0.58'
@@ -213,6 +216,7 @@ dependencies {
     exclude group: 'junit', module: 'junit'
     exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
   }
+  testImplementation group: 'org.springframework.security', name: 'spring-security-test'
   testImplementation group: 'org.awaitility', name: 'awaitility', version: '3.0.0'
   testImplementation group: 'io.github.hakky54', name: 'logcaptor', version: '2.7.8'
 
