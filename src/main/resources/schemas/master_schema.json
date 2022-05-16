@@ -307,8 +307,8 @@
         },
         "region": {
           "$id": "#root/locationDetails/region",
-          "description": "Full venue name",
-          "title": "Venue Name",
+          "description": "Region details",
+          "title": "Region Details",
           "type": "object",
           "properties": {
             "name": {
@@ -321,6 +321,7 @@
                 "Wales"
               ],
               "pattern": "^.*$"
+            },
             "regionalJOH": {
               "$id": "#root/locationDetails/region/regionalJOH",
               "type": "array",
