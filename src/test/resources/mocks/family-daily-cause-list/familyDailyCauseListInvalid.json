@@ -33,8 +33,6 @@
           "line": [
             "Address Line 1"
           ],
-          "town": "Venue Town",
-          "county": "Venue County",
           "postCode": "AA1 AA1"
         },
         "courtRoom": [
