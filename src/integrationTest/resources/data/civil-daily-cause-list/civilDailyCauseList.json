@@ -11,10 +11,9 @@
     },
     "venueAddress": {
       "line": [
-        "THE LAW COURTS"
+        "Address Line 1"
       ],
-      "town": "town name",
-      "postCode": ""
+      "postCode": "AA1 AA1"
     }
   },
   "@schemaLocation": "",
@@ -22,6 +21,12 @@
     {
       "courtHouse": {
         "courtHouseName": "PRESTON",
+        "courtHouseAddress": {
+          "line": [
+            "Address Line 1"
+          ],
+          "postCode": "AA1 AA1"
+        },
         "courtRoom": [
           {
             "courtRoomName": "1",
