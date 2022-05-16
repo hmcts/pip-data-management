@@ -146,7 +146,6 @@
                                           "title": "Party",
                                           "description": "A party",
                                           "type": "object",
-                                          "required": ["partyRole", "individualDetails", "organisationDetails"],
                                           "properties": {
                                             "partyRole": {
                                               "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items/partyRole",
@@ -219,7 +218,7 @@
                                                   "title": "Address",
                                                   "description": "Party Address",
                                                   "$ref": "#/definitions/address",
-                                                  "required": ["town", "country", "postCode"]
+                                                  "required": ["town", "county", "postCode"]
                                                 }
                                               }
                                             },
@@ -245,7 +244,24 @@
                                                 }
                                               }
                                             }
-                                          }
+                                          },
+                                          "allOf": [{
+                                            "if": {
+                                              "properties":
+                                              {
+                                                "partyRole":
+                                                {
+                                                  "string": "PROSECUTOR"
+                                                }
+                                              },
+                                              "required": ["partyRole", "organisationDetails"]
+                                            },
+                                            "then": {
+                                              "required": ["partyRole", "organisationDetails"]
+                                            },
+                                            "else": {
+                                              "required": ["partyRole", "individualDetails"]
+                                            }}]
                                         }
                                       },
                                       "offence": {

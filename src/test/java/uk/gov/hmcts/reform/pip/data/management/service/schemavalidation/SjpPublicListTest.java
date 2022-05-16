@@ -239,7 +239,7 @@ class SjpPublicListTest {
     }
 
     @Test
-    void testValidateWithErrorWhenIndividualDetailsMissingInSjpPublicList() throws IOException {
+    void testValidateWithErrorWhenIndividualDetailsForAccusedMissingInSjpPublicList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(SJP_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
@@ -259,7 +259,7 @@ class SjpPublicListTest {
     }
 
     @Test
-    void testValidateWithErrorWhenIndividualForenamesMissingInSjpPublicList() throws IOException {
+    void testValidateWithErrorWhenIndividualForenamesForAccusedMissingInSjpPublicList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(SJP_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
@@ -279,7 +279,7 @@ class SjpPublicListTest {
     }
 
     @Test
-    void testValidateWithErrorWhenIndividualSurnameMissingInSjpPublicList() throws IOException {
+    void testValidateWithErrorWhenIndividualSurnameForAccusedMissingInSjpPublicList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(SJP_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
@@ -299,7 +299,7 @@ class SjpPublicListTest {
     }
 
     @Test
-    void testValidateWithErrorWhenAddressMissingInSjpPublicList() throws IOException {
+    void testValidateWithErrorWhenAddressForAccusedMissingInSjpPublicList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(SJP_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
@@ -319,7 +319,7 @@ class SjpPublicListTest {
     }
 
     @Test
-    void testValidateWithErrorWhenTownMissingInSjpPublicList() throws IOException {
+    void testValidateWithErrorWhenTownForAccusedMissingInSjpPublicList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(SJP_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
@@ -339,7 +339,7 @@ class SjpPublicListTest {
     }
 
     @Test
-    void testValidateWithErrorWhenCountryMissingInSjpPublicList() throws IOException {
+    void testValidateWithErrorWhenCountyForAccusedMissingInSjpPublicList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(SJP_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
@@ -350,7 +350,7 @@ class SjpPublicListTest {
                 .get(COURT_ROOM_SCHEMA).get(0).get(SESSION_SCHEMA).get(0)
                 .get(SITTINGS_SCHEMA).get(0).get(HEARING_SCHEMA).get(0)
                 .get(PARTY_SCHEMA).get(0).get(INDIVIDUAL_DETAILS_SCHEMA)
-                .get(ADDRESS_SCHEMA)).remove("country");
+                .get(ADDRESS_SCHEMA)).remove("county");
 
             assertThrows(PayloadValidationException.class, () ->
                              validationService.validateBody(node.toString(), ListType.SJP_PUBLIC_LIST),
@@ -359,7 +359,7 @@ class SjpPublicListTest {
     }
 
     @Test
-    void testValidateWithErrorWhenPostCodeMissingInSjpPublicList() throws IOException {
+    void testValidateWithErrorWhenPostCodeForAccusedMissingInSjpPublicList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(SJP_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
@@ -379,7 +379,7 @@ class SjpPublicListTest {
     }
 
     @Test
-    void testValidateWithErrorWhenOrganisationDetailsMissingInSjpPublicList() throws IOException {
+    void testValidateWithErrorWhenOrganisationDetailsForProsecutorMissingInSjpPublicList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(SJP_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
@@ -389,7 +389,7 @@ class SjpPublicListTest {
             ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0).get(COURT_HOUSE_SCHEMA)
                 .get(COURT_ROOM_SCHEMA).get(0).get(SESSION_SCHEMA).get(0)
                 .get(SITTINGS_SCHEMA).get(0).get(HEARING_SCHEMA).get(0)
-                .get(PARTY_SCHEMA).get(0))
+                .get(PARTY_SCHEMA).get(1))
                 .remove("organisationDetails");
 
             assertThrows(PayloadValidationException.class, () ->
@@ -399,7 +399,7 @@ class SjpPublicListTest {
     }
 
     @Test
-    void testValidateWithErrorWhenOrganisationNameMissingInSjpPublicList() throws IOException {
+    void testValidateWithErrorWhenOrganisationNameForProsecutorMissingInSjpPublicList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(SJP_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
@@ -409,7 +409,7 @@ class SjpPublicListTest {
             ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0).get(COURT_HOUSE_SCHEMA)
                 .get(COURT_ROOM_SCHEMA).get(0).get(SESSION_SCHEMA).get(0)
                 .get(SITTINGS_SCHEMA).get(0).get(HEARING_SCHEMA).get(0)
-                .get(PARTY_SCHEMA).get(0).get("organisationDetails"))
+                .get(PARTY_SCHEMA).get(1).get("organisationDetails"))
                 .remove("organisationName");
 
             assertThrows(PayloadValidationException.class, () ->

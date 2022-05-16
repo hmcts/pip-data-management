@@ -180,7 +180,6 @@
                                           "title": "Party",
                                           "description": "A party",
                                           "type": "object",
-                                          "required": ["partyRole", "individualDetails", "organisationDetails"],
                                           "properties": {
                                             "partyRole": {
                                               "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items/partyRole",
@@ -305,7 +304,24 @@
                                                 }
                                               }
                                             }
-                                          }
+                                          },
+                                          "allOf": [{
+                                            "if": {
+                                              "properties":
+                                                {
+                                                  "partyRole":
+                                                    {
+                                                      "string": "PROSECUTOR"
+                                                    }
+                                                },
+                                                "required": ["partyRole", "organisationDetails"]
+                                            },
+                                            "then": {
+                                              "required": ["partyRole", "organisationDetails"]
+                                            },
+                                            "else": {
+                                              "required": ["partyRole", "individualDetails"]
+                                          }}]
                                         }
                                       },
                                       "offence": {
