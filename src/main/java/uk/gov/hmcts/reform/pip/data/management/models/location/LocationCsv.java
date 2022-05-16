@@ -13,16 +13,18 @@ import java.util.List;
 @Data
 public class LocationCsv {
 
+    private static final String DELIMITER = ";(\\s)?";
+
     @CsvBindByName(column = "P&I ID")
     private Integer uniqueId;
 
     @CsvBindByName(column = "Court Desc")
     private String locationName;
 
-    @CsvBindAndSplitByName(elementType = String.class, splitOn = ";(\\s)?")
+    @CsvBindAndSplitByName(elementType = String.class, splitOn = DELIMITER, column = "Region")
     private List<String> region = new ArrayList<>();
 
-    @CsvBindAndSplitByName(elementType = String.class, splitOn = ";(\\s)?")
+    @CsvBindAndSplitByName(elementType = String.class, splitOn = DELIMITER, column = "Jurisdiction")
     private List<String> jurisdiction = new ArrayList<>();
 
     @CsvBindByName(column = "Provenance")
@@ -34,4 +36,12 @@ public class LocationCsv {
     @CsvBindByName(column = "Provenance Location Type")
     private String provenanceLocationType;
 
+    @CsvBindByName(column = "Welsh Court Desc")
+    private String welshLocationName;
+
+    @CsvBindAndSplitByName(elementType = String.class, splitOn = DELIMITER, column = "Welsh Region")
+    private List<String> welshRegion = new ArrayList<>();
+
+    @CsvBindAndSplitByName(elementType = String.class, splitOn = DELIMITER, column = "Welsh Jurisdiction")
+    private List<String> welshJurisdiction = new ArrayList<>();
 }
