@@ -595,6 +595,17 @@
                                         ],
                                         "pattern": "^.*$"
                                       },
+                                      "hearingOutcome": {
+                                        "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/hearingOutcome",
+                                        "description": "Hearing outcome",
+                                        "title": "Hearing outcome",
+                                        "type": "string",
+                                        "default": "",
+                                        "examples": [
+                                          ""
+                                        ],
+                                        "pattern": "^.*$"
+                                      },
                                       "listNote": {
                                         "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/listNote",
                                         "description": "Will always be required but can be null",
@@ -843,8 +854,8 @@
                                               ],
                                               "pattern": "^.*$"
                                             },
-                                            "orderData": {
-                                              "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/orderData",
+                                            "orderDate": {
+                                              "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/orderDate",
                                               "title": "Order Date",
                                               "description": "This will be order date of the case.",
                                               "type": "string",
@@ -897,7 +908,7 @@
                                             "hearingNumber": {
                                               "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/hearingNumber",
                                               "title": "Hearing number",
-                                              "description": "",
+                                              "description": "This is also known as informant number",
                                               "type": "string",
                                               "default": "",
                                               "examples": [
@@ -923,9 +934,9 @@
                                                 "2016-09-13T23:30:52.123Z"
                                               ]
                                             },
-                                            "adjournedReason": {
-                                              "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/adjournedReason",
-                                              "title": "Adjourned Reason",
+                                            "adjournmentReason": {
+                                              "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/adjournmentReason",
+                                              "title": "Adjournment Reason",
                                               "description": "",
                                               "type": "string",
                                               "default": "",
@@ -952,7 +963,7 @@
                                               "type": "string",
                                               "default": "",
                                               "examples": [
-                                                "panel 1"
+                                                "CHILD or ADULT"
                                               ],
                                               "pattern": "^.*$"
                                             }
@@ -1014,13 +1025,13 @@
                                               "default": "",
                                               "pattern": "^.*$"
                                             },
-                                            "NoRepRecord": {
-                                              "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items/NoRepRecord",
-                                              "description": "No Rep Record",
-                                              "title": "NoRepRecord",
+                                            "NoRepRecorded": {
+                                              "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items/NoRepRecorded",
+                                              "description": "No Rep Recorded",
+                                              "title": "No Rep Recorded",
                                               "type": "string",
                                               "examples": [
-                                                "r"
+                                                "true/false"
                                               ],
                                               "default": "",
                                               "pattern": "^.*$"
@@ -1296,7 +1307,7 @@
                                       "offence": {
                                         "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/offence",
                                         "title": "offence",
-                                        "description": "The offence and details of offences associated with the case",
+                                        "description": "The offence and details of offences associated with the case. It is also known as charges.",
                                         "type": "array",
                                         "items":{
                                           "type": "object",
@@ -1397,6 +1408,17 @@
                                           "listingRepDeadline": {
                                             "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/listingDetails/listingRepDeadline",
                                             "description": "DListing Rep Deadline",
+                                            "title": "",
+                                            "type":"string",
+                                            "default": "",
+                                            "examples": [
+                                              ""
+                                            ],
+                                            "pattern": "^.*$"
+                                          },
+                                          "appealOutcome": {
+                                            "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/listingDetails/appealOutcome",
+                                            "description": "Appeal outcome",
                                             "title": "",
                                             "type":"string",
                                             "default": "",
