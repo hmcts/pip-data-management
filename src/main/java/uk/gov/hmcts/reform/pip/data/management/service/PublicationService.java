@@ -12,6 +12,7 @@ import uk.gov.hmcts.reform.pip.data.management.database.LocationRepository;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ArtefactNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.NotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
+import uk.gov.hmcts.reform.pip.data.management.models.location.LocationType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ListType;
 import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
@@ -318,7 +319,7 @@ public class PublicationService {
         }
     }
 
-    public String getLocationType(ListType listType) {
-        return listType.getListLocationLevel().name();
+    public LocationType getLocationType(ListType listType) {
+        return listType.getListLocationLevel();
     }
 }

@@ -25,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.authentication.roles.IsAdmin;
 import uk.gov.hmcts.reform.pip.data.management.authentication.roles.IsPublisher;
 import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
+import uk.gov.hmcts.reform.pip.data.management.models.location.LocationType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.HeaderGroup;
@@ -330,7 +331,7 @@ public class PublicationController {
     })
     @ApiOperation("Return the Location type associated with a given list type")
     @GetMapping("/location-type/{listType}")
-    public ResponseEntity<String> getLocationType(@PathVariable ListType listType) {
+    public ResponseEntity<LocationType> getLocationType(@PathVariable ListType listType) {
         return ResponseEntity.ok(publicationService.getLocationType(listType));
     }
 }

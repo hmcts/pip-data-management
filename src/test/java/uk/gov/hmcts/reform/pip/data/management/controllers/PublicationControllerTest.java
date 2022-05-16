@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
+import uk.gov.hmcts.reform.pip.data.management.models.location.LocationType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.HeaderGroup;
@@ -280,7 +281,7 @@ class PublicationControllerTest {
 
     @Test
     void testGetLocationTypeReturnsOk() {
-        when(publicationService.getLocationType(ListType.CIVIL_DAILY_CAUSE_LIST)).thenReturn("success");
+        when(publicationService.getLocationType(ListType.CIVIL_DAILY_CAUSE_LIST)).thenReturn(LocationType.VENUE);
         assertEquals(HttpStatus.OK,
                      publicationController.getLocationType(ListType.CIVIL_DAILY_CAUSE_LIST).getStatusCode(),
                      STATUS_CODE_MATCH);

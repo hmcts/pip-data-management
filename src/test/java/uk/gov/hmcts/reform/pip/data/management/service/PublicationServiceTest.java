@@ -857,7 +857,7 @@ class PublicationServiceTest {
         venueListTypes.add(ListType.FAMILY_DAILY_CAUSE_LIST);
 
         venueListTypes.forEach(listType ->
-                                   assertEquals(LocationType.VENUE.name(),
+                                   assertEquals(LocationType.VENUE,
                                                 publicationService.getLocationType(listType),
                                                 LOCATION_TYPE_MATCH));
     }
@@ -869,7 +869,7 @@ class PublicationServiceTest {
         nationalListTypes.add(ListType.SJP_PUBLIC_LIST);
 
         nationalListTypes.forEach(listType ->
-                                      assertEquals(LocationType.NATIONAL.name(),
+                                      assertEquals(LocationType.NATIONAL,
                                                    publicationService.getLocationType(listType),
                                                    LOCATION_TYPE_MATCH));
 
