@@ -606,6 +606,17 @@
                                         ],
                                         "pattern": "^.*$"
                                       },
+                                      "appealOutcome": {
+                                        "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/listingDetails/appealOutcome",
+                                        "description": "Appeal outcome",
+                                        "title": "",
+                                        "type":"string",
+                                        "default": "",
+                                        "examples": [
+                                          ""
+                                        ],
+                                        "pattern": "^.*$"
+                                      },
                                       "listNote": {
                                         "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/listNote",
                                         "description": "Will always be required but can be null",
@@ -1408,17 +1419,6 @@
                                           "listingRepDeadline": {
                                             "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/listingDetails/listingRepDeadline",
                                             "description": "DListing Rep Deadline",
-                                            "title": "",
-                                            "type":"string",
-                                            "default": "",
-                                            "examples": [
-                                              ""
-                                            ],
-                                            "pattern": "^.*$"
-                                          },
-                                          "appealOutcome": {
-                                            "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/listingDetails/appealOutcome",
-                                            "description": "Appeal outcome",
                                             "title": "",
                                             "type":"string",
                                             "default": "",
