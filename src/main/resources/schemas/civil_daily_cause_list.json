@@ -3,7 +3,6 @@
     "address": {
       "title": "Address Details",
       "type": "object",
-      "required": ["line", "town", "postCode"],
       "properties": {
         "line": {
           "title": "Address Line",
@@ -76,7 +75,6 @@
     "venueContact": {
       "title": "Contact Details for a venue",
       "type": "object",
-      "required": ["venueTelephone", "venueEmail"],
       "properties": {
         "venueTelephone": {
           "description": "Telephone number for the venue",
@@ -174,13 +172,15 @@
         "venueAddress": {
           "description": "Full venue address",
           "$id": "#root/venue/venueAddress",
-          "$ref": "#/definitions/address"
+          "$ref": "#/definitions/address",
+          "required": ["line", "postCode"]
         },
         "venueContact": {
           "$id": "#root/venue/venueContact",
           "description": "Contact details for the venue",
           "title": "Venue Contact",
-          "$ref": "#/definitions/venueContact"
+          "$ref": "#/definitions/venueContact",
+          "required": ["venueTelephone", "venueEmail"]
         }
       }
     },
@@ -211,6 +211,12 @@
                   "PRESTON"
                 ],
                 "pattern": "^.*$"
+              },
+              "courtHouseAddress": {
+                "$id": "#root/courtLists/courtList/courtHouse/courtHouseAddress",
+                "description": "The address for the court house",
+                "title": "Court House Address",
+                "$ref": "#/definitions/address"
               },
               "courtRoom": {
                 "$id": "#root/courtLists/courtRoom",
