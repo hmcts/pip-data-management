@@ -141,11 +141,16 @@
                                         "title": "Party",
                                         "description": "Parties involved in the case (defence, prosecution)",
                                         "type": "array",
+                                        "contains": {
+                                          "type": "object"
+                                        },
+                                        "minContains": 1,
                                         "items": {
                                           "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items",
                                           "title": "Party",
                                           "description": "A party",
                                           "type": "object",
+                                          "required": ["partyRole"],
                                           "properties": {
                                             "partyRole": {
                                               "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items/partyRole",
@@ -251,16 +256,18 @@
                                               {
                                                 "partyRole":
                                                 {
-                                                  "string": "PROSECUTOR"
+                                                  "type": "string",
+                                                  "const": "ACCUSED"
                                                 }
-                                              },
-                                              "required": ["partyRole", "organisationDetails"]
+                                              }
                                             },
                                             "then": {
-                                              "required": ["partyRole", "organisationDetails"]
+                                              "required": [
+                                                "individualDetails"
+                                              ]
                                             },
                                             "else": {
-                                              "required": ["partyRole", "individualDetails"]
+                                              "required": ["organisationDetails"]
                                             }}]
                                         }
                                       },

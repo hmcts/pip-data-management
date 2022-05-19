@@ -150,6 +150,10 @@
                                       "case": {
                                         "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case",
                                         "type": "array",
+                                        "contains": {
+                                          "type": "object"
+                                        },
+                                        "minContains": 1,
                                         "items": {
                                           "type": "object",
                                           "title": "Case",
@@ -175,11 +179,16 @@
                                         "title": "Party",
                                         "description": "Parties involved in the case (defence, prosecution)",
                                         "type": "array",
+                                        "contains": {
+                                          "type": "object"
+                                        },
+                                        "minContains": 1,
                                         "items": {
                                           "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items",
                                           "title": "Party",
                                           "description": "A party",
                                           "type": "object",
+                                          "required": ["partyRole"],
                                           "properties": {
                                             "partyRole": {
                                               "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items/partyRole",
@@ -308,20 +317,22 @@
                                           "allOf": [{
                                             "if": {
                                               "properties":
+                                              {
+                                                "partyRole":
                                                 {
-                                                  "partyRole":
-                                                    {
-                                                      "string": "PROSECUTOR"
-                                                    }
-                                                },
-                                                "required": ["partyRole", "organisationDetails"]
+                                                  "type": "string",
+                                                  "const": "ACCUSED"
+                                                }
+                                              }
                                             },
                                             "then": {
-                                              "required": ["partyRole", "organisationDetails"]
+                                              "required": [
+                                                "individualDetails"
+                                              ]
                                             },
                                             "else": {
-                                              "required": ["partyRole", "individualDetails"]
-                                          }}]
+                                              "required": ["organisationDetails"]
+                                            }}]
                                         }
                                       },
                                       "offence": {
