@@ -29,7 +29,7 @@
                               "title": "This is a title",
                               "individualMiddleName": "This is a middle name"
                             }
-                          },
+                          }, 
                           {
                             "partyRole": "PROSECUTOR",
                             "organisationDetails": {
