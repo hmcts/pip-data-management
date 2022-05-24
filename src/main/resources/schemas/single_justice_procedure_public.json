@@ -39,11 +39,13 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Root",
   "type": "object",
+  "required": ["document", "courtLists"],
   "properties": {
     "document": {
       "$id": "#root/document",
       "title": "document",
       "type": "object",
+      "required": ["publicationDate"],
       "properties": {
         "documentName": {
           "$id": "#root/document/documentName",
@@ -85,12 +87,14 @@
         "$id": "#root/courtLists/courtList",
         "title": "Court list",
         "type": "object",
+        "required": ["courtHouse"],
         "properties": {
           "courtHouse": {
             "$id": "#root/courtLists/courtHouse",
             "title": "Court House",
             "description": "The court house that owns the court rooms",
             "type": "object",
+            "required": ["courtRoom"],
             "properties": {
               "courtRoom": {
                 "$id": "#root/courtLists/courtRoom",
@@ -99,6 +103,7 @@
                   "title": "Court Room",
                   "description": "The court room that owns the court rooms",
                   "type": "object",
+                  "required": ["session"],
                   "properties": {
                     "session": {
                       "$id": "#root/courtLists/courtRoom/session",
@@ -107,6 +112,7 @@
                         "title": "Session",
                         "description": "Session associated with the court in the publication",
                         "type": "object",
+                        "required": ["sittings"],
                         "properties": {
                           "sittings": {
                             "$id": "#root/courtLists/courtList/courtRoom/session/sittings",
@@ -116,6 +122,7 @@
                             "items": {
                               "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items",
                               "type": "object",
+                              "required": ["hearing"],
                               "properties": {
                                 "hearing": {
                                   "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing",
@@ -134,14 +141,16 @@
                                         "title": "Party",
                                         "description": "Parties involved in the case (defence, prosecution)",
                                         "type": "array",
+                                        "contains": {
+                                          "type": "object"
+                                        },
+                                        "minContains": 1,
                                         "items": {
                                           "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items",
                                           "title": "Party",
                                           "description": "A party",
                                           "type": "object",
-                                          "required": [
-                                            "partyRole"
-                                          ],
+                                          "required": ["partyRole"],
                                           "properties": {
                                             "partyRole": {
                                               "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items/partyRole",
@@ -213,7 +222,8 @@
                                                   "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items/individualDetails/address",
                                                   "title": "Address",
                                                   "description": "Party Address",
-                                                  "$ref": "#/definitions/address"
+                                                  "$ref": "#/definitions/address",
+                                                  "required": ["town", "county", "postCode"]
                                                 }
                                               }
                                             },
@@ -239,7 +249,26 @@
                                                 }
                                               }
                                             }
-                                          }
+                                          },
+                                          "allOf": [{
+                                            "if": {
+                                              "properties":
+                                              {
+                                                "partyRole":
+                                                {
+                                                  "type": "string",
+                                                  "const": "ACCUSED"
+                                                }
+                                              }
+                                            },
+                                            "then": {
+                                              "required": [
+                                                "individualDetails"
+                                              ]
+                                            },
+                                            "else": {
+                                              "required": ["organisationDetails"]
+                                            }}]
                                         }
                                       },
                                       "offence": {
