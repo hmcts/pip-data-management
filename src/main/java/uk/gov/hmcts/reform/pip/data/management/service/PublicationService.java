@@ -13,9 +13,9 @@ import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.Artefact
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.NotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.models.court.Court;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
+import uk.gov.hmcts.reform.pip.data.management.models.publication.Sensitivity;
 import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
 import uk.gov.hmcts.reform.pip.data.management.utils.PayloadExtractor;
-import uk.gov.hmcts.reform.pip.data.management.utils.SensitivityFilter;
 import uk.gov.hmcts.reform.pip.model.enums.UserActions;
 
 import java.time.LocalDate;
@@ -23,6 +23,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
 
@@ -44,7 +45,7 @@ public class PublicationService {
 
     private final CourtRepository courtRepository;
 
-    private final SensitivityFilter sensitivityFilter;
+    private final AccountManagementService accountManagementService;
 
     @Autowired
     public PublicationService(ArtefactRepository artefactRepository,
@@ -52,13 +53,13 @@ public class PublicationService {
                               PayloadExtractor payloadExtractor,
                               SubscriptionManagementService subscriptionManagementService,
                               CourtRepository courtRepository,
-                              SensitivityFilter sensitivityFilter) {
+                              AccountManagementService accountManagementService) {
         this.artefactRepository = artefactRepository;
         this.azureBlobService = azureBlobService;
         this.payloadExtractor = payloadExtractor;
         this.subscriptionManagementService = subscriptionManagementService;
         this.courtRepository = courtRepository;
-        this.sensitivityFilter = sensitivityFilter;
+        this.accountManagementService = accountManagementService;
     }
 
     /**
@@ -145,7 +146,7 @@ public class PublicationService {
         LocalDateTime currDate = LocalDateTime.now();
         List<Artefact> artefacts =  artefactRepository.findArtefactsByCourtId(searchValue, currDate);
 
-        return sensitivityFilter.filterArtefactList(artefacts, userId);
+        return artefacts.stream().filter(artefact -> isAuthorised(artefact, userId)).collect(Collectors.toList());
     }
 
     /**
@@ -183,7 +184,7 @@ public class PublicationService {
                 throw new IllegalArgumentException(String.format("Invalid search term: %s", searchTerm));
         }
 
-        artefacts = sensitivityFilter.filterArtefactList(artefacts, userId);
+        artefacts = artefacts.stream().filter(artefact -> isAuthorised(artefact, userId)).collect(Collectors.toList());
 
         if (artefacts.isEmpty()) {
             throw new ArtefactNotFoundException(String.format("No Artefacts found with for %s with the value: %s",
@@ -214,11 +215,8 @@ public class PublicationService {
         Optional<Artefact> artefact = artefactRepository.findByArtefactId(artefactId.toString(),
             currentDate);
 
-        if (artefact.isPresent()) {
-            Optional<Artefact> filteredArtefact = sensitivityFilter.filterArtefact(artefact.get(), userId);
-            if (filteredArtefact.isPresent()) {
-                return filteredArtefact.get();
-            }
+        if (artefact.isPresent() && isAuthorised(artefact.get(), userId)) {
+            return artefact.get();
         }
 
         throw new NotFoundException(String.format("No artefact found with the ID: %s", artefactId));
@@ -251,7 +249,7 @@ public class PublicationService {
     }
 
     /**
-     * Attempts to delete a blob from the artefact store
+     * Attempts to delete a blob from the artefact store.
      * @param artefactId The ID of the artefact to be deleted.
      * @param issuerEmail The email of the admin user who is attempting to delete the artefact.
      */
@@ -304,7 +302,6 @@ public class PublicationService {
         log.info("{} outdated artefacts found and deleted for before {}", outdatedArtefacts.size(), LocalDate.now());
     }
 
-
     private void findByCourtIdByProvenanceAndUpdate(Artefact artefact) {
         if ("MANUAL_UPLOAD".equalsIgnoreCase(artefact.getProvenance())) {
             return;
@@ -318,6 +315,16 @@ public class PublicationService {
             }
         } else {
             artefact.setCourtId(String.format("NoMatch%s", artefact.getCourtId()));
+        }
+    }
+
+    private boolean isAuthorised(Artefact artefact, UUID userId) {
+        if (artefact.getSensitivity().equals(Sensitivity.PUBLIC)) {
+            return true;
+        } else if (userId == null) {
+            return false;
+        } else {
+            return accountManagementService.getIsAuthorised(userId, artefact.getListType(), artefact.getSensitivity());
         }
     }
 }

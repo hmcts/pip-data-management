@@ -6,11 +6,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientException;
-import uk.gov.hmcts.reform.pip.data.management.models.request.PiUser;
+import uk.gov.hmcts.reform.pip.data.management.models.publication.ListType;
+import uk.gov.hmcts.reform.pip.data.management.models.publication.Sensitivity;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Optional;
 import java.util.UUID;
 
 import static org.springframework.security.oauth2.client.web.reactive.function.client.ServerOAuth2AuthorizedClientExchangeFilterFunction.clientRegistrationId;
@@ -26,18 +26,21 @@ public class AccountManagementService {
     private String url;
 
     /**
-     * Retrieves the user from account management.
-     * @param userId The UUID of the user to retrieve
-     * @return The found user, or an empty optional if not found.
+     * Calls Account Management to determine whether a user is allowed to see a set publication.
+     * @param userId The UUID of the user to retrieve.
+     * @param listType The list type of the publication.
+     * @param sensitivity The sensitivity of the publication
+     * @return A flag indicating whether the user is authorised.
      */
-    public Optional<PiUser> getUser(UUID userId) {
+    public Boolean getIsAuthorised(UUID userId, ListType listType, Sensitivity sensitivity) {
         try {
-            return Optional.ofNullable(webClient.get().uri(new URI(url + "/account/" + userId))
+            return webClient.get().uri(new URI(String.format(
+                "%s/account/isAuthorised/%s/%s/%s", url, userId, listType, sensitivity)))
                 .attributes(clientRegistrationId("accountManagementApi"))
-                .retrieve().bodyToMono(PiUser.class).block());
+                .retrieve().bodyToMono(Boolean.class).block();
         } catch (WebClientException | URISyntaxException ex) {
             log.error(String.format("Request failed with error message: %s", ex.getMessage()));
-            return Optional.empty();
+            return false;
         }
     }
 

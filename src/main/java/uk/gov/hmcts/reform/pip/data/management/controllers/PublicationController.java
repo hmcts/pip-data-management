@@ -59,6 +59,8 @@ import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
 @SuppressWarnings({"PMD.ExcessiveImports"})
 public class PublicationController {
 
+    private static final String USER_ID_HEADER = "x-user-id";
+
     private static final String UNAUTHORIZED_DESCRIPTION = "User has not been authorized";
 
     private static final String NOT_FOUND_DESCRIPTION =
@@ -242,9 +244,9 @@ public class PublicationController {
     @IsAdmin
     public ResponseEntity<List<Artefact>> getAllRelevantArtefactsByCourtId(
         @PathVariable String courtId,
-        @RequestHeader(value = "x-user-id", required = false) UUID userId,
+        @RequestHeader(value = USER_ID_HEADER, required = false) UUID userId,
         @RequestHeader(value = "x-admin", defaultValue = "false", required = false) Boolean isAdmin) {
-            return ResponseEntity.ok(publicationService.findAllByCourtIdAdmin(courtId, userId, isAdmin));
+        return ResponseEntity.ok(publicationService.findAllByCourtIdAdmin(courtId, userId, isAdmin));
     }
 
     @ApiResponses({
@@ -259,7 +261,7 @@ public class PublicationController {
     @IsAdmin
     public ResponseEntity<List<Artefact>> getAllRelevantArtefactsBySearchValue(
         @PathVariable CaseSearchTerm searchTerm, @PathVariable String searchValue,
-        @RequestHeader(value = "x-user-id",  required = false) UUID userId) {
+        @RequestHeader(value = USER_ID_HEADER,  required = false) UUID userId) {
         return ResponseEntity.ok(publicationService.findAllBySearch(searchTerm, searchValue, userId));
     }
 
@@ -275,7 +277,7 @@ public class PublicationController {
     @GetMapping("/{artefactId}")
     @IsAdmin
     public ResponseEntity<Artefact> getArtefactMetadata(
-        @PathVariable UUID artefactId, @RequestHeader(value = "x-user-id", required = false) UUID userId,
+        @PathVariable UUID artefactId, @RequestHeader(value = USER_ID_HEADER, required = false) UUID userId,
                                        @RequestHeader(value = "x-admin", required = false) Boolean isAdmin) {
         return ResponseEntity.ok(isAdmin ? publicationService.getMetadataByArtefactId(artefactId) :
                                      publicationService.getMetadataByArtefactId(artefactId, userId));
@@ -293,7 +295,7 @@ public class PublicationController {
     @GetMapping("/{artefactId}/payload")
     @IsAdmin
     public ResponseEntity<String> getArtefactPayload(
-        @PathVariable UUID artefactId, @RequestHeader(value = "x-user-id", required = false) UUID userId) {
+        @PathVariable UUID artefactId, @RequestHeader(value = USER_ID_HEADER, required = false) UUID userId) {
 
         return ResponseEntity.ok(publicationService.getPayloadByArtefactId(artefactId, userId));
     }
@@ -310,7 +312,8 @@ public class PublicationController {
     @GetMapping(value = "/{artefactId}/file", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     @IsAdmin
     public ResponseEntity<Resource> getArtefactFile(@PathVariable UUID artefactId,
-                                                    @RequestHeader(value = "x-user-id", required = false) UUID userId) {
+                                                    @RequestHeader(value = USER_ID_HEADER,
+                                                        required = false) UUID userId) {
 
         Resource file = publicationService.getFlatFileByArtefactID(artefactId, userId);
         Artefact metadata = publicationService.getMetadataByArtefactId(artefactId, userId);
