@@ -15,6 +15,7 @@ import uk.gov.hmcts.reform.pip.data.management.models.court.Court;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
 import uk.gov.hmcts.reform.pip.data.management.utils.PayloadExtractor;
+import uk.gov.hmcts.reform.pip.data.management.utils.SensitivityFilter;
 import uk.gov.hmcts.reform.pip.model.enums.UserActions;
 
 import java.time.LocalDate;
@@ -43,17 +44,21 @@ public class PublicationService {
 
     private final CourtRepository courtRepository;
 
+    private final SensitivityFilter sensitivityFilter;
+
     @Autowired
     public PublicationService(ArtefactRepository artefactRepository,
                               AzureBlobService azureBlobService,
                               PayloadExtractor payloadExtractor,
                               SubscriptionManagementService subscriptionManagementService,
-                              CourtRepository courtRepository) {
+                              CourtRepository courtRepository,
+                              SensitivityFilter sensitivityFilter) {
         this.artefactRepository = artefactRepository;
         this.azureBlobService = azureBlobService;
         this.payloadExtractor = payloadExtractor;
         this.subscriptionManagementService = subscriptionManagementService;
         this.courtRepository = courtRepository;
+        this.sensitivityFilter = sensitivityFilter;
     }
 
     /**
@@ -132,31 +137,27 @@ public class PublicationService {
      * Get all relevant artefacts relating to a given court ID.
      *
      * @param searchValue - represents the court ID in question being searched for
-     * @param verified    - represents the verification status of the user. Currently only verified/non-verified, but
-     *                    will include other verified user types in the future
+     * @param userId    - represents the user ID of the user who is making the request
      * @return a list of all artefacts that fulfil the timing criteria, match the given court id and
      *     sensitivity associated with given verification status.
      */
-    public List<Artefact> findAllByCourtId(String searchValue, Boolean verified) {
+    public List<Artefact> findAllByCourtId(String searchValue, UUID userId) {
         LocalDateTime currDate = LocalDateTime.now();
-        if (verified) {
-            return artefactRepository.findArtefactsByCourtIdVerified(searchValue, currDate);
-        } else {
-            return artefactRepository.findArtefactsByCourtIdUnverified(searchValue, currDate);
-        }
+        List<Artefact> artefacts =  artefactRepository.findArtefactsByCourtId(searchValue, currDate);
+
+        return sensitivityFilter.filterArtefactList(artefacts, userId);
     }
 
     /**
      * Get all artefacts for admin actions.
      *
      * @param courtId The court id to search for.
-     * @param verified represents the verification status of the user. Currently only verified/non-verified, but
-     *                 will include other verified user types in the future.
+     * @param userId represents the user ID of the user who is making the request
      * @param isAdmin bool to check whether admin search is needed, if not will default to findAllByCourtId().
      * @return list of matching artefacts.
      */
-    public List<Artefact> findAllByCourtIdAdmin(String courtId, Boolean verified, boolean isAdmin) {
-        return isAdmin ? artefactRepository.findArtefactsByCourtIdAdmin(courtId) : findAllByCourtId(courtId, verified);
+    public List<Artefact> findAllByCourtIdAdmin(String courtId, UUID userId, boolean isAdmin) {
+        return isAdmin ? artefactRepository.findArtefactsByCourtIdAdmin(courtId) : findAllByCourtId(courtId, userId);
     }
 
     /**
@@ -164,27 +165,25 @@ public class PublicationService {
      *
      * @param searchTerm  the search term checking against, eg. CASE_ID or CASE_URN
      * @param searchValue the search value to look for
-     * @param verified    bool for the user being verified or not restricting the results
+     * @param userId  represents the user ID of the user who is making the request
      * @return list of Artefacts
      */
-    public List<Artefact> findAllBySearch(CaseSearchTerm searchTerm, String searchValue, boolean verified) {
+    public List<Artefact> findAllBySearch(CaseSearchTerm searchTerm, String searchValue, UUID userId) {
         LocalDateTime currDate = LocalDateTime.now();
         List<Artefact> artefacts;
         switch (searchTerm) {
             case CASE_ID:
             case CASE_URN:
-                artefacts = verified ? artefactRepository.findArtefactBySearchVerified(searchTerm.dbValue,
-                                                                                       searchValue, currDate
-                ) :
-                    artefactRepository.findArtefactBySearchUnverified(searchTerm.dbValue, searchValue, currDate);
+                artefacts = artefactRepository.findArtefactBySearch(searchTerm.dbValue, searchValue, currDate);
                 break;
             case CASE_NAME:
-                artefacts = verified ? artefactRepository.findArtefactByCaseNameVerified(searchValue, currDate) :
-                    artefactRepository.findArtefactByCaseNameUnverified(searchValue, currDate);
+                artefacts = artefactRepository.findArtefactByCaseName(searchValue, currDate);
                 break;
             default:
                 throw new IllegalArgumentException(String.format("Invalid search term: %s", searchTerm));
         }
+
+        artefacts = sensitivityFilter.filterArtefactList(artefacts, userId);
 
         if (artefacts.isEmpty()) {
             throw new ArtefactNotFoundException(String.format("No Artefacts found with for %s with the value: %s",
@@ -205,30 +204,24 @@ public class PublicationService {
      *
      * @param artefactId   represents the artefact id which is then used to get an artefact to populate the inputs
      *                     for the blob request.
-     * @param verification Whether the user is verified.
+     * @param userId represents the user ID of the user who is making the request
      * @return The metadata for the found artefact.
      */
-    public Artefact getMetadataByArtefactId(UUID artefactId, Boolean verification) {
+    public Artefact getMetadataByArtefactId(UUID artefactId, UUID userId) {
 
-        Optional<Artefact> optionalArtefact;
         LocalDateTime currentDate = LocalDateTime.now();
-        if (verification) {
-            optionalArtefact = artefactRepository.findByArtefactIdVerified(
-                artefactId.toString(),
-                currentDate
-            );
-        } else {
-            optionalArtefact = artefactRepository.findByArtefactIdUnverified(
-                artefactId.toString(),
-                currentDate
-            );
+
+        Optional<Artefact> artefact = artefactRepository.findByArtefactId(artefactId.toString(),
+            currentDate);
+
+        if (artefact.isPresent()) {
+            Optional<Artefact> filteredArtefact = sensitivityFilter.filterArtefact(artefact.get(), userId);
+            if (filteredArtefact.isPresent()) {
+                return filteredArtefact.get();
+            }
         }
 
-        if (optionalArtefact.isPresent()) {
-            return optionalArtefact.get();
-        } else {
-            throw new NotFoundException(String.format("No artefact found with the ID: %s", artefactId));
-        }
+        throw new NotFoundException(String.format("No artefact found with the ID: %s", artefactId));
     }
 
     /**
@@ -236,21 +229,32 @@ public class PublicationService {
      *
      * @param artefactId   represents the artefact id which is then used to get an artefact to populate the inputs
      *                     for the blob request.
-     * @param verification Whether the user is verified.
+     * @param userId represents the user ID of the user who is making the request
      * @return The data within the blob in string format.
      */
-    public String getPayloadByArtefactId(UUID artefactId, Boolean verification) {
-        Artefact artefact = getMetadataByArtefactId(artefactId, verification);
+    public String getPayloadByArtefactId(UUID artefactId, UUID userId) {
+        Artefact artefact = getMetadataByArtefactId(artefactId, userId);
 
         return azureBlobService.getBlobData(getUuidFromUrl(artefact.getPayload()));
     }
 
-    public Resource getFlatFileByArtefactID(UUID artefactId, Boolean verification) {
-        Artefact artefact = getMetadataByArtefactId(artefactId, verification);
+    /**
+     * Retrieves a flat file for an artefact.
+     * @param artefactId The artefact ID to retrieve the flat file from.
+     * @param userId represents the user ID of the user who is making the request
+     * @return The flat file resource.
+     */
+    public Resource getFlatFileByArtefactID(UUID artefactId, UUID userId) {
+        Artefact artefact = getMetadataByArtefactId(artefactId, userId);
 
         return azureBlobService.getBlobFile(getUuidFromUrl(artefact.getPayload()));
     }
 
+    /**
+     * Attempts to delete a blob from the artefact store
+     * @param artefactId The ID of the artefact to be deleted.
+     * @param issuerEmail The email of the admin user who is attempting to delete the artefact.
+     */
     public void deleteArtefactById(String artefactId, String issuerEmail) {
         Optional<Artefact> artefactToDelete = artefactRepository.findArtefactByArtefactId(artefactId);
         if (artefactToDelete.isPresent()) {

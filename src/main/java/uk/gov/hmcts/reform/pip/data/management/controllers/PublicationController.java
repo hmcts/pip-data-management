@@ -240,12 +240,11 @@ public class PublicationController {
     @ApiOperation("Get a series of publications matching a given courtId (e.g. courtid)")
     @GetMapping("/courtId/{courtId}")
     @IsAdmin
-    public ResponseEntity<List<Artefact>> getAllRelevantArtefactsByCourtId(@PathVariable String courtId,
-                                                                           @RequestHeader Boolean verification,
-                                                                           @RequestHeader(value = "x-admin",
-                                                                               defaultValue = "false",
-                                                                               required = false) Boolean isAdmin) {
-        return ResponseEntity.ok(publicationService.findAllByCourtIdAdmin(courtId, verification, isAdmin));
+    public ResponseEntity<List<Artefact>> getAllRelevantArtefactsByCourtId(
+        @PathVariable String courtId,
+        @RequestHeader(value = "x-user-id", required = false) UUID userId,
+        @RequestHeader(value = "x-admin", defaultValue = "false", required = false) Boolean isAdmin) {
+            return ResponseEntity.ok(publicationService.findAllByCourtIdAdmin(courtId, userId, isAdmin));
     }
 
     @ApiResponses({
@@ -258,10 +257,10 @@ public class PublicationController {
     @ApiOperation("Get a series of publications matching a given case search value (e.g. CASE_URN/CASE_ID/CASE_NAME)")
     @GetMapping("/search/{searchTerm}/{searchValue}")
     @IsAdmin
-    public ResponseEntity<List<Artefact>> getAllRelevantArtefactsBySearchValue(@PathVariable CaseSearchTerm searchTerm,
-                                                                           @PathVariable String searchValue,
-                                                                           @RequestHeader Boolean verification) {
-        return ResponseEntity.ok(publicationService.findAllBySearch(searchTerm, searchValue, verification));
+    public ResponseEntity<List<Artefact>> getAllRelevantArtefactsBySearchValue(
+        @PathVariable CaseSearchTerm searchTerm, @PathVariable String searchValue,
+        @RequestHeader(value = "x-user-id",  required = false) UUID userId) {
+        return ResponseEntity.ok(publicationService.findAllBySearch(searchTerm, searchValue, userId));
     }
 
     @ApiResponses({
@@ -276,10 +275,10 @@ public class PublicationController {
     @GetMapping("/{artefactId}")
     @IsAdmin
     public ResponseEntity<Artefact> getArtefactMetadata(
-        @PathVariable UUID artefactId, @RequestHeader Boolean verification, @RequestHeader(value = "x-admin",
-        required = false, defaultValue = "false") Boolean isAdmin) {
+        @PathVariable UUID artefactId, @RequestHeader(value = "x-user-id", required = false) UUID userId,
+                                       @RequestHeader(value = "x-admin", required = false) Boolean isAdmin) {
         return ResponseEntity.ok(isAdmin ? publicationService.getMetadataByArtefactId(artefactId) :
-                                     publicationService.getMetadataByArtefactId(artefactId, verification));
+                                     publicationService.getMetadataByArtefactId(artefactId, userId));
     }
 
     @ApiResponses({
@@ -294,9 +293,9 @@ public class PublicationController {
     @GetMapping("/{artefactId}/payload")
     @IsAdmin
     public ResponseEntity<String> getArtefactPayload(
-        @PathVariable UUID artefactId, @RequestHeader Boolean verification) {
+        @PathVariable UUID artefactId, @RequestHeader(value = "x-user-id", required = false) UUID userId) {
 
-        return ResponseEntity.ok(publicationService.getPayloadByArtefactId(artefactId, verification));
+        return ResponseEntity.ok(publicationService.getPayloadByArtefactId(artefactId, userId));
     }
 
     @ApiResponses({
@@ -311,9 +310,10 @@ public class PublicationController {
     @GetMapping(value = "/{artefactId}/file", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     @IsAdmin
     public ResponseEntity<Resource> getArtefactFile(@PathVariable UUID artefactId,
-                                                    @RequestHeader Boolean verification) {
-        Resource file = publicationService.getFlatFileByArtefactID(artefactId, verification);
-        Artefact metadata = publicationService.getMetadataByArtefactId(artefactId, verification);
+                                                    @RequestHeader(value = "x-user-id", required = false) UUID userId) {
+
+        Resource file = publicationService.getFlatFileByArtefactID(artefactId, userId);
+        Artefact metadata = publicationService.getMetadataByArtefactId(artefactId, userId);
         String fileType = metadata.getSourceArtefactId();
 
         return ResponseEntity.ok()

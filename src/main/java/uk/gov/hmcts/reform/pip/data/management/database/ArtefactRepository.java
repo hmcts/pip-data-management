@@ -41,53 +41,27 @@ public interface ArtefactRepository extends JpaRepository<Artefact, Long> {
     @Query(value = "select * from Artefact where artefact_id = CAST(:artefact_id AS uuid) and display_from < "
         + ":curr_date and (display_to> :curr_date or display_to is null)",
         nativeQuery = true)
-    Optional<Artefact> findByArtefactIdVerified(@Param(ARTEFACT_ID_PARAM) String artefactId,
+    Optional<Artefact> findByArtefactId(@Param(ARTEFACT_ID_PARAM) String artefactId,
                                                 @Param(CURRENT_DATE_PARAM) LocalDateTime currentDate);
-
-    @Query(value = "select * from Artefact where artefact_id = CAST(:artefact_id AS uuid) and sensitivity = 'PUBLIC' "
-        + "and display_from < :curr_date and (display_to> :curr_date or display_to is null)",
-        nativeQuery = true)
-    Optional<Artefact> findByArtefactIdUnverified(@Param(ARTEFACT_ID_PARAM) String artefactId,
-                                                  @Param(CURRENT_DATE_PARAM) LocalDateTime currentDate);
 
     @Query(value = "select * from Artefact where court_id = :courtId and display_from < "
         + ":curr_date and (display_to> :curr_date or display_to is null)",
         nativeQuery = true)
-    List<Artefact> findArtefactsByCourtIdVerified(@Param(COURT_ID_PARAM) String courtId,
+    List<Artefact> findArtefactsByCourtId(@Param(COURT_ID_PARAM) String courtId,
                                                   @Param(CURRENT_DATE_PARAM) LocalDateTime currentDate);
-
-    @Query(value = "select * from Artefact where court_id = :courtId and sensitivity = 'PUBLIC' "
-        + "and display_from < :curr_date and (display_to> :curr_date or display_to is null)",
-        nativeQuery = true)
-    List<Artefact> findArtefactsByCourtIdUnverified(@Param(COURT_ID_PARAM) String courtId,
-                                                    @Param(CURRENT_DATE_PARAM) LocalDateTime currentDate);
 
     @Query(value = INITIAL_SELECT + "WHERE LOWER(searchDetails.caseDetails ->> 'caseName') LIKE LOWER"
         + "('%' || :caseName || '%') and display_from < :curr_date and (display_to > :curr_date or display_to is null)",
         nativeQuery = true)
-    List<Artefact> findArtefactByCaseNameVerified(@Param(CASE_NAME_PARAM) String caseName,
+    List<Artefact> findArtefactByCaseName(@Param(CASE_NAME_PARAM) String caseName,
                                                   @Param(CURRENT_DATE_PARAM) LocalDateTime currentDate);
-
-    @Query(value = INITIAL_SELECT + "WHERE LOWER(searchDetails.caseDetails ->> 'caseName') LIKE "
-        + "LOWER('%' || :caseName || '%') and display_from < :curr_date and (display_to > :curr_date or display_to "
-        + "is null) and sensitivity = 'PUBLIC'", nativeQuery = true)
-    List<Artefact> findArtefactByCaseNameUnverified(@Param(CASE_NAME_PARAM) String caseName,
-                                                    @Param(CURRENT_DATE_PARAM) LocalDateTime currentDate);
 
 
     @Query(value = INITIAL_SELECT + "WHERE searchDetails.caseDetails ->> :searchTerm = :searchValue and "
         + "display_from < :curr_date and (display_to > :curr_date or display_to is null)", nativeQuery = true)
-    List<Artefact> findArtefactBySearchVerified(@Param(SEARCH_TERM_PARAM) String searchTerm,
+    List<Artefact> findArtefactBySearch(@Param(SEARCH_TERM_PARAM) String searchTerm,
                                                 @Param(SEARCH_VAL_PARAM) String searchVal,
                                                 @Param(CURRENT_DATE_PARAM) LocalDateTime currentDate);
-
-    @Query(value = INITIAL_SELECT + "WHERE searchDetails.caseDetails ->> :searchTerm = :searchValue "
-        + "and display_from < :curr_date and (display_to > :curr_date or display_to is null) and sensitivity = "
-        + "'PUBLIC'",
-        nativeQuery = true)
-    List<Artefact> findArtefactBySearchUnverified(@Param(SEARCH_TERM_PARAM) String searchTerm,
-                                                  @Param(SEARCH_VAL_PARAM) String searchVal,
-                                                  @Param(CURRENT_DATE_PARAM) LocalDateTime currentDate);
 
     @Query(value = "select * from Artefact where court_id = :courtId",
         nativeQuery = true)
