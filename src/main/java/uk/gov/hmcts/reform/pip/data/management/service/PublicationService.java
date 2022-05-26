@@ -237,6 +237,20 @@ public class PublicationService {
     }
 
     /**
+     * Takes in artefact id and returns the payload within the matching blob in string format. This is used for admin
+     * requests
+     *
+     * @param artefactId   represents the artefact id which is then used to get an artefact to populate the inputs
+     *                     for the blob request.
+     * @return The data within the blob in string format.
+     */
+    public String getPayloadByArtefactId(UUID artefactId) {
+        Artefact artefact = getMetadataByArtefactId(artefactId);
+
+        return azureBlobService.getBlobData(getUuidFromUrl(artefact.getPayload()));
+    }
+
+    /**
      * Retrieves a flat file for an artefact.
      * @param artefactId The artefact ID to retrieve the flat file from.
      * @param userId represents the user ID of the user who is making the request
@@ -244,6 +258,17 @@ public class PublicationService {
      */
     public Resource getFlatFileByArtefactID(UUID artefactId, UUID userId) {
         Artefact artefact = getMetadataByArtefactId(artefactId, userId);
+
+        return azureBlobService.getBlobFile(getUuidFromUrl(artefact.getPayload()));
+    }
+
+    /**
+     * Retrieves a flat file for an artefact. This is used for admin requests
+     * @param artefactId The artefact ID to retrieve the flat file from.
+     * @return The flat file resource.
+     */
+    public Resource getFlatFileByArtefactID(UUID artefactId) {
+        Artefact artefact = getMetadataByArtefactId(artefactId);
 
         return azureBlobService.getBlobFile(getUuidFromUrl(artefact.getPayload()));
     }

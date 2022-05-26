@@ -139,8 +139,14 @@ class PublicationControllerTest {
     }
 
     @Test
-    void testGetPayloadEndpointReturnsOk() {
-        assertEquals(HttpStatus.OK, publicationController.getArtefactPayload(ARTEFACT_ID, USER_ID)
+    void testGetPayloadEndpointReturnsOkWhenAdmin() {
+        assertEquals(HttpStatus.OK, publicationController.getArtefactPayload(ARTEFACT_ID, USER_ID, true)
+            .getStatusCode(), STATUS_CODE_MATCH);
+    }
+
+    @Test
+    void testGetPayloadEndpointReturnsOkWhenNotAdmin() {
+        assertEquals(HttpStatus.OK, publicationController.getArtefactPayload(ARTEFACT_ID, USER_ID, false)
             .getStatusCode(), STATUS_CODE_MATCH);
     }
 
@@ -201,7 +207,8 @@ class PublicationControllerTest {
     @Test
     void checkGetPayloadContentReturns() {
         when(publicationService.getPayloadByArtefactId(any(), any())).thenReturn(String.valueOf(artefactWithId));
-        ResponseEntity<String> unmappedBlob = publicationController.getArtefactPayload(UUID.randomUUID(), USER_ID);
+        ResponseEntity<String> unmappedBlob =
+            publicationController.getArtefactPayload(UUID.randomUUID(), USER_ID, false);
         assertEquals(HttpStatus.OK, unmappedBlob.getStatusCode(),
                      STATUS_CODE_MATCH
         );
@@ -217,7 +224,8 @@ class PublicationControllerTest {
         when(publicationService.getMetadataByArtefactId(any(), any())).thenReturn(artefactWithId);
         ResponseEntity<Resource> flatFileBlob = publicationController.getArtefactFile(
             UUID.randomUUID(),
-            USER_ID
+            USER_ID,
+            false
         );
         assertEquals(HttpStatus.OK, flatFileBlob.getStatusCode(), STATUS_CODE_MATCH);
         assertEquals(new ByteArrayResource(testData), flatFileBlob.getBody(), NOT_EQUAL_MESSAGE);

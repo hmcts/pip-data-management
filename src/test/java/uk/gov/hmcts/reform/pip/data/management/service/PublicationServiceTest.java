@@ -94,8 +94,10 @@ class PublicationServiceTest {
     private static final String SUCCESS = "Success";
     private static final String DELETION_TRACK_LOG_MESSAGE = "Track: TestValue, Removed %s, at ";
     private static final String ROWID_RETURNS_UUID = "Row ID must match returned UUID";
+    private static final String TEST_FILE = "Hello";
 
     private static final String NO_COURT_EXISTS_IN_REFERENCE_DATA = "NoMatch1234";
+    private static final String VALIDATION_MORE_THAN_PUBLIC = "More than the public artefact has been found";
 
     private static final LocalDateTime CONTENT_DATE = LocalDateTime.now();
 
@@ -122,6 +124,23 @@ class PublicationServiceTest {
 
     @BeforeEach
     void setup() {
+        createPayloads();
+        createClassifiedPayloads();
+
+        intialiseManualUploadArtefact();
+        initialiseCourts();
+
+        lenient().when(artefactRepository.findArtefactByUpdateLogic(artefact.getCourtId(),artefact.getContentDate(),
+                                                                    artefact.getLanguage().name(),
+                                                                    artefact.getListType().name(),
+                                                                    artefact.getProvenance()))
+            .thenReturn(Optional.empty());
+        lenient().when(artefactRepository.save(artefactWithPayloadUrl)).thenReturn(artefactWithIdAndPayloadUrl);
+        lenient().when(courtRepository.findByCourtIdByProvenance(PROVENANCE, PROVENANCE_ID))
+            .thenReturn(Optional.of(courts));
+    }
+
+    private void createPayloads() {
         artefact = Artefact.builder()
             .sourceArtefactId(SOURCE_ARTEFACT_ID)
             .provenance(PROVENANCE)
@@ -130,16 +149,6 @@ class PublicationServiceTest {
             .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
             .language(Language.ENGLISH)
             .sensitivity(Sensitivity.PUBLIC)
-            .build();
-
-        artefactClassified = Artefact.builder()
-            .sourceArtefactId(SOURCE_ARTEFACT_ID)
-            .provenance(PROVENANCE)
-            .courtId(PROVENANCE_ID)
-            .contentDate(CONTENT_DATE)
-            .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
-            .language(Language.ENGLISH)
-            .sensitivity(Sensitivity.CLASSIFIED)
             .build();
 
         artefactWithPayloadUrl = Artefact.builder()
@@ -154,18 +163,6 @@ class PublicationServiceTest {
             .sensitivity(Sensitivity.PUBLIC)
             .build();
 
-        artefactWithPayloadUrlClassified = Artefact.builder()
-            .sourceArtefactId(SOURCE_ARTEFACT_ID)
-            .provenance(PROVENANCE)
-            .payload(PAYLOAD_URL)
-            .search(SEARCH_VALUES)
-            .courtId(COURT_ID)
-            .contentDate(CONTENT_DATE)
-            .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
-            .language(Language.ENGLISH)
-            .sensitivity(Sensitivity.CLASSIFIED)
-            .build();
-
         artefactWithIdAndPayloadUrl = Artefact.builder()
             .artefactId(ARTEFACT_ID)
             .sourceArtefactId(SOURCE_ARTEFACT_ID)
@@ -177,29 +174,6 @@ class PublicationServiceTest {
             .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
             .language(Language.ENGLISH)
             .sensitivity(Sensitivity.PUBLIC)
-            .build();
-
-        artefactWithIdAndPayloadUrlClassified = Artefact.builder()
-            .artefactId(ARTEFACT_ID)
-            .sourceArtefactId(SOURCE_ARTEFACT_ID)
-            .provenance(PROVENANCE)
-            .payload(PAYLOAD_URL)
-            .search(SEARCH_VALUES)
-            .courtId(COURT_ID)
-            .contentDate(CONTENT_DATE)
-            .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
-            .language(Language.ENGLISH)
-            .sensitivity(Sensitivity.CLASSIFIED)
-            .build();
-
-        artefactInTheFuture = Artefact.builder()
-            .artefactId(ARTEFACT_ID)
-            .sourceArtefactId(SOURCE_ARTEFACT_ID)
-            .provenance(PROVENANCE)
-            .payload(PAYLOAD_URL)
-            .search(SEARCH_VALUES)
-            .displayFrom(LocalDateTime.now().plusDays(1))
-            .displayTo(LocalDateTime.now().plusDays(2))
             .build();
 
         artefactFromThePast = Artefact.builder()
@@ -242,17 +216,55 @@ class PublicationServiceTest {
             .displayTo(LocalDateTime.now())
             .build();
 
-        intialiseManualUploadArtefact();
-        initialiseCourts();
 
-        lenient().when(artefactRepository.findArtefactByUpdateLogic(artefact.getCourtId(),artefact.getContentDate(),
-                                                                    artefact.getLanguage().name(),
-                                                                    artefact.getListType().name(),
-                                                                    artefact.getProvenance()))
-            .thenReturn(Optional.empty());
-        lenient().when(artefactRepository.save(artefactWithPayloadUrl)).thenReturn(artefactWithIdAndPayloadUrl);
-        lenient().when(courtRepository.findByCourtIdByProvenance(PROVENANCE, PROVENANCE_ID))
-            .thenReturn(Optional.of(courts));
+        artefactInTheFuture = Artefact.builder()
+            .artefactId(ARTEFACT_ID)
+            .sourceArtefactId(SOURCE_ARTEFACT_ID)
+            .provenance(PROVENANCE)
+            .payload(PAYLOAD_URL)
+            .search(SEARCH_VALUES)
+            .displayFrom(LocalDateTime.now().plusDays(1))
+            .displayTo(LocalDateTime.now().plusDays(2))
+            .build();
+    }
+
+    private void createClassifiedPayloads() {
+        artefactClassified = Artefact.builder()
+            .sourceArtefactId(SOURCE_ARTEFACT_ID)
+            .provenance(PROVENANCE)
+            .courtId(PROVENANCE_ID)
+            .contentDate(CONTENT_DATE)
+            .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
+            .language(Language.ENGLISH)
+            .sensitivity(Sensitivity.CLASSIFIED)
+            .build();
+
+        artefactWithPayloadUrlClassified = Artefact.builder()
+            .sourceArtefactId(SOURCE_ARTEFACT_ID)
+            .provenance(PROVENANCE)
+            .payload(PAYLOAD_URL)
+            .search(SEARCH_VALUES)
+            .courtId(COURT_ID)
+            .contentDate(CONTENT_DATE)
+            .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
+            .language(Language.ENGLISH)
+            .sensitivity(Sensitivity.CLASSIFIED)
+            .build();
+
+
+
+        artefactWithIdAndPayloadUrlClassified = Artefact.builder()
+            .artefactId(ARTEFACT_ID)
+            .sourceArtefactId(SOURCE_ARTEFACT_ID)
+            .provenance(PROVENANCE)
+            .payload(PAYLOAD_URL)
+            .search(SEARCH_VALUES)
+            .courtId(COURT_ID)
+            .contentDate(CONTENT_DATE)
+            .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
+            .language(Language.ENGLISH)
+            .sensitivity(Sensitivity.CLASSIFIED)
+            .build();
     }
 
     private void initialiseCourts() {
@@ -482,6 +494,15 @@ class PublicationServiceTest {
     }
 
     @Test
+    void testArtefactPayloadFromAzureWhenAdmin() {
+        when(artefactRepository.findArtefactByArtefactId(any())).thenReturn(Optional.of(artefactWithPayloadUrl));
+        when(azureBlobService.getBlobData(any())).thenReturn(PAYLOAD);
+        assertEquals(PAYLOAD, publicationService.getPayloadByArtefactId(ARTEFACT_ID),
+                     VALIDATION_ARTEFACT_NOT_MATCH
+        );
+    }
+
+    @Test
     void testArtefactPayloadFromAzureWhenArtefactIsPublic() {
         when(artefactRepository.findByArtefactId(any(), any())).thenReturn(Optional.of(artefactWithPayloadUrl));
         when(azureBlobService.getBlobData(any()))
@@ -520,9 +541,18 @@ class PublicationServiceTest {
     }
 
     @Test
+    void testArtefactFileFromAzureWhenAdmin() {
+        byte[] testData = TEST_FILE.getBytes();
+        when(artefactRepository.findArtefactByArtefactId(any())).thenReturn(Optional.of(artefactWithPayloadUrl));
+        when(azureBlobService.getBlobFile(any())).thenReturn(new ByteArrayResource(testData));
+
+        assertEquals(new ByteArrayResource(testData), publicationService.getFlatFileByArtefactID(
+            ARTEFACT_ID), VALIDATION_ARTEFACT_NOT_MATCH);
+    }
+
+    @Test
     void testArtefactFileFromAzureWhenArtefactIsPublic() {
-        String string = "Hello";
-        byte[] testData = string.getBytes();
+        byte[] testData = TEST_FILE.getBytes();
         when(artefactRepository.findByArtefactId(any(), any())).thenReturn(Optional.of(artefactWithPayloadUrl));
         when(azureBlobService.getBlobFile(any())).thenReturn(new ByteArrayResource(testData));
 
@@ -533,8 +563,7 @@ class PublicationServiceTest {
 
     @Test
     void testArtefactFileFromAzureWhenArtefactIsNotPublic() {
-        String string = "Hello";
-        byte[] testData = string.getBytes();
+        byte[] testData = TEST_FILE.getBytes();
         when(artefactRepository.findByArtefactId(any(), any()))
             .thenReturn(Optional.of(artefactWithPayloadUrlClassified));
         when(azureBlobService.getBlobFile(any())).thenReturn(new ByteArrayResource(testData));
@@ -549,9 +578,7 @@ class PublicationServiceTest {
     }
 
     @Test
-    void testArtefactFileFromAzureWhenArtefactIsNotPublicAndNotAutorised() {
-        String string = "Hello";
-        byte[] testData = string.getBytes();
+    void testArtefactFileFromAzureWhenArtefactIsNotPublicAndNotAuthorised() {
         when(artefactRepository.findByArtefactId(any(), any()))
             .thenReturn(Optional.of(artefactWithPayloadUrlClassified));
 
@@ -587,8 +614,7 @@ class PublicationServiceTest {
 
     @Test
     void testArtefactFileFromAzureWhenUnauthorized() {
-        String string = "Hello";
-        byte[] testData = string.getBytes();
+        byte[] testData = TEST_FILE.getBytes();
         when(artefactRepository.findByArtefactId(any(), any()))
             .thenReturn(Optional.of(artefactWithPayloadUrl));
         when(azureBlobService.getBlobFile(any()))
@@ -743,7 +769,7 @@ class PublicationServiceTest {
 
         List<Artefact> artefacts = publicationService.findAllByCourtId("abc", USER_ID);
 
-        assertEquals(1, artefacts.size(), "More than the public artefact has been found");
+        assertEquals(1, artefacts.size(), VALIDATION_MORE_THAN_PUBLIC);
         assertEquals(artefact, artefacts.get(0), VALIDATION_ARTEFACT_NOT_MATCH);
     }
 
@@ -772,7 +798,7 @@ class PublicationServiceTest {
 
         List<Artefact> artefacts = publicationService.findAllByCourtId("abc", USER_ID);
 
-        assertEquals(1, artefacts.size(), "More than the public artefact has been found");
+        assertEquals(1, artefacts.size(), VALIDATION_MORE_THAN_PUBLIC);
         assertEquals(artefact2, artefacts.get(0), VALIDATION_ARTEFACT_NOT_MATCH);
     }
 
@@ -803,7 +829,7 @@ class PublicationServiceTest {
 
         List<Artefact> artefacts = publicationService.findAllBySearch(SEARCH_TERM_CASE_ID, TEST_VALUE, USER_ID);
 
-        assertEquals(1, artefacts.size(), "More than the public artefact has been found");
+        assertEquals(1, artefacts.size(), VALIDATION_MORE_THAN_PUBLIC);
         assertEquals(artefactWithIdAndPayloadUrl, artefacts.get(0), VALIDATION_ARTEFACT_NOT_MATCH);
     }
 
@@ -815,7 +841,7 @@ class PublicationServiceTest {
 
         List<Artefact> artefacts = publicationService.findAllBySearch(SEARCH_TERM_CASE_ID, TEST_VALUE, USER_ID);
 
-        assertEquals(1, artefacts.size(), "More than the public artefact has been found");
+        assertEquals(1, artefacts.size(), VALIDATION_MORE_THAN_PUBLIC);
         assertEquals(artefactWithIdAndPayloadUrl, artefacts.get(0), VALIDATION_ARTEFACT_NOT_MATCH);
     }
 
@@ -855,7 +881,7 @@ class PublicationServiceTest {
 
         List<Artefact> artefacts = publicationService.findAllBySearch(SEARCH_TERM_CASE_NAME, TEST_VALUE, USER_ID);
 
-        assertEquals(1, artefacts.size(), "More than the public artefact has been found");
+        assertEquals(1, artefacts.size(), VALIDATION_MORE_THAN_PUBLIC);
         assertEquals(artefactWithIdAndPayloadUrl, artefacts.get(0), VALIDATION_ARTEFACT_NOT_MATCH);
     }
 
@@ -867,7 +893,7 @@ class PublicationServiceTest {
 
         List<Artefact> artefacts = publicationService.findAllBySearch(SEARCH_TERM_CASE_NAME, TEST_VALUE, null);
 
-        assertEquals(1, artefacts.size(), "More than the public artefact has been found");
+        assertEquals(1, artefacts.size(), VALIDATION_MORE_THAN_PUBLIC);
         assertEquals(artefactWithIdAndPayloadUrl, artefacts.get(0), VALIDATION_ARTEFACT_NOT_MATCH);
     }
 
@@ -898,7 +924,7 @@ class PublicationServiceTest {
 
         List<Artefact> artefacts = publicationService.findAllBySearch(SEARCH_TERM_CASE_URN, TEST_VALUE, USER_ID);
 
-        assertEquals(1, artefacts.size(), "More than the public artefact has been found");
+        assertEquals(1, artefacts.size(), VALIDATION_MORE_THAN_PUBLIC);
         assertEquals(artefactWithIdAndPayloadUrl, artefacts.get(0), VALIDATION_ARTEFACT_NOT_MATCH);
     }
 
@@ -910,7 +936,7 @@ class PublicationServiceTest {
 
         List<Artefact> artefacts = publicationService.findAllBySearch(SEARCH_TERM_CASE_URN, TEST_VALUE, null);
 
-        assertEquals(1, artefacts.size(), "More than the public artefact has been found");
+        assertEquals(1, artefacts.size(), VALIDATION_MORE_THAN_PUBLIC);
         assertEquals(artefactWithIdAndPayloadUrl, artefacts.get(0), VALIDATION_ARTEFACT_NOT_MATCH);
     }
 

@@ -20,6 +20,7 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@SuppressWarnings("PMD.LawOfDemeter")
 @ExtendWith({MockitoExtension.class})
 @ActiveProfiles("test")
 @SpringBootTest(classes = {Application.class})
