@@ -325,7 +325,7 @@
             "regionalJOH": {
               "$id": "#root/locationDetails/region/regionalJOH",
               "type": "array",
-              "description": "Judiciary for the session",
+              "description": "Judiciary for the region",
               "title": "Judiciary",
               "items":{
                 "type": "object",
