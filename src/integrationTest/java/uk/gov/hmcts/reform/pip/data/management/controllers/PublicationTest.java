@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -70,6 +71,9 @@ class PublicationTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @Value("${test-user-id}")
+    private String userId;
+
     private static final String PUBLICATION_URL = "/publication";
     private static final String SEARCH_URL = "/publication/search";
     private static final String SEARCH_COURT_URL = "/publication/courtId";
@@ -106,7 +110,6 @@ class PublicationTest {
     private static final String VALIDATION_EMPTY_RESPONSE = "Response should contain a Artefact";
     private static final String VALIDATION_DISPLAY_FROM = "The expected Display From has not been returned";
     private static final String SHOULD_RETURN_EXPECTED_ARTEFACT = "Should return expected artefact";
-    private static final UUID USER_ID = UUID.randomUUID();
 
     private static MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
     private static ObjectMapper objectMapper;
@@ -446,7 +449,7 @@ class PublicationTest {
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 = MockMvcRequestBuilders
             .get(SEARCH_COURT_URL + "/" + COURT_ID)
-            .header(USER_ID_HEADER, USER_ID);
+            .header(USER_ID_HEADER, userId);
         MvcResult getResponse =
             mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isOk()).andReturn();
 
@@ -574,7 +577,7 @@ class PublicationTest {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 = MockMvcRequestBuilders
 
             .get(SEARCH_COURT_URL + "/" + COURT_ID)
-            .header(USER_ID_HEADER, USER_ID);
+            .header(USER_ID_HEADER, userId);
         MvcResult getResponse =
             mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isOk()).andReturn();
 
@@ -628,7 +631,7 @@ class PublicationTest {
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 = MockMvcRequestBuilders
             .get(SEARCH_COURT_URL + "/" + COURT_ID)
-            .header(USER_ID_HEADER, USER_ID);
+            .header(USER_ID_HEADER, userId);
         MvcResult getResponse =
             mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isOk()).andReturn();
 
@@ -682,8 +685,7 @@ class PublicationTest {
         );
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 = MockMvcRequestBuilders
-            .get(SEARCH_COURT_URL + "/" + COURT_ID)
-            .header(USER_ID_HEADER, USER_ID);
+            .get(SEARCH_COURT_URL + "/" + COURT_ID);
         MvcResult getResponse =
             mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isOk()).andReturn();
 
@@ -711,7 +713,7 @@ class PublicationTest {
 
         mockHttpServletRequestBuilder
             .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
-            .header(PublicationConfiguration.SENSITIVITY_HEADER, Sensitivity.CLASSIFIED)
+            .header(PublicationConfiguration.SENSITIVITY_HEADER, Sensitivity.PRIVATE)
             .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
             .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
             .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO.plusMonths(1))
@@ -735,8 +737,7 @@ class PublicationTest {
         );
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 = MockMvcRequestBuilders
-            .get(SEARCH_COURT_URL + "/" + COURT_ID)
-            .header(USER_ID_HEADER, USER_ID);
+            .get(SEARCH_COURT_URL + "/" + COURT_ID);
         MvcResult getResponse =
             mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isOk()).andReturn();
 
@@ -786,7 +787,7 @@ class PublicationTest {
 
         response = mockMvc.perform(MockMvcRequestBuilders
                                        .get(PUBLICATION_URL + "/" + artefact.getArtefactId() + "/file")
-                                       .header(USER_ID_HEADER, USER_ID))
+                                       .header(USER_ID_HEADER, userId))
             .andExpect(status().isOk()).andReturn();
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
@@ -889,7 +890,7 @@ class PublicationTest {
     void retrieveFileOfAnArtefactWhereNotFound() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders
                             .get("/publication/7d734e8d-ba1d-4730-bd8b-09a970be00cc/file")
-                            .header(USER_ID_HEADER, USER_ID))
+                            .header(USER_ID_HEADER, userId))
             .andExpect(status().isNotFound()).andReturn();
     }
 
@@ -931,7 +932,7 @@ class PublicationTest {
 
         response = mockMvc.perform(MockMvcRequestBuilders
                                        .get(PUBLICATION_URL + "/" + artefact.getArtefactId() + PAYLOAD_URL)
-                                       .header(USER_ID_HEADER, USER_ID))
+                                       .header(USER_ID_HEADER, userId))
             .andExpect(status().isOk()).andReturn();
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
@@ -979,7 +980,7 @@ class PublicationTest {
 
         mockMvc.perform(MockMvcRequestBuilders
                             .get(PUBLICATION_URL + "/" + artefact.getArtefactId() + PAYLOAD_URL)
-                            .header(USER_ID_HEADER, USER_ID))
+                            .header(USER_ID_HEADER, userId))
             .andExpect(status().isNotFound()).andReturn();
     }
 
@@ -1165,7 +1166,7 @@ class PublicationTest {
     void retrievePayloadOfAnArtefactWhereNotFound() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders
                             .get("/publication/7d734e8d-ba1d-4730-bd8b-09a970be00cc/payload")
-                            .header(USER_ID_HEADER, USER_ID))
+                            .header(USER_ID_HEADER, userId))
             .andExpect(status().isNotFound()).andReturn();
     }
 
@@ -1207,7 +1208,7 @@ class PublicationTest {
 
         response = mockMvc.perform(MockMvcRequestBuilders
                                        .get(PUBLICATION_URL + "/" + artefact.getArtefactId())
-                                       .header(USER_ID_HEADER, USER_ID))
+                                       .header(USER_ID_HEADER, userId))
             .andExpect(status().isOk()).andReturn();
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
@@ -1305,7 +1306,7 @@ class PublicationTest {
 
         mockMvc.perform(MockMvcRequestBuilders
                             .get(PUBLICATION_URL + "/" + artefact.getArtefactId())
-                            .header(USER_ID_HEADER, USER_ID))
+                            .header(USER_ID_HEADER, userId))
             .andExpect(status().isNotFound()).andReturn();
     }
 
@@ -1394,7 +1395,7 @@ class PublicationTest {
     void retrieveMetadataOfAnArtefactWhereNotFound() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders
                             .get("/publication/7d734e8d-ba1d-4730-bd8b-09a970be00cc")
-                            .header(USER_ID_HEADER, USER_ID))
+                            .header(USER_ID_HEADER, userId))
             .andExpect(status().isNotFound()).andReturn();
     }
 
@@ -1409,7 +1410,7 @@ class PublicationTest {
             MockMvcRequestBuilders.get(SEARCH_URL + VALID_CASE_ID_SEARCH);
 
         mockHttpServletRequestBuilder1
-            .header(USER_ID_HEADER, USER_ID);
+            .header(USER_ID_HEADER, userId);
 
         MvcResult getResponse =
             mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isOk()).andReturn();
@@ -1463,7 +1464,7 @@ class PublicationTest {
             MockMvcRequestBuilders.get(SEARCH_URL + VALID_CASE_NAME_SEARCH);
 
         mockHttpServletRequestBuilder1
-            .header(USER_ID_HEADER, USER_ID);
+            .header(USER_ID_HEADER, userId);
 
         MvcResult getResponse =
             mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isOk()).andReturn();
@@ -1546,7 +1547,7 @@ class PublicationTest {
 
         MockHttpServletRequestBuilder preDeleteRequest = MockMvcRequestBuilders
             .get(PUBLICATION_URL + "/" + artefactToDelete.getArtefactId())
-            .header(USER_ID_HEADER, USER_ID);
+            .header(USER_ID_HEADER, userId);
 
         mockMvc.perform(preDeleteRequest).andExpect(status().isOk());
 
@@ -1604,12 +1605,12 @@ class PublicationTest {
 
         MockHttpServletRequestBuilder expectedFailRequest = MockMvcRequestBuilders
             .get(PUBLICATION_URL + "/" + artefactToFind.getArtefactId())
-            .header(USER_ID_HEADER, USER_ID);
+            .header(USER_ID_HEADER, userId);
         mockMvc.perform(expectedFailRequest).andExpect(status().isNotFound());
 
         MockHttpServletRequestBuilder adminRequest = MockMvcRequestBuilders
             .get(PUBLICATION_URL + "/" + artefactToFind.getArtefactId())
-            .header(USER_ID_HEADER, USER_ID)
+            .header(USER_ID_HEADER, userId)
             .header("x-admin", true);
         MvcResult response = mockMvc.perform(adminRequest).andExpect(status().isOk()).andReturn();
 
@@ -1624,7 +1625,7 @@ class PublicationTest {
         when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
         MockHttpServletRequestBuilder adminRequest = MockMvcRequestBuilders
             .get(PUBLICATION_URL + "/" + UUID.randomUUID())
-            .header(USER_ID_HEADER, USER_ID)
+            .header(USER_ID_HEADER, userId)
             .header("x-admin", true);
         mockMvc.perform(adminRequest).andExpect(status().isNotFound());
 

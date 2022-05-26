@@ -71,6 +71,8 @@ public class PublicationController {
     @Autowired
     private final ValidationService validationService;
 
+    private static final String DEFAULT_ADMIN_VALUE = "false";
+
     /**
      * Constructor for Publication controller.
      *
@@ -246,7 +248,7 @@ public class PublicationController {
     public ResponseEntity<List<Artefact>> getAllRelevantArtefactsByCourtId(
         @PathVariable String courtId,
         @RequestHeader(value = USER_ID_HEADER, required = false) UUID userId,
-        @RequestHeader(value = ADMIN_HEADER, defaultValue = "false", required = false) Boolean isAdmin) {
+        @RequestHeader(value = ADMIN_HEADER, defaultValue = DEFAULT_ADMIN_VALUE, required = false) Boolean isAdmin) {
         return ResponseEntity.ok(publicationService.findAllByCourtIdAdmin(courtId, userId, isAdmin));
     }
 
@@ -279,7 +281,8 @@ public class PublicationController {
     @IsAdmin
     public ResponseEntity<Artefact> getArtefactMetadata(
         @PathVariable UUID artefactId, @RequestHeader(value = USER_ID_HEADER, required = false) UUID userId,
-                                       @RequestHeader(value = ADMIN_HEADER, required = false) Boolean isAdmin) {
+                                       @RequestHeader(value = ADMIN_HEADER, defaultValue = DEFAULT_ADMIN_VALUE,
+                                           required = false) Boolean isAdmin) {
         return ResponseEntity.ok(isAdmin ? publicationService.getMetadataByArtefactId(artefactId) :
                                      publicationService.getMetadataByArtefactId(artefactId, userId));
     }
@@ -298,7 +301,7 @@ public class PublicationController {
     public ResponseEntity<String> getArtefactPayload(
         @PathVariable UUID artefactId,
         @RequestHeader(value = USER_ID_HEADER, required = false) UUID userId,
-        @RequestHeader(value = ADMIN_HEADER, required = false) Boolean isAdmin) {
+        @RequestHeader(value = ADMIN_HEADER, defaultValue = DEFAULT_ADMIN_VALUE, required = false) Boolean isAdmin) {
 
         return ResponseEntity.ok(isAdmin ? publicationService.getPayloadByArtefactId(artefactId) :
                                      publicationService.getPayloadByArtefactId(artefactId, userId));
@@ -318,7 +321,7 @@ public class PublicationController {
     public ResponseEntity<Resource> getArtefactFile(
         @PathVariable UUID artefactId,
         @RequestHeader(value = USER_ID_HEADER, required = false) UUID userId,
-        @RequestHeader(value = ADMIN_HEADER, required = false) Boolean isAdmin) {
+        @RequestHeader(value = ADMIN_HEADER, defaultValue = DEFAULT_ADMIN_VALUE, required = false) Boolean isAdmin) {
 
         Resource file;
         Artefact metadata;

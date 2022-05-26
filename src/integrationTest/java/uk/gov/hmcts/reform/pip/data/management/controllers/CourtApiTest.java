@@ -299,7 +299,7 @@ class CourtApiTest {
         assertEquals(ALL_COURTS, returnedCourts.size(), VALIDATION_UNEXPECTED_NUMBER_OF_COURTS);
 
         Court sjpCourt = returnedCourts.get(0);
-        assertEquals("Single Justice Procedure (SJP)", sjpCourt.getName(), VALIDATION_UNKNOWN_COURT);
+        assertEquals("Single Justice Procedure", sjpCourt.getName(), VALIDATION_UNKNOWN_COURT);
         assertEquals(0, sjpCourt.getJurisdiction().size(), "Unexpected number of jurisdictions received");
         assertNull(sjpCourt.getRegion(), "Region has not come through as null for SJP");
 
