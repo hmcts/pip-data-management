@@ -8,7 +8,7 @@ java:
     DB_USER: "{{ .Values.postgresql.postgresqlUsername}}"
     DB_PASS: "{{ .Values.postgresql.postgresqlPassword}}"
     DB_PORT: "5432"
-    AZURE_APPLICATIONINSIGHTS_INSTRUMENTATIONKEY: '3c3bacb7-64e0-476c-aeaa-657657b063fd'
+    #AZURE_APPLICATIONINSIGHTS_INSTRUMENTATIONKEY: '3c3bacb7-64e0-476c-aeaa-657657b063fd'
   #disableKeyVaults: true
   postgresql:
     enabled: true
