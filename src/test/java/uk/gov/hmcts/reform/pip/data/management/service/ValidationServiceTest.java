@@ -210,21 +210,6 @@ class ValidationServiceTest {
     }
 
     @Test
-    void testSjpSetsCourtId() {
-        headerGroup.setListType(ListType.SJP_PRESS_LIST);
-        headerGroup.setCourtId("1");
-
-        assertEquals("0", validationService.validateHeaders(headerGroup).getCourtId(), "Court Id should match");
-    }
-
-    @Test
-    void testNonSjpDoesNotOverwriteCourt() {
-        headerGroup.setCourtId("1");
-
-        assertEquals("1", validationService.validateHeaders(headerGroup).getCourtId(), "Court Id should match");
-    }
-
-    @Test
     void testEmptyFileThrows() {
         FlatFileException ex = assertThrows(FlatFileException.class, () -> {
             validationService.validateBody(new MockMultipartFile("test", (byte[]) null));
