@@ -50,6 +50,9 @@ class LocationControllerTest {
         firstLocationCsv.setProvenance("Venue Provenance A");
         firstLocationCsv.setRegion(List.of("Venue Region A"));
         firstLocationCsv.setProvenanceLocationType("venue");
+        firstLocationCsv.setWelshLocationName("Welsh location A");
+        firstLocationCsv.setWelshJurisdiction(List.of("Welsh jurisdiction A"));
+        firstLocationCsv.setWelshRegion(List.of("Welsh region A"));
         firstLocation = new Location(firstLocationCsv);
 
         LocationCsv secondLocationCsv = new LocationCsv();
@@ -57,6 +60,9 @@ class LocationControllerTest {
         secondLocationCsv.setProvenance("Venue Provenance B");
         secondLocationCsv.setRegion(List.of("Venue Region B"));
         secondLocationCsv.setProvenanceLocationType("venue");
+        secondLocationCsv.setWelshLocationName("Welsh location B");
+        secondLocationCsv.setWelshJurisdiction(List.of("Welsh jurisdiction B"));
+        secondLocationCsv.setWelshRegion(List.of("Welsh region B"));
         secondLocation = new Location(secondLocationCsv);
     }
 

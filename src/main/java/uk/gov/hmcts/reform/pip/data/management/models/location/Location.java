@@ -35,6 +35,9 @@ import javax.persistence.Table;
 )
 public class Location {
 
+    private static final String LIST_ARRAY = "list-array";
+    private static final String DEFINITION = "text[]";
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @JsonView(LocationViews.BaseView.class)
@@ -43,8 +46,8 @@ public class Location {
     @JsonView(LocationViews.BaseView.class)
     private String name;
 
-    @Type(type = "list-array")
-    @Column(name = "region", columnDefinition = "text[]")
+    @Type(type = LIST_ARRAY)
+    @Column(name = "region", columnDefinition = DEFINITION)
     @JsonView(LocationViews.BaseView.class)
     private List<String> region;
 
@@ -52,8 +55,8 @@ public class Location {
     @Enumerated(EnumType.STRING)
     private LocationType locationType;
 
-    @Type(type = "list-array")
-    @Column(name = "jurisdiction", columnDefinition = "text[]")
+    @Type(type = LIST_ARRAY)
+    @Column(name = "jurisdiction", columnDefinition = DEFINITION)
     @JsonView(LocationViews.BaseView.class)
     private List<String> jurisdiction;
 
@@ -61,6 +64,19 @@ public class Location {
     @JoinColumn(name = "location_id")
     @JsonView(LocationViews.ReferenceView.class)
     private List<LocationReference> locationReferenceList = new ArrayList<>();
+
+    @JsonView(LocationViews.BaseView.class)
+    private String welshName;
+
+    @Type(type = LIST_ARRAY)
+    @Column(name = "welsh_jurisdiction", columnDefinition = DEFINITION)
+    @JsonView(LocationViews.BaseView.class)
+    private List<String> welshJurisdiction;
+
+    @Type(type = LIST_ARRAY)
+    @Column(name = "welsh_region", columnDefinition = DEFINITION)
+    @JsonView(LocationViews.BaseView.class)
+    private List<String> welshRegion;
 
     public Location(LocationCsv locationCsv) {
         this.name = locationCsv.getLocationName();
@@ -73,6 +89,9 @@ public class Location {
             locationCsv.getProvenanceLocationId(),
             LocationType.valueOfCsv(locationCsv.getProvenanceLocationType()));
         this.locationReferenceList.add(locationReference);
+        this.welshName = locationCsv.getWelshLocationName();
+        this.welshRegion = locationCsv.getWelshRegion().stream().collect(Collectors.toList());
+        this.welshJurisdiction = locationCsv.getWelshJurisdiction().stream().collect(Collectors.toList());
     }
 
     /**

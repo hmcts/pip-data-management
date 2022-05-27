@@ -270,6 +270,7 @@ These are defined by the [schemas](src/main/resources/schemas).
 - DELETE  `/publication/{artefactId}` used to delete an artefact and its payload from P&I.
 
 ## Headers
+
 ### Upload headers
 headers for uploading an artefact:
 ```json

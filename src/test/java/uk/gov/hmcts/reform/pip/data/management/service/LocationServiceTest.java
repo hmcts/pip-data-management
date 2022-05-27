@@ -48,12 +48,14 @@ class LocationServiceTest {
         LocationCsv locationCsvFirstExample = new LocationCsv();
         locationCsvFirstExample.setLocationName("Venue Name First Example");
         locationCsvFirstExample.setProvenanceLocationType("venue");
+        locationCsvFirstExample.setWelshLocationName("Welsh Venue name first example");
         locationFirstExample = new Location(locationCsvFirstExample);
         locationFirstExample.setLocationId(1);
 
         LocationCsv locationCsvSecondExample = new LocationCsv();
         locationCsvSecondExample.setLocationName("Venue Name Second Example");
         locationCsvSecondExample.setProvenanceLocationType("venue");
+        locationCsvSecondExample.setWelshLocationName("Welsh Venue name second example");
         locationSecondExample = new Location(locationCsvSecondExample);
     }
 
