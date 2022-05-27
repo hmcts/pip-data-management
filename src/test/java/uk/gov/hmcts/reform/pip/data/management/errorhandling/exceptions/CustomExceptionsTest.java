@@ -29,8 +29,8 @@ class CustomExceptionsTest {
 
     @Test
     void testCreationOfCourtNotFoundException() {
-        CourtNotFoundException courtNotFoundException = new CourtNotFoundException(TEST_MESSAGE);
-        assertEquals(TEST_MESSAGE, courtNotFoundException.getMessage(), ASSERTION_MESSAGE);
+        LocationNotFoundException locationNotFoundException = new LocationNotFoundException(TEST_MESSAGE);
+        assertEquals(TEST_MESSAGE, locationNotFoundException.getMessage(), ASSERTION_MESSAGE);
     }
 
     @Test

@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microsoft.applicationinsights.web.dependencies.apachecommons.io.IOUtils;
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -23,8 +24,8 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import uk.gov.hmcts.reform.pip.data.management.Application;
 import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
-import uk.gov.hmcts.reform.pip.data.management.database.CourtRepository;
-import uk.gov.hmcts.reform.pip.data.management.models.court.Court;
+import uk.gov.hmcts.reform.pip.data.management.database.LocationRepository;
+import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Language;
@@ -52,7 +53,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = {Application.class},
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @ActiveProfiles(profiles = "test")
 @SuppressWarnings({"PMD.ExcessiveImports", "PMD.ExcessiveClassLength",
     "PMD.CyclomaticComplexity", "PMD.TooManyMethods"})
@@ -67,7 +68,7 @@ class PublicationInternalCourtIdTest {
     BlobClient blobClient;
 
     @Autowired
-    CourtRepository courtRepository;
+    LocationRepository locationRepository;
 
     @Autowired
     private MockMvc mockMvc;
@@ -92,7 +93,7 @@ class PublicationInternalCourtIdTest {
     private static final String SEARCH_KEY_NOT_FOUND = "case-urn";
     private static final String SEARCH_VALUE_1 = "array-value-1";
     private static final String SEARCH_VALUE_2 = "array-value-2";
-    private static final String COURT_ID_SEARCH_KEY = "court-id";
+    private static final String LOCATION_ID_SEARCH_KEY = "location-id";
 
     private static final String VALIDATION_EMPTY_RESPONSE = "Response should contain a Artefact";
 
@@ -111,18 +112,23 @@ class PublicationInternalCourtIdTest {
         objectMapper.findAndRegisterModules();
     }
 
-    private List<Court> createCourts() throws Exception {
+    @BeforeEach
+    void setupCourts() throws Exception {
+        createCourts();
+    }
+
+    private List<Location> createCourts() throws Exception {
 
         try (InputStream csvInputStream = this.getClass().getClassLoader()
-            .getResourceAsStream("courts/ValidReferenceData.csv")) {
+            .getResourceAsStream("location/ValidReferenceData.csv")) {
             MockMultipartFile csvFile
-                = new MockMultipartFile("courtList", csvInputStream);
+                = new MockMultipartFile("locationList", csvInputStream);
 
-            MvcResult mvcResult = mockMvc.perform(multipart("/courts/upload").file(csvFile))
+            MvcResult mvcResult = mockMvc.perform(multipart("/locations/upload").file(csvFile))
                 .andExpect(status().isOk()).andReturn();
 
             return Arrays.asList(
-                objectMapper.readValue(mvcResult.getResponse().getContentAsString(), Court[].class));
+                objectMapper.readValue(mvcResult.getResponse().getContentAsString(), Location[].class));
         }
     }
 
@@ -131,9 +137,6 @@ class PublicationInternalCourtIdTest {
     @DisplayName("Should create a valid artefact, updated court Id with internal "
         + "court Id and return the created artefact to the user")
     void creationOfAValidArtefactAndUpdateCourtId(boolean isJson) throws Exception {
-
-        createCourts();
-
         if (isJson) {
             mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
         } else {
@@ -171,19 +174,19 @@ class PublicationInternalCourtIdTest {
         assertEquals(artefact.getLanguage(), LANGUAGE, "Language does not match input language");
         assertEquals(artefact.getSensitivity(), SENSITIVITY,
                      "Sensitivity does not match input sensitivity");
-        assertEquals(artefact.getCourtId(), INTERNAL_COURT_ID,
+        assertEquals(artefact.getLocationId(), INTERNAL_COURT_ID,
                      "Provenance court Id does not match with reference data");
 
         Map<String, List<Object>> searchResult = artefact.getSearch();
         assertTrue(
-            searchResult.containsKey(isJson ? SEARCH_KEY_FOUND : COURT_ID_SEARCH_KEY),
+            searchResult.containsKey(isJson ? SEARCH_KEY_FOUND : LOCATION_ID_SEARCH_KEY),
             "Returned search result does not contain the correct key"
         );
         assertFalse(searchResult.containsKey(SEARCH_KEY_NOT_FOUND), "Returned search result contains "
             + "key that does not exist");
         assertEquals(
             isJson ? SEARCH_VALUE_1 : PROVENANCE_COURT_ID_MATCH,
-            searchResult.get(isJson ? SEARCH_KEY_FOUND : COURT_ID_SEARCH_KEY).get(0),
+            searchResult.get(isJson ? SEARCH_KEY_FOUND : LOCATION_ID_SEARCH_KEY).get(0),
             "Does not contain first value in the array"
         );
 
@@ -201,9 +204,6 @@ class PublicationInternalCourtIdTest {
     @DisplayName("Should create a valid artefact, unable to find "
         + "internal court Id and return the created artefact to the user")
     void creationOfAValidArtefactAndUpdateCourtIdWithNoMatch(boolean isJson) throws Exception {
-
-        createCourts();
-
         if (isJson) {
             mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
         } else {
@@ -240,20 +240,20 @@ class PublicationInternalCourtIdTest {
         assertEquals(artefact.getProvenance(), PROVENANCE, "Provenance does not match input provenance");
         assertEquals(artefact.getLanguage(), LANGUAGE, "Language does not match input language");
         assertEquals(artefact.getSensitivity(), SENSITIVITY, "Sensitivity does not match input sensitivity");
-        assertEquals(artefact.getCourtId(), String.format("NoMatch%s", PROVENANCE_COURT_ID_DOESNOT_MATCH),
+        assertEquals(artefact.getLocationId(), String.format("NoMatch%s", PROVENANCE_COURT_ID_DOESNOT_MATCH),
                      "Provenance court Id match with reference data");
 
 
         Map<String, List<Object>> searchResult = artefact.getSearch();
         assertTrue(
-            searchResult.containsKey(isJson ? SEARCH_KEY_FOUND : COURT_ID_SEARCH_KEY),
+            searchResult.containsKey(isJson ? SEARCH_KEY_FOUND : LOCATION_ID_SEARCH_KEY),
             "Returned search result does not contain the correct key"
         );
         assertFalse(searchResult.containsKey(SEARCH_KEY_NOT_FOUND), "Returned search result contains "
             + "key that does not exist");
         assertEquals(
             isJson ? SEARCH_VALUE_1 : PROVENANCE_COURT_ID_DOESNOT_MATCH,
-            searchResult.get(isJson ? SEARCH_KEY_FOUND : COURT_ID_SEARCH_KEY).get(0),
+            searchResult.get(isJson ? SEARCH_KEY_FOUND : LOCATION_ID_SEARCH_KEY).get(0),
             "Does not contain first value in the array"
         );
 

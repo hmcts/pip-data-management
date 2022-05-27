@@ -34,4 +34,3 @@ java:
         - name: app-insights-java-instrumentation-key
           alias: INSTRUMENTATION_KEY
   environment:
-    RUN_DB_MIGRATION_ON_STARTUP: false

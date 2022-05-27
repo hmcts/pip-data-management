@@ -220,30 +220,31 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 # API
 Numerous apis are set up to handle the data passing through P&I and will be built upon as the project progresses.
 
- - [Retrieving Courts and Hearings (Deprecating)](#retrieving-courts-and-hearings)
+ - [Retrieving Courts and Hearings (Deprecating)](#retrieving-locations-and-hearings)
  - [Retrieving and uploading artefacts](#uploading-and-retrieving-artefacts)
 
-## Retrieving Courts and Hearings
-Api set up under the url `{root-url}/courts` to retrieve courts with their assosiated hearings, or `{root-url}
-/hearings`. The /courts and /hearings API's are on their way to deprecation to be replaced by [publications](#uploading-and-retrieving-artefacts)
+## Retrieving Locations and Hearings
+Api set up under the url `{root-url}/locations` to retrieve locations with their assosiated hearings, or `{root-url}
+/hearings`. The /locations and /hearings API's are on their way to deprecation to be replaced by [publications](#uploading-and-retrieving-artefacts)
 to get purely hearings
 
- - /courts - Will return an array of all courts
- - /courts/{courtId} - Will search courts for matching court Id and return full object
- - /courts/find/{courtName} - will search all courts for a matching court with that name and return its full court
+ - /locations - Will return an array of all locations
+ - /locations/{locationId} - Will search locations for matching location Id and return full object
+ - /locations/find/{locationName} - will search all locations for a matching location with that name and return its
+   full location
    object
- - /courts/filter - Takes in a body of an array of `filters` and `values` to search the court list for and return
-   matching courts that satisfy all params provided, can return empty list if none match
+ - /locations/filter - Takes in a body of an array of `filters` and `values` to search the location list for and return
+   matching locations that satisfy all params provided, can return empty list if none match
 
 example filter request:
 ```
 {
-  "filters": ["location", "jurisdiction"],
-  "values": ["london", "manchester", "crown court"]
+  "filters": ["region", "jurisdiction"],
+  "values": ["london", "manchester", "crown location"]
 }
 ```
 
-- /hearings/{courtId} - returns all hearings for particular court id
+- /hearings/{courtId} - returns all hearings for particular location id
 - /hearings/case-name/{caseName} returns all matched and partial match hearings
 - /hearings/case-number/{caseNumber} returns single hearing for matched case number
 - /hearings/urn/{urnNumber} returns single hearing for matched urn number
@@ -259,15 +260,17 @@ These are defined by the [schemas](src/main/resources/schemas).
   multipart form data and uploading a file as the body will upload a flat file to the artefact where no P&I
   processing will be done on the contents of the file.
 
-- GET `/publication/courtId/{courtId}` used to get a series of publications matching the courtId.
+- GET `/publication/locationId/{courtId}` used to get a series of publications matching the courtId.
 - GET `publication/search/{searchTerm}/{searchValue}` used to get a series of publications matching a given case
   search value, e.g. (CASE_URN/CASE_ID/CASE_NAME)
 - GET `/publication/{artefactId}` used to get the metadata for the artefact.
 - GET `/publication/{artefactId}/payload` used to get the payload for the artefact.
 - GET `/publication/{artefactId}/file` used to get payload file for the artefact.
+- GET `/publication/location-type/{listType}` used to get the location type from a list type.
 - DELETE  `/publication/{artefactId}` used to delete an artefact and its payload from P&I.
 
 ## Headers
+
 ### Upload headers
 headers for uploading an artefact:
 ```json
@@ -280,7 +283,7 @@ headers for uploading an artefact:
   "x-display-from": "Local date of when the list can be displayed from",
   "x-display-to":  "Local date of when the list should be displayed to",
   "x-list-type": "ENUM of the different list types available",
-  "x-court-id":  "String of the court id the list is linked to",
+  "x-location-id":  "String of the location id the list is linked to",
   "x-content-date": "Local date of when the earliest case in the list refers to"
 }
 ```
