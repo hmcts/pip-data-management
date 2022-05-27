@@ -233,8 +233,7 @@
                 "$id": "#root/courtLists/courtList/courtHouse/courtHouseContact",
                 "description": "The contact for the court house",
                 "title": "Court House Contact",
-                "$ref": "#/definitions/venueContact",
-                "required": ["venueTelephone", "venueEmail"]
+                "$ref": "#/definitions/venueContact"
               },
               "courtHouseAddress": {
                 "$id": "#root/courtLists/courtList/courtHouse/courtHouseAddress",
@@ -389,7 +388,6 @@
                                           "title": "Party",
                                           "description": "A party",
                                           "type": "object",
-                                          "required": ["partyRole", "individualDetails"],
                                           "properties": {
                                             "partyRole": {
                                               "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items/partyRole",
@@ -418,7 +416,6 @@
                                               "title": "Individual Details",
                                               "description": "Individual Details",
                                               "type": "object",
-                                              "required": ["individualSurname"],
                                               "properties": {
                                                 "title": {
                                                   "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items/individualDetails/title",
