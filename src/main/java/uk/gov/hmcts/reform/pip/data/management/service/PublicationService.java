@@ -14,6 +14,7 @@ import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.NotFound
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
+import uk.gov.hmcts.reform.pip.data.management.models.publication.ListType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Sensitivity;
 import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
 import uk.gov.hmcts.reform.pip.data.management.utils.PayloadExtractor;
@@ -53,7 +54,7 @@ public class PublicationService {
                               AzureBlobService azureBlobService,
                               PayloadExtractor payloadExtractor,
                               SubscriptionManagementService subscriptionManagementService,
-                              AccountManagementService accountManagementService) {
+                              AccountManagementService accountManagementService,
                               LocationRepository locationRepository) {
         this.artefactRepository = artefactRepository;
         this.azureBlobService = azureBlobService;
@@ -352,6 +353,7 @@ public class PublicationService {
         } else {
             return accountManagementService.getIsAuthorised(userId, artefact.getListType(), artefact.getSensitivity());
         }
+    }
 
     public LocationType getLocationType(ListType listType) {
         return listType.getListLocationLevel();

@@ -131,14 +131,15 @@ class PublicationServiceTest {
         intialiseManualUploadArtefact();
         initialiseCourts();
 
-        lenient().when(artefactRepository.findArtefactByUpdateLogic(artefact.getCourtId(),artefact.getContentDate(),
+        lenient().when(artefactRepository.findArtefactByUpdateLogic(artefact.getLocationId(),artefact.getContentDate(),
                                                                     artefact.getLanguage().name(),
                                                                     artefact.getListType().name(),
                                                                     artefact.getProvenance()))
             .thenReturn(Optional.empty());
         lenient().when(artefactRepository.save(artefactWithPayloadUrl)).thenReturn(artefactWithIdAndPayloadUrl);
-        lenient().when(courtRepository.findByCourtIdByProvenance(PROVENANCE, PROVENANCE_ID))
-            .thenReturn(Optional.of(courts));
+        lenient().when(locationRepository.findByCourtIdByProvenance(PROVENANCE, PROVENANCE_ID,
+                                                                    LocationType.VENUE.name()))
+            .thenReturn(Optional.of(location));
     }
 
     private void createPayloads() {
@@ -232,7 +233,7 @@ class PublicationServiceTest {
         artefactClassified = Artefact.builder()
             .sourceArtefactId(SOURCE_ARTEFACT_ID)
             .provenance(PROVENANCE)
-            .courtId(PROVENANCE_ID)
+            .locationId(PROVENANCE_ID)
             .contentDate(CONTENT_DATE)
             .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
             .language(Language.ENGLISH)
@@ -244,7 +245,7 @@ class PublicationServiceTest {
             .provenance(PROVENANCE)
             .payload(PAYLOAD_URL)
             .search(SEARCH_VALUES)
-            .courtId(COURT_ID)
+            .locationId(LOCATION_ID)
             .contentDate(CONTENT_DATE)
             .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
             .language(Language.ENGLISH)
@@ -259,7 +260,7 @@ class PublicationServiceTest {
             .provenance(PROVENANCE)
             .payload(PAYLOAD_URL)
             .search(SEARCH_VALUES)
-            .courtId(COURT_ID)
+            .locationId(LOCATION_ID)
             .contentDate(CONTENT_DATE)
             .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
             .language(Language.ENGLISH)
@@ -339,7 +340,6 @@ class PublicationServiceTest {
 
         assertEquals(artefactWithIdAndPayloadUrl, returnedArtefact, ROWID_RETURNS_UUID);
     }
-
 
     @Test
     void testUpdatingOfExistingArtefact() {
