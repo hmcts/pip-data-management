@@ -3,7 +3,6 @@ java:
   image: ${IMAGE_NAME}
   ingressHost: ${SERVICE_FQDN}
   environment:
-    RUN_DB_MIGRATION_ON_STARTUP: true
     DB_HOST: "{{ .Release.Name }}-postgresql"
     DB_NAME: "{{ .Values.postgresql.postgresqlDatabase}}"
     DB_USER: "{{ .Values.postgresql.postgresqlUsername}}"
@@ -12,4 +11,4 @@ java:
   #disableKeyVaults: true
   postgresql:
     enabled: true
-    
+

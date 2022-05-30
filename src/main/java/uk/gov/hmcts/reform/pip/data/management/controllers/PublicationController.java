@@ -4,6 +4,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -25,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.authentication.roles.IsAdmin;
 import uk.gov.hmcts.reform.pip.data.management.authentication.roles.IsPublisher;
 import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
+import uk.gov.hmcts.reform.pip.data.management.models.location.LocationType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.HeaderGroup;
@@ -34,6 +36,7 @@ import uk.gov.hmcts.reform.pip.data.management.models.publication.Sensitivity;
 import uk.gov.hmcts.reform.pip.data.management.service.PublicationService;
 import uk.gov.hmcts.reform.pip.data.management.service.ValidationService;
 import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
+import uk.gov.hmcts.reform.pip.model.enums.UserActions;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -43,10 +46,13 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
 
+import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
+
 /**
  * This class is the controller for creating new Publications.
  */
 
+@Slf4j
 @Validated
 @RestController
 @Api(tags = "Data Management Publications API")
@@ -115,6 +121,7 @@ public class PublicationController {
         @RequestHeader(PublicationConfiguration.COURT_ID) String courtId,
         @RequestHeader(PublicationConfiguration.CONTENT_DATE)
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime contentDate,
+        @RequestHeader(value = "x-issuer-email", required = false) String issuerEmail,
         @RequestBody String payload) {
 
         HeaderGroup initialHeaders = new HeaderGroup(provenance, sourceArtefactId, type, sensitivity, language,
@@ -133,12 +140,14 @@ public class PublicationController {
             .displayFrom(headers.getDisplayFrom())
             .displayTo(headers.getDisplayTo())
             .listType(headers.getListType())
-            .courtId(headers.getCourtId())
+            .locationId(headers.getCourtId())
             .contentDate(headers.getContentDate())
             .build();
 
         Artefact createdItem = publicationService
             .createPublication(artefact, payload);
+
+        logManualUpload(issuerEmail, createdItem.getArtefactId().toString());
 
         publicationService.checkAndTriggerSubscriptionManagement(createdItem);
 
@@ -185,6 +194,7 @@ public class PublicationController {
         @RequestHeader(PublicationConfiguration.COURT_ID) String courtId,
         @RequestHeader(PublicationConfiguration.CONTENT_DATE)
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime contentDate,
+        @RequestHeader(value = "x-issuer-email", required = false) String issuerEmail,
         @RequestPart MultipartFile file) {
 
         HeaderGroup initialHeaders = new HeaderGroup(provenance, sourceArtefactId, type, sensitivity, language,
@@ -195,7 +205,7 @@ public class PublicationController {
         HeaderGroup headers = validationService.validateHeaders(initialHeaders);
 
         Map<String, List<Object>> search = new ConcurrentHashMap<>();
-        search.put("court-id", List.of(headers.getCourtId()));
+        search.put("location-id", List.of(headers.getCourtId()));
 
         Artefact artefact = Artefact.builder()
             .provenance(headers.getProvenance())
@@ -206,34 +216,38 @@ public class PublicationController {
             .displayFrom(headers.getDisplayFrom())
             .displayTo(headers.getDisplayTo())
             .listType(headers.getListType())
-            .courtId(headers.getCourtId())
+            .locationId(headers.getCourtId())
             .contentDate(headers.getContentDate())
             .isFlatFile(true)
             .search(search)
             .build();
 
+        Artefact createdItem = publicationService.createPublication(artefact, file);
+
+        logManualUpload(issuerEmail, createdItem.getArtefactId().toString());
 
         publicationService.checkAndTriggerSubscriptionManagement(artefact);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(publicationService.createPublication(artefact, file));
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdItem);
     }
 
     @ApiResponses({
         @ApiResponse(code = 200,
-            message = "List of Artefacts matching the given courtId and verification parameters and date requirements"),
+            message =
+                "List of Artefacts matching the given locationId and verification parameters and date requirements"),
         @ApiResponse(code = 403, message = UNAUTHORIZED_DESCRIPTION),
         @ApiResponse(code = 404,
             message = NOT_FOUND_DESCRIPTION),
     })
-    @ApiOperation("Get a series of publications matching a given courtId (e.g. courtid)")
-    @GetMapping("/courtId/{courtId}")
+    @ApiOperation("Get a series of publications matching a given locationId (e.g. locationId)")
+    @GetMapping("/locationId/{locationId}")
     @IsAdmin
-    public ResponseEntity<List<Artefact>> getAllRelevantArtefactsByCourtId(@PathVariable String courtId,
+    public ResponseEntity<List<Artefact>> getAllRelevantArtefactsByCourtId(@PathVariable String locationId,
                                                                            @RequestHeader Boolean verification,
                                                                            @RequestHeader(value = "x-admin",
                                                                                defaultValue = "false",
                                                                                required = false) Boolean isAdmin) {
-        return ResponseEntity.ok(publicationService.findAllByCourtIdAdmin(courtId, verification, isAdmin));
+        return ResponseEntity.ok(publicationService.findAllByCourtIdAdmin(locationId, verification, isAdmin));
     }
 
     @ApiResponses({
@@ -322,5 +336,20 @@ public class PublicationController {
         @PathVariable String artefactId) {
         publicationService.deleteArtefactById(artefactId, issuerEmail);
         return ResponseEntity.ok("Successfully deleted artefact: " + artefactId);
+    }
+
+    @ApiResponses({
+        @ApiResponse(code = 200, message = "{Location type associated with given list type}")
+    })
+    @ApiOperation("Return the Location type associated with a given list type")
+    @GetMapping("/location-type/{listType}")
+    public ResponseEntity<LocationType> getLocationType(@PathVariable ListType listType) {
+        return ResponseEntity.ok(publicationService.getLocationType(listType));
+    }
+  
+    private void logManualUpload(String issuerEmail, String artefactId) {
+        if (issuerEmail != null) {
+            log.info(writeLog(issuerEmail, UserActions.UPLOAD, artefactId));
+        }
     }
 }

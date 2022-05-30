@@ -23,16 +23,16 @@ public interface ArtefactRepository extends JpaRepository<Artefact, Long> {
     String ARTEFACT_ID_PARAM = "artefact_id";
     String CURRENT_DATE_PARAM = "curr_date";
     String SEARCH_VAL_PARAM = "searchValue";
-    String COURT_ID_PARAM = "courtId";
+    String LOCATION_ID_PARAM = "location_id";
     String CASE_NAME_PARAM = "caseName";
     String CONTENT_DATE_PARAM = "content_date";
     String LANGUAGE_PARAM = "language";
     String LIST_TYPE_PARAM = "list_type";
     String PROVENANCE_PARAM = "provenance";
 
-    @Query(value = "SELECT * FROM Artefact WHERE court_id = :courtId AND content_date = :content_date AND "
+    @Query(value = "SELECT * FROM Artefact WHERE location_id = :location_id AND content_date = :content_date AND "
         + "language = :language AND list_type = :list_type AND provenance = :provenance", nativeQuery = true)
-    Optional<Artefact> findArtefactByUpdateLogic(@Param(COURT_ID_PARAM) String courtId,
+    Optional<Artefact> findArtefactByUpdateLogic(@Param(LOCATION_ID_PARAM) String locationId,
                                                  @Param(CONTENT_DATE_PARAM) LocalDateTime contentDate,
                                                  @Param(LANGUAGE_PARAM) String language,
                                                  @Param(LIST_TYPE_PARAM) String listType,
@@ -50,16 +50,16 @@ public interface ArtefactRepository extends JpaRepository<Artefact, Long> {
     Optional<Artefact> findByArtefactIdUnverified(@Param(ARTEFACT_ID_PARAM) String artefactId,
                                                   @Param(CURRENT_DATE_PARAM) LocalDateTime currentDate);
 
-    @Query(value = "select * from Artefact where court_id = :courtId and display_from < "
+    @Query(value = "select * from Artefact where location_id = :location_id and display_from < "
         + ":curr_date and (display_to> :curr_date or display_to is null)",
         nativeQuery = true)
-    List<Artefact> findArtefactsByCourtIdVerified(@Param(COURT_ID_PARAM) String courtId,
+    List<Artefact> findArtefactsByCourtIdVerified(@Param(LOCATION_ID_PARAM) String locationId,
                                                   @Param(CURRENT_DATE_PARAM) LocalDateTime currentDate);
 
-    @Query(value = "select * from Artefact where court_id = :courtId and sensitivity = 'PUBLIC' "
+    @Query(value = "select * from Artefact where location_id = :location_id and sensitivity = 'PUBLIC' "
         + "and display_from < :curr_date and (display_to> :curr_date or display_to is null)",
         nativeQuery = true)
-    List<Artefact> findArtefactsByCourtIdUnverified(@Param(COURT_ID_PARAM) String courtId,
+    List<Artefact> findArtefactsByCourtIdUnverified(@Param(LOCATION_ID_PARAM) String locationId,
                                                     @Param(CURRENT_DATE_PARAM) LocalDateTime currentDate);
 
     @Query(value = INITIAL_SELECT + "WHERE LOWER(searchDetails.caseDetails ->> 'caseName') LIKE LOWER"
@@ -89,9 +89,9 @@ public interface ArtefactRepository extends JpaRepository<Artefact, Long> {
                                                   @Param(SEARCH_VAL_PARAM) String searchVal,
                                                   @Param(CURRENT_DATE_PARAM) LocalDateTime currentDate);
 
-    @Query(value = "select * from Artefact where court_id = :courtId",
+    @Query(value = "select * from Artefact where location_id = :location_id",
         nativeQuery = true)
-    List<Artefact> findArtefactsByCourtIdAdmin(@Param(COURT_ID_PARAM) String courtId);
+    List<Artefact> findArtefactsByCourtIdAdmin(@Param(LOCATION_ID_PARAM) String locationId);
 
     @Query(value = "select * from Artefact where artefact_id = CAST(:artefact_id AS uuid)", nativeQuery = true)
     Optional<Artefact> findArtefactByArtefactId(@Param(ARTEFACT_ID_PARAM) String artefactId);

@@ -95,7 +95,7 @@ class PublicationUnauthorizedTest {
     @Test
     void testUnauthorizedGetByCourtId() throws Exception {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .get("/publication/courtId/1")
+            .get("/publication/locationId/1")
             .header(VERIFICATION_HEADER, VERIFICATION_TRUE);
 
         mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isForbidden()).andReturn();
