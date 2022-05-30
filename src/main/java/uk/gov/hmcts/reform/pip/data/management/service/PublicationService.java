@@ -8,10 +8,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.AzureBlobService;
-import uk.gov.hmcts.reform.pip.data.management.database.CourtRepository;
+import uk.gov.hmcts.reform.pip.data.management.database.LocationRepository;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ArtefactNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.NotFoundException;
-import uk.gov.hmcts.reform.pip.data.management.models.court.Court;
+import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
+import uk.gov.hmcts.reform.pip.data.management.models.location.LocationType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Sensitivity;
 import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
@@ -43,7 +44,7 @@ public class PublicationService {
 
     private final SubscriptionManagementService subscriptionManagementService;
 
-    private final CourtRepository courtRepository;
+    private final LocationRepository locationRepository;
 
     private final AccountManagementService accountManagementService;
 
@@ -52,14 +53,14 @@ public class PublicationService {
                               AzureBlobService azureBlobService,
                               PayloadExtractor payloadExtractor,
                               SubscriptionManagementService subscriptionManagementService,
-                              CourtRepository courtRepository,
                               AccountManagementService accountManagementService) {
+                              LocationRepository locationRepository) {
         this.artefactRepository = artefactRepository;
         this.azureBlobService = azureBlobService;
         this.payloadExtractor = payloadExtractor;
         this.subscriptionManagementService = subscriptionManagementService;
-        this.courtRepository = courtRepository;
         this.accountManagementService = accountManagementService;
+        this.locationRepository = locationRepository;
     }
 
     /**
@@ -70,14 +71,14 @@ public class PublicationService {
      * @return Returns the UUID of the artefact that was created.
      */
     public Artefact createPublication(Artefact artefact, String payload) {
+        applyInternalLocationId(artefact);
+
         boolean isExisting = applyExistingArtefact(artefact);
 
         String blobUrl = azureBlobService.createPayload(
             isExisting ? getUuidFromUrl(artefact.getPayload()) : UUID.randomUUID().toString(),
             payload
         );
-
-        this.findByCourtIdByProvenanceAndUpdate(artefact);
 
         artefact.setPayload(blobUrl);
 
@@ -90,14 +91,14 @@ public class PublicationService {
     }
 
     public Artefact createPublication(Artefact artefact, MultipartFile file) {
+        applyInternalLocationId(artefact);
+
         boolean isExisting = applyExistingArtefact(artefact);
 
         String blobUrl = azureBlobService.uploadFlatFile(
             isExisting ? getUuidFromUrl(artefact.getPayload()) : UUID.randomUUID().toString(),
             file
         );
-
-        this.findByCourtIdByProvenanceAndUpdate(artefact);
 
         artefact.setPayload(blobUrl);
 
@@ -116,7 +117,7 @@ public class PublicationService {
      */
     private boolean applyExistingArtefact(Artefact artefact) {
         Optional<Artefact> foundArtefact = artefactRepository.findArtefactByUpdateLogic(
-            artefact.getCourtId(),
+            artefact.getLocationId(),
             artefact.getContentDate(),
             artefact.getLanguage().name(),
             artefact.getListType().name(),
@@ -327,19 +328,19 @@ public class PublicationService {
         log.info("{} outdated artefacts found and deleted for before {}", outdatedArtefacts.size(), LocalDate.now());
     }
 
-    private void findByCourtIdByProvenanceAndUpdate(Artefact artefact) {
+    private void applyInternalLocationId(Artefact artefact) {
         if ("MANUAL_UPLOAD".equalsIgnoreCase(artefact.getProvenance())) {
             return;
         }
-        Optional<List<Court>> courts = courtRepository.findByCourtIdByProvenance(artefact.getProvenance(),
-                                                                          artefact.getCourtId());
-        int courtsCount = courts.stream().mapToInt(i -> i.size()).sum();
-        if (courtsCount > 0) {
-            if (!courts.isEmpty()) {
-                artefact.setCourtId(courts.get().get(0).getCourtId().toString());
-            }
+        Optional<Location> location = locationRepository.findByCourtIdByProvenance(artefact.getProvenance(),
+                                                                                       artefact.getLocationId(),
+                                                                                       artefact.getListType()
+                                                                                       .getListLocationLevel().name());
+        if (location.isPresent()) {
+            artefact.setLocationId(location.get().getLocationId().toString());
+
         } else {
-            artefact.setCourtId(String.format("NoMatch%s", artefact.getCourtId()));
+            artefact.setLocationId(String.format("NoMatch%s", artefact.getLocationId()));
         }
     }
 
@@ -351,5 +352,8 @@ public class PublicationService {
         } else {
             return accountManagementService.getIsAuthorised(userId, artefact.getListType(), artefact.getSensitivity());
         }
+
+    public LocationType getLocationType(ListType listType) {
+        return listType.getListLocationLevel();
     }
 }

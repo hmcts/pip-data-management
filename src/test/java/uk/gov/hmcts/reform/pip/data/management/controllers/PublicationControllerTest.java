@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
+import uk.gov.hmcts.reform.pip.data.management.models.location.LocationType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.HeaderGroup;
@@ -41,7 +42,7 @@ import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.TestConstants.MESSAGES_MATCH;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.TestConstants.STATUS_CODE_MATCH;
 
-@SuppressWarnings("PMD.UseConcurrentHashMap")
+@SuppressWarnings({"PMD.UseConcurrentHashMap", "PMD.ExcessiveImports"})
 @ExtendWith(MockitoExtension.class)
 class PublicationControllerTest {
 
@@ -64,7 +65,7 @@ class PublicationControllerTest {
     private static final Sensitivity SENSITIVITY = Sensitivity.PUBLIC;
     private static final ArtefactType ARTEFACT_TYPE = ArtefactType.LIST;
     private static final ListType LIST_TYPE = ListType.CIVIL_DAILY_CAUSE_LIST;
-    private static final String COURT_ID = "123";
+    private static final String LOCATION_ID = "123";
     private static final LocalDateTime CONTENT_DATE = LocalDateTime.now();
     private static final String PAYLOAD = "payload";
     private static final MultipartFile FILE = new MockMultipartFile("test", (byte[]) null);
@@ -84,7 +85,7 @@ class PublicationControllerTest {
     @BeforeEach
     void setup() {
         headers = new HeaderGroup(PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE, SENSITIVITY, LANGUAGE,
-                                  DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, COURT_ID, CONTENT_DATE
+                                  DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, LOCATION_ID, CONTENT_DATE
         );
         artefact = Artefact.builder()
             .sourceArtefactId(SOURCE_ARTEFACT_ID)
@@ -95,7 +96,7 @@ class PublicationControllerTest {
             .sensitivity(SENSITIVITY)
             .type(ARTEFACT_TYPE)
             .listType(LIST_TYPE)
-            .courtId(COURT_ID)
+            .locationId(LOCATION_ID)
             .contentDate(CONTENT_DATE)
             .build();
 
@@ -110,7 +111,7 @@ class PublicationControllerTest {
             .type(ARTEFACT_TYPE)
             .payload(PAYLOAD_URL)
             .listType(LIST_TYPE)
-            .courtId(COURT_ID)
+            .locationId(LOCATION_ID)
             .contentDate(CONTENT_DATE)
             .search(new ConcurrentHashMap<>())
             .build();
@@ -125,7 +126,7 @@ class PublicationControllerTest {
 
         ResponseEntity<Artefact> responseEntity = publicationController.uploadPublication(
             PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE,
-            SENSITIVITY, LANGUAGE, DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, COURT_ID, CONTENT_DATE, TEST_STRING, PAYLOAD
+            SENSITIVITY, LANGUAGE, DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, LOCATION_ID, CONTENT_DATE, TEST_STRING, PAYLOAD
         );
 
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode(), STATUS_CODE_MATCH);
@@ -260,7 +261,7 @@ class PublicationControllerTest {
     @Test
     void testCreatePublicationMultipartFile() {
         Map<String, List<Object>> search = new HashMap<>();
-        search.put("court-id", List.of(COURT_ID));
+        search.put("location-id", List.of(LOCATION_ID));
         artefact.setSearch(search);
         artefact.setIsFlatFile(true);
         artefactWithId.setIsFlatFile(true);
@@ -271,7 +272,7 @@ class PublicationControllerTest {
 
         ResponseEntity<Artefact> responseEntity = publicationController.uploadPublication(
             PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE,
-            SENSITIVITY, LANGUAGE, DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, COURT_ID, CONTENT_DATE, TEST_STRING, FILE
+            SENSITIVITY, LANGUAGE, DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, LOCATION_ID, CONTENT_DATE, TEST_STRING, FILE
         );
 
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode(), STATUS_CODE_MATCH);
@@ -289,6 +290,14 @@ class PublicationControllerTest {
     }
 
     @Test
+    void testGetLocationTypeReturnsOk() {
+        when(publicationService.getLocationType(ListType.CIVIL_DAILY_CAUSE_LIST)).thenReturn(LocationType.VENUE);
+        assertEquals(HttpStatus.OK,
+                     publicationController.getLocationType(ListType.CIVIL_DAILY_CAUSE_LIST).getStatusCode(),
+                     STATUS_CODE_MATCH);
+    }
+
+    @Test
     void testCreatePublicationLogsWhenHeaderIsPresent() throws IOException {
         when(validationService.validateHeaders(any())).thenReturn(headers);
         when(publicationService.createPublication(argThat(arg -> arg.equals(artefact)), eq(PAYLOAD)))
@@ -298,7 +307,8 @@ class PublicationControllerTest {
         try (LogCaptor logCaptor = LogCaptor.forClass(PublicationController.class)) {
             publicationController.uploadPublication(
                 PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE,
-                SENSITIVITY, LANGUAGE, DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, COURT_ID, CONTENT_DATE, TEST_STRING, PAYLOAD
+                SENSITIVITY, LANGUAGE, DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, LOCATION_ID, CONTENT_DATE, TEST_STRING,
+                PAYLOAD
             );
             assertEquals(1, logCaptor.getInfoLogs().size(), "Should have logged upload");
         } catch (Exception ex) {

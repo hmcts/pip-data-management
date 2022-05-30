@@ -26,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.authentication.roles.IsAdmin;
 import uk.gov.hmcts.reform.pip.data.management.authentication.roles.IsPublisher;
 import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
+import uk.gov.hmcts.reform.pip.data.management.models.location.LocationType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.HeaderGroup;
@@ -144,7 +145,7 @@ public class PublicationController {
             .displayFrom(headers.getDisplayFrom())
             .displayTo(headers.getDisplayTo())
             .listType(headers.getListType())
-            .courtId(headers.getCourtId())
+            .locationId(headers.getCourtId())
             .contentDate(headers.getContentDate())
             .build();
 
@@ -209,7 +210,7 @@ public class PublicationController {
         HeaderGroup headers = validationService.validateHeaders(initialHeaders);
 
         Map<String, List<Object>> search = new ConcurrentHashMap<>();
-        search.put("court-id", List.of(headers.getCourtId()));
+        search.put("location-id", List.of(headers.getCourtId()));
 
         Artefact artefact = Artefact.builder()
             .provenance(headers.getProvenance())
@@ -220,7 +221,7 @@ public class PublicationController {
             .displayFrom(headers.getDisplayFrom())
             .displayTo(headers.getDisplayTo())
             .listType(headers.getListType())
-            .courtId(headers.getCourtId())
+            .locationId(headers.getCourtId())
             .contentDate(headers.getContentDate())
             .isFlatFile(true)
             .search(search)
@@ -237,19 +238,20 @@ public class PublicationController {
 
     @ApiResponses({
         @ApiResponse(code = 200,
-            message = "List of Artefacts matching the given courtId and verification parameters and date requirements"),
+            message =
+                "List of Artefacts matching the given locationId and verification parameters and date requirements"),
         @ApiResponse(code = 403, message = UNAUTHORIZED_DESCRIPTION),
         @ApiResponse(code = 404,
             message = NOT_FOUND_DESCRIPTION),
     })
-    @ApiOperation("Get a series of publications matching a given courtId (e.g. courtid)")
-    @GetMapping("/courtId/{courtId}")
+    @ApiOperation("Get a series of publications matching a given locationId (e.g. locationId)")
+    @GetMapping("/locationId/{locationId}")
     @IsAdmin
     public ResponseEntity<List<Artefact>> getAllRelevantArtefactsByCourtId(
-        @PathVariable String courtId,
+        @PathVariable String locationId,
         @RequestHeader(value = USER_ID_HEADER, required = false) UUID userId,
         @RequestHeader(value = ADMIN_HEADER, defaultValue = DEFAULT_ADMIN_VALUE, required = false) Boolean isAdmin) {
-        return ResponseEntity.ok(publicationService.findAllByCourtIdAdmin(courtId, userId, isAdmin));
+        return ResponseEntity.ok(publicationService.findAllByCourtIdAdmin(locationId, userId, isAdmin));
     }
 
     @ApiResponses({
@@ -353,6 +355,15 @@ public class PublicationController {
         @PathVariable String artefactId) {
         publicationService.deleteArtefactById(artefactId, issuerEmail);
         return ResponseEntity.ok("Successfully deleted artefact: " + artefactId);
+    }
+
+    @ApiResponses({
+        @ApiResponse(code = 200, message = "{Location type associated with given list type}")
+    })
+    @ApiOperation("Return the Location type associated with a given list type")
+    @GetMapping("/location-type/{listType}")
+    public ResponseEntity<LocationType> getLocationType(@PathVariable ListType listType) {
+        return ResponseEntity.ok(publicationService.getLocationType(listType));
     }
 
     private void logManualUpload(String issuerEmail, String artefactId) {

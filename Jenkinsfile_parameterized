@@ -10,7 +10,6 @@ def kv = product + '-ss-kv'
 
 withParameterizedPipeline(type, product, component, 'sbox', 'sbox') {
 
-  enableDbMigration(kv)
   enableSlackNotifications('#pip-build-notices')
 
   enableAksStagingDeployment()
@@ -27,7 +26,7 @@ withParameterizedPipeline(type, product, component, 'sbox', 'sbox') {
 static String swaggerValidate(String branchName){
   def repoName = "pip-data-management"
   def swaggerPath = "infrastructure/resources/swagger/api-swagger.json"
-  def script = 'url="https://raw.githubusercontent.com/hmcts/' + repoName + '/' + branchName + '/' + swaggerPath + '";' + 
+  def script = 'url="https://raw.githubusercontent.com/hmcts/' + repoName + '/' + branchName + '/' + swaggerPath + '";' +
   'CHECK=$(curl -X "GET" "https://validator.swagger.io/validator/debug?url=\${url}" --silent);' +
   'if [[ "\$CHECK" != "{}" ]]; then' +
   '  echo -e "\\nSorry this is an invalid Swagger:\\n\$CHECK\\n";' +

@@ -34,4 +34,3 @@ java:
         - name: app-pip-account-management-scope
           alias: ACCOUNT_MANAGEMENT_AZ_API
   environment:
-    RUN_DB_MIGRATION_ON_STARTUP: false

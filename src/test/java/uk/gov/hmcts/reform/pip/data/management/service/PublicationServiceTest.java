@@ -13,11 +13,12 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.AzureBlobService;
-import uk.gov.hmcts.reform.pip.data.management.database.CourtRepository;
+import uk.gov.hmcts.reform.pip.data.management.database.LocationRepository;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ArtefactNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.NotFoundException;
-import uk.gov.hmcts.reform.pip.data.management.models.court.Court;
-import uk.gov.hmcts.reform.pip.data.management.models.court.CourtCsv;
+import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
+import uk.gov.hmcts.reform.pip.data.management.models.location.LocationCsv;
+import uk.gov.hmcts.reform.pip.data.management.models.location.LocationType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Language;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ListType;
@@ -47,14 +48,14 @@ import static uk.gov.hmcts.reform.pip.data.management.helpers.TestConstants.MESS
 
 @ExtendWith(MockitoExtension.class)
 @SuppressWarnings({"PMD.ExcessiveImports",
-    "PMD.TooManyMethods", "PMD.TooManyFields", "PMD.ExcessiveClassLength"})
+    "PMD.TooManyMethods", "PMD.TooManyFields", "PMD.ExcessiveClassLength", "PMD.LawOfDemeter"})
 class PublicationServiceTest {
 
     @Mock
     ArtefactRepository artefactRepository;
 
     @Mock
-    CourtRepository courtRepository;
+    LocationRepository locationRepository;
 
     @Mock
     AzureBlobService azureBlobService;
@@ -80,7 +81,7 @@ class PublicationServiceTest {
     private static final String PAYLOAD = "This is a payload";
     private static final String PAYLOAD_URL = "https://ThisIsATestPayload";
     private static final String PAYLOAD_STRIPPED = "ThisIsATestPayload";
-    private static final String COURT_ID = "123";
+    private static final String LOCATION_ID = "123";
     private static final String TEST_KEY = "TestKey";
     private static final String TEST_VALUE = "TestValue";
     private static final CaseSearchTerm SEARCH_TERM_CASE_ID = CaseSearchTerm.CASE_ID;
@@ -95,6 +96,7 @@ class PublicationServiceTest {
     private static final String DELETION_TRACK_LOG_MESSAGE = "Track: TestValue, Removed %s, at ";
     private static final String ROWID_RETURNS_UUID = "Row ID must match returned UUID";
     private static final String TEST_FILE = "Hello";
+    private static final String LOCATION_TYPE_MATCH = "Location types should match";
 
     private static final String NO_COURT_EXISTS_IN_REFERENCE_DATA = "NoMatch1234";
     private static final String VALIDATION_MORE_THAN_PUBLIC = "More than the public artefact has been found";
@@ -114,8 +116,7 @@ class PublicationServiceTest {
     private Artefact artefactWithSameDateFromAndTo;
     private Artefact artefactManualUpload;
 
-    private List<Court> courts;
-    private List<Court> emptyCourts;
+    private Location location;
 
     @BeforeAll
     public static void setupSearchValues() {
@@ -144,7 +145,7 @@ class PublicationServiceTest {
         artefact = Artefact.builder()
             .sourceArtefactId(SOURCE_ARTEFACT_ID)
             .provenance(PROVENANCE)
-            .courtId(PROVENANCE_ID)
+            .locationId(PROVENANCE_ID)
             .contentDate(CONTENT_DATE)
             .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
             .language(Language.ENGLISH)
@@ -156,7 +157,7 @@ class PublicationServiceTest {
             .provenance(PROVENANCE)
             .payload(PAYLOAD_URL)
             .search(SEARCH_VALUES)
-            .courtId(COURT_ID)
+            .locationId(LOCATION_ID)
             .contentDate(CONTENT_DATE)
             .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
             .language(Language.ENGLISH)
@@ -169,7 +170,7 @@ class PublicationServiceTest {
             .provenance(PROVENANCE)
             .payload(PAYLOAD_URL)
             .search(SEARCH_VALUES)
-            .courtId(COURT_ID)
+            .locationId(LOCATION_ID)
             .contentDate(CONTENT_DATE)
             .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
             .language(Language.ENGLISH)
@@ -215,7 +216,6 @@ class PublicationServiceTest {
             .displayFrom(LocalDateTime.now())
             .displayTo(LocalDateTime.now())
             .build();
-
 
         artefactInTheFuture = Artefact.builder()
             .artefactId(ARTEFACT_ID)
@@ -265,25 +265,31 @@ class PublicationServiceTest {
             .language(Language.ENGLISH)
             .sensitivity(Sensitivity.CLASSIFIED)
             .build();
+        lenient().when(artefactRepository.findArtefactByUpdateLogic(artefact.getLocationId(), artefact.getContentDate(),
+                                                                    artefact.getLanguage().name(),
+                                                                    artefact.getListType().name(),
+                                                                    artefact.getProvenance()))
+            .thenReturn(Optional.empty());
+        lenient().when(artefactRepository.save(artefactWithPayloadUrl)).thenReturn(artefactWithIdAndPayloadUrl);
+        lenient().when(locationRepository.findByCourtIdByProvenance(PROVENANCE, PROVENANCE_ID,
+                                                                    LocationType.VENUE.name()))
+            .thenReturn(Optional.of(location));
     }
 
     private void initialiseCourts() {
-        CourtCsv courtCsvFirstExample = new CourtCsv();
-        courtCsvFirstExample.setCourtName("Court Name First Example");
-        Court court = new Court(courtCsvFirstExample);
-        court.setCourtId(1234);
+        LocationCsv locationCsvFirstExample = new LocationCsv();
+        locationCsvFirstExample.setLocationName("Court Name First Example");
+        locationCsvFirstExample.setProvenanceLocationType("venue");
+        location = new Location(locationCsvFirstExample);
+        location.setLocationId(1234);
 
-        courts = new ArrayList<>();
-        courts.add(court);
-
-        emptyCourts = new ArrayList<>();
     }
 
     private void intialiseManualUploadArtefact() {
         artefactManualUpload = Artefact.builder()
             .sourceArtefactId(SOURCE_ARTEFACT_ID)
             .provenance(MANUAL_UPLOAD_PROVENANCE)
-            .courtId(PROVENANCE_ID)
+            .locationId(PROVENANCE_ID)
             .contentDate(CONTENT_DATE)
             .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
             .language(Language.ENGLISH)
@@ -293,10 +299,8 @@ class PublicationServiceTest {
 
     @Test
     void testCreationOfNewArtefact() {
-        artefactWithPayloadUrl.setCourtId(PROVENANCE_ID);
+        artefactWithPayloadUrl.setLocationId(PROVENANCE_ID);
         when(azureBlobService.createPayload(any(), eq(PAYLOAD))).thenReturn(PAYLOAD_URL);
-        when(courtRepository.findByCourtIdByProvenance(PROVENANCE, PROVENANCE_ID))
-            .thenReturn(Optional.of(courts));
         when(artefactRepository.save(artefactWithPayloadUrl)).thenReturn(artefactWithIdAndPayloadUrl);
         when(payloadExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
 
@@ -307,9 +311,9 @@ class PublicationServiceTest {
 
     @Test
     void testCreationOfNewArtefactWhenCourtDoesNotExists() {
-        artefactWithPayloadUrl.setCourtId(NO_COURT_EXISTS_IN_REFERENCE_DATA);
-        when(courtRepository.findByCourtIdByProvenance(PROVENANCE, PROVENANCE_ID))
-            .thenReturn(Optional.of(emptyCourts));
+        artefactWithPayloadUrl.setLocationId(NO_COURT_EXISTS_IN_REFERENCE_DATA);
+        when(locationRepository.findByCourtIdByProvenance(PROVENANCE, PROVENANCE_ID, LocationType.VENUE.name()))
+            .thenReturn(Optional.empty());
         when(artefactRepository.save(artefactWithPayloadUrl)).thenReturn(artefactWithIdAndPayloadUrl);
         when(azureBlobService.createPayload(any(), eq(PAYLOAD))).thenReturn(PAYLOAD_URL);
         when(payloadExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
@@ -322,7 +326,7 @@ class PublicationServiceTest {
     @Test
     void testCreationOfNewArtefactWithManualUpload() {
         artefactWithPayloadUrl.setProvenance(MANUAL_UPLOAD_PROVENANCE);
-        artefactWithPayloadUrl.setCourtId(PROVENANCE_ID);
+        artefactWithPayloadUrl.setLocationId(PROVENANCE_ID);
         artefactWithPayloadUrl.setListType(ListType.CIVIL_DAILY_CAUSE_LIST);
         artefactWithPayloadUrl.setLanguage(Language.ENGLISH);
         artefactWithPayloadUrl.setContentDate(CONTENT_DATE);
@@ -342,7 +346,7 @@ class PublicationServiceTest {
         Artefact artefact = Artefact.builder()
             .sourceArtefactId(SOURCE_ARTEFACT_ID)
             .provenance(PROVENANCE)
-            .courtId(PROVENANCE_ID)
+            .locationId(PROVENANCE_ID)
             .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
             .language(Language.ENGLISH)
             .build();
@@ -350,15 +354,13 @@ class PublicationServiceTest {
         Artefact newArtefactWithId = Artefact.builder()
             .sourceArtefactId(SOURCE_ARTEFACT_ID)
             .provenance(PROVENANCE)
-            .courtId(PROVENANCE_ID)
+            .locationId(PROVENANCE_ID)
             .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
             .language(Language.ENGLISH)
             .payload(PAYLOAD_URL)
             .search(SEARCH_VALUES)
             .build();
 
-        when(courtRepository.findByCourtIdByProvenance(PROVENANCE, PROVENANCE_ID))
-            .thenReturn(Optional.of(courts));
         when(azureBlobService.createPayload(any(), eq(PAYLOAD))).thenReturn(PAYLOAD_URL);
         when(artefactRepository.save(newArtefactWithId)).thenReturn(newArtefactWithId);
         when(payloadExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
@@ -375,7 +377,7 @@ class PublicationServiceTest {
             .artefactId(ARTEFACT_ID)
             .sourceArtefactId(SOURCE_ARTEFACT_ID)
             .provenance(MANUAL_UPLOAD_PROVENANCE)
-            .courtId(PROVENANCE_ID)
+            .locationId(PROVENANCE_ID)
             .language(Language.ENGLISH)
             .contentDate(CONTENT_DATE)
             .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
@@ -385,7 +387,7 @@ class PublicationServiceTest {
             .artefactId(ARTEFACT_ID)
             .sourceArtefactId(SOURCE_ARTEFACT_ID)
             .provenance(MANUAL_UPLOAD_PROVENANCE)
-            .courtId(PROVENANCE_ID)
+            .locationId(PROVENANCE_ID)
             .language(Language.ENGLISH)
             .payload(PAYLOAD_URL)
             .search(SEARCH_VALUES)
@@ -405,15 +407,6 @@ class PublicationServiceTest {
     @Test
     void testUpdatingOfExistingArtefactWhenCourtDoesNotExists() {
 
-        Artefact artefact = Artefact.builder()
-            .sourceArtefactId(SOURCE_ARTEFACT_ID)
-            .provenance(PROVENANCE)
-            .courtId(PROVENANCE_ID)
-            .contentDate(CONTENT_DATE)
-            .language(Language.ENGLISH)
-            .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
-            .build();
-
         Artefact existingArtefact = Artefact.builder()
             .artefactId(ARTEFACT_ID)
             .sourceArtefactId(SOURCE_ARTEFACT_ID)
@@ -423,14 +416,14 @@ class PublicationServiceTest {
             .search(SEARCH_VALUES)
             .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
             .language(Language.ENGLISH)
-            .courtId(NO_COURT_EXISTS_IN_REFERENCE_DATA)
+            .locationId(NO_COURT_EXISTS_IN_REFERENCE_DATA)
             .build();
 
         Artefact newArtefactWithId = Artefact.builder()
             .artefactId(ARTEFACT_ID)
             .sourceArtefactId(SOURCE_ARTEFACT_ID)
             .provenance(PROVENANCE)
-            .courtId(NO_COURT_EXISTS_IN_REFERENCE_DATA)
+            .locationId(NO_COURT_EXISTS_IN_REFERENCE_DATA)
             .contentDate(CONTENT_DATE)
             .payload(PAYLOAD_URL)
             .search(SEARCH_VALUES)
@@ -438,14 +431,14 @@ class PublicationServiceTest {
             .language(Language.ENGLISH)
             .build();
 
-        when(artefactRepository.findArtefactByUpdateLogic(artefact.getCourtId(),artefact.getContentDate(),
+        when(artefactRepository.findArtefactByUpdateLogic(NO_COURT_EXISTS_IN_REFERENCE_DATA, artefact.getContentDate(),
                                                           artefact.getLanguage().name(),
                                                           artefact.getListType().name(),
                                                           artefact.getProvenance()))
             .thenReturn(Optional.of(existingArtefact));
 
-        when(courtRepository.findByCourtIdByProvenance(PROVENANCE, PROVENANCE_ID))
-            .thenReturn(Optional.of(emptyCourts));
+        when(locationRepository.findByCourtIdByProvenance(PROVENANCE, PROVENANCE_ID, LocationType.VENUE.name()))
+            .thenReturn(Optional.empty());
         when(artefactRepository.save(newArtefactWithId)).thenReturn(newArtefactWithId);
         when(azureBlobService.createPayload(PAYLOAD_STRIPPED, PAYLOAD)).thenReturn(PAYLOAD_URL);
         when(artefactRepository.save(existingArtefact)).thenReturn(existingArtefact);
@@ -459,10 +452,8 @@ class PublicationServiceTest {
     @Test
     void testCreationOfNewArtefactWithFile() {
         artefactWithPayloadUrl.setSearch(null);
-        artefactWithPayloadUrl.setCourtId(NO_COURT_EXISTS_IN_REFERENCE_DATA);
+        artefactWithPayloadUrl.setLocationId(NO_COURT_EXISTS_IN_REFERENCE_DATA);
         when(azureBlobService.uploadFlatFile(any(), eq(FILE))).thenReturn(PAYLOAD_URL);
-        when(courtRepository.findByCourtIdByProvenance(PROVENANCE, PROVENANCE_ID))
-            .thenReturn(Optional.of(courts));
         when(artefactRepository.save(artefact)).thenReturn(artefactWithIdAndPayloadUrl);
         Artefact returnedArtefact = publicationService.createPublication(artefact, FILE);
 
@@ -472,7 +463,7 @@ class PublicationServiceTest {
     @Test
     void testCreationOfNewArtefactWithFileByManualUpload() {
         artefactWithPayloadUrl.setSearch(null);
-        artefactWithPayloadUrl.setCourtId(PROVENANCE_ID);
+        artefactWithPayloadUrl.setLocationId(PROVENANCE_ID);
         artefactWithPayloadUrl.setProvenance(MANUAL_UPLOAD_PROVENANCE);
         when(azureBlobService.uploadFlatFile(any(), eq(FILE))).thenReturn(PAYLOAD_URL);
 
@@ -484,10 +475,10 @@ class PublicationServiceTest {
     @Test
     void testCreationOfNewArtefactWithFileWhenCourtDoesNotExists() {
         artefactWithPayloadUrl.setSearch(null);
-        artefactWithPayloadUrl.setCourtId(PROVENANCE_ID);
+        artefactWithPayloadUrl.setLocationId(PROVENANCE_ID);
         when(azureBlobService.uploadFlatFile(any(), eq(FILE))).thenReturn(PAYLOAD_URL);
-        when(courtRepository.findByCourtIdByProvenance(PROVENANCE, PROVENANCE_ID))
-            .thenReturn(Optional.of(courts));
+        when(locationRepository.findByCourtIdByProvenance(PROVENANCE, PROVENANCE_ID, LocationType.VENUE.name()))
+            .thenReturn(Optional.of(location));
         Artefact returnedArtefact = publicationService.createPublication(artefact, FILE);
 
         assertEquals(artefactWithIdAndPayloadUrl, returnedArtefact, VALIDATION_ARTEFACT_NOT_MATCH);
@@ -1096,6 +1087,36 @@ class PublicationServiceTest {
         } catch (Exception ex) {
             throw new IOException(ex.getMessage());
         }
+    }
+
+    @Test
+    void testGetLocationTypeVenue() {
+        List<ListType> venueListTypes = new ArrayList<>();
+        venueListTypes.add(ListType.CROWN_DAILY_LIST);
+        venueListTypes.add(ListType.CROWN_FIRM_LIST);
+        venueListTypes.add(ListType.CROWN_WARNED_LIST);
+        venueListTypes.add(ListType.MAGS_PUBLIC_LIST);
+        venueListTypes.add(ListType.MAGS_STANDARD_LIST);
+        venueListTypes.add(ListType.CIVIL_DAILY_CAUSE_LIST);
+        venueListTypes.add(ListType.FAMILY_DAILY_CAUSE_LIST);
+
+        venueListTypes.forEach(listType ->
+                                   assertEquals(LocationType.VENUE,
+                                                publicationService.getLocationType(listType),
+                                                LOCATION_TYPE_MATCH));
+    }
+
+    @Test
+    void testGetLocationTypeNational() {
+        List<ListType> nationalListTypes = new ArrayList<>();
+        nationalListTypes.add(ListType.SJP_PRESS_LIST);
+        nationalListTypes.add(ListType.SJP_PUBLIC_LIST);
+
+        nationalListTypes.forEach(listType ->
+                                      assertEquals(LocationType.NATIONAL,
+                                                   publicationService.getLocationType(listType),
+                                                   LOCATION_TYPE_MATCH));
+
     }
 
 }
