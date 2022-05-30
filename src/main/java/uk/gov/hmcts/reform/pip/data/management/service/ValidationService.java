@@ -80,7 +80,6 @@ public class ValidationService {
     public HeaderGroup validateHeaders(HeaderGroup headers) {
         handleStringValidation(headers);
         handleDateValidation(headers);
-        handleSjpCourt(headers);
         handleDefaultSensitivity(headers);
 
         return headers;
@@ -110,16 +109,6 @@ public class ValidationService {
         } else {
             validateRequiredDates(PublicationConfiguration.DISPLAY_FROM_HEADER, displayFrom, headers.getType());
             validateRequiredDates(PublicationConfiguration.DISPLAY_TO_HEADER, displayTo, headers.getType());
-        }
-    }
-
-    /**
-     * Sets court id to 0 if list type is SJP to conform to our handling of an SJP.
-     * @param headers headers to check against.
-     */
-    private void handleSjpCourt(HeaderGroup headers) {
-        if (headers.getListType().isSjp()) {
-            headers.setCourtId("0");
         }
     }
 

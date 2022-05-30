@@ -94,7 +94,7 @@ public class Artefact {
     /**
      * Court Id based on the source system (provenance).
      */
-    private String courtId;
+    private String locationId;
 
     /**
      * Date / Time the publication is referring to.
