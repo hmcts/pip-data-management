@@ -245,14 +245,14 @@ class PublicationServiceTest {
             .provenance(PROVENANCE)
             .payload(PAYLOAD_URL)
             .search(SEARCH_VALUES)
+            .displayFrom(LocalDateTime.now())
+            .displayTo(null)
             .locationId(LOCATION_ID)
             .contentDate(CONTENT_DATE)
             .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
             .language(Language.ENGLISH)
             .sensitivity(Sensitivity.CLASSIFIED)
             .build();
-
-
 
         artefactWithIdAndPayloadUrlClassified = Artefact.builder()
             .artefactId(ARTEFACT_ID)
@@ -260,13 +260,19 @@ class PublicationServiceTest {
             .provenance(PROVENANCE)
             .payload(PAYLOAD_URL)
             .search(SEARCH_VALUES)
+            .displayFrom(LocalDateTime.now())
+            .displayTo(LocalDateTime.now())
             .locationId(LOCATION_ID)
             .contentDate(CONTENT_DATE)
             .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
             .language(Language.ENGLISH)
             .sensitivity(Sensitivity.CLASSIFIED)
             .build();
-        lenient().when(artefactRepository.findArtefactByUpdateLogic(artefact.getLocationId(), artefact.getContentDate(),
+
+        intialiseManualUploadArtefact();
+        initialiseCourts();
+
+        lenient().when(artefactRepository.findArtefactByUpdateLogic(artefact.getLocationId(),artefact.getContentDate(),
                                                                     artefact.getLanguage().name(),
                                                                     artefact.getListType().name(),
                                                                     artefact.getProvenance()))
@@ -417,6 +423,7 @@ class PublicationServiceTest {
             .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
             .language(Language.ENGLISH)
             .locationId(NO_COURT_EXISTS_IN_REFERENCE_DATA)
+            .sensitivity(Sensitivity.PUBLIC)
             .build();
 
         Artefact newArtefactWithId = Artefact.builder()
@@ -429,6 +436,7 @@ class PublicationServiceTest {
             .search(SEARCH_VALUES)
             .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
             .language(Language.ENGLISH)
+            .sensitivity(Sensitivity.PUBLIC)
             .build();
 
         when(artefactRepository.findArtefactByUpdateLogic(NO_COURT_EXISTS_IN_REFERENCE_DATA, artefact.getContentDate(),
