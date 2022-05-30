@@ -31,4 +31,5 @@ java:
           alias: APP_URI
         - name: app-pip-subscription-management-scope
           alias: SUBSCRIPTION_MANAGEMENT_AZ_API
-  environment:
+        - name: app-insights-java-instrumentation-key
+          alias: AZURE_APPLICATIONINSIGHTS_INSTRUMENTATIONKEY
