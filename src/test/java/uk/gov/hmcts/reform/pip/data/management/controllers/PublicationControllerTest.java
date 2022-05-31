@@ -235,6 +235,23 @@ class PublicationControllerTest {
     }
 
     @Test
+    void checkGetFileContentAdminReturns() {
+        String string = "Hello";
+        byte[] testData = string.getBytes();
+        when(publicationService.getFlatFileByArtefactID(any())).thenReturn(new ByteArrayResource(testData));
+        when(publicationService.getMetadataByArtefactId(any())).thenReturn(artefactWithId);
+        ResponseEntity<Resource> flatFileBlob = publicationController.getArtefactFile(
+            UUID.randomUUID(),
+            USER_ID,
+            true
+        );
+        assertEquals(HttpStatus.OK, flatFileBlob.getStatusCode(), STATUS_CODE_MATCH);
+        assertEquals(new ByteArrayResource(testData), flatFileBlob.getBody(), NOT_EQUAL_MESSAGE);
+        String filename = flatFileBlob.getHeaders().get("Content-Disposition").toString();
+        assertTrue(filename.contains(artefactWithId.getSourceArtefactId()), NOT_EQUAL_MESSAGE);
+    }
+
+    @Test
     void checkGetArtefactsByCourtIdReturnsWhenTrue() {
         List<Artefact> artefactList = List.of(artefactWithId);
 
