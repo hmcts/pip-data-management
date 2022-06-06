@@ -20,5 +20,7 @@ module "database" {
   key_vault_rg   = "genesis-rg"
   key_vault_name = "dtssharedservices${var.env}kv"
 
+  sku_name = var.env == "stg" || var.env == "prod" ? "GP_Gen5_8" : "GP_Gen5_2"
+
 }
 
