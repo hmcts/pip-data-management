@@ -95,6 +95,7 @@
     <packageUrl regex="true">^pkg:maven/org.springframework.boot/spring-boot-starter-oauth2-client@2.5.14</packageUrl>
     <cve>CVE-2018-1258</cve>
     <cve>CVE-2021-22112</cve>
+    <cve>CVE-2022-22969</cve>
   </suppress>
   <suppress>
     <notes><![CDATA[
@@ -103,6 +104,7 @@
     <packageUrl regex="true">^pkg:maven/org.springframework.boot/spring-boot-starter-oauth2-resource-server@2.5.14</packageUrl>
     <cve>CVE-2018-1258</cve>
     <cve>CVE-2021-22112</cve>
+    <cve>CVE-2022-22969</cve>
   </suppress>
   <suppress>
     <notes><![CDATA[
