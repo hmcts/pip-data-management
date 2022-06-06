@@ -95,6 +95,7 @@
     <packageUrl regex="true">^pkg:maven/org.springframework.boot/spring-boot-starter-oauth2-client@2.5.14</packageUrl>
     <cve>CVE-2018-1258</cve>
     <cve>CVE-2021-22112</cve>
+    <cve>CVE-2022-22976</cve>
   </suppress>
   <suppress>
     <notes><![CDATA[
@@ -103,6 +104,7 @@
     <packageUrl regex="true">^pkg:maven/org.springframework.boot/spring-boot-starter-oauth2-resource-server@2.5.14</packageUrl>
     <cve>CVE-2018-1258</cve>
     <cve>CVE-2021-22112</cve>
+    <cve>CVE-2022-22976</cve>
   </suppress>
   <suppress>
     <notes><![CDATA[
@@ -120,5 +122,15 @@
     <notes><![CDATA[Spring old vuln thats been re-flagged recently, doesnt look like we are impacted]]></notes>
     <packageUrl regex="true">^pkg:maven/org\.springframework/spring.*$</packageUrl>
     <cve>CVE-2016-1000027</cve>
+  </suppress>
+  <suppress>
+    <notes><![CDATA[file name: spring-plugin-core-2.0.0.RELEASE.jar]]></notes>
+    <packageUrl regex="true">^pkg:maven/org.springframework.plugin/spring-plugin-core@2.0.0.RELEASE</packageUrl>
+    <cve>CVE-2022-22970</cve>
+  </suppress>
+  <suppress>
+    <notes><![CDATA[file name: spring-plugin-metadata-2.0.0.RELEASE.jar]]></notes>
+    <packageUrl regex="true">^pkg:maven/org.springframework.plugin/spring-plugin-metadata@2.0.0.RELEASE</packageUrl>
+    <cve>CVE-2022-22970</cve>
   </suppress>
 </suppressions>
