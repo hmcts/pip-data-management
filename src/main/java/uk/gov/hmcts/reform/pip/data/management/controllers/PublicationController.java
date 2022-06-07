@@ -247,7 +247,7 @@ public class PublicationController {
     @ApiOperation("Get a series of publications matching a given locationId (e.g. locationId)")
     @GetMapping("/locationId/{locationId}")
     @IsAdmin
-    public ResponseEntity<List<Artefact>> getAllRelevantArtefactsByCourtId(
+    public ResponseEntity<List<Artefact>> getAllRelevantArtefactsByLocationId(
         @PathVariable String locationId,
         @RequestHeader(value = USER_ID_HEADER, required = false) UUID userId,
         @RequestHeader(value = ADMIN_HEADER, defaultValue = DEFAULT_ADMIN_VALUE, required = false) Boolean isAdmin) {
