@@ -153,13 +153,15 @@ class PublicationControllerTest {
 
     @Test
     void testSearchEndpointReturnsOkWithTrue() {
-        assertEquals(HttpStatus.OK, publicationController.getAllRelevantArtefactsByCourtId(EMPTY_FIELD, USER_ID, true)
+        assertEquals(HttpStatus.OK, publicationController.getAllRelevantArtefactsByLocationId(
+            EMPTY_FIELD, USER_ID, true)
             .getStatusCode(), STATUS_CODE_MATCH);
     }
 
     @Test
     void testSearchEndpointReturnsOkWithFalse() {
-        assertEquals(HttpStatus.OK, publicationController.getAllRelevantArtefactsByCourtId(EMPTY_FIELD, USER_ID, false)
+        assertEquals(HttpStatus.OK, publicationController.getAllRelevantArtefactsByLocationId(
+            EMPTY_FIELD, USER_ID, false)
             .getStatusCode(), STATUS_CODE_MATCH);
     }
 
@@ -257,7 +259,7 @@ class PublicationControllerTest {
 
         when(publicationService.findAllByCourtIdAdmin(EMPTY_FIELD, USER_ID, true)).thenReturn(artefactList);
         ResponseEntity<List<Artefact>> unmappedArtefact = publicationController
-            .getAllRelevantArtefactsByCourtId(EMPTY_FIELD, USER_ID, true);
+            .getAllRelevantArtefactsByLocationId(EMPTY_FIELD, USER_ID, true);
 
         assertEquals(artefactList, unmappedArtefact.getBody(), VALIDATION_EXPECTED_MESSAGE);
         assertEquals(HttpStatus.OK, unmappedArtefact.getStatusCode(), STATUS_CODE_MATCH);
@@ -269,7 +271,7 @@ class PublicationControllerTest {
 
         when(publicationService.findAllByCourtIdAdmin(EMPTY_FIELD, USER_ID, false)).thenReturn(artefactList);
         ResponseEntity<List<Artefact>> unmappedArtefact = publicationController
-            .getAllRelevantArtefactsByCourtId(EMPTY_FIELD, USER_ID, false);
+            .getAllRelevantArtefactsByLocationId(EMPTY_FIELD, USER_ID, false);
 
         assertEquals(artefactList, unmappedArtefact.getBody(), VALIDATION_EXPECTED_MESSAGE);
         assertEquals(HttpStatus.OK, unmappedArtefact.getStatusCode(), STATUS_CODE_MATCH);

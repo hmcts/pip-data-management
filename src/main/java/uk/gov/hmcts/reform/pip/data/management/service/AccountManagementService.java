@@ -9,8 +9,6 @@ import org.springframework.web.reactive.function.client.WebClientException;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ListType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Sensitivity;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.UUID;
 
 import static org.springframework.security.oauth2.client.web.reactive.function.client.ServerOAuth2AuthorizedClientExchangeFilterFunction.clientRegistrationId;
@@ -34,12 +32,12 @@ public class AccountManagementService {
      */
     public Boolean getIsAuthorised(UUID userId, ListType listType, Sensitivity sensitivity) {
         try {
-            return webClient.get().uri(new URI(String.format(
-                "%s/account/isAuthorised/%s/%s/%s", url, userId, listType, sensitivity)))
+            return webClient.get().uri(String.format(
+                "%s/account/isAuthorised/%s/%s/%s", url, userId, listType, sensitivity))
                 .attributes(clientRegistrationId("accountManagementApi"))
                 .retrieve().bodyToMono(Boolean.class).block();
-        } catch (WebClientException | URISyntaxException ex) {
-            log.error(String.format("Request failed with error message: %s", ex.getMessage()));
+        } catch (WebClientException ex) {
+            log.error(String.format("Request to account management failed with error message: %s", ex.getMessage()));
             return false;
         }
     }

@@ -10,7 +10,6 @@ import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.AzureBlobService;
 import uk.gov.hmcts.reform.pip.data.management.database.LocationRepository;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ArtefactNotFoundException;
-import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.NotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
@@ -198,7 +197,7 @@ public class PublicationService {
 
     public Artefact getMetadataByArtefactId(UUID artefactId) {
         return artefactRepository.findArtefactByArtefactId(artefactId.toString())
-                .orElseThrow(() -> new NotFoundException(String.format("No artefact found with the ID: %s",
+                .orElseThrow(() -> new ArtefactNotFoundException(String.format("No artefact found with the ID: %s",
                                                                        artefactId)));
     }
 
@@ -221,7 +220,7 @@ public class PublicationService {
             return artefact.get();
         }
 
-        throw new NotFoundException(String.format("No artefact found with the ID: %s", artefactId));
+        throw new ArtefactNotFoundException(String.format("No artefact found with the ID: %s", artefactId));
     }
 
     /**
