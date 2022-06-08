@@ -1,4 +1,23 @@
 spring:
+  cloud:
+    azure:
+      active-directory:
+        enabled: true
+        profile:
+          tenant-id: ${TENANT_ID}
+        credential:
+          client-id: ${CLIENT_ID}
+          client-secret: ${CLIENT_SECRET}
+        app-id-uri: ${APP_URI}
+        authorization-clients:
+          subscriptionManagementApi:
+            authorization-grant-type: client_credentials
+            scopes:
+              - ${SUBSCRIPTION_MANAGEMENT_AZ_API}/.default
+          accountManagementApi:
+            authorization-grant-type: client_credentials
+            scopes:
+              - ${ACCOUNT_MANAGEMENT_AZ_API}/.default
   datasource:
     driver-class-name: org.h2.Driver
     url: jdbc:h2:mem:testdb
@@ -8,6 +27,8 @@ spring:
     jpa:
       spring.jpa.database-platform: org.hibernate.dialect.H2Dialect
 
+test-user-id: ${TEST_USER_ID}
+
 payload:
   json:
     search-values:
@@ -15,3 +36,5 @@ payload:
       case-urn: "$['unknown-attribute']"
 service-to-service:
   subscription-management: ${SUBSCRIPTION_MANAGEMENT_URL:https://pip-subscription-management.staging.platform.hmcts.net/}
+  account-management: ${ACCOUNT_MANAGEMENT_URL:https://pip-subscription-management.staging.platform.hmcts.net/}
+
