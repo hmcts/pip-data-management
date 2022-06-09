@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -71,6 +72,9 @@ class PublicationTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @Value("${test-user-id}")
+    private String userId;
+
     private static final String PUBLICATION_URL = "/publication";
     private static final String SEARCH_URL = "/publication/search";
     private static final String SEARCH_COURT_URL = "/publication/locationId";
@@ -95,8 +99,9 @@ class PublicationTest {
     private static final String SEARCH_KEY_NOT_FOUND = "case-urn";
     private static final String SEARCH_VALUE_1 = "array-value-1";
     private static final String SEARCH_VALUE_2 = "array-value-2";
+    private static final String USER_ID_HEADER = "x-user-id";
     private static final String LOCATION_ID_SEARCH_KEY = "location-id";
-    private static final String VERIFICATION_HEADER = "verification";
+
     private static final String VALID_CASE_ID_SEARCH = "/CASE_ID/45684548";
     private static final String VALID_CASE_NAME_SEARCH = "/CASE_NAME/Smith";
     private static final String TRUE = "true";
@@ -447,7 +452,7 @@ class PublicationTest {
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 = MockMvcRequestBuilders
             .get(SEARCH_COURT_URL + "/" + COURT_ID)
-            .header(VERIFICATION_HEADER, TRUE);
+            .header(USER_ID_HEADER, userId);
         MvcResult getResponse =
             mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isOk()).andReturn();
 
@@ -575,7 +580,7 @@ class PublicationTest {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 = MockMvcRequestBuilders
 
             .get(SEARCH_COURT_URL + "/" + COURT_ID)
-            .header(VERIFICATION_HEADER, TRUE);
+            .header(USER_ID_HEADER, userId);
         MvcResult getResponse =
             mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isOk()).andReturn();
 
@@ -629,7 +634,7 @@ class PublicationTest {
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 = MockMvcRequestBuilders
             .get(SEARCH_COURT_URL + "/" + COURT_ID)
-            .header(VERIFICATION_HEADER, FALSE);
+            .header(USER_ID_HEADER, userId);
         MvcResult getResponse =
             mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isOk()).andReturn();
 
@@ -683,8 +688,7 @@ class PublicationTest {
         );
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 = MockMvcRequestBuilders
-            .get(SEARCH_COURT_URL + "/" + COURT_ID)
-            .header(VERIFICATION_HEADER, FALSE);
+            .get(SEARCH_COURT_URL + "/" + COURT_ID);
         MvcResult getResponse =
             mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isOk()).andReturn();
 
@@ -712,7 +716,7 @@ class PublicationTest {
 
         mockHttpServletRequestBuilder
             .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
-            .header(PublicationConfiguration.SENSITIVITY_HEADER, Sensitivity.CLASSIFIED)
+            .header(PublicationConfiguration.SENSITIVITY_HEADER, Sensitivity.PRIVATE)
             .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
             .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
             .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO.plusMonths(1))
@@ -736,8 +740,7 @@ class PublicationTest {
         );
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 = MockMvcRequestBuilders
-            .get(SEARCH_COURT_URL + "/" + COURT_ID)
-            .header(VERIFICATION_HEADER, FALSE);
+            .get(SEARCH_COURT_URL + "/" + COURT_ID);
         MvcResult getResponse =
             mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isOk()).andReturn();
 
@@ -787,7 +790,56 @@ class PublicationTest {
 
         response = mockMvc.perform(MockMvcRequestBuilders
                                        .get(PUBLICATION_URL + "/" + artefact.getArtefactId() + "/file")
-                                       .header(VERIFICATION_HEADER, TRUE))
+                                       .header(USER_ID_HEADER, userId))
+            .andExpect(status().isOk()).andReturn();
+
+        assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
+
+        assertEquals(isJson ? payload : new String(file.getBytes()),
+                     response.getResponse().getContentAsString(), "File does not match expected content"
+        );
+
+    }
+
+    @ParameterizedTest
+    @ValueSource(booleans = {true, false})
+    @DisplayName("File endpoint should return the file when artefact exists")
+    void retrieveFileFromAnArtefactWhereAdmin(boolean isJson) throws Exception {
+        if (isJson) {
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
+        } else {
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(PUBLICATION_URL).file(file);
+        }
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
+            .header(PublicationConfiguration.SENSITIVITY_HEADER, Sensitivity.CLASSIFIED)
+            .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
+            .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
+            .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
+            .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO.plusMonths(1))
+            .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
+            .header(PublicationConfiguration.LIST_TYPE, LIST_TYPE)
+            .header(PublicationConfiguration.COURT_ID, COURT_ID)
+            .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
+            .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
+            .contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
+
+        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(blobContainerClient.getBlobContainerUrl()).thenReturn(PAYLOAD_URL);
+
+        MvcResult response =
+            mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
+
+        assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
+
+        Artefact artefact = objectMapper.readValue(
+            response.getResponse().getContentAsString(), Artefact.class);
+
+        when(blobClient.downloadContent()).thenReturn(
+            BinaryData.fromString(isJson ? payload : new String(file.getBytes())));
+
+        response = mockMvc.perform(MockMvcRequestBuilders
+                                       .get(PUBLICATION_URL + "/" + artefact.getArtefactId() + "/file")
+                                       .header(ADMIN_HEADER, true))
             .andExpect(status().isOk()).andReturn();
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
@@ -832,8 +884,7 @@ class PublicationTest {
             response.getResponse().getContentAsString(), Artefact.class);
 
         mockMvc.perform(MockMvcRequestBuilders
-                            .get(PUBLICATION_URL + "/" + artefact.getArtefactId() + "/file")
-                            .header(VERIFICATION_HEADER, FALSE))
+                            .get(PUBLICATION_URL + "/" + artefact.getArtefactId() + "/file"))
             .andExpect(status().isNotFound()).andReturn();
     }
 
@@ -842,7 +893,7 @@ class PublicationTest {
     void retrieveFileOfAnArtefactWhereNotFound() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders
                             .get("/publication/7d734e8d-ba1d-4730-bd8b-09a970be00cc/file")
-                            .header(VERIFICATION_HEADER, TRUE))
+                            .header(USER_ID_HEADER, userId))
             .andExpect(status().isNotFound()).andReturn();
     }
 
@@ -884,7 +935,7 @@ class PublicationTest {
 
         response = mockMvc.perform(MockMvcRequestBuilders
                                        .get(PUBLICATION_URL + "/" + artefact.getArtefactId() + PAYLOAD_URL)
-                                       .header(VERIFICATION_HEADER, TRUE))
+                                       .header(USER_ID_HEADER, userId))
             .andExpect(status().isOk()).andReturn();
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
@@ -932,7 +983,7 @@ class PublicationTest {
 
         mockMvc.perform(MockMvcRequestBuilders
                             .get(PUBLICATION_URL + "/" + artefact.getArtefactId() + PAYLOAD_URL)
-                            .header(VERIFICATION_HEADER, TRUE))
+                            .header(USER_ID_HEADER, userId))
             .andExpect(status().isNotFound()).andReturn();
     }
 
@@ -970,23 +1021,8 @@ class PublicationTest {
             response.getResponse().getContentAsString(), Artefact.class);
 
         mockMvc.perform(MockMvcRequestBuilders
-                            .get(PUBLICATION_URL + "/" + artefact.getArtefactId() + PAYLOAD_URL)
-                            .header(VERIFICATION_HEADER, FALSE))
+                            .get(PUBLICATION_URL + "/" + artefact.getArtefactId() + PAYLOAD_URL))
             .andExpect(status().isNotFound()).andReturn();
-    }
-
-    @Test
-    @DisplayName("Payload endpoint where verification not set should display a 400")
-    void retrievePayloadWhenVerificationEndpointNotSet() throws Exception {
-        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
-                                                  .get("/publication/7d734e8d-ba1d-4730-bd8b-09a970be00cc/payload"))
-            .andExpect(status().isBadRequest()).andReturn();
-
-        ExceptionResponse exceptionResponse =
-            objectMapper.readValue(mvcResult.getResponse().getContentAsString(), ExceptionResponse.class);
-
-        assertTrue(exceptionResponse.getMessage().contains(VERIFICATION_HEADER),
-                   "Verification error not shown in error message");
     }
 
     @ParameterizedTest
@@ -1026,8 +1062,54 @@ class PublicationTest {
             BinaryData.fromString(isJson ? payload : new String(file.getBytes())));
 
         response = mockMvc.perform(MockMvcRequestBuilders
+                                       .get(PUBLICATION_URL + "/" + artefact.getArtefactId() + PAYLOAD_URL))
+            .andExpect(status().isOk()).andReturn();
+
+        assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
+
+        assertEquals(isJson ? payload : new String(file.getBytes()),
+                     response.getResponse().getContentAsString(), "Payload does not match expected content");
+    }
+
+    @ParameterizedTest
+    @ValueSource(booleans = {true, false})
+    @DisplayName("Payload endpoint should return the payload when artefact exists when an admin")
+    void retrievePayloadOfAnArtefactWhenAdmin(boolean isJson) throws Exception {
+        if (isJson) {
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
+        } else {
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(PUBLICATION_URL).file(file);
+        }
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
+            .header(PublicationConfiguration.SENSITIVITY_HEADER, Sensitivity.CLASSIFIED)
+            .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
+            .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
+            .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
+            .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO.plusMonths(1))
+            .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
+            .header(PublicationConfiguration.LIST_TYPE, LIST_TYPE)
+            .header(PublicationConfiguration.COURT_ID, COURT_ID)
+            .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
+            .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
+            .contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
+
+        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(blobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
+
+        MvcResult response =
+            mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
+
+        assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
+
+        Artefact artefact = objectMapper.readValue(
+            response.getResponse().getContentAsString(), Artefact.class);
+
+        when(blobClient.downloadContent()).thenReturn(
+            BinaryData.fromString(isJson ? payload : new String(file.getBytes())));
+
+        response = mockMvc.perform(MockMvcRequestBuilders
                                        .get(PUBLICATION_URL + "/" + artefact.getArtefactId() + PAYLOAD_URL)
-                                       .header(VERIFICATION_HEADER, FALSE))
+                                       .header(ADMIN_HEADER, true))
             .andExpect(status().isOk()).andReturn();
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
@@ -1078,8 +1160,7 @@ class PublicationTest {
             BinaryData.fromString(isJson ? payload : new String(file.getBytes())));
 
         mockMvc.perform(MockMvcRequestBuilders
-                            .get(PUBLICATION_URL + "/" + artefact.getArtefactId() + PAYLOAD_URL)
-                            .header(VERIFICATION_HEADER, FALSE))
+                            .get(PUBLICATION_URL + "/" + artefact.getArtefactId() + PAYLOAD_URL))
             .andExpect(status().isNotFound()).andReturn();
     }
 
@@ -1088,7 +1169,7 @@ class PublicationTest {
     void retrievePayloadOfAnArtefactWhereNotFound() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders
                             .get("/publication/7d734e8d-ba1d-4730-bd8b-09a970be00cc/payload")
-                            .header(VERIFICATION_HEADER, TRUE))
+                            .header(USER_ID_HEADER, userId))
             .andExpect(status().isNotFound()).andReturn();
     }
 
@@ -1130,7 +1211,7 @@ class PublicationTest {
 
         response = mockMvc.perform(MockMvcRequestBuilders
                                        .get(PUBLICATION_URL + "/" + artefact.getArtefactId())
-                                       .header(VERIFICATION_HEADER, TRUE))
+                                       .header(USER_ID_HEADER, userId))
             .andExpect(status().isOk()).andReturn();
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
@@ -1178,8 +1259,7 @@ class PublicationTest {
             BinaryData.fromString(isJson ? payload : new String(file.getBytes())));
 
         response = mockMvc.perform(MockMvcRequestBuilders
-                                       .get(PUBLICATION_URL + "/" + artefact.getArtefactId())
-                                       .header(VERIFICATION_HEADER, FALSE))
+                                       .get(PUBLICATION_URL + "/" + artefact.getArtefactId()))
             .andExpect(status().isOk()).andReturn();
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
@@ -1229,7 +1309,7 @@ class PublicationTest {
 
         mockMvc.perform(MockMvcRequestBuilders
                             .get(PUBLICATION_URL + "/" + artefact.getArtefactId())
-                            .header(VERIFICATION_HEADER, TRUE))
+                            .header(USER_ID_HEADER, userId))
             .andExpect(status().isNotFound()).andReturn();
     }
 
@@ -1270,8 +1350,7 @@ class PublicationTest {
             BinaryData.fromString(isJson ? payload : new String(file.getBytes())));
 
         mockMvc.perform(MockMvcRequestBuilders
-                            .get(PUBLICATION_URL + "/" + artefact.getArtefactId())
-                            .header(VERIFICATION_HEADER, FALSE))
+                            .get(PUBLICATION_URL + "/" + artefact.getArtefactId()))
             .andExpect(status().isNotFound()).andReturn();
     }
 
@@ -1310,8 +1389,7 @@ class PublicationTest {
             response.getResponse().getContentAsString(), Artefact.class);
 
         mockMvc.perform(MockMvcRequestBuilders
-                            .get(PUBLICATION_URL + "/" + artefact.getArtefactId())
-                            .header(VERIFICATION_HEADER, FALSE))
+                            .get(PUBLICATION_URL + "/" + artefact.getArtefactId()))
             .andExpect(status().isNotFound()).andReturn();
     }
 
@@ -1320,26 +1398,8 @@ class PublicationTest {
     void retrieveMetadataOfAnArtefactWhereNotFound() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders
                             .get("/publication/7d734e8d-ba1d-4730-bd8b-09a970be00cc")
-                            .header(VERIFICATION_HEADER, TRUE))
+                            .header(USER_ID_HEADER, userId))
             .andExpect(status().isNotFound()).andReturn();
-    }
-
-    @Test
-    @DisplayName("Metadata endpoint where verification not set should display a 400")
-    void retrieveMetadataWhenVerificationEndpointNotSet() throws Exception {
-        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
-                                                  .get("/publication/7d734e8d-ba1d-4730-bd8b-09a970be00cc"))
-            .andExpect(status().isBadRequest()).andReturn();
-
-        ExceptionResponse exceptionResponse =
-            objectMapper.readValue(mvcResult.getResponse().getContentAsString(), ExceptionResponse.class);
-
-        assertTrue(
-            exceptionResponse.getMessage().contains(VERIFICATION_HEADER),
-            "Verification error not shown in error message"
-        );
-        assertTrue(exceptionResponse.getMessage().contains(VERIFICATION_HEADER),
-                   "Verification error not shown in error message");
     }
 
     @Test
@@ -1353,7 +1413,7 @@ class PublicationTest {
             MockMvcRequestBuilders.get(SEARCH_URL + VALID_CASE_ID_SEARCH);
 
         mockHttpServletRequestBuilder1
-            .header(VERIFICATION_HEADER, TRUE);
+            .header(USER_ID_HEADER, userId);
 
         MvcResult getResponse =
             mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isOk()).andReturn();
@@ -1374,9 +1434,6 @@ class PublicationTest {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 =
             MockMvcRequestBuilders.get(SEARCH_URL + VALID_CASE_ID_SEARCH);
 
-        mockHttpServletRequestBuilder1
-            .header(VERIFICATION_HEADER, FALSE);
-
         MvcResult getResponse =
             mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isOk()).andReturn();
 
@@ -1395,9 +1452,6 @@ class PublicationTest {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 =
             MockMvcRequestBuilders.get(SEARCH_URL + VALID_CASE_ID_SEARCH);
 
-        mockHttpServletRequestBuilder1
-            .header(VERIFICATION_HEADER, FALSE);
-
         mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isNotFound()).andReturn();
 
     }
@@ -1413,7 +1467,7 @@ class PublicationTest {
             MockMvcRequestBuilders.get(SEARCH_URL + VALID_CASE_NAME_SEARCH);
 
         mockHttpServletRequestBuilder1
-            .header(VERIFICATION_HEADER, TRUE);
+            .header(USER_ID_HEADER, userId);
 
         MvcResult getResponse =
             mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isOk()).andReturn();
@@ -1433,9 +1487,6 @@ class PublicationTest {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 =
             MockMvcRequestBuilders.get(SEARCH_URL + VALID_CASE_NAME_SEARCH);
 
-        mockHttpServletRequestBuilder1
-            .header(VERIFICATION_HEADER, FALSE);
-
         MvcResult getResponse =
             mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isOk()).andReturn();
 
@@ -1453,9 +1504,6 @@ class PublicationTest {
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 =
             MockMvcRequestBuilders.get(SEARCH_URL + VALID_CASE_NAME_SEARCH);
-
-        mockHttpServletRequestBuilder1
-            .header(VERIFICATION_HEADER, FALSE);
 
         mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isNotFound()).andReturn();
     }
@@ -1476,7 +1524,6 @@ class PublicationTest {
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
             .get(SEARCH_COURT_URL + "/" + COURT_ID)
-            .header(VERIFICATION_HEADER, FALSE)
             .header(ADMIN_HEADER, FALSE);
 
         MvcResult nonAdminResponse =
@@ -1484,7 +1531,6 @@ class PublicationTest {
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 = MockMvcRequestBuilders
             .get(SEARCH_COURT_URL + "/" + COURT_ID)
-            .header(VERIFICATION_HEADER, FALSE)
             .header(ADMIN_HEADER, TRUE);
 
         MvcResult adminResponse =
@@ -1504,7 +1550,7 @@ class PublicationTest {
 
         MockHttpServletRequestBuilder preDeleteRequest = MockMvcRequestBuilders
             .get(PUBLICATION_URL + "/" + artefactToDelete.getArtefactId())
-            .header(VERIFICATION_HEADER, TRUE);
+            .header(USER_ID_HEADER, userId);
 
         mockMvc.perform(preDeleteRequest).andExpect(status().isOk());
 
@@ -1562,12 +1608,12 @@ class PublicationTest {
 
         MockHttpServletRequestBuilder expectedFailRequest = MockMvcRequestBuilders
             .get(PUBLICATION_URL + "/" + artefactToFind.getArtefactId())
-            .header(VERIFICATION_HEADER, true);
+            .header(USER_ID_HEADER, userId);
         mockMvc.perform(expectedFailRequest).andExpect(status().isNotFound());
 
         MockHttpServletRequestBuilder adminRequest = MockMvcRequestBuilders
             .get(PUBLICATION_URL + "/" + artefactToFind.getArtefactId())
-            .header(VERIFICATION_HEADER, true)
+            .header(USER_ID_HEADER, userId)
             .header("x-admin", true);
         MvcResult response = mockMvc.perform(adminRequest).andExpect(status().isOk()).andReturn();
 
@@ -1582,7 +1628,7 @@ class PublicationTest {
         when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
         MockHttpServletRequestBuilder adminRequest = MockMvcRequestBuilders
             .get(PUBLICATION_URL + "/" + UUID.randomUUID())
-            .header(VERIFICATION_HEADER, true)
+            .header(USER_ID_HEADER, userId)
             .header("x-admin", true);
         mockMvc.perform(adminRequest).andExpect(status().isNotFound());
 

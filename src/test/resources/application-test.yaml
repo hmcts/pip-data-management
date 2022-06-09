@@ -1,5 +1,6 @@
 service-to-service:
   subscription-management: localhost:4550
+  account-management: localhost:8081
 
 cron:
   daily-start-of-day: "*/10 * * * * *"

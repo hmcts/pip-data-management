@@ -28,6 +28,10 @@ spring:
             authorization-grant-type: client_credentials
             scopes:
               - ${SUBSCRIPTION_MANAGEMENT_AZ_API}/.default
+          accountManagementApi:
+            authorization-grant-type: client_credentials
+            scopes:
+              - ${ACCOUNT_MANAGEMENT_AZ_API}/.default
   jackson:
     serialization.write_dates_as_timestamps: false
     mapper:
@@ -73,6 +77,7 @@ azure:
 
 service-to-service:
   subscription-management: ${SUBSCRIPTION_MANAGEMENT_URL:https://pip-subscription-management.staging.platform.hmcts.net}
+  account-management: ${ACCOUNT_MANAGEMENT_URL:https://pip-account-management.staging.platform.hmcts.net}
 
 payload:
   json:
