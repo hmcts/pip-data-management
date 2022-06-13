@@ -25,7 +25,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeGenericLog;
+import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
 import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
 
 /**
@@ -44,7 +44,7 @@ public class LocationService {
      * @return List of Locations
      */
     public List<Location> getAllLocations() {
-        log.info(writeGenericLog("Retrieve all locations"));
+        log.info(writeLog("Retrieve all locations"));
 
         return locationRepository.findAll();
     }

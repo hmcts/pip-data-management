@@ -26,7 +26,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeGenericLog;
+import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
 import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
 
 /**
@@ -166,7 +166,7 @@ public class PublicationService {
      * @return list of matching artefacts.
      */
     public List<Artefact> findAllByLocationIdAdmin(String locationId, UUID userId, boolean isAdmin) {
-        log.info(writeGenericLog("ADMIN - Searing for all artefacts with " + locationId));
+        log.info(writeLog("ADMIN - Searing for all artefacts with " + locationId));
         return isAdmin
             ? artefactRepository.findArtefactsByLocationIdAdmin(locationId) : findAllByLocationId(locationId, userId);
     }
