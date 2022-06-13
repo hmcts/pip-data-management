@@ -69,6 +69,7 @@ public class PublicationController {
         "No artefact found matching given parameters and date requirements";
 
     private final PublicationService publicationService;
+
     @Autowired
     private final ValidationService validationService;
 

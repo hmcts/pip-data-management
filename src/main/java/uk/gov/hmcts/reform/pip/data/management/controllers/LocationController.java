@@ -25,6 +25,8 @@ import uk.gov.hmcts.reform.pip.data.management.service.LocationService;
 import java.util.Collection;
 import java.util.List;
 
+import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeGenericLog;
+
 @RestController
 @Api(tags = "Data Management location list API")
 @RequestMapping("/locations")

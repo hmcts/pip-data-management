@@ -26,6 +26,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeGenericLog;
 import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
 
 /**
@@ -71,6 +72,9 @@ public class PublicationService {
      * @return Returns the UUID of the artefact that was created.
      */
     public Artefact createPublication(Artefact artefact, String payload) {
+        log.info(writeLog(UserActions.UPLOAD, "json publication upload for location "
+            + artefact.getLocationId()));
+
         applyInternalLocationId(artefact);
 
         boolean isExisting = applyExistingArtefact(artefact);
@@ -91,6 +95,9 @@ public class PublicationService {
     }
 
     public Artefact createPublication(Artefact artefact, MultipartFile file) {
+        log.info(writeLog(UserActions.UPLOAD, "flat file publication upload for location "
+            + artefact.getLocationId()));
+
         applyInternalLocationId(artefact);
 
         boolean isExisting = applyExistingArtefact(artefact);
@@ -159,6 +166,7 @@ public class PublicationService {
      * @return list of matching artefacts.
      */
     public List<Artefact> findAllByCourtIdAdmin(String courtId, UUID userId, boolean isAdmin) {
+        log.info(writeGenericLog("ADMIN - Searing for all artefacts with " + courtId));
         return isAdmin ? artefactRepository.findArtefactsByCourtIdAdmin(courtId) : findAllByCourtId(courtId, userId);
     }
 

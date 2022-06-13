@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.pip.data.management.errorhandling;
 
 import com.azure.storage.blob.models.BlobStorageException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +20,11 @@ import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.Unauthor
 import java.time.LocalDateTime;
 import javax.validation.ConstraintViolationException;
 
+import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeGenericLog;
+import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
+
 @ControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler {
 
     /**
@@ -33,6 +38,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(DataStorageNotFoundException.class)
     public ResponseEntity<ExceptionResponse> handle(DataStorageNotFoundException ex) {
 
+        log.warn(writeGenericLog("404, failure when connecting to Blob store"));
+
         ExceptionResponse exceptionResponse = new ExceptionResponse();
         exceptionResponse.setMessage(ex.getMessage());
         exceptionResponse.setTimestamp(LocalDateTime.now());
@@ -42,6 +49,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<ExceptionResponse> handle(NotFoundException ex) {
+
+        log.warn(writeGenericLog("404, unable to find artefact. Details: " + ex.getMessage()));
 
         ExceptionResponse exceptionResponse = new ExceptionResponse();
         exceptionResponse.setMessage(ex.getMessage());
@@ -54,6 +63,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MissingRequestHeaderException.class)
     public ResponseEntity<ExceptionResponse> handle(MissingRequestHeaderException ex) {
 
+        log.warn(writeGenericLog(String.format("400, request heading %s missing", ex.getHeaderName())));
+
         ExceptionResponse exceptionResponse = new ExceptionResponse();
         exceptionResponse.setMessage(
             String.format("%s is mandatory however an empty value is provided", ex.getHeaderName()));
@@ -64,6 +75,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<ExceptionResponse> handle(MethodArgumentTypeMismatchException ex) {
+
+        log.warn(writeGenericLog("400, provided unknown type for field " + ex.getName()));
 
         ExceptionResponse exceptionResponse = new ExceptionResponse();
         exceptionResponse.setMessage(String.format(
@@ -76,6 +89,9 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(HeaderValidationException.class)
     public ResponseEntity<ExceptionResponse> handle(HeaderValidationException ex) {
+
+        log.warn(writeGenericLog("400, error while validating headers"));
+
         ExceptionResponse exceptionResponse = new ExceptionResponse();
         exceptionResponse.setMessage(ex.getMessage());
         exceptionResponse.setTimestamp(LocalDateTime.now());
@@ -85,6 +101,9 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(PayloadValidationException.class)
     public ResponseEntity<ExceptionResponse> handle(PayloadValidationException ex) {
+
+        log.warn(writeGenericLog("400, error while validating JSON payload"));
+
         ExceptionResponse exceptionResponse = new ExceptionResponse();
         exceptionResponse.setMessage(ex.getMessage());
         exceptionResponse.setTimestamp(LocalDateTime.now());
@@ -94,6 +113,9 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(BlobStorageException.class)
     public ResponseEntity<ExceptionResponse> handle(BlobStorageException ex) {
+
+        log.warn(writeGenericLog("404, error while communicating with blob store"));
+
         ExceptionResponse exceptionResponse = new ExceptionResponse();
         exceptionResponse.setMessage(ex.getMessage());
         exceptionResponse.setTimestamp(LocalDateTime.now());
@@ -102,6 +124,9 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(UnauthorisedRequestException.class)
     public ResponseEntity<ExceptionResponse> handle(UnauthorisedRequestException ex) {
+
+        log.warn(writeGenericLog("401, user has attempted to access a restricted endpoint"));
+
         ExceptionResponse exceptionResponse = new ExceptionResponse();
         exceptionResponse.setMessage(ex.getMessage());
         exceptionResponse.setTimestamp(LocalDateTime.now());
@@ -110,6 +135,9 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(FlatFileException.class)
     public ResponseEntity<ExceptionResponse> handle(FlatFileException ex) {
+
+        log.warn(writeGenericLog("400, failure while handling a flat file"));
+
         ExceptionResponse exceptionResponse = new ExceptionResponse();
         exceptionResponse.setMessage(ex.getMessage());
         exceptionResponse.setTimestamp(LocalDateTime.now());
@@ -118,6 +146,9 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(CsvParseException.class)
     public ResponseEntity<ExceptionResponse> handle(CsvParseException ex) {
+
+        log.warn(writeGenericLog("400, error while parsing locations CSV"));
+
         ExceptionResponse exceptionResponse = new ExceptionResponse();
         exceptionResponse.setMessage(ex.getMessage());
         exceptionResponse.setTimestamp(LocalDateTime.now());
@@ -126,6 +157,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<ExceptionResponse> handle(ConstraintViolationException ex) {
+
+        log.warn(writeGenericLog("400, error while validating headers / body"));
 
         ExceptionResponse exceptionResponse = new ExceptionResponse();
         exceptionResponse.setMessage(ex.getMessage());
