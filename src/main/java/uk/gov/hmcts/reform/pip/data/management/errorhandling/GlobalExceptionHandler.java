@@ -21,7 +21,6 @@ import java.time.LocalDateTime;
 import javax.validation.ConstraintViolationException;
 
 import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeGenericLog;
-import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
 
 @ControllerAdvice
 @Slf4j

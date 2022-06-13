@@ -137,7 +137,7 @@ class PublicationServiceTest {
                                                                     artefact.getProvenance()))
             .thenReturn(Optional.empty());
         lenient().when(artefactRepository.save(artefactWithPayloadUrl)).thenReturn(artefactWithIdAndPayloadUrl);
-        lenient().when(locationRepository.findByCourtIdByProvenance(PROVENANCE, PROVENANCE_ID,
+        lenient().when(locationRepository.findByLocationIdByProvenance(PROVENANCE, PROVENANCE_ID,
                                                                     LocationType.VENUE.name()))
             .thenReturn(Optional.of(location));
     }
@@ -278,7 +278,7 @@ class PublicationServiceTest {
                                                                     artefact.getProvenance()))
             .thenReturn(Optional.empty());
         lenient().when(artefactRepository.save(artefactWithPayloadUrl)).thenReturn(artefactWithIdAndPayloadUrl);
-        lenient().when(locationRepository.findByCourtIdByProvenance(PROVENANCE, PROVENANCE_ID,
+        lenient().when(locationRepository.findByLocationIdByProvenance(PROVENANCE, PROVENANCE_ID,
                                                                     LocationType.VENUE.name()))
             .thenReturn(Optional.of(location));
     }
@@ -319,7 +319,7 @@ class PublicationServiceTest {
     @Test
     void testCreationOfNewArtefactWhenCourtDoesNotExists() {
         artefactWithPayloadUrl.setLocationId(NO_COURT_EXISTS_IN_REFERENCE_DATA);
-        when(locationRepository.findByCourtIdByProvenance(PROVENANCE, PROVENANCE_ID, LocationType.VENUE.name()))
+        when(locationRepository.findByLocationIdByProvenance(PROVENANCE, PROVENANCE_ID, LocationType.VENUE.name()))
             .thenReturn(Optional.empty());
         when(artefactRepository.save(artefactWithPayloadUrl)).thenReturn(artefactWithIdAndPayloadUrl);
         when(azureBlobService.createPayload(any(), eq(PAYLOAD))).thenReturn(PAYLOAD_URL);
@@ -445,7 +445,7 @@ class PublicationServiceTest {
                                                           artefact.getProvenance()))
             .thenReturn(Optional.of(existingArtefact));
 
-        when(locationRepository.findByCourtIdByProvenance(PROVENANCE, PROVENANCE_ID, LocationType.VENUE.name()))
+        when(locationRepository.findByLocationIdByProvenance(PROVENANCE, PROVENANCE_ID, LocationType.VENUE.name()))
             .thenReturn(Optional.empty());
         when(artefactRepository.save(newArtefactWithId)).thenReturn(newArtefactWithId);
         when(azureBlobService.createPayload(PAYLOAD_STRIPPED, PAYLOAD)).thenReturn(PAYLOAD_URL);
@@ -485,7 +485,7 @@ class PublicationServiceTest {
         artefactWithPayloadUrl.setSearch(null);
         artefactWithPayloadUrl.setLocationId(PROVENANCE_ID);
         when(azureBlobService.uploadFlatFile(any(), eq(FILE))).thenReturn(PAYLOAD_URL);
-        when(locationRepository.findByCourtIdByProvenance(PROVENANCE, PROVENANCE_ID, LocationType.VENUE.name()))
+        when(locationRepository.findByLocationIdByProvenance(PROVENANCE, PROVENANCE_ID, LocationType.VENUE.name()))
             .thenReturn(Optional.of(location));
         Artefact returnedArtefact = publicationService.createPublication(artefact, FILE);
 
@@ -730,10 +730,10 @@ class PublicationServiceTest {
         when(accountManagementService.getIsAuthorised(USER_ID, ListType.CIVIL_DAILY_CAUSE_LIST, Sensitivity.CLASSIFIED))
             .thenReturn(true);
 
-        when(artefactRepository.findArtefactsByCourtId(any(), any()))
+        when(artefactRepository.findArtefactsByLocationId(any(), any()))
             .thenReturn(artefactList);
 
-        assertEquals(artefactList, publicationService.findAllByCourtId("abc", USER_ID),
+        assertEquals(artefactList, publicationService.findAllByLocationId("abc", USER_ID),
                      VALIDATION_ARTEFACT_NOT_MATCH
         );
     }
@@ -763,10 +763,10 @@ class PublicationServiceTest {
         when(accountManagementService.getIsAuthorised(USER_ID, ListType.CIVIL_DAILY_CAUSE_LIST, Sensitivity.CLASSIFIED))
             .thenReturn(false);
 
-        when(artefactRepository.findArtefactsByCourtId(any(), any()))
+        when(artefactRepository.findArtefactsByLocationId(any(), any()))
             .thenReturn(artefactList);
 
-        List<Artefact> artefacts = publicationService.findAllByCourtId("abc", USER_ID);
+        List<Artefact> artefacts = publicationService.findAllByLocationId("abc", USER_ID);
 
         assertEquals(1, artefacts.size(), VALIDATION_MORE_THAN_PUBLIC);
         assertEquals(artefact, artefacts.get(0), VALIDATION_ARTEFACT_NOT_MATCH);
@@ -792,10 +792,10 @@ class PublicationServiceTest {
         artefactList.add(artefact);
         artefactList.add(artefact2);
 
-        when(artefactRepository.findArtefactsByCourtId(any(), any()))
+        when(artefactRepository.findArtefactsByLocationId(any(), any()))
             .thenReturn(artefactList);
 
-        List<Artefact> artefacts = publicationService.findAllByCourtId("abc", USER_ID);
+        List<Artefact> artefacts = publicationService.findAllByLocationId("abc", USER_ID);
 
         assertEquals(1, artefacts.size(), VALIDATION_MORE_THAN_PUBLIC);
         assertEquals(artefact2, artefacts.get(0), VALIDATION_ARTEFACT_NOT_MATCH);
@@ -1008,15 +1008,15 @@ class PublicationServiceTest {
 
     @Test
     void testFindAllByCourtIdAdmin() {
-        when(artefactRepository.findArtefactsByCourtIdAdmin(TEST_VALUE)).thenReturn(List.of(artefact));
-        assertEquals(List.of(artefact), publicationService.findAllByCourtIdAdmin(TEST_VALUE, USER_ID, true),
+        when(artefactRepository.findArtefactsByLocationIdAdmin(TEST_VALUE)).thenReturn(List.of(artefact));
+        assertEquals(List.of(artefact), publicationService.findAllByLocationIdAdmin(TEST_VALUE, USER_ID, true),
                      VALIDATION_ARTEFACT_NOT_MATCH);
     }
 
     @Test
     void testFindAllByCourtIdAdminNotAdmin() {
-        when(artefactRepository.findArtefactsByCourtId(any(), any())).thenReturn(List.of(artefact));
-        assertEquals(List.of(artefact), publicationService.findAllByCourtIdAdmin(TEST_VALUE, USER_ID, false),
+        when(artefactRepository.findArtefactsByLocationId(any(), any())).thenReturn(List.of(artefact));
+        assertEquals(List.of(artefact), publicationService.findAllByLocationIdAdmin(TEST_VALUE, USER_ID, false),
                      VALIDATION_ARTEFACT_NOT_MATCH);
 
     }

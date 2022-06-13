@@ -29,7 +29,7 @@ import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeGenericLog;
 import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
 
 /**
- * Service to handle the retrieval and filtering of courts.
+ * Service to handle the retrieval and filtering of locations.
  */
 @Service
 @Slf4j
@@ -50,11 +50,11 @@ public class LocationService {
     }
 
     /**
-     * Handles request to search for a court by court id.
+     * Handles request to search for a location by location id.
      *
      * @param locationId The location ID to search for.
      * @return Location of the found location
-     * @throws LocationNotFoundException when no court was found with the given court ID.
+     * @throws LocationNotFoundException when no locations were found with the given location ID.
      */
     public Location getLocationById(Integer locationId) {
         Optional<Location> foundLocation = locationRepository.getLocationByLocationId(locationId);
