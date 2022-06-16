@@ -43,6 +43,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.TestConstants.MESSAGES_MATCH;
 
@@ -68,6 +70,9 @@ class PublicationServiceTest {
 
     @Mock
     AccountManagementService accountManagementService;
+
+    @Mock
+    PublicationServicesService publicationServicesService;
 
     @InjectMocks
     PublicationService publicationService;
@@ -115,6 +120,7 @@ class PublicationServiceTest {
     private Artefact artefactWithNullDateTo;
     private Artefact artefactWithSameDateFromAndTo;
     private Artefact artefactManualUpload;
+    private Artefact noMatchArtefact;
 
     private Location location;
 
@@ -226,6 +232,18 @@ class PublicationServiceTest {
             .search(SEARCH_VALUES)
             .displayFrom(LocalDateTime.now().plusDays(1))
             .displayTo(LocalDateTime.now().plusDays(2))
+            .build();
+
+        noMatchArtefact = Artefact.builder()
+            .sourceArtefactId(SOURCE_ARTEFACT_ID)
+            .provenance(PROVENANCE)
+            .payload(PAYLOAD_URL)
+            .search(SEARCH_VALUES)
+            .locationId(NO_COURT_EXISTS_IN_REFERENCE_DATA)
+            .contentDate(CONTENT_DATE)
+            .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
+            .language(Language.ENGLISH)
+            .sensitivity(Sensitivity.PUBLIC)
             .build();
     }
 
@@ -1073,13 +1091,19 @@ class PublicationServiceTest {
     @Test
     void testDeleteExpiredBlob() throws IOException {
         when(artefactRepository.findOutdatedArtefacts(LocalDate.now())).thenReturn(List.of(artefactWithPayloadUrl));
+        when(artefactRepository.findAllNoMatchArtefacts()).thenReturn(List.of(noMatchArtefact));
         when(azureBlobService.deleteBlob(any())).thenReturn("Success");
+        Map<String, String> testMap = new ConcurrentHashMap<>();
+        testMap.put("1234", "provenance");
+        when(publicationServicesService.sendNoMatchArtefactsForReporting(testMap))
+            .thenReturn("Success no match artefacts sent");
         lenient().doNothing().when(artefactRepository).deleteAll(List.of(artefact));
         try (LogCaptor logCaptor = LogCaptor.forClass(PublicationService.class)) {
             publicationService.deleteExpiredBlobs();
-            assertEquals(SUCCESS, logCaptor.getInfoLogs().get(0), MESSAGES_MATCH);
+            assertEquals("Success no match artefacts sent", logCaptor.getInfoLogs().get(0), MESSAGES_MATCH);
+            assertEquals(SUCCESS, logCaptor.getInfoLogs().get(1), MESSAGES_MATCH);
             assertEquals("1 outdated artefacts found and deleted for before " + LocalDate.now(),
-                         logCaptor.getInfoLogs().get(1), MESSAGES_MATCH);
+                         logCaptor.getInfoLogs().get(2), MESSAGES_MATCH);
         } catch (Exception ex) {
             throw new IOException(ex.getMessage());
         }
@@ -1092,6 +1116,8 @@ class PublicationServiceTest {
             publicationService.deleteExpiredBlobs();
             assertEquals("0 outdated artefacts found and deleted for before " + LocalDate.now(),
                          logCaptor.getInfoLogs().get(0), MESSAGES_MATCH);
+            verify(publicationServicesService, times(0))
+                .sendNoMatchArtefactsForReporting(any());
         } catch (Exception ex) {
             throw new IOException(ex.getMessage());
         }
