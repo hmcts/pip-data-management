@@ -23,7 +23,6 @@ public class PublicationServicesService {
     private String url;
 
     public String sendNoMatchArtefactsForReporting(Map<String, String> noMatchMap) {
-        log.info("Attempting to send no m");
         try {
             return webClient.post().uri(url + "/notify/unidentified-blob")
                 .body(BodyInserters.fromValue(noMatchMap))
