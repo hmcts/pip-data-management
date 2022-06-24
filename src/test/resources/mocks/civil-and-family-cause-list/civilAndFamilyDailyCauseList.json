@@ -105,6 +105,7 @@
                     "johTitle": "Judge",
                     "johNameSurname": "Test Name",
                     "role": "JUDGE",
+                    "johKnownAs": "Judge Test Name",
                     "isPresiding": true
                   },
                   {

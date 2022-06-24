@@ -183,7 +183,7 @@
       "$id": "#root/venue",
       "title": "venue",
       "type": "object",
-      "required": ["venueName"],
+      "required": ["venueName", "venueContact"],
       "properties": {
         "venueName": {
           "$id": "#root/venue/venueName",
@@ -285,7 +285,7 @@
             "title": "Court House",
             "description": "The court house that owns the court rooms",
             "type": "object",
-            "required": ["courtRoom", "courtHouseName", "courtHouseContact"],
+            "required": ["courtRoom", "courtHouseName"],
             "properties": {
               "courtHouseName": {
                 "$id": "#root/courtLists/courtList/courtHouse/courtHouseName",
@@ -302,7 +302,6 @@
                 "$id": "#root/courtLists/courtList/courtHouse/courtHouseContact",
                 "description": "The contact for the court house",
                 "title": "Court House Contact",
-                "required": ["venueTelephone", "venueEmail"],
                 "$ref": "#/definitions/venueContact"
               },
               "courtHouseAddress": {
