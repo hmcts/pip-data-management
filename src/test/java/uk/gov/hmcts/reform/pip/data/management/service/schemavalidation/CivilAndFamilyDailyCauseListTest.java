@@ -135,57 +135,6 @@ class CivilAndFamilyDailyCauseListTest {
     }
 
     @Test
-    void testValidateWithErrorsWhenVenueAddressMissingInFamilyDailyCauseList() throws IOException {
-        try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CIVIL_AND_FAMILY_CAUSE_LIST_VALID_JSON)) {
-            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
-
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode node = mapper.readValue(text, JsonNode.class);
-            ((ObjectNode) node.get(VENUE_SCHEMA)).remove(VENUE_ADDRESS_SCHEMA);
-
-            assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(node.toString(),
-                                                            ListType.CIVIL_AND_FAMILY_DAILY_CAUSE_LIST),
-                         CIVIL_AND_FAMILY_CAUSE_LIST_INVALID_MESSAGE);
-        }
-    }
-
-    @Test
-    void testValidateWithErrorsWhenLineMissingInFamilyDailyCauseList() throws IOException {
-        try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CIVIL_AND_FAMILY_CAUSE_LIST_VALID_JSON)) {
-            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
-
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode node = mapper.readValue(text, JsonNode.class);
-            ((ObjectNode) node.get(VENUE_SCHEMA).get(VENUE_ADDRESS_SCHEMA)).remove("line");
-
-            assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(node.toString(),
-                                                            ListType.CIVIL_AND_FAMILY_DAILY_CAUSE_LIST),
-                         CIVIL_AND_FAMILY_CAUSE_LIST_INVALID_MESSAGE);
-        }
-    }
-
-    @Test
-    void testValidateWithErrorsWhenPostCodeMissingInFamilyDailyCauseList() throws IOException {
-        try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CIVIL_AND_FAMILY_CAUSE_LIST_VALID_JSON)) {
-            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
-
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode node = mapper.readValue(text, JsonNode.class);
-            ((ObjectNode) node.get(VENUE_SCHEMA).get(VENUE_ADDRESS_SCHEMA)).remove("postCode");
-
-            assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(node.toString(),
-                                                            ListType.CIVIL_AND_FAMILY_DAILY_CAUSE_LIST),
-                         CIVIL_AND_FAMILY_CAUSE_LIST_INVALID_MESSAGE);
-        }
-    }
-
-    @Test
     void testValidateWithErrorsWhenVenueContactMissingInFamilyDailyCauseList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(CIVIL_AND_FAMILY_CAUSE_LIST_VALID_JSON)) {
