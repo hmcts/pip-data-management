@@ -20,7 +20,6 @@ import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.HearingN
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.LocationNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.NotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.PayloadValidationException;
-import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ServiceToServiceException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.UnauthorisedRequestException;
 
 import javax.validation.ConstraintViolationException;
@@ -44,7 +43,6 @@ class GlobalExceptionHandlerTest {
 
     private static final String TEST_MESSAGE = "This is a test message";
     private static final String TEST_NAME = "TestName";
-    private static final String FAILED_SERVICE_TEST = "PublicationsService";
     private static final String ASSERTION_MESSAGE = "The message should match the message passed in";
     private static final String BAD_REQUEST_ASSERTION = "Status code should be of type: Not Found";
     private static final String NOT_FOUND_ASSERTION = "Status code should be of type: Bad Request";
@@ -259,19 +257,6 @@ class GlobalExceptionHandlerTest {
                      "Should be bad request exception");
         assertNotNull(responseEntity.getBody(), NOT_NULL_MESSAGE);
         assertTrue(responseEntity.getBody().getMessage().contains(TEST_MESSAGE), EXCEPTION_BODY_NOT_MATCH);
-    }
-
-    @Test
-    void testServiceToServiceException() {
-        ServiceToServiceException serviceToServiceException = new ServiceToServiceException(FAILED_SERVICE_TEST,
-                                                                                            TEST_MESSAGE);
-        ResponseEntity<ExceptionResponse> responseEntity = globalExceptionHandler.handle(serviceToServiceException);
-
-        assertEquals(HttpStatus.BAD_GATEWAY, responseEntity.getStatusCode(),
-                     "Should be bad gateway request exception");
-        assertNotNull(responseEntity.getBody(), NOT_NULL_MESSAGE);
-        assertTrue(responseEntity.getBody().getMessage().contains(TEST_MESSAGE), EXCEPTION_BODY_NOT_MATCH);
-        assertTrue(responseEntity.getBody().getMessage().contains(FAILED_SERVICE_TEST), EXCEPTION_BODY_NOT_MATCH);
     }
 
 }
