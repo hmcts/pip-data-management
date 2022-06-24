@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.pip.data.management.service;
 
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
+import nl.altindag.log.LogCaptor;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import org.junit.jupiter.api.AfterEach;
@@ -32,6 +33,8 @@ class PublicationServicesServiceTest {
     @Autowired
     PublicationServicesService publicationServicesService;
 
+    LogCaptor logCaptor = LogCaptor.forClass(PublicationServicesService.class);
+
     private static final Map<String, String> TEST_MAP = new ConcurrentHashMap<>();
 
     @BeforeEach
@@ -60,10 +63,8 @@ class PublicationServicesServiceTest {
         mockPublicationServicesEndpoint.enqueue(new MockResponse()
                                                     .setResponseCode(HttpStatus.BAD_REQUEST.value()));
 
-        assertTrue(
-            publicationServicesService.sendNoMatchArtefactsForReporting(TEST_MAP)
-                .contains("Request to Publications Service failed due to:"),
-            "Error message did not match expected"
-        );
+        publicationServicesService.sendNoMatchArtefactsForReporting(TEST_MAP);
+        assertTrue(logCaptor.getErrorLogs().get(0).contains("Request to Publications Service failed due to:"),
+                   "Exception was not logged.");
     }
 }

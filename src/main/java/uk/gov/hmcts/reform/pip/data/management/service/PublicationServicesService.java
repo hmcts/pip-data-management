@@ -32,7 +32,8 @@ public class PublicationServicesService {
                 .attributes(clientRegistrationId("publicationServicesApi"))
                 .retrieve().bodyToMono(String.class).block();
         } catch (WebClientException ex) {
-            return String.format(EXCEPTION_MESSAGE, SERVICE, ex.getMessage());
+            log.error(String.format(EXCEPTION_MESSAGE, SERVICE, ex.getMessage()));
+            return "";
         }
     }
 }
