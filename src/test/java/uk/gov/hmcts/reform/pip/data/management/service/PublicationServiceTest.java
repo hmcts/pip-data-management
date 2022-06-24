@@ -1089,7 +1089,7 @@ class PublicationServiceTest {
     }
 
     @Test
-    void testDeleteExpiredBlob() throws IOException {
+    void testRunDailyTasks() throws IOException {
         when(artefactRepository.findOutdatedArtefacts(LocalDate.now())).thenReturn(List.of(artefactWithPayloadUrl));
         when(artefactRepository.findAllNoMatchArtefacts()).thenReturn(List.of(noMatchArtefact));
         when(azureBlobService.deleteBlob(any())).thenReturn("Success");
@@ -1099,7 +1099,7 @@ class PublicationServiceTest {
             .thenReturn("Success no match artefacts sent");
         lenient().doNothing().when(artefactRepository).deleteAll(List.of(artefact));
         try (LogCaptor logCaptor = LogCaptor.forClass(PublicationService.class)) {
-            publicationService.deleteExpiredBlobs();
+            publicationService.runDailyTasks();
             assertEquals("Success no match artefacts sent", logCaptor.getInfoLogs().get(0), MESSAGES_MATCH);
             assertEquals(SUCCESS, logCaptor.getInfoLogs().get(1), MESSAGES_MATCH);
             assertEquals("1 outdated artefacts found and deleted for before " + LocalDate.now(),
@@ -1110,10 +1110,10 @@ class PublicationServiceTest {
     }
 
     @Test
-    void testDeleteExpiredBlobsWithNoBlobsFound() throws IOException {
+    void testRunDailyTasksWithNoBlobsFound() throws IOException {
         when(artefactRepository.findOutdatedArtefacts(LocalDate.now())).thenReturn(List.of());
         try (LogCaptor logCaptor = LogCaptor.forClass(PublicationService.class)) {
-            publicationService.deleteExpiredBlobs();
+            publicationService.runDailyTasks();
             assertEquals("0 outdated artefacts found and deleted for before " + LocalDate.now(),
                          logCaptor.getInfoLogs().get(0), MESSAGES_MATCH);
             verify(publicationServicesService, times(0))

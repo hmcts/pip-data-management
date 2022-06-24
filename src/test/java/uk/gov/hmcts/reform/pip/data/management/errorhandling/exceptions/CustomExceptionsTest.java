@@ -4,10 +4,13 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class CustomExceptionsTest {
 
     private static final String TEST_MESSAGE = "This is a test message";
+
+    private static final String FAILED_SERVICE_TEST = "PublicationsService";
     private static final String ASSERTION_MESSAGE = "The message should match the message passed in";
 
     @Test
@@ -76,4 +79,12 @@ class CustomExceptionsTest {
         assertEquals(TEST_MESSAGE, artefactNotFoundException.getMessage(), ASSERTION_MESSAGE);
     }
 
+    @Test
+    void testServiceToServiceException() {
+        ServiceToServiceException serviceToServiceException = new ServiceToServiceException(FAILED_SERVICE_TEST,
+                                                                                            TEST_MESSAGE);
+
+        assertTrue(serviceToServiceException.getMessage().contains(TEST_MESSAGE), ASSERTION_MESSAGE);
+        assertTrue(serviceToServiceException.getMessage().contains(FAILED_SERVICE_TEST), ASSERTION_MESSAGE);
+    }
 }

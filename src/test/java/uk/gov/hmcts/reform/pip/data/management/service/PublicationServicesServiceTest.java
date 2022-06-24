@@ -10,15 +10,17 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pip.data.management.Application;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ServiceToServiceException;
 
 import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SuppressWarnings("PMD.LawOfDemeter")
 @ExtendWith({MockitoExtension.class})
@@ -32,6 +34,9 @@ class PublicationServicesServiceTest {
     PublicationServicesService publicationServicesService;
 
     private static final Map<String, String> TEST_MAP = new ConcurrentHashMap<>();
+    private static final String EXCEPTION_THROWN_MESSAGE = "Expected exception has not been thrown";
+    private static final String EXCEPTION_RESPONSE_MESSAGE =
+        "Exception response does not contain the status code in the message";
 
     @BeforeEach
     void setup() throws IOException {
@@ -57,14 +62,12 @@ class PublicationServicesServiceTest {
     @Test
     void testFailedSend() {
         mockPublicationServicesEndpoint.enqueue(new MockResponse()
-                                                    .setResponseCode(HttpStatus.BAD_REQUEST.value()));
+                                                    .setResponseCode(501));
 
-        assertEquals(
-            publicationServicesService.sendNoMatchArtefactsForReporting(TEST_MAP),
-            "Sending map of no match artefacts: " + TEST_MAP
-                + ", to publication services failed with error message:"
-                + " 400 Bad Request from POST localhost:8081/notify/unidentified-blob",
-            "Error message failed to send."
-        );
+
+        ServiceToServiceException serviceToServiceException = assertThrows(ServiceToServiceException.class, () ->
+            publicationServicesService.sendNoMatchArtefactsForReporting(TEST_MAP), EXCEPTION_THROWN_MESSAGE);
+
+        assertTrue(serviceToServiceException.getMessage().contains("501"), EXCEPTION_RESPONSE_MESSAGE);
     }
 }
