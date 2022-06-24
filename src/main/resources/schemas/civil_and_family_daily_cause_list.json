@@ -183,7 +183,7 @@
       "$id": "#root/venue",
       "title": "venue",
       "type": "object",
-      "required": ["venueName", "venueContact"],
+      "required": ["venueName", "venueAddress", "venueContact"],
       "properties": {
         "venueName": {
           "$id": "#root/venue/venueName",
@@ -199,7 +199,8 @@
         "venueAddress": {
           "description": "Full venue address",
           "$id": "#root/venue/venueAddress",
-          "$ref": "#/definitions/address"
+          "$ref": "#/definitions/address",
+          "required": ["line", "postCode"]
         },
         "venueContact": {
           "$id": "#root/venue/venueContact",
