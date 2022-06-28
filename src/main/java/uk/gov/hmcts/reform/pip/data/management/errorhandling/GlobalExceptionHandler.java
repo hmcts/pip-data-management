@@ -37,7 +37,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(DataStorageNotFoundException.class)
     public ResponseEntity<ExceptionResponse> handle(DataStorageNotFoundException ex) {
 
-        log.warn(writeLog("404, failure when connecting to Blob store"));
+        log.error(writeLog("404, failure when connecting to Blob store"));
 
         ExceptionResponse exceptionResponse = new ExceptionResponse();
         exceptionResponse.setMessage(ex.getMessage());
@@ -49,7 +49,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<ExceptionResponse> handle(NotFoundException ex) {
 
-        log.warn(writeLog("404, unable to find artefact. Details: " + ex.getMessage()));
+        log.error(writeLog("404, unable to find artefact. Details: " + ex.getMessage()));
 
         ExceptionResponse exceptionResponse = new ExceptionResponse();
         exceptionResponse.setMessage(ex.getMessage());
@@ -62,7 +62,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MissingRequestHeaderException.class)
     public ResponseEntity<ExceptionResponse> handle(MissingRequestHeaderException ex) {
 
-        log.warn(writeLog(String.format("400, request heading %s missing", ex.getHeaderName())));
+        log.error(writeLog(String.format("400, request heading %s missing", ex.getHeaderName())));
 
         ExceptionResponse exceptionResponse = new ExceptionResponse();
         exceptionResponse.setMessage(
@@ -75,7 +75,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<ExceptionResponse> handle(MethodArgumentTypeMismatchException ex) {
 
-        log.warn(writeLog("400, provided unknown type for field " + ex.getName()));
+        log.error(writeLog("400, provided unknown type for field " + ex.getName()));
 
         ExceptionResponse exceptionResponse = new ExceptionResponse();
         exceptionResponse.setMessage(String.format(
@@ -89,7 +89,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(HeaderValidationException.class)
     public ResponseEntity<ExceptionResponse> handle(HeaderValidationException ex) {
 
-        log.warn(writeLog("400, error while validating headers"));
+        log.error(writeLog("400, error while validating headers"));
 
         ExceptionResponse exceptionResponse = new ExceptionResponse();
         exceptionResponse.setMessage(ex.getMessage());
@@ -101,7 +101,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(PayloadValidationException.class)
     public ResponseEntity<ExceptionResponse> handle(PayloadValidationException ex) {
 
-        log.warn(writeLog("400, error while validating JSON payload"));
+        log.error(writeLog("400, error while validating JSON payload"));
 
         ExceptionResponse exceptionResponse = new ExceptionResponse();
         exceptionResponse.setMessage(ex.getMessage());
@@ -113,7 +113,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BlobStorageException.class)
     public ResponseEntity<ExceptionResponse> handle(BlobStorageException ex) {
 
-        log.warn(writeLog("404, error while communicating with blob store"));
+        log.error(writeLog("404, error while communicating with blob store"));
 
         ExceptionResponse exceptionResponse = new ExceptionResponse();
         exceptionResponse.setMessage(ex.getMessage());
@@ -124,7 +124,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UnauthorisedRequestException.class)
     public ResponseEntity<ExceptionResponse> handle(UnauthorisedRequestException ex) {
 
-        log.warn(writeLog("401, user has attempted to access a restricted endpoint"));
+        log.error(writeLog("401, user has attempted to access a restricted endpoint"));
 
         ExceptionResponse exceptionResponse = new ExceptionResponse();
         exceptionResponse.setMessage(ex.getMessage());
@@ -135,7 +135,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(FlatFileException.class)
     public ResponseEntity<ExceptionResponse> handle(FlatFileException ex) {
 
-        log.warn(writeLog("400, failure while handling a flat file"));
+        log.error(writeLog("400, failure while handling a flat file"));
 
         ExceptionResponse exceptionResponse = new ExceptionResponse();
         exceptionResponse.setMessage(ex.getMessage());
@@ -146,7 +146,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(CsvParseException.class)
     public ResponseEntity<ExceptionResponse> handle(CsvParseException ex) {
 
-        log.warn(writeLog("400, error while parsing locations CSV"));
+        log.error(writeLog("400, error while parsing locations CSV"));
 
         ExceptionResponse exceptionResponse = new ExceptionResponse();
         exceptionResponse.setMessage(ex.getMessage());
@@ -157,7 +157,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<ExceptionResponse> handle(ConstraintViolationException ex) {
 
-        log.warn(writeLog("400, error while validating headers / body"));
+        log.error(writeLog("400, error while validating headers / body"));
 
         ExceptionResponse exceptionResponse = new ExceptionResponse();
         exceptionResponse.setMessage(ex.getMessage());
