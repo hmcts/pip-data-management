@@ -112,6 +112,16 @@
           ],
           "default": "",
           "pattern": "^.*$"
+        },
+        "johKnownAs": {
+          "description": "Name and salutations, titles to be presented on publications",
+          "title": "JOH Known As",
+          "type": "string",
+          "examples": [
+            "judge"
+          ],
+          "default": "",
+          "pattern": "^.*$"
         }
       }
     }
@@ -345,14 +355,6 @@
                                               ],
                                               "pattern": "^.*$"
                                             },
-                                            "caseJurisdictionET": {
-                                              "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/caseJurisdictionET",
-                                              "title": "Case Jurisdiction ET",
-                                              "type": "string",
-                                              "default": "",
-                                              "examples": [],
-                                              "pattern": "^.*$"
-                                            },
                                             "caseNumber": {
                                               "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/caseNumber",
                                               "title": "Case Number",
@@ -372,6 +374,17 @@
                                               "default": "",
                                               "examples": [
                                                 "[2 of 3]"
+                                              ],
+                                              "pattern": "^.*$"
+                                            },
+                                            "caseType": {
+                                              "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/caseType",
+                                              "title": "Case Type",
+                                              "description": "This will be type of the case.",
+                                              "type": "string",
+                                              "default": "",
+                                              "examples": [
+                                                "normal"
                                               ],
                                               "pattern": "^.*$"
                                             }
