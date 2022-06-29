@@ -35,7 +35,7 @@ class AccountManagementServiceTest {
     @Test
     void testIsAuthorised() throws IOException {
         mockAccountManagementEndpoint = new MockWebServer();
-        mockAccountManagementEndpoint.start(8081);
+        mockAccountManagementEndpoint.start(6969);
         mockAccountManagementEndpoint.enqueue(new MockResponse().setBody("true")
                                                   .addHeader("Content-Type", "application/json"));
 
@@ -51,7 +51,7 @@ class AccountManagementServiceTest {
     @Test
     void testIsAuthorisedError() throws IOException {
         mockAccountManagementEndpoint = new MockWebServer();
-        mockAccountManagementEndpoint.start(8081);
+        mockAccountManagementEndpoint.start(6969);
         mockAccountManagementEndpoint.enqueue(new MockResponse().setResponseCode(HttpStatus.BAD_REQUEST.value()));
 
         boolean isAuthorised =
