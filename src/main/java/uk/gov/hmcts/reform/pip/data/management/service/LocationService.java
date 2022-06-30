@@ -18,11 +18,13 @@ import uk.gov.hmcts.reform.pip.data.management.models.location.LocationType;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 /**
  * Service to handle the retrieval and filtering of courts.
@@ -103,25 +105,38 @@ public class LocationService {
 
             List<LocationCsv> locationCsvList = csvToBean.parse();
 
-            Map<Integer, Location> locationCsvMap = new ConcurrentHashMap<>();
-            for (LocationCsv locationCsv : locationCsvList) {
-                if (locationCsvMap.containsKey(locationCsv.getUniqueId())) {
-                    Location location = locationCsvMap.get(locationCsv.getUniqueId());
+            Map<Integer, List<LocationCsv>> locations = locationCsvList.stream()
+                .collect(Collectors.groupingBy(LocationCsv::getUniqueId));
+
+            List<Location> savedLocations = new ArrayList<>();
+            locations.values().forEach(groupedLocation -> {
+
+                Location location = new Location(groupedLocation.get(0));
+                groupedLocation.remove(0);
+
+                for (LocationCsv locationCsv : groupedLocation) {
                     location.addLocationReference(new LocationReference(
                         locationCsv.getProvenance(),
                         locationCsv.getProvenanceLocationId(),
                         LocationType.valueOfCsv(locationCsv.getProvenanceLocationType())));
-                } else {
-                    Location location = new Location(locationCsv);
-                    locationCsvMap.put(locationCsv.getUniqueId(), location);
                 }
-            }
 
-            locationCsvMap.forEach((key, value) -> locationRepository.save(value));
-            return locationCsvMap.values();
+                savedLocations.add(locationRepository.save(location));
+            });
+
+            return savedLocations;
 
         } catch (Exception exception) {
             throw new CsvParseException(exception.getMessage());
         }
     }
+
+    /**
+     * This method will delete a location from the database.
+     * @param locationId The ID of the location to delete.
+     */
+    public void deleteLocation(Integer locationId) {
+        locationRepository.deleteById(locationId);
+    }
+
 }

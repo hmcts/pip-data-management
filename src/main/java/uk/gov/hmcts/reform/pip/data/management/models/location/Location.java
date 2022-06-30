@@ -79,10 +79,10 @@ public class Location {
     private List<String> welshRegion;
 
     public Location(LocationCsv locationCsv) {
+        this.locationId = locationCsv.getUniqueId();
         this.name = locationCsv.getLocationName();
-        this.region = locationCsv.getRegion().stream().collect(Collectors.toList());
-        this.jurisdiction = locationCsv.getJurisdiction().stream()
-            .collect(Collectors.toList());
+        this.region = new ArrayList<>(locationCsv.getRegion());
+        this.jurisdiction = new ArrayList<>(locationCsv.getJurisdiction());
         this.locationType = LocationType.valueOfCsv(locationCsv.getProvenanceLocationType());
         LocationReference locationReference = new LocationReference(
             locationCsv.getProvenance(),
@@ -90,8 +90,8 @@ public class Location {
             LocationType.valueOfCsv(locationCsv.getProvenanceLocationType()));
         this.locationReferenceList.add(locationReference);
         this.welshName = locationCsv.getWelshLocationName();
-        this.welshRegion = locationCsv.getWelshRegion().stream().collect(Collectors.toList());
-        this.welshJurisdiction = locationCsv.getWelshJurisdiction().stream().collect(Collectors.toList());
+        this.welshRegion = new ArrayList<>(locationCsv.getWelshRegion());
+        this.welshJurisdiction = new ArrayList<>(locationCsv.getWelshJurisdiction());
     }
 
     /**

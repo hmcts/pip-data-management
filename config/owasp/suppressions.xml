@@ -1,61 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.3.xsd">
-  <suppress until="2030-01-01">
-    <notes><![CDATA[
-     Suppressing as it's a false positive (see: https://pivotal.io/security/cve-2018-1258)
-   ]]></notes>
-    <gav regex="true">^org\.springframework\.security:spring-security-crypto:5.4.[0-5]</gav>
-    <cpe>cpe:/a:pivotal_software:spring_security</cpe>
-    <cve>CVE-2018-1258</cve>
-  </suppress>
-  <suppress>
-    <notes><![CDATA[
-        CVE is a json vulnerability for Node projects. False positive reported at https://github.com/jeremylong/DependencyCheck/issues/2794
-    ]]></notes>
-    <cve>CVE-2020-10663</cve>
-    <cve>CVE-2020-7712</cve>
-  </suppress>
-  <suppress>
-    <notes><![CDATA[
-    file name: commons-io-2.6.jar
-    ]]></notes>
-    <packageUrl regex="true">^pkg:maven/commons\-io/commons\-io@.*$</packageUrl>
-    <cpe>cpe:/a:apache:commons_io</cpe>
-  </suppress>
-  <suppress>
-    <notes><![CDATA[
-    file name: spring-security-crypto-5.4.6.jar
-    ]]></notes>
-    <packageUrl regex="true">^pkg:maven/org\.springframework\.security/spring\-security\-crypto@.*$</packageUrl>
-    <cve>CVE-2018-1258</cve>
-  </suppress>
-  <suppress>
-    <notes><![CDATA[
-   file name: jakarta.el-3.0.3.jar
-   ]]></notes>
-    <packageUrl regex="true">^pkg:maven/org.glassfish/jakarta.el@3.0.3</packageUrl>
-    <cve>CVE-2021-28170</cve>
-  </suppress>
   <suppress>
     <notes><![CDATA[
    file name: guava-28.2-jre.jar
    ]]></notes>
     <packageUrl regex="true">^pkg:maven/com.google.guava/guava@28.2-jre</packageUrl>
     <cve>CVE-2020-8908</cve>
-  </suppress>
-  <suppress base="true">
-    <notes><![CDATA[
-         FP per #3889
-         ]]></notes>
-    <packageUrl regex="true">^pkg:maven/io\.netty/netty\-tcnative\-classes@.*$</packageUrl>
-    <cpe>cpe:/a:netty:netty</cpe>
-  </suppress>
-  <suppress>
-    <notes><![CDATA[
-            jackson-databind-2.12.6.jar
-            ]]></notes>
-    <packageUrl regex="true">^pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.12.6</packageUrl>
-    <cve>CVE-2020-36518</cve>
   </suppress>
   <suppress>
     <notes><![CDATA[
@@ -78,6 +28,7 @@
     <cve>CVE-2020-5421</cve>
     <cve>CVE-2018-1257</cve>
     <cve>CVE-2018-11039</cve>
+    <cve>CVE-2022-22970</cve>
   </suppress>
   <suppress>
     <notes><![CDATA[
@@ -101,6 +52,7 @@
     <cve>CVE-2020-5421</cve>
     <cve>CVE-2018-1257</cve>
     <cve>CVE-2018-11039</cve>
+    <cve>CVE-2022-22970</cve>
   </suppress>
   <suppress>
     <notes><![CDATA[
@@ -140,30 +92,8 @@
     <cve>CVE-2018-11039</cve>
   </suppress>
   <suppress>
-    <notes><![CDATA[
-   file name: spring-security-core-5.5.6.jar
-   ]]></notes>
-    <packageUrl regex="true">^pkg:maven/org.springframework.security/spring-security-core@5.5.6</packageUrl>
-    <vulnerabilityName>CWE-862: Missing Authorization</vulnerabilityName>
-  </suppress>
-  <suppress>
-    <notes>Netty vulnerability, effects Java 6 and under</notes>
-    <packageUrl regex="true">^pkg:maven/io.netty/netty-.*@4.1.76.Final</packageUrl>
-    <cve>CVE-2022-24823</cve>
-  </suppress>
-  <suppress>
     <notes><![CDATA[Spring old vuln thats been re-flagged recently, doesnt look like we are impacted]]></notes>
     <packageUrl regex="true">^pkg:maven/org\.springframework/spring.*$</packageUrl>
     <cve>CVE-2016-1000027</cve>
-  </suppress>
-  <suppress>
-    <notes><![CDATA[file name: spring-plugin-core-2.0.0.RELEASE.jar]]></notes>
-    <packageUrl regex="true">^pkg:maven/org.springframework.plugin/spring-plugin-core@2.0.0.RELEASE</packageUrl>
-    <cve>CVE-2022-22970</cve>
-  </suppress>
-  <suppress>
-    <notes><![CDATA[file name: spring-plugin-metadata-2.0.0.RELEASE.jar]]></notes>
-    <packageUrl regex="true">^pkg:maven/org.springframework.plugin/spring-plugin-metadata@2.0.0.RELEASE</packageUrl>
-    <cve>CVE-2022-22970</cve>
   </suppress>
 </suppressions>
