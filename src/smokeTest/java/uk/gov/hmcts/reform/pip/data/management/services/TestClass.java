@@ -14,4 +14,4 @@ class TestClass {
         assertEquals("Placeholder Test", "Placeholder Test", "Placeholder test for smoke tests");
     }
 
-} 
+}
