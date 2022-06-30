@@ -136,7 +136,14 @@ public class LocationService {
      * @param locationId The ID of the location to delete.
      */
     public void deleteLocation(Integer locationId) {
-        locationRepository.deleteById(locationId);
+        Optional<Location> location = locationRepository.getLocationByLocationId(locationId);
+
+        if (location.isPresent()) {
+            locationRepository.deleteById(locationId);
+        } else {
+            throw new LocationNotFoundException(
+                String.format("No location found with the id: %s", locationId));
+        }
     }
 
 }

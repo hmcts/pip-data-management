@@ -92,15 +92,13 @@ public class LocationController {
 
     @ApiResponses({
         @ApiResponse(code = 200, message = "Location has been deleted"),
-        @ApiResponse(code = 403, message = "User has not been authorized")
+        @ApiResponse(code = 403, message = "User has not been authorized"),
+        @ApiResponse(code = 404, message = "No Location found with the id {locationId}")
     })
     @DeleteMapping(value = "/{locationId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> deleteLocation(@PathVariable Integer locationId) {
         locationService.deleteLocation(locationId);
         return ResponseEntity.ok("Location has been deleted");
     }
-
-
-
 
 }

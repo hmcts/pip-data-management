@@ -288,5 +288,13 @@ class LocationServiceTest {
         }
     }
 
+    void testDeleteLocation() {
+
+
+
+
+
+    }
+
 }
 
