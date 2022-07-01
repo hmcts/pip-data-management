@@ -19,7 +19,6 @@ def setupTestSecrets() {
       secret('app-pip-account-management-scope', 'ACCOUNT_MANAGEMENT_AZ_API'),
       secret('app-tenant', 'TENANT_ID'),
       secret('test-user-id', 'TEST_USER_ID'),
-
     ]) {
     env.CLIENT_ID = "${CLIENT_ID}"
     env.CLIENT_SECRET = "${CLIENT_SECRET}"
