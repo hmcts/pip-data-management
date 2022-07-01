@@ -1,6 +1,7 @@
-package uk.gov.hmcts.reform.pip.data.management.controllers;
+package uk.gov.hmcts.reform.pip.data.management.config;
 
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -9,32 +10,40 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import uk.gov.hmcts.reform.pip.data.management.Application;
 
-import static org.hamcrest.Matchers.containsString;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+/**
+ * Built-in feature which saves service's swagger specs in temporary directory.
+ * Each travis run on master should automatically save and upload (if updated) documentation.
+ */
 @SpringBootTest(classes = {Application.class},
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles(profiles = "test")
 @AutoConfigureMockMvc
+@ActiveProfiles(profiles = "functional")
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
-class LiveCaseStatusApiTest {
+class SwaggerPublisherTest {
 
     @Autowired
-    private MockMvc mockMvc;
+    private MockMvc mvc;
 
+    @DisplayName("Generate swagger documentation")
     @Test
-    void testGetLiveCaseReturnsSuccess() throws Exception {
-        mockMvc.perform(get("/lcsu/1"))
+    @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+    void generateDocs() throws Exception {
+        byte[] specs = mvc.perform(get("/v3/api-docs"))
             .andExpect(status().isOk())
-            .andExpect(content().string(containsString("Mutsu Court")));
-    }
+            .andReturn()
+            .getResponse()
+            .getContentAsByteArray();
 
-    @Test
-    void testGetLiveCaseReturnsNotFound() throws Exception {
-        mockMvc.perform(get("/lcsu/5"))
-            .andExpect(status().isNotFound())
-            .andExpect(content().string(containsString("No live cases found for court id: 5")));
+        try (OutputStream outputStream = Files.newOutputStream(Paths.get("/tmp/swagger-specs.json"))) {
+            outputStream.write(specs);
+        }
+
     }
 }

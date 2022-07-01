@@ -7,6 +7,28 @@ def product = "pip"
 def component = "data-management"
 def kv = product + '-ss-kv'
 
+def setupTestSecrets() {
+  def bootstap_env = env.ENV == "prod" || env.ENV == "demo" || env.ENV == "sbox" ? env.ENV : "stg"
+  azureKeyVault(
+    keyVaultURL: "https://pip-bootstrap-${bootstap_env}-kv.vault.azure.net/",
+    secrets: [
+      secret('app-pip-data-management-id', 'CLIENT_ID'),
+      secret('app-pip-data-management-pwd', 'CLIENT_SECRET'),
+      secret('app-pip-data-management-scope', 'APP_URI'),
+      secret('app-pip-subscription-management-scope', 'SUBSCRIPTION_MANAGEMENT_AZ_API'),
+      secret('app-pip-account-management-scope', 'ACCOUNT_MANAGEMENT_AZ_API'),
+      secret('test-user-id', 'TEST_USER_ID'),
+
+    ]) {
+    env.CLIENT_ID = "${CLIENT_ID}"
+    env.CLIENT_SECRET = "${CLIENT_SECRET}"
+    env.APP_URI = "${APP_URI}"
+    env.SUBSCRIPTION_MANAGEMENT_AZ_API = "${SUBSCRIPTION_MANAGEMENT_AZ_API}"
+    env.ACCOUNT_MANAGEMENT_AZ_API = "${ACCOUNT_MANAGEMENT_AZ_API}"
+    env.TEST_USER_ID = "${TEST_USER_ID}"
+  }
+}
+
 static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
   [ $class: 'AzureKeyVaultSecret',
     secretType: 'Secret',
@@ -18,6 +40,23 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
 
 withPipeline(type, product, component) {
 
+  onMaster() {
+    env.ENV = 'stg'
+  }
+  onPR() {
+    env.ENV = 'dev'
+  }
+  onDemo {
+    env.ENV = 'demo'
+  }
+  onPerftest {
+    env.ENV = 'perftest'
+  }
+  onIthc {
+    env.ENV = 'ithc'
+  }
+
+  setupTestSecrets()
   enableSlackNotifications('#pip-build-notices')
   enableAksStagingDeployment()
   disableLegacyDeployment()

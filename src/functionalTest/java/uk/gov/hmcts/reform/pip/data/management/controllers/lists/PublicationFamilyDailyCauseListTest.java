@@ -40,10 +40,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
-@ActiveProfiles(profiles = "test")
+@ActiveProfiles(profiles = "functional")
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
 @WithMockUser(username = "admin", authorities = { "APPROLE_api.request.admin" })
-class PublicationSjpPublicTest {
+class PublicationFamilyDailyCauseListTest {
 
     @Autowired
     BlobContainerClient blobContainerClient;
@@ -73,9 +73,9 @@ class PublicationSjpPublicTest {
 
     @DisplayName("Should create a valid artefact and return the created artefact to the user")
     @Test
-    void testCreationOfValidSjpPublicList() throws Exception {
+    void testCreationOfValidFamilyDailyCauseList() throws Exception {
         try (InputStream mockFile = this.getClass().getClassLoader()
-            .getResourceAsStream("data/sjp-public-list/sjpPublicList.json")) {
+            .getResourceAsStream("data/family-daily-cause-list/familyDailyCauseList.json")) {
 
             MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
                 .post(POST_URL)
@@ -85,9 +85,9 @@ class PublicationSjpPublicTest {
                 .header(PublicationConfiguration.DISPLAY_FROM_HEADER, LocalDateTime.now())
                 .header(PublicationConfiguration.DISPLAY_TO_HEADER, LocalDateTime.now().plusMonths(1))
                 .header(PublicationConfiguration.COURT_ID, 1)
-                .header(PublicationConfiguration.LIST_TYPE, ListType.SJP_PUBLIC_LIST)
-                .header(PublicationConfiguration.CONTENT_DATE, LocalDateTime.now())
+                .header(PublicationConfiguration.LIST_TYPE, ListType.FAMILY_DAILY_CAUSE_LIST)
                 .header(PublicationConfiguration.LANGUAGE_HEADER, Language.ENGLISH)
+                .header(PublicationConfiguration.CONTENT_DATE, LocalDateTime.now())
                 .content(mockFile.readAllBytes())
                 .contentType(MediaType.APPLICATION_JSON);
 
@@ -105,9 +105,9 @@ class PublicationSjpPublicTest {
 
     @DisplayName("Should return an error message back to the user when creating an invalid blob")
     @Test
-    void testCreationOfInvalidSjpPublicList() throws Exception {
+    void testCreationOfInvalidFamilyDailyCauseListList() throws Exception {
         try (InputStream mockFile = this.getClass().getClassLoader()
-            .getResourceAsStream("data/sjp-public-list/sjpPublicListInvalid.json")) {
+            .getResourceAsStream("data/family-daily-cause-list/familyDailyCauseListInvalid.json")) {
 
             MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
                 .post(POST_URL)
@@ -117,9 +117,9 @@ class PublicationSjpPublicTest {
                 .header(PublicationConfiguration.DISPLAY_FROM_HEADER, LocalDateTime.now())
                 .header(PublicationConfiguration.DISPLAY_TO_HEADER, LocalDateTime.now().plusMonths(1))
                 .header(PublicationConfiguration.COURT_ID, 1)
-                .header(PublicationConfiguration.LIST_TYPE, ListType.SJP_PUBLIC_LIST)
-                .header(PublicationConfiguration.CONTENT_DATE, LocalDateTime.now())
+                .header(PublicationConfiguration.LIST_TYPE, ListType.FAMILY_DAILY_CAUSE_LIST)
                 .header(PublicationConfiguration.LANGUAGE_HEADER, Language.ENGLISH)
+                .header(PublicationConfiguration.CONTENT_DATE, LocalDateTime.now())
                 .content(mockFile.readAllBytes())
                 .contentType(MediaType.APPLICATION_JSON);
 
@@ -134,8 +134,8 @@ class PublicationSjpPublicTest {
             );
 
             assertTrue(
-                exceptionResponse.getMessage().contains("offenceTitle"),
-                "Offence Title is not displayed in the exception response"
+                exceptionResponse.getMessage().contains("caseNumber"),
+                "Case Number is not displayed in the exception response"
             );
         }
     }
