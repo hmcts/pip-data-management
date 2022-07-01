@@ -17,6 +17,7 @@ def setupTestSecrets() {
       secret('app-pip-data-management-scope', 'APP_URI'),
       secret('app-pip-subscription-management-scope', 'SUBSCRIPTION_MANAGEMENT_AZ_API'),
       secret('app-pip-account-management-scope', 'ACCOUNT_MANAGEMENT_AZ_API'),
+      secret('app-tenant', 'TENANT_ID'),
       secret('test-user-id', 'TEST_USER_ID'),
 
     ]) {
@@ -25,6 +26,8 @@ def setupTestSecrets() {
     env.APP_URI = "${APP_URI}"
     env.SUBSCRIPTION_MANAGEMENT_AZ_API = "${SUBSCRIPTION_MANAGEMENT_AZ_API}"
     env.ACCOUNT_MANAGEMENT_AZ_API = "${ACCOUNT_MANAGEMENT_AZ_API}"
+    env.ACCOUNT_MANAGEMENT_AZ_API = "${ACCOUNT_MANAGEMENT_AZ_API}"
+    env.TENANT_ID = "${TENANT_ID}"
     env.TEST_USER_ID = "${TEST_USER_ID}"
   }
 }
