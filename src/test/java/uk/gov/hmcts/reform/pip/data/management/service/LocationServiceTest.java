@@ -317,7 +317,8 @@ class LocationServiceTest {
         LocationNotFoundException locationNotFoundException =
             assertThrows(LocationNotFoundException.class, () -> locationService.deleteLocation(locationId));
 
-        assertEquals("No location found with the id: 1", locationNotFoundException.getMessage());
+        assertEquals("No location found with the id: 1", locationNotFoundException.getMessage(),
+                     "Exception does not contain expected message");
     }
 
 }
