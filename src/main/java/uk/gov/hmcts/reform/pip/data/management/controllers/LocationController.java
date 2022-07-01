@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import uk.gov.hmcts.reform.pip.data.management.authentication.roles.IsAdmin;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationViews;
 import uk.gov.hmcts.reform.pip.data.management.service.LocationService;
@@ -95,7 +96,8 @@ public class LocationController {
         @ApiResponse(code = 403, message = "User has not been authorized"),
         @ApiResponse(code = 404, message = "No Location found with the id {locationId}")
     })
-    @DeleteMapping(value = "/{locationId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @DeleteMapping("/{locationId}")
+    @IsAdmin
     public ResponseEntity<String> deleteLocation(@PathVariable Integer locationId) {
         locationService.deleteLocation(locationId);
         return ResponseEntity.ok(String.format("Location with id %s has been deleted", locationId));

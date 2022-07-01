@@ -117,8 +117,7 @@ public class LocationService {
                         locationCsv.getProvenanceLocationId(),
                         LocationType.valueOfCsv(locationCsv.getProvenanceLocationType()))));
 
-                locationRepository.save(location);
-                savedLocations.add(location);
+                savedLocations.add(locationRepository.save(location));
             });
 
             return savedLocations;
