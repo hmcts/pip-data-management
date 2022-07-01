@@ -91,7 +91,9 @@ public class LocationService {
     }
 
     /**
-     * This method will upload location into the database.
+     * This method will upload locations into the database. It uses the P&I id in the CSV file as the unique identifier
+     * If the ID already exists, then the data will be overwritten, including all of the reference data. It will
+     * not delete records for added safety. Deleting records should be done via the DELETE endpoint instead.
      * @param locationList The location list file to upload.
      * @return The collection of new locations that have been created.
      */
@@ -99,11 +101,9 @@ public class LocationService {
 
         try (InputStreamReader inputStreamReader = new InputStreamReader(locationList.getInputStream());
              Reader reader = new BufferedReader(inputStreamReader)) {
-            CsvToBean<LocationCsv> csvToBean = new CsvToBeanBuilder<LocationCsv>(reader)
-                .withType(LocationCsv.class)
-                .build();
 
-            List<LocationCsv> locationCsvList = csvToBean.parse();
+            List<LocationCsv> locationCsvList = new CsvToBeanBuilder<LocationCsv>(reader).withType(LocationCsv.class)
+                .build().parse();
 
             Map<Integer, List<LocationCsv>> locations = locationCsvList.stream()
                 .collect(Collectors.groupingBy(LocationCsv::getUniqueId));
@@ -112,16 +112,15 @@ public class LocationService {
             locations.values().forEach(groupedLocation -> {
 
                 Location location = new Location(groupedLocation.get(0));
-                groupedLocation.remove(0);
 
-                for (LocationCsv locationCsv : groupedLocation) {
+                groupedLocation.stream().skip(1).forEach(locationCsv ->
                     location.addLocationReference(new LocationReference(
                         locationCsv.getProvenance(),
                         locationCsv.getProvenanceLocationId(),
-                        LocationType.valueOfCsv(locationCsv.getProvenanceLocationType())));
-                }
+                        LocationType.valueOfCsv(locationCsv.getProvenanceLocationType()))));
 
-                savedLocations.add(locationRepository.save(location));
+                locationRepository.save(location);
+                savedLocations.add(location);
             });
 
             return savedLocations;
