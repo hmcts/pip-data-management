@@ -235,4 +235,4 @@ wrapper {
   distributionType = Wrapper.DistributionType.ALL
 }
 
-ext['log4j2.version'] = '2.17.1'
+ext['log4j2.version'] = '2.17.2'
