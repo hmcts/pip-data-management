@@ -107,6 +107,7 @@ class PublicationServiceTest {
     private static final String VALIDATION_MORE_THAN_PUBLIC = "More than the public artefact has been found";
 
     private static final LocalDateTime CONTENT_DATE = LocalDateTime.now();
+    private static final LocalDateTime START_OF_TODAY_CONTENT_DATE = LocalDateTime.now().toLocalDate().atStartOfDay();
 
     private Artefact artefact;
     private Artefact artefactClassified;
@@ -435,7 +436,7 @@ class PublicationServiceTest {
             .artefactId(ARTEFACT_ID)
             .sourceArtefactId(SOURCE_ARTEFACT_ID)
             .provenance(PROVENANCE)
-            .contentDate(CONTENT_DATE)
+            .contentDate(START_OF_TODAY_CONTENT_DATE)
             .payload(PAYLOAD_URL)
             .search(SEARCH_VALUES)
             .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
@@ -449,7 +450,7 @@ class PublicationServiceTest {
             .sourceArtefactId(SOURCE_ARTEFACT_ID)
             .provenance(PROVENANCE)
             .locationId(NO_COURT_EXISTS_IN_REFERENCE_DATA)
-            .contentDate(CONTENT_DATE)
+            .contentDate(START_OF_TODAY_CONTENT_DATE)
             .payload(PAYLOAD_URL)
             .search(SEARCH_VALUES)
             .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
