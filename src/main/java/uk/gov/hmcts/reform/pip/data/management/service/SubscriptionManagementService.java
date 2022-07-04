@@ -9,9 +9,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientException;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-
 @Slf4j
 @Component
 public class SubscriptionManagementService {
@@ -25,10 +22,23 @@ public class SubscriptionManagementService {
     public String sendArtefactForSubscription(Artefact artefact) {
         log.info("Attempting to send trigger to " + url);
         try {
-            return webClient.post().uri(new URI(url + "/subscription/artefact-recipients"))
+            return webClient.post().uri(url + "/subscription/artefact-recipients")
                 .body(BodyInserters.fromValue(artefact))
                 .retrieve().bodyToMono(String.class).block();
-        } catch (WebClientException | URISyntaxException ex) {
+        } catch (WebClientException ex) {
+            log.error(String.format("Request failed with error message: %s", ex.getMessage()
+            ));
+            return "Artefact failed to send: " + artefact.getArtefactId();
+        }
+    }
+
+    public String sendDeletedArtefactForThirdParties(Artefact artefact) {
+        log.info("Attempting to send deletion to " + url);
+        try {
+            return webClient.post().uri(url + "/subscription/deleted-artefact")
+                .body(BodyInserters.fromValue(artefact))
+                .retrieve().bodyToMono(String.class).block();
+        } catch (WebClientException ex) {
             log.error(String.format("Request failed with error message: %s", ex.getMessage()
             ));
             return "Artefact failed to send: " + artefact.getArtefactId();

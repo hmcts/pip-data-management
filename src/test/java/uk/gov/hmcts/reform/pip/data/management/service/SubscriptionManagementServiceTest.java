@@ -4,6 +4,8 @@ import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import nl.altindag.log.LogCaptor;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -32,27 +34,34 @@ class SubscriptionManagementServiceTest {
         .build();
     private static MockWebServer mockSubscriptionManagementEndpoint;
 
+    private static final String TRIGGER_RECEIVED = "Trigger has been received";
+
     @Autowired
     SubscriptionManagementService subscriptionManagementService;
 
     LogCaptor logCaptor = LogCaptor.forClass(SubscriptionManagementService.class);
 
-    @Test
-    void testSendTrigger() throws IOException {
+    @BeforeEach
+    void setup() throws IOException {
         mockSubscriptionManagementEndpoint = new MockWebServer();
         mockSubscriptionManagementEndpoint.start(4550);
-        mockSubscriptionManagementEndpoint.enqueue(new MockResponse()
-                                                       .setBody("Trigger has been received"));
-        assertEquals("Trigger has been received", subscriptionManagementService.sendArtefactForSubscription(ARTEFACT),
-                     "Trigger is not being sent"
-        );
+    }
+
+    @AfterEach
+    void teardown() throws IOException {
         mockSubscriptionManagementEndpoint.shutdown();
     }
 
     @Test
-    void testFailedSend() throws IOException {
-        mockSubscriptionManagementEndpoint = new MockWebServer();
-        mockSubscriptionManagementEndpoint.start(4550);
+    void testSendTrigger() {
+        mockSubscriptionManagementEndpoint.enqueue(new MockResponse()
+                                                       .setBody(TRIGGER_RECEIVED));
+        assertEquals(TRIGGER_RECEIVED, subscriptionManagementService.sendArtefactForSubscription(ARTEFACT),
+                     "Trigger is not being sent");
+    }
+
+    @Test
+    void testFailedSend() {
         mockSubscriptionManagementEndpoint.enqueue(new MockResponse()
                                                        .setResponseCode(HttpStatus.BAD_REQUEST.value()));
         assertEquals(
@@ -60,7 +69,29 @@ class SubscriptionManagementServiceTest {
             "Artefact failed to send: " + ARTEFACT.getArtefactId(),
             "Error message failed to send."
         );
-        assertTrue(logCaptor.getErrorLogs().get(0).contains("Request failed with error message: "), "Exception was "
-            + "not logged.");
+        assertTrue(logCaptor.getErrorLogs().get(0).contains("Request failed with error message: "),
+                   "Exception was not logged.");
+    }
+
+    @Test
+    void testSendDeletedArtefact() {
+        mockSubscriptionManagementEndpoint.enqueue(new MockResponse()
+                                                       .setBody(TRIGGER_RECEIVED)
+                                                       .setResponseCode(200));
+        assertEquals(TRIGGER_RECEIVED, subscriptionManagementService.sendDeletedArtefactForThirdParties(ARTEFACT),
+                     "Trigger is not being sent");
+    }
+
+    @Test
+    void testSendDeletedFailedSend() {
+        mockSubscriptionManagementEndpoint.enqueue(new MockResponse()
+                                                       .setResponseCode(HttpStatus.BAD_REQUEST.value()));
+        assertEquals(
+            subscriptionManagementService.sendDeletedArtefactForThirdParties(ARTEFACT),
+            "Artefact failed to send: " + ARTEFACT.getArtefactId(),
+            "Error message failed to send."
+        );
+        assertTrue(logCaptor.getErrorLogs().get(0).contains("Request failed with error message: "),
+                   "Exception was not logged.");
     }
 }
