@@ -154,7 +154,7 @@ class PublicationServiceTest {
             .sourceArtefactId(SOURCE_ARTEFACT_ID)
             .provenance(PROVENANCE)
             .locationId(PROVENANCE_ID)
-            .contentDate(CONTENT_DATE)
+            .contentDate(START_OF_TODAY_CONTENT_DATE)
             .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
             .language(Language.ENGLISH)
             .sensitivity(Sensitivity.PUBLIC)
@@ -166,7 +166,7 @@ class PublicationServiceTest {
             .payload(PAYLOAD_URL)
             .search(SEARCH_VALUES)
             .locationId(LOCATION_ID)
-            .contentDate(CONTENT_DATE)
+            .contentDate(START_OF_TODAY_CONTENT_DATE)
             .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
             .language(Language.ENGLISH)
             .sensitivity(Sensitivity.PUBLIC)
@@ -355,7 +355,7 @@ class PublicationServiceTest {
         artefactWithPayloadUrl.setLocationId(PROVENANCE_ID);
         artefactWithPayloadUrl.setListType(ListType.CIVIL_DAILY_CAUSE_LIST);
         artefactWithPayloadUrl.setLanguage(Language.ENGLISH);
-        artefactWithPayloadUrl.setContentDate(CONTENT_DATE);
+        artefactWithPayloadUrl.setContentDate(START_OF_TODAY_CONTENT_DATE);
 
         when(azureBlobService.createPayload(any(), eq(PAYLOAD))).thenReturn(PAYLOAD_URL);
         when(artefactRepository.save(artefactWithPayloadUrl)).thenReturn(artefactWithIdAndPayloadUrl);
@@ -372,6 +372,7 @@ class PublicationServiceTest {
             .sourceArtefactId(SOURCE_ARTEFACT_ID)
             .provenance(PROVENANCE)
             .locationId(PROVENANCE_ID)
+            .contentDate(START_OF_TODAY_CONTENT_DATE)
             .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
             .language(Language.ENGLISH)
             .build();
@@ -379,6 +380,7 @@ class PublicationServiceTest {
         Artefact newArtefactWithId = Artefact.builder()
             .sourceArtefactId(SOURCE_ARTEFACT_ID)
             .provenance(PROVENANCE)
+            .contentDate(START_OF_TODAY_CONTENT_DATE)
             .locationId(PROVENANCE_ID)
             .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
             .language(Language.ENGLISH)
@@ -416,7 +418,7 @@ class PublicationServiceTest {
             .language(Language.ENGLISH)
             .payload(PAYLOAD_URL)
             .search(SEARCH_VALUES)
-            .contentDate(CONTENT_DATE)
+            .contentDate(START_OF_TODAY_CONTENT_DATE)
             .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
             .build();
 
