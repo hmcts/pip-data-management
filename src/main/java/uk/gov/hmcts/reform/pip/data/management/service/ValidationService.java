@@ -49,6 +49,9 @@ public class ValidationService {
              InputStream familyDailyCauseListFile = this.getClass().getClassLoader()
                  .getResourceAsStream(validationConfiguration.getFamilyDailyCauseList());
 
+             InputStream civilAndFamilyDailyCauseList = this.getClass().getClassLoader()
+                 .getResourceAsStream(validationConfiguration.getCivilAndFamilyDailyCauseList());
+
              InputStream sjpPublicListFile = this.getClass().getClassLoader()
                 .getResourceAsStream(validationConfiguration.getSjpPublicList());
 
@@ -65,6 +68,8 @@ public class ValidationService {
             validationSchemas.put(ListType.FAMILY_DAILY_CAUSE_LIST, schemaFactory.getSchema(familyDailyCauseListFile));
             validationSchemas.put(ListType.SJP_PUBLIC_LIST, schemaFactory.getSchema(sjpPublicListFile));
             validationSchemas.put(ListType.SJP_PRESS_LIST, schemaFactory.getSchema(sjpPressListFile));
+            validationSchemas.put(ListType.CIVIL_AND_FAMILY_DAILY_CAUSE_LIST,
+                                  schemaFactory.getSchema(civilAndFamilyDailyCauseList));
             validationSchemas.put(ListType.SSCS_DAILY_LIST, schemaFactory.getSchema(sscsDailyList));
 
         } catch (Exception exception) {

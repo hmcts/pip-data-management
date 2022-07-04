@@ -17,6 +17,7 @@ public enum ListType {
     MAGS_STANDARD_LIST(LocationType.VENUE),
     CIVIL_DAILY_CAUSE_LIST(LocationType.VENUE),
     FAMILY_DAILY_CAUSE_LIST(LocationType.VENUE),
+    CIVIL_AND_FAMILY_DAILY_CAUSE_LIST(LocationType.VENUE),
     SSCS_DAILY_LIST(LocationType.VENUE);
 
     /**

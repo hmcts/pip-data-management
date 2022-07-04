@@ -94,6 +94,7 @@ validations:
   family-daily-cause-list: "schemas/family_daily_cause_list.json"
   sjp-public-list: "schemas/single_justice_procedure_public.json"
   sjp-press-list: "schemas/single_justice_procedure_press.json"
+  civil-and-family-daily-cause-list: "schemas/civil_and_family_daily_cause_list.json"
   sscs-daily-list: "schemas/sscs_daily_list.json"
 
 cron:
