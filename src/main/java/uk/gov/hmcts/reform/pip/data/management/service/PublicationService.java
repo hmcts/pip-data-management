@@ -22,8 +22,10 @@ import uk.gov.hmcts.reform.pip.model.enums.UserActions;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
@@ -48,19 +50,23 @@ public class PublicationService {
 
     private final AccountManagementService accountManagementService;
 
+    private final PublicationServicesService publicationServicesService;
+
     @Autowired
     public PublicationService(ArtefactRepository artefactRepository,
                               AzureBlobService azureBlobService,
                               PayloadExtractor payloadExtractor,
                               SubscriptionManagementService subscriptionManagementService,
                               AccountManagementService accountManagementService,
-                              LocationRepository locationRepository) {
+                              LocationRepository locationRepository,
+                              PublicationServicesService publicationServicesService) {
         this.artefactRepository = artefactRepository;
         this.azureBlobService = azureBlobService;
         this.payloadExtractor = payloadExtractor;
         this.subscriptionManagementService = subscriptionManagementService;
         this.accountManagementService = accountManagementService;
         this.locationRepository = locationRepository;
+        this.publicationServicesService = publicationServicesService;
     }
 
     /**
@@ -325,15 +331,14 @@ public class PublicationService {
     }
 
     /**
-     * Scheduled method that checks daily for newly outdated artefacts based on a yesterday or older display to date.
+     * Scheduled method that:
+     *  Checks daily for a list of all no match artefacts to send to publication services.
+     *  checks daily for newly outdated artefacts based on a yesterday or older display to date.
      */
     @Scheduled(cron = "${cron.daily-start-of-day}")
-    public void deleteExpiredBlobs() {
-        List<Artefact> outdatedArtefacts = artefactRepository.findOutdatedArtefacts(LocalDate.now());
-        outdatedArtefacts.forEach(artefact ->
-                                      log.info(azureBlobService.deleteBlob(getUuidFromUrl(artefact.getPayload()))));
-        artefactRepository.deleteAll(outdatedArtefacts);
-        log.info("{} outdated artefacts found and deleted for before {}", outdatedArtefacts.size(), LocalDate.now());
+    public void runDailyTasks() {
+        findNoMatchArtefactsForReporting(artefactRepository.findAllNoMatchArtefacts());
+        deleteExpiredBlobs(artefactRepository.findOutdatedArtefacts(LocalDate.now()));
     }
 
     private void applyInternalLocationId(Artefact artefact) {
@@ -364,5 +369,32 @@ public class PublicationService {
 
     public LocationType getLocationType(ListType listType) {
         return listType.getListLocationLevel();
+    }
+
+    /**
+     * Receives a list of no match artefacts, checks it's not empty and create a map of location id to Provenance.
+     * Send this on to publication services.
+     * @param artefactList A list of no match artefacts
+     */
+    private void findNoMatchArtefactsForReporting(List<Artefact> artefactList) {
+        if (!artefactList.isEmpty()) {
+            Map<String, String> locationIdProvenanceMap = new ConcurrentHashMap<>();
+            artefactList.forEach(artefact -> locationIdProvenanceMap.put(
+                artefact.getLocationId().split("NoMatch")[1], artefact.getProvenance()));
+
+            log.info(publicationServicesService.sendNoMatchArtefactsForReporting(locationIdProvenanceMap));
+        }
+    }
+
+    /**
+     * Receives a list of outdated artefacts and deletes them from the blobstore and database.
+     *
+     * @param outdatedArtefacts A list of the outdated artefacts for deletion
+     */
+    private void deleteExpiredBlobs(List<Artefact> outdatedArtefacts) {
+        outdatedArtefacts.forEach(artefact ->
+                                      log.info(azureBlobService.deleteBlob(getUuidFromUrl(artefact.getPayload()))));
+        artefactRepository.deleteAll(outdatedArtefacts);
+        log.info("{} outdated artefacts found and deleted for before {}", outdatedArtefacts.size(), LocalDate.now());
     }
 }

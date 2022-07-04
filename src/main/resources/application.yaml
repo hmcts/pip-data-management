@@ -32,6 +32,10 @@ spring:
             authorization-grant-type: client_credentials
             scopes:
               - ${ACCOUNT_MANAGEMENT_AZ_API}/.default
+          publicationServicesApi:
+            authorization-grant-type: client_credentials
+            scopes:
+              - ${PUBLICATION_SERVICES_AZ_API}/.default
   jackson:
     serialization.write_dates_as_timestamps: false
     mapper:
@@ -78,6 +82,7 @@ azure:
 service-to-service:
   subscription-management: ${SUBSCRIPTION_MANAGEMENT_URL:https://pip-subscription-management.staging.platform.hmcts.net}
   account-management: ${ACCOUNT_MANAGEMENT_URL:https://pip-account-management.staging.platform.hmcts.net}
+  publication-services: ${PUBLICATION_SERVICES_URL:https://pip-publication-services.staging.platform.hmcts.net}
 
 payload:
   json:
@@ -89,6 +94,7 @@ validations:
   family-daily-cause-list: "schemas/family_daily_cause_list.json"
   sjp-public-list: "schemas/single_justice_procedure_public.json"
   sjp-press-list: "schemas/single_justice_procedure_press.json"
+  civil-and-family-daily-cause-list: "schemas/civil_and_family_daily_cause_list.json"
 
 cron:
   daily-start-of-day: "0 0 0 * * *"
