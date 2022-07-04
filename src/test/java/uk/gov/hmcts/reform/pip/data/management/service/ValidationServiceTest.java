@@ -345,4 +345,26 @@ class ValidationServiceTest {
         }
     }
 
+    @Test
+    void testValidateWithoutErrorsWhenArtefactIsSscsDailyList() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream("mocks/sscs-daily-list/sscsDailyList.json")) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            assertDoesNotThrow(() -> validationService.validateBody(text, ListType.SSCS_DAILY_LIST),
+                               "Valid sscs daily list marked as valid");
+        }
+    }
+
+    @Test
+    void testValidateWithErrorsWhenArtefactIsSscsDailyList() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream("mocks/sscs-daily-list/sscsDailyListInvalid.json")) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            assertThrows(PayloadValidationException.class, () ->
+                             validationService.validateBody(text, ListType.SSCS_DAILY_LIST),
+                         "Invalid sscs daily list marked as valid");
+        }
+    }
 }

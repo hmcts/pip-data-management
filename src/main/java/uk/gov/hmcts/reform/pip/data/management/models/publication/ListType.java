@@ -16,7 +16,8 @@ public enum ListType {
     MAGS_PUBLIC_LIST(LocationType.VENUE),
     MAGS_STANDARD_LIST(LocationType.VENUE),
     CIVIL_DAILY_CAUSE_LIST(LocationType.VENUE),
-    FAMILY_DAILY_CAUSE_LIST(LocationType.VENUE);
+    FAMILY_DAILY_CAUSE_LIST(LocationType.VENUE),
+    SSCS_DAILY_LIST(LocationType.VENUE);
 
     /**
      * Flag that represents the Location Type level the list displays at.

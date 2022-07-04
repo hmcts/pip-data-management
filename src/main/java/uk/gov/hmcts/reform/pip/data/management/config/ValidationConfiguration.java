@@ -39,4 +39,9 @@ public class ValidationConfiguration {
      */
     private String sjpPressList;
 
+    /**
+     * Config option for the sscs daily list.
+     */
+    private String sscsDailyList;
+
 }

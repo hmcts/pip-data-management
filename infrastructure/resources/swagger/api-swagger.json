@@ -128,7 +128,8 @@
                 "MAGS_PUBLIC_LIST",
                 "MAGS_STANDARD_LIST",
                 "SJP_PRESS_LIST",
-                "SJP_PUBLIC_LIST"
+                "SJP_PUBLIC_LIST",
+                "SSCS_DAILY_LIST"
               ]
             }
           },
@@ -279,7 +280,8 @@
               "MAGS_PUBLIC_LIST",
               "MAGS_STANDARD_LIST",
               "SJP_PRESS_LIST",
-              "SJP_PUBLIC_LIST"
+              "SJP_PUBLIC_LIST",
+              "SSCS_DAILY_LIST"
             ]
           },
           "payload":{
