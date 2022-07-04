@@ -77,6 +77,9 @@ public class PublicationService {
      * @return Returns the UUID of the artefact that was created.
      */
     public Artefact createPublication(Artefact artefact, String payload) {
+        log.info(writeLog(UserActions.UPLOAD, "json publication upload for location "
+            + artefact.getLocationId()));
+
         applyInternalLocationId(artefact);
 
         boolean isExisting = applyExistingArtefact(artefact);
@@ -97,6 +100,9 @@ public class PublicationService {
     }
 
     public Artefact createPublication(Artefact artefact, MultipartFile file) {
+        log.info(writeLog(UserActions.UPLOAD, "flat file publication upload for location "
+            + artefact.getLocationId()));
+
         applyInternalLocationId(artefact);
 
         boolean isExisting = applyExistingArtefact(artefact);
@@ -142,16 +148,16 @@ public class PublicationService {
 
 
     /**
-     * Get all relevant artefacts relating to a given court ID.
+     * Get all relevant artefacts relating to a given location ID.
      *
-     * @param searchValue - represents the court ID in question being searched for
+     * @param searchValue - represents the location ID in question being searched for
      * @param userId    - represents the user ID of the user who is making the request
-     * @return a list of all artefacts that fulfil the timing criteria, match the given court id and
+     * @return a list of all artefacts that fulfil the timing criteria, match the given location id and
      *     sensitivity associated with given verification status.
      */
-    public List<Artefact> findAllByCourtId(String searchValue, UUID userId) {
+    public List<Artefact> findAllByLocationId(String searchValue, UUID userId) {
         LocalDateTime currDate = LocalDateTime.now();
-        List<Artefact> artefacts =  artefactRepository.findArtefactsByCourtId(searchValue, currDate);
+        List<Artefact> artefacts =  artefactRepository.findArtefactsByLocationId(searchValue, currDate);
 
         return artefacts.stream().filter(artefact -> isAuthorised(artefact, userId)).collect(Collectors.toList());
     }
@@ -159,13 +165,15 @@ public class PublicationService {
     /**
      * Get all artefacts for admin actions.
      *
-     * @param courtId The court id to search for.
+     * @param locationId The location id to search for.
      * @param userId represents the user ID of the user who is making the request
-     * @param isAdmin bool to check whether admin search is needed, if not will default to findAllByCourtId().
+     * @param isAdmin bool to check whether admin search is needed, if not will default to findAllByLocationId().
      * @return list of matching artefacts.
      */
-    public List<Artefact> findAllByCourtIdAdmin(String courtId, UUID userId, boolean isAdmin) {
-        return isAdmin ? artefactRepository.findArtefactsByCourtIdAdmin(courtId) : findAllByCourtId(courtId, userId);
+    public List<Artefact> findAllByLocationIdAdmin(String locationId, UUID userId, boolean isAdmin) {
+        log.info(writeLog("ADMIN - Searing for all artefacts with " + locationId));
+        return isAdmin
+            ? artefactRepository.findArtefactsByLocationIdAdmin(locationId) : findAllByLocationId(locationId, userId);
     }
 
     /**
@@ -337,9 +345,9 @@ public class PublicationService {
         if ("MANUAL_UPLOAD".equalsIgnoreCase(artefact.getProvenance())) {
             return;
         }
-        Optional<Location> location = locationRepository.findByCourtIdByProvenance(artefact.getProvenance(),
-                                                                                       artefact.getLocationId(),
-                                                                                       artefact.getListType()
+        Optional<Location> location = locationRepository.findByLocationIdByProvenance(artefact.getProvenance(),
+                                                                                      artefact.getLocationId(),
+                                                                                      artefact.getListType()
                                                                                        .getListLocationLevel().name());
         if (location.isPresent()) {
             artefact.setLocationId(location.get().getLocationId().toString());
