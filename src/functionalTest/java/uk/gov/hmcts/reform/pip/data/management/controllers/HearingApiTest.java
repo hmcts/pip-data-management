@@ -22,7 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest(classes = {Application.class},
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles(profiles = "test")
+@ActiveProfiles(profiles = "functional")
 @AutoConfigureMockMvc
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
 class HearingApiTest {
@@ -43,7 +43,7 @@ class HearingApiTest {
             .andExpect(status().isOk())
             .andExpect(jsonPath("$", hasSize(2)))
             .andExpect(content().json(new String(Files.readAllBytes(
-                new File("src/integrationTest/resources/data/hearingResponse.json").toPath()))));
+                new File("src/functionalTest/resources/data/hearingResponse.json").toPath()))));
     }
 
     @Test
