@@ -30,8 +30,8 @@ public interface LocationRepository extends JpaRepository<Location, Integer> {
         + "AND (location_reference.provenance_location_id = :provenanceLocationId) "
         + "AND (location_reference.provenance_location_type = :provenanceLocationType)",
         nativeQuery = true)
-    Optional<Location> findByCourtIdByProvenance(@Param("provenance") String provenance,
-                                                       @Param("provenanceLocationId") String provenanceLocationId,
-                                                       @Param("provenanceLocationType") String provenanceLocationType);
+    Optional<Location> findByLocationIdByProvenance(@Param("provenance") String provenance,
+                                                    @Param("provenanceLocationId") String provenanceLocationId,
+                                                    @Param("provenanceLocationType") String provenanceLocationType);
 
 }

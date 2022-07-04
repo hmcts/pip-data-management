@@ -14,6 +14,7 @@ import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationCsv;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationReference;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationType;
+import uk.gov.hmcts.reform.pip.model.enums.UserActions;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -24,8 +25,10 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
+
 /**
- * Service to handle the retrieval and filtering of courts.
+ * Service to handle the retrieval and filtering of locations.
  */
 @Service
 @Slf4j
@@ -40,18 +43,21 @@ public class LocationService {
      * @return List of Locations
      */
     public List<Location> getAllLocations() {
+        log.info(writeLog("Retrieve all locations"));
+
         return locationRepository.findAll();
     }
 
     /**
-     * Handles request to search for a court by court id.
+     * Handles request to search for a location by location id.
      *
      * @param locationId The location ID to search for.
      * @return Location of the found location
-     * @throws LocationNotFoundException when no court was found with the given court ID.
+     * @throws LocationNotFoundException when no locations were found with the given location ID.
      */
     public Location getLocationById(Integer locationId) {
         Optional<Location> foundLocation = locationRepository.getLocationByLocationId(locationId);
+
         if (foundLocation.isEmpty()) {
             throw new LocationNotFoundException(String.format("No location found with the id: %s", locationId));
         } else {
@@ -94,6 +100,7 @@ public class LocationService {
      * @return The collection of new locations that have been created.
      */
     public Collection<Location> uploadLocations(MultipartFile locationList) {
+        log.info(writeLog(UserActions.LOCATION_UPLOAD, "via CSV"));
 
         try (InputStreamReader inputStreamReader = new InputStreamReader(locationList.getInputStream());
              Reader reader = new BufferedReader(inputStreamReader)) {
