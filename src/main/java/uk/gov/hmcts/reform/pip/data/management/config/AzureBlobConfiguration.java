@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @Configuration
-@Profile("!test")
+@Profile("!test & !functional")
 @EnableScheduling
 public class AzureBlobConfiguration {
 
