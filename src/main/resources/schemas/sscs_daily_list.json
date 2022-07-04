@@ -212,13 +212,13 @@
                             "title": "Sittings",
                             "type": "array",
                             "default": [],
-                            "required": [
-                              "sittingStart",
-                              "hearing"
-                            ],
                             "items": {
                               "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items",
                               "type": "object",
+                              "required": [
+                                "sittingStart",
+                                "hearing"
+                              ],
                               "properties": {
                                 "sittingStart": {
                                   "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/sittingStart",
