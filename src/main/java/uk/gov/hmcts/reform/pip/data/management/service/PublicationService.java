@@ -364,6 +364,6 @@ public class PublicationService {
      * @param deletedArtefact deleted artefact to notify of.
      */
     private void triggerThirdPartyArtefactDeleted(Artefact deletedArtefact) {
-        log.info(subscriptionManagementService.sendDeletedArtefactForThirdParties(deletedArtefact));
+        log.info(writeLog(subscriptionManagementService.sendDeletedArtefactForThirdParties(deletedArtefact)));
     }
 }
