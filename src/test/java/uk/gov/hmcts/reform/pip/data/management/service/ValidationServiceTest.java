@@ -300,6 +300,31 @@ class ValidationServiceTest {
     }
 
     @Test
+    void testValidateWithoutErrorsWhenArtefactIsCivilAndFamilyDailyCauseList() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream(
+                "mocks/civil-and-family-cause-list/civilAndFamilyDailyCauseList.json")) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            assertDoesNotThrow(() -> validationService.validateBody(text, ListType.CIVIL_AND_FAMILY_DAILY_CAUSE_LIST),
+                               "Valid civil and family daily cause list marked as invalid");
+        }
+    }
+
+    @Test
+    void testValidateWithErrorsWhenArtefactIsCivilAndFamilyDailyCauseList() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream(
+                "mocks/civil-and-family-cause-list/civilAndFamilyDailyCauseListInvalid.json")) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            assertThrows(PayloadValidationException.class, () ->
+                             validationService.validateBody(text, ListType.CIVIL_AND_FAMILY_DAILY_CAUSE_LIST),
+                         "Invalid civil and family daily cause list marked as valid");
+        }
+    }
+
+    @Test
     void testValidateWithoutErrorsWhenArtefactIsSjpPublicList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream("mocks/sjp-public-list/sjpPublicList.json")) {

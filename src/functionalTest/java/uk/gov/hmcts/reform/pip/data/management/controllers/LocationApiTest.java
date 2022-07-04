@@ -78,7 +78,7 @@ class LocationApiTest {
 
             MvcResult mvcResult = mockMvc.perform(multipart(UPLOAD_API).file(csvFile))
                 .andExpect(status().isOk()).andReturn();
-
+ 
             return Arrays.asList(
                 objectMapper.readValue(mvcResult.getResponse().getContentAsString(), Location[].class));
         }

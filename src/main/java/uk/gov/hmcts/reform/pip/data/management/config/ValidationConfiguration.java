@@ -39,4 +39,9 @@ public class ValidationConfiguration {
      */
     private String sjpPressList;
 
+    /**
+     *  Config option for the civil and family daily cause list.
+     */
+    private String civilAndFamilyDailyCauseList;
+
 }
