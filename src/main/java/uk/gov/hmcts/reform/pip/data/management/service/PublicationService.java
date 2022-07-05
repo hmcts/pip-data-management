@@ -36,6 +36,7 @@ import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
 
 @Slf4j
 @Service
+@SuppressWarnings("PMD.GodClass")
 public class PublicationService {
 
     private final ArtefactRepository artefactRepository;
