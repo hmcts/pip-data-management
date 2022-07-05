@@ -14,6 +14,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
@@ -56,7 +57,7 @@ public class Location {
     @JsonView(LocationViews.BaseView.class)
     private List<String> jurisdiction;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "location_id")
     @JsonView(LocationViews.ReferenceView.class)
     private List<LocationReference> locationReferenceList = new ArrayList<>();
