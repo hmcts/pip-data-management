@@ -30,8 +30,8 @@ class SchedulerTest {
     }
 
     @Test
-    void testSchedulerDeleteExpiredBlobsRuns() {
+    void testSchedulerRunDailyTasksRuns() {
         await().atMost(Duration.TEN_SECONDS).untilAsserted(() -> verify(publicationService, times(1))
-            .deleteExpiredBlobs());
+            .runDailyTasks());
     }
 }

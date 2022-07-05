@@ -69,6 +69,7 @@ public class PublicationController {
         "No artefact found matching given parameters and date requirements";
 
     private final PublicationService publicationService;
+
     @Autowired
     private final ValidationService validationService;
 
@@ -251,7 +252,7 @@ public class PublicationController {
         @PathVariable String locationId,
         @RequestHeader(value = USER_ID_HEADER, required = false) UUID userId,
         @RequestHeader(value = ADMIN_HEADER, defaultValue = DEFAULT_ADMIN_VALUE, required = false) Boolean isAdmin) {
-        return ResponseEntity.ok(publicationService.findAllByCourtIdAdmin(locationId, userId, isAdmin));
+        return ResponseEntity.ok(publicationService.findAllByLocationIdAdmin(locationId, userId, isAdmin));
     }
 
     @ApiResponses({

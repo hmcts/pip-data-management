@@ -257,7 +257,7 @@ class PublicationControllerTest {
     void checkGetArtefactsByCourtIdReturnsWhenTrue() {
         List<Artefact> artefactList = List.of(artefactWithId);
 
-        when(publicationService.findAllByCourtIdAdmin(EMPTY_FIELD, USER_ID, true)).thenReturn(artefactList);
+        when(publicationService.findAllByLocationIdAdmin(EMPTY_FIELD, USER_ID, true)).thenReturn(artefactList);
         ResponseEntity<List<Artefact>> unmappedArtefact = publicationController
             .getAllRelevantArtefactsByLocationId(EMPTY_FIELD, USER_ID, true);
 
@@ -269,7 +269,7 @@ class PublicationControllerTest {
     void checkGetArtefactsByCourtIdReturnsOkWhenFalse() {
         List<Artefact> artefactList = List.of(artefactWithId);
 
-        when(publicationService.findAllByCourtIdAdmin(EMPTY_FIELD, USER_ID, false)).thenReturn(artefactList);
+        when(publicationService.findAllByLocationIdAdmin(EMPTY_FIELD, USER_ID, false)).thenReturn(artefactList);
         ResponseEntity<List<Artefact>> unmappedArtefact = publicationController
             .getAllRelevantArtefactsByLocationId(EMPTY_FIELD, USER_ID, false);
 
