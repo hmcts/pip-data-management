@@ -104,7 +104,8 @@
       "title": "venue",
       "type": "object",
       "required": [
-        "venueName"
+        "venueName",
+        "venueContact"
       ],
       "properties": {
         "venueName": {
@@ -117,6 +118,12 @@
             "Preston"
           ],
           "pattern": "^.*$"
+        },
+        "venueContact": {
+          "$id": "#root/venue/venueContact",
+          "description": "Contact details for the venue",
+          "title": "Venue Contact",
+          "$ref": "#/definitions/venueContact"
         }
       }
     },
@@ -168,9 +175,20 @@
                   "description": "The court room that owns the court rooms",
                   "type": "object",
                   "required": [
-                    "session"
+                    "session",
+                    "courtRoomName"
                   ],
                   "properties": {
+                    "courtRoomName": {
+                      "$id": "#root/courtLists/courtRoom/courtRoomName",
+                      "description": "Name for the court room",
+                      "title": "Court Room Name",
+                      "type": "string",
+                      "default": "",
+                      "examples": [
+                        "Room 1"
+                      ]
+                    },
                     "session": {
                       "$id": "#root/courtLists/courtRoom/session",
                       "type": "array",

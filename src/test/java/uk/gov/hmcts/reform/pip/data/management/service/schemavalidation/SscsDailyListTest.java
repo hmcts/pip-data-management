@@ -26,7 +26,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @ActiveProfiles(profiles = "test")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
-
 class SscsDailyListTest {
 
     @Autowired
@@ -102,6 +101,21 @@ class SscsDailyListTest {
 
             JsonNode node = getJsonNode(text);
             ((ObjectNode) node.get(VENUE_SCHEMA)).remove("venueName");
+
+            assertThrows(PayloadValidationException.class, () -> validationService.validateBody(node.toString(),
+                ListType.SSCS_DAILY_LIST),
+                         SSCS_DAILY_LIST_INVALID_MESSAGE);
+        }
+    }
+
+    @Test
+    void testValidateWithErrorsWhenVenueContactMissingInSscsDailyList() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream(SSCS_DAILY_LIST_VALID_JSON)) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            JsonNode node = getJsonNode(text);
+            ((ObjectNode) node.get(VENUE_SCHEMA)).remove("venueContact");
 
             assertThrows(PayloadValidationException.class, () -> validationService.validateBody(node.toString(),
                 ListType.SSCS_DAILY_LIST),
@@ -324,6 +338,24 @@ class SscsDailyListTest {
             assertThrows(PayloadValidationException.class, () -> validationService.validateBody(node.toString(),
                 ListType.SSCS_DAILY_LIST),
                     SSCS_DAILY_LIST_INVALID_MESSAGE);
+        }
+    }
+
+    @Test
+    void testValidateWithErrorsWhenCourtRoomNameMissingInSscsDailyList() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream(SSCS_DAILY_LIST_VALID_JSON)) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode node = mapper.readValue(text, JsonNode.class);
+
+            ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0).get(COURT_HOUSE_SCHEMA).get(COURT_ROOM_SCHEMA)
+                .get(0)).remove("courtRoomName");
+
+            assertThrows(PayloadValidationException.class, () -> validationService.validateBody(node.toString(),
+                ListType.SSCS_DAILY_LIST),
+                         SSCS_DAILY_LIST_INVALID_MESSAGE);
         }
     }
 }

@@ -2,7 +2,11 @@
   "document": {
   },
   "venue": {
-    "venueName": "This is the venue name"
+    "venueName": "This is the venue name",
+    "venueContact": {
+      "venueTelephone": "01772 844700",
+      "venueEmail": "court1@moj.gov.uk"
+    }
   },
   "courtLists": [
     {
@@ -14,6 +18,7 @@
         },
         "courtRoom": [
           {
+            "courtRoomName": "1",
             "session": [
               {
                 "sessionChannel": [

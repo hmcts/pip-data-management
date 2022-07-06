@@ -18,7 +18,7 @@ public enum ListType {
     CIVIL_DAILY_CAUSE_LIST(LocationType.VENUE),
     FAMILY_DAILY_CAUSE_LIST(LocationType.VENUE),
     CIVIL_AND_FAMILY_DAILY_CAUSE_LIST(LocationType.VENUE),
-    SSCS_DAILY_LIST(LocationType.VENUE);
+    SSCS_DAILY_LIST(LocationType.REGION);
 
     /**
      * Flag that represents the Location Type level the list displays at.
