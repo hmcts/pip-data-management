@@ -11,17 +11,17 @@
   "courtLists": [
     {
       "courtHouse": {
-        "courtHouseName": "This is the site name",
+        "courtHouseName": [
+          "This is the site name",
+          "This is the site name 2"
+        ],
         "courtHouseContact": {
           "venueTelephone": "01234 123 123",
           "venueEmail": "a@b.com"
         },
         "courtRoom": [
           {
-            "courtRoomName": [
-              "1",
-              "2"
-            ],
+            "courtRoomName": "1",
             "session": [
               {
                 "sessionChannel": [
