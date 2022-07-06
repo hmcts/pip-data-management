@@ -19,7 +19,10 @@
         },
         "courtRoom": [
           {
-            "courtRoomName": "1",
+            "courtRoomName": [
+              "1",
+              "2"
+            ],
             "session": [
               {
                 "sessionChannel": [
@@ -38,7 +41,10 @@
                         ],
                         "informant": [
                           {
-                            "prosecutionAuthorityRef": "Test"
+                            "prosecutionAuthorityRef": [
+                              "test",
+                              "test2"
+                            ]
                           }
                         ],
                         "party": [

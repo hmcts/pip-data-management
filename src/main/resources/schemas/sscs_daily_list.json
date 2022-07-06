@@ -154,7 +154,7 @@
                 "$id": "#root/courtLists/courtList/courtHouse/courtHouseName",
                 "description": "Name of the court house",
                 "title": "Court House Name",
-                "type": "string",
+                "type": "array",
                 "default": "",
                 "examples": [
                   "PRESTON"
@@ -288,7 +288,7 @@
                                                 "prosecutionAuthorityRef": {
                                                   "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/informant/prosecutionAuthorityRef",
                                                   "title": "Prosecution Authority Ref",
-                                                  "type": "string",
+                                                  "type": "array",
                                                   "default": "",
                                                   "examples": [
                                                     ""
