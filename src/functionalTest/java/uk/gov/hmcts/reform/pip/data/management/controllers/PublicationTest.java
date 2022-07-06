@@ -94,7 +94,7 @@ class PublicationTest {
     private static final String BLOB_PAYLOAD_URL = "https://localhost";
     private static final ListType LIST_TYPE = ListType.CIVIL_DAILY_CAUSE_LIST;
     private static final String COURT_ID = "123";
-    private static final LocalDateTime CONTENT_DATE = LocalDateTime.now();
+    private static final LocalDateTime CONTENT_DATE = LocalDateTime.now().toLocalDate().atStartOfDay();
     private static final String SEARCH_KEY_FOUND = "array-value";
     private static final String SEARCH_KEY_NOT_FOUND = "case-urn";
     private static final String SEARCH_VALUE_1 = "array-value-1";
