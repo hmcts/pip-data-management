@@ -152,14 +152,16 @@
             "properties": {
               "courtHouseName": {
                 "$id": "#root/courtLists/courtList/courtHouse/courtHouseName",
-                "description": "Name of the court house",
-                "title": "Court House Name",
                 "type": "array",
-                "default": "",
-                "examples": [
-                  "PRESTON"
-                ],
-                "pattern": "^.*$"
+                "items": {
+                  "type": "string",
+                  "description": "Name of the court house",
+                  "title": "Court House Name",
+                  "examples": [
+                    "PRESTON"
+                  ],
+                  "default": ""
+                }
               },
               "courtHouseContact": {
                 "$id": "#root/courtLists/courtList/courtHouse/courtHouseContact",
@@ -287,13 +289,15 @@
                                               "properties": {
                                                 "prosecutionAuthorityRef": {
                                                   "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/informant/prosecutionAuthorityRef",
-                                                  "title": "Prosecution Authority Ref",
                                                   "type": "array",
-                                                  "default": "",
-                                                  "examples": [
-                                                    ""
-                                                  ],
-                                                  "pattern": "^.*$"
+                                                  "items": {
+                                                    "title": "Prosecution Authority Ref",
+                                                    "type": "string",
+                                                    "default": "",
+                                                    "examples": [
+                                                      ""
+                                                    ]
+                                                  }
                                                 }
                                               }
                                             }
