@@ -1072,10 +1072,10 @@ class PublicationServiceTest {
             doNothing().when(artefactRepository).delete(artefactWithPayloadUrl);
 
             publicationService.deleteArtefactById(ARTEFACT_ID.toString(), TEST_VALUE);
-            assertEquals(SUCCESS, logCaptor.getInfoLogs().get(0), MESSAGES_MATCH);
+            assertTrue(logCaptor.getInfoLogs().get(0).contains(SUCCESS), MESSAGES_MATCH);
             assertTrue(logCaptor.getInfoLogs().get(1).contains(String.format(DELETION_TRACK_LOG_MESSAGE, ARTEFACT_ID)),
                        MESSAGES_MATCH);
-            assertEquals(SUCCESS, logCaptor.getInfoLogs().get(2), MESSAGES_MATCH);
+            assertTrue(logCaptor.getInfoLogs().get(2).contains(SUCCESS), MESSAGES_MATCH);
         } catch (Exception ex) {
             throw new IOException(ex.getMessage());
         }
