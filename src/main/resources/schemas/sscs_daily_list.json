@@ -152,16 +152,14 @@
             "properties": {
               "courtHouseName": {
                 "$id": "#root/courtLists/courtList/courtHouse/courtHouseName",
-                "type": "array",
-                "items": {
-                  "type": "string",
-                  "description": "Name of the court house",
-                  "title": "Court House Name",
-                  "examples": [
-                    "PRESTON"
-                  ],
-                  "default": ""
-                }
+                "description": "Name of the court house",
+                "title": "Court House Name",
+                "type": "string",
+                "default": "",
+                "examples": [
+                  "PRESTON"
+                ],
+                "pattern": "^.*$"
               },
               "courtHouseContact": {
                 "$id": "#root/courtLists/courtList/courtHouse/courtHouseContact",
@@ -291,12 +289,13 @@
                                                   "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/informant/prosecutionAuthorityRef",
                                                   "type": "array",
                                                   "items": {
-                                                    "title": "Prosecution Authority Ref",
                                                     "type": "string",
-                                                    "default": "",
+                                                    "title": "Prosecution Authority Ref",
                                                     "examples": [
-                                                      ""
-                                                    ]
+                                                      "1234"
+                                                    ],
+                                                    "default": "",
+                                                    "pattern": "^.*$"
                                                   }
                                                 }
                                               }

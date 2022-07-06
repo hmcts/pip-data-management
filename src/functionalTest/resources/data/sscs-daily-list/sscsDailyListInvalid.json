@@ -11,10 +11,7 @@
   "courtLists": [
     {
       "courtHouse": {
-        "courtHouseName": [
-          "This is the site name",
-          "This is the site name 2"
-        ],
+        "courtHouseName": "Test court house name",
         "courtHouseContact": {
           "venueTelephone": "01234 123 123",
           "venueEmail": "a@b.com"
