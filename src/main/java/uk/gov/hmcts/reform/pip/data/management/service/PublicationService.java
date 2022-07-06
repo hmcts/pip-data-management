@@ -21,6 +21,7 @@ import uk.gov.hmcts.reform.pip.model.enums.UserActions;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -82,7 +83,7 @@ public class PublicationService {
             + artefact.getLocationId()));
 
         applyInternalLocationId(artefact);
-
+        artefact.setContentDate(artefact.getContentDate().toLocalDate().atTime(LocalTime.MIN));
         boolean isExisting = applyExistingArtefact(artefact);
 
         String blobUrl = azureBlobService.createPayload(
@@ -105,6 +106,7 @@ public class PublicationService {
             + artefact.getLocationId()));
 
         applyInternalLocationId(artefact);
+        artefact.setContentDate(artefact.getContentDate().toLocalDate().atTime(LocalTime.MIN));
 
         boolean isExisting = applyExistingArtefact(artefact);
 
