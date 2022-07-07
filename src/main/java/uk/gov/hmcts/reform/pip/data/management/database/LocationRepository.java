@@ -16,6 +16,8 @@ public interface LocationRepository extends JpaRepository<Location, Integer> {
 
     Optional<Location> getLocationByName(String locationName);
 
+    Optional<Location> getLocationByWelshName(String locationName);
+
     @Query(value = "select * from location "
         + "WHERE (:regions = '' OR location.region && string_to_array(:regions, ',')) "
         + "AND (:jurisdictions = '' OR location.jurisdiction && string_to_array(:jurisdictions, ',')) "

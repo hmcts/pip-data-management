@@ -72,8 +72,14 @@ public class LocationService {
      * @return Location of the found location.
      * @throws LocationNotFoundException when no location was found with the given search input.
      */
-    public Location getLocationByName(String locationName) {
-        Optional<Location> foundLocation = locationRepository.getLocationByName(locationName);
+    public Location getLocationByName(String locationName, String language) {
+        Optional<Location> foundLocation;
+        if ("cy".equals(language)) {
+            foundLocation = locationRepository.getLocationByWelshName(locationName);
+        } else {
+            foundLocation = locationRepository.getLocationByName(locationName);
+        }
+
         if (foundLocation.isEmpty()) {
             throw new LocationNotFoundException(String.format("No location found with the name: %s", locationName));
         } else {

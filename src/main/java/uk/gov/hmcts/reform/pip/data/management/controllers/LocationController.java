@@ -61,10 +61,11 @@ public class LocationController {
         @ApiResponse(code = 404, message = "No Location found with the search {input}")
     })
     @ApiOperation("Gets a Location by searching by the Location name and returning")
-    @GetMapping("/name/{locationName}")
+    @GetMapping("/name/{locationName}/language/{language}")
     public ResponseEntity<Location> getLocationByName(@ApiParam(value = "The search input to retrieve", required = true)
-                                                @PathVariable String locationName) {
-        return ResponseEntity.ok(locationService.getLocationByName(locationName));
+                                                @PathVariable String locationName,
+                                                @PathVariable String language) {
+        return ResponseEntity.ok(locationService.getLocationByName(locationName, language));
 
     }
 

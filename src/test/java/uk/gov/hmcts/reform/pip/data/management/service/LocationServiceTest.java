@@ -112,7 +112,19 @@ class LocationServiceTest {
         when(locationRepository.getLocationByName(locationFirstExample.getName()))
             .thenReturn(Optional.of(locationFirstExample));
 
-        Location location = locationService.getLocationByName(locationFirstExample.getName());
+        Location location = locationService.getLocationByName(locationFirstExample.getName(),
+                                                              ENGLISH_LANGUAGE);
+
+        assertEquals(location, locationFirstExample, "Unknown location has been returned");
+    }
+
+    @Test
+    void testHandleWelshLocationNameSearchReturnsLocation() {
+        when(locationRepository.getLocationByWelshName(locationFirstExample.getName()))
+            .thenReturn(Optional.of(locationFirstExample));
+
+        Location location = locationService.getLocationByName(locationFirstExample.getName(),
+                                                              WELSH_LANGUAGE);
 
         assertEquals(location, locationFirstExample, "Unknown location has been returned");
     }
@@ -122,7 +134,8 @@ class LocationServiceTest {
         String unknownName = "UnknownName";
 
         LocationNotFoundException locationNotFoundException = assertThrows(LocationNotFoundException.class, () ->
-            locationService.getLocationByName(unknownName), "Expected LocationNotFoundException to be thrown"
+            locationService.getLocationByName(unknownName, ENGLISH_LANGUAGE),
+            "Expected LocationNotFoundException to be thrown"
         );
 
         assertTrue(
