@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -89,6 +90,17 @@ public class LocationController {
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Collection<Location>> uploadLocations(@RequestPart MultipartFile locationList) {
         return ResponseEntity.ok(locationService.uploadLocations(locationList));
+    }
+
+    @ApiResponses({
+        @ApiResponse(code = 200, message = "Location with id {locationId} has been deleted"),
+        @ApiResponse(code = 403, message = "User has not been authorized"),
+        @ApiResponse(code = 404, message = "No Location found with the id {locationId}")
+    })
+    @DeleteMapping("/{locationId}")
+    public ResponseEntity<String> deleteLocation(@PathVariable Integer locationId) {
+        locationService.deleteLocation(locationId);
+        return ResponseEntity.ok(String.format("Location with id %s has been deleted", locationId));
     }
 
 }

@@ -25,6 +25,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest(classes = {Application.class, AzureBlobConfigurationTest.class})
@@ -230,4 +231,14 @@ class LocationControllerTest {
         }
 
     }
+
+    @Test
+    void testDeleteLocationReturnsOk() {
+        int locationId = 1;
+        doNothing().when(locationService).deleteLocation(locationId);
+
+        assertEquals(HttpStatus.OK, locationController.deleteLocation(locationId).getStatusCode(),
+                     "Delete location endpoint has not returned OK");
+    }
+
 }

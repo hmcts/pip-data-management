@@ -26,6 +26,10 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -278,6 +282,7 @@ class LocationServiceTest {
 
     @Test
     void testHandleUploadLocationsOk() throws IOException {
+        when(locationRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
         try (InputStream inputStream = this.getClass().getClassLoader()
             .getResourceAsStream("csv/ValidCsv.csv")) {
 
@@ -292,6 +297,7 @@ class LocationServiceTest {
             assertEquals(2, locations.size(), "Unknown number of locations returned from parser");
 
             Location firstLocation = locations.get(0);
+            assertEquals(1, firstLocation.getLocationId(), "Location ID is not as expected");
             assertEquals("Test Location", firstLocation.getName(), "Location name does not match in first location");
             assertEquals(List.of("North West"), firstLocation.getRegion(),
                          "Location region does not match in first location");
@@ -303,6 +309,7 @@ class LocationServiceTest {
                        "Jurisdiction does not have expected value");
 
             Location secondLocation = locations.get(1);
+            assertEquals(2, secondLocation.getLocationId(), "Location ID is not as expected");
             assertEquals("Test Location Other", secondLocation.getName(),
                          "Location name does not match in second location");
             assertEquals(List.of("South West"), secondLocation.getRegion(),
@@ -316,7 +323,7 @@ class LocationServiceTest {
 
     @Test
     void testHandleUploadReferencesOk() throws IOException {
-
+        when(locationRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
         try (InputStream inputStream = this.getClass().getClassLoader()
             .getResourceAsStream("csv/ValidCsv.csv")) {
 
@@ -372,6 +379,34 @@ class LocationServiceTest {
 
             assertThrows(CsvParseException.class, () -> locationService.uploadLocations(multipartFile));
         }
+    }
+
+    @Test
+    void testDeleteLocation() {
+        int locationId = 1;
+
+        when(locationRepository.getLocationByLocationId(locationId))
+            .thenReturn(Optional.of(locationFirstExample));
+
+        doNothing().when(locationRepository).deleteById(locationId);
+
+        locationService.deleteLocation(locationId);
+
+        verify(locationRepository, times(1)).deleteById(locationId);
+    }
+
+    @Test
+    void testDeleteLocationWhereNotFound() {
+        int locationId = 1;
+
+        when(locationRepository.getLocationByLocationId(locationId))
+            .thenReturn(Optional.empty());
+
+        LocationNotFoundException locationNotFoundException =
+            assertThrows(LocationNotFoundException.class, () -> locationService.deleteLocation(locationId));
+
+        assertEquals("No location found with the id: 1", locationNotFoundException.getMessage(),
+                     "Exception does not contain expected message");
     }
 
 }
