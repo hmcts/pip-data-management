@@ -42,6 +42,13 @@ class LocationServiceTest {
 
     private static final String FAMILY_LOCATION =  "Family Location";
     private static final String MAGISTRATES_LOCATION = "Magistrates Location";
+    private static final String FAMILY_LOCATION_WELSH =  "Lleoliad Teulu";
+    private static final String MAGISTRATES_LOCATION_WELSH = "Lleoliad yr Ynadon";
+    private static final String ENGLISH_LANGUAGE = "eng";
+    private static final String WELSH_LANGUAGE = "cy";
+
+    private static final String FIRST_LOCATION_NOT_FOUND = "First location has not been found";
+    private static final String SECOND_LOCATION_NOT_FOUND = "Second location has not been found";
 
     @BeforeEach
     void setup() {
@@ -131,15 +138,40 @@ class LocationServiceTest {
         when(locationRepository.findByRegionAndJurisdictionOrderByName(expectedRegions, expectedJurisdictions))
             .thenReturn(List.of(locationFirstExample, locationSecondExample));
 
-        List<Location> returnedLocations = locationService.searchByRegionAndJurisdiction(regions, jurisdictions);
+        List<Location> returnedLocations = locationService.searchByRegionAndJurisdiction(regions, jurisdictions,
+                                                                                         ENGLISH_LANGUAGE);
 
         assertTrue(
             returnedLocations.contains(locationFirstExample),
-            "First location has not been found");
+            FIRST_LOCATION_NOT_FOUND);
 
         assertTrue(
             returnedLocations.contains(locationSecondExample),
-            "Second location has not been found");
+            SECOND_LOCATION_NOT_FOUND);
+    }
+
+    @Test
+    void testHandleLocationSearchByRegionAndJurisdictionForWelsh() {
+
+        List<String> regions = List.of("Gogledd Orllewin", "De Orllewin");
+        List<String> jurisdictions = List.of(MAGISTRATES_LOCATION_WELSH, FAMILY_LOCATION_WELSH);
+
+        String expectedJurisdictions = MAGISTRATES_LOCATION_WELSH + "," + FAMILY_LOCATION_WELSH;
+        String expectedRegions = "Gogledd Orllewin,De Orllewin";
+
+        when(locationRepository.findByWelshRegionAndJurisdictionOrderByName(expectedRegions, expectedJurisdictions))
+            .thenReturn(List.of(locationFirstExample, locationSecondExample));
+
+        List<Location> returnedLocations = locationService.searchByRegionAndJurisdiction(regions, jurisdictions,
+                                                                                         WELSH_LANGUAGE);
+
+        assertTrue(
+            returnedLocations.contains(locationFirstExample),
+            FIRST_LOCATION_NOT_FOUND);
+
+        assertTrue(
+            returnedLocations.contains(locationSecondExample),
+            SECOND_LOCATION_NOT_FOUND);
     }
 
     @Test
@@ -151,11 +183,29 @@ class LocationServiceTest {
         when(locationRepository.findByRegionAndJurisdictionOrderByName(expectedRegions, ""))
             .thenReturn(List.of(locationFirstExample));
 
-        List<Location> returnedLocations = locationService.searchByRegionAndJurisdiction(regions, null);
+        List<Location> returnedLocations = locationService.searchByRegionAndJurisdiction(regions, null,
+                                                                                         ENGLISH_LANGUAGE);
 
         assertTrue(
             returnedLocations.contains(locationFirstExample),
-            "First location has not been found");
+            FIRST_LOCATION_NOT_FOUND);
+    }
+
+    @Test
+    void testHandleLocationSearchOnlyRegionForWelsh() {
+        List<String> regions = List.of("Gogledd Orllewin", "De Orllewin");
+
+        String expectedRegions = "Gogledd Orllewin,De Orllewin";
+
+        when(locationRepository.findByWelshRegionAndJurisdictionOrderByName(expectedRegions, ""))
+            .thenReturn(List.of(locationFirstExample));
+
+        List<Location> returnedLocations = locationService.searchByRegionAndJurisdiction(regions, null,
+                                                                                         WELSH_LANGUAGE);
+
+        assertTrue(
+            returnedLocations.contains(locationFirstExample),
+            FIRST_LOCATION_NOT_FOUND);
     }
 
     @Test
@@ -167,11 +217,29 @@ class LocationServiceTest {
         when(locationRepository.findByRegionAndJurisdictionOrderByName("", expectedJurisdictions))
             .thenReturn(List.of(locationSecondExample));
 
-        List<Location> returnedLocations = locationService.searchByRegionAndJurisdiction(null, jurisdictions);
+        List<Location> returnedLocations = locationService.searchByRegionAndJurisdiction(null, jurisdictions,
+                                                                                         ENGLISH_LANGUAGE);
 
         assertTrue(
             returnedLocations.contains(locationSecondExample),
-            "Second location has not been found");
+            SECOND_LOCATION_NOT_FOUND);
+    }
+
+    @Test
+    void testHandleLocationSearchOnlyJurisdictionForWelsh() {
+        List<String> jurisdictions = List.of(MAGISTRATES_LOCATION_WELSH, FAMILY_LOCATION_WELSH);
+
+        String expectedJurisdictions = MAGISTRATES_LOCATION_WELSH + "," + FAMILY_LOCATION_WELSH;
+
+        when(locationRepository.findByWelshRegionAndJurisdictionOrderByName("", expectedJurisdictions))
+            .thenReturn(List.of(locationSecondExample));
+
+        List<Location> returnedLocations = locationService.searchByRegionAndJurisdiction(null, jurisdictions,
+                                                                                         WELSH_LANGUAGE);
+
+        assertTrue(
+            returnedLocations.contains(locationSecondExample),
+            SECOND_LOCATION_NOT_FOUND);
     }
 
     @Test
@@ -179,15 +247,33 @@ class LocationServiceTest {
         when(locationRepository.findByRegionAndJurisdictionOrderByName("", ""))
             .thenReturn(List.of(locationFirstExample, locationSecondExample));
 
-        List<Location> returnedLocations = locationService.searchByRegionAndJurisdiction(null, null);
+        List<Location> returnedLocations = locationService.searchByRegionAndJurisdiction(null, null,
+                                                                                         ENGLISH_LANGUAGE);
 
         assertTrue(
             returnedLocations.contains(locationFirstExample),
-            "First location has not been found");
+            FIRST_LOCATION_NOT_FOUND);
 
         assertTrue(
             returnedLocations.contains(locationSecondExample),
-            "Second location has not been found");
+            SECOND_LOCATION_NOT_FOUND);
+    }
+
+    @Test
+    void testHandleLocationSearchNoRegionOrJurisdictionForWelsh() {
+        when(locationRepository.findByWelshRegionAndJurisdictionOrderByName("", ""))
+            .thenReturn(List.of(locationFirstExample, locationSecondExample));
+
+        List<Location> returnedLocations = locationService.searchByRegionAndJurisdiction(null, null,
+                                                                                         WELSH_LANGUAGE);
+
+        assertTrue(
+            returnedLocations.contains(locationFirstExample),
+            FIRST_LOCATION_NOT_FOUND);
+
+        assertTrue(
+            returnedLocations.contains(locationSecondExample),
+            SECOND_LOCATION_NOT_FOUND);
     }
 
     @Test

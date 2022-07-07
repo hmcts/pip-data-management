@@ -46,16 +46,20 @@ class LocationApiTest {
     private static final String ROOT_URL = "/locations";
     private static final String GET_LOCATION_BY_ID_ENDPOINT = ROOT_URL + "/";
     private static final String GET_LOCATION_BY_NAME_ENDPOINT = ROOT_URL + "/name/";
-    private static final String GET_LOCAITON_BY_FILTER_ENDPOINT = ROOT_URL + "/filter";
+    private static final String GET_LOCATON_BY_FILTER_ENDPOINT = ROOT_URL + "/filter";
     public static final String UPLOAD_API = ROOT_URL + "/upload";
 
     private static final String REGIONS_PARAM = "regions";
     private static final String JURISDICTIONS_PARAM = "jurisdictions";
+    private static final String LANGUAGE_PARAM = "language";
+    private static final String ENGLISH_LANGUAGE_PARAM_VALUE = "eng";
+    private static final String WELSH_LANGUAGE_PARAM_VALUE = "cy";
 
     private static final String VALIDATION_UNKNOWN_LOCATION = "Unexpected location has been returned";
     private static final String VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS =
         "Unexpected number of locations has been returned";
     private static final int ALL_LOCATIONS = 3;
+    private static final String LOCATION_RESULT = "Location has been returned when not expected";
 
     private final BiPredicate<Location, Location> compareLocationWithoutReference = (location, otherLocation) ->
         location.getLocationId().equals(otherLocation.getLocationId())
@@ -78,7 +82,7 @@ class LocationApiTest {
 
             MvcResult mvcResult = mockMvc.perform(multipart(UPLOAD_API).file(csvFile))
                 .andExpect(status().isOk()).andReturn();
- 
+
             return Arrays.asList(
                 objectMapper.readValue(mvcResult.getResponse().getContentAsString(), Location[].class));
         }
@@ -173,30 +177,64 @@ class LocationApiTest {
     void testFilterLocationsByRegionReturnsNoResults() throws Exception {
         createLocations();
 
-        MvcResult mvcResult = mockMvc.perform(get(GET_LOCAITON_BY_FILTER_ENDPOINT)
-                                                  .param("regions", "North South"))
+        MvcResult mvcResult = mockMvc.perform(get(GET_LOCATON_BY_FILTER_ENDPOINT)
+                                                  .param("regions", "North South")
+                                                  .param(LANGUAGE_PARAM, ENGLISH_LANGUAGE_PARAM_VALUE))
             .andExpect(status().isOk())
             .andReturn();
 
         List<Location> returnedLocations =
             Arrays.asList(objectMapper.readValue(mvcResult.getResponse().getContentAsString(), Location[].class));
 
-        assertEquals(0, returnedLocations.size(), "Location has been returned when not expected");
+        assertEquals(0, returnedLocations.size(), LOCATION_RESULT);
+    }
+
+    @Test
+    void testWelshFilterLocationsByRegionReturnsNoResults() throws Exception {
+        createLocations();
+
+        MvcResult mvcResult = mockMvc.perform(get(GET_LOCATON_BY_FILTER_ENDPOINT)
+                                                  .param("regions", "Welsh north South")
+                                                  .param(LANGUAGE_PARAM, WELSH_LANGUAGE_PARAM_VALUE))
+            .andExpect(status().isOk())
+            .andReturn();
+
+        List<Location> returnedLocations =
+            Arrays.asList(objectMapper.readValue(mvcResult.getResponse().getContentAsString(), Location[].class));
+
+        assertEquals(0, returnedLocations.size(), LOCATION_RESULT);
     }
 
     @Test
     void testFilterLocationsByJurisdictionReturnsNoResults() throws Exception {
         createLocations();
 
-        MvcResult mvcResult = mockMvc.perform(get(GET_LOCAITON_BY_FILTER_ENDPOINT)
-                                                  .param("jurisdictions", "Test Jurisdiction"))
+        MvcResult mvcResult = mockMvc.perform(get(GET_LOCATON_BY_FILTER_ENDPOINT)
+                                                  .param("jurisdictions", "Test Jurisdiction")
+                                                  .param(LANGUAGE_PARAM, ENGLISH_LANGUAGE_PARAM_VALUE))
             .andExpect(status().isOk())
             .andReturn();
 
         List<Location> returnedLocations =
             Arrays.asList(objectMapper.readValue(mvcResult.getResponse().getContentAsString(), Location[].class));
 
-        assertEquals(0, returnedLocations.size(), "Location has been returned when not expected");
+        assertEquals(0, returnedLocations.size(), LOCATION_RESULT);
+    }
+
+    @Test
+    void testWelshFilterLocationsByJurisdictionReturnsNoResults() throws Exception {
+        createLocations();
+
+        MvcResult mvcResult = mockMvc.perform(get(GET_LOCATON_BY_FILTER_ENDPOINT)
+                                                  .param("jurisdictions", "Welsh magistrates")
+                                                  .param(LANGUAGE_PARAM, WELSH_LANGUAGE_PARAM_VALUE))
+            .andExpect(status().isOk())
+            .andReturn();
+
+        List<Location> returnedLocations =
+            Arrays.asList(objectMapper.readValue(mvcResult.getResponse().getContentAsString(), Location[].class));
+
+        assertEquals(0, returnedLocations.size(), LOCATION_RESULT);
     }
 
 
@@ -204,9 +242,30 @@ class LocationApiTest {
     void testFilterLocationsByJurisdictionAndRegion() throws Exception {
         List<Location> locations = createLocations();
 
-        MvcResult mvcResult = mockMvc.perform(get(GET_LOCAITON_BY_FILTER_ENDPOINT)
+        MvcResult mvcResult = mockMvc.perform(get(GET_LOCATON_BY_FILTER_ENDPOINT)
                             .param(REGIONS_PARAM, "North West")
-                            .param(JURISDICTIONS_PARAM, "Magistrates Location"))
+                            .param(JURISDICTIONS_PARAM, "Magistrates Location")
+                            .param(LANGUAGE_PARAM, ENGLISH_LANGUAGE_PARAM_VALUE))
+            .andExpect(status().isOk())
+            .andReturn();
+
+        List<Location> returnedLocations =
+            Arrays.asList(objectMapper.readValue(mvcResult.getResponse().getContentAsString(), Location[].class));
+
+        assertEquals(1, returnedLocations.size(), VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
+
+        assertTrue(compareLocationWithoutReference.test(locations.get(0), returnedLocations.get(0)),
+                   VALIDATION_UNKNOWN_LOCATION);
+    }
+
+    @Test
+    void testWelshFilterLocationsByJurisdictionAndRegion() throws Exception {
+        List<Location> locations = createLocations();
+
+        MvcResult mvcResult = mockMvc.perform(get(GET_LOCATON_BY_FILTER_ENDPOINT)
+                                                  .param(REGIONS_PARAM, "Welsh north west")
+                                                  .param(JURISDICTIONS_PARAM, "welsh magistrates")
+                                                  .param(LANGUAGE_PARAM, WELSH_LANGUAGE_PARAM_VALUE))
             .andExpect(status().isOk())
             .andReturn();
 
@@ -223,8 +282,9 @@ class LocationApiTest {
     void testFilterByOnlyRegion() throws Exception {
         List<Location> locations = createLocations();
 
-        MvcResult mvcResult = mockMvc.perform(get(GET_LOCAITON_BY_FILTER_ENDPOINT)
-                                                  .param(REGIONS_PARAM, "South West"))
+        MvcResult mvcResult = mockMvc.perform(get(GET_LOCATON_BY_FILTER_ENDPOINT)
+                                                  .param(REGIONS_PARAM, "South West")
+                                                  .param(LANGUAGE_PARAM, ENGLISH_LANGUAGE_PARAM_VALUE))
             .andExpect(status().isOk())
             .andReturn();
 
@@ -238,11 +298,49 @@ class LocationApiTest {
     }
 
     @Test
+    void testWelshFilterByOnlyRegion() throws Exception {
+        createLocations();
+
+        MvcResult mvcResult = mockMvc.perform(get(GET_LOCATON_BY_FILTER_ENDPOINT)
+                                                  .param(REGIONS_PARAM, "Welsh north west")
+                                                  .param(LANGUAGE_PARAM, WELSH_LANGUAGE_PARAM_VALUE))
+            .andExpect(status().isOk())
+            .andReturn();
+
+        List<Location> returnedLocations =
+            Arrays.asList(objectMapper.readValue(mvcResult.getResponse().getContentAsString(), Location[].class));
+
+        assertEquals(1, returnedLocations.size(), VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
+    }
+
+    @Test
     void testFilterByMultipleRegions() throws Exception {
         List<Location> locations = createLocations();
 
-        MvcResult mvcResult = mockMvc.perform(get(GET_LOCAITON_BY_FILTER_ENDPOINT)
-                                                  .param(REGIONS_PARAM, "South West,North West"))
+        MvcResult mvcResult = mockMvc.perform(get(GET_LOCATON_BY_FILTER_ENDPOINT)
+                        .param(REGIONS_PARAM, "South West,North West")
+                        .param(LANGUAGE_PARAM, ENGLISH_LANGUAGE_PARAM_VALUE))
+            .andExpect(status().isOk())
+            .andReturn();
+
+        List<Location> returnedLocations =
+            Arrays.asList(objectMapper.readValue(mvcResult.getResponse().getContentAsString(), Location[].class));
+
+        assertEquals(2, returnedLocations.size(), VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
+
+        assertTrue(compareLocationWithoutReference.test(locations.get(0), returnedLocations.get(0)),
+                   VALIDATION_UNKNOWN_LOCATION);
+        assertTrue(compareLocationWithoutReference.test(locations.get(1), returnedLocations.get(1)),
+                   VALIDATION_UNKNOWN_LOCATION);
+    }
+
+    @Test
+    void testWelshFilterByMultipleRegions() throws Exception {
+        List<Location> locations = createLocations();
+
+        MvcResult mvcResult = mockMvc.perform(get(GET_LOCATON_BY_FILTER_ENDPOINT)
+                                                  .param(REGIONS_PARAM, "Welsh north west,Welsh south west")
+                                                  .param(LANGUAGE_PARAM, WELSH_LANGUAGE_PARAM_VALUE))
             .andExpect(status().isOk())
             .andReturn();
 
@@ -261,8 +359,28 @@ class LocationApiTest {
     void testFilterByOnlyJurisdiction() throws Exception {
         List<Location> locations = createLocations();
 
-        MvcResult mvcResult = mockMvc.perform(get(GET_LOCAITON_BY_FILTER_ENDPOINT)
-                                                  .param(JURISDICTIONS_PARAM, "Magistrates Location"))
+        MvcResult mvcResult = mockMvc.perform(get(GET_LOCATON_BY_FILTER_ENDPOINT)
+                                                  .param(JURISDICTIONS_PARAM, "Magistrates Location")
+                                                  .param(LANGUAGE_PARAM, ENGLISH_LANGUAGE_PARAM_VALUE))
+            .andExpect(status().isOk())
+            .andReturn();
+
+        List<Location> returnedLocations =
+            Arrays.asList(objectMapper.readValue(mvcResult.getResponse().getContentAsString(), Location[].class));
+
+        assertEquals(1, returnedLocations.size(), VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
+
+        assertTrue(compareLocationWithoutReference.test(locations.get(0), returnedLocations.get(0)),
+                   VALIDATION_UNKNOWN_LOCATION);
+    }
+
+    @Test
+    void testWelshFilterByOnlyJurisdiction() throws Exception {
+        List<Location> locations = createLocations();
+
+        MvcResult mvcResult = mockMvc.perform(get(GET_LOCATON_BY_FILTER_ENDPOINT)
+                                                  .param(JURISDICTIONS_PARAM, "welsh magistrates")
+                                                  .param(LANGUAGE_PARAM, WELSH_LANGUAGE_PARAM_VALUE))
             .andExpect(status().isOk())
             .andReturn();
 
@@ -279,8 +397,30 @@ class LocationApiTest {
     void testFilterByMultipleJurisdictions() throws Exception {
         List<Location> locations = createLocations();
 
-        MvcResult mvcResult = mockMvc.perform(get(GET_LOCAITON_BY_FILTER_ENDPOINT)
-                                                  .param(JURISDICTIONS_PARAM, "Magistrates Location,Family Location"))
+        MvcResult mvcResult = mockMvc.perform(get(GET_LOCATON_BY_FILTER_ENDPOINT)
+                                                  .param(JURISDICTIONS_PARAM, "Magistrates Location,Family Location")
+                                                  .param(LANGUAGE_PARAM, ENGLISH_LANGUAGE_PARAM_VALUE))
+            .andExpect(status().isOk())
+            .andReturn();
+
+        List<Location> returnedLocations =
+            Arrays.asList(objectMapper.readValue(mvcResult.getResponse().getContentAsString(), Location[].class));
+
+        assertEquals(2, returnedLocations.size(), VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
+
+        assertTrue(compareLocationWithoutReference.test(locations.get(0), returnedLocations.get(0)),
+                   VALIDATION_UNKNOWN_LOCATION);
+        assertTrue(compareLocationWithoutReference.test(locations.get(1), returnedLocations.get(1)),
+                   VALIDATION_UNKNOWN_LOCATION);
+    }
+
+    @Test
+    void testWelshFilterByMultipleJurisdictions() throws Exception {
+        List<Location> locations = createLocations();
+
+        MvcResult mvcResult = mockMvc.perform(get(GET_LOCATON_BY_FILTER_ENDPOINT)
+                                                  .param(JURISDICTIONS_PARAM, "welsh magistrates,welsh family")
+                                                  .param(LANGUAGE_PARAM, WELSH_LANGUAGE_PARAM_VALUE))
             .andExpect(status().isOk())
             .andReturn();
 
@@ -299,7 +439,29 @@ class LocationApiTest {
     void testFilterByNoRegionOrJurisdiction() throws Exception {
         final List<Location> locations = createLocations();
 
-        MvcResult mvcResult = mockMvc.perform(get(GET_LOCAITON_BY_FILTER_ENDPOINT))
+        MvcResult mvcResult = mockMvc.perform(get(GET_LOCATON_BY_FILTER_ENDPOINT))
+            .andExpect(status().isOk())
+            .andReturn();
+
+        List<Location> returnedLocations =
+            Arrays.asList(objectMapper.readValue(mvcResult.getResponse().getContentAsString(), Location[].class));
+
+        assertEquals(ALL_LOCATIONS, returnedLocations.size(), VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
+
+        assertTrue(compareLocationWithoutReference.test(locations.get(0), returnedLocations.get(0)),
+                   VALIDATION_UNKNOWN_LOCATION);
+        assertTrue(compareLocationWithoutReference.test(locations.get(1), returnedLocations.get(1)),
+                   VALIDATION_UNKNOWN_LOCATION);
+        assertTrue(compareLocationWithoutReference.test(locations.get(2), returnedLocations.get(2)),
+                   VALIDATION_UNKNOWN_LOCATION);
+    }
+
+    @Test
+    void testWelshFilterByNoRegionOrJurisdiction() throws Exception {
+        final List<Location> locations = createLocations();
+
+        MvcResult mvcResult = mockMvc.perform(get(GET_LOCATON_BY_FILTER_ENDPOINT)
+                                                  .param(LANGUAGE_PARAM, WELSH_LANGUAGE_PARAM_VALUE))
             .andExpect(status().isOk())
             .andReturn();
 

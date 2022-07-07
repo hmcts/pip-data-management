@@ -24,6 +24,14 @@ public interface LocationRepository extends JpaRepository<Location, Integer> {
     List<Location> findByRegionAndJurisdictionOrderByName(@Param("regions") String regions,
                                                           @Param("jurisdictions") String jurisdictions);
 
+    @Query(value = "select * from location "
+        + "WHERE (:regions = '' OR location.welsh_region && string_to_array(:regions, ',')) "
+        + "AND (:jurisdictions = '' OR location.welsh_jurisdiction && string_to_array(:jurisdictions, ',')) "
+        + "ORDER BY location.name",
+        nativeQuery = true)
+    List<Location> findByWelshRegionAndJurisdictionOrderByName(@Param("regions") String regions,
+                                                          @Param("jurisdictions") String jurisdictions);
+
     @Query(value = "select location.* from location_reference "
         + "inner join location on location_reference.location_id = location.location_id "
         + "WHERE (location_reference.provenance = :provenance) "

@@ -75,9 +75,11 @@ public class LocationController {
     @JsonView(LocationViews.BaseView.class)
     public ResponseEntity<List<Location>> searchByRegionAndJurisdiction(
         @RequestParam(required = false) List<String> regions,
-        @RequestParam(required = false) List<String> jurisdictions) {
+        @RequestParam(required = false) List<String> jurisdictions,
+        @RequestParam(required = false) String language) {
 
-        return ResponseEntity.ok(locationService.searchByRegionAndJurisdiction(regions, jurisdictions));
+        return ResponseEntity.ok(locationService.searchByRegionAndJurisdiction(regions,
+            jurisdictions, language));
     }
 
     @ApiResponses({

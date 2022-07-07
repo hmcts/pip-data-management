@@ -39,6 +39,12 @@ class LocationControllerTest {
     @InjectMocks
     private LocationController locationController;
 
+    private static final String ENGLISH_LANGUAGE = "eng";
+    private static final String WELSH_LANGUAGE = "cy";
+
+    private static final String FIRST_LOCATION_NOT_FOUND = "First location not contained within list";
+    private static final String SECOND_LOCATION_NOT_FOUND = "Second location not contained within list";
+
     Location firstLocation;
     Location secondLocation;
 
@@ -74,8 +80,8 @@ class LocationControllerTest {
         List<Location> returnedLocations = locationController.getLocationList().getBody();
 
         assertEquals(2, returnedLocations.size(), "Unexpected number of locations returned");
-        assertTrue(returnedLocations.contains(firstLocation), "First location not contained within list");
-        assertTrue(returnedLocations.contains(secondLocation), "Second location not contained within list");
+        assertTrue(returnedLocations.contains(firstLocation), FIRST_LOCATION_NOT_FOUND);
+        assertTrue(returnedLocations.contains(secondLocation), SECOND_LOCATION_NOT_FOUND);
     }
 
     @Test
@@ -128,15 +134,33 @@ class LocationControllerTest {
         List<String> regions = List.of("Region A", "Region B");
         List<String> jurisdictions = List.of("Jurisdiction A", "Jurisdiction B");
 
-        when(locationService.searchByRegionAndJurisdiction(regions, jurisdictions))
+        when(locationService.searchByRegionAndJurisdiction(regions, jurisdictions, ENGLISH_LANGUAGE))
             .thenReturn(List.of(firstLocation, secondLocation));
 
-        List<Location> locations = locationController.searchByRegionAndJurisdiction(regions, jurisdictions).getBody();
+        List<Location> locations = locationController.searchByRegionAndJurisdiction(regions,
+                jurisdictions, ENGLISH_LANGUAGE).getBody();
 
 
         assertEquals(2, locations.size(), "Unexpected number of locations have been returned");
-        assertTrue(locations.contains(firstLocation), "First location not contained within list");
-        assertTrue(locations.contains(secondLocation), "Second location not contained within list");
+        assertTrue(locations.contains(firstLocation), FIRST_LOCATION_NOT_FOUND);
+        assertTrue(locations.contains(secondLocation), SECOND_LOCATION_NOT_FOUND);
+    }
+
+    @Test
+    void testGetWelshFilterLocationsReturnsLocations() {
+        List<String> regions = List.of("Rhanbarth A", "Rhanbarth B");
+        List<String> jurisdictions = List.of("Awdurdodaeth A", "Awdurdodaeth B");
+
+        when(locationService.searchByRegionAndJurisdiction(regions, jurisdictions, WELSH_LANGUAGE))
+            .thenReturn(List.of(firstLocation, secondLocation));
+
+        List<Location> locations = locationController.searchByRegionAndJurisdiction(regions,
+            jurisdictions, WELSH_LANGUAGE).getBody();
+
+
+        assertEquals(2, locations.size(), "Unexpected number of locations have been returned");
+        assertTrue(locations.contains(firstLocation), FIRST_LOCATION_NOT_FOUND);
+        assertTrue(locations.contains(secondLocation), SECOND_LOCATION_NOT_FOUND);
     }
 
     @Test
@@ -144,11 +168,26 @@ class LocationControllerTest {
         List<String> regions = List.of("Region A", "Region B");
         List<String> jurisdictions = List.of("Jurisdiction A", "Jurisdiction B");
 
-        when(locationService.searchByRegionAndJurisdiction(regions, jurisdictions))
+        when(locationService.searchByRegionAndJurisdiction(regions, jurisdictions, ENGLISH_LANGUAGE))
             .thenReturn(List.of(firstLocation, secondLocation));
 
         assertEquals(HttpStatus.OK,
-                     locationController.searchByRegionAndJurisdiction(regions, jurisdictions).getStatusCode(),
+                     locationController.searchByRegionAndJurisdiction(regions, jurisdictions,
+                     ENGLISH_LANGUAGE).getStatusCode(),
+                     "Location region and jurisdiction search has not returned OK");
+    }
+
+    @Test
+    void testGetByWelshRegionAndJurisdictionReturnsOk() {
+        List<String> regions = List.of("Rhanbarth A", "Rhanbarth B");
+        List<String> jurisdictions = List.of("Awdurdodaeth A", "Awdurdodaeth B");
+
+        when(locationService.searchByRegionAndJurisdiction(regions, jurisdictions, WELSH_LANGUAGE))
+            .thenReturn(List.of(firstLocation, secondLocation));
+
+        assertEquals(HttpStatus.OK,
+                     locationController.searchByRegionAndJurisdiction(regions, jurisdictions,
+                                                                      WELSH_LANGUAGE).getStatusCode(),
                      "Location region and jurisdiction search has not returned OK");
     }
 
@@ -168,8 +207,8 @@ class LocationControllerTest {
                                                                    .getBody());
 
             assertEquals(2, returnedLocations.size(), "Unexpected number of location have been returned");
-            assertTrue(returnedLocations.contains(firstLocation), "First location not contained within list");
-            assertTrue(returnedLocations.contains(secondLocation), "Second location not contained within list");
+            assertTrue(returnedLocations.contains(firstLocation), FIRST_LOCATION_NOT_FOUND);
+            assertTrue(returnedLocations.contains(secondLocation), SECOND_LOCATION_NOT_FOUND);
         }
 
     }
