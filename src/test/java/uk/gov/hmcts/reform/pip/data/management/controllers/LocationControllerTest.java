@@ -124,12 +124,34 @@ class LocationControllerTest {
     }
 
     @Test
+    void testGetWelshLocationByNameReturnsLocation() {
+        when(locationService.getLocationByName(secondLocation.getName(), WELSH_LANGUAGE))
+            .thenReturn(secondLocation);
+
+        assertEquals(secondLocation, locationController.getLocationByName(
+            secondLocation.getName(), WELSH_LANGUAGE).getBody(),
+                     "Returned location does not match expected location"
+        );
+    }
+
+    @Test
     void testGetLocationByNameReturnsOk() {
         when(locationService.getLocationByName(secondLocation.getName(), ENGLISH_LANGUAGE))
             .thenReturn(secondLocation);
 
         assertEquals(HttpStatus.OK, locationController.getLocationByName(
             secondLocation.getName(), ENGLISH_LANGUAGE).getStatusCode(),
+                     "Location Name search has not returned OK"
+        );
+    }
+
+    @Test
+    void testGetWelshLocationByNameReturnsOk() {
+        when(locationService.getLocationByName(secondLocation.getName(), WELSH_LANGUAGE))
+            .thenReturn(secondLocation);
+
+        assertEquals(HttpStatus.OK, locationController.getLocationByName(
+            secondLocation.getName(), WELSH_LANGUAGE).getStatusCode(),
                      "Location Name search has not returned OK"
         );
     }

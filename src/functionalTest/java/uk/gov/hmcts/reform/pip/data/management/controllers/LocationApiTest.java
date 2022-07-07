@@ -47,7 +47,7 @@ class LocationApiTest {
 
     private static final String ROOT_URL = "/locations";
     private static final String GET_LOCATION_BY_ID_ENDPOINT = ROOT_URL + "/";
-    private static final String GET_LOCATION_BY_NAME_ENDPOINT = ROOT_URL + "/name/";
+    private static final String GET_LOCATION_BY_NAME_ENDPOINT = ROOT_URL + "/name/%s/language/%s";
     private static final String GET_LOCATION_BY_FILTER_ENDPOINT = ROOT_URL + "/filter";
     public static final String UPLOAD_API = ROOT_URL + "/upload";
     private static final String LOCATIONS_CSV = "location/ValidCsv.csv";
@@ -153,7 +153,8 @@ class LocationApiTest {
 
         Location location = locations.get(0);
 
-        MvcResult mvcResult = mockMvc.perform(get(GET_LOCATION_BY_NAME_ENDPOINT + location.getName()))
+        MvcResult mvcResult = mockMvc.perform(get(String.format(GET_LOCATION_BY_NAME_ENDPOINT,
+                                                                location.getName(), ENGLISH_LANGUAGE_PARAM_VALUE)))
             .andExpect(status().isOk())
             .andReturn();
 
@@ -167,7 +168,41 @@ class LocationApiTest {
     void testGetLocationByNameReturnsNotFound() throws Exception {
         String invalidName = "invalid";
 
-        MvcResult mvcResult = mockMvc.perform(get(GET_LOCATION_BY_NAME_ENDPOINT + invalidName))
+        MvcResult mvcResult = mockMvc.perform(get(String.format(GET_LOCATION_BY_NAME_ENDPOINT,
+                                                                invalidName, ENGLISH_LANGUAGE_PARAM_VALUE)))
+            .andExpect(status().isNotFound())
+            .andReturn();
+
+        ExceptionResponse exceptionResponse =
+            objectMapper.readValue(mvcResult.getResponse().getContentAsString(), ExceptionResponse.class);
+
+        assertEquals("No location found with the name: " + invalidName, exceptionResponse.getMessage(),
+                     "Unexpected error message returned when location by name not found");
+    }
+
+    @Test
+    void testGetWelshLocationByNameReturnsSuccess() throws Exception {
+        List<Location> locations = createLocations(LOCATIONS_CSV);
+
+        Location location = locations.get(0);
+
+        MvcResult mvcResult = mockMvc.perform(get(String.format(GET_LOCATION_BY_NAME_ENDPOINT,
+                                                                location.getWelshName(), WELSH_LANGUAGE_PARAM_VALUE)))
+            .andExpect(status().isOk())
+            .andReturn();
+
+        Location returnedLocation = objectMapper.readValue(mvcResult.getResponse().getContentAsString(),
+                                                           Location.class);
+
+        assertEquals(location, returnedLocation, VALIDATION_UNKNOWN_LOCATION);
+    }
+
+    @Test
+    void testGetWelshLocationByNameReturnsNotFound() throws Exception {
+        String invalidName = "invalid";
+
+        MvcResult mvcResult = mockMvc.perform(get(String.format(GET_LOCATION_BY_NAME_ENDPOINT,
+                                                                invalidName, WELSH_LANGUAGE_PARAM_VALUE)))
             .andExpect(status().isNotFound())
             .andReturn();
 
