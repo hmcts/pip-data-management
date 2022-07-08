@@ -37,6 +37,7 @@ import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
 
 @Slf4j
 @Service
+@SuppressWarnings("PMD.GodClass")
 public class PublicationService {
 
     private final ArtefactRepository artefactRepository;
@@ -301,6 +302,7 @@ public class PublicationService {
             log.info(azureBlobService.deleteBlob(getUuidFromUrl(artefactToDelete.get().getPayload())));
             artefactRepository.delete(artefactToDelete.get());
             log.info(writeLog(issuerEmail, UserActions.REMOVE, artefactId));
+            triggerThirdPartyArtefactDeleted(artefactToDelete.get());
         } else {
             throw new ArtefactNotFoundException("No artefact found with the ID: " + artefactId);
         }
@@ -371,6 +373,14 @@ public class PublicationService {
 
     public LocationType getLocationType(ListType listType) {
         return listType.getListLocationLevel();
+    }
+
+    /**
+     * Triggers subscription management to handle deleted artefact to third party subscribers.
+     * @param deletedArtefact deleted artefact to notify of.
+     */
+    private void triggerThirdPartyArtefactDeleted(Artefact deletedArtefact) {
+        log.info(writeLog(subscriptionManagementService.sendDeletedArtefactForThirdParties(deletedArtefact)));
     }
 
     /**
