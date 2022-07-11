@@ -1067,15 +1067,18 @@ class PublicationServiceTest {
     @Test
     void testDeleteArtefactById() throws IOException {
         try (LogCaptor logCaptor = LogCaptor.forClass(PublicationService.class)) {
+            when(subscriptionManagementService.sendDeletedArtefactForThirdParties(artefactWithPayloadUrl))
+                .thenReturn(SUCCESS);
             when(artefactRepository.findArtefactByArtefactId(ARTEFACT_ID.toString()))
                 .thenReturn(Optional.of(artefactWithPayloadUrl));
             when(azureBlobService.deleteBlob(PAYLOAD_STRIPPED)).thenReturn(SUCCESS);
             doNothing().when(artefactRepository).delete(artefactWithPayloadUrl);
 
             publicationService.deleteArtefactById(ARTEFACT_ID.toString(), TEST_VALUE);
-            assertEquals(SUCCESS, logCaptor.getInfoLogs().get(0), MESSAGES_MATCH);
+            assertTrue(logCaptor.getInfoLogs().get(0).contains(SUCCESS), MESSAGES_MATCH);
             assertTrue(logCaptor.getInfoLogs().get(1).contains(String.format(DELETION_TRACK_LOG_MESSAGE, ARTEFACT_ID)),
                        MESSAGES_MATCH);
+            assertTrue(logCaptor.getInfoLogs().get(2).contains(SUCCESS), MESSAGES_MATCH);
         } catch (Exception ex) {
             throw new IOException(ex.getMessage());
         }
