@@ -13,7 +13,7 @@ The template is a working application with a minimal setup. It contains:
  * common plugins and libraries
  * docker setup
  * swagger configuration for api documentation ([see how to publish your api documentation to shared repository](https://github.com/hmcts/reform-api-docs#publish-swagger-docs))
- * code quality tools already set up
+ * code quality tools already set up.
  * Hystrix circuit breaker enabled.
  * MIT license and contribution information.
  * Helm chart using chart-java.
