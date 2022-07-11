@@ -72,8 +72,14 @@ public class LocationService {
      * @return Location of the found location.
      * @throws LocationNotFoundException when no location was found with the given search input.
      */
-    public Location getLocationByName(String locationName) {
-        Optional<Location> foundLocation = locationRepository.getLocationByName(locationName);
+    public Location getLocationByName(String locationName, String language) {
+        Optional<Location> foundLocation;
+        if ("cy".equals(language)) {
+            foundLocation = locationRepository.getLocationByWelshName(locationName);
+        } else {
+            foundLocation = locationRepository.getLocationByName(locationName);
+        }
+
         if (foundLocation.isEmpty()) {
             throw new LocationNotFoundException(String.format("No location found with the name: %s", locationName));
         } else {
@@ -88,10 +94,19 @@ public class LocationService {
      * @param jurisdictions The list of jurisdictions to filter against.
      * @return List of Location objects, can return empty List
      */
-    public List<Location> searchByRegionAndJurisdiction(List<String> regions, List<String> jurisdictions) {
-        return locationRepository.findByRegionAndJurisdictionOrderByName(
-            regions == null ? "" : StringUtils.join(regions, ','),
-            jurisdictions == null ? "" : StringUtils.join(jurisdictions, ','));
+    public List<Location> searchByRegionAndJurisdiction(List<String> regions, List<String> jurisdictions,
+                                                        String language) {
+        if ("cy".equals(language)) {
+            return locationRepository.findByWelshRegionAndJurisdictionOrderByName(
+                regions == null ? "" : StringUtils.join(regions, ','),
+                jurisdictions == null ? "" : StringUtils.join(jurisdictions, ',')
+            );
+        } else {
+            return locationRepository.findByRegionAndJurisdictionOrderByName(
+                regions == null ? "" : StringUtils.join(regions, ','),
+                jurisdictions == null ? "" : StringUtils.join(jurisdictions, ',')
+            );
+        }
     }
 
     /**
