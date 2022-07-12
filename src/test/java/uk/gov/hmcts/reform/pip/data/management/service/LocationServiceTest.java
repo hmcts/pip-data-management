@@ -26,6 +26,10 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -42,6 +46,13 @@ class LocationServiceTest {
 
     private static final String FAMILY_LOCATION =  "Family Location";
     private static final String MAGISTRATES_LOCATION = "Magistrates Location";
+    private static final String FAMILY_LOCATION_WELSH =  "Lleoliad Teulu";
+    private static final String MAGISTRATES_LOCATION_WELSH = "Lleoliad yr Ynadon";
+    private static final String ENGLISH_LANGUAGE = "eng";
+    private static final String WELSH_LANGUAGE = "cy";
+
+    private static final String FIRST_LOCATION_NOT_FOUND = "First location has not been found";
+    private static final String SECOND_LOCATION_NOT_FOUND = "Second location has not been found";
 
     @BeforeEach
     void setup() {
@@ -101,7 +112,19 @@ class LocationServiceTest {
         when(locationRepository.getLocationByName(locationFirstExample.getName()))
             .thenReturn(Optional.of(locationFirstExample));
 
-        Location location = locationService.getLocationByName(locationFirstExample.getName());
+        Location location = locationService.getLocationByName(locationFirstExample.getName(),
+                                                              ENGLISH_LANGUAGE);
+
+        assertEquals(location, locationFirstExample, "Unknown location has been returned");
+    }
+
+    @Test
+    void testHandleWelshLocationNameSearchReturnsLocation() {
+        when(locationRepository.getLocationByWelshName(locationFirstExample.getName()))
+            .thenReturn(Optional.of(locationFirstExample));
+
+        Location location = locationService.getLocationByName(locationFirstExample.getName(),
+                                                              WELSH_LANGUAGE);
 
         assertEquals(location, locationFirstExample, "Unknown location has been returned");
     }
@@ -111,7 +134,8 @@ class LocationServiceTest {
         String unknownName = "UnknownName";
 
         LocationNotFoundException locationNotFoundException = assertThrows(LocationNotFoundException.class, () ->
-            locationService.getLocationByName(unknownName), "Expected LocationNotFoundException to be thrown"
+            locationService.getLocationByName(unknownName, ENGLISH_LANGUAGE),
+            "Expected LocationNotFoundException to be thrown"
         );
 
         assertTrue(
@@ -131,15 +155,40 @@ class LocationServiceTest {
         when(locationRepository.findByRegionAndJurisdictionOrderByName(expectedRegions, expectedJurisdictions))
             .thenReturn(List.of(locationFirstExample, locationSecondExample));
 
-        List<Location> returnedLocations = locationService.searchByRegionAndJurisdiction(regions, jurisdictions);
+        List<Location> returnedLocations = locationService.searchByRegionAndJurisdiction(regions, jurisdictions,
+                                                                                         ENGLISH_LANGUAGE);
 
         assertTrue(
             returnedLocations.contains(locationFirstExample),
-            "First location has not been found");
+            FIRST_LOCATION_NOT_FOUND);
 
         assertTrue(
             returnedLocations.contains(locationSecondExample),
-            "Second location has not been found");
+            SECOND_LOCATION_NOT_FOUND);
+    }
+
+    @Test
+    void testHandleLocationSearchByRegionAndJurisdictionForWelsh() {
+
+        List<String> regions = List.of("Gogledd Orllewin", "De Orllewin");
+        List<String> jurisdictions = List.of(MAGISTRATES_LOCATION_WELSH, FAMILY_LOCATION_WELSH);
+
+        String expectedJurisdictions = MAGISTRATES_LOCATION_WELSH + "," + FAMILY_LOCATION_WELSH;
+        String expectedRegions = "Gogledd Orllewin,De Orllewin";
+
+        when(locationRepository.findByWelshRegionAndJurisdictionOrderByName(expectedRegions, expectedJurisdictions))
+            .thenReturn(List.of(locationFirstExample, locationSecondExample));
+
+        List<Location> returnedLocations = locationService.searchByRegionAndJurisdiction(regions, jurisdictions,
+                                                                                         WELSH_LANGUAGE);
+
+        assertTrue(
+            returnedLocations.contains(locationFirstExample),
+            FIRST_LOCATION_NOT_FOUND);
+
+        assertTrue(
+            returnedLocations.contains(locationSecondExample),
+            SECOND_LOCATION_NOT_FOUND);
     }
 
     @Test
@@ -151,11 +200,29 @@ class LocationServiceTest {
         when(locationRepository.findByRegionAndJurisdictionOrderByName(expectedRegions, ""))
             .thenReturn(List.of(locationFirstExample));
 
-        List<Location> returnedLocations = locationService.searchByRegionAndJurisdiction(regions, null);
+        List<Location> returnedLocations = locationService.searchByRegionAndJurisdiction(regions, null,
+                                                                                         ENGLISH_LANGUAGE);
 
         assertTrue(
             returnedLocations.contains(locationFirstExample),
-            "First location has not been found");
+            FIRST_LOCATION_NOT_FOUND);
+    }
+
+    @Test
+    void testHandleLocationSearchOnlyRegionForWelsh() {
+        List<String> regions = List.of("Gogledd Orllewin", "De Orllewin");
+
+        String expectedRegions = "Gogledd Orllewin,De Orllewin";
+
+        when(locationRepository.findByWelshRegionAndJurisdictionOrderByName(expectedRegions, ""))
+            .thenReturn(List.of(locationFirstExample));
+
+        List<Location> returnedLocations = locationService.searchByRegionAndJurisdiction(regions, null,
+                                                                                         WELSH_LANGUAGE);
+
+        assertTrue(
+            returnedLocations.contains(locationFirstExample),
+            FIRST_LOCATION_NOT_FOUND);
     }
 
     @Test
@@ -167,11 +234,29 @@ class LocationServiceTest {
         when(locationRepository.findByRegionAndJurisdictionOrderByName("", expectedJurisdictions))
             .thenReturn(List.of(locationSecondExample));
 
-        List<Location> returnedLocations = locationService.searchByRegionAndJurisdiction(null, jurisdictions);
+        List<Location> returnedLocations = locationService.searchByRegionAndJurisdiction(null, jurisdictions,
+                                                                                         ENGLISH_LANGUAGE);
 
         assertTrue(
             returnedLocations.contains(locationSecondExample),
-            "Second location has not been found");
+            SECOND_LOCATION_NOT_FOUND);
+    }
+
+    @Test
+    void testHandleLocationSearchOnlyJurisdictionForWelsh() {
+        List<String> jurisdictions = List.of(MAGISTRATES_LOCATION_WELSH, FAMILY_LOCATION_WELSH);
+
+        String expectedJurisdictions = MAGISTRATES_LOCATION_WELSH + "," + FAMILY_LOCATION_WELSH;
+
+        when(locationRepository.findByWelshRegionAndJurisdictionOrderByName("", expectedJurisdictions))
+            .thenReturn(List.of(locationSecondExample));
+
+        List<Location> returnedLocations = locationService.searchByRegionAndJurisdiction(null, jurisdictions,
+                                                                                         WELSH_LANGUAGE);
+
+        assertTrue(
+            returnedLocations.contains(locationSecondExample),
+            SECOND_LOCATION_NOT_FOUND);
     }
 
     @Test
@@ -179,19 +264,38 @@ class LocationServiceTest {
         when(locationRepository.findByRegionAndJurisdictionOrderByName("", ""))
             .thenReturn(List.of(locationFirstExample, locationSecondExample));
 
-        List<Location> returnedLocations = locationService.searchByRegionAndJurisdiction(null, null);
+        List<Location> returnedLocations = locationService.searchByRegionAndJurisdiction(null, null,
+                                                                                         ENGLISH_LANGUAGE);
 
         assertTrue(
             returnedLocations.contains(locationFirstExample),
-            "First location has not been found");
+            FIRST_LOCATION_NOT_FOUND);
 
         assertTrue(
             returnedLocations.contains(locationSecondExample),
-            "Second location has not been found");
+            SECOND_LOCATION_NOT_FOUND);
+    }
+
+    @Test
+    void testHandleLocationSearchNoRegionOrJurisdictionForWelsh() {
+        when(locationRepository.findByWelshRegionAndJurisdictionOrderByName("", ""))
+            .thenReturn(List.of(locationFirstExample, locationSecondExample));
+
+        List<Location> returnedLocations = locationService.searchByRegionAndJurisdiction(null, null,
+                                                                                         WELSH_LANGUAGE);
+
+        assertTrue(
+            returnedLocations.contains(locationFirstExample),
+            FIRST_LOCATION_NOT_FOUND);
+
+        assertTrue(
+            returnedLocations.contains(locationSecondExample),
+            SECOND_LOCATION_NOT_FOUND);
     }
 
     @Test
     void testHandleUploadLocationsOk() throws IOException {
+        when(locationRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
         try (InputStream inputStream = this.getClass().getClassLoader()
             .getResourceAsStream("csv/ValidCsv.csv")) {
 
@@ -206,6 +310,7 @@ class LocationServiceTest {
             assertEquals(2, locations.size(), "Unknown number of locations returned from parser");
 
             Location firstLocation = locations.get(0);
+            assertEquals(1, firstLocation.getLocationId(), "Location ID is not as expected");
             assertEquals("Test Location", firstLocation.getName(), "Location name does not match in first location");
             assertEquals(List.of("North West"), firstLocation.getRegion(),
                          "Location region does not match in first location");
@@ -217,6 +322,7 @@ class LocationServiceTest {
                        "Jurisdiction does not have expected value");
 
             Location secondLocation = locations.get(1);
+            assertEquals(2, secondLocation.getLocationId(), "Location ID is not as expected");
             assertEquals("Test Location Other", secondLocation.getName(),
                          "Location name does not match in second location");
             assertEquals(List.of("South West"), secondLocation.getRegion(),
@@ -230,7 +336,7 @@ class LocationServiceTest {
 
     @Test
     void testHandleUploadReferencesOk() throws IOException {
-
+        when(locationRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
         try (InputStream inputStream = this.getClass().getClassLoader()
             .getResourceAsStream("csv/ValidCsv.csv")) {
 
@@ -286,6 +392,34 @@ class LocationServiceTest {
 
             assertThrows(CsvParseException.class, () -> locationService.uploadLocations(multipartFile));
         }
+    }
+
+    @Test
+    void testDeleteLocation() {
+        int locationId = 1;
+
+        when(locationRepository.getLocationByLocationId(locationId))
+            .thenReturn(Optional.of(locationFirstExample));
+
+        doNothing().when(locationRepository).deleteById(locationId);
+
+        locationService.deleteLocation(locationId);
+
+        verify(locationRepository, times(1)).deleteById(locationId);
+    }
+
+    @Test
+    void testDeleteLocationWhereNotFound() {
+        int locationId = 1;
+
+        when(locationRepository.getLocationByLocationId(locationId))
+            .thenReturn(Optional.empty());
+
+        LocationNotFoundException locationNotFoundException =
+            assertThrows(LocationNotFoundException.class, () -> locationService.deleteLocation(locationId));
+
+        assertEquals("No location found with the id: 1", locationNotFoundException.getMessage(),
+                     "Exception does not contain expected message");
     }
 
 }

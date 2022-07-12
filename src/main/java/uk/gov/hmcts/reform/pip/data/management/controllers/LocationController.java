@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -60,10 +61,11 @@ public class LocationController {
         @ApiResponse(code = 404, message = "No Location found with the search {input}")
     })
     @ApiOperation("Gets a Location by searching by the Location name and returning")
-    @GetMapping("/name/{locationName}")
+    @GetMapping("/name/{locationName}/language/{language}")
     public ResponseEntity<Location> getLocationByName(@ApiParam(value = "The search input to retrieve", required = true)
-                                                @PathVariable String locationName) {
-        return ResponseEntity.ok(locationService.getLocationByName(locationName));
+                                                @PathVariable String locationName,
+                                                @PathVariable String language) {
+        return ResponseEntity.ok(locationService.getLocationByName(locationName, language));
 
     }
 
@@ -75,9 +77,11 @@ public class LocationController {
     @JsonView(LocationViews.BaseView.class)
     public ResponseEntity<List<Location>> searchByRegionAndJurisdiction(
         @RequestParam(required = false) List<String> regions,
-        @RequestParam(required = false) List<String> jurisdictions) {
+        @RequestParam(required = false) List<String> jurisdictions,
+        @RequestParam(required = false) String language) {
 
-        return ResponseEntity.ok(locationService.searchByRegionAndJurisdiction(regions, jurisdictions));
+        return ResponseEntity.ok(locationService.searchByRegionAndJurisdiction(regions,
+            jurisdictions, language));
     }
 
     @ApiResponses({
@@ -87,6 +91,17 @@ public class LocationController {
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Collection<Location>> uploadLocations(@RequestPart MultipartFile locationList) {
         return ResponseEntity.ok(locationService.uploadLocations(locationList));
+    }
+
+    @ApiResponses({
+        @ApiResponse(code = 200, message = "Location with id {locationId} has been deleted"),
+        @ApiResponse(code = 403, message = "User has not been authorized"),
+        @ApiResponse(code = 404, message = "No Location found with the id {locationId}")
+    })
+    @DeleteMapping("/{locationId}")
+    public ResponseEntity<String> deleteLocation(@PathVariable Integer locationId) {
+        locationService.deleteLocation(locationId);
+        return ResponseEntity.ok(String.format("Location with id %s has been deleted", locationId));
     }
 
 }
