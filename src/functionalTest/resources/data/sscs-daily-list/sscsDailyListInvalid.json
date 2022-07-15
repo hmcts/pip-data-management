@@ -1,57 +1,46 @@
 {
   "document": {
-    "publicationDate": "20-02-2020T20:00.001Z",
-    "documentName": "This is a document name",
-    "version": "This is a document version"
   },
   "venue": {
     "venueName": "This is the venue name",
-    "venueAddress": {
-      "line": [
-        "Address Line 1"
-      ],
-      "postCode": "AA1 AA1"
-    },
     "venueContact": {
-      "venueTelephone": "01234 123 123",
-      "venueEmail": "a@b.com"
+      "venueTelephone": "01772 844700",
+      "venueEmail": "court1@moj.gov.uk"
     }
-  },
-  "locationDetails": {
-    "jurisdiction": "Family"
   },
   "courtLists": [
     {
       "courtHouse": {
-        "courtHouseName": "This is the site name",
+        "courtHouseName": "Test court house name",
         "courtHouseContact": {
           "venueTelephone": "01234 123 123",
           "venueEmail": "a@b.com"
         },
-        "courtHouseAddress": {
-          "line": [
-            "Address Line 1"
-          ],
-          "postCode": "AA1 AA1"
-        },
         "courtRoom": [
           {
-            "courtRoomName": "This is the court room name",
+            "courtRoomName": "1",
             "session": [
               {
+                "sessionChannel": [
+                  "VIDEO HEARING",
+                  ""
+                ],
                 "sittings": [
                   {
                     "sittingStart": "20-02-2020T20:00.001Z",
-                    "sittingEnd": "20-02-2020T20:00.001Z",
                     "hearing": [
                       {
-                        "hearingType": "Directions",
                         "case": [
                           {
-                            "caseName": "This is a case name",
-                            "caseNumber": "12341234",
-                            "caseJurisdictionET": "Family Law",
-                            "caseSequenceIndicator": "[2 of 3]"
+                            "caseNumber": "12341234"
+                          }
+                        ],
+                        "informant": [
+                          {
+                            "prosecutionAuthorityRef": [
+                              "test",
+                              "test2"
+                            ]
                           }
                         ],
                         "party": [
@@ -101,14 +90,13 @@
                     "johTitle": "Judge",
                     "johNameSurname": "Test Name",
                     "role": "JUDGE",
-                    "isPresiding": true,
-                    "johKnownAs": "JUDGE Test Name"
+                    "johKnownAs": "Judge"
                   },
                   {
                     "johTitle": "Magistrate",
                     "johNameSurname": "Test Name",
                     "role": "MAGISTRATE",
-                    "isPresiding": false
+                    "johKnownAs": "Justice of the peace"
                   }
                 ]
               }
