@@ -44,4 +44,9 @@ public class ValidationConfiguration {
      */
     private String civilAndFamilyDailyCauseList;
 
+    /**
+     * Config option for the sscs daily list.
+     */
+    private String sscsDailyList;
+
 }
