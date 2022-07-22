@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+import java.util.Map;
+
 /**
  * This class centralises the static configuration for dealing with Validation.
  */
@@ -19,34 +21,6 @@ public class ValidationConfiguration {
      */
     private String masterSchema;
 
-    /**
-     *  Config option for the civil daily cause list.
-     */
-    private String civilDailyCauseList;
-
-    /**
-     *  Config option for the family daily cause list.
-     */
-    private String familyDailyCauseList;
-
-    /**
-     *  Config option for the sjp public list.
-     */
-    private String sjpPublicList;
-
-    /**
-     *  Config option for the sjp press list.
-     */
-    private String sjpPressList;
-
-    /**
-     *  Config option for the civil and family daily cause list.
-     */
-    private String civilAndFamilyDailyCauseList;
-
-    /**
-     * Config option for the sscs daily list.
-     */
-    private String sscsDailyList;
+    private Map<String, String> validationSchemas;
 
 }

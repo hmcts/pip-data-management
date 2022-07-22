@@ -90,12 +90,14 @@ payload:
       cases: "$['courtLists'][*]['courtHouse']['courtRoom'][*]['session'][*]['sittings'][*]['hearing'][*]['case'][*]['caseNumber', 'caseName', 'caseUrn']"
 validations:
   master-schema: "schemas/master_schema.json"
-  civil-daily-cause-list: "schemas/civil_daily_cause_list.json"
-  family-daily-cause-list: "schemas/family_daily_cause_list.json"
-  sjp-public-list: "schemas/single_justice_procedure_public.json"
-  sjp-press-list: "schemas/single_justice_procedure_press.json"
-  civil-and-family-daily-cause-list: "schemas/civil_and_family_daily_cause_list.json"
-  sscs-daily-list: "schemas/sscs_daily_list.json"
+  validation-schemas:
+    CIVIL_DAILY_CAUSE_LIST: "schemas/civil_daily_cause_list.json"
+    FAMILY_DAILY_CAUSE_LIST: "schemas/family_daily_cause_list.json"
+    SJP_PUBLIC_LIST: "schemas/single_justice_procedure_public.json"
+    SJP_PRESS_LIST: "schemas/single_justice_procedure_press.json"
+    CIVIL_AND_FAMILY_DAILY_CAUSE_LIST: "schemas/civil_and_family_daily_cause_list.json"
+    SSCS_DAILY_LIST: "schemas/sscs_daily_list.json"
+    COP_DAILY_CAUSE_LIST: "schemas/cop_daily_cause_list.json"
 
 cron:
   daily-start-of-day: "0 0 0 * * *"

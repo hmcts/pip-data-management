@@ -25,13 +25,13 @@ class SchedulerTest {
 
     @Test
     void testSchedulerNewlyActiveArtefactRuns() {
-        await().atMost(Duration.TEN_SECONDS).untilAsserted(() -> verify(publicationService, times(1))
+        await().atMost(Duration.ONE_MINUTE).untilAsserted(() -> verify(publicationService, times(1))
             .checkNewlyActiveArtefacts());
     }
 
     @Test
     void testSchedulerRunDailyTasksRuns() {
-        await().atMost(Duration.TEN_SECONDS).untilAsserted(() -> verify(publicationService, times(1))
+        await().atMost(Duration.ONE_MINUTE).untilAsserted(() -> verify(publicationService, times(1))
             .runDailyTasks());
     }
 }

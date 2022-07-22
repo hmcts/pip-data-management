@@ -26,13 +26,13 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @ActiveProfiles(profiles = "test")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
-
 class CivilDailyCauseListTest {
+
     @Autowired
     ValidationService validationService;
 
     private static final String DAILY_CIVIL_CAUSE_LIST_VALID_JSON =
-        "mocks/civil-daily-cause-list/civilDailyCauseListInvalid.json";
+        "mocks/civil-daily-cause-list/civilDailyCauseList.json";
     private static final String DAILY_CIVIL_CAUSE_LIST_INVALID_MESSAGE =
         "Invalid daily cause list marked as valid";
 

@@ -40,42 +40,27 @@ public class ValidationService {
 
     @Autowired
     public ValidationService(ValidationConfiguration validationConfiguration) {
+        JsonSchemaFactory schemaFactory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V7);
+
         try (InputStream masterFile = this.getClass().getClassLoader()
-            .getResourceAsStream(validationConfiguration.getMasterSchema());
-
-             InputStream civilDailyCauseListFile = this.getClass().getClassLoader()
-                 .getResourceAsStream(validationConfiguration.getCivilDailyCauseList());
-
-             InputStream familyDailyCauseListFile = this.getClass().getClassLoader()
-                 .getResourceAsStream(validationConfiguration.getFamilyDailyCauseList());
-
-             InputStream civilAndFamilyDailyCauseList = this.getClass().getClassLoader()
-                 .getResourceAsStream(validationConfiguration.getCivilAndFamilyDailyCauseList());
-
-             InputStream sjpPublicListFile = this.getClass().getClassLoader()
-                .getResourceAsStream(validationConfiguration.getSjpPublicList());
-
-             InputStream sscsDailyList = this.getClass().getClassLoader()
-                 .getResourceAsStream(validationConfiguration.getSscsDailyList());
-
-             InputStream sjpPressListFile = this.getClass().getClassLoader()
-                 .getResourceAsStream(validationConfiguration.getSjpPressList())) {
-
-            JsonSchemaFactory schemaFactory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V7);
+            .getResourceAsStream(validationConfiguration.getMasterSchema())) {
             masterSchema = schemaFactory.getSchema(masterFile);
-
-            validationSchemas.put(ListType.CIVIL_DAILY_CAUSE_LIST, schemaFactory.getSchema(civilDailyCauseListFile));
-            validationSchemas.put(ListType.FAMILY_DAILY_CAUSE_LIST, schemaFactory.getSchema(familyDailyCauseListFile));
-            validationSchemas.put(ListType.SJP_PUBLIC_LIST, schemaFactory.getSchema(sjpPublicListFile));
-            validationSchemas.put(ListType.SJP_PRESS_LIST, schemaFactory.getSchema(sjpPressListFile));
-            validationSchemas.put(ListType.CIVIL_AND_FAMILY_DAILY_CAUSE_LIST,
-                                  schemaFactory.getSchema(civilAndFamilyDailyCauseList));
-            validationSchemas.put(ListType.SSCS_DAILY_LIST, schemaFactory.getSchema(sscsDailyList));
-
         } catch (Exception exception) {
             throw new PayloadValidationException(String.join(exception.getMessage()));
         }
 
+        validationConfiguration.getValidationSchemas().forEach((key, value) -> {
+            try (InputStream schemaFile = this.getClass().getClassLoader()
+                .getResourceAsStream(value)) {
+
+                validationSchemas.put(
+                    ListType.valueOf(key),
+                    schemaFactory.getSchema(schemaFile)
+                );
+            } catch (Exception exception) {
+                throw new PayloadValidationException(String.join(exception.getMessage()));
+            }
+        });
     }
 
     /**
