@@ -152,7 +152,12 @@ public class PublicationController {
         Artefact createdItem = publicationService
             .createPublication(artefact, payload);
 
-        logManualUpload(publicationService.maskEmail(issuerEmail), createdItem.getArtefactId().toString());
+        String emailForLogs = "";
+        if (!issuerEmail.isEmpty()) {
+            emailForLogs = publicationService.maskEmail(issuerEmail);
+        }
+
+        logManualUpload(emailForLogs, createdItem.getArtefactId().toString());
 
         publicationService.checkAndTriggerSubscriptionManagement(createdItem);
 
@@ -229,7 +234,12 @@ public class PublicationController {
 
         Artefact createdItem = publicationService.createPublication(artefact, file);
 
-        logManualUpload(publicationService.maskEmail(issuerEmail), createdItem.getArtefactId().toString());
+        String emailForLogs = "";
+        if (!issuerEmail.isEmpty()) {
+            emailForLogs = publicationService.maskEmail(issuerEmail);
+        }
+
+        logManualUpload(emailForLogs, createdItem.getArtefactId().toString());
 
         publicationService.checkAndTriggerSubscriptionManagement(artefact);
 
