@@ -412,10 +412,10 @@ public class PublicationService {
 
     /**
      * Take in an email and mask it for writing out to the logs.
-     * @param email The email to mask
+     * @param emailToMask The email to mask
      * @return A masked email
      */
     public String maskEmail(String emailToMask) {
-        return emailToMask.replaceAll("(^[^@]|(?!^)\\G)[^@]", "$1*");
+        return emailToMask.replaceAll("(^([^@])|(?!^)\\G)[^@]", "$1*");
     }
 }
