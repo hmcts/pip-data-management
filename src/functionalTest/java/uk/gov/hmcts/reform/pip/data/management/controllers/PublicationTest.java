@@ -90,7 +90,6 @@ class PublicationTest {
     private static final LocalDateTime DISPLAY_TO = LocalDateTime.now();
     private static final LocalDateTime DISPLAY_FROM = LocalDateTime.now();
     private static final Language LANGUAGE = Language.ENGLISH;
-    private static final String TEST_VALUE = "test";
     private static final String BLOB_PAYLOAD_URL = "https://localhost";
     private static final ListType LIST_TYPE = ListType.CIVIL_DAILY_CAUSE_LIST;
     private static final String COURT_ID = "123";
@@ -107,7 +106,7 @@ class PublicationTest {
     private static final String TRUE = "true";
     private static final String FALSE = "false";
     private static final String ADMIN_HEADER = "x-admin";
-    private static final String ISSUER_HEADER = "x-issuer-email";
+    private static final String ISSUER_HEADER = "x-issuer-id";
     private static final String EMAIL = "test@email.com";
 
     private static final String VALIDATION_EMPTY_RESPONSE = "Response should contain a Artefact";
@@ -1580,23 +1579,6 @@ class PublicationTest {
         assertTrue(deleteResponse.getResponse().getContentAsString()
                        .contains("No artefact found with the ID: " + invalidId),
                    "Should return 404 for artefact not found");
-
-    }
-
-    @Test
-    void testDeleteArtefactByIdArtefactIdInvalidIssuerEmail() throws Exception {
-        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
-
-        String invalidId = UUID.randomUUID().toString();
-
-        MockHttpServletRequestBuilder deleteRequest = MockMvcRequestBuilders
-            .delete(PUBLICATION_URL + "/" + invalidId)
-            .header(ISSUER_HEADER, TEST_VALUE);
-
-        MvcResult deleteResponse = mockMvc.perform(deleteRequest).andExpect(status().isBadRequest()).andReturn();
-
-        assertTrue(deleteResponse.getResponse().getContentAsString().contains("must be a well-formed email address"),
-                   "Should return 400 for invalid email");
 
     }
 
