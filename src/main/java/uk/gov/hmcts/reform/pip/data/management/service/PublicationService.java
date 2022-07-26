@@ -417,7 +417,7 @@ public class PublicationService {
      */
     public String maskEmail(String emailToMask) {
         // Sonar flags regex as a bug. However, unable to find a way to split this out.
-        if(emailToMask != null) {
+        if (emailToMask != null) {
             return emailToMask.replaceAll("(^([^@])|(?!^)\\G)[^@]", "$1*"); //NOSONAR
         }
         return emailToMask;
