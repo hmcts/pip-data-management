@@ -321,6 +321,7 @@ class PublicationControllerTest {
         when(validationService.validateHeaders(any())).thenReturn(headers);
         when(publicationService.createPublication(argThat(arg -> arg.equals(artefact)), eq(PAYLOAD)))
             .thenReturn(artefactWithId);
+        when(publicationService.maskEmail(TEST_STRING)).thenReturn(TEST_STRING);
 
 
         try (LogCaptor logCaptor = LogCaptor.forClass(PublicationController.class)) {

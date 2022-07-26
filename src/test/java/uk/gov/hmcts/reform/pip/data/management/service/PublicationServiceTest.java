@@ -1159,4 +1159,25 @@ class PublicationServiceTest {
 
     }
 
+    @Test
+    void testMaskEmail() {
+        assertEquals("t*******@email.com",
+                     publicationService.maskEmail("testUser@email.com"),
+                     "Email was not masked correctly");
+    }
+
+    @Test
+    void testMaskEmailNotValidEmail() {
+        assertEquals("a****",
+                     publicationService.maskEmail("abcde"),
+                     "Email was not masked correctly");
+    }
+
+    @Test
+    void testMaskEmailEmptyString() {
+        assertEquals("",
+                     publicationService.maskEmail(""),
+                     "Email was not masked correctly");
+    }
+
 }
