@@ -294,14 +294,14 @@ public class PublicationService {
     /**
      * Attempts to delete a blob from the artefact store.
      * @param artefactId The ID of the artefact to be deleted.
-     * @param issuerEmail The email of the admin user who is attempting to delete the artefact.
+     * @param issuerId The id of the admin user who is attempting to delete the artefact.
      */
-    public void deleteArtefactById(String artefactId, String issuerEmail) {
+    public void deleteArtefactById(String artefactId, String issuerId) {
         Optional<Artefact> artefactToDelete = artefactRepository.findArtefactByArtefactId(artefactId);
         if (artefactToDelete.isPresent()) {
             log.info(azureBlobService.deleteBlob(getUuidFromUrl(artefactToDelete.get().getPayload())));
             artefactRepository.delete(artefactToDelete.get());
-            log.info(writeLog(issuerEmail, UserActions.REMOVE, artefactId));
+            log.info(writeLog(issuerId, UserActions.REMOVE, artefactId));
             triggerThirdPartyArtefactDeleted(artefactToDelete.get());
         } else {
             throw new ArtefactNotFoundException("No artefact found with the ID: " + artefactId);
@@ -408,5 +408,18 @@ public class PublicationService {
                                       log.info(azureBlobService.deleteBlob(getUuidFromUrl(artefact.getPayload()))));
         artefactRepository.deleteAll(outdatedArtefacts);
         log.info("{} outdated artefacts found and deleted for before {}", outdatedArtefacts.size(), LocalDate.now());
+    }
+
+    /**
+     * Take in an email and mask it for writing out to the logs.
+     * @param emailToMask The email to mask
+     * @return A masked email
+     */
+    public String maskEmail(String emailToMask) {
+        // Sonar flags regex as a bug. However, unable to find a way to split this out.
+        if (emailToMask != null) {
+            return emailToMask.replaceAll("(^([^@])|(?!^)\\G)[^@]", "$1*"); //NOSONAR
+        }
+        return emailToMask;
     }
 }

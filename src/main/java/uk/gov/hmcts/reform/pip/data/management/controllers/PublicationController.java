@@ -44,7 +44,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.validation.Valid;
-import javax.validation.constraints.Email;
 
 import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
 
@@ -153,7 +152,7 @@ public class PublicationController {
         Artefact createdItem = publicationService
             .createPublication(artefact, payload);
 
-        logManualUpload(issuerEmail, createdItem.getArtefactId().toString());
+        logManualUpload(publicationService.maskEmail(issuerEmail), createdItem.getArtefactId().toString());
 
         publicationService.checkAndTriggerSubscriptionManagement(createdItem);
 
@@ -230,7 +229,7 @@ public class PublicationController {
 
         Artefact createdItem = publicationService.createPublication(artefact, file);
 
-        logManualUpload(issuerEmail, createdItem.getArtefactId().toString());
+        logManualUpload(publicationService.maskEmail(issuerEmail), createdItem.getArtefactId().toString());
 
         publicationService.checkAndTriggerSubscriptionManagement(artefact);
 
@@ -352,9 +351,9 @@ public class PublicationController {
     @ApiOperation("Delete a artefact and its list from P&I")
     @DeleteMapping("/{artefactId}")
     @IsAdmin
-    public ResponseEntity<String> deleteArtefact(@RequestHeader("x-issuer-email") @Email String issuerEmail,
+    public ResponseEntity<String> deleteArtefact(@RequestHeader("x-issuer-id") String issuerId,
         @PathVariable String artefactId) {
-        publicationService.deleteArtefactById(artefactId, issuerEmail);
+        publicationService.deleteArtefactById(artefactId, issuerId);
         return ResponseEntity.ok("Successfully deleted artefact: " + artefactId);
     }
 
@@ -367,9 +366,9 @@ public class PublicationController {
         return ResponseEntity.ok(publicationService.getLocationType(listType));
     }
 
-    private void logManualUpload(String issuerEmail, String artefactId) {
-        if (issuerEmail != null) {
-            log.info(writeLog(issuerEmail, UserActions.UPLOAD, artefactId));
+    private void logManualUpload(String issuerId, String artefactId) {
+        if (issuerId != null) {
+            log.info(writeLog(issuerId, UserActions.UPLOAD, artefactId));
         }
     }
 }

@@ -141,7 +141,7 @@ class PublicationUnauthorizedTest {
     void testUnauthorizedDeleteArtefact() throws Exception {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
             .delete("/publication/2dde8f1e-bfb6-11ec-9d64-0242ac120002")
-            .header("x-issuer-email", "a@b.com");
+            .header("x-issuer-id", "abcde");
 
         mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isForbidden()).andReturn();
     }
