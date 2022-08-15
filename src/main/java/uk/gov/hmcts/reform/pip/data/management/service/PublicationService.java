@@ -10,6 +10,7 @@ import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.AzureBlobService;
 import uk.gov.hmcts.reform.pip.data.management.database.LocationRepository;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ArtefactNotFoundException;
+import uk.gov.hmcts.reform.pip.data.management.models.ListTypeModel;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
@@ -22,6 +23,8 @@ import uk.gov.hmcts.reform.pip.model.enums.UserActions;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -421,5 +424,19 @@ public class PublicationService {
             return emailToMask.replaceAll("(^([^@])|(?!^)\\G)[^@]", "$1*"); //NOSONAR
         }
         return emailToMask;
+    }
+
+    /**
+     * Gets the available list types and associated metadata.
+     * @return The available list types
+     */
+    public List<ListTypeModel> getListTypes() {
+        List<ListTypeModel> listTypes = new ArrayList<>();
+        Arrays.stream(ListType.values()).forEach(listType ->
+            listTypes.add(new ListTypeModel(
+                listType.name(), listType.getListLocationLevel(), listType.getProvenances()))
+        );
+
+        return listTypes;
     }
 }

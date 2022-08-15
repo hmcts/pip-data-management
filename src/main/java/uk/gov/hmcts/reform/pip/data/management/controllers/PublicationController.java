@@ -26,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.authentication.roles.IsAdmin;
 import uk.gov.hmcts.reform.pip.data.management.authentication.roles.IsPublisher;
 import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
+import uk.gov.hmcts.reform.pip.data.management.models.ListTypeModel;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactType;
@@ -364,6 +365,15 @@ public class PublicationController {
     @GetMapping("/location-type/{listType}")
     public ResponseEntity<LocationType> getLocationType(@PathVariable ListType listType) {
         return ResponseEntity.ok(publicationService.getLocationType(listType));
+    }
+
+    @ApiResponses({
+        @ApiResponse(code = 200, message = "{Available list types}")
+    })
+    @ApiOperation("Returns the list types and their associated metadata")
+    @GetMapping("/list-types")
+    public ResponseEntity<List<ListTypeModel>> getListTypes() {
+        return ResponseEntity.ok(publicationService.getListTypes());
     }
 
     private void logManualUpload(String issuerId, String artefactId) {
