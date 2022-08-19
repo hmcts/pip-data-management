@@ -100,5 +100,5 @@ validations:
     COP_DAILY_CAUSE_LIST: "schemas/cop_daily_cause_list.json"
 
 cron:
-  daily-start-of-day: "*/60 * * * * *"
+  daily-start-of-day: "0 0 0 * * *"
 
