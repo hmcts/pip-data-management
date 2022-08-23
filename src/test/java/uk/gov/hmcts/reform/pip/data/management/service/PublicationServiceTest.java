@@ -1204,9 +1204,9 @@ class PublicationServiceTest {
             .as("Only one line exists - data must be missing, as only headers are printing")
             .hasSizeGreaterThanOrEqualTo(1);
         assertThat(splitLineString)
+            .as("Wrong comma count compared to header row!")
             .allSatisfy(
-                e -> assertThat(e.chars().filter(character -> character == ',').count()).isEqualTo(countLine1))
-            .as("Wrong comma count compared to header row!");
+                e -> assertThat(e.chars().filter(character -> character == ',').count()).isEqualTo(countLine1));
         when(artefactRepository.getMiData()).thenReturn(EXAMPLE_CSV);
         String testString2 = publicationService.getMiData();
         assertThat(testString2)

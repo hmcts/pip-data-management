@@ -435,7 +435,8 @@ public class PublicationService {
                            + "source_artefact_id,type,content_date,court_id,court_name,search\n");
         for (String s : returnedData) {
             String[] splitString = s.split(",", 12);
-            builder.append(Arrays.stream(splitString).limit(splitString.length - 1)
+            int one = 1;
+            builder.append(Arrays.stream(splitString).limit(splitString.length - one)
                                .collect(Collectors.joining(","))).append(',');
             try {
                 builder.append(jsonDestroyer(splitString[splitString.length - 1]));
