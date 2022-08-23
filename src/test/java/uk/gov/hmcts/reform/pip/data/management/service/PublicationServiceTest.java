@@ -1194,6 +1194,7 @@ class PublicationServiceTest {
 
     @Test
     void testMiEndpoint() {
+        when(artefactRepository.getMiData()).thenReturn(EXAMPLE_CSV);
         String testString = publicationService.getMiData();
         String[] splitLineString = testString.split("\r\n|\r|\n");
         long countLine1 = splitLineString[0].chars().filter(character -> character == ',').count();
@@ -1207,7 +1208,6 @@ class PublicationServiceTest {
             .as("Wrong comma count compared to header row!")
             .allSatisfy(
                 e -> assertThat(e.chars().filter(character -> character == ',').count()).isEqualTo(countLine1));
-        when(artefactRepository.getMiData()).thenReturn(EXAMPLE_CSV);
         String testString2 = publicationService.getMiData();
         assertThat(testString2)
             .as("Json parsing has probably failed")
