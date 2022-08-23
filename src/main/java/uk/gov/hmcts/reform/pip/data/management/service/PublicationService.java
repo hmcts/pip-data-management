@@ -435,8 +435,8 @@ public class PublicationService {
                            + "source_artefact_id,type,content_date,court_id,court_name,search\n");
         for (String s : returnedData) {
             String[] splitString = s.split(",", 12);
-            builder.append(Arrays.stream(splitString).limit(splitString.length - 1).collect(Collectors.joining(",")))
-                .append(',');
+            builder.append(Arrays.stream(splitString).limit(splitString.length - 1)
+                               .collect(Collectors.joining(","))).append(',');
             try {
                 builder.append(jsonDestroyer(splitString[splitString.length - 1]));
             } catch (Exception e) {
@@ -459,7 +459,6 @@ public class PublicationService {
         StringBuilder builder = new StringBuilder();
         while (nodeIterator.hasNext()) {
             JsonNode currentNode = nodeIterator.next();
-            log.info(currentNode.toString());
             builder.append("Case ").append(counter);
             builder.append(": ");
             currentNode.fields().forEachRemaining(
