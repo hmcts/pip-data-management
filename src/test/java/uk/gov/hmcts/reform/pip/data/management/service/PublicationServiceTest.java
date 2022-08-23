@@ -125,6 +125,17 @@ class PublicationServiceTest {
     private Artefact noMatchArtefact;
 
     private Location location;
+    private static final List<String> EXAMPLE_CSV =
+        List.of(
+            "0beac960-68a3-41db-9f51-8c71826eaf30,2022-07-25 14:45:18.836,2022-09-29 14:45:18.836,BI_LINGUAL,"
+                + "MANUAL_UPLOAD,PUBLIC,MANUAL_UPLOAD,LIST,2022-06-29 00:00:00.0,1823,FAMILY_DAILY_CAUSE_LIST,"
+                + "{\"cases\":[{\"caseNumber\":\"12341234\",\"caseName\":\"This is a case name\",\"caseUrn\":null}]}",
+            "165ca91d-1e58-412a-80f5-1e5475a093e4,2022-06-29 14:45:18.836,2022-09-29 14:45:18.836,WELSH,"
+                + "MANUAL_UPLOAD,PUBLIC,MANUAL_UPLOAD,GENERAL_PUBLICATION,2022-06-29 00:00:00.0,1815,SJP_PUBLIC_LIST,"
+                + "{\"location-id\":[\"1815\"]}",
+            "10238a0f-d398-4356-9af4-a4dbbb17d455,2022-06-29 14:45:18.836,2022-09-29 14:45:18.836,ENGLISH,"
+                + "MANUAL_UPLOAD,PUBLIC,MANUAL_UPLOAD,GENERAL_PUBLICATION,2022-06-29 00:00:00.0,1815,SJP_PUBLIC_LIST,{}"
+        );
 
     @BeforeAll
     public static void setupSearchValues() {
@@ -1196,6 +1207,13 @@ class PublicationServiceTest {
             .allSatisfy(
                 e -> assertThat(e.chars().filter(character -> character == ',').count()).isEqualTo(countLine1))
             .as("Wrong comma count compared to header row!");
+        when(artefactRepository.getMiData()).thenReturn(EXAMPLE_CSV);
+        String testString2 = publicationService.getMiData();
+        assertThat(testString2)
+            .as("Json parsing has probably failed")
+            .contains("caseNumber")
+            .hasLineCount(4);
     }
+
 
 }
