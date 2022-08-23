@@ -59,6 +59,8 @@ public class PublicationService {
 
     private final PublicationServicesService publicationServicesService;
 
+    private final ObjectMapper mapper = new ObjectMapper();
+
     @Autowired
     public PublicationService(ArtefactRepository artefactRepository,
                               AzureBlobService azureBlobService,
@@ -449,7 +451,6 @@ public class PublicationService {
     }
 
     private String jsonDestroyer(String json) throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
         JsonNode topLevel = mapper.readTree(json);
         JsonNode iteratorNode = topLevel.get("cases");
         if (iteratorNode == null) {

@@ -1208,8 +1208,7 @@ class PublicationServiceTest {
             .as("Wrong comma count compared to header row!")
             .allSatisfy(
                 e -> assertThat(e.chars().filter(character -> character == ',').count()).isEqualTo(countLine1));
-        String testString2 = publicationService.getMiData();
-        assertThat(testString2)
+        assertThat(testString)
             .as("Json parsing has probably failed")
             .contains("caseNumber")
             .hasLineCount(4);
