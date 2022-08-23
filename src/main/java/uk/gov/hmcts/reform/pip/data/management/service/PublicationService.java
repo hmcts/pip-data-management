@@ -1,5 +1,8 @@
 package uk.gov.hmcts.reform.pip.data.management.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -22,6 +25,8 @@ import uk.gov.hmcts.reform.pip.model.enums.UserActions;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -421,5 +426,51 @@ public class PublicationService {
             return emailToMask.replaceAll("(^([^@])|(?!^)\\G)[^@]", "$1*"); //NOSONAR
         }
         return emailToMask;
+    }
+
+    public String getMiData() {
+        List<String> returnedData = artefactRepository.getMiData();
+        StringBuilder builder = new StringBuilder(146);
+        builder.append("artefact_id,display_from,display_to,language,provenance,sensitivity,"
+                           + "source_artefact_id,type,content_date,court_id,court_name,search\n");
+        for (String s : returnedData) {
+            String[] splitString = s.split(",", 12);
+            builder.append(Arrays.stream(splitString).limit(splitString.length - 1).collect(Collectors.joining(",")))
+                .append(',');
+            try {
+                builder.append(jsonDestroyer(splitString[splitString.length - 1]));
+            } catch (Exception e) {
+                log.error(e.getMessage());
+                builder.append("JSON Error\n");
+            }
+        }
+        return builder.toString();
+    }
+
+    private String jsonDestroyer(String json) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode topLevel = mapper.readTree(json);
+        JsonNode iteratorNode = topLevel.get("cases");
+        if (iteratorNode == null) {
+            return "\n";
+        }
+        Iterator<JsonNode> nodeIterator = iteratorNode.elements();
+        int counter = 1;
+        StringBuilder builder = new StringBuilder();
+        while (nodeIterator.hasNext()) {
+            JsonNode currentNode = nodeIterator.next();
+            log.info(currentNode.toString());
+            builder.append("Case ").append(counter);
+            builder.append(": ");
+            currentNode.fields().forEachRemaining(
+                (node) -> {
+                    builder.append(node.getKey().trim()).append(": ");
+                    builder.append(node.getValue().asText().trim()).append(' ');
+                }
+            );
+            builder.append(' ');
+            counter += 1;
+        }
+        return builder.append('\n').toString();
     }
 }

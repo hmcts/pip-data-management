@@ -371,4 +371,14 @@ public class PublicationController {
             log.info(writeLog(issuerId, UserActions.UPLOAD, artefactId));
         }
     }
+
+
+    @ApiResponses({
+        @ApiResponse(code = 202, message = "Subscription Management - MI Data request accepted.")
+    })
+    @ApiOperation("Return the table of MI data")
+    @GetMapping("/mi-data")
+    public ResponseEntity<String> getMiData() {
+        return ResponseEntity.ok(publicationService.getMiData());
+    }
 }
