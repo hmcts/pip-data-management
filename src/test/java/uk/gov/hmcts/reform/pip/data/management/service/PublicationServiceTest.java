@@ -1193,7 +1193,7 @@ class PublicationServiceTest {
     }
 
     @Test
-    void testMiEndpoint() {
+    void testMiService() {
         when(artefactRepository.getMiData()).thenReturn(EXAMPLE_CSV);
         String testString = publicationService.getMiData();
         String[] splitLineString = testString.split("\r\n|\r|\n");
@@ -1214,5 +1214,4 @@ class PublicationServiceTest {
             .contains("caseNumber")
             .hasLineCount(4);
     }
-
 }

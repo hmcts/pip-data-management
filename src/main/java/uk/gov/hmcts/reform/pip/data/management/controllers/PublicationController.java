@@ -374,7 +374,7 @@ public class PublicationController {
 
 
     @ApiResponses({
-        @ApiResponse(code = 202, message = "Subscription Management - MI Data request accepted.")
+        @ApiResponse(code = 202, message = "Data Management - MI Data request accepted.")
     })
     @ApiOperation("Return the table of MI data")
     @GetMapping("/mi-data")
