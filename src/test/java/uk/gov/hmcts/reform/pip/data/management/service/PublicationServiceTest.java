@@ -1202,7 +1202,7 @@ class PublicationServiceTest {
             .contains("source_artefact_id");
         assertThat(splitLineString)
             .as("Only one line exists - data must be missing, as only headers are printing")
-            .hasSizeGreaterThanOrEqualTo(1);
+            .hasSizeGreaterThanOrEqualTo(2);
         assertThat(splitLineString)
             .as("Wrong comma count compared to header row!")
             .allSatisfy(
@@ -1214,6 +1214,5 @@ class PublicationServiceTest {
             .contains("caseNumber")
             .hasLineCount(4);
     }
-
 
 }

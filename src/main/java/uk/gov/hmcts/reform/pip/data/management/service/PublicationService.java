@@ -435,7 +435,7 @@ public class PublicationService {
                            + "source_artefact_id,type,content_date,court_id,court_name,search\n");
         for (String s : returnedData) {
             String[] splitString = s.split(",", 12);
-            int one = 1;
+            long one = 1;
             builder.append(Arrays.stream(splitString).limit(splitString.length - one)
                                .collect(Collectors.joining(","))).append(',');
             try {
