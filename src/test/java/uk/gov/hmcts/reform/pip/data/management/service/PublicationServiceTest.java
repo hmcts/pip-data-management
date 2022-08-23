@@ -36,6 +36,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -1178,6 +1179,23 @@ class PublicationServiceTest {
         assertEquals("",
                      publicationService.maskEmail(""),
                      "Email was not masked correctly");
+    }
+
+    @Test
+    void testMiEndpoint() {
+        String testString = publicationService.getMiData();
+        String[] splitLineString = testString.split("\r\n|\r|\n");
+        long countLine1 = splitLineString[0].chars().filter(character -> character == ',').count();
+        assertThat(testString)
+            .as("Header row missing")
+            .contains("source_artefact_id");
+        assertThat(splitLineString)
+            .as("Only one line exists - data must be missing, as only headers are printing")
+            .hasSizeGreaterThanOrEqualTo(1);
+        assertThat(splitLineString)
+            .allSatisfy(
+                e -> assertThat(e.chars().filter(character -> character == ',').count()).isEqualTo(countLine1))
+            .as("Wrong comma count compared to header row!");
     }
 
 }
