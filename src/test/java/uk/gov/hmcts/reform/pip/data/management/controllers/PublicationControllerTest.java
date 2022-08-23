@@ -342,5 +342,4 @@ class PublicationControllerTest {
                      publicationController.getMiData().getStatusCode(),
                      STATUS_CODE_MATCH);
     }
-
 }

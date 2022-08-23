@@ -379,6 +379,6 @@ public class PublicationController {
     @ApiOperation("Return the table of MI data")
     @GetMapping("/mi-data")
     public ResponseEntity<String> getMiData() {
-        return ResponseEntity.ok(publicationService.getMiData());
+        return ResponseEntity.accepted().body(publicationService.getMiData());
     }
 }
