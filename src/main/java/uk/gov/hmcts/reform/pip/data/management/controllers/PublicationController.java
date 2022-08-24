@@ -374,11 +374,11 @@ public class PublicationController {
 
 
     @ApiResponses({
-        @ApiResponse(code = 202, message = "Data Management - MI Data request accepted.")
+        @ApiResponse(code = 200, message = "Data Management - MI Data request accepted.")
     })
     @ApiOperation("Return the table of MI data")
     @GetMapping("/mi-data")
     public ResponseEntity<String> getMiData() {
-        return ResponseEntity.accepted().body(publicationService.getMiData());
+        return ResponseEntity.ok().body(publicationService.getMiData());
     }
 }
