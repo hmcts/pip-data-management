@@ -10,6 +10,7 @@ import uk.gov.hmcts.reform.pip.data.management.models.location.LocationType;
 public enum ListType {
     SJP_PUBLIC_LIST(LocationType.NATIONAL),
     SJP_PRESS_LIST(LocationType.NATIONAL),
+    SJP_PRESS_REGISTER(LocationType.NATIONAL),
     CROWN_DAILY_LIST(LocationType.VENUE),
     CROWN_FIRM_LIST(LocationType.VENUE),
     CROWN_WARNED_LIST(LocationType.VENUE),
