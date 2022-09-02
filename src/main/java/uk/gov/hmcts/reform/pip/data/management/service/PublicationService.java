@@ -330,8 +330,8 @@ public class PublicationService {
      */
     @Scheduled(cron = "${cron.daily-start-of-day}")
     public void checkNewlyActiveArtefacts() {
-        List<Artefact> newArtefactsToday = artefactRepository.findArtefactsByDisplayFrom(LocalDate.now());
-        newArtefactsToday.forEach(artefact -> log.info(sendArtefactForSubscription(artefact)));
+        artefactRepository.findArtefactsByDisplayFrom(LocalDate.now())
+            .forEach(artefact -> log.info(sendArtefactForSubscription(artefact)));
     }
 
     /**
@@ -341,7 +341,21 @@ public class PublicationService {
      */
     @Scheduled(cron = "${cron.daily-start-of-day}")
     public void runDailyTasks() {
+        reportNoMatchArtefacts();
+        deleteExpiredArtefacts();
+    }
+
+    /**
+     * Find artefacts with NoMatch location and send them for reporting.
+     */
+    public void reportNoMatchArtefacts() {
         findNoMatchArtefactsForReporting(artefactRepository.findAllNoMatchArtefacts());
+    }
+
+    /**
+     * Delete expired artefacts from database and Azure storage.
+     */
+    public void deleteExpiredArtefacts() {
         deleteExpiredBlobs(artefactRepository.findOutdatedArtefacts(LocalDate.now()));
     }
 
