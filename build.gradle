@@ -175,6 +175,12 @@ dependencies {
   implementation 'org.apache.tomcat.embed:tomcat-embed-websocket:9.0.63'
   implementation 'org.springframework.boot:spring-boot-starter-webflux'
   implementation("com.squareup.okhttp3:okhttp:4.9.3")
+
+  // Force upgrade snakeyaml version for CVE-2022-25857
+  implementation( group: 'org.yaml', name: 'snakeyaml').version {
+    strictly("1.31")
+  }
+
   testImplementation("com.squareup.okhttp3:mockwebserver:4.9.3")
   testImplementation "io.zonky.test:embedded-database-spring-test:2.1.1"
   testImplementation(platform('org.junit:junit-bom:5.8.1'))
