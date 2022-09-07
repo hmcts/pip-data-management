@@ -881,7 +881,7 @@
                                               "title": "Information about linked cases",
                                               "type": "array",
                                               "items": {
-                                                "id": {
+                                                "caseId": {
                                                 "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/caseLinked/id",
                                                 "title": "Case Linked Id",
                                                 "description": "If a case is linked to another case, Id of that case will appear here.",

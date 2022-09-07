@@ -330,4 +330,15 @@ class ValidationServiceTest {
                                "Valid cop daily cause list marked as valid");
         }
     }
+
+    @Test
+    void testValidateWithoutErrorsWhenArtefactIsCrimeDailyCauseList() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream("mocks/crown-daily-list/crownDailyList.json")) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            assertDoesNotThrow(() -> validationService.validateBody(text, ListType.CROWN_DAILY_LIST),
+                               "Valid crown daily list marked as valid");
+        }
+    }
 }
