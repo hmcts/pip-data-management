@@ -330,4 +330,15 @@ class ValidationServiceTest {
                                "Valid cop daily cause list marked as valid");
         }
     }
+
+    @Test
+    void testValidateWithoutErrorWhenArtefactIsMagistratesStandardList() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream("mocks/magistrates-standard-list/magistratesStandardList.json")) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            assertDoesNotThrow(() -> validationService.validateBody(text, ListType.MAGISTRATES_STANDARD_LIST),
+                               "Valid magistrates standard list list marked as valid");
+        }
+    }
 }
