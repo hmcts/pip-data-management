@@ -52,8 +52,9 @@
                           {
                             "caseLinked": [
                               {
-                                "name": "A Vs B",
-                                "id": "ABC123"
+
+                                "caseId": "1234",
+                                "name": "A Vs B"
                               }
                             ]
                           }
