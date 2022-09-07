@@ -107,7 +107,7 @@ class PublicationMagistratesStandardListTest {
     @Test
     void testCreationOfInvalidMagistratesStandardList() throws Exception {
         try (InputStream mockFile = this.getClass().getClassLoader()
-            .getResourceAsStream("data/magistrates-standard-list/magistrateStandardListInvalid.json")) {
+            .getResourceAsStream("data/magistrates-standard-list/magistratesStandardListInvalid.json")) {
 
             MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
                 .post(POST_URL)
