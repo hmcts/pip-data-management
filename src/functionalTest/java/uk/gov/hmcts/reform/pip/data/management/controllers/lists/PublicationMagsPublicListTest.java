@@ -74,7 +74,7 @@ class PublicationMagsPublicListTest {
     @Test
     void testCreationOfValidSscsDailyList() throws Exception {
         try (InputStream mockFile = this.getClass().getClassLoader()
-            .getResourceAsStream("data/mags_public_list/magsPublicList.json")) {
+            .getResourceAsStream("data/magistrates_public_list/magistratesPublicList.json")) {
 
             MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
                 .post(POST_URL)
@@ -84,7 +84,7 @@ class PublicationMagsPublicListTest {
                 .header(PublicationConfiguration.DISPLAY_FROM_HEADER, LocalDateTime.now())
                 .header(PublicationConfiguration.DISPLAY_TO_HEADER, LocalDateTime.now().plusMonths(1))
                 .header(PublicationConfiguration.COURT_ID, 1)
-                .header(PublicationConfiguration.LIST_TYPE, ListType.MAGS_PUBLIC_LIST)
+                .header(PublicationConfiguration.LIST_TYPE, ListType.MAGISTRATES_PUBLIC_LIST)
                 .header(PublicationConfiguration.LANGUAGE_HEADER, Language.ENGLISH)
                 .header(PublicationConfiguration.CONTENT_DATE, LocalDateTime.now())
                 .content(mockFile.readAllBytes())
@@ -106,7 +106,7 @@ class PublicationMagsPublicListTest {
     @Test
     void testCreationOfInvalidSscsDailyList() throws Exception {
         try (InputStream mockFile = this.getClass().getClassLoader()
-            .getResourceAsStream("data/mags_public_list/magsPublicListInvalid.json")) {
+            .getResourceAsStream("data/magistrates_public_list/magistratesPublicListInvalid.json")) {
 
             MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
                 .post(POST_URL)
@@ -116,7 +116,7 @@ class PublicationMagsPublicListTest {
                 .header(PublicationConfiguration.DISPLAY_FROM_HEADER, LocalDateTime.now())
                 .header(PublicationConfiguration.DISPLAY_TO_HEADER, LocalDateTime.now().plusMonths(1))
                 .header(PublicationConfiguration.COURT_ID, 1)
-                .header(PublicationConfiguration.LIST_TYPE, ListType.MAGS_PUBLIC_LIST)
+                .header(PublicationConfiguration.LIST_TYPE, ListType.MAGISTRATES_PUBLIC_LIST)
                 .header(PublicationConfiguration.LANGUAGE_HEADER, Language.ENGLISH)
                 .header(PublicationConfiguration.CONTENT_DATE, LocalDateTime.now())
                 .content(mockFile.readAllBytes())
