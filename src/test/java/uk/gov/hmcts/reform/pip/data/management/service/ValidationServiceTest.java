@@ -338,7 +338,7 @@ class ValidationServiceTest {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             assertDoesNotThrow(() -> validationService.validateBody(text, ListType.MAGISTRATES_STANDARD_LIST),
-                               "Valid magistrates standard list list marked as valid");
+                               "Valid magistrates standard list marked as valid");
         }
     }
 }
