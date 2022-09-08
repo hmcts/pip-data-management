@@ -53,7 +53,7 @@ class MagistratesPublicListTest {
     }
 
     @Test
-    void testValidateWithErrorsWhenDocumentMissingInFamilyDailyCauseList() throws IOException {
+    void testValidateWithErrorsWhenDocumentMissingInMagistratesPublicList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(MAGISTRATES_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
@@ -69,7 +69,7 @@ class MagistratesPublicListTest {
     }
 
     @Test
-    void testValidateWithErrorsWhenVenueMissingInFamilyDailyCauseList() throws IOException {
+    void testValidateWithErrorsWhenVenueMissingInMagistratesPublicList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(MAGISTRATES_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
@@ -85,7 +85,7 @@ class MagistratesPublicListTest {
     }
 
     @Test
-    void testValidateWithErrorsWhenCourtListMissingInFamilyDailyCauseList() throws IOException {
+    void testValidateWithErrorsWhenCourtListMissingInMagistratesPublicList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(MAGISTRATES_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
@@ -101,7 +101,7 @@ class MagistratesPublicListTest {
     }
 
     @Test
-    void testValidateWithErrorsWhenPublicationDateMissingInFamilyDailyCauseList() throws IOException {
+    void testValidateWithErrorsWhenPublicationDateMissingInMagistratesPublicList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(MAGISTRATES_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
@@ -118,7 +118,7 @@ class MagistratesPublicListTest {
     }
 
     @Test
-    void testValidateWithErrorsWhenVenueNameMissingInFamilyDailyCauseList() throws IOException {
+    void testValidateWithErrorsWhenVenueNameMissingInMagistratesPublicList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(MAGISTRATES_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
@@ -135,7 +135,7 @@ class MagistratesPublicListTest {
     }
 
     @Test
-    void testValidateWithErrorsWhenVenueAddressMissingInFamilyDailyCauseList() throws IOException {
+    void testValidateWithErrorsWhenVenueAddressMissingInMagistratesPublicList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(MAGISTRATES_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
@@ -152,7 +152,7 @@ class MagistratesPublicListTest {
     }
 
     @Test
-    void testValidateWithErrorsWhenLineMissingInFamilyDailyCauseList() throws IOException {
+    void testValidateWithErrorsWhenLineMissingInMagistratesPublicList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(MAGISTRATES_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
@@ -169,7 +169,7 @@ class MagistratesPublicListTest {
     }
 
     @Test
-    void testValidateWithErrorsWhenPostCodeMissingInFamilyDailyCauseList() throws IOException {
+    void testValidateWithErrorsWhenPostCodeMissingInMagistratesPublicList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(MAGISTRATES_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
@@ -186,7 +186,7 @@ class MagistratesPublicListTest {
     }
 
     @Test
-    void testValidateWithErrorsWhenVenueContactMissingInFamilyDailyCauseList() throws IOException {
+    void testValidateWithErrorsWhenVenueContactMissingInMagistratesPublicList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(MAGISTRATES_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
@@ -203,7 +203,7 @@ class MagistratesPublicListTest {
     }
 
     @Test
-    void testValidateWithErrorsWhenVenueTelephoneMissingInFamilyDailyCauseList() throws IOException {
+    void testValidateWithErrorsWhenVenueTelephoneMissingInMagistratesPublicList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(MAGISTRATES_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
@@ -220,7 +220,7 @@ class MagistratesPublicListTest {
     }
 
     @Test
-    void testValidateWithErrorsWhenVenueEmailMissingInFamilyDailyCauseList() throws IOException {
+    void testValidateWithErrorsWhenVenueEmailMissingInMagistratesPublicList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(MAGISTRATES_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
@@ -237,7 +237,7 @@ class MagistratesPublicListTest {
     }
 
     @Test
-    void testValidateWithErrorsWhenCourtHouseMissingInFamilyDailyCauseList() throws IOException {
+    void testValidateWithErrorsWhenCourtHouseMissingInMagistratesPublicList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(MAGISTRATES_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
@@ -254,7 +254,7 @@ class MagistratesPublicListTest {
     }
 
     @Test
-    void testValidateWithErrorsWhenCourtHouseNameMissingInFamilyDailyCauseList() throws IOException {
+    void testValidateWithErrorsWhenCourtHouseNameMissingInMagistratesPublicList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(MAGISTRATES_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
@@ -271,7 +271,7 @@ class MagistratesPublicListTest {
     }
 
     @Test
-    void testValidateWithErrorsWhenCourtRoomMissingInFamilyDailyCauseList() throws IOException {
+    void testValidateWithErrorsWhenCourtRoomMissingInMagistratesPublicList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(MAGISTRATES_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
@@ -289,7 +289,7 @@ class MagistratesPublicListTest {
     }
 
     @Test
-    void testValidateWithErrorsWhenCourtRoomNameMissingInFamilyDailyCauseList() throws IOException {
+    void testValidateWithErrorsWhenCourtRoomNameMissingInMagistratesPublicList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(MAGISTRATES_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
@@ -307,7 +307,7 @@ class MagistratesPublicListTest {
     }
 
     @Test
-    void testValidateWithErrorsWhenSessionMissingInFamilyDailyCauseList() throws IOException {
+    void testValidateWithErrorsWhenSessionMissingInMagistratesPublicList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(MAGISTRATES_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
@@ -325,7 +325,7 @@ class MagistratesPublicListTest {
     }
 
     @Test
-    void testValidateWithErrorsWhenSittingsMissingInFamilyDailyCauseList() throws IOException {
+    void testValidateWithErrorsWhenSittingsMissingInMagistratesPublicList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(MAGISTRATES_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
@@ -344,7 +344,7 @@ class MagistratesPublicListTest {
     }
 
     @Test
-    void testValidateWithErrorsWhenSittingStartMissingInFamilyDailyCauseList() throws IOException {
+    void testValidateWithErrorsWhenSittingStartMissingInMagistratesPublicList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(MAGISTRATES_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
@@ -363,7 +363,7 @@ class MagistratesPublicListTest {
     }
 
     @Test
-    void testValidateWithErrorsWhenSittingEndMissingInFamilyDailyCauseList() throws IOException {
+    void testValidateWithErrorsWhenSittingEndMissingInMagistratesPublicList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(MAGISTRATES_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
@@ -382,7 +382,7 @@ class MagistratesPublicListTest {
     }
 
     @Test
-    void testValidateWithErrorsWhenHearingMissingInFamilyDailyCauseList() throws IOException {
+    void testValidateWithErrorsWhenHearingMissingInMagistratesPublicList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(MAGISTRATES_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
@@ -401,7 +401,7 @@ class MagistratesPublicListTest {
     }
 
     @Test
-    void testValidateWithErrorsWhenCaseMissingInFamilyDailyCauseList() throws IOException {
+    void testValidateWithErrorsWhenCaseMissingInMagistratesPublicList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(MAGISTRATES_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
@@ -421,7 +421,7 @@ class MagistratesPublicListTest {
     }
 
     @Test
-    void testValidateWithErrorsWhenCaseNumberMissingInFamilyDailyCauseList() throws IOException {
+    void testValidateWithErrorsWhenCaseNumberMissingInMagistratesPublicList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(MAGISTRATES_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
