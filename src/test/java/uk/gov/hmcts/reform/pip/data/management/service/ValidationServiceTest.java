@@ -330,4 +330,15 @@ class ValidationServiceTest {
                                "Valid cop daily cause list marked as valid");
         }
     }
+
+    @Test
+    void testValidateWithoutErrorWhenArtefactIsIacDailyList() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream("mocks/iac-daily-list/iacDailyList.json")) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            assertDoesNotThrow(() -> validationService.validateBody(text, ListType.IAC_DAILY_LIST),
+                               "Valid iac daily list marked as valid");
+        }
+    }
 }

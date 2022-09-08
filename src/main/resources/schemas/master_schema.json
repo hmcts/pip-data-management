@@ -345,6 +345,17 @@
         "title": "Court list",
         "type": "object",
         "properties": {
+          "courtListName": {
+            "$id": "#root/courtLists/courtListName",
+            "title": "Sub-list Name",
+            "description": "The name of the court list",
+            "type": "string",
+            "default": "",
+            "examples": [
+              "Case Management Review"
+            ],
+            "pattern": "^.*$"
+          },
           "courtHouse": {
             "$id": "#root/courtLists/courtHouse",
             "title": "Court House",
@@ -881,16 +892,16 @@
                                               "title": "Information about linked cases",
                                               "type": "array",
                                               "items": {
-                                                "id": {
-                                                "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/caseLinked/id",
-                                                "title": "Case Linked Id",
-                                                "description": "If a case is linked to another case, Id of that case will appear here.",
-                                                "type": "string",
-                                                "default": "",
-                                                "examples": [
-                                                  "offg35484"
-                                                ],
-                                                "pattern": "^.*$"
+                                                "caseId": {
+                                                  "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/caseLinked/id",
+                                                  "title": "Case Linked Id",
+                                                  "description": "If a case is linked to another case, Id of that case will appear here.",
+                                                  "type": "string",
+                                                  "default": "",
+                                                  "examples": [
+                                                    "offg35484"
+                                                  ],
+                                                  "pattern": "^.*$"
                                                 },
                                                 "name": {
                                                   "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/caseLinked/name",

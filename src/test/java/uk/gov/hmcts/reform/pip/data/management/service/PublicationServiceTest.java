@@ -1139,6 +1139,7 @@ class PublicationServiceTest {
         venueListTypes.add(ListType.MAGS_STANDARD_LIST);
         venueListTypes.add(ListType.CIVIL_DAILY_CAUSE_LIST);
         venueListTypes.add(ListType.FAMILY_DAILY_CAUSE_LIST);
+        venueListTypes.add(ListType.IAC_DAILY_LIST);
 
         venueListTypes.forEach(listType ->
                                    assertEquals(LocationType.VENUE,
