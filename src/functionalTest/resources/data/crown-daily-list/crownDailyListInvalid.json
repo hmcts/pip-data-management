@@ -20,7 +20,7 @@
     }
   },
   "locationDetails": {
-    "jurisdiction": "Crown"
+    "jurisdiction": "Family"
   },
   "courtLists": [
     {
@@ -52,7 +52,6 @@
                           {
                             "caseLinked": [
                               {
-
                                 "caseId": "1234",
                                 "name": "A Vs B"
                               }
