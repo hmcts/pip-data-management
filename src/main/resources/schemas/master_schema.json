@@ -882,15 +882,15 @@
                                               "type": "array",
                                               "items": {
                                                 "caseId": {
-                                                "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/caseLinked/id",
-                                                "title": "Case Linked Id",
-                                                "description": "If a case is linked to another case, Id of that case will appear here.",
-                                                "type": "string",
-                                                "default": "",
-                                                "examples": [
-                                                  "offg35484"
-                                                ],
-                                                "pattern": "^.*$"
+                                                  "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/caseLinked/id",
+                                                  "title": "Case Linked Id",
+                                                  "description": "If a case is linked to another case, Id of that case will appear here.",
+                                                  "type": "string",
+                                                  "default": "",
+                                                  "examples": [
+                                                    "offg35484"
+                                                  ],
+                                                  "pattern": "^.*$"
                                                 },
                                                 "name": {
                                                   "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/caseLinked/name",
