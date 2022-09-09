@@ -198,6 +198,7 @@
                   "description": "The court room that owns the court rooms",
                   "type": "object",
                   "required": [
+                    "courtRoomName",
                     "session"
                   ],
                   "properties": {
@@ -370,6 +371,17 @@
                                                   "pattern": "^.*$"
                                                 }
                                               }
+                                            },
+                                            "language": {
+                                              "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/language",
+                                              "title": "Interpreter Language",
+                                              "description": "Interpreter Language",
+                                              "type": "string",
+                                              "default": "",
+                                              "examples": [
+                                                "French"
+                                              ],
+                                              "pattern": "^.*$"
                                             }
                                           }
                                         }
@@ -399,7 +411,7 @@
                                             },
                                             "friendlyRoleName": {
                                               "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/party/friendlyRoleName",
-                                              "description": "The descriptive version of the role. E.g a party role of APPLICANT_REPRESENTATIVE, might  have a more descriptive role name (e.g Legal Advisor) that you would want to display",
+                                              "description": "The descriptive version of the role. E.g a party role of APPLICANT_REPRESENTATIVE, might have a more descriptive role name (e.g Legal Advisor) that you would want to display",
                                               "title": "Friendly Role Name",
                                               "type": "string",
                                               "examples": [

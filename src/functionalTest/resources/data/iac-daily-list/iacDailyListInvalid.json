@@ -53,7 +53,8 @@
                                 "caseId": "1234",
                                 "name": "A Vs B"
                               }
-                            ]
+                            ],
+                            "language": "French"
                           }
                         ],
                         "party": [

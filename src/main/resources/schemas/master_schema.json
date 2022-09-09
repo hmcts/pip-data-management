@@ -988,6 +988,17 @@
                                                 "CHILD or ADULT"
                                               ],
                                               "pattern": "^.*$"
+                                            },
+                                            "language": {
+                                              "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/language",
+                                              "title": "Interpreter Language",
+                                              "description": "Interpreter Language",
+                                              "type": "string",
+                                              "default": "",
+                                              "examples": [
+                                                "French"
+                                              ],
+                                              "pattern": "^.*$"
                                             }
                                           }
                                         }
