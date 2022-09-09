@@ -225,7 +225,7 @@ class ValidationServiceTest {
             .getResourceAsStream("mocks/badJsonPayload.json")) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(text, ListType.MAGS_PUBLIC_LIST),
+                             validationService.validateBody(text, ListType.MAGISTRATES_PUBLIC_LIST),
                                "Valid JSON string marked as not valid");
         } catch (IOException exception) {
             fail(UNKNOWN_EXCEPTION);
@@ -248,7 +248,7 @@ class ValidationServiceTest {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream("mocks/jsonPayload.json")) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
-            assertDoesNotThrow(() -> validationService.validateBody(text, ListType.MAGS_PUBLIC_LIST),
+            assertDoesNotThrow(() -> validationService.validateBody(text, ListType.MAGS_STANDARD_LIST),
                                "Valid master schema marked as invalid");
         }
     }
@@ -328,6 +328,17 @@ class ValidationServiceTest {
 
             assertDoesNotThrow(() -> validationService.validateBody(text, ListType.COP_DAILY_CAUSE_LIST),
                                "Valid cop daily cause list marked as valid");
+        }
+    }
+
+    @Test
+    void testValidateWithoutErrorsWhenArtefactIsMagsPublicList() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream("mocks/magistrates_public_list/magistratesPublicList.json")) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            assertDoesNotThrow(() -> validationService.validateBody(text, ListType.MAGISTRATES_PUBLIC_LIST),
+                               "Valid sscs daily list marked as valid");
         }
     }
 
