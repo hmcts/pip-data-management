@@ -13,7 +13,7 @@ public enum ListType {
     CROWN_DAILY_LIST(LocationType.VENUE),
     CROWN_FIRM_LIST(LocationType.VENUE),
     CROWN_WARNED_LIST(LocationType.VENUE),
-    MAGS_PUBLIC_LIST(LocationType.VENUE),
+    MAGISTRATES_PUBLIC_LIST(LocationType.VENUE),
     MAGISTRATES_STANDARD_LIST(LocationType.VENUE),
     CIVIL_DAILY_CAUSE_LIST(LocationType.VENUE),
     FAMILY_DAILY_CAUSE_LIST(LocationType.VENUE),
