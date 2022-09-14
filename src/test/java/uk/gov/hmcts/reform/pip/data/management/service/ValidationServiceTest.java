@@ -248,7 +248,7 @@ class ValidationServiceTest {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream("mocks/jsonPayload.json")) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
-            assertDoesNotThrow(() -> validationService.validateBody(text, ListType.CROWN_FIRM_LIST),
+            assertDoesNotThrow(() -> validationService.validateBody(text, ListType.CROWN_WARNED_LIST),
                                "Valid master schema marked as invalid");
         }
     }
@@ -348,8 +348,12 @@ class ValidationServiceTest {
             .getResourceAsStream("mocks/crown_firm_list/crownFirmList.json")) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
-            assertDoesNotThrow(() -> validationService.validateBody(text, ListType.CROWN_FIRM_LIST),
-                               "Valid crown firm list marked as valid");
+            assertDoesNotThrow(
+                () -> validationService.validateBody(text, ListType.CROWN_FIRM_LIST),
+                "Valid crown firm list marked as valid"
+            );
+        }
+    }
 
     @Test
     void testValidateWithoutErrorWhenArtefactIsMagistratesStandardList() throws IOException {
