@@ -1136,7 +1136,7 @@ class PublicationServiceTest {
         venueListTypes.add(ListType.CROWN_FIRM_LIST);
         venueListTypes.add(ListType.CROWN_WARNED_LIST);
         venueListTypes.add(ListType.MAGISTRATES_PUBLIC_LIST);
-        venueListTypes.add(ListType.MAGS_STANDARD_LIST);
+        venueListTypes.add(ListType.MAGISTRATES_STANDARD_LIST);
         venueListTypes.add(ListType.CIVIL_DAILY_CAUSE_LIST);
         venueListTypes.add(ListType.FAMILY_DAILY_CAUSE_LIST);
         venueListTypes.add(ListType.IAC_DAILY_LIST);

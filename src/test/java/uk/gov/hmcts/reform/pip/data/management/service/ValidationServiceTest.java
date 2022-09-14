@@ -248,7 +248,7 @@ class ValidationServiceTest {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream("mocks/jsonPayload.json")) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
-            assertDoesNotThrow(() -> validationService.validateBody(text, ListType.MAGS_STANDARD_LIST),
+            assertDoesNotThrow(() -> validationService.validateBody(text, ListType.CROWN_FIRM_LIST),
                                "Valid master schema marked as invalid");
         }
     }
@@ -339,6 +339,17 @@ class ValidationServiceTest {
 
             assertDoesNotThrow(() -> validationService.validateBody(text, ListType.MAGISTRATES_PUBLIC_LIST),
                                "Valid sscs daily list marked as valid");
+        }
+    }
+
+    @Test
+    void testValidateWithoutErrorWhenArtefactIsMagistratesStandardList() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream("mocks/magistrates-standard-list/magistratesStandardList.json")) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            assertDoesNotThrow(() -> validationService.validateBody(text, ListType.MAGISTRATES_STANDARD_LIST),
+                               "Valid magistrates standard list marked as valid");
         }
     }
 
