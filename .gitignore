@@ -19,8 +19,12 @@ bin/main/application.yaml
 *.iml
 *.ipr
 
+### Mac file system artifacts ###
 .DS_Store
 
+### Jetbrains Fleet metadata ###
+.fleet/*
+.fleet
 
 # Local .terraform directories
 **/.terraform/*
