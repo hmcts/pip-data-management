@@ -107,7 +107,7 @@ class PublicationCareStandardsListTest {
     @Test
     void testCreationOfInvalidCareStandardsDailyList() throws Exception {
         try (InputStream mockFile = this.getClass().getClassLoader()
-            .getResourceAsStream("data/care-standards-list/careStandardsList.json")) {
+            .getResourceAsStream("data/care-standards-list/careStandardsListInvalid.json")) {
 
             MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
                 .post(POST_URL)
