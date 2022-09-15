@@ -251,7 +251,7 @@ example filter request:
 NOTE: searching or filtering is not case-sensitive but requires exact match otherwise.
 
 ## Uploading and retrieving artefacts
-Artefacts are created by uploading blobs of raw data or flat files.
+Artefacts are created by uploading blobs of raw data or flat files
 These are defined by the [schemas](src/main/resources/schemas).
 
 - POST `/publication` used to upload a blob and create an artefact in the P&I database, must include series of
