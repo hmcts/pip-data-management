@@ -352,4 +352,15 @@ class ValidationServiceTest {
                                "Valid magistrates standard list marked as valid");
         }
     }
+
+    @Test
+    void testValidateWithoutErrorWhenArtefactIsPrimaryHealthList() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream("mocks/primary-health-list/primaryHealthList.json")) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            assertDoesNotThrow(() -> validationService.validateBody(text, ListType.PRIMARY_HEALTH_LIST),
+                               "Valid primary health list marked as valid");
+        }
+    }
 }

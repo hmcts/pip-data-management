@@ -104,6 +104,7 @@ validations:
     COP_DAILY_CAUSE_LIST: "schemas/cop_daily_cause_list.json"
     MAGISTRATES_PUBLIC_LIST: "schemas/magistrates_public_list.json"
     MAGISTRATES_STANDARD_LIST: "schemas/magistrates_standard_list.json"
+    PRIMARY_HEALTH_LIST: "schemas/primary_health_list.json"
 
 cron:
   daily-start-of-day: "0 0 0 * * *"
