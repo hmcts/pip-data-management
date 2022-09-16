@@ -206,6 +206,25 @@ class CareStandardsListTest {
     }
 
     @Test
+    void testValidateWithErrorsWhenSittingStartMissingInCareStandardsList() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream(CARE_STANDARDS_LIST_VALID_JSON)) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode node = mapper.readValue(text, JsonNode.class);
+            ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0)
+                .get(COURT_HOUSE_SCHEMA).get(COURT_ROOM_SCHEMA).get(0)
+                .get(SESSION_SCHEMA).get(0).get(SITTINGS_SCHEMA).get(0)).remove("sittingStart");
+
+            assertThrows(PayloadValidationException.class, () ->
+                             validationService.validateBody(node.toString(),
+                                                            ListType.CARE_STANDARDS_LIST),
+                         CARE_STANDARDS_LIST_INVALID_MESSAGE);
+        }
+    }
+
+    @Test
     void testValidateWithErrorsWhenSittingEndMissingInCareStandardsList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(CARE_STANDARDS_LIST_VALID_JSON)) {

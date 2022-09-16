@@ -25,6 +25,7 @@
               {
                 "sittings": [
                   {
+                    "sittingStart": "2022-09-10T12:30:52.123Z",
                     "sittingEnd": "2022-11-13T17:30:52.123Z",
                     "hearing": [
                       {

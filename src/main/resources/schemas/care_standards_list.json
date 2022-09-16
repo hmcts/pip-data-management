@@ -208,10 +208,19 @@
                               "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items",
                               "type": "object",
                               "required": [
+                                "sittingStart",
                                 "sittingEnd",
                                 "hearing"
                               ],
                               "properties": {
+                                "sittingStart": {
+                                  "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/sittingStart",
+                                  "description": "Sitting Start Time",
+                                  "title": "Sitting Start",
+                                  "type": "string",
+                                  "default": "",
+                                  "examples": []
+                                },
                                 "sittingEnd": {
                                   "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/sittingEnd",
                                   "description": "Sitting End Time",
