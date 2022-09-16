@@ -1159,6 +1159,17 @@ class PublicationServiceTest {
     }
 
     @Test
+    void testGetLocationTypeOwningHearingLocation() {
+        List<ListType> venueListTypes = new ArrayList<>();
+        venueListTypes.add(ListType.ET_FORTNIGHTLY_PRESS_LIST);
+
+        venueListTypes.forEach(listType ->
+                                   assertEquals(LocationType.OWNING_HEARING_LOCATION,
+                                                publicationService.getLocationType(listType),
+                                                LOCATION_TYPE_MATCH));
+    }
+
+    @Test
     void testGetLocationTypeNational() {
         List<ListType> nationalListTypes = new ArrayList<>();
         nationalListTypes.add(ListType.SJP_PRESS_LIST);

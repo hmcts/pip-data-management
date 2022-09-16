@@ -130,7 +130,8 @@
                 "MAGISTRATES_STANDARD_LIST",
                 "SJP_PRESS_LIST",
                 "SJP_PUBLIC_LIST",
-                "SSCS_DAILY_LIST"
+                "SSCS_DAILY_LIST",
+                "ET_FORTNIGHTLY_PRESS_LIST"
               ]
             }
           },
