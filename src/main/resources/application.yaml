@@ -105,6 +105,7 @@ validations:
     CROWN_DAILY_LIST: "schemas/crown_daily_list.json"
     MAGISTRATES_PUBLIC_LIST: "schemas/magistrates_public_list.json"
     MAGISTRATES_STANDARD_LIST: "schemas/magistrates_standard_list.json"
+    ET_DAILY_LIST: "schemas/et_daily_list.json"
 
 cron:
   daily-start-of-day: "0 0 0 * * *"
