@@ -64,8 +64,8 @@ class EtDailyListTest {
             JsonHelper.safeRemoveNode(jsonpath, topLevelNode);
             String output = mapper.writeValueAsString(topLevelNode);
             assertThatExceptionOfType(PayloadValidationException.class)
-                .isThrownBy(() -> validationService.validateBody(output, ListType.ET_DAILY_LIST))
-                .as("should fail");
+                .as("should fail")
+                .isThrownBy(() -> validationService.validateBody(output, ListType.ET_DAILY_LIST));
         }
     }
 }
