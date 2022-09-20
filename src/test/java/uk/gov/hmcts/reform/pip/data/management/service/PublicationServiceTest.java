@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -46,12 +47,13 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.TestConstants.MESSAGES_MATCH;
 
 @ExtendWith(MockitoExtension.class)
-@SuppressWarnings({"PMD.ExcessiveImports",
-    "PMD.TooManyMethods", "PMD.TooManyFields", "PMD.ExcessiveClassLength", "PMD.LawOfDemeter"})
+@SuppressWarnings({"PMD.ExcessiveImports", "PMD.TooManyMethods", "PMD.TooManyFields", "PMD.ExcessiveClassLength",
+    "PMD.LawOfDemeter", "PMD.CyclomaticComplexity"})
 class PublicationServiceTest {
 
     @Mock
@@ -1112,7 +1114,7 @@ class PublicationServiceTest {
         when(artefactRepository.findAllNoMatchArtefacts()).thenReturn(List.of(noMatchArtefact));
         when(azureBlobService.deleteBlob(any())).thenReturn("Success");
         Map<String, String> testMap = new ConcurrentHashMap<>();
-        testMap.put("1234", "provenance");
+        testMap.put(PROVENANCE_ID, PROVENANCE);
         when(publicationServicesService.sendNoMatchArtefactsForReporting(testMap))
             .thenReturn("Success no match artefacts sent");
         lenient().doNothing().when(artefactRepository).deleteAll(List.of(artefact));
@@ -1139,6 +1141,36 @@ class PublicationServiceTest {
         } catch (Exception ex) {
             throw new IOException(ex.getMessage());
         }
+    }
+
+    @Test
+    void testReportNoMatchArtefacts() {
+        when(artefactRepository.findAllNoMatchArtefacts()).thenReturn(List.of(noMatchArtefact));
+        publicationService.reportNoMatchArtefacts();
+        verify(publicationServicesService).sendNoMatchArtefactsForReporting(Map.of(PROVENANCE_ID, PROVENANCE));
+    }
+
+    @Test
+    void testReportMatchArtefactsWhenArtefactsNotFound() {
+        when(artefactRepository.findAllNoMatchArtefacts()).thenReturn(Collections.emptyList());
+        publicationService.reportNoMatchArtefacts();
+        verifyNoInteractions(publicationServicesService);
+    }
+
+    @Test
+    void testDeleteExpiredArtefacts() {
+        when(artefactRepository.findOutdatedArtefacts(LocalDate.now())).thenReturn(List.of(artefactWithPayloadUrl));
+        publicationService.deleteExpiredArtefacts();
+        verify(azureBlobService).deleteBlob(PAYLOAD_STRIPPED);
+        verify(artefactRepository).deleteAll(List.of(artefactWithPayloadUrl));
+    }
+
+    @Test
+    void testDeleteExpiredArtefactsWhenArtefactsNotFound() {
+        when(artefactRepository.findOutdatedArtefacts(LocalDate.now())).thenReturn(Collections.emptyList());
+        publicationService.deleteExpiredArtefacts();
+        verifyNoInteractions(azureBlobService);
+        verify(artefactRepository).deleteAll(Collections.emptyList());
     }
 
     @Test

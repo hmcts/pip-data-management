@@ -80,6 +80,9 @@ class PublicationTest {
     private static final String SEARCH_COURT_URL = "/publication/locationId";
     private static final String PAYLOAD_URL = "/payload";
     private static final String LOCATION_TYPE_URL = PUBLICATION_URL + "/location-type/";
+    private static final String SEND_NEW_ARTEFACTS_FOR_SUBSCRIPTION_URL = PUBLICATION_URL + "/latest/subscription";
+    private static final String REPORT_NO_MATCH_ARTEFACTS_URL = PUBLICATION_URL + "/no-match/reporting";
+    private static final String DELETE_EXPIRED_ARTEFACTS_URL = PUBLICATION_URL + "/expired";
     private static final ArtefactType ARTEFACT_TYPE = ArtefactType.LIST;
     private static final Sensitivity SENSITIVITY = Sensitivity.PUBLIC;
     private static final String PROVENANCE = "MANUAL_UPLOAD";
@@ -1633,4 +1636,29 @@ class PublicationTest {
         mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isBadRequest());
     }
 
+    @Test
+    void testSendNewArtefactsForSubscriptionSuccess() throws Exception {
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+            .post(SEND_NEW_ARTEFACTS_FOR_SUBSCRIPTION_URL);
+
+        mockMvc.perform(request).andExpect(status().isNoContent());
+    }
+
+    @Test
+    void testReportNoMatchArtefactsSuccess() throws Exception {
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+            .post(REPORT_NO_MATCH_ARTEFACTS_URL);
+
+        mockMvc.perform(request).andExpect(status().isNoContent());
+    }
+
+    @Test
+    void testDeleteExpiredArtefactsSuccess() throws Exception {
+        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+            .delete(DELETE_EXPIRED_ARTEFACTS_URL);
+
+        mockMvc.perform(request).andExpect(status().isNoContent());
+    }
 }

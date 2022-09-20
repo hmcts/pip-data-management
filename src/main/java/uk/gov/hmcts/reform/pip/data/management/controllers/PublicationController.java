@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.authentication.roles.IsAdmin;
@@ -62,6 +63,7 @@ public class PublicationController {
     private static final String USER_ID_HEADER = "x-user-id";
     private static final String ADMIN_HEADER = "x-admin";
 
+    private static final String NO_CONTENT_DESCRIPTION = "The request has been successfully fulfilled";
     private static final String UNAUTHORIZED_DESCRIPTION = "User has not been authorized";
 
     private static final String NOT_FOUND_DESCRIPTION =
@@ -372,7 +374,6 @@ public class PublicationController {
         }
     }
 
-
     @ApiResponses({
         @ApiResponse(code = 200, message = "Data Management - MI Data request accepted.")
     })
@@ -381,5 +382,44 @@ public class PublicationController {
     @IsAdmin
     public ResponseEntity<String> getMiData() {
         return ResponseEntity.ok().body(publicationService.getMiData());
+    }
+
+    @ApiResponses({
+        @ApiResponse(code = 204, message = NO_CONTENT_DESCRIPTION),
+        @ApiResponse(code = 403, message = UNAUTHORIZED_DESCRIPTION)
+    })
+    @ApiOperation("Find latest artefacts from today and send them to subscribers")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PostMapping("/latest/subscription")
+    @IsAdmin
+    public ResponseEntity<Void> sendNewArtefactsForSubscription() {
+        publicationService.checkNewlyActiveArtefacts();
+        return ResponseEntity.noContent().build();
+    }
+
+    @ApiResponses({
+        @ApiResponse(code = 204, message = NO_CONTENT_DESCRIPTION),
+        @ApiResponse(code = 403, message = UNAUTHORIZED_DESCRIPTION)
+    })
+    @ApiOperation("Report artefacts which do not match any location")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PostMapping("/no-match/reporting")
+    @IsAdmin
+    public ResponseEntity<Void> reportNoMatchArtefacts() {
+        publicationService.reportNoMatchArtefacts();
+        return ResponseEntity.noContent().build();
+    }
+
+    @ApiResponses({
+        @ApiResponse(code = 204, message = NO_CONTENT_DESCRIPTION),
+        @ApiResponse(code = 403, message = UNAUTHORIZED_DESCRIPTION)
+    })
+    @ApiOperation("Delete all expired artefacts")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping("/expired")
+    @IsAdmin
+    public ResponseEntity<Void> deleteExpiredArtefacts() {
+        publicationService.deleteExpiredArtefacts();
+        return ResponseEntity.noContent().build();
     }
 }
