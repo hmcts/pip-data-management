@@ -375,6 +375,16 @@ public class PublicationController {
     }
 
     @ApiResponses({
+        @ApiResponse(code = 200, message = "Data Management - MI Data request accepted.")
+    })
+    @ApiOperation("Return the table of MI data")
+    @GetMapping("/mi-data")
+    @IsAdmin
+    public ResponseEntity<String> getMiData() {
+        return ResponseEntity.ok().body(publicationService.getMiData());
+    }
+
+    @ApiResponses({
         @ApiResponse(code = 204, message = NO_CONTENT_DESCRIPTION),
         @ApiResponse(code = 403, message = UNAUTHORIZED_DESCRIPTION)
     })
