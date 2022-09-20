@@ -372,8 +372,8 @@ class ValidationServiceTest {
             .getResourceAsStream("mocks/et-fortnightly-press-list/etFortnightlyPressList.json")) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
-            assertDoesNotThrow(() -> validationService.validateBody(text, ListType.MAGISTRATES_STANDARD_LIST),
-                               "Valid magistrates standard list marked as valid");
+            assertDoesNotThrow(() -> validationService.validateBody(text, ListType.ET_FORTNIGHTLY_PRESS_LIST),
+                               "Valid et fortnightly press list marked as valid");
         }
     }
 }
