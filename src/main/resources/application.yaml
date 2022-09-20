@@ -102,6 +102,7 @@ validations:
     CIVIL_AND_FAMILY_DAILY_CAUSE_LIST: "schemas/civil_and_family_daily_cause_list.json"
     SSCS_DAILY_LIST: "schemas/sscs_daily_list.json"
     COP_DAILY_CAUSE_LIST: "schemas/cop_daily_cause_list.json"
+    CROWN_DAILY_LIST: "schemas/crown_daily_list.json"
     MAGISTRATES_PUBLIC_LIST: "schemas/magistrates_public_list.json"
     MAGISTRATES_STANDARD_LIST: "schemas/magistrates_standard_list.json"
     IAC_DAILY_LIST: "schemas/iac_daily_list.json"

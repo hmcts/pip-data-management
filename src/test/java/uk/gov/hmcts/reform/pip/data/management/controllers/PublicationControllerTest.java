@@ -336,4 +336,10 @@ class PublicationControllerTest {
         }
     }
 
+    @Test
+    void testMiDataReturnsOk() {
+        assertEquals(HttpStatus.OK,
+                     publicationController.getMiData().getStatusCode(),
+                     STATUS_CODE_MATCH);
+    }
 }
