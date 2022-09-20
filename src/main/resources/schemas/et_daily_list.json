@@ -251,7 +251,7 @@
                                     "type": "object",
                                     "description": "Hearing details of the case and associated details for the sitting",
                                     "title": "Hearing",
-                                    "required": ["case", "hearingType"],
+                                    "required": ["case"],
                                     "properties": {
                                       "hearingType": {
                                         "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/hearingType",
