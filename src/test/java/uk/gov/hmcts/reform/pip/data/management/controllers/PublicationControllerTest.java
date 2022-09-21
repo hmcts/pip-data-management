@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -336,4 +337,34 @@ class PublicationControllerTest {
         }
     }
 
+    @Test
+    void testMiDataReturnsOk() {
+        assertEquals(HttpStatus.OK,
+                     publicationController.getMiData().getStatusCode(),
+                     STATUS_CODE_MATCH);
+    }
+
+    @Test
+    void testSendNewArtefactsForSubscriptionSuccess() {
+        doNothing().when(publicationService).checkNewlyActiveArtefacts();
+        assertThat(publicationController.sendNewArtefactsForSubscription().getStatusCode())
+            .as(STATUS_CODE_MATCH)
+            .isEqualTo(HttpStatus.NO_CONTENT);
+    }
+
+    @Test
+    void testReportNoMatchArtefactsSuccess() {
+        doNothing().when(publicationService).reportNoMatchArtefacts();
+        assertThat(publicationController.reportNoMatchArtefacts().getStatusCode())
+            .as(STATUS_CODE_MATCH)
+            .isEqualTo(HttpStatus.NO_CONTENT);
+    }
+
+    @Test
+    void testDeleteExpiredArtefactsSuccess() {
+        doNothing().when(publicationService).deleteExpiredArtefacts();
+        assertThat(publicationController.deleteExpiredArtefacts().getStatusCode())
+            .as(STATUS_CODE_MATCH)
+            .isEqualTo(HttpStatus.NO_CONTENT);
+    }
 }

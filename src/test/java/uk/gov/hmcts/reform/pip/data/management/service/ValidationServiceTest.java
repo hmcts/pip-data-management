@@ -332,6 +332,19 @@ class ValidationServiceTest {
     }
 
     @Test
+    void testValidateWithoutErrorsWhenArtefactIsCrimeDailyCauseList() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream("mocks/crown-daily-list/crownDailyList.json")) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            assertDoesNotThrow(
+                () -> validationService.validateBody(text, ListType.CROWN_DAILY_LIST),
+                "Valid crown daily list marked as valid"
+            );
+        }
+    }
+
+    @Test
     void testValidateWithoutErrorsWhenArtefactIsMagsPublicList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream("mocks/magistrates_public_list/magistratesPublicList.json")) {
@@ -363,6 +376,17 @@ class ValidationServiceTest {
 
             assertDoesNotThrow(() -> validationService.validateBody(text, ListType.MAGISTRATES_STANDARD_LIST),
                                "Valid magistrates standard list marked as valid");
+        }
+    }
+
+    @Test
+    void testValidateWithoutErrorWhenArtefactIsIacDailyList() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream("mocks/iac-daily-list/iacDailyList.json")) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            assertDoesNotThrow(() -> validationService.validateBody(text, ListType.IAC_DAILY_LIST),
+                               "Valid iac daily list marked as valid");
         }
     }
 }

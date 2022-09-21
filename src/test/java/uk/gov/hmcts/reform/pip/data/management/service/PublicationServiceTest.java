@@ -30,12 +30,14 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -45,12 +47,13 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.TestConstants.MESSAGES_MATCH;
 
 @ExtendWith(MockitoExtension.class)
-@SuppressWarnings({"PMD.ExcessiveImports",
-    "PMD.TooManyMethods", "PMD.TooManyFields", "PMD.ExcessiveClassLength", "PMD.LawOfDemeter"})
+@SuppressWarnings({"PMD.ExcessiveImports", "PMD.TooManyMethods", "PMD.TooManyFields", "PMD.ExcessiveClassLength",
+    "PMD.LawOfDemeter", "PMD.CyclomaticComplexity"})
 class PublicationServiceTest {
 
     @Mock
@@ -124,6 +127,17 @@ class PublicationServiceTest {
     private Artefact noMatchArtefact;
 
     private Location location;
+    private static final List<String> EXAMPLE_CSV =
+        List.of(
+            "0beac960-68a3-41db-9f51-8c71826eaf30,2022-07-25 14:45:18.836,2022-09-29 14:45:18.836,BI_LINGUAL,"
+                + "MANUAL_UPLOAD,PUBLIC,MANUAL_UPLOAD,LIST,2022-06-29 00:00:00.0,1823,FAMILY_DAILY_CAUSE_LIST,"
+                + "{\"cases\":[{\"caseNumber\":\"12341234\",\"caseName\":\"This is a case name\",\"caseUrn\":null}]}",
+            "165ca91d-1e58-412a-80f5-1e5475a093e4,2022-06-29 14:45:18.836,2022-09-29 14:45:18.836,WELSH,"
+                + "MANUAL_UPLOAD,PUBLIC,MANUAL_UPLOAD,GENERAL_PUBLICATION,2022-06-29 00:00:00.0,1815,SJP_PUBLIC_LIST,"
+                + "{\"location-id\":[\"1815\"]}",
+            "10238a0f-d398-4356-9af4-a4dbbb17d455,2022-06-29 14:45:18.836,2022-09-29 14:45:18.836,ENGLISH,"
+                + "MANUAL_UPLOAD,PUBLIC,MANUAL_UPLOAD,GENERAL_PUBLICATION,2022-06-29 00:00:00.0,1815,SJP_PUBLIC_LIST,{}"
+        );
 
     @BeforeAll
     public static void setupSearchValues() {
@@ -1100,7 +1114,7 @@ class PublicationServiceTest {
         when(artefactRepository.findAllNoMatchArtefacts()).thenReturn(List.of(noMatchArtefact));
         when(azureBlobService.deleteBlob(any())).thenReturn("Success");
         Map<String, String> testMap = new ConcurrentHashMap<>();
-        testMap.put("1234", "provenance");
+        testMap.put(PROVENANCE_ID, PROVENANCE);
         when(publicationServicesService.sendNoMatchArtefactsForReporting(testMap))
             .thenReturn("Success no match artefacts sent");
         lenient().doNothing().when(artefactRepository).deleteAll(List.of(artefact));
@@ -1130,6 +1144,36 @@ class PublicationServiceTest {
     }
 
     @Test
+    void testReportNoMatchArtefacts() {
+        when(artefactRepository.findAllNoMatchArtefacts()).thenReturn(List.of(noMatchArtefact));
+        publicationService.reportNoMatchArtefacts();
+        verify(publicationServicesService).sendNoMatchArtefactsForReporting(Map.of(PROVENANCE_ID, PROVENANCE));
+    }
+
+    @Test
+    void testReportMatchArtefactsWhenArtefactsNotFound() {
+        when(artefactRepository.findAllNoMatchArtefacts()).thenReturn(Collections.emptyList());
+        publicationService.reportNoMatchArtefacts();
+        verifyNoInteractions(publicationServicesService);
+    }
+
+    @Test
+    void testDeleteExpiredArtefacts() {
+        when(artefactRepository.findOutdatedArtefacts(LocalDate.now())).thenReturn(List.of(artefactWithPayloadUrl));
+        publicationService.deleteExpiredArtefacts();
+        verify(azureBlobService).deleteBlob(PAYLOAD_STRIPPED);
+        verify(artefactRepository).deleteAll(List.of(artefactWithPayloadUrl));
+    }
+
+    @Test
+    void testDeleteExpiredArtefactsWhenArtefactsNotFound() {
+        when(artefactRepository.findOutdatedArtefacts(LocalDate.now())).thenReturn(Collections.emptyList());
+        publicationService.deleteExpiredArtefacts();
+        verifyNoInteractions(azureBlobService);
+        verify(artefactRepository).deleteAll(Collections.emptyList());
+    }
+
+    @Test
     void testGetLocationTypeVenue() {
         List<ListType> venueListTypes = new ArrayList<>();
         venueListTypes.add(ListType.CROWN_DAILY_LIST);
@@ -1139,6 +1183,7 @@ class PublicationServiceTest {
         venueListTypes.add(ListType.MAGISTRATES_STANDARD_LIST);
         venueListTypes.add(ListType.CIVIL_DAILY_CAUSE_LIST);
         venueListTypes.add(ListType.FAMILY_DAILY_CAUSE_LIST);
+        venueListTypes.add(ListType.IAC_DAILY_LIST);
 
         venueListTypes.forEach(listType ->
                                    assertEquals(LocationType.VENUE,
@@ -1180,4 +1225,25 @@ class PublicationServiceTest {
                      "Email was not masked correctly");
     }
 
+    @Test
+    void testMiService() {
+        when(artefactRepository.getMiData()).thenReturn(EXAMPLE_CSV);
+        String testString = publicationService.getMiData();
+        String[] splitLineString = testString.split("\r\n|\r|\n");
+        long countLine1 = splitLineString[0].chars().filter(character -> character == ',').count();
+        assertThat(testString)
+            .as("Header row missing")
+            .contains("source_artefact_id");
+        assertThat(splitLineString)
+            .as("Only one line exists - data must be missing, as only headers are printing")
+            .hasSizeGreaterThanOrEqualTo(2);
+        assertThat(splitLineString)
+            .as("Wrong comma count compared to header row!")
+            .allSatisfy(
+                e -> assertThat(e.chars().filter(character -> character == ',').count()).isEqualTo(countLine1));
+        assertThat(testString)
+            .as("Json parsing has probably failed")
+            .contains("caseNumber")
+            .hasLineCount(4);
+    }
 }

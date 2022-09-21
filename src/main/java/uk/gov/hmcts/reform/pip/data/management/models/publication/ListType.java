@@ -10,6 +10,7 @@ import uk.gov.hmcts.reform.pip.data.management.models.location.LocationType;
 public enum ListType {
     SJP_PUBLIC_LIST(LocationType.NATIONAL),
     SJP_PRESS_LIST(LocationType.NATIONAL),
+    SJP_PRESS_REGISTER(LocationType.NATIONAL),
     CROWN_DAILY_LIST(LocationType.VENUE),
     CROWN_FIRM_LIST(LocationType.VENUE),
     CROWN_WARNED_LIST(LocationType.VENUE),
@@ -19,7 +20,8 @@ public enum ListType {
     FAMILY_DAILY_CAUSE_LIST(LocationType.VENUE),
     CIVIL_AND_FAMILY_DAILY_CAUSE_LIST(LocationType.VENUE),
     COP_DAILY_CAUSE_LIST(LocationType.VENUE),
-    SSCS_DAILY_LIST(LocationType.REGION);
+    SSCS_DAILY_LIST(LocationType.REGION),
+    IAC_DAILY_LIST(LocationType.VENUE);
 
     /**
      * Flag that represents the Location Type level the list displays at.
