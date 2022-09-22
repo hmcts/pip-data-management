@@ -23,6 +23,7 @@ public enum ListType {
     ET_DAILY_LIST(LocationType.OWNING_HEARING_LOCATION),
     SSCS_DAILY_LIST(LocationType.REGION),
     IAC_DAILY_LIST(LocationType.VENUE),
+    CARE_STANDARDS_LIST(LocationType.NATIONAL),
     PRIMARY_HEALTH_LIST(LocationType.NATIONAL);
 
     /**

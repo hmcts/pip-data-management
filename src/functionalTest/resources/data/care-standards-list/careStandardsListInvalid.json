@@ -1,0 +1,50 @@
+{
+  "document": {
+  },
+  "locationDetails": {
+    "jurisdiction": "Family court"
+  },
+  "courtLists": [
+    {
+      "courtHouse": {
+        "courtHouseName": "PRESTON",
+        "courtHouseContact": {
+          "venueTelephone": "01234 123 123",
+          "venueEmail": "a@b.com"
+        },
+        "courtHouseAddress": {
+          "line": [
+            "Address Line 1"
+          ],
+          "postCode": "AA1 AA1"
+        },
+        "courtRoom": [
+          {
+            "session": [
+              {
+                "sittings": [
+                  {
+                    "sittingStart": "2022-09-10T12:30:52.123Z",
+                    "sittingEnd": "2022-11-13T17:30:52.123Z",
+                    "hearing": [
+                      {
+                        "hearingType": "mda",
+                        "case": [
+                          {
+                            "caseName": "A Vs B",
+                            "caseNumber": "45684548",
+                            "caseSequenceIndicator": "[2 of 3]"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
