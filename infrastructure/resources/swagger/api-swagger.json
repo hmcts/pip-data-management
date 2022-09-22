@@ -132,7 +132,8 @@
                 "SJP_PUBLIC_LIST",
                 "SSCS_DAILY_LIST",
                 "ET_DAILY_LIST",
-                "IAC_DAILY_LIST"
+                "IAC_DAILY_LIST",
+                "CARE_STANDARDS_LIST"
               ]
             }
           },

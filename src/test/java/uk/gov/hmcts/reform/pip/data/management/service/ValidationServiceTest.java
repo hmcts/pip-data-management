@@ -389,4 +389,15 @@ class ValidationServiceTest {
                                "Valid iac daily list marked as valid");
         }
     }
+
+    @Test
+    void testValidateWithoutErrorWhenArtefactIsCareStandardsList() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream("mocks/care-standards-list/careStandardsList.json")) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            assertDoesNotThrow(() -> validationService.validateBody(text, ListType.CARE_STANDARDS_LIST),
+                               "Valid care standards list marked as valid");
+        }
+    }
 }
