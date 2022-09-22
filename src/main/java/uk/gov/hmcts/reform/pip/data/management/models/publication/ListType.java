@@ -21,6 +21,7 @@ public enum ListType {
     CIVIL_AND_FAMILY_DAILY_CAUSE_LIST(LocationType.VENUE),
     COP_DAILY_CAUSE_LIST(LocationType.VENUE),
     SSCS_DAILY_LIST(LocationType.REGION),
+    IAC_DAILY_LIST(LocationType.VENUE),
     CARE_STANDARDS_LIST(LocationType.NATIONAL);
 
     /**
