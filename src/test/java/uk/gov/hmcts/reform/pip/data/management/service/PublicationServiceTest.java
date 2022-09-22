@@ -1197,7 +1197,8 @@ class PublicationServiceTest {
         nationalListTypes.add(ListType.SJP_PRESS_LIST);
         nationalListTypes.add(ListType.SJP_PUBLIC_LIST);
         nationalListTypes.add(ListType.CARE_STANDARDS_LIST);
-
+        nationalListTypes.add(ListType.PRIMARY_HEALTH_LIST);
+        
         nationalListTypes.forEach(listType ->
                                       assertEquals(LocationType.NATIONAL,
                                                    publicationService.getLocationType(listType),
