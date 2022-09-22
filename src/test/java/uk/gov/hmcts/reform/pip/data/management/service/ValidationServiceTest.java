@@ -248,7 +248,7 @@ class ValidationServiceTest {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream("mocks/jsonPayload.json")) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
-            assertDoesNotThrow(() -> validationService.validateBody(text, ListType.CROWN_FIRM_LIST),
+            assertDoesNotThrow(() -> validationService.validateBody(text, ListType.CROWN_WARNED_LIST),
                                "Valid master schema marked as invalid");
         }
     }
@@ -356,6 +356,19 @@ class ValidationServiceTest {
     }
 
     @Test
+    void testValidateWithoutErrorsWhenArtefactIsCrownFirmList() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream("mocks/crown_firm_list/crownFirmList.json")) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            assertDoesNotThrow(
+                () -> validationService.validateBody(text, ListType.CROWN_FIRM_LIST),
+                "Valid crown firm list marked as valid"
+            );
+        }
+    }
+
+    @Test
     void testValidateWithoutErrorWhenArtefactIsMagistratesStandardList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream("mocks/magistrates-standard-list/magistratesStandardList.json")) {
@@ -363,6 +376,17 @@ class ValidationServiceTest {
 
             assertDoesNotThrow(() -> validationService.validateBody(text, ListType.MAGISTRATES_STANDARD_LIST),
                                "Valid magistrates standard list marked as valid");
+        }
+    }
+
+    @Test
+    void testValidateWithoutErrorWhenArtefactIsIacDailyList() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream("mocks/iac-daily-list/iacDailyList.json")) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            assertDoesNotThrow(() -> validationService.validateBody(text, ListType.IAC_DAILY_LIST),
+                               "Valid iac daily list marked as valid");
         }
     }
 
