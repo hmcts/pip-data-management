@@ -109,6 +109,8 @@ validations:
     ET_FORTNIGHTLY_PRESS_LIST: "schemas/et_fortnightly_press_list.json"
     ET_DAILY_LIST: "schemas/et_daily_list.json"
     IAC_DAILY_LIST: "schemas/iac_daily_list.json"
+    CARE_STANDARDS_LIST: "schemas/care_standards_list.json"
+    PRIMARY_HEALTH_LIST: "schemas/primary_health_list.json"
 
 cron:
   daily-start-of-day: "0 0 0 * * *"
