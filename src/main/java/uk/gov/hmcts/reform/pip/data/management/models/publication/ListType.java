@@ -20,8 +20,10 @@ public enum ListType {
     FAMILY_DAILY_CAUSE_LIST(LocationType.VENUE),
     CIVIL_AND_FAMILY_DAILY_CAUSE_LIST(LocationType.VENUE),
     COP_DAILY_CAUSE_LIST(LocationType.VENUE),
+    ET_FORTNIGHTLY_PRESS_LIST(LocationType.OWNING_HEARING_LOCATION),
+    ET_DAILY_LIST(LocationType.OWNING_HEARING_LOCATION),
     SSCS_DAILY_LIST(LocationType.REGION),
-    ET_FORTNIGHTLY_PRESS_LIST(LocationType.OWNING_HEARING_LOCATION);
+    IAC_DAILY_LIST(LocationType.VENUE);
 
     /**
      * Flag that represents the Location Type level the list displays at.

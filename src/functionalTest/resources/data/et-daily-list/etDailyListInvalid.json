@@ -1,0 +1,99 @@
+{
+  "document": {
+  },
+  "venue": {
+    "venueContact": {
+      "venueEmail": "test@email.com",
+      "venueTelephone": "123412341234"
+    }
+  },
+  "courtLists": [
+    {
+      "courtHouse": {
+        "courtRoom": [
+          {
+            "session": [
+              {
+                "sittings": [
+                  {
+                    "sittingStart": "20-02-2020T20:00.001Z",
+                    "sittingEnd": "20-02-2020T20:00.001Z",
+                    "hearing": [
+                      {
+                        "case": [
+                          {
+                            "caseSequenceIndicator": "[2 of 3]",
+                            "caseType": "This is a case type"
+                          }
+                        ],
+                        "party": [
+                          {
+                            "partyRole": "CLAIMANT_PETITIONER",
+                            "individualDetails": {
+                              "title": "This is a title",
+                              "individualForenames": "This is a forename",
+                              "individualMiddleName": "This is a middle name",
+                              "individualSurname": "This is a surname"
+                            }
+                          },
+                          {
+                            "partyRole": "CLAIMANT_PETITIONER_REPRESENTATIVE",
+                            "individualDetails": {
+                              "title": "This is a title",
+                              "individualForenames": "This is a forename",
+                              "individualMiddleName": "This is a middle name",
+                              "individualSurname": "This is a surname"
+                            },
+                            "friendlyRoleName": "This is a role name"
+                          },
+                          {
+                            "partyRole": "RESPONDENT",
+                            "individualDetails": {
+                              "title": "This is a title",
+                              "individualForenames": "This is a forename",
+                              "individualMiddleName": "This is a middle name",
+                              "individualSurname": "This is a surname"
+                            },
+                            "friendlyRoleName": "This is a role name"
+                          },
+                          {
+                            "partyRole": "RESPONDENT_REPRESENTATIVE",
+                            "individualDetails": {
+                              "title": "This is a title",
+                              "individualForenames": "This is a forename",
+                              "individualMiddleName": "This is a middle name",
+                              "individualSurname": "This is a surname"
+                            },
+                            "friendlyRoleName": "This is a role name"
+                          }
+                        ]
+                      }
+                    ],
+                    "channel": [
+                      "This is a sitting channel"
+                    ]
+                  }
+                ],
+                "sessionChannel": [
+                  "This is a session channel"
+                ]
+              }
+            ]
+          }
+        ],
+        "courtHouseAddress": {
+          "town": "This is a town",
+          "postCode": "AA1 AA1",
+          "line": [
+            "Line 1",
+            "Line 2"
+          ],
+          "county": "This is a county"
+        }
+      }
+    }
+  ],
+  "locationDetails": {
+    "jurisdiction": "This is a jurisdiction"
+  }
+}

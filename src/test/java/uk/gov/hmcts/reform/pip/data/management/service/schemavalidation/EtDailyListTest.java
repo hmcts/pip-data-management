@@ -28,19 +28,18 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 @ActiveProfiles(profiles = "test")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
-class EtFortnightlyPressList {
+class EtDailyListTest {
 
     @Autowired
     ValidationService validationService;
 
-    private static final String ET_FORTNIGHTLY_PRESS_LIST_VALID_JSON =
-        "mocks/et-fortnightly-press-list/etFortnightlyPressList.json";
+    private static final String ET_DAILY_LIST_VALID = "mocks/et-daily-list/etDailyList.json";
     ObjectMapper mapper = new ObjectMapper();
 
     @Test
     void testValidPayloadPasses() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(ET_FORTNIGHTLY_PRESS_LIST_VALID_JSON)) {
+            .getResourceAsStream(ET_DAILY_LIST_VALID)) {
             assert jsonInput != null;
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
             assertDoesNotThrow(() -> validationService.validateBody(text, ListType.ET_DAILY_LIST));
@@ -49,27 +48,17 @@ class EtFortnightlyPressList {
 
     @ParameterizedTest
     @ValueSource(strings = {
-        "document",
-        "document.publicationDate",
-        "courtLists",
         "venue",
         "venue.venueName",
-        "courtLists.0.courtHouse",
         "courtLists.0.courtHouse.courtHouseName",
-        "courtLists.0.courtHouse.courtRoom",
-        "courtLists.0.courtHouse.courtRoom.0.session",
-        "courtLists.0.courtHouse.courtRoom.0.session.0.sittings",
         "courtLists.0.courtHouse.courtRoom.0.session.0.sittings.0.sittingStart",
         "courtLists.0.courtHouse.courtRoom.0.session.0.sittings.0.sittingEnd",
-        "courtLists.0.courtHouse.courtRoom.0.session.0.sittings.0.hearing",
-        "courtLists.0.courtHouse.courtRoom.0.session.0.sittings.0.hearing.0.case",
         "courtLists.0.courtHouse.courtRoom.0.session.0.sittings.0.hearing.0.case.0.caseNumber",
         "courtLists.0.courtHouse.courtRoom.0.session.0.sittings.0.hearing.0.hearingType",
-        "courtLists.0.courtHouse.courtRoom.0.session.0.sittings.0.hearing.0.party.0.partyRole",
-    })
+        })
     void testRequiredFieldsAreCaught(String jsonpath) throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(ET_FORTNIGHTLY_PRESS_LIST_VALID_JSON)) {
+            .getResourceAsStream(ET_DAILY_LIST_VALID)) {
             assert jsonInput != null;
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
             JsonNode topLevelNode = mapper.readTree(text);
