@@ -35,6 +35,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 @ActiveProfiles(profiles = "test")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
+@SuppressWarnings("PMD.TooManyMethods")
 class ValidationServiceTest {
 
     @Autowired
