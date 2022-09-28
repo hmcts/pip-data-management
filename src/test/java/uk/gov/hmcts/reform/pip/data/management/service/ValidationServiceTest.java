@@ -249,7 +249,7 @@ class ValidationServiceTest {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream("mocks/jsonPayload.json")) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
-            assertDoesNotThrow(() -> validationService.validateBody(text, ListType.CROWN_WARNED_LIST),
+            assertDoesNotThrow(() -> validationService.validateBody(text, ListType.SJP_PRESS_REGISTER),
                                "Valid master schema marked as invalid");
         }
     }
@@ -333,7 +333,7 @@ class ValidationServiceTest {
     }
 
     @Test
-    void testValidateWithoutErrorsWhenArtefactIsCrimeDailyCauseList() throws IOException {
+    void testValidateWithoutErrorsWhenArtefactIsCrownDailyCauseList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream("mocks/crown-daily-list/crownDailyList.json")) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
@@ -342,6 +342,17 @@ class ValidationServiceTest {
                 () -> validationService.validateBody(text, ListType.CROWN_DAILY_LIST),
                 "Valid crown daily list marked as valid"
             );
+        }
+    }
+
+    @Test
+    void testValidateWithoutErrorWhenArtefactIsCrownWarnedList() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream("mocks/crown-warned-list/crownWarnedList.json")) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            assertDoesNotThrow(() -> validationService.validateBody(text, ListType.CROWN_WARNED_LIST),
+                               "Valid crown warned list marked as valid");
         }
     }
 
