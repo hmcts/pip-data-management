@@ -1,9 +1,13 @@
 {
   "document": {
-    "publicationDate": "20-02-2022T20:00.001Z"
+    "publicationDate": "20-02-2022T20:00:00.001Z"
   },
   "venue": {
-    "venueName": "This is the venue name"
+    "venueName": "This is the venue name",
+    "venueContact": {
+      "venueTelephone": "01234 123 123",
+      "venueEmail": "a@b.com"
+    }
   },
   "locationDetails": {
     "jurisdiction": "Tribunal"
@@ -12,11 +16,6 @@
     {
       "courtListName": "",
       "courtHouse": {
-        "courtHouseName": "This is the site name",
-        "courtHouseContact": {
-          "venueTelephone": "01234 123 123",
-          "venueEmail": "a@b.com"
-        },
         "courtRoom": [
           {
             "courtRoomName": "1",
@@ -39,8 +38,8 @@
                 ],
                 "sittings": [
                   {
-                    "sittingStart": "20-02-2022T20:00.001Z",
-                    "sittingEnd": "20-02-2022T20:00.001Z",
+                    "sittingStart": "20-02-2022T20:00:00.001Z",
+                    "sittingEnd": "20-02-2022T22:00:00.001Z",
                     "hearing": [
                       {
                         "hearingType": "Directions",
