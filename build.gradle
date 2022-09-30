@@ -176,7 +176,7 @@ dependencies {
   implementation 'org.springframework.boot:spring-boot-starter-webflux'
   implementation("com.squareup.okhttp3:okhttp:4.9.3")
 
-  // Force upgrade snakeyaml version for CVE-2022-25857
+  // Force upgrade snakeyaml version for CVE-2022-38752
   implementation( group: 'org.yaml', name: 'snakeyaml').version {
     strictly("1.33")
   }
