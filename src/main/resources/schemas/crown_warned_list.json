@@ -378,6 +378,28 @@
                                                   "pattern": "^.*$"
                                                 }
                                               }
+                                            },
+                                            "organisationDetails": {
+                                              "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items/organisationDetails",
+                                              "title": "Organisation Details",
+                                              "description": "Organisation Details",
+                                              "type": "object",
+                                              "required": [
+                                                "organisationName"
+                                              ],
+                                              "properties": {
+                                                "organisationName": {
+                                                  "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items/organisationDetails/organisationName",
+                                                  "description": "Party name of organisation",
+                                                  "title": "Organisation Name",
+                                                  "type": "string",
+                                                  "examples": [
+                                                    "A & B Solicitors"
+                                                  ],
+                                                  "default": "",
+                                                  "pattern": "^.*$"
+                                                }
+                                              }
                                             }
                                           }
                                         }

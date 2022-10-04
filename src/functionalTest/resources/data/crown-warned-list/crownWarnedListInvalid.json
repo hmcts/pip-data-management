@@ -42,12 +42,24 @@
                         ],
                         "party": [
                           {
-                            "partyRole": "PROSECUTING_AUTHORITY",
+                            "partyRole": "DEFENDANT",
                             "individualDetails": {
                               "title": "Title",
                               "individualForenames": "Forenames",
                               "individualMiddleName": "MidleName",
                               "individualSurname": "Surname"
+                            }
+                          },
+                          {
+                            "partyRole": "DEFENDANT_REPRESENTATIVE",
+                            "organisationDetails": {
+                              "organisationName": "OrganisationName"
+                            }
+                          },
+                          {
+                            "partyRole": "PROSECUTING_AUTHORITY",
+                            "organisationDetails": {
+                              "organisationName": "OrganisationName2"
                             }
                           }
                         ]
