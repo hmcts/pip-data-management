@@ -161,22 +161,21 @@ class CivilDailyCauseListTest {
         }
     }
 
-    //TODO: This block will be added back in once testing is done
-    //    @Test
-    //    void testValidateWithErrorsWhenPostCodeMissingInCivilDailyCauseList() throws IOException {
-    //        try (InputStream jsonInput = this.getClass().getClassLoader()
-    //            .getResourceAsStream(DAILY_CIVIL_CAUSE_LIST_VALID_JSON)) {
-    //            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
-    //
-    //            ObjectMapper mapper = new ObjectMapper();
-    //            JsonNode node = mapper.readValue(text, JsonNode.class);
-    //            ((ObjectNode) node.get(VENUE_SCHEMA).get(VENUE_ADDRESS_SCHEMA)).remove("postCode");
-    //
-    //            assertThrows(PayloadValidationException.class, () ->
-    //                             validationService.validateBody(node.toString(), ListType.CIVIL_DAILY_CAUSE_LIST),
-    //                         DAILY_CIVIL_CAUSE_LIST_INVALID_MESSAGE);
-    //        }
-    //    }
+    @Test
+    void testValidateWithErrorsWhenPostCodeMissingInCivilDailyCauseList() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream(DAILY_CIVIL_CAUSE_LIST_VALID_JSON)) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode node = mapper.readValue(text, JsonNode.class);
+            ((ObjectNode) node.get(VENUE_SCHEMA).get(VENUE_ADDRESS_SCHEMA)).remove("postCode");
+
+            assertThrows(PayloadValidationException.class, () ->
+                             validationService.validateBody(node.toString(), ListType.CIVIL_DAILY_CAUSE_LIST),
+                         DAILY_CIVIL_CAUSE_LIST_INVALID_MESSAGE);
+        }
+    }
 
     @Test
     void testValidateWithErrorsWhenVenueContactMissingInCivilDailyCauseList() throws IOException {
