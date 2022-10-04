@@ -384,9 +384,6 @@
                                               "title": "Organisation Details",
                                               "description": "Organisation Details",
                                               "type": "object",
-                                              "required": [
-                                                "organisationName"
-                                              ],
                                               "properties": {
                                                 "organisationName": {
                                                   "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items/organisationDetails/organisationName",
