@@ -116,6 +116,23 @@ class IacDailyListTest {
     }
 
     @Test
+    void testValidateWithErrorsWhenVenueContactMissingInIacDailyList() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream(IAC_DAILY_LIST_VALID_JSON)) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode node = mapper.readValue(text, JsonNode.class);
+            ((ObjectNode) node.get("venue")).remove("venueContact");
+
+            assertThrows(PayloadValidationException.class, () ->
+                             validationService.validateBody(node.toString(), ListType.IAC_DAILY_LIST),
+                         IAC_DAILY_LIST_INVALID_MESSAGE
+            );
+        }
+    }
+
+    @Test
     void testValidateWithErrorsWhenCourtListMissingInIacDailyList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(IAC_DAILY_LIST_VALID_JSON)) {
@@ -156,23 +173,6 @@ class IacDailyListTest {
             ObjectMapper mapper = new ObjectMapper();
             JsonNode node = mapper.readValue(text, JsonNode.class);
             ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0)).remove(COURT_HOUSE_SCHEMA);
-
-            assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(node.toString(), ListType.IAC_DAILY_LIST),
-                         IAC_DAILY_LIST_INVALID_MESSAGE
-            );
-        }
-    }
-
-    @Test
-    void testValidateWithErrorsWhenCourtHouseNameMissingInIacDailyList() throws IOException {
-        try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(IAC_DAILY_LIST_VALID_JSON)) {
-            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
-
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode node = mapper.readValue(text, JsonNode.class);
-            ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0).get(COURT_HOUSE_SCHEMA)).remove("courtHouseName");
 
             assertThrows(PayloadValidationException.class, () ->
                              validationService.validateBody(node.toString(), ListType.IAC_DAILY_LIST),
