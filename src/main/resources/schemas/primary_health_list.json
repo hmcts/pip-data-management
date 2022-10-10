@@ -81,7 +81,8 @@
   "type": "object",
   "required": [
     "document",
-    "courtLists"
+    "courtLists",
+    "venue"
   ],
   "properties": {
     "@schemaLocation": {
@@ -110,6 +111,22 @@
           "examples": [
             "2016-09-13T23:30:52.123Z"
           ]
+        }
+      }
+    },
+    "venue": {
+      "$id": "#root/venue",
+      "title": "venue",
+      "type": "object",
+      "required": [
+        "venueContact"
+      ],
+      "properties": {
+        "venueContact": {
+          "$id": "#root/venue/venueContact",
+          "description": "Contact details for the venue",
+          "title": "Venue Contact",
+          "$ref": "#/definitions/venueContact"
         }
       }
     },
@@ -150,8 +167,7 @@
             "type": "object",
             "required": [
               "courtRoom",
-              "courtHouseName",
-              "courtHouseContact"
+              "courtHouseName"
             ],
             "properties": {
               "courtHouseName": {
@@ -164,12 +180,6 @@
                   "PRESTON"
                 ],
                 "pattern": "^.*$"
-              },
-              "courtHouseContact": {
-                "$id": "#root/courtLists/courtList/courtHouse/courtHouseContact",
-                "description": "The contact for the court house",
-                "title": "Court House Contact",
-                "$ref": "#/definitions/venueContact"
               },
               "courtHouseAddress": {
                 "$id": "#root/courtLists/courtList/courtHouse/courtHouseAddress",
@@ -196,9 +206,21 @@
                         "description": "Session associated with the court in the publication",
                         "type": "object",
                         "required": [
-                          "sittings"
+                          "sittings",
+                          "sessionStartTime"
                         ],
                         "properties": {
+                          "sessionStartTime": {
+                            "$id": "#root/courtLists/courtRoom/session/sessionStartTime",
+                            "description": "Session start time rfc3999",
+                            "title": "Session start time",
+                            "type": "string",
+                            "examples": [
+                              "2021-09-09t16:41:07.394"
+                            ],
+                            "default": "",
+                            "pattern": "^.*$"
+                          },
                           "sittings": {
                             "$id": "#root/courtLists/courtList/courtRoom/session/sittings",
                             "title": "Sittings",

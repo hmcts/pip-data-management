@@ -1,6 +1,12 @@
 {
   "document": {
-    "publicationDate": "2016-09-13T23:30:52.123Z"
+    "publicationDate": "2022-10-04T09:00:52.123Z"
+  },
+  "venue": {
+    "venueContact": {
+      "venueTelephone": "01772 844700",
+      "venueEmail": "court1@moj.gov.uk"
+    }
   },
   "locationDetails": {
     "jurisdiction": "Family court"
@@ -9,10 +15,6 @@
     {
       "courtHouse": {
         "courtHouseName": "PRESTON",
-        "courtHouseContact": {
-          "venueTelephone": "01234 123 123",
-          "venueEmail": "a@b.com"
-        },
         "courtHouseAddress": {
           "line": [
             "Address Line 1"
@@ -23,10 +25,11 @@
           {
             "session": [
               {
+                "sessionStartTime": "2022-10-04T09:00:52.123Z",
                 "sittings": [
                   {
-                    "sittingStart": "2022-09-10T12:30:52.123Z",
-                    "sittingEnd": "2022-11-13T17:30:52.123Z",
+                    "sittingStart": "2022-10-05T11:00:52.123Z",
+                    "sittingEnd": "2022-10-05T11:30:52.123Z",
                     "hearing": [
                       {
                         "hearingType": "mda",
