@@ -402,7 +402,6 @@ public class PublicationController {
         @ApiResponse(code = 403, message = UNAUTHORIZED_DESCRIPTION)
     })
     @ApiOperation("Report artefacts which do not match any location")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     @PostMapping("/no-match/reporting")
     @IsAdmin
     public ResponseEntity<Void> reportNoMatchArtefacts() {
