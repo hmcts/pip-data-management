@@ -116,7 +116,7 @@ public class PublicationController {
     public ResponseEntity<Artefact> uploadPublication(
         @RequestHeader(PublicationConfiguration.PROVENANCE_HEADER) String provenance,
         @RequestHeader(value = PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, required = false)
-            String sourceArtefactId,
+        String sourceArtefactId,
         @RequestHeader(PublicationConfiguration.TYPE_HEADER) ArtefactType type,
         @RequestHeader(value = PublicationConfiguration.SENSITIVITY_HEADER, required = false) Sensitivity sensitivity,
         @RequestHeader(PublicationConfiguration.LANGUAGE_HEADER) Language language,
@@ -189,7 +189,7 @@ public class PublicationController {
     public ResponseEntity<Artefact> uploadPublication(
         @RequestHeader(PublicationConfiguration.PROVENANCE_HEADER) String provenance,
         @RequestHeader(value = PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, required = false)
-            String sourceArtefactId,
+        String sourceArtefactId,
         @RequestHeader(PublicationConfiguration.TYPE_HEADER) ArtefactType type,
         @RequestHeader(value = PublicationConfiguration.SENSITIVITY_HEADER, required = false) Sensitivity sensitivity,
         @RequestHeader(PublicationConfiguration.LANGUAGE_HEADER) Language language,
@@ -268,7 +268,7 @@ public class PublicationController {
     @IsAdmin
     public ResponseEntity<List<Artefact>> getAllRelevantArtefactsBySearchValue(
         @PathVariable CaseSearchTerm searchTerm, @PathVariable String searchValue,
-        @RequestHeader(value = USER_ID_HEADER,  required = false) UUID userId) {
+        @RequestHeader(value = USER_ID_HEADER, required = false) UUID userId) {
         return ResponseEntity.ok(publicationService.findAllBySearch(searchTerm, searchValue, userId));
     }
 
@@ -285,8 +285,8 @@ public class PublicationController {
     @IsAdmin
     public ResponseEntity<Artefact> getArtefactMetadata(
         @PathVariable UUID artefactId, @RequestHeader(value = USER_ID_HEADER, required = false) UUID userId,
-                                       @RequestHeader(value = ADMIN_HEADER, defaultValue = DEFAULT_ADMIN_VALUE,
-                                           required = false) Boolean isAdmin) {
+        @RequestHeader(value = ADMIN_HEADER, defaultValue = DEFAULT_ADMIN_VALUE,
+            required = false) Boolean isAdmin) {
         return ResponseEntity.ok(isAdmin ? publicationService.getMetadataByArtefactId(artefactId) :
                                      publicationService.getMetadataByArtefactId(artefactId, userId));
     }
@@ -354,7 +354,7 @@ public class PublicationController {
     @DeleteMapping("/{artefactId}")
     @IsAdmin
     public ResponseEntity<String> deleteArtefact(@RequestHeader("x-issuer-id") String issuerId,
-        @PathVariable String artefactId) {
+                                                 @PathVariable String artefactId) {
         publicationService.deleteArtefactById(artefactId, issuerId);
         return ResponseEntity.ok("Successfully deleted artefact: " + artefactId);
     }
@@ -417,7 +417,9 @@ public class PublicationController {
     @ApiOperation("Return a count of artefacts per location")
     @GetMapping("/count/artefact-by-location")
     @IsAdmin
-    public ResponseEntity<String> countByLocation() {return ResponseEntity.ok(publicationService.countArtefactsByLocation());}
+    public ResponseEntity<String> countByLocation() {
+        return ResponseEntity.ok(publicationService.countArtefactsByLocation());
+    }
 
     @ApiResponses({
         @ApiResponse(code = 204, message = NO_CONTENT_DESCRIPTION),
