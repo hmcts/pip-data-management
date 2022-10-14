@@ -445,7 +445,7 @@ public class PublicationService {
     }
 
     /**
-     * Endpoint to return count of artefacts in a given location
+     * Endpoint to return count of artefacts in a given location.
      * @return essentially a csv of location id & count
      */
     public String countArtefactsByLocation() {
