@@ -402,7 +402,6 @@ public class PublicationController {
         @ApiResponse(code = 403, message = UNAUTHORIZED_DESCRIPTION)
     })
     @ApiOperation("Report artefacts which do not match any location")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     @PostMapping("/no-match/reporting")
     @IsAdmin
     public ResponseEntity<Void> reportNoMatchArtefacts() {
@@ -415,7 +414,8 @@ public class PublicationController {
         @ApiResponse(code = 403, message = UNAUTHORIZED_DESCRIPTION)
     })
     @ApiOperation("Return a count of artefacts per location")
-    @GetMapping("/count/artefact-by-location")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @GetMapping("/count-by-location")
     @IsAdmin
     public ResponseEntity<String> countByLocation() {return ResponseEntity.ok(publicationService.countArtefactsByLocation());}
 
