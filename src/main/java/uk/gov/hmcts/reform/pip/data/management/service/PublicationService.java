@@ -444,16 +444,12 @@ public class PublicationService {
         return emailToMask;
     }
 
-    /**
-     * Endpoint to return count of artefacts in a given location
-     * @return essentially a csv of location id & count
-     */
     public String countArtefactsByLocation() {
         List<String> returnedData = artefactRepository.countArtefactsByLocation();
         StringBuilder builder = new StringBuilder(150);
-        builder.append("location,count\n");
+        builder.append("location, count\n");
         for (String s : returnedData) {
-            builder.append(s).append('\n');
+            builder.append(s);
         }
         return builder.toString();
     }
