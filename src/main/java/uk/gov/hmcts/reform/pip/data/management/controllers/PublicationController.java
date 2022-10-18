@@ -34,6 +34,7 @@ import uk.gov.hmcts.reform.pip.data.management.models.publication.HeaderGroup;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Language;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ListType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Sensitivity;
+import uk.gov.hmcts.reform.pip.data.management.service.ChannelManagementService;
 import uk.gov.hmcts.reform.pip.data.management.service.PublicationService;
 import uk.gov.hmcts.reform.pip.data.management.service.ValidationService;
 import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
@@ -74,6 +75,8 @@ public class PublicationController {
     @Autowired
     private final ValidationService validationService;
 
+    private final ChannelManagementService channelManagementService;
+
     private static final String DEFAULT_ADMIN_VALUE = "false";
 
     /**
@@ -82,9 +85,11 @@ public class PublicationController {
      * @param publicationService The PublicationService that contains the business logic to handle publications.
      */
     @Autowired
-    public PublicationController(PublicationService publicationService, ValidationService validationService) {
+    public PublicationController(PublicationService publicationService, ValidationService validationService,
+                                 ChannelManagementService channelManagementService) {
         this.publicationService = publicationService;
         this.validationService = validationService;
+        this.channelManagementService = channelManagementService;
     }
 
     /**
@@ -153,6 +158,8 @@ public class PublicationController {
 
         Artefact createdItem = publicationService
             .createPublication(artefact, payload);
+
+        channelManagementService.requestFileGeneration(createdItem.getArtefactId());
 
         logManualUpload(publicationService.maskEmail(issuerEmail), createdItem.getArtefactId().toString());
 
