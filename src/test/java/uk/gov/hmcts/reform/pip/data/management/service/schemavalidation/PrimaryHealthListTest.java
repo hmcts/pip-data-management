@@ -67,6 +67,40 @@ class PrimaryHealthListTest {
     }
 
     @Test
+    void testValidateWithErrorsWhenVenueMissingInPrimaryHealthList() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream(PRIMARY_HEALTH_LIST_VALID_JSON)) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            JsonNode node = getJsonNode(text);
+            ((ObjectNode) node).remove("venue");
+
+            assertThrows(PayloadValidationException.class, () ->
+                             validationService.validateBody(node.toString(),
+                                                            ListType.PRIMARY_HEALTH_LIST),
+                         PRIMARY_HEALTH_LIST_INVALID_MESSAGE
+            );
+        }
+    }
+
+    @Test
+    void testValidateWithErrorsWhenVenueContactMissingInPrimaryHealthList() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream(PRIMARY_HEALTH_LIST_VALID_JSON)) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            JsonNode node = getJsonNode(text);
+            ((ObjectNode) node.get("venue")).remove("venueContact");
+
+            assertThrows(PayloadValidationException.class, () ->
+                             validationService.validateBody(node.toString(),
+                                                            ListType.PRIMARY_HEALTH_LIST),
+                         PRIMARY_HEALTH_LIST_INVALID_MESSAGE
+            );
+        }
+    }
+
+    @Test
     void testValidateWithErrorsWhenCourtListMissingInPrimaryHealthList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(PRIMARY_HEALTH_LIST_VALID_JSON)) {
@@ -157,7 +191,7 @@ class PrimaryHealthListTest {
     }
 
     @Test
-    void testValidateWithErrorsWhenCourtHouseContactMissingInPrimaryHealthList() throws IOException {
+    void testValidateWithErrorsWhenSessionMissingInPrimaryHealthList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(PRIMARY_HEALTH_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
@@ -165,7 +199,7 @@ class PrimaryHealthListTest {
             ObjectMapper mapper = new ObjectMapper();
             JsonNode node = mapper.readValue(text, JsonNode.class);
             ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0)
-                .get(COURT_HOUSE_SCHEMA)).remove("courtHouseContact");
+                .get(COURT_HOUSE_SCHEMA).get(COURT_ROOM_SCHEMA).get(0)).remove(SESSION_SCHEMA);
 
             assertThrows(PayloadValidationException.class, () ->
                              validationService.validateBody(node.toString(),
@@ -176,7 +210,7 @@ class PrimaryHealthListTest {
     }
 
     @Test
-    void testValidateWithErrorsWhenSessionMissingInPrimaryHealthList() throws IOException {
+    void testValidateWithErrorsWhenSessionStartTimeMissingInPrimaryHealthList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(PRIMARY_HEALTH_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
@@ -184,7 +218,8 @@ class PrimaryHealthListTest {
             ObjectMapper mapper = new ObjectMapper();
             JsonNode node = mapper.readValue(text, JsonNode.class);
             ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0)
-                .get(COURT_HOUSE_SCHEMA).get(COURT_ROOM_SCHEMA).get(0)).remove(SESSION_SCHEMA);
+                .get(COURT_HOUSE_SCHEMA).get(COURT_ROOM_SCHEMA).get(0)
+                .get(SESSION_SCHEMA).get(0)).remove("sessionStartTime");
 
             assertThrows(PayloadValidationException.class, () ->
                              validationService.validateBody(node.toString(),

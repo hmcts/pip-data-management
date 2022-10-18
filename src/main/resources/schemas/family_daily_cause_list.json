@@ -200,7 +200,7 @@
           "description": "Full venue address",
           "$id": "#root/venue/venueAddress",
           "$ref": "#/definitions/address",
-          "required": ["line"]
+          "required": ["line", "postCode"]
         },
         "venueContact": {
           "$id": "#root/venue/venueContact",
