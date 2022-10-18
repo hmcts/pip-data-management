@@ -411,16 +411,6 @@ public class PublicationController {
     }
 
     @ApiResponses({
-        @ApiResponse(code = 204, message = "Data Management - Artefact count per location - request accepted."),
-        @ApiResponse(code = 403, message = UNAUTHORIZED_DESCRIPTION)
-    })
-    @ApiOperation("Return a count of artefacts per location")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    @GetMapping("/count-by-location")
-    @IsAdmin
-    public ResponseEntity<String> countByLocation() {return ResponseEntity.ok(publicationService.countArtefactsByLocation());}
-
-    @ApiResponses({
         @ApiResponse(code = 204, message = NO_CONTENT_DESCRIPTION),
         @ApiResponse(code = 403, message = UNAUTHORIZED_DESCRIPTION)
     })
