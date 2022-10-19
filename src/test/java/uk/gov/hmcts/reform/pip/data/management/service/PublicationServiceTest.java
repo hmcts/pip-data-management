@@ -76,6 +76,9 @@ class PublicationServiceTest {
     @Mock
     PublicationServicesService publicationServicesService;
 
+    @Mock
+    ChannelManagementService channelManagementService;
+
     @InjectMocks
     PublicationService publicationService;
 
@@ -124,6 +127,8 @@ class PublicationServiceTest {
     private Artefact artefactWithSameDateFromAndTo;
     private Artefact artefactManualUpload;
     private Artefact noMatchArtefact;
+    private Artefact sjpPublicArtefact;
+    private Artefact sjpPressArtefact;
 
     private Location location;
     private static final List<String> EXAMPLE_CSV =
@@ -258,6 +263,32 @@ class PublicationServiceTest {
             .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
             .language(Language.ENGLISH)
             .sensitivity(Sensitivity.PUBLIC)
+            .build();
+
+        sjpPublicArtefact = Artefact.builder()
+            .sourceArtefactId(SOURCE_ARTEFACT_ID)
+            .provenance(PROVENANCE)
+            .locationId(PROVENANCE_ID)
+            .contentDate(START_OF_TODAY_CONTENT_DATE)
+            .listType(ListType.SJP_PUBLIC_LIST)
+            .language(Language.ENGLISH)
+            .sensitivity(Sensitivity.PUBLIC)
+            .displayFrom(LocalDateTime.now().plusDays(1))
+            .displayTo(LocalDateTime.now().plusDays(2))
+            .expiryDate(LocalDateTime.now())
+            .build();
+
+        sjpPressArtefact = Artefact.builder()
+            .sourceArtefactId(SOURCE_ARTEFACT_ID)
+            .provenance(PROVENANCE)
+            .locationId(PROVENANCE_ID)
+            .contentDate(START_OF_TODAY_CONTENT_DATE)
+            .listType(ListType.SJP_PRESS_LIST)
+            .language(Language.ENGLISH)
+            .sensitivity(Sensitivity.PUBLIC)
+            .displayFrom(LocalDateTime.now().plusDays(1))
+            .displayTo(LocalDateTime.now().plusDays(2))
+            .expiryDate(LocalDateTime.now())
             .build();
     }
 
@@ -524,6 +555,30 @@ class PublicationServiceTest {
         Artefact returnedArtefact = publicationService.createPublication(artefact, FILE);
 
         assertEquals(artefactWithIdAndPayloadUrl, returnedArtefact, VALIDATION_ARTEFACT_NOT_MATCH);
+    }
+
+    @Test
+    void testCreationOfNewArtefactWhenListTypeSjpPublic() {
+        when(azureBlobService.createPayload(any(), eq(PAYLOAD))).thenReturn(PAYLOAD_URL);
+        when(artefactRepository.save(sjpPublicArtefact)).thenReturn(sjpPublicArtefact);
+        when(payloadExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
+
+        Artefact returnedArtefact = publicationService.createPublication(sjpPublicArtefact, PAYLOAD);
+
+        assertEquals(LocalDateTime.now().plusDays(7).toLocalDate(), returnedArtefact.getExpiryDate().toLocalDate(),
+                     "Expiry date not set correctly for SJP public list");
+    }
+
+    @Test
+    void testCreationOfNewArtefactWhenListTypeSjpPress() {
+        when(azureBlobService.createPayload(any(), eq(PAYLOAD))).thenReturn(PAYLOAD_URL);
+        when(artefactRepository.save(sjpPressArtefact)).thenReturn(sjpPressArtefact);
+        when(payloadExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
+
+        Artefact returnedArtefact = publicationService.createPublication(sjpPressArtefact, PAYLOAD);
+
+        assertEquals(LocalDateTime.now().plusDays(7).toLocalDate(), returnedArtefact.getExpiryDate().toLocalDate(),
+                     "Expiry date not set correctly for SJP press list");
     }
 
     @Test
@@ -1166,6 +1221,28 @@ class PublicationServiceTest {
     }
 
     @Test
+    void testDeleteExpiredArtefactsSjpPublic() {
+        artefactWithPayloadUrl.setListType(ListType.SJP_PUBLIC_LIST);
+        when(artefactRepository.findOutdatedArtefacts(any())).thenReturn(List.of(artefactWithPayloadUrl));
+        publicationService.deleteExpiredArtefacts();
+        verify(azureBlobService).deleteBlob(PAYLOAD_STRIPPED);
+        verify(azureBlobService).deletePublicationBlob(artefactWithPayloadUrl.getArtefactId() + ".pdf");
+        verify(azureBlobService).deletePublicationBlob(artefactWithPayloadUrl.getArtefactId() + ".xlsx");
+        verify(artefactRepository).deleteAll(List.of(artefactWithPayloadUrl));
+    }
+
+    @Test
+    void testDeleteExpiredArtefactsSjpPress() {
+        artefactWithPayloadUrl.setListType(ListType.SJP_PRESS_LIST);
+        when(artefactRepository.findOutdatedArtefacts(any())).thenReturn(List.of(artefactWithPayloadUrl));
+        publicationService.deleteExpiredArtefacts();
+        verify(azureBlobService).deleteBlob(PAYLOAD_STRIPPED);
+        verify(azureBlobService).deletePublicationBlob(artefactWithPayloadUrl.getArtefactId() + ".pdf");
+        verify(azureBlobService).deletePublicationBlob(artefactWithPayloadUrl.getArtefactId() + ".xlsx");
+        verify(artefactRepository).deleteAll(List.of(artefactWithPayloadUrl));
+    }
+
+    @Test
     void testDeleteExpiredArtefactsWhenArtefactsNotFound() {
         when(artefactRepository.findOutdatedArtefacts(any())).thenReturn(Collections.emptyList());
         publicationService.deleteExpiredArtefacts();
@@ -1259,5 +1336,12 @@ class PublicationServiceTest {
             .as("Json parsing has probably failed")
             .contains("caseNumber")
             .hasLineCount(4);
+    }
+
+    @Test
+    void testProcessCreatedPublication() {
+        publicationService.processCreatedPublication(sjpPublicArtefact);
+        verify(channelManagementService, times(1))
+            .requestFileGeneration(sjpPublicArtefact.getArtefactId());
     }
 }
