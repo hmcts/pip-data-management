@@ -52,7 +52,7 @@ import static uk.gov.hmcts.reform.pip.data.management.helpers.TestConstants.MESS
 
 @ExtendWith(MockitoExtension.class)
 @SuppressWarnings({"PMD.ExcessiveImports", "PMD.TooManyMethods", "PMD.TooManyFields", "PMD.ExcessiveClassLength",
-    "PMD.LawOfDemeter", "PMD.CyclomaticComplexity"})
+    "PMD.LawOfDemeter", "PMD.CyclomaticComplexity", "PMD.ExcessiveMethodLength"})
 class PublicationServiceTest {
 
     @Mock
