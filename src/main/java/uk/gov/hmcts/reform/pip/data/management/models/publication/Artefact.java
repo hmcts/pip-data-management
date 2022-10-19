@@ -112,4 +112,9 @@ public class Artefact {
      */
     private String payload;
 
+    /**
+     * Date / Time of when the artefact will expire.
+     */
+    private LocalDateTime expiryDate;
+
 }

@@ -27,7 +27,6 @@ import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
 import uk.gov.hmcts.reform.pip.data.management.utils.PayloadExtractor;
 
 import java.io.IOException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -1110,9 +1109,10 @@ class PublicationServiceTest {
 
     @Test
     void testRunDailyTasks() throws IOException {
-        when(artefactRepository.findOutdatedArtefacts(LocalDate.now())).thenReturn(List.of(artefactWithPayloadUrl));
+        when(artefactRepository.findOutdatedArtefacts(any())).thenReturn(List.of(artefactWithPayloadUrl));
         when(artefactRepository.findAllNoMatchArtefacts()).thenReturn(List.of(noMatchArtefact));
         when(azureBlobService.deleteBlob(any())).thenReturn("Success");
+        when(azureBlobService.deletePublicationBlob(any())).thenReturn("Success");
         Map<String, String> testMap = new ConcurrentHashMap<>();
         testMap.put(PROVENANCE_ID, PROVENANCE);
         when(publicationServicesService.sendNoMatchArtefactsForReporting(testMap))
@@ -1121,9 +1121,8 @@ class PublicationServiceTest {
         try (LogCaptor logCaptor = LogCaptor.forClass(PublicationService.class)) {
             publicationService.runDailyTasks();
             assertEquals("Success no match artefacts sent", logCaptor.getInfoLogs().get(0), MESSAGES_MATCH);
-            assertEquals(SUCCESS, logCaptor.getInfoLogs().get(1), MESSAGES_MATCH);
-            assertEquals("1 outdated artefacts found and deleted for before " + LocalDate.now(),
-                         logCaptor.getInfoLogs().get(2), MESSAGES_MATCH);
+            assertTrue(logCaptor.getInfoLogs().get(1).contains("1 outdated artefacts found and deleted for before"),
+                       MESSAGES_MATCH);
         } catch (Exception ex) {
             throw new IOException(ex.getMessage());
         }
@@ -1131,11 +1130,11 @@ class PublicationServiceTest {
 
     @Test
     void testRunDailyTasksWithNoBlobsFound() throws IOException {
-        when(artefactRepository.findOutdatedArtefacts(LocalDate.now())).thenReturn(List.of());
+        when(artefactRepository.findOutdatedArtefacts(any())).thenReturn(List.of());
         try (LogCaptor logCaptor = LogCaptor.forClass(PublicationService.class)) {
             publicationService.runDailyTasks();
-            assertEquals("0 outdated artefacts found and deleted for before " + LocalDate.now(),
-                         logCaptor.getInfoLogs().get(0), MESSAGES_MATCH);
+            assertTrue(logCaptor.getInfoLogs().get(0).contains("0 outdated artefacts found and deleted for before"),
+                       MESSAGES_MATCH);
             verify(publicationServicesService, times(0))
                 .sendNoMatchArtefactsForReporting(any());
         } catch (Exception ex) {
@@ -1159,15 +1158,16 @@ class PublicationServiceTest {
 
     @Test
     void testDeleteExpiredArtefacts() {
-        when(artefactRepository.findOutdatedArtefacts(LocalDate.now())).thenReturn(List.of(artefactWithPayloadUrl));
+        when(artefactRepository.findOutdatedArtefacts(any())).thenReturn(List.of(artefactWithPayloadUrl));
         publicationService.deleteExpiredArtefacts();
         verify(azureBlobService).deleteBlob(PAYLOAD_STRIPPED);
+        verify(azureBlobService).deletePublicationBlob(artefactWithPayloadUrl.getArtefactId() + ".pdf");
         verify(artefactRepository).deleteAll(List.of(artefactWithPayloadUrl));
     }
 
     @Test
     void testDeleteExpiredArtefactsWhenArtefactsNotFound() {
-        when(artefactRepository.findOutdatedArtefacts(LocalDate.now())).thenReturn(Collections.emptyList());
+        when(artefactRepository.findOutdatedArtefacts(any())).thenReturn(Collections.emptyList());
         publicationService.deleteExpiredArtefacts();
         verifyNoInteractions(azureBlobService);
         verify(artefactRepository).deleteAll(Collections.emptyList());
@@ -1210,7 +1210,7 @@ class PublicationServiceTest {
         nationalListTypes.add(ListType.SJP_PUBLIC_LIST);
         nationalListTypes.add(ListType.CARE_STANDARDS_LIST);
         nationalListTypes.add(ListType.PRIMARY_HEALTH_LIST);
-        
+
         nationalListTypes.forEach(listType ->
                                       assertEquals(LocationType.NATIONAL,
                                                    publicationService.getLocationType(listType),

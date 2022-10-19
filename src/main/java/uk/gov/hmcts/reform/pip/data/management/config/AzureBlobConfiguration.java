@@ -12,13 +12,21 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 public class AzureBlobConfiguration {
 
-    @Bean
-    public BlobContainerClient blobContainerClient(AzureBlobConfigurationProperties
+    @Bean(name = "artefact")
+    public BlobContainerClient artefactBlobContainerClient(AzureBlobConfigurationProperties
                                                            azureBlobConfigurationProperties) {
         return new BlobContainerClientBuilder()
             .connectionString(azureBlobConfigurationProperties.getConnectionString())
-            .containerName(azureBlobConfigurationProperties.getContainerName())
+            .containerName(azureBlobConfigurationProperties.getArtefactContainerName())
             .buildClient();
     }
 
+    @Bean(name = "publications")
+    public BlobContainerClient publicationsBlobContainerClient(AzureBlobConfigurationProperties
+                                                               azureBlobConfigurationProperties) {
+        return new BlobContainerClientBuilder()
+            .connectionString(azureBlobConfigurationProperties.getConnectionString())
+            .containerName(azureBlobConfigurationProperties.getPublicationsContainerName())
+            .buildClient();
+    }
 }

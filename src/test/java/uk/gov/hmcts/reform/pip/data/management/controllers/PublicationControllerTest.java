@@ -99,6 +99,7 @@ class PublicationControllerTest {
             .listType(LIST_TYPE)
             .locationId(LOCATION_ID)
             .contentDate(CONTENT_DATE)
+            .expiryDate(DISPLAY_TO)
             .build();
 
         artefactWithId = Artefact.builder()
@@ -114,6 +115,7 @@ class PublicationControllerTest {
             .listType(LIST_TYPE)
             .locationId(LOCATION_ID)
             .contentDate(CONTENT_DATE)
+            .expiryDate(DISPLAY_TO)
             .search(new ConcurrentHashMap<>())
             .build();
     }

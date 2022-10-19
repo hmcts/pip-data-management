@@ -85,7 +85,9 @@ azure:
     instrumentation-key: ${AZURE_APPLICATIONINSIGHTS_INSTRUMENTATIONKEY:00000000-0000-0000-0000-000000000000}
   blob:
     connection-string: ${CONNECTION_STRING}
-    container-name: artefact
+    artefact-container-name: artefact
+    publications-container-name: publications
+
 
 service-to-service:
   subscription-management: ${SUBSCRIPTION_MANAGEMENT_URL:https://pip-subscription-management.staging.platform.hmcts.net}

@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -42,7 +43,7 @@ import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
 
 @Slf4j
 @Service
-@SuppressWarnings("PMD.GodClass")
+@SuppressWarnings({"PMD.GodClass", "PMD.LawOfDemeter"})
 public class PublicationService {
 
     private final ArtefactRepository artefactRepository;
@@ -59,6 +60,8 @@ public class PublicationService {
 
     private final PublicationServicesService publicationServicesService;
 
+    private final ChannelManagementService channelManagementService;
+
     private final ObjectMapper mapper = new ObjectMapper();
 
     @Autowired
@@ -68,7 +71,8 @@ public class PublicationService {
                               SubscriptionManagementService subscriptionManagementService,
                               AccountManagementService accountManagementService,
                               LocationRepository locationRepository,
-                              PublicationServicesService publicationServicesService) {
+                              PublicationServicesService publicationServicesService,
+                              ChannelManagementService channelManagementService) {
         this.artefactRepository = artefactRepository;
         this.azureBlobService = azureBlobService;
         this.payloadExtractor = payloadExtractor;
@@ -76,6 +80,7 @@ public class PublicationService {
         this.accountManagementService = accountManagementService;
         this.locationRepository = locationRepository;
         this.publicationServicesService = publicationServicesService;
+        this.channelManagementService = channelManagementService;
     }
 
     /**
@@ -97,6 +102,12 @@ public class PublicationService {
             isExisting ? getUuidFromUrl(artefact.getPayload()) : UUID.randomUUID().toString(),
             payload
         );
+
+        // Add 7 days to the expiry date if the list type is SJP
+        if (ListType.SJP_PUBLIC_LIST.equals(artefact.getListType())
+            || ListType.SJP_PRESS_LIST.equals(artefact.getListType())) {
+            artefact.setExpiryDate(artefact.getExpiryDate().plusDays(7));
+        }
 
         artefact.setPayload(blobUrl);
 
@@ -129,6 +140,12 @@ public class PublicationService {
         }
 
         return artefactRepository.save(artefact);
+    }
+
+    @Async
+    public void processCreatedPublication(Artefact artefact) {
+        channelManagementService.requestFileGeneration(artefact.getArtefactId());
+        checkAndTriggerSubscriptionManagement(artefact);
     }
 
     /**
@@ -360,10 +377,26 @@ public class PublicationService {
     }
 
     /**
-     * Delete expired artefacts from database and Azure storage.
+     * Delete expired artefacts from the database, Artefact and Publications Azure storage.
      */
     public void deleteExpiredArtefacts() {
-        deleteExpiredBlobs(artefactRepository.findOutdatedArtefacts(LocalDate.now()));
+        List<Artefact> outdatedArtefacts = artefactRepository.findOutdatedArtefacts(LocalDateTime.now());
+        outdatedArtefacts.forEach(artefact -> {
+            azureBlobService.deleteBlob(getUuidFromUrl(artefact.getPayload()));
+            // Only attempt to delete from the publications container if it's not a flat file being deleted
+            if (!artefact.getIsFlatFile()) {
+                azureBlobService.deletePublicationBlob(artefact.getArtefactId() + ".pdf");
+                // If it's an SJP list the xlsx file also needs to be deleted
+                if (ListType.SJP_PUBLIC_LIST.equals(artefact.getListType())
+                    || ListType.SJP_PRESS_LIST.equals(artefact.getListType())) {
+                    azureBlobService.deletePublicationBlob(artefact.getArtefactId() + ".xlsx");
+                }
+            }
+        });
+
+        artefactRepository.deleteAll(outdatedArtefacts);
+        log.info("{} outdated artefacts found and deleted for before {}", outdatedArtefacts.size(),
+                 LocalDateTime.now());
     }
 
     private void applyInternalLocationId(Artefact artefact) {
@@ -417,18 +450,6 @@ public class PublicationService {
 
             log.info(publicationServicesService.sendNoMatchArtefactsForReporting(locationIdProvenanceMap));
         }
-    }
-
-    /**
-     * Receives a list of outdated artefacts and deletes them from the blobstore and database.
-     *
-     * @param outdatedArtefacts A list of the outdated artefacts for deletion
-     */
-    private void deleteExpiredBlobs(List<Artefact> outdatedArtefacts) {
-        outdatedArtefacts.forEach(artefact ->
-                                      log.info(azureBlobService.deleteBlob(getUuidFromUrl(artefact.getPayload()))));
-        artefactRepository.deleteAll(outdatedArtefacts);
-        log.info("{} outdated artefacts found and deleted for before {}", outdatedArtefacts.size(), LocalDate.now());
     }
 
     /**

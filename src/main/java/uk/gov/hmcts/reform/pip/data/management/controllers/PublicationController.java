@@ -34,7 +34,6 @@ import uk.gov.hmcts.reform.pip.data.management.models.publication.HeaderGroup;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Language;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ListType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Sensitivity;
-import uk.gov.hmcts.reform.pip.data.management.service.ChannelManagementService;
 import uk.gov.hmcts.reform.pip.data.management.service.PublicationService;
 import uk.gov.hmcts.reform.pip.data.management.service.ValidationService;
 import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
@@ -75,8 +74,6 @@ public class PublicationController {
     @Autowired
     private final ValidationService validationService;
 
-    private final ChannelManagementService channelManagementService;
-
     private static final String DEFAULT_ADMIN_VALUE = "false";
 
     /**
@@ -85,11 +82,9 @@ public class PublicationController {
      * @param publicationService The PublicationService that contains the business logic to handle publications.
      */
     @Autowired
-    public PublicationController(PublicationService publicationService, ValidationService validationService,
-                                 ChannelManagementService channelManagementService) {
+    public PublicationController(PublicationService publicationService, ValidationService validationService) {
         this.publicationService = publicationService;
         this.validationService = validationService;
-        this.channelManagementService = channelManagementService;
     }
 
     /**
@@ -154,16 +149,17 @@ public class PublicationController {
             .listType(headers.getListType())
             .locationId(headers.getCourtId())
             .contentDate(headers.getContentDate())
+            .expiryDate(headers.getDisplayTo())
             .build();
 
         Artefact createdItem = publicationService
             .createPublication(artefact, payload);
 
-        channelManagementService.requestFileGeneration(createdItem.getArtefactId());
-
         logManualUpload(publicationService.maskEmail(issuerEmail), createdItem.getArtefactId().toString());
 
-        publicationService.checkAndTriggerSubscriptionManagement(createdItem);
+        // Process the created artefact by requesting channel management to generate PDF/Excel files
+        // and check/trigger subscription management, async.
+        publicationService.processCreatedPublication(createdItem);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(createdItem);
     }
@@ -232,6 +228,7 @@ public class PublicationController {
             .listType(headers.getListType())
             .locationId(headers.getCourtId())
             .contentDate(headers.getContentDate())
+            .expiryDate(headers.getDisplayTo())
             .isFlatFile(true)
             .search(search)
             .build();
