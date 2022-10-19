@@ -14,7 +14,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
  */
 @Configuration
 @EnableScheduling
-@Profile("functional")
+@Profile("test")
 public class AzureBlobConfigurationTest {
 
     @Mock
@@ -27,8 +27,13 @@ public class AzureBlobConfigurationTest {
         MockitoAnnotations.openMocks(this);
     }
 
-    @Bean
-    public BlobContainerClient blobContainerClient() {
+    @Bean(name = "artefact")
+    public BlobContainerClient artefactBlobContainerClient() {
+        return blobContainerClientMock;
+    }
+
+    @Bean(name = "publications")
+    public BlobContainerClient publicationsBlobContainerClient() {
         return blobContainerClientMock;
     }
 

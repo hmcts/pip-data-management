@@ -1243,6 +1243,16 @@ class PublicationServiceTest {
     }
 
     @Test
+    void testDeleteExpiredArtefactsFlatFile() {
+        artefactWithPayloadUrl.setListType(ListType.SJP_PRESS_LIST);
+        artefactWithPayloadUrl.setIsFlatFile(true);
+        when(artefactRepository.findOutdatedArtefacts(any())).thenReturn(List.of(artefactWithPayloadUrl));
+        publicationService.deleteExpiredArtefacts();
+        verify(azureBlobService).deleteBlob(PAYLOAD_STRIPPED);
+        verify(artefactRepository).deleteAll(List.of(artefactWithPayloadUrl));
+    }
+
+    @Test
     void testDeleteExpiredArtefactsWhenArtefactsNotFound() {
         when(artefactRepository.findOutdatedArtefacts(any())).thenReturn(Collections.emptyList());
         publicationService.deleteExpiredArtefacts();
