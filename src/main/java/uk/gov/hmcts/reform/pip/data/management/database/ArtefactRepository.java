@@ -80,7 +80,7 @@ public interface ArtefactRepository extends JpaRepository<Artefact, Long> {
     List<Artefact> findAllNoMatchArtefacts();
 
     @Query(value = "SELECT cast(artefact_id as text), display_from, display_to, language, "
-        + "provenance, sensitivity, source_artefact_id, type, content_date, location_id, null, list_type "
+        + "provenance, sensitivity, source_artefact_id, type, content_date, location_id, list_type "
         + "FROM artefact",
         nativeQuery = true)
     List<String> getMiData();

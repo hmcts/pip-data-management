@@ -40,6 +40,8 @@ import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
 @SuppressWarnings("PMD.GodClass")
 public class PublicationService {
 
+    private static final char DELIMITER = ',';
+
     private final ArtefactRepository artefactRepository;
 
     private final AzureBlobService azureBlobService;
@@ -443,7 +445,13 @@ public class PublicationService {
             .append("artefact_id,display_from,display_to,language,provenance,sensitivity,source_artefact_id,"
                         + "type,content_date,court_id,court_name,list_type")
             .append(System.lineSeparator());
-        artefactRepository.getMiData().forEach(line -> builder.append(line).append(System.lineSeparator()));
+        artefactRepository.getMiData()
+            .stream()
+            // Insert an extra empty field for court name before the list type
+            .map(line -> new StringBuilder(line)
+                .insert(line.lastIndexOf(DELIMITER), DELIMITER)
+                .toString())
+            .forEach(line -> builder.append(line).append(System.lineSeparator()));
         return builder.toString();
     }
 }
