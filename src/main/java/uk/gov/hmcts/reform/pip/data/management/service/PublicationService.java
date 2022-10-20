@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.pip.data.management.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -54,8 +53,6 @@ public class PublicationService {
     private final AccountManagementService accountManagementService;
 
     private final PublicationServicesService publicationServicesService;
-
-    private final ObjectMapper mapper = new ObjectMapper();
 
     @Autowired
     public PublicationService(ArtefactRepository artefactRepository,
