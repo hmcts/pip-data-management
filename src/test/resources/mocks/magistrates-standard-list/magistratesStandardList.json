@@ -39,6 +39,10 @@
                         "case": [
                           {
                             "caseNumber": "45684548",
+                            "reportingRestrictionDetail": [
+                              "Reporting Restriction detail line 1",
+                              "Reporting restriction detail line 2"
+                            ],
                             "caseSequenceIndicator": "[2 of 3]",
                             "informant": {
                               "prosecutionAuthorityRef": "Test",
@@ -84,7 +88,11 @@
                             "offenceTitle": "drink driving",
                             "offenceWording": "driving whilst under the influence of alcohol",
                             "offenceMaxPen": "100yrs",
-                            "reportingRestriction": true
+                            "reportingRestriction": true,
+                            "reportingRestrictionDetail": [
+                              "Reporting Restriction detail line 1",
+                              "Reporting restriction detail line 2"
+                            ]
                           }
                         ]
                       }

@@ -335,6 +335,19 @@
                                               ],
                                               "pattern": "^.*$"
                                             },
+                                            "reportingRestrictionDetail": {
+                                              "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/offence/reportingRestrictionDetail",
+                                              "title": "Reporting Restrictions Detail",
+                                              "description": "The detail / wording of any reporting restrictions attached to the offence",
+                                              "type": "array",
+                                              "items": {
+                                                "type": "string",
+                                                "default": "",
+                                                "examples": [
+                                                  "This is a reporting restrictions detail"
+                                                ]
+                                              }
+                                            },
                                             "caseSequenceIndicator": {
                                               "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/caseSequenceIndicator",
                                               "title": "Case Sequence Indicator",
@@ -634,16 +647,18 @@
                                                 "10yrs"
                                               ]
                                             },
-                                            "reportingRestriction": {
-                                              "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/offence/reportingRestriction",
-                                              "title": "Reporting Restriction",
-                                              "description": "Any reporting restrictions posed to the offence",
-                                              "type": "boolean",
-                                              "default": "",
-                                              "examples": [
-                                                "true"
-                                              ],
-                                              "pattern": "^.*$"
+                                            "reportingRestrictionDetail": {
+                                              "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/offence/reportingRestrictionDetail",
+                                              "title": "Reporting Restrictions Detail",
+                                              "description": "The detail / wording of any reporting restrictions attached to the offence",
+                                              "type": "array",
+                                              "items": {
+                                                "type": "string",
+                                                "default": "",
+                                                "examples": [
+                                                  "This is a reporting restrictions detail"
+                                                ]
+                                              }
                                             }
                                           }
                                         }
