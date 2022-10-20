@@ -647,6 +647,17 @@
                                                 "10yrs"
                                               ]
                                             },
+                                            "reportingRestriction": {
+                                              "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/offence/reportingRestriction",
+                                              "title": "Reporting Restriction",
+                                              "description": "Any reporting restrictions posed to the offence",
+                                              "type": "boolean",
+                                              "default": "",
+                                              "examples": [
+                                                "true"
+                                              ],
+                                              "pattern": "^.*$"
+                                            },
                                             "reportingRestrictionDetail": {
                                               "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/offence/reportingRestrictionDetail",
                                               "title": "Reporting Restrictions Detail",
