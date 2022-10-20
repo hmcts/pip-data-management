@@ -79,9 +79,9 @@ public interface ArtefactRepository extends JpaRepository<Artefact, Long> {
     @Query(value = "SELECT * FROM Artefact WHERE location_id LIKE '%NoMatch%'", nativeQuery = true)
     List<Artefact> findAllNoMatchArtefacts();
 
-    @Query(value = "SELECT cast(ARTEFACT_ID as text), display_from, display_to, language, "
-        + "provenance, sensitivity, source_artefact_id, type, content_date, location_id, list_type, "
-        + "cast(search as text) FROM artefact",
+    @Query(value = "SELECT cast(artefact_id as text), display_from, display_to, language, "
+        + "provenance, sensitivity, source_artefact_id, type, content_date, location_id, null, list_type "
+        + "FROM artefact",
         nativeQuery = true)
     List<String> getMiData();
 }

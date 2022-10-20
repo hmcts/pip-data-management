@@ -445,47 +445,12 @@ public class PublicationService {
     }
 
     public String getMiData() {
-        List<String> returnedData = artefactRepository.getMiData();
-        StringBuilder builder = new StringBuilder(146);
-        builder.append("artefact_id,display_from,display_to,language,provenance,sensitivity,"
-                           + "source_artefact_id,type,content_date,court_id,court_name,search\n");
-        for (String s : returnedData) {
-            String[] splitString = s.split(",", 12);
-            long one = 1;
-            builder.append(Arrays.stream(splitString).limit(splitString.length - one)
-                               .collect(Collectors.joining(","))).append(',');
-            try {
-                builder.append(jsonDestroyer(splitString[splitString.length - 1]));
-            } catch (Exception e) {
-                log.error(e.getMessage());
-                builder.append("JSON Error\n");
-            }
-        }
+        StringBuilder builder = new StringBuilder(150);
+        builder
+            .append("artefact_id,display_from,display_to,language,provenance,sensitivity,source_artefact_id,"
+                        + "type,content_date,court_id,court_name,list_type")
+            .append(System.lineSeparator());
+        artefactRepository.getMiData().forEach(line -> builder.append(line).append(System.lineSeparator()));
         return builder.toString();
-    }
-
-    private String jsonDestroyer(String json) throws JsonProcessingException {
-        JsonNode topLevel = mapper.readTree(json);
-        JsonNode iteratorNode = topLevel.get("cases");
-        if (iteratorNode == null) {
-            return "\n";
-        }
-        Iterator<JsonNode> nodeIterator = iteratorNode.elements();
-        int counter = 1;
-        StringBuilder builder = new StringBuilder();
-        while (nodeIterator.hasNext()) {
-            JsonNode currentNode = nodeIterator.next();
-            builder.append("Case ").append(counter);
-            builder.append(": ");
-            currentNode.fields().forEachRemaining(
-                (node) -> {
-                    builder.append(node.getKey().trim()).append(": ");
-                    builder.append(node.getValue().asText().trim()).append(' ');
-                }
-            );
-            builder.append(' ');
-            counter += 1;
-        }
-        return builder.append('\n').toString();
     }
 }
