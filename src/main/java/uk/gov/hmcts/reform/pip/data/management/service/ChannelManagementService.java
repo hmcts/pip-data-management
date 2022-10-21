@@ -26,7 +26,7 @@ public class ChannelManagementService {
 
     public String requestFileGeneration(UUID artefactId) {
         try {
-            return webClient.post().uri(url + "/file/" + artefactId)
+            return webClient.post().uri(url + "/publication/" + artefactId)
                 .attributes(clientRegistrationId("channelManagementApi"))
                 .retrieve().bodyToMono(String.class).block();
         } catch (WebClientException ex) {
