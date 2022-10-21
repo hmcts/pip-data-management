@@ -34,7 +34,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WithMockUser(username = "admin", authorities = { "APPROLE_api.request.unknown" })
 class PublicationUnauthorizedTest {
 
-    @Qualifier("artefact")
     @Autowired
     private MockMvc mockMvc;
 

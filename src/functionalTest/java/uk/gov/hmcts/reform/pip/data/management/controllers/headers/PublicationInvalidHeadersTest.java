@@ -45,7 +45,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SuppressWarnings("PMD.LawOfDemeter")
 class PublicationInvalidHeadersTest {
 
-    @Qualifier("artefact")
     @Autowired
     private MockMvc mockMvc;
 
