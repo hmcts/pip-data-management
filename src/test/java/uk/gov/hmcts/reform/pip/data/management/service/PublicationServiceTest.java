@@ -1166,8 +1166,9 @@ class PublicationServiceTest {
     void testRunDailyTasks() throws IOException {
         when(artefactRepository.findOutdatedArtefacts(any())).thenReturn(List.of(artefactWithPayloadUrl));
         when(artefactRepository.findAllNoMatchArtefacts()).thenReturn(List.of(noMatchArtefact));
-        when(azureBlobService.deleteBlob(any())).thenReturn("Success");
-        when(azureBlobService.deletePublicationBlob(any())).thenReturn("Success");
+        when(azureBlobService.deleteBlob(any())).thenReturn(SUCCESS);
+        when(azureBlobService.deletePublicationBlob(any())).thenReturn(SUCCESS);
+        when(azureBlobService.deletePublicationBlob(any())).thenReturn(SUCCESS);
         Map<String, String> testMap = new ConcurrentHashMap<>();
         testMap.put(PROVENANCE_ID, PROVENANCE);
         when(publicationServicesService.sendNoMatchArtefactsForReporting(testMap))

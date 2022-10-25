@@ -324,6 +324,7 @@ public class PublicationService {
         Optional<Artefact> artefactToDelete = artefactRepository.findArtefactByArtefactId(artefactId);
         if (artefactToDelete.isPresent()) {
             log.info(azureBlobService.deleteBlob(getUuidFromUrl(artefactToDelete.get().getPayload())));
+            deletePublicationBlobs(artefactToDelete.get());
             artefactRepository.delete(artefactToDelete.get());
             log.info(writeLog(issuerId, UserActions.REMOVE, artefactId));
             triggerThirdPartyArtefactDeleted(artefactToDelete.get());
@@ -380,23 +381,33 @@ public class PublicationService {
      * Delete expired artefacts from the database, Artefact and Publications Azure storage.
      */
     public void deleteExpiredArtefacts() {
-        List<Artefact> outdatedArtefacts = artefactRepository.findOutdatedArtefacts(LocalDateTime.now());
+        LocalDateTime searchDateTime = LocalDateTime.now();
+        List<Artefact> outdatedArtefacts = artefactRepository.findOutdatedArtefacts(searchDateTime);
         outdatedArtefacts.forEach(artefact -> {
             azureBlobService.deleteBlob(getUuidFromUrl(artefact.getPayload()));
-            // Only attempt to delete from the publications container if it's not a flat file being deleted
-            if (!artefact.getIsFlatFile()) {
-                azureBlobService.deletePublicationBlob(artefact.getArtefactId() + ".pdf");
-                // If it's an SJP list the xlsx file also needs to be deleted
-                if (ListType.SJP_PUBLIC_LIST.equals(artefact.getListType())
-                    || ListType.SJP_PRESS_LIST.equals(artefact.getListType())) {
-                    azureBlobService.deletePublicationBlob(artefact.getArtefactId() + ".xlsx");
-                }
-            }
+            deletePublicationBlobs(artefact);
         });
 
         artefactRepository.deleteAll(outdatedArtefacts);
-        log.info("{} outdated artefacts found and deleted for before {}", outdatedArtefacts.size(),
-                 LocalDateTime.now());
+
+        log.info(writeLog(String.format("%s outdated artefacts found and deleted for before %s",
+                                        outdatedArtefacts.size(), searchDateTime)));
+    }
+
+    /**
+     * Attempts to delete the stored publication blobs from the publications store.
+     *
+     * @param artefact The artefact the blobs should be deleted for.
+     */
+    private void deletePublicationBlobs(Artefact artefact) {
+        if (!artefact.getIsFlatFile()) {
+            azureBlobService.deletePublicationBlob(artefact.getArtefactId() + ".pdf");
+            // If it's an SJP list the xlsx file also needs to be deleted
+            if (ListType.SJP_PUBLIC_LIST.equals(artefact.getListType())
+                || ListType.SJP_PRESS_LIST.equals(artefact.getListType())) {
+                azureBlobService.deletePublicationBlob(artefact.getArtefactId() + ".xlsx");
+            }
+        }
     }
 
     private void applyInternalLocationId(Artefact artefact) {
