@@ -116,3 +116,6 @@ validations:
 cron:
   daily-start-of-day: "0 0 0 * * *"
 
+springdoc:
+  swagger-ui:
+    path: /swagger-ui/

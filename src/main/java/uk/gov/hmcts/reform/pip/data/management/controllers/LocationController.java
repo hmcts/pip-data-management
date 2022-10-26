@@ -1,11 +1,11 @@
 package uk.gov.hmcts.reform.pip.data.management.controllers;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -27,17 +27,21 @@ import java.util.Collection;
 import java.util.List;
 
 @RestController
-@Api(tags = "Data Management location list API")
+@Tag(name = "Data Management location list API")
 @RequestMapping("/locations")
 public class LocationController {
 
     @Autowired
     private LocationService locationService;
 
+    private static final String OK_CODE = "200";
+    private static final String AUTH_ERROR_CODE = "403";
+    private static final String NOT_FOUND_CODE = "404";
+
     @ApiResponses({
-        @ApiResponse(code = 200, message = "All courts returned"),
+        @ApiResponse(responseCode = OK_CODE, description = "All courts returned"),
     })
-    @ApiOperation("Get all locations with their hearings")
+    @Operation(summary = "Get all locations with their hearings")
     @GetMapping(produces = "application/json")
     @JsonView(LocationViews.BaseView.class)
     public ResponseEntity<List<Location>> getLocationList() {
@@ -45,34 +49,34 @@ public class LocationController {
     }
 
     @ApiResponses({
-        @ApiResponse(code = 200, message = "Location found"),
-        @ApiResponse(code = 404, message = "No Location found with the id {locationId}")
+        @ApiResponse(responseCode = OK_CODE, description = "Location found"),
+        @ApiResponse(responseCode = NOT_FOUND_CODE, description = "No Location found with the id {locationId}")
     })
-    @ApiOperation("Gets a location by searching by the location id and returning")
+    @Operation(summary = "Gets a location by searching by the location id and returning")
     @GetMapping("/{locationId}")
-    public ResponseEntity<Location> getLocationById(@ApiParam(value = "The Location Id to retrieve", required = true)
-                                                @PathVariable Integer locationId) {
+    public ResponseEntity<Location> getLocationById(@Parameter(description =
+        "The Location Id to retrieve", required = true) @PathVariable Integer locationId) {
         return ResponseEntity.ok(locationService.getLocationById(locationId));
 
     }
 
     @ApiResponses({
-        @ApiResponse(code = 200, message = "Location found"),
-        @ApiResponse(code = 404, message = "No Location found with the search {input}")
+        @ApiResponse(responseCode = OK_CODE, description = "Location found"),
+        @ApiResponse(responseCode = NOT_FOUND_CODE, description = "No Location found with the search {input}")
     })
-    @ApiOperation("Gets a Location by searching by the Location name and returning")
+    @Operation(summary = "Gets a Location by searching by the Location name and returning")
     @GetMapping("/name/{locationName}/language/{language}")
-    public ResponseEntity<Location> getLocationByName(@ApiParam(value = "The search input to retrieve", required = true)
-                                                @PathVariable String locationName,
-                                                @PathVariable String language) {
+    public ResponseEntity<Location> getLocationByName(@Parameter(description =
+        "The search input to retrieve", required = true) @PathVariable String locationName,
+                                                      @PathVariable String language) {
         return ResponseEntity.ok(locationService.getLocationByName(locationName, language));
 
     }
 
     @ApiResponses({
-        @ApiResponse(code = 200, message = "Filtered Locations")
+        @ApiResponse(responseCode = OK_CODE, description = "Filtered Locations")
     })
-    @ApiOperation("Filters list of Locations by region or jurisdiction")
+    @Operation(summary = "Filters list of Locations by region or jurisdiction")
     @GetMapping("/filter")
     @JsonView(LocationViews.BaseView.class)
     public ResponseEntity<List<Location>> searchByRegionAndJurisdiction(
@@ -85,8 +89,8 @@ public class LocationController {
     }
 
     @ApiResponses({
-        @ApiResponse(code = 200, message = "Uploaded Locations"),
-        @ApiResponse(code = 403, message = "User has not been authorized")
+        @ApiResponse(responseCode = OK_CODE, description = "Uploaded Locations"),
+        @ApiResponse(responseCode = AUTH_ERROR_CODE, description = "User has not been authorized")
     })
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Collection<Location>> uploadLocations(@RequestPart MultipartFile locationList) {
@@ -94,9 +98,9 @@ public class LocationController {
     }
 
     @ApiResponses({
-        @ApiResponse(code = 200, message = "Location with id {locationId} has been deleted"),
-        @ApiResponse(code = 403, message = "User has not been authorized"),
-        @ApiResponse(code = 404, message = "No Location found with the id {locationId}")
+        @ApiResponse(responseCode = OK_CODE, description = "Location with id {locationId} has been deleted"),
+        @ApiResponse(responseCode = AUTH_ERROR_CODE, description = "User has not been authorized"),
+        @ApiResponse(responseCode = NOT_FOUND_CODE, description = "No Location found with the id {locationId}")
     })
     @DeleteMapping("/{locationId}")
     public ResponseEntity<String> deleteLocation(@PathVariable Integer locationId) {

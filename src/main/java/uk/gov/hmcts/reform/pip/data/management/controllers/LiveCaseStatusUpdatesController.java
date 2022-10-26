@@ -1,10 +1,10 @@
 package uk.gov.hmcts.reform.pip.data.management.controllers;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,7 +17,7 @@ import uk.gov.hmcts.reform.pip.data.management.service.LiveCaseStatusService;
 import java.util.List;
 
 @RestController
-@Api(tags = "Data Management Live Case Status Updates (LCSU) API")
+@Tag(name = "Data Management Live Case Status Updates (LCSU) API")
 @RequestMapping("/lcsu")
 public class LiveCaseStatusUpdatesController {
 
@@ -25,12 +25,12 @@ public class LiveCaseStatusUpdatesController {
     private LiveCaseStatusService liveCaseStatusService;
 
     @ApiResponses({
-        @ApiResponse(code = 200, message = "Live Cases found"),
-        @ApiResponse(code = 404, message = "No Live cases found with the court id {courtId}")
+        @ApiResponse(responseCode = "200", description = "Live Cases found"),
+        @ApiResponse(responseCode = "404", description = "No Live cases found with the court id {courtId}")
     })
-    @ApiOperation("Gets a court by searching by the court name and returning")
+    @Operation(summary = "Gets a court by searching by the court name and returning")
     @GetMapping("/{courtId}")
-    public ResponseEntity<List<LiveCaseStatus>> getLiveCaseStatus(@ApiParam(value = "The court id to search",
+    public ResponseEntity<List<LiveCaseStatus>> getLiveCaseStatus(@Parameter(description = "The court id to search",
         required = true) @PathVariable int courtId) {
         return ResponseEntity.ok(liveCaseStatusService.handleLiveCaseRequest(courtId));
     }
