@@ -2,6 +2,8 @@ package uk.gov.hmcts.reform.pip.data.management.database;
 
 import com.azure.storage.blob.BlobClient;
 import com.azure.storage.blob.BlobContainerClient;
+import com.azure.storage.blob.models.BlobStorageException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.ByteArrayResource;
@@ -17,6 +19,7 @@ import java.io.IOException;
  * Class with handles the interaction with the Azure Blob Service.
  */
 @Component
+@Slf4j
 public class AzureBlobService {
 
     private final BlobContainerClient artefactBlobContainerClient;
@@ -85,9 +88,14 @@ public class AzureBlobService {
     }
 
     public String deleteBlob(String payloadId) {
-        BlobClient blobClient = artefactBlobContainerClient.getBlobClient(payloadId);
-        blobClient.delete();
-        return String.format(DELETE_MESSAGE, payloadId);
+        try {
+            BlobClient blobClient = artefactBlobContainerClient.getBlobClient(payloadId);
+            blobClient.delete();
+            return String.format(DELETE_MESSAGE, payloadId);
+        } catch (BlobStorageException e) {
+            log.error("Blob with payload ID {} failed to delete with trace {}", payloadId, e.getMessage());
+            return String.format("Blob failed to delete with ID %s", payloadId);
+        }
     }
 
     /**
