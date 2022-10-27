@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
@@ -335,21 +334,9 @@ public class PublicationService {
     /**
      * Scheduled method that checks daily for newly dated from artefacts.
      */
-    @Scheduled(cron = "${cron.daily-start-of-day}")
     public void checkNewlyActiveArtefacts() {
         artefactRepository.findArtefactsByDisplayFrom(LocalDate.now())
             .forEach(artefact -> log.info(sendArtefactForSubscription(artefact)));
-    }
-
-    /**
-     * Scheduled method that:
-     *  Checks daily for a list of all no match artefacts to send to publication services.
-     *  checks daily for newly outdated artefacts based on a yesterday or older display to date.
-     */
-    @Scheduled(cron = "${cron.daily-start-of-day}")
-    public void runDailyTasks() {
-        reportNoMatchArtefacts();
-        deleteExpiredArtefacts();
     }
 
     /**
