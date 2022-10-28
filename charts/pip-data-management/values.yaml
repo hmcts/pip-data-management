@@ -38,3 +38,4 @@ java:
         - name: app-pip-publication-services-scope
           alias: PUBLICATION_SERVICES_AZ_API
   environment:
+    RUN_DB_MIGRATION_ON_STARTUP: false

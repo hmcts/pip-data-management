@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -422,4 +423,19 @@ public class PublicationController {
         publicationService.deleteExpiredArtefacts();
         return ResponseEntity.noContent().build();
     }
+
+    @ApiResponses({
+        @ApiResponse(code = 204, message = NO_CONTENT_DESCRIPTION),
+        @ApiResponse(code = 403, message = UNAUTHORIZED_DESCRIPTION)
+    })
+    @ApiOperation("Delete all expired artefacts")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PutMapping("/{id}/archive")
+    @IsAdmin
+    public ResponseEntity<String> archiveArtefact(@RequestHeader("x-issuer-id") String issuerId,
+                                                  @PathVariable String id) {
+        publicationService.archiveArtefact(issuerId, id);
+        return ResponseEntity.ok(String.format("Artefact of ID %s has been archived", id));
+    }
+
 }

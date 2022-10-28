@@ -90,6 +90,8 @@ public class PublicationService {
 
         applyInternalLocationId(artefact);
         artefact.setContentDate(artefact.getContentDate().toLocalDate().atTime(LocalTime.MIN));
+        artefact.setLastReceivedDate(LocalDateTime.now());
+
         boolean isExisting = applyExistingArtefact(artefact);
 
         String blobUrl = azureBlobService.createPayload(
@@ -113,6 +115,7 @@ public class PublicationService {
 
         applyInternalLocationId(artefact);
         artefact.setContentDate(artefact.getContentDate().toLocalDate().atTime(LocalTime.MIN));
+        artefact.setLastReceivedDate(LocalDateTime.now());
 
         boolean isExisting = applyExistingArtefact(artefact);
 
@@ -147,6 +150,7 @@ public class PublicationService {
         foundArtefact.ifPresent(value -> {
             artefact.setArtefactId(value.getArtefactId());
             artefact.setPayload(value.getPayload());
+            artefact.incrementSupersededCount();
         });
         return foundArtefact.isPresent();
     }
@@ -416,6 +420,20 @@ public class PublicationService {
                                       log.info(azureBlobService.deleteBlob(getUuidFromUrl(artefact.getPayload()))));
         artefactRepository.deleteAll(outdatedArtefacts);
         log.info("{} outdated artefacts found and deleted for before {}", outdatedArtefacts.size(), LocalDate.now());
+    }
+
+    /**
+     * Method that handles the logic to archive an artefact.
+     * @param issuerId The issuer ID of the user who submitted the request.
+     * @param artefactId The artefact to archive.
+     */
+    public void archiveArtefact(String issuerId, String artefactId) {
+        Artefact artefact = artefactRepository.getById(Long.valueOf(artefactId));
+        artefact.setArchived(true);
+        artefactRepository.save(artefact);
+
+        writeLog(UUID.fromString(issuerId), String.format("Artefact with ID %s has been archived by %s", issuerId, artefactId));
+
     }
 
     /**

@@ -112,4 +112,23 @@ public class Artefact {
      */
     private String payload;
 
+    /**
+     * A marker to show whether the artefact is archived.
+     */
+    private boolean isArchived;
+
+    /**
+     * Date/Time to indicate when the artefact was last received
+     */
+    private LocalDateTime lastReceivedDate;
+
+    /**
+     * A counter to show how many times the artefact has been superseded
+     */
+    private int supersededCount = 0;
+
+    public void incrementSupersededCount() {
+        supersededCount++;
+    }
+
 }
