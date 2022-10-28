@@ -61,5 +61,8 @@ SELECT artefact.artefact_id,
        artefact.type,
        artefact.content_date,
        artefact.location_id,
-       artefact.list_type
+       artefact.list_type,
+       artefact.isArchived,
+       artefact.lastReceivedDate,
+       artefact.supersededCount
 FROM artefact;

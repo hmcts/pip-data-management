@@ -367,4 +367,18 @@ class PublicationControllerTest {
             .as(STATUS_CODE_MATCH)
             .isEqualTo(HttpStatus.NO_CONTENT);
     }
+
+    @Test
+    void testArchiveArtefact() {
+        String issuerId = UUID.randomUUID().toString();
+        String artefactId = UUID.randomUUID().toString();
+
+        doNothing().when(publicationService).archiveArtefact(issuerId, artefactId);
+
+        ResponseEntity<String> response = publicationController.archiveArtefact(issuerId, artefactId);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode(), STATUS_CODE_MATCH);
+        assertEquals(String.format("Artefact of ID %s has been archived", artefactId),
+                     response.getBody(), "Response from archiving does not match expected message");
+    }
 }

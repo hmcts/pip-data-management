@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.pip.data.management.controllers;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -35,6 +36,7 @@ import uk.gov.hmcts.reform.pip.data.management.models.publication.HeaderGroup;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Language;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ListType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Sensitivity;
+import uk.gov.hmcts.reform.pip.data.management.models.publication.views.ArtefactView;
 import uk.gov.hmcts.reform.pip.data.management.service.PublicationService;
 import uk.gov.hmcts.reform.pip.data.management.service.ValidationService;
 import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
@@ -113,6 +115,7 @@ public class PublicationController {
     @ApiOperation("Upload a new publication")
     @PostMapping
     @Valid
+    @JsonView(ArtefactView.External.class)
     @IsPublisher
     public ResponseEntity<Artefact> uploadPublication(
         @RequestHeader(PublicationConfiguration.PROVENANCE_HEADER) String provenance,
@@ -186,6 +189,7 @@ public class PublicationController {
     })
     @ApiOperation("Upload a new publication")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @JsonView(ArtefactView.External.class)
     @IsPublisher
     public ResponseEntity<Artefact> uploadPublication(
         @RequestHeader(PublicationConfiguration.PROVENANCE_HEADER) String provenance,
@@ -249,6 +253,7 @@ public class PublicationController {
     })
     @ApiOperation("Get a series of publications matching a given locationId (e.g. locationId)")
     @GetMapping("/locationId/{locationId}")
+    @JsonView(ArtefactView.Internal.class)
     @IsAdmin
     public ResponseEntity<List<Artefact>> getAllRelevantArtefactsByLocationId(
         @PathVariable String locationId,
@@ -266,6 +271,7 @@ public class PublicationController {
     })
     @ApiOperation("Get a series of publications matching a given case search value (e.g. CASE_URN/CASE_ID/CASE_NAME)")
     @GetMapping("/search/{searchTerm}/{searchValue}")
+    @JsonView(ArtefactView.Internal.class)
     @IsAdmin
     public ResponseEntity<List<Artefact>> getAllRelevantArtefactsBySearchValue(
         @PathVariable CaseSearchTerm searchTerm, @PathVariable String searchValue,
@@ -283,6 +289,7 @@ public class PublicationController {
     })
     @ApiOperation("Gets the metadata for the blob, given a specific artefact id")
     @GetMapping("/{artefactId}")
+    @JsonView(ArtefactView.Internal.class)
     @IsAdmin
     public ResponseEntity<Artefact> getArtefactMetadata(
         @PathVariable UUID artefactId, @RequestHeader(value = USER_ID_HEADER, required = false) UUID userId,
@@ -425,7 +432,7 @@ public class PublicationController {
     }
 
     @ApiResponses({
-        @ApiResponse(code = 204, message = NO_CONTENT_DESCRIPTION),
+        @ApiResponse(code = 200, message = "Artefact of ID {} has been archived"),
         @ApiResponse(code = 403, message = UNAUTHORIZED_DESCRIPTION)
     })
     @ApiOperation("Delete all expired artefacts")
