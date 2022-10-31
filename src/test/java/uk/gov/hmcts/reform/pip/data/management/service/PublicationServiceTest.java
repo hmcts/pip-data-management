@@ -1163,42 +1163,6 @@ class PublicationServiceTest {
     }
 
     @Test
-    void testRunDailyTasks() throws IOException {
-        when(artefactRepository.findOutdatedArtefacts(any())).thenReturn(List.of(artefactWithPayloadUrl));
-        when(artefactRepository.findAllNoMatchArtefacts()).thenReturn(List.of(noMatchArtefact));
-        when(azureBlobService.deleteBlob(any())).thenReturn(SUCCESS);
-        when(azureBlobService.deletePublicationBlob(any())).thenReturn(SUCCESS);
-        when(azureBlobService.deletePublicationBlob(any())).thenReturn(SUCCESS);
-        Map<String, String> testMap = new ConcurrentHashMap<>();
-        testMap.put(PROVENANCE_ID, PROVENANCE);
-        when(publicationServicesService.sendNoMatchArtefactsForReporting(testMap))
-            .thenReturn("Success no match artefacts sent");
-        lenient().doNothing().when(artefactRepository).deleteAll(List.of(artefact));
-        try (LogCaptor logCaptor = LogCaptor.forClass(PublicationService.class)) {
-            publicationService.runDailyTasks();
-            assertEquals("Success no match artefacts sent", logCaptor.getInfoLogs().get(0), MESSAGES_MATCH);
-            assertTrue(logCaptor.getInfoLogs().get(1).contains("1 outdated artefacts found and deleted for before"),
-                       MESSAGES_MATCH);
-        } catch (Exception ex) {
-            throw new IOException(ex.getMessage());
-        }
-    }
-
-    @Test
-    void testRunDailyTasksWithNoBlobsFound() throws IOException {
-        when(artefactRepository.findOutdatedArtefacts(any())).thenReturn(List.of());
-        try (LogCaptor logCaptor = LogCaptor.forClass(PublicationService.class)) {
-            publicationService.runDailyTasks();
-            assertTrue(logCaptor.getInfoLogs().get(0).contains("0 outdated artefacts found and deleted for before"),
-                       MESSAGES_MATCH);
-            verify(publicationServicesService, times(0))
-                .sendNoMatchArtefactsForReporting(any());
-        } catch (Exception ex) {
-            throw new IOException(ex.getMessage());
-        }
-    }
-
-    @Test
     void testReportNoMatchArtefacts() {
         when(artefactRepository.findAllNoMatchArtefacts()).thenReturn(List.of(noMatchArtefact));
         publicationService.reportNoMatchArtefacts();

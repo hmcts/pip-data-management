@@ -5,11 +5,9 @@ import com.azure.storage.blob.BlobContainerClientBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import org.springframework.scheduling.annotation.EnableScheduling;
 
 @Configuration
 @Profile("!test & !functional")
-@EnableScheduling
 public class AzureBlobConfiguration {
 
     @Bean(name = "artefact")
