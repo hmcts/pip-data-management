@@ -1,7 +1,7 @@
 plugins {
   id 'application'
   id 'checkstyle'
-  id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+  id 'io.spring.dependency-management' version '1.1.0'
   id 'jacoco'
   id 'org.springframework.boot' version '2.5.14'
   id 'org.owasp.dependencycheck' version '7.0.3'
@@ -157,12 +157,12 @@ dependencies {
   implementation group: 'com.jayway.jsonpath', name: 'json-path', version: '2.6.0'
   implementation group: 'com.vladmihalcea', name: 'hibernate-types-52', version: '2.14.0'
   implementation group: 'io.springfox', name: 'springfox-boot-starter', version: '3.0.0'
-  implementation group: 'com.google.guava', name: 'guava', version: '31.0.1-jre'
+  implementation group: 'com.google.guava', name: 'guava', version: '31.1-jre'
   implementation group: 'com.github.hmcts.java-logging', name: 'logging', version: reformLoggingVersion
   implementation group: 'com.github.hmcts.java-logging', name: 'logging-appinsights', version: reformLoggingVersion
   implementation group: 'com.azure', name: 'azure-data-tables', version: '12.1.2'
-  implementation group: 'com.github.hmcts', name: 'pip-data-models', version: '1.1.1'
-  implementation 'com.networknt:json-schema-validator:1.0.64'
+  implementation group: 'com.github.hmcts', name: 'pip-data-models', version: '1.2.1'
+  implementation 'com.networknt:json-schema-validator:1.0.73'
   implementation group: 'org.postgresql', name: 'postgresql', version: '42.4.1'
   implementation 'org.springframework.boot:spring-boot-starter-validation'
   implementation 'org.springframework.boot:spring-boot-starter-jdbc'
@@ -170,11 +170,11 @@ dependencies {
   implementation 'com.azure.spring:spring-cloud-azure-starter-active-directory:4.0.0'
   implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
   implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
-  implementation 'com.opencsv:opencsv:5.5.2'
+  implementation 'com.opencsv:opencsv:5.7.1'
   implementation 'org.apache.tomcat.embed:tomcat-embed-core:9.0.63'
   implementation 'org.apache.tomcat.embed:tomcat-embed-websocket:9.0.63'
   implementation 'org.springframework.boot:spring-boot-starter-webflux'
-  implementation("com.squareup.okhttp3:okhttp:4.9.3")
+  implementation("com.squareup.okhttp3:okhttp:4.10.0")
 
   // Force upgrade snakeyaml version for CVE-2022-38752
   implementation( group: 'org.yaml', name: 'snakeyaml').version {
@@ -186,15 +186,15 @@ dependencies {
     strictly("1.10.0")
   }
 
-  testImplementation("com.squareup.okhttp3:mockwebserver:4.9.3")
+  testImplementation("com.squareup.okhttp3:mockwebserver:4.10.0")
   testImplementation "io.zonky.test:embedded-database-spring-test:2.1.1"
-  testImplementation(platform('org.junit:junit-bom:5.8.1'))
+  testImplementation(platform('org.junit:junit-bom:5.9.1'))
   testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', {
     exclude group: 'junit', module: 'junit'
     exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
   }
   testImplementation group: 'org.springframework.security', name: 'spring-security-test'
-  testImplementation group: 'org.awaitility', name: 'awaitility', version: '3.0.0'
+  testImplementation group: 'org.awaitility', name: 'awaitility', version: '4.2.0'
   testImplementation group: 'io.github.hakky54', name: 'logcaptor', version: '2.7.10'
 
   functionalTestImplementation sourceSets.main.runtimeClasspath
