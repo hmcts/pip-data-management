@@ -45,7 +45,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.lenient;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
@@ -1109,41 +1108,6 @@ class PublicationServiceTest {
     }
 
     @Test
-    void testRunDailyTasks() throws IOException {
-        when(artefactRepository.findOutdatedArtefacts(LocalDate.now())).thenReturn(List.of(artefactWithPayloadUrl));
-        when(artefactRepository.findAllNoMatchArtefacts()).thenReturn(List.of(noMatchArtefact));
-        when(azureBlobService.deleteBlob(any())).thenReturn("Success");
-        Map<String, String> testMap = new ConcurrentHashMap<>();
-        testMap.put(PROVENANCE_ID, PROVENANCE);
-        when(publicationServicesService.sendNoMatchArtefactsForReporting(testMap))
-            .thenReturn("Success no match artefacts sent");
-        lenient().doNothing().when(artefactRepository).deleteAll(List.of(artefact));
-        try (LogCaptor logCaptor = LogCaptor.forClass(PublicationService.class)) {
-            publicationService.runDailyTasks();
-            assertEquals("Success no match artefacts sent", logCaptor.getInfoLogs().get(0), MESSAGES_MATCH);
-            assertEquals(SUCCESS, logCaptor.getInfoLogs().get(1), MESSAGES_MATCH);
-            assertEquals("1 outdated artefacts found and deleted for before " + LocalDate.now(),
-                         logCaptor.getInfoLogs().get(2), MESSAGES_MATCH);
-        } catch (Exception ex) {
-            throw new IOException(ex.getMessage());
-        }
-    }
-
-    @Test
-    void testRunDailyTasksWithNoBlobsFound() throws IOException {
-        when(artefactRepository.findOutdatedArtefacts(LocalDate.now())).thenReturn(List.of());
-        try (LogCaptor logCaptor = LogCaptor.forClass(PublicationService.class)) {
-            publicationService.runDailyTasks();
-            assertEquals("0 outdated artefacts found and deleted for before " + LocalDate.now(),
-                         logCaptor.getInfoLogs().get(0), MESSAGES_MATCH);
-            verify(publicationServicesService, times(0))
-                .sendNoMatchArtefactsForReporting(any());
-        } catch (Exception ex) {
-            throw new IOException(ex.getMessage());
-        }
-    }
-
-    @Test
     void testReportNoMatchArtefacts() {
         when(artefactRepository.findAllNoMatchArtefacts()).thenReturn(List.of(noMatchArtefact));
         publicationService.reportNoMatchArtefacts();
@@ -1210,7 +1174,7 @@ class PublicationServiceTest {
         nationalListTypes.add(ListType.SJP_PUBLIC_LIST);
         nationalListTypes.add(ListType.CARE_STANDARDS_LIST);
         nationalListTypes.add(ListType.PRIMARY_HEALTH_LIST);
-        
+
         nationalListTypes.forEach(listType ->
                                       assertEquals(LocationType.NATIONAL,
                                                    publicationService.getLocationType(listType),
