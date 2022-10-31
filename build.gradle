@@ -1,7 +1,7 @@
 plugins {
   id 'application'
   id 'checkstyle'
-  id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+  id 'io.spring.dependency-management' version '1.1.0'
   id 'jacoco'
   id 'org.springframework.boot' version '2.5.14'
   id 'org.owasp.dependencycheck' version '7.0.3'
@@ -170,11 +170,11 @@ dependencies {
   implementation 'com.azure.spring:spring-cloud-azure-starter-active-directory:4.0.0'
   implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
   implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
-  implementation 'com.opencsv:opencsv:5.5.2'
+  implementation 'com.opencsv:opencsv:5.7.1'
   implementation 'org.apache.tomcat.embed:tomcat-embed-core:9.0.63'
   implementation 'org.apache.tomcat.embed:tomcat-embed-websocket:9.0.63'
   implementation 'org.springframework.boot:spring-boot-starter-webflux'
-  implementation("com.squareup.okhttp3:okhttp:4.9.3")
+  implementation("com.squareup.okhttp3:okhttp:4.10.0")
 
   // Force upgrade snakeyaml version for CVE-2022-38752
   implementation( group: 'org.yaml', name: 'snakeyaml').version {
