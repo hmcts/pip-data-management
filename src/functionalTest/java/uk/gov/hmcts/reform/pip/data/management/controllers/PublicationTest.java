@@ -82,6 +82,7 @@ class PublicationTest {
     private static final String LOCATION_TYPE_URL = PUBLICATION_URL + "/location-type/";
     private static final String SEND_NEW_ARTEFACTS_FOR_SUBSCRIPTION_URL = PUBLICATION_URL + "/latest/subscription";
     private static final String REPORT_NO_MATCH_ARTEFACTS_URL = PUBLICATION_URL + "/no-match/reporting";
+    private static final String MI_REPORTING_DATA_URL = PUBLICATION_URL + "/mi-data";
     private static final String DELETE_EXPIRED_ARTEFACTS_URL = PUBLICATION_URL + "/expired";
     private static final ArtefactType ARTEFACT_TYPE = ArtefactType.LIST;
     private static final Sensitivity SENSITIVITY = Sensitivity.PUBLIC;
@@ -1660,5 +1661,13 @@ class PublicationTest {
             .delete(DELETE_EXPIRED_ARTEFACTS_URL);
 
         mockMvc.perform(request).andExpect(status().isNoContent());
+    }
+
+    @Test
+    void testMIDataRequestSuccess() throws Exception {
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+            .get(MI_REPORTING_DATA_URL);
+
+        mockMvc.perform(request).andExpect(status().isOk());
     }
 }
