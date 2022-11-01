@@ -289,6 +289,6 @@ headers for uploading an artefact:
 ```
 ## Materialised View
 
-There is a materialised view created for the PI User table, which contains a subset of the fields.
+There is a materialised view created for the Artefact table, which contains a subset of the fields.
 
 This view is implemented via Flyway.
