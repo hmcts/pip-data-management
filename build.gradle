@@ -171,7 +171,7 @@ dependencies {
   implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
   implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
   implementation 'com.opencsv:opencsv:5.7.1'
-  implementation 'org.apache.tomcat.embed:tomcat-embed-core:9.0.63'
+  implementation 'org.apache.tomcat.embed:tomcat-embed-core:10.1.1'
   implementation 'org.apache.tomcat.embed:tomcat-embed-websocket:9.0.63'
   implementation 'org.springframework.boot:spring-boot-starter-webflux'
   implementation("com.squareup.okhttp3:okhttp:4.10.0")
