@@ -428,11 +428,19 @@ public class PublicationService {
      * @param artefactId The artefact to archive.
      */
     public void archiveArtefact(String issuerId, String artefactId) {
-        Artefact artefact = artefactRepository.getById(Long.valueOf(artefactId));
-        artefact.setArchived(true);
-        artefactRepository.save(artefact);
+        Optional<Artefact> optionalArtefact = artefactRepository.findArtefactByArtefactId(artefactId);
 
-        writeLog(UUID.fromString(issuerId), String.format("Artefact with ID %s has been archived by %s", issuerId, artefactId));
+        if (optionalArtefact.isPresent()) {
+            Artefact artefact = optionalArtefact.get();
+            artefact.setArchived(true);
+            artefactRepository.save(artefact);
+
+            writeLog(UUID.fromString(issuerId),
+                     String.format("Artefact with ID %s has been archived by %s", issuerId, artefactId));
+        } else {
+            throw new ArtefactNotFoundException(
+                String.format("Artefact with ID %s not found when archiving", artefactId));
+        }
 
     }
 

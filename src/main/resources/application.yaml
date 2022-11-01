@@ -115,4 +115,4 @@ validations:
 
 # Used for flyway to run DB migration on startup
 dbMigration:
-  runOnStartup: ${RUN_DB_MIGRATION_ON_STARTUP:true}
+  runOnStartup: ${RUN_DB_MIGRATION_ON_STARTUP:false}

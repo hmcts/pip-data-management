@@ -433,7 +433,8 @@ public class PublicationController {
 
     @ApiResponses({
         @ApiResponse(code = 200, message = "Artefact of ID {} has been archived"),
-        @ApiResponse(code = 403, message = UNAUTHORIZED_DESCRIPTION)
+        @ApiResponse(code = 403, message = UNAUTHORIZED_DESCRIPTION),
+        @ApiResponse(code = 404, message = "Artefact of ID {} not found when archiving")
     })
     @ApiOperation("Delete all expired artefacts")
     @ResponseStatus(HttpStatus.NO_CONTENT)

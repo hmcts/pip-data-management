@@ -31,6 +31,7 @@ import javax.persistence.Id;
 @NoArgsConstructor
 @AllArgsConstructor
 @TypeDef(name = "json", typeClass = JsonType.class)
+@SuppressWarnings("PMD.TooManyFields")
 public class Artefact {
 
     /**
@@ -135,17 +136,16 @@ public class Artefact {
     private boolean isArchived;
 
     /**
-     * Date/Time to indicate when the artefact was last received
+     * Date/Time to indicate when the artefact was last received.
      */
     @JsonView(ArtefactView.Internal.class)
     private LocalDateTime lastReceivedDate;
 
     /**
-     * A counter to show how many times the artefact has been superseded
+     * A counter to show how many times the artefact has been superseded. Default is 0
      */
-    @Builder.Default
     @JsonView(ArtefactView.Internal.class)
-    private int supersededCount = 0;
+    private int supersededCount;
 
     public void incrementSupersededCount() {
         supersededCount++;
