@@ -287,3 +287,8 @@ headers for uploading an artefact:
   "x-content-date": "Local date of when the earliest case in the list refers to"
 }
 ```
+## Materialised View
+
+There is a materialised view created for the PI User table, which contains a subset of the fields.
+
+This view is implemented via Flyway.
