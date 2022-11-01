@@ -132,8 +132,9 @@ public class Artefact {
     /**
      * A marker to show whether the artefact is archived.
      */
+    @Builder.Default
     @JsonView(ArtefactView.Internal.class)
-    private boolean isArchived;
+    private Boolean isArchived = false;
 
     /**
      * Date/Time to indicate when the artefact was last received.
@@ -145,10 +146,7 @@ public class Artefact {
      * A counter to show how many times the artefact has been superseded. Default is 0
      */
     @JsonView(ArtefactView.Internal.class)
+    @Column(nullable = false, columnDefinition = "INTEGER DEFAULT 0")
     private int supersededCount;
-
-    public void incrementSupersededCount() {
-        supersededCount++;
-    }
 
 }

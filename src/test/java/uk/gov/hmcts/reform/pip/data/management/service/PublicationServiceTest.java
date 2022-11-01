@@ -1256,6 +1256,47 @@ class PublicationServiceTest {
     }
 
     @Test
+    void testSupersededCountIsUpdated() {
+        when(artefactRepository.findArtefactByUpdateLogic(artefact.getLocationId(), artefact.getContentDate(),
+                                                          artefact.getLanguage().name(),
+                                                          artefact.getListType().name(),
+                                                          artefact.getProvenance()))
+            .thenReturn(Optional.of(artefact));
+
+        artefact.setPayload("/" + UUID.randomUUID());
+        artefactWithPayloadUrl.setLocationId(PROVENANCE_ID);
+        when(azureBlobService.createPayload(any(), eq(PAYLOAD))).thenReturn(PAYLOAD_URL);
+
+        ArgumentCaptor<Artefact> captor = ArgumentCaptor.forClass(Artefact.class);
+        when(artefactRepository.save(captor.capture())).thenReturn(artefactWithIdAndPayloadUrl);
+        when(payloadExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
+
+        publicationService.createPublication(artefact, PAYLOAD);
+
+        assertEquals(1, captor.getValue().getSupersededCount(), "Superseded count has not been incremented");
+    }
+
+    @Test
+    void testSupersededCountIsNotUpdated() {
+        when(artefactRepository.findArtefactByUpdateLogic(artefact.getLocationId(), artefact.getContentDate(),
+                                                          artefact.getLanguage().name(),
+                                                          artefact.getListType().name(),
+                                                          artefact.getProvenance()))
+            .thenReturn(Optional.empty());
+
+        artefactWithPayloadUrl.setLocationId(PROVENANCE_ID);
+        when(azureBlobService.createPayload(any(), eq(PAYLOAD))).thenReturn(PAYLOAD_URL);
+
+        ArgumentCaptor<Artefact> captor = ArgumentCaptor.forClass(Artefact.class);
+        when(artefactRepository.save(captor.capture())).thenReturn(artefactWithIdAndPayloadUrl);
+        when(payloadExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
+
+        publicationService.createPublication(artefact, PAYLOAD);
+
+        assertEquals(0, captor.getValue().getSupersededCount(), "Superseded count has been incremented");
+    }
+
+    @Test
     void testArchivedEndpoint() {
         String artefactId = UUID.randomUUID().toString();
         ArgumentCaptor<Artefact> captor = ArgumentCaptor.forClass(Artefact.class);
@@ -1266,7 +1307,7 @@ class PublicationServiceTest {
 
         publicationService.archiveArtefact(UUID.randomUUID().toString(), artefactId);
 
-        assertTrue(captor.getValue().isArchived(), "Artefact archive flag has not been set");
+        assertTrue(captor.getValue().getIsArchived(), "Artefact archive flag has not been set");
     }
 
     @Test

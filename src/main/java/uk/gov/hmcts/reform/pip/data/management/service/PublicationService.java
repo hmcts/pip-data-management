@@ -150,7 +150,7 @@ public class PublicationService {
         foundArtefact.ifPresent(value -> {
             artefact.setArtefactId(value.getArtefactId());
             artefact.setPayload(value.getPayload());
-            artefact.incrementSupersededCount();
+            artefact.setSupersededCount(value.getSupersededCount() + 1);
         });
         return foundArtefact.isPresent();
     }
@@ -432,7 +432,7 @@ public class PublicationService {
 
         if (optionalArtefact.isPresent()) {
             Artefact artefact = optionalArtefact.get();
-            artefact.setArchived(true);
+            artefact.setIsArchived(true);
             artefactRepository.save(artefact);
 
             writeLog(UUID.fromString(issuerId),
