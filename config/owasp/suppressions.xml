@@ -13,8 +13,8 @@
     <cve>CVE-2022-22978</cve>
   </suppress>
   <suppress>
-    <notes><![CDATA[file name: spring-cloud-azure-starter-active-directory-4.4.0.jar]]></notes>
-    <packageUrl regex="true">^pkg:maven/com.azure.spring/spring-cloud-azure-starter-active-directory@4.4.0</packageUrl>
+    <notes><![CDATA[file name: spring-cloud-azure-starter-active-directory-4.4.1.jar]]></notes>
+    <packageUrl regex="true">^pkg:maven/com.azure.spring/spring-cloud-azure-starter-active-directory@4.4.1</packageUrl>
     <cve>CVE-2021-42306</cve>
   </suppress>
   <suppress>
