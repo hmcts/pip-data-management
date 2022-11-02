@@ -75,6 +75,10 @@ spring:
     multipart:
       max-file-size: 2MB
       max-request-size: 2MB
+  # This is needed as locally, all tables are in a single schema. Flyway is only enabled on the clusters by default
+  flyway:
+    enabled: ${ENABLE_FLYWAY:false}
+
 
 azure:
   application-insights:
@@ -119,5 +123,5 @@ springdoc:
 
 # Used for flyway to run DB migration on startup
 dbMigration:
-  runOnStartup: ${RUN_DB_MIGRATION_ON_STARTUP:false}
+  runOnStartup: ${RUN_DB_MIGRATION_ON_STARTUP:true}
 
