@@ -1218,9 +1218,8 @@ class PublicationTest {
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
 
-
-        assertEquals(artefact,
-                     objectMapper.readValue(response.getResponse().getContentAsString(), Artefact.class),
+        assertTrue(compareArtefacts(artefact,
+                     objectMapper.readValue(response.getResponse().getContentAsString(), Artefact.class)),
                      "Metadata does not match expected artefact");
     }
 
@@ -1266,9 +1265,8 @@ class PublicationTest {
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
 
-        assertEquals(
-            artefact,
-            objectMapper.readValue(response.getResponse().getContentAsString(), Artefact.class),
+        assertTrue(compareArtefacts(artefact,
+            objectMapper.readValue(response.getResponse().getContentAsString(), Artefact.class)),
             "Metadata does not match expected artefact"
         );
     }
@@ -1605,7 +1603,7 @@ class PublicationTest {
         Artefact artefact = objectMapper.readValue(
             response.getResponse().getContentAsString(), Artefact.class);
 
-        assertEquals(artefactToFind, artefact, SHOULD_RETURN_EXPECTED_ARTEFACT);
+        assertTrue(compareArtefacts(artefactToFind, artefact), SHOULD_RETURN_EXPECTED_ARTEFACT);
     }
 
     @Test
@@ -1660,5 +1658,24 @@ class PublicationTest {
             .delete(DELETE_EXPIRED_ARTEFACTS_URL);
 
         mockMvc.perform(request).andExpect(status().isNoContent());
+    }
+
+    private boolean compareArtefacts(Artefact expectedArtefact, Artefact unexpectedArtefact) {
+        return expectedArtefact.getArtefactId().equals(unexpectedArtefact.getArtefactId())
+            && expectedArtefact.getProvenance().equals(unexpectedArtefact.getProvenance())
+            && expectedArtefact.getSensitivity().equals(unexpectedArtefact.getSensitivity())
+            && expectedArtefact.getPayload().equals(unexpectedArtefact.getPayload())
+            && expectedArtefact.getType().equals(unexpectedArtefact.getType())
+            && expectedArtefact.getSearch().equals(unexpectedArtefact.getSearch())
+            && expectedArtefact.getLocationId().equals(unexpectedArtefact.getLocationId())
+            && expectedArtefact.getLanguage().equals(unexpectedArtefact.getLanguage())
+            && expectedArtefact.getListType().equals(unexpectedArtefact.getListType())
+            && expectedArtefact.getDisplayTo().equals(unexpectedArtefact.getDisplayTo())
+            && expectedArtefact.getDisplayFrom().equals(unexpectedArtefact.getDisplayFrom())
+            && expectedArtefact.getContentDate().equals(unexpectedArtefact.getContentDate())
+            && expectedArtefact.getIsFlatFile().equals(unexpectedArtefact.getIsFlatFile())
+            && expectedArtefact.getSourceArtefactId().equals(unexpectedArtefact.getSourceArtefactId());
+
+
     }
 }
