@@ -287,6 +287,16 @@ headers for uploading an artefact:
   "x-content-date": "Local date of when the earliest case in the list refers to"
 }
 ```
+
+## Flyway
+
+Flyway is integrated with Data Management.
+
+- On the pipeline flyway is enabled but run on start up switched off
+- Locally, flyway is disabled. This is due to all tables existing in a single database locally which causes flyway to fail startup due to mismatching scripts
+
+If you want to test the scripts locally, you will first need to clear the "flyway_schema_history' table, and then set the 'ENABLE_FLYWAY' environment variable to 'true'.
+
 ## Materialised View
 
 There is a materialised view created for the Artefact table, which contains a subset of the fields.

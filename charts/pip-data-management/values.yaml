@@ -38,4 +38,5 @@ java:
         - name: app-pip-publication-services-scope
           alias: PUBLICATION_SERVICES_AZ_API
   environment:
+    ENABLE_FLYWAY: true
     RUN_DB_MIGRATION_ON_STARTUP: false
