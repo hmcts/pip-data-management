@@ -18,13 +18,8 @@
     <cve>CVE-2021-42306</cve>
   </suppress>
   <suppress>
-    <notes><![CDATA[Spring old vuln thats been re-flagged recently, doesnt look like we are impacted]]></notes>
-    <packageUrl regex="true">^pkg:maven/org\.springframework/spring.*$</packageUrl>
-    <cve>CVE-2016-1000027</cve>
-  </suppress>
-  <suppress>
     <notes>A new vulnurability flagged. Needing to suppress until a new version of spring boot is released</notes>
-    <packageUrl regex="true">^pkg:maven/org\.springframework/security.*$</packageUrl>
+    <packageUrl regex="true">^pkg:maven/org\.springframework/spring.*$</packageUrl>
     <cve>CVE-2022-31692</cve>
     <cve>CVE-2022-31690</cve>
   </suppress>
