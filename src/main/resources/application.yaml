@@ -113,6 +113,6 @@ validations:
     CARE_STANDARDS_LIST: "schemas/care_standards_list.json"
     PRIMARY_HEALTH_LIST: "schemas/primary_health_list.json"
 
-cron:
-  daily-start-of-day: "0 0 0 * * *"
-
+springdoc:
+  swagger-ui:
+    path: /swagger-ui/
