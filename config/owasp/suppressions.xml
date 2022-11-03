@@ -19,7 +19,7 @@
   </suppress>
   <suppress>
     <notes>A new vulnurability flagged. Needing to suppress until a new version of spring boot is released</notes>
-    <packageUrl regex="true">^pkg:maven/org\.springframework/spring.*$</packageUrl>
+    <packageUrl regex="true">^pkg:maven/org.springframework.security/.*$@5.7.3</packageUrl>
     <cve>CVE-2022-31692</cve>
     <cve>CVE-2022-31690</cve>
   </suppress>
