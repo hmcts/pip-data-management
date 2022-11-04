@@ -45,6 +45,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WithMockUser(username = "admin", authorities = { "APPROLE_api.request.admin" })
 
 class PublicationCrownDailyListTest {
+
     @Autowired
     BlobContainerClient blobContainerClient;
 
