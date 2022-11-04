@@ -50,6 +50,10 @@
                         "hearingType": "Directions",
                         "case": [
                           {
+                            "reportingRestrictionDetail": [
+                              "Reporting Restriction detail line 1",
+                              "Reporting restriction detail line 2"
+                            ],
                             "caseNumber": "12341234",
                             "caseLinked": [
                               {

@@ -60,7 +60,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SuppressWarnings({"PMD.ExcessiveImports", "PMD.ExcessiveClassLength",
     "PMD.CyclomaticComplexity", "PMD.TooManyMethods", "PMD.LawOfDemeter"})
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
-@WithMockUser(username = "admin", authorities = { "APPROLE_api.request.admin" })
+@WithMockUser(username = "admin", authorities = {"APPROLE_api.request.admin"})
 class PublicationTest {
 
     @Autowired
@@ -82,6 +82,7 @@ class PublicationTest {
     private static final String LOCATION_TYPE_URL = PUBLICATION_URL + "/location-type/";
     private static final String SEND_NEW_ARTEFACTS_FOR_SUBSCRIPTION_URL = PUBLICATION_URL + "/latest/subscription";
     private static final String REPORT_NO_MATCH_ARTEFACTS_URL = PUBLICATION_URL + "/no-match/reporting";
+    private static final String MI_REPORTING_DATA_URL = PUBLICATION_URL + "/mi-data";
     private static final String DELETE_EXPIRED_ARTEFACTS_URL = PUBLICATION_URL + "/expired";
     private static final ArtefactType ARTEFACT_TYPE = ArtefactType.LIST;
     private static final Sensitivity SENSITIVITY = Sensitivity.PUBLIC;
@@ -1070,7 +1071,8 @@ class PublicationTest {
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
 
         assertEquals(isJson ? payload : new String(file.getBytes()),
-                     response.getResponse().getContentAsString(), "Payload does not match expected content");
+                     response.getResponse().getContentAsString(), "Payload does not match expected content"
+        );
     }
 
     @ParameterizedTest
@@ -1117,7 +1119,8 @@ class PublicationTest {
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
 
         assertEquals(isJson ? payload : new String(file.getBytes()),
-                     response.getResponse().getContentAsString(), "Payload does not match expected content");
+                     response.getResponse().getContentAsString(), "Payload does not match expected content"
+        );
     }
 
     @ParameterizedTest
@@ -1439,7 +1442,8 @@ class PublicationTest {
 
         assertTrue(
             getResponse.getResponse().getContentAsString().contains(artefact.getArtefactId().toString()),
-            "SHOULD_RETURN_EXPECTED_ARTEFACT");
+            "SHOULD_RETURN_EXPECTED_ARTEFACT"
+        );
     }
 
     @Test
@@ -1474,7 +1478,8 @@ class PublicationTest {
 
         assertTrue(
             getResponse.getResponse().getContentAsString().contains(artefact.getArtefactId().toString()),
-            "SHOULD_RETURN_EXPECTED_ARTEFACT");
+            "SHOULD_RETURN_EXPECTED_ARTEFACT"
+        );
     }
 
     @Test
@@ -1492,7 +1497,8 @@ class PublicationTest {
 
         assertTrue(
             getResponse.getResponse().getContentAsString().contains(artefact.getArtefactId().toString()),
-            "SHOULD_RETURN_EXPECTED_ARTEFACT");
+            "SHOULD_RETURN_EXPECTED_ARTEFACT"
+        );
     }
 
     @Test
@@ -1515,12 +1521,15 @@ class PublicationTest {
 
         Artefact inDateArtefact = createDailyList(Sensitivity.PUBLIC);
         Artefact futureArtefact = createDailyList(Sensitivity.PUBLIC, DISPLAY_FROM.plusMonths(1),
-                                                  CONTENT_DATE.plusDays(1));
+                                                  CONTENT_DATE.plusDays(1)
+        );
 
         assertEquals(inDateArtefact.getDisplayFrom(), DISPLAY_FROM.minusMonths(2),
-                     VALIDATION_DISPLAY_FROM);
+                     VALIDATION_DISPLAY_FROM
+        );
         assertEquals(futureArtefact.getDisplayFrom(), DISPLAY_FROM.plusMonths(1),
-                     VALIDATION_DISPLAY_FROM);
+                     VALIDATION_DISPLAY_FROM
+        );
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
             .get(SEARCH_COURT_URL + "/" + COURT_ID)
@@ -1561,7 +1570,8 @@ class PublicationTest {
         MvcResult deleteResponse = mockMvc.perform(deleteRequest).andExpect(status().isOk()).andReturn();
 
         assertEquals("Successfully deleted artefact: " + artefactToDelete.getArtefactId(),
-                     deleteResponse.getResponse().getContentAsString(), "Should successfully delete artefact");
+                     deleteResponse.getResponse().getContentAsString(), "Should successfully delete artefact"
+        );
 
     }
 
@@ -1577,9 +1587,11 @@ class PublicationTest {
 
         MvcResult deleteResponse = mockMvc.perform(deleteRequest).andExpect(status().isNotFound()).andReturn();
 
-        assertTrue(deleteResponse.getResponse().getContentAsString()
-                       .contains("No artefact found with the ID: " + invalidId),
-                   "Should return 404 for artefact not found");
+        assertTrue(
+            deleteResponse.getResponse().getContentAsString()
+                .contains("No artefact found with the ID: " + invalidId),
+            "Should return 404 for artefact not found"
+        );
 
     }
 
@@ -1587,7 +1599,8 @@ class PublicationTest {
     void testGetArtefactMetadataAdmin() throws Exception {
         when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
         Artefact artefactToFind = createDailyList(Sensitivity.PUBLIC, DISPLAY_FROM.plusMonths(1),
-                                                  CONTENT_DATE.plusDays(1));
+                                                  CONTENT_DATE.plusDays(1)
+        );
 
         MockHttpServletRequestBuilder expectedFailRequest = MockMvcRequestBuilders
             .get(PUBLICATION_URL + "/" + artefactToFind.getArtefactId())
@@ -1623,8 +1636,10 @@ class PublicationTest {
 
         MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isOk()).andReturn();
 
-        assertTrue(response.getResponse().getContentAsString().contains(LocationType.VENUE.name()),
-                     "Location types should match");
+        assertTrue(
+            response.getResponse().getContentAsString().contains(LocationType.VENUE.name()),
+            "Location types should match"
+        );
     }
 
     @Test
@@ -1660,6 +1675,14 @@ class PublicationTest {
         mockMvc.perform(request).andExpect(status().isNoContent());
     }
 
+    @Test
+    void testMiDataRequestSuccess() throws Exception {
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+            .get(MI_REPORTING_DATA_URL);
+
+        mockMvc.perform(request).andExpect(status().isOk());
+    }
+
     private boolean compareArtefacts(Artefact expectedArtefact, Artefact unexpectedArtefact) {
         return expectedArtefact.getArtefactId().equals(unexpectedArtefact.getArtefactId())
             && expectedArtefact.getProvenance().equals(unexpectedArtefact.getProvenance())
@@ -1675,7 +1698,6 @@ class PublicationTest {
             && expectedArtefact.getContentDate().equals(unexpectedArtefact.getContentDate())
             && expectedArtefact.getIsFlatFile().equals(unexpectedArtefact.getIsFlatFile())
             && expectedArtefact.getSourceArtefactId().equals(unexpectedArtefact.getSourceArtefactId());
-
-
     }
+
 }

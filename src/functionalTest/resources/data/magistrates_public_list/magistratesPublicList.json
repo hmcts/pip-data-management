@@ -53,6 +53,10 @@
                         "case": [
                           {
                             "caseNumber": "12341234",
+                            "reportingRestrictionDetail": [
+                              "Reporting Restriction detail line 1",
+                              "Reporting restriction detail line 2"
+                            ],
                             "caseSequenceIndicator": "[2 of 3]"
                           }
                         ],
