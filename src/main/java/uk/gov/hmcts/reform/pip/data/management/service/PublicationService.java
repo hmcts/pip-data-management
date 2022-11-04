@@ -58,8 +58,6 @@ public class PublicationService {
 
     private final ChannelManagementService channelManagementService;
 
-    private final ObjectMapper mapper = new ObjectMapper();
-
     @Autowired
     public PublicationService(ArtefactRepository artefactRepository,
                               AzureBlobService azureBlobService,
