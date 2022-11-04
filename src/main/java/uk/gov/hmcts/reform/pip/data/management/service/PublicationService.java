@@ -1,8 +1,5 @@
 package uk.gov.hmcts.reform.pip.data.management.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -24,8 +21,6 @@ import uk.gov.hmcts.reform.pip.model.enums.UserActions;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -44,6 +39,8 @@ import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
 @SuppressWarnings("PMD.GodClass")
 public class PublicationService {
 
+    private static final char DELIMITER = ',';
+
     private final ArtefactRepository artefactRepository;
 
     private final AzureBlobService azureBlobService;
@@ -57,8 +54,6 @@ public class PublicationService {
     private final AccountManagementService accountManagementService;
 
     private final PublicationServicesService publicationServicesService;
-
-    private final ObjectMapper mapper = new ObjectMapper();
 
     @Autowired
     public PublicationService(ArtefactRepository artefactRepository,
@@ -432,47 +427,18 @@ public class PublicationService {
     }
 
     public String getMiData() {
-        List<String> returnedData = artefactRepository.getMiData();
-        StringBuilder builder = new StringBuilder(146);
-        builder.append("artefact_id,display_from,display_to,language,provenance,sensitivity,"
-                           + "source_artefact_id,type,content_date,court_id,court_name,search\n");
-        for (String s : returnedData) {
-            String[] splitString = s.split(",", 12);
-            long one = 1;
-            builder.append(Arrays.stream(splitString).limit(splitString.length - one)
-                               .collect(Collectors.joining(","))).append(',');
-            try {
-                builder.append(jsonDestroyer(splitString[splitString.length - 1]));
-            } catch (Exception e) {
-                log.error(e.getMessage());
-                builder.append("JSON Error\n");
-            }
-        }
+        StringBuilder builder = new StringBuilder(150);
+        builder
+            .append("artefact_id,display_from,display_to,language,provenance,sensitivity,source_artefact_id,"
+                        + "type,content_date,court_id,court_name,list_type")
+            .append(System.lineSeparator());
+        artefactRepository.getMiData()
+            .stream()
+            // Insert an extra empty field for court name before the list type
+            .map(line -> new StringBuilder(line)
+                .insert(line.lastIndexOf(DELIMITER), DELIMITER)
+                .toString())
+            .forEach(line -> builder.append(line).append(System.lineSeparator()));
         return builder.toString();
-    }
-
-    private String jsonDestroyer(String json) throws JsonProcessingException {
-        JsonNode topLevel = mapper.readTree(json);
-        JsonNode iteratorNode = topLevel.get("cases");
-        if (iteratorNode == null) {
-            return "\n";
-        }
-        Iterator<JsonNode> nodeIterator = iteratorNode.elements();
-        int counter = 1;
-        StringBuilder builder = new StringBuilder();
-        while (nodeIterator.hasNext()) {
-            JsonNode currentNode = nodeIterator.next();
-            builder.append("Case ").append(counter);
-            builder.append(": ");
-            currentNode.fields().forEachRemaining(
-                (node) -> {
-                    builder.append(node.getKey().trim()).append(": ");
-                    builder.append(node.getValue().asText().trim()).append(' ');
-                }
-            );
-            builder.append(' ');
-            counter += 1;
-        }
-        return builder.append('\n').toString();
     }
 }
