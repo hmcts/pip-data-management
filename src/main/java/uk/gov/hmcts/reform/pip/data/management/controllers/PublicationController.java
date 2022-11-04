@@ -428,7 +428,7 @@ public class PublicationController {
         @ApiResponse(responseCode = AUTH_ERROR_CODE, description = UNAUTHORIZED_DESCRIPTION),
         @ApiResponse(responseCode = NOT_FOUND_CODE, description = "Artefact of ID {} not found when archiving")
     })
-    @Operation(summary = "Delete all expired artefacts")
+    @Operation(summary = "Archive an artefact by ID")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PutMapping("/{id}/archive")
     @IsAdmin
