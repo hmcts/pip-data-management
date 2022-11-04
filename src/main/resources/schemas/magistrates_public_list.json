@@ -414,6 +414,19 @@
                                               ],
                                               "pattern": "^.*$"
                                             },
+                                            "reportingRestrictionDetail": {
+                                              "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/reportingRestrictionDetail",
+                                              "title": "Reporting Restrictions Detail",
+                                              "description": "The detail / wording of any reporting restrictions attached to the case",
+                                              "type": "array",
+                                              "items": {
+                                                "type": "string",
+                                                "default": "",
+                                                "examples": [
+                                                  "This is a reporting restrictions detail"
+                                                ]
+                                              }
+                                            },
                                             "caseSequenceIndicator": {
                                               "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/caseSequenceIndicator",
                                               "title": "Case Sequence Indicator",

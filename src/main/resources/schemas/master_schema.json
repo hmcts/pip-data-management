@@ -682,13 +682,26 @@
                                             "reportingRestriction": {
                                               "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/reportingRestriction",
                                               "title": "Reporting Restriction",
-                                              "description": "Any reporting restrictions posed to the case",
+                                              "description": "Whether any reporting restrictions are attached to the case",
                                               "type": "boolean",
                                               "default": "",
                                               "examples": [
                                                 "true"
                                               ],
                                               "pattern": "^.*$"
+                                            },
+                                            "reportingRestrictionDetail": {
+                                              "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/reportingRestrictionDetail",
+                                              "title": "Reporting Restrictions Detail",
+                                              "description": "The detail / wording of any reporting restrictions attached to the case",
+                                              "type": "array",
+                                              "items": {
+                                                "type": "string",
+                                                "default": "",
+                                                "examples": [
+                                                  "This is a reporting restrictions detail"
+                                                ]
+                                              }
                                             },
                                             "caseJurisdictionET": {
                                               "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/caseJurisdictionET",
@@ -1391,13 +1404,26 @@
                                             "reportingRestriction": {
                                               "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/offence/reportingRestriction",
                                               "title": "Reporting Restriction",
-                                              "description": "Any reporting restrictions posed to the offence",
+                                              "description": "Whether there are any reporting restrictions posed to the offence",
                                               "type": "boolean",
                                               "default": "",
                                               "examples": [
                                                 "true"
                                               ],
                                               "pattern": "^.*$"
+                                            },
+                                            "reportingRestrictionDetail": {
+                                              "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/offence/reportingRestrictionDetail",
+                                              "title": "Reporting Restrictions Detail",
+                                              "description": "The detail / wording of any reporting restrictions attached to the offence",
+                                              "type": "array",
+                                              "items": {
+                                                "type": "string",
+                                                "default": "",
+                                                "examples": [
+                                                  "This is a reporting restrictions detail"
+                                                ]
+                                              }
                                             }
                                           }
                                         }
