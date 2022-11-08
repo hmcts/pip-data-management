@@ -24,3 +24,7 @@ module "database" {
 
 }
 
+resource "postgresql_role" "create_sdp_access" {
+  name     = "sdp_access"
+}
+
