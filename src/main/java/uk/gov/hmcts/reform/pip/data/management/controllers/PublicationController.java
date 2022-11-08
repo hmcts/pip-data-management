@@ -157,6 +157,7 @@ public class PublicationController {
             .listType(headers.getListType())
             .locationId(headers.getCourtId())
             .contentDate(headers.getContentDate())
+            .expiryDate(headers.getDisplayTo())
             .build();
 
         Artefact createdItem = publicationService
@@ -164,7 +165,9 @@ public class PublicationController {
 
         logManualUpload(publicationService.maskEmail(issuerEmail), createdItem.getArtefactId().toString());
 
-        publicationService.checkAndTriggerSubscriptionManagement(createdItem);
+        // Process the created artefact by requesting channel management to generate PDF/Excel files
+        // and check/trigger subscription management, async.
+        publicationService.processCreatedPublication(createdItem);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(createdItem);
     }
@@ -233,6 +236,7 @@ public class PublicationController {
             .listType(headers.getListType())
             .locationId(headers.getCourtId())
             .contentDate(headers.getContentDate())
+            .expiryDate(headers.getDisplayTo())
             .isFlatFile(true)
             .search(search)
             .build();

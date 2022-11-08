@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.pip.data.management;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.scheduling.annotation.EnableAsync;
 import uk.gov.hmcts.reform.pip.data.management.config.AzureBlobConfigurationProperties;
 import uk.gov.hmcts.reform.pip.data.management.config.SearchConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.config.ValidationConfiguration;
@@ -16,6 +17,7 @@ import javax.annotation.PostConstruct;
     SearchConfiguration.class,
     ValidationConfiguration.class
 })
+@EnableAsync
 @SuppressWarnings("HideUtilityClassConstructor") // Spring needs a constructor, its not a utility class
 public class Application {
 

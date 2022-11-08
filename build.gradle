@@ -134,7 +134,7 @@ task migratePostgresDatabase(type: org.flywaydb.gradle.task.FlywayMigrateTask) {
 
 project.tasks['sonarqube'].dependsOn jacocoTestReport
 
-def sonarExclusions = []
+def sonarExclusions = ["src/main/java/uk/gov/hmcts/reform/pip/data/management/config/AzureBlobConfiguration.java"]
 
 sonarqube {
   properties {
