@@ -2,7 +2,10 @@ package uk.gov.hmcts.reform.pip.data.management.database;
 
 import com.azure.storage.blob.BlobClient;
 import com.azure.storage.blob.BlobContainerClient;
+import com.azure.storage.blob.models.BlobStorageException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
@@ -16,15 +19,20 @@ import java.io.IOException;
  * Class with handles the interaction with the Azure Blob Service.
  */
 @Component
+@Slf4j
 public class AzureBlobService {
 
-    private final BlobContainerClient blobContainerClient;
+    private final BlobContainerClient artefactBlobContainerClient;
+
+    private final BlobContainerClient publicationsBlobContainerClient;
 
     private static final String DELETE_MESSAGE = "Blob: %s successfully deleted.";
 
     @Autowired
-    public AzureBlobService(BlobContainerClient blobContainerClient) {
-        this.blobContainerClient = blobContainerClient;
+    public AzureBlobService(@Qualifier("artefact") BlobContainerClient artefactBlobContainerClient,
+                            @Qualifier("publications") BlobContainerClient publicationsBlobContainerClient) {
+        this.artefactBlobContainerClient = artefactBlobContainerClient;
+        this.publicationsBlobContainerClient = publicationsBlobContainerClient;
     }
 
     /**
@@ -35,12 +43,12 @@ public class AzureBlobService {
      * @return The URL to where the payload has been created
      */
     public String createPayload(String payloadId, String payload) {
-        BlobClient blobClient = blobContainerClient.getBlobClient(payloadId);
+        BlobClient blobClient = artefactBlobContainerClient.getBlobClient(payloadId);
 
         byte[] payloadBytes = payload.getBytes();
         blobClient.upload(new ByteArrayInputStream(payloadBytes), payloadBytes.length, true);
 
-        return blobContainerClient.getBlobContainerUrl() + '/' + payloadId;
+        return artefactBlobContainerClient.getBlobContainerUrl() + '/' + payloadId;
     }
 
     /**
@@ -51,7 +59,7 @@ public class AzureBlobService {
      * @return The URL where the file was uploaded.
      */
     public String uploadFlatFile(String payloadId, MultipartFile file) {
-        BlobClient blobClient = blobContainerClient.getBlobClient(payloadId);
+        BlobClient blobClient = artefactBlobContainerClient.getBlobClient(payloadId);
 
         try {
             blobClient.upload(file.getInputStream(), file.getSize(), true);
@@ -59,7 +67,7 @@ public class AzureBlobService {
             throw new
                 FlatFileException("Could not parse provided file, please check supported file types and try again");
         }
-        return blobContainerClient.getBlobContainerUrl() + "/" + payloadId;
+        return artefactBlobContainerClient.getBlobContainerUrl() + "/" + payloadId;
     }
 
     /**
@@ -69,19 +77,36 @@ public class AzureBlobService {
      * @return the data contained within the blob in String format.
      */
     public String getBlobData(String payloadId) {
-        BlobClient blobClient = blobContainerClient.getBlobClient(payloadId);
+        BlobClient blobClient = artefactBlobContainerClient.getBlobClient(payloadId);
         return blobClient.downloadContent().toString();
     }
 
     public Resource getBlobFile(String payloadId) {
-        BlobClient blobClient = blobContainerClient.getBlobClient(payloadId);
+        BlobClient blobClient = artefactBlobContainerClient.getBlobClient(payloadId);
         byte[] data = blobClient.downloadContent().toBytes();
         return new ByteArrayResource(data);
     }
 
     public String deleteBlob(String payloadId) {
-        BlobClient blobClient = blobContainerClient.getBlobClient(payloadId);
+        try {
+            BlobClient blobClient = artefactBlobContainerClient.getBlobClient(payloadId);
+            blobClient.delete();
+            return String.format(DELETE_MESSAGE, payloadId);
+        } catch (BlobStorageException e) {
+            log.error("Blob with payload ID {} failed to delete with trace {}", payloadId, e.getMessage());
+            return String.format("Blob failed to delete with ID %s", payloadId);
+        }
+    }
+
+    /**
+     * Delete a blob in the publications storage container that contain the artefact ID.
+     *
+     * @param blobName The name of the blob to delete.
+     * @return A delete message.
+     */
+    public String deletePublicationBlob(String blobName) {
+        BlobClient blobClient = publicationsBlobContainerClient.getBlobClient(blobName);
         blobClient.delete();
-        return String.format(DELETE_MESSAGE, payloadId);
+        return String.format(DELETE_MESSAGE, blobName);
     }
 }
