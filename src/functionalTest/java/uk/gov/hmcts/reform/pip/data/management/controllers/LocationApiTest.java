@@ -97,6 +97,7 @@ class LocationApiTest {
     }
 
     @Test
+    @WithMockUser(username = USERNAME, authorities = { VALID_ROLE })
     void testGetAllLocationsReturnsCorrectLocations() throws Exception {
         List<Location> locations = createLocations(LOCATIONS_CSV);
 
@@ -120,6 +121,7 @@ class LocationApiTest {
     }
 
     @Test
+    @WithMockUser(username = USERNAME, authorities = { VALID_ROLE })
     void testGetLocationByIdReturnsSuccess() throws Exception {
         List<Location> locations = createLocations(LOCATIONS_CSV);
 
@@ -151,6 +153,7 @@ class LocationApiTest {
     }
 
     @Test
+    @WithMockUser(username = USERNAME, authorities = { VALID_ROLE })
     void testGetLocationByNameReturnsSuccess() throws Exception {
         List<Location> locations = createLocations(LOCATIONS_CSV);
 
@@ -184,6 +187,7 @@ class LocationApiTest {
     }
 
     @Test
+    @WithMockUser(username = USERNAME, authorities = { VALID_ROLE })
     void testGetWelshLocationByNameReturnsSuccess() throws Exception {
         List<Location> locations = createLocations(LOCATIONS_CSV);
 
@@ -217,6 +221,7 @@ class LocationApiTest {
     }
 
     @Test
+    @WithMockUser(username = USERNAME, authorities = { VALID_ROLE })
     void testFilterLocationsByRegionReturnsNoResults() throws Exception {
         createLocations(LOCATIONS_CSV);
 
@@ -233,6 +238,7 @@ class LocationApiTest {
     }
 
     @Test
+    @WithMockUser(username = USERNAME, authorities = { VALID_ROLE })
     void testWelshFilterLocationsByRegionReturnsNoResults() throws Exception {
         createLocations(LOCATIONS_CSV);
 
@@ -249,6 +255,7 @@ class LocationApiTest {
     }
 
     @Test
+    @WithMockUser(username = USERNAME, authorities = { VALID_ROLE })
     void testFilterLocationsByJurisdictionReturnsNoResults() throws Exception {
         createLocations(LOCATIONS_CSV);
 
@@ -265,6 +272,7 @@ class LocationApiTest {
     }
 
     @Test
+    @WithMockUser(username = USERNAME, authorities = { VALID_ROLE })
     void testWelshFilterLocationsByJurisdictionReturnsNoResults() throws Exception {
         createLocations(LOCATIONS_CSV);
 
@@ -282,6 +290,7 @@ class LocationApiTest {
 
 
     @Test
+    @WithMockUser(username = USERNAME, authorities = { VALID_ROLE })
     void testFilterLocationsByJurisdictionAndRegion() throws Exception {
         List<Location> locations = createLocations(LOCATIONS_CSV);
 
@@ -302,6 +311,7 @@ class LocationApiTest {
     }
 
     @Test
+    @WithMockUser(username = USERNAME, authorities = { VALID_ROLE })
     void testWelshFilterLocationsByJurisdictionAndRegion() throws Exception {
         List<Location> locations = createLocations(LOCATIONS_CSV);
 
@@ -322,6 +332,7 @@ class LocationApiTest {
     }
 
     @Test
+    @WithMockUser(username = USERNAME, authorities = { VALID_ROLE })
     void testFilterByOnlyRegion() throws Exception {
         List<Location> locations = createLocations(LOCATIONS_CSV);
 
@@ -341,6 +352,7 @@ class LocationApiTest {
     }
 
     @Test
+    @WithMockUser(username = USERNAME, authorities = { VALID_ROLE })
     void testWelshFilterByOnlyRegion() throws Exception {
         createLocations(LOCATIONS_CSV);
 
@@ -357,6 +369,7 @@ class LocationApiTest {
     }
 
     @Test
+    @WithMockUser(username = USERNAME, authorities = { VALID_ROLE })
     void testFilterByMultipleRegions() throws Exception {
         List<Location> locations = createLocations(LOCATIONS_CSV);
 
@@ -378,6 +391,7 @@ class LocationApiTest {
     }
 
     @Test
+    @WithMockUser(username = USERNAME, authorities = { VALID_ROLE })
     void testWelshFilterByMultipleRegions() throws Exception {
         List<Location> locations = createLocations(LOCATIONS_CSV);
 
@@ -399,6 +413,7 @@ class LocationApiTest {
     }
 
     @Test
+    @WithMockUser(username = USERNAME, authorities = { VALID_ROLE })
     void testFilterByOnlyJurisdiction() throws Exception {
         List<Location> locations = createLocations(LOCATIONS_CSV);
 
@@ -418,6 +433,7 @@ class LocationApiTest {
     }
 
     @Test
+    @WithMockUser(username = USERNAME, authorities = { VALID_ROLE })
     void testWelshFilterByOnlyJurisdiction() throws Exception {
         List<Location> locations = createLocations(LOCATIONS_CSV);
 
@@ -437,6 +453,7 @@ class LocationApiTest {
     }
 
     @Test
+    @WithMockUser(username = USERNAME, authorities = { VALID_ROLE })
     void testFilterByMultipleJurisdictions() throws Exception {
         List<Location> locations = createLocations(LOCATIONS_CSV);
 
@@ -458,6 +475,7 @@ class LocationApiTest {
     }
 
     @Test
+    @WithMockUser(username = USERNAME, authorities = { VALID_ROLE })
     void testWelshFilterByMultipleJurisdictions() throws Exception {
         List<Location> locations = createLocations(LOCATIONS_CSV);
 
@@ -479,6 +497,7 @@ class LocationApiTest {
     }
 
     @Test
+    @WithMockUser(username = USERNAME, authorities = { VALID_ROLE })
     void testFilterByNoRegionOrJurisdiction() throws Exception {
         final List<Location> locations = createLocations(LOCATIONS_CSV);
 
@@ -500,6 +519,7 @@ class LocationApiTest {
     }
 
     @Test
+    @WithMockUser(username = USERNAME, authorities = { VALID_ROLE })
     void testWelshFilterByNoRegionOrJurisdiction() throws Exception {
         final List<Location> locations = createLocations(LOCATIONS_CSV);
 
