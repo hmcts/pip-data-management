@@ -25,6 +25,14 @@ module "database" {
 }
 
 resource "postgresql_role" "create_sdp_access" {
-  name     = "sdp_access"
+  name     = "sdp_access_test",
 }
 
+resource "postgresql_grant" "readonly_mv" {
+  database    = module.database.postgresql_database,
+  role        = "sdp_access_test",
+  schema      = "public",
+  object_type = "table",
+  privileges  = ["SELECT"],
+  objects     = ["sdp_mat_view_artefact"]
+}
