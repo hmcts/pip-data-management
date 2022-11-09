@@ -426,7 +426,7 @@ public class PublicationController {
     @ApiResponses({
         @ApiResponse(responseCode = OK_CODE, description = "Artefact of ID {} has been archived"),
         @ApiResponse(responseCode = AUTH_ERROR_CODE, description = UNAUTHORIZED_DESCRIPTION),
-        @ApiResponse(responseCode = NOT_FOUND_CODE, description = "Artefact of ID {} not found when archiving")
+        @ApiResponse(responseCode = NOT_FOUND_CODE, description = "Artefact with ID {} not found when archiving")
     })
     @Operation(summary = "Archive an artefact by ID")
     @ResponseStatus(HttpStatus.NO_CONTENT)
