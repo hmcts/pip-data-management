@@ -66,6 +66,9 @@ class LocationApiTest {
     private static final int ALL_LOCATIONS = 3;
     private static final String LOCATION_RESULT = "Location has been returned when not expected";
 
+    private static final String USERNAME = "admin";
+    private static final String VALID_ROLE = "APPROLE_api.request.admin";
+
     private final BiPredicate<Location, Location> compareLocationWithoutReference = (location, otherLocation) ->
         location.getLocationId().equals(otherLocation.getLocationId())
             && location.getName().equals(otherLocation.getName())
@@ -519,6 +522,7 @@ class LocationApiTest {
     }
 
     @Test
+    @WithMockUser(username = USERNAME, authorities = { VALID_ROLE })
     void testCreateLocationsCoreData() throws Exception {
         List<Location> createdLocations = createLocations(LOCATIONS_CSV);
 
@@ -537,6 +541,7 @@ class LocationApiTest {
     }
 
     @Test
+    @WithMockUser(username = USERNAME, authorities = { VALID_ROLE })
     void testCreateLocationsReferenceData() throws Exception {
         List<Location> createdLocations = createLocations(LOCATIONS_CSV);
 
@@ -560,6 +565,7 @@ class LocationApiTest {
     }
 
     @Test
+    @WithMockUser(username = USERNAME, authorities = { VALID_ROLE })
     void testCreateLocationsDataWithSecondChange() throws Exception {
         createLocations(LOCATIONS_CSV);
         createLocations(UPDATED_CSV);
@@ -599,6 +605,7 @@ class LocationApiTest {
     }
 
     @Test
+    @WithMockUser(username = USERNAME, authorities = { VALID_ROLE })
     void testInvalidCsv() throws Exception {
         try (InputStream csvInputStream = this.getClass().getClassLoader()
             .getResourceAsStream("location/InvalidCsv.txt")) {
@@ -611,7 +618,7 @@ class LocationApiTest {
     }
 
     @Test
-    @WithMockUser(username = "admin", authorities = { "APPROLE_api.request.admin" })
+    @WithMockUser(username = USERNAME, authorities = { VALID_ROLE })
     void testDeleteLocation() throws Exception {
         List<Location> createdLocations = createLocations(LOCATIONS_CSV);
 
@@ -630,7 +637,7 @@ class LocationApiTest {
     }
 
     @Test
-    @WithMockUser(username = "admin", authorities = { "APPROLE_api.request.admin" })
+    @WithMockUser(username = USERNAME, authorities = { VALID_ROLE })
     void testDeleteLocationNotFound() throws Exception {
         mockMvc.perform(
             get(GET_LOCATION_BY_ID_ENDPOINT + "1234"))
