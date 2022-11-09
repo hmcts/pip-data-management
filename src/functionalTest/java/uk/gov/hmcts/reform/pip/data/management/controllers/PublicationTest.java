@@ -1692,21 +1692,21 @@ class PublicationTest {
         mockMvc.perform(request).andExpect(status().isOk());
     }
 
-    private boolean compareArtefacts(Artefact expectedArtefact, Artefact unexpectedArtefact) {
-        return expectedArtefact.getArtefactId().equals(unexpectedArtefact.getArtefactId())
-            && expectedArtefact.getProvenance().equals(unexpectedArtefact.getProvenance())
-            && expectedArtefact.getSensitivity().equals(unexpectedArtefact.getSensitivity())
-            && expectedArtefact.getPayload().equals(unexpectedArtefact.getPayload())
-            && expectedArtefact.getType().equals(unexpectedArtefact.getType())
-            && expectedArtefact.getSearch().equals(unexpectedArtefact.getSearch())
-            && expectedArtefact.getLocationId().equals(unexpectedArtefact.getLocationId())
-            && expectedArtefact.getLanguage().equals(unexpectedArtefact.getLanguage())
-            && expectedArtefact.getListType().equals(unexpectedArtefact.getListType())
-            && expectedArtefact.getDisplayTo().equals(unexpectedArtefact.getDisplayTo())
-            && expectedArtefact.getDisplayFrom().equals(unexpectedArtefact.getDisplayFrom())
-            && expectedArtefact.getContentDate().equals(unexpectedArtefact.getContentDate())
-            && expectedArtefact.getIsFlatFile().equals(unexpectedArtefact.getIsFlatFile())
-            && expectedArtefact.getSourceArtefactId().equals(unexpectedArtefact.getSourceArtefactId());
+    private boolean compareArtefacts(Artefact expectedArtefact, Artefact returnedArtefact) {
+        return expectedArtefact.getArtefactId().equals(returnedArtefact.getArtefactId())
+            && expectedArtefact.getProvenance().equals(returnedArtefact.getProvenance())
+            && expectedArtefact.getSensitivity().equals(returnedArtefact.getSensitivity())
+            && expectedArtefact.getPayload().equals(returnedArtefact.getPayload())
+            && expectedArtefact.getType().equals(returnedArtefact.getType())
+            && expectedArtefact.getSearch().equals(returnedArtefact.getSearch())
+            && expectedArtefact.getLocationId().equals(returnedArtefact.getLocationId())
+            && expectedArtefact.getLanguage().equals(returnedArtefact.getLanguage())
+            && expectedArtefact.getListType().equals(returnedArtefact.getListType())
+            && expectedArtefact.getDisplayTo().equals(returnedArtefact.getDisplayTo())
+            && expectedArtefact.getDisplayFrom().equals(returnedArtefact.getDisplayFrom())
+            && expectedArtefact.getContentDate().equals(returnedArtefact.getContentDate())
+            && expectedArtefact.getIsFlatFile().equals(returnedArtefact.getIsFlatFile())
+            && expectedArtefact.getSourceArtefactId().equals(returnedArtefact.getSourceArtefactId());
     }
 
     @Test
