@@ -27,6 +27,7 @@ module "database" {
 resource "postgresql_role" "create_sdp_access" {
   name                = "sdp_access_test"
   skip_reassign_owned = true
+  skip_drop_role      = true
 }
 
 resource "postgresql_grant" "readonly_mv" {
