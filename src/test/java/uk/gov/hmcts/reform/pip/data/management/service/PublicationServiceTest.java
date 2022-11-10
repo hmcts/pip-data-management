@@ -1105,13 +1105,13 @@ class PublicationServiceTest {
         when(artefactRepository.findArtefactsByLocationId(any(), any())).thenReturn(List.of(artefact));
         assertEquals(List.of(artefact), publicationService.findAllByLocationIdAdmin(TEST_VALUE, USER_ID, false),
                      VALIDATION_ARTEFACT_NOT_MATCH);
-
     }
 
     @Test
     void testArtefactCountService() {
         when(artefactRepository.countArtefactsByLocation()).thenReturn(List.of("1,3","2,4", "3,6"));
-        assertEquals("location,count\n1,3\n2,4\n3,6\n", publicationService.countArtefactsByLocation());
+        assertEquals("location,count\n1,3\n2,4\n3,6\n", publicationService.countArtefactsByLocation(),
+                     MESSAGES_MATCH);
     }
 
     @Test

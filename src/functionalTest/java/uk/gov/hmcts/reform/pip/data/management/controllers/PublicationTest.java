@@ -1660,7 +1660,7 @@ class PublicationTest {
         MvcResult result = mockMvc.perform(mockHttpServletRequestBuilder)
             .andExpect(status().isOk())
             .andReturn();
-        assertTrue(result.getResponse().getContentAsString().contains("location,count"));
+        assertTrue(result.getResponse().getContentAsString().contains("location,count"), "headers not found");
     }
 
     @Test

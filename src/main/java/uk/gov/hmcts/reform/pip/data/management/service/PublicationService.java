@@ -454,7 +454,7 @@ public class PublicationService {
         StringBuilder builder = new StringBuilder(150);
         builder.append("location,count\n");
         for (String s : returnedData) {
-            builder.append(s + '\n');
+            builder.append(s).append('\n');
         }
         return builder.toString();
     }
