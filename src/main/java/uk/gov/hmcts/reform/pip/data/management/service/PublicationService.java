@@ -452,9 +452,9 @@ public class PublicationService {
     public String countArtefactsByLocation() {
         List<String> returnedData = artefactRepository.countArtefactsByLocation();
         StringBuilder builder = new StringBuilder(150);
-        builder.append("location, count\n");
+        builder.append("location,count\n");
         for (String s : returnedData) {
-            builder.append(s);
+            builder.append(s + '\n');
         }
         return builder.toString();
     }

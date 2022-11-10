@@ -50,6 +50,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(classes = {Application.class},
@@ -81,6 +82,7 @@ class PublicationTest {
     private static final String PAYLOAD_URL = "/payload";
     private static final String LOCATION_TYPE_URL = PUBLICATION_URL + "/location-type/";
     private static final String SEND_NEW_ARTEFACTS_FOR_SUBSCRIPTION_URL = PUBLICATION_URL + "/latest/subscription";
+    public static final String COUNT_ENDPOINT = PUBLICATION_URL + "/count-by-location";
     private static final String REPORT_NO_MATCH_ARTEFACTS_URL = PUBLICATION_URL + "/no-match/reporting";
     private static final String MI_REPORTING_DATA_URL = PUBLICATION_URL + "/mi-data";
     private static final String DELETE_EXPIRED_ARTEFACTS_URL = PUBLICATION_URL + "/expired";
@@ -1651,6 +1653,15 @@ class PublicationTest {
         mockHttpServletRequestBuilder = MockMvcRequestBuilders.get(LOCATION_TYPE_URL + "invalid");
 
         mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void testCountArtefactByLocation() throws Exception {
+        mockHttpServletRequestBuilder = MockMvcRequestBuilders.get(COUNT_ENDPOINT);
+        MvcResult result = mockMvc.perform(mockHttpServletRequestBuilder)
+            .andExpect(status().isOk())
+            .andReturn();
+        assertTrue(result.getResponse().getContentAsString().contains("location,count"));
     }
 
     @Test

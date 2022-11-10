@@ -78,6 +78,7 @@ class PublicationControllerTest {
         "The expected exception does not contain the correct message";
     private static final String NOT_EQUAL_MESSAGE = "The expected strings are not the same";
     private static final String DELETED_MESSAGE = "Successfully deleted artefact: ";
+    public static final String COUNT_MSG = "location,count\n1,3\n2,4\n3,6\n";
 
     private Artefact artefact;
     private Artefact artefactWithId;
@@ -209,6 +210,15 @@ class PublicationControllerTest {
         );
         assertEquals(artefactWithId, unmappedBlob.getBody(), VALIDATION_EXPECTED_MESSAGE);
     }
+
+    @Test
+    void checkCountArtefactByLocationReturnsData() {
+        when(publicationService.countArtefactsByLocation()).thenReturn(COUNT_MSG);
+        ResponseEntity<String> csvString = publicationController.countByLocation();
+        assertEquals(HttpStatus.OK, csvString.getStatusCode(), STATUS_CODE_MATCH);
+        assertEquals(COUNT_MSG, csvString.getBody(), NOT_EQUAL_MESSAGE);
+    }
+
 
     @Test
     void checkGetPayloadContentReturns() {
