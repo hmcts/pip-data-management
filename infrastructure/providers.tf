@@ -15,11 +15,16 @@ provider "azurerm" {
   features {}
 }
 
+locals {
+  db_name         = replace(var.component, "-", "")
+  postgresql_user = "${local.db_name}_user"
+}
+
 provider "postgresql" {
   host            = module.database.host_name
   port            = module.database.postgresql_listen_port
   database        = module.database.postgresql_database
-  username        = module.database.user_name
+  username        = locals.postgresql_user
   password        = module.database.postgresql_password
   superuser       = false
   sslmode         = "require"
