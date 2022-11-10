@@ -25,6 +25,16 @@ data "azurerm_key_vault" "sdp-kv" {
   resource_group_name = local.resource_group_name
 }
 
+data "azurerm_key_vault_secret" "sdp-user" {
+  name         = "data-management-SDP-USER"
+  key_vault_id = data.azurerm_key_vault.sdp-kv.id
+}
+
+data "azurerm_key_vault_secret" "sdp-pass" {
+  name         = "data-management-SDP-PASS"
+  key_vault_id = data.azurerm_key_vault.sdp-kv.id
+}
+
 data "azurerm_api_management_product" "apim_product" {
   count               = local.deploy_apim
   product_id          = "${var.product}-product-${local.env}"

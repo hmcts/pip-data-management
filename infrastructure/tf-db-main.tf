@@ -25,7 +25,9 @@ module "database" {
 }
 
 resource "postgresql_role" "create_sdp_access" {
-  name     = "sdp_access_test"
+  name     = data.azurerm_key_vault_secret.sdp-user.value
+  login    = true
+  password = data.azurerm_key_vault_secret.sdp-pass.value
 }
 
 resource "postgresql_grant" "readonly_mv" {
