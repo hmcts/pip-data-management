@@ -16,8 +16,8 @@ provider "azurerm" {
 }
 
 locals {
-  postgres_db_name         = replace(var.component, "-", "")
-  postgres_user = "${local.db_name}_user"
+  postgres_db_name  = replace(var.component, "-", "")
+  postgres_user     = "${local.postgres_db_name}_user"
 }
 
 provider "postgresql" {
