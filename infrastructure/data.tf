@@ -3,6 +3,7 @@ locals {
   auto_secret_prefix  = "auto-${var.product}-${local.env}"
   resource_group_name = "${local.prefix}-${var.env}-rg"
   key_vault_name      = "${local.prefix}-kv-${var.env}"
+  sdp_key_vault_name  = "${local.prefix}-sdp-kv-${var.env}"
 }
 
 data "azurerm_client_config" "current" {}
@@ -19,6 +20,10 @@ data "azurerm_key_vault" "kv" {
   resource_group_name = local.resource_group_name
 }
 
+data "azurerm_key_vault" "sdp-kv" {
+  name                = local.sdp_key_vault_name
+  resource_group_name = local.resource_group_name
+}
 
 data "azurerm_api_management_product" "apim_product" {
   count               = local.deploy_apim
@@ -41,4 +46,4 @@ data "azurerm_key_vault_secret" "data_client_scope" {
   count        = local.deploy_apim
   name         = "app-pip-${var.component}-scope"
   key_vault_id = data.azurerm_key_vault.kv.id
-} 
+}
