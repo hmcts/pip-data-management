@@ -25,7 +25,7 @@ module "database" {
 }
 
 resource "postgresql_role" "create_sdp_access" {
-  name                = "sdp_access_test",
+  name                = "sdp_access_test"
   skip_reassign_owned = true
 }
 
