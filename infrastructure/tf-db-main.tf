@@ -34,7 +34,7 @@ resource "postgresql_role" "create_sdp_access" {
 
 resource "postgresql_grant" "readonly_mv" {
   database    = module.database.postgresql_database
-  role        = "sdp_access_test"
+  role        = data.azurerm_key_vault_secret.sdp-user.value
   schema      = "public"
   object_type = "table"
   privileges  = ["SELECT"]
