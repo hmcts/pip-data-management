@@ -23,3 +23,17 @@ module "database" {
   sku_name = var.env == "stg" || var.env == "prod" || var.env == "test" ? "GP_Gen5_8" : "GP_Gen5_2"
 
 }
+
+resource "postgresql_role" "create_sdp_access" {
+  name                = "sdp_access_test",
+  skip_reassign_owned = true
+}
+
+resource "postgresql_grant" "readonly_mv" {
+  database    = module.database.postgresql_database
+  role        = "sdp_access_test"
+  schema      = "public"
+  object_type = "table"
+  privileges  = ["SELECT"]
+  objects     = ["sdp_mat_view_artefact"]
+}
