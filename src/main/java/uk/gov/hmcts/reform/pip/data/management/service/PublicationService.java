@@ -446,6 +446,20 @@ public class PublicationService {
     }
 
     /**
+     * Returns what is essentially a CSV file with the count of artefacts in a given location.
+     * @return string representing the csv file.
+     */
+    public String countArtefactsByLocation() {
+        List<String> returnedData = artefactRepository.countArtefactsByLocation();
+        StringBuilder builder = new StringBuilder(150);
+        builder.append("location, count\n");
+        for (String s : returnedData) {
+            builder.append(s);
+        }
+        return builder.toString();
+    }
+
+    /**
      * Take in an email and mask it for writing out to the logs.
      * @param emailToMask The email to mask
      * @return A masked email

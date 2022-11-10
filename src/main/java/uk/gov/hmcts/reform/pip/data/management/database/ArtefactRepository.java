@@ -15,9 +15,9 @@ import java.util.Optional;
 public interface ArtefactRepository extends JpaRepository<Artefact, Long> {
 
     String INITIAL_SELECT =
-         "SELECT DISTINCT on (artefact.artefact_id) artefact.* FROM ARTEFACT INNER JOIN (SELECT "
-         + "artefact_id, json_array_elements(search -> 'cases') caseDetails FROM artefact) searchDetails ON artefact"
-         + ".artefact_id = searchDetails.artefact_id ";
+        "SELECT DISTINCT on (artefact.artefact_id) artefact.* FROM ARTEFACT INNER JOIN (SELECT "
+            + "artefact_id, json_array_elements(search -> 'cases') caseDetails FROM artefact) searchDetails ON artefact"
+            + ".artefact_id = searchDetails.artefact_id ";
 
     String SEARCH_TERM_PARAM = "searchTerm";
     String ARTEFACT_ID_PARAM = "artefact_id";
@@ -42,7 +42,7 @@ public interface ArtefactRepository extends JpaRepository<Artefact, Long> {
         + ":curr_date and (display_to> :curr_date or display_to is null)",
         nativeQuery = true)
     Optional<Artefact> findByArtefactId(@Param(ARTEFACT_ID_PARAM) String artefactId,
-                                                @Param(CURRENT_DATE_PARAM) LocalDateTime currentDate);
+                                        @Param(CURRENT_DATE_PARAM) LocalDateTime currentDate);
 
     @Query(value = "select * from Artefact where location_id = :location_id and display_from < "
         + ":curr_date and (display_to> :curr_date or display_to is null)",
@@ -54,14 +54,19 @@ public interface ArtefactRepository extends JpaRepository<Artefact, Long> {
         + "('%' || :caseName || '%') and display_from < :curr_date and (display_to > :curr_date or display_to is null)",
         nativeQuery = true)
     List<Artefact> findArtefactByCaseName(@Param(CASE_NAME_PARAM) String caseName,
-                                                  @Param(CURRENT_DATE_PARAM) LocalDateTime currentDate);
+                                          @Param(CURRENT_DATE_PARAM) LocalDateTime currentDate);
 
 
     @Query(value = INITIAL_SELECT + "WHERE searchDetails.caseDetails ->> :searchTerm = :searchValue and "
         + "display_from < :curr_date and (display_to > :curr_date or display_to is null)", nativeQuery = true)
     List<Artefact> findArtefactBySearch(@Param(SEARCH_TERM_PARAM) String searchTerm,
-                                                @Param(SEARCH_VAL_PARAM) String searchVal,
-                                                @Param(CURRENT_DATE_PARAM) LocalDateTime currentDate);
+                                        @Param(SEARCH_VAL_PARAM) String searchVal,
+                                        @Param(CURRENT_DATE_PARAM) LocalDateTime currentDate);
+
+
+    @Query(value = "select location_id, count(distinct artefact_id) from artefact group by location_id",
+        nativeQuery = true)
+    List<String> countArtefactsByLocation();
 
     @Query(value = "select * from Artefact where location_id = :location_id",
         nativeQuery = true)
