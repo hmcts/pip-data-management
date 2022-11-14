@@ -492,7 +492,8 @@ class LocationApiTest {
         List<Location> locations = createLocations(LOCATIONS_CSV);
 
         MvcResult mvcResult = mockMvc.perform(get(GET_LOCATION_BY_FILTER_ENDPOINT)
-                                                  .param(JURISDICTIONS_PARAM, "Magistrates Location,Family Location")
+                                                  .param(JURISDICTIONS_PARAM,
+                                                         "Magistrates Location,Family Location")
                                                   .param(LANGUAGE_PARAM, ENGLISH_LANGUAGE_PARAM_VALUE))
             .andExpect(status().isOk())
             .andReturn();
@@ -626,11 +627,14 @@ class LocationApiTest {
         Location locationA = createdLocations.get(0);
         List<LocationReference> locationReferenceList = locationA.getLocationReferenceList();
 
-        assertEquals(2, locationReferenceList.size(), "Unexpected number of location references returned");
+        assertEquals(2, locationReferenceList.size(),
+                     "Unexpected number of location references returned");
 
         LocationReference locationReferenceOne = locationReferenceList.get(0);
-        assertEquals("TestProvenance", locationReferenceOne.getProvenance(), "Unexpected provenance name returned");
-        assertEquals("1", locationReferenceOne.getProvenanceLocationId(), "Unexpected provenance id returned");
+        assertEquals("TestProvenance", locationReferenceOne.getProvenance(),
+                     "Unexpected provenance name returned");
+        assertEquals("1", locationReferenceOne.getProvenanceLocationId(),
+                     "Unexpected provenance id returned");
         assertEquals(LocationType.VENUE, locationReferenceOne.getProvenanceLocationType(),
                      "Unexpected provenance location type returned"
         );
@@ -639,7 +643,8 @@ class LocationApiTest {
         assertEquals("TestProvenanceOther", locationReferenceTwo.getProvenance(),
                      "Unexpected provenance name returned"
         );
-        assertEquals("2", locationReferenceTwo.getProvenanceLocationId(), "Unexpected provenance id returned");
+        assertEquals("2", locationReferenceTwo.getProvenanceLocationId(),
+                     "Unexpected provenance id returned");
     }
 
     @Test
@@ -667,11 +672,14 @@ class LocationApiTest {
         assertEquals("Updated Location", returnedLocation.getName(), VALIDATION_LOCATION_NAME_NOT_AS_EXPECTED);
         List<LocationReference> locationReferenceList = returnedLocation.getLocationReferenceList();
 
-        assertEquals(1, locationReferenceList.size(), "Unexpected number of location references returned");
+        assertEquals(1, locationReferenceList.size(),
+                     "Unexpected number of location references returned");
 
         LocationReference locationReferenceOne = locationReferenceList.get(0);
-        assertEquals("TestProvenance", locationReferenceOne.getProvenance(), "Unexpected provenance name returned");
-        assertEquals("1", locationReferenceOne.getProvenanceLocationId(), "Unexpected provenance id returned");
+        assertEquals("TestProvenance", locationReferenceOne.getProvenance(),
+                     "Unexpected provenance name returned");
+        assertEquals("1", locationReferenceOne.getProvenanceLocationId(),
+                     "Unexpected provenance id returned");
         assertEquals(LocationType.VENUE, locationReferenceOne.getProvenanceLocationType(),
                      "Unexpected provenance location type returned"
         );
@@ -718,7 +726,8 @@ class LocationApiTest {
             List<String> locationsInInputCsv = inputCsv.stream().map(s -> s.split(",")[0])
                     .collect(Collectors.toList());
             for (Location locationFromResponse : locationsFromResponse) {
-                assertTrue(locationsInInputCsv.contains(locationFromResponse.getLocationId().toString()),"Returned location matches input location");
+                assertTrue(locationsInInputCsv.contains(locationFromResponse.getLocationId().toString()),
+                           "Returned location matches input location");
             }
         }
     }
