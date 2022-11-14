@@ -42,6 +42,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles(profiles = "functional")
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
 @DirtiesContext(classMode = AFTER_EACH_TEST_METHOD)
+@SuppressWarnings("PMD.TooManyMethods")
 class LocationApiTest {
 
     @Autowired
@@ -72,6 +73,8 @@ class LocationApiTest {
 
     private static final String USERNAME = "admin";
     private static final String VALID_ROLE = "APPROLE_api.request.admin";
+    private static final String LOCATION_LIST = "locationList";
+
 
     private final BiPredicate<Location, Location> compareLocationWithoutReference = (location, otherLocation) ->
         location.getLocationId().equals(otherLocation.getLocationId())
@@ -90,7 +93,7 @@ class LocationApiTest {
         try (InputStream csvInputStream = this.getClass().getClassLoader()
             .getResourceAsStream(locationsFile)) {
             MockMultipartFile csvFile
-                = new MockMultipartFile("locationList", csvInputStream);
+                = new MockMultipartFile(LOCATION_LIST, csvInputStream);
 
             MvcResult mvcResult = mockMvc.perform(multipart(UPLOAD_API).file(csvFile))
                 .andExpect(status().isOk()).andReturn();
@@ -697,7 +700,7 @@ class LocationApiTest {
         try (InputStream csvInputStream = this.getClass().getClassLoader()
             .getResourceAsStream("location/InvalidCsv.txt")) {
             MockMultipartFile csvFile
-                = new MockMultipartFile("locationList", csvInputStream);
+                = new MockMultipartFile(LOCATION_LIST, csvInputStream);
 
             mockMvc.perform(multipart(UPLOAD_API).file(csvFile))
                 .andExpect(status().isBadRequest()).andReturn();
@@ -710,7 +713,7 @@ class LocationApiTest {
         try (InputStream csvInputStream = this.getClass().getClassLoader()
             .getResourceAsStream(LOCATIONS_CSV)) {
             MockMultipartFile csvFile
-                = new MockMultipartFile("locationList", csvInputStream);
+                = new MockMultipartFile(LOCATION_LIST, csvInputStream);
 
             MvcResult mvcResult = mockMvc.perform(multipart(UPLOAD_API).file(csvFile))
                 .andExpect(status().isOk()).andReturn();
@@ -737,7 +740,7 @@ class LocationApiTest {
         try (InputStream csvInputStream = this.getClass().getClassLoader()
             .getResourceAsStream(LOCATIONS_CSV)) {
             MockMultipartFile csvFile
-                = new MockMultipartFile("locationList", csvInputStream);
+                = new MockMultipartFile(LOCATION_LIST, csvInputStream);
 
             mockMvc.perform(multipart(UPLOAD_API).file(csvFile))
                 .andExpect(status().isUnauthorized());
