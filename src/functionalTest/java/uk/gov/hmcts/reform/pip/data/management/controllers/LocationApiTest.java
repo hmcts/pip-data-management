@@ -19,10 +19,14 @@ import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationReference;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationType;
 
+import java.io.BufferedReader;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.BiPredicate;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -97,7 +101,7 @@ class LocationApiTest {
     }
 
     @Test
-    @WithMockUser(username = USERNAME, authorities = { VALID_ROLE })
+    @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})
     void testGetAllLocationsReturnsCorrectLocations() throws Exception {
         List<Location> locations = createLocations(LOCATIONS_CSV);
 
@@ -115,13 +119,14 @@ class LocationApiTest {
         for (Location location : locations) {
             assertTrue(
                 returnedLocations.stream().anyMatch(x -> compareLocationWithoutReference.test(x, location)),
-                "Expected location not displayed in list");
+                "Expected location not displayed in list"
+            );
         }
 
     }
 
     @Test
-    @WithMockUser(username = USERNAME, authorities = { VALID_ROLE })
+    @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})
     void testGetLocationByIdReturnsSuccess() throws Exception {
         List<Location> locations = createLocations(LOCATIONS_CSV);
 
@@ -149,23 +154,27 @@ class LocationApiTest {
             mvcResult.getResponse().getContentAsString(), ExceptionResponse.class);
 
         assertEquals("No location found with the id: " + unknownID, exceptionResponse.getMessage(),
-                     "Unexpected error message returned when location by ID not found");
+                     "Unexpected error message returned when location by ID not found"
+        );
     }
 
     @Test
-    @WithMockUser(username = USERNAME, authorities = { VALID_ROLE })
+    @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})
     void testGetLocationByNameReturnsSuccess() throws Exception {
         List<Location> locations = createLocations(LOCATIONS_CSV);
 
         Location location = locations.get(0);
 
         MvcResult mvcResult = mockMvc.perform(get(String.format(GET_LOCATION_BY_NAME_ENDPOINT,
-                                                                location.getName(), ENGLISH_LANGUAGE_PARAM_VALUE)))
+                                                                location.getName(), ENGLISH_LANGUAGE_PARAM_VALUE
+            )))
             .andExpect(status().isOk())
             .andReturn();
 
-        Location returnedLocation = objectMapper.readValue(mvcResult.getResponse().getContentAsString(),
-                                                           Location.class);
+        Location returnedLocation = objectMapper.readValue(
+            mvcResult.getResponse().getContentAsString(),
+            Location.class
+        );
 
         assertEquals(location, returnedLocation, VALIDATION_UNKNOWN_LOCATION);
     }
@@ -175,7 +184,8 @@ class LocationApiTest {
         String invalidName = "invalid";
 
         MvcResult mvcResult = mockMvc.perform(get(String.format(GET_LOCATION_BY_NAME_ENDPOINT,
-                                                                invalidName, ENGLISH_LANGUAGE_PARAM_VALUE)))
+                                                                invalidName, ENGLISH_LANGUAGE_PARAM_VALUE
+            )))
             .andExpect(status().isNotFound())
             .andReturn();
 
@@ -183,23 +193,27 @@ class LocationApiTest {
             objectMapper.readValue(mvcResult.getResponse().getContentAsString(), ExceptionResponse.class);
 
         assertEquals("No location found with the name: " + invalidName, exceptionResponse.getMessage(),
-                     "Unexpected error message returned when location by name not found");
+                     "Unexpected error message returned when location by name not found"
+        );
     }
 
     @Test
-    @WithMockUser(username = USERNAME, authorities = { VALID_ROLE })
+    @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})
     void testGetWelshLocationByNameReturnsSuccess() throws Exception {
         List<Location> locations = createLocations(LOCATIONS_CSV);
 
         Location location = locations.get(0);
 
         MvcResult mvcResult = mockMvc.perform(get(String.format(GET_LOCATION_BY_NAME_ENDPOINT,
-                                                                location.getWelshName(), WELSH_LANGUAGE_PARAM_VALUE)))
+                                                                location.getWelshName(), WELSH_LANGUAGE_PARAM_VALUE
+            )))
             .andExpect(status().isOk())
             .andReturn();
 
-        Location returnedLocation = objectMapper.readValue(mvcResult.getResponse().getContentAsString(),
-                                                           Location.class);
+        Location returnedLocation = objectMapper.readValue(
+            mvcResult.getResponse().getContentAsString(),
+            Location.class
+        );
 
         assertEquals(location, returnedLocation, VALIDATION_UNKNOWN_LOCATION);
     }
@@ -209,7 +223,8 @@ class LocationApiTest {
         String invalidName = "invalid";
 
         MvcResult mvcResult = mockMvc.perform(get(String.format(GET_LOCATION_BY_NAME_ENDPOINT,
-                                                                invalidName, WELSH_LANGUAGE_PARAM_VALUE)))
+                                                                invalidName, WELSH_LANGUAGE_PARAM_VALUE
+            )))
             .andExpect(status().isNotFound())
             .andReturn();
 
@@ -217,11 +232,12 @@ class LocationApiTest {
             objectMapper.readValue(mvcResult.getResponse().getContentAsString(), ExceptionResponse.class);
 
         assertEquals("No location found with the name: " + invalidName, exceptionResponse.getMessage(),
-                     "Unexpected error message returned when location by name not found");
+                     "Unexpected error message returned when location by name not found"
+        );
     }
 
     @Test
-    @WithMockUser(username = USERNAME, authorities = { VALID_ROLE })
+    @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})
     void testFilterLocationsByRegionReturnsNoResults() throws Exception {
         createLocations(LOCATIONS_CSV);
 
@@ -238,7 +254,7 @@ class LocationApiTest {
     }
 
     @Test
-    @WithMockUser(username = USERNAME, authorities = { VALID_ROLE })
+    @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})
     void testWelshFilterLocationsByRegionReturnsNoResults() throws Exception {
         createLocations(LOCATIONS_CSV);
 
@@ -255,7 +271,7 @@ class LocationApiTest {
     }
 
     @Test
-    @WithMockUser(username = USERNAME, authorities = { VALID_ROLE })
+    @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})
     void testFilterLocationsByJurisdictionReturnsNoResults() throws Exception {
         createLocations(LOCATIONS_CSV);
 
@@ -272,7 +288,7 @@ class LocationApiTest {
     }
 
     @Test
-    @WithMockUser(username = USERNAME, authorities = { VALID_ROLE })
+    @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})
     void testWelshFilterLocationsByJurisdictionReturnsNoResults() throws Exception {
         createLocations(LOCATIONS_CSV);
 
@@ -290,14 +306,14 @@ class LocationApiTest {
 
 
     @Test
-    @WithMockUser(username = USERNAME, authorities = { VALID_ROLE })
+    @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})
     void testFilterLocationsByJurisdictionAndRegion() throws Exception {
         List<Location> locations = createLocations(LOCATIONS_CSV);
 
         MvcResult mvcResult = mockMvc.perform(get(GET_LOCATION_BY_FILTER_ENDPOINT)
-                            .param(REGIONS_PARAM, "North West")
-                            .param(JURISDICTIONS_PARAM, "Magistrates Location")
-                            .param(LANGUAGE_PARAM, ENGLISH_LANGUAGE_PARAM_VALUE))
+                                                  .param(REGIONS_PARAM, "North West")
+                                                  .param(JURISDICTIONS_PARAM, "Magistrates Location")
+                                                  .param(LANGUAGE_PARAM, ENGLISH_LANGUAGE_PARAM_VALUE))
             .andExpect(status().isOk())
             .andReturn();
 
@@ -306,12 +322,14 @@ class LocationApiTest {
 
         assertEquals(1, returnedLocations.size(), VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
 
-        assertTrue(compareLocationWithoutReference.test(locations.get(0), returnedLocations.get(0)),
-                   VALIDATION_UNKNOWN_LOCATION);
+        assertTrue(
+            compareLocationWithoutReference.test(locations.get(0), returnedLocations.get(0)),
+            VALIDATION_UNKNOWN_LOCATION
+        );
     }
 
     @Test
-    @WithMockUser(username = USERNAME, authorities = { VALID_ROLE })
+    @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})
     void testWelshFilterLocationsByJurisdictionAndRegion() throws Exception {
         List<Location> locations = createLocations(LOCATIONS_CSV);
 
@@ -327,12 +345,14 @@ class LocationApiTest {
 
         assertEquals(1, returnedLocations.size(), VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
 
-        assertTrue(compareLocationWithoutReference.test(locations.get(0), returnedLocations.get(0)),
-                   VALIDATION_UNKNOWN_LOCATION);
+        assertTrue(
+            compareLocationWithoutReference.test(locations.get(0), returnedLocations.get(0)),
+            VALIDATION_UNKNOWN_LOCATION
+        );
     }
 
     @Test
-    @WithMockUser(username = USERNAME, authorities = { VALID_ROLE })
+    @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})
     void testFilterByOnlyRegion() throws Exception {
         List<Location> locations = createLocations(LOCATIONS_CSV);
 
@@ -347,12 +367,14 @@ class LocationApiTest {
 
         assertEquals(1, returnedLocations.size(), VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
 
-        assertTrue(compareLocationWithoutReference.test(locations.get(1), returnedLocations.get(0)),
-                   VALIDATION_UNKNOWN_LOCATION);
+        assertTrue(
+            compareLocationWithoutReference.test(locations.get(1), returnedLocations.get(0)),
+            VALIDATION_UNKNOWN_LOCATION
+        );
     }
 
     @Test
-    @WithMockUser(username = USERNAME, authorities = { VALID_ROLE })
+    @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})
     void testWelshFilterByOnlyRegion() throws Exception {
         createLocations(LOCATIONS_CSV);
 
@@ -369,13 +391,13 @@ class LocationApiTest {
     }
 
     @Test
-    @WithMockUser(username = USERNAME, authorities = { VALID_ROLE })
+    @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})
     void testFilterByMultipleRegions() throws Exception {
         List<Location> locations = createLocations(LOCATIONS_CSV);
 
         MvcResult mvcResult = mockMvc.perform(get(GET_LOCATION_BY_FILTER_ENDPOINT)
-                        .param(REGIONS_PARAM, "South West,North West")
-                        .param(LANGUAGE_PARAM, ENGLISH_LANGUAGE_PARAM_VALUE))
+                                                  .param(REGIONS_PARAM, "South West,North West")
+                                                  .param(LANGUAGE_PARAM, ENGLISH_LANGUAGE_PARAM_VALUE))
             .andExpect(status().isOk())
             .andReturn();
 
@@ -384,14 +406,18 @@ class LocationApiTest {
 
         assertEquals(2, returnedLocations.size(), VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
 
-        assertTrue(compareLocationWithoutReference.test(locations.get(0), returnedLocations.get(0)),
-                   VALIDATION_UNKNOWN_LOCATION);
-        assertTrue(compareLocationWithoutReference.test(locations.get(1), returnedLocations.get(1)),
-                   VALIDATION_UNKNOWN_LOCATION);
+        assertTrue(
+            compareLocationWithoutReference.test(locations.get(0), returnedLocations.get(0)),
+            VALIDATION_UNKNOWN_LOCATION
+        );
+        assertTrue(
+            compareLocationWithoutReference.test(locations.get(1), returnedLocations.get(1)),
+            VALIDATION_UNKNOWN_LOCATION
+        );
     }
 
     @Test
-    @WithMockUser(username = USERNAME, authorities = { VALID_ROLE })
+    @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})
     void testWelshFilterByMultipleRegions() throws Exception {
         List<Location> locations = createLocations(LOCATIONS_CSV);
 
@@ -406,14 +432,18 @@ class LocationApiTest {
 
         assertEquals(2, returnedLocations.size(), VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
 
-        assertTrue(compareLocationWithoutReference.test(locations.get(0), returnedLocations.get(0)),
-                   VALIDATION_UNKNOWN_LOCATION);
-        assertTrue(compareLocationWithoutReference.test(locations.get(1), returnedLocations.get(1)),
-                   VALIDATION_UNKNOWN_LOCATION);
+        assertTrue(
+            compareLocationWithoutReference.test(locations.get(0), returnedLocations.get(0)),
+            VALIDATION_UNKNOWN_LOCATION
+        );
+        assertTrue(
+            compareLocationWithoutReference.test(locations.get(1), returnedLocations.get(1)),
+            VALIDATION_UNKNOWN_LOCATION
+        );
     }
 
     @Test
-    @WithMockUser(username = USERNAME, authorities = { VALID_ROLE })
+    @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})
     void testFilterByOnlyJurisdiction() throws Exception {
         List<Location> locations = createLocations(LOCATIONS_CSV);
 
@@ -428,12 +458,14 @@ class LocationApiTest {
 
         assertEquals(1, returnedLocations.size(), VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
 
-        assertTrue(compareLocationWithoutReference.test(locations.get(0), returnedLocations.get(0)),
-                   VALIDATION_UNKNOWN_LOCATION);
+        assertTrue(
+            compareLocationWithoutReference.test(locations.get(0), returnedLocations.get(0)),
+            VALIDATION_UNKNOWN_LOCATION
+        );
     }
 
     @Test
-    @WithMockUser(username = USERNAME, authorities = { VALID_ROLE })
+    @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})
     void testWelshFilterByOnlyJurisdiction() throws Exception {
         List<Location> locations = createLocations(LOCATIONS_CSV);
 
@@ -448,12 +480,14 @@ class LocationApiTest {
 
         assertEquals(1, returnedLocations.size(), VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
 
-        assertTrue(compareLocationWithoutReference.test(locations.get(0), returnedLocations.get(0)),
-                   VALIDATION_UNKNOWN_LOCATION);
+        assertTrue(
+            compareLocationWithoutReference.test(locations.get(0), returnedLocations.get(0)),
+            VALIDATION_UNKNOWN_LOCATION
+        );
     }
 
     @Test
-    @WithMockUser(username = USERNAME, authorities = { VALID_ROLE })
+    @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})
     void testFilterByMultipleJurisdictions() throws Exception {
         List<Location> locations = createLocations(LOCATIONS_CSV);
 
@@ -468,14 +502,18 @@ class LocationApiTest {
 
         assertEquals(2, returnedLocations.size(), VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
 
-        assertTrue(compareLocationWithoutReference.test(locations.get(0), returnedLocations.get(0)),
-                   VALIDATION_UNKNOWN_LOCATION);
-        assertTrue(compareLocationWithoutReference.test(locations.get(1), returnedLocations.get(1)),
-                   VALIDATION_UNKNOWN_LOCATION);
+        assertTrue(
+            compareLocationWithoutReference.test(locations.get(0), returnedLocations.get(0)),
+            VALIDATION_UNKNOWN_LOCATION
+        );
+        assertTrue(
+            compareLocationWithoutReference.test(locations.get(1), returnedLocations.get(1)),
+            VALIDATION_UNKNOWN_LOCATION
+        );
     }
 
     @Test
-    @WithMockUser(username = USERNAME, authorities = { VALID_ROLE })
+    @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})
     void testWelshFilterByMultipleJurisdictions() throws Exception {
         List<Location> locations = createLocations(LOCATIONS_CSV);
 
@@ -490,14 +528,18 @@ class LocationApiTest {
 
         assertEquals(2, returnedLocations.size(), VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
 
-        assertTrue(compareLocationWithoutReference.test(locations.get(0), returnedLocations.get(0)),
-                   VALIDATION_UNKNOWN_LOCATION);
-        assertTrue(compareLocationWithoutReference.test(locations.get(1), returnedLocations.get(1)),
-                   VALIDATION_UNKNOWN_LOCATION);
+        assertTrue(
+            compareLocationWithoutReference.test(locations.get(0), returnedLocations.get(0)),
+            VALIDATION_UNKNOWN_LOCATION
+        );
+        assertTrue(
+            compareLocationWithoutReference.test(locations.get(1), returnedLocations.get(1)),
+            VALIDATION_UNKNOWN_LOCATION
+        );
     }
 
     @Test
-    @WithMockUser(username = USERNAME, authorities = { VALID_ROLE })
+    @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})
     void testFilterByNoRegionOrJurisdiction() throws Exception {
         final List<Location> locations = createLocations(LOCATIONS_CSV);
 
@@ -510,16 +552,22 @@ class LocationApiTest {
 
         assertEquals(ALL_LOCATIONS, returnedLocations.size(), VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
 
-        assertTrue(compareLocationWithoutReference.test(locations.get(0), returnedLocations.get(0)),
-                   VALIDATION_UNKNOWN_LOCATION);
-        assertTrue(compareLocationWithoutReference.test(locations.get(1), returnedLocations.get(1)),
-                   VALIDATION_UNKNOWN_LOCATION);
-        assertTrue(compareLocationWithoutReference.test(locations.get(2), returnedLocations.get(2)),
-                   VALIDATION_UNKNOWN_LOCATION);
+        assertTrue(
+            compareLocationWithoutReference.test(locations.get(0), returnedLocations.get(0)),
+            VALIDATION_UNKNOWN_LOCATION
+        );
+        assertTrue(
+            compareLocationWithoutReference.test(locations.get(1), returnedLocations.get(1)),
+            VALIDATION_UNKNOWN_LOCATION
+        );
+        assertTrue(
+            compareLocationWithoutReference.test(locations.get(2), returnedLocations.get(2)),
+            VALIDATION_UNKNOWN_LOCATION
+        );
     }
 
     @Test
-    @WithMockUser(username = USERNAME, authorities = { VALID_ROLE })
+    @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})
     void testWelshFilterByNoRegionOrJurisdiction() throws Exception {
         final List<Location> locations = createLocations(LOCATIONS_CSV);
 
@@ -533,16 +581,22 @@ class LocationApiTest {
 
         assertEquals(ALL_LOCATIONS, returnedLocations.size(), VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
 
-        assertTrue(compareLocationWithoutReference.test(locations.get(0), returnedLocations.get(0)),
-                   VALIDATION_UNKNOWN_LOCATION);
-        assertTrue(compareLocationWithoutReference.test(locations.get(1), returnedLocations.get(1)),
-                   VALIDATION_UNKNOWN_LOCATION);
-        assertTrue(compareLocationWithoutReference.test(locations.get(2), returnedLocations.get(2)),
-                   VALIDATION_UNKNOWN_LOCATION);
+        assertTrue(
+            compareLocationWithoutReference.test(locations.get(0), returnedLocations.get(0)),
+            VALIDATION_UNKNOWN_LOCATION
+        );
+        assertTrue(
+            compareLocationWithoutReference.test(locations.get(1), returnedLocations.get(1)),
+            VALIDATION_UNKNOWN_LOCATION
+        );
+        assertTrue(
+            compareLocationWithoutReference.test(locations.get(2), returnedLocations.get(2)),
+            VALIDATION_UNKNOWN_LOCATION
+        );
     }
 
     @Test
-    @WithMockUser(username = USERNAME, authorities = { VALID_ROLE })
+    @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})
     void testCreateLocationsCoreData() throws Exception {
         List<Location> createdLocations = createLocations(LOCATIONS_CSV);
 
@@ -555,13 +609,15 @@ class LocationApiTest {
 
         List<String> jurisdictions = locationA.getJurisdiction();
         assertEquals(2, jurisdictions.size(), "Unexpected number of jurisdictions returned");
-        assertTrue(jurisdictions.contains("Magistrates Location"),
-                   "Magistrates Location not within jurisdiction field");
+        assertTrue(
+            jurisdictions.contains("Magistrates Location"),
+            "Magistrates Location not within jurisdiction field"
+        );
         assertTrue(jurisdictions.contains("Family Location"), "Family Location not within jurisdiction field");
     }
 
     @Test
-    @WithMockUser(username = USERNAME, authorities = { VALID_ROLE })
+    @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})
     void testCreateLocationsReferenceData() throws Exception {
         List<Location> createdLocations = createLocations(LOCATIONS_CSV);
 
@@ -576,16 +632,18 @@ class LocationApiTest {
         assertEquals("TestProvenance", locationReferenceOne.getProvenance(), "Unexpected provenance name returned");
         assertEquals("1", locationReferenceOne.getProvenanceLocationId(), "Unexpected provenance id returned");
         assertEquals(LocationType.VENUE, locationReferenceOne.getProvenanceLocationType(),
-                     "Unexpected provenance location type returned");
+                     "Unexpected provenance location type returned"
+        );
 
         LocationReference locationReferenceTwo = locationReferenceList.get(1);
         assertEquals("TestProvenanceOther", locationReferenceTwo.getProvenance(),
-                     "Unexpected provenance name returned");
+                     "Unexpected provenance name returned"
+        );
         assertEquals("2", locationReferenceTwo.getProvenanceLocationId(), "Unexpected provenance id returned");
     }
 
     @Test
-    @WithMockUser(username = USERNAME, authorities = { VALID_ROLE })
+    @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})
     void testCreateLocationsDataWithSecondChange() throws Exception {
         createLocations(LOCATIONS_CSV);
         createLocations(UPDATED_CSV);
@@ -615,7 +673,8 @@ class LocationApiTest {
         assertEquals("TestProvenance", locationReferenceOne.getProvenance(), "Unexpected provenance name returned");
         assertEquals("1", locationReferenceOne.getProvenanceLocationId(), "Unexpected provenance id returned");
         assertEquals(LocationType.VENUE, locationReferenceOne.getProvenanceLocationType(),
-                     "Unexpected provenance location type returned");
+                     "Unexpected provenance location type returned"
+        );
 
         Location locationB = arrayLocations[0];
         assertEquals("Test Location Other", locationB.getName(), VALIDATION_LOCATION_NAME_NOT_AS_EXPECTED);
@@ -625,7 +684,7 @@ class LocationApiTest {
     }
 
     @Test
-    @WithMockUser(username = USERNAME, authorities = { VALID_ROLE })
+    @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})
     void testInvalidCsv() throws Exception {
         try (InputStream csvInputStream = this.getClass().getClassLoader()
             .getResourceAsStream("location/InvalidCsv.txt")) {
@@ -638,30 +697,79 @@ class LocationApiTest {
     }
 
     @Test
-    @WithMockUser(username = USERNAME, authorities = { VALID_ROLE })
+    @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})
+    void testUploadLocation() throws Exception {
+        try (InputStream csvInputStream = this.getClass().getClassLoader()
+            .getResourceAsStream(LOCATIONS_CSV)) {
+            MockMultipartFile csvFile
+                = new MockMultipartFile("locationList", csvInputStream);
+
+            MvcResult mvcResult = mockMvc.perform(multipart(UPLOAD_API).file(csvFile))
+                .andExpect(status().isOk()).andReturn();
+
+            List<String> inputCsv = new BufferedReader(new InputStreamReader(Objects.requireNonNull(this.getClass()
+                   .getClassLoader().getResourceAsStream(
+                    LOCATIONS_CSV)))).lines().collect(Collectors.toList());
+
+            Location[] locationsFromResponse = objectMapper.readValue(
+                mvcResult.getResponse().getContentAsString(),
+                Location[].class
+            );
+            List<String> locationsInInputCsv = inputCsv.stream().map(s -> s.split(",")[0])
+                    .collect(Collectors.toList());
+            for (Location locationFromResponse : locationsFromResponse) {
+                assertTrue(locationsInInputCsv.contains(locationFromResponse.getLocationId().toString()),"Returned location matches input location");
+            }
+        }
+    }
+
+    @Test
+    void testUploadLocationUnauthorised() throws Exception {
+        try (InputStream csvInputStream = this.getClass().getClassLoader()
+            .getResourceAsStream(LOCATIONS_CSV)) {
+            MockMultipartFile csvFile
+                = new MockMultipartFile("locationList", csvInputStream);
+
+            mockMvc.perform(multipart(UPLOAD_API).file(csvFile))
+                .andExpect(status().isUnauthorized());
+        }
+    }
+
+    @Test
+    @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})
     void testDeleteLocation() throws Exception {
         List<Location> createdLocations = createLocations(LOCATIONS_CSV);
 
         MvcResult mvcResult = mockMvc.perform(
-            delete(GET_LOCATION_BY_ID_ENDPOINT + createdLocations.get(0).getLocationId()))
+                delete(GET_LOCATION_BY_ID_ENDPOINT + createdLocations.get(0).getLocationId()))
             .andExpect(status().isOk())
             .andReturn();
 
         assertEquals("Location with id 1 has been deleted", mvcResult.getResponse().getContentAsString(),
-                     "Response does not match expected response");
+                     "Response does not match expected response"
+        );
 
         mockMvc.perform(
-            get(GET_LOCATION_BY_ID_ENDPOINT + createdLocations.get(0).getLocationId()))
+                get(GET_LOCATION_BY_ID_ENDPOINT + createdLocations.get(0).getLocationId()))
+            .andExpect(status().isNotFound())
+            .andReturn();
+    }
+
+
+    @Test
+    @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})
+    void testDeleteLocationNotFound() throws Exception {
+        mockMvc.perform(
+                get(GET_LOCATION_BY_ID_ENDPOINT + "1234"))
             .andExpect(status().isNotFound())
             .andReturn();
     }
 
     @Test
-    @WithMockUser(username = USERNAME, authorities = { VALID_ROLE })
-    void testDeleteLocationNotFound() throws Exception {
+    void testDeleteLocationNotAuthorised() throws Exception {
         mockMvc.perform(
-            get(GET_LOCATION_BY_ID_ENDPOINT + "1234"))
-            .andExpect(status().isNotFound())
+                delete(GET_LOCATION_BY_ID_ENDPOINT + 1))
+            .andExpect(status().isUnauthorized())
             .andReturn();
     }
 }
