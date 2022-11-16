@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.pip.data.management.controllers;
 import com.azure.core.util.BinaryData;
 import com.azure.storage.blob.BlobClient;
 import com.azure.storage.blob.BlobContainerClient;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microsoft.applicationinsights.web.dependencies.apachecommons.io.IOUtils;
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
@@ -39,11 +40,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.*;
 
+import static org.junit.Assert.fail;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -1617,10 +1618,14 @@ class PublicationTest {
             .header("x-admin", true);
         MvcResult response = mockMvc.perform(adminRequest).andExpect(status().isOk()).andReturn();
 
-        Artefact artefact = objectMapper.readValue(
-            response.getResponse().getContentAsString(), Artefact.class);
+        String responseAsString = response.getResponse().getContentAsString();
+        Artefact artefact = objectMapper.readValue(responseAsString, Artefact.class);
 
         assertEquals(artefactToFind, artefact, SHOULD_RETURN_EXPECTED_ARTEFACT);
+
+        JsonNode responseAsJson = objectMapper.readTree(responseAsString);
+        Arrays.asList("contentDate", "displayFrom", "displayTo")
+            .forEach(field -> assertDateTimeFormat(responseAsJson.get(field).asText(), field));
     }
 
     @Test
@@ -1685,5 +1690,16 @@ class PublicationTest {
             .get(MI_REPORTING_DATA_URL);
 
         mockMvc.perform(request).andExpect(status().isOk());
+    }
+
+    private void assertDateTimeFormat(String value, String field) {
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
+            LocalDateTime dateTime = LocalDateTime.parse(value, formatter);
+            String result = dateTime.format(formatter);
+            assertEquals(value, result, String.format("%s should match", field));
+        } catch(DateTimeParseException e) {
+            fail(String.format("%s with value '%s' could not be parsed", field, value));
+        }
     }
 }
