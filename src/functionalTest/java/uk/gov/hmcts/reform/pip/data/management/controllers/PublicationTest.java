@@ -42,7 +42,10 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.UUID;
 
 import static org.junit.Assert.fail;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -1624,7 +1627,7 @@ class PublicationTest {
         assertEquals(artefactToFind, artefact, SHOULD_RETURN_EXPECTED_ARTEFACT);
 
         JsonNode responseAsJson = objectMapper.readTree(responseAsString);
-        Arrays.asList("contentDate", "displayFrom", "displayTo")
+        List.of("contentDate", "displayFrom", "displayTo")
             .forEach(field -> assertDateTimeFormat(responseAsJson.get(field).asText(), field));
     }
 
