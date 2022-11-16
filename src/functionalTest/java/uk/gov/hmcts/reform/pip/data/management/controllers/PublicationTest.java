@@ -1701,7 +1701,7 @@ class PublicationTest {
             LocalDateTime dateTime = LocalDateTime.parse(value, formatter);
             String result = dateTime.format(formatter);
             assertEquals(value, result, String.format("%s should match", field));
-        } catch(DateTimeParseException e) {
+        } catch (DateTimeParseException e) {
             fail(String.format("%s with value '%s' could not be parsed", field, value));
         }
     }
