@@ -299,6 +299,6 @@ If you want to test the scripts locally, you will first need to clear the "flywa
 
 ## Materialised View
 
-There is a materialised view created for the Artefact table, which contains a subset of the fields.
+There is a materialised view created for the Artefact and location table, which contains a subset of the fields.
 
 This view is implemented via Flyway.
