@@ -149,4 +149,9 @@ public class Artefact {
     @Column(nullable = false, columnDefinition = "INTEGER DEFAULT 0")
     private int supersededCount;
 
+    /**
+     * Date / Time of when the artefact will expire.
+     */
+    private LocalDateTime expiryDate;
+
 }

@@ -157,6 +157,7 @@ public class PublicationController {
             .listType(headers.getListType())
             .locationId(headers.getCourtId())
             .contentDate(headers.getContentDate())
+            .expiryDate(headers.getDisplayTo())
             .build();
 
         Artefact createdItem = publicationService
@@ -164,7 +165,9 @@ public class PublicationController {
 
         logManualUpload(publicationService.maskEmail(issuerEmail), createdItem.getArtefactId().toString());
 
-        publicationService.checkAndTriggerSubscriptionManagement(createdItem);
+        // Process the created artefact by requesting channel management to generate PDF/Excel files
+        // and check/trigger subscription management, async.
+        publicationService.processCreatedPublication(createdItem);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(createdItem);
     }
@@ -233,6 +236,7 @@ public class PublicationController {
             .listType(headers.getListType())
             .locationId(headers.getCourtId())
             .contentDate(headers.getContentDate())
+            .expiryDate(headers.getDisplayTo())
             .isFlatFile(true)
             .search(search)
             .build();
@@ -426,9 +430,9 @@ public class PublicationController {
     @ApiResponses({
         @ApiResponse(responseCode = OK_CODE, description = "Artefact of ID {} has been archived"),
         @ApiResponse(responseCode = AUTH_ERROR_CODE, description = UNAUTHORIZED_DESCRIPTION),
-        @ApiResponse(responseCode = NOT_FOUND_CODE, description = "Artefact of ID {} not found when archiving")
+        @ApiResponse(responseCode = NOT_FOUND_CODE, description = "Artefact with ID {} not found when archiving")
     })
-    @Operation(summary = "Delete all expired artefacts")
+    @Operation(summary = "Archive an artefact by ID")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PutMapping("/{id}/archive")
     @IsAdmin

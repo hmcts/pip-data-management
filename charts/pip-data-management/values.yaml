@@ -37,6 +37,8 @@ java:
           alias: AZURE_APPLICATIONINSIGHTS_INSTRUMENTATIONKEY
         - name: app-pip-publication-services-scope
           alias: PUBLICATION_SERVICES_AZ_API
+        - name: app-pip-channel-management-scope
+          alias: CHANNEL_MANAGEMENT_AZ_API
   environment:
     ENABLE_FLYWAY: true
     RUN_DB_MIGRATION_ON_STARTUP: false

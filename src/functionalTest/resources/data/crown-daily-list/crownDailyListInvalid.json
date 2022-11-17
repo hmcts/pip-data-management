@@ -49,6 +49,10 @@
                         "hearingType": "Directions",
                         "case": [
                           {
+                            "reportingRestrictionDetail": [
+                              "Reporting Restriction detail line 1",
+                              "Reporting restriction detail line 2"
+                            ],
                             "caseLinked": [
                               {
                                 "caseId": "1234",

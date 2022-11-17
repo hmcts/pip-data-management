@@ -1,11 +1,9 @@
 package uk.gov.hmcts.reform.pip.data.management.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
@@ -24,8 +22,6 @@ import uk.gov.hmcts.reform.pip.model.enums.UserActions;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -41,8 +37,10 @@ import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
 
 @Slf4j
 @Service
-@SuppressWarnings("PMD.GodClass")
+@SuppressWarnings({"PMD.GodClass", "PMD.LawOfDemeter"})
 public class PublicationService {
+
+    private static final char DELIMITER = ',';
 
     private final ArtefactRepository artefactRepository;
 
@@ -58,7 +56,7 @@ public class PublicationService {
 
     private final PublicationServicesService publicationServicesService;
 
-    private final ObjectMapper mapper = new ObjectMapper();
+    private final ChannelManagementService channelManagementService;
 
     @Autowired
     public PublicationService(ArtefactRepository artefactRepository,
@@ -67,7 +65,8 @@ public class PublicationService {
                               SubscriptionManagementService subscriptionManagementService,
                               AccountManagementService accountManagementService,
                               LocationRepository locationRepository,
-                              PublicationServicesService publicationServicesService) {
+                              PublicationServicesService publicationServicesService,
+                              ChannelManagementService channelManagementService) {
         this.artefactRepository = artefactRepository;
         this.azureBlobService = azureBlobService;
         this.payloadExtractor = payloadExtractor;
@@ -75,6 +74,7 @@ public class PublicationService {
         this.accountManagementService = accountManagementService;
         this.locationRepository = locationRepository;
         this.publicationServicesService = publicationServicesService;
+        this.channelManagementService = channelManagementService;
     }
 
     /**
@@ -98,6 +98,12 @@ public class PublicationService {
             isExisting ? getUuidFromUrl(artefact.getPayload()) : UUID.randomUUID().toString(),
             payload
         );
+
+        // Add 7 days to the expiry date if the list type is SJP
+        if (ListType.SJP_PUBLIC_LIST.equals(artefact.getListType())
+            || ListType.SJP_PRESS_LIST.equals(artefact.getListType())) {
+            artefact.setExpiryDate(artefact.getExpiryDate().plusDays(7));
+        }
 
         artefact.setPayload(blobUrl);
 
@@ -131,6 +137,12 @@ public class PublicationService {
         }
 
         return artefactRepository.save(artefact);
+    }
+
+    @Async
+    public void processCreatedPublication(Artefact artefact) {
+        channelManagementService.requestFileGeneration(artefact.getArtefactId());
+        checkAndTriggerSubscriptionManagement(artefact);
     }
 
     /**
@@ -310,6 +322,7 @@ public class PublicationService {
         Optional<Artefact> artefactToDelete = artefactRepository.findArtefactByArtefactId(artefactId);
         if (artefactToDelete.isPresent()) {
             log.info(azureBlobService.deleteBlob(getUuidFromUrl(artefactToDelete.get().getPayload())));
+            deletePublicationBlobs(artefactToDelete.get());
             artefactRepository.delete(artefactToDelete.get());
             log.info(writeLog(issuerId, UserActions.REMOVE, artefactId));
             triggerThirdPartyArtefactDeleted(artefactToDelete.get());
@@ -351,10 +364,36 @@ public class PublicationService {
     }
 
     /**
-     * Delete expired artefacts from database and Azure storage.
+     * Delete expired artefacts from the database, Artefact and Publications Azure storage.
      */
     public void deleteExpiredArtefacts() {
-        deleteExpiredBlobs(artefactRepository.findOutdatedArtefacts(LocalDate.now()));
+        LocalDateTime searchDateTime = LocalDateTime.now();
+        List<Artefact> outdatedArtefacts = artefactRepository.findOutdatedArtefacts(searchDateTime);
+        outdatedArtefacts.forEach(artefact -> {
+            azureBlobService.deleteBlob(getUuidFromUrl(artefact.getPayload()));
+            deletePublicationBlobs(artefact);
+        });
+
+        artefactRepository.deleteAll(outdatedArtefacts);
+
+        log.info(writeLog(String.format("%s outdated artefacts found and deleted for before %s",
+                                        outdatedArtefacts.size(), searchDateTime)));
+    }
+
+    /**
+     * Attempts to delete the stored publication blobs from the publications store.
+     *
+     * @param artefact The artefact the blobs should be deleted for.
+     */
+    private void deletePublicationBlobs(Artefact artefact) {
+        if (!artefact.getIsFlatFile()) {
+            azureBlobService.deletePublicationBlob(artefact.getArtefactId() + ".pdf");
+            // If it's an SJP list the xlsx file also needs to be deleted
+            if (ListType.SJP_PUBLIC_LIST.equals(artefact.getListType())
+                || ListType.SJP_PRESS_LIST.equals(artefact.getListType())) {
+                azureBlobService.deletePublicationBlob(artefact.getArtefactId() + ".xlsx");
+            }
+        }
     }
 
     private void applyInternalLocationId(Artefact artefact) {
@@ -411,18 +450,6 @@ public class PublicationService {
     }
 
     /**
-     * Receives a list of outdated artefacts and deletes them from the blobstore and database.
-     *
-     * @param outdatedArtefacts A list of the outdated artefacts for deletion
-     */
-    private void deleteExpiredBlobs(List<Artefact> outdatedArtefacts) {
-        outdatedArtefacts.forEach(artefact ->
-                                      log.info(azureBlobService.deleteBlob(getUuidFromUrl(artefact.getPayload()))));
-        artefactRepository.deleteAll(outdatedArtefacts);
-        log.info("{} outdated artefacts found and deleted for before {}", outdatedArtefacts.size(), LocalDate.now());
-    }
-
-    /**
      * Method that handles the logic to archive an artefact.
      * @param issuerId The issuer ID of the user who submitted the request.
      * @param artefactId The artefact to archive.
@@ -458,47 +485,18 @@ public class PublicationService {
     }
 
     public String getMiData() {
-        List<String> returnedData = artefactRepository.getMiData();
-        StringBuilder builder = new StringBuilder(146);
-        builder.append("artefact_id,display_from,display_to,language,provenance,sensitivity,"
-                           + "source_artefact_id,type,content_date,court_id,court_name,search\n");
-        for (String s : returnedData) {
-            String[] splitString = s.split(",", 12);
-            long one = 1;
-            builder.append(Arrays.stream(splitString).limit(splitString.length - one)
-                               .collect(Collectors.joining(","))).append(',');
-            try {
-                builder.append(jsonDestroyer(splitString[splitString.length - 1]));
-            } catch (Exception e) {
-                log.error(e.getMessage());
-                builder.append("JSON Error\n");
-            }
-        }
+        StringBuilder builder = new StringBuilder(150);
+        builder
+            .append("artefact_id,display_from,display_to,language,provenance,sensitivity,source_artefact_id,"
+                        + "type,content_date,court_id,court_name,list_type")
+            .append(System.lineSeparator());
+        artefactRepository.getMiData()
+            .stream()
+            // Insert an extra empty field for court name before the list type
+            .map(line -> new StringBuilder(line)
+                .insert(line.lastIndexOf(DELIMITER), DELIMITER)
+                .toString())
+            .forEach(line -> builder.append(line).append(System.lineSeparator()));
         return builder.toString();
-    }
-
-    private String jsonDestroyer(String json) throws JsonProcessingException {
-        JsonNode topLevel = mapper.readTree(json);
-        JsonNode iteratorNode = topLevel.get("cases");
-        if (iteratorNode == null) {
-            return "\n";
-        }
-        Iterator<JsonNode> nodeIterator = iteratorNode.elements();
-        int counter = 1;
-        StringBuilder builder = new StringBuilder();
-        while (nodeIterator.hasNext()) {
-            JsonNode currentNode = nodeIterator.next();
-            builder.append("Case ").append(counter);
-            builder.append(": ");
-            currentNode.fields().forEachRemaining(
-                (node) -> {
-                    builder.append(node.getKey().trim()).append(": ");
-                    builder.append(node.getValue().asText().trim()).append(' ');
-                }
-            );
-            builder.append(' ');
-            counter += 1;
-        }
-        return builder.append('\n').toString();
     }
 }
