@@ -364,7 +364,7 @@ public class PublicationController {
         @ApiResponse(responseCode = AUTH_ERROR_CODE, description = UNAUTHORIZED_DESCRIPTION)
     })
     @Operation(summary = "Return a count of artefacts per location")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping("/count-by-location")
     @IsAdmin
     public ResponseEntity<String> countByLocation() {

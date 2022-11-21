@@ -192,7 +192,7 @@ public class PublicationService {
      * @return list of matching artefacts.
      */
     public List<Artefact> findAllByLocationIdAdmin(String locationId, UUID userId, boolean isAdmin) {
-        log.info(writeLog("ADMIN - Searing for all artefacts with " + locationId));
+        log.info(writeLog("ADMIN - Searching for all artefacts with " + locationId));
         return isAdmin
             ? artefactRepository.findArtefactsByLocationIdAdmin(locationId) : findAllByLocationId(locationId, userId);
     }
