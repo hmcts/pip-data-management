@@ -297,3 +297,8 @@ Flyway is integrated with Data Management.
 
 If you want to test the scripts locally, you will first need to clear the "flyway_schema_history' table, and then set the 'ENABLE_FLYWAY' environment variable to 'true'.
 
+## Materialised View
+
+There is a materialised view created for the Artefact and location table, which contains a subset of the fields.
+
+This view is implemented via Flyway.
