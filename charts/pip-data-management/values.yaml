@@ -40,3 +40,5 @@ java:
         - name: app-pip-channel-management-scope
           alias: CHANNEL_MANAGEMENT_AZ_API
   environment:
+    ENABLE_FLYWAY: true
+    RUN_DB_MIGRATION_ON_STARTUP: false

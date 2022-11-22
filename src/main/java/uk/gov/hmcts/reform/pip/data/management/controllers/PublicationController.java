@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.pip.data.management.controllers;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,6 +36,7 @@ import uk.gov.hmcts.reform.pip.data.management.models.publication.HeaderGroup;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Language;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ListType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Sensitivity;
+import uk.gov.hmcts.reform.pip.data.management.models.publication.views.ArtefactView;
 import uk.gov.hmcts.reform.pip.data.management.service.PublicationService;
 import uk.gov.hmcts.reform.pip.data.management.service.ValidationService;
 import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
@@ -116,6 +119,7 @@ public class PublicationController {
     @Operation(summary = "Upload a new publication")
     @PostMapping
     @Valid
+    @JsonView(ArtefactView.External.class)
     @IsPublisher
     public ResponseEntity<Artefact> uploadPublication(
         @RequestHeader(PublicationConfiguration.PROVENANCE_HEADER) String provenance,
@@ -191,6 +195,7 @@ public class PublicationController {
     })
     @Operation(summary = "Upload a new publication")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @JsonView(ArtefactView.External.class)
     @IsPublisher
     public ResponseEntity<Artefact> uploadPublication(
         @RequestHeader(PublicationConfiguration.PROVENANCE_HEADER) String provenance,
@@ -253,6 +258,7 @@ public class PublicationController {
     })
     @Operation(summary = "Get a series of publications matching a given locationId (e.g. locationId)")
     @GetMapping("/locationId/{locationId}")
+    @JsonView(ArtefactView.Internal.class)
     @IsAdmin
     public ResponseEntity<List<Artefact>> getAllRelevantArtefactsByLocationId(
         @PathVariable String locationId,
@@ -270,6 +276,7 @@ public class PublicationController {
     @Operation(summary = "Get a series of publications matching a given case search value (e.g. "
         + "CASE_URN/CASE_ID/CASE_NAME)")
     @GetMapping("/search/{searchTerm}/{searchValue}")
+    @JsonView(ArtefactView.Internal.class)
     @IsAdmin
     public ResponseEntity<List<Artefact>> getAllRelevantArtefactsBySearchValue(
         @PathVariable CaseSearchTerm searchTerm, @PathVariable String searchValue,
@@ -284,6 +291,7 @@ public class PublicationController {
     })
     @Operation(summary = "Gets the metadata for the blob, given a specific artefact id")
     @GetMapping("/{artefactId}")
+    @JsonView(ArtefactView.Internal.class)
     @IsAdmin
     public ResponseEntity<Artefact> getArtefactMetadata(
         @PathVariable UUID artefactId, @RequestHeader(value = USER_ID_HEADER, required = false) UUID userId,
@@ -418,4 +426,20 @@ public class PublicationController {
         publicationService.deleteExpiredArtefacts();
         return ResponseEntity.noContent().build();
     }
+
+    @ApiResponses({
+        @ApiResponse(responseCode = OK_CODE, description = "Artefact of ID {} has been archived"),
+        @ApiResponse(responseCode = AUTH_ERROR_CODE, description = UNAUTHORIZED_DESCRIPTION),
+        @ApiResponse(responseCode = NOT_FOUND_CODE, description = "Artefact with ID {} not found when archiving")
+    })
+    @Operation(summary = "Archive an artefact by ID")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PutMapping("/{id}/archive")
+    @IsAdmin
+    public ResponseEntity<String> archiveArtefact(@RequestHeader("x-issuer-id") String issuerId,
+                                                  @PathVariable String id) {
+        publicationService.archiveArtefact(issuerId, id);
+        return ResponseEntity.ok(String.format("Artefact of ID %s has been archived", id));
+    }
+
 }
