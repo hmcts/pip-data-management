@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.pip.data.management.models.publication;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.vladmihalcea.hibernate.type.json.JsonType;
 import lombok.AllArgsConstructor;
@@ -89,12 +90,14 @@ public class Artefact {
      * Date / Time from which the publication will be displayed.
      */
     @JsonView(ArtefactView.External.class)
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
     private LocalDateTime displayFrom;
 
     /**
      * Date / Time until which the publication will be displayed.
      */
     @JsonView(ArtefactView.External.class)
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
     private LocalDateTime displayTo;
 
     /**
@@ -114,6 +117,7 @@ public class Artefact {
      * Date / Time the publication is referring to.
      */
     @JsonView(ArtefactView.External.class)
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
     private LocalDateTime contentDate;
 
     /**
