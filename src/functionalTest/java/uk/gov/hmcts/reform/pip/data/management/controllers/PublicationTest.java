@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.pip.data.management.controllers;
 import com.azure.core.util.BinaryData;
 import com.azure.storage.blob.BlobClient;
 import com.azure.storage.blob.BlobContainerClient;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microsoft.applicationinsights.web.dependencies.apachecommons.io.IOUtils;
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
@@ -39,11 +40,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
+import static org.junit.Assert.fail;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -91,13 +96,14 @@ class PublicationTest {
     private static MockMultipartFile file;
     private static final String PAYLOAD_UNKNOWN = "Unknown-Payload";
     private static final String SOURCE_ARTEFACT_ID = "sourceArtefactId";
-    private static final LocalDateTime DISPLAY_TO = LocalDateTime.now();
-    private static final LocalDateTime DISPLAY_FROM = LocalDateTime.now();
+    private static final LocalDateTime DISPLAY_TO = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+    private static final LocalDateTime DISPLAY_FROM = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
     private static final Language LANGUAGE = Language.ENGLISH;
     private static final String BLOB_PAYLOAD_URL = "https://localhost";
     private static final ListType LIST_TYPE = ListType.CIVIL_DAILY_CAUSE_LIST;
     private static final String COURT_ID = "123";
-    private static final LocalDateTime CONTENT_DATE = LocalDateTime.now().toLocalDate().atStartOfDay();
+    private static final LocalDateTime CONTENT_DATE = LocalDateTime.now().toLocalDate().atStartOfDay()
+        .truncatedTo(ChronoUnit.SECONDS);
     private static final String SEARCH_KEY_FOUND = "array-value";
     private static final String SEARCH_KEY_NOT_FOUND = "case-urn";
     private static final String SEARCH_VALUE_1 = "array-value-1";
@@ -122,7 +128,8 @@ class PublicationTest {
 
     @BeforeAll
     public static void setup() throws IOException {
-        file = new MockMultipartFile("file", "test.pdf", MediaType.APPLICATION_PDF_VALUE, "test content".getBytes(
+        file = new MockMultipartFile("file", "test.pdf",
+                                     MediaType.APPLICATION_PDF_VALUE, "test content".getBytes(
             StandardCharsets.UTF_8));
         payload = new String(IOUtils.toByteArray(
             Objects.requireNonNull(PublicationTest.class.getClassLoader()
@@ -1221,10 +1228,11 @@ class PublicationTest {
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
 
-
-        assertEquals(
-            artefact,
-            objectMapper.readValue(response.getResponse().getContentAsString(), Artefact.class),
+        assertTrue(
+            compareArtefacts(
+                artefact,
+                objectMapper.readValue(response.getResponse().getContentAsString(), Artefact.class)
+            ),
             "Metadata does not match expected artefact"
         );
     }
@@ -1271,9 +1279,11 @@ class PublicationTest {
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
 
-        assertEquals(
-            artefact,
-            objectMapper.readValue(response.getResponse().getContentAsString(), Artefact.class),
+        assertTrue(
+            compareArtefacts(
+                artefact,
+                objectMapper.readValue(response.getResponse().getContentAsString(), Artefact.class)
+            ),
             "Metadata does not match expected artefact"
         );
     }
@@ -1617,10 +1627,14 @@ class PublicationTest {
             .header("x-admin", true);
         MvcResult response = mockMvc.perform(adminRequest).andExpect(status().isOk()).andReturn();
 
-        Artefact artefact = objectMapper.readValue(
-            response.getResponse().getContentAsString(), Artefact.class);
+        String responseAsString = response.getResponse().getContentAsString();
+        Artefact artefact = objectMapper.readValue(responseAsString, Artefact.class);
 
-        assertEquals(artefactToFind, artefact, SHOULD_RETURN_EXPECTED_ARTEFACT);
+        assertTrue(compareArtefacts(artefactToFind, artefact), SHOULD_RETURN_EXPECTED_ARTEFACT);
+
+        JsonNode responseAsJson = objectMapper.readTree(responseAsString);
+        List.of("contentDate", "displayFrom", "displayTo")
+            .forEach(field -> assertDateTimeFormat(responseAsJson.get(field).asText(), field));
     }
 
     @Test
@@ -1636,7 +1650,8 @@ class PublicationTest {
 
     @Test
     void testGetLocationTypeReturns() throws Exception {
-        mockHttpServletRequestBuilder = MockMvcRequestBuilders.get(LOCATION_TYPE_URL + ListType.CIVIL_DAILY_CAUSE_LIST);
+        mockHttpServletRequestBuilder = MockMvcRequestBuilders
+            .get(LOCATION_TYPE_URL + ListType.CIVIL_DAILY_CAUSE_LIST);
 
         MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isOk()).andReturn();
 
@@ -1685,5 +1700,74 @@ class PublicationTest {
             .get(MI_REPORTING_DATA_URL);
 
         mockMvc.perform(request).andExpect(status().isOk());
+    }
+
+    @Test
+    void testArchiveArtefactSuccess() throws Exception {
+        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        Artefact artefactToArchive = createDailyList(Sensitivity.PUBLIC);
+
+        MockHttpServletRequestBuilder preArchiveRequest = MockMvcRequestBuilders
+            .get(PUBLICATION_URL + "/" + artefactToArchive.getArtefactId())
+            .header(USER_ID_HEADER, userId);
+
+        mockMvc.perform(preArchiveRequest).andExpect(status().isOk());
+
+        MockHttpServletRequestBuilder archiveRequest = MockMvcRequestBuilders
+            .put(PUBLICATION_URL + "/" + artefactToArchive.getArtefactId() + "/archive")
+            .header(ISSUER_HEADER, userId);
+
+        MvcResult archiveResponse = mockMvc.perform(archiveRequest).andExpect(status().isOk()).andReturn();
+
+        assertEquals("Artefact of ID " + artefactToArchive.getArtefactId() + " has been archived",
+                     archiveResponse.getResponse().getContentAsString(), "Should successfully archive artefact"
+        );
+    }
+
+    @Test
+    void testArchiveArtefactNotFound() throws Exception {
+        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+
+        String invalidArtefactId = UUID.randomUUID().toString();
+
+        MockHttpServletRequestBuilder archiveRequest = MockMvcRequestBuilders
+            .put(PUBLICATION_URL + "/" + invalidArtefactId + "/archive")
+            .header(ISSUER_HEADER, userId);
+
+        MvcResult archiveResponse = mockMvc.perform(archiveRequest).andExpect(status().isNotFound()).andReturn();
+
+        assertTrue(
+            archiveResponse.getResponse().getContentAsString()
+                .contains("Artefact with ID " + invalidArtefactId + " not found when archiving"),
+            "Should return 404 for artefact not found"
+        );
+    }
+
+    private boolean compareArtefacts(Artefact expectedArtefact, Artefact returnedArtefact) {
+        return expectedArtefact.getArtefactId().equals(returnedArtefact.getArtefactId())
+            && expectedArtefact.getProvenance().equals(returnedArtefact.getProvenance())
+            && expectedArtefact.getSensitivity().equals(returnedArtefact.getSensitivity())
+            && expectedArtefact.getPayload().equals(returnedArtefact.getPayload())
+            && expectedArtefact.getType().equals(returnedArtefact.getType())
+            && expectedArtefact.getSearch().equals(returnedArtefact.getSearch())
+            && expectedArtefact.getLocationId().equals(returnedArtefact.getLocationId())
+            && expectedArtefact.getLanguage().equals(returnedArtefact.getLanguage())
+            && expectedArtefact.getListType().equals(returnedArtefact.getListType())
+            && expectedArtefact.getDisplayTo().equals(returnedArtefact.getDisplayTo())
+            && expectedArtefact.getDisplayFrom().equals(returnedArtefact.getDisplayFrom())
+            && expectedArtefact.getContentDate().equals(returnedArtefact.getContentDate())
+            && expectedArtefact.getIsFlatFile().equals(returnedArtefact.getIsFlatFile())
+            && expectedArtefact.getSourceArtefactId().equals(returnedArtefact.getSourceArtefactId());
+    }
+
+    private void assertDateTimeFormat(String value, String field) {
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
+            LocalDateTime dateTime = LocalDateTime.parse(value, formatter);
+            String result = dateTime.format(formatter);
+            assertEquals(value, result, String.format("%s should match", field));
+        } catch (DateTimeParseException e) {
+            fail(String.format("%s with value '%s' could not be parsed", field, value));
+        }
     }
 }
