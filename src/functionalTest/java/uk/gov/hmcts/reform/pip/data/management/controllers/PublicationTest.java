@@ -1279,9 +1279,11 @@ class PublicationTest {
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
 
-        assertEquals(
-            artefact,
-            objectMapper.readValue(response.getResponse().getContentAsString(), Artefact.class),
+        assertTrue(
+            compareArtefacts(
+                artefact,
+                objectMapper.readValue(response.getResponse().getContentAsString(), Artefact.class)
+            ),
             "Metadata does not match expected artefact"
         );
     }
