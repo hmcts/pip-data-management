@@ -40,6 +40,7 @@ import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
  */
 @Service
 @Slf4j
+@SuppressWarnings({"PMD.CloseResource"})
 public class LocationService {
 
     @Autowired
@@ -193,6 +194,7 @@ public class LocationService {
         });
 
         streamWriter.flush();
+        streamWriter.close();
         return stream.toByteArray();
     }
 
