@@ -7,6 +7,7 @@ plugins {
   id 'org.owasp.dependencycheck' version '7.3.0'
   id 'org.sonarqube' version '3.5.0.2730'
   id 'pmd'
+  id 'org.flywaydb.flyway' version '8.5.13'
   id 'io.freefair.lombok' version '6.5.1'
   id 'org.jetbrains.kotlin.jvm' version '1.7.20'
 }
@@ -116,6 +117,21 @@ jacocoTestCoverageVerification {
   }
 }
 
+flyway {
+  url = System.getenv('FLYWAY_URL')
+  user = System.getenv('FLYWAY_USER')
+  password = System.getenv('FLYWAY_PASSWORD')
+  baselineOnMigrate = true
+  baselineVersion = '000'
+}
+
+task migratePostgresDatabase(type: org.flywaydb.gradle.task.FlywayMigrateTask) {
+  baselineOnMigrate = true
+  if (project.hasProperty("dburl")) {
+    url = "jdbc:postgresql://${dburl}"
+  }
+}
+
 project.tasks['sonarqube'].dependsOn jacocoTestReport
 
 def sonarExclusions = ["src/main/java/uk/gov/hmcts/reform/pip/data/management/config/AzureBlobConfiguration.java"]
@@ -173,6 +189,9 @@ dependencies {
   implementation 'com.opencsv:opencsv:5.7.1'
   implementation 'org.springframework.boot:spring-boot-starter-webflux'
   implementation("com.squareup.okhttp3:okhttp:4.10.0")
+
+  // Include Flyway for database migrations
+  implementation group: 'org.flywaydb', name: 'flyway-core', version: '8.5.13'
 
   // Force upgrade snakeyaml version for CVE-2022-38752
   implementation( group: 'org.yaml', name: 'snakeyaml').version {
