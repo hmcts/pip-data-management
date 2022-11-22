@@ -122,7 +122,8 @@ class PublicationTest {
 
     @BeforeAll
     public static void setup() throws IOException {
-        file = new MockMultipartFile("file", "test.pdf", MediaType.APPLICATION_PDF_VALUE, "test content".getBytes(
+        file = new MockMultipartFile("file", "test.pdf",
+                                     MediaType.APPLICATION_PDF_VALUE, "test content".getBytes(
             StandardCharsets.UTF_8));
         payload = new String(IOUtils.toByteArray(
             Objects.requireNonNull(PublicationTest.class.getClassLoader()
@@ -1221,10 +1222,11 @@ class PublicationTest {
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
 
-
-        assertEquals(
-            artefact,
-            objectMapper.readValue(response.getResponse().getContentAsString(), Artefact.class),
+        assertTrue(
+            compareArtefacts(
+                artefact,
+                objectMapper.readValue(response.getResponse().getContentAsString(), Artefact.class)
+            ),
             "Metadata does not match expected artefact"
         );
     }
@@ -1271,9 +1273,11 @@ class PublicationTest {
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
 
-        assertEquals(
-            artefact,
-            objectMapper.readValue(response.getResponse().getContentAsString(), Artefact.class),
+        assertTrue(
+            compareArtefacts(
+                artefact,
+                objectMapper.readValue(response.getResponse().getContentAsString(), Artefact.class)
+            ),
             "Metadata does not match expected artefact"
         );
     }
@@ -1620,7 +1624,7 @@ class PublicationTest {
         Artefact artefact = objectMapper.readValue(
             response.getResponse().getContentAsString(), Artefact.class);
 
-        assertEquals(artefactToFind, artefact, SHOULD_RETURN_EXPECTED_ARTEFACT);
+        assertTrue(compareArtefacts(artefactToFind, artefact), SHOULD_RETURN_EXPECTED_ARTEFACT);
     }
 
     @Test
@@ -1636,7 +1640,8 @@ class PublicationTest {
 
     @Test
     void testGetLocationTypeReturns() throws Exception {
-        mockHttpServletRequestBuilder = MockMvcRequestBuilders.get(LOCATION_TYPE_URL + ListType.CIVIL_DAILY_CAUSE_LIST);
+        mockHttpServletRequestBuilder = MockMvcRequestBuilders
+            .get(LOCATION_TYPE_URL + ListType.CIVIL_DAILY_CAUSE_LIST);
 
         MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isOk()).andReturn();
 
@@ -1686,4 +1691,63 @@ class PublicationTest {
 
         mockMvc.perform(request).andExpect(status().isOk());
     }
+
+    private boolean compareArtefacts(Artefact expectedArtefact, Artefact returnedArtefact) {
+        return expectedArtefact.getArtefactId().equals(returnedArtefact.getArtefactId())
+            && expectedArtefact.getProvenance().equals(returnedArtefact.getProvenance())
+            && expectedArtefact.getSensitivity().equals(returnedArtefact.getSensitivity())
+            && expectedArtefact.getPayload().equals(returnedArtefact.getPayload())
+            && expectedArtefact.getType().equals(returnedArtefact.getType())
+            && expectedArtefact.getSearch().equals(returnedArtefact.getSearch())
+            && expectedArtefact.getLocationId().equals(returnedArtefact.getLocationId())
+            && expectedArtefact.getLanguage().equals(returnedArtefact.getLanguage())
+            && expectedArtefact.getListType().equals(returnedArtefact.getListType())
+            && expectedArtefact.getDisplayTo().equals(returnedArtefact.getDisplayTo())
+            && expectedArtefact.getDisplayFrom().equals(returnedArtefact.getDisplayFrom())
+            && expectedArtefact.getContentDate().equals(returnedArtefact.getContentDate())
+            && expectedArtefact.getIsFlatFile().equals(returnedArtefact.getIsFlatFile())
+            && expectedArtefact.getSourceArtefactId().equals(returnedArtefact.getSourceArtefactId());
+    }
+
+    @Test
+    void testArchiveArtefactSuccess() throws Exception {
+        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        Artefact artefactToArchive = createDailyList(Sensitivity.PUBLIC);
+
+        MockHttpServletRequestBuilder preArchiveRequest = MockMvcRequestBuilders
+            .get(PUBLICATION_URL + "/" + artefactToArchive.getArtefactId())
+            .header(USER_ID_HEADER, userId);
+
+        mockMvc.perform(preArchiveRequest).andExpect(status().isOk());
+
+        MockHttpServletRequestBuilder archiveRequest = MockMvcRequestBuilders
+            .put(PUBLICATION_URL + "/" + artefactToArchive.getArtefactId() + "/archive")
+            .header(ISSUER_HEADER, userId);
+
+        MvcResult archiveResponse = mockMvc.perform(archiveRequest).andExpect(status().isOk()).andReturn();
+
+        assertEquals("Artefact of ID " + artefactToArchive.getArtefactId() + " has been archived",
+                     archiveResponse.getResponse().getContentAsString(), "Should successfully archive artefact"
+        );
+    }
+
+    @Test
+    void testArchiveArtefactNotFound() throws Exception {
+        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+
+        String invalidArtefactId = UUID.randomUUID().toString();
+
+        MockHttpServletRequestBuilder archiveRequest = MockMvcRequestBuilders
+            .put(PUBLICATION_URL + "/" + invalidArtefactId + "/archive")
+            .header(ISSUER_HEADER, userId);
+
+        MvcResult archiveResponse = mockMvc.perform(archiveRequest).andExpect(status().isNotFound()).andReturn();
+
+        assertTrue(
+            archiveResponse.getResponse().getContentAsString()
+                .contains("Artefact with ID " + invalidArtefactId + " not found when archiving"),
+            "Should return 404 for artefact not found"
+        );
+    }
+
 }
