@@ -3,3 +3,6 @@ service-to-service:
   account-management: localhost:6969
   publication-services: localhost:8081
   channel-management: localhost:8181
+
+dbMigration:
+  runOnStartup: true

@@ -90,6 +90,8 @@ public class PublicationService {
 
         applyInternalLocationId(artefact);
         artefact.setContentDate(artefact.getContentDate().toLocalDate().atTime(LocalTime.MIN));
+        artefact.setLastReceivedDate(LocalDateTime.now());
+
         boolean isExisting = applyExistingArtefact(artefact);
 
         String blobUrl = azureBlobService.createPayload(
@@ -119,6 +121,7 @@ public class PublicationService {
 
         applyInternalLocationId(artefact);
         artefact.setContentDate(artefact.getContentDate().toLocalDate().atTime(LocalTime.MIN));
+        artefact.setLastReceivedDate(LocalDateTime.now());
 
         boolean isExisting = applyExistingArtefact(artefact);
 
@@ -159,6 +162,7 @@ public class PublicationService {
         foundArtefact.ifPresent(value -> {
             artefact.setArtefactId(value.getArtefactId());
             artefact.setPayload(value.getPayload());
+            artefact.setSupersededCount(value.getSupersededCount() + 1);
         });
         return foundArtefact.isPresent();
     }
@@ -446,6 +450,7 @@ public class PublicationService {
     }
 
     /**
+
      * Returns what is essentially a CSV file with the count of artefacts in a given location.
      * @return string representing the csv file.
      */
@@ -457,6 +462,26 @@ public class PublicationService {
             builder.append(s).append('\n');
         }
         return builder.toString();
+        }
+
+     * Method that handles the logic to archive an artefact.
+     * @param issuerId The issuer ID of the user who submitted the request.
+     * @param artefactId The artefact to archive.
+     */
+    public void archiveArtefact(String issuerId, String artefactId) {
+        Optional<Artefact> optionalArtefact = artefactRepository.findArtefactByArtefactId(artefactId);
+
+        if (optionalArtefact.isPresent()) {
+            Artefact artefact = optionalArtefact.get();
+            artefact.setIsArchived(true);
+            artefactRepository.save(artefact);
+
+            writeLog(UUID.fromString(issuerId),
+                     String.format("Artefact with ID %s has been archived by %s", issuerId, artefactId));
+        } else {
+            throw new ArtefactNotFoundException(
+                String.format("Artefact with ID %s not found when archiving", artefactId));
+        }
     }
 
     /**
