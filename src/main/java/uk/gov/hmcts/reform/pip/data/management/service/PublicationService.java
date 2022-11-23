@@ -157,7 +157,8 @@ public class PublicationService {
             artefact.getContentDate(),
             artefact.getLanguage().name(),
             artefact.getListType().name(),
-            artefact.getProvenance());
+            artefact.getProvenance()
+        );
 
         foundArtefact.ifPresent(value -> {
             artefact.setArtefactId(value.getArtefactId());
@@ -176,13 +177,13 @@ public class PublicationService {
      * Get all relevant artefacts relating to a given location ID.
      *
      * @param searchValue - represents the location ID in question being searched for
-     * @param userId    - represents the user ID of the user who is making the request
-     * @return a list of all artefacts that fulfil the timing criteria, match the given location id and
-     *     sensitivity associated with given verification status.
+     * @param userId      - represents the user ID of the user who is making the request
+     * @return a list of all artefacts that fulfil the timing criteria, match the given location id and sensitivity
+     *     associated with given verification status.
      */
     public List<Artefact> findAllByLocationId(String searchValue, UUID userId) {
         LocalDateTime currDate = LocalDateTime.now();
-        List<Artefact> artefacts =  artefactRepository.findArtefactsByLocationId(searchValue, currDate);
+        List<Artefact> artefacts = artefactRepository.findArtefactsByLocationId(searchValue, currDate);
 
         return artefacts.stream().filter(artefact -> isAuthorised(artefact, userId)).collect(Collectors.toList());
     }
@@ -191,8 +192,8 @@ public class PublicationService {
      * Get all artefacts for admin actions.
      *
      * @param locationId The location id to search for.
-     * @param userId represents the user ID of the user who is making the request
-     * @param isAdmin bool to check whether admin search is needed, if not will default to findAllByLocationId().
+     * @param userId     represents the user ID of the user who is making the request
+     * @param isAdmin    bool to check whether admin search is needed, if not will default to findAllByLocationId().
      * @return list of matching artefacts.
      */
     public List<Artefact> findAllByLocationIdAdmin(String locationId, UUID userId, boolean isAdmin) {
@@ -206,7 +207,7 @@ public class PublicationService {
      *
      * @param searchTerm  the search term checking against, eg. CASE_ID or CASE_URN
      * @param searchValue the search value to look for
-     * @param userId  represents the user ID of the user who is making the request
+     * @param userId      represents the user ID of the user who is making the request
      * @return list of Artefacts
      */
     public List<Artefact> findAllBySearch(CaseSearchTerm searchTerm, String searchValue, UUID userId) {
@@ -236,24 +237,28 @@ public class PublicationService {
 
     public Artefact getMetadataByArtefactId(UUID artefactId) {
         return artefactRepository.findArtefactByArtefactId(artefactId.toString())
-                .orElseThrow(() -> new ArtefactNotFoundException(String.format("No artefact found with the ID: %s",
-                                                                       artefactId)));
+            .orElseThrow(() -> new ArtefactNotFoundException(String.format(
+                "No artefact found with the ID: %s",
+                artefactId
+            )));
     }
 
     /**
      * Takes in artefact id and returns the metadata for the artefact.
      *
-     * @param artefactId   represents the artefact id which is then used to get an artefact to populate the inputs
-     *                     for the blob request.
-     * @param userId represents the user ID of the user who is making the request
+     * @param artefactId represents the artefact id which is then used to get an artefact to populate the inputs
+     *                   for the blob request.
+     * @param userId     represents the user ID of the user who is making the request
      * @return The metadata for the found artefact.
      */
     public Artefact getMetadataByArtefactId(UUID artefactId, UUID userId) {
 
         LocalDateTime currentDate = LocalDateTime.now();
 
-        Optional<Artefact> artefact = artefactRepository.findByArtefactId(artefactId.toString(),
-            currentDate);
+        Optional<Artefact> artefact = artefactRepository.findByArtefactId(
+            artefactId.toString(),
+            currentDate
+        );
 
         if (artefact.isPresent() && isAuthorised(artefact.get(), userId)) {
             return artefact.get();
@@ -265,9 +270,9 @@ public class PublicationService {
     /**
      * Takes in artefact id and returns the payload within the matching blob in string format.
      *
-     * @param artefactId   represents the artefact id which is then used to get an artefact to populate the inputs
-     *                     for the blob request.
-     * @param userId represents the user ID of the user who is making the request
+     * @param artefactId represents the artefact id which is then used to get an artefact to populate the inputs
+     *                   for the blob request.
+     * @param userId     represents the user ID of the user who is making the request
      * @return The data within the blob in string format.
      */
     public String getPayloadByArtefactId(UUID artefactId, UUID userId) {
@@ -280,8 +285,8 @@ public class PublicationService {
      * Takes in artefact id and returns the payload within the matching blob in string format. This is used for admin
      * requests
      *
-     * @param artefactId   represents the artefact id which is then used to get an artefact to populate the inputs
-     *                     for the blob request.
+     * @param artefactId represents the artefact id which is then used to get an artefact to populate the inputs
+     *                   for the blob request.
      * @return The data within the blob in string format.
      */
     public String getPayloadByArtefactId(UUID artefactId) {
@@ -292,8 +297,9 @@ public class PublicationService {
 
     /**
      * Retrieves a flat file for an artefact.
+     *
      * @param artefactId The artefact ID to retrieve the flat file from.
-     * @param userId represents the user ID of the user who is making the request
+     * @param userId     represents the user ID of the user who is making the request
      * @return The flat file resource.
      */
     public Resource getFlatFileByArtefactID(UUID artefactId, UUID userId) {
@@ -304,6 +310,7 @@ public class PublicationService {
 
     /**
      * Retrieves a flat file for an artefact. This is used for admin requests
+     *
      * @param artefactId The artefact ID to retrieve the flat file from.
      * @return The flat file resource.
      */
@@ -315,8 +322,9 @@ public class PublicationService {
 
     /**
      * Attempts to delete a blob from the artefact store.
+     *
      * @param artefactId The ID of the artefact to be deleted.
-     * @param issuerId The id of the admin user who is attempting to delete the artefact.
+     * @param issuerId   The id of the admin user who is attempting to delete the artefact.
      */
     public void deleteArtefactById(String artefactId, String issuerId) {
         Optional<Artefact> artefactToDelete = artefactRepository.findArtefactByArtefactId(artefactId);
@@ -377,7 +385,8 @@ public class PublicationService {
         artefactRepository.deleteAll(outdatedArtefacts);
 
         log.info(writeLog(String.format("%s outdated artefacts found and deleted for before %s",
-                                        outdatedArtefacts.size(), searchDateTime)));
+                                        outdatedArtefacts.size(), searchDateTime
+        )));
     }
 
     /**
@@ -400,10 +409,12 @@ public class PublicationService {
         if ("MANUAL_UPLOAD".equalsIgnoreCase(artefact.getProvenance())) {
             return;
         }
-        Optional<Location> location = locationRepository.findByLocationIdByProvenance(artefact.getProvenance(),
-                                                                                      artefact.getLocationId(),
-                                                                                      artefact.getListType()
-                                                                                       .getListLocationLevel().name());
+        Optional<Location> location = locationRepository.findByLocationIdByProvenance(
+            artefact.getProvenance(),
+            artefact.getLocationId(),
+            artefact.getListType()
+                .getListLocationLevel().name()
+        );
         if (location.isPresent()) {
             artefact.setLocationId(location.get().getLocationId().toString());
 
@@ -428,6 +439,7 @@ public class PublicationService {
 
     /**
      * Triggers subscription management to handle deleted artefact to third party subscribers.
+     *
      * @param deletedArtefact deleted artefact to notify of.
      */
     private void triggerThirdPartyArtefactDeleted(Artefact deletedArtefact) {
@@ -437,6 +449,7 @@ public class PublicationService {
     /**
      * Receives a list of no match artefacts, checks it's not empty and create a map of location id to Provenance.
      * Send this on to publication services.
+     *
      * @param artefactList A list of no match artefacts
      */
     private void findNoMatchArtefactsForReporting(List<Artefact> artefactList) {
@@ -450,8 +463,8 @@ public class PublicationService {
     }
 
     /**
-
      * Returns what is essentially a CSV file with the count of artefacts in a given location.
+     *
      * @return string representing the csv file.
      */
     public String countArtefactsByLocation() {
@@ -462,10 +475,12 @@ public class PublicationService {
             builder.append(s).append('\n');
         }
         return builder.toString();
-        }
+    }
 
+    /**
      * Method that handles the logic to archive an artefact.
-     * @param issuerId The issuer ID of the user who submitted the request.
+     *
+     * @param issuerId   The issuer ID of the user who submitted the request.
      * @param artefactId The artefact to archive.
      */
     public void archiveArtefact(String issuerId, String artefactId) {
@@ -476,8 +491,10 @@ public class PublicationService {
             artefact.setIsArchived(true);
             artefactRepository.save(artefact);
 
-            writeLog(UUID.fromString(issuerId),
-                     String.format("Artefact with ID %s has been archived by %s", issuerId, artefactId));
+            writeLog(
+                UUID.fromString(issuerId),
+                String.format("Artefact with ID %s has been archived by %s", issuerId, artefactId)
+            );
         } else {
             throw new ArtefactNotFoundException(
                 String.format("Artefact with ID %s not found when archiving", artefactId));
@@ -486,6 +503,7 @@ public class PublicationService {
 
     /**
      * Take in an email and mask it for writing out to the logs.
+     *
      * @param emailToMask The email to mask
      * @return A masked email
      */
