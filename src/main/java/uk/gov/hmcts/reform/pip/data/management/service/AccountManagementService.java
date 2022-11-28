@@ -42,4 +42,16 @@ public class AccountManagementService {
         }
     }
 
+    public String getAllAccounts(String pageNumber, String pageSize, String provenances) {
+        try {
+            return webClient.get().uri(String.format(
+                    "%s/account/all?pageNumber=%s&pageSize=%s&provenances=%s", url, pageNumber, pageSize, provenances))
+                .attributes(clientRegistrationId("accountManagementApi"))
+                .retrieve().bodyToMono(String.class).block();
+        } catch (WebClientException ex) {
+            log.error(String.format("Request to account management failed with error message: %s", ex.getMessage()));
+            return "Failed to find all the accounts";
+        }
+    }
+
 }

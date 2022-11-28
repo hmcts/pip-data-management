@@ -262,10 +262,11 @@ class LocationControllerTest {
     @Test
     void testDeleteLocationReturnsOk() throws JsonProcessingException {
         int locationId = 1;
+        String requesterName = "ReqName";
         LocationDeletion locationDeletion = new LocationDeletion();
-        when(locationService.deleteLocation(locationId)).thenReturn(locationDeletion);
+        when(locationService.deleteLocation(locationId, requesterName)).thenReturn(locationDeletion);
 
-        assertEquals(HttpStatus.OK, locationController.deleteLocation(locationId).getStatusCode(),
+        assertEquals(HttpStatus.OK, locationController.deleteLocation(locationId, requesterName).getStatusCode(),
                      "Delete location endpoint has not returned OK");
     }
 

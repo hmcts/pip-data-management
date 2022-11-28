@@ -49,6 +49,9 @@ class LocationServiceTest {
     @Mock
     private SubscriptionManagementService subscriptionManagementService;
 
+    @Mock
+    private AccountManagementService accountManagementService;
+
     @InjectMocks
     private LocationService locationService;
 
@@ -65,6 +68,7 @@ class LocationServiceTest {
 
     private static final String FIRST_LOCATION_NOT_FOUND = "First location has not been found";
     private static final String SECOND_LOCATION_NOT_FOUND = "Second location has not been found";
+    private static final String REQUESTOR_NAME = "ReqName";
 
     @BeforeEach
     void setup() {
@@ -421,7 +425,7 @@ class LocationServiceTest {
 
         doNothing().when(locationRepository).deleteById(locationId);
 
-        locationService.deleteLocation(locationId);
+        locationService.deleteLocation(locationId, REQUESTOR_NAME);
 
         verify(locationRepository, times(1)).deleteById(locationId);
     }
@@ -434,8 +438,10 @@ class LocationServiceTest {
             .thenReturn(Optional.of(locationFirstExample));
         when(artefactRepository.findActiveArtefactsForLocation(any(), eq(locationId.toString())))
             .thenReturn(List.of(new Artefact()));
+        when(accountManagementService.getAllAccounts("0","1000", "PI_AAD"))
+            .thenReturn("{\"content\": [{\"email\": \"test@test.com\",\"roles\": \"ROLE\"}]}");
 
-        LocationDeletion result = locationService.deleteLocation(locationId);
+        LocationDeletion result = locationService.deleteLocation(locationId, REQUESTOR_NAME);
 
         assertTrue(result.getIsExists(), "Found active artefact for a court");
     }
@@ -450,8 +456,10 @@ class LocationServiceTest {
             .thenReturn(List.of());
         when(subscriptionManagementService.findSubscriptionsByLocationId(locationId.toString()))
             .thenReturn("[{},{}]");
+        when(accountManagementService.getAllAccounts("0","1000", "PI_AAD"))
+            .thenReturn("{\"content\": [{\"email\": \"test@test.com\",\"roles\": \"ROLE\"}]}");
 
-        LocationDeletion result = locationService.deleteLocation(locationId);
+        LocationDeletion result = locationService.deleteLocation(locationId, REQUESTOR_NAME);
 
         assertTrue(result.getIsExists(), "Found active subscription for a court");
     }
@@ -464,7 +472,8 @@ class LocationServiceTest {
             .thenReturn(Optional.empty());
 
         LocationNotFoundException locationNotFoundException =
-            assertThrows(LocationNotFoundException.class, () -> locationService.deleteLocation(locationId));
+            assertThrows(LocationNotFoundException.class, () ->
+                locationService.deleteLocation(locationId, REQUESTOR_NAME));
 
         assertEquals("No location found with the id: 1", locationNotFoundException.getMessage(),
                      "Exception does not contain expected message");

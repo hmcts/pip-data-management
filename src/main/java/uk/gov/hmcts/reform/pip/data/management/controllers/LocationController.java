@@ -106,11 +106,12 @@ public class LocationController {
         @ApiResponse(responseCode = AUTH_ERROR_CODE, description = "User has not been authorized"),
         @ApiResponse(responseCode = NOT_FOUND_CODE, description = "No Location found with the id {locationId}")
     })
-    @DeleteMapping("/{locationId}")
+    @DeleteMapping("/{locationId}/{requesterName}")
     @IsAdmin
-    public ResponseEntity<LocationDeletion> deleteLocation(@PathVariable Integer locationId)
+    public ResponseEntity<LocationDeletion> deleteLocation(@PathVariable Integer locationId,
+                                                           @PathVariable String requesterName)
         throws JsonProcessingException {
-        return ResponseEntity.ok(locationService.deleteLocation(locationId));
+        return ResponseEntity.ok(locationService.deleteLocation(locationId, requesterName));
     }
 
 }

@@ -12,6 +12,9 @@ import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.LocationRepository;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CsvParseException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.LocationNotFoundException;
+import uk.gov.hmcts.reform.pip.data.management.models.admin.Action;
+import uk.gov.hmcts.reform.pip.data.management.models.admin.ActionResult;
+import uk.gov.hmcts.reform.pip.data.management.models.admin.ChangeType;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationCsv;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationDeletion;
@@ -31,6 +34,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static uk.gov.hmcts.reform.pip.data.management.models.request.Roles.SYSTEM_ADMIN;
 import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
 
 /**
@@ -45,12 +49,20 @@ public class LocationService {
 
     private final SubscriptionManagementService subscriptionManagementService;
 
+    private final AccountManagementService accountManagementService;
+
+    private final PublicationServicesService publicationService;
+
     public LocationService(LocationRepository locationRepository,
                            ArtefactRepository artefactRepository,
-                           SubscriptionManagementService subscriptionManagementService) {
+                           SubscriptionManagementService subscriptionManagementService,
+                           AccountManagementService accountManagementService,
+                           PublicationServicesService publicationService) {
         this.locationRepository = locationRepository;
         this.artefactRepository = artefactRepository;
         this.subscriptionManagementService = subscriptionManagementService;
+        this.accountManagementService = accountManagementService;
+        this.publicationService = publicationService;
     }
 
     /**
@@ -169,14 +181,14 @@ public class LocationService {
      * This method will delete a location from the database.
      * @param locationId The ID of the location to delete.
      */
-    public LocationDeletion deleteLocation(Integer locationId) throws JsonProcessingException {
+    public LocationDeletion deleteLocation(Integer locationId, String requesterName) throws JsonProcessingException {
         LocationDeletion locationDeletion;
         Optional<Location> location = locationRepository.getLocationByLocationId(locationId);
 
         if (location.isPresent()) {
-            locationDeletion = checkActiveArtefactForLocation(locationId.toString());
+            locationDeletion = checkActiveArtefactForLocation(locationId.toString(), requesterName);
             if (!locationDeletion.getIsExists()) {
-                locationDeletion = checkActiveSubscriptionForLocation(locationId.toString());
+                locationDeletion = checkActiveSubscriptionForLocation(locationId.toString(), requesterName);
                 if (!locationDeletion.getIsExists()) {
                     locationRepository.deleteById(locationId);
                 }
@@ -189,30 +201,65 @@ public class LocationService {
         return locationDeletion;
     }
 
-    private LocationDeletion checkActiveArtefactForLocation(String locationId) {
+    private void sendEmailToAllSystemAdmins(Action action, String requesterName) throws JsonProcessingException {
+        String result = accountManagementService.getAllAccounts("0",
+                                                                "1000", "PI_AAD");
+        List<String> systemAdmins = findAllSystemAdmins(result);
+        for (String systemAdminEmail :systemAdmins) {
+            publicationService.sendSystemAdminEmail(systemAdminEmail, requesterName, action);
+        }
+    }
+
+    private List<String> findAllSystemAdmins(String result) throws JsonProcessingException {
+        List<String> systemAdmins = new ArrayList<>();
+        if (!result.isEmpty()) {
+            JsonNode node = new ObjectMapper().readTree(result);
+            if (!node.isEmpty()) {
+                JsonNode content = node.get("content");
+                content.forEach(jsonObject -> {
+                    if (jsonObject.has("roles")
+                        && jsonObject.get("roles").asText().equals(SYSTEM_ADMIN.toString())) {
+                        systemAdmins.add(jsonObject.get("email").asText());
+                    }
+                });
+            }
+        }
+        return systemAdmins;
+    }
+
+    private LocationDeletion checkActiveArtefactForLocation(String locationId, String requesterName)
+        throws JsonProcessingException {
         LocalDateTime searchDateTime = LocalDateTime.now();
         LocationDeletion locationDeletion = new LocationDeletion();
-
         List<Artefact> activeArtefacts = artefactRepository.findActiveArtefactsForLocation(searchDateTime,
                                                                                            locationId);
-
         if (!activeArtefacts.isEmpty()) {
-            locationDeletion.setIsExists(true);
-            locationDeletion.setErrorMessage("There are active artefacts for the given court");
+            Action action = buildErrorAndAdminAction(locationDeletion, ChangeType.DELETE_COURT,
+                ActionResult.ATTEMPTED,"There are active artefacts for the given court");
+            sendEmailToAllSystemAdmins(action, requesterName);
         }
         return locationDeletion;
     }
 
-    private LocationDeletion checkActiveSubscriptionForLocation(String locationId) throws JsonProcessingException {
+    private LocationDeletion checkActiveSubscriptionForLocation(String locationId, String requesterName)
+        throws JsonProcessingException {
         LocationDeletion locationDeletion = new LocationDeletion();
         String result = subscriptionManagementService.findSubscriptionsByLocationId(locationId);
         if (!result.isEmpty()) {
             JsonNode node = new ObjectMapper().readTree(result);
             if (!node.isEmpty()) {
-                locationDeletion.setIsExists(true);
-                locationDeletion.setErrorMessage("There are active subscriptions for the given court");
+                Action action = buildErrorAndAdminAction(locationDeletion, ChangeType.DELETE_COURT,
+                    ActionResult.ATTEMPTED,"There are active subscriptions for the given court");
+                sendEmailToAllSystemAdmins(action, requesterName);
             }
         }
         return locationDeletion;
+    }
+
+    private Action buildErrorAndAdminAction(LocationDeletion locationDeletion, ChangeType changeType,
+                                          ActionResult actionResult, String message) {
+        locationDeletion.setIsExists(true);
+        locationDeletion.setErrorMessage(message);
+        return new Action(changeType, actionResult, message);
     }
 }
