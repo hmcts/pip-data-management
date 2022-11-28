@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.pip.data.management.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,6 +17,7 @@ import uk.gov.hmcts.reform.pip.data.management.Application;
 import uk.gov.hmcts.reform.pip.data.management.config.AzureBlobConfigurationTest;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationCsv;
+import uk.gov.hmcts.reform.pip.data.management.models.location.LocationDeletion;
 import uk.gov.hmcts.reform.pip.data.management.service.LocationService;
 
 import java.io.IOException;
@@ -25,7 +27,6 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest(classes = {Application.class, AzureBlobConfigurationTest.class})
@@ -259,9 +260,10 @@ class LocationControllerTest {
     }
 
     @Test
-    void testDeleteLocationReturnsOk() {
+    void testDeleteLocationReturnsOk() throws JsonProcessingException {
         int locationId = 1;
-        doNothing().when(locationService).deleteLocation(locationId);
+        LocationDeletion locationDeletion = new LocationDeletion();
+        when(locationService.deleteLocation(locationId)).thenReturn(locationDeletion);
 
         assertEquals(HttpStatus.OK, locationController.deleteLocation(locationId).getStatusCode(),
                      "Delete location endpoint has not returned OK");

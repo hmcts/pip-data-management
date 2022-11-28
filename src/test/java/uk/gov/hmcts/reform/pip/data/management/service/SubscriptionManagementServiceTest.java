@@ -32,6 +32,8 @@ class SubscriptionManagementServiceTest {
         .sourceArtefactId("TEST")
         .provenance("PROVENANCE")
         .build();
+
+    private static final String LOCATION_ID = "1";
     private static MockWebServer mockSubscriptionManagementEndpoint;
 
     private static final String TRIGGER_RECEIVED = "Trigger has been received";
@@ -89,6 +91,29 @@ class SubscriptionManagementServiceTest {
         assertEquals(
             subscriptionManagementService.sendDeletedArtefactForThirdParties(ARTEFACT),
             "Artefact failed to send: " + ARTEFACT.getArtefactId(),
+            "Error message failed to send."
+        );
+        assertTrue(logCaptor.getErrorLogs().get(0).contains("Request failed with error message: "),
+                   "Exception was not logged.");
+    }
+
+    @Test
+    void testSubscriptionsByLocationId() {
+        mockSubscriptionManagementEndpoint.enqueue(new MockResponse()
+                                                       .setBody(TRIGGER_RECEIVED)
+                                                       .setResponseCode(200));
+        assertEquals(TRIGGER_RECEIVED,
+                     subscriptionManagementService.findSubscriptionsByLocationId(LOCATION_ID),
+                     "Trigger is not being sent");
+    }
+
+    @Test
+    void testSubscriptionsByLocationIdFailedSend() {
+        mockSubscriptionManagementEndpoint.enqueue(new MockResponse()
+                                                       .setResponseCode(HttpStatus.BAD_REQUEST.value()));
+        assertEquals(
+            subscriptionManagementService.findSubscriptionsByLocationId(LOCATION_ID),
+            "Failed to find subscription for Location: " + LOCATION_ID,
             "Error message failed to send."
         );
         assertTrue(logCaptor.getErrorLogs().get(0).contains("Request failed with error message: "),

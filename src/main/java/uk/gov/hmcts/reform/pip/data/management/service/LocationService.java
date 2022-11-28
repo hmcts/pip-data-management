@@ -1,23 +1,29 @@
 package uk.gov.hmcts.reform.pip.data.management.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.opencsv.bean.CsvToBeanBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.LocationRepository;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CsvParseException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.LocationNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationCsv;
+import uk.gov.hmcts.reform.pip.data.management.models.location.LocationDeletion;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationReference;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationType;
+import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.model.enums.UserActions;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -33,9 +39,19 @@ import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
 @Service
 @Slf4j
 public class LocationService {
+    private final LocationRepository locationRepository;
 
-    @Autowired
-    private LocationRepository locationRepository;
+    private final ArtefactRepository artefactRepository;
+
+    private final SubscriptionManagementService subscriptionManagementService;
+
+    public LocationService(LocationRepository locationRepository,
+                           ArtefactRepository artefactRepository,
+                           SubscriptionManagementService subscriptionManagementService) {
+        this.locationRepository = locationRepository;
+        this.artefactRepository = artefactRepository;
+        this.subscriptionManagementService = subscriptionManagementService;
+    }
 
     /**
      * Gets all locations.
@@ -153,15 +169,50 @@ public class LocationService {
      * This method will delete a location from the database.
      * @param locationId The ID of the location to delete.
      */
-    public void deleteLocation(Integer locationId) {
+    public LocationDeletion deleteLocation(Integer locationId) throws JsonProcessingException {
+        LocationDeletion locationDeletion;
         Optional<Location> location = locationRepository.getLocationByLocationId(locationId);
 
         if (location.isPresent()) {
-            locationRepository.deleteById(locationId);
+            locationDeletion = checkActiveArtefactForLocation(locationId.toString());
+            if (!locationDeletion.getIsExists()) {
+                locationDeletion = checkActiveSubscriptionForLocation(locationId.toString());
+                if (!locationDeletion.getIsExists()) {
+                    locationRepository.deleteById(locationId);
+                }
+            }
         } else {
             throw new LocationNotFoundException(
                 String.format("No location found with the id: %s", locationId));
         }
+
+        return locationDeletion;
     }
 
+    private LocationDeletion checkActiveArtefactForLocation(String locationId) {
+        LocalDateTime searchDateTime = LocalDateTime.now();
+        LocationDeletion locationDeletion = new LocationDeletion();
+
+        List<Artefact> activeArtefacts = artefactRepository.findActiveArtefactsForLocation(searchDateTime,
+                                                                                           locationId);
+
+        if (!activeArtefacts.isEmpty()) {
+            locationDeletion.setIsExists(true);
+            locationDeletion.setErrorMessage("There are active artefacts for the given court");
+        }
+        return locationDeletion;
+    }
+
+    private LocationDeletion checkActiveSubscriptionForLocation(String locationId) throws JsonProcessingException {
+        LocationDeletion locationDeletion = new LocationDeletion();
+        String result = subscriptionManagementService.findSubscriptionsByLocationId(locationId);
+        if (!result.isEmpty()) {
+            JsonNode node = new ObjectMapper().readTree(result);
+            if (!node.isEmpty()) {
+                locationDeletion.setIsExists(true);
+                locationDeletion.setErrorMessage("There are active subscriptions for the given court");
+            }
+        }
+        return locationDeletion;
+    }
 }
