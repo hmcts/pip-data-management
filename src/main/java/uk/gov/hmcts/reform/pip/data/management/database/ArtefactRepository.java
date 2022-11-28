@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.pip.data.management.database;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -45,7 +46,7 @@ public interface ArtefactRepository extends JpaRepository<Artefact, Long> {
                                         @Param(CURRENT_DATE_PARAM) LocalDateTime currentDate);
 
     @Query(value = "select * from Artefact where location_id = :location_id and display_from < "
-        + ":curr_date and (display_to> :curr_date or display_to is null)",
+        + ":curr_date and (display_to> :curr_date or display_to is null) and is_archived != true",
         nativeQuery = true)
     List<Artefact> findArtefactsByLocationId(@Param(LOCATION_ID_PARAM) String locationId,
                                              @Param(CURRENT_DATE_PARAM) LocalDateTime currentDate);
@@ -68,7 +69,7 @@ public interface ArtefactRepository extends JpaRepository<Artefact, Long> {
         nativeQuery = true)
     List<String> countArtefactsByLocation();
 
-    @Query(value = "select * from Artefact where location_id = :location_id",
+    @Query(value = "select * from Artefact where location_id = :location_id and is_archived != true",
         nativeQuery = true)
     List<Artefact> findArtefactsByLocationIdAdmin(@Param(LOCATION_ID_PARAM) String locationId);
 
@@ -89,4 +90,9 @@ public interface ArtefactRepository extends JpaRepository<Artefact, Long> {
         + "FROM artefact",
         nativeQuery = true)
     List<String> getMiData();
+
+    @Modifying
+    @Query(value = "UPDATE artefact SET payload = '', source_artefact_id = '', search = '{}', is_archived = true "
+        + "WHERE artefact_id = CAST(:artefact_id AS uuid)", nativeQuery = true)
+    void archiveArtefact(@Param(ARTEFACT_ID_PARAM) String artefactId);
 }
