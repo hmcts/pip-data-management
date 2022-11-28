@@ -267,6 +267,9 @@ public class PublicationController {
         return ResponseEntity.ok(publicationService.findAllByLocationIdAdmin(locationId, userId, isAdmin));
     }
 
+
+
+
     @ApiResponses({
         @ApiResponse(responseCode = OK_CODE, description = "List of Artefacts matching"
             + " a given case value, verification parameters and date requirements"),
@@ -361,6 +364,19 @@ public class PublicationController {
         @PathVariable String artefactId) {
         publicationService.deleteArtefactById(artefactId, issuerId);
         return ResponseEntity.ok("Successfully deleted artefact: " + artefactId);
+    }
+
+    @ApiResponses({
+        @ApiResponse(responseCode = OK_CODE, description = "Data Management - Artefact count per location - request "
+            + "accepted."),
+        @ApiResponse(responseCode = AUTH_ERROR_CODE, description = UNAUTHORIZED_DESCRIPTION)
+    })
+    @Operation(summary = "Return a count of artefacts per location")
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/count-by-location")
+    @IsAdmin
+    public ResponseEntity<String> countByLocation() {
+        return ResponseEntity.ok(publicationService.countArtefactsByLocation());
     }
 
     @ApiResponses({
