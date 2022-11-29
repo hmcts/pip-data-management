@@ -189,6 +189,7 @@ dependencies {
   implementation 'com.opencsv:opencsv:5.7.1'
   implementation 'org.springframework.boot:spring-boot-starter-webflux'
   implementation("com.squareup.okhttp3:okhttp:4.10.0")
+  implementation group: 'org.springframework.data', name: 'spring-data-keyvalue', version: '2.7.6'
 
   // Include Flyway for database migrations
   implementation group: 'org.flywaydb', name: 'flyway-core', version: '8.5.13'

@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.pip.data.management.controllers;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -8,6 +9,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -22,6 +26,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,6 +34,7 @@ import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.authentication.roles.IsAdmin;
 import uk.gov.hmcts.reform.pip.data.management.authentication.roles.IsPublisher;
 import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
+import uk.gov.hmcts.reform.pip.data.management.models.SjpPublicList;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactType;
@@ -37,6 +43,7 @@ import uk.gov.hmcts.reform.pip.data.management.models.publication.Language;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ListType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Sensitivity;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.views.ArtefactView;
+import uk.gov.hmcts.reform.pip.data.management.service.PaginationService;
 import uk.gov.hmcts.reform.pip.data.management.service.PublicationService;
 import uk.gov.hmcts.reform.pip.data.management.service.ValidationService;
 import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
@@ -79,7 +86,8 @@ public class PublicationController {
 
     private final PublicationService publicationService;
 
-    @Autowired
+    private final PaginationService paginationService;
+
     private final ValidationService validationService;
 
     private static final String DEFAULT_ADMIN_VALUE = "false";
@@ -90,9 +98,11 @@ public class PublicationController {
      * @param publicationService The PublicationService that contains the business logic to handle publications.
      */
     @Autowired
-    public PublicationController(PublicationService publicationService, ValidationService validationService) {
+    public PublicationController(PublicationService publicationService, ValidationService validationService,
+                                 PaginationService paginationService) {
         this.publicationService = publicationService;
         this.validationService = validationService;
+        this.paginationService = paginationService;
     }
 
     /**
@@ -456,6 +466,22 @@ public class PublicationController {
                                                   @PathVariable String id) {
         publicationService.archiveArtefact(issuerId, id);
         return ResponseEntity.ok(String.format("Artefact of ID %s has been archived", id));
+    }
+
+
+    @ApiResponses({
+        @ApiResponse(responseCode = OK_CODE, description = "Blob data from the given request in page object"),
+        @ApiResponse(responseCode = AUTH_ERROR_CODE, description = UNAUTHORIZED_DESCRIPTION),
+        @ApiResponse(responseCode = NOT_FOUND_CODE, description = NOT_FOUND_DESCRIPTION),
+    })
+    @Operation(summary = "Gets the the payload for the blob in a page object, given a specific artefact ID")
+    @GetMapping("/{artefactId}/paginated/payload")
+    @IsAdmin
+    public ResponseEntity<Page<SjpPublicList>> getArtefactPayloadPaginated(
+        @PathVariable UUID artefactId,
+        @RequestParam(name = "pageNumber", defaultValue = "0") int pageNumber) throws JsonProcessingException {
+        Pageable pageable = PageRequest.of(pageNumber, 25);
+        return ResponseEntity.ok(paginationService.getPaginatedSjpPublicList(artefactId, pageable));
     }
 
 }
