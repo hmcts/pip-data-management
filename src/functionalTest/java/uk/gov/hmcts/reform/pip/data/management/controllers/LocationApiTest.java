@@ -800,7 +800,7 @@ class LocationApiTest {
 
     @Test
     @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})
-    void testdDownloadLocations() throws Exception {
+    void testDownloadLocations() throws Exception {
         List<Location> createdLocations = createLocations(LOCATIONS_CSV);
 
         MvcResult mvcResult = mockMvc.perform(
