@@ -7,9 +7,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientException;
-import uk.gov.hmcts.reform.pip.data.management.models.admin.Action;
-import uk.gov.hmcts.reform.pip.data.management.models.external.publication.services.AdminAction;
+import uk.gov.hmcts.reform.pip.model.system.admin.ActionResult;
+import uk.gov.hmcts.reform.pip.model.system.admin.DeleteLocationAction;
 
+import java.util.List;
 import java.util.Map;
 
 import static org.springframework.security.oauth2.client.web.reactive.function.client.ServerOAuth2AuthorizedClientExchangeFilterFunction.clientRegistrationId;
@@ -39,28 +40,29 @@ public class PublicationServicesService {
         }
     }
 
-    public String sendSystemAdminEmail(String email, String requesterName, Action action) {
-        AdminAction payload = formatAdminAction(email, requesterName, action);
+    public String sendSystemAdminEmail(List<String> emails, String requesterName, ActionResult actionResult,
+                                       String additionalDetails) {
+        DeleteLocationAction payload =
+            formatSystemAdminAction(emails, requesterName, actionResult, additionalDetails);
         try {
-            webClient.post().uri(url + "/notify/sysadmin/update")
+            return webClient.post().uri(url + "/notify/sysadmin/update")
+                .body(BodyInserters.fromValue(payload))
                 .attributes(clientRegistrationId("publicationServicesApi"))
-                .body(BodyInserters.fromValue(payload)).retrieve()
-                .bodyToMono(Void.class).block();
-            return payload.toString();
+                .retrieve().bodyToMono(String.class).block();
 
         } catch (WebClientException ex) {
-            log.error(String.format("Request failed with error message: %s", ex.getMessage()));
+            log.error(String.format(EXCEPTION_MESSAGE, SERVICE, ex.getMessage()));
+            return "";
         }
-        return "Request failed";
     }
 
-    private AdminAction formatAdminAction(String email, String requesterName, Action action) {
-        AdminAction adminAction = new AdminAction();
-        adminAction.setEmail(email);
-        adminAction.setName(requesterName);
-        adminAction.setChangeType(action.getChangeType().label);
-        adminAction.setActionResult(action.getActionResult().label);
-        adminAction.setAdditionalInformation(action.getAdditionalDetails());
-        return adminAction;
+    private DeleteLocationAction formatSystemAdminAction(List<String> emails,
+            String requesterName, ActionResult actionResult, String additionalDetails) {
+        DeleteLocationAction systemAdminAction = new DeleteLocationAction();
+        systemAdminAction.setEmailList(emails);
+        systemAdminAction.setRequesterName(requesterName);
+        systemAdminAction.setActionResult(actionResult);
+        systemAdminAction.setDetailString(additionalDetails);
+        return systemAdminAction;
     }
 }

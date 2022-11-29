@@ -14,8 +14,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pip.data.management.Application;
+import uk.gov.hmcts.reform.pip.model.system.admin.ActionResult;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -36,6 +38,7 @@ class PublicationServicesServiceTest {
     LogCaptor logCaptor = LogCaptor.forClass(PublicationServicesService.class);
 
     private static final Map<String, String> TEST_MAP = new ConcurrentHashMap<>();
+    private static final String EMAIL_SENT = "Email has been sent";
 
     @BeforeEach
     void setup() throws IOException {
@@ -52,9 +55,9 @@ class PublicationServicesServiceTest {
 
     @Test
     void testSendNoMatchArtefactsForReporting() {
-        mockPublicationServicesEndpoint.enqueue(new MockResponse().setBody("Email has been sent"));
+        mockPublicationServicesEndpoint.enqueue(new MockResponse().setBody(EMAIL_SENT));
 
-        assertEquals("Email has been sent", publicationServicesService
+        assertEquals(EMAIL_SENT, publicationServicesService
             .sendNoMatchArtefactsForReporting(TEST_MAP), "Email has not been sent");
     }
 
@@ -64,6 +67,27 @@ class PublicationServicesServiceTest {
                                                     .setResponseCode(HttpStatus.BAD_REQUEST.value()));
 
         publicationServicesService.sendNoMatchArtefactsForReporting(TEST_MAP);
+        assertTrue(logCaptor.getErrorLogs().get(0).contains("Request to Publications Service failed due to:"),
+                   "Exception was not logged.");
+    }
+
+    @Test
+    void testSendSystemAdminEmail() {
+        mockPublicationServicesEndpoint.enqueue(new MockResponse().setBody(EMAIL_SENT));
+
+        assertEquals(EMAIL_SENT, publicationServicesService
+            .sendSystemAdminEmail(List.of("test@test.com"), "Name",
+                                  ActionResult.ATTEMPTED, "Error"),
+                     "Email has not been sent");
+    }
+
+    @Test
+    void testFailedSendSystemAdminEmail() {
+        mockPublicationServicesEndpoint.enqueue(new MockResponse()
+                                                    .setResponseCode(HttpStatus.BAD_REQUEST.value()));
+
+        publicationServicesService.sendSystemAdminEmail(List.of("test@test.com"), "Name",
+                                                        ActionResult.ATTEMPTED, "Error");
         assertTrue(logCaptor.getErrorLogs().get(0).contains("Request to Publications Service failed due to:"),
                    "Exception was not logged.");
     }

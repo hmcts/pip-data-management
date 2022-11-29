@@ -20,6 +20,7 @@ import uk.gov.hmcts.reform.pip.data.management.models.location.LocationDeletion;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationReference;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
+import uk.gov.hmcts.reform.pip.model.system.admin.ActionResult;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -51,6 +52,9 @@ class LocationServiceTest {
 
     @Mock
     private AccountManagementService accountManagementService;
+
+    @Mock
+    private PublicationServicesService publicationService;
 
     @InjectMocks
     private LocationService locationService;
@@ -415,6 +419,7 @@ class LocationServiceTest {
     @Test
     void testDeleteLocation() throws JsonProcessingException {
         Integer locationId = 1;
+        locationFirstExample.setName("NAME");
 
         when(locationRepository.getLocationByLocationId(locationId))
             .thenReturn(Optional.of(locationFirstExample));
@@ -422,6 +427,8 @@ class LocationServiceTest {
             .thenReturn(List.of());
         when(subscriptionManagementService.findSubscriptionsByLocationId(locationId.toString()))
             .thenReturn("[]");
+        when(accountManagementService.getAllAccounts("0","1000", "PI_AAD"))
+            .thenReturn("{\"content\": [{\"email\": \"test@test.com\",\"roles\": \"ROLE\"}]}");
 
         doNothing().when(locationRepository).deleteById(locationId);
 
@@ -439,7 +446,10 @@ class LocationServiceTest {
         when(artefactRepository.findActiveArtefactsForLocation(any(), eq(locationId.toString())))
             .thenReturn(List.of(new Artefact()));
         when(accountManagementService.getAllAccounts("0","1000", "PI_AAD"))
-            .thenReturn("{\"content\": [{\"email\": \"test@test.com\",\"roles\": \"ROLE\"}]}");
+            .thenReturn("{\"content\": [{\"email\": \"test@test.com\",\"roles\": \"SYSTEM_ADMIN\"}]}");
+        when(publicationService.sendSystemAdminEmail(List.of("test@test.com"), REQUESTOR_NAME,
+            ActionResult.ATTEMPTED,"There are active artefacts for the given court."))
+            .thenReturn("");
 
         LocationDeletion result = locationService.deleteLocation(locationId, REQUESTOR_NAME);
 

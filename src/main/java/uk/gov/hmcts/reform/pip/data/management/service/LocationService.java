@@ -12,9 +12,6 @@ import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.LocationRepository;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CsvParseException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.LocationNotFoundException;
-import uk.gov.hmcts.reform.pip.data.management.models.admin.Action;
-import uk.gov.hmcts.reform.pip.data.management.models.admin.ActionResult;
-import uk.gov.hmcts.reform.pip.data.management.models.admin.ChangeType;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationCsv;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationDeletion;
@@ -22,6 +19,7 @@ import uk.gov.hmcts.reform.pip.data.management.models.location.LocationReference
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.model.enums.UserActions;
+import uk.gov.hmcts.reform.pip.model.system.admin.ActionResult;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -191,6 +189,9 @@ public class LocationService {
                 locationDeletion = checkActiveSubscriptionForLocation(locationId.toString(), requesterName);
                 if (!locationDeletion.getIsExists()) {
                     locationRepository.deleteById(locationId);
+                    sendEmailToAllSystemAdmins(requesterName, ActionResult.SUCCEEDED,
+                        String.format("Location %s with Id %s has been deleted.",
+                                location.get().getName(), location.get().getLocationId()));
                 }
             }
         } else {
@@ -201,13 +202,13 @@ public class LocationService {
         return locationDeletion;
     }
 
-    private void sendEmailToAllSystemAdmins(Action action, String requesterName) throws JsonProcessingException {
+    private void sendEmailToAllSystemAdmins(String requesterName, ActionResult actionResult,
+                                            String additionalDetails)
+        throws JsonProcessingException {
         String result = accountManagementService.getAllAccounts("0",
                                                                 "1000", "PI_AAD");
         List<String> systemAdmins = findAllSystemAdmins(result);
-        for (String systemAdminEmail :systemAdmins) {
-            publicationService.sendSystemAdminEmail(systemAdminEmail, requesterName, action);
-        }
+        publicationService.sendSystemAdminEmail(systemAdmins, requesterName, actionResult, additionalDetails);
     }
 
     private List<String> findAllSystemAdmins(String result) throws JsonProcessingException {
@@ -234,9 +235,9 @@ public class LocationService {
         List<Artefact> activeArtefacts = artefactRepository.findActiveArtefactsForLocation(searchDateTime,
                                                                                            locationId);
         if (!activeArtefacts.isEmpty()) {
-            Action action = buildErrorAndAdminAction(locationDeletion, ChangeType.DELETE_COURT,
-                ActionResult.ATTEMPTED,"There are active artefacts for the given court");
-            sendEmailToAllSystemAdmins(action, requesterName);
+            String errorMessage = "There are active artefacts for the given court.";
+            buildErrorAndAdminAction(locationDeletion,true, errorMessage);
+            sendEmailToAllSystemAdmins(requesterName, ActionResult.ATTEMPTED, errorMessage);
         }
         return locationDeletion;
     }
@@ -248,18 +249,16 @@ public class LocationService {
         if (!result.isEmpty()) {
             JsonNode node = new ObjectMapper().readTree(result);
             if (!node.isEmpty()) {
-                Action action = buildErrorAndAdminAction(locationDeletion, ChangeType.DELETE_COURT,
-                    ActionResult.ATTEMPTED,"There are active subscriptions for the given court");
-                sendEmailToAllSystemAdmins(action, requesterName);
+                String errorMessage = "There are active subscriptions for the given court.";
+                buildErrorAndAdminAction(locationDeletion,true, errorMessage);
+                sendEmailToAllSystemAdmins(requesterName, ActionResult.ATTEMPTED, errorMessage);
             }
         }
         return locationDeletion;
     }
 
-    private Action buildErrorAndAdminAction(LocationDeletion locationDeletion, ChangeType changeType,
-                                          ActionResult actionResult, String message) {
-        locationDeletion.setIsExists(true);
+    private void buildErrorAndAdminAction(LocationDeletion locationDeletion, Boolean isExists, String message) {
+        locationDeletion.setIsExists(isExists);
         locationDeletion.setErrorMessage(message);
-        return new Action(changeType, actionResult, message);
     }
 }
