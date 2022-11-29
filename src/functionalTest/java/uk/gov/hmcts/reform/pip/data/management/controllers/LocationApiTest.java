@@ -812,7 +812,7 @@ class LocationApiTest {
         for (Location createdLocation:createdLocations) {
             assertTrue(
                 returnedLocations.contains(createdLocation.getName()),
-                "Location names should mach"
+                "Location names should match"
             );
         }
     }
