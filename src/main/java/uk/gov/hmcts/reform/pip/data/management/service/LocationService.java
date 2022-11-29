@@ -32,7 +32,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static uk.gov.hmcts.reform.pip.data.management.models.request.Roles.SYSTEM_ADMIN;
 import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
 
 /**
@@ -179,7 +178,8 @@ public class LocationService {
      * This method will delete a location from the database.
      * @param locationId The ID of the location to delete.
      */
-    public LocationDeletion deleteLocation(Integer locationId, String requesterName) throws JsonProcessingException {
+    public LocationDeletion deleteLocation(Integer locationId, String requesterName)
+        throws JsonProcessingException {
         LocationDeletion locationDeletion;
         Optional<Location> location = locationRepository.getLocationByLocationId(locationId);
 
@@ -203,29 +203,10 @@ public class LocationService {
     }
 
     private void sendEmailToAllSystemAdmins(String requesterName, ActionResult actionResult,
-                                            String additionalDetails)
-        throws JsonProcessingException {
-        String result = accountManagementService.getAllAccounts("0",
+                                            String additionalDetails) throws JsonProcessingException {
+        List<String> systemAdmins = accountManagementService.getAllAccounts("0",
                                                                 "1000", "PI_AAD");
-        List<String> systemAdmins = findAllSystemAdmins(result);
         publicationService.sendSystemAdminEmail(systemAdmins, requesterName, actionResult, additionalDetails);
-    }
-
-    private List<String> findAllSystemAdmins(String result) throws JsonProcessingException {
-        List<String> systemAdmins = new ArrayList<>();
-        if (!result.isEmpty()) {
-            JsonNode node = new ObjectMapper().readTree(result);
-            if (!node.isEmpty()) {
-                JsonNode content = node.get("content");
-                content.forEach(jsonObject -> {
-                    if (jsonObject.has("roles")
-                        && jsonObject.get("roles").asText().equals(SYSTEM_ADMIN.toString())) {
-                        systemAdmins.add(jsonObject.get("email").asText());
-                    }
-                });
-            }
-        }
-        return systemAdmins;
     }
 
     private LocationDeletion checkActiveArtefactForLocation(String locationId, String requesterName)

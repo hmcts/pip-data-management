@@ -72,7 +72,8 @@ class LocationServiceTest {
 
     private static final String FIRST_LOCATION_NOT_FOUND = "First location has not been found";
     private static final String SECOND_LOCATION_NOT_FOUND = "Second location has not been found";
-    private static final String REQUESTOR_NAME = "ReqName";
+    private static final String REQUESTER_NAME = "ReqName";
+    private static final String EMAIL = "test@test.com";
 
     @BeforeEach
     void setup() {
@@ -428,11 +429,11 @@ class LocationServiceTest {
         when(subscriptionManagementService.findSubscriptionsByLocationId(locationId.toString()))
             .thenReturn("[]");
         when(accountManagementService.getAllAccounts("0","1000", "PI_AAD"))
-            .thenReturn("{\"content\": [{\"email\": \"test@test.com\",\"roles\": \"ROLE\"}]}");
+            .thenReturn(List.of(EMAIL));
 
         doNothing().when(locationRepository).deleteById(locationId);
 
-        locationService.deleteLocation(locationId, REQUESTOR_NAME);
+        locationService.deleteLocation(locationId, REQUESTER_NAME);
 
         verify(locationRepository, times(1)).deleteById(locationId);
     }
@@ -446,12 +447,12 @@ class LocationServiceTest {
         when(artefactRepository.findActiveArtefactsForLocation(any(), eq(locationId.toString())))
             .thenReturn(List.of(new Artefact()));
         when(accountManagementService.getAllAccounts("0","1000", "PI_AAD"))
-            .thenReturn("{\"content\": [{\"email\": \"test@test.com\",\"roles\": \"SYSTEM_ADMIN\"}]}");
-        when(publicationService.sendSystemAdminEmail(List.of("test@test.com"), REQUESTOR_NAME,
+            .thenReturn(List.of(EMAIL));
+        when(publicationService.sendSystemAdminEmail(List.of(EMAIL), REQUESTER_NAME,
             ActionResult.ATTEMPTED,"There are active artefacts for the given court."))
             .thenReturn("");
 
-        LocationDeletion result = locationService.deleteLocation(locationId, REQUESTOR_NAME);
+        LocationDeletion result = locationService.deleteLocation(locationId, REQUESTER_NAME);
 
         assertTrue(result.getIsExists(), "Found active artefact for a court");
     }
@@ -467,9 +468,9 @@ class LocationServiceTest {
         when(subscriptionManagementService.findSubscriptionsByLocationId(locationId.toString()))
             .thenReturn("[{},{}]");
         when(accountManagementService.getAllAccounts("0","1000", "PI_AAD"))
-            .thenReturn("{\"content\": [{\"email\": \"test@test.com\",\"roles\": \"ROLE\"}]}");
+            .thenReturn(List.of(EMAIL));
 
-        LocationDeletion result = locationService.deleteLocation(locationId, REQUESTOR_NAME);
+        LocationDeletion result = locationService.deleteLocation(locationId, REQUESTER_NAME);
 
         assertTrue(result.getIsExists(), "Found active subscription for a court");
     }
@@ -483,7 +484,7 @@ class LocationServiceTest {
 
         LocationNotFoundException locationNotFoundException =
             assertThrows(LocationNotFoundException.class, () ->
-                locationService.deleteLocation(locationId, REQUESTOR_NAME));
+                locationService.deleteLocation(locationId, REQUESTER_NAME));
 
         assertEquals("No location found with the id: 1", locationNotFoundException.getMessage(),
                      "Exception does not contain expected message");
