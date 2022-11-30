@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +27,7 @@ import uk.gov.hmcts.reform.pip.data.management.models.location.LocationDeletion;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationViews;
 import uk.gov.hmcts.reform.pip.data.management.service.LocationService;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 
@@ -112,6 +114,18 @@ public class LocationController {
                                                            @PathVariable String requesterName)
         throws JsonProcessingException {
         return ResponseEntity.ok(locationService.deleteLocation(locationId, requesterName));
+    }
+
+    @ApiResponses({
+        @ApiResponse(responseCode = OK_CODE, description = "CSV of the reference data"),
+        @ApiResponse(responseCode = AUTH_ERROR_CODE, description = "User has not been authorized"),
+    })
+    @GetMapping("/download/csv")
+    @IsAdmin
+    public ResponseEntity<byte[]> downloadLocations() throws IOException {
+        return ResponseEntity.ok()
+            .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_VALUE)
+            .body(locationService.downloadLocations());
     }
 
 }

@@ -3,7 +3,13 @@ package uk.gov.hmcts.reform.pip.data.management.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import com.opencsv.CSVWriter;
 import com.opencsv.bean.CsvToBeanBuilder;
+import com.opencsv.bean.StatefulBeanToCsv;
+import com.opencsv.bean.StatefulBeanToCsvBuilder;
+import com.opencsv.exceptions.CsvDataTypeMismatchException;
+import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -22,7 +28,10 @@ import uk.gov.hmcts.reform.pip.model.enums.UserActions;
 import uk.gov.hmcts.reform.pip.model.system.admin.ActionResult;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -39,6 +48,7 @@ import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
  */
 @Service
 @Slf4j
+@SuppressWarnings({"PMD.CloseResource"})
 public class LocationService {
     private final LocationRepository locationRepository;
 
@@ -172,6 +182,46 @@ public class LocationService {
         } catch (Exception exception) {
             throw new CsvParseException(exception.getMessage());
         }
+    }
+
+    /**
+     * Creates a csv of the current reference data.
+     *
+     * @return Returns the created CSV in byte array format.
+     */
+    public byte[] downloadLocations() throws IOException {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        OutputStreamWriter streamWriter = new OutputStreamWriter(stream);
+        CSVWriter writer = new CSVWriter(streamWriter);
+
+        List<Location> allLocations = locationRepository.findAll();
+        StatefulBeanToCsv<LocationCsv> beanToCsv = new StatefulBeanToCsvBuilder<LocationCsv>(writer).build();
+        allLocations.forEach(location -> {
+            location.getLocationReferenceList().forEach(locationReference -> {
+                try {
+                    log.info(location.getJurisdiction().toString());
+                    beanToCsv.write(new LocationCsv(
+                        location.getLocationId(),
+                        location.getName(),
+                        location.getRegion(),
+                        location.getJurisdiction(),
+                        locationReference.getProvenance(),
+                        locationReference.getProvenanceLocationId(),
+                        locationReference.getProvenanceLocationType().csvInput,
+                        location.getWelshName(),
+                        location.getWelshRegion(),
+                        location.getWelshJurisdiction()
+                    ));
+                } catch (CsvDataTypeMismatchException | CsvRequiredFieldEmptyException e) {
+                    throw new CsvParseException(String.format("Failed to create CSV with message: %s",
+                                                              e.getMessage()));
+                }
+            });
+        });
+
+        streamWriter.flush();
+        streamWriter.close();
+        return stream.toByteArray();
     }
 
     /**
