@@ -54,9 +54,11 @@ class LocationApiTest {
     private static final String GET_LOCATION_BY_ID_ENDPOINT = ROOT_URL + "/";
     private static final String GET_LOCATION_BY_NAME_ENDPOINT = ROOT_URL + "/name/%s/language/%s";
     private static final String GET_LOCATION_BY_FILTER_ENDPOINT = ROOT_URL + "/filter";
+    private static final String DOWNLOAD_LOCATIONS_ENDPOINT = ROOT_URL + "/download/csv";
     public static final String UPLOAD_API = ROOT_URL + "/upload";
     private static final String LOCATIONS_CSV = "location/ValidCsv.csv";
     private static final String UPDATED_CSV = "location/UpdatedCsv.csv";
+
 
     private static final String REGIONS_PARAM = "regions";
     private static final String JURISDICTIONS_PARAM = "jurisdictions";
@@ -495,8 +497,10 @@ class LocationApiTest {
         List<Location> locations = createLocations(LOCATIONS_CSV);
 
         MvcResult mvcResult = mockMvc.perform(get(GET_LOCATION_BY_FILTER_ENDPOINT)
-                                                  .param(JURISDICTIONS_PARAM,
-                                                         "Magistrates Location,Family Location")
+                                                  .param(
+                                                      JURISDICTIONS_PARAM,
+                                                      "Magistrates Location,Family Location"
+                                                  )
                                                   .param(LANGUAGE_PARAM, ENGLISH_LANGUAGE_PARAM_VALUE))
             .andExpect(status().isOk())
             .andReturn();
@@ -631,13 +635,16 @@ class LocationApiTest {
         List<LocationReference> locationReferenceList = locationA.getLocationReferenceList();
 
         assertEquals(2, locationReferenceList.size(),
-                     "Unexpected number of location references returned");
+                     "Unexpected number of location references returned"
+        );
 
         LocationReference locationReferenceOne = locationReferenceList.get(0);
         assertEquals("TestProvenance", locationReferenceOne.getProvenance(),
-                     "Unexpected provenance name returned");
+                     "Unexpected provenance name returned"
+        );
         assertEquals("1", locationReferenceOne.getProvenanceLocationId(),
-                     "Unexpected provenance id returned");
+                     "Unexpected provenance id returned"
+        );
         assertEquals(LocationType.VENUE, locationReferenceOne.getProvenanceLocationType(),
                      "Unexpected provenance location type returned"
         );
@@ -647,7 +654,8 @@ class LocationApiTest {
                      "Unexpected provenance name returned"
         );
         assertEquals("2", locationReferenceTwo.getProvenanceLocationId(),
-                     "Unexpected provenance id returned");
+                     "Unexpected provenance id returned"
+        );
     }
 
     @Test
@@ -676,13 +684,16 @@ class LocationApiTest {
         List<LocationReference> locationReferenceList = returnedLocation.getLocationReferenceList();
 
         assertEquals(1, locationReferenceList.size(),
-                     "Unexpected number of location references returned");
+                     "Unexpected number of location references returned"
+        );
 
         LocationReference locationReferenceOne = locationReferenceList.get(0);
         assertEquals("TestProvenance", locationReferenceOne.getProvenance(),
-                     "Unexpected provenance name returned");
+                     "Unexpected provenance name returned"
+        );
         assertEquals("1", locationReferenceOne.getProvenanceLocationId(),
-                     "Unexpected provenance id returned");
+                     "Unexpected provenance id returned"
+        );
         assertEquals(LocationType.VENUE, locationReferenceOne.getProvenanceLocationType(),
                      "Unexpected provenance location type returned"
         );
@@ -719,7 +730,7 @@ class LocationApiTest {
                 .andExpect(status().isOk()).andReturn();
 
             List<String> inputCsv = new BufferedReader(new InputStreamReader(Objects.requireNonNull(this.getClass()
-                   .getClassLoader().getResourceAsStream(
+                                                                           .getClassLoader().getResourceAsStream(
                     LOCATIONS_CSV)))).lines().collect(Collectors.toList());
 
             Location[] locationsFromResponse = objectMapper.readValue(
@@ -727,10 +738,12 @@ class LocationApiTest {
                 Location[].class
             );
             List<String> locationsInInputCsv = inputCsv.stream().map(s -> s.split(",")[0])
-                    .collect(Collectors.toList());
+                .collect(Collectors.toList());
             for (Location locationFromResponse : locationsFromResponse) {
-                assertTrue(locationsInInputCsv.contains(locationFromResponse.getLocationId().toString()),
-                           "Returned location matches input location");
+                assertTrue(
+                    locationsInInputCsv.contains(locationFromResponse.getLocationId().toString()),
+                    "Returned location matches input location"
+                );
             }
         }
     }
@@ -784,4 +797,32 @@ class LocationApiTest {
             .andExpect(status().isUnauthorized())
             .andReturn();
     }
+
+    @Test
+    @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})
+    void testDownloadLocations() throws Exception {
+        List<Location> createdLocations = createLocations(LOCATIONS_CSV);
+
+        MvcResult mvcResult = mockMvc.perform(
+                get(DOWNLOAD_LOCATIONS_ENDPOINT))
+            .andExpect(status().isOk())
+            .andReturn();
+        String returnedLocations = mvcResult.getResponse().getContentAsString();
+
+        for (Location createdLocation:createdLocations) {
+            assertTrue(
+                returnedLocations.contains(createdLocation.getName()),
+                "Location names should match"
+            );
+        }
+    }
+
+    @Test
+    void testDownloadLocationsNotAuthorised() throws Exception {
+        mockMvc.perform(
+                get(DOWNLOAD_LOCATIONS_ENDPOINT))
+            .andExpect(status().isUnauthorized());
+    }
 }
+
+

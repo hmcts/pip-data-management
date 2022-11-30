@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -422,5 +423,14 @@ class LocationServiceTest {
                      "Exception does not contain expected message");
     }
 
+    @Test
+    void testDownloadLocations() throws IOException {
+        when(locationRepository.findAll()).thenReturn(List.of(locationFirstExample));
+
+        byte[] response = locationService.downloadLocations();
+
+        assertNotNull(response, "byte array response was null");
+        assertTrue(response.length > 1, "byte array size less than 1");
+    }
 }
 
