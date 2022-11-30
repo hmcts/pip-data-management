@@ -7,6 +7,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
@@ -265,6 +266,16 @@ class LocationControllerTest {
 
         assertEquals(HttpStatus.OK, locationController.deleteLocation(locationId).getStatusCode(),
                      "Delete location endpoint has not returned OK");
+    }
+
+    @Test
+    void testDownloadLocations() throws IOException {
+        byte[] testByte = new byte[10];
+        when(locationService.downloadLocations()).thenReturn(testByte);
+
+        ResponseEntity<byte[]> controllerResponse = locationController.downloadLocations();
+        assertEquals(HttpStatus.OK, controllerResponse.getStatusCode(), "Status did not match expected");
+        assertEquals(testByte, controllerResponse.getBody(), "Body did not match expected");
     }
 
 }
