@@ -233,9 +233,9 @@ public class LocationService {
         Optional<Location> location = locationRepository.getLocationByLocationId(locationId);
 
         if (location.isPresent()) {
-            locationDeletion = checkActiveArtefactForLocation(locationId.toString(), requesterName);
+            locationDeletion = checkActiveArtefactForLocation(location.get(), requesterName);
             if (!locationDeletion.getIsExists()) {
-                locationDeletion = checkActiveSubscriptionForLocation(locationId.toString(), requesterName);
+                locationDeletion = checkActiveSubscriptionForLocation(location.get(), requesterName);
                 if (!locationDeletion.getIsExists()) {
                     locationRepository.deleteById(locationId);
                     sendEmailToAllSystemAdmins(requesterName, ActionResult.SUCCEEDED,
@@ -258,30 +258,33 @@ public class LocationService {
         publicationService.sendSystemAdminEmail(systemAdmins, requesterName, actionResult, additionalDetails);
     }
 
-    private LocationDeletion checkActiveArtefactForLocation(String locationId, String requesterName)
+    private LocationDeletion checkActiveArtefactForLocation(Location location, String requesterName)
         throws JsonProcessingException {
         LocalDateTime searchDateTime = LocalDateTime.now();
         LocationDeletion locationDeletion = new LocationDeletion();
-        List<Artefact> activeArtefacts = artefactRepository.findActiveArtefactsForLocation(searchDateTime,
-                                                                                           locationId);
+        List<Artefact> activeArtefacts =
+            artefactRepository.findActiveArtefactsForLocation(searchDateTime, location.getLocationId().toString());
         if (!activeArtefacts.isEmpty()) {
-            String errorMessage = "There are active artefacts for the given court.";
-            buildErrorAndAdminAction(locationDeletion,true, errorMessage);
-            sendEmailToAllSystemAdmins(requesterName, ActionResult.ATTEMPTED, errorMessage);
+            buildErrorAndAdminAction(locationDeletion,true,
+                                     "There are active artefacts for the given location.");
+            sendEmailToAllSystemAdmins(requesterName, ActionResult.ATTEMPTED,
+                String.format("There are active artefacts for following location: %s", location.getName()));
         }
         return locationDeletion;
     }
 
-    private LocationDeletion checkActiveSubscriptionForLocation(String locationId, String requesterName)
+    private LocationDeletion checkActiveSubscriptionForLocation(Location location, String requesterName)
         throws JsonProcessingException {
         LocationDeletion locationDeletion = new LocationDeletion();
-        String result = subscriptionManagementService.findSubscriptionsByLocationId(locationId);
+        String result =
+            subscriptionManagementService.findSubscriptionsByLocationId(location.getLocationId().toString());
         if (!result.isEmpty()) {
             JsonNode node = new ObjectMapper().readTree(result);
             if (!node.isEmpty()) {
-                String errorMessage = "There are active subscriptions for the given court.";
-                buildErrorAndAdminAction(locationDeletion,true, errorMessage);
-                sendEmailToAllSystemAdmins(requesterName, ActionResult.ATTEMPTED, errorMessage);
+                buildErrorAndAdminAction(locationDeletion,true,
+                                         "There are active subscriptions for the given location.");
+                sendEmailToAllSystemAdmins(requesterName, ActionResult.ATTEMPTED,
+                    String.format("There are active subscriptions for the following location: %s", location.getName()));
             }
         }
         return locationDeletion;

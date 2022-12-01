@@ -450,7 +450,8 @@ class LocationServiceTest {
         when(accountManagementService.getAllAccounts("0","1000", "PI_AAD"))
             .thenReturn(List.of(EMAIL));
         when(publicationService.sendSystemAdminEmail(List.of(EMAIL), REQUESTER_NAME,
-            ActionResult.ATTEMPTED,"There are active artefacts for the given court."))
+            ActionResult.ATTEMPTED,
+"There are active artefacts for following location: Venue Name First Example"))
             .thenReturn("");
 
         LocationDeletion result = locationService.deleteLocation(locationId, REQUESTER_NAME);
@@ -470,6 +471,10 @@ class LocationServiceTest {
             .thenReturn("[{},{}]");
         when(accountManagementService.getAllAccounts("0","1000", "PI_AAD"))
             .thenReturn(List.of(EMAIL));
+        when(publicationService.sendSystemAdminEmail(List.of(EMAIL), REQUESTER_NAME,
+            ActionResult.ATTEMPTED,
+"There are active subscriptions for the following location: Venue Name First Example"))
+            .thenReturn("");
 
         LocationDeletion result = locationService.deleteLocation(locationId, REQUESTER_NAME);
 
