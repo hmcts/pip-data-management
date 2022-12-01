@@ -26,8 +26,6 @@ spring:
     embedded-directory: build
     jpa:
       spring.jpa.database-platform: org.hibernate.dialect.H2Dialect
-  flyway:
-    enabled: true
 test-user-id: ${TEST_USER_ID}
 
 payload:
