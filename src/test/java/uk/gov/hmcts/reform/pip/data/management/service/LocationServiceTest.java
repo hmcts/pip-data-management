@@ -429,7 +429,7 @@ class LocationServiceTest {
             .thenReturn(List.of());
         when(subscriptionManagementService.findSubscriptionsByLocationId(locationId.toString()))
             .thenReturn("[]");
-        when(accountManagementService.getAllAccounts("0","1000", "PI_AAD"))
+        when(accountManagementService.getAllAccounts("PI_AAD", "SYSTEM_ADMIN"))
             .thenReturn(List.of(EMAIL));
 
         doNothing().when(locationRepository).deleteById(locationId);
@@ -447,7 +447,7 @@ class LocationServiceTest {
             .thenReturn(Optional.of(locationFirstExample));
         when(artefactRepository.findActiveArtefactsForLocation(any(), eq(locationId.toString())))
             .thenReturn(List.of(new Artefact()));
-        when(accountManagementService.getAllAccounts("0","1000", "PI_AAD"))
+        when(accountManagementService.getAllAccounts("PI_AAD", "SYSTEM_ADMIN"))
             .thenReturn(List.of(EMAIL));
         when(publicationService.sendSystemAdminEmail(List.of(EMAIL), REQUESTER_NAME,
             ActionResult.ATTEMPTED,
@@ -469,7 +469,7 @@ class LocationServiceTest {
             .thenReturn(List.of());
         when(subscriptionManagementService.findSubscriptionsByLocationId(locationId.toString()))
             .thenReturn("[{},{}]");
-        when(accountManagementService.getAllAccounts("0","1000", "PI_AAD"))
+        when(accountManagementService.getAllAccounts("PI_AAD", "SYSTEM_ADMIN"))
             .thenReturn(List.of(EMAIL));
         when(publicationService.sendSystemAdminEmail(List.of(EMAIL), REQUESTER_NAME,
             ActionResult.ATTEMPTED,

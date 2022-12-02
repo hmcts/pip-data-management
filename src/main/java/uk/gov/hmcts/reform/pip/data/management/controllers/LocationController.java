@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -108,10 +109,11 @@ public class LocationController {
         @ApiResponse(responseCode = AUTH_ERROR_CODE, description = "User has not been authorized"),
         @ApiResponse(responseCode = NOT_FOUND_CODE, description = "No Location found with the id {locationId}")
     })
-    @DeleteMapping("/{locationId}/{requesterName}")
+    @DeleteMapping("/{locationId}")
     @IsAdmin
-    public ResponseEntity<LocationDeletion> deleteLocation(@PathVariable Integer locationId,
-                                                           @PathVariable String requesterName)
+    public ResponseEntity<LocationDeletion> deleteLocation(
+        @RequestHeader("x-requester-name") String requesterName,
+        @PathVariable Integer locationId)
         throws JsonProcessingException {
         return ResponseEntity.ok(locationService.deleteLocation(locationId, requesterName));
     }

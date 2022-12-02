@@ -267,7 +267,7 @@ class LocationControllerTest {
         LocationDeletion locationDeletion = new LocationDeletion();
         when(locationService.deleteLocation(locationId, requesterName)).thenReturn(locationDeletion);
 
-        assertEquals(HttpStatus.OK, locationController.deleteLocation(locationId, requesterName).getStatusCode(),
+        assertEquals(HttpStatus.OK, locationController.deleteLocation(requesterName, locationId).getStatusCode(),
                      "Delete location endpoint has not returned OK");
     }
 

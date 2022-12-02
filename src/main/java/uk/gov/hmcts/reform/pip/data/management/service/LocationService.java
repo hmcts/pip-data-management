@@ -40,6 +40,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static uk.gov.hmcts.reform.pip.data.management.models.request.Roles.SYSTEM_ADMIN;
 import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
 
 /**
@@ -47,7 +48,7 @@ import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
  */
 @Service
 @Slf4j
-@SuppressWarnings({"PMD.CloseResource"})
+@SuppressWarnings({"PMD"})
 public class LocationService {
     private final LocationRepository locationRepository;
 
@@ -253,8 +254,7 @@ public class LocationService {
 
     private void sendEmailToAllSystemAdmins(String requesterName, ActionResult actionResult,
                                             String additionalDetails) throws JsonProcessingException {
-        List<String> systemAdmins = accountManagementService.getAllAccounts("0",
-                                                                "1000", "PI_AAD");
+        List<String> systemAdmins = accountManagementService.getAllAccounts("PI_AAD", SYSTEM_ADMIN.toString());
         publicationService.sendSystemAdminEmail(systemAdmins, requesterName, actionResult, additionalDetails);
     }
 

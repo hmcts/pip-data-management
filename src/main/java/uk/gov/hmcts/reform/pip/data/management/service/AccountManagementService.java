@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.springframework.security.oauth2.client.web.reactive.function.client.ServerOAuth2AuthorizedClientExchangeFilterFunction.clientRegistrationId;
-import static uk.gov.hmcts.reform.pip.data.management.models.request.Roles.SYSTEM_ADMIN;
 
 @Slf4j
 @Component
@@ -48,11 +47,11 @@ public class AccountManagementService {
         }
     }
 
-    public List<String> getAllAccounts(String pageNumber, String pageSize, String provenances)
+    public List<String> getAllAccounts(String provenances, String role)
         throws JsonProcessingException  {
         try {
             String result = webClient.get().uri(String.format(
-                    "%s/account/all?pageNumber=%s&pageSize=%s&provenances=%s", url, pageNumber, pageSize, provenances))
+                    "%s/account/all?provenances=%s&roles=%s", url, provenances, role))
                 .attributes(clientRegistrationId("accountManagementApi"))
                 .retrieve().bodyToMono(String.class).block();
             return findAllSystemAdmins(result);
@@ -68,8 +67,7 @@ public class AccountManagementService {
         if (!node.isEmpty()) {
             JsonNode content = node.get("content");
             content.forEach(jsonObject -> {
-                if (jsonObject.has("roles")
-                    && jsonObject.get("roles").asText().equals(SYSTEM_ADMIN.toString())) {
+                if (jsonObject.has("roles")) {
                     systemAdmins.add(jsonObject.get("email").asText());
                 }
             });
