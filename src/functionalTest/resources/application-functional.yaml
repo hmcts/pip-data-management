@@ -26,7 +26,6 @@ spring:
     embedded-directory: build
     jpa:
       spring.jpa.database-platform: org.hibernate.dialect.H2Dialect
-
 test-user-id: ${TEST_USER_ID}
 
 payload:
@@ -40,3 +39,4 @@ service-to-service:
 
 dbMigration:
   runOnStartup: true
+
