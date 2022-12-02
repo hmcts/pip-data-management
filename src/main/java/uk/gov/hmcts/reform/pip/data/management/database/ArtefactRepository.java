@@ -73,16 +73,20 @@ public interface ArtefactRepository extends JpaRepository<Artefact, Long> {
         nativeQuery = true)
     List<Artefact> findArtefactsByLocationIdAdmin(@Param(LOCATION_ID_PARAM) String locationId);
 
-    @Query(value = "select * from Artefact where artefact_id = CAST(:artefact_id AS uuid)", nativeQuery = true)
+    @Query(value = "select * from Artefact where artefact_id = CAST(:artefact_id AS uuid)",
+        nativeQuery = true)
     Optional<Artefact> findArtefactByArtefactId(@Param(ARTEFACT_ID_PARAM) String artefactId);
 
-    @Query(value = "SELECT * FROM Artefact WHERE DATE(display_from) = :curr_date", nativeQuery = true)
+    @Query(value = "SELECT * FROM Artefact WHERE DATE(display_from) = :curr_date and is_archived != true",
+        nativeQuery = true)
     List<Artefact> findArtefactsByDisplayFrom(@Param(CURRENT_DATE_PARAM) LocalDate today);
 
-    @Query(value = "SELECT * FROM Artefact WHERE expiry_date < :curr_date", nativeQuery = true)
+    @Query(value = "SELECT * FROM Artefact WHERE expiry_date < :curr_date and is_archived != true",
+        nativeQuery = true)
     List<Artefact> findOutdatedArtefacts(@Param(CURRENT_DATE_PARAM) LocalDateTime today);
 
-    @Query(value = "SELECT * FROM Artefact WHERE location_id LIKE '%NoMatch%'", nativeQuery = true)
+    @Query(value = "SELECT * FROM Artefact WHERE location_id LIKE '%NoMatch%' and is_archived != true",
+        nativeQuery = true)
     List<Artefact> findAllNoMatchArtefacts();
 
     @Query(value = "SELECT cast(artefact_id as text), display_from, display_to, language, "
