@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.pip.data.management.database;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -8,6 +9,7 @@ import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 
 import java.util.List;
 import java.util.Optional;
+import javax.transaction.Transactional;
 
 @Repository
 public interface LocationRepository extends JpaRepository<Location, Integer> {
@@ -43,5 +45,10 @@ public interface LocationRepository extends JpaRepository<Location, Integer> {
     Optional<Location> findByLocationIdByProvenance(@Param("provenance") String provenance,
                                                     @Param("provenanceLocationId") String provenanceLocationId,
                                                     @Param("provenanceLocationType") String provenanceLocationType);
+
+    @Modifying
+    @Transactional
+    @Query(value = "REFRESH MATERIALIZED VIEW sdp_mat_view_location", nativeQuery = true)
+    void refreshLocationView();
 
 }

@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.pip.data.management.database;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -10,6 +11,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import javax.transaction.Transactional;
 
 @Repository
 public interface ArtefactRepository extends JpaRepository<Artefact, Long> {
@@ -95,4 +97,9 @@ public interface ArtefactRepository extends JpaRepository<Artefact, Long> {
         + "and location_id = :location_id", nativeQuery = true)
     List<Artefact> findActiveArtefactsForLocation(@Param(CURRENT_DATE_PARAM) LocalDateTime today,
                                                   @Param(LOCATION_ID_PARAM) String locationId);
+
+    @Modifying
+    @Transactional
+    @Query(value = "REFRESH MATERIALIZED VIEW sdp_mat_view_artefact", nativeQuery = true)
+    void refreshArtefactView();
 }
