@@ -265,8 +265,8 @@ public class LocationService {
         List<Artefact> activeArtefacts =
             artefactRepository.findActiveArtefactsForLocation(searchDateTime, location.getLocationId().toString());
         if (!activeArtefacts.isEmpty()) {
-            buildErrorAndAdminAction(locationDeletion,true,
-                                     "There are active artefacts for the given location.");
+            locationDeletion = new LocationDeletion("There are active artefacts for the given location.",
+                                                    true);
             sendEmailToAllSystemAdmins(requesterName, ActionResult.ATTEMPTED,
                 String.format("There are active artefacts for following location: %s", location.getName()));
         }
@@ -281,17 +281,12 @@ public class LocationService {
         if (!result.isEmpty()) {
             JsonNode node = new ObjectMapper().readTree(result);
             if (!node.isEmpty()) {
-                buildErrorAndAdminAction(locationDeletion,true,
-                                         "There are active subscriptions for the given location.");
+                locationDeletion = new LocationDeletion("There are active subscriptions for the given location.",
+                                                        true);
                 sendEmailToAllSystemAdmins(requesterName, ActionResult.ATTEMPTED,
                     String.format("There are active subscriptions for the following location: %s", location.getName()));
             }
         }
         return locationDeletion;
-    }
-
-    private void buildErrorAndAdminAction(LocationDeletion locationDeletion, Boolean isExists, String message) {
-        locationDeletion.setIsExists(isExists);
-        locationDeletion.setErrorMessage(message);
     }
 }

@@ -5,9 +5,14 @@ import lombok.Data;
 @Data
 public class LocationDeletion {
     private String errorMessage;
-    private Boolean isExists;
+    private Boolean isExists = false;
 
     public LocationDeletion() {
-        this.isExists = false;
+        //This constructor is used to initialized empty object.
+    }
+
+    public LocationDeletion(String errorMessage, boolean isExists) {
+        this.errorMessage = errorMessage;
+        this.isExists = isExists;
     }
 }
