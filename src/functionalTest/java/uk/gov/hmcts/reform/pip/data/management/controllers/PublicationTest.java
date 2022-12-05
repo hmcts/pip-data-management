@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -89,7 +90,7 @@ class PublicationTest {
     public static final String COUNT_ENDPOINT = PUBLICATION_URL + "/count-by-location";
     private static final String REPORT_NO_MATCH_ARTEFACTS_URL = PUBLICATION_URL + "/no-match/reporting";
     private static final String MI_REPORTING_DATA_URL = PUBLICATION_URL + "/mi-data";
-    private static final String DELETE_EXPIRED_ARTEFACTS_URL = PUBLICATION_URL + "/expired";
+    private static final String ARCHIVE_EXPIRED_ARTEFACTS_URL = PUBLICATION_URL + "/expired";
     private static final ArtefactType ARTEFACT_TYPE = ArtefactType.LIST;
     private static final Sensitivity SENSITIVITY = Sensitivity.PUBLIC;
     private static final String PROVENANCE = "MANUAL_UPLOAD";
@@ -111,6 +112,7 @@ class PublicationTest {
     private static final String SEARCH_VALUE_2 = "array-value-2";
     private static final String USER_ID_HEADER = "x-user-id";
     private static final String LOCATION_ID_SEARCH_KEY = "location-id";
+    private static final String FORBIDDEN_STATUS_CODE = "Status code does not match forbidden";
 
     private static final String VALID_CASE_ID_SEARCH = "/CASE_ID/45684548";
     private static final String VALID_CASE_NAME_SEARCH = "/CASE_NAME/Smith";
@@ -1695,13 +1697,26 @@ class PublicationTest {
     }
 
     @Test
-    void testDeleteExpiredArtefactsSuccess() throws Exception {
+    void testArchiveExpiredArtefactsSuccess() throws Exception {
         when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
 
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-            .delete(DELETE_EXPIRED_ARTEFACTS_URL);
+            .delete(ARCHIVE_EXPIRED_ARTEFACTS_URL);
 
         mockMvc.perform(request).andExpect(status().isNoContent());
+    }
+
+    @Test
+    @WithMockUser(username = "unauthorized_create", authorities = {"APPROLE_unknown.create"})
+    void testUnauthorizedArchiveExpiredArtefacts() throws Exception {
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+            .delete(ARCHIVE_EXPIRED_ARTEFACTS_URL);
+
+        MvcResult archiveResponse = mockMvc.perform(request).andExpect(status().isForbidden()).andReturn();
+
+        assertEquals(HttpStatus.FORBIDDEN.value(), archiveResponse.getResponse().getStatus(),
+                     FORBIDDEN_STATUS_CODE
+        );
     }
 
     @Test
@@ -1748,8 +1763,24 @@ class PublicationTest {
 
         assertTrue(
             archiveResponse.getResponse().getContentAsString()
-                .contains("Artefact with ID " + invalidArtefactId + " not found when archiving"),
+                .contains("No artefact found with the ID: " + invalidArtefactId),
             "Should return 404 for artefact not found"
+        );
+    }
+
+    @Test
+    @WithMockUser(username = "unauthorized_create", authorities = {"APPROLE_unknown.create"})
+    void testUnauthorizedArchiveArtefact() throws Exception {
+        String artefactId = UUID.randomUUID().toString();
+
+        MockHttpServletRequestBuilder archiveRequest = MockMvcRequestBuilders
+            .put(PUBLICATION_URL + "/" + artefactId + "/archive")
+            .header(ISSUER_HEADER, userId);
+
+        MvcResult archiveResponse = mockMvc.perform(archiveRequest).andExpect(status().isForbidden()).andReturn();
+
+        assertEquals(HttpStatus.FORBIDDEN.value(), archiveResponse.getResponse().getStatus(),
+                     FORBIDDEN_STATUS_CODE
         );
     }
 
