@@ -100,8 +100,9 @@ public interface ArtefactRepository extends JpaRepository<Artefact, Long> {
     @Query(value = "UPDATE artefact SET payload = '', source_artefact_id = '', search = '{}', is_archived = true "
         + "WHERE artefact_id = CAST(:artefact_id AS uuid)", nativeQuery = true)
     void archiveArtefact(@Param(ARTEFACT_ID_PARAM) String artefactId);
-    
+
     @Transactional
+    @Modifying
     @Query(value = "REFRESH MATERIALIZED VIEW sdp_mat_view_artefact", nativeQuery = true)
     void refreshArtefactView();
 }
