@@ -33,7 +33,8 @@ public interface ArtefactRepository extends JpaRepository<Artefact, Long> {
     String PROVENANCE_PARAM = "provenance";
 
     @Query(value = "SELECT * FROM Artefact WHERE location_id = :location_id AND content_date = :content_date AND "
-        + "language = :language AND list_type = :list_type AND provenance = :provenance", nativeQuery = true)
+        + "language = :language AND list_type = :list_type AND provenance = :provenance AND is_archived != true ",
+        nativeQuery = true)
     Optional<Artefact> findArtefactByUpdateLogic(@Param(LOCATION_ID_PARAM) String locationId,
                                                  @Param(CONTENT_DATE_PARAM) LocalDateTime contentDate,
                                                  @Param(LANGUAGE_PARAM) String language,
