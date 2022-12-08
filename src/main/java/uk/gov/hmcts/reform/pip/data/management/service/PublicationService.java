@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.AzureBlobService;
@@ -321,25 +322,6 @@ public class PublicationService {
     }
 
     /**
-     * Attempts to delete a blob from the artefact store.
-     *
-     * @param artefactId The ID of the artefact to be deleted.
-     * @param issuerId   The id of the admin user who is attempting to delete the artefact.
-     */
-    public void deleteArtefactById(String artefactId, String issuerId) {
-        Optional<Artefact> artefactToDelete = artefactRepository.findArtefactByArtefactId(artefactId);
-        if (artefactToDelete.isPresent()) {
-            log.info(azureBlobService.deleteBlob(getUuidFromUrl(artefactToDelete.get().getPayload())));
-            deletePublicationBlobs(artefactToDelete.get());
-            artefactRepository.delete(artefactToDelete.get());
-            log.info(writeLog(issuerId, UserActions.REMOVE, artefactId));
-            triggerThirdPartyArtefactDeleted(artefactToDelete.get());
-        } else {
-            throw new ArtefactNotFoundException("No artefact found with the ID: " + artefactId);
-        }
-    }
-
-    /**
      * Checks if the artefact has a display from date of today or previous then triggers the sub fulfilment
      * process on subscription-management if appropriate.
      */
@@ -372,35 +354,82 @@ public class PublicationService {
     }
 
     /**
-     * Delete expired artefacts from the database, Artefact and Publications Azure storage.
+     * Attempts to delete an artefact along with the stored blobs.
+     *
+     * @param artefactId The ID of the artefact to be deleted.
+     * @param issuerId   The ID of the admin user who is attempting to delete the artefact.
      */
-    public void deleteExpiredArtefacts() {
+    public void deleteArtefactById(String artefactId, String issuerId) {
+        Optional<Artefact> artefactToDelete = artefactRepository.findArtefactByArtefactId(artefactId);
+        if (artefactToDelete.isPresent()) {
+            deleteAllPublicationBlobData(artefactToDelete.get());
+            artefactRepository.delete(artefactToDelete.get());
+            log.info(writeLog(issuerId, UserActions.REMOVE, artefactId));
+            triggerThirdPartyArtefactDeleted(artefactToDelete.get());
+        } else {
+            throw new ArtefactNotFoundException("No artefact found with the ID: " + artefactId);
+        }
+    }
+
+    /**
+     * Method that handles the logic to archive an artefact and delete the stored blobs.
+     *
+     * @param artefactId The ID of the artefact to be deleted.
+     * @param issuerId   The ID of the admin user who is attempting to delete the artefact.
+     */
+    @Transactional
+    public void archiveArtefactById(String artefactId, String issuerId) {
+        Optional<Artefact> artefactToArchive = artefactRepository.findArtefactByArtefactId(artefactId);
+
+        if (artefactToArchive.isPresent()) {
+            deleteAllPublicationBlobData(artefactToArchive.get());
+            artefactRepository.archiveArtefact(artefactId);
+            log.info(String.format("Artefact archived by %s, with artefact id: %s", issuerId, artefactId));
+            triggerThirdPartyArtefactDeleted(artefactToArchive.get());
+        } else {
+            throw new ArtefactNotFoundException("No artefact found with the ID: " + artefactId);
+        }
+    }
+
+    /**
+     * Archive expired artefacts from the database, Artefact and Publications Azure storage.
+     */
+    @Transactional
+    public void archiveExpiredArtefacts() {
         LocalDateTime searchDateTime = LocalDateTime.now();
         List<Artefact> outdatedArtefacts = artefactRepository.findOutdatedArtefacts(searchDateTime);
+
         outdatedArtefacts.forEach(artefact -> {
-            azureBlobService.deleteBlob(getUuidFromUrl(artefact.getPayload()));
-            deletePublicationBlobs(artefact);
+            artefactRepository.archiveArtefact(artefact.getArtefactId().toString());
+            deleteAllPublicationBlobData(artefact);
         });
 
-        artefactRepository.deleteAll(outdatedArtefacts);
-
-        log.info(writeLog(String.format("%s outdated artefacts found and deleted for before %s",
+        log.info(writeLog(String.format("%s outdated artefacts found and archived for before %s",
                                         outdatedArtefacts.size(), searchDateTime
         )));
     }
 
     /**
-     * Attempts to delete the stored publication blobs from the publications store.
+     * Delete all data stored in the blobstore for an artefact.
      *
-     * @param artefact The artefact the blobs should be deleted for.
+     * @param artefact The artefact requiring blob deletion.
      */
-    private void deletePublicationBlobs(Artefact artefact) {
+    private void deleteAllPublicationBlobData(Artefact artefact) {
+        // Delete the payload/flat file from the publications store
+        azureBlobService.deleteBlob(getUuidFromUrl(artefact.getPayload()));
+
+        // Try to delete the generated files for the publications if it's not a flat file
         if (!artefact.getIsFlatFile()) {
-            azureBlobService.deletePublicationBlob(artefact.getArtefactId() + ".pdf");
-            // If it's an SJP list the xlsx file also needs to be deleted
-            if (ListType.SJP_PUBLIC_LIST.equals(artefact.getListType())
-                || ListType.SJP_PRESS_LIST.equals(artefact.getListType())) {
-                azureBlobService.deletePublicationBlob(artefact.getArtefactId() + ".xlsx");
+            try {
+                azureBlobService.deletePublicationBlob(artefact.getArtefactId() + ".pdf");
+
+                // If it's an SJP list the xlsx file also needs to be deleted
+                if (ListType.SJP_PUBLIC_LIST.equals(artefact.getListType())
+                    || ListType.SJP_PRESS_LIST.equals(artefact.getListType())) {
+                    azureBlobService.deletePublicationBlob(artefact.getArtefactId() + ".xlsx");
+                }
+            } catch (Exception ex) {
+                log.info("Failed to delete the generated publication file. Message: " + ex.getMessage());
             }
         }
     }
@@ -475,30 +504,6 @@ public class PublicationService {
             builder.append(s).append('\n');
         }
         return builder.toString();
-    }
-
-    /**
-     * Method that handles the logic to archive an artefact.
-     *
-     * @param issuerId   The issuer ID of the user who submitted the request.
-     * @param artefactId The artefact to archive.
-     */
-    public void archiveArtefact(String issuerId, String artefactId) {
-        Optional<Artefact> optionalArtefact = artefactRepository.findArtefactByArtefactId(artefactId);
-
-        if (optionalArtefact.isPresent()) {
-            Artefact artefact = optionalArtefact.get();
-            artefact.setIsArchived(true);
-            artefactRepository.save(artefact);
-
-            writeLog(
-                UUID.fromString(issuerId),
-                String.format("Artefact with ID %s has been archived by %s", issuerId, artefactId)
-            );
-        } else {
-            throw new ArtefactNotFoundException(
-                String.format("Artefact with ID %s not found when archiving", artefactId));
-        }
     }
 
     /**
