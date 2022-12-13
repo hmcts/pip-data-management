@@ -1151,10 +1151,9 @@ class PublicationServiceTest {
             doNothing().when(artefactRepository).delete(artefactWithPayloadUrl);
 
             publicationService.deleteArtefactById(ARTEFACT_ID.toString(), TEST_VALUE);
-            assertTrue(logCaptor.getInfoLogs().get(0).contains(SUCCESS), MESSAGES_MATCH);
-            assertTrue(logCaptor.getInfoLogs().get(1).contains(String.format(DELETION_TRACK_LOG_MESSAGE, ARTEFACT_ID)),
+            assertTrue(logCaptor.getInfoLogs().get(0).contains(String.format(DELETION_TRACK_LOG_MESSAGE, ARTEFACT_ID)),
                        MESSAGES_MATCH);
-            assertTrue(logCaptor.getInfoLogs().get(2).contains(SUCCESS), MESSAGES_MATCH);
+            assertTrue(logCaptor.getInfoLogs().get(1).contains(SUCCESS), MESSAGES_MATCH);
         } catch (Exception ex) {
             throw new IOException(ex.getMessage());
         }
@@ -1185,52 +1184,59 @@ class PublicationServiceTest {
     }
 
     @Test
-    void testDeleteExpiredArtefacts() {
+    void testArchiveExpiredArtefacts() {
+        UUID testArtefactId = UUID.randomUUID();
+        artefactWithPayloadUrl.setArtefactId(testArtefactId);
         when(artefactRepository.findOutdatedArtefacts(any())).thenReturn(List.of(artefactWithPayloadUrl));
-        publicationService.deleteExpiredArtefacts();
+        publicationService.archiveExpiredArtefacts();
         verify(azureBlobService).deleteBlob(PAYLOAD_STRIPPED);
-        verify(azureBlobService).deletePublicationBlob(artefactWithPayloadUrl.getArtefactId() + ".pdf");
-        verify(artefactRepository).deleteAll(List.of(artefactWithPayloadUrl));
+        verify(azureBlobService).deletePublicationBlob(testArtefactId + ".pdf");
+        verify(artefactRepository).archiveArtefact(testArtefactId.toString());
     }
 
     @Test
-    void testDeleteExpiredArtefactsSjpPublic() {
+    void testArchiveExpiredArtefactsSjpPublic() {
+        UUID testArtefactId = UUID.randomUUID();
+        artefactWithPayloadUrl.setArtefactId(testArtefactId);
         artefactWithPayloadUrl.setListType(ListType.SJP_PUBLIC_LIST);
         when(artefactRepository.findOutdatedArtefacts(any())).thenReturn(List.of(artefactWithPayloadUrl));
-        publicationService.deleteExpiredArtefacts();
+        publicationService.archiveExpiredArtefacts();
         verify(azureBlobService).deleteBlob(PAYLOAD_STRIPPED);
         verify(azureBlobService).deletePublicationBlob(artefactWithPayloadUrl.getArtefactId() + ".pdf");
         verify(azureBlobService).deletePublicationBlob(artefactWithPayloadUrl.getArtefactId() + ".xlsx");
-        verify(artefactRepository).deleteAll(List.of(artefactWithPayloadUrl));
+        verify(artefactRepository).archiveArtefact(testArtefactId.toString());
     }
 
     @Test
-    void testDeleteExpiredArtefactsSjpPress() {
+    void testArchiveExpiredArtefactsSjpPress() {
+        UUID testArtefactId = UUID.randomUUID();
+        artefactWithPayloadUrl.setArtefactId(testArtefactId);
         artefactWithPayloadUrl.setListType(ListType.SJP_PRESS_LIST);
         when(artefactRepository.findOutdatedArtefacts(any())).thenReturn(List.of(artefactWithPayloadUrl));
-        publicationService.deleteExpiredArtefacts();
+        publicationService.archiveExpiredArtefacts();
         verify(azureBlobService).deleteBlob(PAYLOAD_STRIPPED);
         verify(azureBlobService).deletePublicationBlob(artefactWithPayloadUrl.getArtefactId() + ".pdf");
         verify(azureBlobService).deletePublicationBlob(artefactWithPayloadUrl.getArtefactId() + ".xlsx");
-        verify(artefactRepository).deleteAll(List.of(artefactWithPayloadUrl));
+        verify(artefactRepository).archiveArtefact(testArtefactId.toString());
     }
 
     @Test
-    void testDeleteExpiredArtefactsFlatFile() {
+    void testArchiveExpiredArtefactsFlatFile() {
+        UUID testArtefactId = UUID.randomUUID();
+        artefactWithPayloadUrl.setArtefactId(testArtefactId);
         artefactWithPayloadUrl.setListType(ListType.SJP_PRESS_LIST);
         artefactWithPayloadUrl.setIsFlatFile(true);
         when(artefactRepository.findOutdatedArtefacts(any())).thenReturn(List.of(artefactWithPayloadUrl));
-        publicationService.deleteExpiredArtefacts();
+        publicationService.archiveExpiredArtefacts();
         verify(azureBlobService).deleteBlob(PAYLOAD_STRIPPED);
-        verify(artefactRepository).deleteAll(List.of(artefactWithPayloadUrl));
+        verify(artefactRepository).archiveArtefact(testArtefactId.toString());
     }
 
     @Test
-    void testDeleteExpiredArtefactsWhenArtefactsNotFound() {
+    void testArchiveExpiredArtefactsWhenArtefactsNotFound() {
         when(artefactRepository.findOutdatedArtefacts(any())).thenReturn(Collections.emptyList());
-        publicationService.deleteExpiredArtefacts();
+        publicationService.archiveExpiredArtefacts();
         verifyNoInteractions(azureBlobService);
-        verify(artefactRepository).deleteAll(Collections.emptyList());
     }
 
     @Test
@@ -1387,15 +1393,20 @@ class PublicationServiceTest {
     @Test
     void testArchivedEndpoint() {
         String artefactId = UUID.randomUUID().toString();
-        ArgumentCaptor<Artefact> captor = ArgumentCaptor.forClass(Artefact.class);
 
         when(artefactRepository.findArtefactByArtefactId(artefactId))
             .thenReturn(Optional.of(artefactWithIdAndPayloadUrl));
-        when(artefactRepository.save(captor.capture())).thenReturn(artefactWithIdAndPayloadUrl);
 
-        publicationService.archiveArtefact(UUID.randomUUID().toString(), artefactId);
+        publicationService.archiveArtefactById(artefactId, UUID.randomUUID().toString());
 
-        assertTrue(captor.getValue().getIsArchived(), "Artefact archive flag has not been set");
+        verify(azureBlobService, times(1))
+            .deleteBlob(any());
+        verify(azureBlobService, times(1))
+            .deletePublicationBlob(any());
+        verify(subscriptionManagementService, times(1))
+            .sendDeletedArtefactForThirdParties(any());
+        verify(artefactRepository, times(1))
+            .archiveArtefact(artefactId);
     }
 
     @Test
@@ -1405,11 +1416,9 @@ class PublicationServiceTest {
         when(artefactRepository.findArtefactByArtefactId(artefactId)).thenReturn(Optional.empty());
 
         assertThrows(NotFoundException.class, () -> {
-            publicationService.archiveArtefact(UUID.randomUUID().toString(), artefactId);
+            publicationService.archiveArtefactById(artefactId, UUID.randomUUID().toString());
         }, "Attempting to archive an artefact that does not exist should throw an exception");
-
     }
-
 
     @Test
     void testProcessCreatedPublication() {
@@ -1417,5 +1426,4 @@ class PublicationServiceTest {
         verify(channelManagementService, times(1))
             .requestFileGeneration(sjpPublicArtefact.getArtefactId());
     }
-
 }
