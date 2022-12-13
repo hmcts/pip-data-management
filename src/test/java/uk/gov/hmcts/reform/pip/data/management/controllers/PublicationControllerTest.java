@@ -374,8 +374,8 @@ class PublicationControllerTest {
 
     @Test
     void testDeleteExpiredArtefactsSuccess() {
-        doNothing().when(publicationService).deleteExpiredArtefacts();
-        assertThat(publicationController.deleteExpiredArtefacts().getStatusCode())
+        doNothing().when(publicationService).archiveExpiredArtefacts();
+        assertThat(publicationController.archiveExpiredArtefacts().getStatusCode())
             .as(STATUS_CODE_MATCH)
             .isEqualTo(HttpStatus.NO_CONTENT);
     }
@@ -385,7 +385,7 @@ class PublicationControllerTest {
         String issuerId = UUID.randomUUID().toString();
         String artefactId = UUID.randomUUID().toString();
 
-        doNothing().when(publicationService).archiveArtefact(issuerId, artefactId);
+        doNothing().when(publicationService).archiveArtefactById(artefactId, issuerId);
 
         ResponseEntity<String> response = publicationController.archiveArtefact(issuerId, artefactId);
 

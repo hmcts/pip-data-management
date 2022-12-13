@@ -267,9 +267,6 @@ public class PublicationController {
         return ResponseEntity.ok(publicationService.findAllByLocationIdAdmin(locationId, userId, isAdmin));
     }
 
-
-
-
     @ApiResponses({
         @ApiResponse(responseCode = OK_CODE, description = "List of Artefacts matching"
             + " a given case value, verification parameters and date requirements"),
@@ -434,12 +431,12 @@ public class PublicationController {
         @ApiResponse(responseCode = NO_CONTENT_CODE, description = NO_CONTENT_DESCRIPTION),
         @ApiResponse(responseCode = AUTH_ERROR_CODE, description = UNAUTHORIZED_DESCRIPTION)
     })
-    @Operation(summary = "Delete all expired artefacts")
+    @Operation(summary = "Archive all expired artefacts")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/expired")
     @IsAdmin
-    public ResponseEntity<Void> deleteExpiredArtefacts() {
-        publicationService.deleteExpiredArtefacts();
+    public ResponseEntity<Void> archiveExpiredArtefacts() {
+        publicationService.archiveExpiredArtefacts();
         return ResponseEntity.noContent().build();
     }
 
@@ -454,8 +451,7 @@ public class PublicationController {
     @IsAdmin
     public ResponseEntity<String> archiveArtefact(@RequestHeader("x-issuer-id") String issuerId,
                                                   @PathVariable String id) {
-        publicationService.archiveArtefact(issuerId, id);
+        publicationService.archiveArtefactById(id, issuerId);
         return ResponseEntity.ok(String.format("Artefact of ID %s has been archived", id));
     }
-
 }
