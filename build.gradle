@@ -19,9 +19,10 @@ group = 'uk.gov.hmcts.reform.pip'
 mainClassName = 'uk.gov.hmcts.reform.pip.data.management.Application'
 version = '0.0.1'
 
-allprojects {
-  sourceCompatibility = '17'
-  targetCompatibility = '17'
+java {
+  toolchain {
+    languageVersion = JavaLanguageVersion.of(17)
+  }
 }
 
 repositories {
@@ -52,6 +53,11 @@ sourceSets {
 
 tasks.withType(JavaCompile) {
   options.compilerArgs << "-Xlint:unchecked" << "-Werror"
+}
+
+// https://github.com/gradle/gradle/issues/16791
+tasks.withType(JavaExec).configureEach {
+  javaLauncher.set(javaToolchains.launcherFor(java.toolchain))
 }
 
 tasks.withType(Test) {
