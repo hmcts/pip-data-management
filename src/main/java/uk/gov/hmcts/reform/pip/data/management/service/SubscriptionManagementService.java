@@ -53,7 +53,7 @@ public class SubscriptionManagementService {
         } catch (WebClientException ex) {
             log.error(String.format("Request failed with error message: %s", ex.getMessage()
             ));
-            return "Failed to find subscription for Location: " + locationId;
+            return "Failed to find subscription for Location: " + locationId + " with status: " + ex.getMessage();
         }
     }
 

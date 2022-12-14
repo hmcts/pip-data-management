@@ -112,10 +112,10 @@ public class LocationController {
     @DeleteMapping("/{locationId}")
     @IsAdmin
     public ResponseEntity<LocationDeletion> deleteLocation(
-        @RequestHeader("x-requester-name") String requesterName,
+        @RequestHeader("x-issuer-id") String issuerId,
         @PathVariable Integer locationId)
         throws JsonProcessingException {
-        return ResponseEntity.ok(locationService.deleteLocation(locationId, requesterName));
+        return ResponseEntity.ok(locationService.deleteLocation(locationId, issuerId));
     }
 
     @ApiResponses({

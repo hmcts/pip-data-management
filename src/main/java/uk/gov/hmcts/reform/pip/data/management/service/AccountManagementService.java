@@ -61,6 +61,16 @@ public class AccountManagementService {
         }
     }
 
+    public String getUserInfo(String issuerId) {
+        try {
+            return webClient.get().uri(url + "/account/get-info/" + issuerId)
+                .retrieve().bodyToMono(String.class).block();
+        } catch (WebClientException ex) {
+            log.error(String.format("Request to account management failed with error message: %s", ex.getMessage()));
+            return "Failed to find user info for user: " + issuerId;
+        }
+    }
+
     private List<String> findAllSystemAdmins(String result) throws JsonProcessingException {
         List<String> systemAdmins = new ArrayList<>();
         JsonNode node = new ObjectMapper().readTree(result);

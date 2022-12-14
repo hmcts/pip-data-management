@@ -228,12 +228,22 @@ public class LocationService {
      * This method will delete a location from the database.
      * @param locationId The ID of the location to delete.
      */
-    public LocationDeletion deleteLocation(Integer locationId, String requesterName)
+    public LocationDeletion deleteLocation(Integer locationId, String issuerId)
         throws JsonProcessingException {
         LocationDeletion locationDeletion;
+        String requesterName = "";
         Optional<Location> location = locationRepository.getLocationByLocationId(locationId);
 
         if (location.isPresent()) {
+            String result = accountManagementService.getUserInfo(issuerId);
+            try {
+                JsonNode node = new ObjectMapper().readTree(result);
+                if (!node.isEmpty()) {
+                    requesterName = node.get("displayName").asText();
+                }
+            } catch (JsonProcessingException e) {
+                throw e;
+            }
             locationDeletion = checkActiveArtefactForLocation(location.get(), requesterName);
             if (!locationDeletion.getIsExists()) {
                 locationDeletion = checkActiveSubscriptionForLocation(location.get(), requesterName);
@@ -278,7 +288,8 @@ public class LocationService {
         LocationDeletion locationDeletion = new LocationDeletion();
         String result =
             subscriptionManagementService.findSubscriptionsByLocationId(location.getLocationId().toString());
-        if (!result.isEmpty()) {
+        if (!result.isEmpty()
+            && !result.contains("404")) {
             JsonNode node = new ObjectMapper().readTree(result);
             if (!node.isEmpty()) {
                 locationDeletion = new LocationDeletion("There are active subscriptions for the given location.",

@@ -111,9 +111,9 @@ class SubscriptionManagementServiceTest {
     void testSubscriptionsByLocationIdFailedSend() {
         mockSubscriptionManagementEndpoint.enqueue(new MockResponse()
                                                        .setResponseCode(HttpStatus.BAD_REQUEST.value()));
-        assertEquals(
-            subscriptionManagementService.findSubscriptionsByLocationId(LOCATION_ID),
-            "Failed to find subscription for Location: " + LOCATION_ID,
+        assertTrue(
+            subscriptionManagementService.findSubscriptionsByLocationId(LOCATION_ID)
+                .contains("Failed to find subscription for Location: " + LOCATION_ID),
             "Error message failed to send."
         );
         assertTrue(logCaptor.getErrorLogs().get(0).contains("Request failed with error message: "),
