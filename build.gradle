@@ -20,8 +20,8 @@ mainClassName = 'uk.gov.hmcts.reform.pip.data.management.Application'
 version = '0.0.1'
 
 allprojects {
-  sourceCompatibility = '11'
-  targetCompatibility = '11'
+  sourceCompatibility = '17'
+  targetCompatibility = '17'
 }
 
 repositories {
@@ -95,7 +95,7 @@ pmd {
 }
 
 jacoco {
-  toolVersion = "0.8.6"
+  toolVersion = "0.8.8"
 }
 
 jacocoTestReport {
