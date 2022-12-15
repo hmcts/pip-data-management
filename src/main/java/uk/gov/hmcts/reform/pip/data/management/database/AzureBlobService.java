@@ -105,8 +105,13 @@ public class AzureBlobService {
      * @return A delete message.
      */
     public String deletePublicationBlob(String blobName) {
-        BlobClient blobClient = publicationsBlobContainerClient.getBlobClient(blobName);
-        blobClient.delete();
-        return String.format(DELETE_MESSAGE, blobName);
+        try {
+            BlobClient blobClient = publicationsBlobContainerClient.getBlobClient(blobName);
+            blobClient.delete();
+            return String.format(DELETE_MESSAGE, blobName);
+        } catch (BlobStorageException e) {
+            log.error("Publication Blob with ID {} failed to delete with trace {}", blobName, e.getMessage());
+            return String.format("Publication Blob failed to delete with ID %s", blobName);
+        }
     }
 }
