@@ -215,15 +215,10 @@ public class PublicationService {
         LocalDateTime currDate = LocalDateTime.now();
         List<Artefact> artefacts;
         switch (searchTerm) {
-            case CASE_ID:
-            case CASE_URN:
+            case CASE_ID, CASE_URN ->
                 artefacts = artefactRepository.findArtefactBySearch(searchTerm.dbValue, searchValue, currDate);
-                break;
-            case CASE_NAME:
-                artefacts = artefactRepository.findArtefactByCaseName(searchValue, currDate);
-                break;
-            default:
-                throw new IllegalArgumentException(String.format("Invalid search term: %s", searchTerm));
+            case CASE_NAME -> artefacts = artefactRepository.findArtefactByCaseName(searchValue, currDate);
+            default -> throw new IllegalArgumentException(String.format("Invalid search term: %s", searchTerm));
         }
 
         artefacts = artefacts.stream().filter(artefact -> isAuthorised(artefact, userId)).collect(Collectors.toList());
