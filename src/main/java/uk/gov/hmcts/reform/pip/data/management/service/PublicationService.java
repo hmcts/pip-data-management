@@ -28,7 +28,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
 
@@ -186,7 +185,7 @@ public class PublicationService {
         LocalDateTime currDate = LocalDateTime.now();
         List<Artefact> artefacts = artefactRepository.findArtefactsByLocationId(searchValue, currDate);
 
-        return artefacts.stream().filter(artefact -> isAuthorised(artefact, userId)).collect(Collectors.toList());
+        return artefacts.stream().filter(artefact -> isAuthorised(artefact, userId)).toList();
     }
 
     /**
@@ -221,7 +220,7 @@ public class PublicationService {
             default -> throw new IllegalArgumentException(String.format("Invalid search term: %s", searchTerm));
         }
 
-        artefacts = artefacts.stream().filter(artefact -> isAuthorised(artefact, userId)).collect(Collectors.toList());
+        artefacts = artefacts.stream().filter(artefact -> isAuthorised(artefact, userId)).toList();
 
         if (artefacts.isEmpty()) {
             throw new ArtefactNotFoundException(String.format("No Artefacts found with for %s with the value: %s",
