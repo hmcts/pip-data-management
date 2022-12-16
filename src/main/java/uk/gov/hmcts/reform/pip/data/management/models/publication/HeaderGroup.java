@@ -96,8 +96,13 @@ public class HeaderGroup {
         map.computeIfAbsent("TYPE", val -> type.toString());
         map.computeIfAbsent("SENSITIVITY", val -> sensitivity.toString());
         map.computeIfAbsent("LANGUAGE", val -> language.toString());
-        map.computeIfAbsent("DISPLAY_FROM", val -> displayFrom.toString());
-        map.computeIfAbsent("DISPLAY_TO", val -> displayTo.toString());
+        if (displayFrom != null) {
+            map.computeIfAbsent("DISPLAY_FROM", val -> displayFrom.toString());
+        }
+
+        if (displayTo != null) {
+            map.computeIfAbsent("DISPLAY_TO", val -> displayTo.toString());
+        }
         map.computeIfAbsent("LIST_TYPE", val -> listType.toString());
         map.computeIfAbsent("COURT_ID", val -> courtId);
         map.computeIfAbsent("CONTENT_DATE", val -> contentDate.toString());
