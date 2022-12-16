@@ -61,13 +61,13 @@ public class AccountManagementService {
         }
     }
 
-    public String getUserInfo(String issuerId) {
+    public String getUserInfo(String provenanceUserId) {
         try {
-            return webClient.get().uri(url + "/account/get-info/" + issuerId)
+            return webClient.get().uri(url + "/account/get-info/" + provenanceUserId)
                 .retrieve().bodyToMono(String.class).block();
         } catch (WebClientException ex) {
             log.error(String.format("Request to account management failed with error message: %s", ex.getMessage()));
-            return "Failed to find user info for user: " + issuerId;
+            return "Failed to find user info for user: " + provenanceUserId;
         }
     }
 

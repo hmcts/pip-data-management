@@ -228,14 +228,14 @@ public class LocationService {
      * This method will delete a location from the database.
      * @param locationId The ID of the location to delete.
      */
-    public LocationDeletion deleteLocation(Integer locationId, String issuerId)
+    public LocationDeletion deleteLocation(Integer locationId, String provenanceUserId)
         throws JsonProcessingException {
         LocationDeletion locationDeletion;
         String requesterName = "";
         Optional<Location> location = locationRepository.getLocationByLocationId(locationId);
 
         if (location.isPresent()) {
-            String result = accountManagementService.getUserInfo(issuerId);
+            String result = accountManagementService.getUserInfo(provenanceUserId);
             try {
                 JsonNode node = new ObjectMapper().readTree(result);
                 if (!node.isEmpty()) {
