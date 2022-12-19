@@ -63,7 +63,7 @@ public class AccountManagementService {
 
     public String getUserInfo(String provenanceUserId) {
         try {
-            return webClient.get().uri(url + "/account/get-info/" + provenanceUserId)
+            return webClient.get().uri(url + "/account/azure/" + provenanceUserId)
                 .retrieve().bodyToMono(String.class).block();
         } catch (WebClientException ex) {
             log.error(String.format("Request to account management failed with error message: %s", ex.getMessage()));
