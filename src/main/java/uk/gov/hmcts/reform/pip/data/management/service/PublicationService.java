@@ -496,14 +496,13 @@ public class PublicationService {
      *
      * @return string representing the csv file.
      */
-    public String countArtefactsByLocation() {
-        List<String> returnedData = artefactRepository.countArtefactsByLocation();
-        StringBuilder builder = new StringBuilder(150);
-        builder.append("location,count\n");
-        for (String s : returnedData) {
-            builder.append(s).append('\n');
+    public Map<String, String> countArtefactsByLocation() {
+        Map<String, String> countPerLocation = new ConcurrentHashMap<>();
+        List<Object[]> returnedData = artefactRepository.countArtefactsByLocation();
+        for (Object[] result : returnedData) {
+            countPerLocation.put(result[0].toString(), result[1].toString());
         }
-        return builder.toString();
+        return countPerLocation;
     }
 
     /**

@@ -1113,8 +1113,12 @@ class PublicationServiceTest {
 
     @Test
     void testArtefactCountService() {
-        when(artefactRepository.countArtefactsByLocation()).thenReturn(List.of("1,3","2,4", "3,6"));
-        assertEquals("location,count\n1,3\n2,4\n3,6\n", publicationService.countArtefactsByLocation(),
+        Map<String, String> countPerLocation = new ConcurrentHashMap<>();
+        countPerLocation.put("1", "3");
+        List<Object[]> result = new ArrayList<>();
+        result.add(new Object[]{"1", "3"});
+        when(artefactRepository.countArtefactsByLocation()).thenReturn(result);
+        assertEquals(countPerLocation, publicationService.countArtefactsByLocation(),
                      MESSAGES_MATCH);
     }
 

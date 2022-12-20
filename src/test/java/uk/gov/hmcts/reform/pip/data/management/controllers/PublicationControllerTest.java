@@ -78,8 +78,8 @@ class PublicationControllerTest {
         "The expected exception does not contain the correct message";
     private static final String NOT_EQUAL_MESSAGE = "The expected strings are not the same";
     private static final String DELETED_MESSAGE = "Successfully deleted artefact: ";
-    public static final String COUNT_MSG = "location,count\n1,3\n2,4\n3,6\n";
 
+    private static final Map<String, String> COURT_PER_LOCATION = new ConcurrentHashMap<>();
     private Artefact artefact;
     private Artefact artefactWithId;
     private HeaderGroup headers;
@@ -213,10 +213,11 @@ class PublicationControllerTest {
 
     @Test
     void checkCountArtefactByLocationReturnsData() {
-        when(publicationService.countArtefactsByLocation()).thenReturn(COUNT_MSG);
-        ResponseEntity<String> csvString = publicationController.countByLocation();
+        COURT_PER_LOCATION.put("1", "2");
+        when(publicationService.countArtefactsByLocation()).thenReturn(COURT_PER_LOCATION);
+        ResponseEntity<Map<String, String>> csvString = publicationController.countByLocation();
         assertEquals(HttpStatus.OK, csvString.getStatusCode(), STATUS_CODE_MATCH);
-        assertEquals(COUNT_MSG, csvString.getBody(), NOT_EQUAL_MESSAGE);
+        assertEquals(COURT_PER_LOCATION, csvString.getBody(), NOT_EQUAL_MESSAGE);
     }
 
 

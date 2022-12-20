@@ -372,7 +372,7 @@ public class PublicationController {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/count-by-location")
     @IsAdmin
-    public ResponseEntity<String> countByLocation() {
+    public ResponseEntity<Map<String, String>> countByLocation() {
         return ResponseEntity.ok(publicationService.countArtefactsByLocation());
     }
 
