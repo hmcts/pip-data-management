@@ -9,12 +9,12 @@ import org.springframework.web.client.RestTemplate;
 
 @Configuration
 @Profile("test")
-public class RestTemplateConfigurationTest {
+public class RestTemplateConfigurationTestConfiguration {
 
     @Mock
     private RestTemplate mockRestTemplate;
 
-    public RestTemplateConfigurationTest() {
+    public RestTemplateConfigurationTestConfiguration() {
         MockitoAnnotations.openMocks(this);
     }
 
