@@ -43,7 +43,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles(profiles = "functional")
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
 @WithMockUser(username = "admin", authorities = { "APPROLE_api.request.admin" })
-class PublicationEtFortnightlyPressList {
+class PublicationEtFortnightlyPressListTest {
 
     @Autowired
     BlobContainerClient blobContainerClient;
