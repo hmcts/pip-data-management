@@ -7,7 +7,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 @Configuration
 @Profile("test")
-public class WebClientConfigurationTest {
+public class WebClientConfigurationTestConfiguration {
 
     @Bean
     public WebClient webClient() {

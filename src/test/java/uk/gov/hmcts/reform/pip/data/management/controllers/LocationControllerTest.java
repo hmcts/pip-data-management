@@ -15,7 +15,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.multipart.MultipartFile;
 import org.testcontainers.shaded.org.apache.commons.io.IOUtils;
 import uk.gov.hmcts.reform.pip.data.management.Application;
-import uk.gov.hmcts.reform.pip.data.management.config.AzureBlobConfigurationTest;
+import uk.gov.hmcts.reform.pip.data.management.config.AzureBlobConfigurationTestConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationCsv;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationDeletion;
@@ -30,7 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest(classes = {Application.class, AzureBlobConfigurationTest.class})
+@SpringBootTest(classes = {Application.class, AzureBlobConfigurationTestConfiguration.class})
 @ActiveProfiles(profiles = "test")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)

@@ -50,7 +50,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
-import static uk.gov.hmcts.reform.pip.data.management.helpers.TestConstants.MESSAGES_MATCH;
+import static uk.gov.hmcts.reform.pip.data.management.helpers.ConstantsTestHelper.MESSAGES_MATCH;
 
 @ExtendWith(MockitoExtension.class)
 @SuppressWarnings({"PMD.ExcessiveImports", "PMD.TooManyMethods", "PMD.TooManyFields", "PMD.ExcessiveClassLength",
