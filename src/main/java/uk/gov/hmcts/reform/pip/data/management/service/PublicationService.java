@@ -497,7 +497,8 @@ public class PublicationService {
         List<Object[]> returnedData = artefactRepository.countArtefactsByLocation();
         for (Object[] result : returnedData) {
             artefactsPerLocations.add(
-                new LocationArtefact(Integer.valueOf((String) result[0]), Integer.valueOf((String) result[1])));
+                new LocationArtefact(Integer.parseInt(result[0].toString()),
+                                     Integer.parseInt(result[1].toString())));
         }
         return artefactsPerLocations;
     }
