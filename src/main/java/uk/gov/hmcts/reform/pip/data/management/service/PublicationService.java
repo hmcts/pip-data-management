@@ -12,6 +12,7 @@ import uk.gov.hmcts.reform.pip.data.management.database.AzureBlobService;
 import uk.gov.hmcts.reform.pip.data.management.database.LocationRepository;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ArtefactNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
+import uk.gov.hmcts.reform.pip.data.management.models.location.LocationArtefact;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ListType;
@@ -23,6 +24,7 @@ import uk.gov.hmcts.reform.pip.model.enums.UserActions;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -490,13 +492,14 @@ public class PublicationService {
      *
      * @return string representing the csv file.
      */
-    public Map<String, String> countArtefactsByLocation() {
-        Map<String, String> countPerLocation = new ConcurrentHashMap<>();
+    public List<LocationArtefact> countArtefactsByLocation() {
+        List<LocationArtefact> artefactsPerLocations = new ArrayList<>();
         List<Object[]> returnedData = artefactRepository.countArtefactsByLocation();
         for (Object[] result : returnedData) {
-            countPerLocation.put(result[0].toString(), result[1].toString());
+            artefactsPerLocations.add(
+                new LocationArtefact(Integer.valueOf((String) result[0]), Integer.valueOf((String) result[1])));
         }
-        return countPerLocation;
+        return artefactsPerLocations;
     }
 
     /**

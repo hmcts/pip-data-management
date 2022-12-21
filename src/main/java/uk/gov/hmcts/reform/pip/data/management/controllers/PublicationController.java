@@ -29,6 +29,7 @@ import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.authentication.roles.IsAdmin;
 import uk.gov.hmcts.reform.pip.data.management.authentication.roles.IsPublisher;
 import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
+import uk.gov.hmcts.reform.pip.data.management.models.location.LocationArtefact;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactType;
@@ -372,7 +373,7 @@ public class PublicationController {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/count-by-location")
     @IsAdmin
-    public ResponseEntity<Map<String, String>> countByLocation() {
+    public ResponseEntity<List<LocationArtefact>> countByLocation() {
         return ResponseEntity.ok(publicationService.countArtefactsByLocation());
     }
 
