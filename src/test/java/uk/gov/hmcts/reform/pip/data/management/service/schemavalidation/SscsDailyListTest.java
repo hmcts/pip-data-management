@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,12 +14,17 @@ import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pip.data.management.Application;
 import uk.gov.hmcts.reform.pip.data.management.config.AzureBlobConfigurationTestConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.PayloadValidationException;
+import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactType;
+import uk.gov.hmcts.reform.pip.data.management.models.publication.HeaderGroup;
+import uk.gov.hmcts.reform.pip.data.management.models.publication.Language;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ListType;
+import uk.gov.hmcts.reform.pip.data.management.models.publication.Sensitivity;
 import uk.gov.hmcts.reform.pip.data.management.service.ValidationService;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -42,10 +48,28 @@ class SscsDailyListTest {
     private static final String SITTINGS_SCHEMA = "sittings";
     private static final String HEARING_SCHEMA = "hearing";
     private static final String CASE_SCHEMA  = "case";
+    private static final String SOURCE_ARTEFACT_ID = "sourceArtefactId";
+    private static final LocalDateTime DISPLAY_FROM = LocalDateTime.now();
+    private static final LocalDateTime DISPLAY_TO = LocalDateTime.now();
+    private static final Language LANGUAGE = Language.ENGLISH;
+    private static final String PROVENANCE = "provenance";
+    private static final Sensitivity SENSITIVITY = Sensitivity.PUBLIC;
+    private static final ArtefactType ARTEFACT_TYPE = ArtefactType.LIST;
+    private static final String COURT_ID = "123";
+    private static final ListType LIST_TYPE = ListType.SSCS_DAILY_LIST;
+    private static final LocalDateTime CONTENT_DATE = LocalDateTime.now();
+
+    private HeaderGroup headerGroup;
 
     private JsonNode getJsonNode(String json) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         return mapper.readValue(json, JsonNode.class);
+    }
+
+    @BeforeEach
+    void setup() {
+        headerGroup = new HeaderGroup(PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE, SENSITIVITY, LANGUAGE,
+                                      DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, COURT_ID, CONTENT_DATE);
     }
 
     @Test
@@ -58,7 +82,7 @@ class SscsDailyListTest {
             ((ObjectNode) node).remove("document");
 
             assertThrows(PayloadValidationException.class, () -> validationService.validateBody(node.toString(),
-                ListType.SSCS_DAILY_LIST),
+                headerGroup),
                          SSCS_DAILY_LIST_INVALID_MESSAGE);
         }
     }
@@ -73,7 +97,7 @@ class SscsDailyListTest {
             ((ObjectNode) node.get("document")).remove("publicationDate");
 
             assertThrows(PayloadValidationException.class, () -> validationService.validateBody(node.toString(),
-                ListType.SSCS_DAILY_LIST),
+                headerGroup),
                          SSCS_DAILY_LIST_INVALID_MESSAGE);
         }
     }
@@ -88,7 +112,7 @@ class SscsDailyListTest {
             ((ObjectNode) node).remove(VENUE_SCHEMA);
 
             assertThrows(PayloadValidationException.class, () -> validationService.validateBody(node.toString(),
-                ListType.SSCS_DAILY_LIST),
+                headerGroup),
                          SSCS_DAILY_LIST_INVALID_MESSAGE);
         }
     }
@@ -103,7 +127,7 @@ class SscsDailyListTest {
             ((ObjectNode) node.get(VENUE_SCHEMA)).remove("venueName");
 
             assertThrows(PayloadValidationException.class, () -> validationService.validateBody(node.toString(),
-                ListType.SSCS_DAILY_LIST),
+                headerGroup),
                          SSCS_DAILY_LIST_INVALID_MESSAGE);
         }
     }
@@ -118,7 +142,7 @@ class SscsDailyListTest {
             ((ObjectNode) node.get(VENUE_SCHEMA)).remove("venueContact");
 
             assertThrows(PayloadValidationException.class, () -> validationService.validateBody(node.toString(),
-                ListType.SSCS_DAILY_LIST),
+                headerGroup),
                          SSCS_DAILY_LIST_INVALID_MESSAGE);
         }
     }
@@ -133,7 +157,7 @@ class SscsDailyListTest {
             ((ObjectNode) node).remove(COURT_LIST_SCHEMA);
 
             assertThrows(PayloadValidationException.class, () -> validationService.validateBody(node.toString(),
-                ListType.SSCS_DAILY_LIST),
+                headerGroup),
                     SSCS_DAILY_LIST_INVALID_MESSAGE);
         }
     }
@@ -150,7 +174,7 @@ class SscsDailyListTest {
             ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0)).remove(COURT_HOUSE_SCHEMA);
 
             assertThrows(PayloadValidationException.class, () -> validationService.validateBody(node.toString(),
-                ListType.SSCS_DAILY_LIST),
+                headerGroup),
                     SSCS_DAILY_LIST_INVALID_MESSAGE);
         }
     }
@@ -168,7 +192,7 @@ class SscsDailyListTest {
                 .remove("courtHouseName");
 
             assertThrows(PayloadValidationException.class, () -> validationService.validateBody(node.toString(),
-                ListType.SSCS_DAILY_LIST),
+                headerGroup),
                     SSCS_DAILY_LIST_INVALID_MESSAGE);
         }
     }
@@ -186,7 +210,7 @@ class SscsDailyListTest {
                 .remove("courtHouseContact");
 
             assertThrows(PayloadValidationException.class, () -> validationService.validateBody(node.toString(),
-                ListType.SSCS_DAILY_LIST),
+                headerGroup),
                     SSCS_DAILY_LIST_INVALID_MESSAGE);
         }
     }
@@ -204,7 +228,7 @@ class SscsDailyListTest {
                 .remove(COURT_ROOM_SCHEMA);
 
             assertThrows(PayloadValidationException.class, () -> validationService.validateBody(node.toString(),
-                ListType.SSCS_DAILY_LIST),
+                headerGroup),
                     SSCS_DAILY_LIST_INVALID_MESSAGE);
         }
     }
@@ -222,7 +246,7 @@ class SscsDailyListTest {
                 .get(COURT_ROOM_SCHEMA).get(0)).remove(SESSION_SCHEMA);
 
             assertThrows(PayloadValidationException.class, () -> validationService.validateBody(node.toString(),
-                ListType.SSCS_DAILY_LIST),
+                headerGroup),
                     SSCS_DAILY_LIST_INVALID_MESSAGE);
         }
     }
@@ -241,7 +265,7 @@ class SscsDailyListTest {
                 .remove("sessionChannel");
 
             assertThrows(PayloadValidationException.class, () -> validationService.validateBody(node.toString(),
-                ListType.SSCS_DAILY_LIST),
+                headerGroup),
                     SSCS_DAILY_LIST_INVALID_MESSAGE);
         }
     }
@@ -260,7 +284,7 @@ class SscsDailyListTest {
                 .remove(SITTINGS_SCHEMA);
 
             assertThrows(PayloadValidationException.class, () -> validationService.validateBody(node.toString(),
-                ListType.SSCS_DAILY_LIST),
+                headerGroup),
                     SSCS_DAILY_LIST_INVALID_MESSAGE);
         }
     }
@@ -279,7 +303,7 @@ class SscsDailyListTest {
                 .remove("sittingStart");
 
             assertThrows(PayloadValidationException.class, () -> validationService.validateBody(node.toString(),
-                ListType.SSCS_DAILY_LIST),
+                headerGroup),
                     SSCS_DAILY_LIST_INVALID_MESSAGE);
         }
     }
@@ -298,7 +322,7 @@ class SscsDailyListTest {
                 .remove(HEARING_SCHEMA);
 
             assertThrows(PayloadValidationException.class, () -> validationService.validateBody(node.toString(),
-                ListType.SSCS_DAILY_LIST),
+                headerGroup),
                     SSCS_DAILY_LIST_INVALID_MESSAGE);
         }
     }
@@ -317,7 +341,7 @@ class SscsDailyListTest {
                 .remove(CASE_SCHEMA);
 
             assertThrows(PayloadValidationException.class, () -> validationService.validateBody(node.toString(),
-                ListType.SSCS_DAILY_LIST),
+                headerGroup),
                     SSCS_DAILY_LIST_INVALID_MESSAGE);
         }
     }
@@ -336,7 +360,7 @@ class SscsDailyListTest {
                 .get(0).get(CASE_SCHEMA).get(0)).remove("caseNumber");
 
             assertThrows(PayloadValidationException.class, () -> validationService.validateBody(node.toString(),
-                ListType.SSCS_DAILY_LIST),
+                headerGroup),
                     SSCS_DAILY_LIST_INVALID_MESSAGE);
         }
     }
@@ -354,7 +378,7 @@ class SscsDailyListTest {
                 .get(0)).remove("courtRoomName");
 
             assertThrows(PayloadValidationException.class, () -> validationService.validateBody(node.toString(),
-                ListType.SSCS_DAILY_LIST),
+                headerGroup),
                          SSCS_DAILY_LIST_INVALID_MESSAGE);
         }
     }

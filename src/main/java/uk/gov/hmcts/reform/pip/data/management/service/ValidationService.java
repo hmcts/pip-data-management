@@ -2,6 +2,8 @@ package uk.gov.hmcts.reform.pip.data.management.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.microsoft.applicationinsights.TelemetryClient;
+import com.microsoft.applicationinsights.telemetry.SeverityLevel;
 import com.networknt.schema.JsonSchema;
 import com.networknt.schema.JsonSchemaFactory;
 import com.networknt.schema.SpecVersion;
@@ -35,6 +37,8 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ValidationService {
 
     private final JsonSchema masterSchema;
+
+    private final TelemetryClient telemetry = new TelemetryClient();
 
     Map<ListType, JsonSchema> validationSchemas = new ConcurrentHashMap<>();
 
@@ -146,7 +150,8 @@ public class ValidationService {
      *
      * @param jsonPayload The JSON body to validate.
      */
-    public void validateBody(String jsonPayload, ListType listType) {
+    public void validateBody(String jsonPayload, HeaderGroup headers) {
+        Map<String, String> propertiesMap = headers.getAppInsightsHeaderMap();
         try {
             List<String> errors = new ArrayList<>();
 
@@ -154,16 +159,20 @@ public class ValidationService {
             masterSchema.validate(json).forEach(vm ->  errors.add(vm.getMessage()));
 
             validationSchemas.forEach((type, schema) -> {
-                if (type.equals(listType)) {
+                if (type.equals(headers.getListType())) {
                     schema.validate(json).forEach(vm ->  errors.add(vm.getMessage()));
                 }
             });
 
             if (!errors.isEmpty()) {
+                propertiesMap.put("ERROR", errors.toString());
+                telemetry.trackTrace(jsonPayload, SeverityLevel.Error, propertiesMap);
                 throw new PayloadValidationException(String.join(", ", errors));
             }
 
         } catch (IOException exception) {
+            propertiesMap.put("ERROR", exception.getMessage());
+            telemetry.trackTrace(jsonPayload, SeverityLevel.Error, propertiesMap);
             throw new PayloadValidationException("Error while parsing JSON Payload");
         }
     }
