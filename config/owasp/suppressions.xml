@@ -45,5 +45,6 @@
   <suppress>
     <notes>Netty - Will be fixed when upgrading to springboot 3</notes>
     <cve>CVE-2022-41881</cve>
+    <cve>CVE-2022-41915</cve>
   </suppress>
 </suppressions>
