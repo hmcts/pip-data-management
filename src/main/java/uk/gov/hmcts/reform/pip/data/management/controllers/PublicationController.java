@@ -37,8 +37,10 @@ import uk.gov.hmcts.reform.pip.data.management.models.publication.Language;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ListType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Sensitivity;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.views.ArtefactView;
+import uk.gov.hmcts.reform.pip.data.management.service.artefact.ArtefactSearchService;
 import uk.gov.hmcts.reform.pip.data.management.service.PublicationService;
 import uk.gov.hmcts.reform.pip.data.management.service.ValidationService;
+import uk.gov.hmcts.reform.pip.data.management.service.artefact.ArtefactService;
 import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
 import uk.gov.hmcts.reform.pip.model.enums.UserActions;
 
@@ -79,6 +81,9 @@ public class PublicationController {
 
     private final PublicationService publicationService;
 
+    private final ArtefactSearchService artefactSearchService;
+
+    private final ArtefactService artefactService;
     @Autowired
     private final ValidationService validationService;
 
@@ -88,11 +93,15 @@ public class PublicationController {
      * Constructor for Publication controller.
      *
      * @param publicationService The PublicationService that contains the business logic to handle publications.
+     * @param artefactService
      */
     @Autowired
-    public PublicationController(PublicationService publicationService, ValidationService validationService) {
+    public PublicationController(PublicationService publicationService, ValidationService validationService,
+                                 ArtefactSearchService artefactSearchService, ArtefactService artefactService) {
         this.publicationService = publicationService;
         this.validationService = validationService;
+        this.artefactSearchService = artefactSearchService;
+        this.artefactService = artefactService;
     }
 
     /**
@@ -264,7 +273,7 @@ public class PublicationController {
         @PathVariable String locationId,
         @RequestHeader(value = USER_ID_HEADER, required = false) UUID userId,
         @RequestHeader(value = ADMIN_HEADER, defaultValue = DEFAULT_ADMIN_VALUE, required = false) Boolean isAdmin) {
-        return ResponseEntity.ok(publicationService.findAllByLocationIdAdmin(locationId, userId, isAdmin));
+        return ResponseEntity.ok(artefactSearchService.findAllByLocationIdAdmin(locationId, userId, isAdmin));
     }
 
     @ApiResponses({
@@ -281,7 +290,7 @@ public class PublicationController {
     public ResponseEntity<List<Artefact>> getAllRelevantArtefactsBySearchValue(
         @PathVariable CaseSearchTerm searchTerm, @PathVariable String searchValue,
         @RequestHeader(value = USER_ID_HEADER,  required = false) UUID userId) {
-        return ResponseEntity.ok(publicationService.findAllBySearch(searchTerm, searchValue, userId));
+        return ResponseEntity.ok(artefactSearchService.findAllBySearch(searchTerm, searchValue, userId));
     }
 
     @ApiResponses({
@@ -297,8 +306,8 @@ public class PublicationController {
         @PathVariable UUID artefactId, @RequestHeader(value = USER_ID_HEADER, required = false) UUID userId,
                                        @RequestHeader(value = ADMIN_HEADER, defaultValue = DEFAULT_ADMIN_VALUE,
                                            required = false) Boolean isAdmin) {
-        return ResponseEntity.ok(isAdmin ? publicationService.getMetadataByArtefactId(artefactId) :
-                                     publicationService.getMetadataByArtefactId(artefactId, userId));
+        return ResponseEntity.ok(isAdmin ? artefactService.getMetadataByArtefactId(artefactId) :
+                                     artefactService.getMetadataByArtefactId(artefactId, userId));
     }
 
     @ApiResponses({
@@ -314,8 +323,8 @@ public class PublicationController {
         @RequestHeader(value = USER_ID_HEADER, required = false) UUID userId,
         @RequestHeader(value = ADMIN_HEADER, defaultValue = DEFAULT_ADMIN_VALUE, required = false) Boolean isAdmin) {
 
-        return ResponseEntity.ok(isAdmin ? publicationService.getPayloadByArtefactId(artefactId) :
-                                     publicationService.getPayloadByArtefactId(artefactId, userId));
+        return ResponseEntity.ok(isAdmin ? artefactService.getPayloadByArtefactId(artefactId) :
+                                     artefactService.getPayloadByArtefactId(artefactId, userId));
     }
 
     @ApiResponses({
@@ -334,11 +343,11 @@ public class PublicationController {
         Resource file;
         Artefact metadata;
         if (isAdmin) {
-            file = publicationService.getFlatFileByArtefactID(artefactId);
-            metadata = publicationService.getMetadataByArtefactId(artefactId);
+            file = artefactService.getFlatFileByArtefactID(artefactId);
+            metadata = artefactService.getMetadataByArtefactId(artefactId);
         } else {
-            file = publicationService.getFlatFileByArtefactID(artefactId, userId);
-            metadata = publicationService.getMetadataByArtefactId(artefactId, userId);
+            file = artefactService.getFlatFileByArtefactID(artefactId, userId);
+            metadata = artefactService.getMetadataByArtefactId(artefactId, userId);
         }
 
         String fileType = metadata.getSourceArtefactId();

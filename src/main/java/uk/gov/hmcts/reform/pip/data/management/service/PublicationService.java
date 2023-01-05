@@ -168,153 +168,6 @@ public class PublicationService {
         return foundArtefact.isPresent();
     }
 
-    private String getUuidFromUrl(String payloadUrl) {
-        return payloadUrl.substring(payloadUrl.lastIndexOf('/') + 1);
-    }
-
-
-    /**
-     * Get all relevant artefacts relating to a given location ID.
-     *
-     * @param searchValue - represents the location ID in question being searched for
-     * @param userId      - represents the user ID of the user who is making the request
-     * @return a list of all artefacts that fulfil the timing criteria, match the given location id and sensitivity
-     *     associated with given verification status.
-     */
-    public List<Artefact> findAllByLocationId(String searchValue, UUID userId) {
-        LocalDateTime currDate = LocalDateTime.now();
-        List<Artefact> artefacts = artefactRepository.findArtefactsByLocationId(searchValue, currDate);
-
-        return artefacts.stream().filter(artefact -> isAuthorised(artefact, userId)).toList();
-    }
-
-    /**
-     * Get all artefacts for admin actions.
-     *
-     * @param locationId The location id to search for.
-     * @param userId     represents the user ID of the user who is making the request
-     * @param isAdmin    bool to check whether admin search is needed, if not will default to findAllByLocationId().
-     * @return list of matching artefacts.
-     */
-    public List<Artefact> findAllByLocationIdAdmin(String locationId, UUID userId, boolean isAdmin) {
-        log.info(writeLog("ADMIN - Searching for all artefacts with " + locationId));
-        return isAdmin
-            ? artefactRepository.findArtefactsByLocationIdAdmin(locationId) : findAllByLocationId(locationId, userId);
-    }
-
-    /**
-     * Get all relevant Artefacts based on search values stored in the Artefact.
-     *
-     * @param searchTerm  the search term checking against, eg. CASE_ID or CASE_URN
-     * @param searchValue the search value to look for
-     * @param userId      represents the user ID of the user who is making the request
-     * @return list of Artefacts
-     */
-    public List<Artefact> findAllBySearch(CaseSearchTerm searchTerm, String searchValue, UUID userId) {
-        LocalDateTime currDate = LocalDateTime.now();
-        List<Artefact> artefacts;
-        switch (searchTerm) {
-            case CASE_ID, CASE_URN ->
-                artefacts = artefactRepository.findArtefactBySearch(searchTerm.dbValue, searchValue, currDate);
-            case CASE_NAME -> artefacts = artefactRepository.findArtefactByCaseName(searchValue, currDate);
-            default -> throw new IllegalArgumentException(String.format("Invalid search term: %s", searchTerm));
-        }
-
-        artefacts = artefacts.stream().filter(artefact -> isAuthorised(artefact, userId)).toList();
-
-        if (artefacts.isEmpty()) {
-            throw new ArtefactNotFoundException(String.format("No Artefacts found with for %s with the value: %s",
-                                                              searchTerm, searchValue
-            ));
-        }
-        return artefacts;
-    }
-
-    public Artefact getMetadataByArtefactId(UUID artefactId) {
-        return artefactRepository.findArtefactByArtefactId(artefactId.toString())
-            .orElseThrow(() -> new ArtefactNotFoundException(String.format(
-                "No artefact found with the ID: %s",
-                artefactId
-            )));
-    }
-
-    /**
-     * Takes in artefact id and returns the metadata for the artefact.
-     *
-     * @param artefactId represents the artefact id which is then used to get an artefact to populate the inputs
-     *                   for the blob request.
-     * @param userId     represents the user ID of the user who is making the request
-     * @return The metadata for the found artefact.
-     */
-    public Artefact getMetadataByArtefactId(UUID artefactId, UUID userId) {
-
-        LocalDateTime currentDate = LocalDateTime.now();
-
-        Optional<Artefact> artefact = artefactRepository.findByArtefactId(
-            artefactId.toString(),
-            currentDate
-        );
-
-        if (artefact.isPresent() && isAuthorised(artefact.get(), userId)) {
-            return artefact.get();
-        }
-
-        throw new ArtefactNotFoundException(String.format("No artefact found with the ID: %s", artefactId));
-    }
-
-    /**
-     * Takes in artefact id and returns the payload within the matching blob in string format.
-     *
-     * @param artefactId represents the artefact id which is then used to get an artefact to populate the inputs
-     *                   for the blob request.
-     * @param userId     represents the user ID of the user who is making the request
-     * @return The data within the blob in string format.
-     */
-    public String getPayloadByArtefactId(UUID artefactId, UUID userId) {
-        Artefact artefact = getMetadataByArtefactId(artefactId, userId);
-
-        return azureBlobService.getBlobData(getUuidFromUrl(artefact.getPayload()));
-    }
-
-    /**
-     * Takes in artefact id and returns the payload within the matching blob in string format. This is used for admin
-     * requests
-     *
-     * @param artefactId represents the artefact id which is then used to get an artefact to populate the inputs
-     *                   for the blob request.
-     * @return The data within the blob in string format.
-     */
-    public String getPayloadByArtefactId(UUID artefactId) {
-        Artefact artefact = getMetadataByArtefactId(artefactId);
-
-        return azureBlobService.getBlobData(getUuidFromUrl(artefact.getPayload()));
-    }
-
-    /**
-     * Retrieves a flat file for an artefact.
-     *
-     * @param artefactId The artefact ID to retrieve the flat file from.
-     * @param userId     represents the user ID of the user who is making the request
-     * @return The flat file resource.
-     */
-    public Resource getFlatFileByArtefactID(UUID artefactId, UUID userId) {
-        Artefact artefact = getMetadataByArtefactId(artefactId, userId);
-
-        return azureBlobService.getBlobFile(getUuidFromUrl(artefact.getPayload()));
-    }
-
-    /**
-     * Retrieves a flat file for an artefact. This is used for admin requests
-     *
-     * @param artefactId The artefact ID to retrieve the flat file from.
-     * @return The flat file resource.
-     */
-    public Resource getFlatFileByArtefactID(UUID artefactId) {
-        Artefact artefact = getMetadataByArtefactId(artefactId);
-
-        return azureBlobService.getBlobFile(getUuidFromUrl(artefact.getPayload()));
-    }
-
     /**
      * Checks if the artefact has a display from date of today or previous then triggers the sub fulfilment
      * process on subscription-management if appropriate.
@@ -347,87 +200,6 @@ public class PublicationService {
         findNoMatchArtefactsForReporting(artefactRepository.findAllNoMatchArtefacts());
     }
 
-    /**
-     * Attempts to delete an artefact along with the stored blobs.
-     *
-     * @param artefactId The ID of the artefact to be deleted.
-     * @param issuerId   The ID of the admin user who is attempting to delete the artefact.
-     */
-    public void deleteArtefactById(String artefactId, String issuerId) {
-        Optional<Artefact> artefactToDelete = artefactRepository.findArtefactByArtefactId(artefactId);
-        if (artefactToDelete.isPresent()) {
-            deleteAllPublicationBlobData(artefactToDelete.get());
-            artefactRepository.delete(artefactToDelete.get());
-            log.info(writeLog(issuerId, UserActions.REMOVE, artefactId));
-            triggerThirdPartyArtefactDeleted(artefactToDelete.get());
-        } else {
-            throw new ArtefactNotFoundException("No artefact found with the ID: " + artefactId);
-        }
-    }
-
-    /**
-     * Method that handles the logic to archive an artefact and delete the stored blobs.
-     *
-     * @param artefactId The ID of the artefact to be deleted.
-     * @param issuerId   The ID of the admin user who is attempting to delete the artefact.
-     */
-    @Transactional
-    public void archiveArtefactById(String artefactId, String issuerId) {
-        Optional<Artefact> artefactToArchive = artefactRepository.findArtefactByArtefactId(artefactId);
-
-        if (artefactToArchive.isPresent()) {
-            deleteAllPublicationBlobData(artefactToArchive.get());
-            artefactRepository.archiveArtefact(artefactId);
-            log.info(String.format("Artefact archived by %s, with artefact id: %s", issuerId, artefactId));
-            triggerThirdPartyArtefactDeleted(artefactToArchive.get());
-        } else {
-            throw new ArtefactNotFoundException("No artefact found with the ID: " + artefactId);
-        }
-    }
-
-    /**
-     * Archive expired artefacts from the database, Artefact and Publications Azure storage.
-     */
-    @Transactional
-    public void archiveExpiredArtefacts() {
-        LocalDateTime searchDateTime = LocalDateTime.now();
-        List<Artefact> outdatedArtefacts = artefactRepository.findOutdatedArtefacts(searchDateTime);
-
-        outdatedArtefacts.forEach(artefact -> {
-            artefactRepository.archiveArtefact(artefact.getArtefactId().toString());
-            deleteAllPublicationBlobData(artefact);
-        });
-
-        log.info(writeLog(String.format("%s outdated artefacts found and archived for before %s",
-                                        outdatedArtefacts.size(), searchDateTime
-        )));
-    }
-
-    /**
-     * Delete all data stored in the blobstore for an artefact.
-     *
-     * @param artefact The artefact requiring blob deletion.
-     */
-    private void deleteAllPublicationBlobData(Artefact artefact) {
-        // Delete the payload/flat file from the publications store
-        azureBlobService.deleteBlob(getUuidFromUrl(artefact.getPayload()));
-
-        // Try to delete the generated files for the publications if it's not a flat file
-        if (!artefact.getIsFlatFile()) {
-            try {
-                azureBlobService.deletePublicationBlob(artefact.getArtefactId() + ".pdf");
-
-                // If it's an SJP list the xlsx file also needs to be deleted
-                if (ListType.SJP_PUBLIC_LIST.equals(artefact.getListType())
-                    || ListType.SJP_PRESS_LIST.equals(artefact.getListType())) {
-                    azureBlobService.deletePublicationBlob(artefact.getArtefactId() + ".xlsx");
-                }
-            } catch (Exception ex) {
-                log.info("Failed to delete the generated publication file. Message: " + ex.getMessage());
-            }
-        }
-    }
-
     private void applyInternalLocationId(Artefact artefact) {
         if ("MANUAL_UPLOAD".equalsIgnoreCase(artefact.getProvenance())) {
             return;
@@ -446,27 +218,8 @@ public class PublicationService {
         }
     }
 
-    private boolean isAuthorised(Artefact artefact, UUID userId) {
-        if (artefact.getSensitivity().equals(Sensitivity.PUBLIC)) {
-            return true;
-        } else if (userId == null) {
-            return false;
-        } else {
-            return accountManagementService.getIsAuthorised(userId, artefact.getListType(), artefact.getSensitivity());
-        }
-    }
-
     public LocationType getLocationType(ListType listType) {
         return listType.getListLocationLevel();
-    }
-
-    /**
-     * Triggers subscription management to handle deleted artefact to third party subscribers.
-     *
-     * @param deletedArtefact deleted artefact to notify of.
-     */
-    private void triggerThirdPartyArtefactDeleted(Artefact deletedArtefact) {
-        log.info(writeLog(subscriptionManagementService.sendDeletedArtefactForThirdParties(deletedArtefact)));
     }
 
     /**
@@ -528,5 +281,9 @@ public class PublicationService {
                 .toString())
             .forEach(line -> builder.append(line).append(System.lineSeparator()));
         return builder.toString();
+    }
+
+    private String getUuidFromUrl(String payloadUrl) {
+        return payloadUrl.substring(payloadUrl.lastIndexOf('/') + 1);
     }
 }

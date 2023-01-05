@@ -20,8 +20,10 @@ import uk.gov.hmcts.reform.pip.data.management.models.publication.HeaderGroup;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Language;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ListType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Sensitivity;
+import uk.gov.hmcts.reform.pip.data.management.service.artefact.ArtefactSearchService;
 import uk.gov.hmcts.reform.pip.data.management.service.PublicationService;
 import uk.gov.hmcts.reform.pip.data.management.service.ValidationService;
+import uk.gov.hmcts.reform.pip.data.management.service.artefact.ArtefactService;
 import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
 
 import java.io.IOException;
@@ -49,6 +51,12 @@ class PublicationControllerTest {
 
     @Mock
     private PublicationService publicationService;
+
+    @Mock
+    private ArtefactSearchService artefactSearchService;
+
+    @Mock
+    private ArtefactService artefactService;
 
     @Mock
     private ValidationService validationService;
@@ -171,7 +179,7 @@ class PublicationControllerTest {
 
     @Test
     void testGetArtefactsBySearchReturnsWhenTrue() {
-        when(publicationService.findAllBySearch(SEARCH_TERM, TEST_STRING, USER_ID)).thenReturn(List.of(artefactWithId));
+        when(artefactSearchService.findAllBySearch(SEARCH_TERM, TEST_STRING, USER_ID)).thenReturn(List.of(artefactWithId));
         assertEquals(HttpStatus.OK, publicationController.getAllRelevantArtefactsBySearchValue(SEARCH_TERM, TEST_STRING,
                                                                                                USER_ID).getStatusCode(),
                      STATUS_CODE_MATCH);
@@ -179,7 +187,7 @@ class PublicationControllerTest {
 
     @Test
     void testGetArtefactsBySearchReturnsWhenFalse() {
-        when(publicationService.findAllBySearch(SEARCH_TERM, TEST_STRING, USER_ID)).thenReturn(List.of(artefactWithId));
+        when(artefactSearchService.findAllBySearch(SEARCH_TERM, TEST_STRING, USER_ID)).thenReturn(List.of(artefactWithId));
         assertEquals(HttpStatus.OK, publicationController.getAllRelevantArtefactsBySearchValue(SEARCH_TERM, TEST_STRING,
                                                                                                USER_ID).getStatusCode(),
                      STATUS_CODE_MATCH);
@@ -187,7 +195,7 @@ class PublicationControllerTest {
 
     @Test
     void checkGetMetadataContentReturns() {
-        when(publicationService.getMetadataByArtefactId(any(), any()))
+        when(artefactService.getMetadataByArtefactId(any(), any()))
             .thenReturn(artefactWithId);
         ResponseEntity<Artefact> unmappedBlob = publicationController
             .getArtefactMetadata(UUID.randomUUID(), USER_ID, false);
@@ -200,7 +208,7 @@ class PublicationControllerTest {
 
     @Test
     void checkGetMetadataContentReturnsAdmin() {
-        when(publicationService.getMetadataByArtefactId(any()))
+        when(artefactService.getMetadataByArtefactId(any()))
             .thenReturn(artefactWithId);
         ResponseEntity<Artefact> unmappedBlob = publicationController
             .getArtefactMetadata(UUID.randomUUID(), USER_ID, true);
@@ -222,7 +230,7 @@ class PublicationControllerTest {
 
     @Test
     void checkGetPayloadContentReturns() {
-        when(publicationService.getPayloadByArtefactId(any(), any())).thenReturn(String.valueOf(artefactWithId));
+        when(artefactService.getPayloadByArtefactId(any(), any())).thenReturn(String.valueOf(artefactWithId));
         ResponseEntity<String> unmappedBlob =
             publicationController.getArtefactPayload(UUID.randomUUID(), USER_ID, false);
         assertEquals(HttpStatus.OK, unmappedBlob.getStatusCode(),
@@ -236,8 +244,8 @@ class PublicationControllerTest {
     void checkGetFileContentReturns() {
         String string = "Hello";
         byte[] testData = string.getBytes();
-        when(publicationService.getFlatFileByArtefactID(any(), any())).thenReturn(new ByteArrayResource(testData));
-        when(publicationService.getMetadataByArtefactId(any(), any())).thenReturn(artefactWithId);
+        when(artefactService.getFlatFileByArtefactID(any(), any())).thenReturn(new ByteArrayResource(testData));
+        when(artefactService.getMetadataByArtefactId(any(), any())).thenReturn(artefactWithId);
         ResponseEntity<Resource> flatFileBlob = publicationController.getArtefactFile(
             UUID.randomUUID(),
             USER_ID,
@@ -253,8 +261,8 @@ class PublicationControllerTest {
     void checkGetFileContentAdminReturns() {
         String string = "Hello";
         byte[] testData = string.getBytes();
-        when(publicationService.getFlatFileByArtefactID(any())).thenReturn(new ByteArrayResource(testData));
-        when(publicationService.getMetadataByArtefactId(any())).thenReturn(artefactWithId);
+        when(artefactService.getFlatFileByArtefactID(any())).thenReturn(new ByteArrayResource(testData));
+        when(artefactService.getMetadataByArtefactId(any())).thenReturn(artefactWithId);
         ResponseEntity<Resource> flatFileBlob = publicationController.getArtefactFile(
             UUID.randomUUID(),
             USER_ID,
@@ -270,7 +278,7 @@ class PublicationControllerTest {
     void checkGetArtefactsByCourtIdReturnsWhenTrue() {
         List<Artefact> artefactList = List.of(artefactWithId);
 
-        when(publicationService.findAllByLocationIdAdmin(EMPTY_FIELD, USER_ID, true)).thenReturn(artefactList);
+        when(artefactSearchService.findAllByLocationIdAdmin(EMPTY_FIELD, USER_ID, true)).thenReturn(artefactList);
         ResponseEntity<List<Artefact>> unmappedArtefact = publicationController
             .getAllRelevantArtefactsByLocationId(EMPTY_FIELD, USER_ID, true);
 
@@ -282,7 +290,7 @@ class PublicationControllerTest {
     void checkGetArtefactsByCourtIdReturnsOkWhenFalse() {
         List<Artefact> artefactList = List.of(artefactWithId);
 
-        when(publicationService.findAllByLocationIdAdmin(EMPTY_FIELD, USER_ID, false)).thenReturn(artefactList);
+        when(artefactSearchService.findAllByLocationIdAdmin(EMPTY_FIELD, USER_ID, false)).thenReturn(artefactList);
         ResponseEntity<List<Artefact>> unmappedArtefact = publicationController
             .getAllRelevantArtefactsByLocationId(EMPTY_FIELD, USER_ID, false);
 
