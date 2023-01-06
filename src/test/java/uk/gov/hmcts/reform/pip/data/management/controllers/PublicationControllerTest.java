@@ -20,10 +20,10 @@ import uk.gov.hmcts.reform.pip.data.management.models.publication.HeaderGroup;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Language;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ListType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Sensitivity;
-import uk.gov.hmcts.reform.pip.data.management.service.artefact.ArtefactDeleteService;
-import uk.gov.hmcts.reform.pip.data.management.service.artefact.ArtefactSearchService;
 import uk.gov.hmcts.reform.pip.data.management.service.PublicationService;
 import uk.gov.hmcts.reform.pip.data.management.service.ValidationService;
+import uk.gov.hmcts.reform.pip.data.management.service.artefact.ArtefactDeleteService;
+import uk.gov.hmcts.reform.pip.data.management.service.artefact.ArtefactSearchService;
 import uk.gov.hmcts.reform.pip.data.management.service.artefact.ArtefactService;
 import uk.gov.hmcts.reform.pip.data.management.service.artefact.ArtefactTriggerService;
 import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
@@ -187,7 +187,8 @@ class PublicationControllerTest {
 
     @Test
     void testGetArtefactsBySearchReturnsWhenTrue() {
-        when(artefactSearchService.findAllBySearch(SEARCH_TERM, TEST_STRING, USER_ID)).thenReturn(List.of(artefactWithId));
+        when(artefactSearchService.findAllBySearch(SEARCH_TERM, TEST_STRING, USER_ID))
+            .thenReturn(List.of(artefactWithId));
         assertEquals(HttpStatus.OK, publicationController.getAllRelevantArtefactsBySearchValue(SEARCH_TERM, TEST_STRING,
                                                                                                USER_ID).getStatusCode(),
                      STATUS_CODE_MATCH);
@@ -195,9 +196,11 @@ class PublicationControllerTest {
 
     @Test
     void testGetArtefactsBySearchReturnsWhenFalse() {
-        when(artefactSearchService.findAllBySearch(SEARCH_TERM, TEST_STRING, USER_ID)).thenReturn(List.of(artefactWithId));
-        assertEquals(HttpStatus.OK, publicationController.getAllRelevantArtefactsBySearchValue(SEARCH_TERM, TEST_STRING,
-                                                                                               USER_ID).getStatusCode(),
+        when(artefactSearchService.findAllBySearch(SEARCH_TERM, TEST_STRING, USER_ID))
+            .thenReturn(List.of(artefactWithId));
+        assertEquals(HttpStatus.OK, publicationController
+                         .getAllRelevantArtefactsBySearchValue(SEARCH_TERM, TEST_STRING, USER_ID)
+                         .getStatusCode(),
                      STATUS_CODE_MATCH);
     }
 

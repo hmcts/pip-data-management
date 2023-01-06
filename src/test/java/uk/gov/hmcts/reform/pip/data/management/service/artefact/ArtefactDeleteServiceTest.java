@@ -13,23 +13,17 @@ import uk.gov.hmcts.reform.pip.data.management.database.AzureBlobService;
 import uk.gov.hmcts.reform.pip.data.management.database.LocationRepository;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ArtefactNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.NotFoundException;
+import uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
-import uk.gov.hmcts.reform.pip.data.management.models.location.LocationCsv;
-import uk.gov.hmcts.reform.pip.data.management.models.location.LocationType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
-import uk.gov.hmcts.reform.pip.data.management.models.publication.Language;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ListType;
-import uk.gov.hmcts.reform.pip.data.management.models.publication.Sensitivity;
 import uk.gov.hmcts.reform.pip.data.management.service.SubscriptionManagementService;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -41,8 +35,19 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
+import static reactor.netty.Metrics.SUCCESS;
+import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.ARTEFACT_ID;
+import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.DELETION_TRACK_LOG_MESSAGE;
+import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.LOCATION_VENUE;
+import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.PAYLOAD_STRIPPED;
+import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.PROVENANCE;
+import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.PROVENANCE_ID;
+import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.SEARCH_VALUES;
+import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.TEST_KEY;
+import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.TEST_VALUE;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ConstantsTestHelper.MESSAGES_MATCH;
 
+@SuppressWarnings({"PMD.ExcessiveImports"})
 @ExtendWith(MockitoExtension.class)
 class ArtefactDeleteServiceTest {
 
@@ -61,22 +66,6 @@ class ArtefactDeleteServiceTest {
     @InjectMocks
     ArtefactDeleteService artefactDeleteService;
 
-    private static final UUID ARTEFACT_ID = UUID.randomUUID();
-    private static final String SOURCE_ARTEFACT_ID = "1234";
-    private static final String PROVENANCE = "provenance";
-    private static final String PROVENANCE_ID = "1234";
-    private static final String PAYLOAD_URL = "https://ThisIsATestPayload";
-    private static final String PAYLOAD_STRIPPED = "ThisIsATestPayload";
-    private static final String LOCATION_ID = "123";
-    private static final String TEST_KEY = "TestKey";
-    private static final String TEST_VALUE = "TestValue";
-    private static final Map<String, List<Object>> SEARCH_VALUES = new ConcurrentHashMap<>();
-    private static final String SUCCESS = "Success";
-    private static final String DELETION_TRACK_LOG_MESSAGE = "Track: TestValue, Removed %s, at ";
-
-    private static final LocalDateTime CONTENT_DATE = LocalDateTime.now();
-    private static final LocalDateTime START_OF_TODAY_CONTENT_DATE = LocalDateTime.now().toLocalDate().atStartOfDay();
-
     private Artefact artefact;
     private Artefact artefactWithPayloadUrl;
     private Artefact artefactWithIdAndPayloadUrl;
@@ -93,7 +82,7 @@ class ArtefactDeleteServiceTest {
         createPayloads();
         createClassifiedPayloads();
 
-        initialiseCourts();
+        location = ArtefactConstantTestHelper.initialiseCourts();
 
         lenient().when(artefactRepository.findArtefactByUpdateLogic(artefact.getLocationId(),artefact.getContentDate(),
                                                                     artefact.getLanguage().name(),
@@ -102,50 +91,19 @@ class ArtefactDeleteServiceTest {
             .thenReturn(Optional.empty());
         lenient().when(artefactRepository.save(artefactWithPayloadUrl)).thenReturn(artefactWithIdAndPayloadUrl);
         lenient().when(locationRepository.findByLocationIdByProvenance(PROVENANCE, PROVENANCE_ID,
-                                                                       LocationType.VENUE.name()))
+                                                                       LOCATION_VENUE))
             .thenReturn(Optional.of(location));
     }
 
     private void createPayloads() {
-        artefact = Artefact.builder()
-            .sourceArtefactId(SOURCE_ARTEFACT_ID)
-            .provenance(PROVENANCE)
-            .locationId(PROVENANCE_ID)
-            .contentDate(START_OF_TODAY_CONTENT_DATE)
-            .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
-            .language(Language.ENGLISH)
-            .sensitivity(Sensitivity.PUBLIC)
-            .build();
-
-        artefactWithPayloadUrl = Artefact.builder()
-            .sourceArtefactId(SOURCE_ARTEFACT_ID)
-            .provenance(PROVENANCE)
-            .payload(PAYLOAD_URL)
-            .search(SEARCH_VALUES)
-            .locationId(LOCATION_ID)
-            .contentDate(START_OF_TODAY_CONTENT_DATE)
-            .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
-            .language(Language.ENGLISH)
-            .sensitivity(Sensitivity.PUBLIC)
-            .build();
-
-        artefactWithIdAndPayloadUrl = Artefact.builder()
-            .artefactId(ARTEFACT_ID)
-            .sourceArtefactId(SOURCE_ARTEFACT_ID)
-            .provenance(PROVENANCE)
-            .payload(PAYLOAD_URL)
-            .search(SEARCH_VALUES)
-            .locationId(LOCATION_ID)
-            .contentDate(CONTENT_DATE)
-            .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
-            .language(Language.ENGLISH)
-            .sensitivity(Sensitivity.PUBLIC)
-            .build();
+        artefact = ArtefactConstantTestHelper.buildArtefact();
+        artefactWithPayloadUrl = ArtefactConstantTestHelper.buildArtefactWithPayloadUrl();
+        artefactWithIdAndPayloadUrl = ArtefactConstantTestHelper.buildArtefactWithIdAndPayloadUrl();
     }
 
     private void createClassifiedPayloads() {
 
-        initialiseCourts();
+        location = ArtefactConstantTestHelper.initialiseCourts();
 
         lenient().when(artefactRepository.findArtefactByUpdateLogic(artefact.getLocationId(),artefact.getContentDate(),
                                                                     artefact.getLanguage().name(),
@@ -154,17 +112,8 @@ class ArtefactDeleteServiceTest {
             .thenReturn(Optional.empty());
         lenient().when(artefactRepository.save(artefactWithPayloadUrl)).thenReturn(artefactWithIdAndPayloadUrl);
         lenient().when(locationRepository.findByLocationIdByProvenance(PROVENANCE, PROVENANCE_ID,
-                                                                       LocationType.VENUE.name()))
+                                                                       LOCATION_VENUE))
             .thenReturn(Optional.of(location));
-    }
-
-    private void initialiseCourts() {
-        LocationCsv locationCsvFirstExample = new LocationCsv();
-        locationCsvFirstExample.setLocationName("Court Name First Example");
-        locationCsvFirstExample.setProvenanceLocationType("venue");
-        location = new Location(locationCsvFirstExample);
-        location.setLocationId(1234);
-
     }
 
     @Test
@@ -189,8 +138,8 @@ class ArtefactDeleteServiceTest {
     @Test
     void testDeleteArtefactByIdThrows() {
         ArtefactNotFoundException ex = assertThrows(ArtefactNotFoundException.class, () ->
-                                                        artefactDeleteService.deleteArtefactById(TEST_VALUE, TEST_VALUE),
-                                                    "ArtefactNotFoundException should be thrown");
+            artefactDeleteService.deleteArtefactById(TEST_VALUE, TEST_VALUE),
+            "ArtefactNotFoundException should be thrown");
 
         assertEquals("No artefact found with the ID: " + TEST_VALUE, ex.getMessage(),
                      MESSAGES_MATCH);

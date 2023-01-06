@@ -37,10 +37,10 @@ import uk.gov.hmcts.reform.pip.data.management.models.publication.Language;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ListType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Sensitivity;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.views.ArtefactView;
-import uk.gov.hmcts.reform.pip.data.management.service.artefact.ArtefactDeleteService;
-import uk.gov.hmcts.reform.pip.data.management.service.artefact.ArtefactSearchService;
 import uk.gov.hmcts.reform.pip.data.management.service.PublicationService;
 import uk.gov.hmcts.reform.pip.data.management.service.ValidationService;
+import uk.gov.hmcts.reform.pip.data.management.service.artefact.ArtefactDeleteService;
+import uk.gov.hmcts.reform.pip.data.management.service.artefact.ArtefactSearchService;
 import uk.gov.hmcts.reform.pip.data.management.service.artefact.ArtefactService;
 import uk.gov.hmcts.reform.pip.data.management.service.artefact.ArtefactTriggerService;
 import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
@@ -99,13 +99,17 @@ public class PublicationController {
      * Constructor for Publication controller.
      *
      * @param publicationService     The PublicationService that contains the business logic to handle publications.
-     * @param artefactService
-     * @param artefactDeleteService
-     * @param artefactTriggerService
+     * @param artefactService   The ArtefactService that con be used to get artefact property
+     * @param artefactDeleteService The ArtefactDeleteService that can be used to Delete or Archive artefacts
+     * @param artefactTriggerService The ArtefactTriggerService that can be used to send artefact data to other services
      */
     @Autowired
-    public PublicationController(PublicationService publicationService, ValidationService validationService,
-                                 ArtefactSearchService artefactSearchService, ArtefactService artefactService, ArtefactDeleteService artefactDeleteService, ArtefactTriggerService artefactTriggerService) {
+    public PublicationController(PublicationService publicationService,
+                                 ValidationService validationService,
+                                 ArtefactSearchService artefactSearchService,
+                                 ArtefactService artefactService,
+                                 ArtefactDeleteService artefactDeleteService,
+                                 ArtefactTriggerService artefactTriggerService) {
         this.publicationService = publicationService;
         this.validationService = validationService;
         this.artefactSearchService = artefactSearchService;

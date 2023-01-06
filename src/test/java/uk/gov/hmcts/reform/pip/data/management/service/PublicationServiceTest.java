@@ -8,13 +8,11 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.AzureBlobService;
 import uk.gov.hmcts.reform.pip.data.management.database.LocationRepository;
+import uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
-import uk.gov.hmcts.reform.pip.data.management.models.location.LocationCsv;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Language;
@@ -26,10 +24,8 @@ import uk.gov.hmcts.reform.pip.data.management.utils.PayloadExtractor;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -41,11 +37,29 @@ import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.ARTEFACT_ID;
+import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.CONTENT_DATE;
+import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.FILE;
+import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.LOCATION_TYPE_MATCH;
+import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.LOCATION_VENUE;
+import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.MANUAL_UPLOAD_PROVENANCE;
+import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.NO_COURT_EXISTS_IN_REFERENCE_DATA;
+import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.PAYLOAD;
+import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.PAYLOAD_STRIPPED;
+import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.PAYLOAD_URL;
+import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.PROVENANCE;
+import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.PROVENANCE_ID;
+import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.ROWID_RETURNS_UUID;
+import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.SEARCH_VALUES;
+import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.SOURCE_ARTEFACT_ID;
+import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.START_OF_TODAY_CONTENT_DATE;
+import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.TEST_KEY;
+import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.TEST_VALUE;
+import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.VALIDATION_ARTEFACT_NOT_MATCH;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ConstantsTestHelper.MESSAGES_MATCH;
 
+@SuppressWarnings({"PMD.ExcessiveImports"})
 @ExtendWith(MockitoExtension.class)
-@SuppressWarnings({"PMD.ExcessiveImports", "PMD.TooManyMethods", "PMD.TooManyFields", "PMD.ExcessiveClassLength",
-    "PMD.LawOfDemeter", "PMD.CyclomaticComplexity", "PMD.ExcessiveMethodLength"})
 class PublicationServiceTest {
 
     @Mock
@@ -68,29 +82,6 @@ class PublicationServiceTest {
 
     @Mock
     ArtefactTriggerService artefactTriggerService;
-
-    private static final UUID ARTEFACT_ID = UUID.randomUUID();
-    private static final UUID USER_ID = UUID.randomUUID();
-    private static final String SOURCE_ARTEFACT_ID = "1234";
-    private static final String PROVENANCE = "provenance";
-    private static final String PROVENANCE_ID = "1234";
-    private static final String MANUAL_UPLOAD_PROVENANCE = "MANUAL_UPLOAD";
-    private static final String PAYLOAD = "This is a payload";
-    private static final String PAYLOAD_URL = "https://ThisIsATestPayload";
-    private static final String PAYLOAD_STRIPPED = "ThisIsATestPayload";
-    private static final String LOCATION_ID = "123";
-    private static final String TEST_KEY = "TestKey";
-    private static final String TEST_VALUE = "TestValue";
-    private static final Map<String, List<Object>> SEARCH_VALUES = new ConcurrentHashMap<>();
-    private static final MultipartFile FILE = new MockMultipartFile("test", (byte[]) null);
-    private static final String VALIDATION_ARTEFACT_NOT_MATCH = "Artefacts do not match";
-    private static final String ROWID_RETURNS_UUID = "Row ID must match returned UUID";
-    private static final String LOCATION_TYPE_MATCH = "Location types should match";
-
-    private static final String NO_COURT_EXISTS_IN_REFERENCE_DATA = "NoMatch1234";
-
-    private static final LocalDateTime CONTENT_DATE = LocalDateTime.now();
-    private static final LocalDateTime START_OF_TODAY_CONTENT_DATE = LocalDateTime.now().toLocalDate().atStartOfDay();
 
     private Artefact artefact;
     private Artefact artefactWithPayloadUrl;
@@ -121,7 +112,7 @@ class PublicationServiceTest {
         createClassifiedPayloads();
 
         intialiseManualUploadArtefact();
-        initialiseCourts();
+        location = ArtefactConstantTestHelper.initialiseCourts();
 
         lenient().when(artefactRepository.findArtefactByUpdateLogic(artefact.getLocationId(),artefact.getContentDate(),
                                                                     artefact.getLanguage().name(),
@@ -129,78 +120,22 @@ class PublicationServiceTest {
                                                                     artefact.getProvenance()))
             .thenReturn(Optional.empty());
         lenient().when(artefactRepository.save(artefactWithPayloadUrl)).thenReturn(artefactWithIdAndPayloadUrl);
-        lenient().when(locationRepository.findByLocationIdByProvenance(PROVENANCE, PROVENANCE_ID,
-                                                                    LocationType.VENUE.name()))
+        lenient().when(locationRepository.findByLocationIdByProvenance(PROVENANCE, PROVENANCE_ID, LOCATION_VENUE))
             .thenReturn(Optional.of(location));
     }
 
     private void createPayloads() {
-        artefact = Artefact.builder()
-            .sourceArtefactId(SOURCE_ARTEFACT_ID)
-            .provenance(PROVENANCE)
-            .locationId(PROVENANCE_ID)
-            .contentDate(START_OF_TODAY_CONTENT_DATE)
-            .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
-            .language(Language.ENGLISH)
-            .sensitivity(Sensitivity.PUBLIC)
-            .build();
-
-        artefactWithPayloadUrl = Artefact.builder()
-            .sourceArtefactId(SOURCE_ARTEFACT_ID)
-            .provenance(PROVENANCE)
-            .payload(PAYLOAD_URL)
-            .search(SEARCH_VALUES)
-            .locationId(LOCATION_ID)
-            .contentDate(START_OF_TODAY_CONTENT_DATE)
-            .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
-            .language(Language.ENGLISH)
-            .sensitivity(Sensitivity.PUBLIC)
-            .build();
-
-        artefactWithIdAndPayloadUrl = Artefact.builder()
-            .artefactId(ARTEFACT_ID)
-            .sourceArtefactId(SOURCE_ARTEFACT_ID)
-            .provenance(PROVENANCE)
-            .payload(PAYLOAD_URL)
-            .search(SEARCH_VALUES)
-            .locationId(LOCATION_ID)
-            .contentDate(CONTENT_DATE)
-            .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
-            .language(Language.ENGLISH)
-            .sensitivity(Sensitivity.PUBLIC)
-            .build();
-
-        sjpPublicArtefact = Artefact.builder()
-            .sourceArtefactId(SOURCE_ARTEFACT_ID)
-            .provenance(PROVENANCE)
-            .locationId(PROVENANCE_ID)
-            .contentDate(START_OF_TODAY_CONTENT_DATE)
-            .listType(ListType.SJP_PUBLIC_LIST)
-            .language(Language.ENGLISH)
-            .sensitivity(Sensitivity.PUBLIC)
-            .displayFrom(LocalDateTime.now().plusDays(1))
-            .displayTo(LocalDateTime.now().plusDays(2))
-            .expiryDate(LocalDateTime.now())
-            .build();
-
-        sjpPressArtefact = Artefact.builder()
-            .sourceArtefactId(SOURCE_ARTEFACT_ID)
-            .provenance(PROVENANCE)
-            .locationId(PROVENANCE_ID)
-            .contentDate(START_OF_TODAY_CONTENT_DATE)
-            .listType(ListType.SJP_PRESS_LIST)
-            .language(Language.ENGLISH)
-            .sensitivity(Sensitivity.PUBLIC)
-            .displayFrom(LocalDateTime.now().plusDays(1))
-            .displayTo(LocalDateTime.now().plusDays(2))
-            .expiryDate(LocalDateTime.now())
-            .build();
+        artefact = ArtefactConstantTestHelper.buildArtefact();
+        artefactWithPayloadUrl = ArtefactConstantTestHelper.buildArtefactWithPayloadUrl();
+        artefactWithIdAndPayloadUrl = ArtefactConstantTestHelper.buildArtefactWithIdAndPayloadUrl();
+        sjpPublicArtefact = ArtefactConstantTestHelper.buildSjpPublicArtefact();
+        sjpPressArtefact = ArtefactConstantTestHelper.buildSjpPressArtefact();
     }
 
     private void createClassifiedPayloads() {
 
         intialiseManualUploadArtefact();
-        initialiseCourts();
+        location = ArtefactConstantTestHelper.initialiseCourts();
 
         lenient().when(artefactRepository.findArtefactByUpdateLogic(artefact.getLocationId(),artefact.getContentDate(),
                                                                     artefact.getLanguage().name(),
@@ -209,17 +144,8 @@ class PublicationServiceTest {
             .thenReturn(Optional.empty());
         lenient().when(artefactRepository.save(artefactWithPayloadUrl)).thenReturn(artefactWithIdAndPayloadUrl);
         lenient().when(locationRepository.findByLocationIdByProvenance(PROVENANCE, PROVENANCE_ID,
-                                                                    LocationType.VENUE.name()))
+                                                                       LOCATION_VENUE))
             .thenReturn(Optional.of(location));
-    }
-
-    private void initialiseCourts() {
-        LocationCsv locationCsvFirstExample = new LocationCsv();
-        locationCsvFirstExample.setLocationName("Court Name First Example");
-        locationCsvFirstExample.setProvenanceLocationType("venue");
-        location = new Location(locationCsvFirstExample);
-        location.setLocationId(1234);
-
     }
 
     private void intialiseManualUploadArtefact() {
@@ -249,7 +175,7 @@ class PublicationServiceTest {
     @Test
     void testCreationOfNewArtefactWhenCourtDoesNotExists() {
         artefactWithPayloadUrl.setLocationId(NO_COURT_EXISTS_IN_REFERENCE_DATA);
-        when(locationRepository.findByLocationIdByProvenance(PROVENANCE, PROVENANCE_ID, LocationType.VENUE.name()))
+        when(locationRepository.findByLocationIdByProvenance(PROVENANCE, PROVENANCE_ID, LOCATION_VENUE))
             .thenReturn(Optional.empty());
         when(artefactRepository.save(any())).thenReturn(artefactWithIdAndPayloadUrl);
         when(azureBlobService.createPayload(any(), eq(PAYLOAD))).thenReturn(PAYLOAD_URL);
@@ -377,7 +303,7 @@ class PublicationServiceTest {
                                                           artefact.getProvenance()))
             .thenReturn(Optional.of(existingArtefact));
 
-        when(locationRepository.findByLocationIdByProvenance(PROVENANCE, PROVENANCE_ID, LocationType.VENUE.name()))
+        when(locationRepository.findByLocationIdByProvenance(PROVENANCE, PROVENANCE_ID, LOCATION_VENUE))
             .thenReturn(Optional.empty());
         when(artefactRepository.save(any())).thenReturn(newArtefactWithId);
         when(azureBlobService.createPayload(PAYLOAD_STRIPPED, PAYLOAD)).thenReturn(PAYLOAD_URL);
@@ -419,7 +345,7 @@ class PublicationServiceTest {
         artefactWithPayloadUrl.setLocationId(PROVENANCE_ID);
         when(azureBlobService.uploadFlatFile(any(), eq(FILE))).thenReturn(PAYLOAD_URL);
         when(artefactRepository.save(any())).thenReturn(artefactWithIdAndPayloadUrl);
-        when(locationRepository.findByLocationIdByProvenance(PROVENANCE, PROVENANCE_ID, LocationType.VENUE.name()))
+        when(locationRepository.findByLocationIdByProvenance(PROVENANCE, PROVENANCE_ID, LOCATION_VENUE))
             .thenReturn(Optional.of(location));
         Artefact returnedArtefact = publicationService.createPublication(artefact, FILE);
 

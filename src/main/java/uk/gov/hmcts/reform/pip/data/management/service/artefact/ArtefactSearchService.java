@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ArtefactNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
-import uk.gov.hmcts.reform.pip.data.management.service.PublicationService;
 import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
 
 import java.time.LocalDateTime;
@@ -19,14 +18,12 @@ import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
 @Service
 public class ArtefactSearchService {
     private final ArtefactRepository artefactRepository;
-    private final PublicationService publicationService;
     private final ArtefactService artefactService;
 
     @Autowired
-    public ArtefactSearchService(ArtefactRepository artefactRepository, PublicationService publicationService,
+    public ArtefactSearchService(ArtefactRepository artefactRepository,
                                  ArtefactService artefactService) {
         this.artefactRepository = artefactRepository;
-        this.publicationService = publicationService;
         this.artefactService = artefactService;
     }
 

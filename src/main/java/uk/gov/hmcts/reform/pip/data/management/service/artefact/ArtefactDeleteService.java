@@ -85,8 +85,8 @@ public class ArtefactDeleteService {
                 azureBlobService.deletePublicationBlob(artefact.getArtefactId() + ".pdf");
 
                 // If it's an SJP list the xlsx file also needs to be deleted
-                if (ListType.SJP_PUBLIC_LIST.equals(artefact.getListType())
-                    || ListType.SJP_PRESS_LIST.equals(artefact.getListType())) {
+                if (artefact.getListType().equals(ListType.SJP_PUBLIC_LIST)
+                    || artefact.getListType().equals(ListType.SJP_PRESS_LIST)) {
                     azureBlobService.deletePublicationBlob(artefact.getArtefactId() + ".xlsx");
                 }
             } catch (Exception ex) {

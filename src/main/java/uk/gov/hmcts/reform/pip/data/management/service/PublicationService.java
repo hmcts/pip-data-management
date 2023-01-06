@@ -30,7 +30,6 @@ import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
 
 @Slf4j
 @Service
-@SuppressWarnings({"PMD.GodClass", "PMD.LawOfDemeter"})
 public class PublicationService {
 
     private static final char DELIMITER = ',';
@@ -52,7 +51,8 @@ public class PublicationService {
                               AzureBlobService azureBlobService,
                               PayloadExtractor payloadExtractor,
                               LocationRepository locationRepository,
-                              ChannelManagementService channelManagementService, ArtefactTriggerService artefactTriggerService) {
+                              ChannelManagementService channelManagementService,
+                              ArtefactTriggerService artefactTriggerService) {
         this.artefactRepository = artefactRepository;
         this.azureBlobService = azureBlobService;
         this.payloadExtractor = payloadExtractor;
@@ -84,8 +84,8 @@ public class PublicationService {
         );
 
         // Add 7 days to the expiry date if the list type is SJP
-        if (ListType.SJP_PUBLIC_LIST.equals(artefact.getListType())
-            || ListType.SJP_PRESS_LIST.equals(artefact.getListType())) {
+        if (artefact.getListType().equals(ListType.SJP_PUBLIC_LIST)
+            || artefact.getListType().equals(ListType.SJP_PRESS_LIST)) {
             artefact.setExpiryDate(artefact.getExpiryDate().plusDays(7));
         }
 
