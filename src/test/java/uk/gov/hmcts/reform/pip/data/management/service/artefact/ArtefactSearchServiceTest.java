@@ -461,4 +461,11 @@ class ArtefactSearchServiceTest {
         assertEquals(List.of(artefact), artefactSearchService.findAllByLocationIdAdmin(TEST_VALUE, USER_ID, false),
                      VALIDATION_ARTEFACT_NOT_MATCH);
     }
+
+    @Test
+    void testFindAllByCourtIdAdmin() {
+        when(artefactRepository.findArtefactsByLocationIdAdmin(TEST_VALUE)).thenReturn(List.of(artefact));
+        assertEquals(List.of(artefact), artefactSearchService.findAllByLocationIdAdmin(TEST_VALUE, USER_ID, true),
+                     VALIDATION_ARTEFACT_NOT_MATCH);
+    }
 }

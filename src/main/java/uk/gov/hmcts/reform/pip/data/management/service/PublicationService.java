@@ -2,32 +2,25 @@ package uk.gov.hmcts.reform.pip.data.management.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.AzureBlobService;
 import uk.gov.hmcts.reform.pip.data.management.database.LocationRepository;
-import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ArtefactNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ListType;
-import uk.gov.hmcts.reform.pip.data.management.models.publication.Sensitivity;
-import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
+import uk.gov.hmcts.reform.pip.data.management.service.artefact.ArtefactTriggerService;
 import uk.gov.hmcts.reform.pip.data.management.utils.PayloadExtractor;
 import uk.gov.hmcts.reform.pip.model.enums.UserActions;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 
 import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
 
@@ -48,33 +41,24 @@ public class PublicationService {
 
     private final PayloadExtractor payloadExtractor;
 
-    private final SubscriptionManagementService subscriptionManagementService;
-
     private final LocationRepository locationRepository;
 
-    private final AccountManagementService accountManagementService;
-
-    private final PublicationServicesService publicationServicesService;
-
     private final ChannelManagementService channelManagementService;
+
+    private final ArtefactTriggerService artefactTriggerService;
 
     @Autowired
     public PublicationService(ArtefactRepository artefactRepository,
                               AzureBlobService azureBlobService,
                               PayloadExtractor payloadExtractor,
-                              SubscriptionManagementService subscriptionManagementService,
-                              AccountManagementService accountManagementService,
                               LocationRepository locationRepository,
-                              PublicationServicesService publicationServicesService,
-                              ChannelManagementService channelManagementService) {
+                              ChannelManagementService channelManagementService, ArtefactTriggerService artefactTriggerService) {
         this.artefactRepository = artefactRepository;
         this.azureBlobService = azureBlobService;
         this.payloadExtractor = payloadExtractor;
-        this.subscriptionManagementService = subscriptionManagementService;
-        this.accountManagementService = accountManagementService;
         this.locationRepository = locationRepository;
-        this.publicationServicesService = publicationServicesService;
         this.channelManagementService = channelManagementService;
+        this.artefactTriggerService = artefactTriggerService;
     }
 
     /**
@@ -142,7 +126,7 @@ public class PublicationService {
     @Async
     public void processCreatedPublication(Artefact artefact) {
         channelManagementService.requestFileGeneration(artefact.getArtefactId());
-        checkAndTriggerSubscriptionManagement(artefact);
+        artefactTriggerService.checkAndTriggerSubscriptionManagement(artefact);
     }
 
     /**
@@ -168,38 +152,6 @@ public class PublicationService {
         return foundArtefact.isPresent();
     }
 
-    /**
-     * Checks if the artefact has a display from date of today or previous then triggers the sub fulfilment
-     * process on subscription-management if appropriate.
-     */
-    public void checkAndTriggerSubscriptionManagement(Artefact artefact) {
-        //TODO: fully switch this logic to localdates once artefact model changes
-        if (artefact.getDisplayFrom().toLocalDate().isBefore(LocalDate.now().plusDays(1))
-            && (artefact.getDisplayTo() == null
-            || artefact.getDisplayTo().toLocalDate().isAfter(LocalDate.now().minusDays(1)))) {
-            log.info(sendArtefactForSubscription(artefact));
-        }
-    }
-
-    public String sendArtefactForSubscription(Artefact artefact) {
-        return subscriptionManagementService.sendArtefactForSubscription(artefact);
-    }
-
-    /**
-     * Scheduled method that checks daily for newly dated from artefacts.
-     */
-    public void checkNewlyActiveArtefacts() {
-        artefactRepository.findArtefactsByDisplayFrom(LocalDate.now())
-            .forEach(artefact -> log.info(sendArtefactForSubscription(artefact)));
-    }
-
-    /**
-     * Find artefacts with NoMatch location and send them for reporting.
-     */
-    public void reportNoMatchArtefacts() {
-        findNoMatchArtefactsForReporting(artefactRepository.findAllNoMatchArtefacts());
-    }
-
     private void applyInternalLocationId(Artefact artefact) {
         if ("MANUAL_UPLOAD".equalsIgnoreCase(artefact.getProvenance())) {
             return;
@@ -220,22 +172,6 @@ public class PublicationService {
 
     public LocationType getLocationType(ListType listType) {
         return listType.getListLocationLevel();
-    }
-
-    /**
-     * Receives a list of no match artefacts, checks it's not empty and create a map of location id to Provenance.
-     * Send this on to publication services.
-     *
-     * @param artefactList A list of no match artefacts
-     */
-    private void findNoMatchArtefactsForReporting(List<Artefact> artefactList) {
-        if (!artefactList.isEmpty()) {
-            Map<String, String> locationIdProvenanceMap = new ConcurrentHashMap<>();
-            artefactList.forEach(artefact -> locationIdProvenanceMap.put(
-                artefact.getLocationId().split("NoMatch")[1], artefact.getProvenance()));
-
-            log.info(publicationServicesService.sendNoMatchArtefactsForReporting(locationIdProvenanceMap));
-        }
     }
 
     /**

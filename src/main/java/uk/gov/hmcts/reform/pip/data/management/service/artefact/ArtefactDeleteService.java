@@ -19,14 +19,14 @@ import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
 
 @Slf4j
 @Service
-public class ArtefactArchiveService {
+public class ArtefactDeleteService {
 
     private final ArtefactRepository artefactRepository;
     private final AzureBlobService azureBlobService;
     private final SubscriptionManagementService subscriptionManagementService;
 
-    public ArtefactArchiveService(ArtefactRepository artefactRepository, AzureBlobService azureBlobService,
-                                  SubscriptionManagementService subscriptionManagementService) {
+    public ArtefactDeleteService(ArtefactRepository artefactRepository, AzureBlobService azureBlobService,
+                                 SubscriptionManagementService subscriptionManagementService) {
         this.artefactRepository = artefactRepository;
         this.azureBlobService = azureBlobService;
         this.subscriptionManagementService = subscriptionManagementService;

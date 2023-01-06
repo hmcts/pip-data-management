@@ -20,10 +20,12 @@ import uk.gov.hmcts.reform.pip.data.management.models.publication.HeaderGroup;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Language;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ListType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Sensitivity;
+import uk.gov.hmcts.reform.pip.data.management.service.artefact.ArtefactDeleteService;
 import uk.gov.hmcts.reform.pip.data.management.service.artefact.ArtefactSearchService;
 import uk.gov.hmcts.reform.pip.data.management.service.PublicationService;
 import uk.gov.hmcts.reform.pip.data.management.service.ValidationService;
 import uk.gov.hmcts.reform.pip.data.management.service.artefact.ArtefactService;
+import uk.gov.hmcts.reform.pip.data.management.service.artefact.ArtefactTriggerService;
 import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
 
 import java.io.IOException;
@@ -57,6 +59,12 @@ class PublicationControllerTest {
 
     @Mock
     private ArtefactService artefactService;
+
+    @Mock
+    private ArtefactDeleteService artefactDeleteService;
+
+    @Mock
+    private ArtefactTriggerService artefactTriggerService;
 
     @Mock
     private ValidationService validationService;
@@ -321,7 +329,7 @@ class PublicationControllerTest {
 
     @Test
     void testDeleteArtefactReturnsOk() {
-        doNothing().when(publicationService).deleteArtefactById(any(), any());
+        doNothing().when(artefactDeleteService).deleteArtefactById(any(), any());
         assertEquals(HttpStatus.OK, publicationController.deleteArtefact(TEST_STRING, TEST_STRING).getStatusCode(),
                      STATUS_CODE_MATCH);
         assertEquals(DELETED_MESSAGE + TEST_STRING,
@@ -366,7 +374,7 @@ class PublicationControllerTest {
 
     @Test
     void testSendNewArtefactsForSubscriptionSuccess() {
-        doNothing().when(publicationService).checkNewlyActiveArtefacts();
+        doNothing().when(artefactTriggerService).checkNewlyActiveArtefacts();
         assertThat(publicationController.sendNewArtefactsForSubscription().getStatusCode())
             .as(STATUS_CODE_MATCH)
             .isEqualTo(HttpStatus.NO_CONTENT);
@@ -374,7 +382,7 @@ class PublicationControllerTest {
 
     @Test
     void testReportNoMatchArtefactsSuccess() {
-        doNothing().when(publicationService).reportNoMatchArtefacts();
+        doNothing().when(artefactTriggerService).reportNoMatchArtefacts();
         assertThat(publicationController.reportNoMatchArtefacts().getStatusCode())
             .as(STATUS_CODE_MATCH)
             .isEqualTo(HttpStatus.NO_CONTENT);
@@ -382,7 +390,7 @@ class PublicationControllerTest {
 
     @Test
     void testDeleteExpiredArtefactsSuccess() {
-        doNothing().when(publicationService).archiveExpiredArtefacts();
+        doNothing().when(artefactDeleteService).archiveExpiredArtefacts();
         assertThat(publicationController.archiveExpiredArtefacts().getStatusCode())
             .as(STATUS_CODE_MATCH)
             .isEqualTo(HttpStatus.NO_CONTENT);
@@ -393,7 +401,7 @@ class PublicationControllerTest {
         String issuerId = UUID.randomUUID().toString();
         String artefactId = UUID.randomUUID().toString();
 
-        doNothing().when(publicationService).archiveArtefactById(artefactId, issuerId);
+        doNothing().when(artefactDeleteService).archiveArtefactById(artefactId, issuerId);
 
         ResponseEntity<String> response = publicationController.archiveArtefact(issuerId, artefactId);
 

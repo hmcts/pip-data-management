@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.pip.data.management.service;
 
-import nl.altindag.log.LogCaptor;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,8 +13,6 @@ import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.AzureBlobService;
 import uk.gov.hmcts.reform.pip.data.management.database.LocationRepository;
-import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ArtefactNotFoundException;
-import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.NotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationCsv;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationType;
@@ -23,13 +20,11 @@ import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Language;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ListType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Sensitivity;
-import uk.gov.hmcts.reform.pip.data.management.service.artefact.ArtefactSearchService;
+import uk.gov.hmcts.reform.pip.data.management.service.artefact.ArtefactTriggerService;
 import uk.gov.hmcts.reform.pip.data.management.utils.PayloadExtractor;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -39,15 +34,12 @@ import java.util.concurrent.ConcurrentHashMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ConstantsTestHelper.MESSAGES_MATCH;
 
@@ -69,19 +61,13 @@ class PublicationServiceTest {
     PayloadExtractor payloadExtractor;
 
     @Mock
-    SubscriptionManagementService subscriptionManagementService;
-
-    @Mock
-    PublicationServicesService publicationServicesService;
-
-    @Mock
     ChannelManagementService channelManagementService;
 
     @InjectMocks
     PublicationService publicationService;
 
-    @InjectMocks
-    ArtefactSearchService artefactSearchService;
+    @Mock
+    ArtefactTriggerService artefactTriggerService;
 
     private static final UUID ARTEFACT_ID = UUID.randomUUID();
     private static final UUID USER_ID = UUID.randomUUID();
@@ -98,9 +84,6 @@ class PublicationServiceTest {
     private static final Map<String, List<Object>> SEARCH_VALUES = new ConcurrentHashMap<>();
     private static final MultipartFile FILE = new MockMultipartFile("test", (byte[]) null);
     private static final String VALIDATION_ARTEFACT_NOT_MATCH = "Artefacts do not match";
-    private static final String SUCCESSFUL_TRIGGER = "success - subscription sent";
-    private static final String SUCCESS = "Success";
-    private static final String DELETION_TRACK_LOG_MESSAGE = "Track: TestValue, Removed %s, at ";
     private static final String ROWID_RETURNS_UUID = "Row ID must match returned UUID";
     private static final String LOCATION_TYPE_MATCH = "Location types should match";
 
@@ -112,13 +95,7 @@ class PublicationServiceTest {
     private Artefact artefact;
     private Artefact artefactWithPayloadUrl;
     private Artefact artefactWithIdAndPayloadUrl;
-    private Artefact artefactInTheFuture;
-    private Artefact artefactFromThePast;
-    private Artefact artefactFromNow;
-    private Artefact artefactWithNullDateTo;
-    private Artefact artefactWithSameDateFromAndTo;
     private Artefact artefactManualUpload;
-    private Artefact noMatchArtefact;
     private Artefact sjpPublicArtefact;
     private Artefact sjpPressArtefact;
 
@@ -187,68 +164,6 @@ class PublicationServiceTest {
             .payload(PAYLOAD_URL)
             .search(SEARCH_VALUES)
             .locationId(LOCATION_ID)
-            .contentDate(CONTENT_DATE)
-            .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
-            .language(Language.ENGLISH)
-            .sensitivity(Sensitivity.PUBLIC)
-            .build();
-
-        artefactFromThePast = Artefact.builder()
-            .artefactId(ARTEFACT_ID)
-            .sourceArtefactId(SOURCE_ARTEFACT_ID)
-            .provenance(PROVENANCE)
-            .payload(PAYLOAD_URL)
-            .search(SEARCH_VALUES)
-            .displayFrom(LocalDateTime.now().minusDays(1))
-            .displayTo(LocalDateTime.now().plusDays(1))
-            .build();
-
-        artefactFromNow = Artefact.builder()
-            .artefactId(ARTEFACT_ID)
-            .sourceArtefactId(SOURCE_ARTEFACT_ID)
-            .provenance(PROVENANCE)
-            .payload(PAYLOAD_URL)
-            .search(SEARCH_VALUES)
-            .displayFrom(LocalDateTime.now())
-            .displayTo(LocalDateTime.now().plusHours(3))
-            .build();
-
-        artefactWithNullDateTo = Artefact.builder()
-            .artefactId(ARTEFACT_ID)
-            .sourceArtefactId(SOURCE_ARTEFACT_ID)
-            .provenance(PROVENANCE)
-            .payload(PAYLOAD_URL)
-            .search(SEARCH_VALUES)
-            .displayFrom(LocalDateTime.now())
-            .displayTo(null)
-            .build();
-
-        artefactWithSameDateFromAndTo = Artefact.builder()
-            .artefactId(ARTEFACT_ID)
-            .sourceArtefactId(SOURCE_ARTEFACT_ID)
-            .provenance(PROVENANCE)
-            .payload(PAYLOAD_URL)
-            .search(SEARCH_VALUES)
-            .displayFrom(LocalDateTime.now())
-            .displayTo(LocalDateTime.now())
-            .build();
-
-        artefactInTheFuture = Artefact.builder()
-            .artefactId(ARTEFACT_ID)
-            .sourceArtefactId(SOURCE_ARTEFACT_ID)
-            .provenance(PROVENANCE)
-            .payload(PAYLOAD_URL)
-            .search(SEARCH_VALUES)
-            .displayFrom(LocalDateTime.now().plusDays(1))
-            .displayTo(LocalDateTime.now().plusDays(2))
-            .build();
-
-        noMatchArtefact = Artefact.builder()
-            .sourceArtefactId(SOURCE_ARTEFACT_ID)
-            .provenance(PROVENANCE)
-            .payload(PAYLOAD_URL)
-            .search(SEARCH_VALUES)
-            .locationId(NO_COURT_EXISTS_IN_REFERENCE_DATA)
             .contentDate(CONTENT_DATE)
             .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
             .language(Language.ENGLISH)
@@ -536,199 +451,10 @@ class PublicationServiceTest {
     }
 
     @Test
-    void testTriggerIfDateIsFuture() throws IOException {
-        try (LogCaptor logCaptor = LogCaptor.forClass(PublicationService.class)) {
-            publicationService.checkAndTriggerSubscriptionManagement(artefactInTheFuture);
-            assertEquals(
-                0,
-                logCaptor.getInfoLogs().size(),
-                "Should not have returned a log as no trigger was sent."
-            );
-        } catch (Exception ex) {
-            throw new IOException(ex.getMessage());
-        }
-    }
-
-    @Test
-    void testTriggerIfDateIsNow() {
-        when(subscriptionManagementService.sendArtefactForSubscription(artefactFromNow)).thenReturn(SUCCESSFUL_TRIGGER);
-        try (LogCaptor logCaptor = LogCaptor.forClass(PublicationService.class)) {
-            publicationService.checkAndTriggerSubscriptionManagement(artefactFromNow);
-            assertEquals(SUCCESSFUL_TRIGGER, logCaptor.getInfoLogs().get(0),
-                         "should have returned the Subscription List."
-            );
-        }
-    }
-
-    @Test
-    void testTriggerIfDateIsPast() {
-        when(subscriptionManagementService.sendArtefactForSubscription(artefactFromThePast)).thenReturn(
-            SUCCESSFUL_TRIGGER);
-        try (LogCaptor logCaptor = LogCaptor.forClass(PublicationService.class)) {
-            publicationService.checkAndTriggerSubscriptionManagement(artefactFromThePast);
-            assertEquals(SUCCESSFUL_TRIGGER, logCaptor.getInfoLogs().get(0),
-                         "Should have returned the subscription list"
-            );
-        }
-    }
-
-    @Test
-    void testTriggerIfDateToNull() {
-        when(subscriptionManagementService.sendArtefactForSubscription(artefactWithNullDateTo)).thenReturn(
-            SUCCESSFUL_TRIGGER);
-        try (LogCaptor logCaptor = LogCaptor.forClass(PublicationService.class)) {
-            publicationService.checkAndTriggerSubscriptionManagement(artefactWithNullDateTo);
-            assertEquals(SUCCESSFUL_TRIGGER, logCaptor.getInfoLogs().get(0),
-                         "Should have returned the subscription list"
-            );
-        }
-    }
-
-    @Test
-    void testTriggerIfSameDateFromTo() {
-        when(subscriptionManagementService.sendArtefactForSubscription(artefactWithSameDateFromAndTo)).thenReturn(
-            SUCCESSFUL_TRIGGER);
-        try (LogCaptor logCaptor = LogCaptor.forClass(PublicationService.class)) {
-            publicationService.checkAndTriggerSubscriptionManagement(artefactWithSameDateFromAndTo);
-            assertEquals(SUCCESSFUL_TRIGGER, logCaptor.getInfoLogs().get(0),
-                         "Should have returned the subscription list"
-            );
-        }
-    }
-
-    @Test
-    void testFindAllByCourtIdAdmin() {
-        when(artefactRepository.findArtefactsByLocationIdAdmin(TEST_VALUE)).thenReturn(List.of(artefact));
-        assertEquals(List.of(artefact), artefactSearchService.findAllByLocationIdAdmin(TEST_VALUE, USER_ID, true),
-                     VALIDATION_ARTEFACT_NOT_MATCH);
-    }
-
-    @Test
     void testArtefactCountService() {
         when(artefactRepository.countArtefactsByLocation()).thenReturn(List.of("1,3","2,4", "3,6"));
         assertEquals("location,count\n1,3\n2,4\n3,6\n", publicationService.countArtefactsByLocation(),
                      MESSAGES_MATCH);
-    }
-
-    @Test
-    void testSendArtefactForSubscription() {
-        when(subscriptionManagementService.sendArtefactForSubscription(artefact))
-            .thenReturn(SUCCESS);
-        assertEquals(SUCCESS, publicationService.sendArtefactForSubscription(artefact),
-                     MESSAGES_MATCH);
-    }
-
-    @Test
-    void testCheckNewlyActiveArtefactsLogs() throws IOException {
-        try (LogCaptor logCaptor = LogCaptor.forClass(PublicationService.class)) {
-            when(artefactRepository.findArtefactsByDisplayFrom(any())).thenReturn(List.of(new Artefact()));
-            when(subscriptionManagementService.sendArtefactForSubscription(any())).thenReturn(SUCCESS);
-            publicationService.checkNewlyActiveArtefacts();
-            assertEquals(SUCCESS, logCaptor.getInfoLogs().get(0),
-                         MESSAGES_MATCH
-            );
-        } catch (Exception ex) {
-            throw new IOException(ex.getMessage());
-        }
-    }
-
-    @Test
-    void testDeleteArtefactById() throws IOException {
-        try (LogCaptor logCaptor = LogCaptor.forClass(PublicationService.class)) {
-            when(subscriptionManagementService.sendDeletedArtefactForThirdParties(artefactWithPayloadUrl))
-                .thenReturn(SUCCESS);
-            when(artefactRepository.findArtefactByArtefactId(ARTEFACT_ID.toString()))
-                .thenReturn(Optional.of(artefactWithPayloadUrl));
-            when(azureBlobService.deleteBlob(PAYLOAD_STRIPPED)).thenReturn(SUCCESS);
-            doNothing().when(artefactRepository).delete(artefactWithPayloadUrl);
-
-            publicationService.deleteArtefactById(ARTEFACT_ID.toString(), TEST_VALUE);
-            assertTrue(logCaptor.getInfoLogs().get(0).contains(String.format(DELETION_TRACK_LOG_MESSAGE, ARTEFACT_ID)),
-                       MESSAGES_MATCH);
-            assertTrue(logCaptor.getInfoLogs().get(1).contains(SUCCESS), MESSAGES_MATCH);
-        } catch (Exception ex) {
-            throw new IOException(ex.getMessage());
-        }
-    }
-
-    @Test
-    void testDeleteArtefactByIdThrows() {
-        ArtefactNotFoundException ex = assertThrows(ArtefactNotFoundException.class, () ->
-                                                        publicationService.deleteArtefactById(TEST_VALUE, TEST_VALUE),
-                                                    "ArtefactNotFoundException should be thrown");
-
-        assertEquals("No artefact found with the ID: " + TEST_VALUE, ex.getMessage(),
-                     MESSAGES_MATCH);
-    }
-
-    @Test
-    void testReportNoMatchArtefacts() {
-        when(artefactRepository.findAllNoMatchArtefacts()).thenReturn(List.of(noMatchArtefact));
-        publicationService.reportNoMatchArtefacts();
-        verify(publicationServicesService).sendNoMatchArtefactsForReporting(Map.of(PROVENANCE_ID, PROVENANCE));
-    }
-
-    @Test
-    void testReportMatchArtefactsWhenArtefactsNotFound() {
-        when(artefactRepository.findAllNoMatchArtefacts()).thenReturn(Collections.emptyList());
-        publicationService.reportNoMatchArtefacts();
-        verifyNoInteractions(publicationServicesService);
-    }
-
-    @Test
-    void testArchiveExpiredArtefacts() {
-        UUID testArtefactId = UUID.randomUUID();
-        artefactWithPayloadUrl.setArtefactId(testArtefactId);
-        when(artefactRepository.findOutdatedArtefacts(any())).thenReturn(List.of(artefactWithPayloadUrl));
-        publicationService.archiveExpiredArtefacts();
-        verify(azureBlobService).deleteBlob(PAYLOAD_STRIPPED);
-        verify(azureBlobService).deletePublicationBlob(testArtefactId + ".pdf");
-        verify(artefactRepository).archiveArtefact(testArtefactId.toString());
-    }
-
-    @Test
-    void testArchiveExpiredArtefactsSjpPublic() {
-        UUID testArtefactId = UUID.randomUUID();
-        artefactWithPayloadUrl.setArtefactId(testArtefactId);
-        artefactWithPayloadUrl.setListType(ListType.SJP_PUBLIC_LIST);
-        when(artefactRepository.findOutdatedArtefacts(any())).thenReturn(List.of(artefactWithPayloadUrl));
-        publicationService.archiveExpiredArtefacts();
-        verify(azureBlobService).deleteBlob(PAYLOAD_STRIPPED);
-        verify(azureBlobService).deletePublicationBlob(artefactWithPayloadUrl.getArtefactId() + ".pdf");
-        verify(azureBlobService).deletePublicationBlob(artefactWithPayloadUrl.getArtefactId() + ".xlsx");
-        verify(artefactRepository).archiveArtefact(testArtefactId.toString());
-    }
-
-    @Test
-    void testArchiveExpiredArtefactsSjpPress() {
-        UUID testArtefactId = UUID.randomUUID();
-        artefactWithPayloadUrl.setArtefactId(testArtefactId);
-        artefactWithPayloadUrl.setListType(ListType.SJP_PRESS_LIST);
-        when(artefactRepository.findOutdatedArtefacts(any())).thenReturn(List.of(artefactWithPayloadUrl));
-        publicationService.archiveExpiredArtefacts();
-        verify(azureBlobService).deleteBlob(PAYLOAD_STRIPPED);
-        verify(azureBlobService).deletePublicationBlob(artefactWithPayloadUrl.getArtefactId() + ".pdf");
-        verify(azureBlobService).deletePublicationBlob(artefactWithPayloadUrl.getArtefactId() + ".xlsx");
-        verify(artefactRepository).archiveArtefact(testArtefactId.toString());
-    }
-
-    @Test
-    void testArchiveExpiredArtefactsFlatFile() {
-        UUID testArtefactId = UUID.randomUUID();
-        artefactWithPayloadUrl.setArtefactId(testArtefactId);
-        artefactWithPayloadUrl.setListType(ListType.SJP_PRESS_LIST);
-        artefactWithPayloadUrl.setIsFlatFile(true);
-        when(artefactRepository.findOutdatedArtefacts(any())).thenReturn(List.of(artefactWithPayloadUrl));
-        publicationService.archiveExpiredArtefacts();
-        verify(azureBlobService).deleteBlob(PAYLOAD_STRIPPED);
-        verify(artefactRepository).archiveArtefact(testArtefactId.toString());
-    }
-
-    @Test
-    void testArchiveExpiredArtefactsWhenArtefactsNotFound() {
-        when(artefactRepository.findOutdatedArtefacts(any())).thenReturn(Collections.emptyList());
-        publicationService.archiveExpiredArtefacts();
-        verifyNoInteractions(azureBlobService);
     }
 
     @Test
@@ -883,37 +609,8 @@ class PublicationServiceTest {
     }
 
     @Test
-    void testArchivedEndpoint() {
-        String artefactId = UUID.randomUUID().toString();
-
-        when(artefactRepository.findArtefactByArtefactId(artefactId))
-            .thenReturn(Optional.of(artefactWithIdAndPayloadUrl));
-
-        publicationService.archiveArtefactById(artefactId, UUID.randomUUID().toString());
-
-        verify(azureBlobService, times(1))
-            .deleteBlob(any());
-        verify(azureBlobService, times(1))
-            .deletePublicationBlob(any());
-        verify(subscriptionManagementService, times(1))
-            .sendDeletedArtefactForThirdParties(any());
-        verify(artefactRepository, times(1))
-            .archiveArtefact(artefactId);
-    }
-
-    @Test
-    void testArchivedEndpointNotFound() {
-        String artefactId = UUID.randomUUID().toString();
-
-        when(artefactRepository.findArtefactByArtefactId(artefactId)).thenReturn(Optional.empty());
-
-        assertThrows(NotFoundException.class, () -> {
-            publicationService.archiveArtefactById(artefactId, UUID.randomUUID().toString());
-        }, "Attempting to archive an artefact that does not exist should throw an exception");
-    }
-
-    @Test
     void testProcessCreatedPublication() {
+        doNothing().when(artefactTriggerService).checkAndTriggerSubscriptionManagement(sjpPublicArtefact);
         publicationService.processCreatedPublication(sjpPublicArtefact);
         verify(channelManagementService, times(1))
             .requestFileGeneration(sjpPublicArtefact.getArtefactId());

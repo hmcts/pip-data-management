@@ -37,10 +37,12 @@ import uk.gov.hmcts.reform.pip.data.management.models.publication.Language;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ListType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Sensitivity;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.views.ArtefactView;
+import uk.gov.hmcts.reform.pip.data.management.service.artefact.ArtefactDeleteService;
 import uk.gov.hmcts.reform.pip.data.management.service.artefact.ArtefactSearchService;
 import uk.gov.hmcts.reform.pip.data.management.service.PublicationService;
 import uk.gov.hmcts.reform.pip.data.management.service.ValidationService;
 import uk.gov.hmcts.reform.pip.data.management.service.artefact.ArtefactService;
+import uk.gov.hmcts.reform.pip.data.management.service.artefact.ArtefactTriggerService;
 import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
 import uk.gov.hmcts.reform.pip.model.enums.UserActions;
 
@@ -84,6 +86,10 @@ public class PublicationController {
     private final ArtefactSearchService artefactSearchService;
 
     private final ArtefactService artefactService;
+
+    private final ArtefactDeleteService artefactDeleteService;
+
+    private final ArtefactTriggerService artefactTriggerService;
     @Autowired
     private final ValidationService validationService;
 
@@ -92,16 +98,20 @@ public class PublicationController {
     /**
      * Constructor for Publication controller.
      *
-     * @param publicationService The PublicationService that contains the business logic to handle publications.
+     * @param publicationService     The PublicationService that contains the business logic to handle publications.
      * @param artefactService
+     * @param artefactDeleteService
+     * @param artefactTriggerService
      */
     @Autowired
     public PublicationController(PublicationService publicationService, ValidationService validationService,
-                                 ArtefactSearchService artefactSearchService, ArtefactService artefactService) {
+                                 ArtefactSearchService artefactSearchService, ArtefactService artefactService, ArtefactDeleteService artefactDeleteService, ArtefactTriggerService artefactTriggerService) {
         this.publicationService = publicationService;
         this.validationService = validationService;
         this.artefactSearchService = artefactSearchService;
         this.artefactService = artefactService;
+        this.artefactDeleteService = artefactDeleteService;
+        this.artefactTriggerService = artefactTriggerService;
     }
 
     /**
@@ -254,7 +264,7 @@ public class PublicationController {
 
         logManualUpload(publicationService.maskEmail(issuerEmail), createdItem.getArtefactId().toString());
 
-        publicationService.checkAndTriggerSubscriptionManagement(artefact);
+        artefactTriggerService.checkAndTriggerSubscriptionManagement(artefact);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(createdItem);
     }
@@ -368,7 +378,7 @@ public class PublicationController {
     @IsAdmin
     public ResponseEntity<String> deleteArtefact(@RequestHeader("x-issuer-id") String issuerId,
         @PathVariable String artefactId) {
-        publicationService.deleteArtefactById(artefactId, issuerId);
+        artefactDeleteService.deleteArtefactById(artefactId, issuerId);
         return ResponseEntity.ok("Successfully deleted artefact: " + artefactId);
     }
 
@@ -419,7 +429,7 @@ public class PublicationController {
     @PostMapping("/latest/subscription")
     @IsAdmin
     public ResponseEntity<Void> sendNewArtefactsForSubscription() {
-        publicationService.checkNewlyActiveArtefacts();
+        artefactTriggerService.checkNewlyActiveArtefacts();
         return ResponseEntity.noContent().build();
     }
 
@@ -432,7 +442,7 @@ public class PublicationController {
     @PostMapping("/no-match/reporting")
     @IsAdmin
     public ResponseEntity<Void> reportNoMatchArtefacts() {
-        publicationService.reportNoMatchArtefacts();
+        artefactTriggerService.reportNoMatchArtefacts();
         return ResponseEntity.noContent().build();
     }
 
@@ -445,7 +455,7 @@ public class PublicationController {
     @DeleteMapping("/expired")
     @IsAdmin
     public ResponseEntity<Void> archiveExpiredArtefacts() {
-        publicationService.archiveExpiredArtefacts();
+        artefactDeleteService.archiveExpiredArtefacts();
         return ResponseEntity.noContent().build();
     }
 
@@ -460,7 +470,7 @@ public class PublicationController {
     @IsAdmin
     public ResponseEntity<String> archiveArtefact(@RequestHeader("x-issuer-id") String issuerId,
                                                   @PathVariable String id) {
-        publicationService.archiveArtefactById(id, issuerId);
+        artefactDeleteService.archiveArtefactById(id, issuerId);
         return ResponseEntity.ok(String.format("Artefact of ID %s has been archived", id));
     }
 }
