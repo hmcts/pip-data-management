@@ -42,4 +42,17 @@
     <cve>CVE-2022-41881</cve>
     <cve>CVE-2022-41915</cve>
   </suppress>
+  <suppress>
+    <packageUrl>pkg:maven/org.latencyutils/LatencyUtils@2.0.3</packageUrl>
+    <cve>CVE-2021-4277</cve>
+  </suppress>
+  <suppress>
+    <packageUrl>pkg:maven/org.apache.commons/commons-text@1.10.0</packageUrl>
+    <cve>CVE-2021-37533</cve>
+  </suppress>
+  <suppress>
+    <packageUrl>pkg:maven/org.yaml/snakeyaml@1.33</packageUrl>
+    <cve>CVE-2022-3064</cve>
+    <cve>CVE-2021-4235</cve>
+  </suppress>
 </suppressions>
