@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.pip.data.management.service.schemavalidation;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -14,12 +15,17 @@ import uk.gov.hmcts.reform.pip.data.management.Application;
 import uk.gov.hmcts.reform.pip.data.management.config.AzureBlobConfigurationTestConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.PayloadValidationException;
 import uk.gov.hmcts.reform.pip.data.management.helpers.JsonHelper;
+import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactType;
+import uk.gov.hmcts.reform.pip.data.management.models.publication.HeaderGroup;
+import uk.gov.hmcts.reform.pip.data.management.models.publication.Language;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ListType;
+import uk.gov.hmcts.reform.pip.data.management.models.publication.Sensitivity;
 import uk.gov.hmcts.reform.pip.data.management.service.ValidationService;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -34,7 +40,25 @@ class EtDailyListTest {
     ValidationService validationService;
 
     private static final String ET_DAILY_LIST_VALID = "mocks/et-daily-list/etDailyList.json";
+    private static final String SOURCE_ARTEFACT_ID = "sourceArtefactId";
+    private static final LocalDateTime DISPLAY_FROM = LocalDateTime.now();
+    private static final LocalDateTime DISPLAY_TO = LocalDateTime.now();
+    private static final Language LANGUAGE = Language.ENGLISH;
+    private static final String PROVENANCE = "provenance";
+    private static final Sensitivity SENSITIVITY = Sensitivity.PUBLIC;
+    private static final ArtefactType ARTEFACT_TYPE = ArtefactType.LIST;
+    private static final String COURT_ID = "123";
+    private static final ListType LIST_TYPE = ListType.ET_DAILY_LIST;
+    private static final LocalDateTime CONTENT_DATE = LocalDateTime.now();
+
+    private HeaderGroup headerGroup;
     ObjectMapper mapper = new ObjectMapper();
+
+    @BeforeEach
+    void setup() {
+        headerGroup = new HeaderGroup(PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE, SENSITIVITY, LANGUAGE,
+                                      DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, COURT_ID, CONTENT_DATE);
+    }
 
     @Test
     void testValidPayloadPasses() throws IOException {
@@ -42,7 +66,7 @@ class EtDailyListTest {
             .getResourceAsStream(ET_DAILY_LIST_VALID)) {
             assert jsonInput != null;
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
-            assertDoesNotThrow(() -> validationService.validateBody(text, ListType.ET_DAILY_LIST));
+            assertDoesNotThrow(() -> validationService.validateBody(text, headerGroup));
         }
     }
 
@@ -66,7 +90,7 @@ class EtDailyListTest {
             String output = mapper.writeValueAsString(topLevelNode);
             assertThatExceptionOfType(PayloadValidationException.class)
                 .as("should fail")
-                .isThrownBy(() -> validationService.validateBody(output, ListType.ET_DAILY_LIST));
+                .isThrownBy(() -> validationService.validateBody(output, headerGroup));
         }
     }
 }
