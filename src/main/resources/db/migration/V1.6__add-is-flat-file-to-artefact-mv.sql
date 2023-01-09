@@ -18,5 +18,5 @@ SELECT artefact.artefact_id,
        artefact.superseded_count,
        artefact.last_received_date,
        artefact.is_archived,
-       artefact.is_flat_file,
+       artefact.is_flat_file
 FROM artefact;
