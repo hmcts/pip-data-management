@@ -8,8 +8,8 @@ import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.AzureBlobService;
 import uk.gov.hmcts.reform.pip.data.management.database.LocationRepository;
+import uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactHelper;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
-import uk.gov.hmcts.reform.pip.data.management.models.location.LocationType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ListType;
 import uk.gov.hmcts.reform.pip.data.management.service.artefact.ArtefactTriggerService;
@@ -18,7 +18,6 @@ import uk.gov.hmcts.reform.pip.model.enums.UserActions;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -79,7 +78,7 @@ public class PublicationService {
         boolean isExisting = applyExistingArtefact(artefact);
 
         String blobUrl = azureBlobService.createPayload(
-            isExisting ? getUuidFromUrl(artefact.getPayload()) : UUID.randomUUID().toString(),
+            isExisting ? ArtefactHelper.getUuidFromUrl(artefact.getPayload()) : UUID.randomUUID().toString(),
             payload
         );
 
@@ -110,7 +109,7 @@ public class PublicationService {
         boolean isExisting = applyExistingArtefact(artefact);
 
         String blobUrl = azureBlobService.uploadFlatFile(
-            isExisting ? getUuidFromUrl(artefact.getPayload()) : UUID.randomUUID().toString(),
+            isExisting ? ArtefactHelper.getUuidFromUrl(artefact.getPayload()) : UUID.randomUUID().toString(),
             file
         );
 
@@ -170,25 +169,6 @@ public class PublicationService {
         }
     }
 
-    public LocationType getLocationType(ListType listType) {
-        return listType.getListLocationLevel();
-    }
-
-    /**
-     * Returns what is essentially a CSV file with the count of artefacts in a given location.
-     *
-     * @return string representing the csv file.
-     */
-    public String countArtefactsByLocation() {
-        List<String> returnedData = artefactRepository.countArtefactsByLocation();
-        StringBuilder builder = new StringBuilder(150);
-        builder.append("location,count\n");
-        for (String s : returnedData) {
-            builder.append(s).append('\n');
-        }
-        return builder.toString();
-    }
-
     /**
      * Take in an email and mask it for writing out to the logs.
      *
@@ -217,9 +197,5 @@ public class PublicationService {
                 .toString())
             .forEach(line -> builder.append(line).append(System.lineSeparator()));
         return builder.toString();
-    }
-
-    private String getUuidFromUrl(String payloadUrl) {
-        return payloadUrl.substring(payloadUrl.lastIndexOf('/') + 1);
     }
 }

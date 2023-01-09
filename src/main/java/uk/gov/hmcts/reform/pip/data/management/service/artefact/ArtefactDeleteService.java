@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.AzureBlobService;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ArtefactNotFoundException;
+import uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactHelper;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ListType;
 import uk.gov.hmcts.reform.pip.data.management.service.SubscriptionManagementService;
@@ -77,7 +78,7 @@ public class ArtefactDeleteService {
      */
     private void deleteAllPublicationBlobData(Artefact artefact) {
         // Delete the payload/flat file from the publications store
-        azureBlobService.deleteBlob(getUuidFromUrl(artefact.getPayload()));
+        azureBlobService.deleteBlob(ArtefactHelper.getUuidFromUrl(artefact.getPayload()));
 
         // Try to delete the generated files for the publications if it's not a flat file
         if (!artefact.getIsFlatFile()) {
@@ -121,9 +122,4 @@ public class ArtefactDeleteService {
     private void triggerThirdPartyArtefactDeleted(Artefact deletedArtefact) {
         log.info(writeLog(subscriptionManagementService.sendDeletedArtefactForThirdParties(deletedArtefact)));
     }
-
-    private String getUuidFromUrl(String payloadUrl) {
-        return payloadUrl.substring(payloadUrl.lastIndexOf('/') + 1);
-    }
-
 }

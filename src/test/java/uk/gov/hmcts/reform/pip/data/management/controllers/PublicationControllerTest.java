@@ -232,7 +232,7 @@ class PublicationControllerTest {
 
     @Test
     void checkCountArtefactByLocationReturnsData() {
-        when(publicationService.countArtefactsByLocation()).thenReturn(COUNT_MSG);
+        when(artefactService.countArtefactsByLocation()).thenReturn(COUNT_MSG);
         ResponseEntity<String> csvString = publicationController.countByLocation();
         assertEquals(HttpStatus.OK, csvString.getStatusCode(), STATUS_CODE_MATCH);
         assertEquals(COUNT_MSG, csvString.getBody(), NOT_EQUAL_MESSAGE);
@@ -342,7 +342,7 @@ class PublicationControllerTest {
 
     @Test
     void testGetLocationTypeReturnsOk() {
-        when(publicationService.getLocationType(ListType.CIVIL_DAILY_CAUSE_LIST)).thenReturn(LocationType.VENUE);
+        when(artefactService.getLocationType(ListType.CIVIL_DAILY_CAUSE_LIST)).thenReturn(LocationType.VENUE);
         assertEquals(HttpStatus.OK,
                      publicationController.getLocationType(ListType.CIVIL_DAILY_CAUSE_LIST).getStatusCode(),
                      STATUS_CODE_MATCH);

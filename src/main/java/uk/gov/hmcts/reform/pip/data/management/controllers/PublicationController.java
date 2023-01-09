@@ -396,7 +396,7 @@ public class PublicationController {
     @GetMapping("/count-by-location")
     @IsAdmin
     public ResponseEntity<String> countByLocation() {
-        return ResponseEntity.ok(publicationService.countArtefactsByLocation());
+        return ResponseEntity.ok(artefactService.countArtefactsByLocation());
     }
 
     @ApiResponses({
@@ -405,7 +405,7 @@ public class PublicationController {
     @Operation(summary = "Return the Location type associated with a given list type")
     @GetMapping("/location-type/{listType}")
     public ResponseEntity<LocationType> getLocationType(@PathVariable ListType listType) {
-        return ResponseEntity.ok(publicationService.getLocationType(listType));
+        return ResponseEntity.ok(artefactService.getLocationType(listType));
     }
 
     private void logManualUpload(String issuerId, String artefactId) {

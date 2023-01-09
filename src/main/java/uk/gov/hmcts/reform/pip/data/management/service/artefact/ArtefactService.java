@@ -7,11 +7,15 @@ import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.AzureBlobService;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ArtefactNotFoundException;
+import uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactHelper;
+import uk.gov.hmcts.reform.pip.data.management.models.location.LocationType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
+import uk.gov.hmcts.reform.pip.data.management.models.publication.ListType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Sensitivity;
 import uk.gov.hmcts.reform.pip.data.management.service.AccountManagementService;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -76,7 +80,7 @@ public class ArtefactService {
     public String getPayloadByArtefactId(UUID artefactId, UUID userId) {
         Artefact artefact = getMetadataByArtefactId(artefactId, userId);
 
-        return azureBlobService.getBlobData(getUuidFromUrl(artefact.getPayload()));
+        return azureBlobService.getBlobData(ArtefactHelper.getUuidFromUrl(artefact.getPayload()));
     }
 
     /**
@@ -90,7 +94,7 @@ public class ArtefactService {
     public String getPayloadByArtefactId(UUID artefactId) {
         Artefact artefact = getMetadataByArtefactId(artefactId);
 
-        return azureBlobService.getBlobData(getUuidFromUrl(artefact.getPayload()));
+        return azureBlobService.getBlobData(ArtefactHelper.getUuidFromUrl(artefact.getPayload()));
     }
 
     /**
@@ -103,7 +107,7 @@ public class ArtefactService {
     public Resource getFlatFileByArtefactID(UUID artefactId, UUID userId) {
         Artefact artefact = getMetadataByArtefactId(artefactId, userId);
 
-        return azureBlobService.getBlobFile(getUuidFromUrl(artefact.getPayload()));
+        return azureBlobService.getBlobFile(ArtefactHelper.getUuidFromUrl(artefact.getPayload()));
     }
 
     /**
@@ -115,7 +119,7 @@ public class ArtefactService {
     public Resource getFlatFileByArtefactID(UUID artefactId) {
         Artefact artefact = getMetadataByArtefactId(artefactId);
 
-        return azureBlobService.getBlobFile(getUuidFromUrl(artefact.getPayload()));
+        return azureBlobService.getBlobFile(ArtefactHelper.getUuidFromUrl(artefact.getPayload()));
     }
 
     public boolean isAuthorised(Artefact artefact, UUID userId) {
@@ -128,8 +132,23 @@ public class ArtefactService {
         }
     }
 
-    private String getUuidFromUrl(String payloadUrl) {
-        return payloadUrl.substring(payloadUrl.lastIndexOf('/') + 1);
+    /**
+     * Returns what is essentially a CSV file with the count of artefacts in a given location.
+     *
+     * @return string representing the csv file.
+     */
+    public String countArtefactsByLocation() {
+        List<String> returnedData = artefactRepository.countArtefactsByLocation();
+        StringBuilder builder = new StringBuilder(150);
+        builder.append("location,count\n");
+        for (String s : returnedData) {
+            builder.append(s).append('\n');
+        }
+        return builder.toString();
+    }
+
+    public LocationType getLocationType(ListType listType) {
+        return listType.getListLocationLevel();
     }
 
 }
