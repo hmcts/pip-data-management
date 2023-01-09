@@ -9,7 +9,7 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pip.data.management.Application;
-import uk.gov.hmcts.reform.pip.data.management.config.AzureBlobConfigurationTest;
+import uk.gov.hmcts.reform.pip.data.management.config.AzureBlobConfigurationTestConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.FlatFileException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.HeaderValidationException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.PayloadValidationException;
@@ -31,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
 
-@SpringBootTest(classes = {Application.class, AzureBlobConfigurationTest.class})
+@SpringBootTest(classes = {Application.class, AzureBlobConfigurationTestConfiguration.class})
 @ActiveProfiles(profiles = "test")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
@@ -226,7 +226,7 @@ class ValidationServiceTest {
             .getResourceAsStream("mocks/badJsonPayload.json")) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(text, ListType.MAGISTRATES_PUBLIC_LIST),
+                             validationService.validateBody(text, headerGroup),
                                "Valid JSON string marked as not valid");
         } catch (IOException exception) {
             fail(UNKNOWN_EXCEPTION);
@@ -236,7 +236,7 @@ class ValidationServiceTest {
     @Test
     void testExceptionWhenValidatingPayload() {
         PayloadValidationException payloadValidationException = assertThrows(PayloadValidationException.class, () ->
-            validationService.validateBody("abcd", ListType.CIVIL_DAILY_CAUSE_LIST), "Validation exception not thrown "
+            validationService.validateBody("abcd", headerGroup), "Validation exception not thrown "
                                                                                  + "when value not JSON");
 
         assertEquals("Error while parsing JSON Payload", payloadValidationException.getMessage(),
@@ -248,8 +248,9 @@ class ValidationServiceTest {
     void testValidateMasterSchemaWithoutErrors() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream("mocks/jsonPayload.json")) {
+            headerGroup.setListType(ListType.SJP_PRESS_REGISTER);
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
-            assertDoesNotThrow(() -> validationService.validateBody(text, ListType.SJP_PRESS_REGISTER),
+            assertDoesNotThrow(() -> validationService.validateBody(text, headerGroup),
                                "Valid master schema marked as invalid");
         }
     }
@@ -258,9 +259,10 @@ class ValidationServiceTest {
     void testValidateWithoutErrorsWhenArtefactIsCivilDailyCauseList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream("mocks/civil-daily-cause-list/civilDailyCauseList.json")) {
+            headerGroup.setListType(ListType.CIVIL_DAILY_CAUSE_LIST);
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
-            assertDoesNotThrow(() -> validationService.validateBody(text, ListType.CIVIL_DAILY_CAUSE_LIST),
+            assertDoesNotThrow(() -> validationService.validateBody(text, headerGroup),
                                "Valid daily cause list marked as invalid");
         }
     }
@@ -269,9 +271,10 @@ class ValidationServiceTest {
     void testValidateWithoutErrorsWhenArtefactIsFamilyDailyCauseList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream("mocks/family-daily-cause-list/familyDailyCauseList.json")) {
+            headerGroup.setListType(ListType.FAMILY_DAILY_CAUSE_LIST);
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
-            assertDoesNotThrow(() -> validationService.validateBody(text, ListType.FAMILY_DAILY_CAUSE_LIST),
+            assertDoesNotThrow(() -> validationService.validateBody(text, headerGroup),
                                "Valid daily cause list marked as invalid");
         }
     }
@@ -281,9 +284,10 @@ class ValidationServiceTest {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(
                 "mocks/civil-and-family-cause-list/civilAndFamilyDailyCauseList.json")) {
+            headerGroup.setListType(ListType.CIVIL_AND_FAMILY_DAILY_CAUSE_LIST);
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
-            assertDoesNotThrow(() -> validationService.validateBody(text, ListType.CIVIL_AND_FAMILY_DAILY_CAUSE_LIST),
+            assertDoesNotThrow(() -> validationService.validateBody(text, headerGroup),
                                "Valid civil and family daily cause list marked as invalid");
         }
     }
@@ -292,9 +296,10 @@ class ValidationServiceTest {
     void testValidateWithoutErrorsWhenArtefactIsSjpPublicList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream("mocks/sjp-public-list/sjpPublicList.json")) {
+            headerGroup.setListType(ListType.SJP_PUBLIC_LIST);
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
-            assertDoesNotThrow(() -> validationService.validateBody(text, ListType.SJP_PUBLIC_LIST),
+            assertDoesNotThrow(() -> validationService.validateBody(text, headerGroup),
                                "Valid sjp public list marked as invalid");
         }
     }
@@ -303,9 +308,10 @@ class ValidationServiceTest {
     void testValidateWithoutErrorsWhenArtefactIsSjpPressList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream("mocks/sjp-press-list/sjpPressList.json")) {
+            headerGroup.setListType(ListType.SJP_PRESS_LIST);
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
-            assertDoesNotThrow(() -> validationService.validateBody(text, ListType.SJP_PRESS_LIST),
+            assertDoesNotThrow(() -> validationService.validateBody(text, headerGroup),
                                "Valid sjp press list marked as valid");
         }
     }
@@ -314,9 +320,10 @@ class ValidationServiceTest {
     void testValidateWithoutErrorsWhenArtefactIsSscsDailyList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream("mocks/sscs-daily-list/sscsDailyList.json")) {
+            headerGroup.setListType(ListType.SSCS_DAILY_LIST);
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
-            assertDoesNotThrow(() -> validationService.validateBody(text, ListType.SSCS_DAILY_LIST),
+            assertDoesNotThrow(() -> validationService.validateBody(text, headerGroup),
                                "Valid sscs daily list marked as valid");
         }
     }
@@ -325,9 +332,10 @@ class ValidationServiceTest {
     void testValidateWithoutErrorsWhenArtefactIsCopDailyCauseList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream("mocks/cop-daily-cause-list/copDailyCauseList.json")) {
+            headerGroup.setListType(ListType.COP_DAILY_CAUSE_LIST);
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
-            assertDoesNotThrow(() -> validationService.validateBody(text, ListType.COP_DAILY_CAUSE_LIST),
+            assertDoesNotThrow(() -> validationService.validateBody(text, headerGroup),
                                "Valid cop daily cause list marked as valid");
         }
     }
@@ -336,10 +344,11 @@ class ValidationServiceTest {
     void testValidateWithoutErrorsWhenArtefactIsCrownDailyCauseList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream("mocks/crown-daily-list/crownDailyList.json")) {
+            headerGroup.setListType(ListType.CROWN_DAILY_LIST);
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             assertDoesNotThrow(
-                () -> validationService.validateBody(text, ListType.CROWN_DAILY_LIST),
+                () -> validationService.validateBody(text, headerGroup),
                 "Valid crown daily list marked as valid"
             );
         }
@@ -349,9 +358,10 @@ class ValidationServiceTest {
     void testValidateWithoutErrorWhenArtefactIsCrownWarnedList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream("mocks/crown-warned-list/crownWarnedList.json")) {
+            headerGroup.setListType(ListType.CROWN_WARNED_LIST);
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
-            assertDoesNotThrow(() -> validationService.validateBody(text, ListType.CROWN_WARNED_LIST),
+            assertDoesNotThrow(() -> validationService.validateBody(text, headerGroup),
                                "Valid crown warned list marked as valid");
         }
     }
@@ -360,9 +370,10 @@ class ValidationServiceTest {
     void testValidateWithoutErrorsWhenArtefactIsMagsPublicList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream("mocks/magistrates_public_list/magistratesPublicList.json")) {
+            headerGroup.setListType(ListType.MAGISTRATES_PUBLIC_LIST);
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
-            assertDoesNotThrow(() -> validationService.validateBody(text, ListType.MAGISTRATES_PUBLIC_LIST),
+            assertDoesNotThrow(() -> validationService.validateBody(text, headerGroup),
                                "Valid sscs daily list marked as valid");
         }
     }
@@ -371,10 +382,11 @@ class ValidationServiceTest {
     void testValidateWithoutErrorsWhenArtefactIsCrownFirmList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream("mocks/crown_firm_list/crownFirmList.json")) {
+            headerGroup.setListType(ListType.CROWN_FIRM_LIST);
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             assertDoesNotThrow(
-                () -> validationService.validateBody(text, ListType.CROWN_FIRM_LIST),
+                () -> validationService.validateBody(text, headerGroup),
                 "Valid crown firm list marked as valid"
             );
         }
@@ -384,9 +396,10 @@ class ValidationServiceTest {
     void testValidateWithoutErrorWhenArtefactIsMagistratesStandardList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream("mocks/magistrates-standard-list/magistratesStandardList.json")) {
+            headerGroup.setListType(ListType.MAGISTRATES_STANDARD_LIST);
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
-            assertDoesNotThrow(() -> validationService.validateBody(text, ListType.MAGISTRATES_STANDARD_LIST),
+            assertDoesNotThrow(() -> validationService.validateBody(text, headerGroup),
                                "Valid magistrates standard list marked as valid");
         }
     }
@@ -395,10 +408,11 @@ class ValidationServiceTest {
     void testValidateWithoutErrorWhenArtefactIsEtFortnightlyPressList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream("mocks/et-fortnightly-press-list/etFortnightlyPressList.json")) {
+            headerGroup.setListType(ListType.ET_FORTNIGHTLY_PRESS_LIST);
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             assertDoesNotThrow(
-                () -> validationService.validateBody(text, ListType.ET_FORTNIGHTLY_PRESS_LIST),
+                () -> validationService.validateBody(text, headerGroup),
                 "Valid et fortnightly press list marked as valid"
             );
         }
@@ -408,9 +422,10 @@ class ValidationServiceTest {
     void testValidateWithoutErrorWhenArtefactIsIacDailyList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream("mocks/iac-daily-list/iacDailyList.json")) {
+            headerGroup.setListType(ListType.IAC_DAILY_LIST);
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
-            assertDoesNotThrow(() -> validationService.validateBody(text, ListType.IAC_DAILY_LIST),
+            assertDoesNotThrow(() -> validationService.validateBody(text, headerGroup),
                                "Valid iac daily list marked as valid");
         }
     }
@@ -419,9 +434,10 @@ class ValidationServiceTest {
     void testValidateWithoutErrorWhenArtefactIsCareStandardsList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream("mocks/care-standards-list/careStandardsList.json")) {
+            headerGroup.setListType(ListType.CARE_STANDARDS_LIST);
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
-            assertDoesNotThrow(() -> validationService.validateBody(text, ListType.CARE_STANDARDS_LIST),
+            assertDoesNotThrow(() -> validationService.validateBody(text, headerGroup),
                                "Valid care standards list marked as valid");
         }
     }
@@ -430,9 +446,10 @@ class ValidationServiceTest {
     void testValidateWithoutErrorWhenArtefactIsPrimaryHealthList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream("mocks/primary-health-list/primaryHealthList.json")) {
+            headerGroup.setListType(ListType.PRIMARY_HEALTH_LIST);
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
-            assertDoesNotThrow(() -> validationService.validateBody(text, ListType.PRIMARY_HEALTH_LIST),
+            assertDoesNotThrow(() -> validationService.validateBody(text, headerGroup),
                                "Valid primary health list marked as valid");
         }
     }

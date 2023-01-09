@@ -5,24 +5,30 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pip.data.management.Application;
-import uk.gov.hmcts.reform.pip.data.management.config.AzureBlobConfigurationTest;
+import uk.gov.hmcts.reform.pip.data.management.config.AzureBlobConfigurationTestConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.PayloadValidationException;
+import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactType;
+import uk.gov.hmcts.reform.pip.data.management.models.publication.HeaderGroup;
+import uk.gov.hmcts.reform.pip.data.management.models.publication.Language;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ListType;
+import uk.gov.hmcts.reform.pip.data.management.models.publication.Sensitivity;
 import uk.gov.hmcts.reform.pip.data.management.service.ValidationService;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@SpringBootTest(classes = {Application.class, AzureBlobConfigurationTest.class})
+@SpringBootTest(classes = {Application.class, AzureBlobConfigurationTestConfiguration.class})
 @ActiveProfiles(profiles = "test")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
@@ -44,10 +50,28 @@ class SjpPressListTest {
     private static final String OFFENCE_SCHEMA = "offence";
     private static final String INDIVIDUAL_DETAILS_SCHEMA  = "individualDetails";
     private static final String ADDRESS_SCHEMA  = "address";
+    private static final String SOURCE_ARTEFACT_ID = "sourceArtefactId";
+    private static final LocalDateTime DISPLAY_FROM = LocalDateTime.now();
+    private static final LocalDateTime DISPLAY_TO = LocalDateTime.now();
+    private static final Language LANGUAGE = Language.ENGLISH;
+    private static final String PROVENANCE = "provenance";
+    private static final Sensitivity SENSITIVITY = Sensitivity.PUBLIC;
+    private static final ArtefactType ARTEFACT_TYPE = ArtefactType.LIST;
+    private static final String COURT_ID = "123";
+    private static final ListType LIST_TYPE = ListType.SJP_PRESS_LIST;
+    private static final LocalDateTime CONTENT_DATE = LocalDateTime.now();
+
+    private HeaderGroup headerGroup;
 
     private JsonNode getJsonNode(String json) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         return mapper.readValue(json, JsonNode.class);
+    }
+
+    @BeforeEach
+    void setup() {
+        headerGroup = new HeaderGroup(PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE, SENSITIVITY, LANGUAGE,
+                                      DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, COURT_ID, CONTENT_DATE);
     }
 
     @Test
@@ -60,7 +84,7 @@ class SjpPressListTest {
             ((ObjectNode) node).remove("document");
 
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(node.toString(), ListType.SJP_PRESS_LIST),
+                             validationService.validateBody(node.toString(), headerGroup),
                          SJP_PRESS_INVALID_MESSAGE);
         }
     }
@@ -75,7 +99,7 @@ class SjpPressListTest {
             ((ObjectNode) node).remove(COURT_LIST_SCHEMA);
 
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(node.toString(), ListType.SJP_PRESS_LIST),
+                             validationService.validateBody(node.toString(), headerGroup),
                          SJP_PRESS_INVALID_MESSAGE);
         }
     }
@@ -91,7 +115,7 @@ class SjpPressListTest {
             ((ObjectNode) node.get("document")).remove("publicationDate");
 
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(node.toString(), ListType.SJP_PRESS_LIST),
+                             validationService.validateBody(node.toString(), headerGroup),
                          SJP_PRESS_INVALID_MESSAGE);
         }
     }
@@ -107,7 +131,7 @@ class SjpPressListTest {
             ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0)).remove(COURT_HOUSE_SCHEMA);
 
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(node.toString(), ListType.SJP_PRESS_LIST),
+                             validationService.validateBody(node.toString(), headerGroup),
                          SJP_PRESS_INVALID_MESSAGE);
         }
     }
@@ -124,7 +148,7 @@ class SjpPressListTest {
                 .remove(COURT_ROOM_SCHEMA);
 
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(node.toString(), ListType.SJP_PRESS_LIST),
+                             validationService.validateBody(node.toString(), headerGroup),
                          SJP_PRESS_INVALID_MESSAGE);
         }
     }
@@ -141,7 +165,7 @@ class SjpPressListTest {
                 .get(COURT_ROOM_SCHEMA).get(0)).remove(SESSION_SCHEMA);
 
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(node.toString(), ListType.SJP_PRESS_LIST),
+                             validationService.validateBody(node.toString(), headerGroup),
                          SJP_PRESS_INVALID_MESSAGE);
         }
     }
@@ -158,7 +182,7 @@ class SjpPressListTest {
                 .get(COURT_ROOM_SCHEMA).get(0).get(SESSION_SCHEMA).get(0)).remove(SITTINGS_SCHEMA);
 
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(node.toString(), ListType.SJP_PRESS_LIST),
+                             validationService.validateBody(node.toString(), headerGroup),
                          SJP_PRESS_INVALID_MESSAGE);
         }
     }
@@ -176,7 +200,7 @@ class SjpPressListTest {
                 .get(SITTINGS_SCHEMA).get(0)).remove(HEARING_SCHEMA);
 
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(node.toString(), ListType.SJP_PRESS_LIST),
+                             validationService.validateBody(node.toString(), headerGroup),
                          SJP_PRESS_INVALID_MESSAGE);
         }
     }
@@ -194,7 +218,7 @@ class SjpPressListTest {
                 .get(SITTINGS_SCHEMA).get(0).get(HEARING_SCHEMA).get(0)).remove("case");
 
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(node.toString(), ListType.SJP_PRESS_LIST),
+                             validationService.validateBody(node.toString(), headerGroup),
                          SJP_PRESS_INVALID_MESSAGE);
         }
     }
@@ -213,7 +237,7 @@ class SjpPressListTest {
                 .get("case").get(0)).remove("caseUrn");
 
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(node.toString(), ListType.SJP_PRESS_LIST),
+                             validationService.validateBody(node.toString(), headerGroup),
                          SJP_PRESS_INVALID_MESSAGE);
         }
     }
@@ -231,7 +255,7 @@ class SjpPressListTest {
                 .get(SITTINGS_SCHEMA).get(0).get(HEARING_SCHEMA).get(0)).remove(PARTY_SCHEMA);
 
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(node.toString(), ListType.SJP_PRESS_LIST),
+                             validationService.validateBody(node.toString(), headerGroup),
                          SJP_PRESS_INVALID_MESSAGE);
         }
     }
@@ -250,7 +274,7 @@ class SjpPressListTest {
                 .remove(OFFENCE_SCHEMA);
 
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(node.toString(), ListType.SJP_PRESS_LIST),
+                             validationService.validateBody(node.toString(), headerGroup),
                          SJP_PRESS_INVALID_MESSAGE);
         }
     }
@@ -270,7 +294,7 @@ class SjpPressListTest {
                 .remove("partyRole");
 
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(node.toString(), ListType.SJP_PRESS_LIST),
+                             validationService.validateBody(node.toString(), headerGroup),
                          SJP_PRESS_INVALID_MESSAGE);
         }
     }
@@ -290,7 +314,7 @@ class SjpPressListTest {
                 .remove(INDIVIDUAL_DETAILS_SCHEMA);
 
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(node.toString(), ListType.SJP_PRESS_LIST),
+                             validationService.validateBody(node.toString(), headerGroup),
                          SJP_PRESS_INVALID_MESSAGE);
         }
     }
@@ -310,7 +334,7 @@ class SjpPressListTest {
                 .remove("individualForenames");
 
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(node.toString(), ListType.SJP_PRESS_LIST),
+                             validationService.validateBody(node.toString(), headerGroup),
                          SJP_PRESS_INVALID_MESSAGE);
         }
     }
@@ -330,7 +354,7 @@ class SjpPressListTest {
                 .remove("individualSurname");
 
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(node.toString(), ListType.SJP_PRESS_LIST),
+                             validationService.validateBody(node.toString(), headerGroup),
                          SJP_PRESS_INVALID_MESSAGE);
         }
     }
@@ -350,7 +374,7 @@ class SjpPressListTest {
                 .remove("dateOfBirth");
 
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(node.toString(), ListType.SJP_PRESS_LIST),
+                             validationService.validateBody(node.toString(), headerGroup),
                          SJP_PRESS_INVALID_MESSAGE);
         }
     }
@@ -370,7 +394,7 @@ class SjpPressListTest {
                 .remove("age");
 
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(node.toString(), ListType.SJP_PRESS_LIST),
+                             validationService.validateBody(node.toString(), headerGroup),
                          SJP_PRESS_INVALID_MESSAGE);
         }
     }
@@ -390,7 +414,7 @@ class SjpPressListTest {
                 .remove(ADDRESS_SCHEMA);
 
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(node.toString(), ListType.SJP_PRESS_LIST),
+                             validationService.validateBody(node.toString(), headerGroup),
                          SJP_PRESS_INVALID_MESSAGE);
         }
     }
@@ -410,7 +434,7 @@ class SjpPressListTest {
                 .get(ADDRESS_SCHEMA)).remove("town");
 
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(node.toString(), ListType.SJP_PRESS_LIST),
+                             validationService.validateBody(node.toString(), headerGroup),
                          SJP_PRESS_INVALID_MESSAGE);
         }
     }
@@ -430,7 +454,7 @@ class SjpPressListTest {
                 .get(ADDRESS_SCHEMA)).remove("county");
 
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(node.toString(), ListType.SJP_PRESS_LIST),
+                             validationService.validateBody(node.toString(), headerGroup),
                          SJP_PRESS_INVALID_MESSAGE);
         }
     }
@@ -450,7 +474,7 @@ class SjpPressListTest {
                 .get(ADDRESS_SCHEMA)).remove("postCode");
 
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(node.toString(), ListType.SJP_PRESS_LIST),
+                             validationService.validateBody(node.toString(), headerGroup),
                          SJP_PRESS_INVALID_MESSAGE);
         }
     }
@@ -470,7 +494,7 @@ class SjpPressListTest {
                 .remove("organisationDetails");
 
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(node.toString(), ListType.SJP_PRESS_LIST),
+                             validationService.validateBody(node.toString(), headerGroup),
                          SJP_PRESS_INVALID_MESSAGE);
         }
     }
@@ -490,7 +514,7 @@ class SjpPressListTest {
                 .remove("organisationName");
 
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(node.toString(), ListType.SJP_PRESS_LIST),
+                             validationService.validateBody(node.toString(), headerGroup),
                          SJP_PRESS_INVALID_MESSAGE);
         }
     }

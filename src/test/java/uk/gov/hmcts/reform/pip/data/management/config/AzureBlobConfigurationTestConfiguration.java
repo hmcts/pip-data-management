@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Profile;
  */
 @Configuration
 @Profile("test")
-public class AzureBlobConfigurationTest {
+public class AzureBlobConfigurationTestConfiguration {
 
     @Mock
     BlobClient blobClientMock;
@@ -22,7 +22,7 @@ public class AzureBlobConfigurationTest {
     @Mock
     BlobContainerClient blobContainerClientMock;
 
-    public AzureBlobConfigurationTest() {
+    public AzureBlobConfigurationTestConfiguration() {
         MockitoAnnotations.openMocks(this);
     }
 

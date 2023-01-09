@@ -144,7 +144,7 @@ public class PublicationController {
         );
 
         HeaderGroup headers = validationService.validateHeaders(initialHeaders);
-        validationService.validateBody(payload, initialHeaders.getListType());
+        validationService.validateBody(payload, initialHeaders);
 
         Artefact artefact = Artefact.builder()
             .provenance(headers.getProvenance())
