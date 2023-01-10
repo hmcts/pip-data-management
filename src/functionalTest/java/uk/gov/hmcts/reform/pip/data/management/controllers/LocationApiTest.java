@@ -61,6 +61,7 @@ class LocationApiTest {
     private static final String DOWNLOAD_LOCATIONS_ENDPOINT = ROOT_URL + "/download/csv";
     public static final String UPLOAD_API = ROOT_URL + "/upload";
     private static final String LOCATIONS_CSV = "location/ValidCsv.csv";
+    private static final String DELETE_LOCATIONS_CSV = "location/ValidCsvForDeleteCourt.csv";
     private static final String UPDATED_CSV = "location/UpdatedCsv.csv";
 
 
@@ -768,7 +769,7 @@ class LocationApiTest {
     @Test
     @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})
     void testDeleteLocation() throws Exception {
-        List<Location> createdLocations = createLocations(LOCATIONS_CSV);
+        List<Location> createdLocations = createLocations(DELETE_LOCATIONS_CSV);
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
             .delete(GET_LOCATION_BY_ID_ENDPOINT + createdLocations.get(0).getLocationId())
