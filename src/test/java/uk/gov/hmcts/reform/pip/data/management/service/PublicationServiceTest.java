@@ -18,7 +18,6 @@ import uk.gov.hmcts.reform.pip.data.management.database.LocationRepository;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ArtefactNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.NotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
-import uk.gov.hmcts.reform.pip.data.management.models.location.LocationArtefact;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationCsv;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
@@ -1114,12 +1113,8 @@ class PublicationServiceTest {
 
     @Test
     void testArtefactCountService() {
-        List<LocationArtefact> artefactsPerLocations = new ArrayList<>();
-        artefactsPerLocations.add(new LocationArtefact(1, 3));
-        List<Object[]> result = new ArrayList<>();
-        result.add(new Object[]{"1", "3"});
-        when(artefactRepository.countArtefactsByLocation()).thenReturn(result);
-        assertEquals(artefactsPerLocations, publicationService.countArtefactsByLocation(),
+        when(artefactRepository.countArtefactsByLocation()).thenReturn(List.of("1,3","2,4", "3,6"));
+        assertEquals("location,count\n1,3\n2,4\n3,6\n", publicationService.countArtefactsByLocation(),
                      MESSAGES_MATCH);
     }
 
