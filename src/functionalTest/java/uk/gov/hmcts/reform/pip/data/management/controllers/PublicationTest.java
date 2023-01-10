@@ -1673,11 +1673,15 @@ class PublicationTest {
 
     @Test
     void testCountArtefactByLocation() throws Exception {
+        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(blobContainerClient.getBlobContainerUrl()).thenReturn(PAYLOAD_URL);
+        createDailyList(Sensitivity.PRIVATE);
         mockHttpServletRequestBuilder = MockMvcRequestBuilders.get(COUNT_ENDPOINT);
         MvcResult result = mockMvc.perform(mockHttpServletRequestBuilder)
             .andExpect(status().isOk())
             .andReturn();
-        assertTrue(result.getResponse().getContentAsString().contains("location,count"), "headers not found");
+        String test = result.getResponse().getContentAsString();
+        assertTrue(test.contains("locationId"), "headers not found");
     }
 
     @Test
