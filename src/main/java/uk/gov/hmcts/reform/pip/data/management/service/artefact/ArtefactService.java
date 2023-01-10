@@ -23,8 +23,6 @@ import java.util.UUID;
 @Service
 public class ArtefactService {
 
-    private static final char DELIMITER = ',';
-
     private final ArtefactRepository artefactRepository;
     private final AccountManagementService accountManagementService;
     private final AzureBlobService azureBlobService;
