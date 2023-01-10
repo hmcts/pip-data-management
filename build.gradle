@@ -8,7 +8,7 @@ plugins {
   id 'org.sonarqube' version '3.5.0.2730'
   id 'pmd'
   id 'org.flywaydb.flyway' version '8.5.13'
-  id 'io.freefair.lombok' version '6.5.1'
+  id 'io.freefair.lombok' version '6.6.1'
   id 'org.jetbrains.kotlin.jvm' version '1.7.22'
 }
 
@@ -211,7 +211,7 @@ dependencies {
   }
 
   testImplementation("com.squareup.okhttp3:mockwebserver:4.10.0")
-  testImplementation "io.zonky.test:embedded-database-spring-test:2.1.2"
+  testImplementation "io.zonky.test:embedded-database-spring-test:2.2.0"
   testImplementation(platform('org.junit:junit-bom:5.9.1'))
   testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', {
     exclude group: 'junit', module: 'junit'
