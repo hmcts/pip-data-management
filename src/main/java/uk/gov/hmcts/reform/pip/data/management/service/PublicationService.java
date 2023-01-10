@@ -320,7 +320,7 @@ public class PublicationService {
      * process on subscription-management if appropriate.
      */
     public void checkAndTriggerSubscriptionManagement(Artefact artefact) {
-        //TODO: fully switch this logic to localdates once artefact model changes
+        //TODO: fully switch this logic to localdates once artefact model changes //NOSONAR
         if (artefact.getDisplayFrom().toLocalDate().isBefore(LocalDate.now().plusDays(1))
             && (artefact.getDisplayTo() == null
             || artefact.getDisplayTo().toLocalDate().isAfter(LocalDate.now().minusDays(1)))) {
@@ -413,7 +413,7 @@ public class PublicationService {
         azureBlobService.deleteBlob(getUuidFromUrl(artefact.getPayload()));
 
         // Try to delete the generated files for the publications if it's not a flat file
-        if (!artefact.getIsFlatFile().equals(Boolean.TRUE)) {
+        if (Boolean.FALSE.equals(artefact.getIsFlatFile())) {
             try {
                 azureBlobService.deletePublicationBlob(artefact.getArtefactId() + ".pdf");
 
