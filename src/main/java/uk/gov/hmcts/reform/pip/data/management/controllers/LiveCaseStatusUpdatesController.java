@@ -3,7 +3,6 @@ package uk.gov.hmcts.reform.pip.data.management.controllers;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -24,10 +23,8 @@ public class LiveCaseStatusUpdatesController {
     @Autowired
     private LiveCaseStatusService liveCaseStatusService;
 
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Live Cases found"),
-        @ApiResponse(responseCode = "404", description = "No Live cases found with the court id {courtId}")
-    })
+    @ApiResponse(responseCode = "200", description = "Live Cases found")
+    @ApiResponse(responseCode = "404", description = "No Live cases found with the court id {courtId}")
     @Operation(summary = "Gets a court by searching by the court name and returning")
     @GetMapping("/{courtId}")
     public ResponseEntity<List<LiveCaseStatus>> getLiveCaseStatus(@Parameter(description = "The court id to search",

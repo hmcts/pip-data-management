@@ -14,7 +14,6 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
-import java.util.stream.Collectors;
 
 @Component
 @Data
@@ -53,12 +52,12 @@ public class CourtsAndHearings {
     public List<Hearing> getListHearings(int courtId) {
         return this.listHearings.stream()
             .filter(h -> h.getCourtId().equals(courtId))
-            .collect(Collectors.toList());
+            .toList();
     }
 
     public List<LiveCaseStatus> getLiveCaseStatus(int courtId) {
         return this.listLiveCases.stream()
             .filter(lcsu -> lcsu.getCourtId().equals(courtId))
-            .collect(Collectors.toList());
+            .toList();
     }
 }

@@ -6,7 +6,6 @@ import uk.gov.hmcts.reform.pip.data.management.models.Hearing;
 
 import java.util.List;
 import java.util.Locale;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -16,7 +15,7 @@ public class FilterService {
         return hearings.stream()
              .filter(hearing -> hearing.getCaseName().toLowerCase(Locale.ENGLISH)
                  .contains(searchInput.toLowerCase(Locale.ENGLISH)))
-             .collect(Collectors.toList());
+             .toList();
     }
 
     public Hearing findHearingByCaseNumber(String caseNumber, List<Hearing> hearings) {
