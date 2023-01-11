@@ -111,6 +111,9 @@ class PublicationTest {
     private static final String SEARCH_VALUE_1 = "array-value-1";
     private static final String SEARCH_VALUE_2 = "array-value-2";
     private static final String USER_ID_HEADER = "x-user-id";
+    private static final String UNAUTHORIZED_USERNAME = "unauthorized_username";
+    private static final String UNAUTHORIZED_ROLE = "APPROLE_unknown.role";
+
     private static final String LOCATION_ID_SEARCH_KEY = "location-id";
     private static final String FORBIDDEN_STATUS_CODE = "Status code does not match forbidden";
 
@@ -276,6 +279,31 @@ class PublicationTest {
         assertEquals(artefact.getContentDate(), CONTENT_DATE, "Content date does not match input content date");
         assertEquals(artefact.getLanguage(), LANGUAGE, "Language does not match input language");
     }
+
+    @Test
+    @WithMockUser(username = UNAUTHORIZED_USERNAME, authorities = {UNAUTHORIZED_ROLE})
+    void testUnauthorizedUploadPublication() throws Exception {
+        MockHttpServletRequestBuilder request;
+        request = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
+
+        request.header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE);
+        request.header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE);
+        request.header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM);
+        request.header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO);
+        request.header(PublicationConfiguration.COURT_ID, COURT_ID);
+        request.header(PublicationConfiguration.LIST_TYPE, LIST_TYPE);
+        request.header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE);
+        request.header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE);
+
+        request.contentType(MediaType.APPLICATION_JSON);
+
+        MvcResult archiveResponse = mockMvc.perform(request).andExpect(status().isForbidden()).andReturn();
+
+        assertEquals(HttpStatus.FORBIDDEN.value(), archiveResponse.getResponse().getStatus(),
+                     FORBIDDEN_STATUS_CODE
+        );
+    }
+
 
     @DisplayName("Should populate the datefrom field if it's empty and the type is GENERAL_PUBLICATION")
     @ParameterizedTest
@@ -762,7 +790,19 @@ class PublicationTest {
         assertEquals(0, jsonArray.length(),
                      "Unknown artefacts have been returned from the database"
         );
+    }
 
+    @Test
+    @WithMockUser(username = UNAUTHORIZED_USERNAME, authorities = {UNAUTHORIZED_ROLE})
+    void testUnauthorizedGetAllRelevantArtefactsByLocationId() throws Exception {
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+            .get(SEARCH_COURT_URL + "/" + COURT_ID);
+
+        MvcResult archiveResponse = mockMvc.perform(request).andExpect(status().isForbidden()).andReturn();
+
+        assertEquals(HttpStatus.FORBIDDEN.value(), archiveResponse.getResponse().getStatus(),
+                     FORBIDDEN_STATUS_CODE
+        );
     }
 
     @ParameterizedTest
@@ -1531,6 +1571,19 @@ class PublicationTest {
         mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isNotFound()).andReturn();
     }
 
+    @Test
+    @WithMockUser(username = UNAUTHORIZED_USERNAME, authorities = {UNAUTHORIZED_ROLE})
+    void testUnauthorizedGetAllRelevantArtefactsBySearchValue() throws Exception {
+        MockHttpServletRequestBuilder request =
+            MockMvcRequestBuilders.get(SEARCH_URL + VALID_CASE_NAME_SEARCH);
+
+        MvcResult archiveResponse = mockMvc.perform(request).andExpect(status().isForbidden()).andReturn();
+
+        assertEquals(HttpStatus.FORBIDDEN.value(), archiveResponse.getResponse().getStatus(),
+                     FORBIDDEN_STATUS_CODE
+        );
+    }
+
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     @Test
     void testGetCourtByIdShowsAllCourtsForAdmin() throws Exception {
@@ -1609,7 +1662,20 @@ class PublicationTest {
                 .contains("No artefact found with the ID: " + invalidId),
             "Should return 404 for artefact not found"
         );
+    }
 
+    @Test
+    @WithMockUser(username = UNAUTHORIZED_USERNAME, authorities = {UNAUTHORIZED_ROLE})
+    void testUnauthorizedDeleteArtefact() throws Exception {
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+            .delete(PUBLICATION_URL + "/" + UUID.randomUUID())
+            .header(ISSUER_HEADER, EMAIL);
+
+        MvcResult archiveResponse = mockMvc.perform(request).andExpect(status().isForbidden()).andReturn();
+
+        assertEquals(HttpStatus.FORBIDDEN.value(), archiveResponse.getResponse().getStatus(),
+                     FORBIDDEN_STATUS_CODE
+        );
     }
 
     @Test
@@ -1627,7 +1693,7 @@ class PublicationTest {
         MockHttpServletRequestBuilder adminRequest = MockMvcRequestBuilders
             .get(PUBLICATION_URL + "/" + artefactToFind.getArtefactId())
             .header(USER_ID_HEADER, userId)
-            .header("x-admin", true);
+            .header(ADMIN_HEADER, true);
         MvcResult response = mockMvc.perform(adminRequest).andExpect(status().isOk()).andReturn();
 
         String responseAsString = response.getResponse().getContentAsString();
@@ -1646,9 +1712,24 @@ class PublicationTest {
         MockHttpServletRequestBuilder adminRequest = MockMvcRequestBuilders
             .get(PUBLICATION_URL + "/" + UUID.randomUUID())
             .header(USER_ID_HEADER, userId)
-            .header("x-admin", true);
+            .header(ADMIN_HEADER, true);
         mockMvc.perform(adminRequest).andExpect(status().isNotFound());
 
+    }
+
+    @Test
+    @WithMockUser(username = UNAUTHORIZED_USERNAME, authorities = {UNAUTHORIZED_ROLE})
+    void testUnauthorizedGetArtefactMetadata() throws Exception {
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+            .get(PUBLICATION_URL + "/" + UUID.randomUUID())
+            .header(USER_ID_HEADER, userId)
+            .header(ADMIN_HEADER, true);
+
+        MvcResult archiveResponse = mockMvc.perform(request).andExpect(status().isForbidden()).andReturn();
+
+        assertEquals(HttpStatus.FORBIDDEN.value(), archiveResponse.getResponse().getStatus(),
+                     FORBIDDEN_STATUS_CODE
+        );
     }
 
     @Test
@@ -1681,6 +1762,18 @@ class PublicationTest {
     }
 
     @Test
+    @WithMockUser(username = UNAUTHORIZED_USERNAME, authorities = {UNAUTHORIZED_ROLE})
+    void testUnauthorizedCountByLocation() throws Exception {
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.get(COUNT_ENDPOINT);
+
+        MvcResult archiveResponse = mockMvc.perform(request).andExpect(status().isForbidden()).andReturn();
+
+        assertEquals(HttpStatus.FORBIDDEN.value(), archiveResponse.getResponse().getStatus(),
+                     FORBIDDEN_STATUS_CODE
+        );
+    }
+
+    @Test
     void testSendNewArtefactsForSubscriptionSuccess() throws Exception {
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
             .post(SEND_NEW_ARTEFACTS_FOR_SUBSCRIPTION_URL);
@@ -1689,11 +1782,37 @@ class PublicationTest {
     }
 
     @Test
+    @WithMockUser(username = UNAUTHORIZED_USERNAME, authorities = {UNAUTHORIZED_ROLE})
+    void testUnauthorizedSendNewArtefactsForSubscription() throws Exception {
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+            .post(SEND_NEW_ARTEFACTS_FOR_SUBSCRIPTION_URL);
+
+        MvcResult archiveResponse = mockMvc.perform(request).andExpect(status().isForbidden()).andReturn();
+
+        assertEquals(HttpStatus.FORBIDDEN.value(), archiveResponse.getResponse().getStatus(),
+                     FORBIDDEN_STATUS_CODE
+        );
+    }
+
+    @Test
     void testReportNoMatchArtefactsSuccess() throws Exception {
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
             .post(REPORT_NO_MATCH_ARTEFACTS_URL);
 
         mockMvc.perform(request).andExpect(status().isNoContent());
+    }
+
+    @Test
+    @WithMockUser(username = UNAUTHORIZED_USERNAME, authorities = {UNAUTHORIZED_ROLE})
+    void testUnauthorizedReportNoMatchArtefacts() throws Exception {
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+            .post(REPORT_NO_MATCH_ARTEFACTS_URL);
+
+        MvcResult archiveResponse = mockMvc.perform(request).andExpect(status().isForbidden()).andReturn();
+
+        assertEquals(HttpStatus.FORBIDDEN.value(), archiveResponse.getResponse().getStatus(),
+                     FORBIDDEN_STATUS_CODE
+        );
     }
 
     @Test
@@ -1707,7 +1826,7 @@ class PublicationTest {
     }
 
     @Test
-    @WithMockUser(username = "unauthorized_create", authorities = {"APPROLE_unknown.create"})
+    @WithMockUser(username = UNAUTHORIZED_USERNAME, authorities = {UNAUTHORIZED_ROLE})
     void testUnauthorizedArchiveExpiredArtefacts() throws Exception {
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
             .delete(ARCHIVE_EXPIRED_ARTEFACTS_URL);
@@ -1720,11 +1839,24 @@ class PublicationTest {
     }
 
     @Test
-    void testMiDataRequestSuccess() throws Exception {
+    void testGetMiDataRequestSuccess() throws Exception {
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
             .get(MI_REPORTING_DATA_URL);
 
         mockMvc.perform(request).andExpect(status().isOk());
+    }
+
+    @Test
+    @WithMockUser(username = UNAUTHORIZED_USERNAME, authorities = {UNAUTHORIZED_ROLE})
+    void testUnauthorizedGetMiData() throws Exception {
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+            .get(MI_REPORTING_DATA_URL);
+
+        MvcResult archiveResponse = mockMvc.perform(request).andExpect(status().isForbidden()).andReturn();
+
+        assertEquals(HttpStatus.FORBIDDEN.value(), archiveResponse.getResponse().getStatus(),
+                     FORBIDDEN_STATUS_CODE
+        );
     }
 
     @Test
@@ -1769,7 +1901,7 @@ class PublicationTest {
     }
 
     @Test
-    @WithMockUser(username = "unauthorized_create", authorities = {"APPROLE_unknown.create"})
+    @WithMockUser(username = UNAUTHORIZED_USERNAME, authorities = {UNAUTHORIZED_ROLE})
     void testUnauthorizedArchiveArtefact() throws Exception {
         String artefactId = UUID.randomUUID().toString();
 
