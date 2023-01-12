@@ -5,6 +5,7 @@ import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
@@ -13,6 +14,8 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import uk.gov.hmcts.reform.pip.data.management.Application;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.ExceptionResponse;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
@@ -31,7 +34,6 @@ import java.util.stream.Collectors;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.annotation.DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -48,8 +50,10 @@ class LocationApiTest {
     @Autowired
     private MockMvc mockMvc;
 
-    private static ObjectMapper objectMapper;
+    @Value("${system-admin-provenance-id}")
+    private String systemAdminProvenanceId;
 
+    private static ObjectMapper objectMapper;
     private static final String ROOT_URL = "/locations";
     private static final String GET_LOCATION_BY_ID_ENDPOINT = ROOT_URL + "/";
     private static final String GET_LOCATION_BY_NAME_ENDPOINT = ROOT_URL + "/name/%s/language/%s";
@@ -57,6 +61,7 @@ class LocationApiTest {
     private static final String DOWNLOAD_LOCATIONS_ENDPOINT = ROOT_URL + "/download/csv";
     public static final String UPLOAD_API = ROOT_URL + "/upload";
     private static final String LOCATIONS_CSV = "location/ValidCsv.csv";
+    private static final String DELETE_LOCATIONS_CSV = "location/ValidCsvForDeleteCourt.csv";
     private static final String UPDATED_CSV = "location/UpdatedCsv.csv";
 
 
@@ -76,6 +81,7 @@ class LocationApiTest {
     private static final String USERNAME = "admin";
     private static final String VALID_ROLE = "APPROLE_api.request.admin";
     private static final String LOCATION_LIST = "locationList";
+    private static final String PROVENANCE_USER_ID = "x-provenance-user-id";
 
 
     private final BiPredicate<Location, Location> compareLocationWithoutReference = (location, otherLocation) ->
@@ -730,7 +736,7 @@ class LocationApiTest {
                 .andExpect(status().isOk()).andReturn();
 
             List<String> inputCsv = new BufferedReader(new InputStreamReader(Objects.requireNonNull(this.getClass()
-                                                                           .getClassLoader().getResourceAsStream(
+                                                                             .getClassLoader().getResourceAsStream(
                     LOCATIONS_CSV)))).lines().collect(Collectors.toList());
 
             Location[] locationsFromResponse = objectMapper.readValue(
@@ -763,16 +769,13 @@ class LocationApiTest {
     @Test
     @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})
     void testDeleteLocation() throws Exception {
-        List<Location> createdLocations = createLocations(LOCATIONS_CSV);
+        List<Location> createdLocations = createLocations(DELETE_LOCATIONS_CSV);
 
-        MvcResult mvcResult = mockMvc.perform(
-                delete(GET_LOCATION_BY_ID_ENDPOINT + createdLocations.get(0).getLocationId()))
-            .andExpect(status().isOk())
-            .andReturn();
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+            .delete(GET_LOCATION_BY_ID_ENDPOINT + createdLocations.get(0).getLocationId())
+            .header(PROVENANCE_USER_ID, systemAdminProvenanceId);
 
-        assertEquals("Location with id 1 has been deleted", mvcResult.getResponse().getContentAsString(),
-                     "Response does not match expected response"
-        );
+        mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isOk()).andReturn();
 
         mockMvc.perform(
                 get(GET_LOCATION_BY_ID_ENDPOINT + createdLocations.get(0).getLocationId()))
@@ -784,18 +787,22 @@ class LocationApiTest {
     @Test
     @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})
     void testDeleteLocationNotFound() throws Exception {
-        mockMvc.perform(
-                get(GET_LOCATION_BY_ID_ENDPOINT + "1234"))
-            .andExpect(status().isNotFound())
-            .andReturn();
+
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+            .delete(GET_LOCATION_BY_ID_ENDPOINT + "1234")
+            .header(PROVENANCE_USER_ID, systemAdminProvenanceId);
+
+        mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isNotFound()).andReturn();
     }
 
     @Test
+    @WithMockUser(username = "unauthorized_account", authorities = {"APPROLE_unknown.account"})
     void testDeleteLocationNotAuthorised() throws Exception {
-        mockMvc.perform(
-                delete(GET_LOCATION_BY_ID_ENDPOINT + 1))
-            .andExpect(status().isUnauthorized())
-            .andReturn();
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+            .delete(GET_LOCATION_BY_ID_ENDPOINT + "1234")
+            .header(PROVENANCE_USER_ID, systemAdminProvenanceId);
+
+        mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isForbidden()).andReturn();
     }
 
     @Test
@@ -809,7 +816,7 @@ class LocationApiTest {
             .andReturn();
         String returnedLocations = mvcResult.getResponse().getContentAsString();
 
-        for (Location createdLocation:createdLocations) {
+        for (Location createdLocation : createdLocations) {
             assertTrue(
                 returnedLocations.contains(createdLocation.getName()),
                 "Location names should match"

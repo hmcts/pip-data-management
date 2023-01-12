@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.pip.data.management.controllers;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.authentication.roles.IsAdmin;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
+import uk.gov.hmcts.reform.pip.data.management.models.location.LocationDeletion;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationViews;
 import uk.gov.hmcts.reform.pip.data.management.service.LocationService;
 
@@ -95,9 +98,11 @@ public class LocationController {
     @ApiResponse(responseCode = NOT_FOUND_CODE, description = "No Location found with the id {locationId}")
     @DeleteMapping("/{locationId}")
     @IsAdmin
-    public ResponseEntity<String> deleteLocation(@PathVariable Integer locationId) {
-        locationService.deleteLocation(locationId);
-        return ResponseEntity.ok(String.format("Location with id %s has been deleted", locationId));
+    public ResponseEntity<LocationDeletion> deleteLocation(
+        @RequestHeader("x-provenance-user-id") String provenanceUserId,
+        @PathVariable Integer locationId)
+        throws JsonProcessingException {
+        return ResponseEntity.ok(locationService.deleteLocation(locationId, provenanceUserId));
     }
 
     @ApiResponse(responseCode = OK_CODE, description = "CSV of the reference data")
