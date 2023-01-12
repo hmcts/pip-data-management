@@ -196,7 +196,7 @@ public class LocationService {
 
         List<Location> allLocations = locationRepository.findAll();
         StatefulBeanToCsv<LocationCsv> beanToCsv = new StatefulBeanToCsvBuilder<LocationCsv>(writer).build();
-        allLocations.forEach(location -> {
+        allLocations.forEach(location ->
             location.getLocationReferenceList().forEach(locationReference -> {
                 try {
                     log.info(location.getJurisdiction().toString());
@@ -216,8 +216,7 @@ public class LocationService {
                     throw new CsvParseException(String.format("Failed to create CSV with message: %s",
                                                               e.getMessage()));
                 }
-            });
-        });
+            }));
 
         streamWriter.flush();
         streamWriter.close();

@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.pip.data.management.service;
 
 import nl.altindag.log.LogCaptor;
+import org.junit.Assert;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -1032,8 +1033,12 @@ class PublicationServiceTest {
 
     @Test
     void testInvalidEnumTypeThrows() {
-        assertThrows(IllegalArgumentException.class, () ->
-            publicationService.findAllBySearch(CaseSearchTerm.valueOf("invalid"), TEST_VALUE, USER_ID));
+        try {
+            CaseSearchTerm.valueOf("invalid");
+            Assert.fail("No exception thrown for invalid enum");
+        } catch (IllegalArgumentException e) {
+            assertNotNull(e.getMessage(), "Exception is not empty");
+        }
     }
 
     @Test
@@ -1316,9 +1321,8 @@ class PublicationServiceTest {
             .contains("source_artefact_id");
         assertThat(splitLineString)
             .as("Only one line exists - data must be missing, as only headers are printing")
-            .hasSizeGreaterThanOrEqualTo(2);
-        assertThat(splitLineString)
             .as("Wrong comma count compared to header row!")
+            .hasSizeGreaterThanOrEqualTo(2)
             .allSatisfy(
                 e -> assertThat(e.chars().filter(character -> character == ',').count()).isEqualTo(countLine1));
     }
@@ -1415,8 +1419,9 @@ class PublicationServiceTest {
 
         when(artefactRepository.findArtefactByArtefactId(artefactId)).thenReturn(Optional.empty());
 
+        String uuId = UUID.randomUUID().toString();
         assertThrows(NotFoundException.class, () -> {
-            publicationService.archiveArtefactById(artefactId, UUID.randomUUID().toString());
+            publicationService.archiveArtefactById(artefactId, uuId);
         }, "Attempting to archive an artefact that does not exist should throw an exception");
     }
 

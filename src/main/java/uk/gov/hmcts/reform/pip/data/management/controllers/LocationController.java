@@ -5,7 +5,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -44,9 +43,7 @@ public class LocationController {
     private static final String AUTH_ERROR_CODE = "403";
     private static final String NOT_FOUND_CODE = "404";
 
-    @ApiResponses({
-        @ApiResponse(responseCode = OK_CODE, description = "All courts returned"),
-    })
+    @ApiResponse(responseCode = OK_CODE, description = "All courts returned")
     @Operation(summary = "Get all locations with their hearings")
     @GetMapping(produces = "application/json")
     @JsonView(LocationViews.BaseView.class)
@@ -54,10 +51,8 @@ public class LocationController {
         return new ResponseEntity<>(locationService.getAllLocations(), HttpStatus.OK);
     }
 
-    @ApiResponses({
-        @ApiResponse(responseCode = OK_CODE, description = "Location found"),
-        @ApiResponse(responseCode = NOT_FOUND_CODE, description = "No Location found with the id {locationId}")
-    })
+    @ApiResponse(responseCode = OK_CODE, description = "Location found")
+    @ApiResponse(responseCode = NOT_FOUND_CODE, description = "No Location found with the id {locationId}")
     @Operation(summary = "Gets a location by searching by the location id and returning")
     @GetMapping("/{locationId}")
     public ResponseEntity<Location> getLocationById(@Parameter(description =
@@ -66,10 +61,8 @@ public class LocationController {
 
     }
 
-    @ApiResponses({
-        @ApiResponse(responseCode = OK_CODE, description = "Location found"),
-        @ApiResponse(responseCode = NOT_FOUND_CODE, description = "No Location found with the search {input}")
-    })
+    @ApiResponse(responseCode = OK_CODE, description = "Location found")
+    @ApiResponse(responseCode = NOT_FOUND_CODE, description = "No Location found with the search {input}")
     @Operation(summary = "Gets a Location by searching by the Location name and returning")
     @GetMapping("/name/{locationName}/language/{language}")
     public ResponseEntity<Location> getLocationByName(@Parameter(description =
@@ -79,9 +72,7 @@ public class LocationController {
 
     }
 
-    @ApiResponses({
-        @ApiResponse(responseCode = OK_CODE, description = "Filtered Locations")
-    })
+    @ApiResponse(responseCode = OK_CODE, description = "Filtered Locations")
     @Operation(summary = "Filters list of Locations by region or jurisdiction")
     @GetMapping("/filter")
     @JsonView(LocationViews.BaseView.class)
@@ -94,21 +85,17 @@ public class LocationController {
             jurisdictions, language));
     }
 
-    @ApiResponses({
-        @ApiResponse(responseCode = OK_CODE, description = "Uploaded Locations"),
-        @ApiResponse(responseCode = AUTH_ERROR_CODE, description = "User has not been authorized")
-    })
+    @ApiResponse(responseCode = OK_CODE, description = "Uploaded Locations")
+    @ApiResponse(responseCode = AUTH_ERROR_CODE, description = "User has not been authorized")
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @IsAdmin
     public ResponseEntity<Collection<Location>> uploadLocations(@RequestPart MultipartFile locationList) {
         return ResponseEntity.ok(locationService.uploadLocations(locationList));
     }
 
-    @ApiResponses({
-        @ApiResponse(responseCode = OK_CODE, description = "Location with id {locationId} has been deleted"),
-        @ApiResponse(responseCode = AUTH_ERROR_CODE, description = "User has not been authorized"),
-        @ApiResponse(responseCode = NOT_FOUND_CODE, description = "No Location found with the id {locationId}")
-    })
+    @ApiResponse(responseCode = OK_CODE, description = "Location with id {locationId} has been deleted")
+    @ApiResponse(responseCode = AUTH_ERROR_CODE, description = "User has not been authorized")
+    @ApiResponse(responseCode = NOT_FOUND_CODE, description = "No Location found with the id {locationId}")
     @DeleteMapping("/{locationId}")
     @IsAdmin
     public ResponseEntity<LocationDeletion> deleteLocation(
@@ -118,10 +105,8 @@ public class LocationController {
         return ResponseEntity.ok(locationService.deleteLocation(locationId, provenanceUserId));
     }
 
-    @ApiResponses({
-        @ApiResponse(responseCode = OK_CODE, description = "CSV of the reference data"),
-        @ApiResponse(responseCode = AUTH_ERROR_CODE, description = "User has not been authorized"),
-    })
+    @ApiResponse(responseCode = OK_CODE, description = "CSV of the reference data")
+    @ApiResponse(responseCode = AUTH_ERROR_CODE, description = "User has not been authorized")
     @GetMapping("/download/csv")
     @IsAdmin
     public ResponseEntity<byte[]> downloadLocations() throws IOException {
