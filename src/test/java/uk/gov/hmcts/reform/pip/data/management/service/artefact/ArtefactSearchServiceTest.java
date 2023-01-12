@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.pip.data.management.service.artefact;
 
+import org.junit.Assert;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -404,8 +406,12 @@ class ArtefactSearchServiceTest {
 
     @Test
     void testInvalidEnumTypeThrows() {
-        assertThrows(IllegalArgumentException.class, () ->
-            artefactSearchService.findAllBySearch(CaseSearchTerm.valueOf("invalid"), TEST_VALUE, USER_ID));
+        try {
+            CaseSearchTerm.valueOf("invalid");
+            Assert.fail("No exception thrown for invalid enum");
+        } catch (IllegalArgumentException e) {
+            assertNotNull(e.getMessage(), "Exception is not empty");
+        }
     }
 
     @Test

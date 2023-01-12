@@ -81,7 +81,7 @@ public class ArtefactDeleteService {
         azureBlobService.deleteBlob(ArtefactHelper.getUuidFromUrl(artefact.getPayload()));
 
         // Try to delete the generated files for the publications if it's not a flat file
-        if (!artefact.getIsFlatFile()) {
+        if (artefact.getIsFlatFile().equals(Boolean.FALSE)) {
             try {
                 azureBlobService.deletePublicationBlob(artefact.getArtefactId() + ".pdf");
 

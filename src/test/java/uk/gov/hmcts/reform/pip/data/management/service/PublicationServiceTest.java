@@ -404,9 +404,8 @@ class PublicationServiceTest {
             .contains("source_artefact_id");
         assertThat(splitLineString)
             .as("Only one line exists - data must be missing, as only headers are printing")
-            .hasSizeGreaterThanOrEqualTo(2);
-        assertThat(splitLineString)
             .as("Wrong comma count compared to header row!")
+            .hasSizeGreaterThanOrEqualTo(2)
             .allSatisfy(
                 e -> assertThat(e.chars().filter(character -> character == ',').count()).isEqualTo(countLine1));
     }

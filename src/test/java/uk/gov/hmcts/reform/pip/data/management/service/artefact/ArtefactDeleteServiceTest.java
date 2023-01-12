@@ -226,8 +226,9 @@ class ArtefactDeleteServiceTest {
 
         when(artefactRepository.findArtefactByArtefactId(artefactId)).thenReturn(Optional.empty());
 
+        String randomUuID = UUID.randomUUID().toString();
         assertThrows(NotFoundException.class, () -> {
-            artefactDeleteService.archiveArtefactById(artefactId, UUID.randomUUID().toString());
+            artefactDeleteService.archiveArtefactById(artefactId, randomUuID);
         }, "Attempting to archive an artefact that does not exist should throw an exception");
     }
 

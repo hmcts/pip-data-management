@@ -33,7 +33,7 @@ public class ArtefactTriggerService {
      * process on subscription-management if appropriate.
      */
     public void checkAndTriggerSubscriptionManagement(Artefact artefact) {
-        //TODO: fully switch this logic to localdates once artefact model changes
+        //TODO: fully switch this logic to localdates once artefact model changes //NOSONAR
         if (artefact.getDisplayFrom().toLocalDate().isBefore(LocalDate.now().plusDays(1))
             && (artefact.getDisplayTo() == null
             || artefact.getDisplayTo().toLocalDate().isAfter(LocalDate.now().minusDays(1)))) {
