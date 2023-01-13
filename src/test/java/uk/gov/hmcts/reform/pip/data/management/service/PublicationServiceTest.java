@@ -1,7 +1,5 @@
 package uk.gov.hmcts.reform.pip.data.management.service;
 
-import nl.altindag.log.LogCaptor;
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -10,52 +8,54 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.core.io.ByteArrayResource;
-import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.AzureBlobService;
 import uk.gov.hmcts.reform.pip.data.management.database.LocationRepository;
-import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ArtefactNotFoundException;
-import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.NotFoundException;
+import uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
-import uk.gov.hmcts.reform.pip.data.management.models.location.LocationCsv;
-import uk.gov.hmcts.reform.pip.data.management.models.location.LocationType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Language;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ListType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Sensitivity;
-import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
+import uk.gov.hmcts.reform.pip.data.management.service.artefact.ArtefactTriggerService;
 import uk.gov.hmcts.reform.pip.data.management.utils.PayloadExtractor;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
-import static uk.gov.hmcts.reform.pip.data.management.helpers.ConstantsTestHelper.MESSAGES_MATCH;
+import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.ARTEFACT_ID;
+import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.CONTENT_DATE;
+import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.FILE;
+import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.LOCATION_VENUE;
+import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.MANUAL_UPLOAD_PROVENANCE;
+import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.NO_COURT_EXISTS_IN_REFERENCE_DATA;
+import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.PAYLOAD;
+import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.PAYLOAD_STRIPPED;
+import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.PAYLOAD_URL;
+import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.PROVENANCE;
+import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.PROVENANCE_ID;
+import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.ROWID_RETURNS_UUID;
+import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.SEARCH_VALUES;
+import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.SOURCE_ARTEFACT_ID;
+import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.START_OF_TODAY_CONTENT_DATE;
+import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.TEST_KEY;
+import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.TEST_VALUE;
+import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.VALIDATION_ARTEFACT_NOT_MATCH;
 
+@SuppressWarnings({"PMD.ExcessiveImports"})
 @ExtendWith(MockitoExtension.class)
-@SuppressWarnings({"PMD.ExcessiveImports", "PMD.TooManyMethods", "PMD.TooManyFields", "PMD.ExcessiveClassLength",
-    "PMD.LawOfDemeter", "PMD.CyclomaticComplexity", "PMD.ExcessiveMethodLength"})
 class PublicationServiceTest {
 
     @Mock
@@ -71,65 +71,18 @@ class PublicationServiceTest {
     PayloadExtractor payloadExtractor;
 
     @Mock
-    SubscriptionManagementService subscriptionManagementService;
-
-    @Mock
-    AccountManagementService accountManagementService;
-
-    @Mock
-    PublicationServicesService publicationServicesService;
-
-    @Mock
     ChannelManagementService channelManagementService;
 
     @InjectMocks
     PublicationService publicationService;
 
-    private static final UUID ARTEFACT_ID = UUID.randomUUID();
-    private static final UUID USER_ID = UUID.randomUUID();
-    private static final String SOURCE_ARTEFACT_ID = "1234";
-    private static final String PROVENANCE = "provenance";
-    private static final String PROVENANCE_ID = "1234";
-    private static final String MANUAL_UPLOAD_PROVENANCE = "MANUAL_UPLOAD";
-    private static final String PAYLOAD = "This is a payload";
-    private static final String PAYLOAD_URL = "https://ThisIsATestPayload";
-    private static final String PAYLOAD_STRIPPED = "ThisIsATestPayload";
-    private static final String LOCATION_ID = "123";
-    private static final String TEST_KEY = "TestKey";
-    private static final String TEST_VALUE = "TestValue";
-    private static final CaseSearchTerm SEARCH_TERM_CASE_ID = CaseSearchTerm.CASE_ID;
-    private static final CaseSearchTerm SEARCH_TERM_CASE_NAME = CaseSearchTerm.CASE_NAME;
-    private static final CaseSearchTerm SEARCH_TERM_CASE_URN = CaseSearchTerm.CASE_URN;
-    private static final Map<String, List<Object>> SEARCH_VALUES = new ConcurrentHashMap<>();
-    private static final MultipartFile FILE = new MockMultipartFile("test", (byte[]) null);
-    private static final String VALIDATION_ARTEFACT_NOT_MATCH = "Artefacts do not match";
-    private static final String VALIDATION_NOT_THROWN_MESSAGE = "Expected exception has not been thrown";
-    private static final String SUCCESSFUL_TRIGGER = "success - subscription sent";
-    private static final String SUCCESS = "Success";
-    private static final String DELETION_TRACK_LOG_MESSAGE = "Track: TestValue, Removed %s, at ";
-    private static final String ROWID_RETURNS_UUID = "Row ID must match returned UUID";
-    private static final String TEST_FILE = "Hello";
-    private static final String LOCATION_TYPE_MATCH = "Location types should match";
-
-    private static final String NO_COURT_EXISTS_IN_REFERENCE_DATA = "NoMatch1234";
-    private static final String VALIDATION_MORE_THAN_PUBLIC = "More than the public artefact has been found";
-
-    private static final LocalDateTime CONTENT_DATE = LocalDateTime.now();
-    private static final LocalDateTime START_OF_TODAY_CONTENT_DATE = LocalDateTime.now().toLocalDate().atStartOfDay();
+    @Mock
+    ArtefactTriggerService artefactTriggerService;
 
     private Artefact artefact;
-    private Artefact artefactClassified;
     private Artefact artefactWithPayloadUrl;
-    private Artefact artefactWithPayloadUrlClassified;
     private Artefact artefactWithIdAndPayloadUrl;
-    private Artefact artefactWithIdAndPayloadUrlClassified;
-    private Artefact artefactInTheFuture;
-    private Artefact artefactFromThePast;
-    private Artefact artefactFromNow;
-    private Artefact artefactWithNullDateTo;
-    private Artefact artefactWithSameDateFromAndTo;
     private Artefact artefactManualUpload;
-    private Artefact noMatchArtefact;
     private Artefact sjpPublicArtefact;
     private Artefact sjpPressArtefact;
 
@@ -155,7 +108,7 @@ class PublicationServiceTest {
         createClassifiedPayloads();
 
         intialiseManualUploadArtefact();
-        initialiseCourts();
+        location = ArtefactConstantTestHelper.initialiseCourts();
 
         lenient().when(artefactRepository.findArtefactByUpdateLogic(artefact.getLocationId(),artefact.getContentDate(),
                                                                     artefact.getLanguage().name(),
@@ -163,178 +116,22 @@ class PublicationServiceTest {
                                                                     artefact.getProvenance()))
             .thenReturn(Optional.empty());
         lenient().when(artefactRepository.save(artefactWithPayloadUrl)).thenReturn(artefactWithIdAndPayloadUrl);
-        lenient().when(locationRepository.findByLocationIdByProvenance(PROVENANCE, PROVENANCE_ID,
-                                                                    LocationType.VENUE.name()))
+        lenient().when(locationRepository.findByLocationIdByProvenance(PROVENANCE, PROVENANCE_ID, LOCATION_VENUE))
             .thenReturn(Optional.of(location));
     }
 
     private void createPayloads() {
-        artefact = Artefact.builder()
-            .sourceArtefactId(SOURCE_ARTEFACT_ID)
-            .provenance(PROVENANCE)
-            .locationId(PROVENANCE_ID)
-            .contentDate(START_OF_TODAY_CONTENT_DATE)
-            .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
-            .language(Language.ENGLISH)
-            .sensitivity(Sensitivity.PUBLIC)
-            .build();
-
-        artefactWithPayloadUrl = Artefact.builder()
-            .sourceArtefactId(SOURCE_ARTEFACT_ID)
-            .provenance(PROVENANCE)
-            .payload(PAYLOAD_URL)
-            .search(SEARCH_VALUES)
-            .locationId(LOCATION_ID)
-            .contentDate(START_OF_TODAY_CONTENT_DATE)
-            .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
-            .language(Language.ENGLISH)
-            .sensitivity(Sensitivity.PUBLIC)
-            .build();
-
-        artefactWithIdAndPayloadUrl = Artefact.builder()
-            .artefactId(ARTEFACT_ID)
-            .sourceArtefactId(SOURCE_ARTEFACT_ID)
-            .provenance(PROVENANCE)
-            .payload(PAYLOAD_URL)
-            .search(SEARCH_VALUES)
-            .locationId(LOCATION_ID)
-            .contentDate(CONTENT_DATE)
-            .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
-            .language(Language.ENGLISH)
-            .sensitivity(Sensitivity.PUBLIC)
-            .build();
-
-        artefactFromThePast = Artefact.builder()
-            .artefactId(ARTEFACT_ID)
-            .sourceArtefactId(SOURCE_ARTEFACT_ID)
-            .provenance(PROVENANCE)
-            .payload(PAYLOAD_URL)
-            .search(SEARCH_VALUES)
-            .displayFrom(LocalDateTime.now().minusDays(1))
-            .displayTo(LocalDateTime.now().plusDays(1))
-            .build();
-
-        artefactFromNow = Artefact.builder()
-            .artefactId(ARTEFACT_ID)
-            .sourceArtefactId(SOURCE_ARTEFACT_ID)
-            .provenance(PROVENANCE)
-            .payload(PAYLOAD_URL)
-            .search(SEARCH_VALUES)
-            .displayFrom(LocalDateTime.now())
-            .displayTo(LocalDateTime.now().plusHours(3))
-            .build();
-
-        artefactWithNullDateTo = Artefact.builder()
-            .artefactId(ARTEFACT_ID)
-            .sourceArtefactId(SOURCE_ARTEFACT_ID)
-            .provenance(PROVENANCE)
-            .payload(PAYLOAD_URL)
-            .search(SEARCH_VALUES)
-            .displayFrom(LocalDateTime.now())
-            .displayTo(null)
-            .build();
-
-        artefactWithSameDateFromAndTo = Artefact.builder()
-            .artefactId(ARTEFACT_ID)
-            .sourceArtefactId(SOURCE_ARTEFACT_ID)
-            .provenance(PROVENANCE)
-            .payload(PAYLOAD_URL)
-            .search(SEARCH_VALUES)
-            .displayFrom(LocalDateTime.now())
-            .displayTo(LocalDateTime.now())
-            .build();
-
-        artefactInTheFuture = Artefact.builder()
-            .artefactId(ARTEFACT_ID)
-            .sourceArtefactId(SOURCE_ARTEFACT_ID)
-            .provenance(PROVENANCE)
-            .payload(PAYLOAD_URL)
-            .search(SEARCH_VALUES)
-            .displayFrom(LocalDateTime.now().plusDays(1))
-            .displayTo(LocalDateTime.now().plusDays(2))
-            .build();
-
-        noMatchArtefact = Artefact.builder()
-            .sourceArtefactId(SOURCE_ARTEFACT_ID)
-            .provenance(PROVENANCE)
-            .payload(PAYLOAD_URL)
-            .search(SEARCH_VALUES)
-            .locationId(NO_COURT_EXISTS_IN_REFERENCE_DATA)
-            .contentDate(CONTENT_DATE)
-            .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
-            .language(Language.ENGLISH)
-            .sensitivity(Sensitivity.PUBLIC)
-            .build();
-
-        sjpPublicArtefact = Artefact.builder()
-            .sourceArtefactId(SOURCE_ARTEFACT_ID)
-            .provenance(PROVENANCE)
-            .locationId(PROVENANCE_ID)
-            .contentDate(START_OF_TODAY_CONTENT_DATE)
-            .listType(ListType.SJP_PUBLIC_LIST)
-            .language(Language.ENGLISH)
-            .sensitivity(Sensitivity.PUBLIC)
-            .displayFrom(LocalDateTime.now().plusDays(1))
-            .displayTo(LocalDateTime.now().plusDays(2))
-            .expiryDate(LocalDateTime.now())
-            .build();
-
-        sjpPressArtefact = Artefact.builder()
-            .sourceArtefactId(SOURCE_ARTEFACT_ID)
-            .provenance(PROVENANCE)
-            .locationId(PROVENANCE_ID)
-            .contentDate(START_OF_TODAY_CONTENT_DATE)
-            .listType(ListType.SJP_PRESS_LIST)
-            .language(Language.ENGLISH)
-            .sensitivity(Sensitivity.PUBLIC)
-            .displayFrom(LocalDateTime.now().plusDays(1))
-            .displayTo(LocalDateTime.now().plusDays(2))
-            .expiryDate(LocalDateTime.now())
-            .build();
+        artefact = ArtefactConstantTestHelper.buildArtefact();
+        artefactWithPayloadUrl = ArtefactConstantTestHelper.buildArtefactWithPayloadUrl();
+        artefactWithIdAndPayloadUrl = ArtefactConstantTestHelper.buildArtefactWithIdAndPayloadUrl();
+        sjpPublicArtefact = ArtefactConstantTestHelper.buildSjpPublicArtefact();
+        sjpPressArtefact = ArtefactConstantTestHelper.buildSjpPressArtefact();
     }
 
     private void createClassifiedPayloads() {
-        artefactClassified = Artefact.builder()
-            .sourceArtefactId(SOURCE_ARTEFACT_ID)
-            .provenance(PROVENANCE)
-            .locationId(PROVENANCE_ID)
-            .contentDate(CONTENT_DATE)
-            .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
-            .language(Language.ENGLISH)
-            .sensitivity(Sensitivity.CLASSIFIED)
-            .build();
-
-        artefactWithPayloadUrlClassified = Artefact.builder()
-            .sourceArtefactId(SOURCE_ARTEFACT_ID)
-            .provenance(PROVENANCE)
-            .payload(PAYLOAD_URL)
-            .search(SEARCH_VALUES)
-            .displayFrom(LocalDateTime.now())
-            .displayTo(null)
-            .locationId(LOCATION_ID)
-            .contentDate(CONTENT_DATE)
-            .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
-            .language(Language.ENGLISH)
-            .sensitivity(Sensitivity.CLASSIFIED)
-            .build();
-
-        artefactWithIdAndPayloadUrlClassified = Artefact.builder()
-            .artefactId(ARTEFACT_ID)
-            .sourceArtefactId(SOURCE_ARTEFACT_ID)
-            .provenance(PROVENANCE)
-            .payload(PAYLOAD_URL)
-            .search(SEARCH_VALUES)
-            .displayFrom(LocalDateTime.now())
-            .displayTo(LocalDateTime.now())
-            .locationId(LOCATION_ID)
-            .contentDate(CONTENT_DATE)
-            .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
-            .language(Language.ENGLISH)
-            .sensitivity(Sensitivity.CLASSIFIED)
-            .build();
 
         intialiseManualUploadArtefact();
-        initialiseCourts();
+        location = ArtefactConstantTestHelper.initialiseCourts();
 
         lenient().when(artefactRepository.findArtefactByUpdateLogic(artefact.getLocationId(),artefact.getContentDate(),
                                                                     artefact.getLanguage().name(),
@@ -343,17 +140,8 @@ class PublicationServiceTest {
             .thenReturn(Optional.empty());
         lenient().when(artefactRepository.save(artefactWithPayloadUrl)).thenReturn(artefactWithIdAndPayloadUrl);
         lenient().when(locationRepository.findByLocationIdByProvenance(PROVENANCE, PROVENANCE_ID,
-                                                                    LocationType.VENUE.name()))
+                                                                       LOCATION_VENUE))
             .thenReturn(Optional.of(location));
-    }
-
-    private void initialiseCourts() {
-        LocationCsv locationCsvFirstExample = new LocationCsv();
-        locationCsvFirstExample.setLocationName("Court Name First Example");
-        locationCsvFirstExample.setProvenanceLocationType("venue");
-        location = new Location(locationCsvFirstExample);
-        location.setLocationId(1234);
-
     }
 
     private void intialiseManualUploadArtefact() {
@@ -383,7 +171,7 @@ class PublicationServiceTest {
     @Test
     void testCreationOfNewArtefactWhenCourtDoesNotExists() {
         artefactWithPayloadUrl.setLocationId(NO_COURT_EXISTS_IN_REFERENCE_DATA);
-        when(locationRepository.findByLocationIdByProvenance(PROVENANCE, PROVENANCE_ID, LocationType.VENUE.name()))
+        when(locationRepository.findByLocationIdByProvenance(PROVENANCE, PROVENANCE_ID, LOCATION_VENUE))
             .thenReturn(Optional.empty());
         when(artefactRepository.save(any())).thenReturn(artefactWithIdAndPayloadUrl);
         when(azureBlobService.createPayload(any(), eq(PAYLOAD))).thenReturn(PAYLOAD_URL);
@@ -511,7 +299,7 @@ class PublicationServiceTest {
                                                           artefact.getProvenance()))
             .thenReturn(Optional.of(existingArtefact));
 
-        when(locationRepository.findByLocationIdByProvenance(PROVENANCE, PROVENANCE_ID, LocationType.VENUE.name()))
+        when(locationRepository.findByLocationIdByProvenance(PROVENANCE, PROVENANCE_ID, LOCATION_VENUE))
             .thenReturn(Optional.empty());
         when(artefactRepository.save(any())).thenReturn(newArtefactWithId);
         when(azureBlobService.createPayload(PAYLOAD_STRIPPED, PAYLOAD)).thenReturn(PAYLOAD_URL);
@@ -553,7 +341,7 @@ class PublicationServiceTest {
         artefactWithPayloadUrl.setLocationId(PROVENANCE_ID);
         when(azureBlobService.uploadFlatFile(any(), eq(FILE))).thenReturn(PAYLOAD_URL);
         when(artefactRepository.save(any())).thenReturn(artefactWithIdAndPayloadUrl);
-        when(locationRepository.findByLocationIdByProvenance(PROVENANCE, PROVENANCE_ID, LocationType.VENUE.name()))
+        when(locationRepository.findByLocationIdByProvenance(PROVENANCE, PROVENANCE_ID, LOCATION_VENUE))
             .thenReturn(Optional.of(location));
         Artefact returnedArtefact = publicationService.createPublication(artefact, FILE);
 
@@ -582,711 +370,6 @@ class PublicationServiceTest {
 
         assertEquals(LocalDateTime.now().plusDays(7).toLocalDate(), returnedArtefact.getExpiryDate().toLocalDate(),
                      "Expiry date not set correctly for SJP press list");
-    }
-
-    @Test
-    void testArtefactPayloadFromAzureWhenAdmin() {
-        when(artefactRepository.findArtefactByArtefactId(any())).thenReturn(Optional.of(artefactWithPayloadUrl));
-        when(azureBlobService.getBlobData(any())).thenReturn(PAYLOAD);
-        assertEquals(PAYLOAD, publicationService.getPayloadByArtefactId(ARTEFACT_ID),
-                     VALIDATION_ARTEFACT_NOT_MATCH
-        );
-    }
-
-    @Test
-    void testArtefactPayloadFromAzureWhenArtefactIsPublic() {
-        when(artefactRepository.findByArtefactId(any(), any())).thenReturn(Optional.of(artefactWithPayloadUrl));
-        when(azureBlobService.getBlobData(any()))
-            .thenReturn(PAYLOAD);
-        assertEquals(PAYLOAD, publicationService.getPayloadByArtefactId(ARTEFACT_ID, USER_ID),
-                     VALIDATION_ARTEFACT_NOT_MATCH
-        );
-    }
-
-    @Test
-    void testArtefactPayloadFromAzureWhenArtefactIsNotPublicAndIsAuthorised() {
-        when(artefactRepository.findByArtefactId(any(), any()))
-            .thenReturn(Optional.of(artefactWithPayloadUrlClassified));
-        when(azureBlobService.getBlobData(any()))
-            .thenReturn(PAYLOAD);
-        when(accountManagementService.getIsAuthorised(USER_ID,
-                                                      ListType.CIVIL_DAILY_CAUSE_LIST, Sensitivity.CLASSIFIED))
-            .thenReturn(true);
-
-        assertEquals(PAYLOAD, publicationService.getPayloadByArtefactId(ARTEFACT_ID, USER_ID),
-                     VALIDATION_ARTEFACT_NOT_MATCH
-        );
-    }
-
-    @Test
-    void testArtefactPayloadFromAzureWhenArtefactIsNotPublicAndIsNotAuthorised() {
-        when(artefactRepository.findByArtefactId(any(), any()))
-            .thenReturn(Optional.of(artefactWithPayloadUrlClassified));
-
-        when(accountManagementService.getIsAuthorised(USER_ID,
-                                                      ListType.CIVIL_DAILY_CAUSE_LIST, Sensitivity.CLASSIFIED))
-            .thenReturn(false);
-
-        assertThrows(NotFoundException.class, () -> publicationService.getPayloadByArtefactId(ARTEFACT_ID, USER_ID),
-                     VALIDATION_NOT_THROWN_MESSAGE);
-    }
-
-    @Test
-    void testArtefactFileFromAzureWhenAdmin() {
-        byte[] testData = TEST_FILE.getBytes();
-        when(artefactRepository.findArtefactByArtefactId(any())).thenReturn(Optional.of(artefactWithPayloadUrl));
-        when(azureBlobService.getBlobFile(any())).thenReturn(new ByteArrayResource(testData));
-
-        assertEquals(new ByteArrayResource(testData), publicationService.getFlatFileByArtefactID(
-            ARTEFACT_ID), VALIDATION_ARTEFACT_NOT_MATCH);
-    }
-
-    @Test
-    void testArtefactFileFromAzureWhenArtefactIsPublic() {
-        byte[] testData = TEST_FILE.getBytes();
-        when(artefactRepository.findByArtefactId(any(), any())).thenReturn(Optional.of(artefactWithPayloadUrl));
-        when(azureBlobService.getBlobFile(any())).thenReturn(new ByteArrayResource(testData));
-
-        assertEquals(new ByteArrayResource(testData), publicationService.getFlatFileByArtefactID(
-            ARTEFACT_ID,
-            USER_ID), VALIDATION_ARTEFACT_NOT_MATCH);
-    }
-
-    @Test
-    void testArtefactFileFromAzureWhenArtefactIsNotPublic() {
-        byte[] testData = TEST_FILE.getBytes();
-        when(artefactRepository.findByArtefactId(any(), any()))
-            .thenReturn(Optional.of(artefactWithPayloadUrlClassified));
-        when(azureBlobService.getBlobFile(any())).thenReturn(new ByteArrayResource(testData));
-
-        when(accountManagementService.getIsAuthorised(USER_ID,
-                                                      ListType.CIVIL_DAILY_CAUSE_LIST, Sensitivity.CLASSIFIED))
-            .thenReturn(true);
-
-        assertEquals(new ByteArrayResource(testData), publicationService.getFlatFileByArtefactID(
-            ARTEFACT_ID,
-            USER_ID), VALIDATION_ARTEFACT_NOT_MATCH);
-    }
-
-    @Test
-    void testArtefactFileFromAzureWhenArtefactIsNotPublicAndNotAuthorised() {
-        when(artefactRepository.findByArtefactId(any(), any()))
-            .thenReturn(Optional.of(artefactWithPayloadUrlClassified));
-
-        when(accountManagementService.getIsAuthorised(USER_ID, ListType.CIVIL_DAILY_CAUSE_LIST, Sensitivity.CLASSIFIED))
-            .thenReturn(false);
-
-        assertThrows(NotFoundException.class, () -> publicationService.getFlatFileByArtefactID(
-            ARTEFACT_ID,
-            USER_ID), VALIDATION_NOT_THROWN_MESSAGE);
-    }
-
-    @Test
-    void testArtefactPayloadFromAzureWhenUnauthorized() {
-        when(artefactRepository.findByArtefactId(any(), any()))
-            .thenReturn(Optional.of(artefactWithPayloadUrl));
-        when(azureBlobService.getBlobData(any()))
-            .thenReturn(PAYLOAD);
-        assertEquals(PAYLOAD, publicationService.getPayloadByArtefactId(ARTEFACT_ID, USER_ID),
-                     VALIDATION_ARTEFACT_NOT_MATCH
-        );
-    }
-
-    @Test
-    void testArtefactContentFromAzureWhenDoesNotExist() {
-        when(artefactRepository.findByArtefactId(any(), any())).thenReturn(Optional.empty());
-        assertThrows(
-            NotFoundException.class,
-            ()
-                -> publicationService.getPayloadByArtefactId(ARTEFACT_ID, USER_ID),
-            "Not Found exception has not been thrown when artefact does not exist"
-        );
-    }
-
-    @Test
-    void testArtefactFileFromAzureWhenUnauthorized() {
-        byte[] testData = TEST_FILE.getBytes();
-        when(artefactRepository.findByArtefactId(any(), any()))
-            .thenReturn(Optional.of(artefactWithPayloadUrl));
-        when(azureBlobService.getBlobFile(any()))
-            .thenReturn(new ByteArrayResource(testData));
-
-        assertEquals(new ByteArrayResource(testData), publicationService.getFlatFileByArtefactID(ARTEFACT_ID, USER_ID),
-                     VALIDATION_ARTEFACT_NOT_MATCH
-        );
-    }
-
-    @Test
-    void testArtefactFileFromAzureWhenDoesNotExist() {
-        when(artefactRepository.findByArtefactId(any(), any())).thenReturn(Optional.empty());
-        assertThrows(
-            NotFoundException.class,
-            ()
-                -> publicationService.getFlatFileByArtefactID(ARTEFACT_ID, USER_ID),
-            "Not Found exception has not been thrown when artefact does not exist"
-        );
-    }
-
-    @Test
-    void testArtefactMetadataFromAzureWhenPublic() {
-        when(artefactRepository.findByArtefactId(any(), any())).thenReturn(Optional.of(artefact));
-
-        assertEquals(artefact, publicationService.getMetadataByArtefactId(ARTEFACT_ID, USER_ID),
-                     VALIDATION_ARTEFACT_NOT_MATCH
-        );
-    }
-
-    @Test
-    void testArtefactMetadataFromAzureWhenNotPublic() {
-        when(artefactRepository.findByArtefactId(any(), any())).thenReturn(Optional.of(artefactClassified));
-
-        when(accountManagementService.getIsAuthorised(USER_ID, ListType.CIVIL_DAILY_CAUSE_LIST, Sensitivity.CLASSIFIED))
-            .thenReturn(true);
-
-        assertEquals(artefactClassified, publicationService.getMetadataByArtefactId(ARTEFACT_ID, USER_ID),
-                     VALIDATION_ARTEFACT_NOT_MATCH
-        );
-    }
-
-    @Test
-    void testArtefactMetadataFromAzureWhenNotPublicAndNotAuthorised() {
-        when(artefactRepository.findByArtefactId(any(), any())).thenReturn(Optional.of(artefactClassified));
-
-        when(accountManagementService.getIsAuthorised(USER_ID, ListType.CIVIL_DAILY_CAUSE_LIST, Sensitivity.CLASSIFIED))
-            .thenReturn(false);
-
-        assertThrows(NotFoundException.class, () -> publicationService.getMetadataByArtefactId(ARTEFACT_ID, USER_ID),
-                     VALIDATION_NOT_THROWN_MESSAGE
-        );
-    }
-
-    @Test
-    void testArtefactMetadataFromAzureWhenDoesNotExist() {
-        when(artefactRepository.findByArtefactId(any(), any())).thenReturn(Optional.empty());
-        assertThrows(
-            NotFoundException.class,
-            () -> publicationService.getPayloadByArtefactId(ARTEFACT_ID, USER_ID),
-            "Not Found exception has not been thrown when artefact does not exist"
-        );
-    }
-
-    @Test
-    void testGetArtefactMetadataForAdmin() {
-        when(artefactRepository.findArtefactByArtefactId(ARTEFACT_ID.toString()))
-            .thenReturn(Optional.of(artefactWithIdAndPayloadUrl));
-        assertEquals(artefactWithIdAndPayloadUrl, publicationService.getMetadataByArtefactId(ARTEFACT_ID),
-                     VALIDATION_ARTEFACT_NOT_MATCH);
-    }
-
-    @Test
-    void testGetArtefactMetadataForAdminThrows() {
-        when(artefactRepository.findArtefactByArtefactId(ARTEFACT_ID.toString())).thenReturn(Optional.empty());
-        NotFoundException ex = assertThrows(NotFoundException.class, () ->
-                                                publicationService.getMetadataByArtefactId(ARTEFACT_ID),
-                                            "Not found exception should be thrown"
-        );
-        assertEquals("No artefact found with the ID: " + ARTEFACT_ID, ex.getMessage(),
-                     MESSAGES_MATCH);
-    }
-
-    @Test
-    void testGetArtefactMetadataCallsNonAdmin() {
-        when(artefactRepository.findByArtefactId(any(), any()))
-            .thenReturn(Optional.of(artefactWithIdAndPayloadUrl));
-        assertEquals(artefactWithIdAndPayloadUrl, publicationService.getMetadataByArtefactId(ARTEFACT_ID, USER_ID),
-                     VALIDATION_ARTEFACT_NOT_MATCH);
-    }
-
-    @Test
-    void testFindByCourtIdWhenVerifiedAndAuthorised() {
-        Artefact artefact = Artefact.builder()
-            .sourceArtefactId(SOURCE_ARTEFACT_ID)
-            .provenance(PROVENANCE)
-            .language(Language.ENGLISH)
-            .sensitivity(Sensitivity.PUBLIC)
-            .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
-            .build();
-
-        Artefact artefact2 = Artefact.builder()
-            .sourceArtefactId(SOURCE_ARTEFACT_ID)
-            .provenance(PROVENANCE)
-            .language(Language.WELSH)
-            .sensitivity(Sensitivity.CLASSIFIED)
-            .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
-            .build();
-
-        List<Artefact> artefactList = new ArrayList<>();
-        artefactList.add(artefact);
-        artefactList.add(artefact2);
-
-        when(accountManagementService.getIsAuthorised(USER_ID, ListType.CIVIL_DAILY_CAUSE_LIST, Sensitivity.CLASSIFIED))
-            .thenReturn(true);
-
-        when(artefactRepository.findArtefactsByLocationId(any(), any()))
-            .thenReturn(artefactList);
-
-        assertEquals(artefactList, publicationService.findAllByLocationId("abc", USER_ID),
-                     VALIDATION_ARTEFACT_NOT_MATCH
-        );
-    }
-
-    @Test
-    void testFindByCourtIdWhenVerifiedAndNotAuthorised() {
-        Artefact artefact = Artefact.builder()
-            .sourceArtefactId(SOURCE_ARTEFACT_ID)
-            .provenance(PROVENANCE)
-            .language(Language.ENGLISH)
-            .sensitivity(Sensitivity.PUBLIC)
-            .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
-            .build();
-
-        Artefact artefact2 = Artefact.builder()
-            .sourceArtefactId(SOURCE_ARTEFACT_ID)
-            .provenance(PROVENANCE)
-            .language(Language.WELSH)
-            .sensitivity(Sensitivity.CLASSIFIED)
-            .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
-            .build();
-
-        List<Artefact> artefactList = new ArrayList<>();
-        artefactList.add(artefact);
-        artefactList.add(artefact2);
-
-        when(accountManagementService.getIsAuthorised(USER_ID, ListType.CIVIL_DAILY_CAUSE_LIST, Sensitivity.CLASSIFIED))
-            .thenReturn(false);
-
-        when(artefactRepository.findArtefactsByLocationId(any(), any()))
-            .thenReturn(artefactList);
-
-        List<Artefact> artefacts = publicationService.findAllByLocationId("abc", USER_ID);
-
-        assertEquals(1, artefacts.size(), VALIDATION_MORE_THAN_PUBLIC);
-        assertEquals(artefact, artefacts.get(0), VALIDATION_ARTEFACT_NOT_MATCH);
-    }
-
-    @Test
-    void testFindByCourtIdWhenUnverified() {
-        Artefact artefact = Artefact.builder()
-            .sourceArtefactId(SOURCE_ARTEFACT_ID)
-            .provenance(PROVENANCE)
-            .language(Language.ENGLISH)
-            .sensitivity(Sensitivity.CLASSIFIED)
-            .build();
-
-        Artefact artefact2 = Artefact.builder()
-            .sourceArtefactId(SOURCE_ARTEFACT_ID)
-            .provenance(PROVENANCE)
-            .language(Language.WELSH)
-            .sensitivity(Sensitivity.PUBLIC)
-            .build();
-
-        List<Artefact> artefactList = new ArrayList<>();
-        artefactList.add(artefact);
-        artefactList.add(artefact2);
-
-        when(artefactRepository.findArtefactsByLocationId(any(), any()))
-            .thenReturn(artefactList);
-
-        List<Artefact> artefacts = publicationService.findAllByLocationId("abc", USER_ID);
-
-        assertEquals(1, artefacts.size(), VALIDATION_MORE_THAN_PUBLIC);
-        assertEquals(artefact2, artefacts.get(0), VALIDATION_ARTEFACT_NOT_MATCH);
-    }
-
-    @Test
-    void testFindAllBySearchCaseIdClassifiedAndAuthorised() {
-        List<Artefact> list = List.of(artefactWithIdAndPayloadUrl, artefactWithIdAndPayloadUrlClassified);
-        when(artefactRepository.findArtefactBySearch(eq(SEARCH_TERM_CASE_ID.dbValue), eq(TEST_VALUE), any()))
-            .thenReturn(list);
-
-        when(accountManagementService.getIsAuthorised(USER_ID, ListType.CIVIL_DAILY_CAUSE_LIST, Sensitivity.CLASSIFIED))
-            .thenReturn(true);
-
-        assertEquals(
-            list,
-            publicationService.findAllBySearch(SEARCH_TERM_CASE_ID, TEST_VALUE, USER_ID),
-            VALIDATION_ARTEFACT_NOT_MATCH
-        );
-    }
-
-    @Test
-    void testFindAllBySearchCaseIdClassifiedAndNotAuthorised() {
-        List<Artefact> list = List.of(artefactWithIdAndPayloadUrl, artefactWithIdAndPayloadUrlClassified);
-        when(artefactRepository.findArtefactBySearch(eq(SEARCH_TERM_CASE_ID.dbValue), eq(TEST_VALUE), any()))
-            .thenReturn(list);
-
-        when(accountManagementService.getIsAuthorised(USER_ID, ListType.CIVIL_DAILY_CAUSE_LIST, Sensitivity.CLASSIFIED))
-            .thenReturn(false);
-
-        List<Artefact> artefacts = publicationService.findAllBySearch(SEARCH_TERM_CASE_ID, TEST_VALUE, USER_ID);
-
-        assertEquals(1, artefacts.size(), VALIDATION_MORE_THAN_PUBLIC);
-        assertEquals(artefactWithIdAndPayloadUrl, artefacts.get(0), VALIDATION_ARTEFACT_NOT_MATCH);
-    }
-
-    @Test
-    void testFindAllBySearchCaseIdUnverified() {
-        List<Artefact> list = List.of(artefactWithIdAndPayloadUrl, artefactWithIdAndPayloadUrlClassified);
-        when(artefactRepository.findArtefactBySearch(eq(SEARCH_TERM_CASE_ID.dbValue), eq(TEST_VALUE), any()))
-            .thenReturn(list);
-
-        List<Artefact> artefacts = publicationService.findAllBySearch(SEARCH_TERM_CASE_ID, TEST_VALUE, USER_ID);
-
-        assertEquals(1, artefacts.size(), VALIDATION_MORE_THAN_PUBLIC);
-        assertEquals(artefactWithIdAndPayloadUrl, artefacts.get(0), VALIDATION_ARTEFACT_NOT_MATCH);
-    }
-
-    @Test
-    void testFindAllNoArtefactsThrowsNotFound() {
-        ArtefactNotFoundException ex = assertThrows(ArtefactNotFoundException.class, () ->
-            publicationService.findAllBySearch(SEARCH_TERM_CASE_ID, "not found", USER_ID)
-        );
-        assertEquals("No Artefacts found with for CASE_ID with the value: not found",
-                     ex.getMessage(), MESSAGES_MATCH
-        );
-    }
-
-    @Test
-    void testFindAllByCaseNameClassifiedAndAuthorised() {
-        List<Artefact> list = List.of(artefactWithIdAndPayloadUrl, artefactWithIdAndPayloadUrlClassified);
-        when(artefactRepository.findArtefactByCaseName(eq(TEST_VALUE), any()))
-            .thenReturn(list);
-
-        when(accountManagementService.getIsAuthorised(USER_ID, ListType.CIVIL_DAILY_CAUSE_LIST, Sensitivity.CLASSIFIED))
-            .thenReturn(true);
-
-        assertEquals(
-            list,
-            publicationService.findAllBySearch(SEARCH_TERM_CASE_NAME, TEST_VALUE, USER_ID),
-            VALIDATION_ARTEFACT_NOT_MATCH);
-    }
-
-    @Test
-    void testFindAllByCaseNameClassifiedAndNotAuthorised() {
-        List<Artefact> list = List.of(artefactWithIdAndPayloadUrl, artefactWithIdAndPayloadUrlClassified);
-        when(artefactRepository.findArtefactByCaseName(eq(TEST_VALUE), any()))
-            .thenReturn(list);
-
-        when(accountManagementService.getIsAuthorised(USER_ID, ListType.CIVIL_DAILY_CAUSE_LIST, Sensitivity.CLASSIFIED))
-            .thenReturn(false);
-
-        List<Artefact> artefacts = publicationService.findAllBySearch(SEARCH_TERM_CASE_NAME, TEST_VALUE, USER_ID);
-
-        assertEquals(1, artefacts.size(), VALIDATION_MORE_THAN_PUBLIC);
-        assertEquals(artefactWithIdAndPayloadUrl, artefacts.get(0), VALIDATION_ARTEFACT_NOT_MATCH);
-    }
-
-    @Test
-    void testFindAllByCaseNameUnverified() {
-        List<Artefact> list = List.of(artefactWithIdAndPayloadUrl, artefactWithIdAndPayloadUrlClassified);
-        when(artefactRepository.findArtefactByCaseName(eq(TEST_VALUE), any()))
-            .thenReturn(list);
-
-        List<Artefact> artefacts = publicationService.findAllBySearch(SEARCH_TERM_CASE_NAME, TEST_VALUE, null);
-
-        assertEquals(1, artefacts.size(), VALIDATION_MORE_THAN_PUBLIC);
-        assertEquals(artefactWithIdAndPayloadUrl, artefacts.get(0), VALIDATION_ARTEFACT_NOT_MATCH);
-    }
-
-    @Test
-    void testFindAllByCaseUrnClassifiedAndAuthorised() {
-        List<Artefact> list = List.of(artefactWithIdAndPayloadUrl, artefactWithIdAndPayloadUrlClassified);
-        when(artefactRepository.findArtefactBySearch(eq(SEARCH_TERM_CASE_URN.dbValue), eq(TEST_VALUE), any()))
-            .thenReturn(list);
-
-        when(accountManagementService.getIsAuthorised(USER_ID, ListType.CIVIL_DAILY_CAUSE_LIST, Sensitivity.CLASSIFIED))
-            .thenReturn(true);
-
-        assertEquals(
-            list,
-            publicationService.findAllBySearch(SEARCH_TERM_CASE_URN, TEST_VALUE, USER_ID),
-            VALIDATION_ARTEFACT_NOT_MATCH
-        );
-    }
-
-    @Test
-    void testFindAllByCaseUrnClassifiedAndNotAuthorised() {
-        List<Artefact> list = List.of(artefactWithIdAndPayloadUrl, artefactWithIdAndPayloadUrlClassified);
-        when(artefactRepository.findArtefactBySearch(eq(SEARCH_TERM_CASE_URN.dbValue), eq(TEST_VALUE), any()))
-            .thenReturn(list);
-
-        when(accountManagementService.getIsAuthorised(USER_ID, ListType.CIVIL_DAILY_CAUSE_LIST, Sensitivity.CLASSIFIED))
-            .thenReturn(false);
-
-        List<Artefact> artefacts = publicationService.findAllBySearch(SEARCH_TERM_CASE_URN, TEST_VALUE, USER_ID);
-
-        assertEquals(1, artefacts.size(), VALIDATION_MORE_THAN_PUBLIC);
-        assertEquals(artefactWithIdAndPayloadUrl, artefacts.get(0), VALIDATION_ARTEFACT_NOT_MATCH);
-    }
-
-    @Test
-    void testFindAllByCaseUrnUnverified() {
-        List<Artefact> list = List.of(artefactWithIdAndPayloadUrl, artefactWithIdAndPayloadUrlClassified);
-        when(artefactRepository.findArtefactBySearch(eq(SEARCH_TERM_CASE_URN.dbValue), eq(TEST_VALUE), any()))
-            .thenReturn(list);
-
-        List<Artefact> artefacts = publicationService.findAllBySearch(SEARCH_TERM_CASE_URN, TEST_VALUE, null);
-
-        assertEquals(1, artefacts.size(), VALIDATION_MORE_THAN_PUBLIC);
-        assertEquals(artefactWithIdAndPayloadUrl, artefacts.get(0), VALIDATION_ARTEFACT_NOT_MATCH);
-    }
-
-    @Test
-    void testInvalidEnumTypeThrows() {
-        try {
-            CaseSearchTerm.valueOf("invalid");
-            Assert.fail("No exception thrown for invalid enum");
-        } catch (IllegalArgumentException e) {
-            assertNotNull(e.getMessage(), "Exception is not empty");
-        }
-    }
-
-    @Test
-    void testTriggerIfDateIsFuture() throws IOException {
-        try (LogCaptor logCaptor = LogCaptor.forClass(PublicationService.class)) {
-            publicationService.checkAndTriggerSubscriptionManagement(artefactInTheFuture);
-            assertEquals(
-                0,
-                logCaptor.getInfoLogs().size(),
-                "Should not have returned a log as no trigger was sent."
-            );
-        } catch (Exception ex) {
-            throw new IOException(ex.getMessage());
-        }
-    }
-
-    @Test
-    void testTriggerIfDateIsNow() {
-        when(subscriptionManagementService.sendArtefactForSubscription(artefactFromNow)).thenReturn(SUCCESSFUL_TRIGGER);
-        try (LogCaptor logCaptor = LogCaptor.forClass(PublicationService.class)) {
-            publicationService.checkAndTriggerSubscriptionManagement(artefactFromNow);
-            assertEquals(SUCCESSFUL_TRIGGER, logCaptor.getInfoLogs().get(0),
-                         "should have returned the Subscription List."
-            );
-        }
-    }
-
-    @Test
-    void testTriggerIfDateIsPast() {
-        when(subscriptionManagementService.sendArtefactForSubscription(artefactFromThePast)).thenReturn(
-            SUCCESSFUL_TRIGGER);
-        try (LogCaptor logCaptor = LogCaptor.forClass(PublicationService.class)) {
-            publicationService.checkAndTriggerSubscriptionManagement(artefactFromThePast);
-            assertEquals(SUCCESSFUL_TRIGGER, logCaptor.getInfoLogs().get(0),
-                         "Should have returned the subscription list"
-            );
-        }
-    }
-
-    @Test
-    void testTriggerIfDateToNull() {
-        when(subscriptionManagementService.sendArtefactForSubscription(artefactWithNullDateTo)).thenReturn(
-            SUCCESSFUL_TRIGGER);
-        try (LogCaptor logCaptor = LogCaptor.forClass(PublicationService.class)) {
-            publicationService.checkAndTriggerSubscriptionManagement(artefactWithNullDateTo);
-            assertEquals(SUCCESSFUL_TRIGGER, logCaptor.getInfoLogs().get(0),
-                         "Should have returned the subscription list"
-            );
-        }
-    }
-
-    @Test
-    void testTriggerIfSameDateFromTo() {
-        when(subscriptionManagementService.sendArtefactForSubscription(artefactWithSameDateFromAndTo)).thenReturn(
-            SUCCESSFUL_TRIGGER);
-        try (LogCaptor logCaptor = LogCaptor.forClass(PublicationService.class)) {
-            publicationService.checkAndTriggerSubscriptionManagement(artefactWithSameDateFromAndTo);
-            assertEquals(SUCCESSFUL_TRIGGER, logCaptor.getInfoLogs().get(0),
-                         "Should have returned the subscription list"
-            );
-        }
-    }
-
-    @Test
-    void testFindAllByCourtIdAdmin() {
-        when(artefactRepository.findArtefactsByLocationIdAdmin(TEST_VALUE)).thenReturn(List.of(artefact));
-        assertEquals(List.of(artefact), publicationService.findAllByLocationIdAdmin(TEST_VALUE, USER_ID, true),
-                     VALIDATION_ARTEFACT_NOT_MATCH);
-    }
-
-    @Test
-    void testFindAllByCourtIdAdminNotAdmin() {
-        when(artefactRepository.findArtefactsByLocationId(any(), any())).thenReturn(List.of(artefact));
-        assertEquals(List.of(artefact), publicationService.findAllByLocationIdAdmin(TEST_VALUE, USER_ID, false),
-                     VALIDATION_ARTEFACT_NOT_MATCH);
-    }
-
-    @Test
-    void testArtefactCountService() {
-        when(artefactRepository.countArtefactsByLocation()).thenReturn(List.of("1,3","2,4", "3,6"));
-        assertEquals("location,count\n1,3\n2,4\n3,6\n", publicationService.countArtefactsByLocation(),
-                     MESSAGES_MATCH);
-    }
-
-    @Test
-    void testSendArtefactForSubscription() {
-        when(subscriptionManagementService.sendArtefactForSubscription(artefact))
-            .thenReturn(SUCCESS);
-        assertEquals(SUCCESS, publicationService.sendArtefactForSubscription(artefact),
-                     MESSAGES_MATCH);
-    }
-
-    @Test
-    void testCheckNewlyActiveArtefactsLogs() throws IOException {
-        try (LogCaptor logCaptor = LogCaptor.forClass(PublicationService.class)) {
-            when(artefactRepository.findArtefactsByDisplayFrom(any())).thenReturn(List.of(new Artefact()));
-            when(subscriptionManagementService.sendArtefactForSubscription(any())).thenReturn(SUCCESS);
-            publicationService.checkNewlyActiveArtefacts();
-            assertEquals(SUCCESS, logCaptor.getInfoLogs().get(0),
-                         MESSAGES_MATCH
-            );
-        } catch (Exception ex) {
-            throw new IOException(ex.getMessage());
-        }
-    }
-
-    @Test
-    void testDeleteArtefactById() throws IOException {
-        try (LogCaptor logCaptor = LogCaptor.forClass(PublicationService.class)) {
-            when(subscriptionManagementService.sendDeletedArtefactForThirdParties(artefactWithPayloadUrl))
-                .thenReturn(SUCCESS);
-            when(artefactRepository.findArtefactByArtefactId(ARTEFACT_ID.toString()))
-                .thenReturn(Optional.of(artefactWithPayloadUrl));
-            when(azureBlobService.deleteBlob(PAYLOAD_STRIPPED)).thenReturn(SUCCESS);
-            doNothing().when(artefactRepository).delete(artefactWithPayloadUrl);
-
-            publicationService.deleteArtefactById(ARTEFACT_ID.toString(), TEST_VALUE);
-            assertTrue(logCaptor.getInfoLogs().get(0).contains(String.format(DELETION_TRACK_LOG_MESSAGE, ARTEFACT_ID)),
-                       MESSAGES_MATCH);
-            assertTrue(logCaptor.getInfoLogs().get(1).contains(SUCCESS), MESSAGES_MATCH);
-        } catch (Exception ex) {
-            throw new IOException(ex.getMessage());
-        }
-    }
-
-    @Test
-    void testDeleteArtefactByIdThrows() {
-        ArtefactNotFoundException ex = assertThrows(ArtefactNotFoundException.class, () ->
-                                                        publicationService.deleteArtefactById(TEST_VALUE, TEST_VALUE),
-                                                    "ArtefactNotFoundException should be thrown");
-
-        assertEquals("No artefact found with the ID: " + TEST_VALUE, ex.getMessage(),
-                     MESSAGES_MATCH);
-    }
-
-    @Test
-    void testReportNoMatchArtefacts() {
-        when(artefactRepository.findAllNoMatchArtefacts()).thenReturn(List.of(noMatchArtefact));
-        publicationService.reportNoMatchArtefacts();
-        verify(publicationServicesService).sendNoMatchArtefactsForReporting(Map.of(PROVENANCE_ID, PROVENANCE));
-    }
-
-    @Test
-    void testReportMatchArtefactsWhenArtefactsNotFound() {
-        when(artefactRepository.findAllNoMatchArtefacts()).thenReturn(Collections.emptyList());
-        publicationService.reportNoMatchArtefacts();
-        verifyNoInteractions(publicationServicesService);
-    }
-
-    @Test
-    void testArchiveExpiredArtefacts() {
-        UUID testArtefactId = UUID.randomUUID();
-        artefactWithPayloadUrl.setArtefactId(testArtefactId);
-        when(artefactRepository.findOutdatedArtefacts(any())).thenReturn(List.of(artefactWithPayloadUrl));
-        publicationService.archiveExpiredArtefacts();
-        verify(azureBlobService).deleteBlob(PAYLOAD_STRIPPED);
-        verify(azureBlobService).deletePublicationBlob(testArtefactId + ".pdf");
-        verify(artefactRepository).archiveArtefact(testArtefactId.toString());
-    }
-
-    @Test
-    void testArchiveExpiredArtefactsSjpPublic() {
-        UUID testArtefactId = UUID.randomUUID();
-        artefactWithPayloadUrl.setArtefactId(testArtefactId);
-        artefactWithPayloadUrl.setListType(ListType.SJP_PUBLIC_LIST);
-        when(artefactRepository.findOutdatedArtefacts(any())).thenReturn(List.of(artefactWithPayloadUrl));
-        publicationService.archiveExpiredArtefacts();
-        verify(azureBlobService).deleteBlob(PAYLOAD_STRIPPED);
-        verify(azureBlobService).deletePublicationBlob(artefactWithPayloadUrl.getArtefactId() + ".pdf");
-        verify(azureBlobService).deletePublicationBlob(artefactWithPayloadUrl.getArtefactId() + ".xlsx");
-        verify(artefactRepository).archiveArtefact(testArtefactId.toString());
-    }
-
-    @Test
-    void testArchiveExpiredArtefactsSjpPress() {
-        UUID testArtefactId = UUID.randomUUID();
-        artefactWithPayloadUrl.setArtefactId(testArtefactId);
-        artefactWithPayloadUrl.setListType(ListType.SJP_PRESS_LIST);
-        when(artefactRepository.findOutdatedArtefacts(any())).thenReturn(List.of(artefactWithPayloadUrl));
-        publicationService.archiveExpiredArtefacts();
-        verify(azureBlobService).deleteBlob(PAYLOAD_STRIPPED);
-        verify(azureBlobService).deletePublicationBlob(artefactWithPayloadUrl.getArtefactId() + ".pdf");
-        verify(azureBlobService).deletePublicationBlob(artefactWithPayloadUrl.getArtefactId() + ".xlsx");
-        verify(artefactRepository).archiveArtefact(testArtefactId.toString());
-    }
-
-    @Test
-    void testArchiveExpiredArtefactsFlatFile() {
-        UUID testArtefactId = UUID.randomUUID();
-        artefactWithPayloadUrl.setArtefactId(testArtefactId);
-        artefactWithPayloadUrl.setListType(ListType.SJP_PRESS_LIST);
-        artefactWithPayloadUrl.setIsFlatFile(true);
-        when(artefactRepository.findOutdatedArtefacts(any())).thenReturn(List.of(artefactWithPayloadUrl));
-        publicationService.archiveExpiredArtefacts();
-        verify(azureBlobService).deleteBlob(PAYLOAD_STRIPPED);
-        verify(artefactRepository).archiveArtefact(testArtefactId.toString());
-    }
-
-    @Test
-    void testArchiveExpiredArtefactsWhenArtefactsNotFound() {
-        when(artefactRepository.findOutdatedArtefacts(any())).thenReturn(Collections.emptyList());
-        publicationService.archiveExpiredArtefacts();
-        verifyNoInteractions(azureBlobService);
-    }
-
-    @Test
-    void testGetLocationTypeVenue() {
-        List<ListType> venueListTypes = new ArrayList<>();
-        venueListTypes.add(ListType.CROWN_DAILY_LIST);
-        venueListTypes.add(ListType.CROWN_FIRM_LIST);
-        venueListTypes.add(ListType.CROWN_WARNED_LIST);
-        venueListTypes.add(ListType.MAGISTRATES_PUBLIC_LIST);
-        venueListTypes.add(ListType.MAGISTRATES_STANDARD_LIST);
-        venueListTypes.add(ListType.CIVIL_DAILY_CAUSE_LIST);
-        venueListTypes.add(ListType.FAMILY_DAILY_CAUSE_LIST);
-        venueListTypes.add(ListType.IAC_DAILY_LIST);
-
-        venueListTypes.forEach(listType ->
-                                   assertEquals(LocationType.VENUE,
-                                                publicationService.getLocationType(listType),
-                                                LOCATION_TYPE_MATCH));
-    }
-
-    @Test
-    void testGetLocationTypeOwningHearingLocation() {
-        List<ListType> venueListTypes = new ArrayList<>();
-        venueListTypes.add(ListType.ET_DAILY_LIST);
-        venueListTypes.add(ListType.ET_FORTNIGHTLY_PRESS_LIST);
-
-        venueListTypes.forEach(listType ->
-                                   assertEquals(LocationType.OWNING_HEARING_LOCATION,
-                                                publicationService.getLocationType(listType),
-                                                LOCATION_TYPE_MATCH));
-    }
-
-    @Test
-    void testGetLocationTypeNational() {
-        List<ListType> nationalListTypes = new ArrayList<>();
-        nationalListTypes.add(ListType.SJP_PRESS_LIST);
-        nationalListTypes.add(ListType.SJP_PUBLIC_LIST);
-        nationalListTypes.add(ListType.CARE_STANDARDS_LIST);
-        nationalListTypes.add(ListType.PRIMARY_HEALTH_LIST);
-
-        nationalListTypes.forEach(listType ->
-                                      assertEquals(LocationType.NATIONAL,
-                                                   publicationService.getLocationType(listType),
-                                                   LOCATION_TYPE_MATCH));
-
     }
 
     @Test
@@ -1395,38 +478,8 @@ class PublicationServiceTest {
     }
 
     @Test
-    void testArchivedEndpoint() {
-        String artefactId = UUID.randomUUID().toString();
-
-        when(artefactRepository.findArtefactByArtefactId(artefactId))
-            .thenReturn(Optional.of(artefactWithIdAndPayloadUrl));
-
-        publicationService.archiveArtefactById(artefactId, UUID.randomUUID().toString());
-
-        verify(azureBlobService, times(1))
-            .deleteBlob(any());
-        verify(azureBlobService, times(1))
-            .deletePublicationBlob(any());
-        verify(subscriptionManagementService, times(1))
-            .sendDeletedArtefactForThirdParties(any());
-        verify(artefactRepository, times(1))
-            .archiveArtefact(artefactId);
-    }
-
-    @Test
-    void testArchivedEndpointNotFound() {
-        String artefactId = UUID.randomUUID().toString();
-
-        when(artefactRepository.findArtefactByArtefactId(artefactId)).thenReturn(Optional.empty());
-
-        String uuId = UUID.randomUUID().toString();
-        assertThrows(NotFoundException.class, () -> {
-            publicationService.archiveArtefactById(artefactId, uuId);
-        }, "Attempting to archive an artefact that does not exist should throw an exception");
-    }
-
-    @Test
     void testProcessCreatedPublication() {
+        doNothing().when(artefactTriggerService).checkAndTriggerSubscriptionManagement(sjpPublicArtefact);
         publicationService.processCreatedPublication(sjpPublicArtefact);
         verify(channelManagementService, times(1))
             .requestFileGeneration(sjpPublicArtefact.getArtefactId());

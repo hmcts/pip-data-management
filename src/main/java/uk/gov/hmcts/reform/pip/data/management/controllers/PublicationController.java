@@ -38,6 +38,10 @@ import uk.gov.hmcts.reform.pip.data.management.models.publication.Sensitivity;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.views.ArtefactView;
 import uk.gov.hmcts.reform.pip.data.management.service.PublicationService;
 import uk.gov.hmcts.reform.pip.data.management.service.ValidationService;
+import uk.gov.hmcts.reform.pip.data.management.service.artefact.ArtefactDeleteService;
+import uk.gov.hmcts.reform.pip.data.management.service.artefact.ArtefactSearchService;
+import uk.gov.hmcts.reform.pip.data.management.service.artefact.ArtefactService;
+import uk.gov.hmcts.reform.pip.data.management.service.artefact.ArtefactTriggerService;
 import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
 import uk.gov.hmcts.reform.pip.model.enums.UserActions;
 
@@ -78,6 +82,13 @@ public class PublicationController {
 
     private final PublicationService publicationService;
 
+    private final ArtefactSearchService artefactSearchService;
+
+    private final ArtefactService artefactService;
+
+    private final ArtefactDeleteService artefactDeleteService;
+
+    private final ArtefactTriggerService artefactTriggerService;
     @Autowired
     private final ValidationService validationService;
 
@@ -86,12 +97,24 @@ public class PublicationController {
     /**
      * Constructor for Publication controller.
      *
-     * @param publicationService The PublicationService that contains the business logic to handle publications.
+     * @param publicationService     The PublicationService that contains the business logic to handle publications.
+     * @param artefactService   The ArtefactService that con be used to get artefact property
+     * @param artefactDeleteService The ArtefactDeleteService that can be used to Delete or Archive artefacts
+     * @param artefactTriggerService The ArtefactTriggerService that can be used to send artefact data to other services
      */
     @Autowired
-    public PublicationController(PublicationService publicationService, ValidationService validationService) {
+    public PublicationController(PublicationService publicationService,
+                                 ValidationService validationService,
+                                 ArtefactSearchService artefactSearchService,
+                                 ArtefactService artefactService,
+                                 ArtefactDeleteService artefactDeleteService,
+                                 ArtefactTriggerService artefactTriggerService) {
         this.publicationService = publicationService;
         this.validationService = validationService;
+        this.artefactSearchService = artefactSearchService;
+        this.artefactService = artefactService;
+        this.artefactDeleteService = artefactDeleteService;
+        this.artefactTriggerService = artefactTriggerService;
     }
 
     /**
@@ -240,7 +263,7 @@ public class PublicationController {
 
         logManualUpload(publicationService.maskEmail(issuerEmail), createdItem.getArtefactId().toString());
 
-        publicationService.checkAndTriggerSubscriptionManagement(artefact);
+        artefactTriggerService.checkAndTriggerSubscriptionManagement(artefact);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(createdItem);
     }
@@ -257,7 +280,7 @@ public class PublicationController {
         @PathVariable String locationId,
         @RequestHeader(value = USER_ID_HEADER, required = false) UUID userId,
         @RequestHeader(value = ADMIN_HEADER, defaultValue = DEFAULT_ADMIN_VALUE, required = false) Boolean isAdmin) {
-        return ResponseEntity.ok(publicationService.findAllByLocationIdAdmin(locationId, userId, isAdmin));
+        return ResponseEntity.ok(artefactSearchService.findAllByLocationIdAdmin(locationId, userId, isAdmin));
     }
 
     @ApiResponse(responseCode = OK_CODE, description = "List of Artefacts matching"
@@ -272,7 +295,7 @@ public class PublicationController {
     public ResponseEntity<List<Artefact>> getAllRelevantArtefactsBySearchValue(
         @PathVariable CaseSearchTerm searchTerm, @PathVariable String searchValue,
         @RequestHeader(value = USER_ID_HEADER,  required = false) UUID userId) {
-        return ResponseEntity.ok(publicationService.findAllBySearch(searchTerm, searchValue, userId));
+        return ResponseEntity.ok(artefactSearchService.findAllBySearch(searchTerm, searchValue, userId));
     }
 
     @ApiResponse(responseCode = OK_CODE, description = "Gets the artefact metadata")
@@ -287,8 +310,8 @@ public class PublicationController {
                                        @RequestHeader(value = ADMIN_HEADER, defaultValue = DEFAULT_ADMIN_VALUE,
                                            required = false) Boolean isAdmin) {
         return ResponseEntity.ok(isAdmin.equals(Boolean.TRUE)
-                                     ? publicationService.getMetadataByArtefactId(artefactId) :
-                                     publicationService.getMetadataByArtefactId(artefactId, userId));
+                                    ? artefactService.getMetadataByArtefactId(artefactId) :
+                                     artefactService.getMetadataByArtefactId(artefactId, userId));
     }
 
     @ApiResponse(responseCode = OK_CODE, description = "Blob data from the given request in text format.")
@@ -301,10 +324,9 @@ public class PublicationController {
         @PathVariable UUID artefactId,
         @RequestHeader(value = USER_ID_HEADER, required = false) UUID userId,
         @RequestHeader(value = ADMIN_HEADER, defaultValue = DEFAULT_ADMIN_VALUE, required = false) Boolean isAdmin) {
-
         return ResponseEntity.ok(isAdmin.equals(Boolean.TRUE)
-                                     ? publicationService.getPayloadByArtefactId(artefactId) :
-                                     publicationService.getPayloadByArtefactId(artefactId, userId));
+                                    ? artefactService.getPayloadByArtefactId(artefactId) :
+                                     artefactService.getPayloadByArtefactId(artefactId, userId));
     }
 
     @ApiResponse(responseCode = OK_CODE, description = "Blob data from the given request as a file.")
@@ -321,11 +343,11 @@ public class PublicationController {
         Resource file;
         Artefact metadata;
         if (isAdmin.equals(Boolean.TRUE)) {
-            file = publicationService.getFlatFileByArtefactID(artefactId);
-            metadata = publicationService.getMetadataByArtefactId(artefactId);
+            file = artefactService.getFlatFileByArtefactID(artefactId);
+            metadata = artefactService.getMetadataByArtefactId(artefactId);
         } else {
-            file = publicationService.getFlatFileByArtefactID(artefactId, userId);
-            metadata = publicationService.getMetadataByArtefactId(artefactId, userId);
+            file = artefactService.getFlatFileByArtefactID(artefactId, userId);
+            metadata = artefactService.getMetadataByArtefactId(artefactId, userId);
         }
 
         String fileType = metadata.getSourceArtefactId();
@@ -344,7 +366,7 @@ public class PublicationController {
     @IsAdmin
     public ResponseEntity<String> deleteArtefact(@RequestHeader("x-issuer-id") String issuerId,
         @PathVariable String artefactId) {
-        publicationService.deleteArtefactById(artefactId, issuerId);
+        artefactDeleteService.deleteArtefactById(artefactId, issuerId);
         return ResponseEntity.ok("Successfully deleted artefact: " + artefactId);
     }
 
@@ -356,14 +378,14 @@ public class PublicationController {
     @GetMapping("/count-by-location")
     @IsAdmin
     public ResponseEntity<String> countByLocation() {
-        return ResponseEntity.ok(publicationService.countArtefactsByLocation());
+        return ResponseEntity.ok(artefactService.countArtefactsByLocation());
     }
 
     @ApiResponse(responseCode = OK_CODE, description = "{Location type associated with given list type}")
     @Operation(summary = "Return the Location type associated with a given list type")
     @GetMapping("/location-type/{listType}")
     public ResponseEntity<LocationType> getLocationType(@PathVariable ListType listType) {
-        return ResponseEntity.ok(publicationService.getLocationType(listType));
+        return ResponseEntity.ok(artefactService.getLocationType(listType));
     }
 
     private void logManualUpload(String issuerId, String artefactId) {
@@ -387,7 +409,7 @@ public class PublicationController {
     @PostMapping("/latest/subscription")
     @IsAdmin
     public ResponseEntity<Void> sendNewArtefactsForSubscription() {
-        publicationService.checkNewlyActiveArtefacts();
+        artefactTriggerService.checkNewlyActiveArtefacts();
         return ResponseEntity.noContent().build();
     }
 
@@ -398,7 +420,7 @@ public class PublicationController {
     @PostMapping("/no-match/reporting")
     @IsAdmin
     public ResponseEntity<Void> reportNoMatchArtefacts() {
-        publicationService.reportNoMatchArtefacts();
+        artefactTriggerService.reportNoMatchArtefacts();
         return ResponseEntity.noContent().build();
     }
 
@@ -409,7 +431,7 @@ public class PublicationController {
     @DeleteMapping("/expired")
     @IsAdmin
     public ResponseEntity<Void> archiveExpiredArtefacts() {
-        publicationService.archiveExpiredArtefacts();
+        artefactDeleteService.archiveExpiredArtefacts();
         return ResponseEntity.noContent().build();
     }
 
@@ -422,7 +444,7 @@ public class PublicationController {
     @IsAdmin
     public ResponseEntity<String> archiveArtefact(@RequestHeader("x-issuer-id") String issuerId,
                                                   @PathVariable String id) {
-        publicationService.archiveArtefactById(id, issuerId);
+        artefactDeleteService.archiveArtefactById(id, issuerId);
         return ResponseEntity.ok(String.format("Artefact of ID %s has been archived", id));
     }
 }

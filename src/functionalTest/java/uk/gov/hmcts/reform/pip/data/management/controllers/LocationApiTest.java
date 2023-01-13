@@ -133,7 +133,6 @@ class LocationApiTest {
                 "Expected location not displayed in list"
             );
         }
-
     }
 
     @Test
@@ -726,7 +725,7 @@ class LocationApiTest {
 
     @Test
     @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})
-    void testUploadLocation() throws Exception {
+    void testUploadLocations() throws Exception {
         try (InputStream csvInputStream = this.getClass().getClassLoader()
             .getResourceAsStream(LOCATIONS_CSV)) {
             MockMultipartFile csvFile
@@ -755,7 +754,7 @@ class LocationApiTest {
     }
 
     @Test
-    void testUploadLocationUnauthorised() throws Exception {
+    void testUploadLocationsUnauthorised() throws Exception {
         try (InputStream csvInputStream = this.getClass().getClassLoader()
             .getResourceAsStream(LOCATIONS_CSV)) {
             MockMultipartFile csvFile
