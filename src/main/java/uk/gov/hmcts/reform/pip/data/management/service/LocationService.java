@@ -241,12 +241,13 @@ public class LocationService {
                     requesterName = node.get("displayName").asText();
                 }
             } catch (JsonProcessingException e) {
+                log.error(e.getMessage());
                 throw e;
             }
             locationDeletion = checkActiveArtefactForLocation(location.get(), requesterName);
-            if (!locationDeletion.getIsExists()) {
+            if (Boolean.FALSE.equals(locationDeletion.getIsExists())) {
                 locationDeletion = checkActiveSubscriptionForLocation(location.get(), requesterName);
-                if (!locationDeletion.getIsExists()) {
+                if (Boolean.FALSE.equals(locationDeletion.getIsExists())) {
                     locationRepository.deleteById(locationId);
                     sendEmailToAllSystemAdmins(requesterName, ActionResult.SUCCEEDED,
                         String.format("Location %s with Id %s has been deleted.",

@@ -28,6 +28,9 @@ public class AccountManagementService {
     @Value("${service-to-service.account-management}")
     private String url;
 
+    private static final String ACCOUNT_MANAGEMENT_API = "accountManagementApi";
+    private static final String REQUEST_ACCOUNT_ERROR = "Request to account management failed with error message: %s";
+
     /**
      * Calls Account Management to determine whether a user is allowed to see a set publication.
      * @param userId The UUID of the user to retrieve.
@@ -39,10 +42,10 @@ public class AccountManagementService {
         try {
             return webClient.get().uri(String.format(
                 "%s/account/isAuthorised/%s/%s/%s", url, userId, listType, sensitivity))
-                .attributes(clientRegistrationId("accountManagementApi"))
+                .attributes(clientRegistrationId(ACCOUNT_MANAGEMENT_API))
                 .retrieve().bodyToMono(Boolean.class).block();
         } catch (WebClientException ex) {
-            log.error(String.format("Request to account management failed with error message: %s", ex.getMessage()));
+            log.error(String.format(REQUEST_ACCOUNT_ERROR, ex.getMessage()));
             return false;
         }
     }
@@ -52,11 +55,11 @@ public class AccountManagementService {
         try {
             String result = webClient.get().uri(String.format(
                     "%s/account/all?provenances=%s&roles=%s", url, provenances, role))
-                .attributes(clientRegistrationId("accountManagementApi"))
+                .attributes(clientRegistrationId(ACCOUNT_MANAGEMENT_API))
                 .retrieve().bodyToMono(String.class).block();
             return findAllSystemAdmins(result);
         } catch (WebClientException ex) {
-            log.error(String.format("Request to account management failed with error message: %s", ex.getMessage()));
+            log.error(String.format(REQUEST_ACCOUNT_ERROR, ex.getMessage()));
             return List.of("Failed to find all the accounts");
         }
     }
@@ -64,10 +67,10 @@ public class AccountManagementService {
     public String getUserInfo(String provenanceUserId) {
         try {
             return webClient.get().uri(url + "/account/azure/" + provenanceUserId)
-                .attributes(clientRegistrationId("accountManagementApi"))
+                .attributes(clientRegistrationId(ACCOUNT_MANAGEMENT_API))
                 .retrieve().bodyToMono(String.class).block();
         } catch (WebClientException ex) {
-            log.error(String.format("Request to account management failed with error message: %s", ex.getMessage()));
+            log.error(String.format(REQUEST_ACCOUNT_ERROR, ex.getMessage()));
             return "Failed to find user info for user: " + provenanceUserId;
         }
     }
