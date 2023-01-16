@@ -2,7 +2,6 @@ package uk.gov.hmcts.reform.pip.data.management.controllers;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -22,9 +21,7 @@ public class CaseEventGlossaryController {
     @Autowired
     private CaseEventGlossaryService caseEventGlossaryService;
 
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "All case event glossary returned"),
-    })
+    @ApiResponse(responseCode = "200", description = "All case event glossary returned")
     @Operation(summary = "Get all case event glossary list with their description")
     @GetMapping
     public ResponseEntity<List<CaseEventGlossary>> getCaseEventGlossaryList() {

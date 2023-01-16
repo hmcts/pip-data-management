@@ -81,7 +81,8 @@ class SscsDailyListTest {
             JsonNode node = getJsonNode(text);
             ((ObjectNode) node).remove("document");
 
-            assertThrows(PayloadValidationException.class, () -> validationService.validateBody(node.toString(),
+            String listJson = node.toString();
+            assertThrows(PayloadValidationException.class, () -> validationService.validateBody(listJson,
                 headerGroup),
                          SSCS_DAILY_LIST_INVALID_MESSAGE);
         }
@@ -96,7 +97,8 @@ class SscsDailyListTest {
             JsonNode node = getJsonNode(text);
             ((ObjectNode) node.get("document")).remove("publicationDate");
 
-            assertThrows(PayloadValidationException.class, () -> validationService.validateBody(node.toString(),
+            String listJson = node.toString();
+            assertThrows(PayloadValidationException.class, () -> validationService.validateBody(listJson,
                 headerGroup),
                          SSCS_DAILY_LIST_INVALID_MESSAGE);
         }
@@ -111,7 +113,8 @@ class SscsDailyListTest {
             JsonNode node = getJsonNode(text);
             ((ObjectNode) node).remove(VENUE_SCHEMA);
 
-            assertThrows(PayloadValidationException.class, () -> validationService.validateBody(node.toString(),
+            String listJson = node.toString();
+            assertThrows(PayloadValidationException.class, () -> validationService.validateBody(listJson,
                 headerGroup),
                          SSCS_DAILY_LIST_INVALID_MESSAGE);
         }
@@ -126,7 +129,8 @@ class SscsDailyListTest {
             JsonNode node = getJsonNode(text);
             ((ObjectNode) node.get(VENUE_SCHEMA)).remove("venueName");
 
-            assertThrows(PayloadValidationException.class, () -> validationService.validateBody(node.toString(),
+            String listJson = node.toString();
+            assertThrows(PayloadValidationException.class, () -> validationService.validateBody(listJson,
                 headerGroup),
                          SSCS_DAILY_LIST_INVALID_MESSAGE);
         }
@@ -141,7 +145,8 @@ class SscsDailyListTest {
             JsonNode node = getJsonNode(text);
             ((ObjectNode) node.get(VENUE_SCHEMA)).remove("venueContact");
 
-            assertThrows(PayloadValidationException.class, () -> validationService.validateBody(node.toString(),
+            String listJson = node.toString();
+            assertThrows(PayloadValidationException.class, () -> validationService.validateBody(listJson,
                 headerGroup),
                          SSCS_DAILY_LIST_INVALID_MESSAGE);
         }
@@ -156,7 +161,8 @@ class SscsDailyListTest {
             JsonNode node = getJsonNode(text);
             ((ObjectNode) node).remove(COURT_LIST_SCHEMA);
 
-            assertThrows(PayloadValidationException.class, () -> validationService.validateBody(node.toString(),
+            String listJson = node.toString();
+            assertThrows(PayloadValidationException.class, () -> validationService.validateBody(listJson,
                 headerGroup),
                     SSCS_DAILY_LIST_INVALID_MESSAGE);
         }
@@ -173,7 +179,8 @@ class SscsDailyListTest {
 
             ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0)).remove(COURT_HOUSE_SCHEMA);
 
-            assertThrows(PayloadValidationException.class, () -> validationService.validateBody(node.toString(),
+            String listJson = node.toString();
+            assertThrows(PayloadValidationException.class, () -> validationService.validateBody(listJson,
                 headerGroup),
                     SSCS_DAILY_LIST_INVALID_MESSAGE);
         }
@@ -191,7 +198,8 @@ class SscsDailyListTest {
             ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0).get(COURT_HOUSE_SCHEMA))
                 .remove("courtHouseName");
 
-            assertThrows(PayloadValidationException.class, () -> validationService.validateBody(node.toString(),
+            String listJson = node.toString();
+            assertThrows(PayloadValidationException.class, () -> validationService.validateBody(listJson,
                 headerGroup),
                     SSCS_DAILY_LIST_INVALID_MESSAGE);
         }
@@ -209,7 +217,8 @@ class SscsDailyListTest {
             ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0).get(COURT_HOUSE_SCHEMA))
                 .remove("courtHouseContact");
 
-            assertThrows(PayloadValidationException.class, () -> validationService.validateBody(node.toString(),
+            String listJson = node.toString();
+            assertThrows(PayloadValidationException.class, () -> validationService.validateBody(listJson,
                 headerGroup),
                     SSCS_DAILY_LIST_INVALID_MESSAGE);
         }
@@ -227,7 +236,8 @@ class SscsDailyListTest {
             ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0).get(COURT_HOUSE_SCHEMA))
                 .remove(COURT_ROOM_SCHEMA);
 
-            assertThrows(PayloadValidationException.class, () -> validationService.validateBody(node.toString(),
+            String listJson = node.toString();
+            assertThrows(PayloadValidationException.class, () -> validationService.validateBody(listJson,
                 headerGroup),
                     SSCS_DAILY_LIST_INVALID_MESSAGE);
         }
@@ -245,7 +255,8 @@ class SscsDailyListTest {
             ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0).get(COURT_HOUSE_SCHEMA)
                 .get(COURT_ROOM_SCHEMA).get(0)).remove(SESSION_SCHEMA);
 
-            assertThrows(PayloadValidationException.class, () -> validationService.validateBody(node.toString(),
+            String listJson = node.toString();
+            assertThrows(PayloadValidationException.class, () -> validationService.validateBody(listJson,
                 headerGroup),
                     SSCS_DAILY_LIST_INVALID_MESSAGE);
         }
@@ -264,7 +275,8 @@ class SscsDailyListTest {
                 .get(COURT_ROOM_SCHEMA).get(0).get(SESSION_SCHEMA).get(0))
                 .remove("sessionChannel");
 
-            assertThrows(PayloadValidationException.class, () -> validationService.validateBody(node.toString(),
+            String listJson = node.toString();
+            assertThrows(PayloadValidationException.class, () -> validationService.validateBody(listJson,
                 headerGroup),
                     SSCS_DAILY_LIST_INVALID_MESSAGE);
         }
@@ -283,7 +295,8 @@ class SscsDailyListTest {
                 .get(COURT_ROOM_SCHEMA).get(0).get(SESSION_SCHEMA).get(0))
                 .remove(SITTINGS_SCHEMA);
 
-            assertThrows(PayloadValidationException.class, () -> validationService.validateBody(node.toString(),
+            String listJson = node.toString();
+            assertThrows(PayloadValidationException.class, () -> validationService.validateBody(listJson,
                 headerGroup),
                     SSCS_DAILY_LIST_INVALID_MESSAGE);
         }
@@ -302,7 +315,8 @@ class SscsDailyListTest {
                 .get(0).get(SESSION_SCHEMA).get(0).get(SITTINGS_SCHEMA).get(0))
                 .remove("sittingStart");
 
-            assertThrows(PayloadValidationException.class, () -> validationService.validateBody(node.toString(),
+            String listJson = node.toString();
+            assertThrows(PayloadValidationException.class, () -> validationService.validateBody(listJson,
                 headerGroup),
                     SSCS_DAILY_LIST_INVALID_MESSAGE);
         }
@@ -321,7 +335,8 @@ class SscsDailyListTest {
                 .get(COURT_ROOM_SCHEMA).get(0).get(SESSION_SCHEMA).get(0).get(SITTINGS_SCHEMA).get(0))
                 .remove(HEARING_SCHEMA);
 
-            assertThrows(PayloadValidationException.class, () -> validationService.validateBody(node.toString(),
+            String listJson = node.toString();
+            assertThrows(PayloadValidationException.class, () -> validationService.validateBody(listJson,
                 headerGroup),
                     SSCS_DAILY_LIST_INVALID_MESSAGE);
         }
@@ -340,7 +355,8 @@ class SscsDailyListTest {
                 .get(0).get(SESSION_SCHEMA).get(0).get(SITTINGS_SCHEMA).get(0).get(HEARING_SCHEMA).get(0))
                 .remove(CASE_SCHEMA);
 
-            assertThrows(PayloadValidationException.class, () -> validationService.validateBody(node.toString(),
+            String listJson = node.toString();
+            assertThrows(PayloadValidationException.class, () -> validationService.validateBody(listJson,
                 headerGroup),
                     SSCS_DAILY_LIST_INVALID_MESSAGE);
         }
@@ -359,7 +375,8 @@ class SscsDailyListTest {
                 .get(0).get(SESSION_SCHEMA).get(0).get(SITTINGS_SCHEMA).get(0).get(HEARING_SCHEMA)
                 .get(0).get(CASE_SCHEMA).get(0)).remove("caseNumber");
 
-            assertThrows(PayloadValidationException.class, () -> validationService.validateBody(node.toString(),
+            String listJson = node.toString();
+            assertThrows(PayloadValidationException.class, () -> validationService.validateBody(listJson,
                 headerGroup),
                     SSCS_DAILY_LIST_INVALID_MESSAGE);
         }
@@ -377,7 +394,8 @@ class SscsDailyListTest {
             ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0).get(COURT_HOUSE_SCHEMA).get(COURT_ROOM_SCHEMA)
                 .get(0)).remove("courtRoomName");
 
-            assertThrows(PayloadValidationException.class, () -> validationService.validateBody(node.toString(),
+            String listJson = node.toString();
+            assertThrows(PayloadValidationException.class, () -> validationService.validateBody(listJson,
                 headerGroup),
                          SSCS_DAILY_LIST_INVALID_MESSAGE);
         }

@@ -3,7 +3,6 @@ package uk.gov.hmcts.reform.pip.data.management.controllers;
 import com.fasterxml.jackson.annotation.JsonView;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +39,10 @@ import uk.gov.hmcts.reform.pip.data.management.models.publication.Sensitivity;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.views.ArtefactView;
 import uk.gov.hmcts.reform.pip.data.management.service.PublicationService;
 import uk.gov.hmcts.reform.pip.data.management.service.ValidationService;
+import uk.gov.hmcts.reform.pip.data.management.service.artefact.ArtefactDeleteService;
+import uk.gov.hmcts.reform.pip.data.management.service.artefact.ArtefactSearchService;
+import uk.gov.hmcts.reform.pip.data.management.service.artefact.ArtefactService;
+import uk.gov.hmcts.reform.pip.data.management.service.artefact.ArtefactTriggerService;
 import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
 import uk.gov.hmcts.reform.pip.model.enums.UserActions;
 
@@ -80,6 +83,13 @@ public class PublicationController {
 
     private final PublicationService publicationService;
 
+    private final ArtefactSearchService artefactSearchService;
+
+    private final ArtefactService artefactService;
+
+    private final ArtefactDeleteService artefactDeleteService;
+
+    private final ArtefactTriggerService artefactTriggerService;
     @Autowired
     private final ValidationService validationService;
 
@@ -88,12 +98,24 @@ public class PublicationController {
     /**
      * Constructor for Publication controller.
      *
-     * @param publicationService The PublicationService that contains the business logic to handle publications.
+     * @param publicationService     The PublicationService that contains the business logic to handle publications.
+     * @param artefactService   The ArtefactService that con be used to get artefact property
+     * @param artefactDeleteService The ArtefactDeleteService that can be used to Delete or Archive artefacts
+     * @param artefactTriggerService The ArtefactTriggerService that can be used to send artefact data to other services
      */
     @Autowired
-    public PublicationController(PublicationService publicationService, ValidationService validationService) {
+    public PublicationController(PublicationService publicationService,
+                                 ValidationService validationService,
+                                 ArtefactSearchService artefactSearchService,
+                                 ArtefactService artefactService,
+                                 ArtefactDeleteService artefactDeleteService,
+                                 ArtefactTriggerService artefactTriggerService) {
         this.publicationService = publicationService;
         this.validationService = validationService;
+        this.artefactSearchService = artefactSearchService;
+        this.artefactService = artefactService;
+        this.artefactDeleteService = artefactDeleteService;
+        this.artefactTriggerService = artefactTriggerService;
     }
 
     /**
@@ -112,11 +134,9 @@ public class PublicationController {
      * @param payload     JSON Blob with key/value pairs of data to be published.
      * @return The created artefact.
      */
-    @ApiResponses({
-        @ApiResponse(responseCode = "201", description = "Artefact.class instance for the artefact that has been "
-            + "created"),
-        @ApiResponse(responseCode = AUTH_ERROR_CODE, description = UNAUTHORIZED_DESCRIPTION)
-    })
+    @ApiResponse(responseCode = "201", description = "Artefact.class instance for the artefact that has been "
+            + "created")
+    @ApiResponse(responseCode = AUTH_ERROR_CODE, description = UNAUTHORIZED_DESCRIPTION)
     @Operation(summary = "Upload a new publication")
     @PostMapping
     @Valid
@@ -189,11 +209,9 @@ public class PublicationController {
      * @param file             The flat file that is to be uploaded and associated with the Artefact.
      * @return The created artefact.
      */
-    @ApiResponses({
-        @ApiResponse(responseCode = "201", description = "Artefact.class instance for the artefact that has been "
-            + "created"),
-        @ApiResponse(responseCode = AUTH_ERROR_CODE, description = UNAUTHORIZED_DESCRIPTION)
-    })
+    @ApiResponse(responseCode = "201", description = "Artefact.class instance for the artefact that has been "
+            + "created")
+    @ApiResponse(responseCode = AUTH_ERROR_CODE, description = UNAUTHORIZED_DESCRIPTION)
     @Operation(summary = "Upload a new publication")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @JsonView(ArtefactView.External.class)
@@ -246,17 +264,15 @@ public class PublicationController {
 
         logManualUpload(publicationService.maskEmail(issuerEmail), createdItem.getArtefactId().toString());
 
-        publicationService.checkAndTriggerSubscriptionManagement(artefact);
+        artefactTriggerService.checkAndTriggerSubscriptionManagement(artefact);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(createdItem);
     }
 
-    @ApiResponses({
-        @ApiResponse(responseCode = OK_CODE, description = "List of Artefacts matching the given locationId and "
-            + "verification parameters and date requirements"),
-        @ApiResponse(responseCode = AUTH_ERROR_CODE, description = UNAUTHORIZED_DESCRIPTION),
-        @ApiResponse(responseCode = NOT_FOUND_CODE, description = NOT_FOUND_DESCRIPTION),
-    })
+    @ApiResponse(responseCode = OK_CODE, description = "List of Artefacts matching the given locationId and "
+            + "verification parameters and date requirements")
+    @ApiResponse(responseCode = AUTH_ERROR_CODE, description = UNAUTHORIZED_DESCRIPTION)
+    @ApiResponse(responseCode = NOT_FOUND_CODE, description = NOT_FOUND_DESCRIPTION)
     @Operation(summary = "Get a series of publications matching a given locationId (e.g. locationId)")
     @GetMapping("/locationId/{locationId}")
     @JsonView(ArtefactView.Internal.class)
@@ -265,15 +281,13 @@ public class PublicationController {
         @PathVariable String locationId,
         @RequestHeader(value = USER_ID_HEADER, required = false) UUID userId,
         @RequestHeader(value = ADMIN_HEADER, defaultValue = DEFAULT_ADMIN_VALUE, required = false) Boolean isAdmin) {
-        return ResponseEntity.ok(publicationService.findAllByLocationIdAdmin(locationId, userId, isAdmin));
+        return ResponseEntity.ok(artefactSearchService.findAllByLocationIdAdmin(locationId, userId, isAdmin));
     }
 
-    @ApiResponses({
-        @ApiResponse(responseCode = OK_CODE, description = "List of Artefacts matching"
-            + " a given case value, verification parameters and date requirements"),
-        @ApiResponse(responseCode = AUTH_ERROR_CODE, description = UNAUTHORIZED_DESCRIPTION),
-        @ApiResponse(responseCode = NOT_FOUND_CODE, description = NOT_FOUND_DESCRIPTION),
-    })
+    @ApiResponse(responseCode = OK_CODE, description = "List of Artefacts matching"
+            + " a given case value, verification parameters and date requirements")
+    @ApiResponse(responseCode = AUTH_ERROR_CODE, description = UNAUTHORIZED_DESCRIPTION)
+    @ApiResponse(responseCode = NOT_FOUND_CODE, description = NOT_FOUND_DESCRIPTION)
     @Operation(summary = "Get a series of publications matching a given case search value (e.g. "
         + "CASE_URN/CASE_ID/CASE_NAME)")
     @GetMapping("/search/{searchTerm}/{searchValue}")
@@ -282,14 +296,12 @@ public class PublicationController {
     public ResponseEntity<List<Artefact>> getAllRelevantArtefactsBySearchValue(
         @PathVariable CaseSearchTerm searchTerm, @PathVariable String searchValue,
         @RequestHeader(value = USER_ID_HEADER,  required = false) UUID userId) {
-        return ResponseEntity.ok(publicationService.findAllBySearch(searchTerm, searchValue, userId));
+        return ResponseEntity.ok(artefactSearchService.findAllBySearch(searchTerm, searchValue, userId));
     }
 
-    @ApiResponses({
-        @ApiResponse(responseCode = OK_CODE, description = "Gets the artefact metadata"),
-        @ApiResponse(responseCode = AUTH_ERROR_CODE, description = UNAUTHORIZED_DESCRIPTION),
-        @ApiResponse(responseCode = NOT_FOUND_CODE, description = NOT_FOUND_DESCRIPTION),
-    })
+    @ApiResponse(responseCode = OK_CODE, description = "Gets the artefact metadata")
+    @ApiResponse(responseCode = AUTH_ERROR_CODE, description = UNAUTHORIZED_DESCRIPTION)
+    @ApiResponse(responseCode = NOT_FOUND_CODE, description = NOT_FOUND_DESCRIPTION)
     @Operation(summary = "Gets the metadata for the blob, given a specific artefact id")
     @GetMapping("/{artefactId}")
     @JsonView(ArtefactView.Internal.class)
@@ -298,15 +310,14 @@ public class PublicationController {
         @PathVariable UUID artefactId, @RequestHeader(value = USER_ID_HEADER, required = false) UUID userId,
                                        @RequestHeader(value = ADMIN_HEADER, defaultValue = DEFAULT_ADMIN_VALUE,
                                            required = false) Boolean isAdmin) {
-        return ResponseEntity.ok(isAdmin ? publicationService.getMetadataByArtefactId(artefactId) :
-                                     publicationService.getMetadataByArtefactId(artefactId, userId));
+        return ResponseEntity.ok(isAdmin.equals(Boolean.TRUE)
+                                    ? artefactService.getMetadataByArtefactId(artefactId) :
+                                     artefactService.getMetadataByArtefactId(artefactId, userId));
     }
 
-    @ApiResponses({
-        @ApiResponse(responseCode = OK_CODE, description = "Blob data from the given request in text format."),
-        @ApiResponse(responseCode = AUTH_ERROR_CODE, description = UNAUTHORIZED_DESCRIPTION),
-        @ApiResponse(responseCode = NOT_FOUND_CODE, description = NOT_FOUND_DESCRIPTION),
-    })
+    @ApiResponse(responseCode = OK_CODE, description = "Blob data from the given request in text format.")
+    @ApiResponse(responseCode = AUTH_ERROR_CODE, description = UNAUTHORIZED_DESCRIPTION)
+    @ApiResponse(responseCode = NOT_FOUND_CODE, description = NOT_FOUND_DESCRIPTION)
     @Operation(summary = "Gets the the payload for the blob, given a specific artefact ID")
     @GetMapping("/{artefactId}/payload")
     @IsAdmin
@@ -314,16 +325,14 @@ public class PublicationController {
         @PathVariable UUID artefactId,
         @RequestHeader(value = USER_ID_HEADER, required = false) UUID userId,
         @RequestHeader(value = ADMIN_HEADER, defaultValue = DEFAULT_ADMIN_VALUE, required = false) Boolean isAdmin) {
-
-        return ResponseEntity.ok(isAdmin ? publicationService.getPayloadByArtefactId(artefactId) :
-                                     publicationService.getPayloadByArtefactId(artefactId, userId));
+        return ResponseEntity.ok(isAdmin.equals(Boolean.TRUE)
+                                    ? artefactService.getPayloadByArtefactId(artefactId) :
+                                     artefactService.getPayloadByArtefactId(artefactId, userId));
     }
 
-    @ApiResponses({
-        @ApiResponse(responseCode = OK_CODE, description = "Blob data from the given request as a file."),
-        @ApiResponse(responseCode = AUTH_ERROR_CODE, description = UNAUTHORIZED_DESCRIPTION),
-        @ApiResponse(responseCode = NOT_FOUND_CODE, description = NOT_FOUND_DESCRIPTION),
-    })
+    @ApiResponse(responseCode = OK_CODE, description = "Blob data from the given request as a file.")
+    @ApiResponse(responseCode = AUTH_ERROR_CODE, description = UNAUTHORIZED_DESCRIPTION)
+    @ApiResponse(responseCode = NOT_FOUND_CODE, description = NOT_FOUND_DESCRIPTION)
     @Operation(summary = "Gets the the payload for the blob, given a specific artefact ID")
     @GetMapping(value = "/{artefactId}/file", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     @IsAdmin
@@ -334,12 +343,12 @@ public class PublicationController {
 
         Resource file;
         Artefact metadata;
-        if (isAdmin) {
-            file = publicationService.getFlatFileByArtefactID(artefactId);
-            metadata = publicationService.getMetadataByArtefactId(artefactId);
+        if (isAdmin.equals(Boolean.TRUE)) {
+            file = artefactService.getFlatFileByArtefactID(artefactId);
+            metadata = artefactService.getMetadataByArtefactId(artefactId);
         } else {
-            file = publicationService.getFlatFileByArtefactID(artefactId, userId);
-            metadata = publicationService.getMetadataByArtefactId(artefactId, userId);
+            file = artefactService.getFlatFileByArtefactID(artefactId, userId);
+            metadata = artefactService.getMetadataByArtefactId(artefactId, userId);
         }
 
         String fileType = metadata.getSourceArtefactId();
@@ -350,25 +359,21 @@ public class PublicationController {
             .body(file);
     }
 
-    @ApiResponses({
-        @ApiResponse(responseCode = OK_CODE, description = "Successfully deleted artefact: {artefactId}"),
-        @ApiResponse(responseCode = AUTH_ERROR_CODE, description = UNAUTHORIZED_DESCRIPTION),
-        @ApiResponse(responseCode = NOT_FOUND_CODE, description = "No artefact found with the ID: {artefactId}"),
-    })
+    @ApiResponse(responseCode = OK_CODE, description = "Successfully deleted artefact: {artefactId}")
+    @ApiResponse(responseCode = AUTH_ERROR_CODE, description = UNAUTHORIZED_DESCRIPTION)
+    @ApiResponse(responseCode = NOT_FOUND_CODE, description = "No artefact found with the ID: {artefactId}")
     @Operation(summary = "Delete a artefact and its list from P&I")
     @DeleteMapping("/{artefactId}")
     @IsAdmin
     public ResponseEntity<String> deleteArtefact(@RequestHeader("x-issuer-id") String issuerId,
         @PathVariable String artefactId) {
-        publicationService.deleteArtefactById(artefactId, issuerId);
+        artefactDeleteService.deleteArtefactById(artefactId, issuerId);
         return ResponseEntity.ok("Successfully deleted artefact: " + artefactId);
     }
 
-    @ApiResponses({
-        @ApiResponse(responseCode = OK_CODE, description = "Data Management - Artefact count per location - request "
-            + "accepted."),
-        @ApiResponse(responseCode = AUTH_ERROR_CODE, description = UNAUTHORIZED_DESCRIPTION)
-    })
+    @ApiResponse(responseCode = OK_CODE, description = "Data Management - Artefact count per location - request "
+            + "accepted.")
+    @ApiResponse(responseCode = AUTH_ERROR_CODE, description = UNAUTHORIZED_DESCRIPTION)
     @Operation(summary = "Return a count of artefacts per location")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/count-by-location")
@@ -377,13 +382,11 @@ public class PublicationController {
         return ResponseEntity.ok(publicationService.countArtefactsByLocation());
     }
 
-    @ApiResponses({
-        @ApiResponse(responseCode = OK_CODE, description = "{Location type associated with given list type}")
-    })
+    @ApiResponse(responseCode = OK_CODE, description = "{Location type associated with given list type}")
     @Operation(summary = "Return the Location type associated with a given list type")
     @GetMapping("/location-type/{listType}")
     public ResponseEntity<LocationType> getLocationType(@PathVariable ListType listType) {
-        return ResponseEntity.ok(publicationService.getLocationType(listType));
+        return ResponseEntity.ok(artefactService.getLocationType(listType));
     }
 
     private void logManualUpload(String issuerId, String artefactId) {
@@ -392,9 +395,7 @@ public class PublicationController {
         }
     }
 
-    @ApiResponses({
-        @ApiResponse(responseCode = OK_CODE, description = "Data Management - MI Data request accepted.")
-    })
+    @ApiResponse(responseCode = OK_CODE, description = "Data Management - MI Data request accepted.")
     @Operation(summary = "Return the table of MI data")
     @GetMapping("/mi-data")
     @IsAdmin
@@ -402,57 +403,49 @@ public class PublicationController {
         return ResponseEntity.ok().body(publicationService.getMiData());
     }
 
-    @ApiResponses({
-        @ApiResponse(responseCode = NO_CONTENT_CODE, description = NO_CONTENT_DESCRIPTION),
-        @ApiResponse(responseCode = AUTH_ERROR_CODE, description = UNAUTHORIZED_DESCRIPTION)
-    })
+    @ApiResponse(responseCode = NO_CONTENT_CODE, description = NO_CONTENT_DESCRIPTION)
+    @ApiResponse(responseCode = AUTH_ERROR_CODE, description = UNAUTHORIZED_DESCRIPTION)
     @Operation(summary = "Find latest artefacts from today and send them to subscribers")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PostMapping("/latest/subscription")
     @IsAdmin
     public ResponseEntity<Void> sendNewArtefactsForSubscription() {
-        publicationService.checkNewlyActiveArtefacts();
+        artefactTriggerService.checkNewlyActiveArtefacts();
         return ResponseEntity.noContent().build();
     }
 
-    @ApiResponses({
-        @ApiResponse(responseCode = NO_CONTENT_CODE, description = NO_CONTENT_DESCRIPTION),
-        @ApiResponse(responseCode = AUTH_ERROR_CODE, description = UNAUTHORIZED_DESCRIPTION)
-    })
+    @ApiResponse(responseCode = NO_CONTENT_CODE, description = NO_CONTENT_DESCRIPTION)
+    @ApiResponse(responseCode = AUTH_ERROR_CODE, description = UNAUTHORIZED_DESCRIPTION)
     @Operation(summary = "Report artefacts which do not match any location")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PostMapping("/no-match/reporting")
     @IsAdmin
     public ResponseEntity<Void> reportNoMatchArtefacts() {
-        publicationService.reportNoMatchArtefacts();
+        artefactTriggerService.reportNoMatchArtefacts();
         return ResponseEntity.noContent().build();
     }
 
-    @ApiResponses({
-        @ApiResponse(responseCode = NO_CONTENT_CODE, description = NO_CONTENT_DESCRIPTION),
-        @ApiResponse(responseCode = AUTH_ERROR_CODE, description = UNAUTHORIZED_DESCRIPTION)
-    })
+    @ApiResponse(responseCode = NO_CONTENT_CODE, description = NO_CONTENT_DESCRIPTION)
+    @ApiResponse(responseCode = AUTH_ERROR_CODE, description = UNAUTHORIZED_DESCRIPTION)
     @Operation(summary = "Archive all expired artefacts")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/expired")
     @IsAdmin
     public ResponseEntity<Void> archiveExpiredArtefacts() {
-        publicationService.archiveExpiredArtefacts();
+        artefactDeleteService.archiveExpiredArtefacts();
         return ResponseEntity.noContent().build();
     }
 
-    @ApiResponses({
-        @ApiResponse(responseCode = OK_CODE, description = "Artefact of ID {} has been archived"),
-        @ApiResponse(responseCode = AUTH_ERROR_CODE, description = UNAUTHORIZED_DESCRIPTION),
-        @ApiResponse(responseCode = NOT_FOUND_CODE, description = "Artefact with ID {} not found when archiving")
-    })
+    @ApiResponse(responseCode = OK_CODE, description = "Artefact of ID {} has been archived")
+    @ApiResponse(responseCode = AUTH_ERROR_CODE, description = UNAUTHORIZED_DESCRIPTION)
+    @ApiResponse(responseCode = NOT_FOUND_CODE, description = "Artefact with ID {} not found when archiving")
     @Operation(summary = "Archive an artefact by ID")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PutMapping("/{id}/archive")
     @IsAdmin
     public ResponseEntity<String> archiveArtefact(@RequestHeader("x-issuer-id") String issuerId,
                                                   @PathVariable String id) {
-        publicationService.archiveArtefactById(id, issuerId);
+        artefactDeleteService.archiveArtefactById(id, issuerId);
         return ResponseEntity.ok(String.format("Artefact of ID %s has been archived", id));
     }
 }
