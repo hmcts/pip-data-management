@@ -379,7 +379,7 @@ public class PublicationController {
     @GetMapping("/count-by-location")
     @IsAdmin
     public ResponseEntity<List<LocationArtefact>> countByLocation() {
-        return ResponseEntity.ok(publicationService.countArtefactsByLocation());
+        return ResponseEntity.ok(artefactService.countArtefactsByLocation());
     }
 
     @ApiResponse(responseCode = OK_CODE, description = "{Location type associated with given list type}")
