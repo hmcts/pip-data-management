@@ -460,7 +460,7 @@ class LocationServiceTest {
 
         LocationDeletion result = locationService.deleteLocation(locationId, REQUESTER_NAME);
 
-        assertTrue(result.getIsExists(), "Found active artefact for a court");
+        assertTrue(result.isExists(), "Found active artefact for a court");
     }
 
     @Test
@@ -484,7 +484,7 @@ class LocationServiceTest {
 
         LocationDeletion result = locationService.deleteLocation(locationId, REQUESTER_NAME);
 
-        assertTrue(result.getIsExists(), "Found active subscription for a court");
+        assertTrue(result.isExists(), "Found active subscription for a court");
     }
 
     @Test
