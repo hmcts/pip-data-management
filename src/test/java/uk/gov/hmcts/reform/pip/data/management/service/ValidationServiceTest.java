@@ -8,6 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.Application;
 import uk.gov.hmcts.reform.pip.data.management.config.AzureBlobConfigurationTestConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.FlatFileException;
@@ -212,8 +213,9 @@ class ValidationServiceTest {
 
     @Test
     void testEmptyFileThrows() {
+        MultipartFile file = new MockMultipartFile("test", (byte[]) null);
         FlatFileException ex = assertThrows(FlatFileException.class, () -> {
-            validationService.validateBody(new MockMultipartFile("test", (byte[]) null));
+            validationService.validateBody(file);
         });
 
         assertEquals("Empty file provided, please provide a valid file", ex.getMessage(),

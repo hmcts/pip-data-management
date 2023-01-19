@@ -85,8 +85,9 @@ class FamilyCauseListTest {
             JsonNode node = getJsonNode(text);
             ((ObjectNode) node).remove("document");
 
+            String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(node.toString(), headerGroup),
+                             validationService.validateBody(listJson, headerGroup),
                          FAMILY_CAUSE_LIST_INVALID_MESSAGE);
         }
     }
@@ -100,8 +101,9 @@ class FamilyCauseListTest {
             JsonNode node = getJsonNode(text);
             ((ObjectNode) node).remove(VENUE_SCHEMA);
 
+            String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(node.toString(), headerGroup),
+                             validationService.validateBody(listJson, headerGroup),
                          FAMILY_CAUSE_LIST_INVALID_MESSAGE);
         }
     }
@@ -115,8 +117,9 @@ class FamilyCauseListTest {
             JsonNode node = getJsonNode(text);
             ((ObjectNode) node).remove(COURT_LIST_SCHEMA);
 
+            String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(node.toString(), headerGroup),
+                             validationService.validateBody(listJson, headerGroup),
                          FAMILY_CAUSE_LIST_INVALID_MESSAGE);
         }
     }
@@ -131,8 +134,9 @@ class FamilyCauseListTest {
             JsonNode node = mapper.readValue(text, JsonNode.class);
             ((ObjectNode) node.get("document")).remove("publicationDate");
 
+            String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(node.toString(), headerGroup),
+                             validationService.validateBody(listJson, headerGroup),
                          FAMILY_CAUSE_LIST_INVALID_MESSAGE);
         }
     }
@@ -147,8 +151,9 @@ class FamilyCauseListTest {
             JsonNode node = mapper.readValue(text, JsonNode.class);
             ((ObjectNode) node.get(VENUE_SCHEMA)).remove("venueName");
 
+            String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(node.toString(), headerGroup),
+                             validationService.validateBody(listJson, headerGroup),
                          FAMILY_CAUSE_LIST_INVALID_MESSAGE);
         }
     }
@@ -163,8 +168,9 @@ class FamilyCauseListTest {
             JsonNode node = mapper.readValue(text, JsonNode.class);
             ((ObjectNode) node.get(VENUE_SCHEMA)).remove(VENUE_ADDRESS_SCHEMA);
 
+            String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(node.toString(), headerGroup),
+                             validationService.validateBody(listJson, headerGroup),
                          FAMILY_CAUSE_LIST_INVALID_MESSAGE);
         }
     }
@@ -179,8 +185,9 @@ class FamilyCauseListTest {
             JsonNode node = mapper.readValue(text, JsonNode.class);
             ((ObjectNode) node.get(VENUE_SCHEMA).get(VENUE_ADDRESS_SCHEMA)).remove("line");
 
+            String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(node.toString(), headerGroup),
+                             validationService.validateBody(listJson, headerGroup),
                          FAMILY_CAUSE_LIST_INVALID_MESSAGE);
         }
     }
@@ -195,8 +202,9 @@ class FamilyCauseListTest {
             JsonNode node = mapper.readValue(text, JsonNode.class);
             ((ObjectNode) node.get(VENUE_SCHEMA).get(VENUE_ADDRESS_SCHEMA)).remove("postCode");
 
+            String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(node.toString(), headerGroup),
+                             validationService.validateBody(listJson, headerGroup),
                          FAMILY_CAUSE_LIST_INVALID_MESSAGE);
         }
     }
@@ -211,8 +219,9 @@ class FamilyCauseListTest {
             JsonNode node = mapper.readValue(text, JsonNode.class);
             ((ObjectNode) node.get(VENUE_SCHEMA)).remove(VENUE_CONTACT_SCHEMA);
 
+            String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(node.toString(), headerGroup),
+                             validationService.validateBody(listJson, headerGroup),
                          FAMILY_CAUSE_LIST_INVALID_MESSAGE);
         }
     }
@@ -227,8 +236,9 @@ class FamilyCauseListTest {
             JsonNode node = mapper.readValue(text, JsonNode.class);
             ((ObjectNode) node.get(VENUE_SCHEMA).get(VENUE_CONTACT_SCHEMA)).remove("venueTelephone");
 
+            String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(node.toString(), headerGroup),
+                             validationService.validateBody(listJson, headerGroup),
                          FAMILY_CAUSE_LIST_INVALID_MESSAGE);
         }
     }
@@ -243,8 +253,9 @@ class FamilyCauseListTest {
             JsonNode node = mapper.readValue(text, JsonNode.class);
             ((ObjectNode) node.get(VENUE_SCHEMA).get(VENUE_CONTACT_SCHEMA)).remove("venueEmail");
 
+            String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(node.toString(), headerGroup),
+                             validationService.validateBody(listJson, headerGroup),
                          FAMILY_CAUSE_LIST_INVALID_MESSAGE);
         }
     }
@@ -259,8 +270,9 @@ class FamilyCauseListTest {
             JsonNode node = mapper.readValue(text, JsonNode.class);
             ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0)).remove(COURT_HOUSE_SCHEMA);
 
+            String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(node.toString(), headerGroup),
+                             validationService.validateBody(listJson, headerGroup),
                          FAMILY_CAUSE_LIST_INVALID_MESSAGE);
         }
     }
@@ -275,8 +287,9 @@ class FamilyCauseListTest {
             JsonNode node = mapper.readValue(text, JsonNode.class);
             ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0).get(COURT_HOUSE_SCHEMA)).remove("courtHouseName");
 
+            String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(node.toString(), headerGroup),
+                             validationService.validateBody(listJson, headerGroup),
                          FAMILY_CAUSE_LIST_INVALID_MESSAGE);
         }
     }
@@ -292,8 +305,9 @@ class FamilyCauseListTest {
             ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0)
                 .get(COURT_HOUSE_SCHEMA)).remove(COURT_ROOM_SCHEMA);
 
+            String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(node.toString(), headerGroup),
+                             validationService.validateBody(listJson, headerGroup),
                          FAMILY_CAUSE_LIST_INVALID_MESSAGE);
         }
     }
@@ -309,8 +323,9 @@ class FamilyCauseListTest {
             ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0)
                 .get(COURT_HOUSE_SCHEMA).get(COURT_ROOM_SCHEMA).get(0)).remove("courtRoomName");
 
+            String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(node.toString(), headerGroup),
+                             validationService.validateBody(listJson, headerGroup),
                          FAMILY_CAUSE_LIST_INVALID_MESSAGE);
         }
     }
@@ -326,8 +341,9 @@ class FamilyCauseListTest {
             ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0)
                 .get(COURT_HOUSE_SCHEMA).get(COURT_ROOM_SCHEMA).get(0)).remove(SESSION_SCHEMA);
 
+            String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(node.toString(), headerGroup),
+                             validationService.validateBody(listJson, headerGroup),
                          FAMILY_CAUSE_LIST_INVALID_MESSAGE);
         }
     }
@@ -344,8 +360,9 @@ class FamilyCauseListTest {
                 .get(COURT_HOUSE_SCHEMA).get(COURT_ROOM_SCHEMA).get(0)
                 .get(SESSION_SCHEMA).get(0)).remove(SITTINGS_SCHEMA);
 
+            String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(node.toString(), headerGroup),
+                             validationService.validateBody(listJson, headerGroup),
                          FAMILY_CAUSE_LIST_INVALID_MESSAGE);
         }
     }
@@ -362,8 +379,9 @@ class FamilyCauseListTest {
                 .get(COURT_HOUSE_SCHEMA).get(COURT_ROOM_SCHEMA).get(0)
                 .get(SESSION_SCHEMA).get(0).get(SITTINGS_SCHEMA).get(0)).remove("sittingStart");
 
+            String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(node.toString(), headerGroup),
+                             validationService.validateBody(listJson, headerGroup),
                          FAMILY_CAUSE_LIST_INVALID_MESSAGE);
         }
     }
@@ -380,8 +398,9 @@ class FamilyCauseListTest {
                 .get(COURT_HOUSE_SCHEMA).get(COURT_ROOM_SCHEMA).get(0)
                 .get(SESSION_SCHEMA).get(0).get(SITTINGS_SCHEMA).get(0)).remove("sittingEnd");
 
+            String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(node.toString(), headerGroup),
+                             validationService.validateBody(listJson, headerGroup),
                          FAMILY_CAUSE_LIST_INVALID_MESSAGE);
         }
     }
@@ -398,8 +417,9 @@ class FamilyCauseListTest {
                 .get(COURT_HOUSE_SCHEMA).get(COURT_ROOM_SCHEMA).get(0)
                 .get(SESSION_SCHEMA).get(0).get(SITTINGS_SCHEMA).get(0)).remove(HEARING_SCHEMA);
 
+            String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(node.toString(), headerGroup),
+                             validationService.validateBody(listJson, headerGroup),
                          FAMILY_CAUSE_LIST_INVALID_MESSAGE);
         }
     }
@@ -417,8 +437,9 @@ class FamilyCauseListTest {
                 .get(SESSION_SCHEMA).get(0).get(SITTINGS_SCHEMA).get(0)
                 .get(HEARING_SCHEMA).get(0)).remove("hearingType");
 
+            String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(node.toString(), headerGroup),
+                             validationService.validateBody(listJson, headerGroup),
                          FAMILY_CAUSE_LIST_INVALID_MESSAGE);
         }
     }
@@ -436,8 +457,9 @@ class FamilyCauseListTest {
                 .get(SESSION_SCHEMA).get(0).get(SITTINGS_SCHEMA).get(0)
                 .get(HEARING_SCHEMA).get(0)).remove(CASE_SCHEMA);
 
+            String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(node.toString(), headerGroup),
+                             validationService.validateBody(listJson, headerGroup),
                          FAMILY_CAUSE_LIST_INVALID_MESSAGE);
         }
     }
@@ -455,8 +477,9 @@ class FamilyCauseListTest {
                 .get(SITTINGS_SCHEMA).get(0).get(HEARING_SCHEMA).get(0)
                 .get(CASE_SCHEMA).get(0)).remove("caseName");
 
+            String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(node.toString(), headerGroup),
+                             validationService.validateBody(listJson, headerGroup),
                          FAMILY_CAUSE_LIST_INVALID_MESSAGE);
         }
     }
@@ -474,8 +497,9 @@ class FamilyCauseListTest {
                 .get(SESSION_SCHEMA).get(0).get(SITTINGS_SCHEMA).get(0)
                 .get(HEARING_SCHEMA).get(0).get(CASE_SCHEMA).get(0)).remove("caseNumber");
 
+            String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(node.toString(), headerGroup),
+                             validationService.validateBody(listJson, headerGroup),
                          FAMILY_CAUSE_LIST_INVALID_MESSAGE);
         }
     }

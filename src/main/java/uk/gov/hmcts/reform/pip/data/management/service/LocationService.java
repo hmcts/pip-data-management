@@ -1,5 +1,8 @@
 package uk.gov.hmcts.reform.pip.data.management.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.opencsv.CSVWriter;
 import com.opencsv.bean.CsvToBeanBuilder;
 import com.opencsv.bean.StatefulBeanToCsv;
@@ -8,17 +11,20 @@ import com.opencsv.exceptions.CsvDataTypeMismatchException;
 import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.LocationRepository;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CsvParseException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.LocationNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationCsv;
+import uk.gov.hmcts.reform.pip.data.management.models.location.LocationDeletion;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationReference;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationType;
+import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.model.enums.UserActions;
+import uk.gov.hmcts.reform.pip.model.system.admin.ActionResult;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -26,6 +32,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -33,6 +40,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static uk.gov.hmcts.reform.pip.data.management.models.request.Roles.SYSTEM_ADMIN;
 import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
 
 /**
@@ -40,11 +48,29 @@ import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
  */
 @Service
 @Slf4j
-@SuppressWarnings({"PMD.CloseResource"})
+@SuppressWarnings({"PMD"})
 public class LocationService {
+    private final LocationRepository locationRepository;
 
-    @Autowired
-    private LocationRepository locationRepository;
+    private final ArtefactRepository artefactRepository;
+
+    private final SubscriptionManagementService subscriptionManagementService;
+
+    private final AccountManagementService accountManagementService;
+
+    private final PublicationServicesService publicationService;
+
+    public LocationService(LocationRepository locationRepository,
+                           ArtefactRepository artefactRepository,
+                           SubscriptionManagementService subscriptionManagementService,
+                           AccountManagementService accountManagementService,
+                           PublicationServicesService publicationService) {
+        this.locationRepository = locationRepository;
+        this.artefactRepository = artefactRepository;
+        this.subscriptionManagementService = subscriptionManagementService;
+        this.accountManagementService = accountManagementService;
+        this.publicationService = publicationService;
+    }
 
     /**
      * Gets all locations.
@@ -170,7 +196,7 @@ public class LocationService {
 
         List<Location> allLocations = locationRepository.findAll();
         StatefulBeanToCsv<LocationCsv> beanToCsv = new StatefulBeanToCsvBuilder<LocationCsv>(writer).build();
-        allLocations.forEach(location -> {
+        allLocations.forEach(location ->
             location.getLocationReferenceList().forEach(locationReference -> {
                 try {
                     log.info(location.getJurisdiction().toString());
@@ -190,8 +216,7 @@ public class LocationService {
                     throw new CsvParseException(String.format("Failed to create CSV with message: %s",
                                                               e.getMessage()));
                 }
-            });
-        });
+            }));
 
         streamWriter.flush();
         streamWriter.close();
@@ -202,15 +227,76 @@ public class LocationService {
      * This method will delete a location from the database.
      * @param locationId The ID of the location to delete.
      */
-    public void deleteLocation(Integer locationId) {
+    public LocationDeletion deleteLocation(Integer locationId, String provenanceUserId)
+        throws JsonProcessingException {
+        LocationDeletion locationDeletion;
+        String requesterName = "";
         Optional<Location> location = locationRepository.getLocationByLocationId(locationId);
 
         if (location.isPresent()) {
-            locationRepository.deleteById(locationId);
+            String result = accountManagementService.getUserInfo(provenanceUserId);
+            try {
+                JsonNode node = new ObjectMapper().readTree(result);
+                if (!node.isEmpty()) {
+                    requesterName = node.get("displayName").asText();
+                }
+            } catch (JsonProcessingException e) {
+                throw e;
+            }
+            locationDeletion = checkActiveArtefactForLocation(location.get(), requesterName);
+            if (!locationDeletion.getIsExists()) {
+                locationDeletion = checkActiveSubscriptionForLocation(location.get(), requesterName);
+                if (!locationDeletion.getIsExists()) {
+                    locationRepository.deleteById(locationId);
+                    sendEmailToAllSystemAdmins(requesterName, ActionResult.SUCCEEDED,
+                        String.format("Location %s with Id %s has been deleted.",
+                                location.get().getName(), location.get().getLocationId()));
+                }
+            }
         } else {
             throw new LocationNotFoundException(
                 String.format("No location found with the id: %s", locationId));
         }
+
+        return locationDeletion;
     }
 
+    private void sendEmailToAllSystemAdmins(String requesterName, ActionResult actionResult,
+                                            String additionalDetails) throws JsonProcessingException {
+        List<String> systemAdmins = accountManagementService.getAllAccounts("PI_AAD", SYSTEM_ADMIN.toString());
+        publicationService.sendSystemAdminEmail(systemAdmins, requesterName, actionResult, additionalDetails);
+    }
+
+    private LocationDeletion checkActiveArtefactForLocation(Location location, String requesterName)
+        throws JsonProcessingException {
+        LocalDateTime searchDateTime = LocalDateTime.now();
+        LocationDeletion locationDeletion = new LocationDeletion();
+        List<Artefact> activeArtefacts =
+            artefactRepository.findActiveArtefactsForLocation(searchDateTime, location.getLocationId().toString());
+        if (!activeArtefacts.isEmpty()) {
+            locationDeletion = new LocationDeletion("There are active artefacts for the given location.",
+                                                    true);
+            sendEmailToAllSystemAdmins(requesterName, ActionResult.ATTEMPTED,
+                String.format("There are active artefacts for following location: %s", location.getName()));
+        }
+        return locationDeletion;
+    }
+
+    private LocationDeletion checkActiveSubscriptionForLocation(Location location, String requesterName)
+        throws JsonProcessingException {
+        LocationDeletion locationDeletion = new LocationDeletion();
+        String result =
+            subscriptionManagementService.findSubscriptionsByLocationId(location.getLocationId().toString());
+        if (!result.isEmpty()
+            && !result.contains("404")) {
+            JsonNode node = new ObjectMapper().readTree(result);
+            if (!node.isEmpty()) {
+                locationDeletion = new LocationDeletion("There are active subscriptions for the given location.",
+                                                        true);
+                sendEmailToAllSystemAdmins(requesterName, ActionResult.ATTEMPTED,
+                    String.format("There are active subscriptions for the following location: %s", location.getName()));
+            }
+        }
+        return locationDeletion;
+    }
 }

@@ -3,7 +3,6 @@ package uk.gov.hmcts.reform.pip.data.management.controllers;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -27,10 +26,8 @@ public class HearingController {
     private static final String OK_CODE = "200";
     private static final String NOT_FOUND_CODE = "404";
 
-    @ApiResponses({
-        @ApiResponse(responseCode = OK_CODE, description = "Hearings found"),
-        @ApiResponse(responseCode = NOT_FOUND_CODE, description = "No hearings found with the courtId {courtId}")
-    })
+    @ApiResponse(responseCode = OK_CODE, description = "Hearings found")
+    @ApiResponse(responseCode = NOT_FOUND_CODE, description = "No hearings found with the courtId {courtId}")
     @Operation(summary = "Gets hearings pertaining to a specific courtId")
     @GetMapping("/{courtId}")
     public ResponseEntity<List<Hearing>> getHearing(@Parameter(description =
@@ -38,10 +35,8 @@ public class HearingController {
         return ResponseEntity.ok(hearingService.getHearings(courtId));
     }
 
-    @ApiResponses({
-        @ApiResponse(responseCode = OK_CODE, description = "Hearings found"),
-        @ApiResponse(responseCode = NOT_FOUND_CODE, description = "No hearings found with the case name {caseName}")
-    })
+    @ApiResponse(responseCode = OK_CODE, description = "Hearings found")
+    @ApiResponse(responseCode = NOT_FOUND_CODE, description = "No hearings found with the case name {caseName}")
     @Operation(summary = "Gets hearings pertaining to case name full or partial match")
     @GetMapping("/case-name/{caseName}")
     public ResponseEntity<List<Hearing>> getHearingsByName(@Parameter(description =
@@ -50,10 +45,8 @@ public class HearingController {
         return ResponseEntity.ok(hearingService.getHearingByName(caseName));
     }
 
-    @ApiResponses({
-        @ApiResponse(responseCode = OK_CODE, description = "Hearing found"),
-        @ApiResponse(responseCode = NOT_FOUND_CODE, description = "No hearing found with the case number {caseNumber}")
-    })
+    @ApiResponse(responseCode = OK_CODE, description = "Hearing found")
+    @ApiResponse(responseCode = NOT_FOUND_CODE, description = "No hearing found with the case number {caseNumber}")
     @Operation(summary = "Gets a hearing pertaining to case number")
     @GetMapping("/case-number/{caseNumber}")
     public ResponseEntity<Hearing> getHearingsByCaseNumber(@Parameter(description =
@@ -62,10 +55,8 @@ public class HearingController {
         return ResponseEntity.ok(hearingService.getHearingByCaseNumber(caseNumber));
     }
 
-    @ApiResponses({
-        @ApiResponse(responseCode = OK_CODE, description = "Hearing found"),
-        @ApiResponse(responseCode = NOT_FOUND_CODE, description = "No hearing found with the urn {urnNumber}")
-    })
+    @ApiResponse(responseCode = OK_CODE, description = "Hearing found")
+    @ApiResponse(responseCode = NOT_FOUND_CODE, description = "No hearing found with the urn {urnNumber}")
     @Operation(summary = "Gets a hearing pertaining to urn number")
     @GetMapping("/urn/{urnNumber}")
     public ResponseEntity<Hearing> getHearingByUrn(@Parameter(description = "The case number to match", required = true)
