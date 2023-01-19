@@ -112,6 +112,7 @@ validations:
     SJP_PRESS_LIST: "schemas/single_justice_procedure_press.json"
     CIVIL_AND_FAMILY_DAILY_CAUSE_LIST: "schemas/civil_and_family_daily_cause_list.json"
     SSCS_DAILY_LIST: "schemas/sscs_daily_list.json"
+    SSCS_DAILY_LIST_ADDITIONAL_HEARINGS: "schemas/sscs_daily_list.json"
     COP_DAILY_CAUSE_LIST: "schemas/cop_daily_cause_list.json"
     CROWN_DAILY_LIST: "schemas/crown_daily_list.json"
     CROWN_WARNED_LIST: "schemas/crown_warned_list.json"
