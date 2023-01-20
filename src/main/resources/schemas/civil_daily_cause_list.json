@@ -70,6 +70,16 @@
           "default": "",
           "pattern": "^.*$"
         },
+        "isPresiding": {
+          "description": "A flag to indicate whether a judiciary is presiding",
+          "title": "Is Presiding",
+          "type": "boolean",
+          "examples": [
+            true
+          ],
+          "default": "",
+          "pattern": "^.*$"
+        },
         "johKnownAs": {
           "description": "Name and salutations, titles to be presented on publications",
           "title": "JOH Known As",
