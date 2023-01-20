@@ -124,16 +124,6 @@
   "type": "object",
   "required": ["document", "venue", "courtLists"],
   "properties": {
-    "@schemaLocation": {
-      "$id": "#root/@schemaLocation",
-      "title": "@schemalocation",
-      "type": "string",
-      "default": "",
-      "examples": [
-        "http://json-schema.org/draft-07/schema#"
-      ],
-      "pattern": "^.*$"
-    },
     "document": {
       "$id": "#root/document",
       "title": "document",
