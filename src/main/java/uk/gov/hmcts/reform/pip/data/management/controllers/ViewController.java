@@ -1,7 +1,6 @@
 package uk.gov.hmcts.reform.pip.data.management.controllers;
 
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,10 +22,8 @@ public class ViewController {
     @Autowired
     ViewService viewService;
 
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "View Refreshed"),
-        @ApiResponse(responseCode = "403", description = "User has not been authorised"),
-    })
+    @ApiResponse(responseCode = "200", description = "View Refreshed")
+    @ApiResponse(responseCode = "403", description = "User has not been authorised")
     @PostMapping("/refresh")
     public ResponseEntity<Void> refreshView() {
         viewService.refreshView();

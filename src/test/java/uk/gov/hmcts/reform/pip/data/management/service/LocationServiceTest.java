@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.pip.data.management.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -9,13 +10,17 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 import org.testcontainers.shaded.org.apache.commons.io.IOUtils;
+import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.LocationRepository;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CsvParseException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.LocationNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationCsv;
+import uk.gov.hmcts.reform.pip.data.management.models.location.LocationDeletion;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationReference;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationType;
+import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
+import uk.gov.hmcts.reform.pip.model.system.admin.ActionResult;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,6 +33,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -39,11 +45,24 @@ class LocationServiceTest {
     @Mock
     private LocationRepository locationRepository;
 
+    @Mock
+    private ArtefactRepository artefactRepository;
+
+    @Mock
+    private SubscriptionManagementService subscriptionManagementService;
+
+    @Mock
+    private AccountManagementService accountManagementService;
+
+    @Mock
+    private PublicationServicesService publicationService;
+
     @InjectMocks
     private LocationService locationService;
 
     Location locationFirstExample;
     Location locationSecondExample;
+    LocationDeletion locationDeletion;
 
     private static final String FAMILY_LOCATION =  "Family Location";
     private static final String MAGISTRATES_LOCATION = "Magistrates Location";
@@ -54,6 +73,8 @@ class LocationServiceTest {
 
     private static final String FIRST_LOCATION_NOT_FOUND = "First location has not been found";
     private static final String SECOND_LOCATION_NOT_FOUND = "Second location has not been found";
+    private static final String REQUESTER_NAME = "ReqName";
+    private static final String EMAIL = "test@test.com";
 
     @BeforeEach
     void setup() {
@@ -69,6 +90,8 @@ class LocationServiceTest {
         locationCsvSecondExample.setProvenanceLocationType("venue");
         locationCsvSecondExample.setWelshLocationName("Welsh Venue name second example");
         locationSecondExample = new Location(locationCsvSecondExample);
+
+        locationDeletion = new LocationDeletion();
     }
 
     @Test
@@ -396,17 +419,72 @@ class LocationServiceTest {
     }
 
     @Test
-    void testDeleteLocation() {
-        int locationId = 1;
+    void testDeleteLocation() throws JsonProcessingException {
+        Integer locationId = 1;
+        locationFirstExample.setName("NAME");
 
         when(locationRepository.getLocationByLocationId(locationId))
             .thenReturn(Optional.of(locationFirstExample));
+        when(accountManagementService.getUserInfo(any()))
+            .thenReturn("{\"displayName\": \"ReqName\"}");
+        when(artefactRepository.findActiveArtefactsForLocation(any(), eq(locationId.toString())))
+            .thenReturn(List.of());
+        when(subscriptionManagementService.findSubscriptionsByLocationId(locationId.toString()))
+            .thenReturn("[]");
+        when(accountManagementService.getAllAccounts("PI_AAD", "SYSTEM_ADMIN"))
+            .thenReturn(List.of(EMAIL));
 
         doNothing().when(locationRepository).deleteById(locationId);
 
-        locationService.deleteLocation(locationId);
+        locationService.deleteLocation(locationId, REQUESTER_NAME);
 
         verify(locationRepository, times(1)).deleteById(locationId);
+    }
+
+    @Test
+    void testDeleteLocationWhenArtefactFound() throws JsonProcessingException {
+        Integer locationId = 1;
+
+        when(locationRepository.getLocationByLocationId(locationId))
+            .thenReturn(Optional.of(locationFirstExample));
+        when(artefactRepository.findActiveArtefactsForLocation(any(), eq(locationId.toString())))
+            .thenReturn(List.of(new Artefact()));
+        when(accountManagementService.getAllAccounts("PI_AAD", "SYSTEM_ADMIN"))
+            .thenReturn(List.of(EMAIL));
+        when(accountManagementService.getUserInfo(any()))
+            .thenReturn("{\"displayName\": \"ReqName\"}");
+        when(publicationService.sendSystemAdminEmail(List.of(EMAIL), REQUESTER_NAME,
+            ActionResult.ATTEMPTED,
+"There are active artefacts for following location: Venue Name First Example"))
+            .thenReturn("");
+
+        LocationDeletion result = locationService.deleteLocation(locationId, REQUESTER_NAME);
+
+        assertTrue(result.getIsExists(), "Found active artefact for a court");
+    }
+
+    @Test
+    void testDeleteLocationWhenSubscriptionFound() throws JsonProcessingException {
+        Integer locationId = 1;
+
+        when(locationRepository.getLocationByLocationId(locationId))
+            .thenReturn(Optional.of(locationFirstExample));
+        when(accountManagementService.getUserInfo(any()))
+            .thenReturn("{\"displayName\": \"ReqName\"}");
+        when(artefactRepository.findActiveArtefactsForLocation(any(), eq(locationId.toString())))
+            .thenReturn(List.of());
+        when(subscriptionManagementService.findSubscriptionsByLocationId(locationId.toString()))
+            .thenReturn("[{},{}]");
+        when(accountManagementService.getAllAccounts("PI_AAD", "SYSTEM_ADMIN"))
+            .thenReturn(List.of(EMAIL));
+        when(publicationService.sendSystemAdminEmail(List.of(EMAIL), REQUESTER_NAME,
+            ActionResult.ATTEMPTED,
+"There are active subscriptions for the following location: Venue Name First Example"))
+            .thenReturn("");
+
+        LocationDeletion result = locationService.deleteLocation(locationId, REQUESTER_NAME);
+
+        assertTrue(result.getIsExists(), "Found active subscription for a court");
     }
 
     @Test
@@ -417,7 +495,8 @@ class LocationServiceTest {
             .thenReturn(Optional.empty());
 
         LocationNotFoundException locationNotFoundException =
-            assertThrows(LocationNotFoundException.class, () -> locationService.deleteLocation(locationId));
+            assertThrows(LocationNotFoundException.class, () ->
+                locationService.deleteLocation(locationId, REQUESTER_NAME));
 
         assertEquals("No location found with the id: 1", locationNotFoundException.getMessage(),
                      "Exception does not contain expected message");
