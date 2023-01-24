@@ -1,68 +1,150 @@
 {
   "document": {
-    "version": "",
-    "publicationDate": "2016-09-13T23:30:52.123Z"
+    "version": "V1",
+    "publicationDate": "2022-11-15T09:00:00Z",
+    "documentName": "Civil List"
   },
   "venue": {
-    "venueName": "PRESTON",
+    "venueName": "CaTh Service Assessment",
     "venueContact": {
-      "venueTelephone": "01772 844700",
+      "venueTelephone": "07951533410",
       "venueEmail": "court1@moj.gov.uk"
     },
     "venueAddress": {
       "line": [
-        "Address Line 1"
+        "102 Petty France",
+        ""
       ],
-      "postCode": "AA1 AA1"
+      "town": "London City",
+      "county": "London",
+      "postCode": "SW1H 9AJ"
     }
   },
-  "@schemaLocation": "",
   "courtLists": [
     {
       "courtHouse": {
-        "courtHouseName": "PRESTON",
+        "courtHouseName": "CaTh Service Assessment",
         "courtHouseAddress": {
           "line": [
-            "Address Line 1"
+            "102 Petty France"
           ],
-          "postCode": "AA1 AA1"
+          "town": "London",
+          "postCode": "SW1H 9AJ"
         },
         "courtRoom": [
           {
-            "courtRoomName": "1",
+            "courtRoomName": "Courtroom 1",
             "session": [
               {
                 "sessionChannel": [
                   "VIDEO HEARING",
                   ""
                 ],
+                "judiciary": [
+                  {
+                    "johTitle": "Judge",
+                    "johNameSurname": "Chahal",
+                    "johKnownAs": "DDJ, Chahal",
+                    "isPresiding": true
+                  },
+                  {
+                    "johTitle": "Judge",
+                    "johNameSurname": "Judge Chahal",
+                    "johKnownAs": "Judge Chahal",
+                    "isPresiding": false
+                  }
+                ],
                 "sittings": [
                   {
-                    "sittingStart": "",
-                    "sittingEnd": "",
+                    "sittingStart": "2022-01-01T09:30:00.00Z",
+                    "sittingEnd": "2022-01-01T12:15:00.00Z",
                     "hearing": [
                       {
-                        "hearingType": "",
+                        "hearingType": "Small Claims",
                         "case": [
                           {
-                            "caseName": "",
-                            "caseNumber": "45684548"
-                          }
-                        ]
-                      },
-                      {
-                        "hearingType": "mda",
-                        "case": [
-                          {
-                            "caseName": "A Vs B",
-                            "caseNumber": "",
-                            "caseSequenceIndicator": "[2 of 3]"
+                            "caseName": "Fred v Ginger",
+                            "caseNumber": "OX21P00298",
+                            "caseSequenceIndicator": "2 of 3"
                           }
                         ]
                       }
                     ],
                     "channel": [
-                      ""
+                      "Remote",
+                      "Teams"
+                    ]
+                  },
+                  {
+                    "sittingStart": "2022-01-27T10:30:00.496Z",
+                    "sittingEnd": "2022-01-27T10:45:00.00Z",
+                    "hearing": [
+                      {
+                        "hearingType": "Final Hearing (Public Law)",
+                        "case": [
+                          {
+                            "caseName": "Man v Machine",
+                            "caseNumber": "OX21P00236"
+                          }
+                        ]
+                      }
+                    ],
+                    "channel": [
+                      "CVP"
+                    ]
+                  },
+                  {
+                    "sittingStart": "2022-01-27T11:00:17.496Z",
+                    "sittingEnd": "2022-01-27T11:15:17.496Z",
+                    "hearing": [
+                      {
+                        "hearingType": "DRA (Dispute Resolution Appointment)",
+                        "case": [
+                          {
+                            "caseName": "Him v Her",
+                            "caseNumber": "OX21P00290"
+                          }
+                        ]
+                      }
+                    ],
+                    "channel": [
+                      "In Person"
+                    ]
+                  },
+                  {
+                    "sittingStart": "2022-01-27T11:15:17.496Z",
+                    "sittingEnd": "2022-01-27T12:00:17.496Z",
+                    "hearing": [
+                      {
+                        "hearingType": "Case Management Hearing (Civil)",
+                        "case": [
+                          {
+                            "caseName": "Salt v Pepper",
+                            "caseNumber": "OX21P00265"
+                          }
+                        ]
+                      }
+                    ],
+                    "channel": [
+                      "In Person"
+                    ]
+                  },
+                  {
+                    "sittingStart": "2022-01-27T12:00:17.496Z",
+                    "sittingEnd": "2022-01-27T12:15:17.496Z",
+                    "hearing": [
+                      {
+                        "hearingType": "FR - 1st Appointment",
+                        "case": [
+                          {
+                            "caseName": "Sweet v Sour",
+                            "caseNumber": "OX21P00420"
+                          }
+                        ]
+                      }
+                    ],
+                    "channel": [
+                      "CVP"
                     ]
                   }
                 ]
@@ -70,40 +152,175 @@
             ]
           },
           {
-            "courtRoomName": "1",
+            "courtRoomName": "Courtroom 4",
             "session": [
               {
+                "sessionStartTime": "",
                 "sessionChannel": [
+                  "VIDEO HEARING",
                   ""
                 ],
                 "judiciary": [
                   {
-                    "johNameSurname": "Test Name",
-                    "johTitle": "District Judge"
+                    "johNameSurname": "Carter",
+                    "johKnownAs": "Duty District Judge, Carter",
+                    "isPresiding": true
+                  },
+                  {
+                    "johNameSurname": "Judge Carter",
+                    "johKnownAs": "Judge Carter",
+                    "isPresiding": false
                   }
                 ],
                 "sittings": [
                   {
-                    "sittingStart": "",
-                    "sittingEnd": "",
+                    "sittingStart": "2022-01-27T11:00:17.496Z",
+                    "sittingEnd": "2022-01-27T11:15:17.496Z",
                     "hearing": [
                       {
-                        "hearingType": "",
+                        "hearingType": "Application (Private Law)",
                         "case": [
                           {
-                            "caseName": "John Smith v Jane Doe",
-                            "caseNumber": "45684548"
-                          },
-                          {
-                            "caseName": "",
-                            "caseNumber": ""
+                            "caseName": "Mr Unhappy v Mr Cross",
+                            "caseNumber": "H1PP2381"
                           }
                         ]
                       }
                     ],
                     "channel": [
-                      "",
-                      "VIDEO HEARING"
+                      "In Person"
+                    ]
+                  },
+                  {
+                    "sittingStart": "2022-01-27T11:15:17.496Z",
+                    "sittingEnd": "2022-01-27T11:45:17.496Z",
+                    "hearing": [
+                      {
+                        "hearingType": "Application (Divorce)",
+                        "case": [
+                          {
+                            "caseName": "Mr Sad v Mrs Sad",
+                            "caseNumber": "H00OX285"
+                          }
+                        ]
+                      }
+                    ],
+                    "channel": [
+                      "CVP"
+                    ]
+                  },
+                  {
+                    "sittingStart": "2022-01-27T11:45:17.496Z",
+                    "sittingEnd": "2022-01-27T12:00:17.496Z",
+                    "hearing": [
+                      {
+                        "hearingType": "Interim Third Party Order",
+                        "case": [
+                          {
+                            "caseName": "Mrs Supplier V Miss Customer",
+                            "caseNumber": "H00OX393"
+                          }
+                        ]
+                      }
+                    ],
+                    "channel": [
+                      "In Person"
+                    ]
+                  },
+                  {
+                    "sittingStart": "2022-01-27T12:05:17.496Z",
+                    "sittingEnd": "2022-01-27T12:35:17.496Z",
+                    "hearing": [
+                      {
+                        "hearingType": "RTA Small Claim",
+                        "case": [
+                          {
+                            "caseName": "Miss Supplier v Mr Customer",
+                            "caseNumber": "H00OX335"
+                          }
+                        ]
+                      }
+                    ],
+                    "channel": [
+                      "In Person"
+                    ]
+                  },
+                  {
+                    "sittingStart": "2022-01-27T12:35:17.496Z",
+                    "sittingEnd": "2022-01-27T12:50:17.496Z",
+                    "hearing": [
+                      {
+                        "hearingType": "Fast-track",
+                        "case": [
+                          {
+                            "caseName": "Mrs Supplier v Mr Customer",
+                            "caseNumber": "H00OX346"
+                          }
+                        ]
+                      }
+                    ],
+                    "channel": [
+                      "CVP"
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "courtRoomName": "Courtroom 5",
+            "session": [
+              {
+                "sessionStartTime": "",
+                "sessionChannel": [
+                  "In Person",
+                  ""
+                ],
+                "judiciary": [
+                  {
+                    "johNameSurname": "Collier",
+                    "johKnownAs": "DDJ, Collier",
+                    "isPresiding": true
+                  },
+                  {
+                    "johNameSurname": "Judge Collier",
+                    "johKnownAs": "Judge Collier",
+                    "isPresiding": false
+                  }
+                ],
+                "sittings": [
+                  {
+                    "sittingStart": "2022-01-27T10:00:17.496Z",
+                    "sittingEnd": "2022-01-27T12:30:17.496Z",
+                    "hearing": [
+                      {
+                        "hearingType": "DRA (Dispute Resolution Appointment)",
+                        "case": [
+                          {
+                            "caseName": "Pepper v Pots",
+                            "caseNumber": "OX20P00765"
+                          }
+                        ]
+                      }
+                    ],
+                    "channel": []
+                  },
+                  {
+                    "sittingStart": "2022-01-27T11:00:17.496Z",
+                    "sittingEnd": "2022-01-27T12:30:17.496Z",
+                    "hearing": [
+                      {
+                        "hearingType": "DRA (Dispute Resolution Appointment)",
+                        "case": [
+                          {
+                            "caseName": "Lost v Found",
+                            "caseNumber": "OX21F00502"
+                          }
+                        ]
+                      }
+                    ],
+                    "channel": [
+                      "In Person"
                     ]
                   }
                 ]
