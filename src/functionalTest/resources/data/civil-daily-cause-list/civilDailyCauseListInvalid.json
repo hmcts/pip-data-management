@@ -6,7 +6,7 @@
   "venue": {
     "venueName": "CaTh Service Assessment",
     "venueContact": {
-      "venueTelephone": "07951533410",
+      "venueTelephone": "079515000000",
       "venueEmail": "court1@moj.gov.uk"
     },
     "venueAddress": {
@@ -22,7 +22,7 @@
   "courtLists": [
     {
       "courtHouse": {
-        "courtHouseName": "CaTh Service Assessment",
+        "courtHouseName": "Example Court House",
         "courtHouseAddress": {
           "line": [
             "102 Petty France"
@@ -36,20 +36,19 @@
             "session": [
               {
                 "sessionChannel": [
-                  "VIDEO HEARING",
-                  ""
+                  "VIDEO HEARING"
                 ],
                 "judiciary": [
                   {
                     "johTitle": "Judge",
-                    "johNameSurname": "Chahal",
-                    "johKnownAs": "DDJ, Chahal",
+                    "johNameSurname": "Surname details",
+                    "johKnownAs": "DDJ, Judges Surname",
                     "isPresiding": true
                   },
                   {
                     "johTitle": "Judge",
-                    "johNameSurname": "Judge Chahal",
-                    "johKnownAs": "Judge Chahal",
+                    "johNameSurname": "Judge Name",
+                    "johKnownAs": "Judge Name",
                     "isPresiding": false
                   }
                 ],
@@ -156,18 +155,17 @@
               {
                 "sessionStartTime": "",
                 "sessionChannel": [
-                  "VIDEO HEARING",
-                  ""
+                  "VIDEO HEARING"
                 ],
                 "judiciary": [
                   {
-                    "johNameSurname": "Carter",
-                    "johKnownAs": "Duty District Judge, Carter",
+                    "johNameSurname": "Surname details",
+                    "johKnownAs": "Duty District Judge, Surname",
                     "isPresiding": true
                   },
                   {
-                    "johNameSurname": "Judge Carter",
-                    "johKnownAs": "Judge Carter",
+                    "johNameSurname": "Judge Name",
+                    "johKnownAs": "Judge Name",
                     "isPresiding": false
                   }
                 ],
@@ -272,18 +270,17 @@
               {
                 "sessionStartTime": "",
                 "sessionChannel": [
-                  "In Person",
-                  ""
+                  "In Person"
                 ],
                 "judiciary": [
                   {
-                    "johNameSurname": "Collier",
-                    "johKnownAs": "DDJ, Collier",
+                    "johNameSurname": "Surname details",
+                    "johKnownAs": "DDJ, Surname",
                     "isPresiding": true
                   },
                   {
-                    "johNameSurname": "Judge Collier",
-                    "johKnownAs": "Judge Collier",
+                    "johNameSurname": "Judge Name",
+                    "johKnownAs": "Judge Name",
                     "isPresiding": false
                   }
                 ],
