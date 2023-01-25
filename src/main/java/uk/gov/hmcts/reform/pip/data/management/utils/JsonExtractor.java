@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 @Component
 public class JsonExtractor implements Extractor {
@@ -43,7 +42,7 @@ public class JsonExtractor implements Extractor {
                 .parse(payload);
 
             List<Object> searchValues = jsonPayload.read(value);
-            List<Object> objects = searchValues.stream().filter(Objects::nonNull).collect(Collectors.toList());
+            List<Object> objects = searchValues.stream().filter(Objects::nonNull).toList();
             if (!objects.isEmpty()) {
                 searchTermsMap.put(key, objects);
             }
