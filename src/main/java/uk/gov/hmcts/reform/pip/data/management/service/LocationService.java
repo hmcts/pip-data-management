@@ -245,9 +245,9 @@ public class LocationService {
                 throw e;
             }
             locationDeletion = checkActiveArtefactForLocation(location.get(), requesterName);
-            if (!locationDeletion.getIsExists()) {
+            if (!locationDeletion.isExists()) {
                 locationDeletion = checkActiveSubscriptionForLocation(location.get(), requesterName);
-                if (!locationDeletion.getIsExists()) {
+                if (!locationDeletion.isExists()) {
                     locationRepository.deleteById(locationId);
                     sendEmailToAllSystemAdmins(requesterName, ActionResult.SUCCEEDED,
                         String.format("Location %s with Id %s has been deleted.",
