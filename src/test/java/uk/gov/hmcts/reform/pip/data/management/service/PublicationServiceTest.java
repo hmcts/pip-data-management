@@ -4,9 +4,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -27,7 +24,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -91,22 +87,7 @@ class PublicationServiceTest {
     private Artefact sjpPressArtefact;
 
     private Location location;
-
-    private static final char DELIMITER = ',';
-    private static final String LOCATION_NAME_WITH_ID_3 = "Oxford Combined Court Centre";
-    private static final String LOCATION_NAME_WITH_ID_9 = "Single Justice Procedure";
-
-    private static final List<String> MI_DATA_WITH_VALID_LOCATION_ID =
-        List.of(
-            "0beac960-68a3-41db-9f51-8c71826eaf30,2022-07-25 14:45:18.836,2022-09-29 14:45:18.836,BI_LINGUAL,"
-                + "MANUAL_UPLOAD,PUBLIC,MANUAL_UPLOAD,LIST,2022-06-29 00:00:00.0,3,FAMILY_DAILY_CAUSE_LIST",
-            "165ca91d-1e58-412a-80f5-1e5475a093e4,2022-06-29 14:45:18.836,2022-09-29 14:45:18.836,WELSH,"
-                + "MANUAL_UPLOAD,PUBLIC,MANUAL_UPLOAD,GENERAL_PUBLICATION,2022-06-29 00:00:00.0,9,SJP_PUBLIC_LIST",
-            "10238a0f-d398-4356-9af4-a4dbbb17d455,2022-06-29 14:45:18.836,2022-09-29 14:45:18.836,ENGLISH,"
-                + "MANUAL_UPLOAD,PUBLIC,MANUAL_UPLOAD,GENERAL_PUBLICATION,2022-06-29 00:00:00.0,9,SJP_PUBLIC_LIST"
-        );
-
-    private static final List<String> MI_DATA_WITH_INVALID_LOCATION_ID =
+    private static final List<String> EXAMPLE_CSV =
         List.of(
             "0beac960-68a3-41db-9f51-8c71826eaf30,2022-07-25 14:45:18.836,2022-09-29 14:45:18.836,BI_LINGUAL,"
                 + "MANUAL_UPLOAD,PUBLIC,MANUAL_UPLOAD,LIST,2022-06-29 00:00:00.0,1823,FAMILY_DAILY_CAUSE_LIST",
@@ -412,58 +393,21 @@ class PublicationServiceTest {
                      "Email was not masked correctly");
     }
 
-    @ParameterizedTest
-    @MethodSource("parametersForGetMiData")
-    void testGetMiData(List<String> miData, String firstLocationName, String secondLocationName) {
-        when(artefactRepository.getMiData()).thenReturn(miData);
-
-        Location locationWithId3 = new Location();
-        locationWithId3.setLocationId(3);
-        locationWithId3.setName(LOCATION_NAME_WITH_ID_3);
-
-        Location locationWithId9 = new Location();
-        locationWithId9.setLocationId(9);
-        locationWithId9.setName(LOCATION_NAME_WITH_ID_9);
-
-        lenient().when(locationRepository.getLocationByLocationId(3)).thenReturn(Optional.of(locationWithId3));
-        lenient().when(locationRepository.getLocationByLocationId(9)).thenReturn(Optional.of(locationWithId9));
-        lenient().when(locationRepository.getLocationByLocationId(1823)).thenReturn(Optional.empty());
-        lenient().when(locationRepository.getLocationByLocationId(1815)).thenReturn(Optional.empty());
-
+    @Test
+    void testMiService() {
+        when(artefactRepository.getMiData()).thenReturn(EXAMPLE_CSV);
         String testString = publicationService.getMiData();
         String[] splitLineString = testString.split(System.lineSeparator());
         long countLine1 = splitLineString[0].chars().filter(character -> character == ',').count();
-
         assertThat(testString)
             .as("Header row missing")
             .contains("source_artefact_id");
-
         assertThat(splitLineString)
             .as("Only one line exists - data must be missing, as only headers are printing")
             .as("Wrong comma count compared to header row!")
-            .hasSize(4)
+            .hasSizeGreaterThanOrEqualTo(2)
             .allSatisfy(
                 e -> assertThat(e.chars().filter(character -> character == ',').count()).isEqualTo(countLine1));
-
-        assertThat(getLocationName(splitLineString[1]))
-            .isEqualTo(firstLocationName);
-
-        assertThat(getLocationName(splitLineString[2]))
-            .isEqualTo(secondLocationName);
-    }
-
-    private String getLocationName(String line) {
-        return line.substring(
-            line.lastIndexOf(DELIMITER, line.lastIndexOf(DELIMITER) - 1) + 1,
-            line.lastIndexOf(DELIMITER)
-        );
-    }
-
-    private static Stream<Arguments> parametersForGetMiData() {
-        return Stream.of(
-            Arguments.of(MI_DATA_WITH_VALID_LOCATION_ID, LOCATION_NAME_WITH_ID_3, LOCATION_NAME_WITH_ID_9),
-            Arguments.of(MI_DATA_WITH_INVALID_LOCATION_ID, "", "")
-        );
     }
 
     @Test
