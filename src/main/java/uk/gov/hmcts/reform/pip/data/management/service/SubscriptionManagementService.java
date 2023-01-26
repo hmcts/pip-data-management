@@ -53,8 +53,7 @@ public class SubscriptionManagementService {
             return webClient.get().uri(url + "/subscription/location/" + locationId)
                 .retrieve().bodyToMono(String.class).block();
         } catch (WebClientException ex) {
-            log.error(String.format(REQUEST_FAILED_ERROR_MESSAGE, ex.getMessage()
-            ));
+            log.error(String.format(REQUEST_FAILED_ERROR_MESSAGE, ex.getMessage()));
             return "Failed to find subscription for Location: " + locationId + " with status: " + ex.getMessage();
         }
     }

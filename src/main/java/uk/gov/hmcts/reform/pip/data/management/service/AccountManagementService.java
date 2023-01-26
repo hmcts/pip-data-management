@@ -72,6 +72,7 @@ public class AccountManagementService {
         } catch (WebClientException ex) {
             log.error(String.format(REQUEST_ACCOUNT_ERROR, ex.getMessage()));
             return "Failed to find user info for user: " + provenanceUserId;
+
         }
     }
 
