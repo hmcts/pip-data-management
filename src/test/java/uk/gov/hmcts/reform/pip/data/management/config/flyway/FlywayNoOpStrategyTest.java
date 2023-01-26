@@ -48,8 +48,9 @@ class FlywayNoOpStrategyTest {
         when(migrationInfoService.all()).thenReturn(migrationInfos);
         when(migrationInfo.getState()).thenReturn(MigrationState.PENDING);
 
+        FlywayNoOpStrategy flywayNoOpStrategy = new FlywayNoOpStrategy();
         assertThrows(PendingMigrationScriptException.class, () -> {
-            new FlywayNoOpStrategy().migrate(flyway);
+            flywayNoOpStrategy.migrate(flyway);
         }, "No exception thrown for pending flyway");
     }
 }

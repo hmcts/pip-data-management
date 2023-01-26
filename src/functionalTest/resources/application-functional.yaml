@@ -27,7 +27,7 @@ spring:
     jpa:
       spring.jpa.database-platform: org.hibernate.dialect.H2Dialect
 test-user-id: ${TEST_USER_ID}
-
+system-admin-provenance-id: ${SYSTEM_ADMIN_PROVENANCE_ID}
 payload:
   json:
     search-values:

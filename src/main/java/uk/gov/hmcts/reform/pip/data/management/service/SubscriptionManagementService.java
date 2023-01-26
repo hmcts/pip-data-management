@@ -45,4 +45,16 @@ public class SubscriptionManagementService {
         }
     }
 
+    public String findSubscriptionsByLocationId(String locationId) {
+        log.info("Attempting to send trigger to " + url);
+        try {
+            return webClient.get().uri(url + "/subscription/location/" + locationId)
+                .retrieve().bodyToMono(String.class).block();
+        } catch (WebClientException ex) {
+            log.error(String.format("Request failed with error message: %s", ex.getMessage()
+            ));
+            return "Failed to find subscription for Location: " + locationId + " with status: " + ex.getMessage();
+        }
+    }
+
 }

@@ -83,8 +83,9 @@ class SjpPublicListTest {
             JsonNode node = getJsonNode(text);
             ((ObjectNode) node).remove("document");
 
+            String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(node.toString(), headerGroup),
+                             validationService.validateBody(listJson, headerGroup),
                          SJP_PUBLIC_INVALID_MESSAGE);
         }
     }
@@ -98,8 +99,9 @@ class SjpPublicListTest {
             JsonNode node = getJsonNode(text);
             ((ObjectNode) node).remove(COURT_LIST_SCHEMA);
 
+            String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(node.toString(), headerGroup),
+                             validationService.validateBody(listJson, headerGroup),
                          SJP_PUBLIC_INVALID_MESSAGE);
         }
     }
@@ -114,8 +116,9 @@ class SjpPublicListTest {
             JsonNode node = mapper.readValue(text, JsonNode.class);
             ((ObjectNode) node.get("document")).remove("publicationDate");
 
+            String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(node.toString(), headerGroup),
+                             validationService.validateBody(listJson, headerGroup),
                          SJP_PUBLIC_INVALID_MESSAGE);
         }
     }
@@ -130,8 +133,9 @@ class SjpPublicListTest {
             JsonNode node = mapper.readValue(text, JsonNode.class);
             ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0)).remove(COURT_HOUSE_SCHEMA);
 
+            String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(node.toString(), headerGroup),
+                             validationService.validateBody(listJson, headerGroup),
                          SJP_PUBLIC_INVALID_MESSAGE);
         }
     }
@@ -147,8 +151,9 @@ class SjpPublicListTest {
             ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0).get(COURT_HOUSE_SCHEMA))
                 .remove(COURT_ROOM_SCHEMA);
 
+            String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(node.toString(), headerGroup),
+                             validationService.validateBody(listJson, headerGroup),
                          SJP_PUBLIC_INVALID_MESSAGE);
         }
     }
@@ -164,8 +169,9 @@ class SjpPublicListTest {
             ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0).get(COURT_HOUSE_SCHEMA)
                 .get(COURT_ROOM_SCHEMA).get(0)).remove(SESSION_SCHEMA);
 
+            String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(node.toString(), headerGroup),
+                             validationService.validateBody(listJson, headerGroup),
                          SJP_PUBLIC_INVALID_MESSAGE);
         }
     }
@@ -181,8 +187,9 @@ class SjpPublicListTest {
             ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0).get(COURT_HOUSE_SCHEMA)
                 .get(COURT_ROOM_SCHEMA).get(0).get(SESSION_SCHEMA).get(0)).remove(SITTINGS_SCHEMA);
 
+            String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(node.toString(), headerGroup),
+                             validationService.validateBody(listJson, headerGroup),
                          SJP_PUBLIC_INVALID_MESSAGE);
         }
     }
@@ -199,8 +206,9 @@ class SjpPublicListTest {
                 .get(COURT_ROOM_SCHEMA).get(0).get(SESSION_SCHEMA).get(0)
                 .get(SITTINGS_SCHEMA).get(0)).remove(HEARING_SCHEMA);
 
+            String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(node.toString(), headerGroup),
+                             validationService.validateBody(listJson, headerGroup),
                          SJP_PUBLIC_INVALID_MESSAGE);
         }
     }
@@ -217,8 +225,9 @@ class SjpPublicListTest {
                 .get(COURT_ROOM_SCHEMA).get(0).get(SESSION_SCHEMA).get(0)
                 .get(SITTINGS_SCHEMA).get(0).get(HEARING_SCHEMA).get(0)).remove(PARTY_SCHEMA);
 
+            String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(node.toString(), headerGroup),
+                             validationService.validateBody(listJson, headerGroup),
                          SJP_PUBLIC_INVALID_MESSAGE);
         }
     }
@@ -236,8 +245,9 @@ class SjpPublicListTest {
                 .get(SITTINGS_SCHEMA).get(0).get(HEARING_SCHEMA).get(0))
                 .remove(OFFENCE_SCHEMA);
 
+            String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(node.toString(), headerGroup),
+                             validationService.validateBody(listJson, headerGroup),
                          SJP_PUBLIC_INVALID_MESSAGE);
         }
     }
@@ -256,8 +266,9 @@ class SjpPublicListTest {
                 .get(PARTY_SCHEMA).get(0))
                 .remove("partyRole");
 
+            String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(node.toString(), headerGroup),
+                             validationService.validateBody(listJson, headerGroup),
                          SJP_PUBLIC_INVALID_MESSAGE);
         }
     }
@@ -276,8 +287,9 @@ class SjpPublicListTest {
                 .get(PARTY_SCHEMA).get(0))
                 .remove(INDIVIDUAL_DETAILS_SCHEMA);
 
+            String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(node.toString(), headerGroup),
+                             validationService.validateBody(listJson, headerGroup),
                          SJP_PUBLIC_INVALID_MESSAGE);
         }
     }
@@ -296,8 +308,9 @@ class SjpPublicListTest {
                 .get(PARTY_SCHEMA).get(0).get(INDIVIDUAL_DETAILS_SCHEMA))
                 .remove("individualForenames");
 
+            String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(node.toString(), headerGroup),
+                             validationService.validateBody(listJson, headerGroup),
                          SJP_PUBLIC_INVALID_MESSAGE);
         }
     }
@@ -316,8 +329,9 @@ class SjpPublicListTest {
                 .get(PARTY_SCHEMA).get(0).get(INDIVIDUAL_DETAILS_SCHEMA))
                 .remove("individualSurname");
 
+            String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(node.toString(), headerGroup),
+                             validationService.validateBody(listJson, headerGroup),
                          SJP_PUBLIC_INVALID_MESSAGE);
         }
     }
@@ -336,8 +350,9 @@ class SjpPublicListTest {
                 .get(PARTY_SCHEMA).get(0).get(INDIVIDUAL_DETAILS_SCHEMA))
                 .remove(ADDRESS_SCHEMA);
 
+            String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(node.toString(), headerGroup),
+                             validationService.validateBody(listJson, headerGroup),
                          SJP_PUBLIC_INVALID_MESSAGE);
         }
     }
@@ -356,8 +371,9 @@ class SjpPublicListTest {
                 .get(PARTY_SCHEMA).get(0).get(INDIVIDUAL_DETAILS_SCHEMA)
                 .get(ADDRESS_SCHEMA)).remove("town");
 
+            String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(node.toString(), headerGroup),
+                             validationService.validateBody(listJson, headerGroup),
                          SJP_PUBLIC_INVALID_MESSAGE);
         }
     }
@@ -376,8 +392,9 @@ class SjpPublicListTest {
                 .get(PARTY_SCHEMA).get(0).get(INDIVIDUAL_DETAILS_SCHEMA)
                 .get(ADDRESS_SCHEMA)).remove("county");
 
+            String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(node.toString(), headerGroup),
+                             validationService.validateBody(listJson, headerGroup),
                          SJP_PUBLIC_INVALID_MESSAGE);
         }
     }
@@ -396,8 +413,9 @@ class SjpPublicListTest {
                 .get(PARTY_SCHEMA).get(0).get(INDIVIDUAL_DETAILS_SCHEMA)
                 .get(ADDRESS_SCHEMA)).remove("postCode");
 
+            String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(node.toString(), headerGroup),
+                             validationService.validateBody(listJson, headerGroup),
                          SJP_PUBLIC_INVALID_MESSAGE);
         }
     }
@@ -416,8 +434,9 @@ class SjpPublicListTest {
                 .get(PARTY_SCHEMA).get(1))
                 .remove("organisationDetails");
 
+            String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(node.toString(), headerGroup),
+                             validationService.validateBody(listJson, headerGroup),
                          SJP_PUBLIC_INVALID_MESSAGE);
         }
     }
@@ -436,8 +455,9 @@ class SjpPublicListTest {
                 .get(PARTY_SCHEMA).get(1).get("organisationDetails"))
                 .remove("organisationName");
 
+            String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(node.toString(), headerGroup),
+                             validationService.validateBody(listJson, headerGroup),
                          SJP_PUBLIC_INVALID_MESSAGE);
         }
     }

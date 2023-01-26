@@ -82,8 +82,9 @@ class IacDailyListTest {
             JsonNode node = getJsonNode(text);
             ((ObjectNode) node).remove("document");
 
+            String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(node.toString(), headerGroup),
+                             validationService.validateBody(listJson, headerGroup),
                          IAC_DAILY_LIST_INVALID_MESSAGE
             );
         }
@@ -99,8 +100,9 @@ class IacDailyListTest {
             JsonNode node = mapper.readValue(text, JsonNode.class);
             ((ObjectNode) node.get("document")).remove("publicationDate");
 
+            String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(node.toString(), headerGroup),
+                             validationService.validateBody(listJson, headerGroup),
                          IAC_DAILY_LIST_INVALID_MESSAGE
             );
         }
@@ -115,8 +117,9 @@ class IacDailyListTest {
             JsonNode node = getJsonNode(text);
             ((ObjectNode) node).remove("venue");
 
+            String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(node.toString(), headerGroup),
+                             validationService.validateBody(listJson, headerGroup),
                          IAC_DAILY_LIST_INVALID_MESSAGE
             );
         }
@@ -132,8 +135,9 @@ class IacDailyListTest {
             JsonNode node = mapper.readValue(text, JsonNode.class);
             ((ObjectNode) node.get("venue")).remove("venueName");
 
+            String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(node.toString(), headerGroup),
+                             validationService.validateBody(listJson, headerGroup),
                          IAC_DAILY_LIST_INVALID_MESSAGE
             );
         }
@@ -149,8 +153,9 @@ class IacDailyListTest {
             JsonNode node = mapper.readValue(text, JsonNode.class);
             ((ObjectNode) node.get("venue")).remove("venueContact");
 
+            String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(node.toString(), headerGroup),
+                             validationService.validateBody(listJson, headerGroup),
                          IAC_DAILY_LIST_INVALID_MESSAGE
             );
         }
@@ -165,8 +170,9 @@ class IacDailyListTest {
             JsonNode node = getJsonNode(text);
             ((ObjectNode) node).remove(COURT_LIST_SCHEMA);
 
+            String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(node.toString(), headerGroup),
+                             validationService.validateBody(listJson, headerGroup),
                          IAC_DAILY_LIST_INVALID_MESSAGE
             );
         }
@@ -181,8 +187,9 @@ class IacDailyListTest {
             JsonNode node = getJsonNode(text);
             ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0)).remove(COURT_LIST_NAME_SCHEMA);
 
+            String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(node.toString(), headerGroup),
+                             validationService.validateBody(listJson, headerGroup),
                          IAC_DAILY_LIST_INVALID_MESSAGE
             );
         }
@@ -198,8 +205,9 @@ class IacDailyListTest {
             JsonNode node = mapper.readValue(text, JsonNode.class);
             ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0)).remove(COURT_HOUSE_SCHEMA);
 
+            String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(node.toString(), headerGroup),
+                             validationService.validateBody(listJson, headerGroup),
                          IAC_DAILY_LIST_INVALID_MESSAGE
             );
         }
@@ -216,8 +224,9 @@ class IacDailyListTest {
             ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0)
                 .get(COURT_HOUSE_SCHEMA)).remove(COURT_ROOM_SCHEMA);
 
+            String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(node.toString(), headerGroup),
+                             validationService.validateBody(listJson, headerGroup),
                          IAC_DAILY_LIST_INVALID_MESSAGE
             );
         }
@@ -234,8 +243,9 @@ class IacDailyListTest {
             ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0)
                 .get(COURT_HOUSE_SCHEMA).get(COURT_ROOM_SCHEMA).get(0)).remove(SESSION_SCHEMA);
 
+            String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(node.toString(), headerGroup),
+                             validationService.validateBody(listJson, headerGroup),
                          IAC_DAILY_LIST_INVALID_MESSAGE
             );
         }
@@ -253,8 +263,9 @@ class IacDailyListTest {
                 .get(COURT_HOUSE_SCHEMA).get(COURT_ROOM_SCHEMA).get(0)
                 .get(SESSION_SCHEMA).get(0)).remove(SITTINGS_SCHEMA);
 
+            String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(node.toString(), headerGroup),
+                             validationService.validateBody(listJson, headerGroup),
                          IAC_DAILY_LIST_INVALID_MESSAGE
             );
         }
@@ -272,8 +283,9 @@ class IacDailyListTest {
                 .get(COURT_HOUSE_SCHEMA).get(COURT_ROOM_SCHEMA).get(0)
                 .get(SESSION_SCHEMA).get(0).get(SITTINGS_SCHEMA).get(0)).remove("sittingStart");
 
+            String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(node.toString(), headerGroup),
+                             validationService.validateBody(listJson, headerGroup),
                          IAC_DAILY_LIST_INVALID_MESSAGE
             );
         }
@@ -291,8 +303,9 @@ class IacDailyListTest {
                 .get(COURT_HOUSE_SCHEMA).get(COURT_ROOM_SCHEMA).get(0)
                 .get(SESSION_SCHEMA).get(0).get(SITTINGS_SCHEMA).get(0)).remove("sittingEnd");
 
+            String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(node.toString(), headerGroup),
+                             validationService.validateBody(listJson, headerGroup),
                          IAC_DAILY_LIST_INVALID_MESSAGE
             );
         }
@@ -310,8 +323,9 @@ class IacDailyListTest {
                 .get(COURT_HOUSE_SCHEMA).get(COURT_ROOM_SCHEMA).get(0)
                 .get(SESSION_SCHEMA).get(0).get(SITTINGS_SCHEMA).get(0)).remove(HEARING_SCHEMA);
 
+            String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(node.toString(), headerGroup),
+                             validationService.validateBody(listJson, headerGroup),
                          IAC_DAILY_LIST_INVALID_MESSAGE
             );
         }
@@ -330,8 +344,9 @@ class IacDailyListTest {
                 .get(SESSION_SCHEMA).get(0).get(SITTINGS_SCHEMA).get(0)
                 .get(HEARING_SCHEMA).get(0)).remove(CASE_SCHEMA);
 
+            String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(node.toString(), headerGroup),
+                             validationService.validateBody(listJson, headerGroup),
                          IAC_DAILY_LIST_INVALID_MESSAGE
             );
         }
@@ -350,8 +365,9 @@ class IacDailyListTest {
                 .get(SESSION_SCHEMA).get(0).get(SITTINGS_SCHEMA).get(0)
                 .get(HEARING_SCHEMA).get(0).get(CASE_SCHEMA).get(0)).remove("caseNumber");
 
+            String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(node.toString(), headerGroup),
+                             validationService.validateBody(listJson, headerGroup),
                          IAC_DAILY_LIST_INVALID_MESSAGE
             );
         }
