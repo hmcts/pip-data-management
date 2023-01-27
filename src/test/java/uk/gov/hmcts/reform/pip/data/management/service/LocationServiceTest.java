@@ -75,6 +75,9 @@ class LocationServiceTest {
     private static final String SECOND_LOCATION_NOT_FOUND = "Second location has not been found";
     private static final String REQUESTER_NAME = "ReqName";
     private static final String EMAIL = "test@test.com";
+    private static final String FILE = "file";
+    private static final String FILE_NAME = "TestFileName";
+    private static final String FILE_TYPE = "text/plain";
 
     @BeforeEach
     void setup() {
@@ -323,9 +326,9 @@ class LocationServiceTest {
         try (InputStream inputStream = this.getClass().getClassLoader()
             .getResourceAsStream("csv/ValidCsv.csv")) {
 
-            MultipartFile multipartFile = new MockMultipartFile("file",
-                                                                "TestFileName",
-                                                                "text/plain",
+            MultipartFile multipartFile = new MockMultipartFile(FILE,
+                                                                FILE_NAME,
+                                                                FILE_TYPE,
                                                                 IOUtils.toByteArray(inputStream)
             );
 
@@ -365,8 +368,8 @@ class LocationServiceTest {
             .getResourceAsStream("csv/ValidCsv.csv")) {
 
 
-            MultipartFile multipartFile = new MockMultipartFile("file", "TestFileName",
-                                                                "text/plain", IOUtils.toByteArray(inputStream)
+            MultipartFile multipartFile = new MockMultipartFile(FILE, FILE_NAME,
+                                                                FILE_TYPE, IOUtils.toByteArray(inputStream)
             );
 
             List<Location> locations = new ArrayList<>(locationService.uploadLocations(multipartFile));
@@ -409,8 +412,24 @@ class LocationServiceTest {
             .getResourceAsStream("csv/InvalidCsv.txt")) {
 
 
-            MultipartFile multipartFile = new MockMultipartFile("file", "TestFileName",
-                                                                "text/plain", IOUtils.toByteArray(inputStream)
+            MultipartFile multipartFile = new MockMultipartFile(FILE, FILE_NAME,
+                                                                FILE_TYPE, IOUtils.toByteArray(inputStream)
+            );
+
+
+            assertThrows(CsvParseException.class, () -> locationService.uploadLocations(multipartFile));
+        }
+    }
+
+    @Test
+    void testHandleUploadInvalidCsvWithNoLocationType() throws IOException {
+
+        try (InputStream inputStream = this.getClass().getClassLoader()
+            .getResourceAsStream("csv/InvalidNoLocationType.csv")) {
+
+
+            MultipartFile multipartFile = new MockMultipartFile(FILE, FILE_NAME,
+                                                                FILE_TYPE, IOUtils.toByteArray(inputStream)
             );
 
 
