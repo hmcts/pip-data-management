@@ -70,6 +70,16 @@
           "default": "",
           "pattern": "^.*$"
         },
+        "isPresiding": {
+          "description": "A flag to indicate whether a judiciary is presiding",
+          "title": "Is Presiding",
+          "type": "boolean",
+          "examples": [
+            true
+          ],
+          "default": "",
+          "pattern": "^.*$"
+        },
         "johKnownAs": {
           "description": "Name and salutations, titles to be presented on publications",
           "title": "JOH Known As",
@@ -114,16 +124,6 @@
   "type": "object",
   "required": ["document", "venue", "courtLists"],
   "properties": {
-    "@schemaLocation": {
-      "$id": "#root/@schemaLocation",
-      "title": "@schemalocation",
-      "type": "string",
-      "default": "",
-      "examples": [
-        "http://json-schema.org/draft-07/schema#"
-      ],
-      "pattern": "^.*$"
-    },
     "document": {
       "$id": "#root/document",
       "title": "document",
