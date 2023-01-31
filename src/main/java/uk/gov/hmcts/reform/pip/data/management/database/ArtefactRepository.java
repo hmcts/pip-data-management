@@ -68,7 +68,7 @@ public interface ArtefactRepository extends JpaRepository<Artefact, Long> {
 
 
     @Query(value = "select location_id, count(distinct artefact_id) from artefact "
-        + "where location_id NOT LIKE 'NoMatch%' "
+        + "where location_id ~ '^[0-9]+$' "
         + "and is_archived != true "
         + "group by location_id",
         nativeQuery = true)
