@@ -61,6 +61,7 @@ class LocationApiTest {
     private static final String DOWNLOAD_LOCATIONS_ENDPOINT = ROOT_URL + "/download/csv";
     public static final String UPLOAD_API = ROOT_URL + "/upload";
     private static final String LOCATIONS_CSV = "location/ValidCsv.csv";
+    private static final String CSV_WITHOUT_LOCATION_TYPE = "location/InvalidCsvWithoutLocationType.csv";
     private static final String DELETE_LOCATIONS_CSV = "location/ValidCsvForDeleteCourt.csv";
     private static final String UPDATED_CSV = "location/UpdatedCsv.csv";
 
@@ -735,7 +736,7 @@ class LocationApiTest {
                 .andExpect(status().isOk()).andReturn();
 
             List<String> inputCsv = new BufferedReader(new InputStreamReader(Objects.requireNonNull(this.getClass()
-                                                                             .getClassLoader().getResourceAsStream(
+                                                                          .getClassLoader().getResourceAsStream(
                     LOCATIONS_CSV)))).lines().collect(Collectors.toList());
 
             Location[] locationsFromResponse = objectMapper.readValue(
@@ -750,6 +751,19 @@ class LocationApiTest {
                     "Returned location matches input location"
                 );
             }
+        }
+    }
+
+    @Test
+    @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})
+    void testUploadLocationsBadRequest() throws Exception {
+        try (InputStream csvInputStream = this.getClass().getClassLoader()
+            .getResourceAsStream(CSV_WITHOUT_LOCATION_TYPE)) {
+            MockMultipartFile csvFile
+                = new MockMultipartFile(LOCATION_LIST, csvInputStream);
+
+            mockMvc.perform(multipart(UPLOAD_API).file(csvFile))
+                .andExpect(status().isBadRequest());
         }
     }
 
