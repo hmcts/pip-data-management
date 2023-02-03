@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.pip.data.management.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -209,8 +210,12 @@ public class PublicationService {
         // Find the second to last index of the delimiter then advance a place for the location ID index
         int locationIdIndex = line.lastIndexOf(DELIMITER, line.lastIndexOf(DELIMITER) - 1) + 1;
         String locationId = line.substring(locationIdIndex, line.lastIndexOf(DELIMITER));
-        return locationRepository.getLocationByLocationId(Integer.valueOf(locationId))
-            .map(l -> l.getName())
-            .orElse("");
+
+        if (NumberUtils.isCreatable(locationId)) {
+            return locationRepository.getLocationByLocationId(Integer.valueOf(locationId))
+                .map(l -> l.getName())
+                .orElse("");
+        }
+        return "";
     }
 }
