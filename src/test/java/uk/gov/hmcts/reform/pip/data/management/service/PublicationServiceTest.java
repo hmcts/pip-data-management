@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.pip.data.management.service;
 
+import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -38,6 +39,7 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.ARTEFACT_ID;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.CONTENT_DATE;
@@ -114,6 +116,16 @@ class PublicationServiceTest {
                 + "MANUAL_UPLOAD,PUBLIC,MANUAL_UPLOAD,GENERAL_PUBLICATION,2022-06-29 00:00:00.0,1815,SJP_PUBLIC_LIST",
             "10238a0f-d398-4356-9af4-a4dbbb17d455,2022-06-29 14:45:18.836,2022-09-29 14:45:18.836,ENGLISH,"
                 + "MANUAL_UPLOAD,PUBLIC,MANUAL_UPLOAD,GENERAL_PUBLICATION,2022-06-29 00:00:00.0,1815,SJP_PUBLIC_LIST"
+        );
+
+    private static final List<String> MI_DATA_WITH_NON_DIGITS_LOCATION_ID =
+        List.of(
+            "0beac960-68a3-41db-9f51-8c71826eaf30,2022-07-25 14:45:18.836,2022-09-29 14:45:18.836,BI_LINGUAL,"
+                + "MANUAL_UPLOAD,PUBLIC,MANUAL_UPLOAD,LIST,2022-06-29 00:00:00.0,null,FAMILY_DAILY_CAUSE_LIST",
+            "165ca91d-1e58-412a-80f5-1e5475a093e4,2022-06-29 14:45:18.836,2022-09-29 14:45:18.836,WELSH,MANUAL_UPLOAD,"
+                + "PUBLIC,MANUAL_UPLOAD,GENERAL_PUBLICATION,2022-06-29 00:00:00.0,NoMatch3,SJP_PUBLIC_LIST",
+            "10238a0f-d398-4356-9af4-a4dbbb17d455,2022-06-29 14:45:18.836,2022-09-29 14:45:18.836,ENGLISH,"
+                + "MANUAL_UPLOAD,PUBLIC,MANUAL_UPLOAD,GENERAL_PUBLICATION,2022-06-29 00:00:00.0,,SJP_PUBLIC_LIST"
         );
 
     @BeforeAll
@@ -464,6 +476,28 @@ class PublicationServiceTest {
             Arguments.of(MI_DATA_WITH_VALID_LOCATION_ID, LOCATION_NAME_WITH_ID_3, LOCATION_NAME_WITH_ID_9),
             Arguments.of(MI_DATA_WITH_INVALID_LOCATION_ID, "", "")
         );
+    }
+
+    @Test
+    void testGetMiDataWithNonDigitsLocationId() {
+        when(artefactRepository.getMiData()).thenReturn(MI_DATA_WITH_NON_DIGITS_LOCATION_ID);
+        String result = publicationService.getMiData();
+
+        verifyNoInteractions(locationRepository);
+
+        String[] splitLineString = result.split(System.lineSeparator());
+        SoftAssertions softly = new SoftAssertions();
+
+        softly.assertThat(getLocationName(splitLineString[1]))
+            .isEmpty();
+
+        softly.assertThat(getLocationName(splitLineString[2]))
+            .isEmpty();
+
+        softly.assertThat(getLocationName(splitLineString[3]))
+            .isEmpty();
+
+        softly.assertAll();
     }
 
     @Test
