@@ -183,19 +183,34 @@ public class PublicationService {
         return emailToMask;
     }
 
+    /**
+     * Retrieve artefact data for MI reporting. Insert court name before returning the data.
+     * @return MI artefact data as comma delimited string
+     */
     public String getMiData() {
         StringBuilder builder = new StringBuilder(150);
         builder
             .append("artefact_id,display_from,display_to,language,provenance,sensitivity,source_artefact_id,"
                         + "type,content_date,court_id,court_name,list_type")
             .append(System.lineSeparator());
+
         artefactRepository.getMiData()
             .stream()
-            // Insert an extra empty field for court name before the list type
+            // Insert an extra field for court name before the list type
             .map(line -> new StringBuilder(line)
-                .insert(line.lastIndexOf(DELIMITER), DELIMITER)
+                .insert(line.lastIndexOf(DELIMITER), DELIMITER + getLocationNameFromMiData(line))
                 .toString())
-            .forEach(line -> builder.append(line).append(System.lineSeparator()));
+            .forEach(line -> builder.append(line)
+                .append(System.lineSeparator()));
         return builder.toString();
+    }
+
+    private String getLocationNameFromMiData(String line) {
+        // Find the second to last index of the delimiter then advance a place for the location ID index
+        int locationIdIndex = line.lastIndexOf(DELIMITER, line.lastIndexOf(DELIMITER) - 1) + 1;
+        String locationId = line.substring(locationIdIndex, line.lastIndexOf(DELIMITER));
+        return locationRepository.getLocationByLocationId(Integer.valueOf(locationId))
+            .map(l -> l.getName())
+            .orElse("");
     }
 }

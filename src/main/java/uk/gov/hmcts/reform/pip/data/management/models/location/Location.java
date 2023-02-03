@@ -19,6 +19,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 /**
  * This class captures the Location Data, which will be persisted in the database.
@@ -50,6 +51,7 @@ public class Location {
 
     @JsonView(LocationViews.BaseView.class)
     @Enumerated(EnumType.STRING)
+    @NotNull
     private LocationType locationType;
 
     @Type(type = LIST_ARRAY)

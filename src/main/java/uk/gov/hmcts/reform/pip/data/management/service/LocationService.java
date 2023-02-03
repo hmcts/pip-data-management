@@ -241,12 +241,14 @@ public class LocationService {
                     requesterName = node.get("displayName").asText();
                 }
             } catch (JsonProcessingException e) {
+                log.error(String.format("Failed to get userInfo: %s",
+                                        e.getMessage()));
                 throw e;
             }
             locationDeletion = checkActiveArtefactForLocation(location.get(), requesterName);
-            if (!locationDeletion.getIsExists()) {
+            if (!locationDeletion.isExists()) {
                 locationDeletion = checkActiveSubscriptionForLocation(location.get(), requesterName);
-                if (!locationDeletion.getIsExists()) {
+                if (!locationDeletion.isExists()) {
                     locationRepository.deleteById(locationId);
                     sendEmailToAllSystemAdmins(requesterName, ActionResult.SUCCEEDED,
                         String.format("Location %s with Id %s has been deleted.",
