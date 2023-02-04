@@ -9,9 +9,9 @@ def component = "data-management"
 def kv = product + '-ss-kv'
 
 def setupTestSecrets() {
-  def bootstap_env = env.ENV == "prod" || env.ENV == "demo" || env.ENV == "sbox" ? env.ENV : "stg"
+  def bootstrap_env = env.ENV == "prod" || env.ENV == "demo" || env.ENV == "sbox" ? env.ENV : "stg"
   azureKeyVault(
-    keyVaultURL: "https://pip-bootstrap-${bootstap_env}-kv.vault.azure.net/",
+    keyVaultURL: "https://pip-bootstrap-${bootstrap_env}-kv.vault.azure.net/",
     secrets: [
       secret('app-pip-data-management-id', 'CLIENT_ID'),
       secret('app-pip-data-management-pwd', 'CLIENT_SECRET'),
