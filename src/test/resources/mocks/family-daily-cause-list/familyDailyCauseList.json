@@ -71,11 +71,8 @@
                           {
                             "partyRole": "APPLICANT_PETITIONER_REPRESENTATIVE",
                             "friendlyRoleName": "Legal Advisor",
-                            "individualDetails": {
-                              "individualForenames": "Individual Forenames",
-                              "individualMiddleName": "Individual Middlename",
-                              "individualSurname": "Individual Surname",
-                              "title": "Mr"
+                            "organisationDetails": {
+                              "organisationName": "OrganisationName"
                             }
                           },
                           {
