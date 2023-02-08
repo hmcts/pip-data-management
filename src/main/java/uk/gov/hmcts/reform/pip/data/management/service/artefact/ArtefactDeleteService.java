@@ -9,6 +9,7 @@ import uk.gov.hmcts.reform.pip.data.management.database.AzureBlobService;
 import uk.gov.hmcts.reform.pip.data.management.database.LocationRepository;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ArtefactNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactHelper;
+import uk.gov.hmcts.reform.pip.data.management.helpers.JsonParser;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ListType;
@@ -146,7 +147,10 @@ public class ArtefactDeleteService {
         List<Artefact> activeArtefacts =
             artefactRepository.findActiveArtefactsForLocation(searchDateTime, locationId.toString());
         if (activeArtefacts.isEmpty()) {
-            return String.format("No artefact found for location id %s", locationId);
+            throw new ArtefactNotFoundException(String.format(
+                "No artefact found with the location ID %s",
+                locationId
+            ));
         } else {
             activeArtefacts.forEach(artefact -> {
                 artefactRepository.delete(artefact);
@@ -157,7 +161,7 @@ public class ArtefactDeleteService {
             });
             Optional<Location> location = locationRepository.getLocationByLocationId(locationId);
             notifySystemAdminAboutSubscriptionDeletion(provenanceUserId,
-                String.format("Total %s subscription(s) for location %s", activeArtefacts.size(),
+                String.format("Total %s artefact(s) for location %s", activeArtefacts.size(),
                               location.get().getName()));
             return String.format("All artefact deleted for location id %s", locationId);
         }
@@ -165,7 +169,8 @@ public class ArtefactDeleteService {
 
     private void notifySystemAdminAboutSubscriptionDeletion(String provenanceUserId, String additionalDetails)
         throws JsonProcessingException {
-        String requesterName = accountManagementService.readUserAttribute("displayName", provenanceUserId);
+        String userInfo = accountManagementService.getUserInfo(provenanceUserId);
+        String requesterName = JsonParser.readAttribute(userInfo, "displayName");
         List<String> systemAdmins = accountManagementService.getAllAccounts("PI_AAD", "SYSTEM_ADMIN");
         publicationServicesService.sendSystemAdminEmail(systemAdmins, requesterName,
             ActionResult.SUCCEEDED, additionalDetails, ChangeType.DELETE_LOCATION_ARTEFACT);

@@ -17,6 +17,7 @@ import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.LocationRepository;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CsvParseException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.LocationNotFoundException;
+import uk.gov.hmcts.reform.pip.data.management.helpers.JsonParser;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationCsv;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationDeletion;
@@ -235,7 +236,8 @@ public class LocationService {
         Optional<Location> location = locationRepository.getLocationByLocationId(locationId);
 
         if (location.isPresent()) {
-            requesterName = accountManagementService.readUserAttribute("displayName", provenanceUserId);
+            String userInfo = accountManagementService.getUserInfo(provenanceUserId);
+            requesterName = JsonParser.readAttribute(userInfo, "displayName");
             locationDeletion = checkActiveArtefactForLocation(location.get(), requesterName);
             if (!locationDeletion.isExists()) {
                 locationDeletion = checkActiveSubscriptionForLocation(location.get(), requesterName);

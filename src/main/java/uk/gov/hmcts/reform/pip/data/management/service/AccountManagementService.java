@@ -76,22 +76,6 @@ public class AccountManagementService {
         }
     }
 
-    public String readUserAttribute(String attribute, String provenanceUserId)
-        throws JsonProcessingException {
-        String result = this.getUserInfo(provenanceUserId);
-        try {
-            JsonNode node = new ObjectMapper().readTree(result);
-            if (!node.isEmpty()) {
-                return node.get(attribute).asText();
-            }
-        } catch (JsonProcessingException e) {
-            log.error(String.format("Failed to get userInfo: %s",
-                                    e.getMessage()));
-            throw e;
-        }
-        return "";
-    }
-
     private List<String> findAllSystemAdmins(String result) throws JsonProcessingException {
         List<String> systemAdmins = new ArrayList<>();
         JsonNode node = new ObjectMapper().readTree(result);

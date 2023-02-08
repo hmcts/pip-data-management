@@ -445,8 +445,8 @@ class LocationServiceTest {
 
         when(locationRepository.getLocationByLocationId(locationId))
             .thenReturn(Optional.of(locationFirstExample));
-        when(accountManagementService.readUserAttribute(any(), any()))
-            .thenReturn(REQUESTER_NAME);
+        when(accountManagementService.getUserInfo(any()))
+            .thenReturn("{\"displayName\": \"ReqName\"}");
         when(artefactRepository.findActiveArtefactsForLocation(any(), eq(locationId.toString())))
             .thenReturn(List.of());
         when(subscriptionManagementService.findSubscriptionsByLocationId(locationId.toString()))
@@ -471,8 +471,8 @@ class LocationServiceTest {
             .thenReturn(List.of(new Artefact()));
         when(accountManagementService.getAllAccounts("PI_AAD", "SYSTEM_ADMIN"))
             .thenReturn(List.of(EMAIL));
-        when(accountManagementService.readUserAttribute(any(), any()))
-            .thenReturn(REQUESTER_NAME);
+        when(accountManagementService.getUserInfo(any()))
+            .thenReturn("{\"displayName\": \"ReqName\"}");
         when(publicationService.sendSystemAdminEmail(List.of(EMAIL), REQUESTER_NAME,
             ActionResult.ATTEMPTED,
 "There are active artefacts for following location: Venue Name First Example",
@@ -490,8 +490,8 @@ class LocationServiceTest {
 
         when(locationRepository.getLocationByLocationId(locationId))
             .thenReturn(Optional.of(locationFirstExample));
-        when(accountManagementService.readUserAttribute(any(), any()))
-            .thenReturn(REQUESTER_NAME);
+        when(accountManagementService.getUserInfo(any()))
+            .thenReturn("{\"displayName\": \"ReqName\"}");
         when(artefactRepository.findActiveArtefactsForLocation(any(), eq(locationId.toString())))
             .thenReturn(List.of());
         when(subscriptionManagementService.findSubscriptionsByLocationId(locationId.toString()))

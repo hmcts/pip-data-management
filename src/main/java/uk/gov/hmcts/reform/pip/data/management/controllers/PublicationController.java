@@ -451,11 +451,11 @@ public class PublicationController {
 
     @ApiResponse(responseCode = OK_CODE, description = "Successfully deleted artefact for location: {locationId}")
     @ApiResponse(responseCode = AUTH_ERROR_CODE, description = UNAUTHORIZED_DESCRIPTION)
-    @ApiResponse(responseCode = NOT_FOUND_CODE, description = "No artefact found with the ID: {locationId}")
+    @ApiResponse(responseCode = NOT_FOUND_CODE, description = "No artefact found with the location ID: {locationId}")
     @Operation(summary = "Delete all artefacts for given location from P&I")
     @DeleteMapping("/{locationId}/deleteArtefacts")
     @IsAdmin
-    public ResponseEntity<String> deleteArtefactsForLocation(
+    public ResponseEntity<String> deleteArtefactsByLocation(
         @RequestHeader("x-provenance-user-id") String provenanceUserId,
         @PathVariable Integer locationId) throws JsonProcessingException {
         artefactDeleteService.deleteArtefactByLocation(locationId, provenanceUserId);
