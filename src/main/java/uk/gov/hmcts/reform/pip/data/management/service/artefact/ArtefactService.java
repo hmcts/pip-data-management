@@ -14,7 +14,6 @@ import uk.gov.hmcts.reform.pip.data.management.models.publication.ListType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Sensitivity;
 import uk.gov.hmcts.reform.pip.data.management.service.AccountManagementService;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -53,11 +52,8 @@ public class ArtefactService {
      */
     public Artefact getMetadataByArtefactId(UUID artefactId, UUID userId) {
 
-        LocalDateTime currentDate = LocalDateTime.now();
-
         Optional<Artefact> artefact = artefactRepository.findByArtefactId(
-            artefactId.toString(),
-            currentDate
+            artefactId.toString()
         );
 
         if (artefact.isPresent() && isAuthorised(artefact.get(), userId)) {

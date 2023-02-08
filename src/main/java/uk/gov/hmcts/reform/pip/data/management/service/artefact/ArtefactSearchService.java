@@ -8,7 +8,6 @@ import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.Artefact
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -28,16 +27,15 @@ public class ArtefactSearchService {
     }
 
     /**
-     * Get all relevant artefacts relating to a given location ID.
-     *
-     * @param searchValue - represents the location ID in question being searched for
-     * @param userId      - represents the user ID of the user who is making the request
-     * @return a list of all artefacts that fulfil the timing criteria, match the given location id and sensitivity
-     *     associated with given verification status.
-     */
+    * Get all relevant artefacts relating to a given location ID.
+    *
+    * @param searchValue - represents the location ID in question being searched for
+    * @param userId      - represents the user ID of the user who is making the request
+    * @return a list of all artefacts that fulfil the timing criteria, match the given location id and sensitivity
+    *     associated with given verification status.
+    */
     public List<Artefact> findAllByLocationId(String searchValue, UUID userId) {
-        LocalDateTime currDate = LocalDateTime.now();
-        List<Artefact> artefacts = artefactRepository.findArtefactsByLocationId(searchValue, currDate);
+        List<Artefact> artefacts = artefactRepository.findArtefactsByLocationId(searchValue);
 
         return artefacts.stream().filter(artefact -> artefactService.isAuthorised(artefact, userId)).toList();
     }
@@ -65,12 +63,11 @@ public class ArtefactSearchService {
      * @return list of Artefacts
      */
     public List<Artefact> findAllBySearch(CaseSearchTerm searchTerm, String searchValue, UUID userId) {
-        LocalDateTime currDate = LocalDateTime.now();
         List<Artefact> artefacts;
         switch (searchTerm) {
             case CASE_ID, CASE_URN ->
-                artefacts = artefactRepository.findArtefactBySearch(searchTerm.dbValue, searchValue, currDate);
-            case CASE_NAME -> artefacts = artefactRepository.findArtefactByCaseName(searchValue, currDate);
+                artefacts = artefactRepository.findArtefactBySearch(searchTerm.dbValue, searchValue);
+            case CASE_NAME -> artefacts = artefactRepository.findArtefactByCaseName(searchValue);
             default -> throw new IllegalArgumentException(String.format("Invalid search term: %s", searchTerm));
         }
 
