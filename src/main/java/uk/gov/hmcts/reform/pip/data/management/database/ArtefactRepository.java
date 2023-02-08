@@ -56,7 +56,7 @@ public interface ArtefactRepository extends JpaRepository<Artefact, Long> {
     List<Artefact> findArtefactByCaseName(@Param(CASE_NAME_PARAM) String caseName);
 
 
-    @Query(value = INITIAL_SELECT + "WHERE searchDetails.caseDetails ->> :searchTerm = :searchValue and"
+    @Query(value = INITIAL_SELECT + "WHERE searchDetails.caseDetails ->> :searchTerm = :searchValue and "
         + "is_archived != true", nativeQuery = true)
     List<Artefact> findArtefactBySearch(@Param(SEARCH_TERM_PARAM) String searchTerm,
                                         @Param(SEARCH_VAL_PARAM) String searchVal);
