@@ -63,7 +63,7 @@ public interface ArtefactRepository extends JpaRepository<Artefact, Long> {
 
 
     @Query(value = "select location_id, count(distinct artefact_id) from (SELECT * FROM artefact WHERE is_archived !="
-        + " true) group by location_id",
+        + " true) as a group by location_id",
         nativeQuery = true)
     List<String> countArtefactsByLocation();
 
