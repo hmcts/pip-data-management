@@ -25,6 +25,7 @@ import uk.gov.hmcts.reform.pip.data.management.models.location.LocationType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.model.enums.UserActions;
 import uk.gov.hmcts.reform.pip.model.system.admin.ActionResult;
+import uk.gov.hmcts.reform.pip.model.system.admin.ChangeType;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -234,17 +235,7 @@ public class LocationService {
         Optional<Location> location = locationRepository.getLocationByLocationId(locationId);
 
         if (location.isPresent()) {
-            String result = accountManagementService.getUserInfo(provenanceUserId);
-            try {
-                JsonNode node = new ObjectMapper().readTree(result);
-                if (!node.isEmpty()) {
-                    requesterName = node.get("displayName").asText();
-                }
-            } catch (JsonProcessingException e) {
-                log.error(String.format("Failed to get userInfo: %s",
-                                        e.getMessage()));
-                throw e;
-            }
+            requesterName = accountManagementService.readUserAttribute("displayName", provenanceUserId);
             locationDeletion = checkActiveArtefactForLocation(location.get(), requesterName);
             if (!locationDeletion.isExists()) {
                 locationDeletion = checkActiveSubscriptionForLocation(location.get(), requesterName);
@@ -266,7 +257,8 @@ public class LocationService {
     private void sendEmailToAllSystemAdmins(String requesterName, ActionResult actionResult,
                                             String additionalDetails) throws JsonProcessingException {
         List<String> systemAdmins = accountManagementService.getAllAccounts("PI_AAD", SYSTEM_ADMIN.toString());
-        publicationService.sendSystemAdminEmail(systemAdmins, requesterName, actionResult, additionalDetails);
+        publicationService.sendSystemAdminEmail(systemAdmins, requesterName, actionResult, additionalDetails,
+                                                ChangeType.DELETE_LOCATION);
     }
 
     private LocationDeletion checkActiveArtefactForLocation(Location location, String requesterName)

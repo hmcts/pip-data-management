@@ -1,16 +1,23 @@
 package uk.gov.hmcts.reform.pip.data.management.service.artefact;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.AzureBlobService;
+import uk.gov.hmcts.reform.pip.data.management.database.LocationRepository;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ArtefactNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactHelper;
+import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ListType;
+import uk.gov.hmcts.reform.pip.data.management.service.AccountManagementService;
+import uk.gov.hmcts.reform.pip.data.management.service.PublicationServicesService;
 import uk.gov.hmcts.reform.pip.data.management.service.SubscriptionManagementService;
 import uk.gov.hmcts.reform.pip.model.enums.UserActions;
+import uk.gov.hmcts.reform.pip.model.system.admin.ActionResult;
+import uk.gov.hmcts.reform.pip.model.system.admin.ChangeType;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -23,14 +30,23 @@ import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
 public class ArtefactDeleteService {
 
     private final ArtefactRepository artefactRepository;
+    private final LocationRepository locationRepository;
     private final AzureBlobService azureBlobService;
     private final SubscriptionManagementService subscriptionManagementService;
+    private final AccountManagementService accountManagementService;
+    private final PublicationServicesService publicationServicesService;
 
-    public ArtefactDeleteService(ArtefactRepository artefactRepository, AzureBlobService azureBlobService,
-                                 SubscriptionManagementService subscriptionManagementService) {
+    public ArtefactDeleteService(ArtefactRepository artefactRepository, LocationRepository locationRepository,
+                                 AzureBlobService azureBlobService,
+                                 SubscriptionManagementService subscriptionManagementService,
+                                 AccountManagementService accountManagementService,
+                                 PublicationServicesService publicationServicesService) {
         this.artefactRepository = artefactRepository;
+        this.locationRepository = locationRepository;
         this.azureBlobService = azureBlobService;
         this.subscriptionManagementService = subscriptionManagementService;
+        this.accountManagementService = accountManagementService;
+        this.publicationServicesService = publicationServicesService;
     }
 
     /**
@@ -121,5 +137,37 @@ public class ArtefactDeleteService {
      */
     private void triggerThirdPartyArtefactDeleted(Artefact deletedArtefact) {
         log.info(writeLog(subscriptionManagementService.sendDeletedArtefactForThirdParties(deletedArtefact)));
+    }
+
+    @Transactional
+    public String deleteArtefactByLocation(Integer locationId, String provenanceUserId)
+        throws JsonProcessingException {
+        LocalDateTime searchDateTime = LocalDateTime.now();
+        List<Artefact> activeArtefacts =
+            artefactRepository.findActiveArtefactsForLocation(searchDateTime, locationId.toString());
+        if (activeArtefacts.isEmpty()) {
+            return String.format("No artefact found for location id %s", locationId);
+        } else {
+            activeArtefacts.forEach(artefact -> {
+                artefactRepository.delete(artefact);
+                deleteAllPublicationBlobData(artefact);
+                log.info(String.format("Artefact deleted by %s, with artefact id: %s",
+                                       provenanceUserId, artefact.getArtefactId()
+                ));
+            });
+            Optional<Location> location = locationRepository.getLocationByLocationId(locationId);
+            notifySystemAdminAboutSubscriptionDeletion(provenanceUserId,
+                String.format("Total %s subscription(s) for location %s", activeArtefacts.size(),
+                              location.get().getName()));
+            return String.format("All artefact deleted for location id %s", locationId);
+        }
+    }
+
+    private void notifySystemAdminAboutSubscriptionDeletion(String provenanceUserId, String additionalDetails)
+        throws JsonProcessingException {
+        String requesterName = accountManagementService.readUserAttribute("displayName", provenanceUserId);
+        List<String> systemAdmins = accountManagementService.getAllAccounts("PI_AAD", "SYSTEM_ADMIN");
+        publicationServicesService.sendSystemAdminEmail(systemAdmins, requesterName,
+            ActionResult.SUCCEEDED, additionalDetails, ChangeType.DELETE_LOCATION_ARTEFACT);
     }
 }
