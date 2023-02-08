@@ -51,13 +51,13 @@ public interface ArtefactRepository extends JpaRepository<Artefact, Long> {
     List<Artefact> findArtefactsByLocationId(@Param(LOCATION_ID_PARAM) String locationId);
 
     @Query(value = INITIAL_SELECT + "WHERE LOWER(searchDetails.caseDetails ->> 'caseName') LIKE LOWER"
-        + "('%' || :caseName || '%') and is_archived != true)",
+        + "('%' || :caseName || '%') and is_archived != true",
         nativeQuery = true)
     List<Artefact> findArtefactByCaseName(@Param(CASE_NAME_PARAM) String caseName);
 
 
-    @Query(value = INITIAL_SELECT + "WHERE searchDetails.caseDetails ->> :searchTerm = :searchValue and "
-        + "is_archived != true", nativeQuery = true)
+    @Query(value = INITIAL_SELECT + "WHERE searchDetails.caseDetails ->> :searchTerm = :searchValue and is_archived "
+        + "!= true", nativeQuery = true)
     List<Artefact> findArtefactBySearch(@Param(SEARCH_TERM_PARAM) String searchTerm,
                                         @Param(SEARCH_VAL_PARAM) String searchVal);
 
