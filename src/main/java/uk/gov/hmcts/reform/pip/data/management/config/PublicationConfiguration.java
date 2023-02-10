@@ -15,6 +15,7 @@ public final class PublicationConfiguration {
     public static final String LIST_TYPE = "x-list-type";
     public static final String COURT_ID = "x-court-id";
     public static final String CONTENT_DATE = "x-content-date";
+    public static final String EXPIRY_DATE_HEADER = "x-expiry-date";
 
     private PublicationConfiguration() {
         //Private constructor
