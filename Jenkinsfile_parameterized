@@ -10,6 +10,7 @@ def kv = product + '-ss-kv'
 
 withParameterizedPipeline(type, product, component, 'sbox', 'sbox') {
 
+  enableDbMigration(kv)
   enableSlackNotifications('#pip-build-notices')
 
   enableAksStagingDeployment()
