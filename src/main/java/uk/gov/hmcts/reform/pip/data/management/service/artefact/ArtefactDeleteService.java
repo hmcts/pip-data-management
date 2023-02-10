@@ -163,7 +163,7 @@ public class ArtefactDeleteService {
             notifySystemAdminAboutSubscriptionDeletion(provenanceUserId,
                 String.format("Total %s artefact(s) for location %s", activeArtefacts.size(),
                               location.get().getName()));
-            return String.format("All artefact deleted for location id %s", locationId);
+            return String.format("Total %s artefact deleted for location id %s", activeArtefacts.size(), locationId);
         }
     }
 

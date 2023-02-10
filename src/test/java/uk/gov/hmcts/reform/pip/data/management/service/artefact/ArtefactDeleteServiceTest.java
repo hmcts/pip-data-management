@@ -262,11 +262,11 @@ class ArtefactDeleteServiceTest {
         when(publicationService.sendSystemAdminEmail(List.of(EMAIL_ADDRESS), REQUESTER_NAME, ActionResult.SUCCEEDED,
         "Total 1 artefact(s) for location NAME",
         ChangeType.DELETE_LOCATION_ARTEFACT))
-            .thenReturn("All artefact deleted for location id 1");
+            .thenReturn("Total 1 artefact deleted for location id 1");
 
         doNothing().when(artefactRepository).delete(artefactWithIdAndPayloadUrl);
 
-        assertEquals("All artefact deleted for location id 1",
+        assertEquals("Total 1 artefact deleted for location id 1",
                      artefactDeleteService.deleteArtefactByLocation(LOCATION_ID, REQUESTER_NAME),
                      "The artefacts for given location is not deleted");
         verify(azureBlobService, times(1))

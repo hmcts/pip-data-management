@@ -458,7 +458,6 @@ public class PublicationController {
     public ResponseEntity<String> deleteArtefactsByLocation(
         @RequestHeader("x-provenance-user-id") String provenanceUserId,
         @PathVariable Integer locationId) throws JsonProcessingException {
-        artefactDeleteService.deleteArtefactByLocation(locationId, provenanceUserId);
-        return ResponseEntity.ok("Successfully deleted artefact for location: " + locationId);
+        return ResponseEntity.ok(artefactDeleteService.deleteArtefactByLocation(locationId, provenanceUserId));
     }
 }
