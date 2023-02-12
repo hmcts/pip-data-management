@@ -635,9 +635,9 @@ class PublicationTest {
             assertNotNull(artefact.getArtefactId(), "Artefact ID is not populated");
         }
     }
+
     @DisplayName("Verify that artefact is not returned to blob explorer when artefact is not archived and expiry date "
-        + "is "
-        + "in the future")
+        + "is in the future")
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
     void verifyThatArtefactsAreNotReturnedForBlobExplorerWhenExpiryIsPassed(boolean isJson) throws Exception {
