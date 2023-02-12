@@ -137,7 +137,8 @@ class PublicationTest {
     public static void setup() throws IOException {
         file = new MockMultipartFile("file", "test.pdf",
                                      MediaType.APPLICATION_PDF_VALUE, "test content".getBytes(
-            StandardCharsets.UTF_8));
+            StandardCharsets.UTF_8)
+        );
         payload = new String(IOUtils.toByteArray(
             Objects.requireNonNull(PublicationTest.class.getClassLoader()
                                        .getResourceAsStream("data/artefact.json"))));
@@ -634,6 +635,48 @@ class PublicationTest {
             assertNotNull(artefact.getArtefactId(), "Artefact ID is not populated");
         }
     }
+    @DisplayName("Verify that artefact is not returned to blob explorer when artefact is not archived and expiry date "
+        + "is "
+        + "in the future")
+    @ParameterizedTest
+    @ValueSource(booleans = {true, false})
+    void verifyThatArtefactsAreNotReturnedForBlobExplorerWhenExpiryIsPassed(boolean isJson) throws Exception {
+        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
+        if (isJson) {
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
+        } else {
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(PUBLICATION_URL).file(file);
+        }
+
+        mockHttpServletRequestBuilder
+            .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
+            .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
+            .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
+            .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
+            .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO.minusMonths(1))
+            .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM.minusMonths(2))
+            .header(PublicationConfiguration.LIST_TYPE, LIST_TYPE)
+            .header(PublicationConfiguration.COURT_ID, COURT_ID)
+            .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
+            .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
+            .contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
+
+        mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
+
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 = MockMvcRequestBuilders
+
+            .get(BLOB_EXPLORER_SEARCH_LOCATION_URL + "/" + COURT_ID)
+            .header(USER_ID_HEADER, userId);
+        MvcResult getResponse =
+            mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isOk()).andReturn();
+
+        String jsonOutput = getResponse.getResponse().getContentAsString();
+        JSONArray jsonArray = new JSONArray(jsonOutput);
+        assertEquals(0, jsonArray.length(),
+                     "Unknown artefacts have been returned from the database"
+        );
+    }
 
     @DisplayName("Verify that artefact is returned to blob explorer when artefact is not archived and expiry date is "
         + "in the future")
@@ -654,7 +697,6 @@ class PublicationTest {
             .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
             .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
             .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO.plusMonths(1))
-            .header(PublicationConfiguration.EXPIRY_DATE_HEADER, DISPLAY_TO.plusMonths(1))
             .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM.minusMonths(2))
             .header(PublicationConfiguration.LIST_TYPE, LIST_TYPE)
             .header(PublicationConfiguration.COURT_ID, COURT_ID)
@@ -662,8 +704,8 @@ class PublicationTest {
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
             .contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
 
-        MvcResult createResponse =
-            mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
+
+        mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 = MockMvcRequestBuilders
 
             .get(BLOB_EXPLORER_SEARCH_LOCATION_URL + "/" + COURT_ID)
