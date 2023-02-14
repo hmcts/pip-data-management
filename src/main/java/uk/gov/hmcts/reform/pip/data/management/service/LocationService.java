@@ -17,7 +17,7 @@ import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.LocationRepository;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CsvParseException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.LocationNotFoundException;
-import uk.gov.hmcts.reform.pip.data.management.helpers.JsonParser;
+import uk.gov.hmcts.reform.pip.data.management.models.external.account.management.AzureAccount;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationCsv;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationDeletion;
@@ -232,18 +232,16 @@ public class LocationService {
     public LocationDeletion deleteLocation(Integer locationId, String provenanceUserId)
         throws JsonProcessingException {
         LocationDeletion locationDeletion;
-        String requesterName = "";
         Optional<Location> location = locationRepository.getLocationByLocationId(locationId);
 
         if (location.isPresent()) {
-            String userInfo = accountManagementService.getUserInfo(provenanceUserId);
-            requesterName = JsonParser.readAttribute(userInfo, "displayName");
-            locationDeletion = checkActiveArtefactForLocation(location.get(), requesterName);
+            AzureAccount userInfo = accountManagementService.getUserInfo(provenanceUserId);
+            locationDeletion = checkActiveArtefactForLocation(location.get(), userInfo.getDisplayName());
             if (!locationDeletion.isExists()) {
-                locationDeletion = checkActiveSubscriptionForLocation(location.get(), requesterName);
+                locationDeletion = checkActiveSubscriptionForLocation(location.get(), userInfo.getDisplayName());
                 if (!locationDeletion.isExists()) {
                     locationRepository.deleteById(locationId);
-                    sendEmailToAllSystemAdmins(requesterName, ActionResult.SUCCEEDED,
+                    sendEmailToAllSystemAdmins(userInfo.getDisplayName(), ActionResult.SUCCEEDED,
                         String.format("Location %s with Id %s has been deleted.",
                                 location.get().getName(), location.get().getLocationId()));
                 }

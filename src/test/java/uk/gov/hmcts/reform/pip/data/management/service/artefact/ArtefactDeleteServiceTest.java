@@ -15,6 +15,7 @@ import uk.gov.hmcts.reform.pip.data.management.database.LocationRepository;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ArtefactNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.NotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper;
+import uk.gov.hmcts.reform.pip.data.management.models.external.account.management.AzureAccount;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ListType;
@@ -83,6 +84,7 @@ class ArtefactDeleteServiceTest {
     private Artefact artefactWithIdAndPayloadUrl;
 
     private Location location;
+    AzureAccount azureAccount;
     private static final String REQUESTER_NAME = "ReqName";
     private static final String EMAIL_ADDRESS = "test@test.com";
     private static final Integer LOCATION_ID = 1;
@@ -108,6 +110,9 @@ class ArtefactDeleteServiceTest {
         lenient().when(locationRepository.findByLocationIdByProvenance(PROVENANCE, PROVENANCE_ID,
                                                                        LOCATION_VENUE))
             .thenReturn(Optional.of(location));
+
+        azureAccount = new AzureAccount();
+        azureAccount.setDisplayName(REQUESTER_NAME);
     }
 
     private void createPayloads() {
@@ -256,7 +261,7 @@ class ArtefactDeleteServiceTest {
         when(locationRepository.getLocationByLocationId(LOCATION_ID))
             .thenReturn(Optional.of(location));
         when(accountManagementService.getUserInfo(any()))
-            .thenReturn("{\"displayName\": \"ReqName\"}");
+            .thenReturn(azureAccount);
         when(accountManagementService.getAllAccounts("PI_AAD", "SYSTEM_ADMIN"))
             .thenReturn(List.of(EMAIL_ADDRESS));
         when(publicationService.sendSystemAdminEmail(List.of(EMAIL_ADDRESS), REQUESTER_NAME, ActionResult.SUCCEEDED,
@@ -286,14 +291,16 @@ class ArtefactDeleteServiceTest {
     }
 
     @Test
-    void testDeleteArtefactByLocationJsonProcessingException() {
+    void testDeleteArtefactByLocationJsonProcessingException() throws JsonProcessingException {
 
         when(artefactRepository.findActiveArtefactsForLocation(any(), eq(LOCATION_ID.toString())))
             .thenReturn(List.of(artefactWithIdAndPayloadUrl));
         when(locationRepository.getLocationByLocationId(LOCATION_ID))
             .thenReturn(Optional.of(location));
         when(accountManagementService.getUserInfo(any()))
-            .thenReturn("test");
+            .thenReturn(azureAccount);
+        when(accountManagementService.getAllAccounts(any(), any()))
+            .thenThrow(JsonProcessingException.class);
 
         assertThrows(JsonProcessingException.class, () ->
                          artefactDeleteService.deleteArtefactByLocation(LOCATION_ID, REQUESTER_NAME),

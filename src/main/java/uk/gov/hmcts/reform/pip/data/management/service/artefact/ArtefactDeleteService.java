@@ -9,7 +9,7 @@ import uk.gov.hmcts.reform.pip.data.management.database.AzureBlobService;
 import uk.gov.hmcts.reform.pip.data.management.database.LocationRepository;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ArtefactNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactHelper;
-import uk.gov.hmcts.reform.pip.data.management.helpers.JsonParser;
+import uk.gov.hmcts.reform.pip.data.management.models.external.account.management.AzureAccount;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ListType;
@@ -140,7 +140,6 @@ public class ArtefactDeleteService {
         log.info(writeLog(subscriptionManagementService.sendDeletedArtefactForThirdParties(deletedArtefact)));
     }
 
-    @Transactional
     public String deleteArtefactByLocation(Integer locationId, String provenanceUserId)
         throws JsonProcessingException {
         LocalDateTime searchDateTime = LocalDateTime.now();
@@ -162,17 +161,16 @@ public class ArtefactDeleteService {
             Optional<Location> location = locationRepository.getLocationByLocationId(locationId);
             notifySystemAdminAboutSubscriptionDeletion(provenanceUserId,
                 String.format("Total %s artefact(s) for location %s", activeArtefacts.size(),
-                              location.get().getName()));
+                              location.isPresent() ? location.get().getName() : ""));
             return String.format("Total %s artefact deleted for location id %s", activeArtefacts.size(), locationId);
         }
     }
 
     private void notifySystemAdminAboutSubscriptionDeletion(String provenanceUserId, String additionalDetails)
         throws JsonProcessingException {
-        String userInfo = accountManagementService.getUserInfo(provenanceUserId);
-        String requesterName = JsonParser.readAttribute(userInfo, "displayName");
+        AzureAccount userInfo = accountManagementService.getUserInfo(provenanceUserId);
         List<String> systemAdmins = accountManagementService.getAllAccounts("PI_AAD", "SYSTEM_ADMIN");
-        publicationServicesService.sendSystemAdminEmail(systemAdmins, requesterName,
+        publicationServicesService.sendSystemAdminEmail(systemAdmins, userInfo.getDisplayName(),
             ActionResult.SUCCEEDED, additionalDetails, ChangeType.DELETE_LOCATION_ARTEFACT);
     }
 }

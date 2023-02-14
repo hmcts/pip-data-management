@@ -14,6 +14,7 @@ import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.LocationRepository;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CsvParseException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.LocationNotFoundException;
+import uk.gov.hmcts.reform.pip.data.management.models.external.account.management.AzureAccount;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationCsv;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationDeletion;
@@ -64,6 +65,7 @@ class LocationServiceTest {
     Location locationFirstExample;
     Location locationSecondExample;
     LocationDeletion locationDeletion;
+    AzureAccount azureAccount;
 
     private static final String FAMILY_LOCATION =  "Family Location";
     private static final String MAGISTRATES_LOCATION = "Magistrates Location";
@@ -96,6 +98,9 @@ class LocationServiceTest {
         locationSecondExample = new Location(locationCsvSecondExample);
 
         locationDeletion = new LocationDeletion();
+
+        azureAccount = new AzureAccount();
+        azureAccount.setDisplayName("ReqName");
     }
 
     @Test
@@ -446,7 +451,7 @@ class LocationServiceTest {
         when(locationRepository.getLocationByLocationId(locationId))
             .thenReturn(Optional.of(locationFirstExample));
         when(accountManagementService.getUserInfo(any()))
-            .thenReturn("{\"displayName\": \"ReqName\"}");
+            .thenReturn(azureAccount);
         when(artefactRepository.findActiveArtefactsForLocation(any(), eq(locationId.toString())))
             .thenReturn(List.of());
         when(subscriptionManagementService.findSubscriptionsByLocationId(locationId.toString()))
@@ -472,7 +477,7 @@ class LocationServiceTest {
         when(accountManagementService.getAllAccounts("PI_AAD", "SYSTEM_ADMIN"))
             .thenReturn(List.of(EMAIL));
         when(accountManagementService.getUserInfo(any()))
-            .thenReturn("{\"displayName\": \"ReqName\"}");
+            .thenReturn(azureAccount);
         when(publicationService.sendSystemAdminEmail(List.of(EMAIL), REQUESTER_NAME,
             ActionResult.ATTEMPTED,
 "There are active artefacts for following location: Venue Name First Example",
@@ -491,7 +496,7 @@ class LocationServiceTest {
         when(locationRepository.getLocationByLocationId(locationId))
             .thenReturn(Optional.of(locationFirstExample));
         when(accountManagementService.getUserInfo(any()))
-            .thenReturn("{\"displayName\": \"ReqName\"}");
+            .thenReturn(azureAccount);
         when(artefactRepository.findActiveArtefactsForLocation(any(), eq(locationId.toString())))
             .thenReturn(List.of());
         when(subscriptionManagementService.findSubscriptionsByLocationId(locationId.toString()))
