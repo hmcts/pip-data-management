@@ -28,6 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.authentication.roles.IsAdmin;
 import uk.gov.hmcts.reform.pip.data.management.authentication.roles.IsPublisher;
 import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
+import uk.gov.hmcts.reform.pip.data.management.helpers.LocationHelper;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactType;
@@ -180,14 +181,15 @@ public class PublicationController {
             .expiryDate(headers.getDisplayTo())
             .build();
 
-        Artefact createdItem = publicationService
-            .createPublication(artefact, payload);
+        Artefact createdItem = publicationService.createPublication(artefact, payload);
 
         logManualUpload(publicationService.maskEmail(issuerEmail), createdItem.getArtefactId().toString());
 
         // Process the created artefact by requesting channel management to generate PDF/Excel files
         // and check/trigger subscription management, async.
-        publicationService.processCreatedPublication(createdItem);
+        if (!LocationHelper.isNoMatchLocationId(createdItem.getLocationId())) {
+            publicationService.processCreatedPublication(createdItem);
+        }
 
         return ResponseEntity.status(HttpStatus.CREATED).body(createdItem);
     }

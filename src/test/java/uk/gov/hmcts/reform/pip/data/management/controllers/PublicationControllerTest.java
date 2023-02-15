@@ -43,6 +43,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ConstantsTestHelper.MESSAGES_MATCH;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ConstantsTestHelper.STATUS_CODE_MATCH;
@@ -94,10 +96,12 @@ class PublicationControllerTest {
         "The expected exception does not contain the correct message";
     private static final String NOT_EQUAL_MESSAGE = "The expected strings are not the same";
     private static final String DELETED_MESSAGE = "Successfully deleted artefact: ";
-    public static final String COUNT_MSG = "location,count\n1,3\n2,4\n3,6\n";
+    private static final String COUNT_MSG = "location,count\n1,3\n2,4\n3,6\n";
+    private static final String NO_MATCH = "NoMatch";
 
     private Artefact artefact;
     private Artefact artefactWithId;
+    private Artefact artefactWithNoMatchLocationId;
     private HeaderGroup headers;
 
     @BeforeEach
@@ -135,6 +139,23 @@ class PublicationControllerTest {
             .expiryDate(DISPLAY_TO)
             .search(new ConcurrentHashMap<>())
             .build();
+
+        artefactWithNoMatchLocationId = Artefact.builder()
+            .artefactId(ARTEFACT_ID)
+            .sourceArtefactId(SOURCE_ARTEFACT_ID)
+            .displayFrom(DISPLAY_FROM)
+            .displayTo(DISPLAY_TO)
+            .language(LANGUAGE)
+            .provenance(PROVENANCE)
+            .sensitivity(SENSITIVITY)
+            .type(ARTEFACT_TYPE)
+            .payload(PAYLOAD_URL)
+            .listType(LIST_TYPE)
+            .locationId(NO_MATCH + LOCATION_ID)
+            .contentDate(CONTENT_DATE)
+            .expiryDate(DISPLAY_TO)
+            .search(new ConcurrentHashMap<>())
+            .build();
     }
 
     @Test
@@ -145,12 +166,31 @@ class PublicationControllerTest {
 
 
         ResponseEntity<Artefact> responseEntity = publicationController.uploadPublication(
-            PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE,
-            SENSITIVITY, LANGUAGE, DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, LOCATION_ID, CONTENT_DATE, TEST_STRING, PAYLOAD
+            PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE, SENSITIVITY, LANGUAGE,
+            DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, LOCATION_ID, CONTENT_DATE, TEST_STRING, PAYLOAD
         );
+
+        verify(publicationService).processCreatedPublication(any(Artefact.class));
 
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode(), STATUS_CODE_MATCH);
         assertEquals(artefactWithId, responseEntity.getBody(), "The expected return ID is returned");
+    }
+
+    @Test
+    void testCreationOfPublicationWithNonExistentLocationId() {
+        when(validationService.validateHeaders(any())).thenReturn(headers);
+        when(publicationService.createPublication(argThat(arg -> arg.equals(artefact)), eq(PAYLOAD)))
+            .thenReturn(artefactWithNoMatchLocationId);
+
+        ResponseEntity<Artefact> responseEntity = publicationController.uploadPublication(
+            PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE, SENSITIVITY, LANGUAGE,
+            DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, LOCATION_ID, CONTENT_DATE, TEST_STRING, PAYLOAD
+        );
+
+        verify(publicationService, never()).processCreatedPublication(any(Artefact.class));
+
+        assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode(), STATUS_CODE_MATCH);
+        assertEquals(artefactWithNoMatchLocationId, responseEntity.getBody(), "The expected return ID is returned");
     }
 
     @Test
