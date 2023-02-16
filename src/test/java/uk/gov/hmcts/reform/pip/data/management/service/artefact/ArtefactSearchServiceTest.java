@@ -5,6 +5,9 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -23,10 +26,12 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.lenient;
@@ -71,6 +76,7 @@ class ArtefactSearchServiceTest {
     private Artefact artefactWithIdAndPayloadUrlClassified;
 
     private Location location;
+    private static final String ABC = "abc";
 
     @BeforeAll
     public static void setupSearchValues() {
@@ -84,14 +90,16 @@ class ArtefactSearchServiceTest {
 
         location = ArtefactConstantTestHelper.initialiseCourts();
 
-        lenient().when(artefactRepository.findArtefactByUpdateLogic(artefact.getLocationId(),artefact.getContentDate(),
+        lenient().when(artefactRepository.findArtefactByUpdateLogic(artefact.getLocationId(), artefact.getContentDate(),
                                                                     artefact.getLanguage().name(),
                                                                     artefact.getListType().name(),
-                                                                    artefact.getProvenance()))
+                                                                    artefact.getProvenance()
+            ))
             .thenReturn(Optional.empty());
         lenient().when(artefactRepository.save(artefactWithPayloadUrl)).thenReturn(artefactWithIdAndPayloadUrl);
         lenient().when(locationRepository.findByLocationIdByProvenance(PROVENANCE, PROVENANCE_ID,
-                                                                       LOCATION_VENUE))
+                                                                       LOCATION_VENUE
+            ))
             .thenReturn(Optional.of(location));
     }
 
@@ -120,14 +128,16 @@ class ArtefactSearchServiceTest {
 
         location = ArtefactConstantTestHelper.initialiseCourts();
 
-        lenient().when(artefactRepository.findArtefactByUpdateLogic(artefact.getLocationId(),artefact.getContentDate(),
+        lenient().when(artefactRepository.findArtefactByUpdateLogic(artefact.getLocationId(), artefact.getContentDate(),
                                                                     artefact.getLanguage().name(),
                                                                     artefact.getListType().name(),
-                                                                    artefact.getProvenance()))
+                                                                    artefact.getProvenance()
+            ))
             .thenReturn(Optional.empty());
         lenient().when(artefactRepository.save(artefactWithPayloadUrl)).thenReturn(artefactWithIdAndPayloadUrl);
         lenient().when(locationRepository.findByLocationIdByProvenance(PROVENANCE, PROVENANCE_ID,
-                                                                       LOCATION_VENUE))
+                                                                       LOCATION_VENUE
+            ))
             .thenReturn(Optional.of(location));
     }
 
@@ -162,7 +172,7 @@ class ArtefactSearchServiceTest {
         when(artefactService.isAuthorised(artefact2, USER_ID))
             .thenReturn(true);
 
-        assertEquals(artefactList, artefactSearchService.findAllByLocationId("abc", USER_ID),
+        assertEquals(artefactList, artefactSearchService.findAllByLocationId(ABC, USER_ID),
                      VALIDATION_ARTEFACT_NOT_MATCH
         );
     }
@@ -198,11 +208,42 @@ class ArtefactSearchServiceTest {
         when(artefactService.isAuthorised(artefact2, USER_ID))
             .thenReturn(false);
 
-        List<Artefact> artefacts = artefactSearchService.findAllByLocationId("abc", USER_ID);
+        List<Artefact> artefacts = artefactSearchService.findAllByLocationId(ABC, USER_ID);
 
         assertEquals(1, artefacts.size(), VALIDATION_MORE_THAN_PUBLIC);
         assertEquals(artefact, artefacts.get(0), VALIDATION_ARTEFACT_NOT_MATCH);
     }
+
+
+    @ParameterizedTest
+    @MethodSource("blobExplorerTestArgs")
+    void testFindByLocationBlobExplorer(Boolean admin, int count) {
+        Artefact artefact2 = Artefact.builder()
+            .sourceArtefactId(SOURCE_ARTEFACT_ID)
+            .provenance(PROVENANCE)
+            .language(Language.WELSH)
+            .sensitivity(Sensitivity.CLASSIFIED)
+            .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
+            .build();
+
+        List<Artefact> artefactList = new ArrayList<>();
+        artefactList.add(artefact2);
+        lenient().when(artefactRepository.findArtefactsByLocationBlobExplorer(any(), any()))
+            .thenReturn(artefactList);
+        lenient().when(artefactRepository.findArtefactsByLocationId(eq(ABC), any())).thenReturn(new ArrayList<>());
+
+        List<Artefact> artefacts = artefactSearchService.findAllByLocationIdBlobExplorer(ABC, USER_ID, admin);
+
+        assertEquals(count, artefacts.size(), VALIDATION_MORE_THAN_PUBLIC);
+    }
+
+    private static Stream<Arguments> blobExplorerTestArgs() {
+        return Stream.of(
+            arguments(false, 0),
+            arguments(true, 1)
+        );
+    }
+
 
     @Test
     void testFindByCourtIdWhenUnverified() {
@@ -233,7 +274,7 @@ class ArtefactSearchServiceTest {
         when(artefactService.isAuthorised(artefact2, USER_ID))
             .thenReturn(true);
 
-        List<Artefact> artefacts = artefactSearchService.findAllByLocationId("abc", USER_ID);
+        List<Artefact> artefacts = artefactSearchService.findAllByLocationId(ABC, USER_ID);
 
         assertEquals(1, artefacts.size(), VALIDATION_MORE_THAN_PUBLIC);
         assertEquals(artefact2, artefacts.get(0), VALIDATION_ARTEFACT_NOT_MATCH);
@@ -316,7 +357,8 @@ class ArtefactSearchServiceTest {
         assertEquals(
             list,
             artefactSearchService.findAllBySearch(SEARCH_TERM_CASE_NAME, TEST_VALUE, USER_ID),
-            VALIDATION_ARTEFACT_NOT_MATCH);
+            VALIDATION_ARTEFACT_NOT_MATCH
+        );
     }
 
     @Test
@@ -420,13 +462,15 @@ class ArtefactSearchServiceTest {
         when(artefactService.isAuthorised(artefact, USER_ID))
             .thenReturn(true);
         assertEquals(List.of(artefact), artefactSearchService.findAllByLocationIdAdmin(TEST_VALUE, USER_ID, false),
-                     VALIDATION_ARTEFACT_NOT_MATCH);
+                     VALIDATION_ARTEFACT_NOT_MATCH
+        );
     }
 
     @Test
     void testFindAllByCourtIdAdmin() {
         when(artefactRepository.findArtefactsByLocationIdAdmin(TEST_VALUE)).thenReturn(List.of(artefact));
         assertEquals(List.of(artefact), artefactSearchService.findAllByLocationIdAdmin(TEST_VALUE, USER_ID, true),
-                     VALIDATION_ARTEFACT_NOT_MATCH);
+                     VALIDATION_ARTEFACT_NOT_MATCH
+        );
     }
 }
