@@ -175,14 +175,14 @@ class PublicationControllerTest {
     @Test
     void testSearchEndpointReturnsOkWithTrue() {
         assertEquals(HttpStatus.OK, publicationController.getAllRelevantArtefactsByLocationId(
-            EMPTY_FIELD, USER_ID, true)
+                EMPTY_FIELD, USER_ID, true)
             .getStatusCode(), STATUS_CODE_MATCH);
     }
 
     @Test
     void testSearchEndpointReturnsOkWithFalse() {
         assertEquals(HttpStatus.OK, publicationController.getAllRelevantArtefactsByLocationId(
-            EMPTY_FIELD, USER_ID, false)
+                EMPTY_FIELD, USER_ID, false)
             .getStatusCode(), STATUS_CODE_MATCH);
     }
 
@@ -191,8 +191,10 @@ class PublicationControllerTest {
         when(artefactSearchService.findAllBySearch(SEARCH_TERM, TEST_STRING, USER_ID))
             .thenReturn(List.of(artefactWithId));
         assertEquals(HttpStatus.OK, publicationController.getAllRelevantArtefactsBySearchValue(SEARCH_TERM, TEST_STRING,
-                                                                                               USER_ID).getStatusCode(),
-                     STATUS_CODE_MATCH);
+                                                                                               USER_ID
+                     ).getStatusCode(),
+                     STATUS_CODE_MATCH
+        );
     }
 
     @Test
@@ -202,7 +204,8 @@ class PublicationControllerTest {
         assertEquals(HttpStatus.OK, publicationController
                          .getAllRelevantArtefactsBySearchValue(SEARCH_TERM, TEST_STRING, USER_ID)
                          .getStatusCode(),
-                     STATUS_CODE_MATCH);
+                     STATUS_CODE_MATCH
+        );
     }
 
     @Test
@@ -299,6 +302,38 @@ class PublicationControllerTest {
     }
 
     @Test
+    void checkGetArtefactsBlobExplorerReturnsWhenTrue() {
+        List<Artefact> artefactList = List.of(artefactWithId);
+
+        when(artefactSearchService.findAllByLocationIdBlobExplorer(
+            EMPTY_FIELD,
+            USER_ID,
+            true
+        )).thenReturn(artefactList);
+        ResponseEntity<List<Artefact>> unmappedArtefact = publicationController
+            .getAllRelevantArtefactsByLocationIdBlobExplorer(EMPTY_FIELD, USER_ID, true);
+
+        assertEquals(artefactList, unmappedArtefact.getBody(), VALIDATION_EXPECTED_MESSAGE);
+        assertEquals(HttpStatus.OK, unmappedArtefact.getStatusCode(), STATUS_CODE_MATCH);
+    }
+
+    @Test
+    void checkGetArtefactsBlobExplorerReturnsOkWhenFalse() {
+        List<Artefact> artefactList = List.of(artefactWithId);
+
+        when(artefactSearchService.findAllByLocationIdBlobExplorer(
+            EMPTY_FIELD,
+            USER_ID,
+            false
+        )).thenReturn(artefactList);
+        ResponseEntity<List<Artefact>> unmappedArtefact = publicationController
+            .getAllRelevantArtefactsByLocationIdBlobExplorer(EMPTY_FIELD, USER_ID, false);
+
+        assertEquals(artefactList, unmappedArtefact.getBody(), VALIDATION_EXPECTED_MESSAGE);
+        assertEquals(HttpStatus.OK, unmappedArtefact.getStatusCode(), STATUS_CODE_MATCH);
+    }
+
+    @Test
     void checkGetArtefactsByCourtIdReturnsOkWhenFalse() {
         List<Artefact> artefactList = List.of(artefactWithId);
 
@@ -335,18 +370,23 @@ class PublicationControllerTest {
     void testDeleteArtefactReturnsOk() {
         doNothing().when(artefactDeleteService).deleteArtefactById(any(), any());
         assertEquals(HttpStatus.OK, publicationController.deleteArtefact(TEST_STRING, TEST_STRING).getStatusCode(),
-                     STATUS_CODE_MATCH);
-        assertEquals(DELETED_MESSAGE + TEST_STRING,
-                     publicationController.deleteArtefact(TEST_STRING, TEST_STRING).getBody(),
-                     MESSAGES_MATCH);
+                     STATUS_CODE_MATCH
+        );
+        assertEquals(
+            DELETED_MESSAGE + TEST_STRING,
+            publicationController.deleteArtefact(TEST_STRING, TEST_STRING).getBody(),
+            MESSAGES_MATCH
+        );
     }
 
     @Test
     void testGetLocationTypeReturnsOk() {
         when(artefactService.getLocationType(ListType.CIVIL_DAILY_CAUSE_LIST)).thenReturn(LocationType.VENUE);
-        assertEquals(HttpStatus.OK,
-                     publicationController.getLocationType(ListType.CIVIL_DAILY_CAUSE_LIST).getStatusCode(),
-                     STATUS_CODE_MATCH);
+        assertEquals(
+            HttpStatus.OK,
+            publicationController.getLocationType(ListType.CIVIL_DAILY_CAUSE_LIST).getStatusCode(),
+            STATUS_CODE_MATCH
+        );
     }
 
     @Test
@@ -371,9 +411,11 @@ class PublicationControllerTest {
 
     @Test
     void testMiDataReturnsOk() {
-        assertEquals(HttpStatus.OK,
-                     publicationController.getMiData().getStatusCode(),
-                     STATUS_CODE_MATCH);
+        assertEquals(
+            HttpStatus.OK,
+            publicationController.getMiData().getStatusCode(),
+            STATUS_CODE_MATCH
+        );
     }
 
     @Test
@@ -411,7 +453,8 @@ class PublicationControllerTest {
 
         assertEquals(HttpStatus.OK, response.getStatusCode(), STATUS_CODE_MATCH);
         assertEquals(String.format("Artefact of ID %s has been archived", artefactId),
-                     response.getBody(), "Response from archiving does not match expected message");
+                     response.getBody(), "Response from archiving does not match expected message"
+        );
     }
 
     @Test
