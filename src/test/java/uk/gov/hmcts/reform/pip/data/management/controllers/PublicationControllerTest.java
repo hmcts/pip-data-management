@@ -366,8 +366,33 @@ class PublicationControllerTest {
             SENSITIVITY, LANGUAGE, DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, LOCATION_ID, CONTENT_DATE, TEST_STRING, FILE
         );
 
+        verify(artefactTriggerService).checkAndTriggerSubscriptionManagement(any(Artefact.class));
+
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode(), STATUS_CODE_MATCH);
         assertEquals(artefactWithId, responseEntity.getBody(), "Artefacts should match");
+    }
+
+    @Test
+    void testCreatePublicationMultipartFileWithNonExistentLocationId() {
+        Map<String, List<Object>> search = new HashMap<>();
+        search.put("location-id", List.of(LOCATION_ID));
+        artefact.setSearch(search);
+        artefact.setIsFlatFile(true);
+        artefactWithNoMatchLocationId.setIsFlatFile(true);
+        artefactWithNoMatchLocationId.setSearch(search);
+
+        when(validationService.validateHeaders(any())).thenReturn(headers);
+        when(publicationService.createPublication(artefact, FILE)).thenReturn(artefactWithNoMatchLocationId);
+
+        ResponseEntity<Artefact> responseEntity = publicationController.uploadPublication(
+            PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE,
+            SENSITIVITY, LANGUAGE, DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, LOCATION_ID, CONTENT_DATE, TEST_STRING, FILE
+        );
+
+        verify(artefactTriggerService, never()).checkAndTriggerSubscriptionManagement(any(Artefact.class));
+
+        assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode(), STATUS_CODE_MATCH);
+        assertEquals(artefactWithNoMatchLocationId, responseEntity.getBody(), "Artefacts should match");
     }
 
     @Test
