@@ -268,8 +268,23 @@ public class PublicationController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdItem);
     }
 
+    @ApiResponse(responseCode = OK_CODE, description = "List of Artefacts for the Blob Explorer window matching the "
+        + "given locationId and verification parameters and expiry date requirements")
+    @ApiResponse(responseCode = AUTH_ERROR_CODE, description = UNAUTHORIZED_DESCRIPTION)
+    @ApiResponse(responseCode = NOT_FOUND_CODE, description = NOT_FOUND_DESCRIPTION)
+    @Operation(summary = "Get a series of publications matching a given locationId (e.g. locationId)")
+    @GetMapping("/locationid-blob-explorer/{locationId}")
+    @JsonView(ArtefactView.Internal.class)
+    @IsAdmin
+    public ResponseEntity<List<Artefact>> getAllRelevantArtefactsByLocationIdBlobExplorer(
+        @PathVariable String locationId,
+        @RequestHeader(value = USER_ID_HEADER, required = false) UUID userId,
+        @RequestHeader(value = ADMIN_HEADER, defaultValue = DEFAULT_ADMIN_VALUE, required = false) Boolean isAdmin) {
+        return ResponseEntity.ok(artefactSearchService.findAllByLocationIdBlobExplorer(locationId, userId, isAdmin));
+    }
+
     @ApiResponse(responseCode = OK_CODE, description = "List of Artefacts matching the given locationId and "
-            + "verification parameters and date requirements")
+        + "verification parameters and date requirements")
     @ApiResponse(responseCode = AUTH_ERROR_CODE, description = UNAUTHORIZED_DESCRIPTION)
     @ApiResponse(responseCode = NOT_FOUND_CODE, description = NOT_FOUND_DESCRIPTION)
     @Operation(summary = "Get a series of publications matching a given locationId (e.g. locationId)")
