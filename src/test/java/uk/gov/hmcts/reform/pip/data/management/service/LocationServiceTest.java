@@ -347,6 +347,9 @@ class LocationServiceTest {
                        "Jurisdiction does not have expected value");
             assertTrue(firstLocationJurisdiction.contains(FAMILY_LOCATION),
                        "Jurisdiction does not have expected value");
+            assertEquals("test1@test.com", firstLocation.getEmail(), "Location email is not as expected");
+            assertEquals("0123456789", firstLocation.getContactNo(),
+                         "Location contact no does not match in first location");
 
             Location secondLocation = locations.get(1);
             assertEquals(2, secondLocation.getLocationId(), "Location ID is not as expected");
@@ -358,6 +361,9 @@ class LocationServiceTest {
             assertEquals(1, secondLocationJurisdiction.size(), "Unexpected number of jurisdictions");
             assertTrue(firstLocationJurisdiction.contains(FAMILY_LOCATION),
                        "Jurisdiction does not have expected value");
+            assertEquals("test2@test.com", secondLocation.getEmail(), "Location email is not as expected");
+            assertEquals("01111111111", secondLocation.getContactNo(),
+                         "Location contact no does not match in first location");
         }
     }
 
