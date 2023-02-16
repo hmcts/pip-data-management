@@ -241,7 +241,8 @@ public class LocationService {
                     requesterName = node.get("displayName").asText();
                 }
             } catch (JsonProcessingException e) {
-                log.error(e.getMessage());
+                log.error(String.format("Failed to get userInfo: %s",
+                                        e.getMessage()));
                 throw e;
             }
             locationDeletion = checkActiveArtefactForLocation(location.get(), requesterName);

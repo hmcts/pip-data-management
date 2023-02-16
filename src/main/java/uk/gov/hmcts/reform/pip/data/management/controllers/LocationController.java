@@ -40,6 +40,7 @@ public class LocationController {
     private LocationService locationService;
 
     private static final String OK_CODE = "200";
+    private static final String BAD_REQUEST_CODE = "400";
     private static final String AUTH_ERROR_CODE = "403";
     private static final String NOT_FOUND_CODE = "404";
 
@@ -86,6 +87,7 @@ public class LocationController {
     }
 
     @ApiResponse(responseCode = OK_CODE, description = "Uploaded Locations")
+    @ApiResponse(responseCode = BAD_REQUEST_CODE, description = "Unable to upload the reference data")
     @ApiResponse(responseCode = AUTH_ERROR_CODE, description = "User has not been authorized")
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @IsAdmin

@@ -19,7 +19,7 @@ public class SubscriptionManagementService {
     @Value("${service-to-service.subscription-management}")
     private String url;
 
-    private static final String REQUEST_FAILED_ERROR_MESSAGE = "Request failed with error message: %s";
+    public static final String REQUEST_FAILED = "Request failed with error message: %s";
 
     public String sendArtefactForSubscription(Artefact artefact) {
         log.info("Attempting to send trigger to " + url);
@@ -28,8 +28,7 @@ public class SubscriptionManagementService {
                 .body(BodyInserters.fromValue(artefact))
                 .retrieve().bodyToMono(String.class).block();
         } catch (WebClientException ex) {
-            log.error(String.format(REQUEST_FAILED_ERROR_MESSAGE, ex.getMessage()
-            ));
+            log.error(String.format(REQUEST_FAILED, ex.getMessage()));
             return "Artefact failed to send: " + artefact.getArtefactId();
         }
     }
@@ -41,8 +40,7 @@ public class SubscriptionManagementService {
                 .body(BodyInserters.fromValue(artefact))
                 .retrieve().bodyToMono(String.class).block();
         } catch (WebClientException ex) {
-            log.error(String.format(REQUEST_FAILED_ERROR_MESSAGE, ex.getMessage()
-            ));
+            log.error(String.format(REQUEST_FAILED, ex.getMessage()));
             return "Artefact failed to send: " + artefact.getArtefactId();
         }
     }
@@ -53,7 +51,7 @@ public class SubscriptionManagementService {
             return webClient.get().uri(url + "/subscription/location/" + locationId)
                 .retrieve().bodyToMono(String.class).block();
         } catch (WebClientException ex) {
-            log.error(String.format(REQUEST_FAILED_ERROR_MESSAGE, ex.getMessage()));
+            log.error(String.format(REQUEST_FAILED, ex.getMessage()));
             return "Failed to find subscription for Location: " + locationId + " with status: " + ex.getMessage();
         }
     }
