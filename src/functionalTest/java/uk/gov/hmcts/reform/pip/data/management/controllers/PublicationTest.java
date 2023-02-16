@@ -81,6 +81,9 @@ class PublicationTest {
     @Value("${test-user-id}")
     private String userId;
 
+    @Value("${system-admin-provenance-id}")
+    private String systemAdminProvenanceId;
+
     private static final String PUBLICATION_URL = "/publication";
     private static final String SEARCH_URL = "/publication/search";
     private static final String SEARCH_COURT_URL = "/publication/locationId";
@@ -106,6 +109,7 @@ class PublicationTest {
     private static final String COURT_ID = "123";
     private static final LocalDateTime CONTENT_DATE = LocalDateTime.now().toLocalDate().atStartOfDay()
         .truncatedTo(ChronoUnit.SECONDS);
+    private static final String PROVENANCE_USER_ID = "x-provenance-user-id";
     private static final String SEARCH_KEY_FOUND = "array-value";
     private static final String SEARCH_KEY_NOT_FOUND = "case-urn";
     private static final String SEARCH_VALUE_1 = "array-value-1";
@@ -136,7 +140,8 @@ class PublicationTest {
     public static void setup() throws IOException {
         file = new MockMultipartFile("file", "test.pdf",
                                      MediaType.APPLICATION_PDF_VALUE, "test content".getBytes(
-            StandardCharsets.UTF_8));
+            StandardCharsets.UTF_8)
+        );
         payload = new String(IOUtils.toByteArray(
             Objects.requireNonNull(PublicationTest.class.getClassLoader()
                                        .getResourceAsStream("data/artefact.json"))));
@@ -1642,7 +1647,6 @@ class PublicationTest {
         assertEquals("Successfully deleted artefact: " + artefactToDelete.getArtefactId(),
                      deleteResponse.getResponse().getContentAsString(), "Should successfully delete artefact"
         );
-
     }
 
     @Test
@@ -1943,4 +1947,57 @@ class PublicationTest {
             fail(String.format("%s with value '%s' could not be parsed", field, value));
         }
     }
+
+    @Test
+    void testDeleteArtefactsByLocation() throws Exception {
+        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        Artefact artefactToDelete = createDailyList(Sensitivity.PUBLIC);
+
+        MockHttpServletRequestBuilder preDeleteRequest = MockMvcRequestBuilders
+            .get(PUBLICATION_URL + "/" + artefactToDelete.getArtefactId())
+            .header(USER_ID_HEADER, userId);
+
+        mockMvc.perform(preDeleteRequest).andExpect(status().isOk());
+
+        MockHttpServletRequestBuilder deleteRequest = MockMvcRequestBuilders
+            .delete(PUBLICATION_URL + "/" + COURT_ID + "/deleteArtefacts")
+            .header(PROVENANCE_USER_ID, systemAdminProvenanceId);
+
+        MvcResult deleteResponse = mockMvc.perform(deleteRequest).andExpect(status().isOk()).andReturn();
+
+        assertEquals("Total 1 artefact deleted for location id " + COURT_ID,
+                     deleteResponse.getResponse().getContentAsString(), "Should successfully delete artefact"
+        );
+    }
+
+    @Test
+    void testDeleteArtefactsByLocationNotFound() throws Exception {
+        MockHttpServletRequestBuilder deleteRequest = MockMvcRequestBuilders
+            .delete(PUBLICATION_URL + "/" + COURT_ID + "/deleteArtefacts")
+            .header(PROVENANCE_USER_ID, systemAdminProvenanceId);
+
+        MvcResult deleteResponse = mockMvc.perform(deleteRequest).andExpect(status().isNotFound()).andReturn();
+
+        assertTrue(
+            deleteResponse.getResponse().getContentAsString()
+                .contains("No artefact found with the location ID " + COURT_ID),
+            "Artefact not found error message"
+        );
+    }
+
+    @Test
+    @WithMockUser(username = UNAUTHORIZED_USERNAME, authorities = {UNAUTHORIZED_ROLE})
+    void testDeleteArtefactsByLocationUnauthorized() throws Exception {
+        MockHttpServletRequestBuilder deleteRequest = MockMvcRequestBuilders
+            .delete(PUBLICATION_URL + "/" + COURT_ID + "/deleteArtefacts")
+            .header(PROVENANCE_USER_ID, systemAdminProvenanceId);
+
+        MvcResult deleteResponse = mockMvc.perform(deleteRequest).andExpect(status().isForbidden()).andReturn();
+
+        assertEquals(HttpStatus.FORBIDDEN.value(), deleteResponse.getResponse().getStatus(),
+                     FORBIDDEN_STATUS_CODE
+        );
+    }
+
+
 }
