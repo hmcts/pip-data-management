@@ -52,6 +52,8 @@ public final class ArtefactConstantTestHelper {
 
     public static final String LOCATION_VENUE = LocationType.VENUE.name();
 
+    public static final String LOCATION_OWNING_HEARING_LOCATION = LocationType.OWNING_HEARING_LOCATION.name();
+
     public static Artefact buildArtefact() {
         return Artefact.builder()
             .sourceArtefactId(SOURCE_ARTEFACT_ID)
