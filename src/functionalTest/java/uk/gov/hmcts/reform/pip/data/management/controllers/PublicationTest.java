@@ -87,6 +87,7 @@ class PublicationTest {
     private static final String PUBLICATION_URL = "/publication";
     private static final String SEARCH_URL = "/publication/search";
     private static final String SEARCH_COURT_URL = "/publication/locationId";
+    public static final String BLOB_EXPLORER_SEARCH_LOCATION_URL = "/publication/locationid-blob-explorer";
     private static final String PAYLOAD_URL = "/payload";
     private static final String LOCATION_TYPE_URL = PUBLICATION_URL + "/location-type/";
     private static final String SEND_NEW_ARTEFACTS_FOR_SUBSCRIPTION_URL = PUBLICATION_URL + "/latest/subscription";
@@ -550,42 +551,6 @@ class PublicationTest {
         }
     }
 
-    @DisplayName("Should create a valid artefact and return the created artefact to the user")
-    @Test
-    void testCreationOfValidDailyCauseList() throws Exception {
-        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
-        when(blobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
-
-        try (InputStream mockFile = this.getClass().getClassLoader()
-            .getResourceAsStream("data/civil-daily-cause-list/civilDailyCauseList.json")) {
-
-            MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-                .post(PUBLICATION_URL)
-                .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
-                .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
-                .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
-                .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
-                .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO)
-                .header(PublicationConfiguration.COURT_ID, COURT_ID)
-                .header(PublicationConfiguration.LIST_TYPE, ListType.CIVIL_DAILY_CAUSE_LIST)
-                .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
-                .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
-                .content(mockFile.readAllBytes())
-                .contentType(MediaType.APPLICATION_JSON);
-
-
-            MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
-                .andExpect(status().isCreated()).andReturn();
-
-            assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
-
-            Artefact artefact = objectMapper.readValue(
-                response.getResponse().getContentAsString(), Artefact.class);
-
-            assertNotNull(artefact.getArtefactId(), "Artefact ID is not populated");
-        }
-    }
-
     @DisplayName("Verify that artefact is returned when user is verified and sensitivity is public")
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
@@ -624,7 +589,6 @@ class PublicationTest {
         );
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 = MockMvcRequestBuilders
-
             .get(SEARCH_COURT_URL + "/" + COURT_ID)
             .header(USER_ID_HEADER, userId);
         MvcResult getResponse =
@@ -638,6 +602,130 @@ class PublicationTest {
         assertEquals(COURT_ID, retrievedArtefact.getLocationId(),
                      "Incorrect court ID has been retrieved from the database"
         );
+    }
+
+    @DisplayName("Should create a valid artefact and return the created artefact to the user")
+    @Test
+    void testCreationOfValidDailyCauseList() throws Exception {
+        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(blobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
+
+        try (InputStream mockFile = this.getClass().getClassLoader()
+            .getResourceAsStream("data/civil-daily-cause-list/civilDailyCauseList.json")) {
+
+            MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .post(PUBLICATION_URL)
+                .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
+                .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
+                .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
+                .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
+                .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO)
+                .header(PublicationConfiguration.COURT_ID, COURT_ID)
+                .header(PublicationConfiguration.LIST_TYPE, ListType.CIVIL_DAILY_CAUSE_LIST)
+                .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
+                .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
+                .content(mockFile.readAllBytes())
+                .contentType(MediaType.APPLICATION_JSON);
+
+
+            MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
+                .andExpect(status().isCreated()).andReturn();
+
+            assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
+
+            Artefact artefact = objectMapper.readValue(
+                response.getResponse().getContentAsString(), Artefact.class);
+
+            assertNotNull(artefact.getArtefactId(), "Artefact ID is not populated");
+        }
+    }
+
+    @DisplayName("Verify that artefact is not returned to blob explorer when artefact is not archived and expiry date "
+        + "is in the future")
+    @ParameterizedTest
+    @ValueSource(booleans = {true, false})
+    void verifyThatArtefactsAreNotReturnedForBlobExplorerWhenExpiryIsPassed(boolean isJson) throws Exception {
+        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
+        if (isJson) {
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
+        } else {
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(PUBLICATION_URL).file(file);
+        }
+
+        mockHttpServletRequestBuilder
+            .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
+            .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
+            .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
+            .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
+            .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO.minusMonths(1))
+            .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM.minusMonths(2))
+            .header(PublicationConfiguration.LIST_TYPE, LIST_TYPE)
+            .header(PublicationConfiguration.COURT_ID, COURT_ID)
+            .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
+            .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
+            .contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
+
+        mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
+
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 = MockMvcRequestBuilders
+
+            .get(BLOB_EXPLORER_SEARCH_LOCATION_URL + "/" + COURT_ID)
+            .header(USER_ID_HEADER, userId);
+        MvcResult getResponse =
+            mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isOk()).andReturn();
+
+        String jsonOutput = getResponse.getResponse().getContentAsString();
+        JSONArray jsonArray = new JSONArray(jsonOutput);
+        assertEquals(0, jsonArray.length(),
+                     "Unknown artefacts have been returned from the database"
+        );
+    }
+
+    @DisplayName("Verify that artefact is returned to blob explorer when artefact is not archived and expiry date is "
+        + "in the future")
+    @ParameterizedTest
+    @ValueSource(booleans = {true, false})
+    void verifyThatArtefactsAreReturnedForBlobExplorerWhenExpiryIsFuture(boolean isJson) throws Exception {
+        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
+        if (isJson) {
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
+        } else {
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(PUBLICATION_URL).file(file);
+        }
+
+        mockHttpServletRequestBuilder
+            .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
+            .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
+            .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
+            .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
+            .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO.plusMonths(1))
+            .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM.minusMonths(2))
+            .header(PublicationConfiguration.LIST_TYPE, LIST_TYPE)
+            .header(PublicationConfiguration.COURT_ID, COURT_ID)
+            .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
+            .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
+            .contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
+
+
+        mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 = MockMvcRequestBuilders
+
+            .get(BLOB_EXPLORER_SEARCH_LOCATION_URL + "/" + COURT_ID)
+            .header(USER_ID_HEADER, userId);
+        MvcResult getResponse =
+            mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isOk()).andReturn();
+
+        String jsonOutput = getResponse.getResponse().getContentAsString();
+        JSONArray jsonArray = new JSONArray(jsonOutput);
+        Artefact retrievedArtefact = objectMapper.readValue(
+            jsonArray.get(0).toString(), Artefact.class
+        );
+        assertEquals(COURT_ID, retrievedArtefact.getLocationId(),
+                     "Incorrect court ID has been retrieved from the database"
+        );
+
     }
 
     @DisplayName("Verify that artefact is returned when user is unverified and sensitivity is public")
