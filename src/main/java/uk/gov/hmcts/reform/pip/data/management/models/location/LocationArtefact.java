@@ -4,10 +4,10 @@ import lombok.Data;
 
 @Data
 public class LocationArtefact {
-    private int locationId;
+    private String locationId;
     private int totalArtefacts;
 
-    public LocationArtefact(int locationId, int totalArtefacts) {
+    public LocationArtefact(String locationId, int totalArtefacts) {
         this.locationId = locationId;
         this.totalArtefacts = totalArtefacts;
     }

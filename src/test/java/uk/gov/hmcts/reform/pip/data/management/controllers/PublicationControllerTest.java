@@ -234,7 +234,7 @@ class PublicationControllerTest {
 
     @Test
     void checkCountArtefactByLocationReturnsData() {
-        COURT_PER_LOCATION.add(new LocationArtefact(1, 2));
+        COURT_PER_LOCATION.add(new LocationArtefact("1", 2));
         when(artefactService.countArtefactsByLocation()).thenReturn(COURT_PER_LOCATION);
         ResponseEntity<List<LocationArtefact>> result = publicationController.countByLocation();
         assertEquals(HttpStatus.OK, result.getStatusCode(), STATUS_CODE_MATCH);
