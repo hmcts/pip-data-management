@@ -7,11 +7,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientException;
+import uk.gov.hmcts.reform.pip.data.management.models.NoMatchArtefact;
 import uk.gov.hmcts.reform.pip.model.system.admin.ActionResult;
 import uk.gov.hmcts.reform.pip.model.system.admin.DeleteLocationAction;
 
 import java.util.List;
-import java.util.Map;
 
 import static org.springframework.security.oauth2.client.web.reactive.function.client.ServerOAuth2AuthorizedClientExchangeFilterFunction.clientRegistrationId;
 
@@ -28,10 +28,10 @@ public class PublicationServicesService {
     @Value("${service-to-service.publication-services}")
     private String url;
 
-    public String sendNoMatchArtefactsForReporting(Map<String, String> noMatchMap) {
+    public String sendNoMatchArtefactsForReporting(List<NoMatchArtefact> noMatchArtefacts) {
         try {
             return webClient.post().uri(url + "/notify/unidentified-blob")
-                .body(BodyInserters.fromValue(noMatchMap))
+                .body(BodyInserters.fromValue(noMatchArtefacts))
                 .attributes(clientRegistrationId("publicationServicesApi"))
                 .retrieve().bodyToMono(String.class).block();
         } catch (WebClientException ex) {
