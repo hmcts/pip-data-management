@@ -28,8 +28,7 @@ public class SubscriptionManagementService {
                 .body(BodyInserters.fromValue(artefact))
                 .retrieve().bodyToMono(String.class).block();
         } catch (WebClientException ex) {
-            log.error(String.format(REQUEST_FAILED, ex.getMessage()
-            ));
+            log.error(String.format(REQUEST_FAILED, ex.getMessage()));
             return "Artefact failed to send: " + artefact.getArtefactId();
         }
     }
@@ -41,8 +40,7 @@ public class SubscriptionManagementService {
                 .body(BodyInserters.fromValue(artefact))
                 .retrieve().bodyToMono(String.class).block();
         } catch (WebClientException ex) {
-            log.error(String.format(REQUEST_FAILED, ex.getMessage()
-            ));
+            log.error(String.format(REQUEST_FAILED, ex.getMessage()));
             return "Artefact failed to send: " + artefact.getArtefactId();
         }
     }
@@ -53,8 +51,7 @@ public class SubscriptionManagementService {
             return webClient.get().uri(url + "/subscription/location/" + locationId)
                 .retrieve().bodyToMono(String.class).block();
         } catch (WebClientException ex) {
-            log.error(String.format(REQUEST_FAILED, ex.getMessage()
-            ));
+            log.error(String.format(REQUEST_FAILED, ex.getMessage()));
             return "Failed to find subscription for Location: " + locationId + " with status: " + ex.getMessage();
         }
     }

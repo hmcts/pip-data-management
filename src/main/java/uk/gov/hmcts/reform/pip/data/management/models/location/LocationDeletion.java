@@ -4,7 +4,9 @@ import lombok.Data;
 
 @Data
 public class LocationDeletion {
+
     private String errorMessage;
+
     private boolean isExists;
 
     public LocationDeletion() {
