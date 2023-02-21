@@ -153,13 +153,19 @@ class PublicationTest {
 
     Artefact createDailyList(Sensitivity sensitivity, LocalDateTime displayFrom, LocalDateTime contentDate)
         throws Exception {
+        return createDailyList(sensitivity, displayFrom, contentDate, PROVENANCE);
+    }
+
+    Artefact createDailyList(Sensitivity sensitivity, LocalDateTime displayFrom, LocalDateTime contentDate,
+                             String provenance)
+        throws Exception {
         try (InputStream mockFile = this.getClass().getClassLoader()
             .getResourceAsStream("data/civil-daily-cause-list/civilDailyCauseList.json")) {
 
             MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
                 .post(PUBLICATION_URL)
                 .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
-                .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
+                .header(PublicationConfiguration.PROVENANCE_HEADER, provenance)
                 .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
                 .header(PublicationConfiguration.DISPLAY_FROM_HEADER, displayFrom)
                 .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO.plusMonths(1))
@@ -1842,12 +1848,29 @@ class PublicationTest {
     }
 
     @Test
-    void testCountArtefactByLocation() throws Exception {
+    void testCountByLocationManualUpload() throws Exception {
+        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(blobContainerClient.getBlobContainerUrl()).thenReturn(PAYLOAD_URL);
+        createDailyList(Sensitivity.PRIVATE);
         mockHttpServletRequestBuilder = MockMvcRequestBuilders.get(COUNT_ENDPOINT);
         MvcResult result = mockMvc.perform(mockHttpServletRequestBuilder)
             .andExpect(status().isOk())
             .andReturn();
-        assertTrue(result.getResponse().getContentAsString().contains("location,count"), "headers not found");
+        assertTrue(result.getResponse().getContentAsString().contains(COURT_ID), "headers not found");
+    }
+
+    @Test
+    void testCountByLocationListAssist() throws Exception {
+        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(blobContainerClient.getBlobContainerUrl()).thenReturn(PAYLOAD_URL);
+        createDailyList(Sensitivity.PRIVATE, DISPLAY_FROM.minusMonths(2), CONTENT_DATE, "ListAssist");
+        mockHttpServletRequestBuilder = MockMvcRequestBuilders.get(COUNT_ENDPOINT);
+        MvcResult result = mockMvc.perform(mockHttpServletRequestBuilder)
+            .andExpect(status().isOk())
+            .andReturn();
+        assertEquals(HttpStatus.OK.value(), result.getResponse().getStatus(),
+                     "CountByLocation endpoint for ListAssist is not successful"
+        );
     }
 
     @Test

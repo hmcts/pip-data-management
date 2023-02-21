@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
+import uk.gov.hmcts.reform.pip.data.management.models.location.LocationArtefact;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactType;
@@ -30,6 +31,7 @@ import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -94,8 +96,8 @@ class PublicationControllerTest {
         "The expected exception does not contain the correct message";
     private static final String NOT_EQUAL_MESSAGE = "The expected strings are not the same";
     private static final String DELETED_MESSAGE = "Successfully deleted artefact: ";
-    public static final String COUNT_MSG = "location,count\n1,3\n2,4\n3,6\n";
 
+    private static final List<LocationArtefact> COURT_PER_LOCATION = new ArrayList<>();
     private Artefact artefact;
     private Artefact artefactWithId;
     private HeaderGroup headers;
@@ -235,10 +237,11 @@ class PublicationControllerTest {
 
     @Test
     void checkCountArtefactByLocationReturnsData() {
-        when(artefactService.countArtefactsByLocation()).thenReturn(COUNT_MSG);
-        ResponseEntity<String> csvString = publicationController.countByLocation();
-        assertEquals(HttpStatus.OK, csvString.getStatusCode(), STATUS_CODE_MATCH);
-        assertEquals(COUNT_MSG, csvString.getBody(), NOT_EQUAL_MESSAGE);
+        COURT_PER_LOCATION.add(new LocationArtefact(1, 2));
+        when(artefactService.countArtefactsByLocation()).thenReturn(COURT_PER_LOCATION);
+        ResponseEntity<List<LocationArtefact>> result = publicationController.countByLocation();
+        assertEquals(HttpStatus.OK, result.getStatusCode(), STATUS_CODE_MATCH);
+        assertEquals(COURT_PER_LOCATION, result.getBody(), NOT_EQUAL_MESSAGE);
     }
 
 

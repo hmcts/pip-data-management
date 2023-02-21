@@ -484,7 +484,6 @@ class LocationServiceTest {
             .thenReturn("");
 
         LocationDeletion result = locationService.deleteLocation(locationId, REQUESTER_NAME);
-
         assertTrue(result.isExists(), "Found active artefact for a court");
     }
 
