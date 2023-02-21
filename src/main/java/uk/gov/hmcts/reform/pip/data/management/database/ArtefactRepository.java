@@ -42,7 +42,7 @@ public interface ArtefactRepository extends JpaRepository<Artefact, Long> {
                                                  @Param(PROVENANCE_PARAM) String provenance);
 
     @Query(value = "select * from Artefact where artefact_id = CAST(:artefact_id AS uuid) and display_from < "
-        + ":curr_date and (display_to> :curr_date or display_to is null)",
+        + ":curr_date and (display_to> :curr_date or display_to is null) and is_archived != true",
         nativeQuery = true)
     Optional<Artefact> findByArtefactId(@Param(ARTEFACT_ID_PARAM) String artefactId,
                                         @Param(CURRENT_DATE_PARAM) LocalDateTime currentDate);
@@ -54,14 +54,16 @@ public interface ArtefactRepository extends JpaRepository<Artefact, Long> {
                                              @Param(CURRENT_DATE_PARAM) LocalDateTime currentDate);
 
     @Query(value = INITIAL_SELECT + "WHERE LOWER(searchDetails.caseDetails ->> 'caseName') LIKE LOWER"
-        + "('%' || :caseName || '%') and display_from < :curr_date and (display_to > :curr_date or display_to is null)",
+        + "('%' || :caseName || '%') and display_from < :curr_date and (display_to > :curr_date or display_to is "
+        + "null) and is_archived != true",
         nativeQuery = true)
     List<Artefact> findArtefactByCaseName(@Param(CASE_NAME_PARAM) String caseName,
                                           @Param(CURRENT_DATE_PARAM) LocalDateTime currentDate);
 
 
     @Query(value = INITIAL_SELECT + "WHERE searchDetails.caseDetails ->> :searchTerm = :searchValue and "
-        + "display_from < :curr_date and (display_to > :curr_date or display_to is null)", nativeQuery = true)
+        + "display_from < :curr_date and (display_to > :curr_date or display_to is null) and is_archived != true",
+        nativeQuery = true)
     List<Artefact> findArtefactBySearch(@Param(SEARCH_TERM_PARAM) String searchTerm,
                                         @Param(SEARCH_VAL_PARAM) String searchVal,
                                         @Param(CURRENT_DATE_PARAM) LocalDateTime currentDate);
@@ -77,6 +79,11 @@ public interface ArtefactRepository extends JpaRepository<Artefact, Long> {
     @Query(value = "select * from Artefact where location_id = :location_id and is_archived != true",
         nativeQuery = true)
     List<Artefact> findArtefactsByLocationIdAdmin(@Param(LOCATION_ID_PARAM) String locationId);
+
+    @Query(value = "SELECT * FROM artefact WHERE location_id = :location_id and expiry_date > :curr_date and "
+        + "is_archived != true", nativeQuery = true)
+    List<Artefact> findArtefactsByLocationBlobExplorer(@Param(LOCATION_ID_PARAM) String locationId,
+                                                       @Param(CURRENT_DATE_PARAM) LocalDateTime currentDate);
 
     @Query(value = "select * from Artefact where artefact_id = CAST(:artefact_id AS uuid)",
         nativeQuery = true)
