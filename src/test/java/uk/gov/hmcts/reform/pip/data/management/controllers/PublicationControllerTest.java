@@ -458,4 +458,16 @@ class PublicationControllerTest {
                      response.getBody(), "Response from archiving does not match expected message"
         );
     }
+
+    @Test
+    void testGetAllNoMatchArtefacts() {
+        List<Artefact> artefactList = List.of(artefactWithId);
+
+        when(artefactService.findAllNoMatchArtefacts()).thenReturn(artefactList);
+
+        ResponseEntity<List<Artefact>> response = publicationController.getAllNoMatchArtefacts();
+
+        assertEquals(HttpStatus.OK, response.getStatusCode(), STATUS_CODE_MATCH);
+        assertEquals(artefactList, response.getBody(), "Body should match");
+    }
 }

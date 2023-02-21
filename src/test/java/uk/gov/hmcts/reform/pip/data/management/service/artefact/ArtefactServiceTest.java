@@ -389,4 +389,11 @@ class ArtefactServiceTest {
                      MESSAGES_MATCH);
     }
 
+    @Test
+    void testFindAllNoMatchArtefacts() {
+        when(artefactRepository.findAllNoMatchArtefacts()).thenReturn(List.of(artefact));
+
+        assertEquals(List.of(artefact), artefactService.findAllNoMatchArtefacts(), MESSAGES_MATCH);
+    }
+
 }
