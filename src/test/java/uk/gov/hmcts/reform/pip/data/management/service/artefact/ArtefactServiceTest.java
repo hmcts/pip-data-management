@@ -14,6 +14,7 @@ import uk.gov.hmcts.reform.pip.data.management.database.LocationRepository;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.NotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
+import uk.gov.hmcts.reform.pip.data.management.models.location.LocationArtefact;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ListType;
@@ -378,8 +379,12 @@ class ArtefactServiceTest {
 
     @Test
     void testArtefactCountService() {
-        when(artefactRepository.countArtefactsByLocation()).thenReturn(List.of("1,3","2,4", "3,6"));
-        assertEquals("location,count\n1,3\n2,4\n3,6\n", artefactService.countArtefactsByLocation(),
+        List<LocationArtefact> artefactsPerLocations = new ArrayList<>();
+        artefactsPerLocations.add(new LocationArtefact(1, 3));
+        List<Object[]> result = new ArrayList<>();
+        result.add(new Object[]{"1", "3"});
+        when(artefactRepository.countArtefactsByLocation()).thenReturn(result);
+        assertEquals(artefactsPerLocations, artefactService.countArtefactsByLocation(),
                      MESSAGES_MATCH);
     }
 

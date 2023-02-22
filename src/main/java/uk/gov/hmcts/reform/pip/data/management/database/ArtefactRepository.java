@@ -69,10 +69,12 @@ public interface ArtefactRepository extends JpaRepository<Artefact, Long> {
                                         @Param(CURRENT_DATE_PARAM) LocalDateTime currentDate);
 
 
-    @Query(value = "select location_id, count(distinct artefact_id) from (SELECT * FROM artefact WHERE is_archived !="
-        + " true) as a group by location_id",
+    @Query(value = "select location_id, count(distinct artefact_id) from artefact "
+        + "where location_id ~ '^[0-9]+$' "
+        + "and is_archived != true "
+        + "group by location_id",
         nativeQuery = true)
-    List<String> countArtefactsByLocation();
+    List<Object[]> countArtefactsByLocation();
 
     @Query(value = "select * from Artefact where location_id = :location_id and is_archived != true",
         nativeQuery = true)
