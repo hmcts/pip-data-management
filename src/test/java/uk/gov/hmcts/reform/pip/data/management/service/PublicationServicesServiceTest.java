@@ -73,12 +73,22 @@ class PublicationServicesServiceTest {
     }
 
     @Test
-    void testSendSystemAdminEmail() {
+    void testSendSystemAdminDeleteLocationEmail() {
         mockPublicationServicesEndpoint.enqueue(new MockResponse().setBody(EMAIL_SENT));
 
         assertEquals(EMAIL_SENT, publicationServicesService
             .sendSystemAdminEmail(List.of("test@test.com"), "Name",
                                   ActionResult.ATTEMPTED, "Error", ChangeType.DELETE_LOCATION),
+                     "Email has not been sent");
+    }
+
+    @Test
+    void testSendSystemAdminDeleteLocationArtefactEmail() {
+        mockPublicationServicesEndpoint.enqueue(new MockResponse().setBody(EMAIL_SENT));
+
+        assertEquals(EMAIL_SENT, publicationServicesService
+                         .sendSystemAdminEmail(List.of("test@test.com"), "Name",
+                                               ActionResult.ATTEMPTED, "Error", ChangeType.DELETE_LOCATION_ARTEFACT),
                      "Email has not been sent");
     }
 
