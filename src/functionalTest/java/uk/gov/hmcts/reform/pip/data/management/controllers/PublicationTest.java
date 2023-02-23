@@ -2084,14 +2084,14 @@ class PublicationTest {
     @Test
     void testDeleteArtefactsByLocationNotFound() throws Exception {
         MockHttpServletRequestBuilder deleteRequest = MockMvcRequestBuilders
-            .delete(PUBLICATION_URL + "/" + COURT_ID + "/deleteArtefacts")
+            .delete(PUBLICATION_URL + "/" + 11 + "/deleteArtefacts")
             .header(PROVENANCE_USER_ID, systemAdminProvenanceId);
 
         MvcResult deleteResponse = mockMvc.perform(deleteRequest).andExpect(status().isNotFound()).andReturn();
 
         assertTrue(
             deleteResponse.getResponse().getContentAsString()
-                .contains("No artefact found with the location ID " + COURT_ID),
+                .contains("No artefact found with the location ID " + 11),
             "Artefact not found error message"
         );
     }
