@@ -11,6 +11,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.LocationRepository;
 import uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper;
+import uk.gov.hmcts.reform.pip.data.management.models.NoMatchArtefact;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.service.PublicationServicesService;
@@ -19,7 +20,6 @@ import uk.gov.hmcts.reform.pip.data.management.service.SubscriptionManagementSer
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -28,6 +28,7 @@ import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
+import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.ARTEFACT_ID;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.LOCATION_VENUE;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.PROVENANCE;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.PROVENANCE_ID;
@@ -206,7 +207,11 @@ class ArtefactTriggerServiceTest {
     void testReportNoMatchArtefacts() {
         when(artefactRepository.findAllNoMatchArtefacts()).thenReturn(List.of(noMatchArtefact));
         artefactTriggerService.reportNoMatchArtefacts();
-        verify(publicationServicesService).sendNoMatchArtefactsForReporting(Map.of(PROVENANCE_ID, PROVENANCE));
+        verify(publicationServicesService).sendNoMatchArtefactsForReporting(List.of(new NoMatchArtefact(
+            ARTEFACT_ID,
+            PROVENANCE,
+            PROVENANCE_ID
+        )));
     }
 
     @Test

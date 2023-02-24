@@ -476,4 +476,14 @@ public class PublicationController {
         @PathVariable Integer locationId) throws JsonProcessingException {
         return ResponseEntity.ok(artefactDeleteService.deleteArtefactByLocation(locationId, provenanceUserId));
     }
+
+    @ApiResponse(responseCode = OK_CODE, description = "List of all artefacts that are noMatch in their id")
+    @ApiResponse(responseCode = AUTH_ERROR_CODE, description = UNAUTHORIZED_DESCRIPTION)
+    @Operation(summary = "Get all no match publications")
+    @GetMapping("/no-match")
+    @JsonView(ArtefactView.Internal.class)
+    @IsAdmin
+    public ResponseEntity<List<Artefact>> getAllNoMatchArtefacts() {
+        return ResponseEntity.ok(artefactService.findAllNoMatchArtefacts());
+    }
 }

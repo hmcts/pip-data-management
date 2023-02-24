@@ -2031,6 +2031,43 @@ class PublicationTest {
         );
     }
 
+    @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
+    void testGetAllNoMatchArtefacts() throws Exception {
+        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(blobContainerClient.getBlobContainerUrl()).thenReturn(PAYLOAD_URL);
+        Artefact expectedArtefact = createDailyList(Sensitivity.PRIVATE, DISPLAY_FROM.minusMonths(2), CONTENT_DATE,
+                                              "NoMatch");
+
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
+            MockMvcRequestBuilders.get("/publication/no-match");
+
+        MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isOk()).andReturn();
+
+        String jsonOutput = response.getResponse().getContentAsString();
+        JSONArray jsonArray = new JSONArray(jsonOutput);
+        Artefact returnedArtefact = objectMapper.readValue(
+            jsonArray.get(0).toString(), Artefact.class
+        );
+
+        assertTrue(compareArtefacts(expectedArtefact, returnedArtefact),
+                   "Expected and returned artefacts do not match");
+    }
+
+    @Test
+    @WithMockUser(username = UNAUTHORIZED_USERNAME, authorities = {UNAUTHORIZED_ROLE})
+    void testUnauthorizedGetAllNoMatchArtefacts() throws Exception {
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
+            MockMvcRequestBuilders.get("/publication/no-match");
+
+        MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
+            .andExpect(status().isForbidden()).andReturn();
+
+        assertEquals(HttpStatus.FORBIDDEN.value(), response.getResponse().getStatus(),
+                     FORBIDDEN_STATUS_CODE
+        );
+    }
+
     private boolean compareArtefacts(Artefact expectedArtefact, Artefact returnedArtefact) {
         return expectedArtefact.getArtefactId().equals(returnedArtefact.getArtefactId())
             && expectedArtefact.getProvenance().equals(returnedArtefact.getProvenance())
