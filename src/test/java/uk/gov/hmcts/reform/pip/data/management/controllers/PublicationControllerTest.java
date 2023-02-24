@@ -238,7 +238,7 @@ class PublicationControllerTest {
 
     @Test
     void checkCountArtefactByLocationReturnsData() {
-        COURT_PER_LOCATION.add(new LocationArtefact(1, 2));
+        COURT_PER_LOCATION.add(new LocationArtefact("1", 2));
         when(artefactService.countArtefactsByLocation()).thenReturn(COURT_PER_LOCATION);
         ResponseEntity<List<LocationArtefact>> result = publicationController.countByLocation();
         assertEquals(HttpStatus.OK, result.getStatusCode(), STATUS_CODE_MATCH);
@@ -469,5 +469,17 @@ class PublicationControllerTest {
         assertEquals(HttpStatus.OK,
                      publicationController.deleteArtefactsByLocation(requesterName, locationId).getStatusCode(),
                      "Delete artefacts for location endpoint has not returned OK");
+    }
+
+    @Test
+    void testGetAllNoMatchArtefacts() {
+        List<Artefact> artefactList = List.of(artefactWithId);
+
+        when(artefactService.findAllNoMatchArtefacts()).thenReturn(artefactList);
+
+        ResponseEntity<List<Artefact>> response = publicationController.getAllNoMatchArtefacts();
+
+        assertEquals(HttpStatus.OK, response.getStatusCode(), STATUS_CODE_MATCH);
+        assertEquals(artefactList, response.getBody(), "Body should match");
     }
 }

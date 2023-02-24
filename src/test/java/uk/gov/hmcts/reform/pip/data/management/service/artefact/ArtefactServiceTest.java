@@ -380,12 +380,20 @@ class ArtefactServiceTest {
     @Test
     void testArtefactCountService() {
         List<LocationArtefact> artefactsPerLocations = new ArrayList<>();
-        artefactsPerLocations.add(new LocationArtefact(1, 3));
+        artefactsPerLocations.add(new LocationArtefact("1", 3));
+        artefactsPerLocations.add(new LocationArtefact("noMatch", 0));
         List<Object[]> result = new ArrayList<>();
         result.add(new Object[]{"1", "3"});
         when(artefactRepository.countArtefactsByLocation()).thenReturn(result);
         assertEquals(artefactsPerLocations, artefactService.countArtefactsByLocation(),
                      MESSAGES_MATCH);
+    }
+
+    @Test
+    void testFindAllNoMatchArtefacts() {
+        when(artefactRepository.findAllNoMatchArtefacts()).thenReturn(List.of(artefact));
+
+        assertEquals(List.of(artefact), artefactService.findAllNoMatchArtefacts(), MESSAGES_MATCH);
     }
 
 }
