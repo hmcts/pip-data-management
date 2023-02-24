@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.pip.data.management.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import nl.altindag.log.LogCaptor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -457,5 +458,16 @@ class PublicationControllerTest {
         assertEquals(String.format("Artefact of ID %s has been archived", artefactId),
                      response.getBody(), "Response from archiving does not match expected message"
         );
+    }
+
+    @Test
+    void testDeleteArtefactsByLocationReturnsOk() throws JsonProcessingException {
+        int locationId = 1;
+        String requesterName = "ReqName";
+        when(artefactDeleteService.deleteArtefactByLocation(locationId, requesterName)).thenReturn("Success");
+
+        assertEquals(HttpStatus.OK,
+                     publicationController.deleteArtefactsByLocation(requesterName, locationId).getStatusCode(),
+                     "Delete artefacts for location endpoint has not returned OK");
     }
 }

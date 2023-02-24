@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.pip.data.management.service.artefact;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import nl.altindag.log.LogCaptor;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,10 +15,15 @@ import uk.gov.hmcts.reform.pip.data.management.database.LocationRepository;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ArtefactNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.NotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper;
+import uk.gov.hmcts.reform.pip.data.management.models.external.account.management.AzureAccount;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ListType;
+import uk.gov.hmcts.reform.pip.data.management.service.AccountManagementService;
+import uk.gov.hmcts.reform.pip.data.management.service.PublicationServicesService;
 import uk.gov.hmcts.reform.pip.data.management.service.SubscriptionManagementService;
+import uk.gov.hmcts.reform.pip.model.system.admin.ActionResult;
+import uk.gov.hmcts.reform.pip.model.system.admin.ChangeType;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -29,6 +35,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.times;
@@ -63,6 +70,12 @@ class ArtefactDeleteServiceTest {
     @Mock
     SubscriptionManagementService subscriptionManagementService;
 
+    @Mock
+    AccountManagementService accountManagementService;
+
+    @Mock
+    PublicationServicesService publicationService;
+
     @InjectMocks
     ArtefactDeleteService artefactDeleteService;
 
@@ -71,6 +84,10 @@ class ArtefactDeleteServiceTest {
     private Artefact artefactWithIdAndPayloadUrl;
 
     private Location location;
+    AzureAccount azureAccount;
+    private static final String REQUESTER_NAME = "ReqName";
+    private static final String EMAIL_ADDRESS = "test@test.com";
+    private static final Integer LOCATION_ID = 1;
 
     @BeforeAll
     public static void setupSearchValues() {
@@ -93,6 +110,9 @@ class ArtefactDeleteServiceTest {
         lenient().when(locationRepository.findByLocationIdByProvenance(PROVENANCE, PROVENANCE_ID,
                                                                        LOCATION_VENUE))
             .thenReturn(Optional.of(location));
+
+        azureAccount = new AzureAccount();
+        azureAccount.setDisplayName(REQUESTER_NAME);
     }
 
     private void createPayloads() {
@@ -230,6 +250,62 @@ class ArtefactDeleteServiceTest {
         assertThrows(NotFoundException.class, () -> {
             artefactDeleteService.archiveArtefactById(artefactId, randomUuID);
         }, "Attempting to archive an artefact that does not exist should throw an exception");
+    }
+
+    @Test
+    void testDeleteArtefactByLocation() throws JsonProcessingException {
+        location.setName("NAME");
+
+        when(artefactRepository.findActiveArtefactsForLocation(any(), eq(LOCATION_ID.toString())))
+            .thenReturn(List.of(artefactWithIdAndPayloadUrl));
+        when(locationRepository.getLocationByLocationId(LOCATION_ID))
+            .thenReturn(Optional.of(location));
+        when(accountManagementService.getUserInfo(any()))
+            .thenReturn(azureAccount);
+        when(accountManagementService.getAllAccounts("PI_AAD", "SYSTEM_ADMIN"))
+            .thenReturn(List.of(EMAIL_ADDRESS));
+        when(publicationService.sendSystemAdminEmail(List.of(EMAIL_ADDRESS), REQUESTER_NAME, ActionResult.SUCCEEDED,
+        "Total 1 artefact(s) for location NAME",
+        ChangeType.DELETE_LOCATION_ARTEFACT))
+            .thenReturn("Total 1 artefact deleted for location id 1");
+
+        doNothing().when(artefactRepository).delete(artefactWithIdAndPayloadUrl);
+
+        assertEquals("Total 1 artefact deleted for location id 1",
+                     artefactDeleteService.deleteArtefactByLocation(LOCATION_ID, REQUESTER_NAME),
+                     "The artefacts for given location is not deleted");
+        verify(azureBlobService, times(1))
+            .deleteBlob(any());
+        verify(azureBlobService, times(1))
+            .deletePublicationBlob(any());
+    }
+
+    @Test
+    void testDeleteArtefactByLocationWhenNoArtefactFound() {
+        when(artefactRepository.findActiveArtefactsForLocation(any(), eq(LOCATION_ID.toString())))
+            .thenReturn(List.of());
+        assertThrows(ArtefactNotFoundException.class, () ->
+                         artefactDeleteService.deleteArtefactByLocation(LOCATION_ID, REQUESTER_NAME),
+                     "ArtefactNotFoundException not thrown when trying to delete a artefact"
+                         + " that does not exist");
+    }
+
+    @Test
+    void testDeleteArtefactByLocationJsonProcessingException() throws JsonProcessingException {
+
+        when(artefactRepository.findActiveArtefactsForLocation(any(), eq(LOCATION_ID.toString())))
+            .thenReturn(List.of(artefactWithIdAndPayloadUrl));
+        when(locationRepository.getLocationByLocationId(LOCATION_ID))
+            .thenReturn(Optional.of(location));
+        when(accountManagementService.getUserInfo(any()))
+            .thenReturn(azureAccount);
+        when(accountManagementService.getAllAccounts(any(), any()))
+            .thenThrow(JsonProcessingException.class);
+
+        assertThrows(JsonProcessingException.class, () ->
+                         artefactDeleteService.deleteArtefactByLocation(LOCATION_ID, REQUESTER_NAME),
+                     "JsonProcessingException not thrown when trying to get errored system admin"
+                         + " api response");
     }
 
 }

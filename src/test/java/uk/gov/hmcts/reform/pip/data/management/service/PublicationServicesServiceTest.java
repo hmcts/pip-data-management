@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pip.data.management.Application;
 import uk.gov.hmcts.reform.pip.model.system.admin.ActionResult;
+import uk.gov.hmcts.reform.pip.model.system.admin.ChangeType;
 
 import java.io.IOException;
 import java.util.List;
@@ -72,12 +73,22 @@ class PublicationServicesServiceTest {
     }
 
     @Test
-    void testSendSystemAdminEmail() {
+    void testSendSystemAdminDeleteLocationEmail() {
         mockPublicationServicesEndpoint.enqueue(new MockResponse().setBody(EMAIL_SENT));
 
         assertEquals(EMAIL_SENT, publicationServicesService
             .sendSystemAdminEmail(List.of("test@test.com"), "Name",
-                                  ActionResult.ATTEMPTED, "Error"),
+                                  ActionResult.ATTEMPTED, "Error", ChangeType.DELETE_LOCATION),
+                     "Email has not been sent");
+    }
+
+    @Test
+    void testSendSystemAdminDeleteLocationArtefactEmail() {
+        mockPublicationServicesEndpoint.enqueue(new MockResponse().setBody(EMAIL_SENT));
+
+        assertEquals(EMAIL_SENT, publicationServicesService
+                         .sendSystemAdminEmail(List.of("test@test.com"), "Name",
+                                               ActionResult.ATTEMPTED, "Error", ChangeType.DELETE_LOCATION_ARTEFACT),
                      "Email has not been sent");
     }
 
@@ -87,7 +98,7 @@ class PublicationServicesServiceTest {
                                                     .setResponseCode(HttpStatus.BAD_REQUEST.value()));
 
         publicationServicesService.sendSystemAdminEmail(List.of("test@test.com"), "Name",
-                                                        ActionResult.ATTEMPTED, "Error");
+                                                        ActionResult.ATTEMPTED, "Error", ChangeType.DELETE_LOCATION);
         assertTrue(logCaptor.getErrorLogs().get(0).contains("Request to Publications Service failed due to:"),
                    "Exception was not logged.");
     }
