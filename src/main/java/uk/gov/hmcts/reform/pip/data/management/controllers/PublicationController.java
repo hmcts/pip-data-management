@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.pip.data.management.controllers;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -462,6 +463,18 @@ public class PublicationController {
                                                   @PathVariable String id) {
         artefactDeleteService.archiveArtefactById(id, issuerId);
         return ResponseEntity.ok(String.format("Artefact of ID %s has been archived", id));
+    }
+
+    @ApiResponse(responseCode = OK_CODE, description = "Successfully deleted artefact for location: {locationId}")
+    @ApiResponse(responseCode = AUTH_ERROR_CODE, description = UNAUTHORIZED_DESCRIPTION)
+    @ApiResponse(responseCode = NOT_FOUND_CODE, description = "No artefact found with the location ID: {locationId}")
+    @Operation(summary = "Delete all artefacts for given location from P&I")
+    @DeleteMapping("/{locationId}/deleteArtefacts")
+    @IsAdmin
+    public ResponseEntity<String> deleteArtefactsByLocation(
+        @RequestHeader("x-provenance-user-id") String provenanceUserId,
+        @PathVariable Integer locationId) throws JsonProcessingException {
+        return ResponseEntity.ok(artefactDeleteService.deleteArtefactByLocation(locationId, provenanceUserId));
     }
 
     @ApiResponse(responseCode = OK_CODE, description = "List of all artefacts that are noMatch in their id")

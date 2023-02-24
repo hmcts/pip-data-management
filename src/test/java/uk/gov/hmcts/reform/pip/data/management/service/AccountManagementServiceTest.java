@@ -11,6 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pip.data.management.Application;
+import uk.gov.hmcts.reform.pip.data.management.models.external.account.management.AzureAccount;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ListType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Sensitivity;
 
@@ -19,6 +20,8 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SuppressWarnings("PMD.LawOfDemeter")
@@ -72,10 +75,10 @@ class AccountManagementServiceTest {
         mockAccountManagementEndpoint.start(6969);
         mockAccountManagementEndpoint.enqueue(new MockResponse().setBody(TRIGGER_RECEIVED));
 
-        String result =
+        AzureAccount result =
             accountManagementService.getUserInfo(UUID.randomUUID().toString());
 
-        assertTrue(result.contains(TRIGGER_RECEIVED),
+        assertNotNull(result,
                    "User information has not been returned from the server");
 
         mockAccountManagementEndpoint.shutdown();
@@ -87,10 +90,10 @@ class AccountManagementServiceTest {
         mockAccountManagementEndpoint.start(6969);
         mockAccountManagementEndpoint.enqueue(new MockResponse().setResponseCode(HttpStatus.BAD_REQUEST.value()));
 
-        String result =
+        AzureAccount result =
             accountManagementService.getUserInfo(UUID.randomUUID().toString());
 
-        assertTrue(result.contains("Failed to find user info for user"),
+        assertNull(result.getDisplayName(),
                    "User information has not been returned from the server");
 
         mockAccountManagementEndpoint.shutdown();
