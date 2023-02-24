@@ -101,6 +101,10 @@ public interface ArtefactRepository extends JpaRepository<Artefact, Long> {
         nativeQuery = true)
     List<Artefact> findAllNoMatchArtefacts();
 
+    @Query(value = "SELECT COUNT(artefact_id) FROM Artefact WHERE location_id LIKE '%NoMatch%' and is_archived != "
+        + "true", nativeQuery = true)
+    Integer countNoMatchArtefacts();
+
     @Query(value = "SELECT cast(artefact_id as text), display_from, display_to, language, "
         + "provenance, sensitivity, source_artefact_id, type, content_date, location_id, list_type "
         + "FROM artefact",

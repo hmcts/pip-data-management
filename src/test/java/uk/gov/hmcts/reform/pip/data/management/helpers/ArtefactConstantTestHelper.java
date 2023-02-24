@@ -213,6 +213,7 @@ public final class ArtefactConstantTestHelper {
 
     public static Artefact buildNoMatchArtefact() {
         return Artefact.builder()
+            .artefactId(ARTEFACT_ID)
             .sourceArtefactId(SOURCE_ARTEFACT_ID)
             .provenance(PROVENANCE)
             .payload(PAYLOAD_URL)

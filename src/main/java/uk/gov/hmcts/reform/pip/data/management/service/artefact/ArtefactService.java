@@ -142,10 +142,14 @@ public class ArtefactService {
         List<Object[]> returnedData = artefactRepository.countArtefactsByLocation();
         for (Object[] result : returnedData) {
             artefactsPerLocations.add(
-                new LocationArtefact(Integer.parseInt(result[0].toString()),
-                                     Integer.parseInt(result[1].toString())));
+                new LocationArtefact(result[0].toString(), Integer.parseInt(result[1].toString())));
         }
+        artefactsPerLocations.add(new LocationArtefact("noMatch", artefactRepository.countNoMatchArtefacts()));
         return artefactsPerLocations;
+    }
+
+    public List<Artefact> findAllNoMatchArtefacts() {
+        return artefactRepository.findAllNoMatchArtefacts();
     }
 
     public LocationType getLocationType(ListType listType) {
