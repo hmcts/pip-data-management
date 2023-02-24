@@ -2060,6 +2060,7 @@ class PublicationTest {
     }
 
     @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     void testDeleteArtefactsByLocation() throws Exception {
         when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
         Artefact artefactToDelete = createDailyList(Sensitivity.PUBLIC);
