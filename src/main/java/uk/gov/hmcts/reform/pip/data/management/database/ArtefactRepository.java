@@ -109,7 +109,8 @@ public interface ArtefactRepository extends JpaRepository<Artefact, Long> {
 
     @Query(value = "SELECT * FROM Artefact "
         + "WHERE expiry_date >= :curr_date "
-        + "and location_id = :location_id", nativeQuery = true)
+        + "and location_id = :location_id "
+        + "and is_archived != true", nativeQuery = true)
     List<Artefact> findActiveArtefactsForLocation(@Param(CURRENT_DATE_PARAM) LocalDateTime today,
                                                   @Param(LOCATION_ID_PARAM) String locationId);
 
