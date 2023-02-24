@@ -8,7 +8,9 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientException;
 import uk.gov.hmcts.reform.pip.model.system.admin.ActionResult;
+import uk.gov.hmcts.reform.pip.model.system.admin.ChangeType;
 import uk.gov.hmcts.reform.pip.model.system.admin.DeleteLocationAction;
+import uk.gov.hmcts.reform.pip.model.system.admin.DeleteLocationArtefactAction;
 
 import java.util.List;
 import java.util.Map;
@@ -41,9 +43,15 @@ public class PublicationServicesService {
     }
 
     public String sendSystemAdminEmail(List<String> emails, String requesterName, ActionResult actionResult,
-                                       String additionalDetails) {
-        DeleteLocationAction payload =
-            formatSystemAdminAction(emails, requesterName, actionResult, additionalDetails);
+                                       String additionalDetails, ChangeType changeType) {
+        Object payload;
+        if (changeType.equals(ChangeType.DELETE_LOCATION)) {
+            payload = formatDeleteLocationSystemAdminAction(emails, requesterName, actionResult, additionalDetails);
+        } else {
+            payload = formatDeleteLocationArtefactSystemAdminAction(emails, requesterName,
+                                                                    actionResult, additionalDetails);
+        }
+
         try {
             return webClient.post().uri(url + "/notify/sysadmin/update")
                 .body(BodyInserters.fromValue(payload))
@@ -56,9 +64,19 @@ public class PublicationServicesService {
         }
     }
 
-    private DeleteLocationAction formatSystemAdminAction(List<String> emails,
+    private DeleteLocationAction formatDeleteLocationSystemAdminAction(List<String> emails,
             String requesterName, ActionResult actionResult, String additionalDetails) {
         DeleteLocationAction systemAdminAction = new DeleteLocationAction();
+        systemAdminAction.setEmailList(emails);
+        systemAdminAction.setRequesterName(requesterName);
+        systemAdminAction.setActionResult(actionResult);
+        systemAdminAction.setDetailString(additionalDetails);
+        return systemAdminAction;
+    }
+
+    private DeleteLocationArtefactAction formatDeleteLocationArtefactSystemAdminAction(List<String> emails,
+        String requesterName, ActionResult actionResult, String additionalDetails) {
+        DeleteLocationArtefactAction systemAdminAction = new DeleteLocationArtefactAction();
         systemAdminAction.setEmailList(emails);
         systemAdminAction.setRequesterName(requesterName);
         systemAdminAction.setActionResult(actionResult);
