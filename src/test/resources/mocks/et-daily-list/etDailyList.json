@@ -1,93 +1,327 @@
 {
   "document": {
-    "publicationDate": "20-02-2020T20:00.001Z"
+    "publicationDate": "2022-02-13T09:30:52.123Z"
   },
   "venue": {
-    "venueName": "This is a venue name",
+    "venueName": "Regional Venue South",
     "venueContact": {
-      "venueEmail": "test@email.com",
-      "venueTelephone": "123412341234"
+      "venueEmail": "a@b.com",
+      "venueTelephone": "+44 1234 1234 1234"
     }
   },
-  "courtLists": [
+  "courtLists": [{
+    "courtHouse": {
+      "courtHouseName": "Leicester Crown Court",
+      "courtRoom": [{
+        "courtRoomName": "Court 1",
+        "session": [{
+          "sittings": [{
+            "sittingStart": "2022-02-13T09:30:32.123Z",
+            "sittingEnd": "2022-02-13T11:30:32.123Z",
+            "hearing": [{
+              "case": [{
+                "caseNumber": "12341234",
+                "caseSequenceIndicator": "[2 of 3]",
+                "caseType": "This is a case type"
+              }],
+              "party": [{
+                "partyRole": "CLAIMANT_PETITIONER",
+                "OrganisationDetails": {
+                  "OrganisationName": "Fathers for Justice"
+                }
+
+
+
+              },
+                {
+                  "partyRole": "CLAIMANT_PETITIONER_REPRESENTATIVE",
+                  "individualDetails": {
+                    "title": "Mr",
+                    "individualForenames": "Test forename 2",
+                    "individualMiddleName": "X",
+                    "individualSurname": "Test Surname 2"
+                  },
+                  "friendlyRoleName": "This is a role name"
+                },
+                {
+                  "partyRole": "RESPONDENT",
+                  "individualDetails": {
+                    "title": "Capt.",
+                    "individualForenames": "Test forename",
+                    "individualMiddleName": "A",
+                    "individualSurname": "Test Surname"
+                  },
+                  "friendlyRoleName": "This is a role name"
+                },
+                {
+                  "partyRole": "RESPONDENT_REPRESENTATIVE",
+                  "individualDetails": {
+                    "title": "Dr",
+                    "individualForenames": "Test forename 2",
+                    "individualMiddleName": "G",
+                    "individualSurname": "Test Surname 2"
+                  },
+                  "friendlyRoleName": "This is a role name"
+                }
+              ],
+              "hearingType": "This is a hearing type"
+            }],
+            "channel": [
+              "This is a sitting channel"
+            ]
+          }],
+          "sessionChannel": [
+            "This is a session channel"
+          ]
+        }]
+      }],
+      "courtHouseAddress": {
+        "town": "Leicester",
+        "postCode": "L5 4UU",
+        "line": [
+          "5-7 Hill Street"
+        ],
+        "county": ""
+      }
+    }
+  },
     {
       "courtHouse": {
-        "courtHouseName": "This is a court house name",
-        "courtRoom": [
-          {
-            "session": [
-              {
-                "sittings": [
+        "courtHouseName": "Nottingham Justice Centre",
+        "courtHouseContact": {
+          "venueEmail": "a@c.com",
+          "venueTelephone": "+44 1234 1234 1234"
+        },
+        "courtRoom": [{
+          "courtRoomName": "Dynatrace Suite 2",
+          "session": [{
+            "sittings": [{
+              "sittingStart": "2022-02-13T09:30:32.123Z",
+              "sittingEnd": "2022-02-13T09:33:32.123Z",
+              "hearing": [{
+                "case": [{
+                  "caseNumber": "12341234",
+                  "caseType": "This is a case type"
+                }],
+                "party": [{
+                  "partyRole": "CLAIMANT_PETITIONER",
+                  "individualDetails": {
+                    "title": "Ms",
+                    "individualForenames": "Test forename",
+                    "individualMiddleName": "B",
+                    "individualSurname": "Test Surname"
+                  }
+                },
                   {
-                    "sittingStart": "20-02-2020T20:00.001Z",
-                    "sittingEnd": "20-02-2020T20:00.001Z",
-                    "hearing": [
+                    "partyRole": "CLAIMANT_PETITIONER_REPRESENTATIVE",
+                    "individualDetails": {
+                      "title": "Sir",
+                      "individualForenames": "Test forename",
+                      "individualMiddleName": "V",
+                      "individualSurname": "Test Surname"
+                    },
+                    "friendlyRoleName": "This is a role name"
+                  },
+                  {
+                    "partyRole": "RESPONDENT",
+                    "individualDetails": {
+                      "title": "Lord",
+                      "individualForenames": "Test forename",
+                      "individualMiddleName": "A",
+                      "individualSurname": "Test Surname"
+                    },
+                    "friendlyRoleName": "This is a role name"
+                  },
+                  {
+                    "partyRole": "RESPONDENT_REPRESENTATIVE",
+                    "individualDetails": {
+                      "title": "Dame",
+                      "individualForenames": "Test forename",
+                      "individualMiddleName": "H",
+                      "individualSurname": "Test Surname"
+                    },
+                    "friendlyRoleName": "This is a role name"
+                  }
+                ],
+                "hearingType": "Hearing Type 1"
+              }]
+            }]
+          },
+            {
+              "sittings": [{
+                "sittingStart": "2022-02-13T15:30:32.123Z",
+                "sittingEnd": "2022-02-13T16:55:32.123Z",
+                "hearing": [{
+                  "case": [{
+                    "caseNumber": "12341234",
+                    "caseType": "This is a case type"
+                  }],
+                  "party": [{
+                    "partyRole": "CLAIMANT_PETITIONER",
+                    "individualDetails": {
+                      "title": "Ms",
+                      "individualForenames": "Test forename",
+                      "individualMiddleName": "G",
+                      "individualSurname": "Test Surname"
+                    }
+                  },
+                    {
+                      "partyRole": "CLAIMANT_PETITIONER_REPRESENTATIVE",
+                      "individualDetails": {
+                        "title": "Sir",
+                        "individualForenames": "Test forename",
+                        "individualMiddleName": "N",
+                        "individualSurname": "Test Surname"
+                      },
+                      "friendlyRoleName": "This is a role name"
+                    },
+                    {
+                      "partyRole": "RESPONDENT",
+                      "individualDetails": {
+                        "title": "Lord",
+                        "individualForenames": "Test forename",
+                        "individualMiddleName": "P",
+                        "individualSurname": "Test Surname"
+                      },
+                      "friendlyRoleName": "This is a role name"
+                    },
+                    {
+                      "partyRole": "RESPONDENT_REPRESENTATIVE",
+                      "individualDetails": {
+                        "title": "Dame",
+                        "individualForenames": "Test forename",
+                        "individualMiddleName": "Q",
+                        "individualSurname": "Test Surname"
+                      },
+                      "friendlyRoleName": "This is a role name"
+                    }
+                  ],
+                  "hearingType": "Hearing Type 2"
+                }]
+              }]
+            }
+          ]
+        },
+          {
+            "courtRoomName": "Jenkins Room 3",
+            "session": [{
+              "sittings": [{
+                "sittingStart": "2022-02-13T09:30:32.123Z",
+                "sittingEnd": "2022-02-13T09:33:32.123Z",
+                "hearing": [{
+                  "case": [{
+                    "caseNumber": "12341234",
+                    "caseSequenceIndicator": "[2 of 3]",
+                    "caseType": "This is a case type"
+                  }],
+                  "party": [{
+                    "partyRole": "CLAIMANT_PETITIONER",
+                    "individualDetails": {
+                      "title": "Ms",
+                      "individualForenames": "Test forename",
+                      "individualMiddleName": "1",
+                      "individualSurname": "Test Surname"
+                    }
+                  },
+                    {
+                      "partyRole": "CLAIMANT_PETITIONER_REPRESENTATIVE",
+                      "individualDetails": {
+                        "title": "Sir",
+                        "individualForenames": "Test forename",
+                        "individualMiddleName": "2",
+                        "individualSurname": "Test Surname"
+                      },
+                      "friendlyRoleName": "This is a role name"
+                    },
+                    {
+                      "partyRole": "RESPONDENT",
+                      "individualDetails": {
+                        "title": "Lord",
+                        "individualForenames": "Test forename",
+                        "individualMiddleName": "3",
+                        "individualSurname": "Test Surname"
+                      },
+                      "friendlyRoleName": "This is a role name"
+                    },
+                    {
+                      "partyRole": "RESPONDENT_REPRESENTATIVE",
+                      "individualDetails": {
+                        "title": "Dame",
+                        "individualForenames": "Test forename",
+                        "individualMiddleName": "4",
+                        "individualSurname": "Test Surname"
+                      },
+                      "friendlyRoleName": "This is a role name"
+                    }
+                  ],
+                  "hearingType": "Hearing Type 1"
+                }]
+              }]
+            },
+              {
+                "sittings": [{
+                  "sittingStart": "2022-02-13T15:30:32.123Z",
+                  "sittingEnd": "2022-02-13T16:55:32.123Z",
+                  "hearing": [{
+                    "case": [{
+                      "caseNumber": "12341234",
+                      "caseSequenceIndicator": "[2 of 3]",
+                      "caseType": "This is a case type"
+                    }],
+                    "party": [{
+                      "partyRole": "CLAIMANT_PETITIONER",
+                      "individualDetails": {
+                        "title": "Ms",
+                        "individualForenames": "Test forename",
+                        "individualMiddleName": "5",
+                        "individualSurname": "Test Surname"
+                      }
+                    },
                       {
-                        "case": [
-                          {
-                            "caseNumber": "12341234",
-                            "caseSequenceIndicator": "[2 of 3]",
-                            "caseType": "This is a case type"
-                          }
-                        ],
-                        "party": [
-                          {
-                            "partyRole": "CLAIMANT_PETITIONER",
-                            "individualDetails": {
-                              "title": "This is a title",
-                              "individualForenames": "This is a forename",
-                              "individualMiddleName": "This is a middle name",
-                              "individualSurname": "This is a surname"
-                            }
-                          },
-                          {
-                            "partyRole": "CLAIMANT_PETITIONER_REPRESENTATIVE",
-                            "individualDetails": {
-                              "title": "This is a title",
-                              "individualForenames": "This is a forename",
-                              "individualMiddleName": "This is a middle name",
-                              "individualSurname": "This is a surname"
-                            }
-                          },
-                          {
-                            "partyRole": "RESPONDENT",
-                            "individualDetails": {
-                              "title": "This is a title",
-                              "individualForenames": "This is a forename",
-                              "individualMiddleName": "This is a middle name",
-                              "individualSurname": "This is a surname"
-                            }
-                          },
-                          {
-                            "partyRole": "RESPONDENT_REPRESENTATIVE",
-                            "individualDetails": {
-                              "title": "This is a title",
-                              "individualForenames": "This is a forename",
-                              "individualMiddleName": "This is a middle name",
-                              "individualSurname": "This is a surname"
-                            }
-                          }
-                        ],
-                        "hearingType": "This is a hearing type"
+                        "partyRole": "CLAIMANT_PETITIONER_REPRESENTATIVE",
+                        "individualDetails": {
+                          "title": "Sir",
+                          "individualForenames": "Test forename",
+                          "individualMiddleName": "6",
+                          "individualSurname": "Test Surname"
+                        },
+                        "friendlyRoleName": "This is a role name"
+                      },
+                      {
+                        "partyRole": "RESPONDENT",
+                        "individualDetails": {
+                          "title": "Lord",
+                          "individualForenames": "Test forename",
+                          "individualMiddleName": "7",
+                          "individualSurname": "Test Surname"
+                        },
+                        "friendlyRoleName": "This is a role name"
+                      },
+                      {
+                        "partyRole": "RESPONDENT_REPRESENTATIVE",
+                        "individualDetails": {
+                          "title": "Dame",
+                          "individualForenames": "Test forename",
+                          "individualMiddleName": "8",
+                          "individualSurname": "Test Surname"
+                        },
+                        "friendlyRoleName": "This is a role name"
                       }
                     ],
-                    "channel": [
-                      "This is a sitting channel"
-                    ]
-                  }
-                ]
+                    "hearingType": "Hearing Type 2"
+                  }]
+                }]
               }
             ]
           }
         ],
         "courtHouseAddress": {
-          "town": "This is a town",
-          "postCode": "AA1 AA1",
+          "town": "Nottingham",
+          "postCode": "NG1 2FP",
           "line": [
-            "Line 1",
-            "Line 2"
+            "1 Crown Road"
           ],
-          "county": "This is a county"
+          "county": ""
         }
       }
     }
