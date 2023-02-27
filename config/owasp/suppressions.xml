@@ -21,7 +21,7 @@
   </suppress>
   <suppress>
     <notes>Occurs even in latest version of spring 2.x.x. Waiting for 3.x.x upgrade</notes>
-    <packageUrl>pkg:maven/com.fasterxml.jackson.core/jackson-core@2.13.5</packageUrl>
+    <packageUrl>pkg:maven/com.fasterxml.jackson.core/jackson-core@2.13.4</packageUrl>
     <cve>CVE-2022-45688</cve>
   </suppress>
 </suppressions>
