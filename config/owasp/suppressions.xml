@@ -20,6 +20,11 @@
     <cve>CVE-2022-45688</cve>
   </suppress>
   <suppress>
+    <notes>Already on latest version</notes>
+    <packageUrl>pkg:maven/com.jayway.jsonpath/json-path@2.7.0</packageUrl>
+    <cve>CVE-2022-45688</cve>
+  </suppress>
+  <suppress>
     <notes>Occurs even in latest version of spring 2.x.x. Waiting for 3.x.x upgrade</notes>
     <packageUrl>pkg:maven/com.fasterxml.jackson.core/jackson-core@2.13.4</packageUrl>
     <cve>CVE-2022-45688</cve>
