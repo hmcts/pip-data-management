@@ -182,7 +182,7 @@ dependencies {
   implementation group: 'com.google.guava', name: 'guava', version: '31.1-jre'
   implementation group: 'com.github.hmcts.java-logging', name: 'logging', version: reformLoggingVersion
   implementation group: 'com.github.hmcts.java-logging', name: 'logging-appinsights', version: reformLoggingVersion
-  implementation group: 'net.logstash.logback', name: 'logstash-logback-encoder', version: '7.2'
+  implementation group: 'net.logstash.logback', name: 'logstash-logback-encoder', version: '7.3'
   implementation group: 'com.azure', name: 'azure-data-tables', version: '12.3.7'
   implementation group: 'com.github.hmcts', name: 'pip-data-models', version: '1.4.1'
   implementation 'com.networknt:json-schema-validator:1.0.76'
