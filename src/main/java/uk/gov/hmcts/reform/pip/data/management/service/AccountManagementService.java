@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientException;
+import uk.gov.hmcts.reform.pip.data.management.models.external.account.management.AzureAccount;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ListType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Sensitivity;
 
@@ -65,14 +66,14 @@ public class AccountManagementService {
         }
     }
 
-    public String getUserInfo(String provenanceUserId) {
+    public AzureAccount getUserInfo(String provenanceUserId) {
         try {
             return webClient.get().uri(url + "/account/azure/" + provenanceUserId)
                 .attributes(clientRegistrationId(ACCOUNT_MANAGEMENT_API))
-                .retrieve().bodyToMono(String.class).block();
+                .retrieve().bodyToMono(AzureAccount.class).block();
         } catch (WebClientException ex) {
             log.error(String.format(ACCOUNT_MANAGEMENT_REQUEST_FAILED, ex.getMessage()));
-            return "Failed to find user info for user: " + provenanceUserId;
+            return new AzureAccount();
         }
     }
 

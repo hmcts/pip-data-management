@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.pip.data.management.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import nl.altindag.log.LogCaptor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
+import uk.gov.hmcts.reform.pip.data.management.models.location.LocationArtefact;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactType;
@@ -30,6 +32,7 @@ import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -99,6 +102,7 @@ class PublicationControllerTest {
     private static final String COUNT_MSG = "location,count\n1,3\n2,4\n3,6\n";
     private static final String NO_MATCH = "NoMatch";
 
+    private static final List<LocationArtefact> COURT_PER_LOCATION = new ArrayList<>();
     private Artefact artefact;
     private Artefact artefactWithId;
     private Artefact artefactWithNoMatchLocationId;
@@ -275,10 +279,11 @@ class PublicationControllerTest {
 
     @Test
     void checkCountArtefactByLocationReturnsData() {
-        when(artefactService.countArtefactsByLocation()).thenReturn(COUNT_MSG);
-        ResponseEntity<String> csvString = publicationController.countByLocation();
-        assertEquals(HttpStatus.OK, csvString.getStatusCode(), STATUS_CODE_MATCH);
-        assertEquals(COUNT_MSG, csvString.getBody(), NOT_EQUAL_MESSAGE);
+        COURT_PER_LOCATION.add(new LocationArtefact("1", 2));
+        when(artefactService.countArtefactsByLocation()).thenReturn(COURT_PER_LOCATION);
+        ResponseEntity<List<LocationArtefact>> result = publicationController.countByLocation();
+        assertEquals(HttpStatus.OK, result.getStatusCode(), STATUS_CODE_MATCH);
+        assertEquals(COURT_PER_LOCATION, result.getBody(), NOT_EQUAL_MESSAGE);
     }
 
 
@@ -519,5 +524,28 @@ class PublicationControllerTest {
         assertEquals(String.format("Artefact of ID %s has been archived", artefactId),
                      response.getBody(), "Response from archiving does not match expected message"
         );
+    }
+
+    @Test
+    void testDeleteArtefactsByLocationReturnsOk() throws JsonProcessingException {
+        int locationId = 1;
+        String requesterName = "ReqName";
+        when(artefactDeleteService.deleteArtefactByLocation(locationId, requesterName)).thenReturn("Success");
+
+        assertEquals(HttpStatus.OK,
+                     publicationController.deleteArtefactsByLocation(requesterName, locationId).getStatusCode(),
+                     "Delete artefacts for location endpoint has not returned OK");
+    }
+
+    @Test
+    void testGetAllNoMatchArtefacts() {
+        List<Artefact> artefactList = List.of(artefactWithId);
+
+        when(artefactService.findAllNoMatchArtefacts()).thenReturn(artefactList);
+
+        ResponseEntity<List<Artefact>> response = publicationController.getAllNoMatchArtefacts();
+
+        assertEquals(HttpStatus.OK, response.getStatusCode(), STATUS_CODE_MATCH);
+        assertEquals(artefactList, response.getBody(), "Body should match");
     }
 }

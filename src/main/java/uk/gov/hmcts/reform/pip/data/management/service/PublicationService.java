@@ -214,7 +214,7 @@ public class PublicationService {
 
         if (NumberUtils.isCreatable(locationId)) {
             return locationRepository.getLocationByLocationId(Integer.valueOf(locationId))
-                .map(l -> l.getName())
+                .map(Location::getName)
                 .orElse("");
         }
         return "";

@@ -81,6 +81,9 @@ class PublicationTest {
     @Value("${test-user-id}")
     private String userId;
 
+    @Value("${system-admin-provenance-id}")
+    private String systemAdminProvenanceId;
+
     private static final String PUBLICATION_URL = "/publication";
     private static final String SEARCH_URL = "/publication/search";
     private static final String SEARCH_COURT_URL = "/publication/locationId";
@@ -107,6 +110,7 @@ class PublicationTest {
     private static final String COURT_ID = "123";
     private static final LocalDateTime CONTENT_DATE = LocalDateTime.now().toLocalDate().atStartOfDay()
         .truncatedTo(ChronoUnit.SECONDS);
+    private static final String PROVENANCE_USER_ID = "x-provenance-user-id";
     private static final String SEARCH_KEY_FOUND = "array-value";
     private static final String SEARCH_KEY_NOT_FOUND = "case-urn";
     private static final String SEARCH_VALUE_1 = "array-value-1";
@@ -153,13 +157,19 @@ class PublicationTest {
 
     Artefact createDailyList(Sensitivity sensitivity, LocalDateTime displayFrom, LocalDateTime contentDate)
         throws Exception {
+        return createDailyList(sensitivity, displayFrom, contentDate, PROVENANCE);
+    }
+
+    Artefact createDailyList(Sensitivity sensitivity, LocalDateTime displayFrom, LocalDateTime contentDate,
+                             String provenance)
+        throws Exception {
         try (InputStream mockFile = this.getClass().getClassLoader()
             .getResourceAsStream("data/civil-daily-cause-list/civilDailyCauseList.json")) {
 
             MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
                 .post(PUBLICATION_URL)
                 .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
-                .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
+                .header(PublicationConfiguration.PROVENANCE_HEADER, provenance)
                 .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
                 .header(PublicationConfiguration.DISPLAY_FROM_HEADER, displayFrom)
                 .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO.plusMonths(1))
@@ -1731,7 +1741,6 @@ class PublicationTest {
         assertEquals("Successfully deleted artefact: " + artefactToDelete.getArtefactId(),
                      deleteResponse.getResponse().getContentAsString(), "Should successfully delete artefact"
         );
-
     }
 
     @Test
@@ -1842,12 +1851,29 @@ class PublicationTest {
     }
 
     @Test
-    void testCountArtefactByLocation() throws Exception {
+    void testCountByLocationManualUpload() throws Exception {
+        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(blobContainerClient.getBlobContainerUrl()).thenReturn(PAYLOAD_URL);
+        createDailyList(Sensitivity.PRIVATE);
         mockHttpServletRequestBuilder = MockMvcRequestBuilders.get(COUNT_ENDPOINT);
         MvcResult result = mockMvc.perform(mockHttpServletRequestBuilder)
             .andExpect(status().isOk())
             .andReturn();
-        assertTrue(result.getResponse().getContentAsString().contains("location,count"), "headers not found");
+        assertTrue(result.getResponse().getContentAsString().contains(COURT_ID), "headers not found");
+    }
+
+    @Test
+    void testCountByLocationListAssist() throws Exception {
+        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(blobContainerClient.getBlobContainerUrl()).thenReturn(PAYLOAD_URL);
+        createDailyList(Sensitivity.PRIVATE, DISPLAY_FROM.minusMonths(2), CONTENT_DATE, "ListAssist");
+        mockHttpServletRequestBuilder = MockMvcRequestBuilders.get(COUNT_ENDPOINT);
+        MvcResult result = mockMvc.perform(mockHttpServletRequestBuilder)
+            .andExpect(status().isOk())
+            .andReturn();
+        assertEquals(HttpStatus.OK.value(), result.getResponse().getStatus(),
+                     "CountByLocation endpoint for ListAssist is not successful"
+        );
     }
 
     @Test
@@ -2005,6 +2031,43 @@ class PublicationTest {
         );
     }
 
+    @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
+    void testGetAllNoMatchArtefacts() throws Exception {
+        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(blobContainerClient.getBlobContainerUrl()).thenReturn(PAYLOAD_URL);
+        Artefact expectedArtefact = createDailyList(Sensitivity.PRIVATE, DISPLAY_FROM.minusMonths(2), CONTENT_DATE,
+                                              "NoMatch");
+
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
+            MockMvcRequestBuilders.get("/publication/no-match");
+
+        MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isOk()).andReturn();
+
+        String jsonOutput = response.getResponse().getContentAsString();
+        JSONArray jsonArray = new JSONArray(jsonOutput);
+        Artefact returnedArtefact = objectMapper.readValue(
+            jsonArray.get(0).toString(), Artefact.class
+        );
+
+        assertTrue(compareArtefacts(expectedArtefact, returnedArtefact),
+                   "Expected and returned artefacts do not match");
+    }
+
+    @Test
+    @WithMockUser(username = UNAUTHORIZED_USERNAME, authorities = {UNAUTHORIZED_ROLE})
+    void testUnauthorizedGetAllNoMatchArtefacts() throws Exception {
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
+            MockMvcRequestBuilders.get("/publication/no-match");
+
+        MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
+            .andExpect(status().isForbidden()).andReturn();
+
+        assertEquals(HttpStatus.FORBIDDEN.value(), response.getResponse().getStatus(),
+                     FORBIDDEN_STATUS_CODE
+        );
+    }
+
     private boolean compareArtefacts(Artefact expectedArtefact, Artefact returnedArtefact) {
         return expectedArtefact.getArtefactId().equals(returnedArtefact.getArtefactId())
             && expectedArtefact.getProvenance().equals(returnedArtefact.getProvenance())
@@ -2032,4 +2095,58 @@ class PublicationTest {
             fail(String.format("%s with value '%s' could not be parsed", field, value));
         }
     }
+
+    @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
+    void testDeleteArtefactsByLocation() throws Exception {
+        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        Artefact artefactToDelete = createDailyList(Sensitivity.PUBLIC);
+
+        MockHttpServletRequestBuilder preDeleteRequest = MockMvcRequestBuilders
+            .get(PUBLICATION_URL + "/" + artefactToDelete.getArtefactId())
+            .header(USER_ID_HEADER, userId);
+
+        mockMvc.perform(preDeleteRequest).andExpect(status().isOk());
+
+        MockHttpServletRequestBuilder deleteRequest = MockMvcRequestBuilders
+            .delete(PUBLICATION_URL + "/" + COURT_ID + "/deleteArtefacts")
+            .header(PROVENANCE_USER_ID, systemAdminProvenanceId);
+
+        MvcResult deleteResponse = mockMvc.perform(deleteRequest).andExpect(status().isOk()).andReturn();
+
+        assertEquals("Total 1 artefact deleted for location id " + COURT_ID,
+                     deleteResponse.getResponse().getContentAsString(), "Should successfully delete artefact"
+        );
+    }
+
+    @Test
+    void testDeleteArtefactsByLocationNotFound() throws Exception {
+        MockHttpServletRequestBuilder deleteRequest = MockMvcRequestBuilders
+            .delete(PUBLICATION_URL + "/" + 11 + "/deleteArtefacts")
+            .header(PROVENANCE_USER_ID, systemAdminProvenanceId);
+
+        MvcResult deleteResponse = mockMvc.perform(deleteRequest).andExpect(status().isNotFound()).andReturn();
+
+        assertTrue(
+            deleteResponse.getResponse().getContentAsString()
+                .contains("No artefact found with the location ID " + 11),
+            "Artefact not found error message"
+        );
+    }
+
+    @Test
+    @WithMockUser(username = UNAUTHORIZED_USERNAME, authorities = {UNAUTHORIZED_ROLE})
+    void testDeleteArtefactsByLocationUnauthorized() throws Exception {
+        MockHttpServletRequestBuilder deleteRequest = MockMvcRequestBuilders
+            .delete(PUBLICATION_URL + "/" + COURT_ID + "/deleteArtefacts")
+            .header(PROVENANCE_USER_ID, systemAdminProvenanceId);
+
+        MvcResult deleteResponse = mockMvc.perform(deleteRequest).andExpect(status().isForbidden()).andReturn();
+
+        assertEquals(HttpStatus.FORBIDDEN.value(), deleteResponse.getResponse().getStatus(),
+                     FORBIDDEN_STATUS_CODE
+        );
+    }
+
+
 }

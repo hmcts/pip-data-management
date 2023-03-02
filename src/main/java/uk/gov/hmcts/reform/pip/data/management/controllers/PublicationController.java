@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.pip.data.management.controllers;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -29,6 +30,7 @@ import uk.gov.hmcts.reform.pip.data.management.authentication.roles.IsAdmin;
 import uk.gov.hmcts.reform.pip.data.management.authentication.roles.IsPublisher;
 import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.helpers.LocationHelper;
+import uk.gov.hmcts.reform.pip.data.management.models.location.LocationArtefact;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactType;
@@ -181,15 +183,14 @@ public class PublicationController {
             .expiryDate(headers.getDisplayTo())
             .build();
 
-        Artefact createdItem = publicationService.createPublication(artefact, payload);
+        Artefact createdItem = publicationService
+            .createPublication(artefact, payload);
 
         logManualUpload(publicationService.maskEmail(issuerEmail), createdItem.getArtefactId().toString());
 
         // Process the created artefact by requesting channel management to generate PDF/Excel files
         // and check/trigger subscription management, async.
-        if (!LocationHelper.isNoMatchLocationId(createdItem.getLocationId())) {
-            publicationService.processCreatedPublication(createdItem);
-        }
+        publicationService.processCreatedPublication(createdItem);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(createdItem);
     }
@@ -265,9 +266,7 @@ public class PublicationController {
 
         logManualUpload(publicationService.maskEmail(issuerEmail), createdItem.getArtefactId().toString());
 
-        if (!LocationHelper.isNoMatchLocationId(createdItem.getLocationId())) {
-            artefactTriggerService.checkAndTriggerSubscriptionManagement(artefact);
-        }
+        artefactTriggerService.checkAndTriggerSubscriptionManagement(artefact);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(createdItem);
     }
@@ -396,7 +395,7 @@ public class PublicationController {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/count-by-location")
     @IsAdmin
-    public ResponseEntity<String> countByLocation() {
+    public ResponseEntity<List<LocationArtefact>> countByLocation() {
         return ResponseEntity.ok(artefactService.countArtefactsByLocation());
     }
 
@@ -465,5 +464,27 @@ public class PublicationController {
                                                   @PathVariable String id) {
         artefactDeleteService.archiveArtefactById(id, issuerId);
         return ResponseEntity.ok(String.format("Artefact of ID %s has been archived", id));
+    }
+
+    @ApiResponse(responseCode = OK_CODE, description = "Successfully deleted artefact for location: {locationId}")
+    @ApiResponse(responseCode = AUTH_ERROR_CODE, description = UNAUTHORIZED_DESCRIPTION)
+    @ApiResponse(responseCode = NOT_FOUND_CODE, description = "No artefact found with the location ID: {locationId}")
+    @Operation(summary = "Delete all artefacts for given location from P&I")
+    @DeleteMapping("/{locationId}/deleteArtefacts")
+    @IsAdmin
+    public ResponseEntity<String> deleteArtefactsByLocation(
+        @RequestHeader("x-provenance-user-id") String provenanceUserId,
+        @PathVariable Integer locationId) throws JsonProcessingException {
+        return ResponseEntity.ok(artefactDeleteService.deleteArtefactByLocation(locationId, provenanceUserId));
+    }
+
+    @ApiResponse(responseCode = OK_CODE, description = "List of all artefacts that are noMatch in their id")
+    @ApiResponse(responseCode = AUTH_ERROR_CODE, description = UNAUTHORIZED_DESCRIPTION)
+    @Operation(summary = "Get all no match publications")
+    @GetMapping("/no-match")
+    @JsonView(ArtefactView.Internal.class)
+    @IsAdmin
+    public ResponseEntity<List<Artefact>> getAllNoMatchArtefacts() {
+        return ResponseEntity.ok(artefactService.findAllNoMatchArtefacts());
     }
 }

@@ -69,10 +69,12 @@ public interface ArtefactRepository extends JpaRepository<Artefact, Long> {
                                         @Param(CURRENT_DATE_PARAM) LocalDateTime currentDate);
 
 
-    @Query(value = "select location_id, count(distinct artefact_id) from (SELECT * FROM artefact WHERE is_archived !="
-        + " true) as a group by location_id",
+    @Query(value = "select location_id, count(distinct artefact_id) from artefact "
+        + "where location_id ~ '^[0-9]+$' "
+        + "and is_archived != true "
+        + "group by location_id",
         nativeQuery = true)
-    List<String> countArtefactsByLocation();
+    List<Object[]> countArtefactsByLocation();
 
     @Query(value = "select * from Artefact where location_id = :location_id and is_archived != true",
         nativeQuery = true)
@@ -99,6 +101,10 @@ public interface ArtefactRepository extends JpaRepository<Artefact, Long> {
         nativeQuery = true)
     List<Artefact> findAllNoMatchArtefacts();
 
+    @Query(value = "SELECT COUNT(artefact_id) FROM Artefact WHERE location_id LIKE '%NoMatch%' and is_archived != "
+        + "true", nativeQuery = true)
+    Integer countNoMatchArtefacts();
+
     @Query(value = "SELECT cast(artefact_id as text), display_from, display_to, language, "
         + "provenance, sensitivity, source_artefact_id, type, content_date, location_id, list_type "
         + "FROM artefact",
@@ -107,7 +113,8 @@ public interface ArtefactRepository extends JpaRepository<Artefact, Long> {
 
     @Query(value = "SELECT * FROM Artefact "
         + "WHERE expiry_date >= :curr_date "
-        + "and location_id = :location_id", nativeQuery = true)
+        + "and location_id = :location_id "
+        + "and is_archived != true", nativeQuery = true)
     List<Artefact> findActiveArtefactsForLocation(@Param(CURRENT_DATE_PARAM) LocalDateTime today,
                                                   @Param(LOCATION_ID_PARAM) String locationId);
 

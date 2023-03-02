@@ -7,11 +7,13 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientException;
+import uk.gov.hmcts.reform.pip.data.management.models.NoMatchArtefact;
 import uk.gov.hmcts.reform.pip.model.system.admin.ActionResult;
+import uk.gov.hmcts.reform.pip.model.system.admin.ChangeType;
 import uk.gov.hmcts.reform.pip.model.system.admin.DeleteLocationAction;
+import uk.gov.hmcts.reform.pip.model.system.admin.DeleteLocationArtefactAction;
 
 import java.util.List;
-import java.util.Map;
 
 import static org.springframework.security.oauth2.client.web.reactive.function.client.ServerOAuth2AuthorizedClientExchangeFilterFunction.clientRegistrationId;
 
@@ -28,10 +30,10 @@ public class PublicationServicesService {
     @Value("${service-to-service.publication-services}")
     private String url;
 
-    public String sendNoMatchArtefactsForReporting(Map<String, String> noMatchMap) {
+    public String sendNoMatchArtefactsForReporting(List<NoMatchArtefact> noMatchArtefacts) {
         try {
             return webClient.post().uri(url + "/notify/unidentified-blob")
-                .body(BodyInserters.fromValue(noMatchMap))
+                .body(BodyInserters.fromValue(noMatchArtefacts))
                 .attributes(clientRegistrationId("publicationServicesApi"))
                 .retrieve().bodyToMono(String.class).block();
         } catch (WebClientException ex) {
@@ -41,9 +43,15 @@ public class PublicationServicesService {
     }
 
     public String sendSystemAdminEmail(List<String> emails, String requesterName, ActionResult actionResult,
-                                       String additionalDetails) {
-        DeleteLocationAction payload =
-            formatSystemAdminAction(emails, requesterName, actionResult, additionalDetails);
+                                       String additionalDetails, ChangeType changeType) {
+        Object payload;
+        if (changeType.equals(ChangeType.DELETE_LOCATION)) {
+            payload = formatDeleteLocationSystemAdminAction(emails, requesterName, actionResult, additionalDetails);
+        } else {
+            payload = formatDeleteLocationArtefactSystemAdminAction(emails, requesterName,
+                                                                    actionResult, additionalDetails);
+        }
+
         try {
             return webClient.post().uri(url + "/notify/sysadmin/update")
                 .body(BodyInserters.fromValue(payload))
@@ -56,9 +64,19 @@ public class PublicationServicesService {
         }
     }
 
-    private DeleteLocationAction formatSystemAdminAction(List<String> emails,
+    private DeleteLocationAction formatDeleteLocationSystemAdminAction(List<String> emails,
             String requesterName, ActionResult actionResult, String additionalDetails) {
         DeleteLocationAction systemAdminAction = new DeleteLocationAction();
+        systemAdminAction.setEmailList(emails);
+        systemAdminAction.setRequesterName(requesterName);
+        systemAdminAction.setActionResult(actionResult);
+        systemAdminAction.setDetailString(additionalDetails);
+        return systemAdminAction;
+    }
+
+    private DeleteLocationArtefactAction formatDeleteLocationArtefactSystemAdminAction(List<String> emails,
+        String requesterName, ActionResult actionResult, String additionalDetails) {
+        DeleteLocationArtefactAction systemAdminAction = new DeleteLocationArtefactAction();
         systemAdminAction.setEmailList(emails);
         systemAdminAction.setRequesterName(requesterName);
         systemAdminAction.setActionResult(actionResult);

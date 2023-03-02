@@ -4,14 +4,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.helpers.LocationHelper;
+import uk.gov.hmcts.reform.pip.data.management.models.NoMatchArtefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.service.PublicationServicesService;
 import uk.gov.hmcts.reform.pip.data.management.service.SubscriptionManagementService;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 @Service
@@ -69,12 +69,12 @@ public class ArtefactTriggerService {
      */
     private void findNoMatchArtefactsForReporting(List<Artefact> artefactList) {
         if (!artefactList.isEmpty()) {
-            Map<String, String> locationIdProvenanceMap = new ConcurrentHashMap<>();
-            artefactList.forEach(artefact -> locationIdProvenanceMap.put(
-                LocationHelper.getLocationIdForNoMatch(artefact.getLocationId()), artefact.getProvenance())
-            );
+            List<NoMatchArtefact> noMatchArtefactList = new ArrayList<>();
 
-            log.info(publicationServicesService.sendNoMatchArtefactsForReporting(locationIdProvenanceMap));
+            artefactList.forEach(artefact -> noMatchArtefactList.add(new NoMatchArtefact(artefact.getArtefactId(), artefact.getProvenance(),
+                                                                                         LocationHelper.getLocationIdForNoMatch(artefact.getLocationId()))));
+
+            log.info(publicationServicesService.sendNoMatchArtefactsForReporting(noMatchArtefactList));
         }
     }
 }
