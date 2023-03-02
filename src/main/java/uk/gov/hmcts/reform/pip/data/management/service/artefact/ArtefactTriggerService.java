@@ -71,8 +71,10 @@ public class ArtefactTriggerService {
         if (!artefactList.isEmpty()) {
             List<NoMatchArtefact> noMatchArtefactList = new ArrayList<>();
 
-            artefactList.forEach(artefact -> noMatchArtefactList.add(new NoMatchArtefact(artefact.getArtefactId(), artefact.getProvenance(),
-                                                                                         LocationHelper.getLocationIdForNoMatch(artefact.getLocationId()))));
+            artefactList.forEach(artefact -> noMatchArtefactList.add(
+                new NoMatchArtefact(artefact.getArtefactId(), artefact.getProvenance(),
+                                    LocationHelper.getLocationIdForNoMatch(artefact.getLocationId()))
+            ));
 
             log.info(publicationServicesService.sendNoMatchArtefactsForReporting(noMatchArtefactList));
         }

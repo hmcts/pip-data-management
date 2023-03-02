@@ -190,7 +190,9 @@ public class PublicationController {
 
         // Process the created artefact by requesting channel management to generate PDF/Excel files
         // and check/trigger subscription management, async.
-        publicationService.processCreatedPublication(createdItem);
+        if (!LocationHelper.isNoMatchLocationId(createdItem.getLocationId())) {
+            publicationService.processCreatedPublication(createdItem);
+        }
 
         return ResponseEntity.status(HttpStatus.CREATED).body(createdItem);
     }
@@ -266,7 +268,9 @@ public class PublicationController {
 
         logManualUpload(publicationService.maskEmail(issuerEmail), createdItem.getArtefactId().toString());
 
-        artefactTriggerService.checkAndTriggerSubscriptionManagement(artefact);
+        if (!LocationHelper.isNoMatchLocationId(createdItem.getLocationId())) {
+            artefactTriggerService.checkAndTriggerSubscriptionManagement(artefact);
+        }
 
         return ResponseEntity.status(HttpStatus.CREATED).body(createdItem);
     }
