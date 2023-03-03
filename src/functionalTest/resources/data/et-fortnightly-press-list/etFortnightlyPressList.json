@@ -47,8 +47,7 @@
                               "individualForenames": "This is a forename",
                               "individualMiddleName": "This is a middle name",
                               "individualSurname": "This is a surname"
-                            },
-                            "friendlyRoleName": "This is a role name"
+                            }
                           },
                           {
                             "partyRole": "RESPONDENT",
@@ -57,8 +56,7 @@
                               "individualForenames": "This is a forename",
                               "individualMiddleName": "This is a middle name",
                               "individualSurname": "This is a surname"
-                            },
-                            "friendlyRoleName": "This is a role name"
+                            }
                           },
                           {
                             "partyRole": "RESPONDENT_REPRESENTATIVE",
@@ -67,8 +65,7 @@
                               "individualForenames": "This is a forename",
                               "individualMiddleName": "This is a middle name",
                               "individualSurname": "This is a surname"
-                            },
-                            "friendlyRoleName": "This is a role name"
+                            }
                           }
                         ],
                         "hearingType": "This is a hearing type"
@@ -78,9 +75,6 @@
                       "This is a sitting channel"
                     ]
                   }
-                ],
-                "sessionChannel": [
-                  "This is a session channel"
                 ]
               }
             ]
@@ -97,8 +91,5 @@
         }
       }
     }
-  ],
-  "locationDetails": {
-    "jurisdiction": "This is a jurisdiction"
-  }
+  ]
 }
