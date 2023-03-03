@@ -77,6 +77,12 @@ public class Location {
     @JsonView(LocationViews.BaseView.class)
     private List<String> welshRegion;
 
+    @JsonView(LocationViews.BaseView.class)
+    private String email;
+
+    @JsonView(LocationViews.BaseView.class)
+    private String contactNo;
+
     public Location(LocationCsv locationCsv) {
         this.locationId = locationCsv.getUniqueId();
         this.name = locationCsv.getLocationName();
@@ -91,6 +97,8 @@ public class Location {
         this.welshName = locationCsv.getWelshLocationName();
         this.welshRegion = new ArrayList<>(locationCsv.getWelshRegion());
         this.welshJurisdiction = new ArrayList<>(locationCsv.getWelshJurisdiction());
+        this.email = locationCsv.getEmail();
+        this.contactNo = locationCsv.getContactNo();
     }
 
     /**
