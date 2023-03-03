@@ -44,6 +44,7 @@ import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.ARTEFACT_ID;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.CONTENT_DATE;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.FILE;
+import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.LOCATION_OWNING_HEARING_LOCATION;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.LOCATION_VENUE;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.MANUAL_UPLOAD_PROVENANCE;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.NO_COURT_EXISTS_IN_REFERENCE_DATA;
@@ -188,8 +189,26 @@ class PublicationServiceTest {
     }
 
     @Test
-    void testCreationOfNewArtefact() {
+    void testCreationOfNewArtefactWhenVenue() {
         artefactWithPayloadUrl.setLocationId(PROVENANCE_ID);
+        when(azureBlobService.createPayload(any(), eq(PAYLOAD))).thenReturn(PAYLOAD_URL);
+        when(artefactRepository.save(any())).thenReturn(artefactWithIdAndPayloadUrl);
+        when(payloadExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
+
+        Artefact returnedArtefact = publicationService.createPublication(artefact, PAYLOAD);
+
+        assertEquals(artefactWithIdAndPayloadUrl, returnedArtefact, ROWID_RETURNS_UUID);
+    }
+
+    @Test
+    void testCreationOfNewArtefactWhenOwningHearingLocation() {
+        artefact.setListType(ListType.SSCS_DAILY_LIST);
+
+        lenient().when(locationRepository.findByLocationIdByProvenance(PROVENANCE, "12341234",
+                                                             LOCATION_OWNING_HEARING_LOCATION))
+            .thenReturn(Optional.of(location));
+
+        artefactWithPayloadUrl.setLocationId("12341234");
         when(azureBlobService.createPayload(any(), eq(PAYLOAD))).thenReturn(PAYLOAD_URL);
         when(artefactRepository.save(any())).thenReturn(artefactWithIdAndPayloadUrl);
         when(payloadExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
