@@ -10,6 +10,7 @@ import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.AzureBlobService;
 import uk.gov.hmcts.reform.pip.data.management.database.LocationRepository;
 import uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactHelper;
+import uk.gov.hmcts.reform.pip.data.management.helpers.LocationHelper;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ListType;
@@ -166,7 +167,7 @@ public class PublicationService {
             artefact.setLocationId(location.get().getLocationId().toString());
 
         } else {
-            artefact.setLocationId(String.format("NoMatch%s", artefact.getLocationId()));
+            artefact.setLocationId(LocationHelper.buildNoMatchLocationId(artefact.getLocationId()));
         }
     }
 
