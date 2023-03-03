@@ -212,7 +212,9 @@ public class LocationService {
                         locationReference.getProvenanceLocationType().csvInput,
                         location.getWelshName(),
                         location.getWelshRegion(),
-                        location.getWelshJurisdiction()
+                        location.getWelshJurisdiction(),
+                        location.getEmail(),
+                        location.getContactNo()
                     ));
                 } catch (CsvDataTypeMismatchException | CsvRequiredFieldEmptyException e) {
                     throw new CsvParseException(String.format("Failed to create CSV with message: %s",

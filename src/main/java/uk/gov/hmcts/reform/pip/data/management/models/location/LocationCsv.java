@@ -53,4 +53,10 @@ public class LocationCsv {
     @CsvBindAndSplitByName(elementType = String.class, splitOn = DELIMITER, writeDelimiter = WRITE_DELIMITER,
         column = "Welsh Jurisdiction")
     private List<String> welshJurisdiction = new ArrayList<>();
+
+    @CsvBindByName(column = "Email")
+    private String email;
+
+    @CsvBindByName(column = "Contact No")
+    private String contactNo;
 }
