@@ -189,6 +189,34 @@ class PublicationTest {
         }
     }
 
+    Artefact createSscsDailyList(Sensitivity sensitivity, String provenance)
+        throws Exception {
+        try (InputStream mockFile = this.getClass().getClassLoader()
+            .getResourceAsStream("data/sscs-daily-list/sscsDailyList.json")) {
+
+            MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .post(PUBLICATION_URL)
+                .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
+                .header(PublicationConfiguration.PROVENANCE_HEADER, provenance)
+                .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
+                .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM.minusMonths(2))
+                .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO.plusMonths(1))
+                .header(PublicationConfiguration.COURT_ID, COURT_ID)
+                .header(PublicationConfiguration.LIST_TYPE, ListType.SSCS_DAILY_LIST)
+                .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
+                .header(PublicationConfiguration.SENSITIVITY_HEADER, sensitivity)
+                .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
+                .content(mockFile.readAllBytes())
+                .contentType(MediaType.APPLICATION_JSON);
+
+            MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
+                .andExpect(status().isCreated()).andReturn();
+
+            return objectMapper.readValue(
+                response.getResponse().getContentAsString(), Artefact.class);
+        }
+    }
+
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
     @DisplayName("Should create a valid artefact and return the created artefact to the user")
@@ -250,6 +278,22 @@ class PublicationTest {
                          "Does not contain second value in the array"
             );
         }
+    }
+
+    @DisplayName("Should create a valid artefact with provenance different from manual_upload")
+    @Test
+    void testUploadPublicationWithDifferentProvenance() throws Exception {
+        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(blobContainerClient.getBlobContainerUrl()).thenReturn(PAYLOAD_URL);
+
+        Artefact artefact = createSscsDailyList(Sensitivity.PUBLIC, "TestProvenance");
+
+        assertNotNull(artefact.getArtefactId(), "Artefact IDs do not match");
+        assertEquals(artefact.getType(), ARTEFACT_TYPE, "Artefact types do not match");
+        assertEquals(artefact.getProvenance(), "TestProvenance", "Provenances do not match");
+        assertEquals(artefact.getLocationId(), "NoMatch" + COURT_ID, "Court ids do not match");
+        assertEquals(artefact.getListType(), ListType.SSCS_DAILY_LIST, "List types do not match");
+        assertEquals(artefact.getContentDate(), CONTENT_DATE, "Content dates do not match");
     }
 
     @DisplayName("Should create a valid artefact with only mandatory fields")
@@ -2037,7 +2081,8 @@ class PublicationTest {
         when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
         when(blobContainerClient.getBlobContainerUrl()).thenReturn(PAYLOAD_URL);
         Artefact expectedArtefact = createDailyList(Sensitivity.PRIVATE, DISPLAY_FROM.minusMonths(2), CONTENT_DATE,
-                                              "NoMatch");
+                                                    "NoMatch"
+        );
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
             MockMvcRequestBuilders.get("/publication/no-match");
@@ -2050,8 +2095,10 @@ class PublicationTest {
             jsonArray.get(0).toString(), Artefact.class
         );
 
-        assertTrue(compareArtefacts(expectedArtefact, returnedArtefact),
-                   "Expected and returned artefacts do not match");
+        assertTrue(
+            compareArtefacts(expectedArtefact, returnedArtefact),
+            "Expected and returned artefacts do not match"
+        );
     }
 
     @Test
