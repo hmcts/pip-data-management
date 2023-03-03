@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.pip.data.management.service.artefact;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
+import uk.gov.hmcts.reform.pip.data.management.helpers.LocationHelper;
 import uk.gov.hmcts.reform.pip.data.management.models.NoMatchArtefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.service.PublicationServicesService;
@@ -70,8 +71,10 @@ public class ArtefactTriggerService {
         if (!artefactList.isEmpty()) {
             List<NoMatchArtefact> noMatchArtefactList = new ArrayList<>();
 
-            artefactList.forEach(artefact -> noMatchArtefactList.add(new NoMatchArtefact(artefact.getArtefactId(),
-                artefact.getProvenance(), artefact.getLocationId().split("NoMatch")[1])));
+            artefactList.forEach(artefact -> noMatchArtefactList.add(
+                new NoMatchArtefact(artefact.getArtefactId(), artefact.getProvenance(),
+                                    LocationHelper.getLocationIdForNoMatch(artefact.getLocationId()))
+            ));
 
             log.info(publicationServicesService.sendNoMatchArtefactsForReporting(noMatchArtefactList));
         }
