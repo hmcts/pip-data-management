@@ -73,7 +73,7 @@ class PublicationEtDailyListTest {
 
     @DisplayName("Should create a valid artefact and return the created artefact to the user")
     @Test
-    void testCreationOfValidMagistratesStandardList() throws Exception {
+    void testCreationOfValidEtDailyList() throws Exception {
         try (InputStream mockFile = this.getClass().getClassLoader()
             .getResourceAsStream("data/et-daily-list/etDailyList.json")) {
 
@@ -106,7 +106,7 @@ class PublicationEtDailyListTest {
 
     @DisplayName("Should return an error message back to the user when creating an invalid blob")
     @Test
-    void testCreationOfInvalidMagistratesStandardList() throws Exception {
+    void testCreationOfInvalidEtDailyList() throws Exception {
         try (InputStream mockFile = this.getClass().getClassLoader()
             .getResourceAsStream("data/et-daily-list/etDailyListInvalid.json")) {
 
