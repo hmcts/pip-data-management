@@ -123,7 +123,11 @@
           "$id": "#root/venue/venueContact",
           "description": "Contact details for the venue",
           "title": "Venue Contact",
-          "$ref": "#/definitions/venueContact"
+          "$ref": "#/definitions/venueContact",
+          "required": [
+            "venueTelephone",
+            "venueEmail"
+          ]
         }
       }
     },
