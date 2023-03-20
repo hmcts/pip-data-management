@@ -32,9 +32,9 @@
 
 
 ## Overview
-`pip-data-management` is a microservice that deals with most operations relating to data persistence within the Court and Tribunals Hearing Service (CaTH hereafter) written with Spring Boot/Java.
+`pip-data-management` is a microservice that deals with most operations relating to data persistence within the Court and Tribunal Hearings Service (CaTH hereafter) written with Spring Boot/Java.
 
-In practice, the service is usually included within a hosted kubernetes environment within Azure.
+In practice, the service is usually containerized within a hosted kubernetes environment within Azure.
 
 Broadly speaking, this service has two main components relating to the persistence, validation, retrieval and manipulation of court publications and canonical location information (reference data).
 
@@ -86,6 +86,8 @@ The above diagram is somewhat simplified for readability (e.g. it does not inclu
 
 ##### Nice-to-haves
 
+- [pip-dev-env](https://github.com/hmcts/pip-dev-env) - This repo provides a development environment wherein ensure all microservices, as well as external services (e.g. postgres & redis) are all running in tandem within the service. It eases the development process and is particularly helpful when working with cross-service communication, as it also reduces strain on local performance from having many separate IDE windows open.
+- PostgreSQL - for local development, it will help to install Postgres. Ensure your postgres instance matches the relevant [environment variables](#environment-variables). Most devs on the project are just using this within a docker container.
 - Some means of interfacing with the postgres database either locally or remotely. Good options include [DataGrip](https://www.jetbrains.com/datagrip/), [pgAdmin](https://www.pgadmin.org/) or [psql](https://www.postgresql.org/docs/9.1/app-psql.html). This will allow you to verify the impacts of your requests on the underlying database.
 
 ### Installation
@@ -244,6 +246,8 @@ If you wish to test a flyway script locally, you will first need to clear the `f
 We utilise [Azure Application Insights](https://learn.microsoft.com/en-us/azure/azure-monitor/app/app-insights-overview) to store our logs. Ask a teammate for the specific resource in Azure to access these.
 Locally, we use [Log4j](https://logging.apache.org/log4j/2.x/).
 
+In addition, this service is also monitored in production and staging environments by [Dynatrace](https://www.dynatrace.com/). The URL for viewing our specific Dynatrace instance can be had by asking a team member.
+
 ## Security & Quality Considerations
 We use a few automated tools to ensure quality and security within the service. A few examples can be found below:
 
@@ -259,7 +263,7 @@ This microservice is comprehensively tested using both unit and functional tests
 
 ### Unit tests
 
-Unit tests can be run on demand using `.gradlew test`.
+Unit tests can be run on demand using `./gradlew test`.
 
 ### Functional tests
 
