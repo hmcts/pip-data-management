@@ -27,11 +27,8 @@
               "party": [{
                 "partyRole": "CLAIMANT_PETITIONER",
                 "OrganisationDetails": {
-                  "OrganisationName": "Fathers for Justice"
+                  "OrganisationName": "Test Organisation"
                 }
-
-
-
               },
                 {
                   "partyRole": "CLAIMANT_PETITIONER_REPRESENTATIVE",
@@ -77,9 +74,9 @@
       }],
       "courtHouseAddress": {
         "town": "Leicester",
-        "postCode": "L5 4UU",
+        "postCode": "SW1H 9AJ",
         "line": [
-          "5-7 Hill Street"
+          "5 Test Street"
         ],
         "county": ""
       }
@@ -93,7 +90,7 @@
           "venueTelephone": "+44 1234 1234 1234"
         },
         "courtRoom": [{
-          "courtRoomName": "Dynatrace Suite 2",
+          "courtRoomName": "Suite 2",
           "session": [{
             "sittings": [{
               "sittingStart": "2022-02-13T09:30:32.123Z",
@@ -203,7 +200,7 @@
           ]
         },
           {
-            "courtRoomName": "Jenkins Room 3",
+            "courtRoomName": "Room 3",
             "session": [{
               "sittings": [{
                 "sittingStart": "2022-02-13T09:30:32.123Z",
@@ -317,9 +314,9 @@
         ],
         "courtHouseAddress": {
           "town": "Nottingham",
-          "postCode": "NG1 2FP",
+          "postCode": "SW1H 9AJ",
           "line": [
-            "1 Crown Road"
+            "Test Line 1"
           ],
           "county": ""
         }
