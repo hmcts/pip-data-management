@@ -1,5 +1,5 @@
 # pip-data-management
-![alt-text](https://hmctsjobs.co.uk/wp-content/themes/HMCTS/dist/images/HM-CTS-logo.png)
+![alt-text](./hmctsLogo.png)
 
 
 
@@ -55,10 +55,10 @@ Most interactions with `pip-data-management` are performed through the API (spec
 ## Features and Functionality
 
 - Uploading/retrieval/deletion of publications into the service
-- Interfacing with local or hosted Postgres instances for metadata and retrieval and Azure Blob Storage for raw files. 
+- Interfacing with local or hosted Postgres instances for metadata and retrieval and Azure Blob Storage for raw files.
 - Parsing and validation of ingested json files.
 - Flyway for database modifications via SQL ingestion.
-- Secure/Insecure Mode: Use of bearer tokens for authentication with the secure instance (if desired) 
+- Secure/Insecure Mode: Use of bearer tokens for authentication with the secure instance (if desired)
 - Azure Blob Storage: Handles interactions with the CaTH Azure Blob Storage instance (or local Azurite emulator/Azure Storage Explorer instances)
 - Scheduled cronjobs for daily tasks (e.g. retention period checks for archival purposes)
 - OpenAPI Spec/Swagger-UI: Documents and allows users or developers to access API resources within the browser.
@@ -114,7 +114,7 @@ Python scripts to quickly grab all environment variables (subject to Azure permi
 
 Below is a table of currently used environment variables for starting the service, along with a descriptor of their purpose and whether they are optional or required.
 
-|Variable|Description|Required?| 
+|Variable|Description|Required?|
 |:----------|:-------------|------|
 |SPRING_PROFILES_ACTIVE|If set equal to `dev`, the application will run in insecure mode (i.e. no bearer token authentication required for incoming requests.) *Note - if you wish to communicate with other services, you will need to set them all to run in insecure mode in the same way.*|No|
 |APP_URI|Uniform Resource Identifier - the location where the application expects to receive bearer tokens after a successful authentication process. The application then validates received bearer tokens using the AUD parameter in the token|No|
@@ -212,7 +212,7 @@ Hearing locations are ingested into the system using the reference data endpoint
 ```
 curl --request GET \                                                                                                    13:40:44
           --url http://localhost:8090/locations \
-          --header 'Authorization: Bearer {BEARER_TOKEN_HERE}' 
+          --header 'Authorization: Bearer {BEARER_TOKEN_HERE}'
 ```
 
 ### Getting a specific hearing location
@@ -220,7 +220,7 @@ The following request returns location metadata for an individual court.
 ```
 curl --request GET \                                                                                                    13:40:44
           --url http://localhost:8090/locations/{LOCATION_ID_OF_DESIRED_LOCATION} \
-          --header 'Authorization: Bearer {BEARER_TOKEN_HERE}' 
+          --header 'Authorization: Bearer {BEARER_TOKEN_HERE}'
 ```
 
 
@@ -251,9 +251,9 @@ Locally, we use [Log4j](https://logging.apache.org/log4j/2.x/)
 
 ## Security & Quality Considerations
 We use a few automated tools to ensure quality and security within the service. A few examples can be found below:
- 
+
  - SonarCloud - provides automated code analysis, finding vulnerabilities, bugs and code smells. Quality gates ensure that test coverage, code style and security are maintained where possible.
- - DependencyCheckAggregate - Ensures that dependencies are kept up to date and that those with known security vulnerabilities (based on the [National Vulnerability Database(NVD)](https://nvd.nist.gov/)) are flagged to developers for mitigation or suppression. 
+ - DependencyCheckAggregate - Ensures that dependencies are kept up to date and that those with known security vulnerabilities (based on the [National Vulnerability Database(NVD)](https://nvd.nist.gov/)) are flagged to developers for mitigation or suppression.
  - JaCoCo Test Coverage - Produces code coverage metrics which allows developers to determine which lines of code are covered (or not) by unit testing. This also makes up one of SonarCloud's quality gates.
  - PMD - Static code analysis tool providing code quality guidance and identifying potential issues relating to coding standards, performance or security.
  - CheckStyle - Enforces coding standards and conventions such as formatting, naming conventions and structure.
