@@ -1,304 +1,281 @@
-# Publication and Information - Data Management
-
-[![Build Status](https://travis-ci.org/hmcts/spring-boot-template.svg?branch=master)](https://travis-ci.org/hmcts/spring-boot-template)
-
-## Purpose
-
-The purpose of this service is to provide the ability to manage data based on data governance, retention and
-security policies. Including providing Usage Data & MI to SDP
-
-## What's inside
-
-The template is a working application with a minimal setup. It contains:
- * common plugins and libraries
- * docker setup
- * swagger configuration for api documentation ([see how to publish your api documentation to shared repository](https://github.com/hmcts/reform-api-docs#publish-swagger-docs))
- * code quality tools already set up.
- * Hystrix circuit breaker enabled.
- * MIT license and contribution information.
- * Helm chart using chart-java.
-
-The application exposes health endpoint (http://localhost:8090/health) and metrics endpoint
-(http://localhost:8090/metrics).
-
-## Plugins
-
-The template contains the following plugins:
-
-  * checkstyle
-
-    https://docs.gradle.org/current/userguide/checkstyle_plugin.html
-
-    Performs code style checks on Java source files using Checkstyle and generates reports from these checks.
-    The checks are included in gradle's *check* task (you can run them by executing `./gradlew check` command).
-
-  * pmd
-
-    https://docs.gradle.org/current/userguide/pmd_plugin.html
-
-    Performs static code analysis to finds common programming flaws. Included in gradle `check` task.
+# pip-data-management
+![alt-text](https://hmctsjobs.co.uk/wp-content/themes/HMCTS/dist/images/HM-CTS-logo.png)
 
 
-  * jacoco
 
-    https://docs.gradle.org/current/userguide/jacoco_plugin.html
+## Table of Contents
 
-    Provides code coverage metrics for Java code via integration with JaCoCo.
-    You can create the report by running the following command:
-
-    ```bash
-      ./gradlew jacocoTestReport
-    ```
-
-    The report will be created in build/reports subdirectory in your project directory.
-
-  * io.spring.dependency-management
-
-    https://github.com/spring-gradle-plugins/dependency-management-plugin
-
-    Provides Maven-like dependency management. Allows you to declare dependency management
-    using `dependency 'groupId:artifactId:version'`
-    or `dependency group:'group', name:'name', version:version'`.
-
-  * org.springframework.boot
-
-    http://projects.spring.io/spring-boot/
-
-    Reduces the amount of work needed to create a Spring application
-
-  * org.owasp.dependencycheck
-
-    https://jeremylong.github.io/DependencyCheck/dependency-check-gradle/index.html
-
-    Provides monitoring of the project's dependent libraries and creating a report
-    of known vulnerable components that are included in the build. To run it
-    execute `gradle dependencyCheck` command.
-
-  * com.github.ben-manes.versions
-
-    https://github.com/ben-manes/gradle-versions-plugin
-
-    Provides a task to determine which dependencies have updates. Usage:
-
-    ```bash
-      ./gradlew dependencyUpdates -Drevision=release
-    ```
+- [Overview](#overview)
+- [Features and Functionality](#features-and-functionality)
+- [Architecture Diagram](#architecture-diagram)
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+  - [Configuration](#configuration)
+    - [Environment variables](#environment-variables)
+      - [Getting all environment variables with python]()
+      - [Runtime secrets](#runtime-vars)
+      - [Test secrets](#test-vars)
+- [API Documentation](#api-documentation)
+- [Examples](#examples)
+  - [Uploading a new publication](#uploading-a-new-publication)
+  - [Getting a list of all hearing locations](#getting-a-list-of-all-hearing-locations)
+  - [Getting a specific hearing location](#getting-a-specific-hearing-location)
+- [Deployment](#deployment)
+- [Monitoring and Logging](#monitoring-and-logging)
+- [Security Considerations](#security-considerations)
+- [Troubleshooting](#troubleshooting)
+- [Test Suite](#test-suite)
+- [Contributing](#contributing)
+- [Changelog](#changelog)
+- [License](#license)
+- [Acknowledgments](#acknowledgments)
 
 
-## Notes
+## Overview
+`pip-data-management` is a microservice that deals with most operations relating to data persistence within the Court and Tribunals Hearing Service (CaTH hereafter) written with Spring Boot/Java.
 
-Since Spring Boot 2.1 bean overriding is disabled. If you want to enable it you will need to set `spring.main.allow-bean-definition-overriding` to `true`.
+In practice, the service is usually included within a hosted kubernetes environment within Azure.
 
-JUnit 5 is now enabled by default in the project. Please refrain from using JUnit4 and use the next generation
+Broadly speaking, this service has two main components relating to the persistence, validation, retrieval and manipulation of court publications and canonical location information (reference data).
 
-## Integration Testing
+##### Publications
+- Uploading publications to the service
+- Validation of publications before publication (JSON)
+- Retrieval of existing publications and metadata
+- Archival processes to handle mandated data retention periods
 
-To run integration tests (After PUB-1000 is merged), [Docker](https://www.docker.com) is now required to run integration tests.
-This is due to the use of [TestContainers](https://www.testcontainers.org) to stand up a local Postgres instance for testing.
-Previously we used H2 for this purpose, which did not require docker.
-You do not have to install any particular containers manually, as testcontainers will do all the necessary work for you, as long as docker is running.
+##### Locations
+- Retrieving individual locations or lists of locations
+- Uploading and validation of location reference data
+- Deletion of locations where appropriate.
 
-## Building and deploying the application
+Most interactions with `pip-data-management` are performed through the API (specified in [API Documentation](#api-documentation)) either as a standalone service or via connections to other microservices.
 
-### Building the application
+## Features and Functionality
 
-The project uses [Gradle](https://gradle.org) as a build tool. It already contains
-`./gradlew` wrapper script, so there's no need to install gradle.
+- Uploading/retrieval/deletion of publications into the service
+- Interfacing with local or hosted Postgres instances for metadata and retrieval and Azure Blob Storage for raw files. 
+- Parsing and validation of ingested json files.
+- Flyway for database modifications via SQL ingestion.
+- Secure/Insecure Mode: Use of bearer tokens for authentication with the secure instance (if desired) 
+- Azure Blob Storage: Handles interactions with the CaTH Azure Blob Storage instance (or local Azurite emulator/Azure Storage Explorer instances)
+- Scheduled cronjobs for daily tasks (e.g. retention period checks for archival purposes)
+- OpenAPI Spec/Swagger-UI: Documents and allows users or developers to access API resources within the browser.
+- Integration tests using TestContainers for dummy database operations.
 
-To build the project execute the following command:
+## Architecture Diagram
 
-```bash
-  ./gradlew build
+![Architecture Diagram for pip-data-management](./data-man-arch.png)
+
+The above diagram is somewhat simplified for readability (e.g. it does not include secure/insecure communications, but those are covered elsewhere).
+
+## Getting Started
+
+### Prerequisites
+
+##### General
+
+- [Java JDK 17](https://openjdk.org/projects/jdk/17/) - this is used throughout all of our services.
+- REST client of some description (e.g. [Curl](https://github.com/curl/curl), [Insomnia](https://insomnia.rest/), [Postman](https://www.postman.com/)). Swagger-UI can also be used to send requests.
+- Docker - used to run integration tests due to our use of [TestContainers](https://www.testcontainers.org/)
+
+##### Local development
+
+- [Azurite](https://learn.microsoft.com/en-us/azure/storage/common/storage-use-azurite) - Local Azure emulator used along with Azure Storage explorer for local storage.
+- [Azure Storage Explorer](https://azure.microsoft.com/en-us/products/storage/storage-explorer) - Used for viewing and storing blobs within an Azurite instance locally.
+
+##### Nice-to-haves
+
+- Some means of interfacing with the postgres database either locally or remotely. Good options include [DataGrip](https://www.jetbrains.com/datagrip/), [pgAdmin](https://www.pgadmin.org/) or [psql](https://www.postgresql.org/docs/9.1/app-psql.html). This will allow you to verify the impacts of your requests on the underlying database.
+
+### Installation
+
+- Clone the repository
+- Ensure all required [environment variables](#environment-variables) have been set.
+- Build using the command `./gradlew clean build`
+- Start the service using the command `./gradlew bootrun` in the newly created directory.
+
+### Configuration
+
+#### Environment Variables
+
+Environment variables are used by the service to control its behaviour in various ways.
+
+
+These variables can be found within various separate CaTH Azure keyvaults. You may need to obtain access to this via a support ticket.
+- Runtime secrets are stored in `pip-ss-{env}-kv` (where {env} is the environment where the given instance is running (e.g. production, staging, test, sandbox)).
+- Test secrets are stored in `pip-bootstrap-{env}-kv` with the same convention.
+
+##### Get environment variables with python scripts
+Python scripts to quickly grab all environment variables (subject to Azure permissions) are available for both [runtime](https://github.com/hmcts/pip-dev-env/blob/master/get_envs.py) and [test](https://github.com/hmcts/pip-secret-grabber/blob/master/main.py) secrets.
+
+##### Runtime secrets
+
+Below is a table of currently used environment variables for starting the service, along with a descriptor of their purpose and whether they are optional or required.
+
+|Variable|Description|Required?| 
+|:----------|:-------------|------|
+|SPRING_PROFILES_ACTIVE|If set equal to `dev`, the application will run in insecure mode (i.e. no bearer token authentication required for incoming requests.) *Note - if you wish to communicate with other services, you will need to set them all to run in insecure mode in the same way.*|No|
+|APP_URI|Uniform Resource Identifier - the location where the application expects to receive bearer tokens after a successful authentication process. The application then validates received bearer tokens using the AUD parameter in the token|No|
+|CLIENT_ID|Unique ID for the application within Azure AD. Used to identify the application during authentication.|No|
+|TENANT_ID|Directory unique ID assigned to our Azure AD tenant. Represents the organisation that owns and manages the Azure AD instance.|No|
+|CLIENT_SECRET|Secret key for authentication requests to the service.|No|
+|CONNECTION_STRING|Connection string for connecting to the Azure Blob Storage service. If connecting locally via Azurite, this can be found [here]()|Yes|
+|DB_HOST|Postgres Hostname|Yes|
+|DB_PORT|Postgres Port|Yes|
+|DB_NAME|Postgres Db name|Yes|
+|DB_USER|Postgres Username|Yes|
+|DB_PASS|Postgres Password|Yes|
+|ACCOUNT_MANAGEMENT_URL|URL used for connecting to the pip-account-management service. Defaults to staging if not provided.|No|
+|CHANNEL_MANAGEMENT_URL|URL used for connecting to the pip-channel-management service. Defaults to staging if not provided.|No|
+|PUBLICATION_SERVICES_URL|URL used for connecting to the pip-publication-services service. Defaults to staging if not provided.|No|
+|SUBSCRIPTION_MANAGEMENT_URL|URL used for connecting to the pip-subscription-management service. Defaults to staging if not provided.|No|
+|CHANNEL_MANAGEMENT_AZ_API|Used as part of the `scope` parameter when requesting a token from Azure. Used for service-to-service communication with the pip-channel-management service|No|
+|SUBSCRIPTION_MANAGEMENT_AZ_API|Used as part of the `scope` parameter when requesting a token from Azure. Used for service-to-service communication with the pip-subscription-management service|No|
+|PUBLICATION_SERVICES_AZ_API|Used as part of the `scope` parameter when requesting a token from Azure. Used for service-to-service communication with the pip-publication-services service|No|
+|ACCOUNT_MANAGEMENT_AZ_API|Used as part of the `scope` parameter when requesting a token from Azure. Used for service-to-service communication with the account management service|No|
+
+
+##### Additional Test secrets
+
+Secrets required for getting tests to run correctly can be found in the below table:
+
+|Variable|Description|
+|:-------|:----------------|
+|CLIENT_ID|As above|
+|CLIENT_SECRET|As above|
+|APP_URI|As above|
+|SUBSCRIPTION_MANAGEMENT_AZ_API|As above|
+|TENANT_ID|As above|
+|ACCOUNT_MANAGEMENT_AZ_API|As above|
+|PUBLICATION_SERVICES_AZ_API|As above|
+|SYSTEM_ADMIN_PROVENANCE_ID|Value for the provenance of a system admin used as a header on authentication-bound tests.|
+|TEST_USER_ID|User ID for a test account used as a header for most publication tests.|
+
+#### Application.yaml files
+The service can also be adapted using the yaml files found in the following locations:
+- `src/main/resources/application.yaml` for changes to the behaviour of the service itself.
+- `src/main/resources/application-dev.yaml` for changes to the behaviour of the service when running locally.
+- `src/functionalTest/resources/application-functional.yaml` for changes to the application when it's running functional tests.
+- `src/functionalTest/resources/application-view.yaml` for changes to postgres view tests.
+- `src/test/resources/application-test.yaml` for changes to other test types (e.g. unit tests).
+
+## API Documentation
+Our full API specification can be found within our Swagger-UI page.
+It can be accessed locally by starting the service and going to [http://localhost:8090/swagger-ui/swagger-ui/index.html](http://localhost:8090/swagger-ui/swagger-ui/index.html)
+Alternatively, if you're on our VPN, you can access the swagger endpoint at our staging URL (ask a teammate to give you this).
+
+## Examples
+As mentioned, the full api documentation can be found within swagger-ui, but some of the most common operations are highlighted below.
+
+Most of the communication with this service benefits from using secure authentication. While possible to stand up locally in insecure mode, to simulate a production environment it is better to use secure mode.
+Before sending in any requests to the service, you'll need to obtain a bearer token using the following approach:
+
+### Requesting a bearer token
+To request a bearer token, sending a post request following this template:
+```
+curl --request POST \
+  --url https://login.microsoftonline.com/{TENANT_ID}/oauth2/v2.0/token \
+  --header 'Content-Type: multipart/form-data' \
+  --form client_id={CLIENT_ID_FOR_ANOTHER_SERVICE} \
+  --form scope={APP_URI}/.default \
+  --form client_secret={CLIENT_SECRET_FOR_ANOTHER_SERVICE}\
+  --form grant_type=client_credentials
+```
+You can copy the above curl command into either Postman or Insomnia and they will automatically be converted to the relevant formats for those programs.
+
+*Note - the `_FOR_ANOTHER_SERVICE` variables need to be extracted from another registered microservice within the broader CaTH umbrella (e.g. [pip-subscription-management](https://github.com/hmcts/pip-subscription-management))*
+
+### Uploading a new publication
+The following request is a template which can be used to input a new list or publication at the `/publication` post endpoint.
+```
+curl --request POST \
+  --url http://localhost:8090/publication \
+  --header 'Authorization: Bearer {BEARER_TOKEN_HERE}' \
+  --header 'Content-Type: application/json' \
+  --header 'x-content-date: {DATE_IN_ISO_FORMAT_WITH_NO_OFFSET}' \
+  --header 'x-court-id: {LOCATION_ID_OF_DESIRED_LOCATION}' \
+  --header 'x-display-from: {DATE_IN_ISO_FORMAT_WITH_NO_OFFSET}' \
+  --header 'x-display-to: {DATE_IN_ISO_FORMAT_WITH_NO_OFFSET}' \
+  --header 'x-language: {ENGLISH or WELSH or BI_LINGUAL}' \
+  --header 'x-list-type: {LIST_TYPE}' \
+  --header 'x-provenance: {MANUAL_UPLOAD}' \
+  --header 'x-source-artefact-id: {FILENAME_IF_PROVENANCE_IS_MANUAL_UPLOAD}' \
+  --header 'x-type: {"LIST" or "GENERAL_PUBLICATION"}' \
+  --data '{YOUR_JSON_HERE}'
 ```
 
-### Environment Variables
-
-The following environment variables are required to run the application
-
-Name | Value
---- | ---
-CONNECTION_STRING | This is used to communicate with Azure
-DB_USER | The username to connect to the postgres DB
-DB_PASS | The password to connect to the postgres DB
-DB_PORT | The port to connect to the postgres DB
-DB_NAME | (Azure Only) The name of the postgres DB to connect to
-SPRING_PROFILES_ACTIVE | Set this to 'dev' in dev mode. This will automatically connect to the local docker image
-
-### Running the application
-
-Create the image of the application by executing the following command:
-
-```bash
-  ./gradlew assemble
+### Getting a list of all hearing locations
+The following request returns a list of all hearing locations with metadata such as region, location-type, jurisdiction, welsh names etc.
+Hearing locations are ingested into the system using the reference data endpoint.
+```
+curl --request GET \                                                                                                    13:40:44
+          --url http://localhost:8090/locations \
+          --header 'Authorization: Bearer {BEARER_TOKEN_HERE}' 
 ```
 
-Create docker image:
-
-```bash
-  docker-compose build
+### Getting a specific hearing location
+The following request returns location metadata for an individual court.
+```
+curl --request GET \                                                                                                    13:40:44
+          --url http://localhost:8090/locations/{LOCATION_ID_OF_DESIRED_LOCATION} \
+          --header 'Authorization: Bearer {BEARER_TOKEN_HERE}' 
 ```
 
-Run the distribution (created in `build/install/spring-boot-template` directory)
-by executing the following command:
 
-```bash
-  docker-compose up
-```
 
-This will start the API container exposing the application's port
-(set to `8090` in this template app).
+## Deployment
+We use [Jenkins](https://www.jenkins.io/) as our CI/CD system. The deployment of this can be controlled within our application logic using the various `Jenkinsfile`-prepended files within the root directory of the repository.
 
-In order to test if the application is up, you can call its health endpoint:
+Our builds run against our `dev` environment during the Jenkins build process. As this is a microservice, the build process involves standing up the service in a docker container in a Kubernetes cluster with the current staging master copies of the other interconnected microservices.
 
-```bash
-  curl http://localhost:8090/health
-```
+If your debugging leads you to conclude that you need to implement a pipeline fix, this can be done in the [CNP Jenkins repo](https://github.com/hmcts/cnp-jenkins-library)
 
-You should get a response similar to this:
+## Creating or debugging of SQL scripts with Flyway
+Flyway is used to apply incremental schema changes (migrations) to our database.
 
-```
-  {"status":"UP","diskSpace":{"status":"UP","total":249644974080,"free":137188298752,"threshold":10485760}}
-```
+### Pipeline
+Flyway is enabled on the pipeline, but is run at startup then switched off.
 
-### Alternative script to run application
+### Local
+For local development, flyway is turned off by default. This is due to all tables existing within a single database locally. This can cause flyway to fail at startup due to mismatching scripts.
 
-To skip all the setting up and building, just execute the following command:
+If you wish to test a flyway script locally, you will first need to clear the `flyway_schema_history` table then set the environment variable `ENABLE_FLYWAY` to true.
 
-```bash
-./bin/run-in-docker.sh
-```
+## Monitoring and Logging
+We utilise [Azure Application Insights](https://learn.microsoft.com/en-us/azure/azure-monitor/app/app-insights-overview) to store our logs. Ask a teammate for the specific resource in Azure to access these.
+Locally, we use [Log4j](https://logging.apache.org/log4j/2.x/)
 
-For more information:
+[Describe the monitoring, logging, and error reporting tools integrated with the microservice, and how to access logs and metrics]
 
-```bash
-./bin/run-in-docker.sh -h
-```
+## Security & Quality Considerations
+We use a few automated tools to ensure quality and security within the service. A few examples can be found below:
+ 
+ - SonarCloud - provides automated code analysis, finding vulnerabilities, bugs and code smells. Quality gates ensure that test coverage, code style and security are maintained where possible.
+ - DependencyCheckAggregate - Ensures that dependencies are kept up to date and that those with known security vulnerabilities (based on the [National Vulnerability Database(NVD)](https://nvd.nist.gov/)) are flagged to developers for mitigation or suppression. 
+ - JaCoCo Test Coverage - Produces code coverage metrics which allows developers to determine which lines of code are covered (or not) by unit testing. This also makes up one of SonarCloud's quality gates.
+ - PMD - Static code analysis tool providing code quality guidance and identifying potential issues relating to coding standards, performance or security.
+ - CheckStyle - Enforces coding standards and conventions such as formatting, naming conventions and structure.
 
-Script includes bare minimum environment variables necessary to start api instance. Whenever any variable is changed or any other script regarding docker image/container build, the suggested way to ensure all is cleaned up properly is by this command:
+## Test Suite
 
-```bash
-docker-compose rm
-```
+This microservice is comprehensively tested using both unit and functional tests.
 
-It clears stopped containers correctly. Might consider removing clutter of images too, especially the ones fiddled with:
+### Unit tests
 
-```bash
-docker images
+Unit tests can be run on demand using `.gradlew test`.
 
-docker image rm <image-id>
-```
+### Functional tests
 
-There is no need to remove postgres and java or similar core images.
+Functional tests can be run using `./gradlew functional`
 
-## Hystrix
+For our functional tests, we are using Square's [MockWebServer](https://github.com/square/okhttp/tree/master/mockwebserver) library. This allows us to test the full HTTP stack for our service-to-service interactions.
+We also use TestContainers to create throwaway postgres databases for testing to protect our prod and staging databases.
 
-[Hystrix](https://github.com/Netflix/Hystrix/wiki) is a library that helps you control the interactions
-between your application and other services by adding latency tolerance and fault tolerance logic. It does this
-by isolating points of access between the services, stopping cascading failures across them,
-and providing fallback options. We recommend you to use Hystrix in your application if it calls any services.
+## Contributing
+We are happy to accept third-party contributions. See `.github/CONTRIBUTING.md` for more details.
 
-### Hystrix circuit breaker
-
-This template API has [Hystrix Circuit Breaker](https://github.com/Netflix/Hystrix/wiki/How-it-Works#circuit-breaker)
-already enabled. It monitors and manages all the`@HystrixCommand` or `HystrixObservableCommand` annotated methods
-inside `@Component` or `@Service` annotated classes.
-
-### Other
-
-Hystrix offers much more than Circuit Breaker pattern implementation or command monitoring.
-Here are some other functionalities it provides:
- * [Separate, per-dependency thread pools](https://github.com/Netflix/Hystrix/wiki/How-it-Works#isolation)
- * [Semaphores](https://github.com/Netflix/Hystrix/wiki/How-it-Works#semaphores), which you can use to limit
- the number of concurrent calls to any given dependency
- * [Request caching](https://github.com/Netflix/Hystrix/wiki/How-it-Works#request-caching), allowing
- different code paths to execute Hystrix Commands without worrying about duplicating work
 
 ## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-# API
-Numerous apis are set up to handle the data passing through P&I and will be built upon as the project progresses.
-
- - [Retrieving Courts and Hearings (Deprecating)](#retrieving-locations-and-hearings)
- - [Retrieving and uploading artefacts](#uploading-and-retrieving-artefacts)
-
-## Retrieving Locations and Hearings
-Api set up under the url `{root-url}/locations` to retrieve locations with their assosiated hearings, or `{root-url}
-/hearings`. The /locations and /hearings API's are on their way to deprecation to be replaced by [publications](#uploading-and-retrieving-artefacts)
-to get purely hearings
-
- - /locations - Will return an array of all locations
- - /locations/{locationId} - Will search locations for matching location Id and return full object
- - /locations/find/{locationName} - will search all locations for a matching location with that name and return its
-   full location
-   object
- - /locations/filter - Takes in a body of an array of `filters` and `values` to search the location list for and return
-   matching locations that satisfy all params provided, can return empty list if none match
-
-example filter request:
-```
-{
-  "filters": ["region", "jurisdiction"],
-  "values": ["london", "manchester", "crown location"]
-}
-```
-
-- /hearings/{courtId} - returns all hearings for particular location id
-- /hearings/case-name/{caseName} returns all matched and partial match hearings
-- /hearings/case-number/{caseNumber} returns single hearing for matched case number
-- /hearings/urn/{urnNumber} returns single hearing for matched urn number
-NOTE: searching or filtering is not case-sensitive but requires exact match otherwise.
-
-## Uploading and retrieving artefacts
-Artefacts are created by uploading blobs of raw data or flat files
-These are defined by the [schemas](src/main/resources/schemas).
-
-- POST `/publication` used to upload a blob and create an artefact in the P&I database, must include series of
-  headers defined in the [upload headers section](#upload-headers). NOTE: providing the content type as json and
-  including raw json in the body will upload blob as raw data to be processed by P&I, providing the content type as
-  multipart form data and uploading a file as the body will upload a flat file to the artefact where no P&I
-  processing will be done on the contents of the file.
-
-- GET `/publication/locationId/{courtId}` used to get a series of publications matching the courtId.
-- GET `publication/search/{searchTerm}/{searchValue}` used to get a series of publications matching a given case.
-  search value, e.g. (CASE_URN/CASE_ID/CASE_NAME)
-- GET `/publication/{artefactId}` used to get the metadata for the artefact.
-- GET `/publication/{artefactId}/payload` used to get the payload for the artefact.
-- GET `/publication/{artefactId}/file` used to get payload file for the artefact.
-- GET `/publication/location-type/{listType}` used to get the location type from a list type.
-- DELETE  `/publication/{artefactId}` used to delete an artefact and its payload from P&I.
-
-## Headers
-
-### Upload headers
-headers for uploading an artefact:
-```json
-{
-  "x-provenance":  "String of the provenance the upload is coming from",
-  "x-source-artefact-id": "String of the artefact id as labelled in the source system",
-  "x-type":  "ENUM of the type of artefact",
-  "x-sensitivity": "ENUM of the sensitvity of the artefact",
-  "x-language":  "ENUM of the language the data is in",
-  "x-display-from": "Local date of when the list can be displayed from",
-  "x-display-to":  "Local date of when the list should be displayed to",
-  "x-list-type": "ENUM of the different list types available",
-  "x-location-id":  "String of the location id the list is linked to",
-  "x-content-date": "Local date of when the earliest case in the list refers to"
-}
-```
-
-## Flyway
-
-Flyway is integrated with Data Management.
-
-- On the pipeline flyway is enabled but run on start up switched off
-- Locally, flyway is disabled. This is due to all tables existing in a single database locally which causes flyway to fail startup due to mismatching scripts
-
-If you want to test the scripts locally, you will first need to clear the "flyway_schema_history' table, and then set the 'ENABLE_FLYWAY' environment variable to 'true'.
-
-## Materialised View
-
-There is a materialised view created for the Artefact and location table, which contains a subset of the fields.
-
-This view is implemented via Flyway.
+The entirety of our code falls within the MIT License. For more details, see the `LICENSE` file within the root directory of this repository.
