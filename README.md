@@ -1,6 +1,8 @@
 # pip-data-management
 ![alt-text](./hmctsLogo.png)
-
+![LINE](http://line.coverage.link)
+![BRANCH](http://branch.coverage.link)
+![COMPLEXITY](http://complexity.link)
 
 
 ## Table of Contents
@@ -223,8 +225,6 @@ curl --request GET \                                                            
           --header 'Authorization: Bearer {BEARER_TOKEN_HERE}'
 ```
 
-
-
 ## Deployment
 We use [Jenkins](https://www.jenkins.io/) as our CI/CD system. The deployment of this can be controlled within our application logic using the various `Jenkinsfile`-prepended files within the root directory of the repository.
 
@@ -246,8 +246,6 @@ If you wish to test a flyway script locally, you will first need to clear the `f
 ## Monitoring and Logging
 We utilise [Azure Application Insights](https://learn.microsoft.com/en-us/azure/azure-monitor/app/app-insights-overview) to store our logs. Ask a teammate for the specific resource in Azure to access these.
 Locally, we use [Log4j](https://logging.apache.org/log4j/2.x/)
-
-[Describe the monitoring, logging, and error reporting tools integrated with the microservice, and how to access logs and metrics]
 
 ## Security & Quality Considerations
 We use a few automated tools to ensure quality and security within the service. A few examples can be found below:
@@ -274,8 +272,7 @@ For our functional tests, we are using Square's [MockWebServer](https://github.c
 We also use TestContainers to create throwaway postgres databases for testing to protect our prod and staging databases.
 
 ## Contributing
-We are happy to accept third-party contributions. See `.github/CONTRIBUTING.md` for more details.
-
+We are happy to accept third-party contributions. See [.github/CONTRIBUTING.md](./.github/CONTRIBUTING.md) for more details.
 
 ## License
-The entirety of our code falls within the MIT License. For more details, see the `LICENSE` file within the root directory of this repository.
+The entirety of our code falls within the MIT License. For more details, see the [LICENSE](./LICENSE) file within the root directory of this repository.
