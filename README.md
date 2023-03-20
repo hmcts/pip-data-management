@@ -1,8 +1,5 @@
 # pip-data-management
 ![alt-text](./hmctsLogo.png)
-![LINE](http://line.coverage.link)
-![BRANCH](http://branch.coverage.link)
-![COMPLEXITY](http://complexity.link)
 
 
 ## Table of Contents
@@ -245,7 +242,7 @@ If you wish to test a flyway script locally, you will first need to clear the `f
 
 ## Monitoring and Logging
 We utilise [Azure Application Insights](https://learn.microsoft.com/en-us/azure/azure-monitor/app/app-insights-overview) to store our logs. Ask a teammate for the specific resource in Azure to access these.
-Locally, we use [Log4j](https://logging.apache.org/log4j/2.x/)
+Locally, we use [Log4j](https://logging.apache.org/log4j/2.x/).
 
 ## Security & Quality Considerations
 We use a few automated tools to ensure quality and security within the service. A few examples can be found below:
