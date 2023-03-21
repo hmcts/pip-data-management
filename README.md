@@ -59,7 +59,7 @@ Most interactions with `pip-data-management` are performed through the API (spec
 - Flyway for database modifications via SQL ingestion.
 - Secure/Insecure Mode: Use of bearer tokens for authentication with the secure instance (if desired)
 - Azure Blob Storage: Handles interactions with the CaTH Azure Blob Storage instance (or local Azurite emulator/Azure Storage Explorer instances)
-- Scheduled cronjobs for daily tasks (e.g. retention period checks for archival purposes)
+- Endpoints which interact with scheduled cronjobs for daily tasks (e.g. retention period checks for archival purposes within `pip-cron-trigger`)
 - OpenAPI Spec/Swagger-UI: Documents and allows users or developers to access API resources within the browser.
 - Integration tests using TestContainers for dummy database operations.
 
@@ -276,4 +276,4 @@ We also use TestContainers to create throwaway postgres databases for testing to
 We are happy to accept third-party contributions. See [.github/CONTRIBUTING.md](./.github/CONTRIBUTING.md) for more details.
 
 ## License
-The entirety of our code falls within the MIT License. For more details, see the [LICENSE](./LICENSE) file within the root directory of this repository.
+This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.
