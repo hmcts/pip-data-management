@@ -2,6 +2,10 @@ package uk.gov.hmcts.reform.pip.data.management.models.publication;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import uk.gov.hmcts.reform.pip.model.publication.ArtefactType;
+import uk.gov.hmcts.reform.pip.model.publication.Language;
+import uk.gov.hmcts.reform.pip.model.publication.ListType;
+import uk.gov.hmcts.reform.pip.model.publication.Sensitivity;
 
 import java.time.LocalDateTime;
 import java.util.Map;

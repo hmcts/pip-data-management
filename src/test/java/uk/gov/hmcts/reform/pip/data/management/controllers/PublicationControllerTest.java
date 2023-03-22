@@ -15,13 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationArtefact;
-import uk.gov.hmcts.reform.pip.data.management.models.location.LocationType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
-import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.HeaderGroup;
-import uk.gov.hmcts.reform.pip.data.management.models.publication.Language;
-import uk.gov.hmcts.reform.pip.data.management.models.publication.ListType;
-import uk.gov.hmcts.reform.pip.data.management.models.publication.Sensitivity;
 import uk.gov.hmcts.reform.pip.data.management.service.PublicationService;
 import uk.gov.hmcts.reform.pip.data.management.service.ValidationService;
 import uk.gov.hmcts.reform.pip.data.management.service.artefact.ArtefactDeleteService;
@@ -29,6 +24,11 @@ import uk.gov.hmcts.reform.pip.data.management.service.artefact.ArtefactSearchSe
 import uk.gov.hmcts.reform.pip.data.management.service.artefact.ArtefactService;
 import uk.gov.hmcts.reform.pip.data.management.service.artefact.ArtefactTriggerService;
 import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
+import uk.gov.hmcts.reform.pip.model.location.LocationType;
+import uk.gov.hmcts.reform.pip.model.publication.ArtefactType;
+import uk.gov.hmcts.reform.pip.model.publication.Language;
+import uk.gov.hmcts.reform.pip.model.publication.ListType;
+import uk.gov.hmcts.reform.pip.model.publication.Sensitivity;
 
 import java.io.IOException;
 import java.time.LocalDateTime;

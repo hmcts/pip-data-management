@@ -17,14 +17,14 @@ import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.LocationRepository;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CsvParseException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.LocationNotFoundException;
-import uk.gov.hmcts.reform.pip.data.management.models.external.account.management.AzureAccount;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
-import uk.gov.hmcts.reform.pip.data.management.models.location.LocationCsv;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationDeletion;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationReference;
-import uk.gov.hmcts.reform.pip.data.management.models.location.LocationType;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
+import uk.gov.hmcts.reform.pip.model.account.AzureAccount;
 import uk.gov.hmcts.reform.pip.model.enums.UserActions;
+import uk.gov.hmcts.reform.pip.model.location.LocationCsv;
+import uk.gov.hmcts.reform.pip.model.location.LocationType;
 import uk.gov.hmcts.reform.pip.model.system.admin.ActionResult;
 import uk.gov.hmcts.reform.pip.model.system.admin.ChangeType;
 
@@ -42,8 +42,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static uk.gov.hmcts.reform.pip.data.management.models.request.Roles.SYSTEM_ADMIN;
 import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
+import static uk.gov.hmcts.reform.pip.model.account.Roles.SYSTEM_ADMIN;
 
 /**
  * Service to handle the retrieval and filtering of locations.
@@ -93,13 +93,10 @@ public class LocationService {
      * @throws LocationNotFoundException when no locations were found with the given location ID.
      */
     public Location getLocationById(Integer locationId) {
-        Optional<Location> foundLocation = locationRepository.getLocationByLocationId(locationId);
-
-        if (foundLocation.isEmpty()) {
-            throw new LocationNotFoundException(String.format("No location found with the id: %s", locationId));
-        } else {
-            return foundLocation.get();
-        }
+        return locationRepository.getLocationByLocationId(locationId)
+            .orElseThrow(() -> new LocationNotFoundException(
+                String.format("No location found with the id: %s", locationId)
+            ));
     }
 
     /**
@@ -110,18 +107,14 @@ public class LocationService {
      * @throws LocationNotFoundException when no location was found with the given search input.
      */
     public Location getLocationByName(String locationName, String language) {
-        Optional<Location> foundLocation;
-        if ("cy".equals(language)) {
-            foundLocation = locationRepository.getLocationByWelshName(locationName);
-        } else {
-            foundLocation = locationRepository.getLocationByName(locationName);
-        }
+        Optional<Location> foundLocation = "cy".equals(language)
+            ? locationRepository.getLocationByWelshName(locationName)
+            : locationRepository.getLocationByName(locationName);
 
-        if (foundLocation.isEmpty()) {
-            throw new LocationNotFoundException(String.format("No location found with the name: %s", locationName));
-        } else {
-            return foundLocation.get();
-        }
+        return foundLocation
+            .orElseThrow(() -> new LocationNotFoundException(
+                String.format("No location found with the name: %s", locationName))
+            );
     }
 
     /**
@@ -133,17 +126,12 @@ public class LocationService {
      */
     public List<Location> searchByRegionAndJurisdiction(List<String> regions, List<String> jurisdictions,
                                                         String language) {
-        if ("cy".equals(language)) {
-            return locationRepository.findByWelshRegionAndJurisdictionOrderByName(
-                regions == null ? "" : StringUtils.join(regions, ','),
-                jurisdictions == null ? "" : StringUtils.join(jurisdictions, ',')
-            );
-        } else {
-            return locationRepository.findByRegionAndJurisdictionOrderByName(
-                regions == null ? "" : StringUtils.join(regions, ','),
-                jurisdictions == null ? "" : StringUtils.join(jurisdictions, ',')
-            );
-        }
+        String region = regions == null ? "" : StringUtils.join(regions, ',');
+        String jurisdiction = jurisdictions == null ? "" : StringUtils.join(jurisdictions, ',');
+
+        return "cy".equals(language)
+            ? locationRepository.findByWelshRegionAndJurisdictionOrderByName(region, jurisdiction)
+            : locationRepository.findByRegionAndJurisdictionOrderByName(region, jurisdiction);
     }
 
     /**
@@ -234,23 +222,21 @@ public class LocationService {
     public LocationDeletion deleteLocation(Integer locationId, String provenanceUserId)
         throws JsonProcessingException {
         LocationDeletion locationDeletion;
-        Optional<Location> location = locationRepository.getLocationByLocationId(locationId);
+        Location location = locationRepository.getLocationByLocationId(locationId)
+            .orElseThrow(() -> new LocationNotFoundException(
+                String.format("No location found with the id: %s", locationId)
+            ));
 
-        if (location.isPresent()) {
-            AzureAccount userInfo = accountManagementService.getUserInfo(provenanceUserId);
-            locationDeletion = checkActiveArtefactForLocation(location.get(), userInfo.getDisplayName());
+        AzureAccount userInfo = accountManagementService.getUserInfo(provenanceUserId);
+        locationDeletion = checkActiveArtefactForLocation(location, userInfo.getDisplayName());
+        if (!locationDeletion.isExists()) {
+            locationDeletion = checkActiveSubscriptionForLocation(location, userInfo.getDisplayName());
             if (!locationDeletion.isExists()) {
-                locationDeletion = checkActiveSubscriptionForLocation(location.get(), userInfo.getDisplayName());
-                if (!locationDeletion.isExists()) {
-                    locationRepository.deleteById(locationId);
-                    sendEmailToAllSystemAdmins(userInfo.getDisplayName(), ActionResult.SUCCEEDED,
-                        String.format("Location %s with Id %s has been deleted.",
-                                location.get().getName(), location.get().getLocationId()));
-                }
+                locationRepository.deleteById(locationId);
+                sendEmailToAllSystemAdmins(userInfo.getDisplayName(), ActionResult.SUCCEEDED,
+                    String.format("Location %s with Id %s has been deleted.",
+                            location.getName(), location.getLocationId()));
             }
-        } else {
-            throw new LocationNotFoundException(
-                String.format("No location found with the id: %s", locationId));
         }
 
         return locationDeletion;

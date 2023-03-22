@@ -1,6 +1,8 @@
 package uk.gov.hmcts.reform.pip.data.management.models.location;
 
 import org.junit.jupiter.api.Test;
+import uk.gov.hmcts.reform.pip.model.location.LocationCsv;
+import uk.gov.hmcts.reform.pip.model.location.LocationType;
 
 import java.util.List;
 

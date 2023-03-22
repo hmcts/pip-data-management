@@ -11,9 +11,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pip.data.management.Application;
-import uk.gov.hmcts.reform.pip.data.management.models.external.account.management.AzureAccount;
-import uk.gov.hmcts.reform.pip.data.management.models.publication.ListType;
-import uk.gov.hmcts.reform.pip.data.management.models.publication.Sensitivity;
+import uk.gov.hmcts.reform.pip.model.account.AzureAccount;
+import uk.gov.hmcts.reform.pip.model.publication.ListType;
+import uk.gov.hmcts.reform.pip.model.publication.Sensitivity;
 
 import java.io.IOException;
 import java.util.List;
