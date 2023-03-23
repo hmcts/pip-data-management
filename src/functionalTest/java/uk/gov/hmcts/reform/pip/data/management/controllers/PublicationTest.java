@@ -157,10 +157,11 @@ class PublicationTest {
 
     Artefact createDailyList(Sensitivity sensitivity, LocalDateTime displayFrom, LocalDateTime contentDate)
         throws Exception {
-        return createDailyList(sensitivity, displayFrom, contentDate, PROVENANCE);
+        return createDailyList(sensitivity, displayFrom, DISPLAY_TO, contentDate, PROVENANCE);
     }
 
-    Artefact createDailyList(Sensitivity sensitivity, LocalDateTime displayFrom, LocalDateTime contentDate,
+    Artefact createDailyList(Sensitivity sensitivity, LocalDateTime displayFrom, LocalDateTime displayTo,
+                             LocalDateTime contentDate,
                              String provenance)
         throws Exception {
         try (InputStream mockFile = this.getClass().getClassLoader()
@@ -172,7 +173,7 @@ class PublicationTest {
                 .header(PublicationConfiguration.PROVENANCE_HEADER, provenance)
                 .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
                 .header(PublicationConfiguration.DISPLAY_FROM_HEADER, displayFrom)
-                .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO.plusMonths(1))
+                .header(PublicationConfiguration.DISPLAY_TO_HEADER, displayTo.plusMonths(1))
                 .header(PublicationConfiguration.COURT_ID, COURT_ID)
                 .header(PublicationConfiguration.LIST_TYPE, ListType.CIVIL_DAILY_CAUSE_LIST)
                 .header(PublicationConfiguration.CONTENT_DATE, contentDate)
@@ -1910,7 +1911,7 @@ class PublicationTest {
     void testCountByLocationListAssist() throws Exception {
         when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
         when(blobContainerClient.getBlobContainerUrl()).thenReturn(PAYLOAD_URL);
-        createDailyList(Sensitivity.PRIVATE, DISPLAY_FROM.minusMonths(2), CONTENT_DATE, "ListAssist");
+        createDailyList(Sensitivity.PRIVATE, DISPLAY_FROM.minusMonths(2), DISPLAY_TO, CONTENT_DATE, "ListAssist");
         mockHttpServletRequestBuilder = MockMvcRequestBuilders.get(COUNT_ENDPOINT);
         MvcResult result = mockMvc.perform(mockHttpServletRequestBuilder)
             .andExpect(status().isOk())
@@ -1977,11 +1978,40 @@ class PublicationTest {
     @Test
     void testArchiveExpiredArtefactsSuccess() throws Exception {
         when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        Artefact artefactToExpire = createDailyList(Sensitivity.PUBLIC, DISPLAY_FROM.minusMonths(9),
+                                                    DISPLAY_FROM.minusMonths(6),
+                                                    DISPLAY_FROM.minusMonths(10), PROVENANCE
+        );
 
-        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+        MockHttpServletRequestBuilder adminGetRequest = MockMvcRequestBuilders
+            .get(PUBLICATION_URL + "/" + artefactToExpire.getArtefactId())
+            .header(USER_ID_HEADER, userId)
+            .header(ADMIN_HEADER, true);
+        MvcResult response = mockMvc.perform(adminGetRequest).andExpect(status().isOk()).andReturn();
+
+        Artefact artefactNotExpired = objectMapper.readValue(
+            response.getResponse().getContentAsString(),
+            Artefact.class
+        );
+        assertTrue(!artefactNotExpired.getIsArchived(), SHOULD_RETURN_EXPECTED_ARTEFACT);
+
+        MockHttpServletRequestBuilder deleteRequest = MockMvcRequestBuilders
             .delete(ARCHIVE_EXPIRED_ARTEFACTS_URL);
+        mockMvc.perform(deleteRequest).andExpect(status().isNoContent());
 
-        mockMvc.perform(request).andExpect(status().isNoContent());
+        MockHttpServletRequestBuilder adminGetRequestAfterDelete = MockMvcRequestBuilders
+            .get(PUBLICATION_URL + "/" + artefactToExpire.getArtefactId())
+            .header(USER_ID_HEADER, userId)
+            .header(ADMIN_HEADER, true);
+
+        MvcResult archiveResponse = mockMvc.perform(adminGetRequestAfterDelete).andExpect(status().isOk()).andReturn();
+
+        Artefact artefactExired = objectMapper.readValue(
+            archiveResponse.getResponse().getContentAsString(),
+            Artefact.class
+        );
+        assertTrue(artefactExired.getIsArchived(), SHOULD_RETURN_EXPECTED_ARTEFACT);
+
     }
 
     @Test
@@ -2080,8 +2110,8 @@ class PublicationTest {
     void testGetAllNoMatchArtefacts() throws Exception {
         when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
         when(blobContainerClient.getBlobContainerUrl()).thenReturn(PAYLOAD_URL);
-        Artefact expectedArtefact = createDailyList(Sensitivity.PRIVATE, DISPLAY_FROM.minusMonths(2), CONTENT_DATE,
-                                                    "NoMatch"
+        Artefact expectedArtefact = createDailyList(Sensitivity.PRIVATE, DISPLAY_FROM.minusMonths(2), DISPLAY_TO,
+                                                    CONTENT_DATE, "NoMatch"
         );
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
@@ -2194,6 +2224,4 @@ class PublicationTest {
                      FORBIDDEN_STATUS_CODE
         );
     }
-
-
 }
