@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.pip.data.management.models.location;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
+import uk.gov.hmcts.reform.pip.model.location.LocationType;
 
 import java.util.UUID;
 import javax.persistence.Column;

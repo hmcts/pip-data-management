@@ -21,11 +21,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import uk.gov.hmcts.reform.pip.data.management.authentication.roles.IsAdmin;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationDeletion;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationViews;
 import uk.gov.hmcts.reform.pip.data.management.service.LocationService;
+import uk.gov.hmcts.reform.pip.model.authentication.roles.IsAdmin;
 
 import java.io.IOException;
 import java.util.Collection;

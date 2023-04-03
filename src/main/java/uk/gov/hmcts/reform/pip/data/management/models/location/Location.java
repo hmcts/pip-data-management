@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
+import uk.gov.hmcts.reform.pip.model.location.LocationCsv;
+import uk.gov.hmcts.reform.pip.model.location.LocationType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -108,5 +110,4 @@ public class Location {
     public void addLocationReference(LocationReference locationReference) {
         locationReferenceList.add(locationReference);
     }
-
 }

@@ -14,9 +14,9 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import uk.gov.hmcts.reform.pip.data.management.Application;
 import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
-import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactType;
-import uk.gov.hmcts.reform.pip.data.management.models.publication.Language;
-import uk.gov.hmcts.reform.pip.data.management.models.publication.ListType;
+import uk.gov.hmcts.reform.pip.model.publication.ArtefactType;
+import uk.gov.hmcts.reform.pip.model.publication.Language;
+import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;

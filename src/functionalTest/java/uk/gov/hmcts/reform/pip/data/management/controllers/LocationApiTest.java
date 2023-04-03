@@ -20,7 +20,7 @@ import uk.gov.hmcts.reform.pip.data.management.Application;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.ExceptionResponse;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationReference;
-import uk.gov.hmcts.reform.pip.data.management.models.location.LocationType;
+import uk.gov.hmcts.reform.pip.model.location.LocationType;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
