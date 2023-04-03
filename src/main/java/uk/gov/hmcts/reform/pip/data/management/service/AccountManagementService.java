@@ -9,9 +9,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientException;
-import uk.gov.hmcts.reform.pip.data.management.models.external.account.management.AzureAccount;
-import uk.gov.hmcts.reform.pip.data.management.models.publication.ListType;
-import uk.gov.hmcts.reform.pip.data.management.models.publication.Sensitivity;
+import uk.gov.hmcts.reform.pip.model.account.AzureAccount;
+import uk.gov.hmcts.reform.pip.model.publication.ListType;
+import uk.gov.hmcts.reform.pip.model.publication.Sensitivity;
 
 import java.util.ArrayList;
 import java.util.List;

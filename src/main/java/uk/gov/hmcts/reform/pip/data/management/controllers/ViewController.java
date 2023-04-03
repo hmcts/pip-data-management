@@ -7,8 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import uk.gov.hmcts.reform.pip.data.management.authentication.roles.IsAdmin;
 import uk.gov.hmcts.reform.pip.data.management.service.ViewService;
+import uk.gov.hmcts.reform.pip.model.authentication.roles.IsAdmin;
 
 /**
  * View controller which deals with the view for Account Management.

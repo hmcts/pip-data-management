@@ -10,6 +10,10 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.views.ArtefactView;
+import uk.gov.hmcts.reform.pip.model.publication.ArtefactType;
+import uk.gov.hmcts.reform.pip.model.publication.Language;
+import uk.gov.hmcts.reform.pip.model.publication.ListType;
+import uk.gov.hmcts.reform.pip.model.publication.Sensitivity;
 
 import java.time.LocalDateTime;
 import java.util.List;
