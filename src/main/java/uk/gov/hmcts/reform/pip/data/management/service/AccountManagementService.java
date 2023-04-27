@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.springframework.security.oauth2.client.web.reactive.function.client.ServerOAuth2AuthorizedClientExchangeFilterFunction.clientRegistrationId;
+import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
 
 @Slf4j
 @Component
@@ -30,8 +31,6 @@ public class AccountManagementService {
     private String url;
 
     private static final String ACCOUNT_MANAGEMENT_API = "accountManagementApi";
-    private static final String ACCOUNT_MANAGEMENT_REQUEST_FAILED =
-        "Request to account management failed with error message: %s";
 
     /**
      * Calls Account Management to determine whether a user is allowed to see a set publication.
@@ -47,7 +46,10 @@ public class AccountManagementService {
                 .attributes(clientRegistrationId(ACCOUNT_MANAGEMENT_API))
                 .retrieve().bodyToMono(Boolean.class).block();
         } catch (WebClientException ex) {
-            log.error(String.format(ACCOUNT_MANAGEMENT_REQUEST_FAILED, ex.getMessage()));
+            log.error(writeLog(
+                String.format("Request to Account Management to check user authorisation failed with error: %s",
+                              ex.getMessage())
+            ));
             return false;
         }
     }
@@ -61,7 +63,10 @@ public class AccountManagementService {
                 .retrieve().bodyToMono(String.class).block();
             return findAllSystemAdmins(result);
         } catch (WebClientException ex) {
-            log.error(String.format(ACCOUNT_MANAGEMENT_REQUEST_FAILED, ex.getMessage()));
+            log.error(writeLog(
+                String.format("Request to Account Management to get all user accounts failed with error: %s",
+                              ex.getMessage())
+            ));
             return List.of("Failed to find all the accounts");
         }
     }
@@ -72,7 +77,10 @@ public class AccountManagementService {
                 .attributes(clientRegistrationId(ACCOUNT_MANAGEMENT_API))
                 .retrieve().bodyToMono(AzureAccount.class).block();
         } catch (WebClientException ex) {
-            log.error(String.format(ACCOUNT_MANAGEMENT_REQUEST_FAILED, ex.getMessage()));
+            log.error(writeLog(
+                String.format("Request to Account Management to get Azure account failed with error: %s",
+                              ex.getMessage())
+            ));
             return new AzureAccount();
         }
     }

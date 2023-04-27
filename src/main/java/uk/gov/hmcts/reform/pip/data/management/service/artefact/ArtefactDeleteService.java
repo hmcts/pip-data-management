@@ -63,7 +63,7 @@ public class ArtefactDeleteService {
         if (artefactToArchive.isPresent()) {
             deleteAllPublicationBlobData(artefactToArchive.get());
             artefactRepository.archiveArtefact(artefactId);
-            log.info(String.format("Artefact archived by %s, with artefact id: %s", issuerId, artefactId));
+            log.info(writeLog(String.format("Artefact archived by %s, with artefact id: %s", issuerId, artefactId)));
             triggerThirdPartyArtefactDeleted(artefactToArchive.get());
         } else {
             throw new ArtefactNotFoundException("No artefact found with the ID: " + artefactId);
@@ -83,9 +83,10 @@ public class ArtefactDeleteService {
             deleteAllPublicationBlobData(artefact);
         });
 
-        log.info(writeLog(String.format("%s outdated artefacts found and archived for before %s",
-                                        outdatedArtefacts.size(), searchDateTime
-        )));
+        log.info(writeLog(
+            String.format("%s outdated artefacts found and archived for before %s",
+                          outdatedArtefacts.size(), searchDateTime)
+        ));
     }
 
     /**
@@ -108,7 +109,8 @@ public class ArtefactDeleteService {
                     azureBlobService.deletePublicationBlob(artefact.getArtefactId() + ".xlsx");
                 }
             } catch (Exception ex) {
-                log.info("Failed to delete the generated publication file. Message: " + ex.getMessage());
+                log.error(writeLog("Failed to delete the generated publication file. Message: "
+                                       + ex.getMessage()));
             }
         }
     }
@@ -137,7 +139,7 @@ public class ArtefactDeleteService {
      * @param deletedArtefact deleted artefact to notify of.
      */
     private void triggerThirdPartyArtefactDeleted(Artefact deletedArtefact) {
-        log.info(writeLog(subscriptionManagementService.sendDeletedArtefactForThirdParties(deletedArtefact)));
+        subscriptionManagementService.sendDeletedArtefactForThirdParties(deletedArtefact);
     }
 
     public String deleteArtefactByLocation(Integer locationId, String provenanceUserId)
@@ -154,8 +156,9 @@ public class ArtefactDeleteService {
             activeArtefacts.forEach(artefact -> {
                 artefactRepository.delete(artefact);
                 deleteAllPublicationBlobData(artefact);
-                log.info(String.format("Artefact deleted by %s, with artefact id: %s",
-                                       provenanceUserId, artefact.getArtefactId()
+                log.info(writeLog(
+                    String.format("Artefact deleted by %s, with artefact id: %s",
+                                  provenanceUserId, artefact.getArtefactId())
                 ));
             });
             Optional<Location> location = locationRepository.getLocationByLocationId(locationId);
