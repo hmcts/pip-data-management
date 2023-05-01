@@ -200,7 +200,7 @@ dependencies {
   implementation("com.squareup.okhttp3:okhttp:4.10.0")
 
   // Include Flyway for database migrations
-  implementation group: 'org.flywaydb', name: 'flyway-core', version: '9.16.1'
+  implementation group: 'org.flywaydb', name: 'flyway-core', version: '9.17.0'
 
   // Force upgrade snakeyaml version for CVE-2022-38752
   implementation( group: 'org.yaml', name: 'snakeyaml').version {
