@@ -57,22 +57,6 @@ public class ArtefactSearchService {
     }
 
     /**
-     * Get all artefacts for display in blob explorer.
-     *
-     * @param locationId The location id to search for.
-     * @param userId     represents the user ID of the user who is making the request
-     * @param isAdmin    bool to check whether admin search is needed, if not will default to findAllByLocationId().
-     * @return list of matching artefacts.
-     */
-    public List<Artefact> findAllByLocationIdBlobExplorer(String locationId, UUID userId, boolean isAdmin) {
-        log.info(writeLog("ADMIN - Searching for all artefacts with expiry date > current date and not "
-                              + "archived." + locationId));
-        return isAdmin
-            ? artefactRepository.findArtefactsByLocationBlobExplorer(locationId, LocalDateTime.now()) :
-            findAllByLocationId(locationId, userId);
-    }
-
-    /**
      * Get all relevant Artefacts based on search values stored in the Artefact.
      *
      * @param searchTerm  the search term checking against, eg. CASE_ID or CASE_URN
