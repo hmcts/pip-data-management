@@ -80,11 +80,6 @@ public interface ArtefactRepository extends JpaRepository<Artefact, Long> {
         nativeQuery = true)
     List<Artefact> findArtefactsByLocationIdAdmin(@Param(LOCATION_ID_PARAM) String locationId);
 
-    @Query(value = "SELECT * FROM artefact WHERE location_id = :location_id and expiry_date > :curr_date and "
-        + "is_archived != true", nativeQuery = true)
-    List<Artefact> findArtefactsByLocationBlobExplorer(@Param(LOCATION_ID_PARAM) String locationId,
-                                                       @Param(CURRENT_DATE_PARAM) LocalDateTime currentDate);
-
     @Query(value = "select * from Artefact where artefact_id = CAST(:artefact_id AS uuid)",
         nativeQuery = true)
     Optional<Artefact> findArtefactByArtefactId(@Param(ARTEFACT_ID_PARAM) String artefactId);
