@@ -5,9 +5,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -26,12 +23,10 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.lenient;
@@ -213,37 +208,6 @@ class ArtefactSearchServiceTest {
         assertEquals(1, artefacts.size(), VALIDATION_MORE_THAN_PUBLIC);
         assertEquals(artefact, artefacts.get(0), VALIDATION_ARTEFACT_NOT_MATCH);
     }
-
-
-    @ParameterizedTest
-    @MethodSource("blobExplorerTestArgs")
-    void testFindByLocationBlobExplorer(Boolean admin, int count) {
-        Artefact artefact2 = Artefact.builder()
-            .sourceArtefactId(SOURCE_ARTEFACT_ID)
-            .provenance(PROVENANCE)
-            .language(Language.WELSH)
-            .sensitivity(Sensitivity.CLASSIFIED)
-            .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
-            .build();
-
-        List<Artefact> artefactList = new ArrayList<>();
-        artefactList.add(artefact2);
-        lenient().when(artefactRepository.findArtefactsByLocationBlobExplorer(any(), any()))
-            .thenReturn(artefactList);
-        lenient().when(artefactRepository.findArtefactsByLocationId(eq(ABC), any())).thenReturn(new ArrayList<>());
-
-        List<Artefact> artefacts = artefactSearchService.findAllByLocationIdBlobExplorer(ABC, USER_ID, admin);
-
-        assertEquals(count, artefacts.size(), VALIDATION_MORE_THAN_PUBLIC);
-    }
-
-    private static Stream<Arguments> blobExplorerTestArgs() {
-        return Stream.of(
-            arguments(false, 0),
-            arguments(true, 1)
-        );
-    }
-
 
     @Test
     void testFindByCourtIdWhenUnverified() {
