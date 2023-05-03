@@ -7,9 +7,9 @@ plugins {
   id 'org.owasp.dependencycheck' version '8.2.1'
   id 'org.sonarqube' version '4.0.0.2929'
   id 'pmd'
-  id 'org.flywaydb.flyway' version '9.16.1'
+  id 'org.flywaydb.flyway' version '9.16.3'
   id 'io.freefair.lombok' version '8.0.1'
-  id 'org.jetbrains.kotlin.jvm' version '1.8.20'
+  id 'org.jetbrains.kotlin.jvm' version '1.8.21'
 }
 
 apply plugin: 'org.owasp.dependencycheck'
@@ -177,7 +177,7 @@ dependencies {
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-aop'
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-json'
-  implementation group: 'com.azure', name: 'azure-storage-blob', version: '12.21.1'
+  implementation group: 'com.azure', name: 'azure-storage-blob', version: '12.22.0'
   implementation group: 'com.jayway.jsonpath', name: 'json-path', version: '2.8.0'
   implementation group: 'com.vladmihalcea', name: 'hibernate-types-52', version: '2.21.1'
   implementation group: 'org.springdoc', name: 'springdoc-openapi-ui', version: '1.7.0'
@@ -185,8 +185,8 @@ dependencies {
   implementation group: 'com.github.hmcts.java-logging', name: 'logging', version: reformLoggingVersion
   implementation group: 'com.github.hmcts.java-logging', name: 'logging-appinsights', version: reformLoggingVersion
   implementation group: 'net.logstash.logback', name: 'logstash-logback-encoder', version: '7.3'
-  implementation group: 'com.azure', name: 'azure-data-tables', version: '12.3.9'
-  implementation 'com.networknt:json-schema-validator:1.0.79'
+  implementation group: 'com.azure', name: 'azure-data-tables', version: '12.3.10'
+  implementation 'com.networknt:json-schema-validator:1.0.81'
   implementation group: 'org.postgresql', name: 'postgresql', version: '42.6.0'
   implementation group: 'com.github.hmcts', name: 'pip-data-models', version: '2.0.2'
   implementation 'org.springframework.boot:spring-boot-starter-validation'
@@ -197,10 +197,10 @@ dependencies {
   implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
   implementation 'com.opencsv:opencsv:5.7.1'
   implementation 'org.springframework.boot:spring-boot-starter-webflux'
-  implementation("com.squareup.okhttp3:okhttp:4.10.0")
+  implementation("com.squareup.okhttp3:okhttp:4.11.0")
 
   // Include Flyway for database migrations
-  implementation group: 'org.flywaydb', name: 'flyway-core', version: '9.16.1'
+  implementation group: 'org.flywaydb', name: 'flyway-core', version: '9.17.0'
 
   // Force upgrade snakeyaml version for CVE-2022-38752
   implementation( group: 'org.yaml', name: 'snakeyaml').version {
@@ -212,9 +212,9 @@ dependencies {
     strictly("1.10.0")
   }
 
-  testImplementation("com.squareup.okhttp3:mockwebserver:4.10.0")
+  testImplementation("com.squareup.okhttp3:mockwebserver:4.11.0")
   testImplementation "io.zonky.test:embedded-database-spring-test:2.2.0"
-  testImplementation(platform('org.junit:junit-bom:5.9.2'))
+  testImplementation(platform('org.junit:junit-bom:5.9.3'))
   testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', {
     exclude group: 'junit', module: 'junit'
     exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
