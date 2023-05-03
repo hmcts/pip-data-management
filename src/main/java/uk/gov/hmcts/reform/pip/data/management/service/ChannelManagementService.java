@@ -10,6 +10,7 @@ import org.springframework.web.reactive.function.client.WebClientException;
 import java.util.UUID;
 
 import static org.springframework.security.oauth2.client.web.reactive.function.client.ServerOAuth2AuthorizedClientExchangeFilterFunction.clientRegistrationId;
+import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
 
 @Slf4j
 @Component
@@ -30,7 +31,10 @@ public class ChannelManagementService {
                 .attributes(clientRegistrationId("channelManagementApi"))
                 .retrieve().bodyToMono(String.class).block();
         } catch (WebClientException ex) {
-            log.error(String.format(EXCEPTION_MESSAGE, SERVICE, ex.getMessage()));
+            log.error(writeLog(
+                String.format("Request to Channel Management to generate files failed with error: %s",
+                              ex.getMessage())
+            ));
             return "";
         }
     }

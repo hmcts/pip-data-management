@@ -16,13 +16,11 @@ import uk.gov.hmcts.reform.pip.model.system.admin.DeleteLocationArtefactAction;
 import java.util.List;
 
 import static org.springframework.security.oauth2.client.web.reactive.function.client.ServerOAuth2AuthorizedClientExchangeFilterFunction.clientRegistrationId;
+import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
 
 @Slf4j
 @Component
 public class PublicationServicesService {
-
-    private static final String EXCEPTION_MESSAGE = "Request to %s failed due to: %s";
-    private static final String SERVICE = "Publications Service";
 
     @Autowired
     WebClient webClient;
@@ -37,7 +35,9 @@ public class PublicationServicesService {
                 .attributes(clientRegistrationId("publicationServicesApi"))
                 .retrieve().bodyToMono(String.class).block();
         } catch (WebClientException ex) {
-            log.error(String.format(EXCEPTION_MESSAGE, SERVICE, ex.getMessage()));
+            log.error(writeLog(
+                String.format("Unidentified blob email failed to send with error: %s", ex.getMessage())
+            ));
             return "";
         }
     }
@@ -59,7 +59,9 @@ public class PublicationServicesService {
                 .retrieve().bodyToMono(String.class).block();
 
         } catch (WebClientException ex) {
-            log.error(String.format(EXCEPTION_MESSAGE, SERVICE, ex.getMessage()));
+            log.error(writeLog(
+                String.format("System admin notification email failed to send with error: %s", ex.getMessage())
+            ));
             return "";
         }
     }

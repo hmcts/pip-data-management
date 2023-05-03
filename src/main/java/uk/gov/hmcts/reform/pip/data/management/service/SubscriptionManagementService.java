@@ -9,6 +9,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientException;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 
+import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
+
 @Slf4j
 @Component
 public class SubscriptionManagementService {
@@ -19,39 +21,43 @@ public class SubscriptionManagementService {
     @Value("${service-to-service.subscription-management}")
     private String url;
 
-    public static final String REQUEST_FAILED = "Request failed with error message: %s";
-
     public String sendArtefactForSubscription(Artefact artefact) {
-        log.info("Attempting to send trigger to " + url);
         try {
             return webClient.post().uri(url + "/subscription/artefact-recipients")
                 .body(BodyInserters.fromValue(artefact))
                 .retrieve().bodyToMono(String.class).block();
         } catch (WebClientException ex) {
-            log.error(String.format(REQUEST_FAILED, ex.getMessage()));
+            log.error(writeLog(
+                String.format("Request to send artefact to Subscription Management failed with error: %s",
+                              ex.getMessage())
+            ));
             return "Artefact failed to send: " + artefact.getArtefactId();
         }
     }
 
     public String sendDeletedArtefactForThirdParties(Artefact artefact) {
-        log.info("Attempting to send deletion to " + url);
         try {
             return webClient.post().uri(url + "/subscription/deleted-artefact")
                 .body(BodyInserters.fromValue(artefact))
                 .retrieve().bodyToMono(String.class).block();
         } catch (WebClientException ex) {
-            log.error(String.format(REQUEST_FAILED, ex.getMessage()));
+            log.error(writeLog(
+                String.format("Request to Subscription Management to send deleted artefact to third party failed "
+                                  + "with error: %s", ex.getMessage())
+            ));
             return "Artefact failed to send: " + artefact.getArtefactId();
         }
     }
 
     public String findSubscriptionsByLocationId(String locationId) {
-        log.info("Attempting to send trigger to " + url);
         try {
             return webClient.get().uri(url + "/subscription/location/" + locationId)
                 .retrieve().bodyToMono(String.class).block();
         } catch (WebClientException ex) {
-            log.error(String.format(REQUEST_FAILED, ex.getMessage()));
+            log.error(writeLog(
+                String.format("Request to Subscription Management to find subscriptions for location %s failed "
+                                  + "with error: %s", locationId, ex.getMessage())
+            ));
             return "Failed to find subscription for Location: " + locationId + " with status: " + ex.getMessage();
         }
     }
