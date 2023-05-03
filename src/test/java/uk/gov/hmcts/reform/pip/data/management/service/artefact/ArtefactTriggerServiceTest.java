@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.lenient;
@@ -37,10 +38,10 @@ import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTe
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.SUCCESSFUL_TRIGGER;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.TEST_KEY;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.TEST_VALUE;
-import static uk.gov.hmcts.reform.pip.data.management.helpers.ConstantsTestHelper.MESSAGES_MATCH;
 
 @ExtendWith(MockitoExtension.class)
 class ArtefactTriggerServiceTest {
+    private static final String ERROR_LOG_EMPTY = "Error log not empty";
 
     @Mock
     ArtefactRepository artefactRepository;
@@ -139,9 +140,7 @@ class ArtefactTriggerServiceTest {
         when(subscriptionManagementService.sendArtefactForSubscription(artefactFromNow)).thenReturn(SUCCESSFUL_TRIGGER);
         try (LogCaptor logCaptor = LogCaptor.forClass(ArtefactTriggerService.class)) {
             artefactTriggerService.checkAndTriggerSubscriptionManagement(artefactFromNow);
-            assertEquals(SUCCESSFUL_TRIGGER, logCaptor.getInfoLogs().get(0),
-                         "should have returned the Subscription List."
-            );
+            assertTrue(ERROR_LOG_EMPTY, logCaptor.getErrorLogs().isEmpty());
         }
     }
 
@@ -151,9 +150,7 @@ class ArtefactTriggerServiceTest {
             SUCCESSFUL_TRIGGER);
         try (LogCaptor logCaptor = LogCaptor.forClass(ArtefactTriggerService.class)) {
             artefactTriggerService.checkAndTriggerSubscriptionManagement(artefactFromThePast);
-            assertEquals(SUCCESSFUL_TRIGGER, logCaptor.getInfoLogs().get(0),
-                         "Should have returned the subscription list"
-            );
+            assertTrue(ERROR_LOG_EMPTY, logCaptor.getErrorLogs().isEmpty());
         }
     }
 
@@ -163,9 +160,7 @@ class ArtefactTriggerServiceTest {
             SUCCESSFUL_TRIGGER);
         try (LogCaptor logCaptor = LogCaptor.forClass(ArtefactTriggerService.class)) {
             artefactTriggerService.checkAndTriggerSubscriptionManagement(artefactWithNullDateTo);
-            assertEquals(SUCCESSFUL_TRIGGER, logCaptor.getInfoLogs().get(0),
-                         "Should have returned the subscription list"
-            );
+            assertTrue(ERROR_LOG_EMPTY, logCaptor.getErrorLogs().isEmpty());
         }
     }
 
@@ -175,18 +170,8 @@ class ArtefactTriggerServiceTest {
             SUCCESSFUL_TRIGGER);
         try (LogCaptor logCaptor = LogCaptor.forClass(ArtefactTriggerService.class)) {
             artefactTriggerService.checkAndTriggerSubscriptionManagement(artefactWithSameDateFromAndTo);
-            assertEquals(SUCCESSFUL_TRIGGER, logCaptor.getInfoLogs().get(0),
-                         "Should have returned the subscription list"
-            );
+            assertTrue(ERROR_LOG_EMPTY, logCaptor.getErrorLogs().isEmpty());
         }
-    }
-
-    @Test
-    void testSendArtefactForSubscription() {
-        when(subscriptionManagementService.sendArtefactForSubscription(artefact))
-            .thenReturn(SUCCESS);
-        assertEquals(SUCCESS, artefactTriggerService.sendArtefactForSubscription(artefact),
-                     MESSAGES_MATCH);
     }
 
     @Test
@@ -195,9 +180,7 @@ class ArtefactTriggerServiceTest {
             when(artefactRepository.findArtefactsByDisplayFrom(any())).thenReturn(List.of(new Artefact()));
             when(subscriptionManagementService.sendArtefactForSubscription(any())).thenReturn(SUCCESS);
             artefactTriggerService.checkNewlyActiveArtefacts();
-            assertEquals(SUCCESS, logCaptor.getInfoLogs().get(0),
-                         MESSAGES_MATCH
-            );
+            assertTrue(ERROR_LOG_EMPTY, logCaptor.getErrorLogs().isEmpty());
         } catch (Exception ex) {
             throw new IOException(ex.getMessage());
         }

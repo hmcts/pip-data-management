@@ -38,12 +38,8 @@ public class ArtefactTriggerService {
         if (artefact.getDisplayFrom().toLocalDate().isBefore(LocalDate.now().plusDays(1))
             && (artefact.getDisplayTo() == null
             || artefact.getDisplayTo().toLocalDate().isAfter(LocalDate.now().minusDays(1)))) {
-            log.info(sendArtefactForSubscription(artefact));
+            subscriptionManagementService.sendArtefactForSubscription(artefact);
         }
-    }
-
-    public String sendArtefactForSubscription(Artefact artefact) {
-        return subscriptionManagementService.sendArtefactForSubscription(artefact);
     }
 
     /**
@@ -51,7 +47,7 @@ public class ArtefactTriggerService {
      */
     public void checkNewlyActiveArtefacts() {
         artefactRepository.findArtefactsByDisplayFrom(LocalDate.now())
-            .forEach(artefact -> log.info(sendArtefactForSubscription(artefact)));
+            .forEach(artefact -> subscriptionManagementService.sendArtefactForSubscription(artefact));
     }
 
     /**
@@ -76,7 +72,7 @@ public class ArtefactTriggerService {
                                     LocationHelper.getLocationIdForNoMatch(artefact.getLocationId()))
             ));
 
-            log.info(publicationServicesService.sendNoMatchArtefactsForReporting(noMatchArtefactList));
+            publicationServicesService.sendNoMatchArtefactsForReporting(noMatchArtefactList);
         }
     }
 }

@@ -71,7 +71,8 @@ class SubscriptionManagementServiceTest {
             "Artefact failed to send: " + ARTEFACT.getArtefactId(),
             "Error message failed to send."
         );
-        assertTrue(logCaptor.getErrorLogs().get(0).contains("Request failed with error message: "),
+        assertTrue(logCaptor.getErrorLogs().get(0)
+                       .contains("Request to send artefact to Subscription Management failed with error:"),
                    "Exception was not logged.");
     }
 
@@ -93,7 +94,9 @@ class SubscriptionManagementServiceTest {
             "Artefact failed to send: " + ARTEFACT.getArtefactId(),
             "Error message failed to send."
         );
-        assertTrue(logCaptor.getErrorLogs().get(0).contains("Request failed with error message: "),
+        assertTrue(logCaptor.getErrorLogs().get(0)
+                       .contains("Request to Subscription Management to send deleted artefact to third party "
+                                     + "failed with error:"),
                    "Exception was not logged.");
     }
 
@@ -116,7 +119,9 @@ class SubscriptionManagementServiceTest {
                 .contains("Failed to find subscription for Location: " + LOCATION_ID),
             "Error message failed to send."
         );
-        assertTrue(logCaptor.getErrorLogs().get(0).contains("Request failed with error message: "),
+        assertTrue(logCaptor.getErrorLogs().get(0)
+                       .contains("Request to Subscription Management to find subscriptions for location "
+                                     + LOCATION_ID + " failed with error:"),
                    "Exception was not logged.");
     }
 }
