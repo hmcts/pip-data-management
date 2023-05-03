@@ -346,38 +346,6 @@ class PublicationControllerTest {
     }
 
     @Test
-    void checkGetArtefactsBlobExplorerReturnsWhenTrue() {
-        List<Artefact> artefactList = List.of(artefactWithId);
-
-        when(artefactSearchService.findAllByLocationIdBlobExplorer(
-            EMPTY_FIELD,
-            USER_ID,
-            true
-        )).thenReturn(artefactList);
-        ResponseEntity<List<Artefact>> unmappedArtefact = publicationController
-            .getAllRelevantArtefactsByLocationIdBlobExplorer(EMPTY_FIELD, USER_ID, true);
-
-        assertEquals(artefactList, unmappedArtefact.getBody(), VALIDATION_EXPECTED_MESSAGE);
-        assertEquals(HttpStatus.OK, unmappedArtefact.getStatusCode(), STATUS_CODE_MATCH);
-    }
-
-    @Test
-    void checkGetArtefactsBlobExplorerReturnsOkWhenFalse() {
-        List<Artefact> artefactList = List.of(artefactWithId);
-
-        when(artefactSearchService.findAllByLocationIdBlobExplorer(
-            EMPTY_FIELD,
-            USER_ID,
-            false
-        )).thenReturn(artefactList);
-        ResponseEntity<List<Artefact>> unmappedArtefact = publicationController
-            .getAllRelevantArtefactsByLocationIdBlobExplorer(EMPTY_FIELD, USER_ID, false);
-
-        assertEquals(artefactList, unmappedArtefact.getBody(), VALIDATION_EXPECTED_MESSAGE);
-        assertEquals(HttpStatus.OK, unmappedArtefact.getStatusCode(), STATUS_CODE_MATCH);
-    }
-
-    @Test
     void checkGetArtefactsByCourtIdReturnsOkWhenFalse() {
         List<Artefact> artefactList = List.of(artefactWithId);
 
