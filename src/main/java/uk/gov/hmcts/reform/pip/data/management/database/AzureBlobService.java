@@ -15,6 +15,8 @@ import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.FlatFile
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
+import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
+
 /**
  * Class with handles the interaction with the Azure Blob Service.
  */
@@ -93,7 +95,9 @@ public class AzureBlobService {
             blobClient.delete();
             return String.format(DELETE_MESSAGE, payloadId);
         } catch (BlobStorageException e) {
-            log.error("Blob with payload ID {} failed to delete with trace {}", payloadId, e.getMessage());
+            log.error(writeLog(
+                String.format("Blob with payload ID %s failed to delete with trace %s", payloadId, e.getMessage())
+            ));
             return String.format("Blob failed to delete with ID %s", payloadId);
         }
     }
@@ -110,7 +114,9 @@ public class AzureBlobService {
             blobClient.delete();
             return String.format(DELETE_MESSAGE, blobName);
         } catch (BlobStorageException e) {
-            log.error("Publication Blob with ID {} failed to delete with trace {}", blobName, e.getMessage());
+            log.error(writeLog(
+                String.format("Publication Blob with ID %s failed to delete with trace %s", blobName, e.getMessage())
+            ));
             return String.format("Publication Blob failed to delete with ID %s", blobName);
         }
     }

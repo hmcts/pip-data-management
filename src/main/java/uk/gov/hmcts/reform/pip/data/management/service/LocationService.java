@@ -80,8 +80,6 @@ public class LocationService {
      * @return List of Locations
      */
     public List<Location> getAllLocations() {
-        log.info(writeLog("Retrieve all locations"));
-
         return locationRepository.findAll();
     }
 
@@ -189,7 +187,6 @@ public class LocationService {
         allLocations.forEach(location ->
             location.getLocationReferenceList().forEach(locationReference -> {
                 try {
-                    log.info(location.getJurisdiction().toString());
                     beanToCsv.write(new LocationCsv(
                         location.getLocationId(),
                         location.getName(),

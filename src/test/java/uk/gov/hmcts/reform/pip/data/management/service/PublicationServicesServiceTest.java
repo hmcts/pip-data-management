@@ -73,7 +73,7 @@ class PublicationServicesServiceTest {
                                                     .setResponseCode(HttpStatus.BAD_REQUEST.value()));
 
         publicationServicesService.sendNoMatchArtefactsForReporting(TEST_LIST);
-        assertTrue(logCaptor.getErrorLogs().get(0).contains("Request to Publications Service failed due to:"),
+        assertTrue(logCaptor.getErrorLogs().get(0).contains("Unidentified blob email failed to send with error:"),
                    "Exception was not logged.");
     }
 
@@ -104,7 +104,8 @@ class PublicationServicesServiceTest {
 
         publicationServicesService.sendSystemAdminEmail(List.of("test@test.com"), "Name",
                                                         ActionResult.ATTEMPTED, "Error", ChangeType.DELETE_LOCATION);
-        assertTrue(logCaptor.getErrorLogs().get(0).contains("Request to Publications Service failed due to:"),
+        assertTrue(logCaptor.getErrorLogs().get(0)
+                       .contains("System admin notification email failed to send with error:"),
                    "Exception was not logged.");
     }
 }

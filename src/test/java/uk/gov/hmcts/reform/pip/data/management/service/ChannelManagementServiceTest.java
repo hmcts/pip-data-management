@@ -61,7 +61,8 @@ class ChannelManagementServiceTest {
                                                     .setResponseCode(HttpStatus.BAD_REQUEST.value()));
 
         channelManagementService.requestFileGeneration(UUID.randomUUID());
-        assertTrue(logCaptor.getErrorLogs().get(0).contains("Request to Channel Management failed due to:"),
+        assertTrue(logCaptor.getErrorLogs().get(0)
+                       .contains("Request to Channel Management to generate files failed with error:"),
                    "Exception was not logged.");
     }
 }

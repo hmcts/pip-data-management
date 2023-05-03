@@ -12,8 +12,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
-import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
-
 @Slf4j
 @Service
 public class ArtefactSearchService {
@@ -51,7 +49,6 @@ public class ArtefactSearchService {
      * @return list of matching artefacts.
      */
     public List<Artefact> findAllByLocationIdAdmin(String locationId, UUID userId, boolean isAdmin) {
-        log.info(writeLog("ADMIN - Searching for all artefacts with " + locationId));
         return isAdmin
             ? artefactRepository.findArtefactsByLocationIdAdmin(locationId) : findAllByLocationId(locationId, userId);
     }
