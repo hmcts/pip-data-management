@@ -2117,7 +2117,7 @@ class PublicationTest {
 
         assertTrue(
             deleteResponse.getResponse().getContentAsString()
-                .contains("No artefact found with the location ID " + 11),
+                .contains("No artefacts found with the location ID " + 11),
             "Artefact not found error message"
         );
     }
