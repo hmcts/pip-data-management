@@ -255,38 +255,55 @@ class ArtefactDeleteServiceTest {
     void testDeleteArtefactByLocation() throws JsonProcessingException {
         location.setName("NAME");
 
-        when(artefactRepository.findActiveArtefactsForLocation(any(), eq(LOCATION_ID.toString())))
-            .thenReturn(List.of(artefactWithIdAndPayloadUrl));
-        when(locationRepository.getLocationByLocationId(LOCATION_ID))
-            .thenReturn(Optional.of(location));
-        when(accountManagementService.getUserInfo(any()))
-            .thenReturn(azureAccount);
-        when(accountManagementService.getAllAccounts("PI_AAD", "SYSTEM_ADMIN"))
-            .thenReturn(List.of(EMAIL_ADDRESS));
-        when(publicationService.sendSystemAdminEmail(List.of(EMAIL_ADDRESS), REQUESTER_NAME, ActionResult.SUCCEEDED,
-        "Total 1 artefact(s) for location NAME",
-        ChangeType.DELETE_LOCATION_ARTEFACT))
-            .thenReturn("Total 1 artefact deleted for location id 1");
+        try (LogCaptor logCaptor = LogCaptor.forClass(ArtefactDeleteService.class)) {
+            when(artefactRepository.findActiveArtefactsForLocation(any(), eq(LOCATION_ID.toString())))
+                .thenReturn(List.of(artefactWithIdAndPayloadUrl));
+            when(locationRepository.getLocationByLocationId(LOCATION_ID))
+                .thenReturn(Optional.of(location));
+            when(accountManagementService.getUserInfo(any()))
+                .thenReturn(azureAccount);
+            when(accountManagementService.getAllAccounts("PI_AAD", "SYSTEM_ADMIN"))
+                .thenReturn(List.of(EMAIL_ADDRESS));
+            when(publicationService.sendSystemAdminEmail(List.of(EMAIL_ADDRESS), REQUESTER_NAME, ActionResult.SUCCEEDED,
+                                                         "Total 1 artefact(s) for location NAME",
+                                                         ChangeType.DELETE_LOCATION_ARTEFACT))
+                .thenReturn("Total 1 artefact deleted for location id 1");
 
-        doNothing().when(artefactRepository).delete(artefactWithIdAndPayloadUrl);
+            doNothing().when(artefactRepository).delete(artefactWithIdAndPayloadUrl);
 
-        assertEquals("Total 1 artefact deleted for location id 1",
-                     artefactDeleteService.deleteArtefactByLocation(LOCATION_ID, REQUESTER_NAME),
-                     "The artefacts for given location is not deleted");
-        verify(azureBlobService, times(1))
-            .deleteBlob(any());
-        verify(azureBlobService, times(1))
-            .deletePublicationBlob(any());
+            assertEquals("Total 1 artefact deleted for location id 1",
+                         artefactDeleteService.deleteArtefactByLocation(LOCATION_ID, REQUESTER_NAME),
+                         "The artefacts for given location is not deleted");
+            verify(azureBlobService, times(1))
+                .deleteBlob(any());
+            verify(azureBlobService, times(1))
+                .deletePublicationBlob(any());
+
+            assertTrue(logCaptor.getInfoLogs().get(0).contains("User " + REQUESTER_NAME
+                                                                   + " attempting to delete all artefacts for location "
+                                                                   + LOCATION_ID + ". 1 artefact(s) found"),
+                       "Expected log does not exist");
+        }
+
     }
 
     @Test
     void testDeleteArtefactByLocationWhenNoArtefactFound() {
-        when(artefactRepository.findActiveArtefactsForLocation(any(), eq(LOCATION_ID.toString())))
-            .thenReturn(List.of());
-        assertThrows(ArtefactNotFoundException.class, () ->
-                         artefactDeleteService.deleteArtefactByLocation(LOCATION_ID, REQUESTER_NAME),
-                     "ArtefactNotFoundException not thrown when trying to delete a artefact"
-                         + " that does not exist");
+
+        try (LogCaptor logCaptor = LogCaptor.forClass(ArtefactDeleteService.class)) {
+            when(artefactRepository.findActiveArtefactsForLocation(any(), eq(LOCATION_ID.toString())))
+                .thenReturn(List.of());
+            assertThrows(ArtefactNotFoundException.class, () ->
+                             artefactDeleteService.deleteArtefactByLocation(LOCATION_ID, REQUESTER_NAME),
+                         "ArtefactNotFoundException not thrown when trying to delete a artefact"
+                             + " that does not exist"
+            );
+
+            assertTrue(logCaptor.getInfoLogs().get(0).contains("User " + REQUESTER_NAME
+                                                                   + " attempting to delete all artefacts for location "
+                                                                   + LOCATION_ID + ". No artefacts found"),
+                       "Expected log does not exist");
+        }
     }
 
     @Test
