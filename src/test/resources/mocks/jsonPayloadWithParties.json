@@ -1,0 +1,91 @@
+{
+  "courtLists": [
+    {
+      "courtHouse": {
+        "courtRoom": [
+          {
+            "session": [
+              {
+                "sittings": [
+                  {
+                    "hearing": [
+                      {
+                        "party": [
+                          {
+                            "partyRole": "APPLICANT",
+                            "individualDetails": {
+                              "individualSurname": "Applicant Surname"
+                            }
+                          },
+                          {
+                            "partyRole": "RESPONDENT",
+                            "organisationDetails": {
+                              "organisationName": "Respondent Org Name"
+                            }
+                          },
+                          {
+                            "partyRole": "APPLICANT_REPRESENTATIVE",
+                            "individualDetails": {
+                              "individualSurname": "Applicant Rep Surname"
+                            }
+                          },
+                          {
+                            "partyRole": "RESPONDENT_REPRESENTATIVE",
+                            "organisationDetails": {
+                              "organisationName": "Respondent Rep Surname"
+                            }
+                          }
+                        ],
+                        "case": [
+                          {
+                            "caseNumber": "CASE1234",
+                            "caseName": "A vs B",
+                            "caseUrn": "URN1234"
+                          },
+                          {
+                            "caseNumber": "CASE5678",
+                            "caseName": "A2 vs B2",
+                            "caseUrn": "URN5678"
+                          }
+                        ]
+                      },
+                      {
+                        "case": [
+                          {
+                            "caseNumber": "CASE1234",
+                            "caseName": "A vs B",
+                            "caseUrn": "URN1234"
+                          },
+                          {
+                            "caseNumber": "CASE5678",
+                            "caseName": "A2 vs B2",
+                            "caseUrn": "URN5678"
+                          }
+                        ]
+                      },
+                      {
+                        "party": [],
+                        "case": [
+                          {
+                            "caseNumber": "CASE1234",
+                            "caseName": "A vs B",
+                            "caseUrn": "URN1234"
+                          },
+                          {
+                            "caseNumber": "CASE5678",
+                            "caseName": "A2 vs B2",
+                            "caseUrn": "URN5678"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

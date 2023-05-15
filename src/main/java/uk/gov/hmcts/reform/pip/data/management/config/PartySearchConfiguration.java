@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * Class with captures any advanced search configuration, for specific scenarios
+ * Class with captures any advanced search configuration, for specific scenarios.
  */
 @Getter
 @Setter

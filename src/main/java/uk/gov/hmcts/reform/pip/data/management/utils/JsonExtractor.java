@@ -30,6 +30,8 @@ public class JsonExtractor implements Extractor {
 
     private final SearchConfiguration searchConfiguration;
 
+    private final ObjectMapper objectMapper;
+
     @Autowired
     public JsonExtractor(SearchConfiguration searchConfiguration) {
         this.searchConfiguration = searchConfiguration;
@@ -38,6 +40,8 @@ public class JsonExtractor implements Extractor {
             .addOptions(Option.DEFAULT_PATH_LEAF_TO_NULL)
             .addOptions(Option.SUPPRESS_EXCEPTIONS)
             .addOptions(Option.ALWAYS_RETURN_LIST);
+
+        objectMapper = new ObjectMapper();
 
     }
 
@@ -73,15 +77,13 @@ public class JsonExtractor implements Extractor {
             .parse(payload);
 
         List<Object> hearings = jsonPayload.read(hearingsPath);
-
-
         List<Object> parties = new ArrayList<>();
         hearings.forEach(hearing -> {
 
             try {
                 DocumentContext hearingsPayload = JsonPath
                     .using(jsonConfiguration)
-                    .parse(new ObjectMapper().writeValueAsString(hearing));
+                    .parse(objectMapper.writeValueAsString(hearing));
 
                 String casesPath = searchConfiguration.getPartySearchConfig().getCasesPath();
                 String partiesSurnamePath = searchConfiguration.getPartySearchConfig().getPartiesSurnamePath();
@@ -93,7 +95,8 @@ public class JsonExtractor implements Extractor {
 
                 JSONObject json = new JSONObject();
                 json.put("cases", caseValues);
-                json.put("parties", Stream.concat(partySurnameValues.stream(), partyOrganisationValues.stream()).toList());
+                json.put("parties", Stream.concat(partySurnameValues.stream(),
+                                                  partyOrganisationValues.stream()).toList());
 
                 parties.add(json);
             } catch (JsonProcessingException e) {
