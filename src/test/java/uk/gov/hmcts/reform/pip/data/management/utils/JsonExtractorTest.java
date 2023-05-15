@@ -52,6 +52,14 @@ class JsonExtractorTest {
 
     }
 
+    void testExtractParties() {
+      //Need to add a general test about extracting parties
+    }
+
+    void testExtractPartiesExcludesRepresentatives() {
+      //Need to ensure that parties are extracted successfully
+    }
+
     @Test
     void testExtractSearchTermWhereMissing() {
         try (InputStream mockFile = this.getClass().getClassLoader()

@@ -12,6 +12,7 @@ import com.jayway.jsonpath.spi.json.JacksonJsonNodeJsonProvider;
 import com.jayway.jsonpath.spi.json.JacksonJsonProvider;
 import com.jayway.jsonpath.spi.json.JsonProvider;
 import com.jayway.jsonpath.spi.mapper.JacksonMappingProvider;
+import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -25,7 +26,10 @@ import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
 
+import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
+
 @Component
+@Slf4j
 public class JsonExtractor implements Extractor {
 
     private final Configuration jsonConfiguration;
@@ -68,8 +72,6 @@ public class JsonExtractor implements Extractor {
     }
 
     private void extractUsingAdvancedJPath(Map<String, List<Object>> searchTermsMap, String payload) {
-
-        //Firstly retrieve all hearings
         String hearingsPath = searchConfiguration.getAdvancedSearchConfig().getHearingsPath();
 
         DocumentContext jsonPayload = JsonPath
@@ -81,12 +83,12 @@ public class JsonExtractor implements Extractor {
 
         List<Object> parties = new ArrayList<>();
         hearings.forEach(hearing -> {
+
             try {
                 DocumentContext hearingsPayload = JsonPath
                     .using(jsonConfiguration)
                     .parse(new ObjectMapper().writeValueAsString(hearing));
 
-                //Now that were in each hearing, let's firstly extract the case info
                 String casesPath = searchConfiguration.getAdvancedSearchConfig().getCasesPath();
                 String partiesSurnamePath = searchConfiguration.getAdvancedSearchConfig().getPartiesSurnamePath();
                 String partiesOrganisationPath = searchConfiguration.getAdvancedSearchConfig().getPartiesOrgNamePath();
@@ -95,22 +97,18 @@ public class JsonExtractor implements Extractor {
                 List<Object> partySurnameValues = hearingsPayload.read(partiesSurnamePath);
                 List<Object> partyOrganisationValues = hearingsPayload.read(partiesOrganisationPath);
 
-                //Now let's combine them together into a single object
                 JSONObject json = new JSONObject();
                 json.put("cases", caseValues);
                 json.put("parties", Stream.concat(partySurnameValues.stream(), partyOrganisationValues.stream()).toList());
 
-
-                //And add it into the Json object!!
                 parties.add(json);
             } catch (JsonProcessingException e) {
-                throw new RuntimeException(e);
+                log.warn(writeLog("Failed to extract parties from JSON payload"));
             }
+
         });
 
         searchTermsMap.put("parties", parties);
-
-
     }
 
     @Override
