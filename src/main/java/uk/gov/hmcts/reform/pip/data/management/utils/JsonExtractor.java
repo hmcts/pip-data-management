@@ -1,17 +1,11 @@
 package uk.gov.hmcts.reform.pip.data.management.utils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.Option;
-import com.jayway.jsonpath.TypeRef;
-import com.jayway.jsonpath.spi.json.JacksonJsonNodeJsonProvider;
-import com.jayway.jsonpath.spi.json.JacksonJsonProvider;
-import com.jayway.jsonpath.spi.json.JsonProvider;
-import com.jayway.jsonpath.spi.mapper.JacksonMappingProvider;
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,7 +46,7 @@ public class JsonExtractor implements Extractor {
         Map<String, List<Object>> searchTermsMap = new ConcurrentHashMap<>();
 
         extractUsingJPath(searchTermsMap, payload);
-        extractUsingAdvancedJPath(searchTermsMap, payload);
+        extractPartiesUsingJPath(searchTermsMap, payload);
 
         return searchTermsMap;
     }
@@ -71,8 +65,8 @@ public class JsonExtractor implements Extractor {
         });
     }
 
-    private void extractUsingAdvancedJPath(Map<String, List<Object>> searchTermsMap, String payload) {
-        String hearingsPath = searchConfiguration.getAdvancedSearchConfig().getHearingsPath();
+    private void extractPartiesUsingJPath(Map<String, List<Object>> searchTermsMap, String payload) {
+        String hearingsPath = searchConfiguration.getPartySearchConfig().getHearingsPath();
 
         DocumentContext jsonPayload = JsonPath
             .using(jsonConfiguration)
@@ -89,9 +83,9 @@ public class JsonExtractor implements Extractor {
                     .using(jsonConfiguration)
                     .parse(new ObjectMapper().writeValueAsString(hearing));
 
-                String casesPath = searchConfiguration.getAdvancedSearchConfig().getCasesPath();
-                String partiesSurnamePath = searchConfiguration.getAdvancedSearchConfig().getPartiesSurnamePath();
-                String partiesOrganisationPath = searchConfiguration.getAdvancedSearchConfig().getPartiesOrgNamePath();
+                String casesPath = searchConfiguration.getPartySearchConfig().getCasesPath();
+                String partiesSurnamePath = searchConfiguration.getPartySearchConfig().getPartiesSurnamePath();
+                String partiesOrganisationPath = searchConfiguration.getPartySearchConfig().getPartiesOrgNamePath();
 
                 List<Object> caseValues = hearingsPayload.read(casesPath);
                 List<Object> partySurnameValues = hearingsPayload.read(partiesSurnamePath);

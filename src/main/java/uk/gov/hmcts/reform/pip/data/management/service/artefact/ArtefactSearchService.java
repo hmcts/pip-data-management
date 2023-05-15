@@ -65,8 +65,6 @@ public class ArtefactSearchService {
         LocalDateTime currDate = LocalDateTime.now();
         List<Artefact> artefacts;
 
-        //Need to add parties into here
-
         switch (searchTerm) {
             case CASE_ID, CASE_URN ->
                 artefacts = artefactRepository.findArtefactBySearch(searchTerm.dbValue, searchValue, currDate);

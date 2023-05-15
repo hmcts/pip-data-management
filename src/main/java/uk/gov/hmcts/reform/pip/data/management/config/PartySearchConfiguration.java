@@ -8,7 +8,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class AdvancedSearchConfiguration {
+public class PartySearchConfiguration {
 
     private String hearingsPath;
     private String casesPath;
