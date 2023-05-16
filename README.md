@@ -167,6 +167,40 @@ Our full API specification can be found within our Swagger-UI page.
 It can be accessed locally by starting the service and going to [http://localhost:8090/swagger-ui/swagger-ui/index.html](http://localhost:8090/swagger-ui/swagger-ui/index.html)
 Alternatively, if you're on our VPN, you can access the swagger endpoint at our staging URL (ask a teammate to give you this).
 
+## Search Criteria
+
+The 'search' field forms part of the response back from the POST /publication endpoint.
+
+The field contains values extracted from the payload that are then used by users in the frontend to search for publications when setting up subscriptions.
+
+The values are extracted using JPATH (Jayway implementation). This is an example of the extracted values:
+
+```json
+{
+  "cases":[{
+    "caseUrn": "ExampleURN",
+    "caseName": "ExampleName",
+    "caseNumber": "ExampleNumber"
+  }],
+  "parties": [
+    {
+      "cases": [{
+        "caseUrn": "ExampleURN",
+        "caseName": "ExampleName",
+        "caseNumber": "ExampleNumber"
+      }],
+      "parties": [
+        "PARTY NAME"
+      ]
+    }
+  ]
+}
+```
+
+The 'parties' section is used for searching via party name in the frontend. It excludes representatives, and blank / null party roles.
+
+The 'cases' section is used for search by case Number, URN or Name.
+
 ## Examples
 As mentioned, the full api documentation can be found within swagger-ui, but some of the most common operations are highlighted below.
 
