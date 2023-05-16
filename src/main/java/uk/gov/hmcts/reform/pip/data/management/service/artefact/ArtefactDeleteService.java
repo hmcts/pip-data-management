@@ -148,11 +148,18 @@ public class ArtefactDeleteService {
         List<Artefact> activeArtefacts =
             artefactRepository.findActiveArtefactsForLocation(searchDateTime, locationId.toString());
         if (activeArtefacts.isEmpty()) {
+            log.info(writeLog(String.format("User %s attempting to delete all artefacts for location %s. "
+                                                + "No artefacts found",
+                                            provenanceUserId, locationId)));
             throw new ArtefactNotFoundException(String.format(
-                "No artefact found with the location ID %s",
+                "No artefacts found with the location ID %s",
                 locationId
             ));
         } else {
+            log.info(writeLog(String.format("User %s attempting to delete all artefacts for location %s. "
+                                                + "%s artefact(s) found",
+                                            provenanceUserId, locationId, activeArtefacts.size())));
+
             activeArtefacts.forEach(artefact -> {
                 artefactRepository.delete(artefact);
                 deleteAllPublicationBlobData(artefact);
