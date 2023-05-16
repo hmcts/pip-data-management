@@ -92,7 +92,8 @@ class JsonExtractorTest {
         }
     }
 
-    //Note - By checking the array size / contents - this test also captures excluding
+    //Note - By checking the array size / contents - this test also captures exclusion of representatives
+    // null and missing party roles
     @Test
     void testExtractPartiesPartiesArray() {
         try (InputStream mockFile = this.getClass().getClassLoader()

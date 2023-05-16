@@ -42,6 +42,17 @@
                         "hearingType": "Hearing Type",
                         "party": [
                           {
+                            "individualDetails": {
+                              "individualSurname": "Missing party role"
+                            }
+                          },
+                          {
+                            "partyRole": "",
+                            "individualDetails": {
+                              "individualSurname": "Empty party role"
+                            }
+                          },
+                          {
                             "partyRole": "APPLICANT",
                             "individualDetails": {
                               "individualSurname": "Applicant Surname"

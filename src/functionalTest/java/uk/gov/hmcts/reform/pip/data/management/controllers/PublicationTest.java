@@ -1630,7 +1630,7 @@ class PublicationTest {
 
         assertTrue(
             getResponse.getResponse().getContentAsString().contains(artefact.getArtefactId().toString()),
-            "SHOULD_RETURN_EXPECTED_ARTEFACT"
+            SHOULD_RETURN_EXPECTED_ARTEFACT
         );
     }
 
@@ -1666,7 +1666,7 @@ class PublicationTest {
 
         assertTrue(
             getResponse.getResponse().getContentAsString().contains(artefact.getArtefactId().toString()),
-            "SHOULD_RETURN_EXPECTED_ARTEFACT"
+            SHOULD_RETURN_EXPECTED_ARTEFACT
         );
     }
 
@@ -1685,7 +1685,7 @@ class PublicationTest {
 
         assertTrue(
             getResponse.getResponse().getContentAsString().contains(artefact.getArtefactId().toString()),
-            "SHOULD_RETURN_EXPECTED_ARTEFACT"
+            SHOULD_RETURN_EXPECTED_ARTEFACT
         );
     }
 
@@ -1720,7 +1720,7 @@ class PublicationTest {
 
         assertTrue(
             getResponse.getResponse().getContentAsString().contains(artefact.getArtefactId().toString()),
-            "SHOULD_RETURN_EXPECTED_ARTEFACT"
+            SHOULD_RETURN_EXPECTED_ARTEFACT
         );
     }
 
@@ -1739,7 +1739,7 @@ class PublicationTest {
 
         assertTrue(
             getResponse.getResponse().getContentAsString().contains(artefact.getArtefactId().toString()),
-            "SHOULD_RETURN_EXPECTED_ARTEFACT"
+            SHOULD_RETURN_EXPECTED_ARTEFACT
         );
     }
 
@@ -1850,7 +1850,7 @@ class PublicationTest {
 
             assertTrue(
                 getResponse.getResponse().getContentAsString().contains(artefact.getArtefactId().toString()),
-                "SHOULD_RETURN_EXPECTED_ARTEFACT"
+                SHOULD_RETURN_EXPECTED_ARTEFACT
             );
         }
     }

@@ -104,8 +104,8 @@ payload:
     party-search-config:
       hearings-path: "$['courtLists'][*]['courtHouse']['courtRoom'][*]['session'][*]['sittings'][*]['hearing'][*]"
       cases-path: "$['case'][*]['caseNumber', 'caseName', 'caseUrn']"
-      parties-surname-path: "$['party'][?(!(@.partyRole =~ /^.*representative.*$/i))]['individualDetails']['individualSurname']"
-      parties-org-name-path: "$['party'][?(!(@.partyRole =~ /^.*representative.*$/i))]['organisationDetails']['organisationName']"
+      parties-surname-path: "$['party'][?(@.partyRole != null && !(@.partyRole size 0) && @.partyRole != null && !(@.partyRole =~ /^.*representative.*$/i))]['individualDetails']['individualSurname']"
+      parties-org-name-path: "$['party'][?(@.partyRole != null && !(@.partyRole size 0) && !(@.partyRole =~ /^.*representative.*$/i))]['organisationDetails']['organisationName']"
     search-values:
       cases: "$['courtLists'][*]['courtHouse']['courtRoom'][*]['session'][*]['sittings'][*]['hearing'][*]['case'][*]['caseNumber', 'caseName', 'caseUrn']"
 validations:
