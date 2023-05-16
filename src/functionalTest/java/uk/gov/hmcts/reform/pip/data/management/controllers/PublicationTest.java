@@ -3,6 +3,8 @@ package uk.gov.hmcts.reform.pip.data.management.controllers;
 import com.azure.core.util.BinaryData;
 import com.azure.storage.blob.BlobClient;
 import com.azure.storage.blob.BlobContainerClient;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microsoft.applicationinsights.web.dependencies.apachecommons.io.IOUtils;
@@ -48,6 +50,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static org.junit.Assert.fail;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -123,6 +126,10 @@ class PublicationTest {
 
     private static final String VALID_CASE_ID_SEARCH = "/CASE_ID/45684548";
     private static final String VALID_CASE_NAME_SEARCH = "/CASE_NAME/Smith";
+    private static final String PARTY_NAME_SEARCH = "/PARTY_NAME/Applicant";
+
+    private static final String PARTY_NAME_SEARCH_REPRESENTATIVE = "/PARTY_NAME/Rep";
+
     private static final String TRUE = "true";
     private static final String FALSE = "false";
     private static final String ADMIN_HEADER = "x-admin";
@@ -132,6 +139,10 @@ class PublicationTest {
     private static final String VALIDATION_EMPTY_RESPONSE = "Response should contain a Artefact";
     private static final String VALIDATION_DISPLAY_FROM = "The expected Display From has not been returned";
     private static final String SHOULD_RETURN_EXPECTED_ARTEFACT = "Should return expected artefact";
+    private static final String PARTIES_KEY = "parties";
+
+    private static final String CASES_KEY = "cases";
+    private static final String PARTIES_MESSAGE = "Parties does not contain parties key";
 
     private static MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
     private static ObjectMapper objectMapper;
@@ -157,6 +168,11 @@ class PublicationTest {
     Artefact createDailyList(Sensitivity sensitivity, LocalDateTime displayFrom, LocalDateTime contentDate)
         throws Exception {
         return createDailyList(sensitivity, displayFrom, DISPLAY_TO, contentDate, PROVENANCE);
+    }
+
+    Artefact createDailyList(LocalDateTime displayFrom, LocalDateTime displayTo)
+        throws Exception {
+        return createDailyList(SENSITIVITY, displayFrom, displayTo, CONTENT_DATE, PROVENANCE);
     }
 
     Artefact createDailyList(Sensitivity sensitivity, LocalDateTime displayFrom, LocalDateTime displayTo,
@@ -279,6 +295,66 @@ class PublicationTest {
             );
         }
     }
+
+    @Test
+    @DisplayName("Should create a valid artefact including the correct search criteria")
+    void creationOfAValidArtefactPartiesExtraction() throws Exception {
+
+        mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
+
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
+            .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
+            .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
+            .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
+            .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
+            .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO)
+            .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
+            .header(PublicationConfiguration.LIST_TYPE, LIST_TYPE)
+            .header(PublicationConfiguration.COURT_ID, COURT_ID)
+            .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
+            .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
+            .contentType(MediaType.APPLICATION_JSON);
+
+        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(blobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
+
+        MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
+
+        Artefact artefact = objectMapper.readValue(
+            response.getResponse().getContentAsString(), Artefact.class);
+
+
+        Map<String, List<Object>> searchResult = artefact.getSearch();
+        assertTrue(searchResult.containsKey("parties"), "Returned search result does not contain the correct key");
+
+        List<Map<String, Object>> parties = new ObjectMapper().convertValue(searchResult.get("parties"),
+                                                                            new TypeReference<>() {});
+        assertEquals(3, parties.size(), "Party array not expected size");
+
+        Map<String, Object> firstParty = parties.get(0);
+        assertTrue(firstParty.containsKey(PARTIES_KEY), PARTIES_MESSAGE);
+        assertTrue(firstParty.containsKey(CASES_KEY), "Parties does not contain cases key");
+
+        List<ConcurrentHashMap<String, Object>> cases = new ObjectMapper()
+            .setSerializationInclusion(JsonInclude.Include.NON_NULL)
+            .convertValue(firstParty.get(CASES_KEY),new TypeReference<>() {});
+
+        assertEquals(1, cases.size(), "Unexpected number of cases returned");
+
+        ConcurrentHashMap<String, String> firstCase = new ObjectMapper().convertValue(cases.get(0),
+                                                                                      new TypeReference<>() {});
+        assertEquals("45684548", firstCase.get("caseNumber"), "Unexpected case number returned");
+        assertEquals("This is a case name", firstCase.get("caseName"), "Unexpected case name returned");
+
+        assertTrue(firstParty.containsKey(PARTIES_KEY), PARTIES_MESSAGE);
+
+        List<String> partyNames = new ObjectMapper().convertValue(firstParty.get(PARTIES_KEY),
+                                                                  new TypeReference<>() {});
+        assertEquals(2, partyNames.size(), "Unexpected number of parties returned");
+        assertTrue(partyNames.contains("Applicant Surname"), "Applicant not present");
+        assertTrue(partyNames.contains("Respondent Org Name"), "Respondent not present");
+    }
+
 
     @DisplayName("Should create a valid artefact with provenance different from manual_upload")
     @Test
@@ -1624,6 +1700,159 @@ class PublicationTest {
             MockMvcRequestBuilders.get(SEARCH_URL + VALID_CASE_NAME_SEARCH);
 
         mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isNotFound()).andReturn();
+    }
+
+    @Test
+    void testGetArtefactByPartiesSearchVerified() throws Exception {
+        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(blobContainerClient.getBlobContainerUrl()).thenReturn(PAYLOAD_URL);
+
+        Artefact artefact = createDailyList(Sensitivity.PRIVATE);
+
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 =
+            MockMvcRequestBuilders.get(SEARCH_URL + PARTY_NAME_SEARCH);
+
+        mockHttpServletRequestBuilder1
+            .header(USER_ID_HEADER, userId);
+
+        MvcResult getResponse =
+            mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isOk()).andReturn();
+
+        assertTrue(
+            getResponse.getResponse().getContentAsString().contains(artefact.getArtefactId().toString()),
+            "SHOULD_RETURN_EXPECTED_ARTEFACT"
+        );
+    }
+
+    @Test
+    void testGetArtefactByPartiesSearchUnverified() throws Exception {
+        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(blobContainerClient.getBlobContainerUrl()).thenReturn(PAYLOAD_URL);
+
+        Artefact artefact = createDailyList(Sensitivity.PUBLIC);
+
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 =
+            MockMvcRequestBuilders.get(SEARCH_URL + PARTY_NAME_SEARCH);
+
+        MvcResult getResponse =
+            mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isOk()).andReturn();
+
+        assertTrue(
+            getResponse.getResponse().getContentAsString().contains(artefact.getArtefactId().toString()),
+            "SHOULD_RETURN_EXPECTED_ARTEFACT"
+        );
+    }
+
+    @Test
+    void testGetArtefactByPartiesSearchUnverifiedRepresentative() throws Exception {
+        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(blobContainerClient.getBlobContainerUrl()).thenReturn(PAYLOAD_URL);
+
+        createDailyList(Sensitivity.CLASSIFIED);
+
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 =
+            MockMvcRequestBuilders.get(SEARCH_URL + PARTY_NAME_SEARCH_REPRESENTATIVE);
+
+        mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isNotFound()).andReturn();
+    }
+
+    @Test
+    void testGetArtefactByPartiesSearchUnverifiedNotFound() throws Exception {
+        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(blobContainerClient.getBlobContainerUrl()).thenReturn(PAYLOAD_URL);
+
+        createDailyList(Sensitivity.CLASSIFIED);
+
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 =
+            MockMvcRequestBuilders.get(SEARCH_URL + PARTY_NAME_SEARCH);
+
+        mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isNotFound()).andReturn();
+    }
+
+    @Test
+    void testGetArtefactByPartiesSearchOutOfDateRangePast() throws Exception {
+        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(blobContainerClient.getBlobContainerUrl()).thenReturn(PAYLOAD_URL);
+
+        createDailyList(LocalDateTime.now().minusMonths(2), LocalDateTime.now().minusMonths(2));
+
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 =
+            MockMvcRequestBuilders.get(SEARCH_URL + PARTY_NAME_SEARCH);
+
+        mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isNotFound()).andReturn();
+    }
+
+    @Test
+    void testGetArtefactByPartiesSearchOutOfDateRangeFuture() throws Exception {
+        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(blobContainerClient.getBlobContainerUrl()).thenReturn(PAYLOAD_URL);
+
+        createDailyList(LocalDateTime.now().plusMonths(1), LocalDateTime.now().plusMonths(2));
+
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 =
+            MockMvcRequestBuilders.get(SEARCH_URL + PARTY_NAME_SEARCH);
+
+        mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isNotFound()).andReturn();
+    }
+
+    @Test
+    void testGetArtefactByPartiesSearchIsArchived() throws Exception {
+        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(blobContainerClient.getBlobContainerUrl()).thenReturn(PAYLOAD_URL);
+
+        Artefact artefact = createDailyList(Sensitivity.PUBLIC);
+
+        MockHttpServletRequestBuilder deleteRequest = MockMvcRequestBuilders
+            .delete(PUBLICATION_URL + "/" + artefact.getArtefactId())
+            .header(ISSUER_HEADER, EMAIL);
+
+        mockMvc.perform(deleteRequest).andExpect(status().isOk());
+
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 =
+            MockMvcRequestBuilders.get(SEARCH_URL + PARTY_NAME_SEARCH);
+
+        mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isNotFound()).andReturn();
+    }
+
+    @Test
+    void testGetArtefactByPartiesSearchDisplayToBlank() throws Exception {
+        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(blobContainerClient.getBlobContainerUrl()).thenReturn(PAYLOAD_URL);
+
+        try (InputStream mockFile = this.getClass().getClassLoader()
+            .getResourceAsStream("data/civil-daily-cause-list/civilDailyCauseList.json")) {
+
+            MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .post(PUBLICATION_URL)
+                .header(PublicationConfiguration.TYPE_HEADER, ArtefactType.GENERAL_PUBLICATION)
+                .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
+                .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
+                .header(PublicationConfiguration.DISPLAY_FROM_HEADER, LocalDateTime.now())
+                .header(PublicationConfiguration.COURT_ID, COURT_ID)
+                .header(PublicationConfiguration.LIST_TYPE, ListType.CIVIL_DAILY_CAUSE_LIST)
+                .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
+                .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
+                .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
+                .content(mockFile.readAllBytes())
+                .contentType(MediaType.APPLICATION_JSON);
+
+            MvcResult artefactResponse = mockMvc.perform(mockHttpServletRequestBuilder)
+                .andExpect(status().isCreated()).andReturn();
+
+            Artefact artefact = objectMapper.readValue(
+                artefactResponse.getResponse().getContentAsString(), Artefact.class);
+
+            MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 =
+                MockMvcRequestBuilders.get(SEARCH_URL + PARTY_NAME_SEARCH);
+
+            MvcResult getResponse =
+                mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isOk()).andReturn();
+
+            assertTrue(
+                getResponse.getResponse().getContentAsString().contains(artefact.getArtefactId().toString()),
+                "SHOULD_RETURN_EXPECTED_ARTEFACT"
+            );
+        }
     }
 
     @Test
