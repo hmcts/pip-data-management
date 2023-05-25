@@ -11,6 +11,7 @@ import java.util.Map;
 @Setter
 public class SearchConfiguration {
 
+    private PartySearchConfiguration partySearchConfig;
     private Map<String, String> searchValues;
 
 }

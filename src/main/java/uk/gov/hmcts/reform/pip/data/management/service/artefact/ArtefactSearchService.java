@@ -56,7 +56,7 @@ public class ArtefactSearchService {
     /**
      * Get all relevant Artefacts based on search values stored in the Artefact.
      *
-     * @param searchTerm  the search term checking against, eg. CASE_ID or CASE_URN
+     * @param searchTerm  the search term checking against, e.g. CASE_ID or CASE_URN
      * @param searchValue the search value to look for
      * @param userId      represents the user ID of the user who is making the request
      * @return list of Artefacts
@@ -64,10 +64,12 @@ public class ArtefactSearchService {
     public List<Artefact> findAllBySearch(CaseSearchTerm searchTerm, String searchValue, UUID userId) {
         LocalDateTime currDate = LocalDateTime.now();
         List<Artefact> artefacts;
+
         switch (searchTerm) {
             case CASE_ID, CASE_URN ->
                 artefacts = artefactRepository.findArtefactBySearch(searchTerm.dbValue, searchValue, currDate);
             case CASE_NAME -> artefacts = artefactRepository.findArtefactByCaseName(searchValue, currDate);
+            case PARTY_NAME -> artefacts = artefactRepository.findArtefactsByPartyName(searchValue, currDate);
             default -> throw new IllegalArgumentException(String.format("Invalid search term: %s", searchTerm));
         }
 

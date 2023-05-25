@@ -4,7 +4,8 @@ public enum CaseSearchTerm {
 
     CASE_URN("caseUrn"),
     CASE_ID("caseNumber"),
-    CASE_NAME("caseName");
+    CASE_NAME("caseName"),
+    PARTY_NAME("partyName");
 
     public final String dbValue;
 
