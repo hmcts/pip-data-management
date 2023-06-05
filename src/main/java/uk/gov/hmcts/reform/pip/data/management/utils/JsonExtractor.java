@@ -95,8 +95,10 @@ public class JsonExtractor implements Extractor {
 
                 JSONObject json = new JSONObject();
                 json.put("cases", caseValues);
-                json.put("parties", Stream.concat(partySurnameValues.stream(),
-                                                  partyOrganisationValues.stream()).toList());
+                json.put("parties",
+                         Stream.concat(partySurnameValues.stream(), partyOrganisationValues.stream())
+                             .distinct()
+                             .toList());
 
                 parties.add(json);
             } catch (JsonProcessingException e) {

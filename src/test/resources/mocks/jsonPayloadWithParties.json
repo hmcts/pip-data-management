@@ -29,6 +29,18 @@
                             }
                           },
                           {
+                            "partyRole": "APPLICANT",
+                            "individualDetails": {
+                              "individualSurname": "Applicant Surname"
+                            }
+                          },
+                          {
+                            "partyRole": "RESPONDENT",
+                            "organisationDetails": {
+                              "organisationName": "Respondent Org Name"
+                            }
+                          },
+                          {
                             "partyRole": "RESPONDENT",
                             "organisationDetails": {
                               "organisationName": "Respondent Org Name"
