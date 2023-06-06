@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -36,12 +37,24 @@ class JsonExtractorTest {
     private static final String CASES_KEY = "cases";
 
     private static final String PARTIES_KEY = "parties";
+    private static final String ORGANISATIONS_KEY = "organisations";
+    private static final String INDIVIDUALS_KEY = "individuals";
     private static final String TEST_KEY_NOT_FOUND = "test-id-not-found";
     private static final String UNKNOWN_EXCEPTION = "Unknown exception when opening the paylaod file";
     private static final String MOCK_PARTIES_FILE = "mocks/jsonPayloadWithParties.json";
 
     private static final String SEARCH_TERM_MESSAGE = "Search term does not contain expected key";
     private static final String PARTIES_MESSAGE = "Parties does not contain parties key";
+    private static final String ORGANISATION_KEY_MESSAGE = "Parties does not contain organisations key";
+    private static final String ORGANISATION_COUNT_MESSAGE = "The number of organisation names does not match";
+    private static final String ORGANISATION_NAME_MESSAGE = "Organisation name does not match";
+    private static final String INDIVIDUAL_KEY_MESSAGE = "Parties does not contain individuals key";
+    private static final String INDIVIDUAL_COUNT_MESSAGE = "The number of individual names does not match";
+    private static final String INDIVIDUAL_FORENAME_MESSAGE = "Individual forename does not match";
+    private static final String INDIVIDUAL_MIDDLE_NAME_MESSAGE = "Individual middle name does not match";
+    private static final String INDIVIDUAL_SURNAME_MESSAGE = "Individual surname does not match";
+
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     @Test
     void testExtractSearchTerms() {
@@ -70,20 +83,21 @@ class JsonExtractorTest {
             Map<String, List<Object>> searchTerms = jsonExtractor.extractSearchTerms(textJson);
             assertTrue(searchTerms.containsKey(PARTIES_KEY), SEARCH_TERM_MESSAGE);
 
-            List<Map<String, Object>> parties = new ObjectMapper().convertValue(searchTerms.get(PARTIES_KEY),
-                                                                                new TypeReference<>() {});
+            List<Map<String, Object>> parties = OBJECT_MAPPER.convertValue(searchTerms.get(PARTIES_KEY),
+                                                                           new TypeReference<>() {});
             assertEquals(3, parties.size(), "Party array not expected size");
 
             Map<String, Object> firstParty = parties.get(0);
-            assertTrue(firstParty.containsKey(PARTIES_KEY), PARTIES_MESSAGE);
+            assertTrue(firstParty.containsKey(ORGANISATIONS_KEY), ORGANISATION_KEY_MESSAGE);
+            assertTrue(firstParty.containsKey(INDIVIDUALS_KEY), INDIVIDUAL_KEY_MESSAGE);
             assertTrue(firstParty.containsKey(CASES_KEY), "Parties does not contain cases key");
 
-            List<ConcurrentHashMap<String, Object>> cases = new ObjectMapper().convertValue(firstParty.get(CASES_KEY),
-                                                                                            new TypeReference<>() {});
+            List<ConcurrentHashMap<String, Object>> cases = OBJECT_MAPPER.convertValue(firstParty.get(CASES_KEY),
+                                                                                       new TypeReference<>() {});
             assertEquals(2, cases.size(), "Unexpected number of cases returned");
 
-            ConcurrentHashMap<String, String> firstCase = new ObjectMapper().convertValue(cases.get(0),
-                                                                                          new TypeReference<>() {});
+            ConcurrentHashMap<String, String> firstCase = OBJECT_MAPPER.convertValue(cases.get(0),
+                                                                                     new TypeReference<>() {});
             assertEquals("CASE1234", firstCase.get("caseNumber"), "Unexpected case number returned");
             assertEquals("A vs B", firstCase.get("caseName"), "Unexpected case name returned");
             assertEquals("URN1234", firstCase.get("caseUrn"), "Unexpected case urn returned");
@@ -103,22 +117,40 @@ class JsonExtractorTest {
             Map<String, List<Object>> searchTerms = jsonExtractor.extractSearchTerms(textJson);
             assertTrue(searchTerms.containsKey(PARTIES_KEY), SEARCH_TERM_MESSAGE);
 
-            List<Map<String, Object>> parties = new ObjectMapper().convertValue(searchTerms.get(PARTIES_KEY),
-                                                                                new TypeReference<>() {});
+            List<Map<String, Object>> parties = OBJECT_MAPPER.convertValue(searchTerms.get(PARTIES_KEY),
+                                                                           new TypeReference<>() {});
             assertEquals(3, parties.size(), "Party array not expected size");
 
             Map<String, Object> firstParty = parties.get(0);
-            assertTrue(firstParty.containsKey(PARTIES_KEY), PARTIES_MESSAGE);
+            assertTrue(firstParty.containsKey(ORGANISATIONS_KEY), ORGANISATION_KEY_MESSAGE);
+            assertTrue(firstParty.containsKey(INDIVIDUALS_KEY), INDIVIDUAL_KEY_MESSAGE);
 
-            List<String> partyNames = new ObjectMapper().convertValue(firstParty.get(PARTIES_KEY),
-                                                                      new TypeReference<>() {});
-            assertEquals(2, partyNames.size(), "Unexpected number of parties returned");
-            assertTrue(partyNames.contains("Applicant Surname"), "Applicant not present");
-            assertTrue(partyNames.contains("Respondent Org Name"), "Respondent not present");
+            List<String> organisationNames = OBJECT_MAPPER.convertValue(firstParty.get(ORGANISATIONS_KEY),
+                                                                        new TypeReference<>() {});
+
+            assertEquals(2, organisationNames.size(), ORGANISATION_COUNT_MESSAGE);
+            assertTrue(organisationNames.contains("Applicant Org Name"), ORGANISATION_NAME_MESSAGE);
+            assertTrue(organisationNames.contains("Respondent Org Name"), ORGANISATION_NAME_MESSAGE);
+
+            List<Map<String, Object>> individualNames = OBJECT_MAPPER.convertValue(firstParty.get(INDIVIDUALS_KEY),
+                                                                                   new TypeReference<>() {});
+
+            assertEquals(2, individualNames.size(), INDIVIDUAL_COUNT_MESSAGE);
+            assertEquals("Applicant Forename", individualNames.get(0).get("forename"),
+                         INDIVIDUAL_FORENAME_MESSAGE);
+            assertEquals("Applicant middle name", individualNames.get(0).get("middleName"),
+                         INDIVIDUAL_MIDDLE_NAME_MESSAGE);
+            assertEquals("Applicant Surname", individualNames.get(0).get("surname"),
+                         INDIVIDUAL_SURNAME_MESSAGE);
+
+            assertNull(INDIVIDUAL_FORENAME_MESSAGE, individualNames.get(1).get("forename"));
+            assertNull(INDIVIDUAL_MIDDLE_NAME_MESSAGE, individualNames.get(1).get("middleName"));
+            assertEquals("Respondent Surname", individualNames.get(1).get("surname"),
+                         INDIVIDUAL_SURNAME_MESSAGE);
+
         } catch (IOException exception) {
             fail(UNKNOWN_EXCEPTION);
         }
-
     }
 
     @Test
@@ -128,15 +160,19 @@ class JsonExtractorTest {
 
             String textJson = new String(mockFile.readAllBytes(), StandardCharsets.UTF_8);
             Map<String, List<Object>> searchTerms = jsonExtractor.extractSearchTerms(textJson);
-            List<Map<String, Object>> parties = new ObjectMapper().convertValue(searchTerms.get(PARTIES_KEY),
-                                                                                new TypeReference<>() {});
-            Map<String, Object> firstParty = parties.get(1);
+            List<Map<String, Object>> parties = OBJECT_MAPPER.convertValue(searchTerms.get(PARTIES_KEY),
+                                                                           new TypeReference<>() {});
+            Map<String, Object> secondParty = parties.get(1);
+            assertTrue(secondParty.containsKey(ORGANISATIONS_KEY), ORGANISATION_KEY_MESSAGE);
+            assertTrue(secondParty.containsKey(INDIVIDUALS_KEY), INDIVIDUAL_KEY_MESSAGE);
 
-            assertTrue(firstParty.containsKey(PARTIES_KEY), PARTIES_MESSAGE);
+            List<String> organisationNames = OBJECT_MAPPER.convertValue(secondParty.get(ORGANISATIONS_KEY),
+                                                                        new TypeReference<>() {});
+            assertEquals(0, organisationNames.size(), ORGANISATION_COUNT_MESSAGE);
 
-            List<String> partyNames = new ObjectMapper().convertValue(firstParty.get(PARTIES_KEY),
-                                                                      new TypeReference<>() {});
-            assertEquals(0, partyNames.size(), "Unexpected number of parties returned");
+            List<Map<String, Object>> individualNames = OBJECT_MAPPER.convertValue(secondParty.get(INDIVIDUALS_KEY),
+                                                                                   new TypeReference<>() {});
+            assertEquals(0, individualNames.size(), INDIVIDUAL_COUNT_MESSAGE);
         } catch (IOException exception) {
             fail(UNKNOWN_EXCEPTION);
         }
@@ -149,15 +185,20 @@ class JsonExtractorTest {
 
             String textJson = new String(mockFile.readAllBytes(), StandardCharsets.UTF_8);
             Map<String, List<Object>> searchTerms = jsonExtractor.extractSearchTerms(textJson);
-            List<Map<String, Object>> parties = new ObjectMapper().convertValue(searchTerms.get(PARTIES_KEY),
-                                                                                new TypeReference<>() {});
-            Map<String, Object> firstParty = parties.get(2);
+            List<Map<String, Object>> parties = OBJECT_MAPPER.convertValue(searchTerms.get(PARTIES_KEY),
+                                                                           new TypeReference<>() {});
+            Map<String, Object> thirdParty = parties.get(2);
 
-            assertTrue(firstParty.containsKey(PARTIES_KEY), PARTIES_MESSAGE);
+            assertTrue(thirdParty.containsKey(ORGANISATIONS_KEY), ORGANISATION_KEY_MESSAGE);
+            assertTrue(thirdParty.containsKey(INDIVIDUALS_KEY), INDIVIDUAL_KEY_MESSAGE);
 
-            List<String> partyNames = new ObjectMapper().convertValue(firstParty.get(PARTIES_KEY),
-                                                                      new TypeReference<>() {});
-            assertEquals(0, partyNames.size(), "Unexpected number of parties returned");
+            List<String> organisationNames = OBJECT_MAPPER.convertValue(thirdParty.get(ORGANISATIONS_KEY),
+                                                                        new TypeReference<>() {});
+            assertEquals(0, organisationNames.size(), ORGANISATION_COUNT_MESSAGE);
+
+            List<Map<String, Object>> individualNames = OBJECT_MAPPER.convertValue(thirdParty.get(INDIVIDUALS_KEY),
+                                                                                   new TypeReference<>() {});
+            assertEquals(0, individualNames.size(), INDIVIDUAL_COUNT_MESSAGE);
         } catch (IOException exception) {
             fail(UNKNOWN_EXCEPTION);
         }

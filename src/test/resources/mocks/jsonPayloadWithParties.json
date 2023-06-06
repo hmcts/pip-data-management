@@ -25,19 +25,21 @@
                           {
                             "partyRole": "APPLICANT",
                             "individualDetails": {
-                              "individualSurname": "Applicant Surname"
-                            }
-                          },
-                          {
-                            "partyRole": "APPLICANT",
-                            "individualDetails": {
+                              "individualForenames": "Applicant Forename",
+                              "individualMiddleName": "Applicant middle name",
                               "individualSurname": "Applicant Surname"
                             }
                           },
                           {
                             "partyRole": "RESPONDENT",
+                            "individualDetails": {
+                              "individualSurname": "Respondent Surname"
+                            }
+                          },
+                          {
+                            "partyRole": "APPLICANT",
                             "organisationDetails": {
-                              "organisationName": "Respondent Org Name"
+                              "organisationName": "Applicant Org Name"
                             }
                           },
                           {
