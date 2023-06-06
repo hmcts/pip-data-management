@@ -44,7 +44,6 @@ class JsonExtractorTest {
     private static final String MOCK_PARTIES_FILE = "mocks/jsonPayloadWithParties.json";
 
     private static final String SEARCH_TERM_MESSAGE = "Search term does not contain expected key";
-    private static final String PARTIES_MESSAGE = "Parties does not contain parties key";
     private static final String ORGANISATION_KEY_MESSAGE = "Parties does not contain organisations key";
     private static final String ORGANISATION_COUNT_MESSAGE = "The number of organisation names does not match";
     private static final String ORGANISATION_NAME_MESSAGE = "Organisation name does not match";
