@@ -283,6 +283,7 @@ Locally, we use [Log4j](https://logging.apache.org/log4j/2.x/).
 In addition, this service is also monitored in production and staging environments by [Dynatrace](https://www.dynatrace.com/). The URL for viewing our specific Dynatrace instance can be had by asking a team member.
 
 ## Security & Quality Considerations
+
 We use a few automated tools to ensure quality and security within the service. A few examples can be found below:
 
  - SonarCloud - provides automated code analysis, finding vulnerabilities, bugs and code smells. Quality gates ensure that test coverage, code style and security are maintained where possible.
