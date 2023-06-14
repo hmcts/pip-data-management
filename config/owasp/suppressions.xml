@@ -10,4 +10,9 @@
     <packageUrl regex="true">^pkg:maven/org.yaml/snakeyaml@1.33</packageUrl>
     <cve>CVE-2022-1471</cve>
   </suppress>
+  <suppress>
+    <notes>Pulled in by azure-storage-blob where the latest stable version still contain this vulnerable sub-dependency. Will need to wait until the parent dependency is updated, therefore suppressing</notes>
+    <packageUrl regex="true">^pkg:maven/com.fasterxml.woodstox/woodstox-core@6.4.0</packageUrl>
+    <cve>CVE-2023-34411</cve>
+  </suppress>
 </suppressions>
