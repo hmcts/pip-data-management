@@ -22,10 +22,9 @@ public interface ArtefactRepository extends JpaRepository<Artefact, Long> {
             + ".artefact_id = searchDetails.artefact_id ";
 
     String INITIAL_SELECT_PARTY =
-        "SELECT DISTINCT on (artefact.artefact_id) artefact.* FROM ARTEFACT INNER JOIN (SELECT "
-            + "artefact_id, json_array_elements(search -> 'parties') partyDetails FROM artefact) "
-            + "searchDetails ON artefact"
-            + ".artefact_id = searchDetails.artefact_id ";
+        "SELECT DISTINCT on (artefact.artefact_id) artefact.* FROM ARTEFACT, json_array_elements(search -> 'parties') "
+            + "parties, json_array_elements(search -> 'parties') partyDetails, json_array_elements(parties -> "
+            + "'individuals') individualDetails ";
 
     String SEARCH_TERM_PARAM = "searchTerm";
     String ARTEFACT_ID_PARAM = "artefact_id";
@@ -67,9 +66,9 @@ public interface ArtefactRepository extends JpaRepository<Artefact, Long> {
     List<Artefact> findArtefactByCaseName(@Param(CASE_NAME_PARAM) String caseName,
                                           @Param(CURRENT_DATE_PARAM) LocalDateTime currentDate);
 
-    @Query(value = INITIAL_SELECT_PARTY + "WHERE LOWER(searchDetails.partyDetails ->> 'parties')  "
-        + "~ LOWER(:partyName) and display_from < :curr_date and (display_to > :curr_date or display_to is null) "
-        + "and is_archived != true",
+    @Query(value = INITIAL_SELECT_PARTY + "WHERE (LOWER(partyDetails ->> 'organisations') ~ LOWER(:partyName) or "
+        + "LOWER(individualDetails ->> 'surname') ~ LOWER(:partyName)) and display_from < :curr_date and "
+        + "(display_to > :curr_date or display_to is null) and is_archived != true",
         nativeQuery = true)
     List<Artefact> findArtefactsByPartyName(@Param(PARTY_NAME_PARAM) String partyName,
                                           @Param(CURRENT_DATE_PARAM) LocalDateTime currentDate);
