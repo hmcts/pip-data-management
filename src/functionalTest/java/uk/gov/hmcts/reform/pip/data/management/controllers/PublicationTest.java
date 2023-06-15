@@ -133,9 +133,9 @@ class PublicationTest {
     private static final String VALIDATION_DISPLAY_FROM = "The expected Display From has not been returned";
     private static final String SHOULD_RETURN_EXPECTED_ARTEFACT = "Should return expected artefact";
     private static final String PARTIES_KEY = "parties";
-
+    private static final String ORGANISATION_KEY = "organisations";
+    private static final String INDIVIDUAL_KEY = "individuals";
     private static final String CASES_KEY = "cases";
-    private static final String PARTIES_MESSAGE = "Parties does not contain parties key";
 
     private static MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
     private static ObjectMapper objectMapper;
@@ -315,13 +315,14 @@ class PublicationTest {
         Map<String, List<Object>> searchResult = artefact.getSearch();
         assertTrue(searchResult.containsKey("parties"), "Returned search result does not contain the correct key");
 
-        List<Map<String, Object>> parties = new ObjectMapper().convertValue(searchResult.get("parties"),
+        List<Map<String, Object>> parties = new ObjectMapper().convertValue(searchResult.get(PARTIES_KEY),
                                                                             new TypeReference<>() {});
         assertEquals(3, parties.size(), "Party array not expected size");
 
         Map<String, Object> firstParty = parties.get(0);
-        assertTrue(firstParty.containsKey(PARTIES_KEY), PARTIES_MESSAGE);
         assertTrue(firstParty.containsKey(CASES_KEY), "Parties does not contain cases key");
+        assertTrue(firstParty.containsKey(ORGANISATION_KEY), "Parties does not contain organisations key");
+        assertTrue(firstParty.containsKey(INDIVIDUAL_KEY), "Parties does not contain individuals key");
 
         List<ConcurrentHashMap<String, Object>> cases = new ObjectMapper()
             .setSerializationInclusion(JsonInclude.Include.NON_NULL)
@@ -334,13 +335,15 @@ class PublicationTest {
         assertEquals("45684548", firstCase.get("caseNumber"), "Unexpected case number returned");
         assertEquals("This is a case name", firstCase.get("caseName"), "Unexpected case name returned");
 
-        assertTrue(firstParty.containsKey(PARTIES_KEY), PARTIES_MESSAGE);
+        List<String> organisationNames = new ObjectMapper().convertValue(firstParty.get(ORGANISATION_KEY),
+                                                                         new TypeReference<>() {});
+        assertEquals(1, organisationNames.size(), "Unexpected number of organisations returned");
+        assertTrue(organisationNames.contains("Respondent Org Name"), "Respondent not present");
 
-        List<String> partyNames = new ObjectMapper().convertValue(firstParty.get(PARTIES_KEY),
-                                                                  new TypeReference<>() {});
-        assertEquals(2, partyNames.size(), "Unexpected number of parties returned");
-        assertTrue(partyNames.contains("Applicant Surname"), "Applicant not present");
-        assertTrue(partyNames.contains("Respondent Org Name"), "Respondent not present");
+        List<Map<String, Object>> individualNames = new ObjectMapper().convertValue(firstParty.get(INDIVIDUAL_KEY),
+                                                                       new TypeReference<>() {});
+        assertEquals(1, individualNames.size(), "Unexpected number of individuals returned");
+        assertEquals("Applicant Surname", individualNames.get(0).get("surname"), "Individual surname does not present");
     }
 
 

@@ -189,17 +189,24 @@ The values are extracted using JPATH (Jayway implementation). This is an example
         "caseName": "ExampleName",
         "caseNumber": "ExampleNumber"
       }],
-      "parties": [
-        "PARTY NAME"
+      "organisations": [
+        "Org name"
+      ],
+      "individuals": [
+        {
+          "forename": "Forename",
+          "middleName": "M",
+          "surname": "Surname"
+        }
       ]
     }
   ]
 }
 ```
 
-The 'parties' section is used for searching via party name in the frontend. It excludes representatives, and blank / null party roles.
+The 'parties' section is used for searching the matched publications when adding subscriptions in the frontend. It excludes representatives, and blank / null party roles. For individual names, only the surname is used for searching. However the forenames and middle names are also stored so that full names can be displayed on the subscription tables.
 
-The 'cases' section is used for search by case Number, URN or Name.
+The legacy 'cases' section is used for search by case Number, URN or Name for publications created previously before "parties" were added.
 
 ## Examples
 As mentioned, the full api documentation can be found within swagger-ui, but some of the most common operations are highlighted below.
