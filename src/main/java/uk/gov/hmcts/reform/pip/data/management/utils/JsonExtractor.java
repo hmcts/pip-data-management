@@ -7,6 +7,7 @@ import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.Option;
 import lombok.extern.slf4j.Slf4j;
+import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -14,11 +15,11 @@ import uk.gov.hmcts.reform.pip.data.management.config.SearchConfiguration;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Stream;
 
 import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
 
@@ -86,19 +87,19 @@ public class JsonExtractor implements Extractor {
                     .parse(objectMapper.writeValueAsString(hearing));
 
                 String casesPath = searchConfiguration.getPartySearchConfig().getCasesPath();
-                String partiesSurnamePath = searchConfiguration.getPartySearchConfig().getPartiesSurnamePath();
+                String partiesIndividualDetailsPath = searchConfiguration.getPartySearchConfig()
+                    .getPartiesIndividualDetailsPath();
                 String partiesOrganisationPath = searchConfiguration.getPartySearchConfig().getPartiesOrgNamePath();
 
                 List<Object> caseValues = hearingsPayload.read(casesPath);
-                List<Object> partySurnameValues = hearingsPayload.read(partiesSurnamePath);
+                List<Object> partyIndividualDetailsValues = hearingsPayload.read(partiesIndividualDetailsPath);
                 List<Object> partyOrganisationValues = hearingsPayload.read(partiesOrganisationPath);
 
-                JSONObject json = new JSONObject();
-                json.put("cases", caseValues);
-                json.put("parties", Stream.concat(partySurnameValues.stream(),
-                                                  partyOrganisationValues.stream()).toList());
-
-                parties.add(json);
+                JSONObject partiesJson = new JSONObject();
+                partiesJson.put("cases", caseValues);
+                partiesJson.put("organisations", partyOrganisationValues);
+                partiesJson.put("individuals", constructIndividualParties(partyIndividualDetailsValues));
+                parties.add(partiesJson);
             } catch (JsonProcessingException e) {
                 log.warn(writeLog("Failed to extract parties from JSON payload"));
             }
@@ -117,6 +118,31 @@ public class JsonExtractor implements Extractor {
         } catch (IOException exception) {
             return false;
         }
+    }
+
+    private JSONArray constructIndividualParties(List<Object> partyIndividualDetailsValues) {
+        JSONArray individualJsonArray = new JSONArray();
+        partyIndividualDetailsValues.forEach(i -> {
+            if (i != null) {
+                Object forename = ((LinkedHashMap) i).get("individualForenames");
+                Object middleName = ((LinkedHashMap) i).get("individualMiddleName");
+                Object surname = ((LinkedHashMap) i).get("individualSurname");
+
+                Map<String, Object> individuals = new ConcurrentHashMap<>();
+                if (forename != null) {
+                    individuals.put("forename", forename);
+                }
+                if (middleName != null) {
+                    individuals.put("middleName", middleName);
+                }
+                if (surname != null) {
+                    individuals.put("surname", surname);
+                }
+
+                individualJsonArray.add(individuals);
+            }
+        });
+        return individualJsonArray;
     }
 
 }

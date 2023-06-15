@@ -12,7 +12,7 @@ public class PartySearchConfiguration {
 
     private String hearingsPath;
     private String casesPath;
-    private String partiesSurnamePath;
+    private String partiesIndividualDetailsPath;
     private String partiesOrgNamePath;
 
 }
