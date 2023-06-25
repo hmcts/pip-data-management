@@ -18,6 +18,7 @@ import uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelpe
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.service.AccountManagementService;
+import uk.gov.hmcts.reform.pip.data.management.service.LocationService;
 import uk.gov.hmcts.reform.pip.data.management.service.PublicationServicesService;
 import uk.gov.hmcts.reform.pip.data.management.service.SubscriptionManagementService;
 import uk.gov.hmcts.reform.pip.model.account.AzureAccount;
@@ -31,13 +32,16 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -65,6 +69,9 @@ class ArtefactDeleteServiceTest {
     LocationRepository locationRepository;
 
     @Mock
+    LocationService locationService;
+
+    @Mock
     AzureBlobService azureBlobService;
 
     @Mock
@@ -88,6 +95,7 @@ class ArtefactDeleteServiceTest {
     private static final String REQUESTER_NAME = "ReqName";
     private static final String EMAIL_ADDRESS = "test@test.com";
     private static final Integer LOCATION_ID = 1;
+    private static final String LOCATION_NAME_PREFIX = "TEST_PIP_1234_";
 
     @BeforeAll
     public static void setupSearchValues() {
@@ -324,4 +332,62 @@ class ArtefactDeleteServiceTest {
                          + " api response");
     }
 
+    @Test
+    void testDeleteAllArtefactsWithLocationNamePrefix() {
+        Artefact artefact1 = new Artefact();
+        Integer locationId1 = 1;
+        UUID artefactId1 = UUID.randomUUID();
+        artefact1.setArtefactId(artefactId1);
+        artefact1.setLocationId(locationId1.toString());
+
+        Artefact artefact2 = new Artefact();
+        UUID artefactId2 = UUID.randomUUID();
+        artefact2.setArtefactId(artefactId2);
+        artefact2.setLocationId(locationId1.toString());
+
+        Artefact artefact3 = new Artefact();
+        Integer locationId2 = 2;
+        UUID artefactId3 = UUID.randomUUID();
+        artefact3.setArtefactId(artefactId3);
+        artefact3.setLocationId(locationId2.toString());
+
+        when(locationService.getAllLocationsWithNamePrefix(LOCATION_NAME_PREFIX))
+            .thenReturn(List.of(locationId1, locationId2));
+
+        when(artefactRepository.findAllByLocationIdIn(List.of(locationId1.toString(), locationId2.toString())))
+            .thenReturn(List.of(artefact1, artefact2, artefact3));
+
+        assertThat(artefactDeleteService.deleteAllArtefactsWithLocationNamePrefix(LOCATION_NAME_PREFIX))
+            .isEqualTo("3 artefacts(s) deleted for location name starting with " + LOCATION_NAME_PREFIX);
+
+        verify(artefactRepository).deleteAllByArtefactIdIn(List.of(artefactId1, artefactId2, artefactId3));
+    }
+
+    @Test
+    void testDeleteAllArtefactsWithLocationNamePrefixWhenArtefactNotFound() {
+        Integer locationId = 1;
+
+        when(locationService.getAllLocationsWithNamePrefix(LOCATION_NAME_PREFIX))
+            .thenReturn(List.of(locationId));
+
+        when(artefactRepository.findAllByLocationIdIn(List.of(locationId.toString())))
+            .thenReturn(Collections.emptyList());
+
+        assertThat(artefactDeleteService.deleteAllArtefactsWithLocationNamePrefix(LOCATION_NAME_PREFIX))
+            .isEqualTo("0 artefacts(s) deleted for location name starting with " + LOCATION_NAME_PREFIX);
+
+        verify(artefactRepository, never()).deleteAllByArtefactIdIn(anyList());
+    }
+
+    @Test
+    void testDeleteAllArtefactsWithLocationNamePrefixWhenLocationNotFound() {
+        when(locationService.getAllLocationsWithNamePrefix(LOCATION_NAME_PREFIX))
+            .thenReturn(Collections.emptyList());
+
+        assertThat(artefactDeleteService.deleteAllArtefactsWithLocationNamePrefix(LOCATION_NAME_PREFIX))
+            .isEqualTo("0 artefacts(s) deleted for location name starting with " + LOCATION_NAME_PREFIX);
+
+        verify(artefactRepository, never()).findAllByLocationIdIn(anyList());
+        verify(artefactRepository, never()).deleteAllByArtefactIdIn(anyList());
+    }
 }
