@@ -12,7 +12,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -40,7 +39,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest(classes = {Application.class}, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @ActiveProfiles(profiles = "functional")
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
 @WithMockUser(username = "admin", authorities = {"APPROLE_api.request.admin"})
@@ -111,7 +109,7 @@ class TestingSupportApiTest {
     }
 
     @Test
-    void testTestingSupportDeleteLocationByNamePrefix() throws Exception {
+    void testTestingSupportDeleteLocationsByNamePrefix() throws Exception {
         createLocationByIdAndName();
 
         MvcResult deleteResponse = mockMvc.perform(delete(TESTING_SUPPORT_LOCATION_URL + LOCATION_NAME_PREFIX))
@@ -127,7 +125,7 @@ class TestingSupportApiTest {
     }
 
     @Test
-    void testTestingSupportDeletePublicationByLocationNamePrefix() throws Exception {
+    void testTestingSupportDeletePublicationsByLocationNamePrefix() throws Exception {
         createLocationByIdAndName();
         uploadPublication();
 
