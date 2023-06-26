@@ -70,6 +70,9 @@ class TestingSupportApiTest {
         .truncatedTo(ChronoUnit.SECONDS);
     private static final String ADMIN_HEADER = "x-admin";
 
+    private static final String UNAUTHORIZED_ROLE = "APPROLE_unknown.authorized";
+    private static final String UNAUTHORIZED_USERNAME = "unauthorized_isAuthorized";
+
     @Autowired
     private MockMvc mockMvc;
 
@@ -155,6 +158,32 @@ class TestingSupportApiTest {
         assertThat(getResponse.getResponse().getContentAsString())
             .as("Artefact is not empty")
             .isEqualTo("[]");
+    }
+
+    @Test
+    @WithMockUser(username = UNAUTHORIZED_USERNAME, authorities = {UNAUTHORIZED_ROLE})
+    void testUnauthorizedTestingSupportCreateLocation() throws Exception {
+        MockHttpServletRequestBuilder postRequest = MockMvcRequestBuilders
+            .post(TESTING_SUPPORT_LOCATION_URL + LOCATION_ID)
+            .content(LOCATION_NAME)
+            .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(postRequest)
+            .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(username = UNAUTHORIZED_USERNAME, authorities = {UNAUTHORIZED_ROLE})
+    void testUnauthorizedTestingSupportDeleteLocations() throws Exception {
+        mockMvc.perform(delete(TESTING_SUPPORT_LOCATION_URL + LOCATION_NAME_PREFIX))
+            .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(username = UNAUTHORIZED_USERNAME, authorities = {UNAUTHORIZED_ROLE})
+    void testUnauthorizedTestingSupportDeletePublications() throws Exception {
+        mockMvc.perform(delete(TESTING_SUPPORT_PUBLICATION_URL + LOCATION_NAME_PREFIX))
+            .andExpect(status().isForbidden());
     }
 
     private MvcResult createLocationByIdAndName() throws Exception {
