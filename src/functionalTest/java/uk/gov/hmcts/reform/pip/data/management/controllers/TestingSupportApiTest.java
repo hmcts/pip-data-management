@@ -44,6 +44,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WithMockUser(username = "admin", authorities = {"APPROLE_api.request.admin"})
 class TestingSupportApiTest {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+
     private static final String TESTING_SUPPORT_BASE_URL = "/testing-support/";
     private static final String TESTING_SUPPORT_LOCATION_URL = TESTING_SUPPORT_BASE_URL + "location/";
     private static final String TESTING_SUPPORT_PUBLICATION_URL = TESTING_SUPPORT_BASE_URL + "publication/";
