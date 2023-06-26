@@ -78,6 +78,37 @@
                             }
                           }
                         ]
+                      },
+                      {
+                        "case": [
+                          {
+                            "caseNumber": "12341235"
+                          }
+                        ],
+                        "party": [
+                          {
+                            "partyRole": "APPLICANT_PETITIONER",
+                            "individualDetails": {
+                              "individualSurname": "Surname"
+                            }
+                          },
+                          {
+                            "partyRole": "PROSECUTOR",
+                            "organisationDetails": {
+                              "organisationName": "Prosecutor name"
+                            }
+                          },
+                          {
+                            "partyRole": "APPLICANT_PETITIONER_REPRESENTATIVE",
+                            "friendlyRoleName": "Legal Advisor",
+                            "individualDetails": {
+                              "individualForenames": "Individual Forenames",
+                              "individualMiddleName": "Individual Middlename",
+                              "individualSurname": "Individual Surname",
+                              "title": "Mr"
+                            }
+                          }
+                        ]
                       }
                     ],
                     "channel": [
