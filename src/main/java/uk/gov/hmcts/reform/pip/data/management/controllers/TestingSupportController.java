@@ -23,6 +23,7 @@ import uk.gov.hmcts.reform.pip.model.authentication.roles.IsAdmin;
 @RequestMapping("/testing-support")
 @IsAdmin
 @ConditionalOnProperty(prefix = "testingSupport", name = "enableApi", havingValue = "true")
+@SuppressWarnings("PMD.TestClassWithoutTestCases")
 public class TestingSupportController {
     private static final String UNAUTHORIZED_DESCRIPTION = "User has not been authorized";
 
