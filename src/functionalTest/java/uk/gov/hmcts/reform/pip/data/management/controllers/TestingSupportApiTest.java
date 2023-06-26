@@ -162,7 +162,7 @@ class TestingSupportApiTest {
 
     @Test
     @WithMockUser(username = UNAUTHORIZED_USERNAME, authorities = {UNAUTHORIZED_ROLE})
-    void testUnauthorizedTestingSupportCreateLocation() throws Exception {
+    void testUnauthorisedTestingSupportCreateLocation() throws Exception {
         MockHttpServletRequestBuilder postRequest = MockMvcRequestBuilders
             .post(TESTING_SUPPORT_LOCATION_URL + LOCATION_ID)
             .content(LOCATION_NAME)
@@ -181,7 +181,7 @@ class TestingSupportApiTest {
 
     @Test
     @WithMockUser(username = UNAUTHORIZED_USERNAME, authorities = {UNAUTHORIZED_ROLE})
-    void testUnauthorizedTestingSupportDeletePublications() throws Exception {
+    void testUnauthorisedTestingSupportDeletePublications() throws Exception {
         mockMvc.perform(delete(TESTING_SUPPORT_PUBLICATION_URL + LOCATION_NAME_PREFIX))
             .andExpect(status().isForbidden());
     }
