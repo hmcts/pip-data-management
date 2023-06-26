@@ -174,7 +174,7 @@ class TestingSupportApiTest {
 
     @Test
     @WithMockUser(username = UNAUTHORIZED_USERNAME, authorities = {UNAUTHORIZED_ROLE})
-    void testUnauthorizedTestingSupportDeleteLocations() throws Exception {
+    void testUnauthorisedTestingSupportDeleteLocations() throws Exception {
         mockMvc.perform(delete(TESTING_SUPPORT_LOCATION_URL + LOCATION_NAME_PREFIX))
             .andExpect(status().isForbidden());
     }
