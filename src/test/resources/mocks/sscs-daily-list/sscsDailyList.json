@@ -93,12 +93,6 @@
                             }
                           },
                           {
-                            "partyRole": "PROSECUTOR",
-                            "organisationDetails": {
-                              "organisationName": "Prosecutor name"
-                            }
-                          },
-                          {
                             "partyRole": "APPLICANT_PETITIONER_REPRESENTATIVE",
                             "friendlyRoleName": "Legal Advisor",
                             "individualDetails": {
@@ -106,6 +100,18 @@
                               "individualMiddleName": "Individual Middlename",
                               "individualSurname": "Individual Surname",
                               "title": "Mr"
+                            }
+                          },
+                          {
+                            "partyRole": "PROSECUTOR",
+                            "organisationDetails": {
+                              "organisationName": "Prosecutor1"
+                            }
+                          },
+                          {
+                            "partyRole": "PROSECUTOR",
+                            "organisationDetails": {
+                              "organisationName": "Prosecutor2"
                             }
                           }
                         ]
