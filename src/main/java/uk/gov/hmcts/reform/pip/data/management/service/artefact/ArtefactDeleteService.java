@@ -186,18 +186,21 @@ public class ArtefactDeleteService {
             .map(Object::toString)
             .toList();
 
-        List<UUID> artefactIds = Collections.emptyList();
+        List<Artefact> artefactsToDelete = Collections.emptyList();
         if (!locationIds.isEmpty()) {
-            artefactIds = artefactRepository.findAllByLocationIdIn(locationIds).stream()
+            artefactsToDelete = artefactRepository.findAllByLocationIdIn(locationIds);
+
+            if (!artefactsToDelete.isEmpty()) {
+                artefactsToDelete.forEach(a -> deleteAllPublicationBlobData(a));
+
+                List<UUID> artefactIds = artefactsToDelete.stream()
                     .map(Artefact::getArtefactId)
                     .toList();
-
-            if (!artefactIds.isEmpty()) {
                 artefactRepository.deleteAllByArtefactIdIn(artefactIds);
             }
         }
         return String.format("%s artefacts(s) deleted for location name starting with %s",
-                             artefactIds.size(), prefix);
+                             artefactsToDelete.size(), prefix);
     }
 
     private void notifySystemAdminAboutSubscriptionDeletion(String provenanceUserId, String additionalDetails)
