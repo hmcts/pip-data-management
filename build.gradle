@@ -146,12 +146,9 @@ def sonarExclusions = ["src/main/java/uk/gov/hmcts/reform/pip/data/management/co
 
 sonarqube {
   properties {
+    property "sonar.projectName", "PIP Data Management"
     property "sonar.projectKey", "pip-data-management"
     property "sonar.exclusions", sonarExclusions.join(', ')
-    property "sonar.dynamicAnalysis", "reuseReports"
-    property "sonar.java.coveragePlugin", "jacoco"
-    property "sonar.coverage.jacoco.xmlReportPaths", "${jacocoTestReport.reports.xml.destination.path}"
-    property "sonar.dependencyCheck.reportPath", "${project.buildDir}/reports/dependency-check-report.xml"
   }
 }
 
