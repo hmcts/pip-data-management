@@ -204,12 +204,7 @@ dependencies {
 
   // Force upgrade snakeyaml version for CVE-2022-38752
   implementation( group: 'org.yaml', name: 'snakeyaml').version {
-    strictly("1.33")
-  }
-
-  // Force upgrade commons version for CVE-2022-42889
-  implementation( group: 'org.apache.commons', name: 'commons-text').version {
-    strictly("1.10.0")
+    strictly("2.0")
   }
 
   testImplementation("com.squareup.okhttp3:mockwebserver:4.11.0")

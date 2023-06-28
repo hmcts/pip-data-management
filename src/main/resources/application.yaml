@@ -64,13 +64,19 @@ spring:
       maxLifetime: 7200000
       connectionTimeout: 30000
   jpa:
+    show-sql: 'false'
     properties:
-      hibernate.jdbc:
+      hibernate:
+        format_sql: 'true'
+        dialect: org.hibernate.dialect.PostgreSQL81Dialect
+        jdbc:
           lob:
-            non_contextual_creation: true
+            non_contextual_creation: 'true'
+    database: POSTGRESQL
+    generate-ddl: 'true'
     hibernate:
       # this ensures the db persists after spring boot connection drops.
-      ddl-auto: validate
+      ddl-auto: update
   servlet:
     multipart:
       max-file-size: 2MB
