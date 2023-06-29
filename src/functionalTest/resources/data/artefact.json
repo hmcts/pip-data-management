@@ -90,7 +90,7 @@
                           {
                             "caseName": "A Vs B",
                             "caseNumber": "12345678",
-                            "caseSequenceIndicator": "[2 of 3]"
+                            "caseSequenceIndicator": "2 of 3"
                           }
                         ]
                       }
