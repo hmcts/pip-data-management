@@ -314,7 +314,7 @@
                                               "type": "string",
                                               "default": "",
                                               "examples": [
-                                                "[2 of 3]"
+                                                "2 of 3"
                                               ],
                                               "pattern": "^.*$"
                                             }
