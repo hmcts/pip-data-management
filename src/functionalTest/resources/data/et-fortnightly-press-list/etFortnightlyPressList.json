@@ -21,7 +21,7 @@
             "hearing": [{
               "case": [{
                 "caseNumber": "12341234",
-                "caseSequenceIndicator": "[2 of 3]",
+                "caseSequenceIndicator": "2 of 3",
                 "caseType": "This is a case type"
               }],
               "party": [{
@@ -208,7 +208,7 @@
                 "hearing": [{
                   "case": [{
                     "caseNumber": "12341234",
-                    "caseSequenceIndicator": "[2 of 3]",
+                    "caseSequenceIndicator": "2 of 3",
                     "caseType": "This is a case type"
                   }],
                   "party": [{
@@ -262,7 +262,7 @@
                   "hearing": [{
                     "case": [{
                       "caseNumber": "12341234",
-                      "caseSequenceIndicator": "[2 of 3]",
+                      "caseSequenceIndicator": "2 of 3",
                       "caseType": "This is a case type"
                     }],
                     "party": [{

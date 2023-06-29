@@ -42,7 +42,7 @@
                               "Reporting Restriction detail line 1",
                               "Reporting restriction detail line 2"
                             ],
-                            "caseSequenceIndicator": "[2 of 3]",
+                            "caseSequenceIndicator": "2 of 3",
                             "informant": {
                               "prosecutionAuthorityRef": "Test",
                               "prosecutionAuthorityId": "1234",

@@ -45,7 +45,7 @@
                         "hearingType": "Directions",
                         "case": [
                           {
-                            "caseSequenceIndicator": "[2 of 3]",
+                            "caseSequenceIndicator": "2 of 3",
                             "caseType": "case type",
                             "caseLinked": [
                               {
