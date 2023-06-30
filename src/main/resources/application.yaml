@@ -74,7 +74,7 @@ spring:
     database: POSTGRESQL
     hibernate:
       # Updated to 'none'. This is the default, and prevents auto updates in production
-      ddl-auto: none
+      ddl-auto: ${DB_UPDATE:none}
   servlet:
     multipart:
       max-file-size: 2MB

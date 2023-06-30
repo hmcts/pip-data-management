@@ -3,6 +3,7 @@ java:
   image: ${IMAGE_NAME}
   ingressHost: ${SERVICE_FQDN}
   environment:
+    DB_UPDATE: update
     ENABLE_FLYWAY: true
     RUN_DB_MIGRATION_ON_STARTUP: true
     DB_HOST: "{{ .Release.Name }}-postgresql"
