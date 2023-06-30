@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Profile;
 
 @Configuration
 @Profile("!test & !functional")
+@SuppressWarnings("PMD.SystemPrintln")
 public class AzureBlobConfiguration {
     private static final String BLOB_ENDPOINT = "https://%s.blob.core.windows.net/";
 
