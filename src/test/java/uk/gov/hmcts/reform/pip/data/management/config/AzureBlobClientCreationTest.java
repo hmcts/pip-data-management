@@ -43,7 +43,8 @@ class AzureBlobClientCreationTest {
 
     @Test
     void testCreationOfAzureArtefactBlobClientWithManagedIdentity() {
-        ReflectionTestUtils.setField(azureBlobConfiguration, MANAGED_IDENTITY_CLIENT_ID_KEY, MANAGED_IDENTITY_CLIENT_ID);
+        ReflectionTestUtils.setField(azureBlobConfiguration, MANAGED_IDENTITY_CLIENT_ID_KEY,
+                                     MANAGED_IDENTITY_CLIENT_ID);
         when(blobConfigProperties.getStorageAccountName()).thenReturn(AZURE_STORAGE_ACCOUNT_NAME);
         when(blobConfigProperties.getArtefactContainerName()).thenReturn(ARTEFACT_CONTAINER_NAME);
 
@@ -83,7 +84,8 @@ class AzureBlobClientCreationTest {
 
     @Test
     void testCreationOfAzurePublicationsBlobClientWithManagedIdentity() {
-        ReflectionTestUtils.setField(azureBlobConfiguration, MANAGED_IDENTITY_CLIENT_ID_KEY, MANAGED_IDENTITY_CLIENT_ID);
+        ReflectionTestUtils.setField(azureBlobConfiguration, MANAGED_IDENTITY_CLIENT_ID_KEY,
+                                     MANAGED_IDENTITY_CLIENT_ID);
         when(blobConfigProperties.getStorageAccountName()).thenReturn(AZURE_STORAGE_ACCOUNT_NAME);
         when(blobConfigProperties.getPublicationsContainerName()).thenReturn(PUBLICATIONS_CONTAINER_NAME);
 
