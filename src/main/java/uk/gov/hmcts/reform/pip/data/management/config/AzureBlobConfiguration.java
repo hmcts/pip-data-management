@@ -11,7 +11,6 @@ import org.springframework.context.annotation.Profile;
 
 @Configuration
 @Profile("!test & !functional")
-@SuppressWarnings("PMD.SystemPrintln")
 public class AzureBlobConfiguration {
     private static final String BLOB_ENDPOINT = "https://%s.blob.core.windows.net/";
 
@@ -40,14 +39,11 @@ public class AzureBlobConfiguration {
         String containerName
     ) {
         if (managedIdentityClientId.isEmpty()) {
-            System.out.println("*****Use connection string to connect to Azure blob");
-
             return new BlobContainerClientBuilder()
                 .connectionString(azureBlobConfigurationProperties.getConnectionString())
                 .containerName(containerName)
                 .buildClient();
         }
-        System.out.println("*****Use MI to connect to Azure blob");
 
         DefaultAzureCredential defaultCredential = new DefaultAzureCredentialBuilder()
             .tenantId(tenantId)
