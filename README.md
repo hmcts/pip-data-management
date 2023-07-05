@@ -136,7 +136,7 @@ Below is a table of currently used environment variables for starting the servic
 |SUBSCRIPTION_MANAGEMENT_AZ_API|Used as part of the `scope` parameter when requesting a token from Azure. Used for service-to-service communication with the pip-subscription-management service|No|
 |PUBLICATION_SERVICES_AZ_API|Used as part of the `scope` parameter when requesting a token from Azure. Used for service-to-service communication with the pip-publication-services service|No|
 |ACCOUNT_MANAGEMENT_AZ_API|Used as part of the `scope` parameter when requesting a token from Azure. Used for service-to-service communication with the account management service|No|
-
+| ENABLE_TESTING_SUPPORT_API     | Used to conditionally enable testing support API. Default to `false` for the production environment only.|No|
 
 ##### Additional Test secrets
 
