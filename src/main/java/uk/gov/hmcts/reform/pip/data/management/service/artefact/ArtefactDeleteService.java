@@ -12,6 +12,7 @@ import uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactHelper;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.service.AccountManagementService;
+import uk.gov.hmcts.reform.pip.data.management.service.LocationService;
 import uk.gov.hmcts.reform.pip.data.management.service.PublicationServicesService;
 import uk.gov.hmcts.reform.pip.data.management.service.SubscriptionManagementService;
 import uk.gov.hmcts.reform.pip.model.account.AzureAccount;
@@ -21,8 +22,10 @@ import uk.gov.hmcts.reform.pip.model.system.admin.ActionResult;
 import uk.gov.hmcts.reform.pip.model.system.admin.ChangeType;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
 
@@ -32,18 +35,20 @@ public class ArtefactDeleteService {
 
     private final ArtefactRepository artefactRepository;
     private final LocationRepository locationRepository;
+    private final LocationService locationService;
     private final AzureBlobService azureBlobService;
     private final SubscriptionManagementService subscriptionManagementService;
     private final AccountManagementService accountManagementService;
     private final PublicationServicesService publicationServicesService;
 
     public ArtefactDeleteService(ArtefactRepository artefactRepository, LocationRepository locationRepository,
-                                 AzureBlobService azureBlobService,
+                                 LocationService locationService, AzureBlobService azureBlobService,
                                  SubscriptionManagementService subscriptionManagementService,
                                  AccountManagementService accountManagementService,
                                  PublicationServicesService publicationServicesService) {
         this.artefactRepository = artefactRepository;
         this.locationRepository = locationRepository;
+        this.locationService = locationService;
         this.azureBlobService = azureBlobService;
         this.subscriptionManagementService = subscriptionManagementService;
         this.accountManagementService = accountManagementService;
@@ -174,6 +179,28 @@ public class ArtefactDeleteService {
                               location.isPresent() ? location.get().getName() : ""));
             return String.format("Total %s artefact deleted for location id %s", activeArtefacts.size(), locationId);
         }
+    }
+
+    public String deleteAllArtefactsWithLocationNamePrefix(String prefix) {
+        List<String> locationIds = locationService.getAllLocationsWithNamePrefix(prefix).stream()
+            .map(Object::toString)
+            .toList();
+
+        List<Artefact> artefactsToDelete = Collections.emptyList();
+        if (!locationIds.isEmpty()) {
+            artefactsToDelete = artefactRepository.findAllByLocationIdIn(locationIds);
+
+            if (!artefactsToDelete.isEmpty()) {
+                artefactsToDelete.forEach(a -> deleteAllPublicationBlobData(a));
+
+                List<UUID> artefactIds = artefactsToDelete.stream()
+                    .map(Artefact::getArtefactId)
+                    .toList();
+                artefactRepository.deleteAllByArtefactIdIn(artefactIds);
+            }
+        }
+        return String.format("%s artefacts(s) deleted for location name starting with %s",
+                             artefactsToDelete.size(), prefix);
     }
 
     private void notifySystemAdminAboutSubscriptionDeletion(String provenanceUserId, String additionalDetails)
