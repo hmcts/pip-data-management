@@ -5,6 +5,7 @@ java:
   environment:
     ENABLE_FLYWAY: true
     RUN_DB_MIGRATION_ON_STARTUP: true
+    ENABLE_TESTING_SUPPORT_API: true
     DB_HOST: "{{ .Release.Name }}-postgresql"
     DB_NAME: "{{ .Values.postgresql.auth.database}}"
     DB_USER: "{{ .Values.postgresql.auth.username}}"
