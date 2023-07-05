@@ -27,21 +27,26 @@ import uk.gov.hmcts.reform.pip.model.system.admin.ChangeType;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
+@SuppressWarnings("PMD.ExcessiveImports")
 class LocationServiceTest {
 
     @Mock
@@ -73,6 +78,9 @@ class LocationServiceTest {
     private static final String MAGISTRATES_LOCATION_WELSH = "Lleoliad yr Ynadon";
     private static final String ENGLISH_LANGUAGE = "eng";
     private static final String WELSH_LANGUAGE = "cy";
+    private static final Integer LOCATION_ID = 123;
+    private static final String LOCATION_NAME = "TEST_PIP_1234_Court123";
+    private static final String LOCATION_NAME_PREFIX = "TEST_PIP_1234_";
 
     private static final String FIRST_LOCATION_NOT_FOUND = "First location has not been found";
     private static final String SECOND_LOCATION_NOT_FOUND = "Second location has not been found";
@@ -447,6 +455,51 @@ class LocationServiceTest {
 
             assertThrows(CsvParseException.class, () -> locationService.uploadLocations(multipartFile));
         }
+    }
+
+    @Test
+    void testCreateLocation() {
+        assertThat(locationService.createLocation(LOCATION_ID, LOCATION_NAME))
+            .as("Location created message does not match")
+            .isEqualTo(
+                "Location with ID " + LOCATION_ID + " and name " + LOCATION_NAME + " created successfully"
+            );
+        verify(locationRepository).save(any());
+    }
+
+    @Test
+    void testDeleteAllLocationsWithNamePrefix() {
+        Integer id1 = 1;
+        Integer id2 = 2;
+
+        Location location1 = new Location();
+        location1.setLocationId(id1);
+        location1.setName(LOCATION_NAME_PREFIX + 1);
+
+        Location location2 = new Location();
+        location2.setLocationId(id2);
+        location2.setName(LOCATION_NAME_PREFIX + 2);
+
+        when(locationRepository.findAllByNameStartingWithIgnoreCase(LOCATION_NAME_PREFIX))
+            .thenReturn(List.of(location1, location2));
+
+        assertThat(locationService.deleteAllLocationsWithNamePrefix(LOCATION_NAME_PREFIX))
+            .as("Location deleted message does not match")
+            .isEqualTo("2 location(s) deleted with name starting with " + LOCATION_NAME_PREFIX);
+
+        verify(locationRepository).deleteByLocationIdIn(List.of(id1, id2));
+    }
+
+    @Test
+    void testDeleteAllLocationsWithNamePrefixWhenLocationNotFound() {
+        when(locationRepository.findAllByNameStartingWithIgnoreCase(LOCATION_NAME_PREFIX))
+            .thenReturn(Collections.emptyList());
+
+        assertThat(locationService.deleteAllLocationsWithNamePrefix(LOCATION_NAME_PREFIX))
+            .as("Location deleted message does not match")
+            .isEqualTo("0 location(s) deleted with name starting with " + LOCATION_NAME_PREFIX);
+
+        verify(locationRepository, never()).deleteByLocationIdIn(anyList());
     }
 
     @Test

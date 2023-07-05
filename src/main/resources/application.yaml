@@ -138,3 +138,8 @@ springdoc:
 dbMigration:
   runOnStartup: ${RUN_DB_MIGRATION_ON_STARTUP:true}
 
+# Used to conditionally enable testing support API
+testingSupport:
+  enableApi: ${ENABLE_TESTING_SUPPORT_API:true}
+
+
