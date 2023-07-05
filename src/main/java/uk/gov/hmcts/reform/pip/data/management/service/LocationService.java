@@ -17,6 +17,7 @@ import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.LocationRepository;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CsvParseException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.LocationNotFoundException;
+import uk.gov.hmcts.reform.pip.data.management.helpers.TestingSupportLocationHelper;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationDeletion;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationReference;
@@ -172,6 +173,11 @@ public class LocationService {
         }
     }
 
+    public String createLocation(Integer locationId, String locationName) {
+        locationRepository.save(TestingSupportLocationHelper.createLocation(locationId, locationName));
+        return String.format("Location with ID %s and name %s created successfully", locationId, locationName);
+    }
+
     /**
      * Creates a csv of the current reference data.
      *
@@ -237,6 +243,22 @@ public class LocationService {
         }
 
         return locationDeletion;
+    }
+
+    public String deleteAllLocationsWithNamePrefix(String prefix) {
+        List<Integer> locationIds = getAllLocationsWithNamePrefix(prefix);
+
+        if (!locationIds.isEmpty()) {
+            locationRepository.deleteByLocationIdIn(locationIds);
+        }
+        return String.format("%s location(s) deleted with name starting with %s",
+                             locationIds.size(), prefix);
+    }
+
+    public List<Integer> getAllLocationsWithNamePrefix(String prefix) {
+        return locationRepository.findAllByNameStartingWithIgnoreCase(prefix).stream()
+            .map(Location::getLocationId)
+            .toList();
     }
 
     private void sendEmailToAllSystemAdmins(String requesterName, ActionResult actionResult,
