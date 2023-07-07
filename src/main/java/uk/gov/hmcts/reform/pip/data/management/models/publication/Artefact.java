@@ -3,12 +3,18 @@ package uk.gov.hmcts.reform.pip.data.management.models.publication;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.vladmihalcea.hibernate.type.json.JsonType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.views.ArtefactView;
 import uk.gov.hmcts.reform.pip.model.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
@@ -19,13 +25,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 
 /**
  * Class that represents the Inbound artifact that is being published.
@@ -35,7 +34,6 @@ import javax.persistence.Id;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@TypeDef(name = "json", typeClass = JsonType.class)
 @SuppressWarnings("PMD.TooManyFields")
 public class Artefact {
 
@@ -45,7 +43,6 @@ public class Artefact {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(columnDefinition = "uuid", insertable = false, updatable = false, nullable = false)
-    @Type(type = "org.hibernate.type.PostgresUUIDType")
     @JsonView(ArtefactView.External.class)
     private UUID artefactId;
 
@@ -85,7 +82,7 @@ public class Artefact {
     /**
      * Metadata that will be indexed for searching.
      */
-    @Type(type = "json")
+    @Type(JsonType.class)
     @Column(columnDefinition = "json")
     @JsonView(ArtefactView.External.class)
     private Map<String, List<Object>> search;
