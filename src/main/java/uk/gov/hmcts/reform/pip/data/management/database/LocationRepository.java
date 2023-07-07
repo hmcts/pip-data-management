@@ -20,6 +20,10 @@ public interface LocationRepository extends JpaRepository<Location, Integer> {
 
     Optional<Location> getLocationByWelshName(String locationName);
 
+    List<Location> findAllByNameStartingWithIgnoreCase(String prefix);
+
+    void deleteByLocationIdIn(List<Integer> locationId);
+
     @Query(value = "select * from location "
         + "WHERE (:regions = '' OR location.region && string_to_array(:regions, ',')) "
         + "AND (:jurisdictions = '' OR location.jurisdiction && string_to_array(:jurisdictions, ',')) "
