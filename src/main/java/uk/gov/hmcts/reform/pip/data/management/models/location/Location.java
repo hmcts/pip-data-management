@@ -2,26 +2,25 @@ package uk.gov.hmcts.reform.pip.data.management.models.location;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.vladmihalcea.hibernate.type.array.ListArrayType;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
 import uk.gov.hmcts.reform.pip.model.location.LocationCsv;
 import uk.gov.hmcts.reform.pip.model.location.LocationType;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 
 /**
  * This class captures the Location Data, which will be persisted in the database.
@@ -30,10 +29,6 @@ import javax.validation.constraints.NotNull;
 @Data
 @NoArgsConstructor
 @Table(name = "location")
-@TypeDef(
-    name = "list-array",
-    typeClass = ListArrayType.class
-)
 public class Location {
 
     private static final String LIST_ARRAY = "list-array";
@@ -46,7 +41,7 @@ public class Location {
     @JsonView(LocationViews.BaseView.class)
     private String name;
 
-    @Type(type = LIST_ARRAY)
+    @Type(ListArrayType.class)
     @Column(name = "region", columnDefinition = DEFINITION)
     @JsonView(LocationViews.BaseView.class)
     private List<String> region;
@@ -56,7 +51,7 @@ public class Location {
     @NotNull
     private LocationType locationType;
 
-    @Type(type = LIST_ARRAY)
+    @Type(ListArrayType.class)
     @Column(name = "jurisdiction", columnDefinition = DEFINITION)
     @JsonView(LocationViews.BaseView.class)
     private List<String> jurisdiction;
@@ -69,12 +64,12 @@ public class Location {
     @JsonView(LocationViews.BaseView.class)
     private String welshName;
 
-    @Type(type = LIST_ARRAY)
+    @Type(ListArrayType.class)
     @Column(name = "welsh_jurisdiction", columnDefinition = DEFINITION)
     @JsonView(LocationViews.BaseView.class)
     private List<String> welshJurisdiction;
 
-    @Type(type = LIST_ARRAY)
+    @Type(ListArrayType.class)
     @Column(name = "welsh_region", columnDefinition = DEFINITION)
     @JsonView(LocationViews.BaseView.class)
     private List<String> welshRegion;
