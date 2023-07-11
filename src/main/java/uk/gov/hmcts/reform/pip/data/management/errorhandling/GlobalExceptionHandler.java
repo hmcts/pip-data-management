@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.pip.data.management.errorhandling;
 
 import com.azure.storage.blob.models.BlobStorageException;
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -18,7 +19,6 @@ import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.PayloadV
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.UnauthorisedRequestException;
 
 import java.time.LocalDateTime;
-import javax.validation.ConstraintViolationException;
 
 import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
 

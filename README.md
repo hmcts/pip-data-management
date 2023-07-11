@@ -116,7 +116,7 @@ Python scripts to quickly grab all environment variables (subject to Azure permi
 Below is a table of currently used environment variables for starting the service, along with a descriptor of their purpose and whether they are optional or required.
 
 |Variable|Description|Required?|
-|:----------|:-------------|----|
+|:----------|:-------------|------|
 |SPRING_PROFILES_ACTIVE|If set equal to `dev`, the application will run in insecure mode (i.e. no bearer token authentication required for incoming requests.) *Note - if you wish to communicate with other services, you will need to set them all to run in insecure mode in the same way.*|No|
 |APP_URI|Uniform Resource Identifier - the location where the application expects to receive bearer tokens after a successful authentication process. The application then validates received bearer tokens using the AUD parameter in the token|No|
 |CLIENT_ID|Unique ID for the application within Azure AD. Used to identify the application during authentication.|No|
@@ -137,6 +137,7 @@ Below is a table of currently used environment variables for starting the servic
 |SUBSCRIPTION_MANAGEMENT_AZ_API|Used as part of the `scope` parameter when requesting a token from Azure. Used for service-to-service communication with the pip-subscription-management service|No|
 |PUBLICATION_SERVICES_AZ_API|Used as part of the `scope` parameter when requesting a token from Azure. Used for service-to-service communication with the pip-publication-services service|No|
 |ACCOUNT_MANAGEMENT_AZ_API|Used as part of the `scope` parameter when requesting a token from Azure. Used for service-to-service communication with the account management service|No|
+| ENABLE_TESTING_SUPPORT_API     | Used to conditionally enable testing support API. Default to `false` for the production environment only.|No|
 
 ##### Additional Test secrets
 

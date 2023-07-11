@@ -66,15 +66,15 @@ spring:
   jpa:
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.PostgreSQL81Dialect
+        format_sql: 'true'
+        dialect: org.hibernate.dialect.PostgreSQLDialect
         jdbc:
           lob:
-            non_contextual_creation: true
+            non_contextual_creation: 'true'
     database: POSTGRESQL
-    generate-ddl: 'true'
     hibernate:
-      # this ensures the db persists after spring boot connection drops.
-      ddl-auto: update
+      # Updated to 'none'. This is the default, and prevents auto updates in production
+      ddl-auto: ${DB_UPDATE:none}
   servlet:
     multipart:
       max-file-size: 2MB
@@ -140,4 +140,9 @@ springdoc:
 # Used for flyway to run DB migration on startup
 dbMigration:
   runOnStartup: ${RUN_DB_MIGRATION_ON_STARTUP:true}
+
+# Used to conditionally enable testing support API
+testingSupport:
+  enableApi: ${ENABLE_TESTING_SUPPORT_API:true}
+
 

@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.pip.data.management;
 
+import jakarta.annotation.PostConstruct;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -9,7 +10,6 @@ import uk.gov.hmcts.reform.pip.data.management.config.SearchConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.config.ValidationConfiguration;
 
 import java.util.TimeZone;
-import javax.annotation.PostConstruct;
 
 @SpringBootApplication
 @EnableConfigurationProperties({

@@ -44,3 +44,4 @@ java:
   environment:
     ENABLE_FLYWAY: true
     RUN_DB_MIGRATION_ON_STARTUP: false
+    ENABLE_TESTING_SUPPORT_API: false

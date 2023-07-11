@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.pip.data.management.database;
 
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -9,7 +10,6 @@ import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 
 import java.util.List;
 import java.util.Optional;
-import javax.transaction.Transactional;
 
 @Repository
 public interface LocationRepository extends JpaRepository<Location, Integer> {
@@ -19,6 +19,10 @@ public interface LocationRepository extends JpaRepository<Location, Integer> {
     Optional<Location> getLocationByName(String locationName);
 
     Optional<Location> getLocationByWelshName(String locationName);
+
+    List<Location> findAllByNameStartingWithIgnoreCase(String prefix);
+
+    void deleteByLocationIdIn(List<Integer> locationId);
 
     @Query(value = "select * from location "
         + "WHERE (:regions = '' OR location.region && string_to_array(:regions, ',')) "
