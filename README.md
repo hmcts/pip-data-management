@@ -122,7 +122,8 @@ Below is a table of currently used environment variables for starting the servic
 |CLIENT_ID|Unique ID for the application within Azure AD. Used to identify the application during authentication.|No|
 |TENANT_ID|Directory unique ID assigned to our Azure AD tenant. Represents the organisation that owns and manages the Azure AD instance.|No|
 |CLIENT_SECRET|Secret key for authentication requests to the service.|No|
-|CONNECTION_STRING|Connection string for connecting to the Azure Blob Storage service. If connecting locally via Azurite, this can be found [here]()|Yes|
+|CONNECTION_STRING|Connection string for connecting to the Azure Blob Storage service. Only required when running the application locally via Azurite.|Yes|
+|STORAGE_ACCOUNT_NAME|Azure storage account name used to construct the storage account endpoint. Not required when running the application locally.|No|
 |DB_HOST|Postgres Hostname|Yes|
 |DB_PORT|Postgres Port|Yes|
 |DB_NAME|Postgres Db name|Yes|
