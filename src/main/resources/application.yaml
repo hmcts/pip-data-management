@@ -85,8 +85,6 @@ spring:
 
 
 azure:
-  application-insights:
-    instrumentation-key: ${AZURE_APPLICATIONINSIGHTS_INSTRUMENTATIONKEY:00000000-0000-0000-0000-000000000000}
   blob:
     connection-string: ${CONNECTION_STRING}
     storage-account-name: ${STORAGE_ACCOUNT_NAME}
