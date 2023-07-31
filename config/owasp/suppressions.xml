@@ -15,4 +15,14 @@
     <packageUrl regex="true">^pkg:maven/io.netty/netty-.*$</packageUrl>
     <cve>CVE-2023-34462</cve>
   </suppress>
+  <suppress>
+    <notes>Already on latest version of okhttp</notes>
+    <packageUrl regex="true">^pkg:maven/com.squareup.okhttp3/okhttp@4.11.0</packageUrl>
+    <cve>CVE-2023-3782</cve>
+  </suppress>
+  <suppress>
+    <notes>Pulled in by okhttp (which we're already on the latest version of)</notes>
+    <packageUrl regex="true">^pkg:maven/com.squareup.okio/okio-jvm@3.2.0</packageUrl>
+    <cve>CVE-2023-3635</cve>
+  </suppress>
 </suppressions>
