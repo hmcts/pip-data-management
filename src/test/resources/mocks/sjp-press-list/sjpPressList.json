@@ -19,12 +19,10 @@
                           {
                             "partyRole": "ACCUSED",
                             "individualDetails": {
-                              "individualForenames": "This is a forename",
                               "individualSurname": "This is a surname",
                               "dateOfBirth": "01/01/1800",
                               "age": 50,
                               "address": {
-                                "county": "County A",
                                 "town": "Month A",
                                 "postCode": "AA1 AA1",
                                 "line": [
@@ -32,8 +30,7 @@
                                   "Address Line 2"
                                 ]
                               },
-                              "title": "This is a title",
-                              "individualMiddleName": "This is a middle name"
+                              "title": "This is a title"
                             }
                           },
                           {
@@ -65,11 +62,7 @@
                               "organisationAddress": {
                                 "county": "County A",
                                 "town": "Month A",
-                                "postCode": "AA1 AA1",
-                                "line": [
-                                  "Address Line 1",
-                                  "Address Line 2"
-                                ]
+                                "postCode": "AA1 AA1"
                               }
                             }
                           },
