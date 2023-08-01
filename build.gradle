@@ -198,7 +198,7 @@ dependencies {
   implementation 'com.azure.spring:spring-cloud-azure-starter-active-directory:5.2.0'
   implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
   implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
-  implementation 'com.opencsv:opencsv:5.7.1'
+  implementation 'com.opencsv:opencsv:5.8'
   implementation 'org.springframework.boot:spring-boot-starter-webflux'
   implementation("com.squareup.okhttp3:okhttp:4.11.0")
 
