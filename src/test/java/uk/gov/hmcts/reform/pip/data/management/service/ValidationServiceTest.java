@@ -279,6 +279,8 @@ class ValidationServiceTest {
                          "mocks/sjp-public-list/sjpPublicList.json"),
             Arguments.of(ListType.SJP_PRESS_LIST,
                          "mocks/sjp-press-list/sjpPressList.json"),
+            Arguments.of(ListType.SJP_DELTA_PRESS_LIST,
+                         "mocks/sjp-press-list/sjpPressList.json"),
             Arguments.of(ListType.CROWN_DAILY_LIST,
                          "mocks/crown-daily-list/crownDailyList.json"),
             Arguments.of(ListType.CROWN_FIRM_LIST,
