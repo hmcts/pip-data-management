@@ -86,7 +86,8 @@ public class PublicationService {
 
         // Add 7 days to the expiry date if the list type is SJP
         if (artefact.getListType().equals(ListType.SJP_PUBLIC_LIST)
-            || artefact.getListType().equals(ListType.SJP_PRESS_LIST)) {
+            || artefact.getListType().equals(ListType.SJP_PRESS_LIST)
+            || artefact.getListType().equals(ListType.SJP_DELTA_PRESS_LIST)) {
             artefact.setExpiryDate(artefact.getExpiryDate().plusDays(7));
         }
 
