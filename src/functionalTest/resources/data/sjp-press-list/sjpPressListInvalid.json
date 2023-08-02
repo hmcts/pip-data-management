@@ -20,7 +20,6 @@
                             "partyRole": "ACCUSED",
                             "individualDetails": {
                               "individualForenames": "This is a forename",
-                              "dateOfBirth": "01/01/1800",
                               "age": 50,
                               "address": {
                                 "county": "County A",
