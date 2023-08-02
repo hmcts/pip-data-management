@@ -209,8 +209,7 @@
                                               "type": "object",
                                               "required": [
                                                 "dateOfBirth",
-                                                "age",
-                                                "address"
+                                                "age"
                                               ],
                                               "properties": {
                                                 "title": {
