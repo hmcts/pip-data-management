@@ -26,6 +26,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest(classes = {Application.class, AzureBlobConfigurationTestConfiguration.class})
@@ -39,7 +40,8 @@ class SjpPressListTest {
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private static final String SJP_PRESS_LIST_VALID_JSON = "mocks/sjp-press-list/sjpPressList.json";
-    private static final String SJP_PRESS_INVALID_MESSAGE = "Invalid sjp press";
+    private static final String SJP_PRESS_INVALID_MESSAGE = "Invalid SJP press";
+    private static final String SJP_PRESS_VALID_MESSAGE = "Exception should not be thrown for SJP press";
 
     private static final String COURT_LIST_SCHEMA = "courtLists";
     private static final String COURT_HOUSE_SCHEMA = "courtHouse";
@@ -325,7 +327,7 @@ class SjpPressListTest {
     }
 
     @Test
-    void testValidateWithErrorWhenIndividualForenamesForAccusedMissingInSjpPressList() throws IOException {
+    void testValidateWithSuccessWhenIndividualForenamesForAccusedMissingInSjpPressList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(SJP_PRESS_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
@@ -338,14 +340,13 @@ class SjpPressListTest {
                 .remove("individualForenames");
 
             String listJson = node.toString();
-            assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup),
-                         SJP_PRESS_INVALID_MESSAGE);
+            assertDoesNotThrow(() -> validationService.validateBody(listJson, headerGroup),
+                               SJP_PRESS_VALID_MESSAGE);
         }
     }
 
     @Test
-    void testValidateWithErrorWhenIndividualSurnameForAccusedMissingInSjpPressList() throws IOException {
+    void testValidateWithSuccessWhenIndividualSurnameForAccusedMissingInSjpPressList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(SJP_PRESS_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
@@ -358,9 +359,8 @@ class SjpPressListTest {
                 .remove("individualSurname");
 
             String listJson = node.toString();
-            assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup),
-                         SJP_PRESS_INVALID_MESSAGE);
+            assertDoesNotThrow(() -> validationService.validateBody(listJson, headerGroup),
+                               SJP_PRESS_VALID_MESSAGE);
         }
     }
 
@@ -405,7 +405,7 @@ class SjpPressListTest {
     }
 
     @Test
-    void testValidateWithErrorWhenAddressForAccusedMissingInSjpPressList() throws IOException {
+    void testValidateWithSuccessWhenAddressForAccusedMissingInSjpPressList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(SJP_PRESS_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
@@ -418,14 +418,13 @@ class SjpPressListTest {
                 .remove(ADDRESS_SCHEMA);
 
             String listJson = node.toString();
-            assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup),
-                         SJP_PRESS_INVALID_MESSAGE);
+            assertDoesNotThrow(() -> validationService.validateBody(listJson, headerGroup),
+                               SJP_PRESS_VALID_MESSAGE);
         }
     }
 
     @Test
-    void testValidateWithErrorWhenTownForAccusedMissingInSjpPressList() throws IOException {
+    void testValidateWithSuccessWhenTownForAccusedMissingInSjpPressList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(SJP_PRESS_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
@@ -438,14 +437,13 @@ class SjpPressListTest {
                 .get(ADDRESS_SCHEMA)).remove("town");
 
             String listJson = node.toString();
-            assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup),
-                         SJP_PRESS_INVALID_MESSAGE);
+            assertDoesNotThrow(() -> validationService.validateBody(listJson, headerGroup),
+                               SJP_PRESS_VALID_MESSAGE);
         }
     }
 
     @Test
-    void testValidateWithErrorWhenCountryForAccusedMissingInSjpPressList() throws IOException {
+    void testValidateWithSuccessWhenCountryForAccusedMissingInSjpPressList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(SJP_PRESS_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
@@ -458,14 +456,13 @@ class SjpPressListTest {
                 .get(ADDRESS_SCHEMA)).remove("county");
 
             String listJson = node.toString();
-            assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup),
-                         SJP_PRESS_INVALID_MESSAGE);
+            assertDoesNotThrow(() -> validationService.validateBody(listJson, headerGroup),
+                               SJP_PRESS_VALID_MESSAGE);
         }
     }
 
     @Test
-    void testValidateWithErrorWhenPostCodeForAccusedMissingInSjpPressList() throws IOException {
+    void testValidateWithSuccessWhenPostCodeForAccusedMissingInSjpPressList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(SJP_PRESS_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
@@ -478,9 +475,8 @@ class SjpPressListTest {
                 .get(ADDRESS_SCHEMA)).remove("postCode");
 
             String listJson = node.toString();
-            assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup),
-                         SJP_PRESS_INVALID_MESSAGE);
+            assertDoesNotThrow(() -> validationService.validateBody(listJson, headerGroup),
+                               SJP_PRESS_VALID_MESSAGE);
         }
     }
 
@@ -505,7 +501,7 @@ class SjpPressListTest {
     }
 
     @Test
-    void testValidateWithErrorWhenOrganisationTownForAccusedMissingInSjpPressList() throws IOException {
+    void testValidateWithSuccessWhenOrganisationTownForAccusedMissingInSjpPressList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(SJP_PRESS_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
@@ -518,14 +514,13 @@ class SjpPressListTest {
                 .get(ORGANISATION_ADDRESS_SCHEMA)).remove("town");
 
             String listJson = node.toString();
-            assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup),
-                         SJP_PRESS_INVALID_MESSAGE);
+            assertDoesNotThrow(() -> validationService.validateBody(listJson, headerGroup),
+                               SJP_PRESS_VALID_MESSAGE);
         }
     }
 
     @Test
-    void testValidateWithErrorWhenOrganisationCountryForAccusedMissingInSjpPressList() throws IOException {
+    void testValidateWithSuccessWhenOrganisationCountryForAccusedMissingInSjpPressList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(SJP_PRESS_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
@@ -538,14 +533,13 @@ class SjpPressListTest {
                 .get(ORGANISATION_ADDRESS_SCHEMA)).remove("county");
 
             String listJson = node.toString();
-            assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup),
-                         SJP_PRESS_INVALID_MESSAGE);
+            assertDoesNotThrow(() -> validationService.validateBody(listJson, headerGroup),
+                               SJP_PRESS_VALID_MESSAGE);
         }
     }
 
     @Test
-    void testValidateWithErrorWhenOrganisationPostCodeForAccusedMissingInSjpPressList() throws IOException {
+    void testValidateWithSuccessWhenOrganisationPostCodeForAccusedMissingInSjpPressList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(SJP_PRESS_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
@@ -558,9 +552,8 @@ class SjpPressListTest {
                 .get(ORGANISATION_ADDRESS_SCHEMA)).remove("postCode");
 
             String listJson = node.toString();
-            assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup),
-                         SJP_PRESS_INVALID_MESSAGE);
+            assertDoesNotThrow(() -> validationService.validateBody(listJson, headerGroup),
+                               SJP_PRESS_VALID_MESSAGE);
         }
     }
 
