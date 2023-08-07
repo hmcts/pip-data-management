@@ -208,11 +208,8 @@
                                               "description": "Individual Details",
                                               "type": "object",
                                               "required": [
-                                                "individualForenames",
-                                                "individualSurname",
                                                 "dateOfBirth",
-                                                "age",
-                                                "address"
+                                                "age"
                                               ],
                                               "properties": {
                                                 "title": {
@@ -282,12 +279,7 @@
                                                   "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items/individualDetails/address",
                                                   "title": "Address",
                                                   "description": "Party Address",
-                                                  "$ref": "#/definitions/address",
-                                                  "required": [
-                                                    "town",
-                                                    "county",
-                                                    "postCode"
-                                                  ]
+                                                  "$ref": "#/definitions/address"
                                                 }
                                               }
                                             },
@@ -315,12 +307,7 @@
                                                   "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items/organisationDetails/organisationAddress",
                                                   "title": "Organisation Address",
                                                   "description": "Party Address",
-                                                  "$ref": "#/definitions/address",
-                                                  "required": [
-                                                    "town",
-                                                    "county",
-                                                    "postCode"
-                                                  ]
+                                                  "$ref": "#/definitions/address"
                                                 }
                                               }
                                             }
