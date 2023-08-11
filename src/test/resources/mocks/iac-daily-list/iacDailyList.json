@@ -9,9 +9,6 @@
       "venueEmail": "a@b.com"
     }
   },
-  "locationDetails": {
-    "jurisdiction": "Tribunal"
-  },
   "courtLists": [
     {
       "courtListName": "",
@@ -21,9 +18,6 @@
             "courtRoomName": "1",
             "session": [
               {
-                "sessionChannel": [
-                  "VIDEO HEARING"
-                ],
                 "judiciary": [
                   {
                     "johTitle": "Judge",
@@ -72,7 +66,6 @@
                           },
                           {
                             "partyRole": "CLAIMANT_PETITIONER_REPRESENTATIVE",
-                            "friendlyRoleName": "Legal Advisor",
                             "individualDetails": {
                               "individualForenames": "Individual Forenames",
                               "individualMiddleName": "Individual Middlename",
@@ -82,7 +75,6 @@
                           },
                           {
                             "partyRole": "RESPONDENT_REPRESENTATIVE",
-                            "friendlyRoleName": "Legal Advisor",
                             "individualDetails": {
                               "individualForenames": "Individual Forenames",
                               "individualMiddleName": "Individual Middlename",
