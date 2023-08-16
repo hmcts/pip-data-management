@@ -2,12 +2,10 @@ package uk.gov.hmcts.reform.pip.data.management.errorhandling;
 
 import com.azure.storage.blob.models.BlobStorageException;
 import jakarta.validation.ConstraintViolationException;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -49,12 +47,6 @@ class GlobalExceptionHandlerTest {
     static final String ASSERTION_RESPONSE_BODY = "Response should contain a body";
     private static final String NOT_NULL_MESSAGE = "Exception body should not be null";
     private final GlobalExceptionHandler globalExceptionHandler = new GlobalExceptionHandler();
-
-    @BeforeAll
-    public static void setup() {
-        MockitoAnnotations.openMocks(MissingRequestHeaderException.class);
-        MockitoAnnotations.openMocks(MethodArgumentTypeMismatchException.class);
-    }
 
     @Test
     @DisplayName("Test that the response entity returned from the exception handler, "
