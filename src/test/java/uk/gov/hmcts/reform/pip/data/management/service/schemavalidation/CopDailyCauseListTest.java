@@ -46,6 +46,7 @@ class CopDailyCauseListTest {
     private static final String COURT_HOUSE_SCHEMA = "courtHouse";
     private static final String COURT_HOUSE_CONTACT_SCHEMA = "courtHouseContact";
     private static final String COURT_ROOM_SCHEMA = "courtRoom";
+    private static final String COURT_ROOM_NAME_SCHEMA = "courtRoomName";
     private static final String SESSION_SCHEMA = "session";
     private static final String SITTINGS_SCHEMA = "sittings";
     private static final String HEARING_SCHEMA = "hearing";
@@ -305,6 +306,24 @@ class CopDailyCauseListTest {
             JsonNode node = mapper.readValue(text, JsonNode.class);
             ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0)
                 .get(COURT_HOUSE_SCHEMA)).remove(COURT_ROOM_SCHEMA);
+
+            String listJson = node.toString();
+            assertThrows(PayloadValidationException.class, () ->
+                             validationService.validateBody(listJson, headerGroup),
+                         COP_DAILY_LIST_INVALID_MESSAGE);
+        }
+    }
+
+    @Test
+    void testValidateWithErrorsWhenCourtRoomNameMissingInCopDailyCauseList() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream(COP_DAILY_LIST_VALID_JSON)) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode node = mapper.readValue(text, JsonNode.class);
+            ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0)
+                .get(COURT_HOUSE_SCHEMA).get(COURT_ROOM_SCHEMA).get(0)).remove(COURT_ROOM_NAME_SCHEMA);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->

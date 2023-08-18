@@ -74,49 +74,6 @@
           "pattern": "^.*$"
         }
       }
-    },
-    "judiciary": {
-      "title": "Judiciary",
-      "description": "Can be an array of objects as such will be a collective and use plurals for object arrays (clerks and scribes etc included)",
-      "type": "object",
-      "properties": {
-        "johTitle": {
-          "description": "The title for the judiciary",
-          "title": "Judiciary Title",
-          "type": "string",
-          "default": ""
-        },
-        "johNameSurname": {
-          "description": "First and Surname of the JOH",
-          "title": "JOH Name",
-          "type": "string",
-          "examples": [
-            "John Smith"
-          ],
-          "default": "",
-          "pattern": "^.*$"
-        },
-        "johKnownAs": {
-          "description": "Name and salutations, titles to be presented on publications",
-          "title": "JOH Known As",
-          "type": "string",
-          "examples": [
-            "judge"
-          ],
-          "default": "",
-          "pattern": "^.*$"
-        },
-        "isPresiding": {
-          "description": "A flag to indicate whether a judiciary is presiding",
-          "title": "Is Presiding",
-          "type": "boolean",
-          "examples": [
-            true
-          ],
-          "default": "",
-          "pattern": "^.*$"
-        }
-      }
     }
   },
   "$schema": "http://json-schema.org/draft-07/schema#",
@@ -124,16 +81,6 @@
   "type": "object",
   "required": ["document", "venue", "courtLists"],
   "properties": {
-    "@schemaLocation": {
-      "$id": "#root/@schemaLocation",
-      "title": "@schemalocation",
-      "type": "string",
-      "default": "",
-      "examples": [
-        "http://json-schema.org/draft-07/schema#"
-      ],
-      "pattern": "^.*$"
-    },
     "document": {
       "$id": "#root/document",
       "title": "document",
@@ -218,12 +165,44 @@
             },
             "regionalJOH": {
               "$id": "#root/locationDetails/region/regionalJOH",
-              "type": "array",
-              "description": "Judiciary for the region",
               "title": "Judiciary",
-              "items":{
+              "description": "Judiciary for the region",
+              "type": "array",
+              "default": [],
+              "items": {
+                "$id": "#root/locationDetails/region/regionalJOH/items",
                 "type": "object",
-                "$ref": "#/definitions/judiciary"
+                "properties": {
+                  "johTitle": {
+                    "$id": "#root/locationDetails/region/regionalJOH/items/johTitle",
+                    "description": "The title for the judiciary",
+                    "title": "Judiciary Title",
+                    "type": "string",
+                    "default": ""
+                  },
+                  "johNameSurname": {
+                    "$id": "#root/locationDetails/region/regionalJOH/items/johNameSurname",
+                    "description": "First and Surname of the JOH",
+                    "title": "JOH Name",
+                    "type": "string",
+                    "examples": [
+                      "John Smith"
+                    ],
+                    "default": "",
+                    "pattern": "^.*$"
+                  },
+                  "johKnownAs": {
+                    "$id": "#root/locationDetails/region/regionalJOH/items/johKnownAs",
+                    "description": "Name and salutations, titles to be presented on publications",
+                    "title": "JOH Known As",
+                    "type": "string",
+                    "examples": [
+                      "judge"
+                    ],
+                    "default": "",
+                    "pattern": "^.*$"
+                  }
+                }
               }
             }
           }
@@ -278,8 +257,18 @@
                   "title": "Court Room",
                   "description": "The court room that owns the court rooms",
                   "type": "object",
-                  "required": ["session"],
+                  "required": ["courtRoomName", "session"],
                   "properties": {
+                    "courtRoomName": {
+                      "$id": "#root/courtLists/courtRoom/courtRoomName",
+                      "description": "Name for the court room",
+                      "title": "Court Room Name",
+                      "type": "string",
+                      "default": "",
+                      "examples": [
+                        "Room 1"
+                      ]
+                    },
                     "session": {
                       "$id": "#root/courtLists/courtRoom/session",
                       "type": "array",
@@ -291,12 +280,37 @@
                         "properties": {
                           "judiciary": {
                             "$id": "#root/courtLists/courtRoom/session/judiciary",
-                            "type": "array",
-                            "description": "Judiciary for the session",
                             "title": "Judiciary",
-                            "items":{
+                            "description": "Judiciary for the session",
+                            "type": "array",
+                            "default": [],
+                            "items": {
+                              "$id": "#root/courtLists/courtList/courtRoom/session/judiciary/items",
                               "type": "object",
-                              "$ref": "#/definitions/judiciary"
+                              "properties": {
+                                "johKnownAs": {
+                                  "$id": "#root/courtLists/courtList/courtRoom/session/judiciary/items/johKnownAs",
+                                  "description": "Name and salutations, titles to be presented on publications",
+                                  "title": "JOH Known As",
+                                  "type": "string",
+                                  "examples": [
+                                    "judge"
+                                  ],
+                                  "default": "",
+                                  "pattern": "^.*$"
+                                },
+                                "isPresiding": {
+                                  "$id": "#root/courtLists/courtList/courtRoom/session/judiciary/items/isPresiding",
+                                  "description": "A flag to indicate whether a judiciary is presiding",
+                                  "title": "Is Presiding",
+                                  "type": "boolean",
+                                  "examples": [
+                                    true
+                                  ],
+                                  "default": "",
+                                  "pattern": "^.*$"
+                                }
+                              }
                             }
                           },
                           "sittings": {
