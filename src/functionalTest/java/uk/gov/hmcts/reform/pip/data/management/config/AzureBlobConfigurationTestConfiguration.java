@@ -26,14 +26,8 @@ public class AzureBlobConfigurationTestConfiguration {
         MockitoAnnotations.openMocks(this);
     }
 
-    @Bean(name = "artefact")
-    @Primary
-    public BlobContainerClient artefactBlobContainerClient() {
-        return blobContainerClientMock;
-    }
-
-    @Bean(name = "publications")
-    public BlobContainerClient publicationsBlobContainerClient() {
+    @Bean
+    public BlobContainerClient blobContainerClient() {
         return blobContainerClientMock;
     }
 
