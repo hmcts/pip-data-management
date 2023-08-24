@@ -18,6 +18,7 @@ import uk.gov.hmcts.reform.pip.data.management.Application;
 import java.io.IOException;
 import java.util.UUID;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -64,5 +65,27 @@ class ChannelManagementServiceTest {
         assertTrue(logCaptor.getErrorLogs().get(0)
                        .contains("Request to Channel Management to generate files failed with error:"),
                    "Exception was not logged.");
+    }
+
+    @Test
+    void testDeleteFilesSuccess() {
+        mockChannelManagementEndpoint.enqueue(new MockResponse()
+                                                  .setResponseCode(HttpStatus.NO_CONTENT.value()));
+
+        channelManagementService.deleteFiles(UUID.randomUUID());
+        assertThat(logCaptor.getErrorLogs())
+            .as("Error log should be empty")
+            .isEmpty();
+    }
+
+    @Test
+    void testDeleteFilesWithException() {
+        mockChannelManagementEndpoint.enqueue(new MockResponse()
+                                                  .setResponseCode(HttpStatus.BAD_REQUEST.value()));
+
+        channelManagementService.deleteFiles(UUID.randomUUID());
+        assertThat(logCaptor.getErrorLogs().get(0))
+            .as("Error log does not match")
+            .contains("Request to Channel Management to delete files failed with error:");
     }
 }

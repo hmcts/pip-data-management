@@ -20,28 +20,12 @@ public class AzureBlobConfiguration {
     @Value("${azure.managed-identity.client-id}")
     private String managedIdentityClientId;
 
-    @Bean(name = "artefact")
-    public BlobContainerClient artefactBlobContainerClient(AzureBlobConfigurationProperties
-                                                           azureBlobConfigurationProperties) {
-        return configureBlobContainerClient(azureBlobConfigurationProperties,
-                                            azureBlobConfigurationProperties.getArtefactContainerName());
-    }
-
-    @Bean(name = "publications")
-    public BlobContainerClient publicationsBlobContainerClient(AzureBlobConfigurationProperties
-                                                               azureBlobConfigurationProperties) {
-        return configureBlobContainerClient(azureBlobConfigurationProperties,
-                                            azureBlobConfigurationProperties.getPublicationsContainerName());
-    }
-
-    private BlobContainerClient configureBlobContainerClient(
-        AzureBlobConfigurationProperties azureBlobConfigurationProperties,
-        String containerName
-    ) {
+    @Bean
+    public BlobContainerClient blobContainerClient(AzureBlobConfigurationProperties azureBlobConfigurationProperties) {
         if (managedIdentityClientId.isEmpty()) {
             return new BlobContainerClientBuilder()
                 .connectionString(azureBlobConfigurationProperties.getConnectionString())
-                .containerName(containerName)
+                .containerName(azureBlobConfigurationProperties.getContainerName())
                 .buildClient();
         }
 
@@ -53,7 +37,7 @@ public class AzureBlobConfiguration {
         return new BlobContainerClientBuilder()
             .endpoint(String.format(BLOB_ENDPOINT, azureBlobConfigurationProperties.getStorageAccountName()))
             .credential(defaultCredential)
-            .containerName(containerName)
+            .containerName(azureBlobConfigurationProperties.getContainerName())
             .buildClient();
     }
 }

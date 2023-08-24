@@ -12,12 +12,12 @@ import uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactHelper;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.service.AccountManagementService;
+import uk.gov.hmcts.reform.pip.data.management.service.ChannelManagementService;
 import uk.gov.hmcts.reform.pip.data.management.service.LocationService;
 import uk.gov.hmcts.reform.pip.data.management.service.PublicationServicesService;
 import uk.gov.hmcts.reform.pip.data.management.service.SubscriptionManagementService;
 import uk.gov.hmcts.reform.pip.model.account.AzureAccount;
 import uk.gov.hmcts.reform.pip.model.enums.UserActions;
-import uk.gov.hmcts.reform.pip.model.publication.ListType;
 import uk.gov.hmcts.reform.pip.model.system.admin.ActionResult;
 import uk.gov.hmcts.reform.pip.model.system.admin.ChangeType;
 
@@ -40,12 +40,14 @@ public class ArtefactDeleteService {
     private final SubscriptionManagementService subscriptionManagementService;
     private final AccountManagementService accountManagementService;
     private final PublicationServicesService publicationServicesService;
+    private final ChannelManagementService channelManagementService;
 
     public ArtefactDeleteService(ArtefactRepository artefactRepository, LocationRepository locationRepository,
                                  LocationService locationService, AzureBlobService azureBlobService,
                                  SubscriptionManagementService subscriptionManagementService,
                                  AccountManagementService accountManagementService,
-                                 PublicationServicesService publicationServicesService) {
+                                 PublicationServicesService publicationServicesService,
+                                 ChannelManagementService channelManagementService) {
         this.artefactRepository = artefactRepository;
         this.locationRepository = locationRepository;
         this.locationService = locationService;
@@ -53,6 +55,7 @@ public class ArtefactDeleteService {
         this.subscriptionManagementService = subscriptionManagementService;
         this.accountManagementService = accountManagementService;
         this.publicationServicesService = publicationServicesService;
+        this.channelManagementService = channelManagementService;
     }
 
     /**
@@ -103,20 +106,9 @@ public class ArtefactDeleteService {
         // Delete the payload/flat file from the publications store
         azureBlobService.deleteBlob(ArtefactHelper.getUuidFromUrl(artefact.getPayload()));
 
-        // Try to delete the generated files for the publications if it's not a flat file
+        // Delete the generated files for the publications if it's not a flat file
         if (artefact.getIsFlatFile().equals(Boolean.FALSE)) {
-            try {
-                azureBlobService.deletePublicationBlob(artefact.getArtefactId() + ".pdf");
-
-                // If it's an SJP list the xlsx file also needs to be deleted
-                if (artefact.getListType().equals(ListType.SJP_PUBLIC_LIST)
-                    || artefact.getListType().equals(ListType.SJP_PRESS_LIST)) {
-                    azureBlobService.deletePublicationBlob(artefact.getArtefactId() + ".xlsx");
-                }
-            } catch (Exception ex) {
-                log.error(writeLog("Failed to delete the generated publication file. Message: "
-                                       + ex.getMessage()));
-            }
+            channelManagementService.deleteFiles(artefact.getArtefactId());
         }
     }
 

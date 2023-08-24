@@ -18,6 +18,7 @@ import uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelpe
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.service.AccountManagementService;
+import uk.gov.hmcts.reform.pip.data.management.service.ChannelManagementService;
 import uk.gov.hmcts.reform.pip.data.management.service.LocationService;
 import uk.gov.hmcts.reform.pip.data.management.service.PublicationServicesService;
 import uk.gov.hmcts.reform.pip.data.management.service.SubscriptionManagementService;
@@ -42,7 +43,6 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -83,6 +83,9 @@ class ArtefactDeleteServiceTest {
 
     @Mock
     PublicationServicesService publicationService;
+
+    @Mock
+    ChannelManagementService channelManagementService;
 
     @InjectMocks
     ArtefactDeleteService artefactDeleteService;
@@ -180,7 +183,7 @@ class ArtefactDeleteServiceTest {
         when(artefactRepository.findOutdatedArtefacts(any())).thenReturn(List.of(artefactWithPayloadUrl));
         artefactDeleteService.archiveExpiredArtefacts();
         verify(azureBlobService).deleteBlob(PAYLOAD_STRIPPED);
-        verify(azureBlobService).deletePublicationBlob(testArtefactId + ".pdf");
+        verify(channelManagementService).deleteFiles(testArtefactId);
         verify(artefactRepository).archiveArtefact(testArtefactId.toString());
     }
 
@@ -192,8 +195,7 @@ class ArtefactDeleteServiceTest {
         when(artefactRepository.findOutdatedArtefacts(any())).thenReturn(List.of(artefactWithPayloadUrl));
         artefactDeleteService.archiveExpiredArtefacts();
         verify(azureBlobService).deleteBlob(PAYLOAD_STRIPPED);
-        verify(azureBlobService).deletePublicationBlob(artefactWithPayloadUrl.getArtefactId() + ".pdf");
-        verify(azureBlobService).deletePublicationBlob(artefactWithPayloadUrl.getArtefactId() + ".xlsx");
+        verify(channelManagementService).deleteFiles(testArtefactId);
         verify(artefactRepository).archiveArtefact(testArtefactId.toString());
     }
 
@@ -205,8 +207,7 @@ class ArtefactDeleteServiceTest {
         when(artefactRepository.findOutdatedArtefacts(any())).thenReturn(List.of(artefactWithPayloadUrl));
         artefactDeleteService.archiveExpiredArtefacts();
         verify(azureBlobService).deleteBlob(PAYLOAD_STRIPPED);
-        verify(azureBlobService).deletePublicationBlob(artefactWithPayloadUrl.getArtefactId() + ".pdf");
-        verify(azureBlobService).deletePublicationBlob(artefactWithPayloadUrl.getArtefactId() + ".xlsx");
+        verify(channelManagementService).deleteFiles(testArtefactId);
         verify(artefactRepository).archiveArtefact(testArtefactId.toString());
     }
 
@@ -238,14 +239,10 @@ class ArtefactDeleteServiceTest {
 
         artefactDeleteService.archiveArtefactById(artefactId, UUID.randomUUID().toString());
 
-        verify(azureBlobService, times(1))
-            .deleteBlob(any());
-        verify(azureBlobService, times(1))
-            .deletePublicationBlob(any());
-        verify(subscriptionManagementService, times(1))
-            .sendDeletedArtefactForThirdParties(any());
-        verify(artefactRepository, times(1))
-            .archiveArtefact(artefactId);
+        verify(azureBlobService).deleteBlob(any());
+        verify(channelManagementService).deleteFiles(any());
+        verify(subscriptionManagementService).sendDeletedArtefactForThirdParties(any());
+        verify(artefactRepository).archiveArtefact(artefactId);
     }
 
     @Test
@@ -283,10 +280,8 @@ class ArtefactDeleteServiceTest {
             assertEquals("Total 1 artefact deleted for location id 1",
                          artefactDeleteService.deleteArtefactByLocation(LOCATION_ID, REQUESTER_NAME),
                          "The artefacts for given location is not deleted");
-            verify(azureBlobService, times(1))
-                .deleteBlob(any());
-            verify(azureBlobService, times(1))
-                .deletePublicationBlob(any());
+            verify(azureBlobService).deleteBlob(any());
+            verify(channelManagementService).deleteFiles(ARTEFACT_ID);
 
             assertTrue(logCaptor.getInfoLogs().get(0).contains("User " + REQUESTER_NAME
                                                                    + " attempting to delete all artefacts for location "
