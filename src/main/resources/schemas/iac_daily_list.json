@@ -69,16 +69,6 @@
     "courtLists"
   ],
   "properties": {
-    "@schemaLocation": {
-      "$id": "#root/@schemaLocation",
-      "title": "@schemalocation",
-      "type": "string",
-      "default": "",
-      "examples": [
-        "http://json-schema.org/draft-07/schema#"
-      ],
-      "pattern": "^.*$"
-    },
     "document": {
       "$id": "#root/document",
       "title": "document",
@@ -124,25 +114,6 @@
           "title": "Venue Contact",
           "$ref": "#/definitions/venueContact",
           "required": ["venueTelephone", "venueEmail"]
-        }
-      }
-    },
-    "locationDetails": {
-      "$id": "#root/locationDetails",
-      "title": "Location Details",
-      "type": "object",
-      "properties": {
-        "jurisdiction": {
-          "$id": "#root/locationDetails/jurisdiction",
-          "description": "Jurisdiction",
-          "title": "Jurisdiction",
-          "type": "string",
-          "default": "",
-          "examples": [
-            "Tribunal"
-          ],
-          "pattern": "^.*$"
-
         }
       }
     },
@@ -212,20 +183,6 @@
                           "sittings"
                         ],
                         "properties": {
-                          "sessionChannel": {
-                            "$id": "#root/courtLists/courtRoom/session/sessionChannel",
-                            "type": "array",
-                            "items": {
-                              "description": "Requested to ensure we host the type of hearing channel in the session",
-                              "title": "Session Channel",
-                              "type": "string",
-                              "examples": [
-                                "VIDEO HEARING"
-                              ],
-                              "default": "",
-                              "pattern": "^.*$"
-                            }
-                          },
                           "judiciary": {
                             "$id": "#root/courtLists/courtRoom/session/judiciary",
                             "type": "array",
@@ -394,17 +351,6 @@
                                               "examples": [
                                                 "ACCUSED",
                                                 "PROSECUTOR"
-                                              ],
-                                              "default": "",
-                                              "pattern": "^.*$"
-                                            },
-                                            "friendlyRoleName": {
-                                              "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/party/friendlyRoleName",
-                                              "description": "The descriptive version of the role. E.g a party role of APPLICANT_REPRESENTATIVE, might have a more descriptive role name (e.g Legal Advisor) that you would want to display",
-                                              "title": "Friendly Role Name",
-                                              "type": "string",
-                                              "examples": [
-                                                "Legal Advisor"
                                               ],
                                               "default": "",
                                               "pattern": "^.*$"
