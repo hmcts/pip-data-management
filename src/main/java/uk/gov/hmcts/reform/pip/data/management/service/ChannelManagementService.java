@@ -30,10 +30,10 @@ public class ChannelManagementService {
                 .bodyToMono(String.class)
                 .block();
         } catch (WebClientException ex) {
-            log.error(writeLog(
-                String.format("Request to Channel Management to generate files failed with error: %s",
-                              ex.getMessage())
-            ));
+            log.error(writeLog(String.format(
+                "Request to Channel Management to generate files for artefact with ID %s failed with error: %s",
+                artefactId, ex.getMessage()
+            )));
             return "";
         }
     }
@@ -47,10 +47,10 @@ public class ChannelManagementService {
                 .bodyToMono(String.class)
                 .block();
         } catch (WebClientException ex) {
-            log.error(writeLog(
-                String.format("Request to Channel Management to delete files failed with error: %s",
-                              ex.getMessage())
-            ));
+            log.error(writeLog(String.format(
+                "Request to Channel Management to delete files for artefact with ID %s failed with error: %s",
+                artefactId, ex.getMessage()
+            )));
         }
     }
 }
