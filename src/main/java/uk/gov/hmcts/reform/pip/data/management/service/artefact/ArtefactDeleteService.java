@@ -79,7 +79,11 @@ public class ArtefactDeleteService {
     public void archiveExpiredArtefacts() {
         LocalDateTime searchDateTime = LocalDateTime.now();
         List<Artefact> outdatedArtefacts = artefactRepository.findOutdatedArtefacts(searchDateTime);
-        outdatedArtefacts.forEach(artefact -> handleArtifactArchiving(artefact, artefact.getArtefactId().toString()));
+
+        outdatedArtefacts.forEach(artefact -> {
+            artefactRepository.archiveArtefact(artefact.getArtefactId().toString());
+            deleteAllPublicationBlobData(artefact);
+        });
 
         log.info(writeLog(
             String.format("%s outdated artefacts found and archived for before %s",

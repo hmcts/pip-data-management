@@ -40,6 +40,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -182,7 +183,7 @@ class ArtefactDeleteServiceTest {
         verify(azureBlobService).deleteBlob(PAYLOAD_STRIPPED);
         verify(azureBlobService).deletePublicationBlob(testArtefactId + ".pdf");
         verify(artefactRepository).archiveArtefact(testArtefactId.toString());
-        verify(subscriptionManagementService).sendDeletedArtefactForThirdParties(artefactWithPayloadUrl);
+        verify(subscriptionManagementService, never()).sendDeletedArtefactForThirdParties(artefactWithPayloadUrl);
     }
 
     @Test
@@ -197,7 +198,7 @@ class ArtefactDeleteServiceTest {
         verify(azureBlobService).deletePublicationBlob(artefactWithPayloadUrl.getArtefactId() + ".pdf");
         verify(azureBlobService).deletePublicationBlob(artefactWithPayloadUrl.getArtefactId() + ".xlsx");
         verify(artefactRepository).archiveArtefact(testArtefactId.toString());
-        verify(subscriptionManagementService).sendDeletedArtefactForThirdParties(artefactWithPayloadUrl);
+        verify(subscriptionManagementService, never()).sendDeletedArtefactForThirdParties(artefactWithPayloadUrl);
     }
 
     @Test
@@ -212,7 +213,7 @@ class ArtefactDeleteServiceTest {
         verify(azureBlobService).deletePublicationBlob(artefactWithPayloadUrl.getArtefactId() + ".pdf");
         verify(azureBlobService).deletePublicationBlob(artefactWithPayloadUrl.getArtefactId() + ".xlsx");
         verify(artefactRepository).archiveArtefact(testArtefactId.toString());
-        verify(subscriptionManagementService).sendDeletedArtefactForThirdParties(artefactWithPayloadUrl);
+        verify(subscriptionManagementService, never()).sendDeletedArtefactForThirdParties(artefactWithPayloadUrl);
     }
 
     @Test
@@ -226,7 +227,7 @@ class ArtefactDeleteServiceTest {
         artefactDeleteService.archiveExpiredArtefacts();
         verify(azureBlobService).deleteBlob(PAYLOAD_STRIPPED);
         verify(artefactRepository).archiveArtefact(testArtefactId.toString());
-        verify(subscriptionManagementService).sendDeletedArtefactForThirdParties(artefactWithPayloadUrl);
+        verify(subscriptionManagementService, never()).sendDeletedArtefactForThirdParties(artefactWithPayloadUrl);
     }
 
     @Test
