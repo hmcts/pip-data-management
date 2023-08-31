@@ -20,4 +20,14 @@
     <packageUrl regex="true">^pkg:maven/com.squareup.okio/okio-jvm@3.2.0</packageUrl>
     <cve>CVE-2023-3635</cve>
   </suppress>
+  <suppress>
+    <notes>Needing to suppress as Spring Boot version 3.0.10 still pulls in some 3.0.9 components - Data Commons</notes>
+    <packageUrl regex="true">^pkg:maven/org.springframework.data/spring-data-commons@3.0.9</packageUrl>
+    <cve>CVE-2023-34040</cve>
+  </suppress>
+  <suppress>
+    <notes>Needing to suppress as Spring Boot version 3.0.10 still pulls in some 3.0.9 components - Data JPA</notes>
+    <packageUrl regex="true">^pkg:maven/org.springframework.data/spring-data-jpa@3.0.9</packageUrl>
+    <cve>CVE-2023-34040</cve>
+  </suppress>
 </suppressions>
