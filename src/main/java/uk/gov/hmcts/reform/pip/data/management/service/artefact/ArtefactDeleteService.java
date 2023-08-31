@@ -177,13 +177,13 @@ public class ArtefactDeleteService {
                              artefactsToDelete.size(), prefix);
     }
 
-    public void handleArtifactDeletion(Artefact artefact) {
+    private void handleArtifactDeletion(Artefact artefact) {
         deleteAllPublicationBlobData(artefact);
         artefactRepository.delete(artefact);
         subscriptionManagementService.sendDeletedArtefactForThirdParties(artefact);
     }
 
-    public void handleArtifactArchiving(Artefact artefact, String artefactId) {
+    private void handleArtifactArchiving(Artefact artefact, String artefactId) {
         deleteAllPublicationBlobData(artefact);
         artefactRepository.archiveArtefact(artefactId);
         subscriptionManagementService.sendDeletedArtefactForThirdParties(artefact);
