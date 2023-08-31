@@ -158,8 +158,6 @@ class ArtefactDeleteServiceTest {
             assertTrue(logCaptor.getInfoLogs().get(0).contains(String.format(DELETION_TRACK_LOG_MESSAGE, ARTEFACT_ID)),
                        MESSAGES_MATCH);
             verify(subscriptionManagementService).sendDeletedArtefactForThirdParties(artefactWithPayloadUrl);
-        } catch (Exception ex) {
-            throw new IOException(ex.getMessage());
         }
     }
 
