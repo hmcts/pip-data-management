@@ -284,9 +284,9 @@
                                               "title": "Party Role",
                                               "type": "string",
                                               "examples": [
-                                                "ACCUSED", "PROSECUTOR"
+                                                "CLAIMANT_PETITIONER", "RESPONDENT"
                                               ],
-                                              "enum": ["CLAIMANT_PETITIONER", "CLAIMANT_PETITIONER_REPRESENTATIVE", "RESPONDENT", "RESPONDENT_REPRESENTATIVE"],
+                                              "enum": ["CLAIMANT_PETITIONER", "RESPONDENT"],
                                               "default": "",
                                               "pattern": "^.*$"
                                             },
