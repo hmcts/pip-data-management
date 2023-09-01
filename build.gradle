@@ -9,7 +9,7 @@ plugins {
   id 'pmd'
   id 'org.flywaydb.flyway' version '9.21.1'
   id 'io.freefair.lombok' version '8.1.0'
-  id 'org.jetbrains.kotlin.jvm' version '1.9.0'
+  id 'org.jetbrains.kotlin.jvm' version '1.9.10'
 }
 
 apply plugin: 'org.owasp.dependencycheck'
