@@ -137,10 +137,6 @@
                                               "description": "Role of the party, selectable list of roles, i.e. prosecution, solicitor defence etc",
                                               "title": "Party Role",
                                               "type": "string",
-                                              "enum": [
-                                                "ACCUSED",
-                                                "PROSECUTOR"
-                                              ],
                                               "examples": [
                                                 "ACCUSED",
                                                 "PROSECUTOR"
