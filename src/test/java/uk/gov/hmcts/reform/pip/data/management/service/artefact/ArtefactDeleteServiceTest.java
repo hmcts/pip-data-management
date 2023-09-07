@@ -38,7 +38,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.lenient;
@@ -161,8 +160,7 @@ class ArtefactDeleteServiceTest {
             artefactDeleteService.deleteArtefactById(ARTEFACT_ID.toString(), TEST_VALUE);
             assertTrue(logCaptor.getInfoLogs().get(0).contains(String.format(DELETION_TRACK_LOG_MESSAGE, ARTEFACT_ID)),
                        MESSAGES_MATCH);
-        } catch (Exception ex) {
-            throw new IOException(ex.getMessage());
+            verify(subscriptionManagementService).sendDeletedArtefactForThirdParties(artefactWithPayloadUrl);
         }
     }
 
@@ -181,10 +179,12 @@ class ArtefactDeleteServiceTest {
         UUID testArtefactId = UUID.randomUUID();
         artefactWithPayloadUrl.setArtefactId(testArtefactId);
         when(artefactRepository.findOutdatedArtefacts(any())).thenReturn(List.of(artefactWithPayloadUrl));
+
         artefactDeleteService.archiveExpiredArtefacts();
         verify(azureBlobService).deleteBlob(PAYLOAD_STRIPPED);
         verify(channelManagementService).deleteFiles(testArtefactId);
         verify(artefactRepository).archiveArtefact(testArtefactId.toString());
+        verify(subscriptionManagementService, never()).sendDeletedArtefactForThirdParties(artefactWithPayloadUrl);
     }
 
     @Test
@@ -193,10 +193,12 @@ class ArtefactDeleteServiceTest {
         artefactWithPayloadUrl.setArtefactId(testArtefactId);
         artefactWithPayloadUrl.setListType(ListType.SJP_PUBLIC_LIST);
         when(artefactRepository.findOutdatedArtefacts(any())).thenReturn(List.of(artefactWithPayloadUrl));
+
         artefactDeleteService.archiveExpiredArtefacts();
         verify(azureBlobService).deleteBlob(PAYLOAD_STRIPPED);
         verify(channelManagementService).deleteFiles(testArtefactId);
         verify(artefactRepository).archiveArtefact(testArtefactId.toString());
+        verify(subscriptionManagementService, never()).sendDeletedArtefactForThirdParties(artefactWithPayloadUrl);
     }
 
     @Test
@@ -205,10 +207,12 @@ class ArtefactDeleteServiceTest {
         artefactWithPayloadUrl.setArtefactId(testArtefactId);
         artefactWithPayloadUrl.setListType(ListType.SJP_PRESS_LIST);
         when(artefactRepository.findOutdatedArtefacts(any())).thenReturn(List.of(artefactWithPayloadUrl));
+
         artefactDeleteService.archiveExpiredArtefacts();
         verify(azureBlobService).deleteBlob(PAYLOAD_STRIPPED);
         verify(channelManagementService).deleteFiles(testArtefactId);
         verify(artefactRepository).archiveArtefact(testArtefactId.toString());
+        verify(subscriptionManagementService, never()).sendDeletedArtefactForThirdParties(artefactWithPayloadUrl);
     }
 
     @Test
@@ -218,9 +222,11 @@ class ArtefactDeleteServiceTest {
         artefactWithPayloadUrl.setListType(ListType.SJP_PRESS_LIST);
         artefactWithPayloadUrl.setIsFlatFile(true);
         when(artefactRepository.findOutdatedArtefacts(any())).thenReturn(List.of(artefactWithPayloadUrl));
+
         artefactDeleteService.archiveExpiredArtefacts();
         verify(azureBlobService).deleteBlob(PAYLOAD_STRIPPED);
         verify(artefactRepository).archiveArtefact(testArtefactId.toString());
+        verify(subscriptionManagementService, never()).sendDeletedArtefactForThirdParties(artefactWithPayloadUrl);
     }
 
     @Test
@@ -228,6 +234,7 @@ class ArtefactDeleteServiceTest {
         when(artefactRepository.findOutdatedArtefacts(any())).thenReturn(Collections.emptyList());
         artefactDeleteService.archiveExpiredArtefacts();
         verifyNoInteractions(azureBlobService);
+        verifyNoInteractions(subscriptionManagementService);
     }
 
     @Test
@@ -241,8 +248,9 @@ class ArtefactDeleteServiceTest {
 
         verify(azureBlobService).deleteBlob(any());
         verify(channelManagementService).deleteFiles(any());
-        verify(subscriptionManagementService).sendDeletedArtefactForThirdParties(any());
         verify(artefactRepository).archiveArtefact(artefactId);
+        verify(subscriptionManagementService).sendDeletedArtefactForThirdParties(any());
+
     }
 
     @Test
@@ -282,6 +290,7 @@ class ArtefactDeleteServiceTest {
                          "The artefacts for given location is not deleted");
             verify(azureBlobService).deleteBlob(any());
             verify(channelManagementService).deleteFiles(ARTEFACT_ID);
+            verify(subscriptionManagementService).sendDeletedArtefactForThirdParties(any());
 
             assertTrue(logCaptor.getInfoLogs().get(0).contains("User " + REQUESTER_NAME
                                                                    + " attempting to delete all artefacts for location "
@@ -365,7 +374,8 @@ class ArtefactDeleteServiceTest {
         verify(azureBlobService).deleteBlob("url1");
         verify(azureBlobService).deleteBlob("url2");
         verify(azureBlobService).deleteBlob("url3");
-        verify(artefactRepository).deleteAllByArtefactIdIn(List.of(artefactId1, artefactId2, artefactId3));
+        verify(artefactRepository, times(3)).delete(any());
+        verify(subscriptionManagementService, times(3)).sendDeletedArtefactForThirdParties(any());
     }
 
     @Test
@@ -383,6 +393,7 @@ class ArtefactDeleteServiceTest {
 
         verifyNoInteractions(azureBlobService);
         verifyNoMoreInteractions(artefactRepository);
+        verifyNoInteractions(subscriptionManagementService);
     }
 
     @Test
@@ -393,7 +404,8 @@ class ArtefactDeleteServiceTest {
         assertThat(artefactDeleteService.deleteAllArtefactsWithLocationNamePrefix(LOCATION_NAME_PREFIX))
             .isEqualTo("0 artefacts(s) deleted for location name starting with " + LOCATION_NAME_PREFIX);
 
-        verify(artefactRepository, never()).findAllByLocationIdIn(anyList());
-        verify(artefactRepository, never()).deleteAllByArtefactIdIn(anyList());
+        verifyNoInteractions(azureBlobService);
+        verifyNoInteractions(artefactRepository);
+        verifyNoInteractions(subscriptionManagementService);
     }
 }

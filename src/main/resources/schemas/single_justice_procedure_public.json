@@ -4,26 +4,6 @@
       "title": "Address Details",
       "type": "object",
       "properties": {
-        "town": {
-          "title": "Town",
-          "description": "The town for the address",
-          "type": "string",
-          "default": "",
-          "examples": [
-            "Cambridge"
-          ],
-          "pattern": "^.*$"
-        },
-        "county": {
-          "title": "County",
-          "description": "The county for the address",
-          "type": "string",
-          "default": "",
-          "examples": [
-            "Cambridgeshire"
-          ],
-          "pattern": "^.*$"
-        },
         "postCode": {
           "title": "Address Postcode",
           "type": "string",
@@ -175,16 +155,6 @@
                                                 "address"
                                               ],
                                               "properties": {
-                                                "title": {
-                                                  "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items/individualDetails/title",
-                                                  "description": "Title of individual",
-                                                  "title": "Title",
-                                                  "type": "string",
-                                                  "examples": [
-                                                    "Mr"
-                                                  ],
-                                                  "default": ""
-                                                },
                                                 "individualForenames": {
                                                   "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items/individualDetails/individualForenames",
                                                   "description": "Forename of party",
@@ -192,17 +162,6 @@
                                                   "type": "string",
                                                   "examples": [
                                                     "John Smith"
-                                                  ],
-                                                  "default": "",
-                                                  "pattern": "^.*$"
-                                                },
-                                                "individualMiddleName": {
-                                                  "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items/individualDetails/individualMiddleName",
-                                                  "description": "Middle name of the individual",
-                                                  "title": "Individual Middle Name",
-                                                  "type": "string",
-                                                  "examples": [
-                                                    "MiddleName"
                                                   ],
                                                   "default": "",
                                                   "pattern": "^.*$"
@@ -223,7 +182,7 @@
                                                   "title": "Address",
                                                   "description": "Party Address",
                                                   "$ref": "#/definitions/address",
-                                                  "required": ["town", "county", "postCode"]
+                                                  "required": ["postCode"]
                                                 }
                                               }
                                             },
@@ -290,17 +249,6 @@
                                               "default": "",
                                               "examples": [
                                                 "drink driving"
-                                              ],
-                                              "pattern": "^.*$"
-                                            },
-                                            "reportingRestriction": {
-                                              "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/offence/reportingRestriction",
-                                              "title": "Reporting Restriction",
-                                              "description": "Any reporting restrictions posed to the offence",
-                                              "type": "boolean",
-                                              "default": "",
-                                              "examples": [
-                                                "true"
                                               ],
                                               "pattern": "^.*$"
                                             }

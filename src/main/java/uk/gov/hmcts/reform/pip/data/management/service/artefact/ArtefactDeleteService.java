@@ -25,7 +25,6 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
 
@@ -69,10 +68,8 @@ public class ArtefactDeleteService {
         Optional<Artefact> artefactToArchive = artefactRepository.findArtefactByArtefactId(artefactId);
 
         if (artefactToArchive.isPresent()) {
-            deleteAllPublicationBlobData(artefactToArchive.get());
-            artefactRepository.archiveArtefact(artefactId);
+            handleArtifactArchiving(artefactToArchive.get(), artefactId);
             log.info(writeLog(String.format("Artefact archived by %s, with artefact id: %s", issuerId, artefactId)));
-            triggerThirdPartyArtefactDeleted(artefactToArchive.get());
         } else {
             throw new ArtefactNotFoundException("No artefact found with the ID: " + artefactId);
         }
@@ -120,23 +117,13 @@ public class ArtefactDeleteService {
      */
     public void deleteArtefactById(String artefactId, String issuerId) {
         Optional<Artefact> artefactToDelete = artefactRepository.findArtefactByArtefactId(artefactId);
+
         if (artefactToDelete.isPresent()) {
-            deleteAllPublicationBlobData(artefactToDelete.get());
-            artefactRepository.delete(artefactToDelete.get());
+            handleArtifactDeletion(artefactToDelete.get());
             log.info(writeLog(issuerId, UserActions.REMOVE, artefactId));
-            triggerThirdPartyArtefactDeleted(artefactToDelete.get());
         } else {
             throw new ArtefactNotFoundException("No artefact found with the ID: " + artefactId);
         }
-    }
-
-    /**
-     * Triggers subscription management to handle deleted artefact to third party subscribers.
-     *
-     * @param deletedArtefact deleted artefact to notify of.
-     */
-    private void triggerThirdPartyArtefactDeleted(Artefact deletedArtefact) {
-        subscriptionManagementService.sendDeletedArtefactForThirdParties(deletedArtefact);
     }
 
     public String deleteArtefactByLocation(Integer locationId, String provenanceUserId)
@@ -158,8 +145,7 @@ public class ArtefactDeleteService {
                                             provenanceUserId, locationId, activeArtefacts.size())));
 
             activeArtefacts.forEach(artefact -> {
-                artefactRepository.delete(artefact);
-                deleteAllPublicationBlobData(artefact);
+                handleArtifactDeletion(artefact);
                 log.info(writeLog(
                     String.format("Artefact deleted by %s, with artefact id: %s",
                                   provenanceUserId, artefact.getArtefactId())
@@ -181,18 +167,22 @@ public class ArtefactDeleteService {
         List<Artefact> artefactsToDelete = Collections.emptyList();
         if (!locationIds.isEmpty()) {
             artefactsToDelete = artefactRepository.findAllByLocationIdIn(locationIds);
-
-            if (!artefactsToDelete.isEmpty()) {
-                artefactsToDelete.forEach(a -> deleteAllPublicationBlobData(a));
-
-                List<UUID> artefactIds = artefactsToDelete.stream()
-                    .map(Artefact::getArtefactId)
-                    .toList();
-                artefactRepository.deleteAllByArtefactIdIn(artefactIds);
-            }
+            artefactsToDelete.forEach(this::handleArtifactDeletion);
         }
         return String.format("%s artefacts(s) deleted for location name starting with %s",
                              artefactsToDelete.size(), prefix);
+    }
+
+    private void handleArtifactDeletion(Artefact artefact) {
+        deleteAllPublicationBlobData(artefact);
+        artefactRepository.delete(artefact);
+        subscriptionManagementService.sendDeletedArtefactForThirdParties(artefact);
+    }
+
+    private void handleArtifactArchiving(Artefact artefact, String artefactId) {
+        deleteAllPublicationBlobData(artefact);
+        artefactRepository.archiveArtefact(artefactId);
+        subscriptionManagementService.sendDeletedArtefactForThirdParties(artefact);
     }
 
     private void notifySystemAdminAboutSubscriptionDeletion(String provenanceUserId, String additionalDetails)
