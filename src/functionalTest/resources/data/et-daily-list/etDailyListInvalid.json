@@ -23,21 +23,12 @@
                 "caseSequenceIndicator": "2 of 3",
                 "caseType": "This is a case type"
               }],
-              "party": [{
-                "partyRole": "CLAIMANT_PETITIONER",
-                "OrganisationDetails": {
-                  "OrganisationName": "Test Organisation"
-                }
-              },
+              "party": [
                 {
-                  "partyRole": "CLAIMANT_PETITIONER_REPRESENTATIVE",
-                  "individualDetails": {
-                    "title": "Mr",
-                    "individualForenames": "Test forename 2",
-                    "individualMiddleName": "X",
-                    "individualSurname": "Test Surname 2"
-                  },
-                  "friendlyRoleName": "This is a role name"
+                  "partyRole": "CLAIMANT_PETITIONER",
+                  "OrganisationDetails": {
+                    "OrganisationName": "Test Organisation"
+                  }
                 },
                 {
                   "partyRole": "RESPONDENT",
@@ -46,16 +37,6 @@
                     "individualForenames": "Test forename",
                     "individualMiddleName": "A",
                     "individualSurname": "Test Surname"
-                  },
-                  "friendlyRoleName": "This is a role name"
-                },
-                {
-                  "partyRole": "RESPONDENT_REPRESENTATIVE",
-                  "individualDetails": {
-                    "title": "Dr",
-                    "individualForenames": "Test forename 2",
-                    "individualMiddleName": "G",
-                    "individualSurname": "Test Surname 2"
                   },
                   "friendlyRoleName": "This is a role name"
                 }
@@ -99,24 +80,15 @@
                   "caseNumber": "12341234",
                   "caseType": "This is a case type"
                 }],
-                "party": [{
-                  "partyRole": "CLAIMANT_PETITIONER",
-                  "individualDetails": {
-                    "title": "Ms",
-                    "individualForenames": "Test forename",
-                    "individualMiddleName": "B",
-                    "individualSurname": "Test Surname"
-                  }
-                },
+                "party": [
                   {
-                    "partyRole": "CLAIMANT_PETITIONER_REPRESENTATIVE",
+                    "partyRole": "CLAIMANT_PETITIONER",
                     "individualDetails": {
-                      "title": "Sir",
+                      "title": "Ms",
                       "individualForenames": "Test forename",
-                      "individualMiddleName": "V",
+                      "individualMiddleName": "B",
                       "individualSurname": "Test Surname"
-                    },
-                    "friendlyRoleName": "This is a role name"
+                    }
                   },
                   {
                     "partyRole": "RESPONDENT",
@@ -124,16 +96,6 @@
                       "title": "Lord",
                       "individualForenames": "Test forename",
                       "individualMiddleName": "A",
-                      "individualSurname": "Test Surname"
-                    },
-                    "friendlyRoleName": "This is a role name"
-                  },
-                  {
-                    "partyRole": "RESPONDENT_REPRESENTATIVE",
-                    "individualDetails": {
-                      "title": "Dame",
-                      "individualForenames": "Test forename",
-                      "individualMiddleName": "H",
                       "individualSurname": "Test Surname"
                     },
                     "friendlyRoleName": "This is a role name"
@@ -152,24 +114,15 @@
                     "caseNumber": "12341234",
                     "caseType": "This is a case type"
                   }],
-                  "party": [{
-                    "partyRole": "CLAIMANT_PETITIONER",
-                    "individualDetails": {
-                      "title": "Ms",
-                      "individualForenames": "Test forename",
-                      "individualMiddleName": "G",
-                      "individualSurname": "Test Surname"
-                    }
-                  },
+                  "party": [
                     {
-                      "partyRole": "CLAIMANT_PETITIONER_REPRESENTATIVE",
+                      "partyRole": "CLAIMANT_PETITIONER",
                       "individualDetails": {
-                        "title": "Sir",
+                        "title": "Ms",
                         "individualForenames": "Test forename",
-                        "individualMiddleName": "N",
+                        "individualMiddleName": "G",
                         "individualSurname": "Test Surname"
-                      },
-                      "friendlyRoleName": "This is a role name"
+                      }
                     },
                     {
                       "partyRole": "RESPONDENT",
@@ -177,16 +130,6 @@
                         "title": "Lord",
                         "individualForenames": "Test forename",
                         "individualMiddleName": "P",
-                        "individualSurname": "Test Surname"
-                      },
-                      "friendlyRoleName": "This is a role name"
-                    },
-                    {
-                      "partyRole": "RESPONDENT_REPRESENTATIVE",
-                      "individualDetails": {
-                        "title": "Dame",
-                        "individualForenames": "Test forename",
-                        "individualMiddleName": "Q",
                         "individualSurname": "Test Surname"
                       },
                       "friendlyRoleName": "This is a role name"
@@ -210,24 +153,15 @@
                     "caseSequenceIndicator": "2 of 3",
                     "caseType": "This is a case type"
                   }],
-                  "party": [{
-                    "partyRole": "CLAIMANT_PETITIONER",
-                    "individualDetails": {
-                      "title": "Ms",
-                      "individualForenames": "Test forename",
-                      "individualMiddleName": "1",
-                      "individualSurname": "Test Surname"
-                    }
-                  },
+                  "party": [
                     {
-                      "partyRole": "CLAIMANT_PETITIONER_REPRESENTATIVE",
+                      "partyRole": "CLAIMANT_PETITIONER",
                       "individualDetails": {
-                        "title": "Sir",
+                        "title": "Ms",
                         "individualForenames": "Test forename",
-                        "individualMiddleName": "2",
+                        "individualMiddleName": "1",
                         "individualSurname": "Test Surname"
-                      },
-                      "friendlyRoleName": "This is a role name"
+                      }
                     },
                     {
                       "partyRole": "RESPONDENT",
@@ -235,16 +169,6 @@
                         "title": "Lord",
                         "individualForenames": "Test forename",
                         "individualMiddleName": "3",
-                        "individualSurname": "Test Surname"
-                      },
-                      "friendlyRoleName": "This is a role name"
-                    },
-                    {
-                      "partyRole": "RESPONDENT_REPRESENTATIVE",
-                      "individualDetails": {
-                        "title": "Dame",
-                        "individualForenames": "Test forename",
-                        "individualMiddleName": "4",
                         "individualSurname": "Test Surname"
                       },
                       "friendlyRoleName": "This is a role name"
@@ -264,24 +188,15 @@
                       "caseSequenceIndicator": "2 of 3",
                       "caseType": "This is a case type"
                     }],
-                    "party": [{
-                      "partyRole": "CLAIMANT_PETITIONER",
-                      "individualDetails": {
-                        "title": "Ms",
-                        "individualForenames": "Test forename",
-                        "individualMiddleName": "5",
-                        "individualSurname": "Test Surname"
-                      }
-                    },
+                    "party": [
                       {
-                        "partyRole": "CLAIMANT_PETITIONER_REPRESENTATIVE",
+                        "partyRole": "CLAIMANT_PETITIONER",
                         "individualDetails": {
-                          "title": "Sir",
+                          "title": "Ms",
                           "individualForenames": "Test forename",
-                          "individualMiddleName": "6",
+                          "individualMiddleName": "5",
                           "individualSurname": "Test Surname"
-                        },
-                        "friendlyRoleName": "This is a role name"
+                        }
                       },
                       {
                         "partyRole": "RESPONDENT",
@@ -289,16 +204,6 @@
                           "title": "Lord",
                           "individualForenames": "Test forename",
                           "individualMiddleName": "7",
-                          "individualSurname": "Test Surname"
-                        },
-                        "friendlyRoleName": "This is a role name"
-                      },
-                      {
-                        "partyRole": "RESPONDENT_REPRESENTATIVE",
-                        "individualDetails": {
-                          "title": "Dame",
-                          "individualForenames": "Test forename",
-                          "individualMiddleName": "8",
                           "individualSurname": "Test Surname"
                         },
                         "friendlyRoleName": "This is a role name"
