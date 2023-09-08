@@ -15,10 +15,6 @@ import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
 @Slf4j
 @Component
 public class ChannelManagementService {
-
-    private static final String EXCEPTION_MESSAGE = "Request to %s failed due to: %s";
-    private static final String SERVICE = "Channel Management";
-
     @Autowired
     WebClient webClient;
 
@@ -27,15 +23,34 @@ public class ChannelManagementService {
 
     public String requestFileGeneration(UUID artefactId) {
         try {
-            return webClient.post().uri(url + "/publication/" + artefactId)
+            return webClient.post()
+                .uri(url + "/publication/" + artefactId)
                 .attributes(clientRegistrationId("channelManagementApi"))
-                .retrieve().bodyToMono(String.class).block();
+                .retrieve()
+                .bodyToMono(String.class)
+                .block();
         } catch (WebClientException ex) {
-            log.error(writeLog(
-                String.format("Request to Channel Management to generate files failed with error: %s",
-                              ex.getMessage())
-            ));
+            log.error(writeLog(String.format(
+                "Request to Channel Management to generate files for artefact with ID %s failed with error: %s",
+                artefactId, ex.getMessage()
+            )));
             return "";
+        }
+    }
+
+    public void deleteFiles(UUID artefactId) {
+        try {
+            webClient.delete()
+                .uri(url + "/publication/" + artefactId)
+                .attributes(clientRegistrationId("channelManagementApi"))
+                .retrieve()
+                .bodyToMono(String.class)
+                .block();
+        } catch (WebClientException ex) {
+            log.error(writeLog(String.format(
+                "Request to Channel Management to delete files for artefact with ID %s failed with error: %s",
+                artefactId, ex.getMessage()
+            )));
         }
     }
 }

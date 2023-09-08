@@ -18,6 +18,7 @@ import uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelpe
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.service.AccountManagementService;
+import uk.gov.hmcts.reform.pip.data.management.service.ChannelManagementService;
 import uk.gov.hmcts.reform.pip.data.management.service.LocationService;
 import uk.gov.hmcts.reform.pip.data.management.service.PublicationServicesService;
 import uk.gov.hmcts.reform.pip.data.management.service.SubscriptionManagementService;
@@ -82,6 +83,9 @@ class ArtefactDeleteServiceTest {
 
     @Mock
     PublicationServicesService publicationService;
+
+    @Mock
+    ChannelManagementService channelManagementService;
 
     @InjectMocks
     ArtefactDeleteService artefactDeleteService;
@@ -179,7 +183,7 @@ class ArtefactDeleteServiceTest {
 
         artefactDeleteService.archiveExpiredArtefacts();
         verify(azureBlobService).deleteBlob(PAYLOAD_STRIPPED);
-        verify(azureBlobService).deletePublicationBlob(testArtefactId + ".pdf");
+        verify(channelManagementService).deleteFiles(testArtefactId);
         verify(artefactRepository).archiveArtefact(testArtefactId.toString());
         verify(subscriptionManagementService, never()).sendDeletedArtefactForThirdParties(artefactWithPayloadUrl);
     }
@@ -193,8 +197,7 @@ class ArtefactDeleteServiceTest {
 
         artefactDeleteService.archiveExpiredArtefacts();
         verify(azureBlobService).deleteBlob(PAYLOAD_STRIPPED);
-        verify(azureBlobService).deletePublicationBlob(artefactWithPayloadUrl.getArtefactId() + ".pdf");
-        verify(azureBlobService).deletePublicationBlob(artefactWithPayloadUrl.getArtefactId() + ".xlsx");
+        verify(channelManagementService).deleteFiles(testArtefactId);
         verify(artefactRepository).archiveArtefact(testArtefactId.toString());
         verify(subscriptionManagementService, never()).sendDeletedArtefactForThirdParties(artefactWithPayloadUrl);
     }
@@ -208,8 +211,7 @@ class ArtefactDeleteServiceTest {
 
         artefactDeleteService.archiveExpiredArtefacts();
         verify(azureBlobService).deleteBlob(PAYLOAD_STRIPPED);
-        verify(azureBlobService).deletePublicationBlob(artefactWithPayloadUrl.getArtefactId() + ".pdf");
-        verify(azureBlobService).deletePublicationBlob(artefactWithPayloadUrl.getArtefactId() + ".xlsx");
+        verify(channelManagementService).deleteFiles(testArtefactId);
         verify(artefactRepository).archiveArtefact(testArtefactId.toString());
         verify(subscriptionManagementService, never()).sendDeletedArtefactForThirdParties(artefactWithPayloadUrl);
     }
@@ -246,7 +248,7 @@ class ArtefactDeleteServiceTest {
         artefactDeleteService.archiveArtefactById(artefactId, UUID.randomUUID().toString());
 
         verify(azureBlobService).deleteBlob(any());
-        verify(azureBlobService).deletePublicationBlob(any());
+        verify(channelManagementService).deleteFiles(any());
         verify(artefactRepository).archiveArtefact(artefactId);
         verify(subscriptionManagementService).sendDeletedArtefactForThirdParties(any());
 
@@ -288,7 +290,7 @@ class ArtefactDeleteServiceTest {
                          artefactDeleteService.deleteArtefactByLocation(LOCATION_ID, REQUESTER_NAME),
                          "The artefacts for given location is not deleted");
             verify(azureBlobService).deleteBlob(any());
-            verify(azureBlobService).deletePublicationBlob(any());
+            verify(channelManagementService).deleteFiles(ARTEFACT_ID);
             verify(subscriptionManagementService).sendDeletedArtefactForThirdParties(any());
 
             assertTrue(logCaptor.getInfoLogs().get(0).contains("User " + REQUESTER_NAME
