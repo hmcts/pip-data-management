@@ -88,8 +88,7 @@ azure:
   blob:
     connection-string: ${CONNECTION_STRING}
     storage-account-name: ${STORAGE_ACCOUNT_NAME}
-    artefact-container-name: artefact
-    publications-container-name: publications
+    container-name: artefact
   managed-identity:
     client-id: ${MANAGED_IDENTITY_CLIENT_ID:}
 

@@ -11,23 +11,24 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pip.data.management.Application;
 
 import java.io.IOException;
 import java.util.UUID;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.NO_CONTENT;
 
-@SuppressWarnings("PMD.LawOfDemeter")
+
 @ExtendWith({MockitoExtension.class})
 @ActiveProfiles("test")
 @SpringBootTest(classes = {Application.class})
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
 class ChannelManagementServiceTest {
-
+    private static final UUID ARTEFACT_ID = UUID.randomUUID();
     private static MockWebServer mockChannelManagementEndpoint;
 
     @Autowired
@@ -58,11 +59,39 @@ class ChannelManagementServiceTest {
     @Test
     void testFailedSend() {
         mockChannelManagementEndpoint.enqueue(new MockResponse()
-                                                    .setResponseCode(HttpStatus.BAD_REQUEST.value()));
+                                                    .setResponseCode(BAD_REQUEST.value()));
 
-        channelManagementService.requestFileGeneration(UUID.randomUUID());
-        assertTrue(logCaptor.getErrorLogs().get(0)
-                       .contains("Request to Channel Management to generate files failed with error:"),
-                   "Exception was not logged.");
+        channelManagementService.requestFileGeneration(ARTEFACT_ID);
+        assertThat(logCaptor.getErrorLogs().get(0))
+            .as("Error log does not match")
+            .contains(String.format(
+                "Request to Channel Management to generate files for artefact with ID %s failed with error:",
+                ARTEFACT_ID
+            ));
+    }
+
+    @Test
+    void testDeleteFilesSuccess() {
+        mockChannelManagementEndpoint.enqueue(new MockResponse()
+                                                  .setResponseCode(NO_CONTENT.value()));
+
+        channelManagementService.deleteFiles(ARTEFACT_ID);
+        assertThat(logCaptor.getErrorLogs())
+            .as("Error log should be empty")
+            .isEmpty();
+    }
+
+    @Test
+    void testDeleteFilesWithException() {
+        mockChannelManagementEndpoint.enqueue(new MockResponse()
+                                                  .setResponseCode(BAD_REQUEST.value()));
+
+        channelManagementService.deleteFiles(ARTEFACT_ID);
+        assertThat(logCaptor.getErrorLogs().get(0))
+            .as("Error log does not match")
+            .contains(String.format(
+                      "Request to Channel Management to delete files for artefact with ID %s failed with error:",
+                      ARTEFACT_ID
+            ));
     }
 }

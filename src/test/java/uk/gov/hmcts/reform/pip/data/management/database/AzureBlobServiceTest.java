@@ -87,11 +87,4 @@ class AzureBlobServiceTest {
                      azureBlobService.deleteBlob(BLOB_NAME),
                      MESSAGES_MATCH);
     }
-
-    @Test
-    void testDeletePublicationBlob() {
-        assertEquals(String.format("Blob: %s successfully deleted.", BLOB_NAME),
-                     azureBlobService.deletePublicationBlob(BLOB_NAME),
-                     MESSAGES_MATCH);
-    }
 }
