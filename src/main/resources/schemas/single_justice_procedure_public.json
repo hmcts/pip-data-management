@@ -149,11 +149,6 @@
                                               "title": "Individual Details",
                                               "description": "Individual Details",
                                               "type": "object",
-                                              "required": [
-                                                "individualForenames",
-                                                "individualSurname",
-                                                "address"
-                                              ],
                                               "properties": {
                                                 "individualForenames": {
                                                   "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items/individualDetails/individualForenames",
@@ -181,8 +176,7 @@
                                                   "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items/individualDetails/address",
                                                   "title": "Address",
                                                   "description": "Party Address",
-                                                  "$ref": "#/definitions/address",
-                                                  "required": ["postCode"]
+                                                  "$ref": "#/definitions/address"
                                                 }
                                               }
                                             },
@@ -205,6 +199,12 @@
                                                   ],
                                                   "default": "",
                                                   "pattern": "^.*$"
+                                                },
+                                                "organisationAddress": {
+                                                  "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items/organisationDetails/organisationAddress",
+                                                  "title": "Organisation Address",
+                                                  "description": "Party Address",
+                                                  "$ref": "#/definitions/address"
                                                 }
                                               }
                                             }
@@ -221,8 +221,13 @@
                                               }
                                             },
                                             "then": {
-                                              "required": [
-                                                "individualDetails"
+                                              "anyOf": [
+                                                {
+                                                  "required": ["individualDetails"]
+                                                },
+                                                {
+                                                  "required": ["organisationDetails"]
+                                                }
                                               ]
                                             },
                                             "else": {

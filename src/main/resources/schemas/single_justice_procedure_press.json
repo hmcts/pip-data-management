@@ -249,7 +249,7 @@
                                                   "description": "Surname of party",
                                                   "title": "Individual Surname",
                                                   "type": "string",
-                                                  "examxples": [
+                                                  "examples": [
                                                     "Surname"
                                                   ],
                                                   "default": "",

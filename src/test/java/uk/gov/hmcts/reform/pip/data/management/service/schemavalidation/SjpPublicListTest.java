@@ -26,6 +26,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest(classes = {Application.class, AzureBlobConfigurationTestConfiguration.class})
@@ -38,6 +39,7 @@ class SjpPublicListTest {
     ValidationService validationService;
 
     private static final String SJP_PUBLIC_LIST_VALID_JSON = "mocks/sjp-public-list/sjpPublicList.json";
+    private static final String SJP_PUBLIC_VALID_MESSAGE = "SJP public list should be valid";
     private static final String SJP_PUBLIC_INVALID_MESSAGE = "Invalid sjp public";
 
     private static final String COURT_LIST_SCHEMA = "courtLists";
@@ -72,6 +74,17 @@ class SjpPublicListTest {
     void setup() {
         headerGroup = new HeaderGroup(PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE, SENSITIVITY, LANGUAGE,
                                       DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, COURT_ID, CONTENT_DATE);
+    }
+
+    @Test
+    void testValidateWithSuccessIfEitherAccusedIndividualOrOrgDetailsPresentInSjpPublicList() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream(SJP_PUBLIC_LIST_VALID_JSON)) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            assertDoesNotThrow(() -> validationService.validateBody(text, headerGroup),
+                               SJP_PUBLIC_VALID_MESSAGE);
+        }
     }
 
     @Test
@@ -309,9 +322,8 @@ class SjpPublicListTest {
                 .remove("individualForenames");
 
             String listJson = node.toString();
-            assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup),
-                         SJP_PUBLIC_INVALID_MESSAGE);
+            assertDoesNotThrow(() -> validationService.validateBody(listJson, headerGroup),
+                               SJP_PUBLIC_VALID_MESSAGE);
         }
     }
 
@@ -330,9 +342,8 @@ class SjpPublicListTest {
                 .remove("individualSurname");
 
             String listJson = node.toString();
-            assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup),
-                         SJP_PUBLIC_INVALID_MESSAGE);
+            assertDoesNotThrow(() -> validationService.validateBody(listJson, headerGroup),
+                               SJP_PUBLIC_VALID_MESSAGE);
         }
     }
 
@@ -351,9 +362,8 @@ class SjpPublicListTest {
                 .remove(ADDRESS_SCHEMA);
 
             String listJson = node.toString();
-            assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup),
-                         SJP_PUBLIC_INVALID_MESSAGE);
+            assertDoesNotThrow(() -> validationService.validateBody(listJson, headerGroup),
+                               SJP_PUBLIC_VALID_MESSAGE);
         }
     }
 
@@ -372,9 +382,8 @@ class SjpPublicListTest {
                 .get(ADDRESS_SCHEMA)).remove("postCode");
 
             String listJson = node.toString();
-            assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup),
-                         SJP_PUBLIC_INVALID_MESSAGE);
+            assertDoesNotThrow(() -> validationService.validateBody(listJson, headerGroup),
+                               SJP_PUBLIC_VALID_MESSAGE);
         }
     }
 
