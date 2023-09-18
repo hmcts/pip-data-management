@@ -152,6 +152,7 @@ public class PublicationService {
             artefact.setArtefactId(value.getArtefactId());
             artefact.setPayload(value.getPayload());
             artefact.setSupersededCount(value.getSupersededCount() + 1);
+            artefact.setVersion(value.getVersion());
         });
         return foundArtefact.isPresent();
     }

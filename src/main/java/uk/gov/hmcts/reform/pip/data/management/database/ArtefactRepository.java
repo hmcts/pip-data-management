@@ -43,7 +43,7 @@ public interface ArtefactRepository extends JpaRepository<Artefact, Long> {
     String LIST_TYPE_PARAM = "list_type";
     String PROVENANCE_PARAM = "provenance";
 
-    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Lock(LockModeType.OPTIMISTIC_FORCE_INCREMENT)
     @Query(value = "SELECT a FROM Artefact a WHERE a.locationId = :location_id AND a.contentDate = :content_date AND "
         + "a.language = :language AND a.listType = :list_type AND a.provenance = :provenance AND a.isArchived != true")
     Optional<Artefact> findArtefactByUpdateLogic(@Param(LOCATION_ID_PARAM) String locationId,

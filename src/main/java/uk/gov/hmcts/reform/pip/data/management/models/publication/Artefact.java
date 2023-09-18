@@ -10,6 +10,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Version;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -158,5 +159,8 @@ public class Artefact {
      * Date / Time of when the artefact will expire.
      */
     private LocalDateTime expiryDate;
+
+    @Version
+    private Integer version;
 
 }

@@ -183,6 +183,7 @@ public class PublicationController {
             .locationId(headers.getCourtId())
             .contentDate(headers.getContentDate())
             .expiryDate(headers.getDisplayTo())
+            .version(0L)
             .build();
 
         Artefact createdItem = null;
