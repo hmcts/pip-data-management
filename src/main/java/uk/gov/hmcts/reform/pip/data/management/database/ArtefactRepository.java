@@ -1,12 +1,16 @@
 package uk.gov.hmcts.reform.pip.data.management.database;
 
+import jakarta.persistence.LockModeType;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
+import uk.gov.hmcts.reform.pip.model.publication.Language;
+import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -39,13 +43,13 @@ public interface ArtefactRepository extends JpaRepository<Artefact, Long> {
     String LIST_TYPE_PARAM = "list_type";
     String PROVENANCE_PARAM = "provenance";
 
-    @Query(value = "SELECT * FROM Artefact WHERE location_id = :location_id AND content_date = :content_date AND "
-        + "language = :language AND list_type = :list_type AND provenance = :provenance AND is_archived != true ",
-        nativeQuery = true)
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query(value = "SELECT a FROM Artefact a WHERE a.locationId = :location_id AND a.contentDate = :content_date AND "
+        + "a.language = :language AND a.listType = :list_type AND a.provenance = :provenance AND a.isArchived != true")
     Optional<Artefact> findArtefactByUpdateLogic(@Param(LOCATION_ID_PARAM) String locationId,
                                                  @Param(CONTENT_DATE_PARAM) LocalDateTime contentDate,
-                                                 @Param(LANGUAGE_PARAM) String language,
-                                                 @Param(LIST_TYPE_PARAM) String listType,
+                                                 @Param(LANGUAGE_PARAM) Language language,
+                                                 @Param(LIST_TYPE_PARAM) ListType listType,
                                                  @Param(PROVENANCE_PARAM) String provenance);
 
     @Query(value = "select * from Artefact where artefact_id = CAST(:artefact_id AS uuid) and display_from < "

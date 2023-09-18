@@ -5,6 +5,8 @@ import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.AzureBlobService;
@@ -69,10 +71,8 @@ public class PublicationService {
      * @param payload  The payload for the artefact that needs to be created.
      * @return Returns the UUID of the artefact that was created.
      */
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     public Artefact createPublication(Artefact artefact, String payload) {
-        log.info(writeLog(UserActions.UPLOAD, "json publication upload for location "
-            + artefact.getLocationId()));
-
         applyInternalLocationId(artefact);
         artefact.setContentDate(artefact.getContentDate().toLocalDate().atTime(LocalTime.MIN));
         artefact.setLastReceivedDate(LocalDateTime.now());
@@ -93,8 +93,10 @@ public class PublicationService {
 
         artefact.setPayload(blobUrl);
 
-        if (!isExisting) {
-            artefact.setPayload(blobUrl);
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
 
         artefact.setSearch(payloadExtractor.extractSearchTerms(payload));
@@ -141,8 +143,8 @@ public class PublicationService {
         Optional<Artefact> foundArtefact = artefactRepository.findArtefactByUpdateLogic(
             artefact.getLocationId(),
             artefact.getContentDate(),
-            artefact.getLanguage().name(),
-            artefact.getListType().name(),
+            artefact.getLanguage(),
+            artefact.getListType(),
             artefact.getProvenance()
         );
 
