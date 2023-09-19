@@ -67,13 +67,24 @@ public class PublicationService {
     }
 
     /**
-     * Set up the location and dates of the artefact before creating it.
+     * Set up the location, dates and search terms of the artefact before creating it.
      * @param artefact The artifact that needs to be created.
      */
-    public void preprocessArtefactForCreation(Artefact artefact) {
+    public void preprocessArtefactForCreation(Artefact artefact, String payload) {
         applyInternalLocationId(artefact);
         artefact.setContentDate(artefact.getContentDate().toLocalDate().atTime(LocalTime.MIN));
         artefact.setLastReceivedDate(LocalDateTime.now());
+
+        // Add 7 days to the expiry date if the list type is SJP
+        if (artefact.getListType().equals(ListType.SJP_PUBLIC_LIST)
+            || artefact.getListType().equals(ListType.SJP_PRESS_LIST)
+            || artefact.getListType().equals(ListType.SJP_DELTA_PRESS_LIST)) {
+            artefact.setExpiryDate(artefact.getExpiryDate().plusDays(7));
+        }
+
+        if (payload != null) {
+            artefact.setSearch(payloadExtractor.extractSearchTerms(payload));
+        }
     }
 
     /**
@@ -92,13 +103,6 @@ public class PublicationService {
             payload
         );
 
-        // Add 7 days to the expiry date if the list type is SJP
-        if (artefact.getListType().equals(ListType.SJP_PUBLIC_LIST)
-            || artefact.getListType().equals(ListType.SJP_PRESS_LIST)
-            || artefact.getListType().equals(ListType.SJP_DELTA_PRESS_LIST)) {
-            artefact.setExpiryDate(artefact.getExpiryDate().plusDays(7));
-        }
-
         artefact.setPayload(blobUrl);
 
         // TODO: This is used to slow down the upload process for testing. Need to be removed.
@@ -108,7 +112,6 @@ public class PublicationService {
             throw new RuntimeException(e);
         }
 
-        artefact.setSearch(payloadExtractor.extractSearchTerms(payload));
         return artefactRepository.save(artefact);
     }
 

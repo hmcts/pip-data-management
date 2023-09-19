@@ -28,7 +28,7 @@ public class PublicationCreationRunner {
      * @return Returns the UUID of the artefact that was created.
      */
     public Artefact run(Artefact artefact, String payload) {
-        publicationService.preprocessArtefactForCreation(artefact);
+        publicationService.preprocessArtefactForCreation(artefact, payload);
 
         Artefact createdArtefact = null;
         int maxRetries = 5;
