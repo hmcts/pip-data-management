@@ -67,38 +67,22 @@ public class PublicationService {
     }
 
     /**
+     * Set up the location and dates of the artefact before creating it.
+     * @param artefact The artifact that needs to be created.
+     */
+    public void preprocessArtefactForCreation(Artefact artefact) {
+        applyInternalLocationId(artefact);
+        artefact.setContentDate(artefact.getContentDate().toLocalDate().atTime(LocalTime.MIN));
+        artefact.setLastReceivedDate(LocalDateTime.now());
+    }
+
+    /**
      * Method that handles the creation or updating of a new publication.
      *
      * @param artefact The artifact that needs to be created.
      * @param payload  The payload for the artefact that needs to be created.
      * @return Returns the UUID of the artefact that was created.
      */
-    public Artefact handlePublicationCreation(Artefact artefact, String payload) {
-        applyInternalLocationId(artefact);
-        artefact.setContentDate(artefact.getContentDate().toLocalDate().atTime(LocalTime.MIN));
-        artefact.setLastReceivedDate(LocalDateTime.now());
-
-        Artefact createdArtefact = null;
-        int maxRetries = 3;
-        do {
-            maxRetries--;
-            try {
-                createdArtefact = createPublication(artefact, payload);
-            } catch (CannotAcquireLockException e) {
-                if (maxRetries == 0) {
-                    throw new CreateArtefactConflictException(
-                        "Deadlock when creating publication. Please try again later."
-                    );
-                }
-            }
-        } while (createdArtefact == null && maxRetries >= 0);
-
-        log.info(writeLog(UserActions.UPLOAD,
-                          "json publication upload for location " + createdArtefact.getLocationId()));
-        return createdArtefact;
-    }
-
-
     @Transactional(isolation = Isolation.SERIALIZABLE)
     public Artefact createPublication(Artefact artefact, String payload) {
         boolean isExisting = applyExistingArtefact(artefact);
@@ -117,8 +101,9 @@ public class PublicationService {
 
         artefact.setPayload(blobUrl);
 
+        // TODO: This is used to slow down the upload process for testing. Need to be removed.
         try {
-            Thread.sleep(5000);
+            Thread.sleep(10000);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }

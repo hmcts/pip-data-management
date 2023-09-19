@@ -33,6 +33,7 @@ import uk.gov.hmcts.reform.pip.data.management.models.location.LocationArtefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.HeaderGroup;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.views.ArtefactView;
+import uk.gov.hmcts.reform.pip.data.management.service.PublicationCreationRunner;
 import uk.gov.hmcts.reform.pip.data.management.service.PublicationService;
 import uk.gov.hmcts.reform.pip.data.management.service.ValidationService;
 import uk.gov.hmcts.reform.pip.data.management.service.artefact.ArtefactDeleteService;
@@ -85,6 +86,8 @@ public class PublicationController {
 
     private final PublicationService publicationService;
 
+    private final PublicationCreationRunner publicationCreationRunner;
+
     private final ArtefactSearchService artefactSearchService;
 
     private final ArtefactService artefactService;
@@ -101,18 +104,21 @@ public class PublicationController {
      * Constructor for Publication controller.
      *
      * @param publicationService     The PublicationService that contains the business logic to handle publications.
+     * @param publicationCreationRunner The service class that handles publication creation.
      * @param artefactService   The ArtefactService that con be used to get artefact property
      * @param artefactDeleteService The ArtefactDeleteService that can be used to Delete or Archive artefacts
      * @param artefactTriggerService The ArtefactTriggerService that can be used to send artefact data to other services
      */
     @Autowired
     public PublicationController(PublicationService publicationService,
+                                 PublicationCreationRunner publicationCreationRunner,
                                  ValidationService validationService,
                                  ArtefactSearchService artefactSearchService,
                                  ArtefactService artefactService,
                                  ArtefactDeleteService artefactDeleteService,
                                  ArtefactTriggerService artefactTriggerService) {
         this.publicationService = publicationService;
+        this.publicationCreationRunner = publicationCreationRunner;
         this.validationService = validationService;
         this.artefactSearchService = artefactSearchService;
         this.artefactService = artefactService;
@@ -184,7 +190,9 @@ public class PublicationController {
             .version(0)
             .build();
 
-        Artefact createdItem = publicationService.handlePublicationCreation(artefact, payload);
+        System.out.println("**********Upload start time: " + LocalDateTime.now());
+        Artefact createdItem = publicationCreationRunner.run(artefact, payload);
+        System.out.println("##########Upload end time: " + LocalDateTime.now());
 
         logManualUpload(publicationService.maskEmail(issuerEmail), createdItem.getArtefactId().toString());
 
