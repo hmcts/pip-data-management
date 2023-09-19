@@ -87,7 +87,7 @@ public class PublicationService {
             } catch (CannotAcquireLockException e) {
                 if (maxRetries == 0) {
                     throw new CreateArtefactConflictException(
-                        "Deadlock when creating publication. Please try again later"
+                        "Deadlock when creating publication. Please try again later."
                     );
                 }
             }
