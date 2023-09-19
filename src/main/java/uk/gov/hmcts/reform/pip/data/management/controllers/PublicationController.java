@@ -9,7 +9,6 @@ import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
-import org.springframework.dao.CannotAcquireLockException;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -29,7 +28,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
-import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CreateArtefactConflictException;
 import uk.gov.hmcts.reform.pip.data.management.helpers.LocationHelper;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationArtefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
@@ -186,22 +184,8 @@ public class PublicationController {
             .version(0)
             .build();
 
-        Artefact createdItem = null;
-        int maxRetries = 3;
-        do {
-            maxRetries--;
-            try {
-                createdItem = publicationService.createPublication(artefact, payload);
-            } catch (CannotAcquireLockException e) {
-                if (maxRetries == 0) {
-                    throw new CreateArtefactConflictException(
-                        "Deadlock when creating publication. Please try again later"
-                    );
-                }
-            }
-        }  while (createdItem == null && maxRetries >= 0);
+        Artefact createdItem = publicationService.handlePublicationCreation(artefact, payload);
 
-        log.info(writeLog(UserActions.UPLOAD, "json publication upload for location " + createdItem.getLocationId()));
         logManualUpload(publicationService.maskEmail(issuerEmail), createdItem.getArtefactId().toString());
 
         // Process the created artefact by requesting channel management to generate PDF/Excel files

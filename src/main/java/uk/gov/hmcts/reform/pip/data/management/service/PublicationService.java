@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.pip.data.management.service;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.CannotAcquireLockException;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -11,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.AzureBlobService;
 import uk.gov.hmcts.reform.pip.data.management.database.LocationRepository;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CreateArtefactConflictException;
 import uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactHelper;
 import uk.gov.hmcts.reform.pip.data.management.helpers.LocationHelper;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
@@ -71,12 +73,34 @@ public class PublicationService {
      * @param payload  The payload for the artefact that needs to be created.
      * @return Returns the UUID of the artefact that was created.
      */
-    @Transactional(isolation = Isolation.SERIALIZABLE)
-    public Artefact createPublication(Artefact artefact, String payload) {
+    public Artefact handlePublicationCreation(Artefact artefact, String payload) {
         applyInternalLocationId(artefact);
         artefact.setContentDate(artefact.getContentDate().toLocalDate().atTime(LocalTime.MIN));
         artefact.setLastReceivedDate(LocalDateTime.now());
 
+        Artefact createdArtefact = null;
+        int maxRetries = 3;
+        do {
+            maxRetries--;
+            try {
+                createdArtefact = createPublication(artefact, payload);
+            } catch (CannotAcquireLockException e) {
+                if (maxRetries == 0) {
+                    throw new CreateArtefactConflictException(
+                        "Deadlock when creating publication. Please try again later."
+                    );
+                }
+            }
+        } while (createdArtefact == null && maxRetries >= 0);
+
+        log.info(writeLog(UserActions.UPLOAD,
+                          "json publication upload for location " + createdArtefact.getLocationId()));
+        return createdArtefact;
+    }
+
+
+    @Transactional(isolation = Isolation.SERIALIZABLE)
+    public Artefact createPublication(Artefact artefact, String payload) {
         boolean isExisting = applyExistingArtefact(artefact);
 
         String blobUrl = azureBlobService.createPayload(
