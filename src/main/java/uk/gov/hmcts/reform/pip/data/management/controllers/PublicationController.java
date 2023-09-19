@@ -185,22 +185,8 @@ public class PublicationController {
             .expiryDate(headers.getDisplayTo())
             .build();
 
-        Artefact createdItem = null;
-        int maxRetries = 3;
-        do {
-            maxRetries--;
-            try {
-                createdItem = publicationService.createPublication(artefact, payload);
-            } catch (CannotAcquireLockException e) {
-                if (maxRetries == 0) {
-                    throw new CreateArtefactConflictException(
-                        "Deadlock when creating publication. Please try again later"
-                    );
-                }
-            }
-        }  while (createdItem == null && maxRetries >= 0);
+        Artefact createdItem = publicationService.handlePublicationCreation(artefact, payload);
 
-        log.info(writeLog(UserActions.UPLOAD, "json publication upload for location " + createdItem.getLocationId()));
         logManualUpload(publicationService.maskEmail(issuerEmail), createdItem.getArtefactId().toString());
 
         // Process the created artefact by requesting channel management to generate PDF/Excel files

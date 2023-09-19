@@ -81,6 +81,7 @@ spring:
       max-request-size: 2MB
   # This is needed as locally, all tables are in a single schema. Flyway is only enabled on the clusters by default
   flyway:
+    baselineOnMigrate: true
     enabled: ${ENABLE_FLYWAY:false}
 
 
