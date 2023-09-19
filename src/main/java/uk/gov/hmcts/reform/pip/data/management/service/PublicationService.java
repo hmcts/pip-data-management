@@ -98,8 +98,23 @@ public class PublicationService {
         return createdArtefact;
     }
 
+    /**
+     * Set up the location and dates of the artefact before creating it.
+     * @param artefact The artifact that needs to be created.
+     */
+    public void preprocessArtefactForCreation(Artefact artefact) {
+        applyInternalLocationId(artefact);
+        artefact.setContentDate(artefact.getContentDate().toLocalDate().atTime(LocalTime.MIN));
+        artefact.setLastReceivedDate(LocalDateTime.now());
+    }
 
-
+    /**
+     * Method that handles the creation or updating of a new publication.
+     *
+     * @param artefact The artifact that needs to be created.
+     * @param payload  The payload for the artefact that needs to be created.
+     * @return Returns the UUID of the artefact that was created.
+     */
     @Transactional(isolation = Isolation.SERIALIZABLE)
     public Artefact createPublication(Artefact artefact, String payload) {
         boolean isExisting = applyExistingArtefact(artefact);
@@ -118,8 +133,9 @@ public class PublicationService {
 
         artefact.setPayload(blobUrl);
 
+        // TODO: This is used to slow down the upload process for testing. Need to be removed.
         try {
-            Thread.sleep(5000);
+            Thread.sleep(10000);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
