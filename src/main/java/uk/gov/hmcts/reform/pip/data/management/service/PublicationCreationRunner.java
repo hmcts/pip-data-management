@@ -31,7 +31,7 @@ public class PublicationCreationRunner {
         publicationService.preprocessArtefactForCreation(artefact);
 
         Artefact createdArtefact = null;
-        int maxRetries = 10;
+        int maxRetries = 5;
         do {
             maxRetries--;
             try {
