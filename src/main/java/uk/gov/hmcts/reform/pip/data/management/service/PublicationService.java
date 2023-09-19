@@ -67,38 +67,6 @@ public class PublicationService {
     }
 
     /**
-     * Method that handles the creation or updating of a new publication.
-     *
-     * @param artefact The artifact that needs to be created.
-     * @param payload  The payload for the artefact that needs to be created.
-     * @return Returns the UUID of the artefact that was created.
-     */
-    public Artefact handlePublicationCreation(Artefact artefact, String payload) {
-        applyInternalLocationId(artefact);
-        artefact.setContentDate(artefact.getContentDate().toLocalDate().atTime(LocalTime.MIN));
-        artefact.setLastReceivedDate(LocalDateTime.now());
-
-        Artefact createdArtefact = null;
-        int maxRetries = 3;
-        do {
-            maxRetries--;
-            try {
-                createdArtefact = createPublication(artefact, payload);
-            } catch (CannotAcquireLockException e) {
-                if (maxRetries == 0) {
-                    throw new CreateArtefactConflictException(
-                        "Deadlock when creating publication. Please try again later."
-                    );
-                }
-            }
-        } while (createdArtefact == null && maxRetries >= 0);
-
-        log.info(writeLog(UserActions.UPLOAD,
-                          "json publication upload for location " + createdArtefact.getLocationId()));
-        return createdArtefact;
-    }
-
-    /**
      * Set up the location and dates of the artefact before creating it.
      * @param artefact The artifact that needs to be created.
      */
