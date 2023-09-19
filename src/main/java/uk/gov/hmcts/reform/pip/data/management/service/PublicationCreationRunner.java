@@ -21,7 +21,7 @@ public class PublicationCreationRunner {
     }
 
     /**
-     * Method that handles the creation or updating of a new publication.
+     * Method that handles the creation or updating of a new JSON publication.
      *
      * @param artefact The artifact that needs to be created.
      * @param payload  The payload for the artefact that needs to be created.
@@ -35,7 +35,7 @@ public class PublicationCreationRunner {
         do {
             maxRetries--;
             try {
-                createdArtefact = publicationService.createPublication(artefact, payload);
+                createdArtefact = publicationService.createPublication(artefact);
             } catch (CannotAcquireLockException e) {
                 if (maxRetries == 0) {
                     throw new CreateArtefactConflictException(
@@ -47,6 +47,6 @@ public class PublicationCreationRunner {
 
         log.info(writeLog(UserActions.UPLOAD,
                           "json publication upload for location " + createdArtefact.getLocationId()));
-        return createdArtefact;
+        return publicationService.uploadJsonBlob(artefact, payload);
     }
 }

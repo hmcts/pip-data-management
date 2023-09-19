@@ -95,15 +95,8 @@ public class PublicationService {
      * @return Returns the UUID of the artefact that was created.
      */
     @Transactional(isolation = Isolation.SERIALIZABLE)
-    public Artefact createPublication(Artefact artefact, String payload) {
-        boolean isExisting = applyExistingArtefact(artefact);
-
-        String blobUrl = azureBlobService.createPayload(
-            isExisting ? ArtefactHelper.getUuidFromUrl(artefact.getPayload()) : UUID.randomUUID().toString(),
-            payload
-        );
-
-        artefact.setPayload(blobUrl);
+    public Artefact createPublication(Artefact artefact) {
+        applyExistingArtefact(artefact);
 
         // TODO: This is used to slow down the upload process for testing. Need to be removed.
         try {
@@ -112,6 +105,20 @@ public class PublicationService {
             throw new RuntimeException(e);
         }
 
+        return artefactRepository.save(artefact);
+    }
+
+    public Artefact uploadJsonBlob(Artefact artefact, String payload) {
+        boolean isExisting = artefact.getSupersededCount() > 0;
+        String blobUrl = azureBlobService.createPayload(
+            isExisting ? ArtefactHelper.getUuidFromUrl(artefact.getPayload()) : UUID.randomUUID().toString(),
+            payload
+        );
+
+        if (isExisting) {
+            return artefact;
+        }
+        artefact.setPayload(blobUrl);
         return artefactRepository.save(artefact);
     }
 
