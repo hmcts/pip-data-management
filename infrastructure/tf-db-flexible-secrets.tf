@@ -1,7 +1,7 @@
 locals {
-  secret_prefix = "${var.component}-POSTGRES-FLEXIBLE"
+  flexible_secret_prefix = "${var.component}-POSTGRES-FLEXIBLE"
 
-  secrets = [
+  flexible_secrets = [
     {
       name_suffix = "PASS"
       value       = module.postgresql.password
@@ -26,10 +26,10 @@ locals {
 
 }
 
-resource "azurerm_key_vault_secret" "secret" {
-  for_each     = { for secret in local.secrets : secret.name_suffix => secret }
+resource "azurerm_key_vault_secret" "flexible_secret" {
+  for_each     = { for secret in local.flexible_secrets : secret.name_suffix => secret }
   key_vault_id = data.azurerm_key_vault.kv.id
-  name         = "${local.secret_prefix}-${each.value.name_suffix}"
+  name         = "${local.flexible_secret_prefix}-${each.value.name_suffix}"
   value        = each.value.value
   tags = merge(var.common_tags, {
     "source" : "${var.component} PostgreSQL"
