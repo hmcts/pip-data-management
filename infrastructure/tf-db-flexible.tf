@@ -15,7 +15,7 @@ module "postgresql" {
     }
   ]
   common_tags        = var.common_tags
-  business_area      = "SDS"
+  business_area      = "sds"
   pgsql_version = "15"
 }
 
