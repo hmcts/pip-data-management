@@ -21,3 +21,4 @@ variable "common_tags" {
 variable "aks_subscription_id" {
   default = ""
 }
+variable "jenkins_AAD_objectId" {}

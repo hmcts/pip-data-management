@@ -17,6 +17,8 @@ module "postgresql" {
   common_tags        = var.common_tags
   business_area      = "sds"
   pgsql_version = "15"
+
+  admin_user_object_id = var.jenkins_AAD_objectId
 }
 
 # SDP access and MV required in here. Will be done at migration
