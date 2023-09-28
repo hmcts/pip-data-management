@@ -1,8 +1,3 @@
-locals {
-  db_name         = replace(var.component, "-", "")
-  postgresql_user = "${local.db_name}_user"
-}
-
 module "postgresql" {
   source = "git@github.com:hmcts/terraform-module-postgresql-flexible?ref=master"
   product       = var.product
