@@ -1,7 +1,7 @@
 locals {
-  flexible_secret_prefix = "${var.component}-POSTGRES"
+  secret_prefix = "${var.component}-POSTGRES"
 
-  flexible_secrets = [
+  secrets = [
     {
       name_suffix = "PASS"
       value       = module.database.postgresql_password
@@ -29,9 +29,9 @@ locals {
 
 ## Loop secrets
 resource "azurerm_key_vault_secret" "secret" {
-  for_each     = { for secret in local.flexible_secrets : secret.name_suffix => secret }
+  for_each     = { for secret in local.secrets : secret.name_suffix => secret }
   key_vault_id = data.azurerm_key_vault.kv.id
-  name         = "${local.flexible_secret_prefix}-${each.value.name_suffix}"
+  name         = "${local.secret_prefix}-${each.value.name_suffix}"
   value        = each.value.value
   tags = merge(var.common_tags, {
     "source" : "${var.component} PostgreSQL"
@@ -46,7 +46,7 @@ resource "azurerm_key_vault_secret" "secret" {
 
 resource "azurerm_key_vault_secret" "sdp-host" {
   key_vault_id = data.azurerm_key_vault.sdp-kv.id
-  name         = "${local.flexible_secret_prefix}-HOST"
+  name         = "${local.secret_prefix}-HOST"
   value        = module.database.host_name
   tags = merge(var.common_tags, {
     "source" : "${var.component} PostgreSQL"
@@ -61,7 +61,7 @@ resource "azurerm_key_vault_secret" "sdp-host" {
 
 resource "azurerm_key_vault_secret" "sdp-port" {
   key_vault_id = data.azurerm_key_vault.sdp-kv.id
-  name         = "${local.flexible_secret_prefix}-PORT"
+  name         = "${local.secret_prefix}-PORT"
   value        = module.database.postgresql_listen_port
   tags = merge(var.common_tags, {
     "source" : "${var.component} PostgreSQL"
