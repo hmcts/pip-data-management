@@ -7,7 +7,6 @@ module "postgresql" {
   source = "git@github.com:hmcts/terraform-module-postgresql-flexible?ref=master"
   product       = var.product
   component     = var.component
-#   subnet_id          = data.azurerm_subnet.iaas.id 
   location           = var.location
   env    = var.env
   pgsql_admin_username = local.postgresql_user
@@ -17,11 +16,8 @@ module "postgresql" {
     }
   ]
   common_tags        = var.common_tags
-    # subscription       = local.env_long_name
   business_area      = "SDS"
-  pgsql_version = "14" # This is a switch from current at 11. Discussion needed
+  pgsql_version = "15"
 }
 
-# SDP stuff needs to be here but will be covered by the migration workstream
-
-
+# SDP access and MV required in here. Will be done at migration
