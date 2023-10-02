@@ -24,6 +24,21 @@ module "postgresql" {
   pgsql_version = "15"
 
   admin_user_object_id = var.jenkins_AAD_objectId
+
+  pgsql_server_configuration = [
+    {
+     name  = "azure.extensions"
+     value = "plpgsql"
+    },
+    {
+      name  = "azure.extensions"
+      value = "pg_stat_statements"
+    },
+    {
+      name  = "azure.extensions"
+      value = "pg_buffercache"
+    }
+  ]
 }
 
 # SDP access and MV required in here. Will be done at migration
