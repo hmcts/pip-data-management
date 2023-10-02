@@ -29,6 +29,10 @@ module "postgresql" {
     {
      name  = "azure.extensions"
      value = "plpgsql, pg_stat_statements, pg_buffercache"
+    },
+    {
+      name  = "backslash_quote"
+      value = "on"
     }
   ]
 }
