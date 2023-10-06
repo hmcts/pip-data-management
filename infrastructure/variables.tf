@@ -18,3 +18,7 @@ variable "deployment_namespace" {
 variable "common_tags" {
   type = map(string)
 }
+variable "aks_subscription_id" {
+  default = ""
+}
+variable "jenkins_AAD_objectId" {}
