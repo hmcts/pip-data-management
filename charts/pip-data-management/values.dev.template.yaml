@@ -1,6 +1,5 @@
 java:
   # Don't modify below here
-  aadIdentityName: null
   image: ${IMAGE_NAME}
   ingressHost: ${SERVICE_FQDN}
   environment:
