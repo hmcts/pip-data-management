@@ -3,7 +3,8 @@ package uk.gov.hmcts.reform.pip.data.management.service;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.CannotAcquireLockException;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -22,6 +23,7 @@ import uk.gov.hmcts.reform.pip.data.management.utils.PayloadExtractor;
 import uk.gov.hmcts.reform.pip.model.enums.UserActions;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Optional;
@@ -95,6 +97,7 @@ public class PublicationService {
      * @return Returns the UUID of the artefact that was created.
      */
     @Transactional(isolation = Isolation.SERIALIZABLE)
+    @Retryable(value = { SQLException.class }, maxAttempts = 10, backoff = @Backoff(delay = 100))
     public Artefact createPublication(Artefact artefact, String payload) {
         boolean isExisting = applyExistingArtefact(artefact);
 
@@ -104,14 +107,6 @@ public class PublicationService {
         );
 
         artefact.setPayload(blobUrl);
-
-        // TODO: This is used to slow down the upload process for testing. Need to be removed.
-        try {
-            Thread.sleep(10000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-
         return artefactRepository.save(artefact);
     }
 

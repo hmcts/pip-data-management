@@ -190,9 +190,9 @@ public class PublicationController {
             .version(0)
             .build();
 
-        System.out.println("**********Upload start time: " + LocalDateTime.now());
+        System.out.println("**********Upload start time for " + headers.getListType() + ": " + LocalDateTime.now());
         Artefact createdItem = publicationCreationRunner.run(artefact, payload);
-        System.out.println("##########Upload end time: " + LocalDateTime.now());
+        System.out.println("##########Upload end time for " + headers.getListType() + ": " + LocalDateTime.now());
 
         logManualUpload(publicationService.maskEmail(issuerEmail), createdItem.getArtefactId().toString());
 
