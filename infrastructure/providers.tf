@@ -40,7 +40,7 @@ provider "postgresql" {
 
   host            = module.postgresql.fqdn
   port            = 5432
-  database        = "flexible-${var.product}-${var.component}"
+  database        = local.db_name
   username        = module.postgresql.username
   password        = module.postgresql.password
   superuser       = false
