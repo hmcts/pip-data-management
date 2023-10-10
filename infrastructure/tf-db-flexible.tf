@@ -34,3 +34,25 @@ module "postgresql" {
 }
 
 # SDP access and MV required in here. Will be done at migration
+resource "postgresql_role" "create_sdp_access-flexible" {
+  provider            = postgresql.postgres-flexible
+
+  name                = data.azurerm_key_vault_secret.sdp-user.value
+  login               = true
+  password            = data.azurerm_key_vault_secret.sdp-pass.value
+  skip_reassign_owned = true
+  skip_drop_role      = true
+  count               = var.env == "sbox" ? 1 : 0
+}
+
+resource "postgresql_grant" "readonly_mv-flexible" {
+  provider    = postgresql.postgres-flexible
+
+  database    = local.db_host_name
+  role        = data.azurerm_key_vault_secret.sdp-user.value
+  schema      = "public"
+  object_type = "table"
+  privileges  = ["SELECT"]
+  objects     = ["sdp_mat_view_location", "sdp_mat_view_artefact"]
+  count       = var.env == "sbox" ? 1 : 0
+}

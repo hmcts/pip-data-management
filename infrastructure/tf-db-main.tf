@@ -25,6 +25,8 @@ module "database" {
 }
 
 resource "postgresql_role" "create_sdp_access" {
+  provider            = postgresql.postgres-v11
+
   name                = data.azurerm_key_vault_secret.sdp-user.value
   login               = true
   password            = data.azurerm_key_vault_secret.sdp-pass.value
@@ -34,6 +36,8 @@ resource "postgresql_role" "create_sdp_access" {
 }
 
 resource "postgresql_grant" "readonly_mv" {
+  provider    = postgresql.postgres-v11
+
   database    = module.database.postgresql_database
   role        = data.azurerm_key_vault_secret.sdp-user.value
   schema      = "public"
