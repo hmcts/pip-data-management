@@ -48,7 +48,7 @@ resource "postgresql_role" "create_sdp_access-flexible" {
 resource "postgresql_grant" "readonly_mv-flexible" {
   provider    = postgresql.postgres-flexible
 
-  database    = local.db_host_name
+  database    = local.db_name
   role        = data.azurerm_key_vault_secret.sdp-user.value
   schema      = "public"
   object_type = "table"
