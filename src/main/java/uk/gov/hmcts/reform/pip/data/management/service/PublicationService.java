@@ -194,7 +194,7 @@ public class PublicationService {
         StringBuilder builder = new StringBuilder(150);
         builder
             .append("artefact_id,display_from,display_to,language,provenance,sensitivity,source_artefact_id,"
-                        + "type,content_date,court_id,court_name,list_type")
+                        + "superseded_count,type,content_date,court_id,court_name,list_type")
             .append(System.lineSeparator());
 
         artefactRepository.getMiData()
