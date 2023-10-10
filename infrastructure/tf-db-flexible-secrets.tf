@@ -44,3 +44,47 @@ resource "azurerm_key_vault_secret" "flexible_secret" {
 
 
 # SDP Secrets also required which will be done at migration
+resource "azurerm_key_vault_secret" "sdp-host-flexible" {
+  key_vault_id = data.azurerm_key_vault.sdp-kv.id
+  name         = "${local.flexible_secret_prefix}-HOST"
+  value        = module.postgresql.fqdn
+  tags = merge(var.common_tags, {
+    "source" : "${var.component} PostgreSQL"
+  })
+  content_type    = ""
+  expiration_date = timeadd(timestamp(), "8760h")
+
+  depends_on = [
+    module.database
+  ]
+}
+
+resource "azurerm_key_vault_secret" "sdp-port-flexible" {
+  key_vault_id = data.azurerm_key_vault.sdp-kv.id
+  name         = "${local.flexible_secret_prefix}-PORT"
+  value        = 5432
+  tags = merge(var.common_tags, {
+    "source" : "${var.component} PostgreSQL"
+  })
+  content_type    = ""
+  expiration_date = timeadd(timestamp(), "8760h")
+
+  depends_on = [
+    module.database
+  ]
+}
+
+resource "azurerm_key_vault_secret" "sdp-database-flexible" {
+  key_vault_id = data.azurerm_key_vault.sdp-kv.id
+  name         = "${local.flexible_secret_prefix}-DATABASE"
+  value        = local.db_name
+  tags = merge(var.common_tags, {
+    "source" : "${var.component} PostgreSQL"
+  })
+  content_type    = ""
+  expiration_date = timeadd(timestamp(), "8760h")
+
+  depends_on = [
+    module.database
+  ]
+}
