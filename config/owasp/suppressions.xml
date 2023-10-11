@@ -21,7 +21,7 @@
   </suppress>
   <suppress>
     <notes>Suppression for netty. Pulled in by springboot.</notes>
-    <packageUrl regex="true">^pkg:maven/io\.netty/netty\*</packageUrl>
+    <packageUrl regex="true">^pkg:maven/io\.netty/netty\*$</packageUrl>
     <cve>CVE-2023-4586</cve>
   </suppress>
 </suppressions>
