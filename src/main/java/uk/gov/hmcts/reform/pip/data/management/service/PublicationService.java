@@ -191,7 +191,7 @@ public class PublicationService {
      * @return MI artefact data as comma delimited string
      */
     public String getMiData() {
-        StringBuilder builder = new StringBuilder(150);
+        StringBuilder builder = new StringBuilder(200);
         builder
             .append("artefact_id,display_from,display_to,language,provenance,sensitivity,source_artefact_id,"
                         + "superseded_count,type,content_date,court_id,court_name,list_type")
