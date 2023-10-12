@@ -42,7 +42,7 @@ resource "postgresql_role" "create_sdp_access-flexible" {
   password            = data.azurerm_key_vault_secret.sdp-pass.value
   skip_reassign_owned = true
   skip_drop_role      = true
-  count               = var.env == "sbox" || var.env == "demo" ? 1 : 0
+  count               = var.env == "sbox" || var.env == "demo" || var.env == "test" ? 1 : 0
 }
 
 resource "postgresql_grant" "readonly_mv-flexible" {
@@ -54,5 +54,5 @@ resource "postgresql_grant" "readonly_mv-flexible" {
   object_type = "table"
   privileges  = ["SELECT"]
   objects     = ["sdp_mat_view_location", "sdp_mat_view_artefact"]
-  count       = var.env == "sbox" || var.env == "demo" ? 1 : 0
+  count       = var.env == "sbox" || var.env == "demo" || var.env == "test" ? 1 : 0
 }
