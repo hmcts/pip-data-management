@@ -15,6 +15,7 @@
     <packageUrl regex="true">^pkg:maven/com.squareup.okio/okio-jvm@3.2.0</packageUrl>
     <cve>CVE-2023-3635</cve>
   </suppress>
+  <suppress>
     <notes>Suppression for netty. Pulled in by springboot on latest version</notes>
     <cve>CVE-2023-4586</cve>
   </suppress>
