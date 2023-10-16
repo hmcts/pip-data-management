@@ -20,7 +20,7 @@
     <cve>CVE-2023-41080</cve>
   </suppress>
   <suppress>
-    <notes>Suppression for netty. Pulled in by springboot.</notes>
+    <notes>Suppression for netty. Pulled in by springboot on latest version</notes>
     <cve>CVE-2023-4586</cve>
   </suppress>
 </suppressions>
