@@ -1012,6 +1012,17 @@
                                                 "French"
                                               ],
                                               "pattern": "^.*$"
+                                            },
+                                            "scheduledHearingDate": {
+                                              "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/scheduledHearingDate",
+                                              "title": "Scheduled hearing date",
+                                              "description": "The scheduled date for the case hearing",
+                                              "type": "string",
+                                              "default": "",
+                                              "examples": [
+                                                "2023-09-13T23:30:52.123Z"
+                                              ],
+                                              "pattern": "^.*$"
                                             }
                                           }
                                         }
@@ -1229,6 +1240,83 @@
                                                   ],
                                                   "default": "",
                                                   "pattern": "^.*$"
+                                                },
+                                                "youth": {
+                                                  "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/party/individualDetails/youth",
+                                                  "description": "Party youth",
+                                                  "title": "Youth",
+                                                  "type": "string",
+                                                  "examples": [
+                                                    ""
+                                                  ],
+                                                  "default": "",
+                                                  "pattern": "^.*$"
+                                                },
+                                                "offence": {
+                                                  "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/party/individualDetails/offence",
+                                                  "title": "offence",
+                                                  "description": "The offence and details of offences associated with the individual. It is also known as charges.",
+                                                  "type": "array",
+                                                  "items":{
+                                                    "type": "object",
+                                                    "properties": {
+                                                      "offenceTitle":{
+                                                        "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/party/individualDetails/offence/offenceTitle",
+                                                        "description": "Short description of offence",
+                                                        "title": "Offence title",
+                                                        "type": "string",
+                                                        "default": "",
+                                                        "examples": [
+                                                          "drink driving"
+                                                        ],
+                                                        "pattern": "^.*$"
+                                                      },
+                                                      "offenceSection":{
+                                                        "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/party/individualDetails/offence/offenceSection",
+                                                        "description": "Section for the offence",
+                                                        "title": "Offence section",
+                                                        "type": "string",
+                                                        "default": "",
+                                                        "examples": [
+                                                          "dd01-01"
+                                                        ],
+                                                        "pattern": "^.*$"
+                                                      },
+                                                      "offenceWording":{
+                                                        "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/party/individualDetails/offence/offenceWording",
+                                                        "description": "Long description of offence",
+                                                        "title": "Offence wording",
+                                                        "type":"string",
+                                                        "default": "",
+                                                        "examples": [
+                                                          "driving whilst under the influence of alcohol"
+                                                        ],
+                                                        "pattern": "^.*$"
+                                                      },
+                                                      "plea":{
+                                                        "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/party/individualDetails/offence/plea",
+                                                        "description": "Indicated plea",
+                                                        "title": "Plea",
+                                                        "type": "string",
+                                                        "default": "",
+                                                        "examples": [
+                                                          "NOT_GUILTY"
+                                                        ],
+                                                        "pattern": "^.*$"
+                                                      },
+                                                      "pleaDate":{
+                                                        "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/party/individualDetails/offence/pleaDate",
+                                                        "description": "Indicated plea date",
+                                                        "title": "Plea date",
+                                                        "type": "string",
+                                                        "default": "",
+                                                        "examples": [
+                                                          "2023-09-13T23:30:52.123Z"
+                                                        ],
+                                                        "pattern": "^.*$"
+                                                      }
+                                                    }
+                                                  }
                                                 }
                                               }
                                             },
@@ -1343,6 +1431,72 @@
                                                   "examples": [],
                                                   "default": "",
                                                   "pattern": "^.*$"
+                                                },
+                                                "offence": {
+                                                  "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/party/organisationDetails/offence",
+                                                  "title": "offence",
+                                                  "description": "The offence and details of offences associated with the organisation. It is also known as charges.",
+                                                  "type": "array",
+                                                  "items":{
+                                                    "type": "object",
+                                                    "properties": {
+                                                      "offenceTitle":{
+                                                        "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/party/organisationDetails/offence/offenceTitle",
+                                                        "description": "Short description of offence",
+                                                        "title": "Offence title",
+                                                        "type": "string",
+                                                        "default": "",
+                                                        "examples": [
+                                                          "drink driving"
+                                                        ],
+                                                        "pattern": "^.*$"
+                                                      },
+                                                      "offenceSection":{
+                                                        "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/party/organisationDetails/offence/offenceSection",
+                                                        "description": "Section for the offence",
+                                                        "title": "Offence section",
+                                                        "type": "string",
+                                                        "default": "",
+                                                        "examples": [
+                                                          "dd01-01"
+                                                        ],
+                                                        "pattern": "^.*$"
+                                                      },
+                                                      "offenceWording":{
+                                                        "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/party/organisationDetails/offence/offenceWording",
+                                                        "description": "Long description of offence",
+                                                        "title": "Offence wording",
+                                                        "type":"string",
+                                                        "default": "",
+                                                        "examples": [
+                                                          "driving whilst under the influence of alcohol"
+                                                        ],
+                                                        "pattern": "^.*$"
+                                                      },
+                                                      "plea":{
+                                                        "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/party/organisationDetails/offence/plea",
+                                                        "description": "Indicated plea",
+                                                        "title": "Plea",
+                                                        "type": "string",
+                                                        "default": "",
+                                                        "examples": [
+                                                          "NOT_GUILTY"
+                                                        ],
+                                                        "pattern": "^.*$"
+                                                      },
+                                                      "pleaDate":{
+                                                        "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/party/organisationDetails/offence/pleaDate",
+                                                        "description": "Indicated plea date",
+                                                        "title": "Plea date",
+                                                        "type": "string",
+                                                        "default": "",
+                                                        "examples": [
+                                                          "2023-09-13T23:30:52.123Z"
+                                                        ],
+                                                        "pattern": "^.*$"
+                                                      }
+                                                    }
+                                                  }
                                                 }
                                               }
                                             }
