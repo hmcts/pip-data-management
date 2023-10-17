@@ -8,7 +8,6 @@ java:
     pip-ss-kv:
       excludeEnvironmentSuffix: false
       resourceGroup: pip-ss-stg-rg
-      usePodIdentity: true
       secrets:
         - name: shared-storageaccount-connection-string
           alias: CONNECTION_STRING
