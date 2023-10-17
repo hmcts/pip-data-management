@@ -44,5 +44,5 @@ resource "postgresql_grant" "readonly_mv" {
   object_type = "table"
   privileges  = ["SELECT"]
   objects     = ["sdp_mat_view_location", "sdp_mat_view_artefact"]
-  count       = var.env == "sbox" || var.env == "demo" || var.env == "test" || var.env == "stg" ? 0 : 1
+  count       = var.env == "sbox" || var.env == "demo" || var.env == "test" || var.env == "stg" || var.env == "ithc" ? 0 : 1
 }
