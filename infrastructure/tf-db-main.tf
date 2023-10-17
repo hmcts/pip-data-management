@@ -32,7 +32,7 @@ resource "postgresql_role" "create_sdp_access" {
   password            = data.azurerm_key_vault_secret.sdp-pass.value
   skip_reassign_owned = true
   skip_drop_role      = true
-  count               = var.env == "sbox" || var.env == "demo" || var.env == "test" || var.env == "stg" ? 0 : 1
+  count               = var.env == "sbox" || var.env == "demo" || var.env == "test" || var.env == "stg" || var.env == "ithc" ? 0 : 1
 }
 
 resource "postgresql_grant" "readonly_mv" {
