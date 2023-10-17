@@ -314,7 +314,7 @@
                                               "title": "Party Role",
                                               "type": "string",
                                               "examples": [
-                                                "ACCUSED", "PROSECUTOR"
+                                                "DEFENDANT", "PROSECUTING_AUTHORITY"
                                               ],
                                               "enum": ["DEFENDANT", "PROSECUTING_AUTHORITY"],
                                               "default": "",
