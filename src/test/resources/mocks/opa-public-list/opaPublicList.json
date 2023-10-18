@@ -1,0 +1,104 @@
+{
+  "document": {
+    "version": "",
+    "publicationDate": "2022-02-13T09:30:52.123Z",
+    "documentName": ""
+  },
+  "venue": {
+    "venueName": "PRESTON",
+    "venueContact": {
+      "venueTelephone": "01772 844700",
+      "venueEmail": "court1@moj.gov.uk"
+    },
+    "venueAddress": {
+      "line": [
+        "THE LAW COURTS"
+      ],
+      "town": "town name",
+      "county": "",
+      "postCode": ""
+    }
+  },
+  "@schemaLocation": "",
+  "courtLists": [
+    {
+      "courtHouse": {
+        "courtHouseName": "This is the site name",
+        "courtRoom": [
+          {
+            "courtRoomName": "1",
+            "session": [
+              {
+                "sittings": [
+                  {
+                    "sittingStart": "20-02-2020T20:00.001Z",
+                    "hearing": [
+                      {
+                        "case": [
+                          {
+                            "caseUrn": "URN1234",
+                            "reportingRestrictionDetail": [
+                              "Reporting Restriction detail line 1",
+                              "Reporting restriction detail line 2"
+                            ],
+                            "scheduledHearingDate": "2016-09-13T23:30:52.123Z",
+                            "informant": [
+                              {
+                                "prosecutionAuthorityRef": "Prosecution Authority ref 1"
+                              }
+                            ]
+                          }
+                        ],
+                        "party": [
+                          {
+                            "partyRole": "DEFENDANT",
+                            "friendlyRoleName": "Defendant",
+                            "individualDetails": {
+                              "individualSurname": "Surname",
+                              "individualMiddleName": "",
+                              "individualFirstName": "FirstName",
+                              "individualTitle": "Title",
+                              "offence": [
+                                {
+                                  "offenceTitle": "Offence title",
+                                  "offenceSection": "Offence section"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "partyRole": "PROSECUTING_AUTHORITY",
+                            "friendlyRoleName": "Prosecuting Authority",
+                            "organisationDetails": {
+                              "organisationName": "organisationName",
+                              "organisationAddress": [
+                                {
+                                  "line": [
+                                    "ORGANISATION ADDRESS"
+                                  ],
+                                  "town": "town name",
+                                  "county": "",
+                                  "postCode": ""
+                                }
+                              ],
+                              "offence": [
+                                {
+                                  "offenceTitle": "",
+                                  "offenceSection": ""
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
