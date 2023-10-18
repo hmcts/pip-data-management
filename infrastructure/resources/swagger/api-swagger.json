@@ -135,7 +135,8 @@
                 "ET_DAILY_LIST",
                 "IAC_DAILY_LIST",
                 "CARE_STANDARDS_LIST",
-                "PRIMARY_HEALTH_LIST"
+                "PRIMARY_HEALTH_LIST",
+                "OPA_PUBLIC_LIST"
               ]
             }
           },
