@@ -23,23 +23,20 @@
   "courtLists": [
     {
       "courtHouse": {
-        "courtHouseName": "This is the court house name",
         "courtRoom": [
           {
-            "courtRoomName": "This is the court room name",
             "session": [
               {
                 "sittings": [
                   {
-                    "sittingStart": "2023-10-01T09:30:00.123Z",
                     "hearing": [
                       {
                         "case": [
                           {
                             "caseUrn": "URN8888",
                             "reportingRestrictionDetail": [
-                              "Reporting Restriction detail line 1",
-                              "Reporting restriction detail line 2"
+                              "Case reporting Restriction detail line 1",
+                              "Case reporting restriction detail line 2"
                             ],
                             "scheduledHearingDate": "2023-10-01T09:30:00.123Z",
                             "informant": {
@@ -50,9 +47,7 @@
                         "party": [
                           {
                             "partyRole": "DEFENDANT",
-                            "friendlyRoleName": "Defendant",
                             "individualDetails": {
-                              "title": "Mr",
                               "individualForenames": "Forename",
                               "individualMiddleName": "MiddleName",
                               "individualSurname": "Surname",
@@ -74,7 +69,10 @@
                                   "offenceSection": "Offence section 1",
                                   "offenceWording": "Offence Wording 1",
                                   "plea": "NOT_GUILTY",
-                                  "pleaDate": "2023-09-20T09:00:00.123Z"
+                                  "pleaDate": "2023-09-20T09:00:00.123Z",
+                                  "reportingRestrictionDetail": [
+                                    "Offence reporting Restriction detail"
+                                  ]
                                 }
                               ]
                             }
@@ -85,16 +83,12 @@
                         "case": [
                           {
                             "caseUrn": "URN9999",
-                            "reportingRestrictionDetail": [
-                              "Reporting Restriction detail line 1"
-                            ],
                             "scheduledHearingDate": "2023-10-02T09:30:00.123Z"
                           }
                         ],
                         "party": [
                           {
                             "partyRole": "DEFENDANT",
-                            "friendlyRoleName": "Defendant",
                             "organisationDetails": {
                               "organisationName": "Organisation name",
                               "organisationAddress": {
@@ -112,14 +106,16 @@
                                   "offenceSection": "Offence section 2",
                                   "offenceWording": "Offence Wording 2",
                                   "plea": "NOT_GUILTY",
-                                  "pleaDate": "2023-09-21T09:00:00.123Z"
+                                  "pleaDate": "2023-09-21T09:00:00.123Z",
+                                  "reportingRestrictionDetail": [
+                                    "Offence reporting Restriction detail 2"
+                                  ]
                                 }
                               ]
                             }
                           },
                           {
                             "partyRole": "PROSECUTING_AUTHORITY",
-                            "friendlyRoleName": "Prosecuting authority",
                             "organisationDetails": {
                               "organisationName": "Prosecuting authority name"
                             }

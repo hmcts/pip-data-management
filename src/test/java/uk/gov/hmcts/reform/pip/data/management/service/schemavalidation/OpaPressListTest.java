@@ -65,12 +65,9 @@ class OpaPressListTest {
         "venue.venueContact",
         "courtLists",
         "courtLists.0.courtHouse",
-        "courtLists.0.courtHouse.courtHouseName",
         "courtLists.0.courtHouse.courtRoom",
-        "courtLists.0.courtHouse.courtRoom.0.courtRoomName",
         "courtLists.0.courtHouse.courtRoom.0.session",
         "courtLists.0.courtHouse.courtRoom.0.session.0.sittings",
-        "courtLists.0.courtHouse.courtRoom.0.session.0.sittings.0.sittingStart",
         "courtLists.0.courtHouse.courtRoom.0.session.0.sittings.0.hearing",
         "courtLists.0.courtHouse.courtRoom.0.session.0.sittings.0.hearing.0.case",
         "courtLists.0.courtHouse.courtRoom.0.session.0.sittings.0.hearing.0.case.0.caseUrn"

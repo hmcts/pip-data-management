@@ -1314,6 +1314,19 @@
                                                           "2023-09-13T23:30:52.123Z"
                                                         ],
                                                         "pattern": "^.*$"
+                                                      },
+                                                      "reportingRestrictionDetail": {
+                                                        "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/party/individualDetails/offence/reportingRestrictionDetail",
+                                                        "title": "Reporting Restrictions Detail",
+                                                        "description": "The detail / wording of any reporting restrictions attached to the case",
+                                                        "type": "array",
+                                                        "items": {
+                                                          "type": "string",
+                                                          "default": "",
+                                                          "examples": [
+                                                            "This is a reporting restrictions detail"
+                                                          ]
+                                                        }
                                                       }
                                                     }
                                                   }
@@ -1494,6 +1507,19 @@
                                                           "2023-09-13T23:30:52.123Z"
                                                         ],
                                                         "pattern": "^.*$"
+                                                      },
+                                                      "reportingRestrictionDetail": {
+                                                        "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/party/organisationDetails/offence/reportingRestrictionDetail",
+                                                        "title": "Reporting Restrictions Detail",
+                                                        "description": "The detail / wording of any reporting restrictions attached to the case",
+                                                        "type": "array",
+                                                        "items": {
+                                                          "type": "string",
+                                                          "default": "",
+                                                          "examples": [
+                                                            "This is a reporting restrictions detail"
+                                                          ]
+                                                        }
                                                       }
                                                     }
                                                   }
