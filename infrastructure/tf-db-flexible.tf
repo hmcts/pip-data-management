@@ -31,6 +31,8 @@ module "postgresql" {
      value = "plpgsql, pg_stat_statements, pg_buffercache"
     }
   ]
+
+  enable_read_only_group_access = false
 }
 
 # SDP access and MV required in here. Will be done at migration
