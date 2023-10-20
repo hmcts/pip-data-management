@@ -3,7 +3,7 @@ locals {
 
   //Needed to change the old details to the new Flexible Server details, as Flyway on the pipeline only picks up
   //a specific naming convention.
-  secrets = var.env == "sbox" || var.env == "demo" || var.env == "test" || var.env == "ithc" ? [
+  secrets = var.env == "sbox" || var.env == "demo" || var.env == "test" || var.env == "ithc" || var.env == "stg" ? [
     {
       name_suffix = "PASS"
       value       = module.postgresql.password
