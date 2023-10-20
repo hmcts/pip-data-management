@@ -1,7 +1,7 @@
 locals {
   secret_prefix = "${var.component}-POSTGRES"
 
-  secrets = [
+  secrets = var.env == "sbox" || var.env == "demo" || var.env == "test" || var.env == "ithc" ? [] : [
     {
       name_suffix = "PASS"
       value       = module.database.postgresql_password
