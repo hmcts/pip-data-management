@@ -329,4 +329,4 @@ We also use TestContainers to create throwaway postgres databases for testing to
 We are happy to accept third-party contributions. See [.github/CONTRIBUTING.md](./.github/CONTRIBUTING.md) for more details.
 
 ## License
-This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details
+This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for detail
