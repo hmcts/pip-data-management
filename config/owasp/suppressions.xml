@@ -25,9 +25,4 @@
     <cve>CVE-2023-36414</cve>
     <cve>CVE-2023-36415</cve>
   </suppress>
-  <suppress>
-    <notes>Tomcat vuln, exists on latest version of spring 3.0.x</notes>
-    <cve>CVE-2023-42795</cve>
-    <cve>CVE-2023-45648</cve>
-  </suppress>
 </suppressions>
