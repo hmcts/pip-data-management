@@ -22,15 +22,12 @@
   "courtLists": [
     {
       "courtHouse": {
-        "courtHouseName": "This is the site name",
         "courtRoom": [
           {
-            "courtRoomName": "1",
             "session": [
               {
                 "sittings": [
                   {
-                    "sittingStart": "20-02-2020T20:00.001Z",
                     "hearing": [
                       {
                         "case": [
@@ -49,12 +46,10 @@
                         "party": [
                           {
                             "partyRole": "DEFENDANT",
-                            "friendlyRoleName": "Defendant",
                             "individualDetails": {
-                              "individualSurname": "Surname",
-                              "individualMiddleName": "",
-                              "individualFirstName": "FirstName",
-                              "individualTitle": "Title",
+                              "individualSurname": "IndividualSurname",
+                              "individualMiddleName": "individualMiddleName",
+                              "individualFirstName": "individualFirstName",
                               "offence": [
                                 {
                                   "offenceTitle": "Offence title",

@@ -164,19 +164,8 @@
             "title": "Court House",
             "description": "The court house that owns the court rooms",
             "type": "object",
-            "required": ["courtHouseName", "courtRoom"],
+            "required": ["courtRoom"],
             "properties": {
-              "courtHouseName": {
-                "$id": "#root/courtLists/courtHouse/courtHouseName",
-                "description": "Name of the court house",
-                "title": "Court House Name",
-                "type": "string",
-                "default": "",
-                "examples": [
-                  "PRESTON"
-                ],
-                "pattern": "^.*$"
-              },
               "courtRoom": {
                 "$id": "#root/courtLists/courtHouse/courtRoom",
                 "type": "array",
@@ -184,18 +173,8 @@
                   "title": "Court Room",
                   "description": "The court room that owns the court rooms",
                   "type": "object",
-                  "required": ["courtRoomName", "session"],
+                  "required": ["session"],
                   "properties": {
-                    "courtRoomName": {
-                      "$id": "#root/courtLists/courtHouse/courtRoom/courtRoomName",
-                      "description": "Name for the court room",
-                      "title": "Court Room Name",
-                      "type": "string",
-                      "default": "",
-                      "examples": [
-                        "Room 1"
-                      ]
-                    },
                     "session": {
                       "$id": "#root/courtLists/courtList/courtHouse/courtRoom/session",
                       "type": "array",
@@ -213,16 +192,8 @@
                             "items":{
                               "$id": "#root/courtLists/courtList/courtHouse/courtRoom/session/sittings/items",
                               "type": "object",
-                              "required": ["sittingStart", "hearing"],
+                              "required": ["hearing"],
                               "properties": {
-                                "sittingStart": {
-                                  "$id": "#root/courtLists/courtList/courtHouse/courtRoom/session/sittings/items/sittingStart",
-                                  "description": "Sitting Start Time",
-                                  "title": "Sitting Start",
-                                  "type": "string",
-                                  "default": "",
-                                  "examples": []
-                                },
                                 "hearing": {
                                   "$id": "#root/courtLists/courtList/courtHouse/courtRoom/session/sittings/items/hearing",
                                   "type": "array",
@@ -320,33 +291,12 @@
                                               "default": "",
                                               "pattern": "^.*$"
                                             },
-                                            "friendlyRoleName": {
-                                              "$id": "#root/courtLists/courtList/courtHouse/courtRoom/session/sittings/items/hearing/party/friendlyRoleName",
-                                              "description": "The descriptive version of the role. E.g a party role of APPLICANT_REPRESENTATIVE, might  have a more descriptive role name (e.g Legal Advisor) that you would want to display",
-                                              "title": "Friendly Role Name",
-                                              "type": "string",
-                                              "examples": [
-                                                "Legal Advisor"
-                                              ],
-                                              "default": "",
-                                              "pattern": "^.*$"
-                                            },
                                             "individualDetails": {
                                               "$id": "#root/courtLists/courtList/courtHouse/courtRoom/session/sittings/items/hearing/party/individualDetails",
                                               "title": "Individual Details",
                                               "description": "Individual Details",
                                               "type": "object",
                                               "properties": {
-                                                "title": {
-                                                  "$id": "#root/courtLists/courtList/courtHouse/courtRoom/session/sittings/items/hearing/party/individualDetails/title",
-                                                  "description": "Title of individual",
-                                                  "title": "Title",
-                                                  "type": "string",
-                                                  "examples": [
-                                                    "Mr"
-                                                  ],
-                                                  "default": ""
-                                                },
                                                 "individualForenames": {
                                                   "$id": "#root/courtLists/courtList/courtHouse/courtRoom/session/sittings/items/hearing/party/individualDetails/individualForenames",
                                                   "description": "Forename of party",
