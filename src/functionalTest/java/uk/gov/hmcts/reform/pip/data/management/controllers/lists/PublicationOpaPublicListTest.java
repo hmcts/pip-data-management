@@ -105,7 +105,7 @@ class PublicationOpaPublicListTest {
 
     @DisplayName("Should return an error message back to the user when creating an invalid blob")
     @Test
-    void testCreationOfInvalidSscsDailyList() throws Exception {
+    void testCreationOfInvalidOpaPublicList() throws Exception {
         try (InputStream mockFile = this.getClass().getClassLoader()
             .getResourceAsStream("data/opa-public-list/opaPublicListInvalid.json")) {
 
