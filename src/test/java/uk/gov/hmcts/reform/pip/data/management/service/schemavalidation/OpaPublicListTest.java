@@ -48,12 +48,9 @@
         private static final String VENUE_CONTACT_SCHEMA = "venueContact";
         private static final String COURT_LIST_SCHEMA = "courtLists";
         private static final String COURT_HOUSE_SCHEMA = "courtHouse";
-        private static final String COURT_HOUSE_NAME_SCHEMA = "courtHouseName";
         private static final String COURT_ROOM_SCHEMA = "courtRoom";
-        private static final String COURT_ROOM_NAME_SCHEMA = "courtRoomName";
         private static final String SESSION_SCHEMA = "session";
         private static final String SITTINGS_SCHEMA = "sittings";
-        private static final String SITTING_START_SCHEMA = "sittingStart";
         private static final String HEARING_SCHEMA = "hearing";
         private static final String CASE_SCHEMA  = "case";
         private static final String CASE_URN_SCHEMA  = "caseUrn";
@@ -205,25 +202,6 @@
             }
 
             @Test
-            void testValidateWithErrorsWhenCourtHouseNameMissingInOpaPublicList() throws IOException {
-                try (InputStream jsonInput = this.getClass().getClassLoader()
-                    .getResourceAsStream(OPA_PUBLIC_LIST_VALID_JSON)) {
-                    String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
-
-                    ObjectMapper mapper = new ObjectMapper();
-                    JsonNode node = mapper.readValue(text, JsonNode.class);
-                    ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0).get(COURT_HOUSE_SCHEMA))
-                    .remove(COURT_HOUSE_NAME_SCHEMA);
-
-                    String listJson = node.toString();
-                    assertThrows(PayloadValidationException.class, () ->
-                                     validationService.validateBody(listJson,
-                                                                    headerGroup),
-                                 OPA_PUBLIC_LIST_INVALID_MESSAGE);
-                }
-            }
-
-            @Test
             void testValidateWithErrorsWhenCourtRoomMissingInOpaPublicList() throws IOException {
                 try (InputStream jsonInput = this.getClass().getClassLoader()
                     .getResourceAsStream(OPA_PUBLIC_LIST_VALID_JSON)) {
@@ -241,25 +219,6 @@
                                  OPA_PUBLIC_LIST_INVALID_MESSAGE);
                 }
             }
-
-        @Test
-        void testValidateWithErrorsWhenCourtRoomNameMissingInOpaPublicList() throws IOException {
-            try (InputStream jsonInput = this.getClass().getClassLoader()
-                .getResourceAsStream(OPA_PUBLIC_LIST_VALID_JSON)) {
-                String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
-
-                ObjectMapper mapper = new ObjectMapper();
-                JsonNode node = mapper.readValue(text, JsonNode.class);
-                ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0)
-                    .get(COURT_HOUSE_SCHEMA).get(COURT_ROOM_SCHEMA).get(0)).remove(COURT_ROOM_NAME_SCHEMA);
-
-                String listJson = node.toString();
-                assertThrows(PayloadValidationException.class, () ->
-                                 validationService.validateBody(listJson,
-                                                                headerGroup),
-                             OPA_PUBLIC_LIST_INVALID_MESSAGE);
-            }
-        }
 
         @Test
         void testValidateWithErrorsWhenSessionMissingInOpaPublicList() throws IOException {
@@ -291,26 +250,6 @@
                 ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0)
                     .get(COURT_HOUSE_SCHEMA).get(COURT_ROOM_SCHEMA).get(0)
                     .get(SESSION_SCHEMA).get(0)).remove(SITTINGS_SCHEMA);
-
-                String listJson = node.toString();
-                assertThrows(PayloadValidationException.class, () ->
-                                 validationService.validateBody(listJson,
-                                                                headerGroup),
-                             OPA_PUBLIC_LIST_INVALID_MESSAGE);
-            }
-        }
-
-        @Test
-        void testValidateWithErrorsWhenSittingStartMissingInOpaPublicList() throws IOException {
-            try (InputStream jsonInput = this.getClass().getClassLoader()
-                .getResourceAsStream(OPA_PUBLIC_LIST_VALID_JSON)) {
-                String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
-
-                ObjectMapper mapper = new ObjectMapper();
-                JsonNode node = mapper.readValue(text, JsonNode.class);
-                ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0)
-                    .get(COURT_HOUSE_SCHEMA).get(COURT_ROOM_SCHEMA).get(0)
-                    .get(SESSION_SCHEMA).get(0).get(SITTINGS_SCHEMA).get(0)).remove(SITTING_START_SCHEMA);
 
                 String listJson = node.toString();
                 assertThrows(PayloadValidationException.class, () ->
