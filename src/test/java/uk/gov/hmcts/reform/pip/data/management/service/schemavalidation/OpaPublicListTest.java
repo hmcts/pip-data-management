@@ -78,57 +78,57 @@ class OpaPublicListTest {
                                       DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, COURT_ID, CONTENT_DATE);
     }
 
-        @Test
-        void testValidateWithErrorsWhenDocumentMissingInOpaPublicList() throws IOException {
-            try (InputStream jsonInput = this.getClass().getClassLoader()
-                .getResourceAsStream(OPA_PUBLIC_LIST_VALID_JSON)) {
-                String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+    @Test
+    void testValidateWithErrorsWhenDocumentMissingInOpaPublicList() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream(OPA_PUBLIC_LIST_VALID_JSON)) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
-                JsonNode node = getJsonNode(text);
-                ((ObjectNode) node).remove("document");
+            JsonNode node = getJsonNode(text);
+            ((ObjectNode) node).remove("document");
 
-                String listJson = node.toString();
-                assertThrows(PayloadValidationException.class, () ->
-                                 validationService.validateBody(listJson,
-                                                                headerGroup),
-                             OPA_PUBLIC_LIST_INVALID_MESSAGE);
-            }
+            String listJson = node.toString();
+            assertThrows(PayloadValidationException.class, () ->
+                             validationService.validateBody(listJson,
+                                                            headerGroup),
+                         OPA_PUBLIC_LIST_INVALID_MESSAGE);
         }
+    }
 
-        @Test
-        void testValidateWithErrorsWhenPublicationDateMissingInOpaPublicList() throws IOException {
-            try (InputStream jsonInput = this.getClass().getClassLoader()
-                .getResourceAsStream(OPA_PUBLIC_LIST_VALID_JSON)) {
-                String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+    @Test
+    void testValidateWithErrorsWhenPublicationDateMissingInOpaPublicList() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream(OPA_PUBLIC_LIST_VALID_JSON)) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
-                ObjectMapper mapper = new ObjectMapper();
-                JsonNode node = mapper.readValue(text, JsonNode.class);
-                ((ObjectNode) node.get("document")).remove("publicationDate");
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode node = mapper.readValue(text, JsonNode.class);
+            ((ObjectNode) node.get("document")).remove("publicationDate");
 
-                String listJson = node.toString();
-                assertThrows(PayloadValidationException.class, () ->
-                                 validationService.validateBody(listJson,
-                                                                headerGroup),
-                             OPA_PUBLIC_LIST_INVALID_MESSAGE);
-            }
+            String listJson = node.toString();
+            assertThrows(PayloadValidationException.class, () ->
+                             validationService.validateBody(listJson,
+                                                            headerGroup),
+                         OPA_PUBLIC_LIST_INVALID_MESSAGE);
         }
+    }
 
-        @Test
-        void testValidateWithErrorsWhenVenueMissingInOpaPublicList() throws IOException {
-            try (InputStream jsonInput = this.getClass().getClassLoader()
-                .getResourceAsStream(OPA_PUBLIC_LIST_VALID_JSON)) {
-                String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+    @Test
+    void testValidateWithErrorsWhenVenueMissingInOpaPublicList() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream(OPA_PUBLIC_LIST_VALID_JSON)) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
-                JsonNode node = getJsonNode(text);
-                ((ObjectNode) node).remove(VENUE_SCHEMA);
+            JsonNode node = getJsonNode(text);
+            ((ObjectNode) node).remove(VENUE_SCHEMA);
 
-                String listJson = node.toString();
-                assertThrows(PayloadValidationException.class, () ->
-                                 validationService.validateBody(listJson,
-                                                                headerGroup),
-                             OPA_PUBLIC_LIST_INVALID_MESSAGE);
-            }
+            String listJson = node.toString();
+            assertThrows(PayloadValidationException.class, () ->
+                             validationService.validateBody(listJson,
+                                                            headerGroup),
+                         OPA_PUBLIC_LIST_INVALID_MESSAGE);
         }
+    }
 
     @Test
     void testValidateWithErrorsWhenVenueNameMissingInOpaPublicList() throws IOException {
@@ -148,77 +148,77 @@ class OpaPublicListTest {
         }
     }
 
-        @Test
-        void testValidateWithErrorsWhenVenueContactMissingInOpaPublicList() throws IOException {
-            try (InputStream jsonInput = this.getClass().getClassLoader()
-                .getResourceAsStream(OPA_PUBLIC_LIST_VALID_JSON)) {
-                String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+    @Test
+    void testValidateWithErrorsWhenVenueContactMissingInOpaPublicList() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream(OPA_PUBLIC_LIST_VALID_JSON)) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
-                ObjectMapper mapper = new ObjectMapper();
-                JsonNode node = mapper.readValue(text, JsonNode.class);
-                ((ObjectNode) node.get(VENUE_SCHEMA)).remove(VENUE_CONTACT_SCHEMA);
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode node = mapper.readValue(text, JsonNode.class);
+            ((ObjectNode) node.get(VENUE_SCHEMA)).remove(VENUE_CONTACT_SCHEMA);
 
-                String listJson = node.toString();
-                assertThrows(PayloadValidationException.class, () ->
-                                 validationService.validateBody(listJson,
-                                                                headerGroup),
-                             OPA_PUBLIC_LIST_INVALID_MESSAGE);
-            }
+            String listJson = node.toString();
+            assertThrows(PayloadValidationException.class, () ->
+                             validationService.validateBody(listJson,
+                                                            headerGroup),
+                         OPA_PUBLIC_LIST_INVALID_MESSAGE);
         }
+    }
 
-        @Test
-        void testValidateWithErrorsWhenCourtListMissingInOpaPublicList() throws IOException {
-            try (InputStream jsonInput = this.getClass().getClassLoader()
-                .getResourceAsStream(OPA_PUBLIC_LIST_VALID_JSON)) {
-                String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+    @Test
+    void testValidateWithErrorsWhenCourtListMissingInOpaPublicList() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream(OPA_PUBLIC_LIST_VALID_JSON)) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
-                JsonNode node = getJsonNode(text);
-                ((ObjectNode) node).remove(COURT_LIST_SCHEMA);
+            JsonNode node = getJsonNode(text);
+            ((ObjectNode) node).remove(COURT_LIST_SCHEMA);
 
-                String listJson = node.toString();
-                assertThrows(PayloadValidationException.class, () ->
-                                 validationService.validateBody(listJson,
-                                                                headerGroup),
-                             OPA_PUBLIC_LIST_INVALID_MESSAGE);
-            }
+            String listJson = node.toString();
+            assertThrows(PayloadValidationException.class, () ->
+                             validationService.validateBody(listJson,
+                                                            headerGroup),
+                         OPA_PUBLIC_LIST_INVALID_MESSAGE);
         }
+    }
 
-        @Test
-        void testValidateWithErrorsWhenCourtHouseMissingInOpaPublicList() throws IOException {
-            try (InputStream jsonInput = this.getClass().getClassLoader()
-                .getResourceAsStream(OPA_PUBLIC_LIST_VALID_JSON)) {
-                String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+    @Test
+    void testValidateWithErrorsWhenCourtHouseMissingInOpaPublicList() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream(OPA_PUBLIC_LIST_VALID_JSON)) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
-                ObjectMapper mapper = new ObjectMapper();
-                JsonNode node = mapper.readValue(text, JsonNode.class);
-                ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0)).remove(COURT_HOUSE_SCHEMA);
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode node = mapper.readValue(text, JsonNode.class);
+            ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0)).remove(COURT_HOUSE_SCHEMA);
 
-                String listJson = node.toString();
-                assertThrows(PayloadValidationException.class, () ->
-                                 validationService.validateBody(listJson,
-                                                                headerGroup),
-                             OPA_PUBLIC_LIST_INVALID_MESSAGE);
-            }
+            String listJson = node.toString();
+            assertThrows(PayloadValidationException.class, () ->
+                             validationService.validateBody(listJson,
+                                                            headerGroup),
+                         OPA_PUBLIC_LIST_INVALID_MESSAGE);
         }
+    }
 
-        @Test
-        void testValidateWithErrorsWhenCourtRoomMissingInOpaPublicList() throws IOException {
-            try (InputStream jsonInput = this.getClass().getClassLoader()
-                .getResourceAsStream(OPA_PUBLIC_LIST_VALID_JSON)) {
-                String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+    @Test
+    void testValidateWithErrorsWhenCourtRoomMissingInOpaPublicList() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream(OPA_PUBLIC_LIST_VALID_JSON)) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
-                ObjectMapper mapper = new ObjectMapper();
-                JsonNode node = mapper.readValue(text, JsonNode.class);
-                ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0)
-                    .get(COURT_HOUSE_SCHEMA)).remove(COURT_ROOM_SCHEMA);
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode node = mapper.readValue(text, JsonNode.class);
+            ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0)
+                .get(COURT_HOUSE_SCHEMA)).remove(COURT_ROOM_SCHEMA);
 
-                String listJson = node.toString();
-                assertThrows(PayloadValidationException.class, () ->
-                                 validationService.validateBody(listJson,
-                                                                headerGroup),
-                             OPA_PUBLIC_LIST_INVALID_MESSAGE);
-            }
+            String listJson = node.toString();
+            assertThrows(PayloadValidationException.class, () ->
+                             validationService.validateBody(listJson,
+                                                            headerGroup),
+                         OPA_PUBLIC_LIST_INVALID_MESSAGE);
         }
+    }
 
     @Test
     void testValidateWithErrorsWhenSessionMissingInOpaPublicList() throws IOException {
@@ -279,45 +279,45 @@ class OpaPublicListTest {
         }
     }
 
-        @Test
-        void testValidateWithErrorsWhenCaseMissingInOpaPublicList() throws IOException {
-            try (InputStream jsonInput = this.getClass().getClassLoader()
-                .getResourceAsStream(OPA_PUBLIC_LIST_VALID_JSON)) {
-                String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+    @Test
+    void testValidateWithErrorsWhenCaseMissingInOpaPublicList() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream(OPA_PUBLIC_LIST_VALID_JSON)) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
-                ObjectMapper mapper = new ObjectMapper();
-                JsonNode node = mapper.readValue(text, JsonNode.class);
-                ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0)
-                    .get(COURT_HOUSE_SCHEMA).get(COURT_ROOM_SCHEMA).get(0)
-                    .get(SESSION_SCHEMA).get(0).get(SITTINGS_SCHEMA).get(0)
-                    .get(HEARING_SCHEMA).get(0)).remove(CASE_SCHEMA);
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode node = mapper.readValue(text, JsonNode.class);
+            ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0)
+                .get(COURT_HOUSE_SCHEMA).get(COURT_ROOM_SCHEMA).get(0)
+                .get(SESSION_SCHEMA).get(0).get(SITTINGS_SCHEMA).get(0)
+                .get(HEARING_SCHEMA).get(0)).remove(CASE_SCHEMA);
 
-                String listJson = node.toString();
-                assertThrows(PayloadValidationException.class, () ->
-                                 validationService.validateBody(listJson,
-                                                                headerGroup),
-                             OPA_PUBLIC_LIST_INVALID_MESSAGE);
-            }
+            String listJson = node.toString();
+            assertThrows(PayloadValidationException.class, () ->
+                             validationService.validateBody(listJson,
+                                                            headerGroup),
+                         OPA_PUBLIC_LIST_INVALID_MESSAGE);
         }
+    }
 
-        @Test
-        void testValidateWithErrorsWhenCaseNumberMissingInOpaPublicList() throws IOException {
-            try (InputStream jsonInput = this.getClass().getClassLoader()
-                .getResourceAsStream(OPA_PUBLIC_LIST_VALID_JSON)) {
-                String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+    @Test
+    void testValidateWithErrorsWhenCaseNumberMissingInOpaPublicList() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream(OPA_PUBLIC_LIST_VALID_JSON)) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
-                ObjectMapper mapper = new ObjectMapper();
-                JsonNode node = mapper.readValue(text, JsonNode.class);
-                ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0)
-                    .get(COURT_HOUSE_SCHEMA).get(COURT_ROOM_SCHEMA).get(0)
-                    .get(SESSION_SCHEMA).get(0).get(SITTINGS_SCHEMA).get(0)
-                    .get(HEARING_SCHEMA).get(0).get(CASE_SCHEMA).get(0)).remove(CASE_URN_SCHEMA);
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode node = mapper.readValue(text, JsonNode.class);
+            ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0)
+                .get(COURT_HOUSE_SCHEMA).get(COURT_ROOM_SCHEMA).get(0)
+                .get(SESSION_SCHEMA).get(0).get(SITTINGS_SCHEMA).get(0)
+                .get(HEARING_SCHEMA).get(0).get(CASE_SCHEMA).get(0)).remove(CASE_URN_SCHEMA);
 
-                String listJson = node.toString();
-                assertThrows(PayloadValidationException.class, () ->
-                                 validationService.validateBody(listJson,
-                                                                headerGroup),
-                             OPA_PUBLIC_LIST_INVALID_MESSAGE);
-            }
+            String listJson = node.toString();
+            assertThrows(PayloadValidationException.class, () ->
+                             validationService.validateBody(listJson,
+                                                            headerGroup),
+                         OPA_PUBLIC_LIST_INVALID_MESSAGE);
         }
+    }
 }
