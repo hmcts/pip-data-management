@@ -130,6 +130,7 @@ validations:
     IAC_DAILY_LIST: "schemas/iac_daily_list.json"
     CARE_STANDARDS_LIST: "schemas/care_standards_list.json"
     PRIMARY_HEALTH_LIST: "schemas/primary_health_list.json"
+    OPA_PRESS_LIST: "schemas/opa_press_list.json"
 
 springdoc:
   swagger-ui:
