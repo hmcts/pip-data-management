@@ -348,6 +348,30 @@
                                                           "drink driving"
                                                         ],
                                                         "pattern": "^.*$"
+                                                      },
+                                                      "offenceSection":{
+                                                        "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/party/individualDetails/offence/offenceSection",
+                                                        "description": "Section for the offence",
+                                                        "title": "Offence section",
+                                                        "type": "string",
+                                                        "default": "",
+                                                        "examples": [
+                                                          "dd01-01"
+                                                        ],
+                                                        "pattern": "^.*$"
+                                                      },
+                                                      "reportingRestrictionDetail": {
+                                                        "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/party/individualDetails/offence/reportingRestrictionDetail",
+                                                        "title": "Reporting Restrictions Detail",
+                                                        "description": "The detail / wording of any reporting restrictions attached to the case",
+                                                        "type": "array",
+                                                        "items": {
+                                                          "type": "string",
+                                                          "default": "",
+                                                          "examples": [
+                                                            "This is a reporting restrictions detail"
+                                                          ]
+                                                        }
                                                       }
                                                     }
                                                   }
@@ -395,6 +419,30 @@
                                                           "drink driving"
                                                         ],
                                                         "pattern": "^.*$"
+                                                      },
+                                                      "offenceSection":{
+                                                        "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/party/individualDetails/offence/offenceSection",
+                                                        "description": "Section for the offence",
+                                                        "title": "Offence section",
+                                                        "type": "string",
+                                                        "default": "",
+                                                        "examples": [
+                                                          "dd01-01"
+                                                        ],
+                                                        "pattern": "^.*$"
+                                                      },
+                                                      "reportingRestrictionDetail": {
+                                                        "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/party/individualDetails/offence/reportingRestrictionDetail",
+                                                        "title": "Reporting Restrictions Detail",
+                                                        "description": "The detail / wording of any reporting restrictions attached to the case",
+                                                        "type": "array",
+                                                        "items": {
+                                                          "type": "string",
+                                                          "default": "",
+                                                          "examples": [
+                                                            "This is a reporting restrictions detail"
+                                                          ]
+                                                        }
                                                       }
                                                     }
                                                   }
