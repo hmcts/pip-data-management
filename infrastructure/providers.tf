@@ -2,7 +2,7 @@ terraform {
   required_version = ">= 1.0.4"
   required_providers {
     azurerm = {
-      version = "3.71.0"
+      version = "3.75.0"
     }
     postgresql = {
       source  = "cyrilgdn/postgresql"
@@ -23,11 +23,26 @@ provider "azurerm" {
 }
 
 provider "postgresql" {
+  alias           = "postgres-v11"
+
   host            = module.database.host_name
   port            = module.database.postgresql_listen_port
   database        = module.database.postgresql_database
   username        = module.database.user_name
   password        = module.database.postgresql_password
+  superuser       = false
+  sslmode         = "require"
+  connect_timeout = 15
+}
+
+provider "postgresql" {
+  alias           = "postgres-flexible"
+
+  host            = module.postgresql.fqdn
+  port            = 5432
+  database        = local.db_name
+  username        = module.postgresql.username
+  password        = module.postgresql.password
   superuser       = false
   sslmode         = "require"
   connect_timeout = 15

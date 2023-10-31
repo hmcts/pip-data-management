@@ -1,26 +1,28 @@
 locals {
   secret_prefix = "${var.component}-POSTGRES"
 
+  //Needed to change the old details to the new Flexible Server details, as Flyway on the pipeline only picks up
+  //a specific naming convention.
   secrets = [
     {
       name_suffix = "PASS"
-      value       = module.database.postgresql_password
+      value       = module.postgresql.password
     },
     {
       name_suffix = "HOST"
-      value       = module.database.host_name
+      value       = module.postgresql.fqdn
     },
     {
       name_suffix = "USER"
-      value       = module.database.user_name
+      value       = module.postgresql.username
     },
     {
       name_suffix = "PORT"
-      value       = module.database.postgresql_listen_port
+      value       = "5432"
     },
     {
       name_suffix = "DATABASE"
-      value       = module.database.postgresql_database
+      value       = local.db_name
     }
   ]
 
