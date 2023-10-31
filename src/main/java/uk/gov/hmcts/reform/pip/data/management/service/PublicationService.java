@@ -81,10 +81,10 @@ public class PublicationService {
     }
 
     /**
-     * Method that handles the creation or updating of a new JSON publication.
+     * Method that handles the creation or updating of a new flat file publication.
      *
      * @param artefact The artifact that needs to be created.
-     * @param file  The flat file that is to be uploaded and associated with the artefact.
+     * @param file     The flat file that is to be uploaded and associated with the artefact.
      * @return Returns the artefact that was created.
      */
     @Transactional(isolation = Isolation.SERIALIZABLE)

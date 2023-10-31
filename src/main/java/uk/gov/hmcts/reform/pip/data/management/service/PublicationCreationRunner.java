@@ -47,6 +47,7 @@ public class PublicationCreationRunner {
      * Starts the flat file publication creation process.
      *
      * @param artefact The artefact that needs to be created.
+     * @param file     The flat file that is to be uploaded and associated with the artefact.
      * @return Returns the artefact that was created.
      */
     public Artefact run(Artefact artefact, MultipartFile file) {

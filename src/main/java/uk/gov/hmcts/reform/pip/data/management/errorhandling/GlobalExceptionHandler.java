@@ -123,7 +123,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(CreateArtefactConflictException.class)
     public ResponseEntity<ExceptionResponse> handle(CreateArtefactConflictException ex) {
-        log.error(writeLog("409, error while uploading artefact"));
+        log.error(writeLog("409, conflict while uploading publication"));
         return ResponseEntity.status(HttpStatus.CONFLICT)
             .body(generateExceptionResponse(ex.getMessage()));
     }
