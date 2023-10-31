@@ -199,7 +199,7 @@ dependencies {
   implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
   implementation 'com.opencsv:opencsv:5.8'
   implementation 'org.springframework.boot:spring-boot-starter-webflux'
-  implementation 'org.springframework.retry:spring-retry:2.0.3'
+  implementation 'org.springframework.retry:spring-retry:2.0.4'
   implementation("com.squareup.okhttp3:okhttp:4.11.0")
 
   // Include Flyway for database migrations
