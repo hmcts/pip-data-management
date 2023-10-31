@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CreateArtefactConflictException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CsvParseException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.DataStorageNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.FlatFileException;
@@ -41,8 +42,9 @@ class GlobalExceptionHandlerTest {
     private static final String TEST_MESSAGE = "This is a test message";
     private static final String TEST_NAME = "TestName";
     private static final String ASSERTION_MESSAGE = "The message should match the message passed in";
-    private static final String BAD_REQUEST_ASSERTION = "Status code should be of type: Not Found";
-    private static final String NOT_FOUND_ASSERTION = "Status code should be of type: Bad Request";
+    private static final String BAD_REQUEST_ASSERTION = "Status code should be of type: Bad Request";
+    private static final String NOT_FOUND_ASSERTION = "Status code should be of type: Not Found";
+    private static final String CONFLICT_ASSERTION = "Status code should be of type: Conflict";
     private static final String EXCEPTION_BODY_NOT_MATCH = "Exception body doesn't match test message";
     static final String ASSERTION_RESPONSE_BODY = "Response should contain a body";
     private static final String NOT_NULL_MESSAGE = "Exception body should not be null";
@@ -209,7 +211,7 @@ class GlobalExceptionHandlerTest {
         ResponseEntity<ExceptionResponse> responseEntity =
             globalExceptionHandler.handle(flatFileException);
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode(),
-                     "Should be unauthorised exception"
+                     BAD_REQUEST_ASSERTION
         );
         assertNotNull(responseEntity.getBody(), NOT_NULL_MESSAGE);
         assertTrue(
@@ -250,4 +252,13 @@ class GlobalExceptionHandlerTest {
         assertTrue(responseEntity.getBody().getMessage().contains(TEST_MESSAGE), EXCEPTION_BODY_NOT_MATCH);
     }
 
+    @Test
+    void testCreateArtefactConflictException() {
+        CreateArtefactConflictException conflictException = new CreateArtefactConflictException(TEST_MESSAGE);
+        ResponseEntity<ExceptionResponse> responseEntity = globalExceptionHandler.handle(conflictException);
+
+        assertEquals(HttpStatus.CONFLICT, responseEntity.getStatusCode(), CONFLICT_ASSERTION);
+        assertNotNull(responseEntity.getBody(), NOT_NULL_MESSAGE);
+        assertTrue(responseEntity.getBody().getMessage().contains(TEST_MESSAGE), EXCEPTION_BODY_NOT_MATCH);
+    }
 }

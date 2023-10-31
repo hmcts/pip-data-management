@@ -44,7 +44,7 @@ public interface ArtefactRepository extends JpaRepository<Artefact, Long> {
     String PROVENANCE_PARAM = "provenance";
 
     @Lock(LockModeType.OPTIMISTIC)
-    @Query(value = "SELECT a FROM Artefact a WHERE a.locationId = :location_id AND a.contentDate = :content_date AND "
+    @Query("SELECT a FROM Artefact a WHERE a.locationId = :location_id AND a.contentDate = :content_date AND "
         + "a.language = :language AND a.listType = :list_type AND a.provenance = :provenance AND a.isArchived != true")
     Optional<Artefact> findArtefactByUpdateLogic(@Param(LOCATION_ID_PARAM) String locationId,
                                                  @Param(CONTENT_DATE_PARAM) LocalDateTime contentDate,

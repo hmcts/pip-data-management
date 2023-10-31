@@ -190,10 +190,7 @@ public class PublicationController {
             .version(0)
             .build();
 
-        System.out.println("**********Upload start time for " + headers.getListType() + ": " + LocalDateTime.now());
         Artefact createdItem = publicationCreationRunner.run(artefact, payload);
-        System.out.println("##########Upload end time for " + headers.getListType() + ": " + LocalDateTime.now());
-
         logManualUpload(publicationService.maskEmail(issuerEmail), createdItem.getArtefactId().toString());
 
         // Process the created artefact by requesting channel management to generate PDF/Excel files
@@ -270,10 +267,10 @@ public class PublicationController {
             .expiryDate(headers.getDisplayTo())
             .isFlatFile(true)
             .search(search)
+            .version(0)
             .build();
 
-        Artefact createdItem = publicationService.createPublication(artefact, file);
-
+        Artefact createdItem =  publicationCreationRunner.run(artefact, file);
         logManualUpload(publicationService.maskEmail(issuerEmail), createdItem.getArtefactId().toString());
 
         if (!LocationHelper.isNoMatchLocationId(createdItem.getLocationId())) {

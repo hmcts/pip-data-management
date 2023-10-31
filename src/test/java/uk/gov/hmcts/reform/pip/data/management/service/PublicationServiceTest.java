@@ -142,9 +142,10 @@ class PublicationServiceTest {
         intialiseManualUploadArtefact();
         location = ArtefactConstantTestHelper.initialiseCourts();
 
-        lenient().when(artefactRepository.findArtefactByUpdateLogic(artefact.getLocationId(),artefact.getContentDate(),
-                                                                    artefact.getLanguage().name(),
-                                                                    artefact.getListType().name(),
+        lenient().when(artefactRepository.findArtefactByUpdateLogic(artefact.getLocationId(),
+                                                                    artefact.getContentDate(),
+                                                                    artefact.getLanguage(),
+                                                                    artefact.getListType(),
                                                                     artefact.getProvenance()))
             .thenReturn(Optional.empty());
         lenient().when(artefactRepository.save(artefactWithPayloadUrl)).thenReturn(artefactWithIdAndPayloadUrl);
@@ -165,9 +166,10 @@ class PublicationServiceTest {
         intialiseManualUploadArtefact();
         location = ArtefactConstantTestHelper.initialiseCourts();
 
-        lenient().when(artefactRepository.findArtefactByUpdateLogic(artefact.getLocationId(),artefact.getContentDate(),
-                                                                    artefact.getLanguage().name(),
-                                                                    artefact.getListType().name(),
+        lenient().when(artefactRepository.findArtefactByUpdateLogic(artefact.getLocationId(),
+                                                                    artefact.getContentDate(),
+                                                                    artefact.getLanguage(),
+                                                                    artefact.getListType(),
                                                                     artefact.getProvenance()))
             .thenReturn(Optional.empty());
         lenient().when(artefactRepository.save(artefactWithPayloadUrl)).thenReturn(artefactWithIdAndPayloadUrl);
@@ -343,9 +345,10 @@ class PublicationServiceTest {
             .sensitivity(Sensitivity.PUBLIC)
             .build();
 
-        when(artefactRepository.findArtefactByUpdateLogic(NO_COURT_EXISTS_IN_REFERENCE_DATA, artefact.getContentDate(),
-                                                          artefact.getLanguage().name(),
-                                                          artefact.getListType().name(),
+        when(artefactRepository.findArtefactByUpdateLogic(NO_COURT_EXISTS_IN_REFERENCE_DATA,
+                                                          artefact.getContentDate(),
+                                                          artefact.getLanguage(),
+                                                          artefact.getListType(),
                                                           artefact.getProvenance()))
             .thenReturn(Optional.of(existingArtefact));
 
@@ -549,9 +552,10 @@ class PublicationServiceTest {
 
     @Test
     void testSupersededCountIsUpdated() {
-        when(artefactRepository.findArtefactByUpdateLogic(artefact.getLocationId(), artefact.getContentDate(),
-                                                          artefact.getLanguage().name(),
-                                                          artefact.getListType().name(),
+        when(artefactRepository.findArtefactByUpdateLogic(artefact.getLocationId(),
+                                                          artefact.getContentDate(),
+                                                          artefact.getLanguage(),
+                                                          artefact.getListType(),
                                                           artefact.getProvenance()))
             .thenReturn(Optional.of(artefact));
 
@@ -570,9 +574,10 @@ class PublicationServiceTest {
 
     @Test
     void testSupersededCountIsNotUpdated() {
-        when(artefactRepository.findArtefactByUpdateLogic(artefact.getLocationId(), artefact.getContentDate(),
-                                                          artefact.getLanguage().name(),
-                                                          artefact.getListType().name(),
+        when(artefactRepository.findArtefactByUpdateLogic(artefact.getLocationId(),
+                                                          artefact.getContentDate(),
+                                                          artefact.getLanguage(),
+                                                          artefact.getListType(),
                                                           artefact.getProvenance()))
             .thenReturn(Optional.empty());
 

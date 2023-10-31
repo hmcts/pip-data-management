@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationArtefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.HeaderGroup;
+import uk.gov.hmcts.reform.pip.data.management.service.PublicationCreationRunner;
 import uk.gov.hmcts.reform.pip.data.management.service.PublicationService;
 import uk.gov.hmcts.reform.pip.data.management.service.ValidationService;
 import uk.gov.hmcts.reform.pip.data.management.service.artefact.ArtefactDeleteService;
@@ -60,6 +61,9 @@ class PublicationControllerTest {
     private PublicationService publicationService;
 
     @Mock
+    private PublicationCreationRunner publicationCreationRunner;
+
+    @Mock
     private ArtefactSearchService artefactSearchService;
 
     @Mock
@@ -99,7 +103,6 @@ class PublicationControllerTest {
         "The expected exception does not contain the correct message";
     private static final String NOT_EQUAL_MESSAGE = "The expected strings are not the same";
     private static final String DELETED_MESSAGE = "Successfully deleted artefact: ";
-    private static final String COUNT_MSG = "location,count\n1,3\n2,4\n3,6\n";
     private static final String NO_MATCH = "NoMatch";
 
     private static final List<LocationArtefact> COURT_PER_LOCATION = new ArrayList<>();
@@ -125,6 +128,7 @@ class PublicationControllerTest {
             .locationId(LOCATION_ID)
             .contentDate(CONTENT_DATE)
             .expiryDate(DISPLAY_TO)
+            .version(0)
             .build();
 
         artefactWithId = Artefact.builder()
@@ -142,6 +146,7 @@ class PublicationControllerTest {
             .contentDate(CONTENT_DATE)
             .expiryDate(DISPLAY_TO)
             .search(new ConcurrentHashMap<>())
+            .version(0)
             .build();
 
         artefactWithNoMatchLocationId = Artefact.builder()
@@ -159,15 +164,14 @@ class PublicationControllerTest {
             .contentDate(CONTENT_DATE)
             .expiryDate(DISPLAY_TO)
             .search(new ConcurrentHashMap<>())
+            .version(0)
             .build();
     }
 
     @Test
     void testCreationOfPublication() {
         when(validationService.validateHeaders(any())).thenReturn(headers);
-        when(publicationService.createPublication(argThat(arg -> arg.equals(artefact)), eq(PAYLOAD)))
-            .thenReturn(artefactWithId);
-
+        when(publicationCreationRunner.run(artefact, PAYLOAD)).thenReturn(artefactWithId);
 
         ResponseEntity<Artefact> responseEntity = publicationController.uploadPublication(
             PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE, SENSITIVITY, LANGUAGE,
@@ -183,8 +187,7 @@ class PublicationControllerTest {
     @Test
     void testCreationOfPublicationWithNonExistentLocationId() {
         when(validationService.validateHeaders(any())).thenReturn(headers);
-        when(publicationService.createPublication(argThat(arg -> arg.equals(artefact)), eq(PAYLOAD)))
-            .thenReturn(artefactWithNoMatchLocationId);
+        when(publicationCreationRunner.run(artefact, PAYLOAD)).thenReturn(artefactWithNoMatchLocationId);
 
         ResponseEntity<Artefact> responseEntity = publicationController.uploadPublication(
             PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE, SENSITIVITY, LANGUAGE,
@@ -367,7 +370,7 @@ class PublicationControllerTest {
         artefactWithId.setSearch(search);
 
         when(validationService.validateHeaders(any())).thenReturn(headers);
-        when(publicationService.createPublication(artefact, FILE)).thenReturn(artefactWithId);
+        when(publicationCreationRunner.run(artefact, FILE)).thenReturn(artefactWithId);
 
         ResponseEntity<Artefact> responseEntity = publicationController.uploadPublication(
             PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE,
@@ -390,7 +393,7 @@ class PublicationControllerTest {
         artefactWithNoMatchLocationId.setSearch(search);
 
         when(validationService.validateHeaders(any())).thenReturn(headers);
-        when(publicationService.createPublication(artefact, FILE)).thenReturn(artefactWithNoMatchLocationId);
+        when(publicationCreationRunner.run(artefact, FILE)).thenReturn(artefactWithNoMatchLocationId);
 
         ResponseEntity<Artefact> responseEntity = publicationController.uploadPublication(
             PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE,
@@ -429,10 +432,8 @@ class PublicationControllerTest {
     @Test
     void testCreatePublicationLogsWhenHeaderIsPresent() throws IOException {
         when(validationService.validateHeaders(any())).thenReturn(headers);
-        when(publicationService.createPublication(argThat(arg -> arg.equals(artefact)), eq(PAYLOAD)))
-            .thenReturn(artefactWithId);
+        when(publicationCreationRunner.run(artefact, PAYLOAD)).thenReturn(artefactWithId);
         when(publicationService.maskEmail(TEST_STRING)).thenReturn(TEST_STRING);
-
 
         try (LogCaptor logCaptor = LogCaptor.forClass(PublicationController.class)) {
             publicationController.uploadPublication(
