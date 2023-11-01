@@ -53,8 +53,6 @@ public final class ArtefactConstantTestHelper {
 
     public static final String LOCATION_VENUE = LocationType.VENUE.name();
 
-    public static final String LOCATION_OWNING_HEARING_LOCATION = LocationType.OWNING_HEARING_LOCATION.name();
-
     public static Artefact buildArtefact() {
         return Artefact.builder()
             .sourceArtefactId(SOURCE_ARTEFACT_ID)
@@ -64,6 +62,7 @@ public final class ArtefactConstantTestHelper {
             .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
             .language(Language.ENGLISH)
             .sensitivity(Sensitivity.PUBLIC)
+            .expiryDate(LocalDateTime.now())
             .build();
     }
 
