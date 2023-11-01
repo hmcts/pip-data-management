@@ -149,18 +149,16 @@ public class Artefact {
     private LocalDateTime lastReceivedDate;
 
     /**
-     * A counter to show how many times the artefact has been superseded. Default is 0
+     * A counter to show how many times the artefact has been superseded. Default is 0.
+     * This is also used as the version count for optimistic locking
      */
     @JsonView(ArtefactView.Internal.class)
     @Column(nullable = false, columnDefinition = "INTEGER DEFAULT 0")
+    @Version
     private int supersededCount;
 
     /**
      * Date / Time of when the artefact will expire.
      */
     private LocalDateTime expiryDate;
-
-    @Version
-    private Integer version;
-
 }

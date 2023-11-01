@@ -126,8 +126,7 @@ public class PublicationService {
         foundArtefact.ifPresent(value -> {
             artefact.setArtefactId(value.getArtefactId());
             artefact.setPayload(value.getPayload());
-            artefact.setSupersededCount(value.getSupersededCount() + 1);
-            artefact.setVersion(value.getVersion());
+            artefact.setSupersededCount(value.getSupersededCount());
         });
         return foundArtefact.isPresent();
     }

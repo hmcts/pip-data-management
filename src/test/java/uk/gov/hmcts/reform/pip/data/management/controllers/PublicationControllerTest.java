@@ -128,7 +128,6 @@ class PublicationControllerTest {
             .locationId(LOCATION_ID)
             .contentDate(CONTENT_DATE)
             .expiryDate(DISPLAY_TO)
-            .version(0)
             .build();
 
         artefactWithId = Artefact.builder()
@@ -146,7 +145,6 @@ class PublicationControllerTest {
             .contentDate(CONTENT_DATE)
             .expiryDate(DISPLAY_TO)
             .search(new ConcurrentHashMap<>())
-            .version(0)
             .build();
 
         artefactWithNoMatchLocationId = Artefact.builder()
@@ -164,7 +162,6 @@ class PublicationControllerTest {
             .contentDate(CONTENT_DATE)
             .expiryDate(DISPLAY_TO)
             .search(new ConcurrentHashMap<>())
-            .version(0)
             .build();
     }
 

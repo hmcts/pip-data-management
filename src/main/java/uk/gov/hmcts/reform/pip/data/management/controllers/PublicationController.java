@@ -187,7 +187,6 @@ public class PublicationController {
             .locationId(headers.getCourtId())
             .contentDate(headers.getContentDate())
             .expiryDate(headers.getDisplayTo())
-            .version(0)
             .build();
 
         Artefact createdItem = publicationCreationRunner.run(artefact, payload);
@@ -267,7 +266,6 @@ public class PublicationController {
             .expiryDate(headers.getDisplayTo())
             .isFlatFile(true)
             .search(search)
-            .version(0)
             .build();
 
         Artefact createdItem =  publicationCreationRunner.run(artefact, file);
