@@ -3,6 +3,8 @@ package uk.gov.hmcts.reform.pip.data.management.service;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.CannotAcquireLockException;
+import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.scheduling.annotation.Async;
@@ -19,7 +21,6 @@ import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.service.artefact.ArtefactTriggerService;
 
-import java.sql.SQLException;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -66,8 +67,8 @@ public class PublicationService {
      * @return Returns the artefact that was created.
      */
     @Transactional(isolation = Isolation.SERIALIZABLE)
-    @Retryable(value = { SQLException.class }, maxAttempts = RETRY_MAX_ATTEMPTS,
-        backoff = @Backoff(delay = RETRY_DELAY_IN_MS))
+    @Retryable(value = { CannotAcquireLockException.class, JpaSystemException.class },
+        maxAttempts = RETRY_MAX_ATTEMPTS, backoff = @Backoff(delay = RETRY_DELAY_IN_MS))
     public Artefact createPublication(Artefact artefact, String payload) {
         boolean isExisting = applyExistingArtefact(artefact);
 
@@ -88,8 +89,8 @@ public class PublicationService {
      * @return Returns the artefact that was created.
      */
     @Transactional(isolation = Isolation.SERIALIZABLE)
-    @Retryable(value = { SQLException.class }, maxAttempts = RETRY_MAX_ATTEMPTS,
-        backoff = @Backoff(delay = RETRY_DELAY_IN_MS))
+    @Retryable(value = { CannotAcquireLockException.class, JpaSystemException.class },
+        maxAttempts = RETRY_MAX_ATTEMPTS, backoff = @Backoff(delay = RETRY_DELAY_IN_MS))
     public Artefact createPublication(Artefact artefact, MultipartFile file) {
         boolean isExisting = applyExistingArtefact(artefact);
 

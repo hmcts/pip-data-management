@@ -2,8 +2,11 @@ package uk.gov.hmcts.reform.pip.data.management.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.CannotAcquireLockException;
+import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CreateArtefactConflictException;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.utils.PayloadExtractor;
 import uk.gov.hmcts.reform.pip.model.enums.UserActions;
@@ -36,7 +39,15 @@ public class PublicationCreationRunner {
      */
     public Artefact run(Artefact artefact, String payload) {
         preprocessJsonPublicationForCreation(artefact, payload);
-        Artefact createdArtefact = publicationService.createPublication(artefact, payload);
+        Artefact createdArtefact;
+
+        try {
+            createdArtefact = publicationService.createPublication(artefact, payload);
+        } catch (CannotAcquireLockException | JpaSystemException ex) {
+            throw new CreateArtefactConflictException(
+                "Deadlock when creating json publication. Please try again later."
+            );
+        }
 
         log.info(writeLog(UserActions.UPLOAD,
                           "json publication upload for location " + createdArtefact.getLocationId()));
@@ -52,7 +63,15 @@ public class PublicationCreationRunner {
      */
     public Artefact run(Artefact artefact, MultipartFile file) {
         preprocessPublicationForCreation(artefact);
-        Artefact createdArtefact = publicationService.createPublication(artefact, file);
+        Artefact createdArtefact;
+
+        try {
+            createdArtefact = publicationService.createPublication(artefact, file);
+        } catch (CannotAcquireLockException | JpaSystemException ex) {
+            throw new CreateArtefactConflictException(
+                "Deadlock when creating flat file publication. Please try again later."
+            );
+        }
 
         log.info(writeLog(UserActions.UPLOAD,
                           "flat file publication upload for location " + artefact.getLocationId()));

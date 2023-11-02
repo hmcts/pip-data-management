@@ -7,12 +7,18 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.CannotAcquireLockException;
+import org.springframework.orm.jpa.JpaSystemException;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CreateArtefactConflictException;
 import uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.utils.PayloadExtractor;
 
 import java.time.LocalDate;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.FILE;
@@ -26,6 +32,7 @@ class PublicationCreationRunnerTest {
     private static final String EXPIRY_DATE_MESSAGE = "Expiry date does not match";
     private static final String SEARCH_VALUE_MESSAGE = "Search value does not match";
     private static final String LOG_MESSAGE = "Log message does not match";
+    private static final String EXCEPTION_MESSAGE = "Exception does not match";
     private static final String JSON_PUBLICATION_LOG = "Uploaded json publication upload for location "
         + PROVENANCE_ID;
 
@@ -128,6 +135,38 @@ class PublicationCreationRunnerTest {
     }
 
     @Test
+    void testRuMethodForJsonPublicationWithCannotAcquireLockException() {
+        Artefact artefact = ArtefactConstantTestHelper.buildArtefact();
+        doThrow(CannotAcquireLockException.class).when(publicationService).createPublication(artefact, PAYLOAD);
+        when(payloadExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
+
+        assertThatThrownBy(() -> publicationCreationRunner.run(artefact, PAYLOAD))
+            .as(EXCEPTION_MESSAGE)
+            .isInstanceOf(CreateArtefactConflictException.class)
+            .hasMessage("Deadlock when creating json publication. Please try again later.");
+
+        assertThat(logCaptor.getInfoLogs())
+            .as(LOG_MESSAGE)
+            .isEmpty();
+    }
+
+    @Test
+    void testRuMethodForJsonPublicationWithJpaSystemException() {
+        Artefact artefact = ArtefactConstantTestHelper.buildArtefact();
+        doThrow(JpaSystemException.class).when(publicationService).createPublication(artefact, PAYLOAD);
+        when(payloadExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
+
+        assertThatThrownBy(() -> publicationCreationRunner.run(artefact, PAYLOAD))
+            .as(EXCEPTION_MESSAGE)
+            .isInstanceOf(CreateArtefactConflictException.class)
+            .hasMessage("Deadlock when creating json publication. Please try again later.");
+
+        assertThat(logCaptor.getInfoLogs())
+            .as(LOG_MESSAGE)
+            .isEmpty();
+    }
+
+    @Test
     void testRuMethodForFlatFilePublication() {
         Artefact artefact = ArtefactConstantTestHelper.buildSjpPublicArtefact();
         when(publicationService.createPublication(artefact, FILE)).thenReturn(artefact);
@@ -154,5 +193,35 @@ class PublicationCreationRunnerTest {
 
         softly.assertAll();
         verifyNoInteractions(payloadExtractor);
+    }
+
+    @Test
+    void testRuMethodForFlatFilePublicationWithCannotAcquireLockException() {
+        Artefact artefact = ArtefactConstantTestHelper.buildArtefact();
+        doThrow(CannotAcquireLockException.class).when(publicationService).createPublication(artefact, FILE);
+
+        assertThatThrownBy(() -> publicationCreationRunner.run(artefact, FILE))
+            .as(EXCEPTION_MESSAGE)
+            .isInstanceOf(CreateArtefactConflictException.class)
+            .hasMessage("Deadlock when creating flat file publication. Please try again later.");
+
+        assertThat(logCaptor.getInfoLogs())
+            .as(LOG_MESSAGE)
+            .isEmpty();
+    }
+
+    @Test
+    void testRuMethodForFlatFilePublicationWithJpaSystemException() {
+        Artefact artefact = ArtefactConstantTestHelper.buildArtefact();
+        doThrow(JpaSystemException.class).when(publicationService).createPublication(artefact, FILE);
+
+        assertThatThrownBy(() -> publicationCreationRunner.run(artefact, FILE))
+            .as(EXCEPTION_MESSAGE)
+            .isInstanceOf(CreateArtefactConflictException.class)
+            .hasMessage("Deadlock when creating flat file publication. Please try again later.");
+
+        assertThat(logCaptor.getInfoLogs())
+            .as(LOG_MESSAGE)
+            .isEmpty();
     }
 }
