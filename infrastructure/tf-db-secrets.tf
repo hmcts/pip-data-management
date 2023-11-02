@@ -42,14 +42,14 @@ resource "azurerm_key_vault_secret" "secret" {
   expiration_date = timeadd(timestamp(), "8760h")
 
   depends_on = [
-    module.database
+    module.postgresql
   ]
 }
 
 resource "azurerm_key_vault_secret" "sdp-host" {
   key_vault_id = data.azurerm_key_vault.sdp-kv.id
   name         = "${local.secret_prefix}-HOST"
-  value        = module.database.host_name
+  value        = module.postgresql.fqdn
   tags = merge(var.common_tags, {
     "source" : "${var.component} PostgreSQL"
   })
@@ -57,14 +57,14 @@ resource "azurerm_key_vault_secret" "sdp-host" {
   expiration_date = timeadd(timestamp(), "8760h")
 
   depends_on = [
-    module.database
+    module.postgresql
   ]
 }
 
 resource "azurerm_key_vault_secret" "sdp-port" {
   key_vault_id = data.azurerm_key_vault.sdp-kv.id
   name         = "${local.secret_prefix}-PORT"
-  value        = module.database.postgresql_listen_port
+  value        = 5432
   tags = merge(var.common_tags, {
     "source" : "${var.component} PostgreSQL"
   })
@@ -72,14 +72,14 @@ resource "azurerm_key_vault_secret" "sdp-port" {
   expiration_date = timeadd(timestamp(), "8760h")
 
   depends_on = [
-    module.database
+    module.postgresql
   ]
 }
 
 resource "azurerm_key_vault_secret" "sdp-database" {
   key_vault_id = data.azurerm_key_vault.sdp-kv.id
   name         = "${local.secret_prefix}-DATABASE"
-  value        = module.database.postgresql_database
+  value        = local.db_name
   tags = merge(var.common_tags, {
     "source" : "${var.component} PostgreSQL"
   })
@@ -87,7 +87,7 @@ resource "azurerm_key_vault_secret" "sdp-database" {
   expiration_date = timeadd(timestamp(), "8760h")
 
   depends_on = [
-    module.database
+    module.postgresql
   ]
 }
 

@@ -38,7 +38,7 @@ resource "azurerm_key_vault_secret" "flexible_secret" {
   expiration_date = timeadd(timestamp(), "8760h")
 
   depends_on = [
-    module.database
+    module.postgresql
   ]
 }
 
@@ -55,7 +55,7 @@ resource "azurerm_key_vault_secret" "sdp-host-flexible" {
   expiration_date = timeadd(timestamp(), "8760h")
 
   depends_on = [
-    module.database
+    module.postgresql
   ]
 }
 
@@ -70,7 +70,7 @@ resource "azurerm_key_vault_secret" "sdp-port-flexible" {
   expiration_date = timeadd(timestamp(), "8760h")
 
   depends_on = [
-    module.database
+    module.postgresql
   ]
 }
 
@@ -85,6 +85,6 @@ resource "azurerm_key_vault_secret" "sdp-database-flexible" {
   expiration_date = timeadd(timestamp(), "8760h")
 
   depends_on = [
-    module.database
+    module.postgresql
   ]
 }
