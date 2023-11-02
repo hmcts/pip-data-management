@@ -22,4 +22,5 @@ module "database" {
 
   sku_name = var.env == "stg" || var.env == "prod" || var.env == "test" ? "GP_Gen5_8" : "GP_Gen5_2"
 
+  count    = var.env == "test" ? 0 : 1
 }
