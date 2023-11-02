@@ -24,3 +24,8 @@ module "database" {
 
   count    = var.env == "sbox" || var.env == "test" || var.env == "demo" ? 0 : 1
 }
+
+moved {
+  from = module.database
+  to   = module.database[0]
+}
