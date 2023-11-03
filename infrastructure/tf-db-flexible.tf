@@ -1,4 +1,6 @@
 locals {
+  db_name         = replace(var.component, "-", "")
+  postgresql_user = "${local.db_name}_user"
   db_host_name = "flexible-${var.product}-${var.component}"
 }
 
