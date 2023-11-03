@@ -22,7 +22,7 @@ module "database" {
 
   sku_name = var.env == "stg" || var.env == "prod" || var.env == "test" ? "GP_Gen5_8" : "GP_Gen5_2"
 
-  count    = var.env == "sbox" || var.env == "test" || var.env == "demo" ? 0 : 1
+  count    = var.env == "sbox" || var.env == "test" || var.env == "demo" || var.env == "stg" ? 0 : 1
 }
 
 moved {
