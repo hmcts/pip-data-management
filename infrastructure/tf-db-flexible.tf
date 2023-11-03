@@ -25,6 +25,8 @@ module "postgresql" {
 
   admin_user_object_id = var.jenkins_AAD_objectId
 
+  force_user_permissions_trigger = "1"
+
   pgsql_server_configuration = [
     {
      name  = "azure.extensions"
