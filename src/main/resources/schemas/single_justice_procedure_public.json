@@ -11,7 +11,7 @@
           "examples": [
             "PR1 2LL"
           ],
-          "pattern": "^.*$"
+          "pattern": "^[a-zA-Z]{1,2}([0-9]{1,2}|[0-9][a-zA-Z])$"
         }
       }
     }
@@ -159,7 +159,7 @@
                                                     "John Smith"
                                                   ],
                                                   "default": "",
-                                                  "pattern": "^.*$"
+                                                  "pattern": "^[a-zA-Z]$"
                                                 },
                                                 "individualSurname": {
                                                   "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items/individualDetails/individualSurname",
