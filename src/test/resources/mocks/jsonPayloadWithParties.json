@@ -64,27 +64,82 @@
                         "case": [
                           {
                             "caseNumber": "CASE1234",
-                            "caseName": "A vs B",
+                            "caseName": "NAME1",
                             "caseUrn": "URN1234"
                           },
                           {
-                            "caseNumber": "CASE5678",
-                            "caseName": "A2 vs B2",
-                            "caseUrn": "URN5678"
+                            "caseNumber": "CASE1235",
+                            "caseName": "NAME2",
+                            "caseUrn": "URN1235"
+                          }
+                        ]
+                      },
+                      {
+                        "party": [
+                          {
+                            "individualDetails": {
+                              "individualSurname": "Missing party role"
+                            }
+                          },
+                          {
+                            "partyRole": "",
+                            "individualDetails": {
+                              "individualSurname": "Empty party role"
+                            }
+                          },
+                          {
+                            "partyRole": "APPLICANT",
+                            "individualDetails": {
+                              "individualForenames": "Applicant Forename",
+                              "individualMiddleName": "Applicant middle name",
+                              "individualSurname": "Applicant Surname"
+                            }
+                          },
+                          {
+                            "partyRole": "RESPONDENT",
+                            "individualDetails": {
+                              "individualSurname": "Respondent Surname"
+                            }
+                          },
+                          {
+                            "partyRole": "APPLICANT",
+                            "organisationDetails": {
+                              "organisationName": "Applicant Org Name"
+                            }
+                          },
+                          {
+                            "partyRole": "RESPONDENT",
+                            "organisationDetails": {
+                              "organisationName": "Respondent Org Name"
+                            }
+                          },
+                          {
+                            "partyRole": "APPLICANT_REPRESENTATIVE",
+                            "individualDetails": {
+                              "individualSurname": "Applicant Rep Surname"
+                            }
+                          },
+                          {
+                            "partyRole": "RESPONDENT_REPRESENTATIVE",
+                            "organisationDetails": {
+                              "organisationName": "Respondent Rep Surname"
+                            }
+                          }
+                        ],
+                        "case": [
+                          {
+                            "caseNumber": "CASE1236",
+                            "caseName": "NAME3",
+                            "caseUrn": "URN1236"
                           }
                         ]
                       },
                       {
                         "case": [
                           {
-                            "caseNumber": "CASE1234",
-                            "caseName": "A vs B",
-                            "caseUrn": "URN1234"
-                          },
-                          {
-                            "caseNumber": "CASE5678",
-                            "caseName": "A2 vs B2",
-                            "caseUrn": "URN5678"
+                            "caseNumber": "CASE1237",
+                            "caseName": "NAME4",
+                            "caseUrn": "URN1237"
                           }
                         ]
                       },
@@ -92,14 +147,9 @@
                         "party": [],
                         "case": [
                           {
-                            "caseNumber": "CASE1234",
-                            "caseName": "A vs B",
-                            "caseUrn": "URN1234"
-                          },
-                          {
-                            "caseNumber": "CASE5678",
-                            "caseName": "A2 vs B2",
-                            "caseUrn": "URN5678"
+                            "caseNumber": "CASE1238",
+                            "caseName": "NAME5",
+                            "caseUrn": "URN1238"
                           }
                         ]
                       }
