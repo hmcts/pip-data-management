@@ -19,10 +19,10 @@
                           {
                             "partyRole": "ACCUSED",
                             "individualDetails": {
-                              "individualForenames": "This is a forename",
+                              "individualForenames": "A",
                               "individualSurname": "This is a surname",
                               "address": {
-                                "postCode": "This is a postcode"
+                                "postCode": "AA1"
                               }
                             }
                           },
