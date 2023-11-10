@@ -308,7 +308,7 @@ class SjpPublicListTest {
     }
 
     @Test
-    void testValidateWithErrorWhenIndividualForenamesForAccusedMissingInSjpPublicList() throws IOException {
+    void testValidateSuccessWhenIndividualForenamesForAccusedMissingInSjpPublicList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(SJP_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
@@ -328,7 +328,7 @@ class SjpPublicListTest {
     }
 
     @Test
-    void testValidateWithErrorWhenIndividualSurnameForAccusedMissingInSjpPublicList() throws IOException {
+    void testValidateWithSuccessWhenIndividualSurnameForAccusedMissingInSjpPublicList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(SJP_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
@@ -348,7 +348,7 @@ class SjpPublicListTest {
     }
 
     @Test
-    void testValidateWithErrorWhenAddressForAccusedMissingInSjpPublicList() throws IOException {
+    void testValidateWithSuccessWhenAddressForAccusedMissingInSjpPublicList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(SJP_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
@@ -368,7 +368,7 @@ class SjpPublicListTest {
     }
 
     @Test
-    void testValidateWithErrorWhenPostCodeForAccusedMissingInSjpPublicList() throws IOException {
+    void testValidateWithSuccessWhenPostCodeForAccusedMissingInSjpPublicList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(SJP_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
@@ -446,6 +446,78 @@ class SjpPublicListTest {
             assertThrows(PayloadValidationException.class, () ->
                              validationService.validateBody(listJson, headerGroup),
                          SJP_PUBLIC_INVALID_MESSAGE);
+        }
+    }
+
+    @Test
+    void testValidateWithErrorWhenPostCodeForAccusedInWrongFormat() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream(SJP_PUBLIC_LIST_VALID_JSON)) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode node = mapper.readValue(text, JsonNode.class);
+
+            String listJson = node.toString().replace("\"postCode\":\"AA1\"", "\"postCode\":\"1234\"");
+            assertThrows(PayloadValidationException.class, () ->
+                             validationService.validateBody(listJson, headerGroup),
+                         SJP_PUBLIC_INVALID_MESSAGE
+            );
+        }
+    }
+
+    @Test
+    void testValidateWithErrorWhenPostCodeForAccusedIsFullPostcode() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream(SJP_PUBLIC_LIST_VALID_JSON)) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode node = mapper.readValue(text, JsonNode.class);
+
+            String listJson = node.toString().replace("\"postCode\":\"AA1\"", "\"postCode\":\"AA1 1AA\"");
+            assertThrows(PayloadValidationException.class, () ->
+                             validationService.validateBody(listJson, headerGroup),
+                         SJP_PUBLIC_INVALID_MESSAGE
+            );
+        }
+    }
+
+    @Test
+    void testValidateWithErrorWhenForenameForAccusedIsNotInitial() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream(SJP_PUBLIC_LIST_VALID_JSON)) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode node = mapper.readValue(text, JsonNode.class);
+
+            String listJson = node.toString().replace(
+                "\"individualForenames\":\"A\"",
+                "\"individualForenames\":\"ABC\""
+            );
+            assertThrows(PayloadValidationException.class, () ->
+                             validationService.validateBody(listJson, headerGroup),
+                         SJP_PUBLIC_INVALID_MESSAGE
+            );
+        }
+    }
+
+    @Test
+    void testValidateWithSuccessWhenForenameForAccusedIsLowerCaseInitial() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream(SJP_PUBLIC_LIST_VALID_JSON)) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode node = mapper.readValue(text, JsonNode.class);
+
+            String listJson = node.toString().replace(
+                "\"individualForenames\":\"A\"",
+                "\"individualForenames\":\"a\""
+            );
+            assertDoesNotThrow(() -> validationService.validateBody(listJson, headerGroup),
+                               SJP_PUBLIC_VALID_MESSAGE);
         }
     }
 }
