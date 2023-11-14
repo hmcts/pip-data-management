@@ -317,7 +317,7 @@ class PublicationTest {
 
         List<Map<String, Object>> parties = new ObjectMapper().convertValue(searchResult.get(PARTIES_KEY),
                                                                             new TypeReference<>() {});
-        assertEquals(3, parties.size(), "Party array not expected size");
+        assertEquals(2, parties.size(), "Party array not expected size");
 
         Map<String, Object> firstParty = parties.get(0);
         assertTrue(firstParty.containsKey(CASES_KEY), "Parties does not contain cases key");

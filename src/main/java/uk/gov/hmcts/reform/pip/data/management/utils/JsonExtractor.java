@@ -26,11 +26,10 @@ import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
 @Component
 @Slf4j
 public class JsonExtractor implements Extractor {
+    private static final int SINGLE_CASE_COUNT = 1;
 
     private final Configuration jsonConfiguration;
-
     private final SearchConfiguration searchConfiguration;
-
     private final ObjectMapper objectMapper;
 
     @Autowired
@@ -80,30 +79,30 @@ public class JsonExtractor implements Extractor {
         List<Object> hearings = jsonPayload.read(hearingsPath);
         List<Object> parties = new ArrayList<>();
         hearings.forEach(hearing -> {
-
             try {
                 DocumentContext hearingsPayload = JsonPath
                     .using(jsonConfiguration)
                     .parse(objectMapper.writeValueAsString(hearing));
 
                 String casesPath = searchConfiguration.getPartySearchConfig().getCasesPath();
-                String partiesIndividualDetailsPath = searchConfiguration.getPartySearchConfig()
-                    .getPartiesIndividualDetailsPath();
-                String partiesOrganisationPath = searchConfiguration.getPartySearchConfig().getPartiesOrgNamePath();
-
                 List<Object> caseValues = hearingsPayload.read(casesPath);
-                List<Object> partyIndividualDetailsValues = hearingsPayload.read(partiesIndividualDetailsPath);
-                List<Object> partyOrganisationValues = hearingsPayload.read(partiesOrganisationPath);
 
-                JSONObject partiesJson = new JSONObject();
-                partiesJson.put("cases", caseValues);
-                partiesJson.put("organisations", partyOrganisationValues);
-                partiesJson.put("individuals", constructIndividualParties(partyIndividualDetailsValues));
-                parties.add(partiesJson);
+                if (caseValues.size() <= SINGLE_CASE_COUNT) {
+                    String partiesIndividualDetailsPath = searchConfiguration.getPartySearchConfig()
+                        .getPartiesIndividualDetailsPath();
+                    String partiesOrganisationPath = searchConfiguration.getPartySearchConfig().getPartiesOrgNamePath();
+                    List<Object> partyIndividualDetailsValues = hearingsPayload.read(partiesIndividualDetailsPath);
+                    List<Object> partyOrganisationValues = hearingsPayload.read(partiesOrganisationPath);
+
+                    JSONObject partiesJson = new JSONObject();
+                    partiesJson.put("cases", caseValues);
+                    partiesJson.put("organisations", partyOrganisationValues);
+                    partiesJson.put("individuals", constructIndividualParties(partyIndividualDetailsValues));
+                    parties.add(partiesJson);
+                }
             } catch (JsonProcessingException e) {
                 log.warn(writeLog("Failed to extract parties from JSON payload"));
             }
-
         });
 
         searchTermsMap.put("parties", parties);
@@ -113,7 +112,7 @@ public class JsonExtractor implements Extractor {
     public boolean isAccepted(String payload) {
         try {
             // test if the file is json format
-            new ObjectMapper().readTree(payload);
+            objectMapper.readTree(payload);
             return true;
         } catch (IOException exception) {
             return false;
