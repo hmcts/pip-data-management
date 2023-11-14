@@ -87,6 +87,7 @@ class JsonExtractorTest {
     void testExtractPartiesForHearingWithMultipleCases() {
         try (InputStream mockFile = this.getClass().getClassLoader()
             .getResourceAsStream(MOCK_PARTIES_FILE)) {
+
             String textJson = new String(mockFile.readAllBytes(), StandardCharsets.UTF_8);
             Map<String, List<Object>> searchTerms = jsonExtractor.extractSearchTerms(textJson);
             assertTrue(searchTerms.containsKey(PARTIES_KEY), SEARCH_TERM_MESSAGE);
@@ -138,10 +139,10 @@ class JsonExtractorTest {
         }
     }
 
-    // Note - By checking the array size / contents - this test also captures exclusion of representatives
+    //Note - By checking the array size / contents - this test also captures exclusion of representatives
     // null and missing party roles
     @Test
-    void testExtractPartiesForHearingWithSingleCase() {
+    void testExtractPartiesPartiesArray() {
         try (InputStream mockFile = this.getClass().getClassLoader()
             .getResourceAsStream(MOCK_PARTIES_FILE)) {
 
