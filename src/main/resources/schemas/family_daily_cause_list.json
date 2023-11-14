@@ -405,7 +405,10 @@
                                                     "title": "Party Role",
                                                     "type": "string",
                                                     "examples": [
-                                                      "ACCUSED", "PROSECUTOR"
+                                                      "APPLICANT_PETITIONER",
+                                                      "RESPONDENT",
+                                                      "APPLICANT_PETITIONER_REPRESENTATIVE",
+                                                      "RESPONDENT_REPRESENTATIVE"
                                                     ],
                                                     "default": "",
                                                     "pattern": "^.*$"
