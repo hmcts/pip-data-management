@@ -105,6 +105,61 @@
                         "hearingId": "",
                         "hearingType": "mda",
                         "listNote": "",
+                        "party": [
+                          {
+                            "individualDetails": {
+                              "nationality": "",
+                              "individualSurname": "Surname",
+                              "individualForenames": "John Smith",
+                              "isMasked": false,
+                              "individualMiddleName": "MiddleName",
+                              "plea": "NOT_GUILTY"
+                            },
+                            "organisationDetails": {
+                              "organisationAddress": {
+                                "description": "Address for organisation",
+                                "title": "Organisation Address"
+                              },
+                              "organisationCharityNumber": "",
+                              "organisationName": "A & B Solicitors",
+                              "organisationIncorporationNumber": "",
+                              "organisationContactName": {
+                                "title": "Other",
+                                "surname": "Smith",
+                                "forename": "John A"
+                              },
+                              "organisationContact": {
+                                "email": "",
+                                "telephoneNumber": "+44 01234 123123"
+                              }
+                            }
+                          },
+                          {
+                            "organisationDetails": {
+                              "organisationIncorporationNumber": ""
+                            },
+                            "individualDetails": {
+                              "title": "Mr",
+                              "isMasked": true,
+                              "asns": [
+                                "",
+                                ""
+                              ],
+                              "individualMiddleName": "MiddleName",
+                              "dateOfBirth": "",
+                              "individualForenames": "",
+                              "nationality": "",
+                              "prosecutionNumber": "r",
+                              "individualSurname": "",
+                              "plea": "NONE",
+                              "address": {
+                                "title": "Address",
+                                "description": "Party Address"
+                              },
+                              "inCustody": true
+                            }
+                          }
+                        ],
                         "lcsu": {
                           "lcsuCode": "ddsc",
                           "lcsuDateTime": ""
@@ -132,62 +187,7 @@
                             "caseNumber": "CASE1234",
                             "numberOfDefendants": 1,
                             "caseName": "",
-                            "listComment": "",
-                            "party": [
-                              {
-                                "individualDetails": {
-                                  "nationality": "",
-                                  "individualSurname": "Surname",
-                                  "individualForenames": "John Smith",
-                                  "isMasked": false,
-                                  "individualMiddleName": "MiddleName",
-                                  "plea": "NOT_GUILTY"
-                                },
-                                "organisationDetails": {
-                                  "organisationAddress": {
-                                    "description": "Address for organisation",
-                                    "title": "Organisation Address"
-                                  },
-                                  "organisationCharityNumber": "",
-                                  "organisationName": "A & B Solicitors",
-                                  "organisationIncorporationNumber": "",
-                                  "organisationContactName": {
-                                    "title": "Other",
-                                    "surname": "Smith",
-                                    "forename": "John A"
-                                  },
-                                  "organisationContact": {
-                                    "email": "",
-                                    "telephoneNumber": "+44 01234 123123"
-                                  }
-                                }
-                              },
-                              {
-                                "organisationDetails": {
-                                  "organisationIncorporationNumber": ""
-                                },
-                                "individualDetails": {
-                                  "title": "Mr",
-                                  "isMasked": true,
-                                  "asns": [
-                                    "",
-                                    ""
-                                  ],
-                                  "individualMiddleName": "MiddleName",
-                                  "dateOfBirth": "",
-                                  "individualForenames": "",
-                                  "nationality": "",
-                                  "prosecutionNumber": "r",
-                                  "individualSurname": "",
-                                  "plea": "NONE",
-                                  "address": {
-                                    "title": "Address",
-                                    "description": "Party Address"
-                                  },
-                                  "inCustody": true
-                                }
-                              }
-                            ]
+                            "listComment": ""
                           }
                         ]
                       }

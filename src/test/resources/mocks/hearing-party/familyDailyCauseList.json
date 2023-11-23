@@ -21,9 +21,6 @@
       "venueEmail": "a@b.com"
     }
   },
-  "locationDetails": {
-    "jurisdiction": "Family"
-  },
   "courtLists": [
     {
       "courtHouse": {
@@ -55,41 +52,38 @@
                             "caseName": "This is a case name",
                             "caseNumber": "12341234",
                             "caseJurisdictionET": "Family Law",
-                            "caseSequenceIndicator": "2 of 3",
-                            "party": [
-                              {
-                                "partyRole": "APPLICANT_PETITIONER",
-                                "individualDetails": {
-                                  "individualSurname": "Surname"
-                                }
-                              },
-                              {
-                                "partyRole": "RESPONDENT",
-                                "organisationDetails": {
-                                  "organisationName": "OrganisationName"
-                                }
-                              },
-                              {
-                                "partyRole": "APPLICANT_PETITIONER_REPRESENTATIVE",
-                                "friendlyRoleName": "Legal Advisor",
-                                "individualDetails": {
-                                  "individualForenames": "Individual Forenames",
-                                  "individualMiddleName": "Individual Middlename",
-                                  "individualSurname": "Individual Surname",
-                                  "title": "Mr"
-                                }
-                              },
-                              {
-                                "partyRole": "RESPONDENT_REPRESENTATIVE",
-                                "friendlyRoleName": "Legal Advisor",
-                                "individualDetails": {
-                                  "individualForenames": "Individual Forenames",
-                                  "individualMiddleName": "Individual Middlename",
-                                  "individualSurname": "Individual Surname",
-                                  "title": "Mr"
-                                }
-                              }
-                            ]
+                            "caseSequenceIndicator": "2 of 3"
+                          }
+                        ],
+                        "party": [
+                          {
+                            "partyRole": "APPLICANT_PETITIONER",
+                            "individualDetails": {
+                              "individualSurname": "Surname"
+                            }
+                          },
+                          {
+                            "partyRole": "RESPONDENT",
+                            "individualDetails": {
+                              "individualSurname": "Surname"
+                            }
+                          },
+                          {
+                            "partyRole": "APPLICANT_PETITIONER_REPRESENTATIVE",
+                            "friendlyRoleName": "Legal Advisor",
+                            "organisationDetails": {
+                              "organisationName": "OrganisationName"
+                            }
+                          },
+                          {
+                            "partyRole": "RESPONDENT_REPRESENTATIVE",
+                            "friendlyRoleName": "Legal Advisor",
+                            "individualDetails": {
+                              "individualForenames": "Individual Forenames",
+                              "individualMiddleName": "Individual Middlename",
+                              "individualSurname": "Individual Surname",
+                              "title": "Mr"
+                            }
                           }
                         ]
                       }
@@ -105,7 +99,6 @@
                     "johTitle": "Judge",
                     "johNameSurname": "Test Name",
                     "role": "JUDGE",
-                    "johKnownAs": "Judge Test Name",
                     "isPresiding": true
                   },
                   {
