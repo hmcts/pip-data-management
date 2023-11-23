@@ -12,7 +12,7 @@
           "examples": [
             "01772 844700"
           ],
-          "pattern": "^.*$"
+          "pattern": "^(?!.*<[^>]+>).*$"
         },
         "venueEmail": {
           "description": "Email for the venue",
@@ -22,7 +22,7 @@
           "examples": [
             "court1@moj.gov.uk"
           ],
-          "pattern": "^.*$"
+          "pattern": "^(?!.*<[^>]+>).*$"
         }
       }
     },
@@ -45,7 +45,7 @@
             "John Smith"
           ],
           "default": "",
-          "pattern": "^.*$"
+          "pattern": "^(?!.*<[^>]+>).*$"
         },
         "role": {
           "description": "Role of the judiciary",
@@ -66,7 +66,7 @@
             "judge"
           ],
           "default": "",
-          "pattern": "^.*$"
+          "pattern": "^(?!.*<[^>]+>).*$"
         }
       }
     }
@@ -117,7 +117,7 @@
           "examples": [
             "Preston"
           ],
-          "pattern": "^.*$"
+          "pattern": "^(?!.*<[^>]+>).*$"
         },
         "venueContact": {
           "$id": "#root/venue/venueContact",
@@ -163,7 +163,7 @@
                 "examples": [
                   "PRESTON"
                 ],
-                "pattern": "^.*$"
+                "pattern": "^(?!.*<[^>]+>).*$"
               },
               "courtHouseContact": {
                 "$id": "#root/courtLists/courtList/courtHouse/courtHouseContact",
@@ -216,7 +216,7 @@
                                 "VIDEO HEARING"
                               ],
                               "default": "",
-                              "pattern": "^.*$"
+                              "pattern": "^(?!.*<[^>]+>).*$"
                             }
                           },
                           "judiciary": {
@@ -281,7 +281,7 @@
                                               "examples": [
                                                 "45684548"
                                               ],
-                                              "pattern": "^.*$"
+                                              "pattern": "^(?!.*<[^>]+>).*$"
                                             },
                                             "informant": {
                                               "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/informant",
@@ -299,7 +299,7 @@
                                                       "1234"
                                                     ],
                                                     "default": "",
-                                                    "pattern": "^.*$"
+                                                    "pattern": "^(?!.*<[^>]+>).*$"
                                                   }
                                                 }
                                               }
@@ -328,7 +328,7 @@
                                                 "PROSECUTOR"
                                               ],
                                               "default": "",
-                                              "pattern": "^.*$"
+                                              "pattern": "^(?!.*<[^>]+>).*$"
                                             },
                                             "friendlyRoleName": {
                                               "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/party/friendlyRoleName",
@@ -339,7 +339,7 @@
                                                 "Legal Advisor"
                                               ],
                                               "default": "",
-                                              "pattern": "^.*$"
+                                              "pattern": "^(?!.*<[^>]+>).*$"
                                             },
                                             "individualDetails": {
                                               "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/party/individualDetails",
@@ -366,7 +366,7 @@
                                                     "John Smith"
                                                   ],
                                                   "default": "",
-                                                  "pattern": "^.*$"
+                                                  "pattern": "^(?!.*<[^>]+>).*$"
                                                 },
                                                 "individualMiddleName": {
                                                   "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/party/individualDetails/individualMiddleName",
@@ -377,7 +377,7 @@
                                                     "MiddleName"
                                                   ],
                                                   "default": "",
-                                                  "pattern": "^.*$"
+                                                  "pattern": "^(?!.*<[^>]+>).*$"
                                                 },
                                                 "individualSurname": {
                                                   "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/party/individualDetails/individualSurname",
@@ -388,7 +388,7 @@
                                                     "Surname"
                                                   ],
                                                   "default": "",
-                                                  "pattern": "^.*$"
+                                                  "pattern": "^(?!.*<[^>]+>).*$"
                                                 }
                                               }
                                             },
@@ -407,7 +407,7 @@
                                                     "A & B Solicitors"
                                                   ],
                                                   "default": "",
-                                                  "pattern": "^.*$"
+                                                  "pattern": "^(?!.*<[^>]+>).*$"
                                                 }
                                               }
                                             }

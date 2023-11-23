@@ -15,7 +15,7 @@
             "examples": [
               "THE LAW COURTS"
             ],
-            "pattern": "^.*$"
+            "pattern": "^(?!.*<[^>]+>).*$"
           }
         },
         "town": {
@@ -26,7 +26,7 @@
           "examples": [
             "Cambridge"
           ],
-          "pattern": "^.*$"
+          "pattern": "^(?!.*<[^>]+>).*$"
         },
         "county": {
           "title": "County",
@@ -36,7 +36,7 @@
           "examples": [
             "Cambridgeshire"
           ],
-          "pattern": "^.*$"
+          "pattern": "^(?!.*<[^>]+>).*$"
         },
         "postCode": {
           "title": "Address Postcode",
@@ -45,7 +45,7 @@
           "examples": [
             "PR1 2LL"
           ],
-          "pattern": "^.*$"
+          "pattern": "^(?!.*<[^>]+>).*$"
         }
       }
     },
@@ -61,7 +61,7 @@
           "examples": [
             "01772 844700"
           ],
-          "pattern": "^.*$"
+          "pattern": "^(?!.*<[^>]+>).*$"
         },
         "venueEmail": {
           "description": "Email for the venue",
@@ -71,7 +71,7 @@
           "examples": [
             "court1@moj.gov.uk"
           ],
-          "pattern": "^.*$"
+          "pattern": "^(?!.*<[^>]+>).*$"
         }
       }
     },
@@ -94,7 +94,7 @@
             "John Smith"
           ],
           "default": "",
-          "pattern": "^.*$"
+          "pattern": "^(?!.*<[^>]+>).*$"
         },
         "role": {
           "description": "Role of the judiciary",
@@ -111,7 +111,7 @@
             true
           ],
           "default": "",
-          "pattern": "^.*$"
+          "pattern": "^(?!.*<[^>]+>).*$"
         },
         "johKnownAs": {
           "description": "Name and salutations, titles to be presented on publications",
@@ -121,7 +121,7 @@
             "judge"
           ],
           "default": "",
-          "pattern": "^.*$"
+          "pattern": "^(?!.*<[^>]+>).*$"
         }
       }
     }
@@ -139,7 +139,7 @@
       "examples": [
         "http://json-schema.org/draft-07/schema#"
       ],
-      "pattern": "^.*$"
+      "pattern": "^(?!.*<[^>]+>).*$"
     },
     "document": {
       "$id": "#root/document",
@@ -156,7 +156,7 @@
           "examples": [
             "Standard List FINAL V4"
           ],
-          "pattern": "^.*$"
+          "pattern": "^(?!.*<[^>]+>).*$"
         },
         "publicationDate": {
           "$id": "#root/document/publicationDate",
@@ -175,7 +175,7 @@
           "examples": [
             "1.0"
           ],
-          "pattern": "^.*$"
+          "pattern": "^(?!.*<[^>]+>).*$"
         }
       }
     },
@@ -194,7 +194,7 @@
           "examples": [
             "Preston"
           ],
-          "pattern": "^.*$"
+          "pattern": "^(?!.*<[^>]+>).*$"
         },
         "venueAddress": {
           "description": "Full venue address",
@@ -225,7 +225,7 @@
           "examples": [
             "Location 1"
           ],
-          "pattern": "^.*$"
+          "pattern": "^(?!.*<[^>]+>).*$"
         },
         "jurisdiction": {
           "$id": "#root/locationDetails/jurisdiction",
@@ -236,7 +236,7 @@
           "examples": [
             "Family court"
           ],
-          "pattern": "^.*$"
+          "pattern": "^(?!.*<[^>]+>).*$"
 
         },
         "region": {
@@ -254,7 +254,7 @@
               "examples": [
                 "Wales"
               ],
-              "pattern": "^.*$"
+              "pattern": "^(?!.*<[^>]+>).*$"
             },
             "regionalJOH": {
               "$id": "#root/locationDetails/region/regionalJOH",
@@ -296,7 +296,7 @@
                 "examples": [
                   "PRESTON"
                 ],
-                "pattern": "^.*$"
+                "pattern": "^(?!.*<[^>]+>).*$"
               },
               "courtHouseContact": {
                 "$id": "#root/courtLists/courtList/courtHouse/courtHouseContact",
@@ -392,7 +392,7 @@
                                           "mda"
                                         ],
                                         "default": "",
-                                        "pattern": "^.*$"
+                                        "pattern": "^(?!.*<[^>]+>).*$"
                                       },
                                       "case": {
                                         "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case",
@@ -412,7 +412,7 @@
                                               "examples": [
                                                 "45684548"
                                               ],
-                                              "pattern": "^.*$"
+                                              "pattern": "^(?!.*<[^>]+>).*$"
                                             },
                                             "reportingRestrictionDetail": {
                                               "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/reportingRestrictionDetail",
@@ -436,7 +436,7 @@
                                               "examples": [
                                                 "2 of 3"
                                               ],
-                                              "pattern": "^.*$"
+                                              "pattern": "^(?!.*<[^>]+>).*$"
                                             }
                                           }
                                         }
@@ -461,7 +461,7 @@
                                                 "Prosecuting Authority"
                                               ],
                                               "default": "",
-                                              "pattern": "^.*$"
+                                              "pattern": "^(?!.*<[^>]+>).*$"
                                             },
                                             "friendlyRoleName": {
                                               "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items/friendlyRoleName",
@@ -472,7 +472,7 @@
                                                 "Legal Advisor"
                                               ],
                                               "default": "",
-                                              "pattern": "^.*$"
+                                              "pattern": "^(?!.*<[^>]+>).*$"
                                             },
                                             "individualDetails": {
                                               "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items/individualDetails",
@@ -499,7 +499,7 @@
                                                     "John Smith"
                                                   ],
                                                   "default": "",
-                                                  "pattern": "^.*$"
+                                                  "pattern": "^(?!.*<[^>]+>).*$"
                                                 },
                                                 "individualMiddleName": {
                                                   "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items/individualDetails/individualMiddleName",
@@ -510,7 +510,7 @@
                                                     "MiddleName"
                                                   ],
                                                   "default": "",
-                                                  "pattern": "^.*$"
+                                                  "pattern": "^(?!.*<[^>]+>).*$"
                                                 },
                                                 "individualSurname": {
                                                   "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items/individualDetails/individualSurname",
@@ -521,7 +521,7 @@
                                                     "Surname"
                                                   ],
                                                   "default": "",
-                                                  "pattern": "^.*$"
+                                                  "pattern": "^(?!.*<[^>]+>).*$"
                                                 }
                                               }
                                             }
@@ -543,7 +543,7 @@
                                             "examples": [
                                               ""
                                             ],
-                                            "pattern": "^.*$"
+                                            "pattern": "^(?!.*<[^>]+>).*$"
                                           }
                                         }
                                       }

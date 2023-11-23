@@ -15,7 +15,7 @@
             "examples": [
               "THE LAW COURTS"
             ],
-            "pattern": "^.*$"
+            "pattern": "^(?!.*<[^>]+>).*$"
           }
         },
         "town": {
@@ -26,7 +26,7 @@
           "examples": [
             "Cambridge"
           ],
-          "pattern": "^.*$"
+          "pattern": "^(?!.*<[^>]+>).*$"
         },
         "county": {
           "title": "County",
@@ -36,7 +36,7 @@
           "examples": [
             "Cambridgeshire"
           ],
-          "pattern": "^.*$"
+          "pattern": "^(?!.*<[^>]+>).*$"
         },
         "postCode": {
           "title": "Address Postcode",
@@ -45,7 +45,7 @@
           "examples": [
             "PR1 2LL"
           ],
-          "pattern": "^.*$"
+          "pattern": "^(?!.*<[^>]+>).*$"
         }
       }
     },
@@ -68,7 +68,7 @@
             "John Smith"
           ],
           "default": "",
-          "pattern": "^.*$"
+          "pattern": "^(?!.*<[^>]+>).*$"
         },
         "role": {
           "description": "Role of the judiciary",
@@ -89,7 +89,7 @@
             "judge"
           ],
           "default": "",
-          "pattern": "^.*$"
+          "pattern": "^(?!.*<[^>]+>).*$"
         },
         "isPresiding": {
           "description": "A flag to indicate whether a judiciary is presiding",
@@ -99,7 +99,7 @@
             true
           ],
           "default": "",
-          "pattern": "^.*$"
+          "pattern": "^(?!.*<[^>]+>).*$"
         }
       }
     }
@@ -121,7 +121,7 @@
       "examples": [
         "http://json-schema.org/draft-07/schema#"
       ],
-      "pattern": "^.*$"
+      "pattern": "^(?!.*<[^>]+>).*$"
     },
     "document": {
       "$id": "#root/document",
@@ -148,7 +148,7 @@
           "examples": [
             "1.0"
           ],
-          "pattern": "^.*$"
+          "pattern": "^(?!.*<[^>]+>).*$"
         }
       }
     },
@@ -169,7 +169,7 @@
           "examples": [
             "Preston"
           ],
-          "pattern": "^.*$"
+          "pattern": "^(?!.*<[^>]+>).*$"
         },
         "venueAddress": {
           "description": "Full venue address",
@@ -192,7 +192,7 @@
           "examples": [
             "Family court"
           ],
-          "pattern": "^.*$"
+          "pattern": "^(?!.*<[^>]+>).*$"
         }
       }
     },
@@ -227,7 +227,7 @@
                 "examples": [
                   "PRESTON"
                 ],
-                "pattern": "^.*$"
+                "pattern": "^(?!.*<[^>]+>).*$"
               },
               "courtRoom": {
                 "$id": "#root/courtLists/courtRoom",
@@ -311,7 +311,7 @@
                                           "mda"
                                         ],
                                         "default": "",
-                                        "pattern": "^.*$"
+                                        "pattern": "^(?!.*<[^>]+>).*$"
                                       },
                                       "case": {
                                         "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case",
@@ -333,7 +333,7 @@
                                               "examples": [
                                                 "45684548"
                                               ],
-                                              "pattern": "^.*$"
+                                              "pattern": "^(?!.*<[^>]+>).*$"
                                             },
                                             "reportingRestrictionDetail": {
                                               "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/offence/reportingRestrictionDetail",
@@ -357,7 +357,7 @@
                                               "examples": [
                                                 "2 of 3"
                                               ],
-                                              "pattern": "^.*$"
+                                              "pattern": "^(?!.*<[^>]+>).*$"
                                             },
                                             "informant": {
                                               "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/informant",
@@ -373,7 +373,7 @@
                                                   "examples": [
                                                     ""
                                                   ],
-                                                  "pattern": "^.*$"
+                                                  "pattern": "^(?!.*<[^>]+>).*$"
                                                 },
                                                 "prosecutionAuthorityId": {
                                                   "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/informant/prosecutionAuthorityId",
@@ -383,7 +383,7 @@
                                                   "examples": [
                                                     ""
                                                   ],
-                                                  "pattern": "^.*$"
+                                                  "pattern": "^(?!.*<[^>]+>).*$"
                                                 },
                                                 "prosecutionAuthorityCode": {
                                                   "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/informant/prosecutionAuthorityCode",
@@ -393,7 +393,7 @@
                                                   "examples": [
                                                     ""
                                                   ],
-                                                  "pattern": "^.*$"
+                                                  "pattern": "^(?!.*<[^>]+>).*$"
                                                 },
                                                 "prosecutionAuthorityName": {
                                                   "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/informant/prosecutionAuthorityName",
@@ -403,7 +403,7 @@
                                                   "examples": [
                                                     ""
                                                   ],
-                                                  "pattern": "^.*$"
+                                                  "pattern": "^(?!.*<[^>]+>).*$"
                                                 }
                                               }
                                             },
@@ -416,7 +416,7 @@
                                               "examples": [
                                                 "12"
                                               ],
-                                              "pattern": "^.*$"
+                                              "pattern": "^(?!.*<[^>]+>).*$"
                                             },
                                             "convictionDate": {
                                               "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/convictionDate",
@@ -445,7 +445,7 @@
                                               "examples": [
                                                 "CHILD or ADULT"
                                               ],
-                                              "pattern": "^.*$"
+                                              "pattern": "^(?!.*<[^>]+>).*$"
                                             }
                                           }
                                         }
@@ -471,7 +471,7 @@
                                                 "PROSECUTOR"
                                               ],
                                               "default": "",
-                                              "pattern": "^.*$"
+                                              "pattern": "^(?!.*<[^>]+>).*$"
                                             },
                                             "friendlyRoleName": {
                                               "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/party/friendlyRoleName",
@@ -482,7 +482,7 @@
                                                 "Legal Advisor"
                                               ],
                                               "default": "",
-                                              "pattern": "^.*$"
+                                              "pattern": "^(?!.*<[^>]+>).*$"
                                             },
                                             "individualDetails": {
                                               "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/party/individualDetails",
@@ -509,7 +509,7 @@
                                                     "John Smith"
                                                   ],
                                                   "default": "",
-                                                  "pattern": "^.*$"
+                                                  "pattern": "^(?!.*<[^>]+>).*$"
                                                 },
                                                 "individualMiddleName": {
                                                   "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/party/individualDetails/individualMiddleName",
@@ -520,7 +520,7 @@
                                                     "MiddleName"
                                                   ],
                                                   "default": "",
-                                                  "pattern": "^.*$"
+                                                  "pattern": "^(?!.*<[^>]+>).*$"
                                                 },
                                                 "individualSurname": {
                                                   "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/party/individualDetails/individualSurname",
@@ -531,7 +531,7 @@
                                                     "Surname"
                                                   ],
                                                   "default": "",
-                                                  "pattern": "^.*$"
+                                                  "pattern": "^(?!.*<[^>]+>).*$"
                                                 },
                                                 "dateOfBirth": {
                                                   "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/party/individualDetails/dateOfBirth",
@@ -589,7 +589,7 @@
                                                     "male"
                                                   ],
                                                   "default": "",
-                                                  "pattern": "^.*$"
+                                                  "pattern": "^(?!.*<[^>]+>).*$"
                                                 }
                                               }
                                             }
@@ -613,7 +613,7 @@
                                               "examples": [
                                                 "dd01-01"
                                               ],
-                                              "pattern": "^.*$"
+                                              "pattern": "^(?!.*<[^>]+>).*$"
                                             },
                                             "offenceTitle": {
                                               "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/offence/offenceTitle",
@@ -624,7 +624,7 @@
                                               "examples": [
                                                 "drink driving"
                                               ],
-                                              "pattern": "^.*$"
+                                              "pattern": "^(?!.*<[^>]+>).*$"
                                             },
                                             "offenceWording": {
                                               "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/offence/offenceWording",
@@ -635,7 +635,7 @@
                                               "examples": [
                                                 "driving whilst under the influence of alcohol"
                                               ],
-                                              "pattern": "^.*$"
+                                              "pattern": "^(?!.*<[^>]+>).*$"
                                             },
                                             "offenceMaxPen": {
                                               "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/offence/offenceMaxPenalty",
@@ -656,7 +656,7 @@
                                               "examples": [
                                                 "true"
                                               ],
-                                              "pattern": "^.*$"
+                                              "pattern": "^(?!.*<[^>]+>).*$"
                                             },
                                             "reportingRestrictionDetail": {
                                               "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/offence/reportingRestrictionDetail",
