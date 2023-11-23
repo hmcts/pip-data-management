@@ -94,7 +94,8 @@
           "type": "string",
           "examples": [
             "2016-09-13T23:30:52.123Z"
-          ]
+          ],
+          "pattern": "^(?!.*<[^>]+>).*$"
         }
       }
     },
@@ -191,7 +192,8 @@
                                   "title": "Sitting Start",
                                   "type": "string",
                                   "default": "",
-                                  "examples": []
+                                  "examples": [],
+                                  "pattern": "^(?!.*<[^>]+>).*$"
                                 },
                                 "sittingEnd": {
                                   "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/sittingEnd",
@@ -199,7 +201,8 @@
                                   "title": "Sitting End",
                                   "type": "string",
                                   "default": "",
-                                  "examples": []
+                                  "examples": [],
+                                  "pattern": "^(?!.*<[^>]+>).*$"
                                 },
                                 "hearing": {
                                   "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing",
@@ -304,7 +307,8 @@
                                                   "examples": [
                                                     "Mr"
                                                   ],
-                                                  "default": ""
+                                                  "default": "",
+                                                  "pattern": "^(?!.*<[^>]+>).*$"
                                                 },
                                                 "individualForenames": {
                                                   "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/party/individualDetails/individualForenames",
@@ -358,7 +362,8 @@
                                     "examples": [
                                       "VIDEO HEARING"
                                     ],
-                                    "default": ""
+                                    "default": "",
+                                    "pattern": "^(?!.*<[^>]+>).*$"
                                   }
                                 }
                               }

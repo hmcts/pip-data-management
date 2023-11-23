@@ -35,7 +35,8 @@
           "description": "The title for the judiciary",
           "title": "Judiciary Title",
           "type": "string",
-          "default": ""
+          "default": "",
+          "pattern": "^(?!.*<[^>]+>).*$"
         },
         "johNameSurname": {
           "description": "First and Surname of the JOH",
@@ -170,7 +171,8 @@
                       "default": "",
                       "examples": [
                         "1"
-                      ]
+                      ],
+                      "pattern": "^(?!.*<[^>]+>).*$"
                     },
                     "session": {
                       "$id": "#root/courtLists/courtRoom/session",
@@ -213,7 +215,8 @@
                                   "title": "Sitting Start",
                                   "type": "string",
                                   "default": "",
-                                  "examples": []
+                                  "examples": [],
+                                  "pattern": "^(?!.*<[^>]+>).*$"
                                 },
                                 "sittingEnd": {
                                   "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/sittingEnd",
@@ -221,7 +224,8 @@
                                   "title": "Sitting End",
                                   "type": "string",
                                   "default": "",
-                                  "examples": []
+                                  "examples": [],
+                                  "pattern": "^(?!.*<[^>]+>).*$"
                                 },
                                 "hearing": {
                                   "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing",
@@ -369,7 +373,8 @@
                                                   "examples": [
                                                     "Mr"
                                                   ],
-                                                  "default": ""
+                                                  "default": "",
+                                                  "pattern": "^(?!.*<[^>]+>).*$"
                                                 },
                                                 "individualForenames": {
                                                   "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/party/individualDetails/individualForenames",
@@ -422,7 +427,8 @@
                                     "examples": [
                                       "VIDEO HEARING"
                                     ],
-                                    "default": ""
+                                    "default": "",
+                                    "pattern": "^(?!.*<[^>]+>).*$"
                                   }
                                 }
                               }

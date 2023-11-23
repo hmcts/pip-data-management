@@ -105,7 +105,8 @@
           "type": "string",
           "examples": [
             "2016-09-13T23:30:52.123Z"
-          ]
+          ],
+          "pattern": "^(?!.*<[^>]+>).*$"
         },
         "version": {
           "$id": "#root/document/version",
@@ -233,7 +234,8 @@
                                                 "default": "",
                                                 "examples": [
                                                   "This is a reporting restrictions detail"
-                                                ]
+                                                ],
+                                                "pattern": "^(?!.*<[^>]+>).*$"
                                               }
                                             },
                                             "scheduledHearingDate": {
@@ -338,7 +340,8 @@
                                                   "examples": [
                                                     "01-01-1901"
                                                   ],
-                                                  "default": ""
+                                                  "default": "",
+                                                  "pattern": "^(?!.*<[^>]+>).*$"
                                                 },
                                                 "age": {
                                                   "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/party/individualDetails/age",
@@ -440,7 +443,8 @@
                                                           "default": "",
                                                           "examples": [
                                                             "This is a reporting restrictions detail"
-                                                          ]
+                                                          ],
+                                                          "pattern": "^(?!.*<[^>]+>).*$"
                                                         }
                                                       }
                                                     }
@@ -544,7 +548,8 @@
                                                           "default": "",
                                                           "examples": [
                                                             "This is a reporting restrictions detail"
-                                                          ]
+                                                          ],
+                                                          "pattern": "^(?!.*<[^>]+>).*$"
                                                         }
                                                       }
                                                     }

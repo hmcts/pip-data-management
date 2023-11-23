@@ -95,7 +95,8 @@
           "type": "string",
           "examples": [
             "2016-09-13T23:30:52.123Z"
-          ]
+          ],
+          "pattern": "^(?!.*<[^>]+>).*$"
         },
         "version": {
           "$id": "#root/document/version",
@@ -198,7 +199,8 @@
                                   "title": "Sitting Start",
                                   "type": "string",
                                   "default": "",
-                                  "examples": []
+                                  "examples": [],
+                                  "pattern": "^(?!.*<[^>]+>).*$"
                                 },
                                 "sittingEnd": {
                                   "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/sittingEnd",
@@ -206,7 +208,8 @@
                                   "title": "Sitting End",
                                   "type": "string",
                                   "default": "",
-                                  "examples": []
+                                  "examples": [],
+                                  "pattern": "^(?!.*<[^>]+>).*$"
                                 },
                                 "hearing": {
                                   "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing",
@@ -273,7 +276,8 @@
                                                 "default": "",
                                                 "examples": [
                                                   "This is a reporting restrictions detail"
-                                                ]
+                                                ],
+                                                "pattern": "^(?!.*<[^>]+>).*$"
                                               }
                                             },
                                             "caseLinked": {
@@ -355,7 +359,8 @@
                                                   "examples": [
                                                     "Mr"
                                                   ],
-                                                  "default": ""
+                                                  "default": "",
+                                                  "pattern": "^(?!.*<[^>]+>).*$"
                                                 },
                                                 "individualForenames": {
                                                   "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items/individualDetails/individualForenames",

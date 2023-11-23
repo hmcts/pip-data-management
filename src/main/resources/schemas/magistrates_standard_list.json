@@ -58,7 +58,8 @@
           "description": "The title for the judiciary",
           "title": "Judiciary Title",
           "type": "string",
-          "default": ""
+          "default": "",
+          "pattern": "^(?!.*<[^>]+>).*$"
         },
         "johNameSurname": {
           "description": "First and Surname of the JOH",
@@ -79,7 +80,8 @@
             "MAGISTRATE",
             "CLERK"
           ],
-          "default": ""
+          "default": "",
+          "pattern": "^(?!.*<[^>]+>).*$"
         },
         "johKnownAs": {
           "description": "Name and salutations, titles to be presented on publications",
@@ -138,7 +140,8 @@
           "type": "string",
           "examples": [
             "2016-09-13T23:30:52.123Z"
-          ]
+          ],
+          "pattern": "^(?!.*<[^>]+>).*$"
         },
         "version": {
           "$id": "#root/document/version",
@@ -281,7 +284,8 @@
                                   "title": "Sitting Start",
                                   "type": "string",
                                   "default": "",
-                                  "examples": []
+                                  "examples": [],
+                                  "pattern": "^(?!.*<[^>]+>).*$"
                                 },
                                 "sittingEnd": {
                                   "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/sittingEnd",
@@ -289,7 +293,8 @@
                                   "title": "Sitting End",
                                   "type": "string",
                                   "default": "",
-                                  "examples": []
+                                  "examples": [],
+                                  "pattern": "^(?!.*<[^>]+>).*$"
                                 },
                                 "hearing": {
                                   "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing",
@@ -345,7 +350,8 @@
                                                 "default": "",
                                                 "examples": [
                                                   "This is a reporting restrictions detail"
-                                                ]
+                                                ],
+                                                "pattern": "^(?!.*<[^>]+>).*$"
                                               }
                                             },
                                             "caseSequenceIndicator": {
@@ -425,7 +431,8 @@
                                               "type": "string",
                                               "examples": [
                                                 "2016-09-13T23:30:52.123Z"
-                                              ]
+                                              ],
+                                              "pattern": "^(?!.*<[^>]+>).*$"
                                             },
                                             "adjournedDate": {
                                               "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/adjournedDate",
@@ -434,7 +441,8 @@
                                               "type": "string",
                                               "examples": [
                                                 "2016-09-13T23:30:52.123Z"
-                                              ]
+                                              ],
+                                              "pattern": "^(?!.*<[^>]+>).*$"
                                             },
                                             "panel": {
                                               "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/panel",
@@ -498,7 +506,8 @@
                                                   "examples": [
                                                     "Mr"
                                                   ],
-                                                  "default": ""
+                                                  "default": "",
+                                                  "pattern": "^(?!.*<[^>]+>).*$"
                                                 },
                                                 "individualForenames": {
                                                   "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/party/individualDetails/individualForenames",
@@ -541,7 +550,8 @@
                                                   "examples": [
                                                     "01-01-1901"
                                                   ],
-                                                  "default": ""
+                                                  "default": "",
+                                                  "pattern": "^(?!.*<[^>]+>).*$"
                                                 },
                                                 "age": {
                                                   "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/party/individualDetails/age",
@@ -645,7 +655,8 @@
                                               "default": "",
                                               "examples": [
                                                 "10yrs"
-                                              ]
+                                              ],
+                                              "pattern": "^(?!.*<[^>]+>).*$"
                                             },
                                             "reportingRestriction": {
                                               "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/offence/reportingRestriction",
@@ -697,7 +708,8 @@
                                     "examples": [
                                       "VIDEO HEARING"
                                     ],
-                                    "default": ""
+                                    "default": "",
+                                    "pattern": "^(?!.*<[^>]+>).*$"
                                   }
                                 }
                               }
