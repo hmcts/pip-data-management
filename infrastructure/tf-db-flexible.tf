@@ -1,4 +1,6 @@
 locals {
+  db_name         = replace(var.component, "-", "")
+  postgresql_user = "${local.db_name}_user"
   db_host_name = "flexible-${var.product}-${var.component}"
 }
 
@@ -25,6 +27,8 @@ module "postgresql" {
 
   admin_user_object_id = var.jenkins_AAD_objectId
 
+  force_user_permissions_trigger = "1"
+
   pgsql_server_configuration = [
     {
      name  = "azure.extensions"
@@ -42,7 +46,6 @@ resource "postgresql_role" "create_sdp_access-flexible" {
   password            = data.azurerm_key_vault_secret.sdp-pass.value
   skip_reassign_owned = true
   skip_drop_role      = true
-  count               = var.env == "sbox" || var.env == "demo" || var.env == "test" || var.env == "stg" ? 1 : 0
 }
 
 resource "postgresql_grant" "readonly_mv-flexible" {
@@ -54,5 +57,4 @@ resource "postgresql_grant" "readonly_mv-flexible" {
   object_type = "table"
   privileges  = ["SELECT"]
   objects     = ["sdp_mat_view_location", "sdp_mat_view_artefact"]
-  count       = var.env == "sbox" || var.env == "demo" || var.env == "test" || var.env == "stg" ? 1 : 0
 }

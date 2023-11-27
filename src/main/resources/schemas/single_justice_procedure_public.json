@@ -9,9 +9,11 @@
           "type": "string",
           "default": "",
           "examples": [
-            "PR1 2LL"
+            "M22",
+            "PR1",
+            "EC1A"
           ],
-          "pattern": "^.*$"
+          "pattern": "^[a-zA-Z]{1,2}([0-9]{1,2}|[0-9][a-zA-Z])$"
         }
       }
     }
@@ -156,10 +158,10 @@
                                                   "title": "Individual Forenames",
                                                   "type": "string",
                                                   "examples": [
-                                                    "John Smith"
+                                                    "A"
                                                   ],
                                                   "default": "",
-                                                  "pattern": "^.*$"
+                                                  "pattern": "^[a-zA-Z]$"
                                                 },
                                                 "individualSurname": {
                                                   "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items/individualDetails/individualSurname",

@@ -47,41 +47,41 @@
                           {
                             "caseName": "This is a case name",
                             "caseJurisdictionET": "Family Law",
-                            "caseSequenceIndicator": "2 of 3"
-                          }
-                        ],
-                        "party": [
-                          {
-                            "partyRole": "APPLICANT_PETITIONER",
-                            "individualDetails": {
-                              "individualSurname": "Surname"
-                            }
-                          },
-                          {
-                            "partyRole": "RESPONDANT",
-                            "individualDetails": {
-                              "individualSurname": "Surname"
-                            }
-                          },
-                          {
-                            "partyRole": "APPLICANT_PETITIONER_REPRESENTATIVE",
-                            "friendlyRoleName": "Legal Advisor",
-                            "individualDetails": {
-                              "individualForenames": "Individual Forenames",
-                              "individualMiddleName": "Individual Middlename",
-                              "individualSurname": "Individual Surname",
-                              "title": "Mr"
-                            }
-                          },
-                          {
-                            "partyRole": "RESPONDANT_REPRESENTATIVE",
-                            "friendlyRoleName": "Legal Advisor",
-                            "individualDetails": {
-                              "individualForenames": "Individual Forenames",
-                              "individualMiddleName": "Individual Middlename",
-                              "individualSurname": "Individual Surname",
-                              "title": "Mr"
-                            }
+                            "caseSequenceIndicator": "2 of 3",
+                            "party": [
+                              {
+                                "partyRole": "APPLICANT_PETITIONER",
+                                "individualDetails": {
+                                  "individualSurname": "Surname"
+                                }
+                              },
+                              {
+                                "partyRole": "RESPONDANT",
+                                "individualDetails": {
+                                  "individualSurname": "Surname"
+                                }
+                              },
+                              {
+                                "partyRole": "APPLICANT_PETITIONER_REPRESENTATIVE",
+                                "friendlyRoleName": "Legal Advisor",
+                                "individualDetails": {
+                                  "individualForenames": "Individual Forenames",
+                                  "individualMiddleName": "Individual Middlename",
+                                  "individualSurname": "Individual Surname",
+                                  "title": "Mr"
+                                }
+                              },
+                              {
+                                "partyRole": "RESPONDANT_REPRESENTATIVE",
+                                "friendlyRoleName": "Legal Advisor",
+                                "individualDetails": {
+                                  "individualForenames": "Individual Forenames",
+                                  "individualMiddleName": "Individual Middlename",
+                                  "individualSurname": "Individual Surname",
+                                  "title": "Mr"
+                                }
+                              }
+                            ]
                           }
                         ]
                       }

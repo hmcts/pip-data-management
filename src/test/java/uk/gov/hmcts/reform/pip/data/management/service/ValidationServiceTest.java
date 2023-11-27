@@ -312,7 +312,11 @@ class ValidationServiceTest {
             Arguments.of(ListType.CARE_STANDARDS_LIST,
                          "mocks/care-standards-list/careStandardsList.json"),
             Arguments.of(ListType.PRIMARY_HEALTH_LIST,
-                         "mocks/primary-health-list/primaryHealthList.json")
+                         "mocks/primary-health-list/primaryHealthList.json"),
+            Arguments.of(ListType.OPA_PRESS_LIST,
+                         "mocks/opa-press-list/opaPressList.json"),
+            Arguments.of(ListType.OPA_PUBLIC_LIST,
+                         "mocks/opa-public-list/opaPublicList.json")
         );
     }
 }
