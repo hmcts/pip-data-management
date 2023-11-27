@@ -407,12 +407,12 @@ public class PublicationController {
     @ApiResponse(responseCode = AUTH_ERROR_CODE, description = UNAUTHORIZED_DESCRIPTION)
     @ApiResponse(responseCode = OK_CODE, description = "A CSV like structure which contains the data. "
         + "See example for headers", content = {
-        @Content(examples = {@ExampleObject("artefact_id,display_from,display_to,language,provenance,"
-            + "sensitivity,source_artefact_id,"
-            + "superseded_count,type,content_date,court_id,court_name,list_type")},
-            mediaType = MediaType.TEXT_PLAIN_VALUE,
-            schema = @Schema(implementation = String.class))
-    }
+            @Content(examples = {@ExampleObject("artefact_id,display_from,display_to,language,provenance,"
+                    + "sensitivity,source_artefact_id,"
+                    + "superseded_count,type,content_date,court_id,court_name,list_type")},
+                    mediaType = MediaType.TEXT_PLAIN_VALUE,
+                    schema = @Schema(implementation = String.class))
+        }
     )
     @Operation(summary = "Return the MI data for artefacts. This endpoint will be "
         + "deprecated in the future, in favour of returning a JSON model")
