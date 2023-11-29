@@ -164,8 +164,8 @@ class PublicationTest {
     }
 
     Artefact createDailyList(Sensitivity sensitivity, LocalDateTime displayFrom, LocalDateTime displayTo,
-                                           LocalDateTime contentDate,
-                                           String provenance)
+                             LocalDateTime contentDate,
+                             String provenance)
         throws Exception {
         try (InputStream mockFile = this.getClass().getClassLoader()
             .getResourceAsStream("data/civil-daily-cause-list/civilDailyCauseList.json")) {
@@ -315,8 +315,11 @@ class PublicationTest {
         Map<String, List<Object>> searchResult = artefact.getSearch();
         assertTrue(searchResult.containsKey("parties"), "Returned search result does not contain the correct key");
 
-        List<Map<String, Object>> parties = new ObjectMapper().convertValue(searchResult.get(PARTIES_KEY),
-                                                                            new TypeReference<>() {});
+        List<Map<String, Object>> parties = new ObjectMapper().convertValue(
+            searchResult.get(PARTIES_KEY),
+            new TypeReference<>() {
+            }
+        );
         assertEquals(2, parties.size(), "Party array not expected size");
 
         Map<String, Object> firstParty = parties.get(0);
@@ -326,22 +329,32 @@ class PublicationTest {
 
         List<ConcurrentHashMap<String, Object>> cases = new ObjectMapper()
             .setSerializationInclusion(JsonInclude.Include.NON_NULL)
-            .convertValue(firstParty.get(CASES_KEY),new TypeReference<>() {});
+            .convertValue(firstParty.get(CASES_KEY), new TypeReference<>() {
+            });
 
         assertEquals(1, cases.size(), "Unexpected number of cases returned");
 
-        ConcurrentHashMap<String, String> firstCase = new ObjectMapper().convertValue(cases.get(0),
-                                                                                      new TypeReference<>() {});
+        ConcurrentHashMap<String, String> firstCase = new ObjectMapper().convertValue(
+            cases.get(0),
+            new TypeReference<>() {
+            }
+        );
         assertEquals("45684548", firstCase.get("caseNumber"), "Unexpected case number returned");
         assertEquals("This is a case name", firstCase.get("caseName"), "Unexpected case name returned");
 
-        List<String> organisationNames = new ObjectMapper().convertValue(firstParty.get(ORGANISATION_KEY),
-                                                                         new TypeReference<>() {});
+        List<String> organisationNames = new ObjectMapper().convertValue(
+            firstParty.get(ORGANISATION_KEY),
+            new TypeReference<>() {
+            }
+        );
         assertEquals(1, organisationNames.size(), "Unexpected number of organisations returned");
         assertTrue(organisationNames.contains("Respondent Org Name"), "Respondent not present");
 
-        List<Map<String, Object>> individualNames = new ObjectMapper().convertValue(firstParty.get(INDIVIDUAL_KEY),
-                                                                       new TypeReference<>() {});
+        List<Map<String, Object>> individualNames = new ObjectMapper().convertValue(
+            firstParty.get(INDIVIDUAL_KEY),
+            new TypeReference<>() {
+            }
+        );
         assertEquals(1, individualNames.size(), "Unexpected number of individuals returned");
         assertEquals("Applicant Surname", individualNames.get(0).get("surname"), "Individual surname does not present");
     }
@@ -1885,10 +1898,22 @@ class PublicationTest {
 
     @Test
     void testGetMiDataRequestSuccess() throws Exception {
+        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        Artefact artefact = createDailyList(Sensitivity.PUBLIC);
+
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
             .get(MI_REPORTING_DATA_URL);
 
-        mockMvc.perform(request).andExpect(status().isOk());
+        MvcResult response = mockMvc.perform(request).andExpect(status().isOk()).andReturn();
+
+        assertTrue(
+            response.getResponse().getContentAsString().contains(artefact.getArtefactId().toString()),
+            "Should successfully retrieve MI data"
+        );
+        assertTrue(
+            response.getResponse().getContentAsString().contains(artefact.getLocationId()),
+            "Should successfully retrieve MI data"
+        );
     }
 
     @Test
