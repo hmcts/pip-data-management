@@ -136,6 +136,9 @@ class PublicationTest {
     private static final String ORGANISATION_KEY = "organisations";
     private static final String INDIVIDUAL_KEY = "individuals";
     private static final String CASES_KEY = "cases";
+    private static final String EXPECTED_MI_DATA_HEADERS = "artefact_id,display_from,display_to,language,provenance,"
+        + "sensitivity,source_artefact_id,"
+        + "superseded_count,type,content_date,court_id,court_name,list_type";
 
     private static MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
     private static ObjectMapper objectMapper;
@@ -1904,14 +1907,18 @@ class PublicationTest {
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
             .get(MI_REPORTING_DATA_URL);
 
-        MvcResult response = mockMvc.perform(request).andExpect(status().isOk()).andReturn();
+        String responseMiData = mockMvc.perform(request).andExpect(status().isOk()).andReturn()
+            .getResponse().getContentAsString();
 
+        assertEquals(EXPECTED_MI_DATA_HEADERS, responseMiData.split("\n")[0],
+                     "Should successfully retrieve MI data headers"
+        );
         assertTrue(
-            response.getResponse().getContentAsString().contains(artefact.getArtefactId().toString()),
+            responseMiData.contains(artefact.getArtefactId().toString()),
             "Should successfully retrieve MI data"
         );
         assertTrue(
-            response.getResponse().getContentAsString().contains(artefact.getLocationId()),
+            responseMiData.contains(artefact.getLocationId()),
             "Should successfully retrieve MI data"
         );
     }
