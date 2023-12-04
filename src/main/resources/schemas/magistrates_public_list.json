@@ -304,12 +304,6 @@
                 "title": "Court House Contact",
                 "$ref": "#/definitions/venueContact"
               },
-              "courtHouseAddress": {
-                "$id": "#root/courtLists/courtList/courtHouse/courtHouseAddress",
-                "description": "The address for the court house",
-                "title": "Court House Address",
-                "$ref": "#/definitions/address"
-              },
               "courtRoom": {
                 "$id": "#root/courtLists/courtRoom",
                 "type": "array",
