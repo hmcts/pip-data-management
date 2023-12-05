@@ -3,6 +3,9 @@ package uk.gov.hmcts.reform.pip.data.management.controllers;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -401,8 +404,18 @@ public class PublicationController {
         }
     }
 
-    @ApiResponse(responseCode = OK_CODE, description = "Data Management - MI Data request accepted.")
-    @Operation(summary = "Return the table of MI data")
+    @ApiResponse(responseCode = AUTH_ERROR_CODE, description = UNAUTHORIZED_DESCRIPTION)
+    @ApiResponse(responseCode = OK_CODE, description = "A CSV like structure which contains the data. "
+        + "See example for headers", content = {
+            @Content(examples = {@ExampleObject("artefact_id,display_from,display_to,language,provenance,"
+                    + "sensitivity,source_artefact_id,"
+                    + "superseded_count,type,content_date,court_id,court_name,list_type")},
+                    mediaType = MediaType.TEXT_PLAIN_VALUE,
+                    schema = @Schema(implementation = String.class))
+        }
+    )
+    @Operation(summary = "Return the MI data for artefacts. This endpoint will be "
+        + "deprecated in the future, in favour of returning a JSON model")
     @GetMapping("/mi-data")
     @IsAdmin
     public ResponseEntity<String> getMiData() {
