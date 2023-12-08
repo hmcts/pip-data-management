@@ -24,10 +24,10 @@ import uk.gov.hmcts.reform.pip.model.publication.Sensitivity;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -153,7 +153,7 @@ public class ValidationService {
     public void validateBody(String jsonPayload, HeaderGroup headers) {
         Map<String, String> propertiesMap = headers.getAppInsightsHeaderMap();
         try {
-            List<String> errors = new ArrayList<>();
+            Set<String> errors = new HashSet<>();
 
             JsonNode json = new ObjectMapper().readTree(jsonPayload);
             masterSchema.validate(json).forEach(vm ->  errors.add(vm.getMessage()));

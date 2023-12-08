@@ -1,0 +1,75 @@
+{
+  "document": {
+    "publicationDate": "2023-08-21T01:01:01Z"
+  },
+  "venue": {
+    "venueName": "This is the venue name",
+    "venueContact": {
+      "venueTelephone": "Test Telephone",
+      "venueEmail": "court1@moj.gov.uk"
+    },
+    "venueAddress": {
+      "line": [
+        "The venue line 1"
+      ],
+      "town": "This is a town name <Test>",
+      "postCode": "AAA AAA"
+    }
+  },
+  "@schemaLocation": "",
+  "courtLists": [
+    {
+      "courtHouse": {
+        "courtHouseName": "This is a court house name",
+        "courtHouseAddress": {
+          "line": [
+            "Address Line 1"
+          ],
+          "postCode": "AAA AAB"
+        },
+        "courtRoom": [
+          {
+            "courtRoomName": "Courtroom 1",
+            "session": [
+              {
+                "sessionStartTime": "",
+                "sessionChannel": [
+                  "This is a session channel"
+                ],
+                "judiciary": [
+                  {
+                    "johNameSurname": "This is the name surname",
+                    "johKnownAs": "This is the known as",
+                    "isPresiding": true
+                  }
+                ],
+                "sittings": [
+                  {
+                    "sittingStart": "2023-08-21T01:01:01Z",
+                    "sittingEnd": "2023-08-21T02:01:01Z",
+                    "hearing": [
+                      {
+                        "hearingType": "This is hearing type 1",
+                        "case": [
+                          {
+                            "caseName": "This is case name 1",
+                            "caseNumber": "This is case number 1",
+                            "caseSequenceIndicator": "1 of 2"
+                          }
+                        ]
+                      }
+                    ],
+                    "channel": [
+                      "Channel A",
+                      "Channel B"
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
