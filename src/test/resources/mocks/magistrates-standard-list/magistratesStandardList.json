@@ -44,6 +44,45 @@
                               "Reporting restriction detail line 2"
                             ],
                             "caseSequenceIndicator": "2 of 3",
+                            "party": [
+                              {
+                                "partyRole": "ACCUSED",
+                                "friendlyRoleName": "Accused",
+                                "individualDetails": {
+                                  "title": "Mr",
+                                  "individualForenames": "John Smith",
+                                  "individualMiddleName": "MiddleName",
+                                  "individualSurname": "Surname",
+                                  "dateOfBirth": "01-01-1901",
+                                  "age": 1,
+                                  "address": {
+                                    "county": "County A",
+                                    "town": "Month A",
+                                    "postCode": "AA1 AA1",
+                                    "line": [
+                                      "Address Line 1",
+                                      "Address Line 2"
+                                    ]
+                                  },
+                                  "inCustody": true,
+                                  "plea": "NOT_GUILTY",
+                                  "gender": "male"
+                                },
+                                "offence": [
+                                  {
+                                    "offenceCode": "dd01-01",
+                                    "offenceTitle": "drink driving",
+                                    "offenceWording": "driving whilst under the influence of alcohol",
+                                    "offenceMaxPen": "100yrs",
+                                    "reportingRestriction": true,
+                                    "reportingRestrictionDetail": [
+                                      "Reporting Restriction detail line 1",
+                                      "Reporting restriction detail line 2"
+                                    ]
+                                  }
+                                ]
+                              }
+                            ],
                             "informant": {
                               "prosecutionAuthorityRef": "Test",
                               "prosecutionAuthorityId": "1234",
@@ -54,45 +93,6 @@
                             "convictionDate": "2016-09-13T23:30:52.123Z",
                             "adjournedDate": "2016-09-13T23:30:52.123Z",
                             "panel": "ADULT"
-                          }
-                        ],
-                        "party": [
-                          {
-                            "partyRole": "ACCUSED",
-                            "friendlyRoleName": "Accused",
-                            "individualDetails": {
-                              "title": "Mr",
-                              "individualForenames": "John Smith",
-                              "individualMiddleName": "MiddleName",
-                              "individualSurname": "Surname",
-                              "dateOfBirth": "01-01-1901",
-                              "age": 1,
-                              "address": {
-                                "county": "County A",
-                                "town": "Month A",
-                                "postCode": "AA1 AA1",
-                                "line": [
-                                  "Address Line 1",
-                                  "Address Line 2"
-                                ]
-                              },
-                              "inCustody": true,
-                              "plea": "NOT_GUILTY",
-                              "gender": "male"
-                            }
-                          }
-                        ],
-                        "offence": [
-                          {
-                            "offenceCode": "dd01-01",
-                            "offenceTitle": "drink driving",
-                            "offenceWording": "driving whilst under the influence of alcohol",
-                            "offenceMaxPen": "100yrs",
-                            "reportingRestriction": true,
-                            "reportingRestrictionDetail": [
-                              "Reporting Restriction detail line 1",
-                              "Reporting restriction detail line 2"
-                            ]
                           }
                         ]
                       }
