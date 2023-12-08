@@ -251,17 +251,6 @@
                                                 "2 of 3"
                                               ],
                                               "pattern": "^.*$"
-                                            },
-                                            "caseType": {
-                                              "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/caseType",
-                                              "title": "Case Type",
-                                              "description": "This will be type of the case.",
-                                              "type": "string",
-                                              "default": "",
-                                              "examples": [
-                                                "normal"
-                                              ],
-                                              "pattern": "^.*$"
                                             }
                                           }
                                         }
