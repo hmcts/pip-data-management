@@ -66,21 +66,21 @@
                                   },
                                   "inCustody": true,
                                   "plea": "NOT_GUILTY",
-                                  "gender": "male",
-                                  "offence": [
-                                    {
-                                      "offenceCode": "dd01-01",
-                                      "reportingRestrictionDetail": [
-                                        "Reporting Restriction detail line 1",
-                                        "Reporting restriction detail line 2"
-                                      ],
-                                      "offenceTitle": "drink driving",
-                                      "offenceWording": "driving whilst under the influence of alcohol",
-                                      "offenceMaxPen": "100yrs",
-                                      "reportingRestriction": true
-                                    }
-                                  ]
-                                }
+                                  "gender": "male"
+                                },
+                                "offence": [
+                                  {
+                                    "offenceCode": "dd01-01",
+                                    "reportingRestrictionDetail": [
+                                      "Reporting Restriction detail line 1",
+                                      "Reporting restriction detail line 2"
+                                    ],
+                                    "offenceTitle": "drink driving",
+                                    "offenceWording": "driving whilst under the influence of alcohol",
+                                    "offenceMaxPen": "100yrs",
+                                    "reportingRestriction": true
+                                  }
+                                ]
                               }
                             ],
                             "informant": {
