@@ -80,7 +80,6 @@
       "description": "Can be an array of objects as such will be a collective and use plurals for object arrays (clerks and scribes etc included)",
       "type": "object",
       "properties": {
-        "johTitle": {
           "description": "The title for the judiciary",
           "title": "Judiciary Title",
           "type": "string",
