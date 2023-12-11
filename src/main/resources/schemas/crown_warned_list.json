@@ -15,7 +15,7 @@
             "examples": [
               "THE LAW COURTS"
             ],
-            "pattern": "^.*$"
+            "pattern": "^(?!.*<[^>]+>).*$"
           }
         },
         "town": {
@@ -26,7 +26,7 @@
           "examples": [
             "Cambridge"
           ],
-          "pattern": "^.*$"
+          "pattern": "^(?!.*<[^>]+>).*$"
         },
         "county": {
           "title": "County",
@@ -36,7 +36,7 @@
           "examples": [
             "Cambridgeshire"
           ],
-          "pattern": "^.*$"
+          "pattern": "^(?!.*<[^>]+>).*$"
         },
         "postCode": {
           "title": "Address Postcode",
@@ -45,7 +45,7 @@
           "examples": [
             "PR1 2LL"
           ],
-          "pattern": "^.*$"
+          "pattern": "^(?!.*<[^>]+>).*$"
         }
       }
     }
@@ -67,7 +67,7 @@
       "examples": [
         "http://json-schema.org/draft-07/schema#"
       ],
-      "pattern": "^.*$"
+      "pattern": "^(?!.*<[^>]+>).*$"
     },
     "document": {
       "$id": "#root/document",
@@ -86,7 +86,7 @@
           "examples": [
             "Standard List FINAL V4"
           ],
-          "pattern": "^.*$"
+          "pattern": "^(?!.*<[^>]+>).*$"
         },
         "publicationDate": {
           "$id": "#root/document/publicationDate",
@@ -95,7 +95,8 @@
           "type": "string",
           "examples": [
             "2016-09-13T23:30:52.123Z"
-          ]
+          ],
+          "pattern": "^(?!.*<[^>]+>).*$"
         },
         "version": {
           "$id": "#root/document/version",
@@ -105,7 +106,7 @@
           "examples": [
             "1.0"
           ],
-          "pattern": "^.*$"
+          "pattern": "^(?!.*<[^>]+>).*$"
         }
       }
     },
@@ -127,7 +128,7 @@
           "examples": [
             "Preston"
           ],
-          "pattern": "^.*$"
+          "pattern": "^(?!.*<[^>]+>).*$"
         },
         "venueAddress": {
           "description": "Full venue address",
@@ -198,7 +199,8 @@
                                   "title": "Sitting Start",
                                   "type": "string",
                                   "default": "",
-                                  "examples": []
+                                  "examples": [],
+                                  "pattern": "^(?!.*<[^>]+>).*$"
                                 },
                                 "sittingEnd": {
                                   "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/sittingEnd",
@@ -206,7 +208,8 @@
                                   "title": "Sitting End",
                                   "type": "string",
                                   "default": "",
-                                  "examples": []
+                                  "examples": [],
+                                  "pattern": "^(?!.*<[^>]+>).*$"
                                 },
                                 "hearing": {
                                   "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing",
@@ -228,7 +231,7 @@
                                           "mda"
                                         ],
                                         "default": "",
-                                        "pattern": "^.*$"
+                                        "pattern": "^(?!.*<[^>]+>).*$"
                                       },
                                       "listNote": {
                                         "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/listNote",
@@ -239,7 +242,7 @@
                                         "examples": [
                                           "reserved – defendant in custody"
                                         ],
-                                        "pattern": "^.*$"
+                                        "pattern": "^(?!.*<[^>]+>).*$"
                                       },
                                       "case": {
                                         "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case",
@@ -261,7 +264,7 @@
                                               "examples": [
                                                 "45684548"
                                               ],
-                                              "pattern": "^.*$"
+                                              "pattern": "^(?!.*<[^>]+>).*$"
                                             },
                                             "reportingRestrictionDetail": {
                                               "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/reportingRestrictionDetail",
@@ -273,7 +276,8 @@
                                                 "default": "",
                                                 "examples": [
                                                   "This is a reporting restrictions detail"
-                                                ]
+                                                ],
+                                                "pattern": "^(?!.*<[^>]+>).*$"
                                               }
                                             },
                                             "caseLinked": {
@@ -290,7 +294,7 @@
                                                   "examples": [
                                                     "offg35484"
                                                   ],
-                                                  "pattern": "^.*$"
+                                                  "pattern": "^(?!.*<[^>]+>).*$"
                                                 },
                                                 "name": {
                                                   "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/caseLinked/name",
@@ -301,7 +305,7 @@
                                                   "examples": [
                                                     "A Vs B"
                                                   ],
-                                                  "pattern": "^.*$"
+                                                  "pattern": "^(?!.*<[^>]+>).*$"
                                                 }
                                               }
                                             }
@@ -328,7 +332,7 @@
                                                 "Prosecuting Authority"
                                               ],
                                               "default": "",
-                                              "pattern": "^.*$"
+                                              "pattern": "^(?!.*<[^>]+>).*$"
                                             },
                                             "friendlyRoleName": {
                                               "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items/friendlyRoleName",
@@ -339,7 +343,7 @@
                                                 "Legal Advisor"
                                               ],
                                               "default": "",
-                                              "pattern": "^.*$"
+                                              "pattern": "^(?!.*<[^>]+>).*$"
                                             },
                                             "individualDetails": {
                                               "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items/individualDetails",
@@ -355,7 +359,8 @@
                                                   "examples": [
                                                     "Mr"
                                                   ],
-                                                  "default": ""
+                                                  "default": "",
+                                                  "pattern": "^(?!.*<[^>]+>).*$"
                                                 },
                                                 "individualForenames": {
                                                   "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items/individualDetails/individualForenames",
@@ -366,7 +371,7 @@
                                                     "John Smith"
                                                   ],
                                                   "default": "",
-                                                  "pattern": "^.*$"
+                                                  "pattern": "^(?!.*<[^>]+>).*$"
                                                 },
                                                 "individualMiddleName": {
                                                   "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items/individualDetails/individualMiddleName",
@@ -377,7 +382,7 @@
                                                     "MiddleName"
                                                   ],
                                                   "default": "",
-                                                  "pattern": "^.*$"
+                                                  "pattern": "^(?!.*<[^>]+>).*$"
                                                 },
                                                 "individualSurname": {
                                                   "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items/individualDetails/individualSurname",
@@ -388,7 +393,7 @@
                                                     "Surname"
                                                   ],
                                                   "default": "",
-                                                  "pattern": "^.*$"
+                                                  "pattern": "^(?!.*<[^>]+>).*$"
                                                 }
                                               }
                                             },
@@ -407,7 +412,7 @@
                                                     "A & B Solicitors"
                                                   ],
                                                   "default": "",
-                                                  "pattern": "^.*$"
+                                                  "pattern": "^(?!.*<[^>]+>).*$"
                                                 }
                                               }
                                             }
