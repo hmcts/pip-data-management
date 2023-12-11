@@ -79,6 +79,7 @@
       "title": "Judiciary",
       "description": "Can be an array of objects as such will be a collective and use plurals for object arrays (clerks and scribes etc included)",
       "type": "object",
+      "properties": {
         "johNameSurname": {
           "description": "First and Surname of the JOH",
           "title": "JOH Name",
@@ -297,6 +298,12 @@
                 "description": "The contact for the court house",
                 "title": "Court House Contact",
                 "$ref": "#/definitions/venueContact"
+              },
+              "courtHouseAddress": {
+                "$id": "#root/courtLists/courtList/courtHouse/courtHouseAddress",
+                "description": "The address for the court house",
+                "title": "Court House Address",
+                "$ref": "#/definitions/address"
               },
               "courtRoom": {
                 "$id": "#root/courtLists/courtRoom",
