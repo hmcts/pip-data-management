@@ -45,8 +45,8 @@
                             "caseSequenceIndicator": "2 of 3",
                             "party": [
                               {
-                                "partyRole": "ACCUSED",
-                                "friendlyRoleName": "Accused",
+                                "partyRole": "DEFENDANT",
+                                "friendlyRoleName": "Defendant",
                                 "individualDetails": {
                                   "title": "Mr",
                                   "individualForenames": "John Smith",

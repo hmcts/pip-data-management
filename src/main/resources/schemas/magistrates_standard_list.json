@@ -382,8 +382,7 @@
                                                     "title": "Party Role",
                                                     "type": "string",
                                                     "examples": [
-                                                      "ACCUSED",
-                                                      "PROSECUTOR"
+                                                      "DEFENDANT"
                                                     ],
                                                     "default": "",
                                                     "pattern": "^(?!.*<[^>]+>).*$"
