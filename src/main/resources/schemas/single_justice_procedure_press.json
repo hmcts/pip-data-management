@@ -183,55 +183,6 @@
                                         "contains": {
                                           "type": "object"
                                         },
-                                        "offence": {
-                                          "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/offence",
-                                          "title": "offence",
-                                          "description": "The offence and details of offences associated with the case",
-                                          "type": "array",
-                                          "items": {
-                                            "type": "object",
-                                            "required": [
-                                              "offenceTitle",
-                                              "offenceWording",
-                                              "reportingRestriction"
-                                            ],
-                                            "properties": {
-                                              "offenceTitle": {
-                                                "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/offence/offenceTitle",
-                                                "description": "Short description of offence",
-                                                "title": "Offence title",
-                                                "type": "string",
-                                                "default": "",
-                                                "examples": [
-                                                  "drink driving"
-                                                ],
-                                                "pattern": "^(?!.*<[^>]+>).*$"
-                                              },
-                                              "offenceWording": {
-                                                "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/offence/offenceWording",
-                                                "description": "Long description of offence",
-                                                "title": "Offence wording",
-                                                "type": "string",
-                                                "default": "",
-                                                "examples": [
-                                                  "driving whilst under the influence of alcohol"
-                                                ],
-                                                "pattern": "^(?!.*<[^>]+>).*$"
-                                              },
-                                              "reportingRestriction": {
-                                                "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/offence/reportingRestriction",
-                                                "title": "Reporting Restriction",
-                                                "description": "Any reporting restrictions posed to the offence",
-                                                "type": "boolean",
-                                                "default": "",
-                                                "examples": [
-                                                  "true"
-                                                ],
-                                                "pattern": "^(?!.*<[^>]+>).*$"
-                                              }
-                                            }
-                                          }
-                                        },
                                         "minContains": 1,
                                         "items": {
                                           "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items",
@@ -388,6 +339,55 @@
                                             "else": {
                                               "required": ["organisationDetails"]
                                             }}]
+                                        }
+                                      },
+                                      "offence": {
+                                        "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/party/offence",
+                                        "title": "offence",
+                                        "description": "The offence and details of offences associated with the case",
+                                        "type": "array",
+                                        "items": {
+                                          "type": "object",
+                                          "required": [
+                                            "offenceTitle",
+                                            "offenceWording",
+                                            "reportingRestriction"
+                                          ],
+                                          "properties": {
+                                            "offenceTitle": {
+                                              "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/party/offence/offenceTitle",
+                                              "description": "Short description of offence",
+                                              "title": "Offence title",
+                                              "type": "string",
+                                              "default": "",
+                                              "examples": [
+                                                "drink driving"
+                                              ],
+                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                            },
+                                            "offenceWording": {
+                                              "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/party/offence/offenceWording",
+                                              "description": "Long description of offence",
+                                              "title": "Offence wording",
+                                              "type": "string",
+                                              "default": "",
+                                              "examples": [
+                                                "driving whilst under the influence of alcohol"
+                                              ],
+                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                            },
+                                            "reportingRestriction": {
+                                              "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/party/offence/reportingRestriction",
+                                              "title": "Reporting Restriction",
+                                              "description": "Any reporting restrictions posed to the offence",
+                                              "type": "boolean",
+                                              "default": "",
+                                              "examples": [
+                                                "true"
+                                              ],
+                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                            }
+                                          }
                                         }
                                       }
                                     }
