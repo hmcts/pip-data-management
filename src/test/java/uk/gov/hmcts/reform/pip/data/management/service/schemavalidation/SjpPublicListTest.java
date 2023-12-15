@@ -49,7 +49,7 @@ class SjpPublicListTest {
     private static final String SITTINGS_SCHEMA = "sittings";
     private static final String HEARING_SCHEMA = "hearing";
     private static final String PARTY_SCHEMA = "party";
-    private static final String OFFENCE_SCHEMA = "offenceTitle";
+    private static final String OFFENCE_SCHEMA = "offence";
     private static final String INDIVIDUAL_DETAILS_SCHEMA  = "individualDetails";
     private static final String ADDRESS_SCHEMA  = "address";
     private static final String SOURCE_ARTEFACT_ID = "sourceArtefactId";
@@ -439,9 +439,9 @@ class SjpPublicListTest {
             JsonNode node = mapper.readValue(text, JsonNode.class);
             ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0).get(COURT_HOUSE_SCHEMA)
                 .get(COURT_ROOM_SCHEMA).get(0).get(SESSION_SCHEMA).get(0)
-                .get(SITTINGS_SCHEMA).get(0).get(HEARING_SCHEMA).get(0)
-                .get(OFFENCE_SCHEMA).get(0)).remove("offenceTitle");
-
+                .get(SITTINGS_SCHEMA).get(0).get(HEARING_SCHEMA).get(0))
+                .remove(OFFENCE_SCHEMA);
+            
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
                              validationService.validateBody(listJson, headerGroup),
