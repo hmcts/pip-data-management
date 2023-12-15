@@ -21,13 +21,18 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Root",
   "type": "object",
-  "required": ["document", "courtLists"],
+  "required": [
+    "document",
+    "courtLists"
+  ],
   "properties": {
     "document": {
       "$id": "#root/document",
       "title": "document",
       "type": "object",
-      "required": ["publicationDate"],
+      "required": [
+        "publicationDate"
+      ],
       "properties": {
         "documentName": {
           "$id": "#root/document/documentName",
@@ -70,14 +75,18 @@
         "$id": "#root/courtLists/courtList",
         "title": "Court list",
         "type": "object",
-        "required": ["courtHouse"],
+        "required": [
+          "courtHouse"
+        ],
         "properties": {
           "courtHouse": {
             "$id": "#root/courtLists/courtHouse",
             "title": "Court House",
             "description": "The court house that owns the court rooms",
             "type": "object",
-            "required": ["courtRoom"],
+            "required": [
+              "courtRoom"
+            ],
             "properties": {
               "courtRoom": {
                 "$id": "#root/courtLists/courtRoom",
@@ -86,7 +95,9 @@
                   "title": "Court Room",
                   "description": "The court room that owns the court rooms",
                   "type": "object",
-                  "required": ["session"],
+                  "required": [
+                    "session"
+                  ],
                   "properties": {
                     "session": {
                       "$id": "#root/courtLists/courtRoom/session",
@@ -95,7 +106,9 @@
                         "title": "Session",
                         "description": "Session associated with the court in the publication",
                         "type": "object",
-                        "required": ["sittings"],
+                        "required": [
+                          "sittings"
+                        ],
                         "properties": {
                           "sittings": {
                             "$id": "#root/courtLists/courtList/courtRoom/session/sittings",
@@ -105,7 +118,9 @@
                             "items": {
                               "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items",
                               "type": "object",
-                              "required": ["hearing"],
+                              "required": [
+                                "hearing"
+                              ],
                               "properties": {
                                 "hearing": {
                                   "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing",
@@ -133,7 +148,9 @@
                                           "title": "Party",
                                           "description": "A party",
                                           "type": "object",
-                                          "required": ["partyRole"],
+                                          "required": [
+                                            "partyRole"
+                                          ],
                                           "properties": {
                                             "partyRole": {
                                               "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items/partyRole",
@@ -212,53 +229,60 @@
                                               }
                                             }
                                           },
-                                          "allOf": [{
-                                            "if": {
-                                              "properties":
-                                              {
-                                                "partyRole":
-                                                {
-                                                  "type": "string",
-                                                  "const": "ACCUSED"
+                                          "allOf": [
+                                            {
+                                              "if": {
+                                                "properties": {
+                                                  "partyRole": {
+                                                    "type": "string",
+                                                    "const": "ACCUSED"
+                                                  }
                                                 }
+                                              },
+                                              "then": {
+                                                "anyOf": [
+                                                  {
+                                                    "required": [
+                                                      "individualDetails"
+                                                    ]
+                                                  },
+                                                  {
+                                                    "required": [
+                                                      "organisationDetails"
+                                                    ]
+                                                  }
+                                                ]
+                                              },
+                                              "else": {
+                                                "required": [
+                                                  "organisationDetails"
+                                                ]
                                               }
-                                            },
-                                            "then": {
-                                              "anyOf": [
-                                                {
-                                                  "required": ["individualDetails"]
-                                                },
-                                                {
-                                                  "required": ["organisationDetails"]
-                                                }
-                                              ]
-                                            },
-                                            "else": {
-                                              "required": ["organisationDetails"]
-                                            }}]
-                                        }
-                                      },
-                                      "offence": {
-                                        "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/offence",
-                                        "title": "offence",
-                                        "description": "The offence and details of offences associated with the case",
-                                        "type": "array",
-                                        "items": {
-                                          "type": "object",
-                                          "required": [
-                                            "offenceTitle"
-                                          ],
-                                          "properties": {
-                                            "offenceTitle": {
-                                              "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/offence/offenceTitle",
-                                              "description": "Short description of offence",
-                                              "title": "Offence title",
-                                              "type": "string",
-                                              "default": "",
-                                              "examples": [
-                                                "drink driving"
-                                              ],
-                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                            }
+                                          ]
+                                        },
+                                        "offence": {
+                                          "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/party/offence",
+                                          "title": "offence",
+                                          "description": "The offence and details of offences associated with the case",
+                                          "type": "array",
+                                          "items": {
+                                            "type": "object",
+                                            "required": [
+                                              "offenceTitle"
+                                            ],
+                                            "properties": {
+                                              "offenceTitle": {
+                                                "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/party/offence/offenceTitle",
+                                                "description": "Short description of offence",
+                                                "title": "Offence title",
+                                                "type": "string",
+                                                "default": "",
+                                                "examples": [
+                                                  "drink driving"
+                                                ],
+                                                "pattern": "^(?!.*<[^>]+>).*$"
+                                              }
                                             }
                                           }
                                         }
