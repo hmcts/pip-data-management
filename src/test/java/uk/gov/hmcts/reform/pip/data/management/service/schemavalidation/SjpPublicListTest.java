@@ -49,7 +49,7 @@ class SjpPublicListTest {
     private static final String SITTINGS_SCHEMA = "sittings";
     private static final String HEARING_SCHEMA = "hearing";
     private static final String PARTY_SCHEMA = "party";
-    private static final String OFFENCE_SCHEMA = "offence";
+    private static final String OFFENCE_SCHEMA = "offenceTitle";
     private static final String INDIVIDUAL_DETAILS_SCHEMA  = "individualDetails";
     private static final String ADDRESS_SCHEMA  = "address";
     private static final String SOURCE_ARTEFACT_ID = "sourceArtefactId";
