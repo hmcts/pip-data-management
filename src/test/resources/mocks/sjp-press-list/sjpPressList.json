@@ -38,14 +38,14 @@
                             "organisationDetails": {
                               "organisationName": "This is an organisation"
                             }
-                          }
-                        ],
-                        "offence": [
-                          {
-                            "offenceTitle": "This is an offence title",
-                            "offenceWording": "This is offence wording",
-                            "reportingRestriction": true
-                          }
+                          },
+                          "offence": [
+                            {
+                              "offenceTitle": "This is an offence title",
+                              "offenceWording": "This is offence wording",
+                              "reportingRestriction": true
+                            }
+                          ]
                         ],
                         "case": [
                           {
@@ -71,14 +71,14 @@
                             "organisationDetails": {
                               "organisationName": "This is an organisation"
                             }
-                          }
-                        ],
-                        "offence": [
-                          {
-                            "offenceTitle": "This is an offence title",
-                            "offenceWording": "This is offence wording",
-                            "reportingRestriction": true
-                          }
+                          },
+                          "offence": [
+                            {
+                              "offenceTitle": "This is an offence title",
+                              "offenceWording": "This is offence wording",
+                              "reportingRestriction": true
+                            }
+                          ]
                         ],
                         "case": [
                           {

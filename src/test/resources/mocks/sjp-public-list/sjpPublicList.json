@@ -26,17 +26,18 @@
                               }
                             }
                           },
+
                           {
                             "partyRole": "PROSECUTOR",
                             "organisationDetails": {
                               "organisationName": "This is a prosecutor organisation"
                             }
-                          }
-                        ],
-                        "offence": [
-                          {
-                            "offenceTitle": "This is an offence title"
-                          }
+                          },
+                          "offence": [
+                            {
+                              "offenceTitle": "This is an offence title"
+                            }
+                          ]
                         ]
                       },
                       {
