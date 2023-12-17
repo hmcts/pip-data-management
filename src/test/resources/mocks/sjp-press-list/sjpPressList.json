@@ -39,52 +39,54 @@
                               "organisationName": "This is an organisation"
                             }
                           },
-                          "offence" : [
-                            {
-                              "offenceTitle": "This is an offence title",
-                              "offenceWording": "This is offence wording",
-                              "reportingRestriction": true
-                            }
-                            }
-                          ],
-                          "case" : [
-                            {
-                              "caseUrn": "ABC12345"
-                            }
-                          ]
-                          },
                           {
-                            "party": [
+                            "offence": [
                               {
-                                "partyRole": "ACCUSED",
-                                "organisationDetails": {
-                                  "organisationName": "Accused's organisation",
-                                  "organisationAddress": {
-                                    "county": "County A",
-                                    "town": "Month A",
-                                    "postCode": "AA1 AA1"
-                                  }
-                                }
-                              },
-                              {
-                                "partyRole": "PROSECUTOR",
-                                "organisationDetails": {
-                                  "organisationName": "This is an organisation"
-                                }
-                              },
-                              "offence" : [
-                                {
-                                  "offenceTitle": "This is an offence title",
-                                  "offenceWording": "This is offence wording",
-                                  "reportingRestriction": true
-                                }
-                              ]
-                            ],
-                            "case": [
-                              {
-                                "caseUrn": "ABC12345"
+                                "offenceTitle": "This is an offence title",
+                                "offenceWording": "This is offence wording",
+                                "reportingRestriction": true
                               }
                             ]
+                          }
+                        ],
+                        "case": [
+                          {
+                            "caseUrn": "ABC12345"
+                          }
+                        ]
+                      },
+                      {
+                        "party": [
+                          {
+                            "partyRole": "ACCUSED",
+                            "organisationDetails": {
+                              "organisationName": "Accused's organisation",
+                              "organisationAddress": {
+                                "county": "County A",
+                                "town": "Month A",
+                                "postCode": "AA1 AA1"
+                              }
+                            }
+                          },
+                          {
+                            "partyRole": "PROSECUTOR",
+                            "organisationDetails": {
+                              "organisationName": "This is an organisation"
+                            }
+                          },
+                          {
+                            "offence": [
+                              {
+                                "offenceTitle": "This is an offence title",
+                                "offenceWording": "This is offence wording",
+                                "reportingRestriction": true
+                              }
+                            ]
+                          }
+                        ],
+                        "case": [
+                          {
+                            "caseUrn": "ABC12345"
                           }
                         ]
                       }
@@ -94,6 +96,8 @@
               }
             ]
           }
-        }
         ]
       }
+    }
+  ]
+}

@@ -32,11 +32,13 @@
                               "organisationName": "This is a prosecutor organisation"
                             }
                           },
-                          "offence": [
-                            {
-                              "offenceTitle": "This is an offence title"
-                            }
-                          ]
+                          {
+                            "offence": [
+                              {
+                                "offenceTitle": "This is an offence title"
+                              }
+                            ]
+                          }
                         ]
                       },
                       {
@@ -55,11 +57,13 @@
                             "organisationDetails": {
                               "organisationName": "This is a prosecutor organisation 2"
                             }
-                          }
-                        ],
-                        "offence": [
+                          },
                           {
-                            "offenceTitle": "This is an offence title 2"
+                            "offence": [
+                              {
+                                "offenceTitle": "This is an offence title 2"
+                              }
+                            ]
                           }
                         ]
                       }
