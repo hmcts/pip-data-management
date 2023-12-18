@@ -210,6 +210,31 @@
                                                   "$ref": "#/definitions/address"
                                                 }
                                               }
+                                            },
+                                            "offence": {
+                                              "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/party/offence",
+                                              "title": "offence",
+                                              "description": "The offence and details of offences associated with the case",
+                                              "type": "array",
+                                              "items": {
+                                                "type": "object",
+                                                "required": [
+                                                  "offenceTitle"
+                                                ],
+                                                "properties": {
+                                                  "offenceTitle": {
+                                                    "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/party/offence/offenceTitle",
+                                                    "description": "Short description of offence",
+                                                    "title": "Offence title",
+                                                    "type": "string",
+                                                    "default": "",
+                                                    "examples": [
+                                                      "drink driving"
+                                                    ],
+                                                    "pattern": "^(?!.*<[^>]+>).*$"
+                                                  }
+                                                }
+                                              }
                                             }
                                           },
                                           "allOf": [{
@@ -236,31 +261,6 @@
                                             "else": {
                                               "required": ["organisationDetails"]
                                             }}]
-                                        },
-                                        "offence": {
-                                          "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/party/offence",
-                                          "title": "offence",
-                                          "description": "The offence and details of offences associated with the case",
-                                          "type": "array",
-                                          "items": {
-                                            "type": "object",
-                                            "required": [
-                                              "offenceTitle"
-                                            ],
-                                            "properties": {
-                                              "offenceTitle": {
-                                                "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/party/offence/offenceTitle",
-                                                "description": "Short description of offence",
-                                                "title": "Offence title",
-                                                "type": "string",
-                                                "default": "",
-                                                "examples": [
-                                                  "drink driving"
-                                                ],
-                                                "pattern": "^(?!.*<[^>]+>).*$"
-                                              }
-                                            }
-                                          }
                                         }
                                       }
                                     }
