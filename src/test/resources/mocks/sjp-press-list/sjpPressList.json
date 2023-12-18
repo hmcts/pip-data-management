@@ -31,15 +31,7 @@
                                 ]
                               },
                               "title": "This is a title"
-                            }
-                          },
-                          {
-                            "partyRole": "PROSECUTOR",
-                            "organisationDetails": {
-                              "organisationName": "This is an organisation"
-                            }
-                          },
-                          {
+                            },
                             "offence": [
                               {
                                 "offenceTitle": "This is an offence title",
@@ -47,6 +39,12 @@
                                 "reportingRestriction": true
                               }
                             ]
+                          },
+                          {
+                            "partyRole": "PROSECUTOR",
+                            "organisationDetails": {
+                              "organisationName": "This is an organisation"
+                            }
                           }
                         ],
                         "case": [
@@ -66,15 +64,7 @@
                                 "town": "Month A",
                                 "postCode": "AA1 AA1"
                               }
-                            }
-                          },
-                          {
-                            "partyRole": "PROSECUTOR",
-                            "organisationDetails": {
-                              "organisationName": "This is an organisation"
-                            }
-                          },
-                          {
+                            },
                             "offence": [
                               {
                                 "offenceTitle": "This is an offence title",
@@ -82,6 +72,12 @@
                                 "reportingRestriction": true
                               }
                             ]
+                          },
+                          {
+                            "partyRole": "PROSECUTOR",
+                            "organisationDetails": {
+                              "organisationName": "This is an organisation"
+                            }
                           }
                         ],
                         "case": [

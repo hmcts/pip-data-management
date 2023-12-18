@@ -24,20 +24,18 @@
                               "address": {
                                 "postCode": "AA1"
                               }
-                            }
+                            },
+                            "offence": [
+                              {
+                                "offenceTitle": "This is an offence title"
+                              }
+                            ]
                           },
                           {
                             "partyRole": "PROSECUTOR",
                             "organisationDetails": {
                               "organisationName": "This is a prosecutor organisation"
                             }
-                          },
-                          {
-                            "offence": [
-                              {
-                                "offenceTitle": "This is an offence title"
-                              }
-                            ]
                           }
                         ]
                       },
@@ -50,20 +48,18 @@
                               "organisationAddress": {
                                 "postCode": "AA1A"
                               }
-                            }
+                            },
+                            "offence": [
+                              {
+                                "offenceTitle": "This is an offence title 2"
+                              }
+                            ]
                           },
                           {
                             "partyRole": "PROSECUTOR",
                             "organisationDetails": {
                               "organisationName": "This is a prosecutor organisation 2"
                             }
-                          },
-                          {
-                            "offence": [
-                              {
-                                "offenceTitle": "This is an offence title 2"
-                              }
-                            ]
                           }
                         ]
                       }
