@@ -255,8 +255,10 @@ class SjpPublicListTest {
             JsonNode node = mapper.readValue(text, JsonNode.class);
             ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0).get(COURT_HOUSE_SCHEMA)
                 .get(COURT_ROOM_SCHEMA).get(0).get(SESSION_SCHEMA).get(0)
-                .get(SITTINGS_SCHEMA).get(0).get(HEARING_SCHEMA).get(0))
-                .remove(OFFENCE_SCHEMA);
+                .get(SITTINGS_SCHEMA).get(0).get(HEARING_SCHEMA).get(0)
+                .get(PARTY_SCHEMA).get(0))
+                .remove("offence");
+
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
@@ -440,6 +442,7 @@ class SjpPublicListTest {
             ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0).get(COURT_HOUSE_SCHEMA)
                 .get(COURT_ROOM_SCHEMA).get(0).get(SESSION_SCHEMA).get(0)
                 .get(SITTINGS_SCHEMA).get(0).get(HEARING_SCHEMA).get(0)
+                .get(PARTY_SCHEMA).get(0)
                 .get(OFFENCE_SCHEMA).get(0)).remove("offenceTitle");
 
             String listJson = node.toString();

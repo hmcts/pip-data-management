@@ -276,8 +276,9 @@ class SjpPressListTest {
             JsonNode node = OBJECT_MAPPER.readValue(text, JsonNode.class);
             ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0).get(COURT_HOUSE_SCHEMA)
                 .get(COURT_ROOM_SCHEMA).get(0).get(SESSION_SCHEMA).get(0)
-                .get(SITTINGS_SCHEMA).get(0).get(HEARING_SCHEMA).get(0))
-                .remove(OFFENCE_SCHEMA);
+                .get(SITTINGS_SCHEMA).get(0).get(HEARING_SCHEMA).get(0)
+                .get(PARTY_SCHEMA).get(0))
+                .remove("offence");
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->

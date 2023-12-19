@@ -378,10 +378,10 @@
                                             "then": {
                                               "anyOf": [
                                                 {
-                                                  "required": ["individualDetails"]
+                                                  "required": ["individualDetails", "offence"]
                                                 },
                                                 {
-                                                  "required": ["organisationDetails"]
+                                                  "required": ["organisationDetails", "offence"]
                                                 }
                                               ]
                                             },
