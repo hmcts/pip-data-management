@@ -24,17 +24,17 @@
                               "address": {
                                 "postCode": "This is a postcode"
                               }
-                            }
+                            },
+                            "offence": [
+                              {
+                              }
+                            ]
                           },
                           {
                             "partyRole": "PROSECUTOR",
                             "organisationDetails": {
                               "organisationName": "This is an organisation"
                             }
-                          }
-                        ],
-                        "offence": [
-                          {
                           }
                         ]
                       }
