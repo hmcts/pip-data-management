@@ -34,20 +34,20 @@
                               },
                               "title": "This is a title",
                               "individualMiddleName": "This is a middle name"
-                            }
+                            },
+                            "offence": [
+                              {
+                                "offenceTitle": "This is an offence title",
+                                "offenceWording": "This is offence wording",
+                                "reportingRestriction": true
+                              }
+                            ]
                           },
                           {
                             "partyRole": "PROSECUTOR",
                             "organisationDetails": {
                               "organisationName": "This is an organisation"
                             }
-                          }
-                        ],
-                        "offence": [
-                          {
-                            "offenceTitle": "This is an offence title",
-                            "offenceWording": "This is offence wording",
-                            "reportingRestriction": true
                           }
                         ],
                         "case": [
