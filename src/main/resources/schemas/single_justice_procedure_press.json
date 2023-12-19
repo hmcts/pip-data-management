@@ -146,7 +146,7 @@
                                     "type": "object",
                                     "description": "Hearing details of the case and associated details for the sitting",
                                     "title": "Hearing",
-                                    "required": [ "case", "party", "offence"],
+                                    "required": [ "case", "party"],
                                     "properties": {
                                       "case": {
                                         "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case",
@@ -189,7 +189,7 @@
                                           "title": "Party",
                                           "description": "A party",
                                           "type": "object",
-                                          "required": ["partyRole"],
+                                          "required": ["partyRole", "offence"],
                                           "properties": {
                                             "partyRole": {
                                               "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items/partyRole",
