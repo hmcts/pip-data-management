@@ -24,18 +24,18 @@
                               "address": {
                                 "postCode": "AA1"
                               }
-                            }
+                            },
+                            "offence": [
+                              {
+                                "offenceTitle": "This is an offence title"
+                              }
+                            ]
                           },
                           {
                             "partyRole": "PROSECUTOR",
                             "organisationDetails": {
                               "organisationName": "This is an organisation"
                             }
-                          }
-                        ],
-                        "offence": [
-                          {
-                            "offenceTitle": "This is an offence title"
                           }
                         ]
                       }
