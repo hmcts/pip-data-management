@@ -9,6 +9,7 @@ locals {
   env_long_name = var.env == "sbox" ? "sandbox" : var.env == "stg" ? "staging" : var.env
 
   deploy_apim = local.env == "stg" || local.env == "demo" || local.env == "test" || local.env == "sbox" || local.env == "prod" ? 1 : 0
+  deploy_apim2 = local.env == "test" ? 1 : 0
 
   prefix            = "${var.product}-ss"
   prefix_no_special = replace(local.prefix, "-", "")

@@ -6,6 +6,12 @@ locals {
     , "{CLIENT_ID}", length(data.azurerm_key_vault_secret.data_client_id) > 0 ? data.azurerm_key_vault_secret.data_client_id[0].value : "")
     , "{CLIENT_PWD}", length(data.azurerm_key_vault_secret.data_client_pwd) > 0 ? data.azurerm_key_vault_secret.data_client_pwd[0].value : "")
   , "{CLIENT_SCOPE}", length(data.azurerm_key_vault_secret.data_client_scope) > 0 ? data.azurerm_key_vault_secret.data_client_scope[0].value : "")
+
+  apim_api_name2  = "${var.product}-data-management-api-test"
+  api_policy_raw2 = file("./resources2/api-policy/api-policy.xml")
+  api_policy2 = replace(replace(local.api_policy_raw2, "{TENANT_ID}", data.azurerm_client_config.current.tenant_id)
+    , "{ENV}", local.env)
+
 }
 module "apim_api" {
   count  = local.deploy_apim
@@ -36,4 +42,35 @@ module "apim_api_policy" {
   depends_on = [
     module.apim_api
   ]
-} 
+}
+
+module "apim_api2" {
+  count  = local.deploy_apim2
+  source = "git@github.com:hmcts/cnp-module-api-mgmt-api?ref=master"
+
+  api_mgmt_name         = local.apim_name
+  api_mgmt_rg           = local.apim_rg
+  display_name          = local.apim_api_name2
+  name                  = local.apim_api_name2
+  path                  = "${var.product}/data-management-test"
+  product_id            = data.azurerm_api_management_product.apim_product[0].product_id
+  protocols             = ["http", "https"]
+  revision              = "1"
+  service_url           = "https://${local.base_url}"
+  swagger_url           = file("./resources2/swagger/api-swagger.json")
+  content_format        = "openapi+json"
+  subscription_required = false
+}
+
+module "apim_api_policy2" {
+  count                  = local.deploy_apim2
+  source                 = "git@github.com:hmcts/cnp-module-api-mgmt-api-policy?ref=master"
+  api_mgmt_name          = local.apim_name
+  api_mgmt_rg            = local.apim_rg
+  api_name               = local.apim_api_name2
+  api_policy_xml_content = local.api_policy2
+
+  depends_on = [
+    module.apim_api2
+  ]
+}
