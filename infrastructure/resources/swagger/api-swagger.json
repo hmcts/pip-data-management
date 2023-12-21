@@ -1,138 +1,134 @@
 {
-  "openapi":"3.0.3",
-  "info":{
-    "title":"P&I Data Management Service",
-    "description":"Use this service to  manage data based on data governance, retention and security policies. You can find out more about how the code works at https://github.com/hmcts/pip-data-management",
-    "contact":{
-      "name":"P&I Team",
-      "url":"https://tools.hmcts.net/confluence/display/PUBH/Publication+Hub",
-      "email":"publicationinformation@hmcts.net"
+  "openapi": "3.0.3",
+  "info": {
+    "title": "CaTH Data Management Service",
+    "description": "Use this service for CRUD operations of court publications and Locations.",
+    "contact": {
+      "name": "P&I Team",
+      "url": "https://tools.hmcts.net/confluence/display/PUBH/Publication+Hub",
+      "email": "publicationinformation@hmcts.net"
     },
-    "version":"1.0.0"
+    "version": "1.0.0"
   },
-  "servers":[
+  "servers": [
     {
-      "url":"https://pip-data-management.staging.platform.hmcts.net",
-      "description":"Inferred Url"
+      "url": "https://pip-data-management.staging.platform.hmcts.net",
+      "description": "Generated server url"
     }
   ],
-  "tags":[
+  "tags": [
     {
-      "name":"Data Management Publications API",
-      "description":"Publication Controller"
+      "name": "Data Management Publications API",
+      "description": "Publication Controller"
     }
   ],
-  "paths":{
-    "/publication":{
-      "post":{
-        "tags":[
+  "paths": {
+    "/publication": {
+      "post": {
+        "tags": [
           "Data Management Publications API"
         ],
-        "summary":"Upload a new publication",
-        "operationId":"uploadPublicationUsingPOST_1",
-        "parameters":[
+        "summary": "Upload a new publication",
+        "operationId": "uploadPublication",
+        "parameters": [
           {
-            "name":"x-provenance",
-            "in":"header",
-            "description":"x-provenance",
-            "required":true,
-            "schema":{
-              "type":"string"
+            "name": "x-provenance",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
             }
           },
           {
-            "name":"x-source-artefact-id",
-            "in":"header",
-            "description":"x-source-artefact-id",
-            "required":false,
-            "schema":{
-              "type":"string"
+            "name": "x-source-artefact-id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
             }
           },
           {
-            "name":"x-type",
-            "in":"header",
-            "description":"x-type",
-            "required":true,
-            "schema":{
-              "type":"string",
-              "enum":[
-                "GENERAL_PUBLICATION",
+            "name": "x-type",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "LIST",
                 "JUDGEMENTS_AND_OUTCOMES",
-                "LIST"
+                "GENERAL_PUBLICATION"
               ]
             }
           },
           {
-            "name":"x-sensitivity",
-            "in":"header",
-            "description":"x-sensitivity",
-            "required":false,
-            "schema":{
-              "type":"string",
-              "enum":[
+            "name": "x-sensitivity",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "PUBLIC",
                 "CLASSIFIED",
                 "INTERNAL",
-                "PRIVATE",
-                "PUBLIC"
+                "PRIVATE"
               ]
             }
           },
           {
-            "name":"x-language",
-            "in":"header",
-            "description":"x-language",
-            "required":true,
-            "schema":{
-              "type":"string",
-              "enum":[
-                "BI_LINGUAL",
+            "name": "x-language",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
                 "ENGLISH",
-                "WELSH"
+                "WELSH",
+                "BI_LINGUAL"
               ]
             }
           },
           {
-            "name":"x-display-from",
-            "in":"header",
-            "description":"x-display-from",
-            "required":false,
-            "schema":{
-              "type":"string",
-              "format":"date-time"
+            "name": "x-display-from",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
             }
           },
           {
-            "name":"x-display-to",
-            "in":"header",
-            "description":"x-display-to",
-            "required":false,
-            "schema":{
-              "type":"string",
-              "format":"date-time"
+            "name": "x-display-to",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
             }
           },
           {
-            "name":"x-list-type",
-            "in":"header",
-            "description":"x-list-type",
-            "required":true,
-            "schema":{
-              "type":"string",
-              "enum":[
-                "CIVIL_DAILY_CAUSE_LIST",
+            "name": "x-list-type",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "SJP_PUBLIC_LIST",
+                "SJP_PRESS_LIST",
+                "SJP_DELTA_PRESS_LIST",
+                "SJP_PRESS_REGISTER",
                 "CROWN_DAILY_LIST",
                 "CROWN_FIRM_LIST",
                 "CROWN_WARNED_LIST",
-                "FAMILY_DAILY_CAUSE_LIST",
-                "CIVIL_AND_FAMILY_DAILY_CAUSE_LIST",
                 "MAGISTRATES_PUBLIC_LIST",
                 "MAGISTRATES_STANDARD_LIST",
-                "SJP_PRESS_LIST",
-                "SJP_PUBLIC_LIST",
-                "SSCS_DAILY_LIST",
+                "CIVIL_DAILY_CAUSE_LIST",
+                "FAMILY_DAILY_CAUSE_LIST",
+                "CIVIL_AND_FAMILY_DAILY_CAUSE_LIST",
+                "COP_DAILY_CAUSE_LIST",
                 "ET_FORTNIGHTLY_PRESS_LIST",
                 "ET_DAILY_LIST",
+                "SSCS_DAILY_LIST",
+                "SSCS_DAILY_LIST_ADDITIONAL_HEARINGS",
                 "IAC_DAILY_LIST",
                 "CARE_STANDARDS_LIST",
                 "PRIMARY_HEALTH_LIST",
@@ -142,144 +138,140 @@
             }
           },
           {
-            "name":"x-court-id",
-            "in":"header",
-            "description":"x-court-id",
-            "required":true,
-            "schema":{
-              "type":"string"
+            "name": "x-court-id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
             }
           },
           {
-            "name":"x-content-date",
-            "in":"header",
-            "description":"x-content-date",
-            "required":true,
-            "schema":{
-              "type":"string",
-              "format":"date-time"
+            "name": "x-content-date",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "x-issuer-email",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
             }
           }
         ],
-        "requestBody":{
-          "content":{
-            "multipart/form-data":{
-              "schema":{
-                "required":[
-                  "file"
-                ],
-                "type":"object",
-                "properties":{
-                  "file":{
-                    "type":"string",
-                    "description":"file",
-                    "format":"binary"
-                  }
-                }
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string"
               }
             },
-            "application/json":{
-              "schema":{
-                "required":[
-                  "string"
+            "multipart/form-data": {
+              "schema": {
+                "required": [
+                  "file"
                 ],
-                "type":"string"
-              }
-            }
-          }
-        },
-        "responses":{
-          "200":{
-            "description":"OK",
-            "content":{
-              "*/*":{
-                "schema":{
-                  "$ref":"#/components/schemas/Artefact"
-                }
-              },
-              "multipart/form-data":{
-                "schema":{
-                  "$ref":"#/components/schemas/Artefact"
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
                 }
               }
             }
           },
-          "201":{
-            "description":"Artefact.class instance for the artefact that has been created"
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Artefact.class instance for the artefact that has been created",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Artefact"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "User has not been authorized",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Artefact"
+                }
+              }
+            }
           }
         }
       }
     },
-    "/":{
-      "get":{
-        "tags":[
-          "Data Management Publications API"
+    "/": {
+      "get": {
+        "tags": [
+          "Data Management root API"
         ],
-        "summary":"Get Welcome",
-        "operationId":"getWelcome",
-        "parameters":[],
-        "responses":{
-          "200":{
-            "description":"OK",
-            "content":{
-              "*/*":{
-                "schema":{
-                  "$ref":"#/components/schemas/Artefact"
-                }
-              },
-              "multipart/form-data":{
-                "schema":{
-                  "$ref":"#/components/schemas/Artefact"
+        "summary": "Get Welcome",
+        "operationId": "welcome",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "string"
                 }
               }
             }
-          },
-          "201":{
-            "description":"Artefact.class instance for the artefact that has been created"
           }
         }
       }
     }
   },
-  "components":{
-    "schemas":{
-      "Artefact":{
-        "title":"Artefact",
-        "type":"object",
-        "properties":{
-          "artefactId":{
-            "type":"string",
-            "format":"uuid"
+  "components": {
+    "schemas": {
+      "Artefact": {
+        "title": "Artefact",
+        "type": "object",
+        "properties": {
+          "artefactId": {
+            "type": "string",
+            "format": "uuid"
           },
-          "contentDate":{
-            "type":"string",
-            "format":"date-time"
+          "contentDate": {
+            "type": "string",
+            "format": "date-time"
           },
-          "courtId":{
-            "type":"string"
+          "courtId": {
+            "type": "string"
           },
-          "displayFrom":{
-            "type":"string",
-            "format":"date-time"
+          "displayFrom": {
+            "type": "string",
+            "format": "date-time"
           },
-          "displayTo":{
-            "type":"string",
-            "format":"date-time"
+          "displayTo": {
+            "type": "string",
+            "format": "date-time"
           },
-          "isFlatFile":{
-            "type":"boolean"
+          "isFlatFile": {
+            "type": "boolean"
           },
-          "language":{
-            "type":"string",
-            "enum":[
+          "language": {
+            "type": "string",
+            "enum": [
               "BI_LINGUAL",
               "ENGLISH",
               "WELSH"
             ]
           },
-          "listType":{
-            "type":"string",
-            "enum":[
+          "listType": {
+            "type": "string",
+            "enum": [
               "CIVIL_DAILY_CAUSE_LIST",
               "CROWN_DAILY_LIST",
               "CROWN_FIRM_LIST",
@@ -293,36 +285,36 @@
               "SSCS_DAILY_LIST"
             ]
           },
-          "payload":{
-            "type":"string"
+          "payload": {
+            "type": "string"
           },
-          "provenance":{
-            "type":"string"
+          "provenance": {
+            "type": "string"
           },
-          "search":{
-            "type":"object",
-            "additionalProperties":{
-              "type":"array",
-              "items":{
-                "type":"object"
+          "search": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "object"
               }
             }
           },
-          "sensitivity":{
-            "type":"string",
-            "enum":[
+          "sensitivity": {
+            "type": "string",
+            "enum": [
               "CLASSIFIED",
               "INTERNAL",
               "PRIVATE",
               "PUBLIC"
             ]
           },
-          "sourceArtefactId":{
-            "type":"string"
+          "sourceArtefactId": {
+            "type": "string"
           },
-          "type":{
-            "type":"string",
-            "enum":[
+          "type": {
+            "type": "string",
+            "enum": [
               "GENERAL_PUBLICATION",
               "JUDGEMENTS_AND_OUTCOMES",
               "LIST"
