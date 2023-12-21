@@ -1,7 +1,6 @@
 # pip-data-management
 ![alt-text](./hmctsLogo.png)
 
-
 ## Table of Contents
 
 - [Overview](#overview)
@@ -22,6 +21,7 @@
   - [Getting a list of all hearing locations](#getting-a-list-of-all-hearing-locations)
   - [Getting a specific hearing location](#getting-a-specific-hearing-location)
 - [Deployment](#deployment)
+- [Azure blob storage](#azure-blob-storage)
 - [Creating or debugging of SQL Scripts with Flyway](#creating-or-debugging-of-sql-scripts-with-flyway)
   - [Pipeline](#pipeline)
   - [Local](#local)
