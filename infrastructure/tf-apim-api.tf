@@ -9,8 +9,10 @@ locals {
 
   apim_api_name2  = "${var.product}-data-management-api-test"
   api_policy_raw2 = file("./resources2/api-policy/api-policy.xml")
-  api_policy2 = replace(replace(local.api_policy_raw2, "{TENANT_ID}", data.azurerm_client_config.current.tenant_id)
-    , "{ENV}", local.env)
+  api_policy2 = replace(replace(replace(local.api_policy_raw2,
+    "{TENANT_ID}", data.azurerm_client_config.current.tenant_id),
+    "{CLIENT_ID}", length(data.azurerm_key_vault_secret.data_client_id) > 0 ? data.azurerm_key_vault_secret.data_client_id[0].value : ""),
+    "{ENV}", local.env)
 
 }
 module "apim_api" {
