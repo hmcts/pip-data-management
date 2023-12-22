@@ -12,11 +12,15 @@ import java.util.List;
  */
 @Service
 public class CaseEventGlossaryService {
+    private final CourtsAndHearings courtsAndHearings;
+
     @Autowired
-    private CourtsAndHearings courtsAndHearings;
+    public CaseEventGlossaryService(CourtsAndHearings courtsAndHearings) {
+        this.courtsAndHearings = courtsAndHearings;
+    }
 
     /**
-     * Gets all court event event glossary.
+     * Gets all court event glossary.
      *
      * @return List of Court event glossary
      */

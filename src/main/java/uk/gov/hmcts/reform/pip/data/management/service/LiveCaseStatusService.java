@@ -10,9 +10,12 @@ import java.util.List;
 
 @Service
 public class LiveCaseStatusService {
+    private final CourtsAndHearings courtsAndHearings;
 
     @Autowired
-    private CourtsAndHearings courtsAndHearings;
+    public LiveCaseStatusService(CourtsAndHearings courtsAndHearings) {
+        this.courtsAndHearings = courtsAndHearings;
+    }
 
     public List<LiveCaseStatus> handleLiveCaseRequest(int courtId) {
         List<LiveCaseStatus> result = courtsAndHearings.getLiveCaseStatus(courtId);

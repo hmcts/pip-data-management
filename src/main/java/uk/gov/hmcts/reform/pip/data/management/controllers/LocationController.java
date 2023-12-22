@@ -36,13 +36,17 @@ import java.util.List;
 @RequestMapping("/locations")
 public class LocationController {
 
-    @Autowired
-    private LocationService locationService;
-
     private static final String OK_CODE = "200";
     private static final String BAD_REQUEST_CODE = "400";
     private static final String AUTH_ERROR_CODE = "403";
     private static final String NOT_FOUND_CODE = "404";
+
+    private final LocationService locationService;
+
+    @Autowired
+    public LocationController(LocationService locationService) {
+        this.locationService = locationService;
+    }
 
     @ApiResponse(responseCode = OK_CODE, description = "All courts returned")
     @Operation(summary = "Get all locations with their hearings")
