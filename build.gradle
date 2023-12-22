@@ -163,8 +163,6 @@ sonarqube {
     property "sonar.projectName", "PIP Data Management"
     property "sonar.projectKey", "pip-data-management"
     property "sonar.exclusions", sonarExclusions.join(', ')
-    property "sonar.login", "admin"
-    property "sonar.password", "Qenigman122"
   }
 }
 
