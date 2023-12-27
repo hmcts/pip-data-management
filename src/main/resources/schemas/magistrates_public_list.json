@@ -80,23 +80,6 @@
       "description": "Can be an array of objects as such will be a collective and use plurals for object arrays (clerks and scribes etc included)",
       "type": "object",
       "properties": {
-        "johNameSurname": {
-          "description": "First and Surname of the JOH",
-          "title": "JOH Name",
-          "type": "string",
-          "examples": [
-            "John Smith"
-          ],
-          "default": "",
-          "pattern": "^(?!.*<[^>]+>).*$"
-        },
-        "role": {
-          "description": "Role of the judiciary",
-          "title": "Role",
-          "type": "string",
-          "enum": ["JUDGE", "MAGISTRATE", "CLERK"],
-          "default": ""
-        },
         "isPresiding": {
           "description": "A flag to indicate whether a judiciary is presiding",
           "title": "Is Presiding",
@@ -201,17 +184,6 @@
       "title": "Location Details",
       "type": "object",
       "properties": {
-        "location": {
-          "$id": "#root/locationDetails/location",
-          "description": "Name of the location",
-          "title": "Location Name",
-          "type": "string",
-          "default": "",
-          "examples": [
-            "Location 1"
-          ],
-          "pattern": "^(?!.*<[^>]+>).*$"
-        },
         "jurisdiction": {
           "$id": "#root/locationDetails/jurisdiction",
           "description": "Jurisdiction",
@@ -222,36 +194,6 @@
             "Family court"
           ],
           "pattern": "^(?!.*<[^>]+>).*$"
-
-        },
-        "region": {
-          "$id": "#root/locationDetails/region",
-          "description": "Region details",
-          "title": "Region Details",
-          "type": "object",
-          "properties": {
-            "name": {
-              "$id": "#root/locationDetails/region/name",
-              "description": "region name",
-              "title": "Region name",
-              "type": "string",
-              "default": "",
-              "examples": [
-                "Wales"
-              ],
-              "pattern": "^(?!.*<[^>]+>).*$"
-            },
-            "regionalJOH": {
-              "$id": "#root/locationDetails/region/regionalJOH",
-              "type": "array",
-              "description": "Judiciary for the region",
-              "title": "Judiciary",
-              "items":{
-                "type": "object",
-                "$ref": "#/definitions/judiciary"
-              }
-            }
-          }
         }
       }
     },
@@ -282,12 +224,6 @@
                   "PRESTON"
                 ],
                 "pattern": "^(?!.*<[^>]+>).*$"
-              },
-              "courtHouseContact": {
-                "$id": "#root/courtLists/courtList/courtHouse/courtHouseContact",
-                "description": "The contact for the court house",
-                "title": "Court House Contact",
-                "$ref": "#/definitions/venueContact"
               },
               "courtRoom": {
                 "$id": "#root/courtLists/courtRoom",
@@ -463,17 +399,6 @@
                                               "description": "Individual Details",
                                               "type": "object",
                                               "properties": {
-                                                "title": {
-                                                  "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items/individualDetails/title",
-                                                  "description": "Title of individual",
-                                                  "title": "Title",
-                                                  "type": "string",
-                                                  "examples": [
-                                                    "Mr"
-                                                  ],
-                                                  "default": "",
-                                                  "pattern": "^(?!.*<[^>]+>).*$"
-                                                },
                                                 "individualForenames": {
                                                   "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items/individualDetails/individualForenames",
                                                   "description": "Forename of party",
@@ -481,17 +406,6 @@
                                                   "type": "string",
                                                   "examples": [
                                                     "John Smith"
-                                                  ],
-                                                  "default": "",
-                                                  "pattern": "^(?!.*<[^>]+>).*$"
-                                                },
-                                                "individualMiddleName": {
-                                                  "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items/individualDetails/individualMiddleName",
-                                                  "description": "Middle name of the individual",
-                                                  "title": "Individual Middle Name",
-                                                  "type": "string",
-                                                  "examples": [
-                                                    "MiddleName"
                                                   ],
                                                   "default": "",
                                                   "pattern": "^(?!.*<[^>]+>).*$"
