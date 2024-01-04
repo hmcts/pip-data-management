@@ -1,7 +1,6 @@
 # pip-data-management
 ![alt-text](./hmctsLogo.png)
 
-
 ## Table of Contents
 
 - [Overview](#overview)
@@ -13,23 +12,25 @@
   - [Configuration](#configuration)
     - [Environment variables](#environment-variables)
       - [Getting all environment variables with python]()
-      - [Runtime secrets](#runtime-vars)
-      - [Test secrets](#test-vars)
+      - [Runtime secrets](#runtime-secrets)
+      - [Test secrets](#additional-test-secrets)
+    - [Application.yaml files](#applicationyaml-files)
 - [API Documentation](#api-documentation)
 - [Examples](#examples)
   - [Uploading a new publication](#uploading-a-new-publication)
   - [Getting a list of all hearing locations](#getting-a-list-of-all-hearing-locations)
   - [Getting a specific hearing location](#getting-a-specific-hearing-location)
 - [Deployment](#deployment)
+- [Azure blob storage](#azure-blob-storage)
+- [Creating or debugging of SQL Scripts with Flyway](#creating-or-debugging-of-sql-scripts-with-flyway)
+  - [Pipeline](#pipeline)
+  - [Local](#local)
 - [Monitoring and Logging](#monitoring-and-logging)
   - [Application Insights](#application-insights)
-- [Security Considerations](#security-considerations)
-- [Troubleshooting](#troubleshooting)
+- [Security Considerations](#security-&-quality-considerations)
 - [Test Suite](#test-suite)
 - [Contributing](#contributing)
-- [Changelog](#changelog)
 - [License](#license)
-- [Acknowledgments](#acknowledgments)
 
 
 ## Overview
@@ -116,29 +117,29 @@ Python scripts to quickly grab all environment variables (subject to Azure permi
 
 Below is a table of currently used environment variables for starting the service, along with a descriptor of their purpose and whether they are optional or required.
 
-|Variable|Description|Required?|
-|:----------|:-------------|------|
-|SPRING_PROFILES_ACTIVE|If set equal to `dev`, the application will run in insecure mode (i.e. no bearer token authentication required for incoming requests.) *Note - if you wish to communicate with other services, you will need to set them all to run in insecure mode in the same way.*|No|
-|APP_URI|Uniform Resource Identifier - the location where the application expects to receive bearer tokens after a successful authentication process. The application then validates received bearer tokens using the AUD parameter in the token|No|
-|CLIENT_ID|Unique ID for the application within Azure AD. Used to identify the application during authentication.|No|
-|TENANT_ID|Directory unique ID assigned to our Azure AD tenant. Represents the organisation that owns and manages the Azure AD instance.|No|
-|CLIENT_SECRET|Secret key for authentication requests to the service.|No|
-|CONNECTION_STRING|Connection string for connecting to the Azure Blob Storage service. Only required when running the application locally via Azurite.|Yes|
-|STORAGE_ACCOUNT_NAME|Azure storage account name used to construct the storage account endpoint. Not required when running the application locally.|No|
-|DB_HOST|Postgres Hostname|Yes|
-|DB_PORT|Postgres Port|Yes|
-|DB_NAME|Postgres Db name|Yes|
-|DB_USER|Postgres Username|Yes|
-|DB_PASS|Postgres Password|Yes|
-|ACCOUNT_MANAGEMENT_URL|URL used for connecting to the pip-account-management service. Defaults to staging if not provided.|No|
-|CHANNEL_MANAGEMENT_URL|URL used for connecting to the pip-channel-management service. Defaults to staging if not provided.|No|
-|PUBLICATION_SERVICES_URL|URL used for connecting to the pip-publication-services service. Defaults to staging if not provided.|No|
-|SUBSCRIPTION_MANAGEMENT_URL|URL used for connecting to the pip-subscription-management service. Defaults to staging if not provided.|No|
-|CHANNEL_MANAGEMENT_AZ_API|Used as part of the `scope` parameter when requesting a token from Azure. Used for service-to-service communication with the pip-channel-management service|No|
-|SUBSCRIPTION_MANAGEMENT_AZ_API|Used as part of the `scope` parameter when requesting a token from Azure. Used for service-to-service communication with the pip-subscription-management service|No|
-|PUBLICATION_SERVICES_AZ_API|Used as part of the `scope` parameter when requesting a token from Azure. Used for service-to-service communication with the pip-publication-services service|No|
-|ACCOUNT_MANAGEMENT_AZ_API|Used as part of the `scope` parameter when requesting a token from Azure. Used for service-to-service communication with the account management service|No|
-| ENABLE_TESTING_SUPPORT_API     | Used to conditionally enable testing support API. Default to `false` for the production environment only.|No|
+| Variable                      |Description|Required?|
+|:------------------------------|:-------------|------|
+| SPRING_PROFILES_ACTIVE        |If set equal to `dev`, the application will run in insecure mode (i.e. no bearer token authentication required for incoming requests.) *Note - if you wish to communicate with other services, you will need to set them all to run in insecure mode in the same way.*|No|
+| APP_URI                       |Uniform Resource Identifier - the location where the application expects to receive bearer tokens after a successful authentication process. The application then validates received bearer tokens using the AUD parameter in the token|No|
+| CLIENT_ID                     |Unique ID for the application within Azure AD. Used to identify the application during authentication.|No|
+| TENANT_ID                     |Directory unique ID assigned to our Azure AD tenant. Represents the organisation that owns and manages the Azure AD instance.|No|
+| CLIENT_SECRET                 |Secret key for authentication requests to the service.|No|
+| CONNECTION_STRING             |Connection string for connecting to the Azure Blob Storage service. Only required when running the application locally via Azurite.|Yes|
+| STORAGE_ACCOUNT_NAME          |Azure storage account name used to construct the storage account endpoint. Not required when running the application locally.|No|
+| DB_HOST                       |Postgres Hostname|Yes|
+| DB_PORT                       |Postgres Port|Yes|
+| DB_NAME                       |Postgres Db name|Yes|
+| DB_USER                       |Postgres Username|Yes|
+| DB_PASS                       |Postgres Password|Yes|
+| ACCOUNT_MANAGEMENT_URL        |URL used for connecting to the pip-account-management service. Defaults to staging if not provided.|No|
+| CHANNEL_MANAGEMENT_URL        |URL used for connecting to the pip-channel-management service. Defaults to staging if not provided.|No|
+| PUBLICATION_SERVICES_URL      |URL used for connecting to the pip-publication-services service. Defaults to staging if not provided.|No|
+| SUBSCRIPTION_MANAGEMENT_URL   |URL used for connecting to the pip-subscription-management service. Defaults to staging if not provided.|No|
+| CHANNEL_MANAGEMENT_AZ_API     |Used as part of the `scope` parameter when requesting a token from Azure. Used for service-to-service communication with the pip-channel-management service|No|
+| SUBSCRIPTION_MANAGEMENT_AZ_API|Used as part of the `scope` parameter when requesting a token from Azure. Used for service-to-service communication with the pip-subscription-management service|No|
+| PUBLICATION_SERVICES_AZ_API   |Used as part of the `scope` parameter when requesting a token from Azure. Used for service-to-service communication with the pip-publication-services service|No|
+| ACCOUNT_MANAGEMENT_AZ_API     |Used as part of the `scope` parameter when requesting a token from Azure. Used for service-to-service communication with the account management service|No|
+| ENABLE_TESTING_SUPPORT_API    | Used to conditionally enable testing support API. Default to `false` for the production environment only.|No|
 
 ##### Additional Test secrets
 
@@ -267,6 +268,14 @@ curl --request GET \                                                            
           --header 'Authorization: Bearer {BEARER_TOKEN_HERE}'
 ```
 
+## Azure Blob Storage
+
+This service uses Azure Blob storage to store the raw artefact data. This is configured in [AzureBlobConfiguration](./src/main/java/uk/gov/hmcts/reform/pip/data/management/config/AzureBlobConfiguration.java).
+
+The Workload Identity is used by default to authenticate with Azure Blob Storage which is present in the Azure environments. If the workload identity is not present (such as in a local environment), a connection string can be used instead by setting the CONNECTION_STRING environment variable.
+
+For the local environment, Azurite docker images can be used to provide a local instance of Blob Storage.
+
 ## Deployment
 We use [Jenkins](https://www.jenkins.io/) as our CI/CD system. The deployment of this can be controlled within our application logic using the various `Jenkinsfile`-prepended files within the root directory of the repository.
 
@@ -277,8 +286,12 @@ If your debugging leads you to conclude that you need to implement a pipeline fi
 ## Creating or debugging of SQL scripts with Flyway
 Flyway is used to apply incremental schema changes (migrations) to our database.
 
+Any modifications to the database schema must be done through flyway. Changes to the models will no longer be automatically applied to the database.
+
+This behaviour can be overridden using the DB_UPDATE environment variable. This is useful for local development, but should not be used in production.
+
 ### Pipeline
-Flyway is enabled on the pipeline, but is run at startup then switched off.
+Flyway is enabled on the pipeline. It is only run on the pipeline, and not on startup. On startup, the app will validate that the flyway scripts have been applied.
 
 ### Local
 For local development, flyway is turned off by default. This is due to all tables existing within a single database locally. This can cause flyway to fail at startup due to mismatching scripts.
