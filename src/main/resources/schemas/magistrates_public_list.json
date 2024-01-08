@@ -179,24 +179,6 @@
         }
       }
     },
-    "locationDetails": {
-      "$id": "#root/locationDetails",
-      "title": "Location Details",
-      "type": "object",
-      "properties": {
-        "jurisdiction": {
-          "$id": "#root/locationDetails/jurisdiction",
-          "description": "Jurisdiction",
-          "title": "Jurisdiction",
-          "type": "string",
-          "default": "",
-          "examples": [
-            "Family court"
-          ],
-          "pattern": "^(?!.*<[^>]+>).*$"
-        }
-      }
-    },
     "courtLists": {
       "$id": "#root/courtLists",
       "title": "Court Lists",
