@@ -19,8 +19,12 @@ import uk.gov.hmcts.reform.pip.model.authentication.roles.IsAdmin;
 @IsAdmin
 public class ViewController {
 
+    private final ViewService viewService;
+
     @Autowired
-    ViewService viewService;
+    public ViewController(ViewService viewService) {
+        this.viewService = viewService;
+    }
 
     @ApiResponse(responseCode = "200", description = "View Refreshed")
     @ApiResponse(responseCode = "403", description = "User has not been authorised")

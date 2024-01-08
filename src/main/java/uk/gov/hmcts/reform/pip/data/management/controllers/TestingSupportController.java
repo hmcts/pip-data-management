@@ -31,11 +31,15 @@ public class TestingSupportController {
     private static final String CREATED_CODE = "201";
     private static final String AUTH_ERROR_CODE = "403";
 
-    @Autowired
-    private ArtefactDeleteService artefactDeleteService;
+    private final ArtefactDeleteService artefactDeleteService;
+
+    private final LocationService locationService;
 
     @Autowired
-    private LocationService locationService;
+    public TestingSupportController(ArtefactDeleteService artefactDeleteService, LocationService locationService) {
+        this.artefactDeleteService = artefactDeleteService;
+        this.locationService = locationService;
+    }
 
     @ApiResponse(responseCode = CREATED_CODE,
         description = "Location with ID {locationId} and name {locationName} created successfully")

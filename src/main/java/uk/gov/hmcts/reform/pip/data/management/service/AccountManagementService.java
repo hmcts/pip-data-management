@@ -24,13 +24,17 @@ import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
 @Component
 public class AccountManagementService {
 
-    @Autowired
-    WebClient webClient;
+    private static final String ACCOUNT_MANAGEMENT_API = "accountManagementApi";
+
+    private final WebClient webClient;
 
     @Value("${service-to-service.account-management}")
     private String url;
 
-    private static final String ACCOUNT_MANAGEMENT_API = "accountManagementApi";
+    @Autowired
+    public AccountManagementService(WebClient webClient) {
+        this.webClient = webClient;
+    }
 
     /**
      * Calls Account Management to determine whether a user is allowed to see a set publication.
