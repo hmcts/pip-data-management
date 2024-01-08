@@ -1244,6 +1244,86 @@
                                                         }
                                                       }
                                                     }
+                                                  },
+                                                  "offence": {
+                                                    "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/party/offence",
+                                                    "title": "offence",
+                                                    "description": "The offence and details of offences associated with the case. It is also known as charges.",
+                                                    "type": "array",
+                                                    "items":{
+                                                      "type": "object",
+                                                      "properties": {
+                                                        "offenceCode":{
+                                                          "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/party/offence/offenceCode",
+                                                          "description": "Offence unique code",
+                                                          "title": "Offence code",
+                                                          "type": "string",
+                                                          "default": "",
+                                                          "examples": [
+                                                            "dd01-01"
+                                                          ],
+                                                          "pattern": "^(?!.*<[^>]+>).*$"
+                                                        },
+                                                        "offenceTitle":{
+                                                          "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/party/offence/offenceTitle",
+                                                          "description": "Short description of offence",
+                                                          "title": "Offence title",
+                                                          "type": "string",
+                                                          "default": "",
+                                                          "examples": [
+                                                            "drink driving"
+                                                          ],
+                                                          "pattern": "^(?!.*<[^>]+>).*$"
+                                                        },
+                                                        "offenceWording":{
+                                                          "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/party/offence/offenceWording",
+                                                          "description": "Long description of offence",
+                                                          "title": "Offence wording",
+                                                          "type":"string",
+                                                          "default": "",
+                                                          "examples": [
+                                                            "driving whilst under the influence of alcohol"
+                                                          ],
+                                                          "pattern": "^(?!.*<[^>]+>).*$"
+                                                        },
+                                                        "offenceMaxPen":{
+                                                          "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/party/offence/offenceMaxPenalty",
+                                                          "description": "Maximum penalty if found guilty",
+                                                          "title": "Offence Max Penalty",
+                                                          "type":"string",
+                                                          "default" : "",
+                                                          "examples": [
+                                                            "10yrs"
+                                                          ],
+                                                          "pattern": "^(?!.*<[^>]+>).*$"
+                                                        },
+                                                        "reportingRestriction": {
+                                                          "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/party/offence/reportingRestriction",
+                                                          "title": "Reporting Restriction",
+                                                          "description": "Whether there are any reporting restrictions posed to the offence",
+                                                          "type": "boolean",
+                                                          "default": "",
+                                                          "examples": [
+                                                            "true"
+                                                          ],
+                                                          "pattern": "^(?!.*<[^>]+>).*$"
+                                                        },
+                                                        "reportingRestrictionDetail": {
+                                                          "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/party/offence/reportingRestrictionDetail",
+                                                          "title": "Reporting Restrictions Detail",
+                                                          "description": "The detail / wording of any reporting restrictions attached to the offence",
+                                                          "type": "array",
+                                                          "items": {
+                                                            "type": "string",
+                                                            "default": "",
+                                                            "examples": [
+                                                              "This is a reporting restrictions detail"
+                                                            ],
+                                                            "pattern": "^(?!.*<[^>]+>).*$"
+                                                          }
+                                                        }
+                                                      }
+                                                    }
                                                   }
                                                 }
 

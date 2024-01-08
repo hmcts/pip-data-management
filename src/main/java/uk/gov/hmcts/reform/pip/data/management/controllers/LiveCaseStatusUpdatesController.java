@@ -20,8 +20,12 @@ import java.util.List;
 @RequestMapping("/lcsu")
 public class LiveCaseStatusUpdatesController {
 
+    private final LiveCaseStatusService liveCaseStatusService;
+
     @Autowired
-    private LiveCaseStatusService liveCaseStatusService;
+    public LiveCaseStatusUpdatesController(LiveCaseStatusService liveCaseStatusService) {
+        this.liveCaseStatusService = liveCaseStatusService;
+    }
 
     @ApiResponse(responseCode = "200", description = "Live Cases found")
     @ApiResponse(responseCode = "404", description = "No Live cases found with the court id {courtId}")
