@@ -14,12 +14,15 @@ import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
 @Slf4j
 @Component
 public class SubscriptionManagementService {
-
-    @Autowired
-    WebClient webClient;
+    private final WebClient webClient;
 
     @Value("${service-to-service.subscription-management}")
     private String url;
+
+    @Autowired
+    public SubscriptionManagementService(WebClient webClient) {
+        this.webClient = webClient;
+    }
 
     public String sendArtefactForSubscription(Artefact artefact) {
         try {
