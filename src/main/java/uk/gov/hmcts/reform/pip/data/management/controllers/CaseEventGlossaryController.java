@@ -18,8 +18,12 @@ import java.util.List;
 @RequestMapping("/glossary")
 public class CaseEventGlossaryController {
 
+    private final CaseEventGlossaryService caseEventGlossaryService;
+
     @Autowired
-    private CaseEventGlossaryService caseEventGlossaryService;
+    public CaseEventGlossaryController(CaseEventGlossaryService caseEventGlossaryService) {
+        this.caseEventGlossaryService = caseEventGlossaryService;
+    }
 
     @ApiResponse(responseCode = "200", description = "All case event glossary returned")
     @Operation(summary = "Get all case event glossary list with their description")

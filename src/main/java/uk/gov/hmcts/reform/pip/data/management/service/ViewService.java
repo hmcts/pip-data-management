@@ -14,12 +14,14 @@ import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
 @Service
 @Slf4j
 public class ViewService {
+    private final ArtefactRepository artefactRepository;
+    private final LocationRepository locationRepository;
 
     @Autowired
-    ArtefactRepository artefactRepository;
-
-    @Autowired
-    LocationRepository locationRepository;
+    public ViewService(ArtefactRepository artefactRepository, LocationRepository locationRepository) {
+        this.artefactRepository = artefactRepository;
+        this.locationRepository = locationRepository;
+    }
 
     /**
      * Service method which refreshes the view.
@@ -29,5 +31,4 @@ public class ViewService {
         artefactRepository.refreshArtefactView();
         locationRepository.refreshLocationView();
     }
-
 }
