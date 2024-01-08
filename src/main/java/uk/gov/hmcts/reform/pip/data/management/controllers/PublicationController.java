@@ -95,7 +95,7 @@ public class PublicationController {
     private final ArtefactDeleteService artefactDeleteService;
 
     private final ArtefactTriggerService artefactTriggerService;
-    @Autowired
+
     private final ValidationService validationService;
 
     private static final String DEFAULT_ADMIN_VALUE = "false";

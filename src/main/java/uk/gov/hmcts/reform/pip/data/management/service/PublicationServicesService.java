@@ -22,11 +22,15 @@ import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
 @Component
 public class PublicationServicesService {
 
-    @Autowired
-    WebClient webClient;
+    private final WebClient webClient;
 
     @Value("${service-to-service.publication-services}")
     private String url;
+
+    @Autowired
+    public PublicationServicesService(WebClient webClient) {
+        this.webClient = webClient;
+    }
 
     public String sendNoMatchArtefactsForReporting(List<NoMatchArtefact> noMatchArtefacts) {
         try {

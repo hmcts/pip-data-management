@@ -15,11 +15,15 @@ import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
 @Slf4j
 @Component
 public class ChannelManagementService {
-    @Autowired
-    WebClient webClient;
+    private final WebClient webClient;
 
     @Value("${service-to-service.channel-management}")
     private String url;
+
+    @Autowired
+    public ChannelManagementService(WebClient webClient) {
+        this.webClient = webClient;
+    }
 
     public String requestFileGeneration(UUID artefactId) {
         try {
