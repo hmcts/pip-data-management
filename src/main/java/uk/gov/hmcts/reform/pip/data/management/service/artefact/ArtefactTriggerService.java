@@ -47,7 +47,7 @@ public class ArtefactTriggerService {
      */
     public void checkNewlyActiveArtefacts() {
         artefactRepository.findArtefactsByDisplayFrom(LocalDate.now())
-            .forEach(artefact -> subscriptionManagementService.sendArtefactForSubscription(artefact));
+            .forEach(subscriptionManagementService::sendArtefactForSubscription);
     }
 
     /**
