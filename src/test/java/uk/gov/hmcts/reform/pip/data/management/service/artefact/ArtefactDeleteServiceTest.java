@@ -164,7 +164,8 @@ class ArtefactDeleteServiceTest {
             orderVerifier.verify(azureBlobService).deleteBlob(PAYLOAD_STRIPPED);
             orderVerifier.verify(channelManagementService).deleteFiles(ARTEFACT_ID);
             orderVerifier.verify(artefactRepository).delete(artefactWithIdAndPayloadUrl);
-            orderVerifier.verify(subscriptionManagementService).sendDeletedArtefactForThirdParties(artefactWithIdAndPayloadUrl);
+            orderVerifier.verify(subscriptionManagementService)
+                .sendDeletedArtefactForThirdParties(artefactWithIdAndPayloadUrl);
         }
     }
 
