@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -38,6 +39,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -157,10 +159,12 @@ class ArtefactDeleteServiceTest {
             assertTrue(logCaptor.getInfoLogs().get(0).contains(String.format(DELETION_TRACK_LOG_MESSAGE, ARTEFACT_ID)),
                        MESSAGES_MATCH);
 
-            verify(artefactRepository).delete(artefactWithIdAndPayloadUrl);
-            verify(azureBlobService).deleteBlob(PAYLOAD_STRIPPED);
-            verify(channelManagementService).deleteFiles(ARTEFACT_ID);
-            verify(subscriptionManagementService).sendDeletedArtefactForThirdParties(artefactWithIdAndPayloadUrl);
+            InOrder orderVerifier = inOrder(azureBlobService, channelManagementService,
+                                            artefactRepository, subscriptionManagementService);
+            orderVerifier.verify(azureBlobService).deleteBlob(PAYLOAD_STRIPPED);
+            orderVerifier.verify(channelManagementService).deleteFiles(ARTEFACT_ID);
+            orderVerifier.verify(artefactRepository).delete(artefactWithIdAndPayloadUrl);
+            orderVerifier.verify(subscriptionManagementService).sendDeletedArtefactForThirdParties(artefactWithIdAndPayloadUrl);
         }
     }
 
@@ -192,10 +196,13 @@ class ArtefactDeleteServiceTest {
             assertTrue(logCaptor.getInfoLogs().get(0).contains(String.format(DELETION_TRACK_LOG_MESSAGE, ARTEFACT_ID)),
                        MESSAGES_MATCH);
 
-            verify(artefactRepository).delete(artefactWithIdAndPayloadUrl);
-            verify(azureBlobService).deleteBlob(PAYLOAD_STRIPPED);
+            InOrder orderVerifier = inOrder(azureBlobService, channelManagementService,
+                                            artefactRepository, subscriptionManagementService);
+            orderVerifier.verify(azureBlobService).deleteBlob(PAYLOAD_STRIPPED);
+            orderVerifier.verify(artefactRepository).delete(artefactWithIdAndPayloadUrl);
+            orderVerifier.verify(subscriptionManagementService)
+                .sendDeletedArtefactForThirdParties(artefactWithIdAndPayloadUrl);
             verifyNoInteractions(channelManagementService);
-            verify(subscriptionManagementService).sendDeletedArtefactForThirdParties(artefactWithIdAndPayloadUrl);
         }
     }
 
@@ -373,10 +380,12 @@ class ArtefactDeleteServiceTest {
                          artefactDeleteService.deleteArtefactByLocation(LOCATION_ID, REQUESTER_NAME),
                          "The artefacts for given location is not deleted");
 
-            verify(artefactRepository).delete(artefactWithIdAndPayloadUrl);
-            verify(azureBlobService).deleteBlob(any());
-            verify(channelManagementService).deleteFiles(ARTEFACT_ID);
-            verify(subscriptionManagementService).sendDeletedArtefactForThirdParties(any());
+            InOrder orderVerifier = inOrder(azureBlobService, channelManagementService,
+                                            artefactRepository, subscriptionManagementService);
+            orderVerifier.verify(azureBlobService).deleteBlob(any());
+            orderVerifier.verify(channelManagementService).deleteFiles(ARTEFACT_ID);
+            orderVerifier.verify(artefactRepository).delete(artefactWithIdAndPayloadUrl);
+            orderVerifier.verify(subscriptionManagementService).sendDeletedArtefactForThirdParties(any());
 
             assertTrue(logCaptor.getInfoLogs().get(0).contains("User " + REQUESTER_NAME
                                                                    + " attempting to delete all artefacts for location "
