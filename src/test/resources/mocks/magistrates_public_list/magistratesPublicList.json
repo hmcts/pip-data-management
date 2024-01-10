@@ -19,9 +19,6 @@
       "venueEmail": "a@b.com"
     }
   },
-  "locationDetails": {
-    "jurisdiction": "Family"
-  },
   "courtLists": [
     {
       "courtHouse": {
