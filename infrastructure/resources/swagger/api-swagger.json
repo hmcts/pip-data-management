@@ -209,36 +209,6 @@
           }
         }
       }
-    },
-    "/":{
-      "get":{
-        "tags":[
-          "Data Management Publications API"
-        ],
-        "summary":"Get Welcome",
-        "operationId":"getWelcome",
-        "parameters":[],
-        "responses":{
-          "200":{
-            "description":"OK",
-            "content":{
-              "*/*":{
-                "schema":{
-                  "$ref":"#/components/schemas/Artefact"
-                }
-              },
-              "multipart/form-data":{
-                "schema":{
-                  "$ref":"#/components/schemas/Artefact"
-                }
-              }
-            }
-          },
-          "201":{
-            "description":"Artefact.class instance for the artefact that has been created"
-          }
-        }
-      }
     }
   },
   "components":{
