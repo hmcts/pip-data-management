@@ -23,6 +23,7 @@ import uk.gov.hmcts.reform.pip.data.management.service.LocationService;
 import uk.gov.hmcts.reform.pip.data.management.service.PublicationServicesService;
 import uk.gov.hmcts.reform.pip.data.management.service.SubscriptionManagementService;
 import uk.gov.hmcts.reform.pip.model.account.AzureAccount;
+import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 import uk.gov.hmcts.reform.pip.model.system.admin.ActionResult;
 import uk.gov.hmcts.reform.pip.model.system.admin.ChangeType;
@@ -183,7 +184,7 @@ class ArtefactDeleteServiceTest {
 
         artefactDeleteService.archiveExpiredArtefacts();
         verify(azureBlobService).deleteBlob(PAYLOAD_STRIPPED);
-        verify(channelManagementService).deleteFiles(testArtefactId);
+        verify(channelManagementService).deleteFiles(testArtefactId, ListType.CIVIL_DAILY_CAUSE_LIST, Language.ENGLISH);
         verify(artefactRepository).archiveArtefact(testArtefactId.toString());
         verify(subscriptionManagementService, never()).sendDeletedArtefactForThirdParties(artefactWithPayloadUrl);
     }
@@ -197,7 +198,7 @@ class ArtefactDeleteServiceTest {
 
         artefactDeleteService.archiveExpiredArtefacts();
         verify(azureBlobService).deleteBlob(PAYLOAD_STRIPPED);
-        verify(channelManagementService).deleteFiles(testArtefactId);
+        verify(channelManagementService).deleteFiles(testArtefactId, ListType.SJP_PUBLIC_LIST, Language.ENGLISH);
         verify(artefactRepository).archiveArtefact(testArtefactId.toString());
         verify(subscriptionManagementService, never()).sendDeletedArtefactForThirdParties(artefactWithPayloadUrl);
     }
@@ -211,7 +212,7 @@ class ArtefactDeleteServiceTest {
 
         artefactDeleteService.archiveExpiredArtefacts();
         verify(azureBlobService).deleteBlob(PAYLOAD_STRIPPED);
-        verify(channelManagementService).deleteFiles(testArtefactId);
+        verify(channelManagementService).deleteFiles(testArtefactId, ListType.SJP_PRESS_LIST, Language.ENGLISH);
         verify(artefactRepository).archiveArtefact(testArtefactId.toString());
         verify(subscriptionManagementService, never()).sendDeletedArtefactForThirdParties(artefactWithPayloadUrl);
     }
@@ -240,16 +241,14 @@ class ArtefactDeleteServiceTest {
 
     @Test
     void testArchivedEndpoint() {
-        String artefactId = UUID.randomUUID().toString();
-
-        when(artefactRepository.findArtefactByArtefactId(artefactId))
+        when(artefactRepository.findArtefactByArtefactId(ARTEFACT_ID.toString()))
             .thenReturn(Optional.of(artefactWithIdAndPayloadUrl));
 
-        artefactDeleteService.archiveArtefactById(artefactId, UUID.randomUUID().toString());
+        artefactDeleteService.archiveArtefactById(ARTEFACT_ID.toString(), UUID.randomUUID().toString());
 
         verify(azureBlobService).deleteBlob(any());
-        verify(channelManagementService).deleteFiles(any());
-        verify(artefactRepository).archiveArtefact(artefactId);
+        verify(channelManagementService).deleteFiles(ARTEFACT_ID, ListType.CIVIL_DAILY_CAUSE_LIST, Language.ENGLISH);
+        verify(artefactRepository).archiveArtefact(ARTEFACT_ID.toString());
         verify(subscriptionManagementService).sendDeletedArtefactForThirdParties(any());
 
     }
@@ -290,7 +289,8 @@ class ArtefactDeleteServiceTest {
                          artefactDeleteService.deleteArtefactByLocation(LOCATION_ID, REQUESTER_NAME),
                          "The artefacts for given location is not deleted");
             verify(azureBlobService).deleteBlob(any());
-            verify(channelManagementService).deleteFiles(ARTEFACT_ID);
+            verify(channelManagementService).deleteFiles(ARTEFACT_ID, ListType.CIVIL_DAILY_CAUSE_LIST,
+                                                         Language.ENGLISH);
             verify(subscriptionManagementService).sendDeletedArtefactForThirdParties(any());
 
             assertTrue(logCaptor.getInfoLogs().get(0).contains("User " + REQUESTER_NAME
