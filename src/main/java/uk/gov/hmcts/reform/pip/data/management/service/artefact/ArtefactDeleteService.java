@@ -9,6 +9,7 @@ import uk.gov.hmcts.reform.pip.data.management.database.AzureBlobService;
 import uk.gov.hmcts.reform.pip.data.management.database.LocationRepository;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ArtefactNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactHelper;
+import uk.gov.hmcts.reform.pip.data.management.helpers.LocationHelper;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.service.AccountManagementService;
@@ -65,14 +66,15 @@ public class ArtefactDeleteService {
      */
     @Transactional
     public void archiveArtefactById(String artefactId, String issuerId) {
-        Optional<Artefact> artefactToArchive = artefactRepository.findArtefactByArtefactId(artefactId);
+        Artefact artefactToArchive = artefactRepository.findArtefactByArtefactId(artefactId)
+            .orElseThrow(() -> new ArtefactNotFoundException("No artefact found with the ID: " + artefactId));
 
-        if (artefactToArchive.isPresent()) {
-            handleArtifactArchiving(artefactToArchive.get(), artefactId);
-            log.info(writeLog(String.format("Artefact archived by %s, with artefact id: %s", issuerId, artefactId)));
-        } else {
-            throw new ArtefactNotFoundException("No artefact found with the ID: " + artefactId);
+        deleteDataFromBlobStore(artefactToArchive);
+        artefactRepository.archiveArtefact(artefactId);
+        if (!LocationHelper.isNoMatchLocationId(artefactToArchive.getLocationId())) {
+            subscriptionManagementService.sendDeletedArtefactForThirdParties(artefactToArchive);
         }
+        log.info(writeLog(String.format("Artefact archived by %s, with artefact id: %s", issuerId, artefactId)));
     }
 
     /**
@@ -84,8 +86,8 @@ public class ArtefactDeleteService {
         List<Artefact> outdatedArtefacts = artefactRepository.findOutdatedArtefacts(searchDateTime);
 
         outdatedArtefacts.forEach(artefact -> {
+            deleteDataFromBlobStore(artefact);
             artefactRepository.archiveArtefact(artefact.getArtefactId().toString());
-            deleteAllPublicationBlobData(artefact);
         });
 
         log.info(writeLog(
@@ -99,12 +101,13 @@ public class ArtefactDeleteService {
      *
      * @param artefact The artefact requiring blob deletion.
      */
-    private void deleteAllPublicationBlobData(Artefact artefact) {
+    private void deleteDataFromBlobStore(Artefact artefact) {
         // Delete the payload/flat file from the publications store
         azureBlobService.deleteBlob(ArtefactHelper.getUuidFromUrl(artefact.getPayload()));
 
         // Delete the generated files for the publications if it's not a flat file
-        if (artefact.getIsFlatFile().equals(Boolean.FALSE)) {
+        if (artefact.getIsFlatFile().equals(Boolean.FALSE)
+            && !LocationHelper.isNoMatchLocationId(artefact.getLocationId())) {
             channelManagementService.deleteFiles(artefact.getArtefactId());
         }
     }
@@ -116,21 +119,17 @@ public class ArtefactDeleteService {
      * @param issuerId   The ID of the admin user who is attempting to delete the artefact.
      */
     public void deleteArtefactById(String artefactId, String issuerId) {
-        Optional<Artefact> artefactToDelete = artefactRepository.findArtefactByArtefactId(artefactId);
+        Artefact artefactToDelete = artefactRepository.findArtefactByArtefactId(artefactId)
+            .orElseThrow(() -> new ArtefactNotFoundException("No artefact found with the ID: " + artefactId));
 
-        if (artefactToDelete.isPresent()) {
-            handleArtifactDeletion(artefactToDelete.get());
-            log.info(writeLog(issuerId, UserActions.REMOVE, artefactId));
-        } else {
-            throw new ArtefactNotFoundException("No artefact found with the ID: " + artefactId);
-        }
+        handleArtefactDeletion(artefactToDelete);
+        log.info(writeLog(issuerId, UserActions.REMOVE, artefactId));
     }
 
     public String deleteArtefactByLocation(Integer locationId, String provenanceUserId)
         throws JsonProcessingException {
-        LocalDateTime searchDateTime = LocalDateTime.now();
-        List<Artefact> activeArtefacts =
-            artefactRepository.findActiveArtefactsForLocation(searchDateTime, locationId.toString());
+        List<Artefact> activeArtefacts = artefactRepository.findActiveArtefactsForLocation(LocalDateTime.now(),
+                                                                                           locationId.toString());
         if (activeArtefacts.isEmpty()) {
             log.info(writeLog(String.format("User %s attempting to delete all artefacts for location %s. "
                                                 + "No artefacts found",
@@ -139,24 +138,23 @@ public class ArtefactDeleteService {
                 "No artefacts found with the location ID %s",
                 locationId
             ));
-        } else {
-            log.info(writeLog(String.format("User %s attempting to delete all artefacts for location %s. "
-                                                + "%s artefact(s) found",
-                                            provenanceUserId, locationId, activeArtefacts.size())));
-
-            activeArtefacts.forEach(artefact -> {
-                handleArtifactDeletion(artefact);
-                log.info(writeLog(
-                    String.format("Artefact deleted by %s, with artefact id: %s",
-                                  provenanceUserId, artefact.getArtefactId())
-                ));
-            });
-            Optional<Location> location = locationRepository.getLocationByLocationId(locationId);
-            notifySystemAdminAboutSubscriptionDeletion(provenanceUserId,
-                String.format("Total %s artefact(s) for location %s", activeArtefacts.size(),
-                              location.isPresent() ? location.get().getName() : ""));
-            return String.format("Total %s artefact deleted for location id %s", activeArtefacts.size(), locationId);
         }
+        log.info(writeLog(String.format("User %s attempting to delete all artefacts for location %s. "
+                                            + "%s artefact(s) found",
+                                        provenanceUserId, locationId, activeArtefacts.size())));
+
+        activeArtefacts.forEach(artefact -> {
+            handleArtefactDeletion(artefact);
+            log.info(writeLog(
+                String.format("Artefact deleted by %s, with artefact id: %s",
+                              provenanceUserId, artefact.getArtefactId())
+            ));
+        });
+        Optional<Location> location = locationRepository.getLocationByLocationId(locationId);
+        notifySystemAdminAboutSubscriptionDeletion(provenanceUserId,
+            String.format("Total %s artefact(s) for location %s", activeArtefacts.size(),
+                          location.isPresent() ? location.get().getName() : ""));
+        return String.format("Total %s artefact deleted for location id %s", activeArtefacts.size(), locationId);
     }
 
     public String deleteAllArtefactsWithLocationNamePrefix(String prefix) {
@@ -167,22 +165,18 @@ public class ArtefactDeleteService {
         List<Artefact> artefactsToDelete = Collections.emptyList();
         if (!locationIds.isEmpty()) {
             artefactsToDelete = artefactRepository.findAllByLocationIdIn(locationIds);
-            artefactsToDelete.forEach(this::handleArtifactDeletion);
+            artefactsToDelete.forEach(this::handleArtefactDeletion);
         }
         return String.format("%s artefacts(s) deleted for location name starting with %s",
                              artefactsToDelete.size(), prefix);
     }
 
-    private void handleArtifactDeletion(Artefact artefact) {
-        deleteAllPublicationBlobData(artefact);
+    private void handleArtefactDeletion(Artefact artefact) {
+        deleteDataFromBlobStore(artefact);
         artefactRepository.delete(artefact);
-        subscriptionManagementService.sendDeletedArtefactForThirdParties(artefact);
-    }
-
-    private void handleArtifactArchiving(Artefact artefact, String artefactId) {
-        deleteAllPublicationBlobData(artefact);
-        artefactRepository.archiveArtefact(artefactId);
-        subscriptionManagementService.sendDeletedArtefactForThirdParties(artefact);
+        if (!LocationHelper.isNoMatchLocationId(artefact.getLocationId())) {
+            subscriptionManagementService.sendDeletedArtefactForThirdParties(artefact);
+        }
     }
 
     private void notifySystemAdminAboutSubscriptionDeletion(String provenanceUserId, String additionalDetails)

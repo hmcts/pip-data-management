@@ -197,10 +197,10 @@ class PublicationMissingHeadersTest {
         assertTrue(exceptionResponse.getMessage().contains("x-language"), VALIDATION_EXCEPTION_RESPONSE);
     }
 
-    @DisplayName("Should return a 400 Bad Request if the artifact type header is empty")
+    @DisplayName("Should return a 400 Bad Request if the artefact type header is empty")
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
-    void testEmptyArtifactType(boolean isJson) throws Exception {
+    void testEmptyArtefactType(boolean isJson) throws Exception {
         if (isJson) {
             mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
         } else {
