@@ -29,6 +29,7 @@ public final class ArtefactConstantTestHelper {
     public static final String PAYLOAD_URL = "https://ThisIsATestPayload";
     public static final String PAYLOAD_STRIPPED = "ThisIsATestPayload";
     public static final String LOCATION_ID = "123";
+    public static final String NO_MATCH_LOCATION_ID = "NoMatch" + LOCATION_ID;
     public static final String TEST_KEY = "TestKey";
     public static final String TEST_VALUE = "TestValue";
     public static final CaseSearchTerm SEARCH_TERM_CASE_ID = CaseSearchTerm.CASE_ID;
@@ -89,6 +90,21 @@ public final class ArtefactConstantTestHelper {
             .payload(PAYLOAD_URL)
             .search(SEARCH_VALUES)
             .locationId(LOCATION_ID)
+            .contentDate(CONTENT_DATE)
+            .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
+            .language(Language.ENGLISH)
+            .sensitivity(Sensitivity.PUBLIC)
+            .build();
+    }
+
+    public static Artefact buildNoMatchArtefactWithIdAndPayloadUrl() {
+        return Artefact.builder()
+            .artefactId(ARTEFACT_ID)
+            .sourceArtefactId(SOURCE_ARTEFACT_ID)
+            .provenance(PROVENANCE)
+            .payload(PAYLOAD_URL)
+            .search(SEARCH_VALUES)
+            .locationId(NO_MATCH_LOCATION_ID)
             .contentDate(CONTENT_DATE)
             .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
             .language(Language.ENGLISH)
