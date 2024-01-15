@@ -27,7 +27,7 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- * Class that represents the Inbound artifact that is being published.
+ * Class that represents the Inbound artefact that is being published.
  */
 @Entity
 @Data
