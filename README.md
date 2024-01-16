@@ -243,7 +243,7 @@ curl --request POST \
   --header 'x-court-id: {LOCATION_ID_OF_DESIRED_LOCATION}' \
   --header 'x-display-from: {DATE_IN_ISO_FORMAT_WITH_NO_OFFSET}' \
   --header 'x-display-to: {DATE_IN_ISO_FORMAT_WITH_NO_OFFSET}' \
-  --header 'x-language: {ENGLISH or WELSH or BI_LINGUAL}' \
+  --header 'x-language: {ENGLISH or WELSH}' \
   --header 'x-list-type: {LIST_TYPE}' \
   --header 'x-provenance: {MANUAL_UPLOAD}' \
   --header 'x-source-artefact-id: {FILENAME_IF_PROVENANCE_IS_MANUAL_UPLOAD}' \

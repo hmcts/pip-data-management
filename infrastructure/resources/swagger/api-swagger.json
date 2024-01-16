@@ -86,7 +86,6 @@
             "schema":{
               "type":"string",
               "enum":[
-                "BI_LINGUAL",
                 "ENGLISH",
                 "WELSH"
               ]
@@ -272,7 +271,6 @@
           "language":{
             "type":"string",
             "enum":[
-              "BI_LINGUAL",
               "ENGLISH",
               "WELSH"
             ]
