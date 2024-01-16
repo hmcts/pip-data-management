@@ -31,19 +31,12 @@
       "description": "Can be an array of objects as such will be a collective and use plurals for object arrays (clerks and scribes etc included)",
       "type": "object",
       "properties": {
-        "johTitle": {
-          "description": "The title for the judiciary",
-          "title": "Judiciary Title",
-          "type": "string",
-          "default": "",
-          "pattern": "^(?!.*<[^>]+>).*$"
-        },
-        "johNameSurname": {
-          "description": "First and Surname of the JOH",
-          "title": "JOH Name",
+        "johKnownAs": {
+          "description": "Name and salutations, titles to be presented on publications",
+          "title": "JOH Known As",
           "type": "string",
           "examples": [
-            "John Smith"
+            "judge"
           ],
           "default": "",
           "pattern": "^(?!.*<[^>]+>).*$"
