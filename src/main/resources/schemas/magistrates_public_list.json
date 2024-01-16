@@ -80,23 +80,6 @@
       "description": "Can be an array of objects as such will be a collective and use plurals for object arrays (clerks and scribes etc included)",
       "type": "object",
       "properties": {
-        "johNameSurname": {
-          "description": "First and Surname of the JOH",
-          "title": "JOH Name",
-          "type": "string",
-          "examples": [
-            "John Smith"
-          ],
-          "default": "",
-          "pattern": "^(?!.*<[^>]+>).*$"
-        },
-        "role": {
-          "description": "Role of the judiciary",
-          "title": "Role",
-          "type": "string",
-          "enum": ["JUDGE", "MAGISTRATE", "CLERK"],
-          "default": ""
-        },
         "isPresiding": {
           "description": "A flag to indicate whether a judiciary is presiding",
           "title": "Is Presiding",
