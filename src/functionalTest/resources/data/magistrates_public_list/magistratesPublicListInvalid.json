@@ -12,8 +12,6 @@
       "town": "Venue Town",
       "county": "Venue County",
       "postCode": "AA1 AA1"
-
-
     },
     "venueContact": {
       "venueTelephone": "01234 123 123",
@@ -70,14 +68,11 @@
                 ],
                 "judiciary": [
                   {
-                    "johNameSurname": "Test Name",
-                    "role": "JUDGE",
-                    "johKnownAs": "Judge Test Name",
+                    "johKnownAs": "Judge TestName Presiding",
                     "isPresiding": true
                   },
                   {
-                    "johNameSurname": "Test Name",
-                    "role": "MAGISTRATE",
+                    "johKnownAs": "Judge TestName",
                     "isPresiding": false
                   }
                 ]

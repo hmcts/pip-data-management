@@ -1,6 +1,6 @@
 {
   "document": {
-    "publicationDate": "20-02-2022T20:00:00.001Z"
+    "publicationDate": "2023-03-03T14:07:33.871502Z"
   },
   "venue": {
     "venueName": "This is the venue name",
@@ -20,20 +20,18 @@
               {
                 "judiciary": [
                   {
-                    "johTitle": "Judge",
-                    "johNameSurname": "Test Name",
+                    "johKnownAs": "Judge TestName Presiding",
                     "isPresiding": true
                   },
                   {
-                    "johTitle": "Magistrate",
-                    "johNameSurname": "Test Name",
+                    "johKnownAs": "Judge TestName",
                     "isPresiding": false
                   }
                 ],
                 "sittings": [
                   {
-                    "sittingStart": "20-02-2022T20:00:00.001Z",
-                    "sittingEnd": "20-02-2022T22:00:00.001Z",
+                    "sittingStart": "2023-03-03T14:00:00.871502Z",
+                    "sittingEnd": "2023-03-03T16:00:00.871502Z",
                     "hearing": [
                       {
                         "hearingType": "Directions",

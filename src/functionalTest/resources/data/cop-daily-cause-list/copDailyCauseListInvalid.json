@@ -1,14 +1,11 @@
 {
   "document": {
-    "publicationDate": "2022-02-13T09:30:52.123Z"
   },
   "locationDetails": {
     "region": {
       "regionalJOH": [
         {
-          "johNameSurname": "Firstname Surname",
-          "johTitle": "Mr",
-          "johKnownAs": "Judge"
+          "johKnownAs": "Judge TestName Regional"
         }
       ],
       "name": "Regional COP Court"
@@ -49,6 +46,7 @@
                       {
                         "case": [
                           {
+                            "caseNumber": "12341234",
                             "caseSuppressionName": "ThisIsACaseSupressionName",
                             "caseSequenceIndicator": "1 of 2"
                           }
@@ -64,7 +62,7 @@
                 ],
                 "judiciary": [
                   {
-                    "johKnownAs": "Crown Judge",
+                    "johKnownAs": "Judge TestName Presiding",
                     "isPresiding": true
                   }
                 ]

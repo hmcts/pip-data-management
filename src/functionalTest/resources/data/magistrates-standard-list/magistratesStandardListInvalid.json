@@ -70,14 +70,14 @@
                                 "offence": [
                                   {
                                     "offenceCode": "dd01-01",
-                                    "reportingRestrictionDetail": [
-                                      "Reporting Restriction detail line 1",
-                                      "Reporting restriction detail line 2"
-                                    ],
                                     "offenceTitle": "drink driving",
                                     "offenceWording": "driving whilst under the influence of alcohol",
                                     "offenceMaxPen": "100yrs",
-                                    "reportingRestriction": true
+                                    "reportingRestriction": true,
+                                    "reportingRestrictionDetail": [
+                                      "Reporting Restriction detail line 1",
+                                      "Reporting restriction detail line 2"
+                                    ]
                                   }
                                 ]
                               }
@@ -98,17 +98,11 @@
                     ],
                     "judiciary": [
                       {
-                        "johTitle": "DJ",
-                        "johNameSurname": "Test Name",
-                        "role": "JUDGE",
-                        "johKnownAs": "DJ",
+                        "johKnownAs": "Judge TestName Presiding",
                         "isPresiding": true
                       },
                       {
-                        "johTitle": "Magistrate",
-                        "johNameSurname": "Test Name",
-                        "role": "MAGISTRATE",
-                        "johKnownAs": "Justice of the peace",
+                        "johKnownAs": "Judge TestName",
                         "isPresiding": false
                       }
                     ],
