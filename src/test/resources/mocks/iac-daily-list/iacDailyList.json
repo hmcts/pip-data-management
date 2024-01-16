@@ -20,13 +20,11 @@
               {
                 "judiciary": [
                   {
-                    "johTitle": "Judge",
-                    "johNameSurname": "Test Name",
+                    "johKnownAs": "Judge TestName Presiding",
                     "isPresiding": true
                   },
                   {
-                    "johTitle": "Magistrate",
-                    "johNameSurname": "Test Name",
+                    "johKnownAs": "Judge TestName",
                     "isPresiding": false
                   }
                 ],
