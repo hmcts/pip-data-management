@@ -46,7 +46,6 @@
                       {
                         "case": [
                           {
-                            "caseNumber": "12341234",
                             "caseSuppressionName": "ThisIsACaseSupressionName",
                             "caseSequenceIndicator": "1 of 2"
                           }

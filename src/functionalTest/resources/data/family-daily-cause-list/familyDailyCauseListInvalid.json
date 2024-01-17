@@ -47,7 +47,6 @@
                         "case": [
                           {
                             "caseName": "This is a case name",
-                            "caseNumber": "12341234",
                             "caseJurisdictionET": "Family Law",
                             "caseSequenceIndicator": "2 of 3",
                             "party": [
