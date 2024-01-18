@@ -18,17 +18,10 @@
       "venueEmail": "a@b.com"
     }
   },
-  "locationDetails": {
-    "jurisdiction": "Family"
-  },
   "courtLists": [
     {
       "courtHouse": {
         "courtHouseName": "This is the site name",
-        "courtHouseContact": {
-          "venueTelephone": "01234 123 123",
-          "venueEmail": "a@b.com"
-        },
         "courtRoom": [
           {
             "courtRoomName": "This is the court room name",

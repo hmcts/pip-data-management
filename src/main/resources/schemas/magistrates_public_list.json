@@ -179,65 +179,6 @@
         }
       }
     },
-    "locationDetails": {
-      "$id": "#root/locationDetails",
-      "title": "Location Details",
-      "type": "object",
-      "properties": {
-        "location": {
-          "$id": "#root/locationDetails/location",
-          "description": "Name of the location",
-          "title": "Location Name",
-          "type": "string",
-          "default": "",
-          "examples": [
-            "Location 1"
-          ],
-          "pattern": "^(?!.*<[^>]+>).*$"
-        },
-        "jurisdiction": {
-          "$id": "#root/locationDetails/jurisdiction",
-          "description": "Jurisdiction",
-          "title": "Jurisdiction",
-          "type": "string",
-          "default": "",
-          "examples": [
-            "Family court"
-          ],
-          "pattern": "^(?!.*<[^>]+>).*$"
-
-        },
-        "region": {
-          "$id": "#root/locationDetails/region",
-          "description": "Region details",
-          "title": "Region Details",
-          "type": "object",
-          "properties": {
-            "name": {
-              "$id": "#root/locationDetails/region/name",
-              "description": "region name",
-              "title": "Region name",
-              "type": "string",
-              "default": "",
-              "examples": [
-                "Wales"
-              ],
-              "pattern": "^(?!.*<[^>]+>).*$"
-            },
-            "regionalJOH": {
-              "$id": "#root/locationDetails/region/regionalJOH",
-              "type": "array",
-              "description": "Judiciary for the region",
-              "title": "Judiciary",
-              "items":{
-                "type": "object",
-                "$ref": "#/definitions/judiciary"
-              }
-            }
-          }
-        }
-      }
-    },
     "courtLists": {
       "$id": "#root/courtLists",
       "title": "Court Lists",
@@ -265,12 +206,6 @@
                   "PRESTON"
                 ],
                 "pattern": "^(?!.*<[^>]+>).*$"
-              },
-              "courtHouseContact": {
-                "$id": "#root/courtLists/courtList/courtHouse/courtHouseContact",
-                "description": "The contact for the court house",
-                "title": "Court House Contact",
-                "$ref": "#/definitions/venueContact"
               },
               "courtRoom": {
                 "$id": "#root/courtLists/courtRoom",
@@ -446,17 +381,6 @@
                                               "description": "Individual Details",
                                               "type": "object",
                                               "properties": {
-                                                "title": {
-                                                  "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items/individualDetails/title",
-                                                  "description": "Title of individual",
-                                                  "title": "Title",
-                                                  "type": "string",
-                                                  "examples": [
-                                                    "Mr"
-                                                  ],
-                                                  "default": "",
-                                                  "pattern": "^(?!.*<[^>]+>).*$"
-                                                },
                                                 "individualForenames": {
                                                   "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items/individualDetails/individualForenames",
                                                   "description": "Forename of party",
@@ -464,17 +388,6 @@
                                                   "type": "string",
                                                   "examples": [
                                                     "John Smith"
-                                                  ],
-                                                  "default": "",
-                                                  "pattern": "^(?!.*<[^>]+>).*$"
-                                                },
-                                                "individualMiddleName": {
-                                                  "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items/individualDetails/individualMiddleName",
-                                                  "description": "Middle name of the individual",
-                                                  "title": "Individual Middle Name",
-                                                  "type": "string",
-                                                  "examples": [
-                                                    "MiddleName"
                                                   ],
                                                   "default": "",
                                                   "pattern": "^(?!.*<[^>]+>).*$"
