@@ -137,7 +137,8 @@
                 "CARE_STANDARDS_LIST",
                 "PRIMARY_HEALTH_LIST",
                 "OPA_PRESS_LIST",
-                "OPA_PUBLIC_LIST"
+                "OPA_PUBLIC_LIST",
+                "OPA_RESULTS"
               ]
             }
           },
@@ -287,10 +288,18 @@
               "FAMILY_DAILY_CAUSE_LIST",
               "CIVIL_AND_FAMILY_DAILY_CAUSE_LIST",
               "MAGISTRATES_PUBLIC_LIST",
-              "MAGS_STANDARD_LIST",
+              "MAGISTRATES_STANDARD_LIST",
               "SJP_PRESS_LIST",
               "SJP_PUBLIC_LIST",
-              "SSCS_DAILY_LIST"
+              "SSCS_DAILY_LIST",
+              "ET_FORTNIGHTLY_PRESS_LIST",
+              "ET_DAILY_LIST",
+              "IAC_DAILY_LIST",
+              "CARE_STANDARDS_LIST",
+              "PRIMARY_HEALTH_LIST",
+              "OPA_PRESS_LIST",
+              "OPA_PUBLIC_LIST",
+              "OPA_RESULTS"
             ]
           },
           "payload":{
