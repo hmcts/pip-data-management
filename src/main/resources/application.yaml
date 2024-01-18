@@ -131,6 +131,7 @@ validations:
     PRIMARY_HEALTH_LIST: "schemas/primary_health_list.json"
     OPA_PRESS_LIST: "schemas/opa_press_list.json"
     OPA_PUBLIC_LIST: "schemas/opa_public_list.json"
+    OPA_RESULTS: "schemas/opa_results.json"
 
 springdoc:
   swagger-ui:
