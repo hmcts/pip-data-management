@@ -333,7 +333,9 @@ class ValidationServiceTest {
             Arguments.of(ListType.OPA_PRESS_LIST,
                          "mocks/opa-press-list/opaPressList.json"),
             Arguments.of(ListType.OPA_PUBLIC_LIST,
-                         "mocks/opa-public-list/opaPublicList.json")
+                         "mocks/opa-public-list/opaPublicList.json"),
+            Arguments.of(ListType.OPA_RESULTS,
+                         "mocks/opa-results/opaResults.json")
         );
     }
 }
