@@ -1275,6 +1275,17 @@
                                                           ],
                                                           "pattern": "^(?!.*<[^>]+>).*$"
                                                         },
+                                                        "offenceSection":{
+                                                          "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/party/offence/offenceSection",
+                                                          "description": "Section for the offence",
+                                                          "title": "Offence section",
+                                                          "type": "string",
+                                                          "default": "",
+                                                          "examples": [
+                                                            "dd01-01"
+                                                          ],
+                                                          "pattern": "^(?!.*<[^>]+>).*$"
+                                                        },
                                                         "offenceWording":{
                                                           "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/party/offence/offenceWording",
                                                           "description": "Long description of offence",
@@ -1294,6 +1305,69 @@
                                                           "default" : "",
                                                           "examples": [
                                                             "10yrs"
+                                                          ],
+                                                          "pattern": "^(?!.*<[^>]+>).*$"
+                                                        },
+                                                        "decision": {
+                                                          "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/party/offence/decision",
+                                                          "title": "Offence decision",
+                                                          "description": "The decision of the offence",
+                                                          "type": "object",
+                                                          "properties": {
+                                                            "decisionDate": {
+                                                              "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/party/offence/decision/decisionDate",
+                                                              "description": "The date when the decision were made",
+                                                              "title": "Decision date",
+                                                              "type": "string",
+                                                              "default": "",
+                                                              "examples": [
+                                                                "2024-01-02T23:30:52.123Z"
+                                                              ],
+                                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                                            },
+                                                            "decisionDetail": {
+                                                              "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/party/offence/decision/decisionDetail",
+                                                              "description": "The detail of the decision",
+                                                              "title": "Decision detail",
+                                                              "type": "string",
+                                                              "default": "",
+                                                              "examples": [
+                                                                "Court direct trial by jury"
+                                                              ],
+                                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                                            }
+                                                          }
+                                                        },
+                                                        "bailStatus": {
+                                                          "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/party/offence/bailStatus",
+                                                          "description": "The status of the given bail",
+                                                          "title": "Bail status",
+                                                          "type":"string",
+                                                          "default": "",
+                                                          "examples": [
+                                                            "Unconditional bail"
+                                                          ],
+                                                          "pattern": "^(?!.*<[^>]+>).*$"
+                                                        },
+                                                        "nextHearingDate": {
+                                                          "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/party/offence/nextHearingDate",
+                                                          "description": "The date of the next hearing",
+                                                          "title": "Next hearing date",
+                                                          "type": "string",
+                                                          "default": "",
+                                                          "examples": [
+                                                            "2024-02-01T10:30:52.123Z"
+                                                          ],
+                                                          "pattern": "^(?!.*<[^>]+>).*$"
+                                                        },
+                                                        "nextHearingLocation": {
+                                                          "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/party/offence/nextHearingLocation",
+                                                          "description": "The location of the next hearing",
+                                                          "title": "Next hearing location",
+                                                          "type": "string",
+                                                          "default": "",
+                                                          "examples": [
+                                                            "Bristol Crown Court"
                                                           ],
                                                           "pattern": "^(?!.*<[^>]+>).*$"
                                                         },
