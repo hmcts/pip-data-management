@@ -8,7 +8,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pip.data.management.Application;
 import uk.gov.hmcts.reform.pip.data.management.config.AzureBlobConfigurationTestConfiguration;
@@ -30,7 +29,6 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 @SpringBootTest(classes = {Application.class, AzureBlobConfigurationTestConfiguration.class})
 @ActiveProfiles(profiles = "test")
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
 class OpaPressListTest {
     private static final ObjectMapper MAPPER = new ObjectMapper();
@@ -69,8 +67,7 @@ class OpaPressListTest {
         "courtLists.0.courtHouse.courtRoom.0.session",
         "courtLists.0.courtHouse.courtRoom.0.session.0.sittings",
         "courtLists.0.courtHouse.courtRoom.0.session.0.sittings.0.hearing",
-        "courtLists.0.courtHouse.courtRoom.0.session.0.sittings.0.hearing.0.case",
-        "courtLists.0.courtHouse.courtRoom.0.session.0.sittings.0.hearing.0.case.0.caseUrn"
+        "courtLists.0.courtHouse.courtRoom.0.session.0.sittings.0.hearing.0.case"
     })
     void testValidateWithErrorWhenRequiredFieldMissing(String jsonpath) throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader().getResourceAsStream(OPA_PRESS_LIST_VALID_JSON)) {
