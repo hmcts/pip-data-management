@@ -20,11 +20,15 @@ import java.util.List;
 @RequestMapping("/hearings")
 public class HearingController {
 
-    @Autowired
-    private HearingService hearingService;
-
     private static final String OK_CODE = "200";
     private static final String NOT_FOUND_CODE = "404";
+
+    private final HearingService hearingService;
+
+    @Autowired
+    public HearingController(HearingService hearingService) {
+        this.hearingService = hearingService;
+    }
 
     @ApiResponse(responseCode = OK_CODE, description = "Hearings found")
     @ApiResponse(responseCode = NOT_FOUND_CODE, description = "No hearings found with the courtId {courtId}")
