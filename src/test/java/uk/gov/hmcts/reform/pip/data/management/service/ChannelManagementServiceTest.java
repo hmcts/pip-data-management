@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pip.data.management.Application;
+import uk.gov.hmcts.reform.pip.model.publication.Language;
+import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -75,7 +77,7 @@ class ChannelManagementServiceTest {
         mockChannelManagementEndpoint.enqueue(new MockResponse()
                                                   .setResponseCode(NO_CONTENT.value()));
 
-        channelManagementService.deleteFiles(ARTEFACT_ID);
+        channelManagementService.deleteFiles(ARTEFACT_ID, ListType.FAMILY_DAILY_CAUSE_LIST, Language.ENGLISH);
         assertThat(logCaptor.getErrorLogs())
             .as("Error log should be empty")
             .isEmpty();
@@ -86,7 +88,7 @@ class ChannelManagementServiceTest {
         mockChannelManagementEndpoint.enqueue(new MockResponse()
                                                   .setResponseCode(BAD_REQUEST.value()));
 
-        channelManagementService.deleteFiles(ARTEFACT_ID);
+        channelManagementService.deleteFiles(ARTEFACT_ID, ListType.FAMILY_DAILY_CAUSE_LIST, Language.ENGLISH);
         assertThat(logCaptor.getErrorLogs().get(0))
             .as("Error log does not match")
             .contains(String.format(
