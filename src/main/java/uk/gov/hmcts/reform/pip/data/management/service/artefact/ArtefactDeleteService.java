@@ -108,7 +108,8 @@ public class ArtefactDeleteService {
         // Delete the generated files for the publications if it's not a flat file
         if (artefact.getIsFlatFile().equals(Boolean.FALSE)
             && !LocationHelper.isNoMatchLocationId(artefact.getLocationId())) {
-            channelManagementService.deleteFiles(artefact.getArtefactId());
+            channelManagementService.deleteFiles(artefact.getArtefactId(), artefact.getListType(),
+                                                 artefact.getLanguage());
         }
     }
 
