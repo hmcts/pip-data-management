@@ -163,7 +163,8 @@ class ArtefactDeleteServiceTest {
             InOrder orderVerifier = inOrder(azureBlobService, channelManagementService,
                                             artefactRepository, subscriptionManagementService);
             orderVerifier.verify(azureBlobService).deleteBlob(PAYLOAD_STRIPPED);
-            orderVerifier.verify(channelManagementService).deleteFiles(ARTEFACT_ID);
+            orderVerifier.verify(channelManagementService).deleteFiles(ARTEFACT_ID, ListType.CIVIL_DAILY_CAUSE_LIST,
+                                                                       Language.ENGLISH);
             orderVerifier.verify(artefactRepository).delete(artefactWithIdAndPayloadUrl);
             orderVerifier.verify(subscriptionManagementService)
                 .sendDeletedArtefactForThirdParties(artefactWithIdAndPayloadUrl);
