@@ -125,7 +125,8 @@
                 ],
                 "judiciary": [
                   {
-                    "johKnownAs": "Judge TestName 1"
+                    "johKnownAs": "Judge TestName Presiding",
+                    "isPresiding": true
                   },
                   {
                     "johKnownAs": "Judge TestName 2"

@@ -40,6 +40,16 @@
           ],
           "default": "",
           "pattern": "^(?!.*<[^>]+>).*$"
+        },
+        "isPresiding": {
+          "description": "A flag to indicate whether a judiciary is presiding",
+          "title": "Is Presiding",
+          "type": "boolean",
+          "examples": [
+            true
+          ],
+          "default": "",
+          "pattern": "^(?!.*<[^>]+>).*$"
         }
       }
     }
