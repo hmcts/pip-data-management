@@ -24,6 +24,7 @@ import uk.gov.hmcts.reform.pip.data.management.service.LocationService;
 import uk.gov.hmcts.reform.pip.data.management.service.PublicationServicesService;
 import uk.gov.hmcts.reform.pip.data.management.service.SubscriptionManagementService;
 import uk.gov.hmcts.reform.pip.model.account.AzureAccount;
+import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 import uk.gov.hmcts.reform.pip.model.system.admin.ActionResult;
 import uk.gov.hmcts.reform.pip.model.system.admin.ChangeType;
@@ -162,7 +163,8 @@ class ArtefactDeleteServiceTest {
             InOrder orderVerifier = inOrder(azureBlobService, channelManagementService,
                                             artefactRepository, subscriptionManagementService);
             orderVerifier.verify(azureBlobService).deleteBlob(PAYLOAD_STRIPPED);
-            orderVerifier.verify(channelManagementService).deleteFiles(ARTEFACT_ID);
+            orderVerifier.verify(channelManagementService).deleteFiles(ARTEFACT_ID, ListType.CIVIL_DAILY_CAUSE_LIST,
+                                                                       Language.ENGLISH);
             orderVerifier.verify(artefactRepository).delete(artefactWithIdAndPayloadUrl);
             orderVerifier.verify(subscriptionManagementService)
                 .sendDeletedArtefactForThirdParties(artefactWithIdAndPayloadUrl);
@@ -242,7 +244,7 @@ class ArtefactDeleteServiceTest {
 
         verify(artefactRepository).archiveArtefact(ARTEFACT_ID.toString());
         verify(azureBlobService).deleteBlob(PAYLOAD_STRIPPED);
-        verify(channelManagementService).deleteFiles(ARTEFACT_ID);
+        verify(channelManagementService).deleteFiles(ARTEFACT_ID, ListType.CIVIL_DAILY_CAUSE_LIST, Language.ENGLISH);
         verifyNoInteractions(subscriptionManagementService);
     }
 
@@ -267,7 +269,7 @@ class ArtefactDeleteServiceTest {
         artefactDeleteService.archiveExpiredArtefacts();
         verify(artefactRepository).archiveArtefact(testArtefactId.toString());
         verify(azureBlobService).deleteBlob(PAYLOAD_STRIPPED);
-        verify(channelManagementService).deleteFiles(testArtefactId);
+        verify(channelManagementService).deleteFiles(testArtefactId, ListType.SJP_PUBLIC_LIST, Language.ENGLISH);
         verifyNoInteractions(subscriptionManagementService);
     }
 
@@ -281,7 +283,7 @@ class ArtefactDeleteServiceTest {
         artefactDeleteService.archiveExpiredArtefacts();
         verify(artefactRepository).archiveArtefact(testArtefactId.toString());
         verify(azureBlobService).deleteBlob(PAYLOAD_STRIPPED);
-        verify(channelManagementService).deleteFiles(testArtefactId);
+        verify(channelManagementService).deleteFiles(testArtefactId, ListType.SJP_PRESS_LIST, Language.ENGLISH);
         verifyNoInteractions(subscriptionManagementService);
     }
 
@@ -330,7 +332,7 @@ class ArtefactDeleteServiceTest {
 
         verify(artefactRepository).archiveArtefact(ARTEFACT_ID.toString());
         verify(azureBlobService).deleteBlob(PAYLOAD_STRIPPED);
-        verify(channelManagementService).deleteFiles(ARTEFACT_ID);
+        verify(channelManagementService).deleteFiles(ARTEFACT_ID, ListType.CIVIL_DAILY_CAUSE_LIST, Language.ENGLISH);
         verify(subscriptionManagementService).sendDeletedArtefactForThirdParties(artefactWithIdAndPayloadUrl);
 
     }
@@ -384,7 +386,8 @@ class ArtefactDeleteServiceTest {
             InOrder orderVerifier = inOrder(azureBlobService, channelManagementService,
                                             artefactRepository, subscriptionManagementService);
             orderVerifier.verify(azureBlobService).deleteBlob(any());
-            orderVerifier.verify(channelManagementService).deleteFiles(ARTEFACT_ID);
+            orderVerifier.verify(channelManagementService).deleteFiles(ARTEFACT_ID, ListType.CIVIL_DAILY_CAUSE_LIST,
+                                                         Language.ENGLISH);
             orderVerifier.verify(artefactRepository).delete(artefactWithIdAndPayloadUrl);
             orderVerifier.verify(subscriptionManagementService).sendDeletedArtefactForThirdParties(any());
 
