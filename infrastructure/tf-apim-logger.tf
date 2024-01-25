@@ -1,4 +1,3 @@
-
 resource "azurerm_api_management_api_diagnostic" "api_logs" {
   count                    = local.deploy_apim
   identifier               = "applicationinsights"
