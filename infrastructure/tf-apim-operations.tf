@@ -4,12 +4,9 @@ locals {
     for operation_policies_file in local.operation_policies_files :
     basename(operation_policies_file) => {
       operation_id = replace(basename(operation_policies_file), ".xml", "")
-      xml_content = replace(replace(file("${path.module}/${operation_policies_file}"),
-        "{BASE_URL}", local.base_url),
-      "{TENANT_ID}", data.azurerm_client_config.current.tenant_id)
+      xml_content  = file("${path.module}/${operation_policies_file}")
     }
   }
-
 }
 
 resource "azurerm_api_management_api_operation_policy" "apim_api_operation_policy" {
