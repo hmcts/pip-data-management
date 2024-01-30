@@ -2,7 +2,7 @@ package uk.gov.hmcts.reform.pip.data.management.models.publication;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonView;
-import com.vladmihalcea.hibernate.type.json.JsonType;
+import io.hypersistence.utils.hibernate.type.json.JsonType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -28,7 +28,7 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- * Class that represents the Inbound artifact that is being published.
+ * Class that represents the Inbound artefact that is being published.
  */
 @Entity
 @Data

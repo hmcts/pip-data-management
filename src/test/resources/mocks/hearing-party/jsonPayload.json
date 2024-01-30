@@ -1,0 +1,214 @@
+{
+  "document": {
+    "version": "",
+    "documentName": "Standard List FINAL V4"
+  },
+  "venue": {
+    "venueName": "PRESTON",
+    "venueContact": {
+      "venueTelephone": "",
+      "primaryContactName": "",
+      "venueEmail": "",
+      "venueSupport": ""
+    },
+    "welshVenueName": "PRESTON",
+    "venueDX": "",
+    "venueAddress": {
+      "line": [
+        "THE LAW COURTS",
+        "THE LAW COURTS"
+      ],
+      "postCode": "PR1 2LL"
+    }
+  },
+  "courtLists": [
+    {
+      "courtHouse": {
+        "courtHouseType": "magistrate",
+        "courtHouseName": "",
+        "welshCourtHouseName": "",
+        "courtHouseDescription": "",
+        "courtHouseCode": "448",
+        "courtRoom": [
+          {
+            "courtRoomId": 1,
+            "courtRoomNumber": 2,
+            "venueContact": {
+              "primaryContactName": "",
+              "venueTelephone": "01772 844700",
+              "venueEmail": "court1@moj.gov.uk"
+            }
+          },
+          {
+            "session": [
+              {
+                "sessionId": "",
+                "sessionType": "TBC"
+              },
+              {
+                "sessionType": "specific to sessions recorded in Listassist",
+                "sessionId": "0023",
+                "sessionStartTime": "2021-09-09t16:41:07.394",
+                "sessionChannel": [
+                  "",
+                  ""
+                ],
+                "sessionSequenceNumber": 3,
+                "sittings": [
+                  {
+                    "judiciary": [
+                      {
+                        "johKnownAs": "judge"
+                      },
+                      {
+                        "johTitle": "Other",
+                        "role": "JUDGE",
+                        "johNameSurname": "",
+                        "johKnownAs": ""
+                      }
+                    ],
+                    "channel": [
+                      "VIDEO HEARING",
+                      ""
+                    ],
+                    "sittingEnd": "",
+                    "hearing": [
+                      {
+                        "hearingSequence": 1
+                      },
+                      {
+                        "hearingSequence": 2,
+                        "hearingType": "mda",
+                        "hearingDescription": "For Application for Bail"
+                      }
+                    ],
+                    "sittingStart": ""
+                  },
+                  {
+                    "sittingStart": "",
+                    "channel": [
+                      "",
+                      "VIDEO HEARING"
+                    ],
+                    "hearing": [
+                      {
+                        "hearingType": "mda"
+                      },
+                      {
+                        "hearingDescription": "For Application for Bail",
+                        "offence": [
+                          {
+                            "reportingRestriction": true,
+                            "offenceMaxPen": "10yrs"
+                          }
+                        ],
+                        "hearingId": "",
+                        "hearingType": "mda",
+                        "listNote": "",
+                        "party": [
+                          {
+                            "individualDetails": {
+                              "nationality": "",
+                              "individualSurname": "Surname",
+                              "individualForenames": "John Smith",
+                              "isMasked": false,
+                              "individualMiddleName": "MiddleName",
+                              "plea": "NOT_GUILTY"
+                            },
+                            "organisationDetails": {
+                              "organisationAddress": {
+                                "description": "Address for organisation",
+                                "title": "Organisation Address"
+                              },
+                              "organisationCharityNumber": "",
+                              "organisationName": "A & B Solicitors",
+                              "organisationIncorporationNumber": "",
+                              "organisationContactName": {
+                                "title": "Other",
+                                "surname": "Smith",
+                                "forename": "John A"
+                              },
+                              "organisationContact": {
+                                "email": "",
+                                "telephoneNumber": "+44 01234 123123"
+                              }
+                            }
+                          },
+                          {
+                            "organisationDetails": {
+                              "organisationIncorporationNumber": ""
+                            },
+                            "individualDetails": {
+                              "title": "Mr",
+                              "isMasked": true,
+                              "asns": [
+                                "",
+                                ""
+                              ],
+                              "individualMiddleName": "MiddleName",
+                              "dateOfBirth": "",
+                              "individualForenames": "",
+                              "nationality": "",
+                              "prosecutionNumber": "r",
+                              "individualSurname": "",
+                              "plea": "NONE",
+                              "address": {
+                                "title": "Address",
+                                "description": "Party Address"
+                              },
+                              "inCustody": true
+                            }
+                          }
+                        ],
+                        "lcsu": {
+                          "lcsuCode": "ddsc",
+                          "lcsuDateTime": ""
+                        },
+                        "hearingSequence": 2,
+                        "case": [
+                          {
+                            "reportingRestriction": true,
+                            "youthCourt": false,
+                            "caseJurisdictionET": "",
+                            "result": {
+                              "resultTitle5": "laborum",
+                              "resultTitle6": "minim adipisicing",
+                              "value7": "quis sit sint",
+                              "value6": "reprehenderit",
+                              "resultTitle4": "Lorem aliquip enim minim fugiat",
+                              "resultTitle7": "officia consectetur",
+                              "value1": "sint proident commodo dolore laboris",
+                              "value4": "minim eiusmod",
+                              "value5": "Excepteur nisi",
+                              "resultTitle2": "elit ex fugiat cupidatat",
+                              "resultTitle1": "Lorem laboris sit Ut",
+                              "value2": "proident dolor sint ad ex"
+                            },
+                            "caseNumber": "CASE1234",
+                            "numberOfDefendants": 1,
+                            "caseName": "",
+                            "listComment": ""
+                          }
+                        ]
+                      }
+                    ],
+                    "sittingEnd": ""
+                  }
+                ]
+              }
+            ],
+            "courtRoomId": 1,
+            "courtRoomNumber": 2,
+            "venueContact": {
+              "venueTelephone": "01772 844700",
+              "venueEmail": "court1@moj.gov.uk",
+              "primaryContactName": "Name",
+              "venueSupport": ""
+            },
+            "courtRoomName": ""
+          }
+        ]
+      }
+    }
+  ]
+}

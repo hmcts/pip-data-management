@@ -19,23 +19,10 @@
       "venueEmail": "a@b.com"
     }
   },
-  "locationDetails": {
-    "jurisdiction": "Family"
-  },
   "courtLists": [
     {
       "courtHouse": {
         "courtHouseName": "This is the site name",
-        "courtHouseContact": {
-          "venueTelephone": "01234 123 123",
-          "venueEmail": "a@b.com"
-        },
-        "courtHouseAddress": {
-          "line": [
-            "Address Line 1"
-          ],
-          "postCode": "AA1 AA1"
-        },
         "courtRoom": [
           {
             "courtRoomName": "This is the court room name",
@@ -76,16 +63,11 @@
                 ],
                 "judiciary": [
                   {
-                    "johTitle": "Judge",
-                    "johNameSurname": "Test Name",
-                    "role": "JUDGE",
                     "johKnownAs": "Judge Test Name",
                     "isPresiding": true
                   },
                   {
-                    "johTitle": "Magistrate",
-                    "johNameSurname": "Test Name",
-                    "role": "MAGISTRATE",
+                    "johKnownAs": "Judge Test Name",
                     "isPresiding": false
                   }
                 ]

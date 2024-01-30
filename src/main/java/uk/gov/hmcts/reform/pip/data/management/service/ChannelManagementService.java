@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientException;
+import uk.gov.hmcts.reform.pip.model.publication.Language;
+import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
 import java.util.UUID;
 
@@ -15,11 +17,18 @@ import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
 @Slf4j
 @Component
 public class ChannelManagementService {
-    @Autowired
-    WebClient webClient;
+    private static final String LIST_TYPE_HEADER = "x-list-type";
+    private static final String LANGUAGE_HEADER = "x-language";
+
+    private final WebClient webClient;
 
     @Value("${service-to-service.channel-management}")
     private String url;
+
+    @Autowired
+    public ChannelManagementService(WebClient webClient) {
+        this.webClient = webClient;
+    }
 
     public String requestFileGeneration(UUID artefactId) {
         try {
@@ -38,10 +47,12 @@ public class ChannelManagementService {
         }
     }
 
-    public void deleteFiles(UUID artefactId) {
+    public void deleteFiles(UUID artefactId, ListType listType, Language language) {
         try {
             webClient.delete()
-                .uri(url + "/publication/" + artefactId)
+                .uri(url + "/publication/v2/" + artefactId)
+                .header(LIST_TYPE_HEADER, listType.toString())
+                .header(LANGUAGE_HEADER, language.toString())
                 .attributes(clientRegistrationId("channelManagementApi"))
                 .retrieve()
                 .bodyToMono(String.class)

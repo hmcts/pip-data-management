@@ -10,127 +10,98 @@
                   {
                     "hearing": [
                       {
-                        "party": [
-                          {
-                            "individualDetails": {
-                              "individualSurname": "Missing party role"
-                            }
-                          },
-                          {
-                            "partyRole": "",
-                            "individualDetails": {
-                              "individualSurname": "Empty party role"
-                            }
-                          },
-                          {
-                            "partyRole": "APPLICANT",
-                            "individualDetails": {
-                              "individualForenames": "Applicant Forename",
-                              "individualMiddleName": "Applicant middle name",
-                              "individualSurname": "Applicant Surname"
-                            }
-                          },
-                          {
-                            "partyRole": "RESPONDENT",
-                            "individualDetails": {
-                              "individualSurname": "Respondent Surname"
-                            }
-                          },
-                          {
-                            "partyRole": "APPLICANT",
-                            "organisationDetails": {
-                              "organisationName": "Applicant Org Name"
-                            }
-                          },
-                          {
-                            "partyRole": "RESPONDENT",
-                            "organisationDetails": {
-                              "organisationName": "Respondent Org Name"
-                            }
-                          },
-                          {
-                            "partyRole": "APPLICANT_REPRESENTATIVE",
-                            "individualDetails": {
-                              "individualSurname": "Applicant Rep Surname"
-                            }
-                          },
-                          {
-                            "partyRole": "RESPONDENT_REPRESENTATIVE",
-                            "organisationDetails": {
-                              "organisationName": "Respondent Rep Surname"
-                            }
-                          }
-                        ],
                         "case": [
                           {
                             "caseNumber": "CASE1234",
                             "caseName": "NAME1",
-                            "caseUrn": "URN1234"
+                            "caseUrn": "URN1234",
+                            "party": [
+                              {
+                                "partyRole": "APPLICANT",
+                                "individualDetails": {
+                                  "individualSurname": "Surname"
+                                }
+                              },
+                              {
+                                "partyRole": "RESPONDENT",
+                                "organisationDetails": {
+                                  "organisationName": "Org Name"
+                                }
+                              }
+                            ]
                           },
                           {
                             "caseNumber": "CASE1235",
                             "caseName": "NAME2",
-                            "caseUrn": "URN1235"
+                            "caseUrn": "URN1235",
+                            "party": [
+                              {
+                                "partyRole": "APPLICANT",
+                                "individualDetails": {
+                                  "individualSurname": "Surname2"
+                                }
+                              }
+                            ]
                           }
                         ]
                       },
                       {
-                        "party": [
-                          {
-                            "individualDetails": {
-                              "individualSurname": "Missing party role"
-                            }
-                          },
-                          {
-                            "partyRole": "",
-                            "individualDetails": {
-                              "individualSurname": "Empty party role"
-                            }
-                          },
-                          {
-                            "partyRole": "APPLICANT",
-                            "individualDetails": {
-                              "individualForenames": "Applicant Forename",
-                              "individualMiddleName": "Applicant middle name",
-                              "individualSurname": "Applicant Surname"
-                            }
-                          },
-                          {
-                            "partyRole": "RESPONDENT",
-                            "individualDetails": {
-                              "individualSurname": "Respondent Surname"
-                            }
-                          },
-                          {
-                            "partyRole": "APPLICANT",
-                            "organisationDetails": {
-                              "organisationName": "Applicant Org Name"
-                            }
-                          },
-                          {
-                            "partyRole": "RESPONDENT",
-                            "organisationDetails": {
-                              "organisationName": "Respondent Org Name"
-                            }
-                          },
-                          {
-                            "partyRole": "APPLICANT_REPRESENTATIVE",
-                            "individualDetails": {
-                              "individualSurname": "Applicant Rep Surname"
-                            }
-                          },
-                          {
-                            "partyRole": "RESPONDENT_REPRESENTATIVE",
-                            "organisationDetails": {
-                              "organisationName": "Respondent Rep Surname"
-                            }
-                          }
-                        ],
                         "case": [
                           {
                             "caseNumber": "CASE1236",
                             "caseName": "NAME3",
-                            "caseUrn": "URN1236"
+                            "caseUrn": "URN1236",
+                            "party": [
+                              {
+                                "individualDetails": {
+                                  "individualSurname": "Missing party role"
+                                }
+                              },
+                              {
+                                "partyRole": "",
+                                "individualDetails": {
+                                  "individualSurname": "Empty party role"
+                                }
+                              },
+                              {
+                                "partyRole": "APPLICANT",
+                                "individualDetails": {
+                                  "individualForenames": "Applicant Forename",
+                                  "individualMiddleName": "Applicant middle name",
+                                  "individualSurname": "Applicant Surname"
+                                }
+                              },
+                              {
+                                "partyRole": "RESPONDENT",
+                                "individualDetails": {
+                                  "individualSurname": "Respondent Surname"
+                                }
+                              },
+                              {
+                                "partyRole": "APPLICANT",
+                                "organisationDetails": {
+                                  "organisationName": "Applicant Org Name"
+                                }
+                              },
+                              {
+                                "partyRole": "RESPONDENT",
+                                "organisationDetails": {
+                                  "organisationName": "Respondent Org Name"
+                                }
+                              },
+                              {
+                                "partyRole": "APPLICANT_REPRESENTATIVE",
+                                "individualDetails": {
+                                  "individualSurname": "Applicant Rep Surname"
+                                }
+                              },
+                              {
+                                "partyRole": "RESPONDENT_REPRESENTATIVE",
+                                "organisationDetails": {
+                                  "organisationName": "Respondent Rep Surname"
+                                }
+                              }
+                            ]
                           }
                         ]
                       },
@@ -144,12 +115,12 @@
                         ]
                       },
                       {
-                        "party": [],
                         "case": [
                           {
                             "caseNumber": "CASE1238",
                             "caseName": "NAME5",
-                            "caseUrn": "URN1238"
+                            "caseUrn": "URN1238",
+                            "party": []
                           }
                         ]
                       }

@@ -1,8 +1,8 @@
 terraform {
-  required_version = ">= 1.0.4"
+  required_version = ">= 1.6.0"
   required_providers {
     azurerm = {
-      version = "3.75.0"
+      version = "3.83.0"
     }
     postgresql = {
       source  = "cyrilgdn/postgresql"
@@ -23,7 +23,7 @@ provider "azurerm" {
 }
 
 provider "postgresql" {
-  alias           = "postgres-flexible"
+  alias = "postgres-flexible"
 
   host            = module.postgresql.fqdn
   port            = 5432

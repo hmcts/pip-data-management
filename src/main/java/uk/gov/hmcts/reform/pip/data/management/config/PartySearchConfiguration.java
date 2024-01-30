@@ -12,6 +12,8 @@ public class PartySearchConfiguration {
 
     private String hearingsPath;
     private String casesPath;
+    private String allCasesPath;
+    private String caseReferencePath;
     private String partiesIndividualDetailsPath;
     private String partiesOrgNamePath;
 

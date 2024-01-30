@@ -15,12 +15,14 @@ import java.util.List;
 @Service
 @Slf4j
 public class HearingService {
+    private final CourtsAndHearings courtsAndHearings;
+    private final FilterService filterService;
 
     @Autowired
-    private CourtsAndHearings courtsAndHearings;
-
-    @Autowired
-    private FilterService filterService;
+    public HearingService(CourtsAndHearings courtsAndHearings, FilterService filterService) {
+        this.courtsAndHearings = courtsAndHearings;
+        this.filterService = filterService;
+    }
 
     /**
      * Returns all hearings for a court ID.

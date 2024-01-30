@@ -62,7 +62,7 @@ public class PublicationService {
     /**
      * Method that handles the creation or updating of a new JSON publication.
      *
-     * @param artefact The artifact that needs to be created.
+     * @param artefact The artefact that needs to be created.
      * @param payload  The payload for the artefact that needs to be created.
      * @return Returns the artefact that was created.
      */

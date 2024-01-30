@@ -240,6 +240,23 @@ class ValidationServiceTest {
     }
 
     @Test
+    void testRemoveDuplicateMessageWhenValidatingJson() {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream("mocks/badJsonWithDuplicateError.json")) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+            PayloadValidationException payloadValidationException = assertThrows(PayloadValidationException.class, () ->
+                             validationService.validateBody(text, headerGroup),
+                         "Valid JSON string marked as not valid");
+
+            assertEquals("$.venue.venueAddress.town: does not match the regex pattern ^(?!.*<[^>]+>).*$",
+                         payloadValidationException.getMessage(),
+                         "JSON Payload message does not match expected exception");
+        } catch (IOException exception) {
+            fail(UNKNOWN_EXCEPTION);
+        }
+    }
+
+    @Test
     void testExceptionWhenValidatingPayload() {
         PayloadValidationException payloadValidationException = assertThrows(PayloadValidationException.class, () ->
             validationService.validateBody("abcd", headerGroup), "Validation exception not thrown "
@@ -316,7 +333,9 @@ class ValidationServiceTest {
             Arguments.of(ListType.OPA_PRESS_LIST,
                          "mocks/opa-press-list/opaPressList.json"),
             Arguments.of(ListType.OPA_PUBLIC_LIST,
-                         "mocks/opa-public-list/opaPublicList.json")
+                         "mocks/opa-public-list/opaPublicList.json"),
+            Arguments.of(ListType.OPA_RESULTS,
+                         "mocks/opa-results/opaResults.json")
         );
     }
 }

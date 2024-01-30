@@ -97,10 +97,10 @@ class PublicationInvalidHeadersTest {
         httpHeaders.add(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE.toString());
     }
 
-    @DisplayName("Should return a 400 Bad Request if an invalid artifact type is provided")
+    @DisplayName("Should return a 400 Bad Request if an invalid artefact type is provided")
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
-    void testInvalidArtifactType(boolean isJson) throws Exception {
+    void testInvalidArtefactType(boolean isJson) throws Exception {
         if (isJson) {
             mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
         } else {
