@@ -56,5 +56,5 @@ resource "postgresql_grant" "readonly_mv-flexible" {
   schema      = "public"
   object_type = "table"
   privileges  = ["SELECT"]
-  objects     = ["sdp_mat_view_artefact"]
+  objects     = ["sdp_mat_view_artefact", "sdp_mat_view_location"]
 }
