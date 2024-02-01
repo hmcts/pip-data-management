@@ -154,7 +154,6 @@ public class Artefact {
      */
     @JsonView(ArtefactView.Internal.class)
     @Column(nullable = false, columnDefinition = "INTEGER DEFAULT 0")
-    @Version
     private int supersededCount;
 
     /**

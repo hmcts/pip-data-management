@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.CannotAcquireLockException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
@@ -66,8 +67,8 @@ public class PublicationService {
      * @param payload  The payload for the artefact that needs to be created.
      * @return Returns the artefact that was created.
      */
-    @Transactional(isolation = Isolation.SERIALIZABLE)
-    @Retryable(value = { CannotAcquireLockException.class, JpaSystemException.class },
+    @Transactional(isolation = Isolation.READ_COMMITTED)
+    @Retryable(value = { CannotAcquireLockException.class, JpaSystemException.class, DataIntegrityViolationException.class},
         maxAttempts = RETRY_MAX_ATTEMPTS, backoff = @Backoff(delay = RETRY_DELAY_IN_MS))
     public Artefact createPublication(Artefact artefact, String payload) {
         boolean isExisting = applyExistingArtefact(artefact);
@@ -78,7 +79,9 @@ public class PublicationService {
         );
 
         artefact.setPayload(blobUrl);
+
         return artefactRepository.save(artefact);
+
     }
 
     /**
@@ -127,7 +130,7 @@ public class PublicationService {
         foundArtefact.ifPresent(value -> {
             artefact.setArtefactId(value.getArtefactId());
             artefact.setPayload(value.getPayload());
-            artefact.setSupersededCount(value.getSupersededCount());
+            artefact.setSupersededCount(value.getSupersededCount() + 1);
         });
         return foundArtefact.isPresent();
     }
