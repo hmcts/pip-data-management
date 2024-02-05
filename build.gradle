@@ -1,7 +1,7 @@
 //This is required as flyway now has a stand alone library for each database rather than being bundled together
 buildscript {
   dependencies {
-    classpath("org.flywaydb:flyway-database-postgresql:10.1.0")
+    classpath("org.flywaydb:flyway-database-postgresql:10.7.1")
   }
 }
 
