@@ -1,5 +1,6 @@
 {
   "document": {
+    "publicationDate": "20-02-2020T20:00.001Z",
     "documentName": "This is a document name",
     "version": "This is a document version"
   },
@@ -49,6 +50,7 @@
                         "hearingType": "Directions",
                         "case": [
                           {
+                            "caseNumber": "12341234",
                             "reportingRestrictionDetail": [
                               "Reporting Restriction detail line 1",
                               "Reporting restriction detail line 2"
@@ -58,15 +60,15 @@
                                 "caseId": "1234",
                                 "name": "A Vs B"
                               }
-                            ],
-                            "party": [
-                              {
-                                "partyRole": "PROSECUTING_AUTHORITY",
-                                "individualDetails": {
-                                  "individualSurname": "Surname"
-                                }
-                              }
                             ]
+                          }
+                        ],
+                        "party": [
+                          {
+                            "partyRole": "PROSECUTING_AUTHORITY",
+                            "individualDetails": {
+                              "individualSurname": "Surname"
+                            }
                           }
                         ]
                       }
