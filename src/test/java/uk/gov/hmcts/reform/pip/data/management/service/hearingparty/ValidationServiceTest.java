@@ -66,6 +66,8 @@ class ValidationServiceTest {
                          "mocks/hearing-party/crownFirmList.json"),
             Arguments.of(ListType.CROWN_WARNED_LIST,
                          "mocks/hearing-party/crownWarnedList.json"),
+            Arguments.of(ListType.MAGISTRATES_PUBLIC_LIST,
+                         "mocks/hearing-party/magistratesPublicList.json"),
             Arguments.of(ListType.FAMILY_DAILY_CAUSE_LIST,
                          "mocks/hearing-party/familyDailyCauseList.json"),
             Arguments.of(ListType.CIVIL_AND_FAMILY_DAILY_CAUSE_LIST,

@@ -1,5 +1,6 @@
 {
   "document": {
+    "publicationDate": "20-02-2020T20:00.001Z",
     "documentName": "This is a document name",
     "version": "This is a document version"
   },
@@ -36,19 +37,20 @@
                         "hearingType": "Directions",
                         "case": [
                           {
+                            "caseNumber": "12341234",
                             "reportingRestrictionDetail": [
                               "Reporting Restriction detail line 1",
                               "Reporting restriction detail line 2"
                             ],
-                            "caseSequenceIndicator": "2 of 3",
-                            "party": [
-                              {
-                                "partyRole": "PROSECUTING_AUTHORITY",
-                                "individualDetails": {
-                                  "individualSurname": "Surname"
-                                }
-                              }
-                            ]
+                            "caseSequenceIndicator": "2 of 3"
+                          }
+                        ],
+                        "party": [
+                          {
+                            "partyRole": "PROSECUTING_AUTHORITY",
+                            "individualDetails": {
+                              "individualSurname": "Surname"
+                            }
                           }
                         ]
                       }
@@ -65,7 +67,7 @@
                     "isPresiding": true
                   },
                   {
-                    "johKnownAs": "Judge Test Name 2",
+                    "johKnownAs": "Judge Test Name",
                     "isPresiding": false
                   }
                 ]

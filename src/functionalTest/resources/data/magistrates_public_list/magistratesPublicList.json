@@ -44,15 +44,15 @@
                               "Reporting Restriction detail line 1",
                               "Reporting restriction detail line 2"
                             ],
-                            "caseSequenceIndicator": "2 of 3"
-                          }
-                        ],
-                        "party": [
-                          {
-                            "partyRole": "PROSECUTING_AUTHORITY",
-                            "individualDetails": {
-                              "individualSurname": "Surname"
-                            }
+                            "caseSequenceIndicator": "2 of 3",
+                            "party": [
+                              {
+                                "partyRole": "PROSECUTING_AUTHORITY",
+                                "individualDetails": {
+                                  "individualSurname": "Surname"
+                                }
+                              }
+                            ]
                           }
                         ]
                       }
