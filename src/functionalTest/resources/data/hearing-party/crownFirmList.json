@@ -1,6 +1,6 @@
 {
   "document": {
-    "publicationDate": "20-02-2020T20:00.001Z",
+    "publicationDate": "2023-03-03T14:07:33.871502Z",
     "documentName": "This is a document name",
     "version": "This is a document version"
   },
@@ -13,8 +13,6 @@
       "town": "Venue Town",
       "county": "Venue County",
       "postCode": "AA1 AA1"
-
-
     },
     "venueContact": {
       "venueTelephone": "01234 123 123",
@@ -45,18 +43,18 @@
               {
                 "sittings": [
                   {
-                    "sittingStart": "20-02-2020T20:00.001Z",
-                    "sittingEnd": "20-02-2020T20:00.001Z",
+                    "sittingStart": "2023-03-03T14:09:30.871502Z",
+                    "sittingEnd": "2023-03-03T14:10:30.871502Z",
                     "hearing": [
                       {
                         "hearingType": "Directions",
                         "case": [
                           {
-                            "caseNumber": "12341234",
                             "reportingRestrictionDetail": [
                               "Reporting Restriction detail line 1",
                               "Reporting restriction detail line 2"
                             ],
+                            "caseNumber": "12341234",
                             "caseLinked": [
                               {
                                 "caseId": "1234",
@@ -68,9 +66,16 @@
                         ],
                         "party": [
                           {
-                            "partyRole": "PROSECUTING_AUTHORITY",
+                            "partyRole": "DEFENDANT",
                             "individualDetails": {
-                              "individualSurname": "Surname"
+                              "individualSurname": "Surname",
+                              "individualForenames": "Forenames"
+                            }
+                          },
+                          {
+                            "partyRole": "PROSECUTING_AUTHORITY",
+                            "organisationDetails": {
+                              "organisationName": "Org name"
                             }
                           }
                         ]
@@ -84,16 +89,11 @@
                 ],
                 "judiciary": [
                   {
-                    "johTitle": "Judge",
-                    "johNameSurname": "Test Name",
-                    "role": "JUDGE",
-                    "johKnownAs": "Judge Test Name",
+                    "johKnownAs": "Judge TestName Presiding",
                     "isPresiding": true
                   },
                   {
-                    "johTitle": "Magistrate",
-                    "johNameSurname": "Test Name",
-                    "role": "MAGISTRATE",
+                    "johKnownAs": "Judge TestName",
                     "isPresiding": false
                   }
                 ]
