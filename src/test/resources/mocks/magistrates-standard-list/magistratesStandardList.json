@@ -99,17 +99,15 @@
                     ],
                     "judiciary": [
                       {
-                        "johTitle": "DJ",
+                        "johTitle": "Judge",
                         "johNameSurname": "Test Name",
                         "role": "JUDGE",
-                        "johKnownAs": "DJ",
                         "isPresiding": true
                       },
                       {
                         "johTitle": "Magistrate",
                         "johNameSurname": "Test Name",
                         "role": "MAGISTRATE",
-                        "johKnownAs": "Justice of the peace",
                         "isPresiding": false
                       }
                     ],
