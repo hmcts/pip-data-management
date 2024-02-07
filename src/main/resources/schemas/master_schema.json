@@ -121,7 +121,11 @@
           "description": "Role of the judiciary",
           "title": "Role",
           "type": "string",
-          "enum": ["JUDGE", "MAGISTRATE", "CLERK"],
+          "enum": [
+            "JUDGE",
+            "MAGISTRATE",
+            "CLERK"
+          ],
           "default": "",
           "pattern": "^(?!.*<[^>]+>).*$"
         },
