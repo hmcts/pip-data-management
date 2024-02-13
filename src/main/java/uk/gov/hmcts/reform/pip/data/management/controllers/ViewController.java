@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.pip.data.management.controllers;
 
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +17,10 @@ import uk.gov.hmcts.reform.pip.model.authentication.roles.IsAdmin;
 @RestController
 @Tag(name = "Data Management - API for dealing with views")
 @RequestMapping("/view")
+@ApiResponse(responseCode = "401", description = "Invalid access credential")
+@ApiResponse(responseCode = "403", description = "User has not been authorized")
 @IsAdmin
+@SecurityRequirement(name = "Bearer authentication")
 public class ViewController {
 
     private final ViewService viewService;
@@ -27,7 +31,6 @@ public class ViewController {
     }
 
     @ApiResponse(responseCode = "200", description = "View Refreshed")
-    @ApiResponse(responseCode = "403", description = "User has not been authorised")
     @PostMapping("/refresh")
     public ResponseEntity<Void> refreshView() {
         viewService.refreshView();
