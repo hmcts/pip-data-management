@@ -204,7 +204,7 @@
             "content": {
               "*/*": {
                 "schema": {
-                  "$ref": "#/components/schemas/Artefact_External"
+                  "$ref": "#/components/schemas/Artefact"
                 }
               }
             }
@@ -214,7 +214,7 @@
             "content": {
               "*/*": {
                 "schema": {
-                  "$ref": "#/components/schemas/Artefact_External"
+                  "$ref": "#/components/schemas/Artefact"
                 }
               }
             }
