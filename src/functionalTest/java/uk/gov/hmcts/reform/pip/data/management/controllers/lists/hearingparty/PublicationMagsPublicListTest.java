@@ -73,7 +73,7 @@ class PublicationMagsPublicListTest {
 
     @DisplayName("Should create a valid artefact and return the created artefact to the user")
     @Test
-    void testCreationOfValidSscsDailyList() throws Exception {
+    void testCreationOfValidMagistratesPublicList() throws Exception {
         try (InputStream mockFile = this.getClass().getClassLoader()
             .getResourceAsStream("data/hearing-party/magistratesPublicList.json")) {
 
@@ -105,7 +105,7 @@ class PublicationMagsPublicListTest {
 
     @DisplayName("Should return an error message back to the user when creating an invalid blob")
     @Test
-    void testCreationOfInvalidSscsDailyList() throws Exception {
+    void testCreationOfInvalidMagistratesPublicList() throws Exception {
         try (InputStream mockFile = this.getClass().getClassLoader()
             .getResourceAsStream("data/hearing-party/magistratesPublicListInvalid.json")) {
 
