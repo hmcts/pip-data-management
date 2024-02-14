@@ -33,7 +33,41 @@
                       {
                         "case": [
                           {
-                            "caseNumber": "12341234"
+                            "caseNumber": "12341234",
+                            "party": [
+                              {
+                                "partyRole": "APPLICANT_PETITIONER",
+                                "individualDetails": {
+                                  "individualSurname": "CasePartyNamePetitioner"
+                                }
+                              },
+                              {
+                                "partyRole": "RESPONDENT",
+                                "organisationDetails": {
+                                  "organisationName": "CasePartyNameRespondentOrg"
+                                }
+                              },
+                              {
+                                "partyRole": "APPLICANT_PETITIONER_REPRESENTATIVE",
+                                "friendlyRoleName": "Legal Advisor",
+                                "individualDetails": {
+                                  "individualForenames": "Test",
+                                  "individualMiddleName": "A",
+                                  "individualSurname": "CasePartyNamePetitionerRep",
+                                  "title": "Mr"
+                                }
+                              },
+                              {
+                                "partyRole": "RESPONDENT_REPRESENTATIVE",
+                                "friendlyRoleName": "Legal Advisor",
+                                "individualDetails": {
+                                  "individualForenames": "Test",
+                                  "individualMiddleName": "A",
+                                  "individualSurname": "CasePartyNameRespondentRep",
+                                  "title": "Mr"
+                                }
+                              }
+                            ]
                           }
                         ],
                         "informant": [
@@ -42,40 +76,6 @@
                               "test",
                               "test2"
                             ]
-                          }
-                        ],
-                        "party": [
-                          {
-                            "partyRole": "APPLICANT_PETITIONER",
-                            "individualDetails": {
-                              "individualSurname": "Surname"
-                            }
-                          },
-                          {
-                            "partyRole": "RESPONDENT",
-                            "individualDetails": {
-                              "individualSurname": "Surname"
-                            }
-                          },
-                          {
-                            "partyRole": "APPLICANT_PETITIONER_REPRESENTATIVE",
-                            "friendlyRoleName": "Legal Advisor",
-                            "individualDetails": {
-                              "individualForenames": "Individual Forenames",
-                              "individualMiddleName": "Individual Middlename",
-                              "individualSurname": "Individual Surname",
-                              "title": "Mr"
-                            }
-                          },
-                          {
-                            "partyRole": "RESPONDENT_REPRESENTATIVE",
-                            "friendlyRoleName": "Legal Advisor",
-                            "individualDetails": {
-                              "individualForenames": "Individual Forenames",
-                              "individualMiddleName": "Individual Middlename",
-                              "individualSurname": "Individual Surname",
-                              "title": "Mr"
-                            }
                           }
                         ]
                       },
@@ -89,7 +89,7 @@
                           {
                             "partyRole": "APPLICANT_PETITIONER",
                             "individualDetails": {
-                              "individualSurname": "Surname"
+                              "individualSurname": "HearingPartyNamePetitioner"
                             }
                           },
                           {
@@ -98,7 +98,7 @@
                             "individualDetails": {
                               "individualForenames": "Individual Forenames",
                               "individualMiddleName": "Individual Middlename",
-                              "individualSurname": "Individual Surname",
+                              "individualSurname": "HearingPartyNamePetitionerRep",
                               "title": "Mr"
                             }
                           },
