@@ -254,88 +254,87 @@
                                                 "2 of 3"
                                               ],
                                               "pattern": "^(?!.*<[^>]+>).*$"
-                                            }
-                                          }
-                                        }
-                                      },
-                                      "party": {
-                                        "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/party",
-                                        "title": "Party",
-                                        "description": "Parties involved in the case (defence, prosecution)",
-                                        "type": "array",
-                                        "items": {
-                                          "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/items",
-                                          "title": "Party",
-                                          "description": "A party",
-                                          "type": "object",
-                                          "required": ["partyRole"],
-                                          "properties": {
-                                            "partyRole": {
-                                              "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/party/partyRole",
-                                              "description": "Role of the party, selectable list of roles, i.e. prosecution, solicitor defence etc",
-                                              "title": "Party Role",
-                                              "type": "string",
-                                              "examples": [
-                                                "ACCUSED", "PROSECUTOR"
-                                              ],
-                                              "enum": ["CLAIMANT_PETITIONER", "CLAIMANT_PETITIONER_REPRESENTATIVE", "RESPONDENT", "RESPONDENT_REPRESENTATIVE"],
-                                              "default": "",
-                                              "pattern": "^(?!.*<[^>]+>).*$"
                                             },
-                                            "individualDetails": {
-                                              "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/party/individualDetails",
-                                              "title": "Individual Details",
-                                              "description": "Individual Details",
-                                              "type": "object",
-                                              "properties": {
-                                                "title": {
-                                                  "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/party/individualDetails/title",
-                                                  "description": "Title of individual",
-                                                  "title": "Title",
-                                                  "type": "string",
-                                                  "examples": [
-                                                    "Mr"
-                                                  ],
-                                                  "default": "",
-                                                  "pattern": "^(?!.*<[^>]+>).*$"
-                                                },
-                                                "individualForenames": {
-                                                  "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/party/individualDetails/individualForenames",
-                                                  "description": "Forename of party",
-                                                  "title": "Individual Forenames",
-                                                  "type": "string",
-                                                  "examples": [
-                                                    "John Smith"
-                                                  ],
-                                                  "default": "",
-                                                  "pattern": "^(?!.*<[^>]+>).*$"
-                                                },
-                                                "individualMiddleName": {
-                                                  "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/party/individualDetails/individualMiddleName",
-                                                  "description": "Middle name of the individual",
-                                                  "title": "Individual Middle Name",
-                                                  "type": "string",
-                                                  "examples": [
-                                                    "MiddleName"
-                                                  ],
-                                                  "default": "",
-                                                  "pattern": "^(?!.*<[^>]+>).*$"
-                                                },
-                                                "individualSurname": {
-                                                  "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/party/individualDetails/individualSurname",
-                                                  "description": "Surname of party",
-                                                  "title": "Individual Surname",
-                                                  "type": "string",
-                                                  "examples": [
-                                                    "Surname"
-                                                  ],
-                                                  "default": "",
-                                                  "pattern": "^(?!.*<[^>]+>).*$"
+                                            "party": {
+                                              "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/party",
+                                              "title": "Party",
+                                              "description": "Parties involved in the case (defence, prosecution)",
+                                              "type": "array",
+                                              "items": {
+                                                "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/party/items",
+                                                "title": "Party",
+                                                "description": "A party",
+                                                "type": "object",
+                                                "required": ["partyRole"],
+                                                "properties": {
+                                                  "partyRole": {
+                                                    "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/party/partyRole",
+                                                    "description": "Role of the party, selectable list of roles, i.e. prosecution, solicitor defence etc",
+                                                    "title": "Party Role",
+                                                    "type": "string",
+                                                    "examples": [
+                                                      "ACCUSED", "PROSECUTOR"
+                                                    ],
+                                                    "enum": ["CLAIMANT_PETITIONER", "CLAIMANT_PETITIONER_REPRESENTATIVE", "RESPONDENT", "RESPONDENT_REPRESENTATIVE"],
+                                                    "default": "",
+                                                    "pattern": "^(?!.*<[^>]+>).*$"
+                                                  },
+                                                  "individualDetails": {
+                                                    "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/party/individualDetails",
+                                                    "title": "Individual Details",
+                                                    "description": "Individual Details",
+                                                    "type": "object",
+                                                    "properties": {
+                                                      "title": {
+                                                        "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/party/individualDetails/title",
+                                                        "description": "Title of individual",
+                                                        "title": "Title",
+                                                        "type": "string",
+                                                        "examples": [
+                                                          "Mr"
+                                                        ],
+                                                        "default": "",
+                                                        "pattern": "^(?!.*<[^>]+>).*$"
+                                                      },
+                                                      "individualForenames": {
+                                                        "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/party/individualDetails/individualForenames",
+                                                        "description": "Forename of party",
+                                                        "title": "Individual Forenames",
+                                                        "type": "string",
+                                                        "examples": [
+                                                          "John Smith"
+                                                        ],
+                                                        "default": "",
+                                                        "pattern": "^(?!.*<[^>]+>).*$"
+                                                      },
+                                                      "individualMiddleName": {
+                                                        "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/party/individualDetails/individualMiddleName",
+                                                        "description": "Middle name of the individual",
+                                                        "title": "Individual Middle Name",
+                                                        "type": "string",
+                                                        "examples": [
+                                                          "MiddleName"
+                                                        ],
+                                                        "default": "",
+                                                        "pattern": "^(?!.*<[^>]+>).*$"
+                                                      },
+                                                      "individualSurname": {
+                                                        "$id": "#root/courtLists/courtList/courtRoom/session/sittings/items/hearing/case/party/individualDetails/individualSurname",
+                                                        "description": "Surname of party",
+                                                        "title": "Individual Surname",
+                                                        "type": "string",
+                                                        "examples": [
+                                                          "Surname"
+                                                        ],
+                                                        "default": "",
+                                                        "pattern": "^(?!.*<[^>]+>).*$"
+                                                      }
+                                                    }
+                                                  }
                                                 }
                                               }
                                             }
                                           }
-
                                         }
                                       }
                                     }
