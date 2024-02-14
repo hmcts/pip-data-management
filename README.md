@@ -15,6 +15,7 @@
       - [Runtime secrets](#runtime-secrets)
       - [Test secrets](#additional-test-secrets)
     - [Application.yaml files](#applicationyaml-files)
+  - [Fortify](#fortify)
 - [API Documentation](#api-documentation)
 - [Examples](#examples)
   - [Uploading a new publication](#uploading-a-new-publication)
@@ -164,6 +165,10 @@ The service can also be adapted using the yaml files found in the following loca
 - `src/functionalTest/resources/application-functional.yaml` for changes to the application when it's running functional tests.
 - `src/functionalTest/resources/application-view.yaml` for changes to postgres view tests.
 - `src/test/resources/application-test.yaml` for changes to other test types (e.g. unit tests).
+
+### Fortify
+
+We use Fortify to scan for security vulnerabilities. This is run as part of our nightly pipelines.
 
 ## API Documentation
 Our full API specification can be found within our Swagger-UI page.
