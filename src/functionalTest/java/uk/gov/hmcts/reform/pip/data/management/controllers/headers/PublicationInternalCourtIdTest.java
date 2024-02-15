@@ -105,9 +105,12 @@ class PublicationInternalCourtIdTest {
     public static void setup() throws IOException {
         file = new MockMultipartFile("file", "test123.pdf", MediaType.APPLICATION_PDF_VALUE, "test content123".getBytes(
             StandardCharsets.UTF_8));
-        payload = new String(IOUtils.toByteArray(
-            Objects.requireNonNull(PublicationInternalCourtIdTest.class.getClassLoader()
-                                       .getResourceAsStream("data/artefact.json"))));
+
+        try (InputStream is = PublicationInternalCourtIdTest.class.getClassLoader()
+            .getResourceAsStream("data/artefact.json")) {
+            payload = new String(IOUtils.toByteArray(
+                Objects.requireNonNull(is)));
+        }
 
         objectMapper = new ObjectMapper();
         objectMapper.findAndRegisterModules();

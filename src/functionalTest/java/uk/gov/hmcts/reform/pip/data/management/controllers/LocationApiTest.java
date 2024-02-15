@@ -29,7 +29,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.BiPredicate;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -735,16 +734,18 @@ class LocationApiTest {
             MvcResult mvcResult = mockMvc.perform(multipart(UPLOAD_API).file(csvFile))
                 .andExpect(status().isOk()).andReturn();
 
-            List<String> inputCsv = new BufferedReader(new InputStreamReader(Objects.requireNonNull(this.getClass()
-                                                                          .getClassLoader().getResourceAsStream(
-                    LOCATIONS_CSV)))).lines().collect(Collectors.toList());
+            List<String> inputCsv;
+            try (InputStream is = this.getClass().getClassLoader().getResourceAsStream(LOCATIONS_CSV)) {
+                inputCsv = new BufferedReader(new InputStreamReader(
+                    Objects.requireNonNull(is)))
+                    .lines().toList();
+            }
 
             Location[] locationsFromResponse = objectMapper.readValue(
                 mvcResult.getResponse().getContentAsString(),
                 Location[].class
             );
-            List<String> locationsInInputCsv = inputCsv.stream().map(s -> s.split(",")[0])
-                .collect(Collectors.toList());
+            List<String> locationsInInputCsv = inputCsv.stream().map(s -> s.split(",")[0]).toList();
             for (Location locationFromResponse : locationsFromResponse) {
                 assertTrue(
                     locationsInInputCsv.contains(locationFromResponse.getLocationId().toString()),
