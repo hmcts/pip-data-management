@@ -1,6 +1,6 @@
 {
   "document": {
-    "publicationDate": "20-02-2020T20:00.001Z",
+    "publicationDate": "2022-02-13T09:30:52.123Z",
     "documentName": "This is a document name",
     "version": "This is a document version"
   },
@@ -30,8 +30,8 @@
               {
                 "sittings": [
                   {
-                    "sittingStart": "20-02-2020T20:00.001Z",
-                    "sittingEnd": "20-02-2020T20:00.001Z",
+                    "sittingStart": "2022-02-13T09:30:52.123Z",
+                    "sittingEnd": "2022-02-13T10:30:52.123Z",
                     "hearing": [
                       {
                         "hearingType": "Directions",
@@ -42,15 +42,21 @@
                               "Reporting Restriction detail line 1",
                               "Reporting restriction detail line 2"
                             ],
-                            "caseSequenceIndicator": "2 of 3"
-                          }
-                        ],
-                        "party": [
-                          {
-                            "partyRole": "PROSECUTING_AUTHORITY",
-                            "individualDetails": {
-                              "individualSurname": "Surname"
-                            }
+                            "caseSequenceIndicator": "2 of 3",
+                            "party": [
+                              {
+                                "partyRole": "DEFENDANT",
+                                "individualDetails": {
+                                  "individualSurname": "Defendant Surname"
+                                }
+                              },
+                              {
+                                "partyRole": "PROSECUTING_AUTHORITY",
+                                "organisationDetails": {
+                                  "organisationName": "Prosecuting Org"
+                                }
+                              }
+                            ]
                           }
                         ]
                       }
