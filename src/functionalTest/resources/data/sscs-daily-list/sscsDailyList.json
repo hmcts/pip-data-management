@@ -78,6 +78,43 @@
                             }
                           }
                         ]
+                      },
+                      {
+                        "case": [
+                          {
+                            "caseNumber": "12341235"
+                          }
+                        ],
+                        "party": [
+                          {
+                            "partyRole": "APPLICANT_PETITIONER",
+                            "individualDetails": {
+                              "individualSurname": "Surname"
+                            }
+                          },
+                          {
+                            "partyRole": "APPLICANT_PETITIONER_REPRESENTATIVE",
+                            "friendlyRoleName": "Legal Advisor",
+                            "individualDetails": {
+                              "individualForenames": "Individual Forenames",
+                              "individualMiddleName": "Individual Middlename",
+                              "individualSurname": "Individual Surname",
+                              "title": "Mr"
+                            }
+                          },
+                          {
+                            "partyRole": "PROSECUTOR",
+                            "organisationDetails": {
+                              "organisationName": "Prosecutor1"
+                            }
+                          },
+                          {
+                            "partyRole": "PROSECUTOR",
+                            "organisationDetails": {
+                              "organisationName": "Prosecutor2"
+                            }
+                          }
+                        ]
                       }
                     ],
                     "channel": [
@@ -88,16 +125,11 @@
                 ],
                 "judiciary": [
                   {
-                    "johTitle": "Judge",
-                    "johNameSurname": "Test Name",
-                    "role": "JUDGE",
-                    "johKnownAs": "Judge"
+                    "johKnownAs": "Judge TestName Presiding",
+                    "isPresiding": true
                   },
                   {
-                    "johTitle": "Magistrate",
-                    "johNameSurname": "Test Name",
-                    "role": "MAGISTRATE",
-                    "johKnownAs": "Justice of the peace"
+                    "johKnownAs": "Judge TestName 2"
                   }
                 ]
               }

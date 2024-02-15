@@ -149,9 +149,12 @@ class PublicationTest {
                                      MediaType.APPLICATION_PDF_VALUE, "test content".getBytes(
             StandardCharsets.UTF_8)
         );
-        payload = new String(IOUtils.toByteArray(
-            Objects.requireNonNull(PublicationTest.class.getClassLoader()
-                                       .getResourceAsStream("data/artefact.json"))));
+
+        try (InputStream is = PublicationTest.class.getClassLoader()
+            .getResourceAsStream("data/artefact.json")) {
+            payload = new String(IOUtils.toByteArray(
+                Objects.requireNonNull(is)));
+        }
 
         objectMapper = new ObjectMapper();
         objectMapper.findAndRegisterModules();
