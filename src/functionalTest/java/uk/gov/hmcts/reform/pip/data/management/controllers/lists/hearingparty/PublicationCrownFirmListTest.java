@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.pip.data.management.controllers.lists;
+package uk.gov.hmcts.reform.pip.data.management.controllers.lists.hearingparty;
 
 import com.azure.storage.blob.BlobClient;
 import com.azure.storage.blob.BlobContainerClient;
@@ -75,7 +75,7 @@ class PublicationCrownFirmListTest {
     @Test
     void testCreationOfValidCrownFirmList() throws Exception {
         try (InputStream mockFile = this.getClass().getClassLoader()
-            .getResourceAsStream("data/crown-firm-list/crownFirmList.json")) {
+            .getResourceAsStream("data/hearing-party/crownFirmList.json")) {
 
             MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
                 .post(POST_URL)
@@ -107,7 +107,7 @@ class PublicationCrownFirmListTest {
     @Test
     void testCreationOfInvalidCrownFirmList() throws Exception {
         try (InputStream mockFile = this.getClass().getClassLoader()
-            .getResourceAsStream("data/crown-firm-list/crownFirmListInvalid.json")) {
+            .getResourceAsStream("data/hearing-party/crownFirmListInvalid.json")) {
 
             MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
                 .post(POST_URL)
