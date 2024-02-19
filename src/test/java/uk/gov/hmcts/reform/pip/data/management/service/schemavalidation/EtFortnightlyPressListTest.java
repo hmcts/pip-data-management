@@ -87,7 +87,7 @@ class EtFortnightlyPressListTest {
         "courtLists.0.courtHouse.courtRoom.0.session.0.sittings.0.hearing.0.case",
         "courtLists.0.courtHouse.courtRoom.0.session.0.sittings.0.hearing.0.case.0.caseNumber",
         "courtLists.0.courtHouse.courtRoom.0.session.0.sittings.0.hearing.0.hearingType",
-        "courtLists.0.courtHouse.courtRoom.0.session.0.sittings.0.hearing.0.party.0.partyRole",
+        "courtLists.0.courtHouse.courtRoom.0.session.0.sittings.0.hearing.0.case.0.party.0.partyRole",
     })
     void testRequiredFieldsAreCaught(String jsonpath) throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
