@@ -77,7 +77,7 @@
     },
     "judiciary": {
       "title": "Judiciary",
-      "description": "Can be an array of objects as such will be a collective and use plurals for object arrays (clerks and scribes etc included)",
+      "description": "An array of judiciary",
       "type": "object",
       "properties": {
         "isPresiding": {
@@ -354,7 +354,7 @@
                                           "properties": {
                                             "caseNumber": {
                                               "title": "Case Number",
-                                              "description": "Some systems hold two instances, i.e. it is duplicated across systems (xhibit, cp.. and a second ref number is required",
+                                              "description": "A number identifying a case",
                                               "type": "string",
                                               "default": "",
                                               "examples": [
@@ -434,7 +434,7 @@
                                               "pattern": "^(?!.*<[^>]+>).*$"
                                             },
                                             "friendlyRoleName": {
-                                              "description": "The descriptive version of the role. E.g a party role of APPLICANT_REPRESENTATIVE, might  have a more descriptive role name (e.g Legal Advisor) that you would want to display",
+                                              "description": "The descriptive version of the role. E.g a party role of APPLICANT_REPRESENTATIVE",
                                               "title": "Friendly Role Name",
                                               "type": "string",
                                               "examples": [
