@@ -22,6 +22,11 @@
       "description": "Publication Controller"
     }
   ],
+  "security": [
+    {
+      "Bearer authentication": []
+    }
+  ],
   "paths": {
     "/publication": {
       "post": {
@@ -219,12 +224,7 @@
               }
             }
           }
-        },
-        "security": [
-          {
-            "Bearer authentication": []
-          }
-        ]
+        }
       }
     },
     "/": {
@@ -241,6 +241,26 @@
               "*/*": {
                 "schema": {
                   "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid access credential",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Artefact"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "User has not been authorized",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Artefact"
                 }
               }
             }
