@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.pip.data.management.service.schemavalidation;
+package uk.gov.hmcts.reform.pip.data.management.service.hearingparty.schemavalidation;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -36,7 +36,7 @@ class CrownFirmListTest {
     ValidationService validationService;
 
     private static final String CROWN_FIRM_LIST_VALID_JSON =
-        "mocks/crown-firm-list/crownFirmList.json";
+        "mocks/hearing-party/crownFirmList.json";
     private static final String CROWN_FIRM_LIST_INVALID_MESSAGE =
         "Invalid crown firm list marked as valid";
 

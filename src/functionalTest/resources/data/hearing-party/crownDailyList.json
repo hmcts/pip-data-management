@@ -19,10 +19,23 @@
       "venueEmail": "a@b.com"
     }
   },
+  "locationDetails": {
+    "jurisdiction": "Family"
+  },
   "courtLists": [
     {
       "courtHouse": {
         "courtHouseName": "This is the site name",
+        "courtHouseContact": {
+          "venueTelephone": "01234 123 123",
+          "venueEmail": "a@b.com"
+        },
+        "courtHouseAddress": {
+          "line": [
+            "Address Line 1"
+          ],
+          "postCode": "AA1 AA1"
+        },
         "courtRoom": [
           {
             "courtRoomName": "This is the court room name",
@@ -42,15 +55,20 @@
                               "Reporting Restriction detail line 1",
                               "Reporting restriction detail line 2"
                             ],
-                            "caseSequenceIndicator": "2 of 3",
-                            "party": [
+                            "caseLinked": [
                               {
-                                "partyRole": "PROSECUTING_AUTHORITY",
-                                "individualDetails": {
-                                  "individualSurname": "Surname"
-                                }
+                                "caseId": "1234",
+                                "name": "A Vs B"
                               }
                             ]
+                          }
+                        ],
+                        "party": [
+                          {
+                            "partyRole": "PROSECUTING_AUTHORITY",
+                            "individualDetails": {
+                              "individualSurname": "Surname"
+                            }
                           }
                         ]
                       }
@@ -63,11 +81,16 @@
                 ],
                 "judiciary": [
                   {
-                    "johKnownAs": "Judge TestName Presiding",
+                    "johTitle": "Judge",
+                    "johNameSurname": "Test Name",
+                    "role": "JUDGE",
+                    "johKnownAs": "Judge Test Name",
                     "isPresiding": true
                   },
                   {
-                    "johKnownAs": "Judge TestName",
+                    "johTitle": "Magistrate",
+                    "johNameSurname": "Test Name",
+                    "role": "MAGISTRATE",
                     "isPresiding": false
                   }
                 ]
