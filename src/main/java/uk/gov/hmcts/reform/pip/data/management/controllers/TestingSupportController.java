@@ -25,7 +25,7 @@ import uk.gov.hmcts.reform.pip.model.authentication.roles.IsAdmin;
 @ApiResponse(responseCode = "401", description = "Invalid access credential")
 @ApiResponse(responseCode = "403", description = "User has not been authorized")
 @IsAdmin
-@SecurityRequirement(name = "Bearer authentication")
+@SecurityRequirement(name = "bearerAuth")
 @ConditionalOnProperty(prefix = "testingSupport", name = "enableApi", havingValue = "true")
 @SuppressWarnings("PMD.TestClassWithoutTestCases")
 public class TestingSupportController {

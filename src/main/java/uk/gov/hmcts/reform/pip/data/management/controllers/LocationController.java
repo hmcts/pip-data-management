@@ -45,7 +45,7 @@ public class LocationController {
 
     private static final String UNAUTHORISED_MESSAGE = "Invalid access credential";
     private static final String FORBIDDEN_MESSAGE = "User has not been authorized";
-    private static final String BEARER_AUTHENTICATION = "Bearer authentication";
+    private static final String BEARER_AUTHENTICATION = "bearerAuth";
 
     private final LocationService locationService;
 

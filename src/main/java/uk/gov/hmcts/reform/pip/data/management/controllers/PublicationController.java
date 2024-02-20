@@ -88,7 +88,7 @@ public class PublicationController {
     private static final String UNAUTHORISED_CODE = "401";
     private static final String FORBIDDEN_CODE = "403";
 
-    private static final String BEARER_AUTHENTICATION = "Bearer authentication";
+    private static final String BEARER_AUTHENTICATION = "bearerAuth";
 
     private final PublicationService publicationService;
 

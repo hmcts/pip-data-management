@@ -24,7 +24,7 @@
   ],
   "security": [
     {
-      "Bearer authentication": []
+      "bearerAuth": []
     }
   ],
   "paths": {
@@ -368,7 +368,7 @@
       }
     },
     "securitySchemes": {
-      "Bearer authentication": {
+      "bearerAuth": {
         "type": "http",
         "in": "header",
         "scheme": "bearer",
