@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.pip.data.management.controllers;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -21,15 +22,15 @@ import uk.gov.hmcts.reform.pip.model.authentication.roles.IsAdmin;
 @RestController
 @Tag(name = "Data Management Testing Support API")
 @RequestMapping("/testing-support")
+@ApiResponse(responseCode = "401", description = "Invalid access credential")
+@ApiResponse(responseCode = "403", description = "User has not been authorized")
 @IsAdmin
+@SecurityRequirement(name = "bearerAuth")
 @ConditionalOnProperty(prefix = "testingSupport", name = "enableApi", havingValue = "true")
 @SuppressWarnings("PMD.TestClassWithoutTestCases")
 public class TestingSupportController {
-    private static final String UNAUTHORIZED_DESCRIPTION = "User has not been authorized";
-
     private static final String OK_CODE = "200";
     private static final String CREATED_CODE = "201";
-    private static final String AUTH_ERROR_CODE = "403";
 
     private final ArtefactDeleteService artefactDeleteService;
 
@@ -43,7 +44,6 @@ public class TestingSupportController {
 
     @ApiResponse(responseCode = CREATED_CODE,
         description = "Location with ID {locationId} and name {locationName} created successfully")
-    @ApiResponse(responseCode = AUTH_ERROR_CODE, description = UNAUTHORIZED_DESCRIPTION)
     @Operation(summary = "Create location")
     @PostMapping("location/{locationId}")
     public ResponseEntity<String> createLocation(@PathVariable Integer locationId, @RequestBody String locationName) {
@@ -53,7 +53,6 @@ public class TestingSupportController {
 
     @ApiResponse(responseCode = OK_CODE,
         description = "Location(s) deleted with name starting with {locationNamePrefix}")
-    @ApiResponse(responseCode = AUTH_ERROR_CODE, description = UNAUTHORIZED_DESCRIPTION)
     @Operation(summary = "Delete all locations with location name prefix")
     @DeleteMapping("location/{locationNamePrefix}")
     @Transactional
@@ -63,7 +62,6 @@ public class TestingSupportController {
 
     @ApiResponse(responseCode = OK_CODE,
         description = "Artefact(s) deleted for location name starting with {locationNamePrefix}")
-    @ApiResponse(responseCode = AUTH_ERROR_CODE, description = UNAUTHORIZED_DESCRIPTION)
     @Operation(summary = "Delete all artefacts with location name prefix")
     @DeleteMapping("publication/{locationNamePrefix}")
     @Transactional
