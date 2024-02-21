@@ -13,6 +13,8 @@
       "town": "Venue Town",
       "county": "Venue County",
       "postCode": "AA1 AA1"
+
+
     },
     "venueContact": {
       "venueTelephone": "01234 123 123",
@@ -42,15 +44,15 @@
                               "Reporting Restriction detail line 1",
                               "Reporting restriction detail line 2"
                             ],
-                            "caseSequenceIndicator": "2 of 3",
-                            "party": [
-                              {
-                                "partyRole": "PROSECUTING_AUTHORITY",
-                                "individualDetails": {
-                                  "individualSurname": "Surname"
-                                }
-                              }
-                            ]
+                            "caseSequenceIndicator": "2 of 3"
+                          }
+                        ],
+                        "party": [
+                          {
+                            "partyRole": "PROSECUTING_AUTHORITY",
+                            "individualDetails": {
+                              "individualSurname": "Surname"
+                            }
                           }
                         ]
                       }
@@ -63,11 +65,11 @@
                 ],
                 "judiciary": [
                   {
-                    "johKnownAs": "Judge TestName Presiding",
+                    "johKnownAs": "Judge Test Name",
                     "isPresiding": true
                   },
                   {
-                    "johKnownAs": "Judge TestName",
+                    "johKnownAs": "Judge Test Name 2",
                     "isPresiding": false
                   }
                 ]
