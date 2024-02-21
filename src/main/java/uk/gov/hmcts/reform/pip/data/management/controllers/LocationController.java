@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -38,8 +39,13 @@ public class LocationController {
 
     private static final String OK_CODE = "200";
     private static final String BAD_REQUEST_CODE = "400";
-    private static final String AUTH_ERROR_CODE = "403";
+    private static final String UNAUTHORISED_CODE = "401";
+    private static final String FORBIDDEN_CODE = "403";
     private static final String NOT_FOUND_CODE = "404";
+
+    private static final String UNAUTHORISED_MESSAGE = "Invalid access credential";
+    private static final String FORBIDDEN_MESSAGE = "User has not been authorized";
+    private static final String BEARER_AUTHENTICATION = "bearerAuth";
 
     private final LocationService locationService;
 
@@ -92,18 +98,22 @@ public class LocationController {
 
     @ApiResponse(responseCode = OK_CODE, description = "Uploaded Locations")
     @ApiResponse(responseCode = BAD_REQUEST_CODE, description = "Unable to upload the reference data")
-    @ApiResponse(responseCode = AUTH_ERROR_CODE, description = "User has not been authorized")
+    @ApiResponse(responseCode = UNAUTHORISED_CODE, description = UNAUTHORISED_MESSAGE)
+    @ApiResponse(responseCode = FORBIDDEN_CODE, description = FORBIDDEN_MESSAGE)
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @IsAdmin
+    @SecurityRequirement(name = BEARER_AUTHENTICATION)
     public ResponseEntity<Collection<Location>> uploadLocations(@RequestPart MultipartFile locationList) {
         return ResponseEntity.ok(locationService.uploadLocations(locationList));
     }
 
     @ApiResponse(responseCode = OK_CODE, description = "Location with id {locationId} has been deleted")
-    @ApiResponse(responseCode = AUTH_ERROR_CODE, description = "User has not been authorized")
     @ApiResponse(responseCode = NOT_FOUND_CODE, description = "No Location found with the id {locationId}")
+    @ApiResponse(responseCode = UNAUTHORISED_CODE, description = UNAUTHORISED_MESSAGE)
+    @ApiResponse(responseCode = FORBIDDEN_CODE, description = FORBIDDEN_MESSAGE)
     @DeleteMapping("/{locationId}")
     @IsAdmin
+    @SecurityRequirement(name = BEARER_AUTHENTICATION)
     public ResponseEntity<LocationDeletion> deleteLocation(
         @RequestHeader("x-provenance-user-id") String provenanceUserId,
         @PathVariable Integer locationId)
@@ -112,9 +122,11 @@ public class LocationController {
     }
 
     @ApiResponse(responseCode = OK_CODE, description = "CSV of the reference data")
-    @ApiResponse(responseCode = AUTH_ERROR_CODE, description = "User has not been authorized")
+    @ApiResponse(responseCode = UNAUTHORISED_CODE, description = UNAUTHORISED_MESSAGE)
+    @ApiResponse(responseCode = FORBIDDEN_CODE, description = FORBIDDEN_MESSAGE)
     @GetMapping("/download/csv")
     @IsAdmin
+    @SecurityRequirement(name = BEARER_AUTHENTICATION)
     public ResponseEntity<byte[]> downloadLocations() throws IOException {
         return ResponseEntity.ok()
             .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_VALUE)
