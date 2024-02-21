@@ -327,16 +327,6 @@
                                                   "description": "Party Address",
                                                   "$ref": "#/$defs/address"
                                                 },
-                                                "youth": {
-                                                  "description": "Party youth",
-                                                  "title": "Youth",
-                                                  "type": "string",
-                                                  "examples": [
-                                                    ""
-                                                  ],
-                                                  "default": "",
-                                                  "pattern": "^(?!.*<[^>]+>).*$"
-                                                },
                                                 "offence": {
                                                   "title": "offence",
                                                   "description": "The offence and details of offences associated with the individual. It is also known as charges.",

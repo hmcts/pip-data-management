@@ -296,6 +296,16 @@
                                     "type": "object",
                                     "title": "Hearing",
                                     "properties": {
+                                      "hearingId": {
+                                        "description": "Id of the hearing associated with the scheduling system",
+                                        "title": "Hearing ID",
+                                        "type": "string",
+                                        "examples": [
+                                          "1234564"
+                                        ],
+                                        "default": "",
+                                        "pattern": "^(?!.*<[^>]+>).*$"
+                                      },
                                       "hearingType": {
                                         "title": "Hearing Type",
                                         "type": "string",
@@ -367,6 +377,16 @@
                                                     "type": "string",
                                                     "pattern": "^(?!.*<[^>]+>).*$"
                                                   },
+                                                  "attendanceMethod": {
+                                                    "description": "The method of attendance for the party",
+                                                    "title": "Attendance Method",
+                                                    "type": "string",
+                                                    "examples": [
+                                                      ""
+                                                    ],
+                                                    "default": "",
+                                                    "pattern": "^(?!.*<[^>]+>).*$"
+                                                  },
                                                   "individualDetails": {
                                                     "title": "Individual Details",
                                                     "type": "object",
@@ -416,11 +436,6 @@
                                                       },
                                                       "gender": {
                                                         "title": "Gender",
-                                                        "type": "string",
-                                                        "pattern": "^(?!.*<[^>]+>).*$"
-                                                      },
-                                                      "youth": {
-                                                        "title": "Youth",
                                                         "type": "string",
                                                         "pattern": "^(?!.*<[^>]+>).*$"
                                                       },
@@ -710,6 +725,16 @@
                                               "type": "string",
                                               "pattern": "^(?!.*<[^>]+>).*$"
                                             },
+                                            "attendanceMethod": {
+                                              "description": "The method of attendance for the party",
+                                              "title": "Attendance Method",
+                                              "type": "string",
+                                              "examples": [
+                                                ""
+                                              ],
+                                              "default": "",
+                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                            },
                                             "individualDetails": {
                                               "title": "Individual Details",
                                               "type": "object",
@@ -872,6 +897,16 @@
                                         "items":{
                                           "type": "object",
                                           "properties": {
+                                            "offenceCode":{
+                                              "description": "Offence unique code",
+                                              "title": "Offence code",
+                                              "type": "string",
+                                              "default": "",
+                                              "examples": [
+                                                "dd01-01"
+                                              ],
+                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                            },
                                             "offenceTitle":{
                                               "title": "Offence title",
                                               "type": "string",
@@ -880,6 +915,16 @@
                                             "offenceWording":{
                                               "title": "Offence wording",
                                               "type":"string",
+                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                            },
+                                            "offenceMaxPen":{
+                                              "description": "Maximum penalty if found guilty",
+                                              "title": "Offence Max Penalty",
+                                              "type":"string",
+                                              "default" : "",
+                                              "examples": [
+                                                "10yrs"
+                                              ],
                                               "pattern": "^(?!.*<[^>]+>).*$"
                                             },
                                             "reportingRestriction": {
