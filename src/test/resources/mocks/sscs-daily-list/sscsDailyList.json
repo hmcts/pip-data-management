@@ -103,15 +103,15 @@
                             }
                           },
                           {
-                            "partyRole": "PROSECUTOR",
+                            "partyRole": "RESPONDENT",
                             "organisationDetails": {
-                              "organisationName": "Prosecutor1"
+                              "organisationName": "Respondent Organisation"
                             }
                           },
                           {
-                            "partyRole": "PROSECUTOR",
+                            "partyRole": "RESPONDENT",
                             "organisationDetails": {
-                              "organisationName": "Prosecutor2"
+                              "organisationName": "Respondent Organisation 2"
                             }
                           }
                         ]
