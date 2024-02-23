@@ -297,13 +297,8 @@
                                     "title": "Hearing",
                                     "properties": {
                                       "hearingId": {
-                                        "description": "Id of the hearing associated with the scheduling system",
                                         "title": "Hearing ID",
                                         "type": "string",
-                                        "examples": [
-                                          "1234564"
-                                        ],
-                                        "default": "",
                                         "pattern": "^(?!.*<[^>]+>).*$"
                                       },
                                       "hearingType": {
@@ -378,13 +373,8 @@
                                                     "pattern": "^(?!.*<[^>]+>).*$"
                                                   },
                                                   "attendanceMethod": {
-                                                    "description": "The method of attendance for the party",
                                                     "title": "Attendance Method",
                                                     "type": "string",
-                                                    "examples": [
-                                                      ""
-                                                    ],
-                                                    "default": "",
                                                     "pattern": "^(?!.*<[^>]+>).*$"
                                                   },
                                                   "individualDetails": {
@@ -726,13 +716,8 @@
                                               "pattern": "^(?!.*<[^>]+>).*$"
                                             },
                                             "attendanceMethod": {
-                                              "description": "The method of attendance for the party",
                                               "title": "Attendance Method",
                                               "type": "string",
-                                              "examples": [
-                                                ""
-                                              ],
-                                              "default": "",
                                               "pattern": "^(?!.*<[^>]+>).*$"
                                             },
                                             "individualDetails": {
@@ -898,13 +883,8 @@
                                           "type": "object",
                                           "properties": {
                                             "offenceCode":{
-                                              "description": "Offence unique code",
                                               "title": "Offence code",
                                               "type": "string",
-                                              "default": "",
-                                              "examples": [
-                                                "dd01-01"
-                                              ],
                                               "pattern": "^(?!.*<[^>]+>).*$"
                                             },
                                             "offenceTitle":{
@@ -918,13 +898,8 @@
                                               "pattern": "^(?!.*<[^>]+>).*$"
                                             },
                                             "offenceMaxPen":{
-                                              "description": "Maximum penalty if found guilty",
                                               "title": "Offence Max Penalty",
                                               "type":"string",
-                                              "default" : "",
-                                              "examples": [
-                                                "10yrs"
-                                              ],
                                               "pattern": "^(?!.*<[^>]+>).*$"
                                             },
                                             "reportingRestriction": {
