@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.pip.data.management.controllers.lists;
+package uk.gov.hmcts.reform.pip.data.management.controllers.lists.hearingparty;
 
 import com.azure.storage.blob.BlobClient;
 import com.azure.storage.blob.BlobContainerClient;
@@ -43,7 +43,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles(profiles = "functional")
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
 @WithMockUser(username = "admin", authorities = { "APPROLE_api.request.admin" })
-class PublicationCrownFirmListTest {
+
+class PublicationCrownDailyListTest {
 
     @Autowired
     BlobContainerClient blobContainerClient;
@@ -73,9 +74,9 @@ class PublicationCrownFirmListTest {
 
     @DisplayName("Should create a valid artefact and return the created artefact to the user")
     @Test
-    void testCreationOfValidCrownFirmList() throws Exception {
+    void testCreationOfValidCrownDailyList() throws Exception {
         try (InputStream mockFile = this.getClass().getClassLoader()
-            .getResourceAsStream("data/crown-firm-list/crownFirmList.json")) {
+            .getResourceAsStream("data/hearing-party/crownDailyList.json")) {
 
             MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
                 .post(POST_URL)
@@ -85,7 +86,7 @@ class PublicationCrownFirmListTest {
                 .header(PublicationConfiguration.DISPLAY_FROM_HEADER, LocalDateTime.now())
                 .header(PublicationConfiguration.DISPLAY_TO_HEADER, LocalDateTime.now().plusMonths(1))
                 .header(PublicationConfiguration.COURT_ID, 1)
-                .header(PublicationConfiguration.LIST_TYPE, ListType.CROWN_FIRM_LIST)
+                .header(PublicationConfiguration.LIST_TYPE, ListType.CROWN_DAILY_LIST)
                 .header(PublicationConfiguration.LANGUAGE_HEADER, Language.ENGLISH)
                 .header(PublicationConfiguration.CONTENT_DATE, LocalDateTime.now())
                 .content(mockFile.readAllBytes())
@@ -105,9 +106,9 @@ class PublicationCrownFirmListTest {
 
     @DisplayName("Should return an error message back to the user when creating an invalid blob")
     @Test
-    void testCreationOfInvalidCrownFirmList() throws Exception {
+    void testCreationOfInvalidCrownDailyList() throws Exception {
         try (InputStream mockFile = this.getClass().getClassLoader()
-            .getResourceAsStream("data/crown-firm-list/crownFirmListInvalid.json")) {
+            .getResourceAsStream("data/hearing-party/crownDailyListInvalid.json")) {
 
             MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
                 .post(POST_URL)
@@ -117,7 +118,7 @@ class PublicationCrownFirmListTest {
                 .header(PublicationConfiguration.DISPLAY_FROM_HEADER, LocalDateTime.now())
                 .header(PublicationConfiguration.DISPLAY_TO_HEADER, LocalDateTime.now().plusMonths(1))
                 .header(PublicationConfiguration.COURT_ID, 1)
-                .header(PublicationConfiguration.LIST_TYPE, ListType.CROWN_FIRM_LIST)
+                .header(PublicationConfiguration.LIST_TYPE, ListType.CROWN_DAILY_LIST)
                 .header(PublicationConfiguration.LANGUAGE_HEADER, Language.ENGLISH)
                 .header(PublicationConfiguration.CONTENT_DATE, LocalDateTime.now())
                 .content(mockFile.readAllBytes())

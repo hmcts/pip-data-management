@@ -58,15 +58,15 @@
                                 "caseId": "1234",
                                 "name": "A Vs B"
                               }
+                            ],
+                            "party": [
+                              {
+                                "partyRole": "PROSECUTING_AUTHORITY",
+                                "individualDetails": {
+                                  "individualSurname": "Surname"
+                                }
+                              }
                             ]
-                          }
-                        ],
-                        "party": [
-                          {
-                            "partyRole": "PROSECUTING_AUTHORITY",
-                            "individualDetails": {
-                              "individualSurname": "Surname"
-                            }
                           }
                         ]
                       }

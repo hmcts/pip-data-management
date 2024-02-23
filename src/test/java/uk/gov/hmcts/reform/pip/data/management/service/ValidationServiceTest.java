@@ -301,7 +301,7 @@ class ValidationServiceTest {
             Arguments.of(ListType.CROWN_DAILY_LIST,
                          "mocks/crown-daily-list/crownDailyList.json"),
             Arguments.of(ListType.CROWN_FIRM_LIST,
-                         "mocks/crown_firm_list/crownFirmList.json"),
+                         "mocks/crown-firm-list/crownFirmList.json"),
             Arguments.of(ListType.CROWN_WARNED_LIST,
                          "mocks/crown-warned-list/crownWarnedList.json"),
             Arguments.of(ListType.MAGISTRATES_PUBLIC_LIST,

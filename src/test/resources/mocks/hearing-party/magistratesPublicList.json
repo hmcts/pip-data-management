@@ -42,15 +42,15 @@
                               "Reporting Restriction detail line 1",
                               "Reporting restriction detail line 2"
                             ],
-                            "caseSequenceIndicator": "2 of 3",
-                            "party": [
-                              {
-                                "partyRole": "PROSECUTING_AUTHORITY",
-                                "individualDetails": {
-                                  "individualSurname": "Surname"
-                                }
-                              }
-                            ]
+                            "caseSequenceIndicator": "2 of 3"
+                          }
+                        ],
+                        "party": [
+                          {
+                            "partyRole": "PROSECUTING_AUTHORITY",
+                            "individualDetails": {
+                              "individualSurname": "Surname"
+                            }
                           }
                         ]
                       }
@@ -63,11 +63,11 @@
                 ],
                 "judiciary": [
                   {
-                    "johKnownAs": "Judge TestName Presiding",
+                    "johKnownAs": "Judge Test Name",
                     "isPresiding": true
                   },
                   {
-                    "johKnownAs": "Judge TestName",
+                    "johKnownAs": "Judge Test Name",
                     "isPresiding": false
                   }
                 ]
