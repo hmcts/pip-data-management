@@ -196,6 +196,268 @@
                                           "description": "Case Details",
                                           "required": ["caseUrn"],
                                           "properties": {
+                                            "party": {
+                                              "title": "Party",
+                                              "description": "Parties involved in the case (defence, prosecution)",
+                                              "type": "array",
+                                              "items": {
+                                                "title": "Party",
+                                                "description": "A party",
+                                                "type": "object",
+                                                "properties": {
+                                                  "partyRole": {
+                                                    "description": "Role of the party, selectable list of roles, i.e. prosecution, solicitor defence etc",
+                                                    "title": "Party Role",
+                                                    "type": "string",
+                                                    "examples": [
+                                                      "DEFENDANT", "PROSECUTING_AUTHORITY"
+                                                    ],
+                                                    "enum": ["DEFENDANT", "PROSECUTING_AUTHORITY"],
+                                                    "default": "",
+                                                    "pattern": "^(?!.*<[^>]+>).*$"
+                                                  },
+                                                  "individualDetails": {
+                                                    "title": "Individual Details",
+                                                    "description": "Individual Details",
+                                                    "type": "object",
+                                                    "properties": {
+                                                      "individualForenames": {
+                                                        "description": "Forename of party",
+                                                        "title": "Individual Forenames",
+                                                        "type": "string",
+                                                        "examples": [
+                                                          "John Smith"
+                                                        ],
+                                                        "default": "",
+                                                        "pattern": "^(?!.*<[^>]+>).*$"
+                                                      },
+                                                      "individualMiddleName": {
+                                                        "description": "Middle name of the individual",
+                                                        "title": "Individual Middle Name",
+                                                        "type": "string",
+                                                        "examples": [
+                                                          "MiddleName"
+                                                        ],
+                                                        "default": "",
+                                                        "pattern": "^(?!.*<[^>]+>).*$"
+                                                      },
+                                                      "individualSurname": {
+                                                        "description": "Surname of party",
+                                                        "title": "Individual Surname",
+                                                        "type": "string",
+                                                        "examples": [
+                                                          "Surname"
+                                                        ],
+                                                        "default": "",
+                                                        "pattern": "^(?!.*<[^>]+>).*$"
+                                                      },
+                                                      "dateOfBirth": {
+                                                        "description": "Date of birth for user (not mandated for all parties)",
+                                                        "title": "Date Of Birth",
+                                                        "type": "string",
+                                                        "examples": [
+                                                          "01-01-1901"
+                                                        ],
+                                                        "default": "",
+                                                        "pattern": "^(?!.*<[^>]+>).*$"
+                                                      },
+                                                      "age": {
+                                                        "description": "Date of birth for user (not mandated for all parties)",
+                                                        "title": "Age",
+                                                        "type": "integer",
+                                                        "examples": [
+                                                          1
+                                                        ],
+                                                        "default": ""
+                                                      },
+                                                      "address": {
+                                                        "title": "Address",
+                                                        "description": "Party Address",
+                                                        "$ref": "#/$defs/address"
+                                                      },
+                                                      "youth": {
+                                                        "description": "Party youth",
+                                                        "title": "Youth",
+                                                        "type": "string",
+                                                        "examples": [
+                                                          ""
+                                                        ],
+                                                        "default": "",
+                                                        "pattern": "^(?!.*<[^>]+>).*$"
+                                                      },
+                                                      "offence": {
+                                                        "title": "offence",
+                                                        "description": "The offence and details of offences associated with the individual. It is also known as charges.",
+                                                        "type": "array",
+                                                        "items":{
+                                                          "type": "object",
+                                                          "properties": {
+                                                            "offenceTitle":{
+                                                              "description": "Short description of offence",
+                                                              "title": "Offence title",
+                                                              "type": "string",
+                                                              "default": "",
+                                                              "examples": [
+                                                                "drink driving"
+                                                              ],
+                                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                                            },
+                                                            "offenceSection":{
+                                                              "description": "Section for the offence",
+                                                              "title": "Offence section",
+                                                              "type": "string",
+                                                              "default": "",
+                                                              "examples": [
+                                                                "dd01-01"
+                                                              ],
+                                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                                            },
+                                                            "offenceWording":{
+                                                              "description": "Long description of offence",
+                                                              "title": "Offence wording",
+                                                              "type":"string",
+                                                              "default": "",
+                                                              "examples": [
+                                                                "driving whilst under the influence of alcohol"
+                                                              ],
+                                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                                            },
+                                                            "plea":{
+                                                              "description": "Indicated plea",
+                                                              "title": "Plea",
+                                                              "type": "string",
+                                                              "default": "",
+                                                              "examples": [
+                                                                "NOT_GUILTY"
+                                                              ],
+                                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                                            },
+                                                            "pleaDate":{
+                                                              "description": "Indicated plea date",
+                                                              "title": "Plea date",
+                                                              "type": "string",
+                                                              "default": "",
+                                                              "examples": [
+                                                                "2023-09-13T23:30:52.123Z"
+                                                              ],
+                                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                                            },
+                                                            "reportingRestrictionDetail": {
+                                                              "title": "Reporting Restrictions Detail",
+                                                              "description": "The detail / wording of any reporting restrictions attached to the case",
+                                                              "type": "array",
+                                                              "items": {
+                                                                "type": "string",
+                                                                "default": "",
+                                                                "examples": [
+                                                                  "This is a reporting restrictions detail"
+                                                                ],
+                                                                "pattern": "^(?!.*<[^>]+>).*$"
+                                                              }
+                                                            }
+                                                          }
+                                                        }
+                                                      }
+                                                    }
+                                                  },
+                                                  "organisationDetails": {
+                                                    "title": "Organisation Details",
+                                                    "description": "Organisation Details",
+                                                    "type": "object",
+                                                    "properties": {
+                                                      "organisationName": {
+                                                        "description": "Party name of organisation",
+                                                        "title": "Organisation Name",
+                                                        "type": "string",
+                                                        "examples": [
+                                                          "A & B Solicitors"
+                                                        ],
+                                                        "default": "",
+                                                        "pattern": "^(?!.*<[^>]+>).*$"
+                                                      },
+                                                      "organisationAddress": {
+                                                        "description": "Address for organisation",
+                                                        "title": "Organisation Address",
+                                                        "$ref": "#/$defs/address"
+                                                      },
+                                                      "offence": {
+                                                        "title": "offence",
+                                                        "description": "The offence and details of offences associated with the organisation. It is also known as charges.",
+                                                        "type": "array",
+                                                        "items":{
+                                                          "type": "object",
+                                                          "properties": {
+                                                            "offenceTitle":{
+                                                              "description": "Short description of offence",
+                                                              "title": "Offence title",
+                                                              "type": "string",
+                                                              "default": "",
+                                                              "examples": [
+                                                                "drink driving"
+                                                              ],
+                                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                                            },
+                                                            "offenceSection":{
+                                                              "description": "Section for the offence",
+                                                              "title": "Offence section",
+                                                              "type": "string",
+                                                              "default": "",
+                                                              "examples": [
+                                                                "dd01-01"
+                                                              ],
+                                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                                            },
+                                                            "offenceWording":{
+                                                              "description": "Long description of offence",
+                                                              "title": "Offence wording",
+                                                              "type":"string",
+                                                              "default": "",
+                                                              "examples": [
+                                                                "driving whilst under the influence of alcohol"
+                                                              ],
+                                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                                            },
+                                                            "plea":{
+                                                              "description": "Indicated plea",
+                                                              "title": "Plea",
+                                                              "type": "string",
+                                                              "default": "",
+                                                              "examples": [
+                                                                "NOT_GUILTY"
+                                                              ],
+                                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                                            },
+                                                            "pleaDate":{
+                                                              "description": "Indicated plea date",
+                                                              "title": "Plea date",
+                                                              "type": "string",
+                                                              "default": "",
+                                                              "examples": [
+                                                                "2023-09-13T23:30:52.123Z"
+                                                              ],
+                                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                                            },
+                                                            "reportingRestrictionDetail": {
+                                                              "title": "Reporting Restrictions Detail",
+                                                              "description": "The detail / wording of any reporting restrictions attached to the case",
+                                                              "type": "array",
+                                                              "items": {
+                                                                "type": "string",
+                                                                "default": "",
+                                                                "examples": [
+                                                                  "This is a reporting restrictions detail"
+                                                                ],
+                                                                "pattern": "^(?!.*<[^>]+>).*$"
+                                                              }
+                                                            }
+                                                          }
+                                                        }
+                                                      }
+                                                    }
+                                                  }
+                                                }
+                                              }
+                                            },
                                             "caseUrn": {
                                               "title": "Case Number",
                                               "description": "Unique reference number of case",
@@ -242,258 +504,6 @@
                                                     ""
                                                   ],
                                                   "pattern": "^(?!.*<[^>]+>).*$"
-                                                }
-                                              }
-                                            }
-                                          }
-                                        }
-                                      },
-                                      "party": {
-                                        "title": "Party",
-                                        "description": "Parties involved in the case (defence, prosecution)",
-                                        "type": "array",
-                                        "items": {
-                                          "title": "Party",
-                                          "description": "A party",
-                                          "type": "object",
-                                          "properties": {
-                                            "partyRole": {
-                                              "description": "Role of the party, selectable list of roles, i.e. prosecution, solicitor defence etc",
-                                              "title": "Party Role",
-                                              "type": "string",
-                                              "examples": [
-                                                "DEFENDANT", "PROSECUTING_AUTHORITY"
-                                              ],
-                                              "enum": ["DEFENDANT", "PROSECUTING_AUTHORITY"],
-                                              "default": "",
-                                              "pattern": "^(?!.*<[^>]+>).*$"
-                                            },
-                                            "individualDetails": {
-                                              "title": "Individual Details",
-                                              "description": "Individual Details",
-                                              "type": "object",
-                                              "properties": {
-                                                "individualForenames": {
-                                                  "description": "Forename of party",
-                                                  "title": "Individual Forenames",
-                                                  "type": "string",
-                                                  "examples": [
-                                                    "John Smith"
-                                                  ],
-                                                  "default": "",
-                                                  "pattern": "^(?!.*<[^>]+>).*$"
-                                                },
-                                                "individualMiddleName": {
-                                                  "description": "Middle name of the individual",
-                                                  "title": "Individual Middle Name",
-                                                  "type": "string",
-                                                  "examples": [
-                                                    "MiddleName"
-                                                  ],
-                                                  "default": "",
-                                                  "pattern": "^(?!.*<[^>]+>).*$"
-                                                },
-                                                "individualSurname": {
-                                                  "description": "Surname of party",
-                                                  "title": "Individual Surname",
-                                                  "type": "string",
-                                                  "examples": [
-                                                    "Surname"
-                                                  ],
-                                                  "default": "",
-                                                  "pattern": "^(?!.*<[^>]+>).*$"
-                                                },
-                                                "dateOfBirth": {
-                                                  "description": "Date of birth for user (not mandated for all parties)",
-                                                  "title": "Date Of Birth",
-                                                  "type": "string",
-                                                  "examples": [
-                                                    "01-01-1901"
-                                                  ],
-                                                  "default": "",
-                                                  "pattern": "^(?!.*<[^>]+>).*$"
-                                                },
-                                                "age": {
-                                                  "description": "Date of birth for user (not mandated for all parties)",
-                                                  "title": "Age",
-                                                  "type": "integer",
-                                                  "examples": [
-                                                    1
-                                                  ],
-                                                  "default": ""
-                                                },
-                                                "address": {
-                                                  "title": "Address",
-                                                  "description": "Party Address",
-                                                  "$ref": "#/$defs/address"
-                                                },
-                                                "offence": {
-                                                  "title": "offence",
-                                                  "description": "The offence and details of offences associated with the individual. It is also known as charges.",
-                                                  "type": "array",
-                                                  "items":{
-                                                    "type": "object",
-                                                    "properties": {
-                                                      "offenceTitle":{
-                                                        "description": "Short description of offence",
-                                                        "title": "Offence title",
-                                                        "type": "string",
-                                                        "default": "",
-                                                        "examples": [
-                                                          "drink driving"
-                                                        ],
-                                                        "pattern": "^(?!.*<[^>]+>).*$"
-                                                      },
-                                                      "offenceSection":{
-                                                        "description": "Section for the offence",
-                                                        "title": "Offence section",
-                                                        "type": "string",
-                                                        "default": "",
-                                                        "examples": [
-                                                          "dd01-01"
-                                                        ],
-                                                        "pattern": "^(?!.*<[^>]+>).*$"
-                                                      },
-                                                      "offenceWording":{
-                                                        "description": "Long description of offence",
-                                                        "title": "Offence wording",
-                                                        "type":"string",
-                                                        "default": "",
-                                                        "examples": [
-                                                          "driving whilst under the influence of alcohol"
-                                                        ],
-                                                        "pattern": "^(?!.*<[^>]+>).*$"
-                                                      },
-                                                      "plea":{
-                                                        "description": "Indicated plea",
-                                                        "title": "Plea",
-                                                        "type": "string",
-                                                        "default": "",
-                                                        "examples": [
-                                                          "NOT_GUILTY"
-                                                        ],
-                                                        "pattern": "^(?!.*<[^>]+>).*$"
-                                                      },
-                                                      "pleaDate":{
-                                                        "description": "Indicated plea date",
-                                                        "title": "Plea date",
-                                                        "type": "string",
-                                                        "default": "",
-                                                        "examples": [
-                                                          "2023-09-13T23:30:52.123Z"
-                                                        ],
-                                                        "pattern": "^(?!.*<[^>]+>).*$"
-                                                      },
-                                                      "reportingRestrictionDetail": {
-                                                        "title": "Reporting Restrictions Detail",
-                                                        "description": "The detail / wording of any reporting restrictions attached to the case",
-                                                        "type": "array",
-                                                        "items": {
-                                                          "type": "string",
-                                                          "default": "",
-                                                          "examples": [
-                                                            "This is a reporting restrictions detail"
-                                                          ],
-                                                          "pattern": "^(?!.*<[^>]+>).*$"
-                                                        }
-                                                      }
-                                                    }
-                                                  }
-                                                }
-                                              }
-                                            },
-                                            "organisationDetails": {
-                                              "title": "Organisation Details",
-                                              "description": "Organisation Details",
-                                              "type": "object",
-                                              "properties": {
-                                                "organisationName": {
-                                                  "description": "Party name of organisation",
-                                                  "title": "Organisation Name",
-                                                  "type": "string",
-                                                  "examples": [
-                                                    "A & B Solicitors"
-                                                  ],
-                                                  "default": "",
-                                                  "pattern": "^(?!.*<[^>]+>).*$"
-                                                },
-                                                "organisationAddress": {
-                                                  "description": "Address for organisation",
-                                                  "title": "Organisation Address",
-                                                  "$ref": "#/$defs/address"
-                                                },
-                                                "offence": {
-                                                  "title": "offence",
-                                                  "description": "The offence and details of offences associated with the organisation. It is also known as charges.",
-                                                  "type": "array",
-                                                  "items":{
-                                                    "type": "object",
-                                                    "properties": {
-                                                      "offenceTitle":{
-                                                        "description": "Short description of offence",
-                                                        "title": "Offence title",
-                                                        "type": "string",
-                                                        "default": "",
-                                                        "examples": [
-                                                          "drink driving"
-                                                        ],
-                                                        "pattern": "^(?!.*<[^>]+>).*$"
-                                                      },
-                                                      "offenceSection":{
-                                                        "description": "Section for the offence",
-                                                        "title": "Offence section",
-                                                        "type": "string",
-                                                        "default": "",
-                                                        "examples": [
-                                                          "dd01-01"
-                                                        ],
-                                                        "pattern": "^(?!.*<[^>]+>).*$"
-                                                      },
-                                                      "offenceWording":{
-                                                        "description": "Long description of offence",
-                                                        "title": "Offence wording",
-                                                        "type":"string",
-                                                        "default": "",
-                                                        "examples": [
-                                                          "driving whilst under the influence of alcohol"
-                                                        ],
-                                                        "pattern": "^(?!.*<[^>]+>).*$"
-                                                      },
-                                                      "plea":{
-                                                        "description": "Indicated plea",
-                                                        "title": "Plea",
-                                                        "type": "string",
-                                                        "default": "",
-                                                        "examples": [
-                                                          "NOT_GUILTY"
-                                                        ],
-                                                        "pattern": "^(?!.*<[^>]+>).*$"
-                                                      },
-                                                      "pleaDate":{
-                                                        "description": "Indicated plea date",
-                                                        "title": "Plea date",
-                                                        "type": "string",
-                                                        "default": "",
-                                                        "examples": [
-                                                          "2023-09-13T23:30:52.123Z"
-                                                        ],
-                                                        "pattern": "^(?!.*<[^>]+>).*$"
-                                                      },
-                                                      "reportingRestrictionDetail": {
-                                                        "title": "Reporting Restrictions Detail",
-                                                        "description": "The detail / wording of any reporting restrictions attached to the case",
-                                                        "type": "array",
-                                                        "items": {
-                                                          "type": "string",
-                                                          "default": "",
-                                                          "examples": [
-                                                            "This is a reporting restrictions detail"
-                                                          ],
-                                                          "pattern": "^(?!.*<[^>]+>).*$"
-                                                        }
-                                                      }
-                                                    }
-                                                  }
                                                 }
                                               }
                                             }

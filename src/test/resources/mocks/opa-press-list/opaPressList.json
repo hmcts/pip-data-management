@@ -34,6 +34,40 @@
                         "case": [
                           {
                             "caseUrn": "URN8888",
+                            "party": [
+                              {
+                                "partyRole": "DEFENDANT",
+                                "individualDetails": {
+                                  "individualForenames": "Forename",
+                                  "individualMiddleName": "MiddleName",
+                                  "individualSurname": "Surname",
+                                  "dateOfBirth": "01-01-1980",
+                                  "age": 43,
+                                  "address": {
+                                    "line": [
+                                      "Address Line 1",
+                                      "Address Line 2"
+                                    ],
+                                    "town": "Town",
+                                    "county": "County",
+                                    "postCode": "BB1 1BB"
+                                  },
+                                  "youth": "Youth",
+                                  "offence": [
+                                    {
+                                      "offenceTitle": "Offence title 1",
+                                      "offenceSection": "Offence section 1",
+                                      "offenceWording": "Offence Wording 1",
+                                      "plea": "NOT_GUILTY",
+                                      "pleaDate": "2023-09-20T09:00:00.123Z",
+                                      "reportingRestrictionDetail": [
+                                        "Offence reporting Restriction detail"
+                                      ]
+                                    }
+                                  ]
+                                }
+                              }
+                            ],
                             "reportingRestrictionDetail": [
                               "Case reporting Restriction detail line 1",
                               "Case reporting restriction detail line 2"
@@ -43,81 +77,48 @@
                               "prosecutionAuthorityRef": "Prosecuting authority ref"
                             }
                           }
-                        ],
-                        "party": [
-                          {
-                            "partyRole": "DEFENDANT",
-                            "individualDetails": {
-                              "individualForenames": "Forename",
-                              "individualMiddleName": "MiddleName",
-                              "individualSurname": "Surname",
-                              "dateOfBirth": "01-01-1980",
-                              "age": 43,
-                              "address": {
-                                "line": [
-                                  "Address Line 1",
-                                  "Address Line 2"
-                                ],
-                                "town": "Town",
-                                "county": "County",
-                                "postCode": "BB1 1BB"
-                              },
-                              "offence": [
-                                {
-                                  "offenceTitle": "Offence title 1",
-                                  "offenceSection": "Offence section 1",
-                                  "offenceWording": "Offence Wording 1",
-                                  "plea": "NOT_GUILTY",
-                                  "pleaDate": "2023-09-20T09:00:00.123Z",
-                                  "reportingRestrictionDetail": [
-                                    "Offence reporting Restriction detail"
-                                  ]
-                                }
-                              ]
-                            }
-                          }
                         ]
                       },
                       {
                         "case": [
                           {
                             "caseUrn": "URN9999",
-                            "scheduledHearingDate": "2023-10-02T09:30:00.123Z"
-                          }
-                        ],
-                        "party": [
-                          {
-                            "partyRole": "DEFENDANT",
-                            "organisationDetails": {
-                              "organisationName": "Organisation name",
-                              "organisationAddress": {
-                                "line": [
-                                  "Address Line 1",
-                                  "Address Line 2"
-                                ],
-                                "town": "Town",
-                                "county": "County",
-                                "postCode": "CC1 1CC"
-                              },
-                              "offence": [
-                                {
-                                  "offenceTitle": "Offence title 2",
-                                  "offenceSection": "Offence section 2",
-                                  "offenceWording": "Offence Wording 2",
-                                  "plea": "NOT_GUILTY",
-                                  "pleaDate": "2023-09-21T09:00:00.123Z",
-                                  "reportingRestrictionDetail": [
-                                    "Offence reporting Restriction detail 2"
+                            "party": [
+                              {
+                                "partyRole": "DEFENDANT",
+                                "organisationDetails": {
+                                  "organisationName": "Organisation name",
+                                  "organisationAddress": {
+                                    "line": [
+                                      "Address Line 1",
+                                      "Address Line 2"
+                                    ],
+                                    "town": "Town",
+                                    "county": "County",
+                                    "postCode": "CC1 1CC"
+                                  },
+                                  "offence": [
+                                    {
+                                      "offenceTitle": "Offence title 2",
+                                      "offenceSection": "Offence section 2",
+                                      "offenceWording": "Offence Wording 2",
+                                      "plea": "NOT_GUILTY",
+                                      "pleaDate": "2023-09-21T09:00:00.123Z",
+                                      "reportingRestrictionDetail": [
+                                        "Offence reporting Restriction detail 2"
+                                      ]
+                                    }
                                   ]
                                 }
-                              ]
-                            }
-                          },
-                          {
-                            "partyRole": "PROSECUTING_AUTHORITY",
-                            "organisationDetails": {
-                              "organisationName": "Prosecuting authority name"
-                            }
+                              },
+                              {
+                                "partyRole": "PROSECUTING_AUTHORITY",
+                                "organisationDetails": {
+                                  "organisationName": "Prosecuting authority name"
+                                }
+                              }
+                            ],
+                            "scheduledHearingDate": "2023-10-02T09:30:00.123Z"
                           }
                         ]
                       }
