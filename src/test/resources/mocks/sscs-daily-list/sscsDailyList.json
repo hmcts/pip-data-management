@@ -1,6 +1,6 @@
 {
   "document": {
-    "publicationDate": "20-02-2020T20:00.001Z"
+    "publicationDate": "2024-02-23T01:01:01Z"
   },
   "venue": {
     "venueName": "This is the venue name",
@@ -28,7 +28,7 @@
                 ],
                 "sittings": [
                   {
-                    "sittingStart": "20-02-2020T20:00.001Z",
+                    "sittingStart": "2024-02-23T01:01:01Z",
                     "hearing": [
                       {
                         "case": [
