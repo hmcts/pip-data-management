@@ -278,7 +278,7 @@
                                             },
                                             "caseNumber": {
                                               "title": "Case Number",
-                                              "description": "Some systems hold two instances, i.e. it is duplicated across systems (xhibit, cp.. and a second ref number is required",
+                                              "description": "A number identifying a case",
                                               "type": "string",
                                               "default": "",
                                               "examples": [

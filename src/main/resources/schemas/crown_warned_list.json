@@ -236,7 +236,7 @@
                                           "properties": {
                                             "caseNumber": {
                                               "title": "Case Number",
-                                              "description": "Some systems hold two instances, i.e. it is duplicated across systems (xhibit, cp.. and a second ref number is required",
+                                              "description": "A number identifying a case",
                                               "type": "string",
                                               "default": "",
                                               "examples": [
@@ -303,7 +303,7 @@
                                                     "pattern": "^(?!.*<[^>]+>).*$"
                                                   },
                                                   "friendlyRoleName": {
-                                                    "description": "The descriptive version of the role. E.g a party role of APPLICANT_REPRESENTATIVE, might  have a more descriptive role name (e.g Legal Advisor) that you would want to display",
+                                                    "description": "The descriptive version of the role. E.g a party role of APPLICANT_REPRESENTATIVE",
                                                     "title": "Friendly Role Name",
                                                     "type": "string",
                                                     "examples": [
@@ -402,7 +402,7 @@
                                               "pattern": "^(?!.*<[^>]+>).*$"
                                             },
                                             "friendlyRoleName": {
-                                              "description": "The descriptive version of the role. E.g a party role of APPLICANT_REPRESENTATIVE, might  have a more descriptive role name (e.g Legal Advisor) that you would want to display",
+                                              "description": "The descriptive version of the role. E.g a party role of APPLICANT_REPRESENTATIVE",
                                               "title": "Friendly Role Name",
                                               "type": "string",
                                               "examples": [
