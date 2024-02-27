@@ -28,7 +28,7 @@
     },
     "judiciary": {
       "title": "Judiciary",
-      "description": "Can be an array of objects as such will be a collective and use plurals for object arrays (clerks and scribes etc included)",
+      "description": "An array of judiciary",
       "type": "object",
       "properties": {
         "johTitle": {
@@ -242,7 +242,7 @@
                                           "properties": {
                                             "caseNumber": {
                                               "title": "Case Number",
-                                              "description": "Some systems hold two instances, i.e. it is duplicated across systems (xhibit, cp.. and a second ref number is required",
+                                              "description": "A number identifying a case",
                                               "type": "string",
                                               "default": "",
                                               "examples": [
@@ -350,16 +350,6 @@
                                                   "type": "string",
                                                   "examples": [
                                                     "John Smith"
-                                                  ],
-                                                  "default": "",
-                                                  "pattern": "^(?!.*<[^>]+>).*$"
-                                                },
-                                                "individualMiddleName": {
-                                                  "description": "Middle name of the individual",
-                                                  "title": "Individual Middle Name",
-                                                  "type": "string",
-                                                  "examples": [
-                                                    "MiddleName"
                                                   ],
                                                   "default": "",
                                                   "pattern": "^(?!.*<[^>]+>).*$"
