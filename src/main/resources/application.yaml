@@ -1,5 +1,6 @@
 server:
   port: 8090
+  shutdown: graceful
 
 management:
   endpoint:
