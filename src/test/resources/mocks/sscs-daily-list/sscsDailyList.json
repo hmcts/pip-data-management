@@ -33,104 +33,18 @@
                       {
                         "case": [
                           {
-                            "caseNumber": "12341234"
-                          }
-                        ],
-                        "informant": [
-                          {
-                            "prosecutionAuthorityRef": [
-                              "HearingParty_Informant1",
-                              "HearingParty_Informant2"
-                            ]
-                          }
-                        ],
-                        "party": [
-                          {
-                            "partyRole": "APPLICANT_PETITIONER",
-                            "individualDetails": {
-                              "individualSurname": "HearingLevelApplicant"
-                            }
-                          },
-                          {
-                            "partyRole": "RESPONDENT",
-                            "individualDetails": {
-                              "individualSurname": "HearingLevelRespondent"
-                            }
-                          },
-                          {
-                            "partyRole": "APPLICANT_PETITIONER_REPRESENTATIVE",
-                            "friendlyRoleName": "Legal Advisor",
-                            "individualDetails": {
-                              "individualForenames": "Forename",
-                              "individualMiddleName": "Middlename",
-                              "individualSurname": "HearingLevelApplicantRep",
-                              "title": "Mr"
-                            }
-                          },
-                          {
-                            "partyRole": "RESPONDENT_REPRESENTATIVE",
-                            "friendlyRoleName": "Legal Advisor",
-                            "individualDetails": {
-                              "individualForenames": "Forename",
-                              "individualMiddleName": "Middlename",
-                              "individualSurname": "HearingLevelRespondentRep",
-                              "title": "Mr"
-                            }
-                          }
-                        ]
-                      },
-                      {
-                        "case": [
-                          {
-                            "caseNumber": "12341235"
-                          }
-                        ],
-                        "party": [
-                          {
-                            "partyRole": "APPLICANT_PETITIONER",
-                            "individualDetails": {
-                              "individualSurname": "HearingLevelApplicant"
-                            }
-                          },
-                          {
-                            "partyRole": "APPLICANT_PETITIONER_REPRESENTATIVE",
-                            "friendlyRoleName": "Legal Advisor",
-                            "individualDetails": {
-                              "individualForenames": "Forename",
-                              "individualMiddleName": "Middlename",
-                              "individualSurname": "HearingLevelApplicantRep",
-                              "title": "Mr"
-                            }
-                          },
-                          {
-                            "partyRole": "PROSECUTOR",
-                            "organisationDetails": {
-                              "organisationName": "HearingLevel_Prosecutor1"
-                            }
-                          },
-                          {
-                            "partyRole": "PROSECUTOR",
-                            "organisationDetails": {
-                              "organisationName": "HearingLevel_Prosecutor2"
-                            }
-                          }
-                        ]
-                      },
-                      {
-                        "case": [
-                          {
-                            "caseNumber": "12341236",
+                            "caseNumber": "12341234",
                             "party": [
                               {
                                 "partyRole": "APPLICANT_PETITIONER",
                                 "individualDetails": {
-                                  "individualSurname": "CaseLevelApplicant"
+                                  "individualSurname": "Applicant Surname"
                                 }
                               },
                               {
                                 "partyRole": "RESPONDENT",
                                 "individualDetails": {
-                                  "individualSurname": "CaseLevelRespondent"
+                                  "individualSurname": "Respondent Surname"
                                 }
                               },
                               {
@@ -139,7 +53,7 @@
                                 "individualDetails": {
                                   "individualForenames": "Forename",
                                   "individualMiddleName": "Middlename",
-                                  "individualSurname": "CaseLevelApplicantRep",
+                                  "individualSurname": "Applicant Representative",
                                   "title": "Mr"
                                 }
                               },
@@ -149,7 +63,7 @@
                                 "individualDetails": {
                                   "individualForenames": "Forename",
                                   "individualMiddleName": "Middlename",
-                                  "individualSurname": "CaseLevelRespondentRep",
+                                  "individualSurname": "Respondent Representative",
                                   "title": "Mr"
                                 }
                               }
@@ -159,8 +73,8 @@
                         "informant": [
                           {
                             "prosecutionAuthorityRef": [
-                              "CaseParty_Informant1",
-                              "CaseParty_Informant2"
+                              "Informant1",
+                              "Informant2"
                             ]
                           }
                         ]
@@ -168,12 +82,12 @@
                       {
                         "case": [
                           {
-                            "caseNumber": "12341237",
+                            "caseNumber": "12341235",
                             "party": [
                               {
                                 "partyRole": "APPLICANT_PETITIONER",
                                 "individualDetails": {
-                                  "individualSurname": "CaseLevelApplicant"
+                                  "individualSurname": "Applicant Surname"
                                 }
                               },
                               {
@@ -182,20 +96,20 @@
                                 "individualDetails": {
                                   "individualForenames": "Forename",
                                   "individualMiddleName": "Middlename",
-                                  "individualSurname": "CaseLevelApplicantRep",
+                                  "individualSurname": "Applicant Representative",
                                   "title": "Mr"
                                 }
                               },
                               {
                                 "partyRole": "PROSECUTOR",
                                 "organisationDetails": {
-                                  "organisationName": "CaseLevel_Prosecutor1"
+                                  "organisationName": "Prosecutor1"
                                 }
                               },
                               {
                                 "partyRole": "PROSECUTOR",
                                 "organisationDetails": {
-                                  "organisationName": "CaseLevel_Prosecutor2"
+                                  "organisationName": "Prosecutor2"
                                 }
                               }
                             ]
