@@ -354,16 +354,6 @@
                                                   "default": "",
                                                   "pattern": "^(?!.*<[^>]+>).*$"
                                                 },
-                                                "individualMiddleName": {
-                                                  "description": "Middle name of the individual",
-                                                  "title": "Individual Middle Name",
-                                                  "type": "string",
-                                                  "examples": [
-                                                    "MiddleName"
-                                                  ],
-                                                  "default": "",
-                                                  "pattern": "^(?!.*<[^>]+>).*$"
-                                                },
                                                 "individualSurname": {
                                                   "description": "Surname of party",
                                                   "title": "Individual Surname",
