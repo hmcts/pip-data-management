@@ -68,7 +68,6 @@
                             "partyRole": "CLAIMANT_PETITIONER_REPRESENTATIVE",
                             "individualDetails": {
                               "individualForenames": "Individual Forenames",
-                              "individualMiddleName": "Individual Middlename",
                               "individualSurname": "Individual Surname",
                               "title": "Mr"
                             }
@@ -77,7 +76,6 @@
                             "partyRole": "RESPONDENT_REPRESENTATIVE",
                             "individualDetails": {
                               "individualForenames": "Individual Forenames",
-                              "individualMiddleName": "Individual Middlename",
                               "individualSurname": "Individual Surname",
                               "title": "Mr"
                             }
