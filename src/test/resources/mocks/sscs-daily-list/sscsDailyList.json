@@ -1,6 +1,6 @@
 {
   "document": {
-    "publicationDate": "20-02-2020T20:00.001Z"
+    "publicationDate": "2024-02-23T01:01:01Z"
   },
   "venue": {
     "venueName": "This is the venue name",
@@ -28,7 +28,7 @@
                 ],
                 "sittings": [
                   {
-                    "sittingStart": "20-02-2020T20:00.001Z",
+                    "sittingStart": "2024-02-23T01:01:01Z",
                     "hearing": [
                       {
                         "case": [
@@ -66,16 +66,6 @@
                               "individualSurname": "Individual Surname",
                               "title": "Mr"
                             }
-                          },
-                          {
-                            "partyRole": "RESPONDENT_REPRESENTATIVE",
-                            "friendlyRoleName": "Legal Advisor",
-                            "individualDetails": {
-                              "individualForenames": "Individual Forenames",
-                              "individualMiddleName": "Individual Middlename",
-                              "individualSurname": "Individual Surname",
-                              "title": "Mr"
-                            }
                           }
                         ]
                       },
@@ -103,15 +93,15 @@
                             }
                           },
                           {
-                            "partyRole": "PROSECUTOR",
+                            "partyRole": "RESPONDENT",
                             "organisationDetails": {
-                              "organisationName": "Prosecutor1"
+                              "organisationName": "Respondent Organisation"
                             }
                           },
                           {
-                            "partyRole": "PROSECUTOR",
+                            "partyRole": "RESPONDENT",
                             "organisationDetails": {
-                              "organisationName": "Prosecutor2"
+                              "organisationName": "Respondent Organisation 2"
                             }
                           }
                         ]
