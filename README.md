@@ -57,6 +57,7 @@ Most interactions with `pip-data-management` are performed through the API (spec
 ## Features and Functionality
 
 - Uploading/retrieval/deletion of publications into the service.
+- Request PDF/Excel generation for JSON payload if the payload size is less than the set limit (currently set at 2MB).
 - Interfacing with local or hosted Postgres instances for metadata and retrieval and Azure Blob Storage for raw files.
 - Parsing and validation of ingested json files.
 - Flyway for database modifications via SQL ingestion.
