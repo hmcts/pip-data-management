@@ -173,6 +173,19 @@
                           "sittings"
                         ],
                         "properties": {
+                          "sessionChannel": {
+                            "type": "array",
+                            "items": {
+                              "description": "Requested to ensure we host the type of hearing channel in the session",
+                              "title": "Session Channel",
+                              "type": "string",
+                              "examples": [
+                                "VIDEO HEARING"
+                              ],
+                              "default": "",
+                              "pattern": "^(?!.*<[^>]+>).*$"
+                            }
+                          },
                           "judiciary": {
                             "type": "array",
                             "description": "Judiciary for the session",
