@@ -18,6 +18,7 @@ import uk.gov.hmcts.reform.pip.data.management.database.LocationRepository;
 import uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
+import uk.gov.hmcts.reform.pip.data.management.service.artefact.ArtefactService;
 import uk.gov.hmcts.reform.pip.data.management.service.artefact.ArtefactTriggerService;
 import uk.gov.hmcts.reform.pip.data.management.utils.PayloadExtractor;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
@@ -35,9 +36,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.lenient;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
@@ -78,13 +77,13 @@ class PublicationServiceTest {
     PayloadExtractor payloadExtractor;
 
     @Mock
-    ChannelManagementService channelManagementService;
+    ArtefactTriggerService artefactTriggerService;
+
+    @Mock
+    ArtefactService artefactService;
 
     @InjectMocks
     PublicationService publicationService;
-
-    @Mock
-    ArtefactTriggerService artefactTriggerService;
 
     private Artefact artefact;
     private Artefact artefactWithPayloadUrl;
@@ -590,9 +589,8 @@ class PublicationServiceTest {
 
     @Test
     void testProcessCreatedPublication() {
-        doNothing().when(artefactTriggerService).checkAndTriggerSubscriptionManagement(sjpPublicArtefact);
         publicationService.processCreatedPublication(sjpPublicArtefact);
-        verify(channelManagementService, times(1))
-            .requestFileGeneration(sjpPublicArtefact.getArtefactId());
+        verify(artefactService).generatePublicationFiles(sjpPublicArtefact);
+        verify(artefactTriggerService).checkAndTriggerSubscriptionManagement(sjpPublicArtefact);
     }
 }

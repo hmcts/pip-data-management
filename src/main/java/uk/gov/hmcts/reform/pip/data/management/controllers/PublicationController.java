@@ -190,6 +190,7 @@ public class PublicationController {
             .locationId(headers.getCourtId())
             .contentDate(headers.getContentDate())
             .expiryDate(headers.getDisplayTo())
+            .payloadSize((float) payload.getBytes().length / 1024)
             .build();
 
         Artefact createdItem = publicationService
@@ -272,6 +273,7 @@ public class PublicationController {
             .contentDate(headers.getContentDate())
             .expiryDate(headers.getDisplayTo())
             .isFlatFile(true)
+            .payloadSize((float) file.getSize() / 1024)
             .search(search)
             .build();
 

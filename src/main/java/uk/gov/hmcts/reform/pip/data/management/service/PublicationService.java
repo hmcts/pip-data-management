@@ -13,6 +13,7 @@ import uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactHelper;
 import uk.gov.hmcts.reform.pip.data.management.helpers.LocationHelper;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
+import uk.gov.hmcts.reform.pip.data.management.service.artefact.ArtefactService;
 import uk.gov.hmcts.reform.pip.data.management.service.artefact.ArtefactTriggerService;
 import uk.gov.hmcts.reform.pip.data.management.utils.PayloadExtractor;
 import uk.gov.hmcts.reform.pip.model.enums.UserActions;
@@ -43,23 +44,23 @@ public class PublicationService {
 
     private final LocationRepository locationRepository;
 
-    private final ChannelManagementService channelManagementService;
-
     private final ArtefactTriggerService artefactTriggerService;
+
+    private final ArtefactService artefactService;
 
     @Autowired
     public PublicationService(ArtefactRepository artefactRepository,
                               AzureBlobService azureBlobService,
                               PayloadExtractor payloadExtractor,
                               LocationRepository locationRepository,
-                              ChannelManagementService channelManagementService,
-                              ArtefactTriggerService artefactTriggerService) {
+                              ArtefactTriggerService artefactTriggerService,
+                              ArtefactService artefactService) {
         this.artefactRepository = artefactRepository;
         this.azureBlobService = azureBlobService;
         this.payloadExtractor = payloadExtractor;
         this.locationRepository = locationRepository;
-        this.channelManagementService = channelManagementService;
         this.artefactTriggerService = artefactTriggerService;
+        this.artefactService = artefactService;
     }
 
     /**
@@ -127,7 +128,7 @@ public class PublicationService {
 
     @Async
     public void processCreatedPublication(Artefact artefact) {
-        channelManagementService.requestFileGeneration(artefact.getArtefactId());
+        artefactService.generatePublicationFiles(artefact);
         artefactTriggerService.checkAndTriggerSubscriptionManagement(artefact);
     }
 
