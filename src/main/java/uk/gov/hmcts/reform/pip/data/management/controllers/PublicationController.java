@@ -10,7 +10,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -155,9 +154,7 @@ public class PublicationController {
     @IsPublisher
     @SecurityRequirement(name = BEARER_AUTHENTICATION)
     public ResponseEntity<Artefact> uploadPublication(
-        @RequestHeader(PublicationConfiguration.PROVENANCE_HEADER)
-            @NotBlank(message = "x-provenance is mandatory however an empty value is provided")
-            String provenance,
+        @RequestHeader(PublicationConfiguration.PROVENANCE_HEADER) String provenance,
         @RequestHeader(value = PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, required = false)
             String sourceArtefactId,
         @RequestHeader(PublicationConfiguration.TYPE_HEADER) ArtefactType type,
@@ -168,9 +165,7 @@ public class PublicationController {
         @RequestHeader(value = PublicationConfiguration.DISPLAY_TO_HEADER, required = false)
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime displayTo,
         @RequestHeader(PublicationConfiguration.LIST_TYPE) ListType listType,
-        @RequestHeader(PublicationConfiguration.COURT_ID)
-            @NotBlank(message = "x-court-id is mandatory however an empty value is provided")
-            String courtId,
+        @RequestHeader(PublicationConfiguration.COURT_ID) String courtId,
         @RequestHeader(PublicationConfiguration.CONTENT_DATE)
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime contentDate,
         @RequestHeader(value = "x-issuer-email", required = false) String issuerEmail,
@@ -197,8 +192,7 @@ public class PublicationController {
             .expiryDate(headers.getDisplayTo())
             .build();
 
-        Artefact createdItem = publicationService
-            .createPublication(artefact, payload);
+        Artefact createdItem = publicationService.createPublication(artefact, payload);
 
         logManualUpload(publicationService.maskEmail(issuerEmail), createdItem.getArtefactId().toString());
 
@@ -237,9 +231,7 @@ public class PublicationController {
     @IsPublisher
     @SecurityRequirement(name = BEARER_AUTHENTICATION)
     public ResponseEntity<Artefact> uploadPublication(
-        @RequestHeader(PublicationConfiguration.PROVENANCE_HEADER)
-            @NotBlank(message = "x-provenance is mandatory however an empty value is provided")
-            String provenance,
+        @RequestHeader(PublicationConfiguration.PROVENANCE_HEADER) String provenance,
         @RequestHeader(value = PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, required = false)
             String sourceArtefactId,
         @RequestHeader(PublicationConfiguration.TYPE_HEADER) ArtefactType type,
@@ -250,9 +242,7 @@ public class PublicationController {
         @RequestHeader(value = PublicationConfiguration.DISPLAY_TO_HEADER, required = false)
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime displayTo,
         @RequestHeader(PublicationConfiguration.LIST_TYPE) ListType listType,
-        @RequestHeader(PublicationConfiguration.COURT_ID)
-            @NotBlank(message = "x-court-id is mandatory however an empty value is provided")
-            String courtId,
+        @RequestHeader(PublicationConfiguration.COURT_ID) String courtId,
         @RequestHeader(PublicationConfiguration.CONTENT_DATE)
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime contentDate,
         @RequestHeader(value = "x-issuer-email", required = false) String issuerEmail,

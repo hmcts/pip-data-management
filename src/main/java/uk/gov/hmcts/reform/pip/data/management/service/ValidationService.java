@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.config.ValidationConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.DateValidationException;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.EmptyRequiredHeaderException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.FlatFileException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.PayloadValidationException;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.HeaderGroup;
@@ -75,10 +76,22 @@ public class ValidationService {
      *      are created, ensure the logic affects the headers map within this class.
      */
     public HeaderGroup validateHeaders(HeaderGroup headers) {
+        handleStringValidation(headers);
         handleDateValidation(headers);
         handleDefaultSensitivity(headers);
 
         return headers;
+    }
+
+
+    /**
+     * By default, spring does not validate empty strings using the required flags in the @RequestHeader. Therefore
+     * this check is required to validate that they are not empty
+     * @param headers The headers to validate.
+     */
+    private void handleStringValidation(HeaderGroup headers) {
+        validateRequiredHeader(PublicationConfiguration.PROVENANCE_HEADER, headers.getProvenance());
+        validateRequiredHeader(PublicationConfiguration.COURT_ID, headers.getCourtId());
     }
 
     /**
@@ -142,15 +155,13 @@ public class ValidationService {
         Map<String, String> propertiesMap = headers.getAppInsightsHeaderMap();
         try {
             Set<String> errors = new HashSet<>();
-
             JsonNode json = new ObjectMapper().readTree(jsonPayload);
+
             masterSchema.validate(json).forEach(vm ->  errors.add(vm.getMessage()));
 
-            validationSchemas.forEach((type, schema) -> {
-                if (type.equals(headers.getListType())) {
-                    schema.validate(json).forEach(vm ->  errors.add(vm.getMessage()));
-                }
-            });
+            if (validationSchemas.containsKey(headers.getListType())) {
+                validationSchemas.get(headers.getListType()).validate(json).forEach(vm ->  errors.add(vm.getMessage()));
+            }
 
             if (!errors.isEmpty()) {
                 propertiesMap.put("ERROR", errors.toString());
@@ -166,6 +177,21 @@ public class ValidationService {
     }
 
     /**
+     * Empty check for headers.
+     *
+     * @param headerName - for error msg.
+     * @param header     - checked var.
+     */
+    private void validateRequiredHeader(String headerName, Object header) {
+        if (isNullOrEmpty(header)) {
+            throw new EmptyRequiredHeaderException(String.format(
+                "%s is mandatory however an empty value is provided",
+                headerName
+            ));
+        }
+    }
+
+    /**
      * Null check class for creating default date objects if null.
      *
      * @param date  LocalDateTime.
@@ -173,6 +199,10 @@ public class ValidationService {
      */
     private LocalDateTime checkAndReplaceDateWithDefault(LocalDateTime date) {
         return Objects.requireNonNullElseGet(date, LocalDateTime::now);
+    }
+
+    private static boolean isNullOrEmpty(Object header) {
+        return header == null || header.toString().isEmpty();
     }
 
 }
