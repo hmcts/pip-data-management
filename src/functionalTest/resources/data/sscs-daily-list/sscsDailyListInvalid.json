@@ -51,12 +51,6 @@
                             }
                           },
                           {
-                            "partyRole": "RESPONDENT",
-                            "individualDetails": {
-                              "individualSurname": "Surname"
-                            }
-                          },
-                          {
                             "partyRole": "APPLICANT_PETITIONER_REPRESENTATIVE",
                             "friendlyRoleName": "Legal Advisor",
                             "individualDetails": {
@@ -67,13 +61,15 @@
                             }
                           },
                           {
-                            "partyRole": "RESPONDENT_REPRESENTATIVE",
-                            "friendlyRoleName": "Legal Advisor",
-                            "individualDetails": {
-                              "individualForenames": "Individual Forenames",
-                              "individualMiddleName": "Individual Middlename",
-                              "individualSurname": "Individual Surname",
-                              "title": "Mr"
+                            "partyRole": "RESPONDENT",
+                            "organisationDetails": {
+                              "organisationName": "Respondent Organisation"
+                            }
+                          },
+                          {
+                            "partyRole": "RESPONDENT",
+                            "organisationDetails": {
+                              "organisationName": "Respondent Organisation 2"
                             }
                           }
                         ]
@@ -102,15 +98,15 @@
                             }
                           },
                           {
-                            "partyRole": "PROSECUTOR",
+                            "partyRole": "RESPONDENT",
                             "organisationDetails": {
-                              "organisationName": "Prosecutor1"
+                              "organisationName": "Respondent Organisation"
                             }
                           },
                           {
-                            "partyRole": "PROSECUTOR",
+                            "partyRole": "RESPONDENT",
                             "organisationDetails": {
-                              "organisationName": "Prosecutor2"
+                              "organisationName": "Respondent Organisation 2"
                             }
                           }
                         ]
