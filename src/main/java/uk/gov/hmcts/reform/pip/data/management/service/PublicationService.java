@@ -44,6 +44,8 @@ public class PublicationService {
 
     private final LocationRepository locationRepository;
 
+    private final ChannelManagementService channelManagementService;
+
     private final ArtefactTriggerService artefactTriggerService;
 
     private final ArtefactService artefactService;
@@ -53,12 +55,14 @@ public class PublicationService {
                               AzureBlobService azureBlobService,
                               PayloadExtractor payloadExtractor,
                               LocationRepository locationRepository,
+                              ChannelManagementService channelManagementService,
                               ArtefactTriggerService artefactTriggerService,
                               ArtefactService artefactService) {
         this.artefactRepository = artefactRepository;
         this.azureBlobService = azureBlobService;
         this.payloadExtractor = payloadExtractor;
         this.locationRepository = locationRepository;
+        this.channelManagementService = channelManagementService;
         this.artefactTriggerService = artefactTriggerService;
         this.artefactService = artefactService;
     }
@@ -151,6 +155,11 @@ public class PublicationService {
             artefact.setArtefactId(value.getArtefactId());
             artefact.setPayload(value.getPayload());
             artefact.setSupersededCount(value.getSupersededCount() + 1);
+            if (!artefactService.shouldGenerateFiles(artefact.getPayloadSize())
+                && artefactService.shouldGenerateFiles(value.getPayloadSize())) {
+                channelManagementService.deleteFiles(artefact.getArtefactId(), artefact.getListType(),
+                                                     artefact.getLanguage());
+            }
         });
         return foundArtefact.isPresent();
     }

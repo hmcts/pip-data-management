@@ -1,17 +1,19 @@
 package uk.gov.hmcts.reform.pip.data.management.service;
 
+import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ActiveProfiles;
+import uk.gov.hmcts.reform.pip.data.management.Application;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.AzureBlobService;
 import uk.gov.hmcts.reform.pip.data.management.database.LocationRepository;
@@ -60,29 +62,34 @@ import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTe
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.TEST_VALUE;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.VALIDATION_ARTEFACT_NOT_MATCH;
 
+@ActiveProfiles("test")
+@SpringBootTest(classes = {Application.class})
+@AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
 @SuppressWarnings({"PMD.ExcessiveImports"})
-@ExtendWith(MockitoExtension.class)
 class PublicationServiceTest {
 
-    @Mock
+    @MockBean
     ArtefactRepository artefactRepository;
 
-    @Mock
+    @MockBean
     LocationRepository locationRepository;
 
-    @Mock
+    @MockBean
     AzureBlobService azureBlobService;
 
-    @Mock
+    @MockBean
     PayloadExtractor payloadExtractor;
 
-    @Mock
+    @MockBean
+    ChannelManagementService channelManagementService;
+
+    @MockBean
     ArtefactTriggerService artefactTriggerService;
 
-    @Mock
+    @MockBean
     ArtefactService artefactService;
 
-    @InjectMocks
+    @Autowired
     PublicationService publicationService;
 
     private Artefact artefact;
@@ -128,6 +135,9 @@ class PublicationServiceTest {
                 + "MANUAL_UPLOAD,PUBLIC,MANUAL_UPLOAD,GENERAL_PUBLICATION,2022-06-29 00:00:00.0,2,,SJP_PUBLIC_LIST"
         );
 
+    private static final Float PAYLOAD_SIZE_WITHIN_LIMIT = 90f;
+    private static final Float PAYLOAD_SIZE_OVER_LIMIT = 110f;
+
     @BeforeAll
     public static void setupSearchValues() {
         SEARCH_VALUES.put(TEST_KEY, List.of(TEST_VALUE));
@@ -149,6 +159,8 @@ class PublicationServiceTest {
         lenient().when(artefactRepository.save(artefactWithPayloadUrl)).thenReturn(artefactWithIdAndPayloadUrl);
         lenient().when(locationRepository.findByLocationIdByProvenance(PROVENANCE, PROVENANCE_ID, LOCATION_VENUE))
             .thenReturn(Optional.of(location));
+        lenient().when(artefactService.shouldGenerateFiles(PAYLOAD_SIZE_WITHIN_LIMIT)).thenReturn(true);
+        lenient().when(artefactService.shouldGenerateFiles(PAYLOAD_SIZE_OVER_LIMIT)).thenReturn(false);
     }
 
     private void createPayloads() {
@@ -277,6 +289,86 @@ class PublicationServiceTest {
         Artefact returnedArtefact = publicationService.createPublication(artefact, PAYLOAD);
 
         assertEquals(newArtefactWithId, returnedArtefact, ROWID_RETURNS_UUID);
+    }
+
+    @Test
+    void testUpdatingOfExistingArtefactWithPayloadOverLimitAndNewArtefactWithPayloadOverLimit() {
+        Artefact existingArtefact = Artefact.builder()
+            .artefactId(ARTEFACT_ID)
+            .provenance(PROVENANCE)
+            .locationId(PROVENANCE_ID)
+            .contentDate(START_OF_TODAY_CONTENT_DATE)
+            .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
+            .language(Language.ENGLISH)
+            .payload(PAYLOAD_URL)
+            .payloadSize(PAYLOAD_SIZE_OVER_LIMIT)
+            .build();
+
+        Artefact artefactToBeCreated = Artefact.builder()
+            .artefactId(ARTEFACT_ID)
+            .provenance(PROVENANCE)
+            .contentDate(START_OF_TODAY_CONTENT_DATE)
+            .locationId(PROVENANCE_ID)
+            .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
+            .language(Language.ENGLISH)
+            .payload(PAYLOAD_URL)
+            .payloadSize(PAYLOAD_SIZE_OVER_LIMIT)
+            .build();
+
+        when(artefactRepository.findArtefactByUpdateLogic(artefactToBeCreated.getLocationId(),
+                                                          artefactToBeCreated.getContentDate(),
+                                                          artefactToBeCreated.getLanguage().name(),
+                                                          artefactToBeCreated.getListType().name(),
+                                                          artefactToBeCreated.getProvenance()))
+            .thenReturn(Optional.of(existingArtefact));
+        when(azureBlobService.createPayload(any(), eq(PAYLOAD))).thenReturn(PAYLOAD_URL);
+        when(artefactRepository.save(any())).thenReturn(artefactToBeCreated);
+
+        Artefact returnedArtefact = publicationService.createPublication(artefactToBeCreated, PAYLOAD);
+        verifyNoInteractions(channelManagementService);
+
+        assertEquals(artefactToBeCreated, returnedArtefact, ROWID_RETURNS_UUID);
+    }
+
+    @Test
+    void testUpdatingOfExistingArtefactWithPayloadWithinLimitAndNewArtefactWithPayloadOverLimit() {
+        Artefact existingArtefact = Artefact.builder()
+            .artefactId(ARTEFACT_ID)
+            .provenance(PROVENANCE)
+            .locationId(PROVENANCE_ID)
+            .contentDate(START_OF_TODAY_CONTENT_DATE)
+            .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
+            .language(Language.ENGLISH)
+            .payload(PAYLOAD_URL)
+            .payloadSize(PAYLOAD_SIZE_WITHIN_LIMIT)
+            .build();
+
+        Artefact artefactToBeCreated = Artefact.builder()
+            .artefactId(ARTEFACT_ID)
+            .provenance(PROVENANCE)
+            .contentDate(START_OF_TODAY_CONTENT_DATE)
+            .locationId(PROVENANCE_ID)
+            .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
+            .language(Language.ENGLISH)
+            .payload(PAYLOAD_URL)
+            .payloadSize(PAYLOAD_SIZE_OVER_LIMIT)
+            .build();
+
+        when(artefactRepository.findArtefactByUpdateLogic(artefactToBeCreated.getLocationId(),
+                                                          artefactToBeCreated.getContentDate(),
+                                                          artefactToBeCreated.getLanguage().name(),
+                                                          artefactToBeCreated.getListType().name(),
+                                                          artefactToBeCreated.getProvenance()))
+            .thenReturn(Optional.of(existingArtefact));
+        when(azureBlobService.createPayload(any(), eq(PAYLOAD))).thenReturn(PAYLOAD_URL);
+        when(artefactRepository.save(any())).thenReturn(artefactToBeCreated);
+
+        Artefact returnedArtefact = publicationService.createPublication(artefactToBeCreated, PAYLOAD);
+        verify(channelManagementService).deleteFiles(artefactToBeCreated.getArtefactId(),
+                                                     artefactToBeCreated.getListType(),
+                                                     artefactToBeCreated.getLanguage());
+
+        assertEquals(artefactToBeCreated, returnedArtefact, ROWID_RETURNS_UUID);
     }
 
     @Test
@@ -585,12 +677,5 @@ class PublicationServiceTest {
         publicationService.createPublication(artefact, PAYLOAD);
 
         assertEquals(0, captor.getValue().getSupersededCount(), "Superseded count has been incremented");
-    }
-
-    @Test
-    void testProcessCreatedPublication() {
-        publicationService.processCreatedPublication(sjpPublicArtefact);
-        verify(artefactService).generatePublicationFiles(sjpPublicArtefact);
-        verify(artefactTriggerService).checkAndTriggerSubscriptionManagement(sjpPublicArtefact);
     }
 }
