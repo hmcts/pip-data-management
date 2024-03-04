@@ -190,7 +190,7 @@ public class PublicationController {
             .locationId(headers.getCourtId())
             .contentDate(headers.getContentDate())
             .expiryDate(headers.getDisplayTo())
-            .payloadSize((float) payload.getBytes().length / 1024)
+            .payloadSize((float) payload.length() / 1024)
             .build();
 
         Artefact createdItem = publicationService
