@@ -270,32 +270,6 @@
                                               ],
                                               "pattern": "^(?!.*<[^>]+>).*$"
                                             },
-                                            "caseLinked": {
-                                              "title": "Information about linked cases",
-                                              "type": "array",
-                                              "items": {
-                                                "caseId": {
-                                                  "title": "Case Linked Id",
-                                                  "description": "If a case is linked to another case, Id of that case will appear here.",
-                                                  "type": "string",
-                                                  "default": "",
-                                                  "examples": [
-                                                    "offg35484"
-                                                  ],
-                                                  "pattern": "^(?!.*<[^>]+>).*$"
-                                                },
-                                                "name": {
-                                                  "title": "Case Name",
-                                                  "description": "Case name is not always present but should be where available displayed",
-                                                  "type": "string",
-                                                  "default": "",
-                                                  "examples": [
-                                                    "A Vs B"
-                                                  ],
-                                                  "pattern": "^(?!.*<[^>]+>).*$"
-                                                }
-                                              }
-                                            },
                                             "language": {
                                               "title": "Interpreter Language",
                                               "description": "Interpreter Language",
