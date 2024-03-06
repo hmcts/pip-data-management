@@ -170,7 +170,8 @@
                         "description": "Session associated with the court in the publication",
                         "type": "object",
                         "required": [
-                          "sittings"
+                          "sittings",
+                          "sessionChannel"
                         ],
                         "properties": {
                           "sessionChannel": {
