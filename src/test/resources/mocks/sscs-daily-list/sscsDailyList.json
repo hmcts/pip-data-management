@@ -36,14 +36,6 @@
                             "caseNumber": "12341234"
                           }
                         ],
-                        "informant": [
-                          {
-                            "prosecutionAuthorityRef": [
-                              "test",
-                              "test2"
-                            ]
-                          }
-                        ],
                         "party": [
                           {
                             "partyRole": "APPLICANT_PETITIONER",
