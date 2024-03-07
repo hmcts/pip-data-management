@@ -247,25 +247,6 @@
                                                 "45684548"
                                               ],
                                               "pattern": "^(?!.*<[^>]+>).*$"
-                                            },
-                                            "informant": {
-                                              "description": "Object representing an informant",
-                                              "title": "Informant",
-                                              "type": "object",
-                                              "properties": {
-                                                "prosecutionAuthorityRef": {
-                                                  "type": "array",
-                                                  "items": {
-                                                    "type": "string",
-                                                    "title": "Prosecution Authority Ref",
-                                                    "examples": [
-                                                      "1234"
-                                                    ],
-                                                    "default": "",
-                                                    "pattern": "^(?!.*<[^>]+>).*$"
-                                                  }
-                                                }
-                                              }
                                             }
                                           }
                                         }
