@@ -1,6 +1,8 @@
 server:
   port: 8090
   shutdown: graceful
+  tomcat:
+    keep-alive-timeout: 300000 # 5 minutes to ensure keep alive is set to > the load balancer
 
 management:
   endpoint:
