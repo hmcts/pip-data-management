@@ -192,8 +192,7 @@ public class PublicationController {
             .expiryDate(headers.getDisplayTo())
             .build();
 
-        Artefact createdItem = publicationService
-            .createPublication(artefact, payload);
+        Artefact createdItem = publicationService.createPublication(artefact, payload);
 
         logManualUpload(publicationService.maskEmail(issuerEmail), createdItem.getArtefactId().toString());
 

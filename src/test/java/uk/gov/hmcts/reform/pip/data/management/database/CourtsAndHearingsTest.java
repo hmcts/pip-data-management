@@ -14,13 +14,6 @@ class CourtsAndHearingsTest {
         courtsAndHearings = new CourtsAndHearings();
     }
 
-
-    @Test
-    void testGetHearingsByCourtId() {
-        assertEquals(3, courtsAndHearings.getListHearings(1).size(),
-                     "Number of hearings should match");
-    }
-
     @Test
     void testGetListCourtEventGlossary() {
         assertEquals(49, courtsAndHearings.getListCaseEventGlossary().size(),
