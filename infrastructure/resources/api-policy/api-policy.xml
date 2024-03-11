@@ -62,6 +62,7 @@
   <set-header name="Authorization" exists-action="override">
     <value>@((String)context.Variables["pipAuthToken"])</value>
   </set-header>
+  <rewrite-uri template="/publication" />
 </inbound>
 <backend>
 <base />
