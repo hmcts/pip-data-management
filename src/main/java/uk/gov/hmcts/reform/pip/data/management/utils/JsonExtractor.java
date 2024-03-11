@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.pip.data.management.config.SearchConfiguration;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -26,7 +25,7 @@ import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
 
 @Component
 @Slf4j
-public class JsonExtractor implements Extractor {
+public class JsonExtractor {
     private static final int SINGLE_CASE_COUNT = 1;
 
     private final Configuration jsonConfiguration;
@@ -46,7 +45,6 @@ public class JsonExtractor implements Extractor {
 
     }
 
-    @Override
     public Map<String, List<Object>> extractSearchTerms(String payload) {
         Map<String, List<Object>> searchTermsMap = new ConcurrentHashMap<>();
 
@@ -85,17 +83,6 @@ public class JsonExtractor implements Extractor {
             String allCasesPath = searchConfiguration.getPartySearchConfig().getAllCasesPath();
             List<Object> allCases = jsonPayload.read(allCasesPath);
             extractPartiesFromCases(searchTermsMap, allCases);
-        }
-    }
-
-    @Override
-    public boolean isAccepted(String payload) {
-        try {
-            // test if the file is json format
-            objectMapper.readTree(payload);
-            return true;
-        } catch (IOException exception) {
-            return false;
         }
     }
 
