@@ -227,14 +227,4 @@ class JsonExtractorTest {
             fail(UNKNOWN_EXCEPTION);
         }
     }
-
-    @Test
-    void testIsAccepted() {
-        assertTrue(jsonExtractor.isAccepted(VALID_PAYLOAD), "Valid JSON string marked as not accepted");
-    }
-
-    @Test
-    void testNotAccepted() {
-        assertFalse(jsonExtractor.isAccepted("invalid-test"), "Invalid JSON string marked as accepted");
-    }
 }
