@@ -59,14 +59,6 @@
                               }
                             ]
                           }
-                        ],
-                        "informant": [
-                          {
-                            "prosecutionAuthorityRef": [
-                              "Informant1",
-                              "Informant2"
-                            ]
-                          }
                         ]
                       },
                       {
