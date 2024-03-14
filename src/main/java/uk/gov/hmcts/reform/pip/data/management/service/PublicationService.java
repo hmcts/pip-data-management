@@ -21,7 +21,6 @@ import uk.gov.hmcts.reform.pip.data.management.helpers.LocationHelper;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.service.artefact.ArtefactTriggerService;
-import uk.gov.hmcts.reform.pip.data.management.utils.JsonExtractor;
 import uk.gov.hmcts.reform.pip.model.enums.UserActions;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
@@ -44,8 +43,6 @@ public class PublicationService {
 
     private final AzureBlobService azureBlobService;
 
-    private final JsonExtractor jsonExtractor;
-
     private final LocationRepository locationRepository;
 
     private final ChannelManagementService channelManagementService;
@@ -55,13 +52,11 @@ public class PublicationService {
     @Autowired
     public PublicationService(ArtefactRepository artefactRepository,
                               AzureBlobService azureBlobService,
-                              JsonExtractor jsonExtractor,
                               LocationRepository locationRepository,
                               ChannelManagementService channelManagementService,
                               ArtefactTriggerService artefactTriggerService) {
         this.artefactRepository = artefactRepository;
         this.azureBlobService = azureBlobService;
-        this.jsonExtractor = jsonExtractor;
         this.locationRepository = locationRepository;
         this.channelManagementService = channelManagementService;
         this.artefactTriggerService = artefactTriggerService;
@@ -86,10 +81,6 @@ public class PublicationService {
         );
 
         artefact.setPayload(blobUrl);
-
-
-        artefact.setSearch(jsonExtractor.extractSearchTerms(payload));
-
         return artefactRepository.save(artefact);
 
     }
@@ -101,7 +92,7 @@ public class PublicationService {
      * @param file     The flat file that is to be uploaded and associated with the artefact.
      * @return Returns the artefact that was created.
      */
-    @Transactional(isolation = Isolation.SERIALIZABLE)
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     @Retryable(value = { CannotAcquireLockException.class, JpaSystemException.class },
         maxAttempts = RETRY_MAX_ATTEMPTS, backoff = @Backoff(delay = RETRY_DELAY_IN_MS))
     public Artefact createPublication(Artefact artefact, MultipartFile file) {

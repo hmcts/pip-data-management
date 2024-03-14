@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CreateArtefactConflictException;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
-import uk.gov.hmcts.reform.pip.data.management.utils.PayloadExtractor;
+import uk.gov.hmcts.reform.pip.data.management.utils.JsonExtractor;
 import uk.gov.hmcts.reform.pip.model.enums.UserActions;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
@@ -22,12 +22,12 @@ import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
 public class PublicationCreationRunner {
     private final PublicationService publicationService;
 
-    private final PayloadExtractor payloadExtractor;
+    private final JsonExtractor jsonExtractor;
 
     @Autowired
-    public PublicationCreationRunner(PublicationService publicationService, PayloadExtractor payloadExtractor) {
+    public PublicationCreationRunner(PublicationService publicationService, JsonExtractor jsonExtractor) {
         this.publicationService = publicationService;
-        this.payloadExtractor = payloadExtractor;
+        this.jsonExtractor = jsonExtractor;
     }
 
     /**
@@ -43,6 +43,8 @@ public class PublicationCreationRunner {
 
         try {
             createdArtefact = publicationService.createPublication(artefact, payload);
+
+
 
             //This is where we would want to delete the old blob, if it's not the first time we're
             //creating this artefact
@@ -93,7 +95,7 @@ public class PublicationCreationRunner {
         }
 
         if (payload != null) {
-            artefact.setSearch(payloadExtractor.extractSearchTerms(payload));
+            artefact.setSearch(jsonExtractor.extractSearchTerms(payload));
         }
     }
 
