@@ -76,6 +76,7 @@ class EtDailyListTest {
         "courtLists.0.courtHouse.courtRoom.0.session.0.sittings.0.sittingStart",
         "courtLists.0.courtHouse.courtRoom.0.session.0.sittings.0.sittingEnd",
         "courtLists.0.courtHouse.courtRoom.0.session.0.sittings.0.hearing.0.case.0.caseNumber",
+        "courtLists.0.courtHouse.courtRoom.0.session.0.sittings.0.hearing.0.case.0.party.0.partyRole",
         "courtLists.0.courtHouse.courtRoom.0.session.0.sittings.0.hearing.0.hearingType",
         })
     void testRequiredFieldsAreCaught(String jsonpath) throws IOException {
