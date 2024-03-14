@@ -1,0 +1,142 @@
+{
+  "document": {
+    "publicationDate": "20-02-2020T20:00.001Z"
+  },
+  "venue": {
+    "venueName": "This is the venue name",
+    "venueContact": {
+      "venueTelephone": "01772 844700",
+      "venueEmail": "court1@moj.gov.uk"
+    }
+  },
+  "courtLists": [
+    {
+      "courtHouse": {
+        "courtHouseName": "Test court house name",
+        "courtHouseContact": {
+          "venueTelephone": "01234 123 123",
+          "venueEmail": "a@b.com"
+        },
+        "courtRoom": [
+          {
+            "courtRoomName": "1",
+            "session": [
+              {
+                "sessionChannel": [
+                  "VIDEO HEARING",
+                  ""
+                ],
+                "sittings": [
+                  {
+                    "sittingStart": "20-02-2020T20:00.001Z",
+                    "hearing": [
+                      {
+                        "case": [
+                          {
+                            "caseNumber": "12341234"
+                          }
+                        ],
+                        "informant": [
+                          {
+                            "prosecutionAuthorityRef": [
+                              "Informant1",
+                              "Informant2"
+                            ]
+                          }
+                        ],
+                        "party": [
+                          {
+                            "partyRole": "APPLICANT_PETITIONER",
+                            "individualDetails": {
+                              "individualSurname": "Applicant Surname"
+                            }
+                          },
+                          {
+                            "partyRole": "RESPONDENT",
+                            "individualDetails": {
+                              "individualSurname": "Respondent Surname"
+                            }
+                          },
+                          {
+                            "partyRole": "APPLICANT_PETITIONER_REPRESENTATIVE",
+                            "friendlyRoleName": "Legal Advisor",
+                            "individualDetails": {
+                              "individualForenames": "Forename",
+                              "individualMiddleName": "Middlename",
+                              "individualSurname": "Applicant Representative",
+                              "title": "Mr"
+                            }
+                          },
+                          {
+                            "partyRole": "RESPONDENT_REPRESENTATIVE",
+                            "friendlyRoleName": "Legal Advisor",
+                            "individualDetails": {
+                              "individualForenames": "Forename",
+                              "individualMiddleName": "Middlename",
+                              "individualSurname": "Respondent Representative",
+                              "title": "Mr"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "case": [
+                          {
+                            "caseNumber": "12341235"
+                          }
+                        ],
+                        "party": [
+                          {
+                            "partyRole": "APPLICANT_PETITIONER",
+                            "individualDetails": {
+                              "individualSurname": "Applicant Surname"
+                            }
+                          },
+                          {
+                            "partyRole": "APPLICANT_PETITIONER_REPRESENTATIVE",
+                            "friendlyRoleName": "Legal Advisor",
+                            "individualDetails": {
+                              "individualForenames": "Forename",
+                              "individualMiddleName": "Middlename",
+                              "individualSurname": "Applicant Representative",
+                              "title": "Mr"
+                            }
+                          },
+                          {
+                            "partyRole": "PROSECUTOR",
+                            "organisationDetails": {
+                              "organisationName": "Prosecutor1"
+                            }
+                          },
+                          {
+                            "partyRole": "PROSECUTOR",
+                            "organisationDetails": {
+                              "organisationName": "Prosecutor2"
+                            }
+                          }
+                        ]
+                      }
+                    ],
+                    "channel": [
+                      "Teams",
+                      "Attended"
+                    ]
+                  }
+                ],
+                "judiciary": [
+                  {
+                    "johKnownAs": "Judge TestName Presiding",
+                    "isPresiding": true
+                  },
+                  {
+                    "johKnownAs": "Judge TestName 2"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -48,37 +48,39 @@
                                 "name": "A Vs B"
                               }
                             ],
-                            "language": "French"
-                          }
-                        ],
-                        "party": [
-                          {
-                            "partyRole": "CLAIMANT_PETITIONER",
-                            "individualDetails": {
-                              "individualSurname": "Surname"
-                            }
-                          },
-                          {
-                            "partyRole": "RESPONDENT",
-                            "individualDetails": {
-                              "individualSurname": "Surname"
-                            }
-                          },
-                          {
-                            "partyRole": "CLAIMANT_PETITIONER_REPRESENTATIVE",
-                            "individualDetails": {
-                              "individualForenames": "Individual Forenames",
-                              "individualSurname": "Individual Surname",
-                              "title": "Mr"
-                            }
-                          },
-                          {
-                            "partyRole": "RESPONDENT_REPRESENTATIVE",
-                            "individualDetails": {
-                              "individualForenames": "Individual Forenames",
-                              "individualSurname": "Individual Surname",
-                              "title": "Mr"
-                            }
+                            "language": "French",
+                            "party": [
+                              {
+                                "partyRole": "CLAIMANT_PETITIONER",
+                                "individualDetails": {
+                                  "individualSurname": "Surname"
+                                }
+                              },
+                              {
+                                "partyRole": "RESPONDENT",
+                                "individualDetails": {
+                                  "individualSurname": "Surname"
+                                }
+                              },
+                              {
+                                "partyRole": "CLAIMANT_PETITIONER_REPRESENTATIVE",
+                                "individualDetails": {
+                                  "individualForenames": "Individual Forenames",
+                                  "individualMiddleName": "Individual Middlename",
+                                  "individualSurname": "Individual Surname",
+                                  "title": "Mr"
+                                }
+                              },
+                              {
+                                "partyRole": "RESPONDENT_REPRESENTATIVE",
+                                "individualDetails": {
+                                  "individualForenames": "Individual Forenames",
+                                  "individualMiddleName": "Individual Middlename",
+                                  "individualSurname": "Individual Surname",
+                                  "title": "Mr"
+                                }
+                              }
+                            ]
                           }
                         ]
                       }
