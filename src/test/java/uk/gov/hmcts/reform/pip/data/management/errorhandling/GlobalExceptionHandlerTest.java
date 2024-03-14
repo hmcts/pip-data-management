@@ -16,7 +16,6 @@ import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CsvParse
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.DataStorageNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.FlatFileException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.HeaderValidationException;
-import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.HearingNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.LocationNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.NotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.PayloadValidationException;
@@ -120,20 +119,6 @@ class GlobalExceptionHandlerTest {
             globalExceptionHandler.handle(headerValidationException);
 
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode(), BAD_REQUEST_ASSERTION);
-        assertNotNull(responseEntity.getBody(), ASSERTION_RESPONSE_BODY);
-        assertEquals(TEST_MESSAGE, responseEntity.getBody().getMessage(),
-                     ASSERTION_MESSAGE
-        );
-    }
-
-    @Test
-    void testHandleHearingNotFoundException() {
-        HearingNotFoundException hearingNotFoundException = new HearingNotFoundException(TEST_MESSAGE);
-
-        ResponseEntity<ExceptionResponse> responseEntity =
-            globalExceptionHandler.handle(hearingNotFoundException);
-
-        assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode(), NOT_FOUND_ASSERTION);
         assertNotNull(responseEntity.getBody(), ASSERTION_RESPONSE_BODY);
         assertEquals(TEST_MESSAGE, responseEntity.getBody().getMessage(),
                      ASSERTION_MESSAGE

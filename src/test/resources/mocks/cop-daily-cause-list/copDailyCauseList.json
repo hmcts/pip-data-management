@@ -6,9 +6,7 @@
     "region": {
       "regionalJOH": [
         {
-          "johNameSurname": "Firstname Surname",
-          "johTitle": "Mr",
-          "johKnownAs": "Judge"
+          "johKnownAs": "Judge TestName Regional"
         }
       ],
       "name": "Regional COP Court"
@@ -65,7 +63,7 @@
                 ],
                 "judiciary": [
                   {
-                    "johKnownAs": "Crown Judge",
+                    "johKnownAs": "Judge TestName Presiding",
                     "isPresiding": true
                   }
                 ]

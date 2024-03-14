@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -77,15 +78,18 @@ public class PublicationController {
     private static final String ADMIN_HEADER = "x-admin";
 
     private static final String NO_CONTENT_DESCRIPTION = "The request has been successfully fulfilled";
-    private static final String UNAUTHORIZED_DESCRIPTION = "User has not been authorized";
-
     private static final String NOT_FOUND_DESCRIPTION =
         "No artefact found matching given parameters and date requirements";
+    private static final String UNAUTHORISED_MESSAGE = "Invalid access credential";
+    private static final String FORBIDDEN_MESSAGE = "User has not been authorized";
 
     private static final String OK_CODE = "200";
-    private static final String AUTH_ERROR_CODE = "403";
     private static final String NOT_FOUND_CODE = "404";
     private static final String NO_CONTENT_CODE = "204";
+    private static final String UNAUTHORISED_CODE = "401";
+    private static final String FORBIDDEN_CODE = "403";
+
+    private static final String BEARER_AUTHENTICATION = "bearerAuth";
 
     private final PublicationService publicationService;
 
@@ -147,12 +151,14 @@ public class PublicationController {
      */
     @ApiResponse(responseCode = "201", description = "Artefact.class instance for the artefact that has been "
             + "created")
-    @ApiResponse(responseCode = AUTH_ERROR_CODE, description = UNAUTHORIZED_DESCRIPTION)
+    @ApiResponse(responseCode = UNAUTHORISED_CODE, description = UNAUTHORISED_MESSAGE)
+    @ApiResponse(responseCode = FORBIDDEN_CODE, description = FORBIDDEN_MESSAGE)
     @Operation(summary = "Upload a new publication")
     @PostMapping
     @Valid
     @JsonView(ArtefactView.External.class)
     @IsPublisher
+    @SecurityRequirement(name = BEARER_AUTHENTICATION)
     public ResponseEntity<Artefact> uploadPublication(
         @RequestHeader(PublicationConfiguration.PROVENANCE_HEADER) String provenance,
         @RequestHeader(value = PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, required = false)
@@ -222,11 +228,13 @@ public class PublicationController {
      */
     @ApiResponse(responseCode = "201", description = "Artefact.class instance for the artefact that has been "
             + "created")
-    @ApiResponse(responseCode = AUTH_ERROR_CODE, description = UNAUTHORIZED_DESCRIPTION)
+    @ApiResponse(responseCode = UNAUTHORISED_CODE, description = UNAUTHORISED_MESSAGE)
+    @ApiResponse(responseCode = FORBIDDEN_CODE, description = FORBIDDEN_MESSAGE)
     @Operation(summary = "Upload a new publication")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @JsonView(ArtefactView.External.class)
     @IsPublisher
+    @SecurityRequirement(name = BEARER_AUTHENTICATION)
     public ResponseEntity<Artefact> uploadPublication(
         @RequestHeader(PublicationConfiguration.PROVENANCE_HEADER) String provenance,
         @RequestHeader(value = PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, required = false)
@@ -283,12 +291,14 @@ public class PublicationController {
 
     @ApiResponse(responseCode = OK_CODE, description = "List of Artefacts matching the given locationId and "
         + "verification parameters and date requirements")
-    @ApiResponse(responseCode = AUTH_ERROR_CODE, description = UNAUTHORIZED_DESCRIPTION)
+    @ApiResponse(responseCode = UNAUTHORISED_CODE, description = UNAUTHORISED_MESSAGE)
+    @ApiResponse(responseCode = FORBIDDEN_CODE, description = FORBIDDEN_MESSAGE)
     @ApiResponse(responseCode = NOT_FOUND_CODE, description = NOT_FOUND_DESCRIPTION)
     @Operation(summary = "Get a series of publications matching a given locationId (e.g. locationId)")
     @GetMapping("/locationId/{locationId}")
     @JsonView(ArtefactView.Internal.class)
     @IsAdmin
+    @SecurityRequirement(name = BEARER_AUTHENTICATION)
     public ResponseEntity<List<Artefact>> getAllRelevantArtefactsByLocationId(
         @PathVariable String locationId,
         @RequestHeader(value = USER_ID_HEADER, required = false) UUID userId,
@@ -298,13 +308,15 @@ public class PublicationController {
 
     @ApiResponse(responseCode = OK_CODE, description = "List of Artefacts matching"
             + " a given case value, verification parameters and date requirements")
-    @ApiResponse(responseCode = AUTH_ERROR_CODE, description = UNAUTHORIZED_DESCRIPTION)
+    @ApiResponse(responseCode = UNAUTHORISED_CODE, description = UNAUTHORISED_MESSAGE)
+    @ApiResponse(responseCode = FORBIDDEN_CODE, description = FORBIDDEN_MESSAGE)
     @ApiResponse(responseCode = NOT_FOUND_CODE, description = NOT_FOUND_DESCRIPTION)
     @Operation(summary = "Get a series of publications matching a given case search value (e.g. "
         + "CASE_URN/CASE_ID/CASE_NAME)")
     @GetMapping("/search/{searchTerm}/{searchValue}")
     @JsonView(ArtefactView.Internal.class)
     @IsAdmin
+    @SecurityRequirement(name = BEARER_AUTHENTICATION)
     public ResponseEntity<List<Artefact>> getAllRelevantArtefactsBySearchValue(
         @PathVariable CaseSearchTerm searchTerm, @PathVariable String searchValue,
         @RequestHeader(value = USER_ID_HEADER,  required = false) UUID userId) {
@@ -312,12 +324,14 @@ public class PublicationController {
     }
 
     @ApiResponse(responseCode = OK_CODE, description = "Gets the artefact metadata")
-    @ApiResponse(responseCode = AUTH_ERROR_CODE, description = UNAUTHORIZED_DESCRIPTION)
+    @ApiResponse(responseCode = UNAUTHORISED_CODE, description = UNAUTHORISED_MESSAGE)
+    @ApiResponse(responseCode = FORBIDDEN_CODE, description = FORBIDDEN_MESSAGE)
     @ApiResponse(responseCode = NOT_FOUND_CODE, description = NOT_FOUND_DESCRIPTION)
     @Operation(summary = "Gets the metadata for the blob, given a specific artefact id")
     @GetMapping("/{artefactId}")
     @JsonView(ArtefactView.Internal.class)
     @IsAdmin
+    @SecurityRequirement(name = BEARER_AUTHENTICATION)
     public ResponseEntity<Artefact> getArtefactMetadata(
         @PathVariable UUID artefactId, @RequestHeader(value = USER_ID_HEADER, required = false) UUID userId,
                                        @RequestHeader(value = ADMIN_HEADER, defaultValue = DEFAULT_ADMIN_VALUE,
@@ -328,11 +342,13 @@ public class PublicationController {
     }
 
     @ApiResponse(responseCode = OK_CODE, description = "Blob data from the given request in text format.")
-    @ApiResponse(responseCode = AUTH_ERROR_CODE, description = UNAUTHORIZED_DESCRIPTION)
+    @ApiResponse(responseCode = UNAUTHORISED_CODE, description = UNAUTHORISED_MESSAGE)
+    @ApiResponse(responseCode = FORBIDDEN_CODE, description = FORBIDDEN_MESSAGE)
     @ApiResponse(responseCode = NOT_FOUND_CODE, description = NOT_FOUND_DESCRIPTION)
     @Operation(summary = "Gets the the payload for the blob, given a specific artefact ID")
     @GetMapping("/{artefactId}/payload")
     @IsAdmin
+    @SecurityRequirement(name = BEARER_AUTHENTICATION)
     public ResponseEntity<String> getArtefactPayload(
         @PathVariable UUID artefactId,
         @RequestHeader(value = USER_ID_HEADER, required = false) UUID userId,
@@ -343,11 +359,13 @@ public class PublicationController {
     }
 
     @ApiResponse(responseCode = OK_CODE, description = "Blob data from the given request as a file.")
-    @ApiResponse(responseCode = AUTH_ERROR_CODE, description = UNAUTHORIZED_DESCRIPTION)
+    @ApiResponse(responseCode = UNAUTHORISED_CODE, description = UNAUTHORISED_MESSAGE)
+    @ApiResponse(responseCode = FORBIDDEN_CODE, description = FORBIDDEN_MESSAGE)
     @ApiResponse(responseCode = NOT_FOUND_CODE, description = NOT_FOUND_DESCRIPTION)
     @Operation(summary = "Gets the the payload for the blob, given a specific artefact ID")
     @GetMapping(value = "/{artefactId}/file", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     @IsAdmin
+    @SecurityRequirement(name = BEARER_AUTHENTICATION)
     public ResponseEntity<Resource> getArtefactFile(
         @PathVariable UUID artefactId,
         @RequestHeader(value = USER_ID_HEADER, required = false) UUID userId,
@@ -372,11 +390,13 @@ public class PublicationController {
     }
 
     @ApiResponse(responseCode = OK_CODE, description = "Successfully deleted artefact: {artefactId}")
-    @ApiResponse(responseCode = AUTH_ERROR_CODE, description = UNAUTHORIZED_DESCRIPTION)
+    @ApiResponse(responseCode = UNAUTHORISED_CODE, description = UNAUTHORISED_MESSAGE)
+    @ApiResponse(responseCode = FORBIDDEN_CODE, description = FORBIDDEN_MESSAGE)
     @ApiResponse(responseCode = NOT_FOUND_CODE, description = "No artefact found with the ID: {artefactId}")
     @Operation(summary = "Delete a artefact and its list from P&I")
     @DeleteMapping("/{artefactId}")
     @IsAdmin
+    @SecurityRequirement(name = BEARER_AUTHENTICATION)
     public ResponseEntity<String> deleteArtefact(@RequestHeader("x-issuer-id") String issuerId,
         @PathVariable String artefactId) {
         artefactDeleteService.deleteArtefactById(artefactId, issuerId);
@@ -385,11 +405,13 @@ public class PublicationController {
 
     @ApiResponse(responseCode = OK_CODE, description = "Data Management - Artefact count per location - request "
             + "accepted.")
-    @ApiResponse(responseCode = AUTH_ERROR_CODE, description = UNAUTHORIZED_DESCRIPTION)
+    @ApiResponse(responseCode = UNAUTHORISED_CODE, description = UNAUTHORISED_MESSAGE)
+    @ApiResponse(responseCode = FORBIDDEN_CODE, description = FORBIDDEN_MESSAGE)
     @Operation(summary = "Return a count of artefacts per location")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/count-by-location")
     @IsAdmin
+    @SecurityRequirement(name = BEARER_AUTHENTICATION)
     public ResponseEntity<List<LocationArtefact>> countByLocation() {
         return ResponseEntity.ok(artefactService.countArtefactsByLocation());
     }
@@ -407,7 +429,6 @@ public class PublicationController {
         }
     }
 
-    @ApiResponse(responseCode = AUTH_ERROR_CODE, description = UNAUTHORIZED_DESCRIPTION)
     @ApiResponse(responseCode = OK_CODE, description = "A CSV like structure which contains the data. "
         + "See example for headers", content = {
             @Content(examples = {@ExampleObject("artefact_id,display_from,display_to,language,provenance,"
@@ -417,54 +438,65 @@ public class PublicationController {
                     schema = @Schema(implementation = String.class))
         }
     )
+    @ApiResponse(responseCode = UNAUTHORISED_CODE, description = UNAUTHORISED_MESSAGE)
+    @ApiResponse(responseCode = FORBIDDEN_CODE, description = FORBIDDEN_MESSAGE)
     @Operation(summary = "Return the MI data for artefacts. This endpoint will be "
         + "deprecated in the future, in favour of returning a JSON model")
     @GetMapping("/mi-data")
     @IsAdmin
+    @SecurityRequirement(name = BEARER_AUTHENTICATION)
     public ResponseEntity<String> getMiData() {
         return ResponseEntity.ok().body(publicationService.getMiData());
     }
 
     @ApiResponse(responseCode = NO_CONTENT_CODE, description = NO_CONTENT_DESCRIPTION)
-    @ApiResponse(responseCode = AUTH_ERROR_CODE, description = UNAUTHORIZED_DESCRIPTION)
+    @ApiResponse(responseCode = UNAUTHORISED_CODE, description = UNAUTHORISED_MESSAGE)
+    @ApiResponse(responseCode = FORBIDDEN_CODE, description = FORBIDDEN_MESSAGE)
     @Operation(summary = "Find latest artefacts from today and send them to subscribers")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PostMapping("/latest/subscription")
     @IsAdmin
+    @SecurityRequirement(name = BEARER_AUTHENTICATION)
     public ResponseEntity<Void> sendNewArtefactsForSubscription() {
         artefactTriggerService.checkNewlyActiveArtefacts();
         return ResponseEntity.noContent().build();
     }
 
     @ApiResponse(responseCode = NO_CONTENT_CODE, description = NO_CONTENT_DESCRIPTION)
-    @ApiResponse(responseCode = AUTH_ERROR_CODE, description = UNAUTHORIZED_DESCRIPTION)
+    @ApiResponse(responseCode = UNAUTHORISED_CODE, description = UNAUTHORISED_MESSAGE)
+    @ApiResponse(responseCode = FORBIDDEN_CODE, description = FORBIDDEN_MESSAGE)
     @Operation(summary = "Report artefacts which do not match any location")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PostMapping("/no-match/reporting")
     @IsAdmin
+    @SecurityRequirement(name = BEARER_AUTHENTICATION)
     public ResponseEntity<Void> reportNoMatchArtefacts() {
         artefactTriggerService.reportNoMatchArtefacts();
         return ResponseEntity.noContent().build();
     }
 
     @ApiResponse(responseCode = NO_CONTENT_CODE, description = NO_CONTENT_DESCRIPTION)
-    @ApiResponse(responseCode = AUTH_ERROR_CODE, description = UNAUTHORIZED_DESCRIPTION)
+    @ApiResponse(responseCode = UNAUTHORISED_CODE, description = UNAUTHORISED_MESSAGE)
+    @ApiResponse(responseCode = FORBIDDEN_CODE, description = FORBIDDEN_MESSAGE)
     @Operation(summary = "Archive all expired artefacts")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/expired")
     @IsAdmin
+    @SecurityRequirement(name = BEARER_AUTHENTICATION)
     public ResponseEntity<Void> archiveExpiredArtefacts() {
         artefactDeleteService.archiveExpiredArtefacts();
         return ResponseEntity.noContent().build();
     }
 
     @ApiResponse(responseCode = OK_CODE, description = "Artefact of ID {} has been archived")
-    @ApiResponse(responseCode = AUTH_ERROR_CODE, description = UNAUTHORIZED_DESCRIPTION)
+    @ApiResponse(responseCode = UNAUTHORISED_CODE, description = UNAUTHORISED_MESSAGE)
+    @ApiResponse(responseCode = FORBIDDEN_CODE, description = FORBIDDEN_MESSAGE)
     @ApiResponse(responseCode = NOT_FOUND_CODE, description = "Artefact with ID {} not found when archiving")
     @Operation(summary = "Archive an artefact by ID")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PutMapping("/{id}/archive")
     @IsAdmin
+    @SecurityRequirement(name = BEARER_AUTHENTICATION)
     public ResponseEntity<String> archiveArtefact(@RequestHeader("x-issuer-id") String issuerId,
                                                   @PathVariable String id) {
         artefactDeleteService.archiveArtefactById(id, issuerId);
@@ -472,11 +504,13 @@ public class PublicationController {
     }
 
     @ApiResponse(responseCode = OK_CODE, description = "Successfully deleted artefact for location: {locationId}")
-    @ApiResponse(responseCode = AUTH_ERROR_CODE, description = UNAUTHORIZED_DESCRIPTION)
+    @ApiResponse(responseCode = UNAUTHORISED_CODE, description = UNAUTHORISED_MESSAGE)
+    @ApiResponse(responseCode = FORBIDDEN_CODE, description = FORBIDDEN_MESSAGE)
     @ApiResponse(responseCode = NOT_FOUND_CODE, description = "No artefact found with the location ID: {locationId}")
     @Operation(summary = "Delete all artefacts for given location from P&I")
     @DeleteMapping("/{locationId}/deleteArtefacts")
     @IsAdmin
+    @SecurityRequirement(name = BEARER_AUTHENTICATION)
     public ResponseEntity<String> deleteArtefactsByLocation(
         @RequestHeader("x-provenance-user-id") String provenanceUserId,
         @PathVariable Integer locationId) throws JsonProcessingException {
@@ -484,11 +518,13 @@ public class PublicationController {
     }
 
     @ApiResponse(responseCode = OK_CODE, description = "List of all artefacts that are noMatch in their id")
-    @ApiResponse(responseCode = AUTH_ERROR_CODE, description = UNAUTHORIZED_DESCRIPTION)
+    @ApiResponse(responseCode = UNAUTHORISED_CODE, description = UNAUTHORISED_MESSAGE)
+    @ApiResponse(responseCode = FORBIDDEN_CODE, description = FORBIDDEN_MESSAGE)
     @Operation(summary = "Get all no match publications")
     @GetMapping("/no-match")
     @JsonView(ArtefactView.Internal.class)
     @IsAdmin
+    @SecurityRequirement(name = BEARER_AUTHENTICATION)
     public ResponseEntity<List<Artefact>> getAllNoMatchArtefacts() {
         return ResponseEntity.ok(artefactService.findAllNoMatchArtefacts());
     }

@@ -11,4 +11,10 @@ def type = "java"
 def product = "pip"
 def component = "data-management"
 
-withNightlyPipeline(type, product, component) {}
+withNightlyPipeline(type, product, component) {
+  enableFortifyScan('pip-ss-kv-stg')
+
+  afterSuccess('fortify-scan') {
+    steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/Fortify Scan/**/*'
+  }
+}

@@ -174,6 +174,37 @@ class PublicationServiceTest {
     }
 
     @Test
+    void testCreationOfNewArtefactWhenCourtDoesNotExists() {
+        artefactWithPayloadUrl.setLocationId(NO_COURT_EXISTS_IN_REFERENCE_DATA);
+        when(locationRepository.findByLocationIdByProvenance(PROVENANCE, PROVENANCE_ID, LOCATION_VENUE))
+            .thenReturn(Optional.empty());
+        when(artefactRepository.save(any())).thenReturn(artefactWithIdAndPayloadUrl);
+        when(azureBlobService.createPayload(any(), eq(PAYLOAD))).thenReturn(PAYLOAD_URL);
+        when(jsonExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
+
+        Artefact returnedArtefact = publicationService.createPublication(artefact, PAYLOAD);
+
+        assertEquals(artefactWithIdAndPayloadUrl, returnedArtefact, ROWID_RETURNS_UUID);
+    }
+
+    @Test
+    void testCreationOfNewArtefactWithManualUpload() {
+        artefactWithPayloadUrl.setProvenance(MANUAL_UPLOAD_PROVENANCE);
+        artefactWithPayloadUrl.setLocationId(PROVENANCE_ID);
+        artefactWithPayloadUrl.setListType(ListType.CIVIL_DAILY_CAUSE_LIST);
+        artefactWithPayloadUrl.setLanguage(Language.ENGLISH);
+        artefactWithPayloadUrl.setContentDate(START_OF_TODAY_CONTENT_DATE);
+
+        when(azureBlobService.createPayload(any(), eq(PAYLOAD))).thenReturn(PAYLOAD_URL);
+        when(artefactRepository.save(any())).thenReturn(artefactWithIdAndPayloadUrl);
+        when(jsonExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
+
+        Artefact returnedArtefact = publicationService.createPublication(artefactManualUpload, PAYLOAD);
+
+        assertEquals(artefactWithIdAndPayloadUrl, returnedArtefact, ROWID_RETURNS_UUID);
+    }
+
+    @Test
     void testUpdatingOfExistingArtefact() {
         Artefact artefact = Artefact.builder()
             .sourceArtefactId(SOURCE_ARTEFACT_ID)
@@ -201,6 +232,87 @@ class PublicationServiceTest {
         Artefact returnedArtefact = publicationService.createPublication(artefact, PAYLOAD);
 
         assertEquals(newArtefactWithId, returnedArtefact, ROWID_RETURNS_UUID);
+    }
+
+    @Test
+    void testUpdatingOfExistingArtefactForManualUpload() {
+
+        Artefact artefact = Artefact.builder()
+            .artefactId(ARTEFACT_ID)
+            .sourceArtefactId(SOURCE_ARTEFACT_ID)
+            .provenance(MANUAL_UPLOAD_PROVENANCE)
+            .locationId(PROVENANCE_ID)
+            .language(Language.ENGLISH)
+            .contentDate(CONTENT_DATE)
+            .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
+            .build();
+
+        Artefact newArtefactWithId = Artefact.builder()
+            .artefactId(ARTEFACT_ID)
+            .sourceArtefactId(SOURCE_ARTEFACT_ID)
+            .provenance(MANUAL_UPLOAD_PROVENANCE)
+            .locationId(PROVENANCE_ID)
+            .language(Language.ENGLISH)
+            .payload(PAYLOAD_URL)
+            .search(SEARCH_VALUES)
+            .contentDate(START_OF_TODAY_CONTENT_DATE)
+            .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
+            .build();
+
+        when(azureBlobService.createPayload(any(), eq(PAYLOAD))).thenReturn(PAYLOAD_URL);
+        when(artefactRepository.save(any())).thenReturn(newArtefactWithId);
+        when(jsonExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
+
+        Artefact returnedArtefact = publicationService.createPublication(artefact, PAYLOAD);
+
+        assertEquals(newArtefactWithId, returnedArtefact, ROWID_RETURNS_UUID);
+    }
+
+    @Test
+    void testUpdatingOfExistingArtefactWhenCourtDoesNotExists() {
+
+        Artefact existingArtefact = Artefact.builder()
+            .artefactId(ARTEFACT_ID)
+            .sourceArtefactId(SOURCE_ARTEFACT_ID)
+            .provenance(PROVENANCE)
+            .contentDate(START_OF_TODAY_CONTENT_DATE)
+            .payload(PAYLOAD_URL)
+            .search(SEARCH_VALUES)
+            .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
+            .language(Language.ENGLISH)
+            .locationId(NO_COURT_EXISTS_IN_REFERENCE_DATA)
+            .sensitivity(Sensitivity.PUBLIC)
+            .build();
+
+        Artefact newArtefactWithId = Artefact.builder()
+            .artefactId(ARTEFACT_ID)
+            .sourceArtefactId(SOURCE_ARTEFACT_ID)
+            .provenance(PROVENANCE)
+            .locationId(NO_COURT_EXISTS_IN_REFERENCE_DATA)
+            .contentDate(START_OF_TODAY_CONTENT_DATE)
+            .payload(PAYLOAD_URL)
+            .search(SEARCH_VALUES)
+            .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
+            .language(Language.ENGLISH)
+            .sensitivity(Sensitivity.PUBLIC)
+            .build();
+
+        when(artefactRepository.findArtefactByUpdateLogic(NO_COURT_EXISTS_IN_REFERENCE_DATA, artefact.getContentDate(),
+                                                          artefact.getLanguage().name(),
+                                                          artefact.getListType().name(),
+                                                          artefact.getProvenance()))
+            .thenReturn(Optional.of(existingArtefact));
+
+        when(locationRepository.findByLocationIdByProvenance(PROVENANCE, PROVENANCE_ID, LOCATION_VENUE))
+            .thenReturn(Optional.empty());
+        when(artefactRepository.save(any())).thenReturn(newArtefactWithId);
+        when(azureBlobService.createPayload(PAYLOAD_STRIPPED, PAYLOAD)).thenReturn(PAYLOAD_URL);
+        when(artefactRepository.save(any())).thenReturn(existingArtefact);
+        when(jsonExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
+
+        Artefact returnedArtefact = publicationService.createPublication(artefact, PAYLOAD);
+
+        assertEquals(existingArtefact, returnedArtefact, ROWID_RETURNS_UUID);
     }
 
     @Test
@@ -236,6 +348,16 @@ class PublicationServiceTest {
 
         publicationService.applyInternalLocationId(artefact);
         assertThat(artefact.getLocationId()).isEqualTo(LOCATION_ID);
+    @Test
+    void testCreationOfNewArtefactWhenListTypeSjpPublic() {
+        when(azureBlobService.createPayload(any(), eq(PAYLOAD))).thenReturn(PAYLOAD_URL);
+        when(artefactRepository.save(sjpPublicArtefact)).thenReturn(sjpPublicArtefact);
+        when(jsonExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
+
+        Artefact returnedArtefact = publicationService.createPublication(sjpPublicArtefact, PAYLOAD);
+
+        assertEquals(LocalDateTime.now().plusDays(7).toLocalDate(), returnedArtefact.getExpiryDate().toLocalDate(),
+                     "Expiry date not set correctly for SJP public list");
     }
 
     @Test
@@ -244,6 +366,10 @@ class PublicationServiceTest {
         location.setLocationId(Integer.valueOf(LOCATION_ID));
         when(locationRepository.findByLocationIdByProvenance(PROVENANCE, PROVENANCE_ID, LOCATION_VENUE))
             .thenReturn(Optional.empty());
+    void testCreationOfNewArtefactWhenListTypeSjpPress() {
+        when(azureBlobService.createPayload(any(), eq(PAYLOAD))).thenReturn(PAYLOAD_URL);
+        when(artefactRepository.save(sjpPressArtefact)).thenReturn(sjpPressArtefact);
+        when(jsonExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
 
         publicationService.applyInternalLocationId(artefact);
         assertThat(artefact.getLocationId()).isEqualTo(NO_COURT_EXISTS_IN_REFERENCE_DATA);
@@ -347,6 +473,73 @@ class PublicationServiceTest {
             .isEmpty();
 
         softly.assertAll();
+    }
+
+    @Test
+    void testLastReceivedDateIsSetForBlob() {
+        ArgumentCaptor<Artefact> captor = ArgumentCaptor.forClass(Artefact.class);
+
+        artefactWithPayloadUrl.setLocationId(PROVENANCE_ID);
+        when(azureBlobService.createPayload(any(), eq(PAYLOAD))).thenReturn(PAYLOAD_URL);
+        when(artefactRepository.save(captor.capture())).thenReturn(artefactWithIdAndPayloadUrl);
+        when(jsonExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
+
+        publicationService.createPublication(artefact, PAYLOAD);
+
+        assertNotNull(captor.getValue().getLastReceivedDate(), "Last received date has not been populated");
+    }
+
+    @Test
+    void testLastReceivedDateIsSetForFlatFile() {
+        ArgumentCaptor<Artefact> captor = ArgumentCaptor.forClass(Artefact.class);
+
+        artefactWithPayloadUrl.setLocationId(PROVENANCE_ID);
+        when(azureBlobService.uploadFlatFile(any(), eq(FILE))).thenReturn(PAYLOAD_URL);
+        when(artefactRepository.save(captor.capture())).thenReturn(artefactWithIdAndPayloadUrl);
+        publicationService.createPublication(artefact, FILE);
+
+        assertNotNull(captor.getValue().getLastReceivedDate(), "Last received date has not been populated");
+    }
+
+    @Test
+    void testSupersededCountIsUpdated() {
+        when(artefactRepository.findArtefactByUpdateLogic(artefact.getLocationId(), artefact.getContentDate(),
+                                                          artefact.getLanguage().name(),
+                                                          artefact.getListType().name(),
+                                                          artefact.getProvenance()))
+            .thenReturn(Optional.of(artefact));
+
+        artefact.setPayload("/" + UUID.randomUUID());
+        artefactWithPayloadUrl.setLocationId(PROVENANCE_ID);
+        when(azureBlobService.createPayload(any(), eq(PAYLOAD))).thenReturn(PAYLOAD_URL);
+
+        ArgumentCaptor<Artefact> captor = ArgumentCaptor.forClass(Artefact.class);
+        when(artefactRepository.save(captor.capture())).thenReturn(artefactWithIdAndPayloadUrl);
+        when(jsonExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
+
+        publicationService.createPublication(artefact, PAYLOAD);
+
+        assertEquals(1, captor.getValue().getSupersededCount(), "Superseded count has not been incremented");
+    }
+
+    @Test
+    void testSupersededCountIsNotUpdated() {
+        when(artefactRepository.findArtefactByUpdateLogic(artefact.getLocationId(), artefact.getContentDate(),
+                                                          artefact.getLanguage().name(),
+                                                          artefact.getListType().name(),
+                                                          artefact.getProvenance()))
+            .thenReturn(Optional.empty());
+
+        artefactWithPayloadUrl.setLocationId(PROVENANCE_ID);
+        when(azureBlobService.createPayload(any(), eq(PAYLOAD))).thenReturn(PAYLOAD_URL);
+
+        ArgumentCaptor<Artefact> captor = ArgumentCaptor.forClass(Artefact.class);
+        when(artefactRepository.save(captor.capture())).thenReturn(artefactWithIdAndPayloadUrl);
+        when(jsonExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
+
+        publicationService.createPublication(artefact, PAYLOAD);
+
+        assertEquals(0, captor.getValue().getSupersededCount(), "Superseded count has been incremented");
     }
 
     @Test

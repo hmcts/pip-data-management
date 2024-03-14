@@ -10,6 +10,8 @@
       "line": [
         "Address Line 1"
       ],
+      "town": "Venue Town",
+      "county": "Venue County",
       "postCode": "AA1 AA1"
     },
     "venueContact": {
@@ -65,11 +67,8 @@
                               {
                                 "partyRole": "APPLICANT_PETITIONER_REPRESENTATIVE",
                                 "friendlyRoleName": "Legal Advisor",
-                                "individualDetails": {
-                                  "individualForenames": "Individual Forenames",
-                                  "individualMiddleName": "Individual Middlename",
-                                  "individualSurname": "Individual Surname",
-                                  "title": "Mr"
+                                "organisationDetails": {
+                                  "organisationName": "OrganisationName"
                                 }
                               },
                               {
@@ -95,15 +94,11 @@
                 ],
                 "judiciary": [
                   {
-                    "johTitle": "Judge",
-                    "johNameSurname": "Test Name",
-                    "role": "JUDGE",
+                    "johKnownAs": "Judge TestName Presiding",
                     "isPresiding": true
                   },
                   {
-                    "johTitle": "Magistrate",
-                    "johNameSurname": "Test Name",
-                    "role": "MAGISTRATE",
+                    "johKnownAs": "Judge TestName",
                     "isPresiding": false
                   }
                 ]

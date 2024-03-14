@@ -75,7 +75,7 @@ class PublicationCrownFirmListTest {
     @Test
     void testCreationOfValidCrownFirmList() throws Exception {
         try (InputStream mockFile = this.getClass().getClassLoader()
-            .getResourceAsStream("data/crown_firm_list/crownFirmList.json")) {
+            .getResourceAsStream("data/crown-firm-list/crownFirmList.json")) {
 
             MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
                 .post(POST_URL)
@@ -107,7 +107,7 @@ class PublicationCrownFirmListTest {
     @Test
     void testCreationOfInvalidCrownFirmList() throws Exception {
         try (InputStream mockFile = this.getClass().getClassLoader()
-            .getResourceAsStream("data/crown_firm_list/crownFirmListInvalid.json")) {
+            .getResourceAsStream("data/crown-firm-list/crownFirmListInvalid.json")) {
 
             MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
                 .post(POST_URL)

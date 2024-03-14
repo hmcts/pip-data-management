@@ -34,12 +34,6 @@ class CustomExceptionsTest {
     }
 
     @Test
-    void testCreationOfHearingNotFoundException() {
-        HearingNotFoundException hearingNotFoundException = new HearingNotFoundException(TEST_MESSAGE);
-        assertEquals(TEST_MESSAGE, hearingNotFoundException.getMessage(), ASSERTION_MESSAGE);
-    }
-
-    @Test
     void testCreationOfHeaderValidationException() {
         HeaderValidationException headerValidationException = new HeaderValidationException(TEST_MESSAGE);
         assertEquals(TEST_MESSAGE, headerValidationException.getMessage(), ASSERTION_MESSAGE);

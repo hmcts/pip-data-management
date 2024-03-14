@@ -60,15 +60,15 @@
                                 "caseId": "1234",
                                 "name": "A Vs B"
                               }
+                            ],
+                            "party": [
+                              {
+                                "partyRole": "PROSECUTING_AUTHORITY",
+                                "individualDetails": {
+                                  "individualSurname": "Surname"
+                                }
+                              }
                             ]
-                          }
-                        ],
-                        "party": [
-                          {
-                            "partyRole": "PROSECUTING_AUTHORITY",
-                            "individualDetails": {
-                              "individualSurname": "Surname"
-                            }
                           }
                         ]
                       }
@@ -81,16 +81,11 @@
                 ],
                 "judiciary": [
                   {
-                    "johTitle": "Judge",
-                    "johNameSurname": "Test Name",
-                    "role": "JUDGE",
-                    "johKnownAs": "Judge Test Name",
+                    "johKnownAs": "Judge TestName Presiding",
                     "isPresiding": true
                   },
                   {
-                    "johTitle": "Magistrate",
-                    "johNameSurname": "Test Name",
-                    "role": "MAGISTRATE",
+                    "johKnownAs": "Judge TestName",
                     "isPresiding": false
                   }
                 ]

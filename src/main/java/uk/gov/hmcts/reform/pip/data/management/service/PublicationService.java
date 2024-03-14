@@ -21,6 +21,9 @@ import uk.gov.hmcts.reform.pip.data.management.helpers.LocationHelper;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.service.artefact.ArtefactTriggerService;
+import uk.gov.hmcts.reform.pip.data.management.utils.JsonExtractor;
+import uk.gov.hmcts.reform.pip.model.enums.UserActions;
+import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -41,6 +44,8 @@ public class PublicationService {
 
     private final AzureBlobService azureBlobService;
 
+    private final JsonExtractor jsonExtractor;
+
     private final LocationRepository locationRepository;
 
     private final ChannelManagementService channelManagementService;
@@ -50,11 +55,13 @@ public class PublicationService {
     @Autowired
     public PublicationService(ArtefactRepository artefactRepository,
                               AzureBlobService azureBlobService,
+                              JsonExtractor jsonExtractor,
                               LocationRepository locationRepository,
                               ChannelManagementService channelManagementService,
                               ArtefactTriggerService artefactTriggerService) {
         this.artefactRepository = artefactRepository;
         this.azureBlobService = azureBlobService;
+        this.jsonExtractor = jsonExtractor;
         this.locationRepository = locationRepository;
         this.channelManagementService = channelManagementService;
         this.artefactTriggerService = artefactTriggerService;
@@ -79,6 +86,9 @@ public class PublicationService {
         );
 
         artefact.setPayload(blobUrl);
+
+
+        artefact.setSearch(jsonExtractor.extractSearchTerms(payload));
 
         return artefactRepository.save(artefact);
 

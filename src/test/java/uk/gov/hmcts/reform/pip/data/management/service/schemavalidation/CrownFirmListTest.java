@@ -36,7 +36,7 @@ class CrownFirmListTest {
     ValidationService validationService;
 
     private static final String CROWN_FIRM_LIST_VALID_JSON =
-        "mocks/crown_firm_list/crownFirmList.json";
+        "mocks/crown-firm-list/crownFirmList.json";
     private static final String CROWN_FIRM_LIST_INVALID_MESSAGE =
         "Invalid crown firm list marked as valid";
 

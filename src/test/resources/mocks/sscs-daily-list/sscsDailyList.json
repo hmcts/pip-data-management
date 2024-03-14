@@ -1,6 +1,6 @@
 {
   "document": {
-    "publicationDate": "20-02-2020T20:00.001Z"
+    "publicationDate": "2024-02-23T01:01:01Z"
   },
   "venue": {
     "venueName": "This is the venue name",
@@ -28,91 +28,73 @@
                 ],
                 "sittings": [
                   {
-                    "sittingStart": "20-02-2020T20:00.001Z",
+                    "sittingStart": "2024-02-23T01:01:01Z",
                     "hearing": [
                       {
                         "case": [
                           {
-                            "caseNumber": "12341234"
-                          }
-                        ],
-                        "informant": [
-                          {
-                            "prosecutionAuthorityRef": [
-                              "test",
-                              "test2"
+                            "caseNumber": "12341234",
+                            "party": [
+                              {
+                                "partyRole": "APPLICANT_PETITIONER",
+                                "individualDetails": {
+                                  "individualSurname": "Surname"
+                                }
+                              },
+                              {
+                                "partyRole": "RESPONDENT",
+                                "individualDetails": {
+                                  "individualSurname": "Surname"
+                                }
+                              },
+                              {
+                                "partyRole": "APPLICANT_PETITIONER_REPRESENTATIVE",
+                                "friendlyRoleName": "Legal Advisor",
+                                "individualDetails": {
+                                  "individualForenames": "Individual Forenames",
+                                  "individualMiddleName": "Individual Middlename",
+                                  "individualSurname": "Individual Surname",
+                                  "title": "Mr"
+                                }
+                              }
                             ]
-                          }
-                        ],
-                        "party": [
-                          {
-                            "partyRole": "APPLICANT_PETITIONER",
-                            "individualDetails": {
-                              "individualSurname": "Surname"
-                            }
-                          },
-                          {
-                            "partyRole": "RESPONDENT",
-                            "individualDetails": {
-                              "individualSurname": "Surname"
-                            }
-                          },
-                          {
-                            "partyRole": "APPLICANT_PETITIONER_REPRESENTATIVE",
-                            "friendlyRoleName": "Legal Advisor",
-                            "individualDetails": {
-                              "individualForenames": "Individual Forenames",
-                              "individualMiddleName": "Individual Middlename",
-                              "individualSurname": "Individual Surname",
-                              "title": "Mr"
-                            }
-                          },
-                          {
-                            "partyRole": "RESPONDENT_REPRESENTATIVE",
-                            "friendlyRoleName": "Legal Advisor",
-                            "individualDetails": {
-                              "individualForenames": "Individual Forenames",
-                              "individualMiddleName": "Individual Middlename",
-                              "individualSurname": "Individual Surname",
-                              "title": "Mr"
-                            }
                           }
                         ]
                       },
                       {
                         "case": [
                           {
-                            "caseNumber": "12341235"
-                          }
-                        ],
-                        "party": [
-                          {
-                            "partyRole": "APPLICANT_PETITIONER",
-                            "individualDetails": {
-                              "individualSurname": "Surname"
-                            }
-                          },
-                          {
-                            "partyRole": "APPLICANT_PETITIONER_REPRESENTATIVE",
-                            "friendlyRoleName": "Legal Advisor",
-                            "individualDetails": {
-                              "individualForenames": "Individual Forenames",
-                              "individualMiddleName": "Individual Middlename",
-                              "individualSurname": "Individual Surname",
-                              "title": "Mr"
-                            }
-                          },
-                          {
-                            "partyRole": "PROSECUTOR",
-                            "organisationDetails": {
-                              "organisationName": "Prosecutor1"
-                            }
-                          },
-                          {
-                            "partyRole": "PROSECUTOR",
-                            "organisationDetails": {
-                              "organisationName": "Prosecutor2"
-                            }
+                            "caseNumber": "12341235",
+                            "party": [
+                              {
+                                "partyRole": "APPLICANT_PETITIONER",
+                                "individualDetails": {
+                                  "individualSurname": "Surname"
+                                }
+                              },
+                              {
+                                "partyRole": "APPLICANT_PETITIONER_REPRESENTATIVE",
+                                "friendlyRoleName": "Legal Advisor",
+                                "individualDetails": {
+                                  "individualForenames": "Individual Forenames",
+                                  "individualMiddleName": "Individual Middlename",
+                                  "individualSurname": "Individual Surname",
+                                  "title": "Mr"
+                                }
+                              },
+                              {
+                                "partyRole": "RESPONDENT",
+                                "organisationDetails": {
+                                  "organisationName": "Respondent Organisation"
+                                }
+                              },
+                              {
+                                "partyRole": "RESPONDENT",
+                                "organisationDetails": {
+                                  "organisationName": "Respondent Organisation 2"
+                                }
+                              }
+                            ]
                           }
                         ]
                       }
@@ -125,16 +107,11 @@
                 ],
                 "judiciary": [
                   {
-                    "johTitle": "Judge",
-                    "johNameSurname": "Test Name",
-                    "role": "JUDGE",
-                    "johKnownAs": "Judge"
+                    "johKnownAs": "Judge TestName Presiding",
+                    "isPresiding": true
                   },
                   {
-                    "johTitle": "Magistrate",
-                    "johNameSurname": "Test Name",
-                    "role": "MAGISTRATE",
-                    "johKnownAs": "Justice of the peace"
+                    "johKnownAs": "Judge TestName 2"
                   }
                 ]
               }

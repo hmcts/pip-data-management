@@ -1,0 +1,82 @@
+{
+  "document": {
+    "publicationDate": "20-02-2020T20:00:00.001Z",
+    "documentName": "This is a document name",
+    "version": "This is a document version"
+  },
+  "venue": {
+    "venueName": "This is the venue name",
+    "venueAddress": {
+      "line": [
+        "Address Line 1"
+      ],
+      "town": "Venue Town",
+      "county": "Venue County",
+      "postCode": "AA1 AA1"
+    }
+  },
+  "courtLists": [
+    {
+      "courtHouse": {
+        "courtRoom": [
+          {
+            "session": [
+              {
+                "sittings": [
+                  {
+                    "sittingStart": "20-02-2020T20:00:00.001Z",
+                    "sittingEnd": "28-02-2020T20:00:00.001Z",
+                    "hearing": [
+                      {
+                        "hearingType": "Directions",
+                        "listNote": "Manual input",
+                        "case": [
+                          {
+                            "caseNumber": "12341234",
+                            "reportingRestrictionDetail": [
+                              "Reporting Restriction detail line 1",
+                              "Reporting restriction detail line 2"
+                            ],
+                            "caseLinked": [
+                              {
+                                "caseId": "1234",
+                                "name": "A Vs B"
+                              }
+                            ]
+                          }
+                        ],
+                        "party": [
+                          {
+                            "partyRole": "DEFENDANT",
+                            "individualDetails": {
+                              "title": "Title",
+                              "individualForenames": "Forenames",
+                              "individualMiddleName": "MidleName",
+                              "individualSurname": "Surname"
+                            }
+                          },
+                          {
+                            "partyRole": "DEFENDANT_REPRESENTATIVE",
+                            "organisationDetails": {
+                              "organisationName": "OrganisationName"
+                            }
+                          },
+                          {
+                            "partyRole": "PROSECUTING_AUTHORITY",
+                            "organisationDetails": {
+                              "organisationName": "OrganisationName2"
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

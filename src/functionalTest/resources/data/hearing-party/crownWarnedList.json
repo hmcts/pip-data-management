@@ -1,6 +1,6 @@
 {
   "document": {
-    "publicationDate": "2023-03-03T14:07:33.871502Z",
+    "publicationDate": "20-02-2020T20:00:00.001Z",
     "documentName": "This is a document name",
     "version": "This is a document version"
   },
@@ -13,93 +13,63 @@
       "town": "Venue Town",
       "county": "Venue County",
       "postCode": "AA1 AA1"
-    },
-    "venueContact": {
-      "venueTelephone": "01234 123 123",
-      "venueEmail": "a@b.com"
     }
-  },
-  "locationDetails": {
-    "jurisdiction": "Family"
   },
   "courtLists": [
     {
       "courtHouse": {
-        "courtHouseName": "This is the site name",
-        "courtHouseContact": {
-          "venueTelephone": "01234 123 123",
-          "venueEmail": "a@b.com"
-        },
-        "courtHouseAddress": {
-          "line": [
-            "Address Line 1"
-          ],
-          "postCode": "AA1 AA1"
-        },
         "courtRoom": [
           {
-            "courtRoomName": "This is the court room name",
             "session": [
               {
                 "sittings": [
                   {
-                    "sittingStart": "2023-03-03T14:09:30.871502Z",
-                    "sittingEnd": "2023-03-03T14:10:30.871502Z",
+                    "sittingStart": "20-02-2020T20:00:00.001Z",
+                    "sittingEnd": "28-02-2020T20:00:00.001Z",
                     "hearing": [
                       {
                         "hearingType": "Directions",
+                        "listNote": "Manual input",
                         "case": [
                           {
+                            "caseNumber": "12341234",
                             "reportingRestrictionDetail": [
                               "Reporting Restriction detail line 1",
                               "Reporting restriction detail line 2"
                             ],
-                            "caseNumber": "12341234",
                             "caseLinked": [
                               {
                                 "caseId": "1234",
                                 "name": "A Vs B"
                               }
-                            ],
-                            "caseSequenceIndicator": "2 of 3"
+                            ]
                           }
                         ],
                         "party": [
                           {
                             "partyRole": "DEFENDANT",
                             "individualDetails": {
-                              "individualSurname": "Surname",
-                              "individualForenames": "Forenames"
+                              "title": "Title",
+                              "individualForenames": "Forenames",
+                              "individualMiddleName": "MidleName",
+                              "individualSurname": "Surname"
+                            }
+                          },
+                          {
+                            "partyRole": "DEFENDANT_REPRESENTATIVE",
+                            "organisationDetails": {
+                              "organisationName": "OrganisationName"
                             }
                           },
                           {
                             "partyRole": "PROSECUTING_AUTHORITY",
                             "organisationDetails": {
-                              "organisationName": "Org name"
+                              "organisationName": "OrganisationName2"
                             }
                           }
                         ]
                       }
-                    ],
-                    "channel": [
-                      "Teams",
-                      "Attended"
                     ]
-                  }
-                ],
-                "judiciary": [
-                  {
-                    "johTitle": "Judge",
-                    "johNameSurname": "Test Name",
-                    "role": "JUDGE",
-                    "johKnownAs": "Judge Test Name",
-                    "isPresiding": true
-                  },
-                  {
-                    "johTitle": "Magistrate",
-                    "johNameSurname": "Test Name",
-                    "role": "MAGISTRATE",
-                    "isPresiding": false
                   }
                 ]
               }

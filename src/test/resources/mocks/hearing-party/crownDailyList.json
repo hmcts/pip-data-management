@@ -1,0 +1,104 @@
+{
+  "document": {
+    "publicationDate": "20-02-2020T20:00.001Z",
+    "documentName": "This is a document name",
+    "version": "This is a document version"
+  },
+  "venue": {
+    "venueName": "This is the venue name",
+    "venueAddress": {
+      "line": [
+        "Address Line 1"
+      ],
+      "town": "Venue Town",
+      "county": "Venue County",
+      "postCode": "AA1 AA1"
+    },
+    "venueContact": {
+      "venueTelephone": "01234 123 123",
+      "venueEmail": "a@b.com"
+    }
+  },
+  "locationDetails": {
+    "jurisdiction": "Family"
+  },
+  "courtLists": [
+    {
+      "courtHouse": {
+        "courtHouseName": "This is the site name",
+        "courtHouseContact": {
+          "venueTelephone": "01234 123 123",
+          "venueEmail": "a@b.com"
+        },
+        "courtHouseAddress": {
+          "line": [
+            "Address Line 1"
+          ],
+          "postCode": "AA1 AA1"
+        },
+        "courtRoom": [
+          {
+            "courtRoomName": "This is the court room name",
+            "session": [
+              {
+                "sittings": [
+                  {
+                    "sittingStart": "20-02-2020T20:00.001Z",
+                    "sittingEnd": "20-02-2020T20:00.001Z",
+                    "hearing": [
+                      {
+                        "hearingType": "Directions",
+                        "case": [
+                          {
+                            "caseNumber": "12341234",
+                            "reportingRestrictionDetail": [
+                              "Reporting Restriction detail line 1",
+                              "Reporting restriction detail line 2"
+                            ],
+                            "caseLinked": [
+                              {
+                                "caseId": "1234",
+                                "name": "A Vs B"
+                              }
+                            ]
+                          }
+                        ],
+                        "party": [
+                          {
+                            "partyRole": "PROSECUTING_AUTHORITY",
+                            "individualDetails": {
+                              "individualSurname": "Surname"
+                            }
+                          }
+                        ]
+                      }
+                    ],
+                    "channel": [
+                      "Teams",
+                      "Attended"
+                    ]
+                  }
+                ],
+                "judiciary": [
+                  {
+                    "johTitle": "Judge",
+                    "johNameSurname": "Test Name",
+                    "role": "JUDGE",
+                    "johKnownAs": "Judge Test Name",
+                    "isPresiding": true
+                  },
+                  {
+                    "johTitle": "Magistrate",
+                    "johNameSurname": "Test Name",
+                    "role": "MAGISTRATE",
+                    "isPresiding": false
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
