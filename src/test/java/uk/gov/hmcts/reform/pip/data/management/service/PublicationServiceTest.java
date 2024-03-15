@@ -19,7 +19,7 @@ import uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelpe
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.service.artefact.ArtefactTriggerService;
-import uk.gov.hmcts.reform.pip.data.management.utils.PayloadExtractor;
+import uk.gov.hmcts.reform.pip.data.management.utils.JsonExtractor;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 import uk.gov.hmcts.reform.pip.model.publication.Sensitivity;
@@ -75,7 +75,7 @@ class PublicationServiceTest {
     AzureBlobService azureBlobService;
 
     @Mock
-    PayloadExtractor payloadExtractor;
+    JsonExtractor jsonExtractor;
 
     @Mock
     ChannelManagementService channelManagementService;
@@ -193,7 +193,7 @@ class PublicationServiceTest {
         artefactWithPayloadUrl.setLocationId(PROVENANCE_ID);
         when(azureBlobService.createPayload(any(), eq(PAYLOAD))).thenReturn(PAYLOAD_URL);
         when(artefactRepository.save(any())).thenReturn(artefactWithIdAndPayloadUrl);
-        when(payloadExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
+        when(jsonExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
 
         Artefact returnedArtefact = publicationService.createPublication(artefact, PAYLOAD);
 
@@ -211,7 +211,7 @@ class PublicationServiceTest {
         artefactWithPayloadUrl.setLocationId("12341234");
         when(azureBlobService.createPayload(any(), eq(PAYLOAD))).thenReturn(PAYLOAD_URL);
         when(artefactRepository.save(any())).thenReturn(artefactWithIdAndPayloadUrl);
-        when(payloadExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
+        when(jsonExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
 
         Artefact returnedArtefact = publicationService.createPublication(artefact, PAYLOAD);
 
@@ -225,7 +225,7 @@ class PublicationServiceTest {
             .thenReturn(Optional.empty());
         when(artefactRepository.save(any())).thenReturn(artefactWithIdAndPayloadUrl);
         when(azureBlobService.createPayload(any(), eq(PAYLOAD))).thenReturn(PAYLOAD_URL);
-        when(payloadExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
+        when(jsonExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
 
         Artefact returnedArtefact = publicationService.createPublication(artefact, PAYLOAD);
 
@@ -242,7 +242,7 @@ class PublicationServiceTest {
 
         when(azureBlobService.createPayload(any(), eq(PAYLOAD))).thenReturn(PAYLOAD_URL);
         when(artefactRepository.save(any())).thenReturn(artefactWithIdAndPayloadUrl);
-        when(payloadExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
+        when(jsonExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
 
         Artefact returnedArtefact = publicationService.createPublication(artefactManualUpload, PAYLOAD);
 
@@ -273,7 +273,7 @@ class PublicationServiceTest {
 
         when(azureBlobService.createPayload(any(), eq(PAYLOAD))).thenReturn(PAYLOAD_URL);
         when(artefactRepository.save(any())).thenReturn(newArtefactWithId);
-        when(payloadExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
+        when(jsonExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
 
         Artefact returnedArtefact = publicationService.createPublication(artefact, PAYLOAD);
 
@@ -307,7 +307,7 @@ class PublicationServiceTest {
 
         when(azureBlobService.createPayload(any(), eq(PAYLOAD))).thenReturn(PAYLOAD_URL);
         when(artefactRepository.save(any())).thenReturn(newArtefactWithId);
-        when(payloadExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
+        when(jsonExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
 
         Artefact returnedArtefact = publicationService.createPublication(artefact, PAYLOAD);
 
@@ -354,7 +354,7 @@ class PublicationServiceTest {
         when(artefactRepository.save(any())).thenReturn(newArtefactWithId);
         when(azureBlobService.createPayload(PAYLOAD_STRIPPED, PAYLOAD)).thenReturn(PAYLOAD_URL);
         when(artefactRepository.save(any())).thenReturn(existingArtefact);
-        when(payloadExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
+        when(jsonExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
 
         Artefact returnedArtefact = publicationService.createPublication(artefact, PAYLOAD);
 
@@ -402,7 +402,7 @@ class PublicationServiceTest {
     void testCreationOfNewArtefactWhenListTypeSjpPublic() {
         when(azureBlobService.createPayload(any(), eq(PAYLOAD))).thenReturn(PAYLOAD_URL);
         when(artefactRepository.save(sjpPublicArtefact)).thenReturn(sjpPublicArtefact);
-        when(payloadExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
+        when(jsonExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
 
         Artefact returnedArtefact = publicationService.createPublication(sjpPublicArtefact, PAYLOAD);
 
@@ -414,7 +414,7 @@ class PublicationServiceTest {
     void testCreationOfNewArtefactWhenListTypeSjpPress() {
         when(azureBlobService.createPayload(any(), eq(PAYLOAD))).thenReturn(PAYLOAD_URL);
         when(artefactRepository.save(sjpPressArtefact)).thenReturn(sjpPressArtefact);
-        when(payloadExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
+        when(jsonExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
 
         Artefact returnedArtefact = publicationService.createPublication(sjpPressArtefact, PAYLOAD);
 
@@ -528,7 +528,7 @@ class PublicationServiceTest {
         artefactWithPayloadUrl.setLocationId(PROVENANCE_ID);
         when(azureBlobService.createPayload(any(), eq(PAYLOAD))).thenReturn(PAYLOAD_URL);
         when(artefactRepository.save(captor.capture())).thenReturn(artefactWithIdAndPayloadUrl);
-        when(payloadExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
+        when(jsonExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
 
         publicationService.createPublication(artefact, PAYLOAD);
 
@@ -561,7 +561,7 @@ class PublicationServiceTest {
 
         ArgumentCaptor<Artefact> captor = ArgumentCaptor.forClass(Artefact.class);
         when(artefactRepository.save(captor.capture())).thenReturn(artefactWithIdAndPayloadUrl);
-        when(payloadExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
+        when(jsonExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
 
         publicationService.createPublication(artefact, PAYLOAD);
 
@@ -581,7 +581,7 @@ class PublicationServiceTest {
 
         ArgumentCaptor<Artefact> captor = ArgumentCaptor.forClass(Artefact.class);
         when(artefactRepository.save(captor.capture())).thenReturn(artefactWithIdAndPayloadUrl);
-        when(payloadExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
+        when(jsonExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
 
         publicationService.createPublication(artefact, PAYLOAD);
 
