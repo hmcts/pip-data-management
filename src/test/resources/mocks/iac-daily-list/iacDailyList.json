@@ -18,6 +18,10 @@
             "courtRoomName": "1",
             "session": [
               {
+                "sessionChannel": [
+                  "VIDEO HEARING",
+                  ""
+                ],
                 "judiciary": [
                   {
                     "johTitle": "Judge",
