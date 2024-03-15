@@ -1,31 +1,5 @@
 {
   "$defs": {
-    "venueContact": {
-      "title": "Contact Details for a venue",
-      "type": "object",
-      "properties": {
-        "venueTelephone": {
-          "description": "Telephone number for the venue",
-          "title": "Venue Telephone",
-          "type": "string",
-          "default": "",
-          "examples": [
-            "01772 844700"
-          ],
-          "pattern": "^(?!.*<[^>]+>).*$"
-        },
-        "venueEmail": {
-          "description": "Email for the venue",
-          "title": "Venue Email",
-          "type": "string",
-          "default": "",
-          "examples": [
-            "court1@moj.gov.uk"
-          ],
-          "pattern": "^(?!.*<[^>]+>).*$"
-        }
-      }
-    },
     "judiciary": {
       "title": "Judiciary",
       "description": "An array of judiciary",
