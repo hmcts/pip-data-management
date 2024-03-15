@@ -43,12 +43,6 @@ public class PublicationCreationRunner {
 
         try {
             createdArtefact = publicationService.createPublication(artefact, payload);
-
-
-
-            //This is where we would want to delete the old blob, if it's not the first time we're
-            //creating this artefact
-
         } catch (CannotAcquireLockException | JpaSystemException ex) {
             throw new CreateArtefactConflictException(
                 "Deadlock when creating json publication. Please try again later."

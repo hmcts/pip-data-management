@@ -74,15 +74,18 @@ public class PublicationService {
         maxAttempts = RETRY_MAX_ATTEMPTS, backoff = @Backoff(delay = RETRY_DELAY_IN_MS))
     public Artefact createPublication(Artefact artefact, String payload) {
         boolean isExisting = applyExistingArtefact(artefact);
+        String existingPayload = isExisting ? artefact.getPayload() : null;
 
-        String blobUrl = azureBlobService.createPayload(
-            isExisting ? ArtefactHelper.getUuidFromUrl(artefact.getPayload()) : UUID.randomUUID().toString(),
-            payload
-        );
-
+        String blobUrl = azureBlobService.createPayload(UUID.randomUUID().toString(), payload);
         artefact.setPayload(blobUrl);
-        return artefactRepository.save(artefact);
 
+        Artefact createdArtefact = artefactRepository.save(artefact);
+        // Remove the old payload after superseded by the new one
+        if (isExisting) {
+            azureBlobService.deleteBlob(ArtefactHelper.getUuidFromUrl(existingPayload));
+        }
+
+        return createdArtefact;
     }
 
     /**
