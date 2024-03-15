@@ -4,10 +4,6 @@
   },
   "venue": {
     "venueName": "This is the venue name",
-    "venueContact": {
-      "venueTelephone": "0300 1231 711",
-      "venueEmail": "contactia@justice.gov.uk"
-    }
   },
   "courtLists": [
     {

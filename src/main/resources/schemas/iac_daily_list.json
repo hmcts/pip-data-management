@@ -65,8 +65,7 @@
       "title": "venue",
       "type": "object",
       "required": [
-        "venueName",
-        "venueContact"
+        "venueName"
       ],
       "properties": {
         "venueName": {
@@ -78,12 +77,6 @@
             "Preston"
           ],
           "pattern": "^(?!.*<[^>]+>).*$"
-        },
-        "venueContact": {
-          "description": "Contact details for the venue",
-          "title": "Venue Contact",
-          "$ref": "#/$defs/venueContact",
-          "required": ["venueTelephone", "venueEmail"]
         }
       }
     },
