@@ -38,6 +38,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -98,6 +99,8 @@ class PublicationServiceTest {
     private Artefact artefactManualUpload;
     private Artefact sjpPublicArtefact;
     private Artefact sjpPressArtefact;
+
+    private Location location;
 
     private static final char DELIMITER = ',';
     private static final String LOCATION_NAME_WITH_ID_3 = "Oxford Combined Court Centre";
@@ -326,8 +329,8 @@ class PublicationServiceTest {
 
         when(artefactRepository.findArtefactByUpdateLogic(artefactToBeCreated.getLocationId(),
                                                           artefactToBeCreated.getContentDate(),
-                                                          artefactToBeCreated.getLanguage().name(),
-                                                          artefactToBeCreated.getListType().name(),
+                                                          artefactToBeCreated.getLanguage(),
+                                                          artefactToBeCreated.getListType(),
                                                           artefactToBeCreated.getProvenance()))
             .thenReturn(Optional.of(existingArtefact));
         when(azureBlobService.createPayload(any(), eq(PAYLOAD))).thenReturn(PAYLOAD_URL);
@@ -658,7 +661,6 @@ class PublicationServiceTest {
     void testProcessCreatedPublication() {
         doNothing().when(artefactTriggerService).checkAndTriggerSubscriptionManagement(sjpPublicArtefact);
         publicationService.processCreatedPublication(sjpPublicArtefact, PAYLOAD);
-        verify(channelManagementService, times(1))
-            .requestFileGeneration(sjpPublicArtefact.getArtefactId(), PAYLOAD);
+        verify(channelManagementService).requestFileGeneration(sjpPublicArtefact.getArtefactId(), PAYLOAD);
     }
 }

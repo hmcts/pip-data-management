@@ -122,8 +122,8 @@ public class PublicationService {
     }
 
     @Async
-    public void processCreatedPublication(Artefact artefact) {
-        artefactService.generatePublicationFiles(artefact);
+    public void processCreatedPublication(Artefact artefact, String payload) {
+        artefactService.generatePublicationFiles(artefact, payload);
         artefactTriggerService.checkAndTriggerSubscriptionManagement(artefact);
     }
 

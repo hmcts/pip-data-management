@@ -57,6 +57,7 @@ import static uk.gov.hmcts.reform.pip.data.management.helpers.ConstantsTestHelpe
 @SuppressWarnings({"PMD.ExcessiveImports", "PMD.TooManyMethods"})
 class ArtefactServiceTest {
     private static final String FILES_GENERATION_MESSAGE = "File generation flag does not match";
+    private static final String PAYLOAD = "payload";
 
     @MockBean
     ArtefactRepository artefactRepository;
@@ -413,14 +414,14 @@ class ArtefactServiceTest {
     @Test
     void testGeneratePublicationFilesIfPayloadSizeWithinLimit() {
         artefactWithIdAndPayloadUrl.setPayloadSize(50f);
-        artefactService.generatePublicationFiles(artefactWithIdAndPayloadUrl);
-        verify(channelManagementService).requestFileGeneration(ARTEFACT_ID);
+        artefactService.generatePublicationFiles(artefactWithIdAndPayloadUrl, PAYLOAD);
+        verify(channelManagementService).requestFileGeneration(ARTEFACT_ID, PAYLOAD);
     }
 
     @Test
     void testGeneratePublicationFilesIfPayloadSizeOverLimit() {
         artefactWithIdAndPayloadUrl.setPayloadSize(200f);
-        artefactService.generatePublicationFiles(artefactWithIdAndPayloadUrl);
+        artefactService.generatePublicationFiles(artefactWithIdAndPayloadUrl, PAYLOAD);
         verifyNoInteractions(channelManagementService);
     }
 

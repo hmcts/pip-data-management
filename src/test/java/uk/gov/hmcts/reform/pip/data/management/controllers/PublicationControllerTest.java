@@ -44,7 +44,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -180,7 +180,7 @@ class PublicationControllerTest {
             DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, LOCATION_ID, CONTENT_DATE, TEST_STRING, PAYLOAD
         );
 
-        verify(publicationService).processCreatedPublication(any(Artefact.class), anyString());
+        verify(publicationService).processCreatedPublication(any(Artefact.class), eq(PAYLOAD));
 
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode(), STATUS_CODE_MATCH);
         assertEquals(artefactWithId, responseEntity.getBody(), "The expected return ID is returned");
@@ -196,7 +196,7 @@ class PublicationControllerTest {
             DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, LOCATION_ID, CONTENT_DATE, TEST_STRING, PAYLOAD
         );
 
-        verify(publicationService, never()).processCreatedPublication(any(Artefact.class), anyString());
+        verify(publicationService, never()).processCreatedPublication(any(Artefact.class), eq(PAYLOAD));
 
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode(), STATUS_CODE_MATCH);
         assertEquals(artefactWithNoMatchLocationId, responseEntity.getBody(), "The expected return ID is returned");
