@@ -4,11 +4,8 @@ import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pip.data.management.Application;
 import uk.gov.hmcts.reform.pip.model.account.AzureAccount;
@@ -23,9 +20,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
-@SuppressWarnings("PMD.LawOfDemeter")
-@ExtendWith({MockitoExtension.class})
 @ActiveProfiles("test")
 @SpringBootTest(classes = {Application.class})
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
@@ -58,7 +54,7 @@ class AccountManagementServiceTest {
     void testIsAuthorisedError() throws IOException {
         mockAccountManagementEndpoint = new MockWebServer();
         mockAccountManagementEndpoint.start(6969);
-        mockAccountManagementEndpoint.enqueue(new MockResponse().setResponseCode(HttpStatus.BAD_REQUEST.value()));
+        mockAccountManagementEndpoint.enqueue(new MockResponse().setResponseCode(BAD_REQUEST.value()));
 
         boolean isAuthorised =
             accountManagementService.getIsAuthorised(UUID.randomUUID(),
@@ -88,7 +84,7 @@ class AccountManagementServiceTest {
     void testGetUserInfoError() throws IOException {
         mockAccountManagementEndpoint = new MockWebServer();
         mockAccountManagementEndpoint.start(6969);
-        mockAccountManagementEndpoint.enqueue(new MockResponse().setResponseCode(HttpStatus.BAD_REQUEST.value()));
+        mockAccountManagementEndpoint.enqueue(new MockResponse().setResponseCode(BAD_REQUEST.value()));
 
         AzureAccount result =
             accountManagementService.getUserInfo(UUID.randomUUID().toString());
@@ -119,7 +115,7 @@ class AccountManagementServiceTest {
     void testGetAllAccountsError() throws IOException {
         mockAccountManagementEndpoint = new MockWebServer();
         mockAccountManagementEndpoint.start(6969);
-        mockAccountManagementEndpoint.enqueue(new MockResponse().setResponseCode(HttpStatus.BAD_REQUEST.value()));
+        mockAccountManagementEndpoint.enqueue(new MockResponse().setResponseCode(BAD_REQUEST.value()));
 
         List<String> result =
             accountManagementService.getAllAccounts("prov", "role");

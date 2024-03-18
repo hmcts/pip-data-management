@@ -7,11 +7,8 @@ import okhttp3.mockwebserver.MockWebServer;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pip.data.management.Application;
 import uk.gov.hmcts.reform.pip.data.management.models.NoMatchArtefact;
@@ -25,9 +22,8 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
-@SuppressWarnings("PMD.LawOfDemeter")
-@ExtendWith({MockitoExtension.class})
 @ActiveProfiles("test")
 @SpringBootTest(classes = {Application.class})
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
@@ -70,7 +66,7 @@ class PublicationServicesServiceTest {
     @Test
     void testFailedSend() {
         mockPublicationServicesEndpoint.enqueue(new MockResponse()
-                                                    .setResponseCode(HttpStatus.BAD_REQUEST.value()));
+                                                    .setResponseCode(BAD_REQUEST.value()));
 
         publicationServicesService.sendNoMatchArtefactsForReporting(TEST_LIST);
         assertTrue(logCaptor.getErrorLogs().get(0).contains("Unidentified blob email failed to send with error:"),
@@ -100,7 +96,7 @@ class PublicationServicesServiceTest {
     @Test
     void testFailedSendSystemAdminEmail() {
         mockPublicationServicesEndpoint.enqueue(new MockResponse()
-                                                    .setResponseCode(HttpStatus.BAD_REQUEST.value()));
+                                                    .setResponseCode(BAD_REQUEST.value()));
 
         publicationServicesService.sendSystemAdminEmail(List.of("test@test.com"), "Name",
                                                         ActionResult.ATTEMPTED, "Error", ChangeType.DELETE_LOCATION);
