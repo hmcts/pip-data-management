@@ -170,9 +170,23 @@
                         "description": "Session associated with the court in the publication",
                         "type": "object",
                         "required": [
-                          "sittings"
+                          "sittings",
+                          "sessionChannel"
                         ],
                         "properties": {
+                          "sessionChannel": {
+                            "type": "array",
+                            "items": {
+                              "description": "Requested to ensure we host the type of hearing channel in the session",
+                              "title": "Session Channel",
+                              "type": "string",
+                              "examples": [
+                                "VIDEO HEARING"
+                              ],
+                              "default": "",
+                              "pattern": "^(?!.*<[^>]+>).*$"
+                            }
+                          },
                           "judiciary": {
                             "type": "array",
                             "description": "Judiciary for the session",
@@ -305,64 +319,74 @@
                                                 "French"
                                               ],
                                               "pattern": "^(?!.*<[^>]+>).*$"
-                                            }
-                                          }
-                                        }
-                                      },
-                                      "party": {
-                                        "title": "Party",
-                                        "description": "Parties involved in the case (defence, prosecution)",
-                                        "type": "array",
-                                        "items": {
-                                          "title": "Party",
-                                          "description": "A party",
-                                          "type": "object",
-                                          "properties": {
-                                            "partyRole": {
-                                              "description": "Role of the party, selectable list of roles, i.e. prosecution, solicitor defence etc",
-                                              "title": "Party Role",
-                                              "type": "string",
-                                              "examples": [
-                                                "ACCUSED",
-                                                "PROSECUTOR"
-                                              ],
-                                              "default": "",
-                                              "pattern": "^(?!.*<[^>]+>).*$"
                                             },
-                                            "individualDetails": {
-                                              "title": "Individual Details",
-                                              "description": "Individual Details",
-                                              "type": "object",
-                                              "properties": {
-                                                "title": {
-                                                  "description": "Title of individual",
-                                                  "title": "Title",
-                                                  "type": "string",
-                                                  "examples": [
-                                                    "Mr"
-                                                  ],
-                                                  "default": "",
-                                                  "pattern": "^(?!.*<[^>]+>).*$"
-                                                },
-                                                "individualForenames": {
-                                                  "description": "Forename of party",
-                                                  "title": "Individual Forenames",
-                                                  "type": "string",
-                                                  "examples": [
-                                                    "John Smith"
-                                                  ],
-                                                  "default": "",
-                                                  "pattern": "^(?!.*<[^>]+>).*$"
-                                                },
-                                                "individualSurname": {
-                                                  "description": "Surname of party",
-                                                  "title": "Individual Surname",
-                                                  "type": "string",
-                                                  "examples": [
-                                                    "Surname"
-                                                  ],
-                                                  "default": "",
-                                                  "pattern": "^(?!.*<[^>]+>).*$"
+                                            "party": {
+                                              "title": "Party",
+                                              "description": "Parties involved in the case (defence, prosecution)",
+                                              "type": "array",
+                                              "items": {
+                                                "title": "Party",
+                                                "description": "A party",
+                                                "type": "object",
+                                                "properties": {
+                                                  "partyRole": {
+                                                    "description": "Role of the party, selectable list of roles, i.e. prosecution, solicitor defence etc",
+                                                    "title": "Party Role",
+                                                    "type": "string",
+                                                    "examples": [
+                                                      "ACCUSED",
+                                                      "PROSECUTOR"
+                                                    ],
+                                                    "default": "",
+                                                    "pattern": "^(?!.*<[^>]+>).*$"
+                                                  },
+                                                  "individualDetails": {
+                                                    "title": "Individual Details",
+                                                    "description": "Individual Details",
+                                                    "type": "object",
+                                                    "properties": {
+                                                      "title": {
+                                                        "description": "Title of individual",
+                                                        "title": "Title",
+                                                        "type": "string",
+                                                        "examples": [
+                                                          "Mr"
+                                                        ],
+                                                        "default": "",
+                                                        "pattern": "^(?!.*<[^>]+>).*$"
+                                                      },
+                                                      "individualForenames": {
+                                                        "description": "Forename of party",
+                                                        "title": "Individual Forenames",
+                                                        "type": "string",
+                                                        "examples": [
+                                                          "John Smith"
+                                                        ],
+                                                        "default": "",
+                                                        "pattern": "^(?!.*<[^>]+>).*$"
+                                                      },
+                                                      "individualMiddleName": {
+                                                        "description": "Middle name of the individual",
+                                                        "title": "Individual Middle Name",
+                                                        "type": "string",
+                                                        "examples": [
+                                                          "MiddleName"
+                                                        ],
+                                                        "default": "",
+                                                        "pattern": "^(?!.*<[^>]+>).*$"
+                                                      },
+                                                      "individualSurname": {
+                                                        "description": "Surname of party",
+                                                        "title": "Individual Surname",
+                                                        "type": "string",
+                                                        "examples": [
+                                                          "Surname"
+                                                        ],
+                                                        "default": "",
+                                                        "pattern": "^(?!.*<[^>]+>).*$"
+                                                      }
+                                                    }
+                                                  }
                                                 }
                                               }
                                             }

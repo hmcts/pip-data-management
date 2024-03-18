@@ -193,8 +193,7 @@ public class PublicationController {
             .payloadSize((float) payload.length() / 1024)
             .build();
 
-        Artefact createdItem = publicationService
-            .createPublication(artefact, payload);
+        Artefact createdItem = publicationService.createPublication(artefact, payload);
 
         logManualUpload(publicationService.maskEmail(issuerEmail), createdItem.getArtefactId().toString());
 
