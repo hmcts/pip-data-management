@@ -8,6 +8,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -18,15 +19,20 @@ import uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelpe
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.service.artefact.ArtefactTriggerService;
+import uk.gov.hmcts.reform.pip.data.management.utils.JsonExtractor;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
+import uk.gov.hmcts.reform.pip.model.publication.Sensitivity;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
@@ -35,12 +41,15 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
+import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.ARTEFACT_ID;
+import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.CONTENT_DATE;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.FILE;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.LOCATION_ID;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.LOCATION_VENUE;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.MANUAL_UPLOAD_PROVENANCE;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.NO_COURT_EXISTS_IN_REFERENCE_DATA;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.PAYLOAD;
+import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.PAYLOAD_STRIPPED;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.PAYLOAD_URL;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.PROVENANCE;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.PROVENANCE_ID;
@@ -66,6 +75,9 @@ class PublicationServiceTest {
     AzureBlobService azureBlobService;
 
     @Mock
+    JsonExtractor jsonExtractor;
+
+    @Mock
     ChannelManagementService channelManagementService;
 
     @InjectMocks
@@ -77,7 +89,9 @@ class PublicationServiceTest {
     private Artefact artefact;
     private Artefact artefactWithPayloadUrl;
     private Artefact artefactWithIdAndPayloadUrl;
+    private Artefact artefactManualUpload;
     private Artefact sjpPublicArtefact;
+    private Artefact sjpPressArtefact;
 
     private static final char DELIMITER = ',';
     private static final String LOCATION_NAME_WITH_ID_3 = "Oxford Combined Court Centre";
@@ -298,8 +312,8 @@ class PublicationServiceTest {
             .build();
 
         when(artefactRepository.findArtefactByUpdateLogic(NO_COURT_EXISTS_IN_REFERENCE_DATA, artefact.getContentDate(),
-                                                          artefact.getLanguage().name(),
-                                                          artefact.getListType().name(),
+                                                          artefact.getLanguage(),
+                                                          artefact.getListType(),
                                                           artefact.getProvenance()))
             .thenReturn(Optional.of(existingArtefact));
 
@@ -348,6 +362,8 @@ class PublicationServiceTest {
 
         publicationService.applyInternalLocationId(artefact);
         assertThat(artefact.getLocationId()).isEqualTo(LOCATION_ID);
+    }
+
     @Test
     void testCreationOfNewArtefactWhenListTypeSjpPublic() {
         when(azureBlobService.createPayload(any(), eq(PAYLOAD))).thenReturn(PAYLOAD_URL);
@@ -366,6 +382,9 @@ class PublicationServiceTest {
         location.setLocationId(Integer.valueOf(LOCATION_ID));
         when(locationRepository.findByLocationIdByProvenance(PROVENANCE, PROVENANCE_ID, LOCATION_VENUE))
             .thenReturn(Optional.empty());
+    }
+
+    @Test
     void testCreationOfNewArtefactWhenListTypeSjpPress() {
         when(azureBlobService.createPayload(any(), eq(PAYLOAD))).thenReturn(PAYLOAD_URL);
         when(artefactRepository.save(sjpPressArtefact)).thenReturn(sjpPressArtefact);
@@ -504,8 +523,8 @@ class PublicationServiceTest {
     @Test
     void testSupersededCountIsUpdated() {
         when(artefactRepository.findArtefactByUpdateLogic(artefact.getLocationId(), artefact.getContentDate(),
-                                                          artefact.getLanguage().name(),
-                                                          artefact.getListType().name(),
+                                                          artefact.getLanguage(),
+                                                          artefact.getListType(),
                                                           artefact.getProvenance()))
             .thenReturn(Optional.of(artefact));
 
@@ -525,8 +544,8 @@ class PublicationServiceTest {
     @Test
     void testSupersededCountIsNotUpdated() {
         when(artefactRepository.findArtefactByUpdateLogic(artefact.getLocationId(), artefact.getContentDate(),
-                                                          artefact.getLanguage().name(),
-                                                          artefact.getListType().name(),
+                                                          artefact.getLanguage(),
+                                                          artefact.getListType(),
                                                           artefact.getProvenance()))
             .thenReturn(Optional.empty());
 
@@ -545,8 +564,8 @@ class PublicationServiceTest {
     @Test
     void testProcessCreatedPublication() {
         doNothing().when(artefactTriggerService).checkAndTriggerSubscriptionManagement(sjpPublicArtefact);
-        publicationService.processCreatedPublication(sjpPublicArtefact);
+        publicationService.processCreatedPublication(sjpPublicArtefact, PAYLOAD);
         verify(channelManagementService, times(1))
-            .requestFileGeneration(sjpPublicArtefact.getArtefactId());
+            .requestFileGeneration(sjpPublicArtefact.getArtefactId(), PAYLOAD);
     }
 }

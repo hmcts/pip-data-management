@@ -69,8 +69,7 @@ public class ArtefactDeleteService {
         Artefact artefactToArchive = artefactRepository.findArtefactByArtefactId(artefactId)
             .orElseThrow(() -> new ArtefactNotFoundException("No artefact found with the ID: " + artefactId));
 
-        deleteDataFromBlobStore(artefactToArchive);
-        artefactRepository.archiveArtefact(artefactId);
+        handleArtefactArchiving(artefactToArchive);
         if (!LocationHelper.isNoMatchLocationId(artefactToArchive.getLocationId())) {
             subscriptionManagementService.sendDeletedArtefactForThirdParties(artefactToArchive);
         }
@@ -84,11 +83,7 @@ public class ArtefactDeleteService {
     public void archiveExpiredArtefacts() {
         LocalDateTime searchDateTime = LocalDateTime.now();
         List<Artefact> outdatedArtefacts = artefactRepository.findOutdatedArtefacts(searchDateTime);
-
-        outdatedArtefacts.forEach(artefact -> {
-            deleteDataFromBlobStore(artefact);
-            artefactRepository.archiveArtefact(artefact.getArtefactId().toString());
-        });
+        outdatedArtefacts.forEach(this::handleArtefactArchiving);
 
         log.info(writeLog(
             String.format("%s outdated artefacts found and archived for before %s",
@@ -178,6 +173,11 @@ public class ArtefactDeleteService {
         if (!LocationHelper.isNoMatchLocationId(artefact.getLocationId())) {
             subscriptionManagementService.sendDeletedArtefactForThirdParties(artefact);
         }
+    }
+
+    private void handleArtefactArchiving(Artefact artefact) {
+        deleteDataFromBlobStore(artefact);
+        artefactRepository.archiveArtefact(artefact.getArtefactId().toString());
     }
 
     private void notifySystemAdminAboutSubscriptionDeletion(String provenanceUserId, String additionalDetails)

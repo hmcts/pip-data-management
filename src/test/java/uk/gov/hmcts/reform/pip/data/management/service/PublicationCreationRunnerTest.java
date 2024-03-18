@@ -12,7 +12,7 @@ import org.springframework.orm.jpa.JpaSystemException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CreateArtefactConflictException;
 import uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
-import uk.gov.hmcts.reform.pip.data.management.utils.PayloadExtractor;
+import uk.gov.hmcts.reform.pip.data.management.utils.JsonExtractor;
 
 import java.time.LocalDate;
 
@@ -40,7 +40,7 @@ class PublicationCreationRunnerTest {
     private PublicationService publicationService;
 
     @Mock
-    PayloadExtractor payloadExtractor;
+    JsonExtractor jsonExtractor;
 
     @InjectMocks
     private PublicationCreationRunner publicationCreationRunner;
@@ -51,7 +51,7 @@ class PublicationCreationRunnerTest {
     void testRuMethodForJsonPublicationWithNonSjpListType() {
         Artefact artefact = ArtefactConstantTestHelper.buildArtefact();
         when(publicationService.createPublication(artefact, PAYLOAD)).thenReturn(artefact);
-        when(payloadExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
+        when(jsonExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
 
         Artefact returnedArtefact = publicationCreationRunner.run(artefact, PAYLOAD);
 
@@ -80,7 +80,7 @@ class PublicationCreationRunnerTest {
     void testRuMethodForJsonPublicationWithSjpPublicListType() {
         Artefact artefact = ArtefactConstantTestHelper.buildSjpPublicArtefact();
         when(publicationService.createPublication(artefact, PAYLOAD)).thenReturn(artefact);
-        when(payloadExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
+        when(jsonExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
 
         Artefact returnedArtefact = publicationCreationRunner.run(artefact, PAYLOAD);
 
@@ -109,7 +109,7 @@ class PublicationCreationRunnerTest {
     void testRuMethodForJsonPublicationWithSjpPressListType() {
         Artefact artefact = ArtefactConstantTestHelper.buildSjpPressArtefact();
         when(publicationService.createPublication(artefact, PAYLOAD)).thenReturn(artefact);
-        when(payloadExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
+        when(jsonExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
 
         Artefact returnedArtefact = publicationCreationRunner.run(artefact, PAYLOAD);
 
@@ -138,7 +138,7 @@ class PublicationCreationRunnerTest {
     void testRuMethodForJsonPublicationWithCannotAcquireLockException() {
         Artefact artefact = ArtefactConstantTestHelper.buildArtefact();
         doThrow(CannotAcquireLockException.class).when(publicationService).createPublication(artefact, PAYLOAD);
-        when(payloadExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
+        when(jsonExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
 
         assertThatThrownBy(() -> publicationCreationRunner.run(artefact, PAYLOAD))
             .as(EXCEPTION_MESSAGE)
@@ -154,7 +154,7 @@ class PublicationCreationRunnerTest {
     void testRuMethodForJsonPublicationWithJpaSystemException() {
         Artefact artefact = ArtefactConstantTestHelper.buildArtefact();
         doThrow(JpaSystemException.class).when(publicationService).createPublication(artefact, PAYLOAD);
-        when(payloadExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
+        when(jsonExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
 
         assertThatThrownBy(() -> publicationCreationRunner.run(artefact, PAYLOAD))
             .as(EXCEPTION_MESSAGE)
@@ -192,7 +192,7 @@ class PublicationCreationRunnerTest {
             .contains("Uploaded flat file publication upload for location " + PROVENANCE_ID);
 
         softly.assertAll();
-        verifyNoInteractions(payloadExtractor);
+        verifyNoInteractions(jsonExtractor);
     }
 
     @Test

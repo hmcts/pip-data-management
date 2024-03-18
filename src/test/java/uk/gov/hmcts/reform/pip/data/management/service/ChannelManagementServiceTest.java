@@ -19,8 +19,11 @@ import uk.gov.hmcts.reform.pip.model.publication.ListType;
 import java.io.IOException;
 import java.util.UUID;
 
+import static com.google.common.base.CharMatcher.any;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 
@@ -54,7 +57,7 @@ class ChannelManagementServiceTest {
     void testRequestFileGeneration() {
         mockChannelManagementEndpoint.enqueue(new MockResponse().setBody("1234"));
 
-        assertEquals("1234", channelManagementService.requestFileGeneration(UUID.randomUUID()),
+        assertEquals("1234", channelManagementService.requestFileGeneration(eq(UUID.randomUUID()), anyString()),
                      "Request was not sent");
     }
 
@@ -63,7 +66,7 @@ class ChannelManagementServiceTest {
         mockChannelManagementEndpoint.enqueue(new MockResponse()
                                                     .setResponseCode(BAD_REQUEST.value()));
 
-        channelManagementService.requestFileGeneration(ARTEFACT_ID);
+        channelManagementService.requestFileGeneration(ARTEFACT_ID, null);
         assertThat(logCaptor.getErrorLogs().get(0))
             .as("Error log does not match")
             .contains(String.format(

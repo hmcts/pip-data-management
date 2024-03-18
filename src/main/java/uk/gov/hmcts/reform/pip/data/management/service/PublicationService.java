@@ -36,7 +36,7 @@ import java.util.UUID;
 public class PublicationService {
 
     private static final char DELIMITER = ',';
-    private static final int RETRY_MAX_ATTEMPTS = 10;
+    private static final int RETRY_MAX_ATTEMPTS = 5;
     private static final int RETRY_DELAY_IN_MS = 100;
 
     private final ArtefactRepository artefactRepository;
@@ -71,15 +71,21 @@ public class PublicationService {
      */
     @Transactional(isolation = Isolation.READ_COMMITTED)
     @Retryable(value = { CannotAcquireLockException.class, JpaSystemException.class, DataIntegrityViolationException.class},
-        maxAttempts = RETRY_MAX_ATTEMPTS, backoff = @Backoff(delay = RETRY_DELAY_IN_MS))
+        maxAttempts = RETRY_MAX_ATTEMPTS)
     public Artefact createPublication(Artefact artefact, String payload) {
         boolean isExisting = applyExistingArtefact(artefact);
+        String i = UUID.randomUUID().toString();
+        System.out.println("*(**Start " + i);
         String existingPayload = isExisting ? artefact.getPayload() : null;
 
         String blobUrl = azureBlobService.createPayload(UUID.randomUUID().toString(), payload);
+        //String blobUrl = azureBlobService.createPayload(isExisting ? ArtefactHelper.getUuidFromUrl(artefact.getPayload()) : UUID.randomUUID().toString(), payload);
         artefact.setPayload(blobUrl);
 
         Artefact createdArtefact = artefactRepository.save(artefact);
+
+        System.out.println("*(**End " + i);
+
         // Remove the old payload after superseded by the new one
         if (isExisting) {
             azureBlobService.deleteBlob(ArtefactHelper.getUuidFromUrl(existingPayload));
@@ -111,8 +117,8 @@ public class PublicationService {
     }
 
     @Async
-    public void processCreatedPublication(Artefact artefact) {
-        channelManagementService.requestFileGeneration(artefact.getArtefactId());
+    public void processCreatedPublication(Artefact artefact, String payload) {
+        channelManagementService.requestFileGeneration(artefact.getArtefactId(), payload);
         artefactTriggerService.checkAndTriggerSubscriptionManagement(artefact);
     }
 

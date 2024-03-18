@@ -17,9 +17,8 @@ public class RetryListenerForPublications implements RetryListener {
     AzureBlobService azureBlobService;
 
     @Override
-    public <T, E extends Throwable> void onError(RetryContext context, RetryCallback<T, E> callback, Throwable throwable) {
-        //Needs tidying up, however in this method we should delete the blob that has been created in Azure storage,
-        //as the transaction has failed
+    public <T, E extends Throwable> void onError(RetryContext context, RetryCallback<T, E> callback,
+                                                 Throwable throwable) {
         String payloadUrl = ((Artefact)(((MethodInvocationRetryCallback<?, ?>) callback)
             .getInvocation().getArguments()[0])).getPayload();
 

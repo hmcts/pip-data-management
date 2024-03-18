@@ -204,7 +204,7 @@ public class PublicationController {
         // Process the created artefact by requesting channel management to generate PDF/Excel files
         // and check/trigger subscription management, async.
         if (!LocationHelper.isNoMatchLocationId(createdItem.getLocationId())) {
-            publicationService.processCreatedPublication(createdItem);
+            publicationService.processCreatedPublication(createdItem, payload);
         }
 
         return ResponseEntity.status(HttpStatus.CREATED).body(createdItem);
