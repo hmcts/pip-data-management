@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.pip.data.management.service.artefact;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
@@ -11,6 +12,7 @@ import uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactHelper;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationArtefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.service.AccountManagementService;
+import uk.gov.hmcts.reform.pip.data.management.service.ChannelManagementService;
 import uk.gov.hmcts.reform.pip.model.location.LocationType;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 import uk.gov.hmcts.reform.pip.model.publication.Sensitivity;
@@ -27,13 +29,20 @@ public class ArtefactService {
 
     private final ArtefactRepository artefactRepository;
     private final AccountManagementService accountManagementService;
+    private final ChannelManagementService channelManagementService;
     private final AzureBlobService azureBlobService;
+
+    @Value("${payload.json.max-size-in-kb}")
+    private int maxPayloadSize;
 
     @Autowired
     public ArtefactService(ArtefactRepository artefactRepository,
-                           AccountManagementService accountManagementService, AzureBlobService azureBlobService) {
+                           AccountManagementService accountManagementService,
+                           ChannelManagementService channelManagementService,
+                           AzureBlobService azureBlobService) {
         this.artefactRepository = artefactRepository;
         this.accountManagementService = accountManagementService;
+        this.channelManagementService = channelManagementService;
         this.azureBlobService = azureBlobService;
     }
 
@@ -154,6 +163,16 @@ public class ArtefactService {
 
     public LocationType getLocationType(ListType listType) {
         return listType.getListLocationLevel();
+    }
+
+    public void generatePublicationFiles(Artefact artefact) {
+        if (shouldGenerateFiles(artefact.getPayloadSize())) {
+            channelManagementService.requestFileGeneration(artefact.getArtefactId());
+        }
+    }
+
+    public boolean shouldGenerateFiles(Float artefactPayloadSize) {
+        return artefactPayloadSize == null || artefactPayloadSize < maxPayloadSize;
     }
 
 }
