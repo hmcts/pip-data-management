@@ -57,6 +57,7 @@ Most interactions with `pip-data-management` are performed through the API (spec
 ## Features and Functionality
 
 - Uploading/retrieval/deletion of publications into the service.
+- Request PDF/Excel generation for JSON payload if the payload size is less than the set limit (currently default to 2MB).
 - Interfacing with local or hosted Postgres instances for metadata and retrieval and Azure Blob Storage for raw files.
 - Parsing and validation of ingested json files.
 - Flyway for database modifications via SQL ingestion.
@@ -118,29 +119,30 @@ Python scripts to quickly grab all environment variables (subject to Azure permi
 
 Below is a table of currently used environment variables for starting the service, along with a descriptor of their purpose and whether they are optional or required.
 
-| Variable                      |Description|Required?|
-|:------------------------------|:-------------|------|
-| SPRING_PROFILES_ACTIVE        |If set equal to `dev`, the application will run in insecure mode (i.e. no bearer token authentication required for incoming requests.) *Note - if you wish to communicate with other services, you will need to set them all to run in insecure mode in the same way.*|No|
-| APP_URI                       |Uniform Resource Identifier - the location where the application expects to receive bearer tokens after a successful authentication process. The application then validates received bearer tokens using the AUD parameter in the token|No|
-| CLIENT_ID                     |Unique ID for the application within Azure AD. Used to identify the application during authentication.|No|
-| TENANT_ID                     |Directory unique ID assigned to our Azure AD tenant. Represents the organisation that owns and manages the Azure AD instance.|No|
-| CLIENT_SECRET                 |Secret key for authentication requests to the service.|No|
-| CONNECTION_STRING             |Connection string for connecting to the Azure Blob Storage service. Only required when running the application locally via Azurite.|Yes|
-| STORAGE_ACCOUNT_NAME          |Azure storage account name used to construct the storage account endpoint. Not required when running the application locally.|No|
-| DB_HOST                       |Postgres Hostname|Yes|
-| DB_PORT                       |Postgres Port|Yes|
-| DB_NAME                       |Postgres Db name|Yes|
-| DB_USER                       |Postgres Username|Yes|
-| DB_PASS                       |Postgres Password|Yes|
-| ACCOUNT_MANAGEMENT_URL        |URL used for connecting to the pip-account-management service. Defaults to staging if not provided.|No|
-| CHANNEL_MANAGEMENT_URL        |URL used for connecting to the pip-channel-management service. Defaults to staging if not provided.|No|
-| PUBLICATION_SERVICES_URL      |URL used for connecting to the pip-publication-services service. Defaults to staging if not provided.|No|
-| SUBSCRIPTION_MANAGEMENT_URL   |URL used for connecting to the pip-subscription-management service. Defaults to staging if not provided.|No|
-| CHANNEL_MANAGEMENT_AZ_API     |Used as part of the `scope` parameter when requesting a token from Azure. Used for service-to-service communication with the pip-channel-management service|No|
-| SUBSCRIPTION_MANAGEMENT_AZ_API|Used as part of the `scope` parameter when requesting a token from Azure. Used for service-to-service communication with the pip-subscription-management service|No|
-| PUBLICATION_SERVICES_AZ_API   |Used as part of the `scope` parameter when requesting a token from Azure. Used for service-to-service communication with the pip-publication-services service|No|
-| ACCOUNT_MANAGEMENT_AZ_API     |Used as part of the `scope` parameter when requesting a token from Azure. Used for service-to-service communication with the account management service|No|
-| ENABLE_TESTING_SUPPORT_API    | Used to conditionally enable testing support API. Default to `false` for the production environment only.|No|
+| Variable                        | Description                                                                                                                                                                                                                                                                              | Required? |
+|:--------------------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------|
+| SPRING_PROFILES_ACTIVE          | If set equal to `dev`, the application will run in insecure mode (i.e. no bearer token authentication required for incoming requests.) *Note - if you wish to communicate with other services, you will need to set them all to run in insecure mode in the same way.*                   | No        |
+| APP_URI                         | Uniform Resource Identifier - the location where the application expects to receive bearer tokens after a successful authentication process. The application then validates received bearer tokens using the AUD parameter in the token                                                  | No        |
+| CLIENT_ID                       | Unique ID for the application within Azure AD. Used to identify the application during authentication.                                                                                                                                                                                   | No        |
+| TENANT_ID                       | Directory unique ID assigned to our Azure AD tenant. Represents the organisation that owns and manages the Azure AD instance.                                                                                                                                                            | No        |
+| CLIENT_SECRET                   | Secret key for authentication requests to the service.                                                                                                                                                                                                                                   | No        |
+| CONNECTION_STRING               | Connection string for connecting to the Azure Blob Storage service. Only required when running the application locally via Azurite.                                                                                                                                                      | Yes       |
+| STORAGE_ACCOUNT_NAME            | Azure storage account name used to construct the storage account endpoint. Not required when running the application locally.                                                                                                                                                            | No        |
+| DB_HOST                         | Postgres Hostname                                                                                                                                                                                                                                                                        | Yes       |
+| DB_PORT                         | Postgres Port                                                                                                                                                                                                                                                                            | Yes       |
+| DB_NAME                         | Postgres Db name                                                                                                                                                                                                                                                                         | Yes       |
+| DB_USER                         | Postgres Username                                                                                                                                                                                                                                                                        | Yes       |
+| DB_PASS                         | Postgres Password                                                                                                                                                                                                                                                                        | Yes       |
+| ACCOUNT_MANAGEMENT_URL          | URL used for connecting to the pip-account-management service. Defaults to staging if not provided.                                                                                                                                                                                      | No        |
+| CHANNEL_MANAGEMENT_URL          | URL used for connecting to the pip-channel-management service. Defaults to staging if not provided.                                                                                                                                                                                      | No        |
+| PUBLICATION_SERVICES_URL        | URL used for connecting to the pip-publication-services service. Defaults to staging if not provided.                                                                                                                                                                                    | No        |
+| SUBSCRIPTION_MANAGEMENT_URL     | URL used for connecting to the pip-subscription-management service. Defaults to staging if not provided.                                                                                                                                                                                 | No        |
+| CHANNEL_MANAGEMENT_AZ_API       | Used as part of the `scope` parameter when requesting a token from Azure. Used for service-to-service communication with the pip-channel-management service                                                                                                                              | No        |
+| SUBSCRIPTION_MANAGEMENT_AZ_API  | Used as part of the `scope` parameter when requesting a token from Azure. Used for service-to-service communication with the pip-subscription-management service                                                                                                                         | No        |
+| PUBLICATION_SERVICES_AZ_API     | Used as part of the `scope` parameter when requesting a token from Azure. Used for service-to-service communication with the pip-publication-services service                                                                                                                            | No        |
+| ACCOUNT_MANAGEMENT_AZ_API       | Used as part of the `scope` parameter when requesting a token from Azure. Used for service-to-service communication with the account management service                                                                                                                                  | No        |
+| ENABLE_TESTING_SUPPORT_API      | Used to conditionally enable testing support API. Default to `false` for the production environment only.                                                                                                                                                                                | No        |
+| MAX_PAYLOAD_SIZE                | The maximum size of input payload before we stop generating the PDF, excel and email summary for the publication. Default to 2MB.                                                                                                                                                        | No        |
 
 ##### Additional Test secrets
 

@@ -1,13 +1,14 @@
 package uk.gov.hmcts.reform.pip.data.management.service.artefact;
 
+import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.AzureBlobService;
 import uk.gov.hmcts.reform.pip.data.management.database.LocationRepository;
@@ -17,6 +18,7 @@ import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationArtefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.service.AccountManagementService;
+import uk.gov.hmcts.reform.pip.data.management.service.ChannelManagementService;
 import uk.gov.hmcts.reform.pip.model.location.LocationType;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 import uk.gov.hmcts.reform.pip.model.publication.Sensitivity;
@@ -25,10 +27,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.ARTEFACT_ID;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.LOCATION_TYPE_MATCH;
@@ -45,23 +51,29 @@ import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTe
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.VALIDATION_NOT_THROWN_MESSAGE;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ConstantsTestHelper.MESSAGES_MATCH;
 
-@SuppressWarnings({"PMD.ExcessiveImports"})
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
+@AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
+@ActiveProfiles("test")
+@SuppressWarnings({"PMD.ExcessiveImports", "PMD.TooManyMethods"})
 class ArtefactServiceTest {
+    private static final String FILES_GENERATION_MESSAGE = "File generation flag does not match";
 
-    @Mock
+    @MockBean
     ArtefactRepository artefactRepository;
 
-    @Mock
+    @MockBean
     LocationRepository locationRepository;
 
-    @Mock
+    @MockBean
     AzureBlobService azureBlobService;
 
-    @Mock
+    @MockBean
     AccountManagementService accountManagementService;
 
-    @InjectMocks
+    @MockBean
+    ChannelManagementService channelManagementService;
+
+    @Autowired
     ArtefactService artefactService;
 
     private Artefact artefact;
@@ -396,6 +408,35 @@ class ArtefactServiceTest {
         when(artefactRepository.findAllNoMatchArtefacts()).thenReturn(List.of(artefact));
 
         assertEquals(List.of(artefact), artefactService.findAllNoMatchArtefacts(), MESSAGES_MATCH);
+    }
+
+    @Test
+    void testGeneratePublicationFilesIfPayloadSizeWithinLimit() {
+        artefactWithIdAndPayloadUrl.setPayloadSize(50f);
+        artefactService.generatePublicationFiles(artefactWithIdAndPayloadUrl);
+        verify(channelManagementService).requestFileGeneration(ARTEFACT_ID);
+    }
+
+    @Test
+    void testGeneratePublicationFilesIfPayloadSizeOverLimit() {
+        artefactWithIdAndPayloadUrl.setPayloadSize(200f);
+        artefactService.generatePublicationFiles(artefactWithIdAndPayloadUrl);
+        verifyNoInteractions(channelManagementService);
+    }
+
+    @Test
+    void shouldGenerateFilesIfPayloadSizeWithinLimit() {
+        assertTrue(FILES_GENERATION_MESSAGE, artefactService.shouldGenerateFiles(99f));
+    }
+
+    @Test
+    void shouldGenerateFilesIfNoPayloadSize() {
+        assertTrue(FILES_GENERATION_MESSAGE, artefactService.shouldGenerateFiles(null));
+    }
+
+    @Test
+    void shouldNotGenerateFilesIfPayloadSizeOverLimit() {
+        assertFalse(FILES_GENERATION_MESSAGE, artefactService.shouldGenerateFiles(101f));
     }
 
 }
