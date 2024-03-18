@@ -6,3 +6,7 @@ service-to-service:
 
 dbMigration:
   runOnStartup: true
+
+payload:
+  json:
+    max-size-in-kb: 100
