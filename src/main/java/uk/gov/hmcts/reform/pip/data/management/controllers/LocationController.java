@@ -69,7 +69,6 @@ public class LocationController {
     public ResponseEntity<Location> getLocationById(@Parameter(description =
         "The Location Id to retrieve", required = true) @PathVariable Integer locationId) {
         return ResponseEntity.ok(locationService.getLocationById(locationId));
-
     }
 
     @ApiResponse(responseCode = OK_CODE, description = "Location found")
@@ -80,7 +79,6 @@ public class LocationController {
         "The search input to retrieve", required = true) @PathVariable String locationName,
                                                       @PathVariable String language) {
         return ResponseEntity.ok(locationService.getLocationByName(locationName, language));
-
     }
 
     @ApiResponse(responseCode = OK_CODE, description = "Filtered Locations")
