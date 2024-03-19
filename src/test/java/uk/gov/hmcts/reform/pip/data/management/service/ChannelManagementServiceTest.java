@@ -31,6 +31,7 @@ import static org.springframework.http.HttpStatus.NO_CONTENT;
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
 class ChannelManagementServiceTest {
     private static final UUID ARTEFACT_ID = UUID.randomUUID();
+    private static final String PAYLOAD = "payload";
     private static MockWebServer mockChannelManagementEndpoint;
 
     @Autowired
@@ -54,7 +55,7 @@ class ChannelManagementServiceTest {
     void testRequestFileGeneration() {
         mockChannelManagementEndpoint.enqueue(new MockResponse().setBody("1234"));
 
-        assertEquals("1234", channelManagementService.requestFileGeneration(eq(UUID.randomUUID()), anyString()),
+        assertEquals("1234", channelManagementService.requestFileGeneration(ARTEFACT_ID, PAYLOAD),
                      "Request was not sent");
     }
 
@@ -63,7 +64,7 @@ class ChannelManagementServiceTest {
         mockChannelManagementEndpoint.enqueue(new MockResponse()
                                                     .setResponseCode(BAD_REQUEST.value()));
 
-        channelManagementService.requestFileGeneration(ARTEFACT_ID, null);
+        channelManagementService.requestFileGeneration(ARTEFACT_ID, PAYLOAD);
         assertThat(logCaptor.getErrorLogs().get(0))
             .as("Error log does not match")
             .contains(String.format(

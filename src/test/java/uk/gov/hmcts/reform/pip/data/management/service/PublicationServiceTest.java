@@ -167,9 +167,13 @@ class PublicationServiceTest {
         artefactWithPayloadUrl = ArtefactConstantTestHelper.buildArtefactWithPayloadUrl();
         artefactWithIdAndPayloadUrl = ArtefactConstantTestHelper.buildArtefactWithIdAndPayloadUrl();
         sjpPublicArtefact = ArtefactConstantTestHelper.buildSjpPublicArtefact();
+        sjpPressArtefact = ArtefactConstantTestHelper.buildSjpPressArtefact();
     }
 
     private void createClassifiedPayloads() {
+        intialiseManualUploadArtefact();
+        location = ArtefactConstantTestHelper.initialiseCourts();
+
         lenient().when(artefactRepository.findArtefactByUpdateLogic(artefact.getLocationId(),
                                                                     artefact.getContentDate(),
                                                                     artefact.getLanguage(),
@@ -177,6 +181,18 @@ class PublicationServiceTest {
                                                                     artefact.getProvenance()))
             .thenReturn(Optional.empty());
         lenient().when(artefactRepository.save(artefactWithPayloadUrl)).thenReturn(artefactWithIdAndPayloadUrl);
+    }
+
+    private void intialiseManualUploadArtefact() {
+        artefactManualUpload = Artefact.builder()
+            .sourceArtefactId(SOURCE_ARTEFACT_ID)
+            .provenance(MANUAL_UPLOAD_PROVENANCE)
+            .locationId(PROVENANCE_ID)
+            .contentDate(CONTENT_DATE)
+            .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
+            .language(Language.ENGLISH)
+            .sensitivity(Sensitivity.PUBLIC)
+            .build();
     }
 
     @Test

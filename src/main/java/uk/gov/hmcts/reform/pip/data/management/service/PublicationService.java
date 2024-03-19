@@ -5,8 +5,6 @@ import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.CannotAcquireLockException;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.orm.jpa.JpaSystemException;
-import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -22,8 +20,6 @@ import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.service.artefact.ArtefactService;
 import uk.gov.hmcts.reform.pip.data.management.service.artefact.ArtefactTriggerService;
-import uk.gov.hmcts.reform.pip.model.enums.UserActions;
-import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -38,7 +34,6 @@ public class PublicationService {
 
     private static final char DELIMITER = ',';
     private static final int RETRY_MAX_ATTEMPTS = 5;
-    private static final int RETRY_DELAY_IN_MS = 100;
 
     private final ArtefactRepository artefactRepository;
 
@@ -75,24 +70,17 @@ public class PublicationService {
      * @return Returns the artefact that was created.
      */
     @Transactional(isolation = Isolation.READ_COMMITTED)
-    @Retryable(value = { CannotAcquireLockException.class, JpaSystemException.class, DataIntegrityViolationException.class},
+    @Retryable(value = { CannotAcquireLockException.class, DataIntegrityViolationException.class},
         maxAttempts = RETRY_MAX_ATTEMPTS)
     public Artefact createPublication(Artefact artefact, String payload) {
-        boolean isExisting = applyExistingArtefact(artefact);
-        String i = UUID.randomUUID().toString();
-        System.out.println("*(**Start " + i);
-        String existingPayload = isExisting ? artefact.getPayload() : null;
-
+        String existingPayload = applyExistingArtefact(artefact) ? artefact.getPayload() : null;
         String blobUrl = azureBlobService.createPayload(UUID.randomUUID().toString(), payload);
-        //String blobUrl = azureBlobService.createPayload(isExisting ? ArtefactHelper.getUuidFromUrl(artefact.getPayload()) : UUID.randomUUID().toString(), payload);
-        artefact.setPayload(blobUrl);
 
+        artefact.setPayload(blobUrl);
         Artefact createdArtefact = artefactRepository.save(artefact);
 
-        System.out.println("*(**End " + i);
-
         // Remove the old payload after superseded by the new one
-        if (isExisting) {
+        if (existingPayload != null) {
             azureBlobService.deleteBlob(ArtefactHelper.getUuidFromUrl(existingPayload));
         }
 
@@ -107,18 +95,21 @@ public class PublicationService {
      * @return Returns the artefact that was created.
      */
     @Transactional(isolation = Isolation.READ_COMMITTED)
-    @Retryable(value = { CannotAcquireLockException.class, JpaSystemException.class },
-        maxAttempts = RETRY_MAX_ATTEMPTS, backoff = @Backoff(delay = RETRY_DELAY_IN_MS))
+    @Retryable(value = { CannotAcquireLockException.class, DataIntegrityViolationException.class },
+        maxAttempts = RETRY_MAX_ATTEMPTS)
     public Artefact createPublication(Artefact artefact, MultipartFile file) {
-        boolean isExisting = applyExistingArtefact(artefact);
-
-        String blobUrl = azureBlobService.uploadFlatFile(
-            isExisting ? ArtefactHelper.getUuidFromUrl(artefact.getPayload()) : UUID.randomUUID().toString(),
-            file
-        );
+        String existingPayload = applyExistingArtefact(artefact) ? artefact.getPayload() : null;
+        String blobUrl = azureBlobService.uploadFlatFile(UUID.randomUUID().toString(), file);
 
         artefact.setPayload(blobUrl);
-        return artefactRepository.save(artefact);
+        Artefact createdArtefact = artefactRepository.save(artefact);
+
+        // Remove the old payload after superseded by the new one
+        if (existingPayload != null) {
+            azureBlobService.deleteBlob(ArtefactHelper.getUuidFromUrl(existingPayload));
+        }
+
+        return createdArtefact;
     }
 
     @Async
