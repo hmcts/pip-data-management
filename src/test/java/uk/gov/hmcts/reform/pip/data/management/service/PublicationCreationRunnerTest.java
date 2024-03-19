@@ -9,6 +9,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.CannotAcquireLockException;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CreateArtefactConflictException;
 import uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
@@ -26,6 +27,7 @@ import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTe
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.PROVENANCE_ID;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.SEARCH_VALUES;
 
+@ActiveProfiles("test")
 @ExtendWith(MockitoExtension.class)
 class PublicationCreationRunnerTest {
     private static final String LAST_RECEIVED_DATE_MESSAGE = "Last received date does not match";
