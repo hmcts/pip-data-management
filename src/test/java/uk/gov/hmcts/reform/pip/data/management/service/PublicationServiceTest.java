@@ -2,7 +2,6 @@ package uk.gov.hmcts.reform.pip.data.management.service;
 
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.assertj.core.api.SoftAssertions;
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
