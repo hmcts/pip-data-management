@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.dao.CannotAcquireLockException;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pip.data.management.Application;
@@ -17,14 +19,18 @@ import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.FILE;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.PAYLOAD;
+import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.PAYLOAD_STRIPPED;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.PAYLOAD_URL;
 
 @ActiveProfiles(profiles = "test")
@@ -32,6 +38,8 @@ import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTe
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
 @EnableRetry
 class CreatePublicationRetryTest {
+    private static final int RETRY_MAX_ATTEMPTS = 5;
+
     @MockBean
     AzureBlobService azureBlobService;
 
@@ -42,7 +50,7 @@ class CreatePublicationRetryTest {
     private PublicationService publicationService;
 
     @Test
-    void testCreateJsonPublicationMaxAttempts() {
+    void testCreateJsonPublicationMaxAttemptsWithCannotAcquireLockException() {
         Artefact artefact = ArtefactConstantTestHelper.buildArtefact();
         when(artefactRepository.findArtefactByUpdateLogic(artefact.getLocationId(), artefact.getContentDate(),
                                                           artefact.getLanguage(), artefact.getListType(),
@@ -53,7 +61,22 @@ class CreatePublicationRetryTest {
 
         assertThatThrownBy(() -> publicationService.createPublication(artefact, PAYLOAD))
             .isInstanceOf(CannotAcquireLockException.class);
-        verify(artefactRepository, times(10)).save(any());
+        verify(artefactRepository, times(RETRY_MAX_ATTEMPTS)).save(any());
+    }
+
+    @Test
+    void testCreateJsonPublicationMaxAttemptsWithDataIntegrityViolationException() {
+        Artefact artefact = ArtefactConstantTestHelper.buildArtefact();
+        when(artefactRepository.findArtefactByUpdateLogic(artefact.getLocationId(), artefact.getContentDate(),
+                                                          artefact.getLanguage(), artefact.getListType(),
+                                                          artefact.getProvenance()))
+            .thenReturn(Optional.empty());
+        when(azureBlobService.createPayload(any(), eq(PAYLOAD))).thenReturn(PAYLOAD_URL);
+        when(artefactRepository.save(artefact)).thenThrow(DataIntegrityViolationException.class);
+
+        assertThatThrownBy(() -> publicationService.createPublication(artefact, PAYLOAD))
+            .isInstanceOf(DataIntegrityViolationException.class);
+        verify(artefactRepository, times(RETRY_MAX_ATTEMPTS)).save(any());
     }
 
     @Test
@@ -69,12 +92,37 @@ class CreatePublicationRetryTest {
             .thenThrow(CannotAcquireLockException.class)
             .thenReturn(artefact);
 
-        publicationService.createPublication(artefact, PAYLOAD);
+        assertThatCode(() -> publicationService.createPublication(artefact, PAYLOAD)).doesNotThrowAnyException();
         verify(artefactRepository, times(3)).save(any());
     }
 
     @Test
-    void testCreateFlatFilePublicationMaxAttempts() {
+    void testCreateJsonPublicationDeleteBlobOnErrorIfPayloadUrlExists() {
+        Artefact artefact = ArtefactConstantTestHelper.buildArtefact();
+        when(azureBlobService.createPayload(any(), eq(PAYLOAD))).thenReturn(PAYLOAD_URL);
+        when(artefactRepository.save(artefact)).thenThrow(new JpaSystemException(new RuntimeException()));
+
+        assertThatThrownBy(() -> publicationService.createPublication(artefact, PAYLOAD))
+            .isInstanceOf(JpaSystemException.class);
+
+        verify(azureBlobService).deleteBlob(PAYLOAD_STRIPPED);
+        verify(artefactRepository).save(any());
+    }
+
+    @Test
+    void testCreateJsonPublicationDoesNotDeleteBlobOnErrorIfNoPayloadUrl() {
+        Artefact artefact = ArtefactConstantTestHelper.buildArtefact();
+        when(azureBlobService.createPayload(any(), eq(PAYLOAD))).thenThrow(new RuntimeException());
+
+        assertThatThrownBy(() -> publicationService.createPublication(artefact, PAYLOAD))
+            .isInstanceOf(RuntimeException.class);
+
+        verify(azureBlobService, never()).deleteBlob(anyString());
+        verify(artefactRepository, never()).save(any());
+    }
+
+    @Test
+    void testCreateFlatFilePublicationMaxAttemptsWithCannotAcquireLockException() {
         Artefact artefact = ArtefactConstantTestHelper.buildArtefact();
         when(artefactRepository.findArtefactByUpdateLogic(artefact.getLocationId(), artefact.getContentDate(),
                                                           artefact.getLanguage(), artefact.getListType(),
@@ -85,7 +133,22 @@ class CreatePublicationRetryTest {
 
         assertThatThrownBy(() -> publicationService.createPublication(artefact, FILE))
             .isInstanceOf(CannotAcquireLockException.class);
-        verify(artefactRepository, times(10)).save(any());
+        verify(artefactRepository, times(RETRY_MAX_ATTEMPTS)).save(any());
+    }
+
+    @Test
+    void testCreateFlatFilePublicationMaxAttemptsWithDataIntegrityViolationException() {
+        Artefact artefact = ArtefactConstantTestHelper.buildArtefact();
+        when(artefactRepository.findArtefactByUpdateLogic(artefact.getLocationId(), artefact.getContentDate(),
+                                                          artefact.getLanguage(), artefact.getListType(),
+                                                          artefact.getProvenance()))
+            .thenReturn(Optional.empty());
+        when(azureBlobService.uploadFlatFile(any(), eq(FILE))).thenReturn(PAYLOAD_URL);
+        when(artefactRepository.save(artefact)).thenThrow(DataIntegrityViolationException.class);
+
+        assertThatThrownBy(() -> publicationService.createPublication(artefact, FILE))
+            .isInstanceOf(DataIntegrityViolationException.class);
+        verify(artefactRepository, times(RETRY_MAX_ATTEMPTS)).save(any());
     }
 
     @Test
@@ -97,11 +160,36 @@ class CreatePublicationRetryTest {
             .thenReturn(Optional.empty());
         when(azureBlobService.uploadFlatFile(any(), eq(FILE))).thenReturn(PAYLOAD_URL);
         when(artefactRepository.save(artefact))
-            .thenThrow(CannotAcquireLockException.class)
-            .thenThrow(CannotAcquireLockException.class)
+            .thenThrow(DataIntegrityViolationException.class)
+            .thenThrow(DataIntegrityViolationException.class)
             .thenReturn(artefact);
 
-        publicationService.createPublication(artefact, FILE);
+        assertThatCode(() -> publicationService.createPublication(artefact, PAYLOAD)).doesNotThrowAnyException();
         verify(artefactRepository, times(3)).save(any());
+    }
+
+    @Test
+    void testCreateFlatFilePublicationDeleteBlobOnErrorIfPayloadUrlExists() {
+        Artefact artefact = ArtefactConstantTestHelper.buildArtefact();
+        when(azureBlobService.uploadFlatFile(any(), eq(FILE))).thenReturn(PAYLOAD_URL);
+        when(artefactRepository.save(artefact)).thenThrow(new JpaSystemException(new RuntimeException()));
+
+        assertThatThrownBy(() -> publicationService.createPublication(artefact, FILE))
+            .isInstanceOf(JpaSystemException.class);
+
+        verify(azureBlobService).deleteBlob(PAYLOAD_STRIPPED);
+        verify(artefactRepository).save(any());
+    }
+
+    @Test
+    void testCreateFlatFilePublicationDoesNotDeleteBlobOnErrorIfNoPayloadUrl() {
+        Artefact artefact = ArtefactConstantTestHelper.buildArtefact();
+        when(azureBlobService.uploadFlatFile(any(), eq(FILE))).thenThrow(new RuntimeException());
+
+        assertThatThrownBy(() -> publicationService.createPublication(artefact, FILE))
+            .isInstanceOf(RuntimeException.class);
+
+        verify(azureBlobService, never()).deleteBlob(anyString());
+        verify(artefactRepository, never()).save(any());
     }
 }

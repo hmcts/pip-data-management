@@ -17,11 +17,8 @@ import uk.gov.hmcts.reform.pip.model.publication.ListType;
 import java.io.IOException;
 import java.util.UUID;
 
-import static com.google.common.base.CharMatcher.any;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 

@@ -372,7 +372,6 @@ class ArtefactDeleteServiceTest {
         verify(azureBlobService).deleteBlob(PAYLOAD_STRIPPED);
         verify(channelManagementService).deleteFiles(ARTEFACT_ID, ListType.CIVIL_DAILY_CAUSE_LIST, Language.ENGLISH);
         verify(subscriptionManagementService).sendDeletedArtefactForThirdParties(artefactWithIdAndPayloadUrl);
-
     }
 
     @Test
