@@ -1,17 +1,3 @@
-
-spring:
-  datasource:
-    driver-class-name: org.h2.Driver
-    url: jdbc:h2:mem:testdb
-    username: my-db
-    password: my-db
-    embedded-directory: build
-    jpa:
-      spring.jpa.database-platform: org.hibernate.dialect.H2Dialect
-  jpa:
-    hibernate:
-      # Set to update for functional tests, so it creates the environment in H2
-      ddl-auto: update
 service-to-service:
   subscription-management: http://localhost:4550
   account-management: http://localhost:6969
