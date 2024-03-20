@@ -389,6 +389,16 @@
                                               ],
                                               "pattern": "^(?!.*<[^>]+>).*$"
                                             },
+                                            "caseType": {
+                                              "title": "Case Type",
+                                              "description": "This will be type of the case.",
+                                              "type": "string",
+                                              "default": "",
+                                              "examples": [
+                                                "normal"
+                                              ],
+                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                            },
                                             "party": {
                                               "title": "Party",
                                               "description": "Parties involved in the case (defence, prosecution)",
