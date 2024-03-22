@@ -13,8 +13,9 @@ import uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactHelper;
 import uk.gov.hmcts.reform.pip.data.management.helpers.LocationHelper;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
+import uk.gov.hmcts.reform.pip.data.management.service.artefact.ArtefactService;
 import uk.gov.hmcts.reform.pip.data.management.service.artefact.ArtefactTriggerService;
-import uk.gov.hmcts.reform.pip.data.management.utils.PayloadExtractor;
+import uk.gov.hmcts.reform.pip.data.management.utils.JsonExtractor;
 import uk.gov.hmcts.reform.pip.model.enums.UserActions;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
@@ -39,7 +40,7 @@ public class PublicationService {
 
     private final AzureBlobService azureBlobService;
 
-    private final PayloadExtractor payloadExtractor;
+    private final JsonExtractor jsonExtractor;
 
     private final LocationRepository locationRepository;
 
@@ -47,19 +48,23 @@ public class PublicationService {
 
     private final ArtefactTriggerService artefactTriggerService;
 
+    private final ArtefactService artefactService;
+
     @Autowired
     public PublicationService(ArtefactRepository artefactRepository,
                               AzureBlobService azureBlobService,
-                              PayloadExtractor payloadExtractor,
+                              JsonExtractor jsonExtractor,
                               LocationRepository locationRepository,
                               ChannelManagementService channelManagementService,
-                              ArtefactTriggerService artefactTriggerService) {
+                              ArtefactTriggerService artefactTriggerService,
+                              ArtefactService artefactService) {
         this.artefactRepository = artefactRepository;
         this.azureBlobService = azureBlobService;
-        this.payloadExtractor = payloadExtractor;
+        this.jsonExtractor = jsonExtractor;
         this.locationRepository = locationRepository;
         this.channelManagementService = channelManagementService;
         this.artefactTriggerService = artefactTriggerService;
+        this.artefactService = artefactService;
     }
 
     /**
@@ -74,6 +79,7 @@ public class PublicationService {
             + artefact.getLocationId()));
 
         applyInternalLocationId(artefact);
+
         artefact.setContentDate(artefact.getContentDate().toLocalDate().atTime(LocalTime.MIN));
         artefact.setLastReceivedDate(LocalDateTime.now());
 
@@ -93,11 +99,8 @@ public class PublicationService {
 
         artefact.setPayload(blobUrl);
 
-        if (!isExisting) {
-            artefact.setPayload(blobUrl);
-        }
+        artefact.setSearch(jsonExtractor.extractSearchTerms(payload));
 
-        artefact.setSearch(payloadExtractor.extractSearchTerms(payload));
         return artefactRepository.save(artefact);
     }
 
@@ -118,16 +121,12 @@ public class PublicationService {
 
         artefact.setPayload(blobUrl);
 
-        if (!isExisting) {
-            artefact.setPayload(blobUrl);
-        }
-
         return artefactRepository.save(artefact);
     }
 
     @Async
     public void processCreatedPublication(Artefact artefact) {
-        channelManagementService.requestFileGeneration(artefact.getArtefactId());
+        artefactService.generatePublicationFiles(artefact);
         artefactTriggerService.checkAndTriggerSubscriptionManagement(artefact);
     }
 
@@ -150,6 +149,11 @@ public class PublicationService {
             artefact.setArtefactId(value.getArtefactId());
             artefact.setPayload(value.getPayload());
             artefact.setSupersededCount(value.getSupersededCount() + 1);
+            if (!artefactService.shouldGenerateFiles(artefact.getPayloadSize())
+                && artefactService.shouldGenerateFiles(value.getPayloadSize())) {
+                channelManagementService.deleteFiles(artefact.getArtefactId(), artefact.getListType(),
+                                                     artefact.getLanguage());
+            }
         });
         return foundArtefact.isPresent();
     }

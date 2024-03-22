@@ -83,6 +83,7 @@ public class ValidationService {
         return headers;
     }
 
+
     /**
      * By default, spring does not validate empty strings using the required flags in the @RequestHeader. Therefore
      * this check is required to validate that they are not empty
@@ -154,15 +155,13 @@ public class ValidationService {
         Map<String, String> propertiesMap = headers.getAppInsightsHeaderMap();
         try {
             Set<String> errors = new HashSet<>();
-
             JsonNode json = new ObjectMapper().readTree(jsonPayload);
+
             masterSchema.validate(json).forEach(vm ->  errors.add(vm.getMessage()));
 
-            validationSchemas.forEach((type, schema) -> {
-                if (type.equals(headers.getListType())) {
-                    schema.validate(json).forEach(vm ->  errors.add(vm.getMessage()));
-                }
-            });
+            if (validationSchemas.containsKey(headers.getListType())) {
+                validationSchemas.get(headers.getListType()).validate(json).forEach(vm ->  errors.add(vm.getMessage()));
+            }
 
             if (!errors.isEmpty()) {
                 propertiesMap.put("ERROR", errors.toString());
@@ -205,4 +204,5 @@ public class ValidationService {
     private static boolean isNullOrEmpty(Object header) {
         return header == null || header.toString().isEmpty();
     }
+
 }

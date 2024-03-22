@@ -1,25 +1,28 @@
 package uk.gov.hmcts.reform.pip.data.management.service;
 
+import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ActiveProfiles;
+import uk.gov.hmcts.reform.pip.data.management.Application;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.AzureBlobService;
 import uk.gov.hmcts.reform.pip.data.management.database.LocationRepository;
 import uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
+import uk.gov.hmcts.reform.pip.data.management.service.artefact.ArtefactService;
 import uk.gov.hmcts.reform.pip.data.management.service.artefact.ArtefactTriggerService;
-import uk.gov.hmcts.reform.pip.data.management.utils.PayloadExtractor;
+import uk.gov.hmcts.reform.pip.data.management.utils.JsonExtractor;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 import uk.gov.hmcts.reform.pip.model.publication.Sensitivity;
@@ -35,9 +38,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.lenient;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
@@ -61,30 +62,35 @@ import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTe
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.TEST_VALUE;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.VALIDATION_ARTEFACT_NOT_MATCH;
 
+@ActiveProfiles("test")
+@SpringBootTest(classes = {Application.class})
+@AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
 @SuppressWarnings({"PMD.ExcessiveImports"})
-@ExtendWith(MockitoExtension.class)
 class PublicationServiceTest {
 
-    @Mock
+    @MockBean
     ArtefactRepository artefactRepository;
 
-    @Mock
+    @MockBean
     LocationRepository locationRepository;
 
-    @Mock
+    @MockBean
     AzureBlobService azureBlobService;
 
-    @Mock
-    PayloadExtractor payloadExtractor;
+    @MockBean
+    JsonExtractor jsonExtractor;
 
-    @Mock
+    @MockBean
     ChannelManagementService channelManagementService;
 
-    @InjectMocks
-    PublicationService publicationService;
-
-    @Mock
+    @MockBean
     ArtefactTriggerService artefactTriggerService;
+
+    @MockBean
+    ArtefactService artefactService;
+
+    @Autowired
+    PublicationService publicationService;
 
     private Artefact artefact;
     private Artefact artefactWithPayloadUrl;
@@ -129,6 +135,9 @@ class PublicationServiceTest {
                 + "MANUAL_UPLOAD,PUBLIC,MANUAL_UPLOAD,GENERAL_PUBLICATION,2022-06-29 00:00:00.0,2,,SJP_PUBLIC_LIST"
         );
 
+    private static final Float PAYLOAD_SIZE_WITHIN_LIMIT = 90f;
+    private static final Float PAYLOAD_SIZE_OVER_LIMIT = 110f;
+
     @BeforeAll
     public static void setupSearchValues() {
         SEARCH_VALUES.put(TEST_KEY, List.of(TEST_VALUE));
@@ -150,6 +159,8 @@ class PublicationServiceTest {
         lenient().when(artefactRepository.save(artefactWithPayloadUrl)).thenReturn(artefactWithIdAndPayloadUrl);
         lenient().when(locationRepository.findByLocationIdByProvenance(PROVENANCE, PROVENANCE_ID, LOCATION_VENUE))
             .thenReturn(Optional.of(location));
+        lenient().when(artefactService.shouldGenerateFiles(PAYLOAD_SIZE_WITHIN_LIMIT)).thenReturn(true);
+        lenient().when(artefactService.shouldGenerateFiles(PAYLOAD_SIZE_OVER_LIMIT)).thenReturn(false);
     }
 
     private void createPayloads() {
@@ -193,7 +204,7 @@ class PublicationServiceTest {
         artefactWithPayloadUrl.setLocationId(PROVENANCE_ID);
         when(azureBlobService.createPayload(any(), eq(PAYLOAD))).thenReturn(PAYLOAD_URL);
         when(artefactRepository.save(any())).thenReturn(artefactWithIdAndPayloadUrl);
-        when(payloadExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
+        when(jsonExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
 
         Artefact returnedArtefact = publicationService.createPublication(artefact, PAYLOAD);
 
@@ -211,7 +222,7 @@ class PublicationServiceTest {
         artefactWithPayloadUrl.setLocationId("12341234");
         when(azureBlobService.createPayload(any(), eq(PAYLOAD))).thenReturn(PAYLOAD_URL);
         when(artefactRepository.save(any())).thenReturn(artefactWithIdAndPayloadUrl);
-        when(payloadExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
+        when(jsonExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
 
         Artefact returnedArtefact = publicationService.createPublication(artefact, PAYLOAD);
 
@@ -225,7 +236,7 @@ class PublicationServiceTest {
             .thenReturn(Optional.empty());
         when(artefactRepository.save(any())).thenReturn(artefactWithIdAndPayloadUrl);
         when(azureBlobService.createPayload(any(), eq(PAYLOAD))).thenReturn(PAYLOAD_URL);
-        when(payloadExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
+        when(jsonExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
 
         Artefact returnedArtefact = publicationService.createPublication(artefact, PAYLOAD);
 
@@ -242,7 +253,7 @@ class PublicationServiceTest {
 
         when(azureBlobService.createPayload(any(), eq(PAYLOAD))).thenReturn(PAYLOAD_URL);
         when(artefactRepository.save(any())).thenReturn(artefactWithIdAndPayloadUrl);
-        when(payloadExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
+        when(jsonExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
 
         Artefact returnedArtefact = publicationService.createPublication(artefactManualUpload, PAYLOAD);
 
@@ -273,11 +284,91 @@ class PublicationServiceTest {
 
         when(azureBlobService.createPayload(any(), eq(PAYLOAD))).thenReturn(PAYLOAD_URL);
         when(artefactRepository.save(any())).thenReturn(newArtefactWithId);
-        when(payloadExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
+        when(jsonExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
 
         Artefact returnedArtefact = publicationService.createPublication(artefact, PAYLOAD);
 
         assertEquals(newArtefactWithId, returnedArtefact, ROWID_RETURNS_UUID);
+    }
+
+    @Test
+    void testUpdatingOfExistingArtefactWithPayloadOverLimitAndNewArtefactWithPayloadOverLimit() {
+        Artefact existingArtefact = Artefact.builder()
+            .artefactId(ARTEFACT_ID)
+            .provenance(PROVENANCE)
+            .locationId(PROVENANCE_ID)
+            .contentDate(START_OF_TODAY_CONTENT_DATE)
+            .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
+            .language(Language.ENGLISH)
+            .payload(PAYLOAD_URL)
+            .payloadSize(PAYLOAD_SIZE_OVER_LIMIT)
+            .build();
+
+        Artefact artefactToBeCreated = Artefact.builder()
+            .artefactId(ARTEFACT_ID)
+            .provenance(PROVENANCE)
+            .contentDate(START_OF_TODAY_CONTENT_DATE)
+            .locationId(PROVENANCE_ID)
+            .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
+            .language(Language.ENGLISH)
+            .payload(PAYLOAD_URL)
+            .payloadSize(PAYLOAD_SIZE_OVER_LIMIT)
+            .build();
+
+        when(artefactRepository.findArtefactByUpdateLogic(artefactToBeCreated.getLocationId(),
+                                                          artefactToBeCreated.getContentDate(),
+                                                          artefactToBeCreated.getLanguage().name(),
+                                                          artefactToBeCreated.getListType().name(),
+                                                          artefactToBeCreated.getProvenance()))
+            .thenReturn(Optional.of(existingArtefact));
+        when(azureBlobService.createPayload(any(), eq(PAYLOAD))).thenReturn(PAYLOAD_URL);
+        when(artefactRepository.save(any())).thenReturn(artefactToBeCreated);
+
+        Artefact returnedArtefact = publicationService.createPublication(artefactToBeCreated, PAYLOAD);
+        verifyNoInteractions(channelManagementService);
+
+        assertEquals(artefactToBeCreated, returnedArtefact, ROWID_RETURNS_UUID);
+    }
+
+    @Test
+    void testUpdatingOfExistingArtefactWithPayloadWithinLimitAndNewArtefactWithPayloadOverLimit() {
+        Artefact existingArtefact = Artefact.builder()
+            .artefactId(ARTEFACT_ID)
+            .provenance(PROVENANCE)
+            .locationId(PROVENANCE_ID)
+            .contentDate(START_OF_TODAY_CONTENT_DATE)
+            .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
+            .language(Language.ENGLISH)
+            .payload(PAYLOAD_URL)
+            .payloadSize(PAYLOAD_SIZE_WITHIN_LIMIT)
+            .build();
+
+        Artefact artefactToBeCreated = Artefact.builder()
+            .artefactId(ARTEFACT_ID)
+            .provenance(PROVENANCE)
+            .contentDate(START_OF_TODAY_CONTENT_DATE)
+            .locationId(PROVENANCE_ID)
+            .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
+            .language(Language.ENGLISH)
+            .payload(PAYLOAD_URL)
+            .payloadSize(PAYLOAD_SIZE_OVER_LIMIT)
+            .build();
+
+        when(artefactRepository.findArtefactByUpdateLogic(artefactToBeCreated.getLocationId(),
+                                                          artefactToBeCreated.getContentDate(),
+                                                          artefactToBeCreated.getLanguage().name(),
+                                                          artefactToBeCreated.getListType().name(),
+                                                          artefactToBeCreated.getProvenance()))
+            .thenReturn(Optional.of(existingArtefact));
+        when(azureBlobService.createPayload(any(), eq(PAYLOAD))).thenReturn(PAYLOAD_URL);
+        when(artefactRepository.save(any())).thenReturn(artefactToBeCreated);
+
+        Artefact returnedArtefact = publicationService.createPublication(artefactToBeCreated, PAYLOAD);
+        verify(channelManagementService).deleteFiles(artefactToBeCreated.getArtefactId(),
+                                                     artefactToBeCreated.getListType(),
+                                                     artefactToBeCreated.getLanguage());
+
+        assertEquals(artefactToBeCreated, returnedArtefact, ROWID_RETURNS_UUID);
     }
 
     @Test
@@ -307,7 +398,7 @@ class PublicationServiceTest {
 
         when(azureBlobService.createPayload(any(), eq(PAYLOAD))).thenReturn(PAYLOAD_URL);
         when(artefactRepository.save(any())).thenReturn(newArtefactWithId);
-        when(payloadExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
+        when(jsonExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
 
         Artefact returnedArtefact = publicationService.createPublication(artefact, PAYLOAD);
 
@@ -354,7 +445,7 @@ class PublicationServiceTest {
         when(artefactRepository.save(any())).thenReturn(newArtefactWithId);
         when(azureBlobService.createPayload(PAYLOAD_STRIPPED, PAYLOAD)).thenReturn(PAYLOAD_URL);
         when(artefactRepository.save(any())).thenReturn(existingArtefact);
-        when(payloadExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
+        when(jsonExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
 
         Artefact returnedArtefact = publicationService.createPublication(artefact, PAYLOAD);
 
@@ -402,7 +493,7 @@ class PublicationServiceTest {
     void testCreationOfNewArtefactWhenListTypeSjpPublic() {
         when(azureBlobService.createPayload(any(), eq(PAYLOAD))).thenReturn(PAYLOAD_URL);
         when(artefactRepository.save(sjpPublicArtefact)).thenReturn(sjpPublicArtefact);
-        when(payloadExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
+        when(jsonExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
 
         Artefact returnedArtefact = publicationService.createPublication(sjpPublicArtefact, PAYLOAD);
 
@@ -414,7 +505,7 @@ class PublicationServiceTest {
     void testCreationOfNewArtefactWhenListTypeSjpPress() {
         when(azureBlobService.createPayload(any(), eq(PAYLOAD))).thenReturn(PAYLOAD_URL);
         when(artefactRepository.save(sjpPressArtefact)).thenReturn(sjpPressArtefact);
-        when(payloadExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
+        when(jsonExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
 
         Artefact returnedArtefact = publicationService.createPublication(sjpPressArtefact, PAYLOAD);
 
@@ -528,7 +619,7 @@ class PublicationServiceTest {
         artefactWithPayloadUrl.setLocationId(PROVENANCE_ID);
         when(azureBlobService.createPayload(any(), eq(PAYLOAD))).thenReturn(PAYLOAD_URL);
         when(artefactRepository.save(captor.capture())).thenReturn(artefactWithIdAndPayloadUrl);
-        when(payloadExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
+        when(jsonExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
 
         publicationService.createPublication(artefact, PAYLOAD);
 
@@ -561,7 +652,7 @@ class PublicationServiceTest {
 
         ArgumentCaptor<Artefact> captor = ArgumentCaptor.forClass(Artefact.class);
         when(artefactRepository.save(captor.capture())).thenReturn(artefactWithIdAndPayloadUrl);
-        when(payloadExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
+        when(jsonExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
 
         publicationService.createPublication(artefact, PAYLOAD);
 
@@ -581,18 +672,10 @@ class PublicationServiceTest {
 
         ArgumentCaptor<Artefact> captor = ArgumentCaptor.forClass(Artefact.class);
         when(artefactRepository.save(captor.capture())).thenReturn(artefactWithIdAndPayloadUrl);
-        when(payloadExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
+        when(jsonExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
 
         publicationService.createPublication(artefact, PAYLOAD);
 
         assertEquals(0, captor.getValue().getSupersededCount(), "Superseded count has been incremented");
-    }
-
-    @Test
-    void testProcessCreatedPublication() {
-        doNothing().when(artefactTriggerService).checkAndTriggerSubscriptionManagement(sjpPublicArtefact);
-        publicationService.processCreatedPublication(sjpPublicArtefact);
-        verify(channelManagementService, times(1))
-            .requestFileGeneration(sjpPublicArtefact.getArtefactId());
     }
 }

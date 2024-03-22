@@ -159,4 +159,9 @@ public class Artefact {
      */
     private LocalDateTime expiryDate;
 
+    /**
+     * The size of the input payload.
+     */
+    @JsonView(ArtefactView.Internal.class)
+    private Float payloadSize;
 }

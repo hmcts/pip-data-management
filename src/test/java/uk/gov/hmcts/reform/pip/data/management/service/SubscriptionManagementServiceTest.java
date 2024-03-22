@@ -7,11 +7,8 @@ import okhttp3.mockwebserver.MockWebServer;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pip.data.management.Application;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
@@ -20,9 +17,8 @@ import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
-@SuppressWarnings("PMD.LawOfDemeter")
-@ExtendWith({MockitoExtension.class})
 @ActiveProfiles("test")
 @SpringBootTest(classes = {Application.class})
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
@@ -65,7 +61,7 @@ class SubscriptionManagementServiceTest {
     @Test
     void testFailedSend() {
         mockSubscriptionManagementEndpoint.enqueue(new MockResponse()
-                                                       .setResponseCode(HttpStatus.BAD_REQUEST.value()));
+                                                       .setResponseCode(BAD_REQUEST.value()));
         assertEquals(
             subscriptionManagementService.sendArtefactForSubscription(ARTEFACT),
             "Artefact failed to send: " + ARTEFACT.getArtefactId(),
@@ -88,7 +84,7 @@ class SubscriptionManagementServiceTest {
     @Test
     void testSendDeletedFailedSend() {
         mockSubscriptionManagementEndpoint.enqueue(new MockResponse()
-                                                       .setResponseCode(HttpStatus.BAD_REQUEST.value()));
+                                                       .setResponseCode(BAD_REQUEST.value()));
         assertEquals(
             subscriptionManagementService.sendDeletedArtefactForThirdParties(ARTEFACT),
             "Artefact failed to send: " + ARTEFACT.getArtefactId(),
@@ -113,7 +109,7 @@ class SubscriptionManagementServiceTest {
     @Test
     void testSubscriptionsByLocationIdFailedSend() {
         mockSubscriptionManagementEndpoint.enqueue(new MockResponse()
-                                                       .setResponseCode(HttpStatus.BAD_REQUEST.value()));
+                                                       .setResponseCode(BAD_REQUEST.value()));
         assertTrue(
             subscriptionManagementService.findSubscriptionsByLocationId(LOCATION_ID)
                 .contains("Failed to find subscription for Location: " + LOCATION_ID),
