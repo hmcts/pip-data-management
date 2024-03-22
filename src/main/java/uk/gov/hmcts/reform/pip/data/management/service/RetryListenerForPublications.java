@@ -19,11 +19,11 @@ public class RetryListenerForPublications implements RetryListener {
     @Override
     public <T, E extends Throwable> void onError(RetryContext context, RetryCallback<T, E> callback,
                                                  Throwable throwable) {
-        String payloadUrl = ((Artefact)(((MethodInvocationRetryCallback<?, ?>) callback)
-            .getInvocation().getArguments()[0])).getPayload();
+        Object[] callbackArguments = ((MethodInvocationRetryCallback) callback).getInvocation().getArguments();
+        Artefact artefact = ((Artefact) callbackArguments[0]);
 
-        if (payloadUrl != null) {
-            azureBlobService.deleteBlob(ArtefactHelper.getUuidFromUrl(payloadUrl));
+        if (artefact.getPayload() != null) {
+            azureBlobService.deleteBlob(ArtefactHelper.getUuidFromUrl(artefact.getPayload()));
         }
     }
 }
