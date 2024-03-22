@@ -90,6 +90,7 @@ class PublicationControllerTest {
     private static final String LOCATION_ID = "123";
     private static final LocalDateTime CONTENT_DATE = LocalDateTime.now();
     private static final String PAYLOAD = "payload";
+    private static final Float PAYLOAD_SIZE = (float) PAYLOAD.getBytes().length / 1024;
     private static final MultipartFile FILE = new MockMultipartFile("test", (byte[]) null);
     private static final String PAYLOAD_URL = "This is a test payload";
     private static final CaseSearchTerm SEARCH_TERM = CaseSearchTerm.CASE_ID;
@@ -125,6 +126,7 @@ class PublicationControllerTest {
             .locationId(LOCATION_ID)
             .contentDate(CONTENT_DATE)
             .expiryDate(DISPLAY_TO)
+            .payloadSize(PAYLOAD_SIZE)
             .build();
 
         artefactWithId = Artefact.builder()
@@ -142,6 +144,7 @@ class PublicationControllerTest {
             .contentDate(CONTENT_DATE)
             .expiryDate(DISPLAY_TO)
             .search(new ConcurrentHashMap<>())
+            .payloadSize(PAYLOAD_SIZE)
             .build();
 
         artefactWithNoMatchLocationId = Artefact.builder()
@@ -159,7 +162,10 @@ class PublicationControllerTest {
             .contentDate(CONTENT_DATE)
             .expiryDate(DISPLAY_TO)
             .search(new ConcurrentHashMap<>())
+            .payloadSize(PAYLOAD_SIZE)
             .build();
+
+
     }
 
     @Test
@@ -363,8 +369,10 @@ class PublicationControllerTest {
         search.put("location-id", List.of(LOCATION_ID));
         artefact.setSearch(search);
         artefact.setIsFlatFile(true);
+        artefact.setPayloadSize(0f);
         artefactWithId.setIsFlatFile(true);
         artefactWithId.setSearch(search);
+        artefactWithId.setPayloadSize(0f);
 
         when(validationService.validateHeaders(any())).thenReturn(headers);
         when(publicationService.createPublication(artefact, FILE)).thenReturn(artefactWithId);
@@ -386,8 +394,10 @@ class PublicationControllerTest {
         search.put("location-id", List.of(LOCATION_ID));
         artefact.setSearch(search);
         artefact.setIsFlatFile(true);
+        artefact.setPayloadSize(0f);
         artefactWithNoMatchLocationId.setIsFlatFile(true);
         artefactWithNoMatchLocationId.setSearch(search);
+        artefactWithNoMatchLocationId.setPayloadSize(0f);
 
         when(validationService.validateHeaders(any())).thenReturn(headers);
         when(publicationService.createPublication(artefact, FILE)).thenReturn(artefactWithNoMatchLocationId);
