@@ -1,6 +1,7 @@
 <policies>
   <inbound>
     <base />
+    <rewrite-uri template="/publication" />
   </inbound>
   <backend>
     <base />
