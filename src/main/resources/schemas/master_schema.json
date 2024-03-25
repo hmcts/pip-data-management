@@ -97,11 +97,6 @@
   "title": "Root",
   "type": "object",
   "properties": {
-    "@schemaLocation": {
-      "title": "@schemalocation",
-      "type": "string",
-      "pattern": "^(?!.*<[^>]+>).*$"
-    },
     "document": {
       "title": "document",
       "type": "object",
