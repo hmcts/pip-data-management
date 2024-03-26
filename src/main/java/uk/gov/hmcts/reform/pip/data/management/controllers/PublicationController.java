@@ -82,12 +82,14 @@ public class PublicationController {
         "No artefact found matching given parameters and date requirements";
     private static final String UNAUTHORISED_MESSAGE = "Invalid access credential";
     private static final String FORBIDDEN_MESSAGE = "User has not been authorized";
+    private static final String CONFLICT_MESSAGE = "Conflict while uploading publication";
 
     private static final String OK_CODE = "200";
     private static final String NOT_FOUND_CODE = "404";
     private static final String NO_CONTENT_CODE = "204";
     private static final String UNAUTHORISED_CODE = "401";
     private static final String FORBIDDEN_CODE = "403";
+    private static final String CONFLICT_CODE = "409";
 
     private static final String BEARER_AUTHENTICATION = "bearerAuth";
 
@@ -153,6 +155,7 @@ public class PublicationController {
             + "created")
     @ApiResponse(responseCode = UNAUTHORISED_CODE, description = UNAUTHORISED_MESSAGE)
     @ApiResponse(responseCode = FORBIDDEN_CODE, description = FORBIDDEN_MESSAGE)
+    @ApiResponse(responseCode = CONFLICT_CODE, description = CONFLICT_MESSAGE)
     @Operation(summary = "Upload a new publication")
     @PostMapping
     @Valid
@@ -231,6 +234,7 @@ public class PublicationController {
             + "created")
     @ApiResponse(responseCode = UNAUTHORISED_CODE, description = UNAUTHORISED_MESSAGE)
     @ApiResponse(responseCode = FORBIDDEN_CODE, description = FORBIDDEN_MESSAGE)
+    @ApiResponse(responseCode = CONFLICT_CODE, description = CONFLICT_MESSAGE)
     @Operation(summary = "Upload a new publication")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @JsonView(ArtefactView.External.class)

@@ -20,7 +20,7 @@ public class RetryListenerForPublications implements RetryListener {
     public <T, E extends Throwable> void onError(RetryContext context, RetryCallback<T, E> callback,
                                                  Throwable throwable) {
         Object[] callbackArguments = ((MethodInvocationRetryCallback) callback).getInvocation().getArguments();
-        Artefact artefact = ((Artefact) callbackArguments[0]);
+        Artefact artefact = (Artefact) callbackArguments[0];
 
         if (artefact.getPayload() != null) {
             azureBlobService.deleteBlob(ArtefactHelper.getUuidFromUrl(artefact.getPayload()));
