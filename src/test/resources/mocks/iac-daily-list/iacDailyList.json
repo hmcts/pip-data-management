@@ -3,11 +3,7 @@
     "publicationDate": "2023-03-03T14:07:33.871502Z"
   },
   "venue": {
-    "venueName": "This is the venue name",
-    "venueContact": {
-      "venueTelephone": "01234 123 123",
-      "venueEmail": "a@b.com"
-    }
+    "venueName": "This is the venue name"
   },
   "courtLists": [
     {
@@ -46,12 +42,6 @@
                             "caseNumber": "12341234",
                             "caseSequenceIndicator": "2 of 3",
                             "caseType": "case type",
-                            "caseLinked": [
-                              {
-                                "caseId": "1234",
-                                "name": "A Vs B"
-                              }
-                            ],
                             "language": "French",
                             "party": [
                               {
@@ -70,7 +60,6 @@
                                 "partyRole": "CLAIMANT_PETITIONER_REPRESENTATIVE",
                                 "individualDetails": {
                                   "individualForenames": "Individual Forenames",
-                                  "individualMiddleName": "Individual Middlename",
                                   "individualSurname": "Individual Surname",
                                   "title": "Mr"
                                 }
@@ -79,7 +68,6 @@
                                 "partyRole": "RESPONDENT_REPRESENTATIVE",
                                 "individualDetails": {
                                   "individualForenames": "Individual Forenames",
-                                  "individualMiddleName": "Individual Middlename",
                                   "individualSurname": "Individual Surname",
                                   "title": "Mr"
                                 }

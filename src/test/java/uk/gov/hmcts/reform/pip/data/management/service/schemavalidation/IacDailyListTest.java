@@ -46,7 +46,7 @@ class IacDailyListTest {
     private static final String SESSION_SCHEMA = "session";
     private static final String SITTINGS_SCHEMA = "sittings";
     private static final String HEARING_SCHEMA = "hearing";
-    private static final String CASE_SCHEMA  = "case";
+    private static final String CASE_SCHEMA = "case";
     private static final String SOURCE_ARTEFACT_ID = "sourceArtefactId";
     private static final LocalDateTime DISPLAY_FROM = LocalDateTime.now();
     private static final LocalDateTime DISPLAY_TO = LocalDateTime.now();
@@ -68,7 +68,8 @@ class IacDailyListTest {
     @BeforeEach
     void setup() {
         headerGroup = new HeaderGroup(PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE, SENSITIVITY, LANGUAGE,
-                                      DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, COURT_ID, CONTENT_DATE);
+                                      DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, COURT_ID, CONTENT_DATE
+        );
     }
 
     @Test
@@ -132,24 +133,6 @@ class IacDailyListTest {
             ObjectMapper mapper = new ObjectMapper();
             JsonNode node = mapper.readValue(text, JsonNode.class);
             ((ObjectNode) node.get("venue")).remove("venueName");
-
-            String listJson = node.toString();
-            assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup),
-                         IAC_DAILY_LIST_INVALID_MESSAGE
-            );
-        }
-    }
-
-    @Test
-    void testValidateWithErrorsWhenVenueContactMissingInIacDailyList() throws IOException {
-        try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(IAC_DAILY_LIST_VALID_JSON)) {
-            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
-
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode node = mapper.readValue(text, JsonNode.class);
-            ((ObjectNode) node.get("venue")).remove("venueContact");
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
