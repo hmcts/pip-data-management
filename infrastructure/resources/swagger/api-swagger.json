@@ -223,6 +223,16 @@
                 }
               }
             }
+          },
+          "409": {
+            "description": "Conflict while uploading publication",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Artefact"
+                }
+              }
+            }
           }
         }
       }

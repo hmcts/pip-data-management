@@ -4,6 +4,7 @@ import jakarta.annotation.PostConstruct;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.scheduling.annotation.EnableAsync;
 import uk.gov.hmcts.reform.pip.data.management.config.AzureBlobConfigurationProperties;
 import uk.gov.hmcts.reform.pip.data.management.config.SearchConfiguration;
@@ -18,6 +19,7 @@ import java.util.TimeZone;
     ValidationConfiguration.class
 })
 @EnableAsync
+@EnableRetry
 @SuppressWarnings("HideUtilityClassConstructor") // Spring needs a constructor, its not a utility class
 public class Application {
 

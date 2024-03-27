@@ -37,6 +37,7 @@ import uk.gov.hmcts.reform.pip.data.management.models.location.LocationArtefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.HeaderGroup;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.views.ArtefactView;
+import uk.gov.hmcts.reform.pip.data.management.service.PublicationCreationRunner;
 import uk.gov.hmcts.reform.pip.data.management.service.PublicationService;
 import uk.gov.hmcts.reform.pip.data.management.service.ValidationService;
 import uk.gov.hmcts.reform.pip.data.management.service.artefact.ArtefactDeleteService;
@@ -81,16 +82,20 @@ public class PublicationController {
         "No artefact found matching given parameters and date requirements";
     private static final String UNAUTHORISED_MESSAGE = "Invalid access credential";
     private static final String FORBIDDEN_MESSAGE = "User has not been authorized";
+    private static final String CONFLICT_MESSAGE = "Conflict while uploading publication";
 
     private static final String OK_CODE = "200";
     private static final String NOT_FOUND_CODE = "404";
     private static final String NO_CONTENT_CODE = "204";
     private static final String UNAUTHORISED_CODE = "401";
     private static final String FORBIDDEN_CODE = "403";
+    private static final String CONFLICT_CODE = "409";
 
     private static final String BEARER_AUTHENTICATION = "bearerAuth";
 
     private final PublicationService publicationService;
+
+    private final PublicationCreationRunner publicationCreationRunner;
 
     private final ArtefactSearchService artefactSearchService;
 
@@ -108,18 +113,21 @@ public class PublicationController {
      * Constructor for Publication controller.
      *
      * @param publicationService     The PublicationService that contains the business logic to handle publications.
+     * @param publicationCreationRunner The service class that handles publication creation.
      * @param artefactService   The ArtefactService that con be used to get artefact property
      * @param artefactDeleteService The ArtefactDeleteService that can be used to Delete or Archive artefacts
      * @param artefactTriggerService The ArtefactTriggerService that can be used to send artefact data to other services
      */
     @Autowired
     public PublicationController(PublicationService publicationService,
+                                 PublicationCreationRunner publicationCreationRunner,
                                  ValidationService validationService,
                                  ArtefactSearchService artefactSearchService,
                                  ArtefactService artefactService,
                                  ArtefactDeleteService artefactDeleteService,
                                  ArtefactTriggerService artefactTriggerService) {
         this.publicationService = publicationService;
+        this.publicationCreationRunner = publicationCreationRunner;
         this.validationService = validationService;
         this.artefactSearchService = artefactSearchService;
         this.artefactService = artefactService;
@@ -147,6 +155,7 @@ public class PublicationController {
             + "created")
     @ApiResponse(responseCode = UNAUTHORISED_CODE, description = UNAUTHORISED_MESSAGE)
     @ApiResponse(responseCode = FORBIDDEN_CODE, description = FORBIDDEN_MESSAGE)
+    @ApiResponse(responseCode = CONFLICT_CODE, description = CONFLICT_MESSAGE)
     @Operation(summary = "Upload a new publication")
     @PostMapping
     @Valid
@@ -193,14 +202,13 @@ public class PublicationController {
             .payloadSize((float) payload.length() / 1024)
             .build();
 
-        Artefact createdItem = publicationService.createPublication(artefact, payload);
-
+        Artefact createdItem = publicationCreationRunner.run(artefact, payload);
         logManualUpload(publicationService.maskEmail(issuerEmail), createdItem.getArtefactId().toString());
 
         // Process the created artefact by requesting channel management to generate PDF/Excel files
         // and check/trigger subscription management, async.
         if (!LocationHelper.isNoMatchLocationId(createdItem.getLocationId())) {
-            publicationService.processCreatedPublication(createdItem);
+            publicationService.processCreatedPublication(createdItem, payload);
         }
 
         return ResponseEntity.status(HttpStatus.CREATED).body(createdItem);
@@ -226,6 +234,7 @@ public class PublicationController {
             + "created")
     @ApiResponse(responseCode = UNAUTHORISED_CODE, description = UNAUTHORISED_MESSAGE)
     @ApiResponse(responseCode = FORBIDDEN_CODE, description = FORBIDDEN_MESSAGE)
+    @ApiResponse(responseCode = CONFLICT_CODE, description = CONFLICT_MESSAGE)
     @Operation(summary = "Upload a new publication")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @JsonView(ArtefactView.External.class)
@@ -276,8 +285,7 @@ public class PublicationController {
             .search(search)
             .build();
 
-        Artefact createdItem = publicationService.createPublication(artefact, file);
-
+        Artefact createdItem =  publicationCreationRunner.run(artefact, file);
         logManualUpload(publicationService.maskEmail(issuerEmail), createdItem.getArtefactId().toString());
 
         if (!LocationHelper.isNoMatchLocationId(createdItem.getLocationId())) {

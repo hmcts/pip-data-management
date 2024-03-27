@@ -165,9 +165,9 @@ public class ArtefactService {
         return listType.getListLocationLevel();
     }
 
-    public void generatePublicationFiles(Artefact artefact) {
+    public void generatePublicationFiles(Artefact artefact, String payload) {
         if (shouldGenerateFiles(artefact.getPayloadSize())) {
-            channelManagementService.requestFileGeneration(artefact.getArtefactId());
+            channelManagementService.requestFileGeneration(artefact.getArtefactId(), payload);
         }
     }
 

@@ -148,7 +148,7 @@ public class Artefact {
     private LocalDateTime lastReceivedDate;
 
     /**
-     * A counter to show how many times the artefact has been superseded. Default is 0
+     * A counter to show how many times the artefact has been superseded. Default is 0.
      */
     @JsonView(ArtefactView.Internal.class)
     @Column(nullable = false, columnDefinition = "INTEGER DEFAULT 0")

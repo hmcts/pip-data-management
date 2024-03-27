@@ -3,8 +3,13 @@ package uk.gov.hmcts.reform.pip.data.management.service;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.CannotAcquireLockException;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.AzureBlobService;
@@ -15,16 +20,9 @@ import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.service.artefact.ArtefactService;
 import uk.gov.hmcts.reform.pip.data.management.service.artefact.ArtefactTriggerService;
-import uk.gov.hmcts.reform.pip.data.management.utils.JsonExtractor;
-import uk.gov.hmcts.reform.pip.model.enums.UserActions;
-import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.Optional;
 import java.util.UUID;
-
-import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
 
 /**
  * This class contains the business logic for handling of Publications.
@@ -35,12 +33,11 @@ import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
 public class PublicationService {
 
     private static final char DELIMITER = ',';
+    private static final int RETRY_MAX_ATTEMPTS = 5;
 
     private final ArtefactRepository artefactRepository;
 
     private final AzureBlobService azureBlobService;
-
-    private final JsonExtractor jsonExtractor;
 
     private final LocationRepository locationRepository;
 
@@ -53,14 +50,12 @@ public class PublicationService {
     @Autowired
     public PublicationService(ArtefactRepository artefactRepository,
                               AzureBlobService azureBlobService,
-                              JsonExtractor jsonExtractor,
                               LocationRepository locationRepository,
                               ChannelManagementService channelManagementService,
                               ArtefactTriggerService artefactTriggerService,
                               ArtefactService artefactService) {
         this.artefactRepository = artefactRepository;
         this.azureBlobService = azureBlobService;
-        this.jsonExtractor = jsonExtractor;
         this.locationRepository = locationRepository;
         this.channelManagementService = channelManagementService;
         this.artefactTriggerService = artefactTriggerService;
@@ -68,65 +63,58 @@ public class PublicationService {
     }
 
     /**
-     * Method that handles the creation or updating of a new publication.
+     * Method that handles the creation or updating of a new JSON publication.
      *
      * @param artefact The artefact that needs to be created.
      * @param payload  The payload for the artefact that needs to be created.
-     * @return Returns the UUID of the artefact that was created.
+     * @return Returns the artefact that was created.
      */
+    @Transactional(isolation = Isolation.READ_COMMITTED)
+    @Retryable(value = { CannotAcquireLockException.class, DataIntegrityViolationException.class},
+        maxAttempts = RETRY_MAX_ATTEMPTS)
     public Artefact createPublication(Artefact artefact, String payload) {
-        log.info(writeLog(UserActions.UPLOAD, "json publication upload for location "
-            + artefact.getLocationId()));
+        String existingPayload = applyExistingArtefact(artefact) ? artefact.getPayload() : null;
+        String blobUrl = azureBlobService.createPayload(UUID.randomUUID().toString(), payload);
 
-        applyInternalLocationId(artefact);
+        artefact.setPayload(blobUrl);
+        Artefact createdArtefact = artefactRepository.save(artefact);
 
-        artefact.setContentDate(artefact.getContentDate().toLocalDate().atTime(LocalTime.MIN));
-        artefact.setLastReceivedDate(LocalDateTime.now());
-
-        boolean isExisting = applyExistingArtefact(artefact);
-
-        String blobUrl = azureBlobService.createPayload(
-            isExisting ? ArtefactHelper.getUuidFromUrl(artefact.getPayload()) : UUID.randomUUID().toString(),
-            payload
-        );
-
-        // Add 7 days to the expiry date if the list type is SJP
-        if (artefact.getListType().equals(ListType.SJP_PUBLIC_LIST)
-            || artefact.getListType().equals(ListType.SJP_PRESS_LIST)
-            || artefact.getListType().equals(ListType.SJP_DELTA_PRESS_LIST)) {
-            artefact.setExpiryDate(artefact.getExpiryDate().plusDays(7));
+        // Remove the old payload after superseded by the new one
+        if (existingPayload != null) {
+            azureBlobService.deleteBlob(ArtefactHelper.getUuidFromUrl(existingPayload));
         }
 
-        artefact.setPayload(blobUrl);
-
-        artefact.setSearch(jsonExtractor.extractSearchTerms(payload));
-
-        return artefactRepository.save(artefact);
+        return createdArtefact;
     }
 
+    /**
+     * Method that handles the creation or updating of a new flat file publication.
+     *
+     * @param artefact The artifact that needs to be created.
+     * @param file     The flat file that is to be uploaded and associated with the artefact.
+     * @return Returns the artefact that was created.
+     */
+    @Transactional(isolation = Isolation.READ_COMMITTED)
+    @Retryable(value = { CannotAcquireLockException.class, DataIntegrityViolationException.class },
+        maxAttempts = RETRY_MAX_ATTEMPTS)
     public Artefact createPublication(Artefact artefact, MultipartFile file) {
-        log.info(writeLog(UserActions.UPLOAD, "flat file publication upload for location "
-            + artefact.getLocationId()));
-
-        applyInternalLocationId(artefact);
-        artefact.setContentDate(artefact.getContentDate().toLocalDate().atTime(LocalTime.MIN));
-        artefact.setLastReceivedDate(LocalDateTime.now());
-
-        boolean isExisting = applyExistingArtefact(artefact);
-
-        String blobUrl = azureBlobService.uploadFlatFile(
-            isExisting ? ArtefactHelper.getUuidFromUrl(artefact.getPayload()) : UUID.randomUUID().toString(),
-            file
-        );
+        String existingPayload = applyExistingArtefact(artefact) ? artefact.getPayload() : null;
+        String blobUrl = azureBlobService.uploadFlatFile(UUID.randomUUID().toString(), file);
 
         artefact.setPayload(blobUrl);
+        Artefact createdArtefact = artefactRepository.save(artefact);
 
-        return artefactRepository.save(artefact);
+        // Remove the old payload after superseded by the new one
+        if (existingPayload != null) {
+            azureBlobService.deleteBlob(ArtefactHelper.getUuidFromUrl(existingPayload));
+        }
+
+        return createdArtefact;
     }
 
     @Async
-    public void processCreatedPublication(Artefact artefact) {
-        artefactService.generatePublicationFiles(artefact);
+    public void processCreatedPublication(Artefact artefact, String payload) {
+        artefactService.generatePublicationFiles(artefact, payload);
         artefactTriggerService.checkAndTriggerSubscriptionManagement(artefact);
     }
 
@@ -140,8 +128,8 @@ public class PublicationService {
         Optional<Artefact> foundArtefact = artefactRepository.findArtefactByUpdateLogic(
             artefact.getLocationId(),
             artefact.getContentDate(),
-            artefact.getLanguage().name(),
-            artefact.getListType().name(),
+            artefact.getLanguage(),
+            artefact.getListType(),
             artefact.getProvenance()
         );
 
@@ -158,7 +146,7 @@ public class PublicationService {
         return foundArtefact.isPresent();
     }
 
-    private void applyInternalLocationId(Artefact artefact) {
+    public void applyInternalLocationId(Artefact artefact) {
         if ("MANUAL_UPLOAD".equalsIgnoreCase(artefact.getProvenance())) {
             return;
         }

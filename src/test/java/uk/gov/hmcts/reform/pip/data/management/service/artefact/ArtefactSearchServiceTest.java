@@ -86,9 +86,10 @@ class ArtefactSearchServiceTest {
 
         location = ArtefactConstantTestHelper.initialiseCourts();
 
-        lenient().when(artefactRepository.findArtefactByUpdateLogic(artefact.getLocationId(), artefact.getContentDate(),
-                                                                    artefact.getLanguage().name(),
-                                                                    artefact.getListType().name(),
+        lenient().when(artefactRepository.findArtefactByUpdateLogic(artefact.getLocationId(),
+                                                                    artefact.getContentDate(),
+                                                                    artefact.getLanguage(),
+                                                                    artefact.getListType(),
                                                                     artefact.getProvenance()
             ))
             .thenReturn(Optional.empty());
@@ -124,9 +125,10 @@ class ArtefactSearchServiceTest {
 
         location = ArtefactConstantTestHelper.initialiseCourts();
 
-        lenient().when(artefactRepository.findArtefactByUpdateLogic(artefact.getLocationId(), artefact.getContentDate(),
-                                                                    artefact.getLanguage().name(),
-                                                                    artefact.getListType().name(),
+        lenient().when(artefactRepository.findArtefactByUpdateLogic(artefact.getLocationId(),
+                                                                    artefact.getContentDate(),
+                                                                    artefact.getLanguage(),
+                                                                    artefact.getListType(),
                                                                     artefact.getProvenance()
             ))
             .thenReturn(Optional.empty());

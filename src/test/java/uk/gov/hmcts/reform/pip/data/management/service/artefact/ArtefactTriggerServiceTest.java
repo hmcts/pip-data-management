@@ -82,9 +82,10 @@ class ArtefactTriggerServiceTest {
 
         location = ArtefactConstantTestHelper.initialiseCourts();
 
-        lenient().when(artefactRepository.findArtefactByUpdateLogic(artefact.getLocationId(),artefact.getContentDate(),
-                                                                    artefact.getLanguage().name(),
-                                                                    artefact.getListType().name(),
+        lenient().when(artefactRepository.findArtefactByUpdateLogic(artefact.getLocationId(),
+                                                                    artefact.getContentDate(),
+                                                                    artefact.getLanguage(),
+                                                                    artefact.getListType(),
                                                                     artefact.getProvenance()))
             .thenReturn(Optional.empty());
         lenient().when(artefactRepository.save(artefactWithPayloadUrl)).thenReturn(artefactWithIdAndPayloadUrl);
@@ -110,9 +111,10 @@ class ArtefactTriggerServiceTest {
 
         location = ArtefactConstantTestHelper.initialiseCourts();
 
-        lenient().when(artefactRepository.findArtefactByUpdateLogic(artefact.getLocationId(),artefact.getContentDate(),
-                                                                    artefact.getLanguage().name(),
-                                                                    artefact.getListType().name(),
+        lenient().when(artefactRepository.findArtefactByUpdateLogic(artefact.getLocationId(),
+                                                                    artefact.getContentDate(),
+                                                                    artefact.getLanguage(),
+                                                                    artefact.getListType(),
                                                                     artefact.getProvenance()))
             .thenReturn(Optional.empty());
         lenient().when(artefactRepository.save(artefactWithPayloadUrl)).thenReturn(artefactWithIdAndPayloadUrl);
