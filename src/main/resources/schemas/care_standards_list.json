@@ -85,15 +85,6 @@
     "venue"
   ],
   "properties": {
-    "@schemaLocation": {
-      "title": "@schemalocation",
-      "type": "string",
-      "default": "",
-      "examples": [
-        "https://json-schema.org/draft/2020-12/schema"
-      ],
-      "pattern": "^(?!.*<[^>]+>).*$"
-    },
     "document": {
       "title": "document",
       "type": "object",
