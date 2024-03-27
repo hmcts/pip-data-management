@@ -54,6 +54,7 @@
                             "caseNumber": "12341234",
                             "caseJurisdictionET": "Family Law",
                             "caseSequenceIndicator": "2 of 3",
+                            "caseType": "case type",
                             "party": [
                               {
                                 "partyRole": "APPLICANT_PETITIONER",

@@ -69,7 +69,8 @@
                         "case": [
                           {
                             "caseName": "This is a case name",
-                            "caseNumber": "45684548"
+                            "caseNumber": "45684548",
+                            "caseType": "Case Type"
                           }
                         ]
                       },
@@ -79,7 +80,8 @@
                           {
                             "caseName": "A Vs B",
                             "caseNumber": "12345678",
-                            "caseSequenceIndicator": "2 of 3"
+                            "caseSequenceIndicator": "2 of 3",
+                            "caseType": "Case Type"
                           }
                         ]
                       }
@@ -112,11 +114,13 @@
                         "case": [
                           {
                             "caseName": "John Smith v Jane Doe",
-                            "caseNumber": "45684548"
+                            "caseNumber": "45684548",
+                            "caseType": "Case Type"
                           },
                           {
                             "caseName": "This is another case name",
-                            "caseNumber": "This is a case number"
+                            "caseNumber": "This is a case number",
+                            "caseType": "Case Type"
                           }
                         ]
                       }
