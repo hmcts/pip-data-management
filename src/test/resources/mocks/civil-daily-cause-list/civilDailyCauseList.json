@@ -46,7 +46,8 @@
                         "case": [
                           {
                             "caseName": "",
-                            "caseNumber": "45684548"
+                            "caseNumber": "45684548",
+                            "caseType": "case type"
                           }
                         ]
                       },
@@ -55,7 +56,8 @@
                         "case": [
                           {
                             "caseName": "A Vs B",
-                            "caseNumber": ""
+                            "caseNumber": "",
+                            "caseType": "case type"
                           }
                         ]
                       }
@@ -85,12 +87,14 @@
                         "case": [
                           {
                             "caseName": "",
-                            "caseNumber": "45684548"
+                            "caseNumber": "45684548",
+                            "caseType": "case type"
                           },
                           {
                             "caseName": "",
                             "caseNumber": "",
-                            "caseSequenceIndicator": "2 of 3"
+                            "caseSequenceIndicator": "2 of 3",
+                            "caseType": "case type"
                           }
                         ]
                       }
