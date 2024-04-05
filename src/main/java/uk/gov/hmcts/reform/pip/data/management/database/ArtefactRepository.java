@@ -133,8 +133,6 @@ public interface ArtefactRepository extends JpaRepository<Artefact, Long> {
 
     List<Artefact> findAllByLocationIdIn(List<String> locationId);
 
-    void deleteAllByArtefactIdIn(List<UUID> artefactId);
-
     @Transactional
     @Modifying
     @Query(value = "REFRESH MATERIALIZED VIEW sdp_mat_view_artefact", nativeQuery = true)
