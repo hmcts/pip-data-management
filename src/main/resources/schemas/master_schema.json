@@ -386,11 +386,6 @@
                                                         "type": "string",
                                                         "pattern": "^(?!.*<[^>]+>).*$"
                                                       },
-                                                      "individualMiddleName": {
-                                                        "title": "Individual Middle Name",
-                                                        "type": "string",
-                                                        "pattern": "^(?!.*<[^>]+>).*$"
-                                                      },
                                                       "individualSurname": {
                                                         "title": "Individual Surname",
                                                         "type": "string",
@@ -726,11 +721,6 @@
                                                 },
                                                 "individualForenames": {
                                                   "title": "Individual Forenames",
-                                                  "type": "string",
-                                                  "pattern": "^(?!.*<[^>]+>).*$"
-                                                },
-                                                "individualMiddleName": {
-                                                  "title": "Individual Middle Name",
                                                   "type": "string",
                                                   "pattern": "^(?!.*<[^>]+>).*$"
                                                 },
