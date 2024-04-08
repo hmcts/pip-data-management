@@ -70,4 +70,9 @@ class CustomExceptionsTest {
         assertEquals(TEST_MESSAGE, artefactNotFoundException.getMessage(), ASSERTION_MESSAGE);
     }
 
+    @Test
+    void testCreateArtefactConflictException() {
+        CreateArtefactConflictException conflictException = new CreateArtefactConflictException(TEST_MESSAGE);
+        assertEquals(TEST_MESSAGE, conflictException.getMessage(), ASSERTION_MESSAGE);
+    }
 }
