@@ -57,6 +57,7 @@ import static uk.gov.hmcts.reform.pip.data.management.helpers.ConstantsTestHelpe
 @SuppressWarnings({"PMD.ExcessiveImports", "PMD.TooManyMethods"})
 class ArtefactServiceTest {
     private static final String FILES_GENERATION_MESSAGE = "File generation flag does not match";
+    private static final String PAYLOAD = "payload";
 
     @MockBean
     ArtefactRepository artefactRepository;
@@ -96,9 +97,10 @@ class ArtefactServiceTest {
 
         location = ArtefactConstantTestHelper.initialiseCourts();
 
-        lenient().when(artefactRepository.findArtefactByUpdateLogic(artefact.getLocationId(),artefact.getContentDate(),
-                                                                    artefact.getLanguage().name(),
-                                                                    artefact.getListType().name(),
+        lenient().when(artefactRepository.findArtefactByUpdateLogic(artefact.getLocationId(),
+                                                                    artefact.getContentDate(),
+                                                                    artefact.getLanguage(),
+                                                                    artefact.getListType(),
                                                                     artefact.getProvenance()))
             .thenReturn(Optional.empty());
         lenient().when(artefactRepository.save(artefactWithPayloadUrl)).thenReturn(artefactWithIdAndPayloadUrl);
@@ -119,9 +121,10 @@ class ArtefactServiceTest {
 
         location = ArtefactConstantTestHelper.initialiseCourts();
 
-        lenient().when(artefactRepository.findArtefactByUpdateLogic(artefact.getLocationId(),artefact.getContentDate(),
-                                                                    artefact.getLanguage().name(),
-                                                                    artefact.getListType().name(),
+        lenient().when(artefactRepository.findArtefactByUpdateLogic(artefact.getLocationId(),
+                                                                    artefact.getContentDate(),
+                                                                    artefact.getLanguage(),
+                                                                    artefact.getListType(),
                                                                     artefact.getProvenance()))
             .thenReturn(Optional.empty());
         lenient().when(artefactRepository.save(artefactWithPayloadUrl)).thenReturn(artefactWithIdAndPayloadUrl);
@@ -411,14 +414,14 @@ class ArtefactServiceTest {
     @Test
     void testGeneratePublicationFilesIfPayloadSizeWithinLimit() {
         artefactWithIdAndPayloadUrl.setPayloadSize(50f);
-        artefactService.generatePublicationFiles(artefactWithIdAndPayloadUrl);
-        verify(channelManagementService).requestFileGeneration(ARTEFACT_ID);
+        artefactService.generatePublicationFiles(artefactWithIdAndPayloadUrl, PAYLOAD);
+        verify(channelManagementService).requestFileGeneration(ARTEFACT_ID, PAYLOAD);
     }
 
     @Test
     void testGeneratePublicationFilesIfPayloadSizeOverLimit() {
         artefactWithIdAndPayloadUrl.setPayloadSize(200f);
-        artefactService.generatePublicationFiles(artefactWithIdAndPayloadUrl);
+        artefactService.generatePublicationFiles(artefactWithIdAndPayloadUrl, PAYLOAD);
         verifyNoInteractions(channelManagementService);
     }
 

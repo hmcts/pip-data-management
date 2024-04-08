@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientException;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
@@ -30,10 +31,11 @@ public class ChannelManagementService {
         this.webClient = webClient;
     }
 
-    public String requestFileGeneration(UUID artefactId) {
+    public String requestFileGeneration(UUID artefactId, String payload) {
         try {
             return webClient.post()
-                .uri(url + "/publication/" + artefactId)
+                .uri(url + "/publication/v2/" + artefactId)
+                .body(BodyInserters.fromValue(payload))
                 .attributes(clientRegistrationId("channelManagementApi"))
                 .retrieve()
                 .bodyToMono(String.class)
