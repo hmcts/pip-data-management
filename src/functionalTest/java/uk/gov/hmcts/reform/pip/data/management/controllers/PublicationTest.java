@@ -67,7 +67,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @ActiveProfiles(profiles = "functional")
 @SuppressWarnings({"PMD.ExcessiveImports", "PMD.ExcessiveClassLength",
-    "PMD.CyclomaticComplexity", "PMD.TooManyMethods", "PMD.LawOfDemeter"})
+    "PMD.CyclomaticComplexity", "PMD.TooManyMethods", "PMD.SignatureDeclareThrowsException",
+    "PMD.CouplingBetweenObjects", "PMD.LooseCoupling"})
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
 @WithMockUser(username = "admin", authorities = {"APPROLE_api.request.admin"})
 class PublicationTest {

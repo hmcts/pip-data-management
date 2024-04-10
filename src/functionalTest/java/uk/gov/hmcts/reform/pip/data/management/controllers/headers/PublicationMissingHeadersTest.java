@@ -67,6 +67,7 @@ class PublicationMissingHeadersTest {
     private static MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
     private static ObjectMapper objectMapper;
 
+    @SuppressWarnings("PMD.LooseCoupling")
     HttpHeaders httpHeaders;
 
     @BeforeAll
