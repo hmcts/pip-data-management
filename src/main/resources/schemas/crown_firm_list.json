@@ -194,33 +194,6 @@
             "Family court"
           ],
           "pattern": "^(?!.*<[^>]+>).*$"
-
-        },
-        "region": {
-          "description": "Region details",
-          "title": "Region Details",
-          "type": "object",
-          "properties": {
-            "name": {
-              "description": "region name",
-              "title": "Region name",
-              "type": "string",
-              "default": "",
-              "examples": [
-                "Wales"
-              ],
-              "pattern": "^(?!.*<[^>]+>).*$"
-            },
-            "regionalJOH": {
-              "type": "array",
-              "description": "Judiciary for the region",
-              "title": "Judiciary",
-              "items":{
-                "type": "object",
-                "$ref": "#/$defs/judiciary"
-              }
-            }
-          }
         }
       }
     },
