@@ -11,7 +11,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 import org.testcontainers.shaded.org.apache.commons.io.IOUtils;
-import uk.gov.hmcts.reform.pip.data.management.controllers.PublicationController;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.LocationRepository;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CreateLocationConflictException;
@@ -439,15 +438,12 @@ class LocationServiceTest {
 
     @Test
     void testHandleUploadInvalidCsv() throws IOException {
-
         try (InputStream inputStream = this.getClass().getClassLoader()
             .getResourceAsStream("csv/InvalidCsv.txt")) {
-
 
             MultipartFile multipartFile = new MockMultipartFile(FILE, FILE_NAME,
                                                                 FILE_TYPE, IOUtils.toByteArray(inputStream)
             );
-
 
             assertThrows(CsvParseException.class, () -> locationService.uploadLocations(multipartFile));
         }
@@ -455,15 +451,12 @@ class LocationServiceTest {
 
     @Test
     void testHandleUploadInvalidCsvWithNoLocationType() throws IOException {
-
         try (InputStream inputStream = this.getClass().getClassLoader()
             .getResourceAsStream("csv/InvalidNoLocationType.csv")) {
-
 
             MultipartFile multipartFile = new MockMultipartFile(FILE, FILE_NAME,
                                                                 FILE_TYPE, IOUtils.toByteArray(inputStream)
             );
-
 
             assertThrows(CsvParseException.class, () -> locationService.uploadLocations(multipartFile));
         }

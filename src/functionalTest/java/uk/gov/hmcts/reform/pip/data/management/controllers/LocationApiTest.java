@@ -314,7 +314,6 @@ class LocationApiTest {
         assertEquals(0, returnedLocations.size(), LOCATION_RESULT);
     }
 
-
     @Test
     @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})
     void testFilterLocationsByJurisdictionAndRegion() throws Exception {
