@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.LocationRepository;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CreateLocationConflictException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CsvParseException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.LocationNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.helpers.TestingSupportLocationHelper;
@@ -163,7 +164,10 @@ public class LocationService {
                         locationCsv.getProvenanceLocationId(),
                         LocationType.valueOfCsv(locationCsv.getProvenanceLocationType()))));
 
-                savedLocations.add(locationRepository.save(location));
+                Optional<Location> savedLocation = saveLocationToRepository(location);
+                if (savedLocation.isPresent()) {
+                    savedLocations.add(savedLocation.get());
+                }
             });
 
             return savedLocations;
@@ -174,8 +178,45 @@ public class LocationService {
     }
 
     public String createLocation(Integer locationId, String locationName) {
-        locationRepository.save(TestingSupportLocationHelper.createLocation(locationId, locationName));
-        return String.format("Location with ID %s and name %s created successfully", locationId, locationName);
+        Optional<Location> createdLocation = saveLocationToRepository(
+            TestingSupportLocationHelper.createLocation(locationId, locationName)
+        );
+
+        if (createdLocation.isPresent()) {
+            return String.format("Location with ID %s and name %s created successfully", locationId, locationName);
+        }
+
+        throw new CreateLocationConflictException(String.format(
+            "Location with ID %d not created. The location name '%s' already exists", locationId, locationName)
+        );
+    }
+
+    private Optional<Location> saveLocationToRepository(Location locationToSave) {
+        Optional<Location> locationByEnglishName = locationRepository.getLocationByName(locationToSave.getName());
+        if (locationByEnglishName.isPresent()
+            && !locationByEnglishName.get().getLocationId().equals(locationToSave.getLocationId())) {
+            log.error(writeLog(String.format(
+                "Record with unique ID %d not saved. The location name '%s' already exists in location with ID %d",
+                locationToSave.getLocationId(), locationToSave.getName(), locationByEnglishName.get().getLocationId()
+            )));
+            return Optional.empty();
+        }
+
+        Optional<Location> locationByWelshName = locationRepository.getLocationByWelshName(
+            locationToSave.getWelshName()
+        );
+        if (locationByWelshName.isPresent()
+            && !locationByWelshName.get().getLocationId().equals(locationToSave.getLocationId())) {
+            log.error(writeLog(String.format(
+                "Record with unique ID %d not saved. The Welsh location name '%s' already exists in location with "
+                    + "ID %d", locationToSave.getLocationId(), locationToSave.getWelshName(),
+                locationByWelshName.get().getLocationId()
+            )));
+            return Optional.empty();
+        }
+
+        Location savedLocation = locationRepository.save(locationToSave);
+        return savedLocation == null ? Optional.empty() : Optional.of(savedLocation);
     }
 
     /**

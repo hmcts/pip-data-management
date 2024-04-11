@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.pip.data.management.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import nl.altindag.log.LogCaptor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,8 +11,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 import org.testcontainers.shaded.org.apache.commons.io.IOUtils;
+import uk.gov.hmcts.reform.pip.data.management.controllers.PublicationController;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.LocationRepository;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CreateLocationConflictException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CsvParseException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.LocationNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
@@ -32,6 +35,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -46,7 +50,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-@SuppressWarnings("PMD.ExcessiveImports")
+@SuppressWarnings({"PMD.ExcessiveImports", "PMD.TooManyMethods"})
 class LocationServiceTest {
 
     @Mock
@@ -81,9 +85,17 @@ class LocationServiceTest {
     private static final Integer LOCATION_ID = 123;
     private static final String LOCATION_NAME = "TEST_PIP_1234_Court123";
     private static final String LOCATION_NAME_PREFIX = "TEST_PIP_1234_";
+    private static final String LOCATION_NAME1 = "Test Location 1";
+    private static final String WELSH_LOCATION_NAME1 = "Welsh Test Location 1";
+    private static final String LOCATION_NAME2 = "Test Location 2";
+    private static final String WELSH_LOCATION_NAME2 = "Welsh Test Location 2";
+    private static final String LOCATION_NAME3 = "Test Location 3";
+    private static final String WELSH_LOCATION_NAME3 = "Welsh Test Location 3";
 
     private static final String FIRST_LOCATION_NOT_FOUND = "First location has not been found";
     private static final String SECOND_LOCATION_NOT_FOUND = "Second location has not been found";
+    private static final String CREATE_LOCATION_MESSAGE = "Location created message does not match";
+    private static final String ERROR_LOG_MESSAGE = "Error log does not match";
     private static final String REQUESTER_NAME = "ReqName";
     private static final String EMAIL = "test@test.com";
     private static final String FILE = "file";
@@ -93,16 +105,16 @@ class LocationServiceTest {
     @BeforeEach
     void setup() {
         LocationCsv locationCsvFirstExample = new LocationCsv();
-        locationCsvFirstExample.setLocationName("Venue Name First Example");
+        locationCsvFirstExample.setLocationName(LOCATION_NAME2);
         locationCsvFirstExample.setProvenanceLocationType("venue");
-        locationCsvFirstExample.setWelshLocationName("Welsh Venue name first example");
+        locationCsvFirstExample.setWelshLocationName(WELSH_LOCATION_NAME2);
         locationFirstExample = new Location(locationCsvFirstExample);
         locationFirstExample.setLocationId(1);
 
         LocationCsv locationCsvSecondExample = new LocationCsv();
-        locationCsvSecondExample.setLocationName("Venue Name Second Example");
+        locationCsvSecondExample.setLocationName(LOCATION_NAME3);
         locationCsvSecondExample.setProvenanceLocationType("venue");
-        locationCsvSecondExample.setWelshLocationName("Welsh Venue name second example");
+        locationCsvSecondExample.setWelshLocationName(WELSH_LOCATION_NAME3);
         locationSecondExample = new Location(locationCsvSecondExample);
 
         locationDeletion = new LocationDeletion();
@@ -458,12 +470,132 @@ class LocationServiceTest {
     }
 
     @Test
-    void testCreateLocation() {
+    void testUploadLocationCsvContainingExistingLocations() throws IOException {
+        when(locationRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+        when(locationRepository.getLocationByName(LOCATION_NAME1)).thenReturn(Optional.empty());
+        when(locationRepository.getLocationByName(LOCATION_NAME2)).thenReturn(Optional.of(locationFirstExample));
+        when(locationRepository.getLocationByName(LOCATION_NAME3)).thenReturn(Optional.empty());
+
+        when(locationRepository.getLocationByWelshName(WELSH_LOCATION_NAME1)).thenReturn(Optional.empty());
+        when(locationRepository.getLocationByWelshName(WELSH_LOCATION_NAME3))
+            .thenReturn(Optional.of(locationFirstExample));
+
+        try (InputStream inputStream = this.getClass().getClassLoader()
+            .getResourceAsStream("csv/ValidCsvWithExistingLocationName.csv");
+             LogCaptor logCaptor = LogCaptor.forClass(LocationService.class)) {
+
+            MultipartFile multipartFile = new MockMultipartFile(FILE, FILE_NAME, FILE_TYPE,
+                                                                IOUtils.toByteArray(inputStream));
+
+            List<Location> locations = new ArrayList<>(locationService.uploadLocations(multipartFile));
+
+            assertThat(locations)
+                .hasSize(1);
+
+            assertThat(locations.get(0).getName())
+                .as("Location name does not match")
+                .isEqualTo(LOCATION_NAME1);
+
+            assertThat(locations.get(0).getWelshName())
+                .as("Welsh location name does not match")
+                .isEqualTo(WELSH_LOCATION_NAME1);
+
+            assertThat(logCaptor.getErrorLogs())
+                .as(ERROR_LOG_MESSAGE)
+                .hasSize(2);
+
+            assertThat(logCaptor.getErrorLogs().get(0))
+                .as(ERROR_LOG_MESSAGE)
+                .contains("Record with unique ID 91 not saved. The location name 'Test Location 2' already exists in "
+                              + "location with ID 1");
+
+            assertThat(logCaptor.getErrorLogs().get(1))
+                .as(ERROR_LOG_MESSAGE)
+                .contains("Record with unique ID 92 not saved. The Welsh location name 'Welsh Test Location 3' "
+                              + "already exists in location with ID 1");
+
+            verify(locationRepository).save(any());
+        }
+    }
+
+
+    @Test
+    void testCreateLocationSuccess() {
+        Location createdLocation = new Location();
+        when(locationRepository.getLocationByName(LOCATION_NAME)).thenReturn(Optional.empty());
+        when(locationRepository.getLocationByWelshName(LOCATION_NAME)).thenReturn(Optional.empty());
+        when(locationRepository.save(any())).thenReturn(createdLocation);
+
         assertThat(locationService.createLocation(LOCATION_ID, LOCATION_NAME))
-            .as("Location created message does not match")
+            .as(CREATE_LOCATION_MESSAGE)
             .isEqualTo(
                 "Location with ID " + LOCATION_ID + " and name " + LOCATION_NAME + " created successfully"
             );
+
+        verify(locationRepository).save(any());
+    }
+
+    @Test
+    void testCreateLocationWithExistingEnglishLocationName() {
+        when(locationRepository.getLocationByName(LOCATION_NAME2)).thenReturn(Optional.of(locationFirstExample));
+
+        assertThatThrownBy(() -> locationService.createLocation(LOCATION_ID, LOCATION_NAME2))
+            .as(CREATE_LOCATION_MESSAGE)
+            .isInstanceOf(CreateLocationConflictException.class)
+            .hasMessage("Location with ID " + LOCATION_ID + " not created. The location name '" + LOCATION_NAME2
+                            + "' already exists");
+
+        verify(locationRepository).getLocationByName(any());
+        verify(locationRepository, never()).getLocationByWelshName(any());
+        verify(locationRepository, never()).save(any());
+    }
+
+    @Test
+    void testCreateLocationWithExistingWelshLocationName() {
+        when(locationRepository.getLocationByName(WELSH_LOCATION_NAME2)).thenReturn(Optional.empty());
+        when(locationRepository.getLocationByWelshName(WELSH_LOCATION_NAME2))
+            .thenReturn(Optional.of(locationFirstExample));
+
+        assertThatThrownBy(() -> locationService.createLocation(LOCATION_ID, WELSH_LOCATION_NAME2))
+            .as(CREATE_LOCATION_MESSAGE)
+            .isInstanceOf(CreateLocationConflictException.class)
+            .hasMessage("Location with ID " + LOCATION_ID + " not created. The location name '" + WELSH_LOCATION_NAME2
+                            + "' already exists");
+
+        verify(locationRepository).getLocationByName(any());
+        verify(locationRepository).getLocationByWelshName(any());
+        verify(locationRepository, never()).save(any());
+    }
+
+    @Test
+    void testCreateLocationWithExistingEnglishLocationNameAndSameLocationId() {
+        Location createdLocation = new Location();
+        when(locationRepository.getLocationByName(LOCATION_NAME2)).thenReturn(Optional.of(locationFirstExample));
+        when(locationRepository.getLocationByWelshName(LOCATION_NAME2)).thenReturn(Optional.empty());
+        when(locationRepository.save(any())).thenReturn(createdLocation);
+
+        assertThat(locationService.createLocation(1, LOCATION_NAME2))
+            .as(CREATE_LOCATION_MESSAGE)
+            .isEqualTo(
+                "Location with ID 1 and name " + LOCATION_NAME2 + " created successfully"
+            );
+
+        verify(locationRepository).save(any());
+    }
+
+    @Test
+    void testCreateLocationWithExistingWelshLocationNameAndSameLocationId() {
+        Location createdLocation = new Location();
+        when(locationRepository.getLocationByName(WELSH_LOCATION_NAME2)).thenReturn(Optional.empty());
+        when(locationRepository.getLocationByWelshName(WELSH_LOCATION_NAME2)).thenReturn(Optional.empty());
+        when(locationRepository.save(any())).thenReturn(createdLocation);
+
+        assertThat(locationService.createLocation(1, WELSH_LOCATION_NAME2))
+            .as(CREATE_LOCATION_MESSAGE)
+            .isEqualTo(
+                "Location with ID 1 and name " + WELSH_LOCATION_NAME2 + " created successfully"
+            );
+
         verify(locationRepository).save(any());
     }
 
@@ -539,7 +671,7 @@ class LocationServiceTest {
             .thenReturn(azureAccount);
         when(publicationService.sendSystemAdminEmail(List.of(EMAIL), REQUESTER_NAME,
             ActionResult.ATTEMPTED,
-"There are active artefacts for following location: Venue Name First Example",
+"There are active artefacts for following location: " + LOCATION_NAME2,
              ChangeType.DELETE_LOCATION))
             .thenReturn("");
 
@@ -563,7 +695,7 @@ class LocationServiceTest {
             .thenReturn(List.of(EMAIL));
         when(publicationService.sendSystemAdminEmail(List.of(EMAIL), REQUESTER_NAME,
             ActionResult.ATTEMPTED,
-"There are active subscriptions for the following location: Venue Name First Example",
+"There are active subscriptions for the following location: " + LOCATION_NAME2,
             ChangeType.DELETE_LOCATION))
             .thenReturn("");
 
