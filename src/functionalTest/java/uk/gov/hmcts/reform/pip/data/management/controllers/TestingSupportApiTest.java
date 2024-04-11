@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
@@ -35,6 +34,8 @@ import java.util.Objects;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.http.HttpStatus.CONFLICT;
+import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -99,7 +100,7 @@ class TestingSupportApiTest {
 
         assertThat(postResponse.getResponse().getStatus())
             .as(STATUS_CODE_MESSAGE)
-            .isEqualTo(HttpStatus.CREATED.value());
+            .isEqualTo(CREATED.value());
 
         assertThat(postResponse.getResponse().getContentAsString())
             .as(CREATE_LOCATION_MESSAGE)
@@ -127,13 +128,13 @@ class TestingSupportApiTest {
 
         assertThat(postResponse.getResponse().getStatus())
             .as(STATUS_CODE_MESSAGE)
-            .isEqualTo(HttpStatus.CREATED.value());
+            .isEqualTo(CREATED.value());
 
         postResponse = createLocationByIdAndName(LOCATION_ID2);
 
         assertThat(postResponse.getResponse().getStatus())
             .as(STATUS_CODE_MESSAGE)
-            .isEqualTo(HttpStatus.CONFLICT.value());
+            .isEqualTo(CONFLICT.value());
 
         assertThat(postResponse.getResponse().getContentAsString())
             .as(CREATE_LOCATION_MESSAGE)
