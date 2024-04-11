@@ -57,7 +57,7 @@
   </rule>
   <rule ref="category/java/design.xml/SignatureDeclareThrowsException">
     <properties>
-      <property name="IgnoreJUnitCompletely" value="true"/>
+      <property name="violationSuppressXPath" value="./ancestor::ClassDeclaration[contains(@SimpleName, 'Test')]"/>
     </properties>
   </rule>
   <rule ref="category/java/documentation.xml">

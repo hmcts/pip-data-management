@@ -57,7 +57,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @ActiveProfiles(profiles = "functional")
 @SuppressWarnings({"PMD.ExcessiveImports", "PMD.ExcessiveClassLength",
-    "PMD.CyclomaticComplexity", "PMD.TooManyMethods", "PMD.SignatureDeclareThrowsException"})
+    "PMD.CyclomaticComplexity", "PMD.TooManyMethods"})
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
 @WithMockUser(username = "admin", authorities = { "APPROLE_api.request.admin" })
 class PublicationInternalCourtIdTest {
