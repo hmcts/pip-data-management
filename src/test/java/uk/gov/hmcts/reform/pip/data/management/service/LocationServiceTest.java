@@ -8,6 +8,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 import org.testcontainers.shaded.org.apache.commons.io.IOUtils;
@@ -84,8 +85,6 @@ class LocationServiceTest {
     private static final Integer LOCATION_ID = 123;
     private static final String LOCATION_NAME = "TEST_PIP_1234_Court123";
     private static final String LOCATION_NAME_PREFIX = "TEST_PIP_1234_";
-    private static final String LOCATION_NAME1 = "Test Location 1";
-    private static final String WELSH_LOCATION_NAME1 = "Welsh Test Location 1";
     private static final String LOCATION_NAME2 = "Test Location 2";
     private static final String WELSH_LOCATION_NAME2 = "Welsh Test Location 2";
     private static final String LOCATION_NAME3 = "Test Location 3";
@@ -464,14 +463,10 @@ class LocationServiceTest {
 
     @Test
     void testUploadLocationCsvContainingExistingLocations() throws IOException {
-        when(locationRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
-        when(locationRepository.getLocationByName(LOCATION_NAME1)).thenReturn(Optional.empty());
-        when(locationRepository.getLocationByName(LOCATION_NAME2)).thenReturn(Optional.of(locationFirstExample));
-        when(locationRepository.getLocationByName(LOCATION_NAME3)).thenReturn(Optional.empty());
-
-        when(locationRepository.getLocationByWelshName(WELSH_LOCATION_NAME1)).thenReturn(Optional.empty());
-        when(locationRepository.getLocationByWelshName(WELSH_LOCATION_NAME3))
-            .thenReturn(Optional.of(locationFirstExample));
+        when(locationRepository.save(any()))
+            .thenReturn(locationFirstExample)
+            .thenThrow(DataIntegrityViolationException.class)
+            .thenReturn(locationSecondExample);
 
         try (InputStream inputStream = this.getClass().getClassLoader()
             .getResourceAsStream("csv/ValidCsvWithExistingLocationName.csv");
@@ -483,42 +478,38 @@ class LocationServiceTest {
             List<Location> locations = new ArrayList<>(locationService.uploadLocations(multipartFile));
 
             assertThat(locations)
-                .hasSize(1);
+                .hasSize(2);
 
             assertThat(locations.get(0).getName())
                 .as("Location name does not match")
-                .isEqualTo(LOCATION_NAME1);
+                .isEqualTo(LOCATION_NAME2);
 
             assertThat(locations.get(0).getWelshName())
                 .as("Welsh location name does not match")
-                .isEqualTo(WELSH_LOCATION_NAME1);
+                .isEqualTo(WELSH_LOCATION_NAME2);
+
+            assertThat(locations.get(1).getName())
+                .as("Location name does not match")
+                .isEqualTo(LOCATION_NAME3);
+
+            assertThat(locations.get(1).getWelshName())
+                .as("Welsh location name does not match")
+                .isEqualTo(WELSH_LOCATION_NAME3);
 
             assertThat(logCaptor.getErrorLogs())
                 .as(ERROR_LOG_MESSAGE)
-                .hasSize(2);
+                .hasSize(1);
 
             assertThat(logCaptor.getErrorLogs().get(0))
                 .as(ERROR_LOG_MESSAGE)
-                .contains("Record with unique ID 91 not saved. The location name 'Test Location 2' already exists in "
-                              + "location with ID 1");
-
-            assertThat(logCaptor.getErrorLogs().get(1))
-                .as(ERROR_LOG_MESSAGE)
-                .contains("Record with unique ID 92 not saved. The Welsh location name 'Welsh Test Location 3' "
-                              + "already exists in location with ID 1");
-
-            verify(locationRepository).save(any());
+                .contains("Record with ID 2 not saved. The location name 'Test Location 2' or Welsh location name "
+                              + "'Welsh Test Location 2' already exists");
         }
     }
 
 
     @Test
     void testCreateLocationSuccess() {
-        Location createdLocation = new Location();
-        when(locationRepository.getLocationByName(LOCATION_NAME)).thenReturn(Optional.empty());
-        when(locationRepository.getLocationByWelshName(LOCATION_NAME)).thenReturn(Optional.empty());
-        when(locationRepository.save(any())).thenReturn(createdLocation);
-
         assertThat(locationService.createLocation(LOCATION_ID, LOCATION_NAME))
             .as(CREATE_LOCATION_MESSAGE)
             .isEqualTo(
@@ -529,67 +520,14 @@ class LocationServiceTest {
     }
 
     @Test
-    void testCreateLocationWithExistingEnglishLocationName() {
-        when(locationRepository.getLocationByName(LOCATION_NAME2)).thenReturn(Optional.of(locationFirstExample));
+    void testCreateLocationWithExistingLocationName() {
+        when(locationRepository.save(any())).thenThrow(DataIntegrityViolationException.class);
 
         assertThatThrownBy(() -> locationService.createLocation(LOCATION_ID, LOCATION_NAME2))
             .as(CREATE_LOCATION_MESSAGE)
             .isInstanceOf(CreateLocationConflictException.class)
             .hasMessage("Location with ID " + LOCATION_ID + " not created. The location name '" + LOCATION_NAME2
                             + "' already exists");
-
-        verify(locationRepository).getLocationByName(any());
-        verify(locationRepository, never()).getLocationByWelshName(any());
-        verify(locationRepository, never()).save(any());
-    }
-
-    @Test
-    void testCreateLocationWithExistingWelshLocationName() {
-        when(locationRepository.getLocationByName(WELSH_LOCATION_NAME2)).thenReturn(Optional.empty());
-        when(locationRepository.getLocationByWelshName(WELSH_LOCATION_NAME2))
-            .thenReturn(Optional.of(locationFirstExample));
-
-        assertThatThrownBy(() -> locationService.createLocation(LOCATION_ID, WELSH_LOCATION_NAME2))
-            .as(CREATE_LOCATION_MESSAGE)
-            .isInstanceOf(CreateLocationConflictException.class)
-            .hasMessage("Location with ID " + LOCATION_ID + " not created. The location name '" + WELSH_LOCATION_NAME2
-                            + "' already exists");
-
-        verify(locationRepository).getLocationByName(any());
-        verify(locationRepository).getLocationByWelshName(any());
-        verify(locationRepository, never()).save(any());
-    }
-
-    @Test
-    void testCreateLocationWithExistingEnglishLocationNameAndSameLocationId() {
-        Location createdLocation = new Location();
-        when(locationRepository.getLocationByName(LOCATION_NAME2)).thenReturn(Optional.of(locationFirstExample));
-        when(locationRepository.getLocationByWelshName(LOCATION_NAME2)).thenReturn(Optional.empty());
-        when(locationRepository.save(any())).thenReturn(createdLocation);
-
-        assertThat(locationService.createLocation(1, LOCATION_NAME2))
-            .as(CREATE_LOCATION_MESSAGE)
-            .isEqualTo(
-                "Location with ID 1 and name " + LOCATION_NAME2 + " created successfully"
-            );
-
-        verify(locationRepository).save(any());
-    }
-
-    @Test
-    void testCreateLocationWithExistingWelshLocationNameAndSameLocationId() {
-        Location createdLocation = new Location();
-        when(locationRepository.getLocationByName(WELSH_LOCATION_NAME2)).thenReturn(Optional.empty());
-        when(locationRepository.getLocationByWelshName(WELSH_LOCATION_NAME2)).thenReturn(Optional.empty());
-        when(locationRepository.save(any())).thenReturn(createdLocation);
-
-        assertThat(locationService.createLocation(1, WELSH_LOCATION_NAME2))
-            .as(CREATE_LOCATION_MESSAGE)
-            .isEqualTo(
-                "Location with ID 1 and name " + WELSH_LOCATION_NAME2 + " created successfully"
-            );
-
-        verify(locationRepository).save(any());
     }
 
     @Test

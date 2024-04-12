@@ -12,6 +12,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -28,7 +29,12 @@ import java.util.List;
 @Entity
 @Data
 @NoArgsConstructor
-@Table(name = "location")
+@Table(
+    name = "location",
+    uniqueConstraints = {
+        @UniqueConstraint(name = "unique_location_name_constraint", columnNames = {"name"}),
+        @UniqueConstraint(name = "unique_welsh_location_name_constraint", columnNames = {"welsh_name"})
+    })
 public class Location {
 
     private static final String LIST_ARRAY = "list-array";
