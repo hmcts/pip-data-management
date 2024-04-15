@@ -32,7 +32,6 @@
                     "individualDetails": {
                       "title": "Mr",
                       "individualForenames": "Test forename 2",
-                      "individualMiddleName": "X",
                       "individualSurname": "Test Surname 2"
                     },
                     "friendlyRoleName": "This is a role name"
@@ -42,7 +41,6 @@
                     "individualDetails": {
                       "title": "Capt.",
                       "individualForenames": "Test forename",
-                      "individualMiddleName": "A",
                       "individualSurname": "Test Surname"
                     },
                     "friendlyRoleName": "This is a role name"
@@ -52,7 +50,6 @@
                     "individualDetails": {
                       "title": "Dr",
                       "individualForenames": "Test forename 2",
-                      "individualMiddleName": "G",
                       "individualSurname": "Test Surname 2"
                     },
                     "friendlyRoleName": "This is a role name"
@@ -100,7 +97,6 @@
                     "individualDetails": {
                       "title": "Ms",
                       "individualForenames": "Test forename",
-                      "individualMiddleName": "B",
                       "individualSurname": "Test Surname"
                     }
                   },
@@ -109,7 +105,6 @@
                       "individualDetails": {
                         "title": "Sir",
                         "individualForenames": "Test forename",
-                        "individualMiddleName": "V",
                         "individualSurname": "Test Surname"
                       },
                       "friendlyRoleName": "This is a role name"
@@ -119,7 +114,6 @@
                       "individualDetails": {
                         "title": "Lord",
                         "individualForenames": "Test forename",
-                        "individualMiddleName": "A",
                         "individualSurname": "Test Surname"
                       },
                       "friendlyRoleName": "This is a role name"
@@ -129,7 +123,6 @@
                       "individualDetails": {
                         "title": "Dame",
                         "individualForenames": "Test forename",
-                        "individualMiddleName": "H",
                         "individualSurname": "Test Surname"
                       },
                       "friendlyRoleName": "This is a role name"
@@ -152,7 +145,6 @@
                       "individualDetails": {
                         "title": "Ms",
                         "individualForenames": "Test forename",
-                        "individualMiddleName": "G",
                         "individualSurname": "Test Surname"
                       }
                     },
@@ -161,7 +153,6 @@
                         "individualDetails": {
                           "title": "Sir",
                           "individualForenames": "Test forename",
-                          "individualMiddleName": "N",
                           "individualSurname": "Test Surname"
                         },
                         "friendlyRoleName": "This is a role name"
@@ -171,7 +162,6 @@
                         "individualDetails": {
                           "title": "Lord",
                           "individualForenames": "Test forename",
-                          "individualMiddleName": "P",
                           "individualSurname": "Test Surname"
                         },
                         "friendlyRoleName": "This is a role name"
@@ -181,7 +171,6 @@
                         "individualDetails": {
                           "title": "Dame",
                           "individualForenames": "Test forename",
-                          "individualMiddleName": "Q",
                           "individualSurname": "Test Surname"
                         },
                         "friendlyRoleName": "This is a role name"
@@ -208,7 +197,6 @@
                       "individualDetails": {
                         "title": "Ms",
                         "individualForenames": "Test forename",
-                        "individualMiddleName": "1",
                         "individualSurname": "Test Surname"
                       }
                     },
@@ -217,7 +205,6 @@
                         "individualDetails": {
                           "title": "Sir",
                           "individualForenames": "Test forename",
-                          "individualMiddleName": "2",
                           "individualSurname": "Test Surname"
                         },
                         "friendlyRoleName": "This is a role name"
@@ -227,7 +214,6 @@
                         "individualDetails": {
                           "title": "Lord",
                           "individualForenames": "Test forename",
-                          "individualMiddleName": "3",
                           "individualSurname": "Test Surname"
                         },
                         "friendlyRoleName": "This is a role name"
@@ -237,7 +223,6 @@
                         "individualDetails": {
                           "title": "Dame",
                           "individualForenames": "Test forename",
-                          "individualMiddleName": "4",
                           "individualSurname": "Test Surname"
                         },
                         "friendlyRoleName": "This is a role name"
@@ -261,7 +246,6 @@
                         "individualDetails": {
                           "title": "Ms",
                           "individualForenames": "Test forename",
-                          "individualMiddleName": "5",
                           "individualSurname": "Test Surname"
                         }
                       },
@@ -270,7 +254,6 @@
                           "individualDetails": {
                             "title": "Sir",
                             "individualForenames": "Test forename",
-                            "individualMiddleName": "6",
                             "individualSurname": "Test Surname"
                           },
                           "friendlyRoleName": "This is a role name"
@@ -280,7 +263,6 @@
                           "individualDetails": {
                             "title": "Lord",
                             "individualForenames": "Test forename",
-                            "individualMiddleName": "7",
                             "individualSurname": "Test Surname"
                           },
                           "friendlyRoleName": "This is a role name"
@@ -290,7 +272,6 @@
                           "individualDetails": {
                             "title": "Dame",
                             "individualForenames": "Test forename",
-                            "individualMiddleName": "8",
                             "individualSurname": "Test Surname"
                           },
                           "friendlyRoleName": "This is a role name"
