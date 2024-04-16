@@ -29,12 +29,7 @@ import java.util.List;
 @Entity
 @Data
 @NoArgsConstructor
-@Table(
-    name = "location",
-    uniqueConstraints = {
-        @UniqueConstraint(name = "unique_location_name_constraint", columnNames = {"name"}),
-        @UniqueConstraint(name = "unique_welsh_location_name_constraint", columnNames = {"welsh_name"})
-    })
+@Table(name = "location")
 public class Location {
 
     private static final String LIST_ARRAY = "list-array";
