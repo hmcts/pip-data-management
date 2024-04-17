@@ -131,6 +131,7 @@ public class ArtefactService {
         return azureBlobService.getBlobFile(ArtefactHelper.getUuidFromUrl(artefact.getPayload()));
     }
 
+    @SuppressWarnings("PMD.SimplifyBooleanReturns")
     public boolean isAuthorised(Artefact artefact, UUID userId) {
         if (artefact.getSensitivity().equals(Sensitivity.PUBLIC)) {
             return true;
