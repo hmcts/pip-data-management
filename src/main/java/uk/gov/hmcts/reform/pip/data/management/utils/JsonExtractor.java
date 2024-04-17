@@ -25,6 +25,7 @@ import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
 
 @Component
 @Slf4j
+@SuppressWarnings("PMD.LooseCoupling")
 public class JsonExtractor {
     private static final int SINGLE_CASE_COUNT = 1;
 

@@ -71,7 +71,6 @@ class ArtefactSearchServiceTest {
     private Artefact artefactWithIdAndPayloadUrl;
     private Artefact artefactWithIdAndPayloadUrlClassified;
 
-    private Location location;
     private static final String ABC = "abc";
 
     @BeforeAll
@@ -84,7 +83,7 @@ class ArtefactSearchServiceTest {
         createPayloads();
         createClassifiedPayloads();
 
-        location = ArtefactConstantTestHelper.initialiseCourts();
+        Location location = ArtefactConstantTestHelper.initialiseCourts();
 
         lenient().when(artefactRepository.findArtefactByUpdateLogic(artefact.getLocationId(),
                                                                     artefact.getContentDate(),
@@ -123,7 +122,7 @@ class ArtefactSearchServiceTest {
             .sensitivity(Sensitivity.CLASSIFIED)
             .build();
 
-        location = ArtefactConstantTestHelper.initialiseCourts();
+        Location location = ArtefactConstantTestHelper.initialiseCourts();
 
         lenient().when(artefactRepository.findArtefactByUpdateLogic(artefact.getLocationId(),
                                                                     artefact.getContentDate(),
