@@ -75,4 +75,10 @@ class CustomExceptionsTest {
         CreateArtefactConflictException conflictException = new CreateArtefactConflictException(TEST_MESSAGE);
         assertEquals(TEST_MESSAGE, conflictException.getMessage(), ASSERTION_MESSAGE);
     }
+
+    @Test
+    void testCreateLocationConflictException() {
+        CreateLocationConflictException conflictException = new CreateLocationConflictException(TEST_MESSAGE);
+        assertEquals(TEST_MESSAGE, conflictException.getMessage(), ASSERTION_MESSAGE);
+    }
 }

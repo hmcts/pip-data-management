@@ -60,6 +60,7 @@ class LocationApiTest {
     private static final String DOWNLOAD_LOCATIONS_ENDPOINT = ROOT_URL + "/download/csv";
     public static final String UPLOAD_API = ROOT_URL + "/upload";
     private static final String LOCATIONS_CSV = "location/ValidCsv.csv";
+    private static final String CSV_WITH_EXISTING_LOCATION_NAME = "location/ValidCsvWithExistingLocationName.csv";
     private static final String CSV_WITHOUT_LOCATION_TYPE = "location/InvalidCsvWithoutLocationType.csv";
     private static final String DELETE_LOCATIONS_CSV = "location/ValidCsvForDeleteCourt.csv";
     private static final String UPDATED_CSV = "location/UpdatedCsv.csv";
@@ -313,7 +314,6 @@ class LocationApiTest {
 
         assertEquals(0, returnedLocations.size(), LOCATION_RESULT);
     }
-
 
     @Test
     @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})
@@ -708,6 +708,29 @@ class LocationApiTest {
 
         Location locationC = arrayLocations[1];
         assertEquals("Unknown Location", locationC.getName(), VALIDATION_LOCATION_NAME_NOT_AS_EXPECTED);
+    }
+
+    @Test
+    @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})
+    void testCreateLocationsWithCsvContainingExistingLocationName() throws Exception {
+        List<Location> createdLocations = createLocations(LOCATIONS_CSV);
+        assertEquals(3, createdLocations.size(), VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
+
+        createdLocations = createLocations(CSV_WITH_EXISTING_LOCATION_NAME);
+        assertEquals(1, createdLocations.size(), VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
+
+        MvcResult mvcResult = mockMvc.perform(get(ROOT_URL))
+            .andExpect(status().isOk())
+            .andReturn();
+
+        Location[] returnedLocations = objectMapper.readValue(mvcResult.getResponse().getContentAsString(),
+                                                              Location[].class);
+
+        assertEquals(4, returnedLocations.length, VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
+        assertEquals(1, returnedLocations[0].getLocationId(), VALIDATION_UNKNOWN_LOCATION);
+        assertEquals(2, returnedLocations[1].getLocationId(), VALIDATION_UNKNOWN_LOCATION);
+        assertEquals(3, returnedLocations[2].getLocationId(), VALIDATION_UNKNOWN_LOCATION);
+        assertEquals(13, returnedLocations[3].getLocationId(), VALIDATION_UNKNOWN_LOCATION);
     }
 
     @Test

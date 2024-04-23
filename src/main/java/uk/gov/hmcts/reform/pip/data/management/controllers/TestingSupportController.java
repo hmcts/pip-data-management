@@ -62,6 +62,7 @@ public class TestingSupportController {
 
     @ApiResponse(responseCode = OK_CODE,
         description = "Artefact(s) deleted for location name starting with {locationNamePrefix}")
+    @ApiResponse(responseCode = "409", description = "Conflict when creating location")
     @Operation(summary = "Delete all artefacts with location name prefix")
     @DeleteMapping("publication/{locationNamePrefix}")
     @Transactional

@@ -30,6 +30,8 @@ spring:
     hibernate:
       # Set to update for functional tests, so it creates the environment in H2
       ddl-auto: update
+  flyway:
+    enabled: true
 test-user-id: ${TEST_USER_ID}
 system-admin-provenance-id: ${SYSTEM_ADMIN_PROVENANCE_ID}
 payload:
