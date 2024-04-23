@@ -363,7 +363,7 @@ class SjpPressListTest {
     }
 
     @Test
-    void testValidateWithErrorWhenDateOfBirthForAccusedMissingInSjpPressList() throws IOException {
+    void testValidateWithSuccessWhenDateOfBirthForAccusedMissingInSjpPressList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(SJP_PRESS_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
@@ -376,14 +376,13 @@ class SjpPressListTest {
                 .remove("dateOfBirth");
 
             String listJson = node.toString();
-            assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup),
-                         SJP_PRESS_INVALID_MESSAGE);
+            assertDoesNotThrow(() -> validationService.validateBody(listJson, headerGroup),
+                               SJP_PRESS_VALID_MESSAGE);
         }
     }
 
     @Test
-    void testValidateWithErrorWhenAgeMissingForAccusedInSjpPressList() throws IOException {
+    void testValidateWithSuccessWhenAgeMissingForAccusedInSjpPressList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(SJP_PRESS_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
@@ -396,9 +395,8 @@ class SjpPressListTest {
                 .remove("age");
 
             String listJson = node.toString();
-            assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup),
-                         SJP_PRESS_INVALID_MESSAGE);
+            assertDoesNotThrow(() -> validationService.validateBody(listJson, headerGroup),
+                               SJP_PRESS_VALID_MESSAGE);;
         }
     }
 
