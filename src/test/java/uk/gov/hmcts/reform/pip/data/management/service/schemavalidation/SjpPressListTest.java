@@ -396,7 +396,7 @@ class SjpPressListTest {
 
             String listJson = node.toString();
             assertDoesNotThrow(() -> validationService.validateBody(listJson, headerGroup),
-                               SJP_PRESS_VALID_MESSAGE);;
+                               SJP_PRESS_VALID_MESSAGE);
         }
     }
 
