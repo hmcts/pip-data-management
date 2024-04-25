@@ -138,8 +138,8 @@ class PublicationSjpPressTest {
             );
 
             assertTrue(
-                exceptionResponse.getMessage().contains("dateOfBirth"),
-                "Date of birth is not displayed in the exception response"
+                exceptionResponse.getMessage().contains("offenceTitle"),
+                "Offence Title is not displayed in the exception response"
             );
         }
     }

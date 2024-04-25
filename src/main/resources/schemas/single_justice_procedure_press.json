@@ -190,10 +190,6 @@
                                               "title": "Individual Details",
                                               "description": "Individual Details",
                                               "type": "object",
-                                              "required": [
-                                                "dateOfBirth",
-                                                "age"
-                                              ],
                                               "properties": {
                                                 "title": {
                                                   "description": "Title of individual",
