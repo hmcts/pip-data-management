@@ -6,14 +6,14 @@ resource "azurerm_api_management_api_diagnostic" "api_logs" {
   api_name                 = local.apim_api_name
   api_management_logger_id = "/subscriptions/${data.azurerm_client_config.current.subscription_id}/resourceGroups/${local.apim_rg}/providers/Microsoft.ApiManagement/service/${local.apim_name}/loggers/sds-api-mgmt-${local.env}-logger"
 
-  sampling_percentage       = 25.0
+  sampling_percentage       = 100.0
   always_log_errors         = true
   log_client_ip             = true
   verbosity                 = "verbose"
   http_correlation_protocol = "W3C"
 
   frontend_request {
-    body_bytes = 8192
+    body_bytes = var.env == "prod" ? 0 : 8192
     headers_to_log = [
       "content-type",
       "accept",
@@ -41,7 +41,7 @@ resource "azurerm_api_management_api_diagnostic" "api_logs" {
   }
 
   backend_request {
-    body_bytes = 8192
+    body_bytes = var.env == "prod" ? 0 : 8192
     headers_to_log = [
       "content-type",
       "accept",
