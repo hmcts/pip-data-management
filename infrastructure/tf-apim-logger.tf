@@ -32,7 +32,7 @@ resource "azurerm_api_management_api_diagnostic" "api_logs" {
   }
 
   frontend_response {
-    body_bytes = 8192
+    body_bytes = var.env == "prod" ? 0 : 8192
     headers_to_log = [
       "content-type",
       "content-length",
@@ -50,7 +50,7 @@ resource "azurerm_api_management_api_diagnostic" "api_logs" {
   }
 
   backend_response {
-    body_bytes = 8192
+    body_bytes = var.env == "prod" ? 0 : 8192
     headers_to_log = [
       "content-type",
       "content-length",
