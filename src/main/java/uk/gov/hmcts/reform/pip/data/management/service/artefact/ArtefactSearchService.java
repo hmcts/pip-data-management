@@ -69,7 +69,6 @@ public class ArtefactSearchService {
             case CASE_ID, CASE_URN ->
                 artefacts = artefactRepository.findArtefactBySearch(searchTerm.dbValue, searchValue, currDate);
             case CASE_NAME -> artefacts = artefactRepository.findArtefactByCaseName(searchValue, currDate);
-            case PARTY_NAME -> artefacts = artefactRepository.findArtefactsByPartyName(searchValue, currDate);
             default -> throw new IllegalArgumentException(String.format("Invalid search term: %s", searchTerm));
         }
 

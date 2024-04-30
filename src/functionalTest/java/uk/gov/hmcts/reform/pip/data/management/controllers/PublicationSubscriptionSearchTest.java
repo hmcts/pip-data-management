@@ -43,8 +43,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @ActiveProfiles(profiles = "functional")
-@SuppressWarnings({"PMD.ExcessiveImports", "PMD.ExcessiveClassLength",
-    "PMD.CyclomaticComplexity", "PMD.TooManyMethods", "PMD.LawOfDemeter"})
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
 @WithMockUser(username = "admin", authorities = {"APPROLE_api.request.admin"})
 class PublicationSubscriptionSearchTest {
@@ -61,8 +59,6 @@ class PublicationSubscriptionSearchTest {
     @Value("${test-user-id}")
     private String userId;
 
-    private static final String PARTY_NAME_SEARCH = "/PARTY_NAME/Applicant";
-    private static final String PARTY_NAME_SEARCH_REPRESENTATIVE = "/PARTY_NAME/Rep";
     private static final String VALID_CASE_ID_SEARCH = "/CASE_ID/45684548";
     private static final String PROVENANCE = "MANUAL_UPLOAD";
     private static final Sensitivity SENSITIVITY = Sensitivity.PUBLIC;
@@ -74,8 +70,6 @@ class PublicationSubscriptionSearchTest {
     private static final String USER_ID_HEADER = "x-user-id";
     private static final String VALID_CASE_NAME_SEARCH = "/CASE_NAME/Smith";
     private static final String PUBLICATION_URL = "/publication";
-    private static final String ISSUER_HEADER = "x-issuer-id";
-    private static final String EMAIL = "test@email.com";
     private static final String SOURCE_ARTEFACT_ID = "sourceArtefactId";
     private static final String COURT_ID = "123";
     private static final Language LANGUAGE = Language.ENGLISH;
@@ -100,11 +94,6 @@ class PublicationSubscriptionSearchTest {
     Artefact createDailyList(Sensitivity sensitivity, LocalDateTime displayFrom, LocalDateTime contentDate)
         throws Exception {
         return this.createDailyList(sensitivity, displayFrom, DISPLAY_TO, contentDate, PROVENANCE);
-    }
-
-    Artefact createDailyList(LocalDateTime displayFrom, LocalDateTime displayTo)
-        throws Exception {
-        return this.createDailyList(SENSITIVITY, displayFrom, displayTo, CONTENT_DATE, PROVENANCE);
     }
 
     public Artefact createDailyList(Sensitivity sensitivity, LocalDateTime displayFrom, LocalDateTime displayTo,
@@ -246,158 +235,6 @@ class PublicationSubscriptionSearchTest {
         mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isNotFound()).andReturn();
     }
 
-    @Test
-    void testGetArtefactByPartiesSearchVerified() throws Exception {
-        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
-        when(blobContainerClient.getBlobContainerUrl()).thenReturn(PAYLOAD_URL);
-
-        Artefact artefact = createDailyList(Sensitivity.PRIVATE);
-
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 =
-            MockMvcRequestBuilders.get(SEARCH_URL + PARTY_NAME_SEARCH);
-
-        mockHttpServletRequestBuilder1
-            .header(USER_ID_HEADER, userId);
-
-        MvcResult getResponse =
-            mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isOk()).andReturn();
-
-        assertTrue(
-            getResponse.getResponse().getContentAsString().contains(artefact.getArtefactId().toString()),
-            SHOULD_RETURN_EXPECTED_ARTEFACT
-        );
-    }
-
-    @Test
-    void testGetArtefactByPartiesSearchUnverified() throws Exception {
-        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
-        when(blobContainerClient.getBlobContainerUrl()).thenReturn(PAYLOAD_URL);
-
-        Artefact artefact = createDailyList(Sensitivity.PUBLIC);
-
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 =
-            MockMvcRequestBuilders.get(SEARCH_URL + PARTY_NAME_SEARCH);
-
-        MvcResult getResponse =
-            mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isOk()).andReturn();
-
-        assertTrue(
-            getResponse.getResponse().getContentAsString().contains(artefact.getArtefactId().toString()),
-            SHOULD_RETURN_EXPECTED_ARTEFACT
-        );
-    }
-
-    @Test
-    void testGetArtefactByPartiesSearchUnverifiedRepresentative() throws Exception {
-        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
-        when(blobContainerClient.getBlobContainerUrl()).thenReturn(PAYLOAD_URL);
-
-        createDailyList(Sensitivity.CLASSIFIED);
-
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 =
-            MockMvcRequestBuilders.get(SEARCH_URL + PARTY_NAME_SEARCH_REPRESENTATIVE);
-
-        mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isNotFound()).andReturn();
-    }
-
-    @Test
-    void testGetArtefactByPartiesSearchUnverifiedNotFound() throws Exception {
-        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
-        when(blobContainerClient.getBlobContainerUrl()).thenReturn(PAYLOAD_URL);
-
-        createDailyList(Sensitivity.CLASSIFIED);
-
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 =
-            MockMvcRequestBuilders.get(SEARCH_URL + PARTY_NAME_SEARCH);
-
-        mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isNotFound()).andReturn();
-    }
-
-    @Test
-    void testGetArtefactByPartiesSearchOutOfDateRangePast() throws Exception {
-        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
-        when(blobContainerClient.getBlobContainerUrl()).thenReturn(PAYLOAD_URL);
-
-        createDailyList(LocalDateTime.now().minusMonths(2), LocalDateTime.now().minusMonths(2));
-
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 =
-            MockMvcRequestBuilders.get(SEARCH_URL + PARTY_NAME_SEARCH);
-
-        mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isNotFound()).andReturn();
-    }
-
-    @Test
-    void testGetArtefactByPartiesSearchOutOfDateRangeFuture() throws Exception {
-        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
-        when(blobContainerClient.getBlobContainerUrl()).thenReturn(PAYLOAD_URL);
-
-        createDailyList(LocalDateTime.now().plusMonths(1), LocalDateTime.now().plusMonths(2));
-
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 =
-            MockMvcRequestBuilders.get(SEARCH_URL + PARTY_NAME_SEARCH);
-
-        mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isNotFound()).andReturn();
-    }
-
-    @Test
-    void testGetArtefactByPartiesSearchIsArchived() throws Exception {
-        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
-        when(blobContainerClient.getBlobContainerUrl()).thenReturn(PAYLOAD_URL);
-
-        Artefact artefact = createDailyList(Sensitivity.PUBLIC);
-
-        MockHttpServletRequestBuilder deleteRequest = MockMvcRequestBuilders
-            .delete(PUBLICATION_URL + "/" + artefact.getArtefactId())
-            .header(ISSUER_HEADER, EMAIL);
-
-        mockMvc.perform(deleteRequest).andExpect(status().isOk());
-
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 =
-            MockMvcRequestBuilders.get(SEARCH_URL + PARTY_NAME_SEARCH);
-
-        mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isNotFound()).andReturn();
-    }
-
-    @Test
-    void testGetArtefactByPartiesSearchDisplayToBlank() throws Exception {
-        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
-        when(blobContainerClient.getBlobContainerUrl()).thenReturn(PAYLOAD_URL);
-
-        try (InputStream mockFile = this.getClass().getClassLoader()
-            .getResourceAsStream("data/civil-daily-cause-list/civilDailyCauseList.json")) {
-
-            MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-                .post(PUBLICATION_URL)
-                .header(PublicationConfiguration.TYPE_HEADER, ArtefactType.GENERAL_PUBLICATION)
-                .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
-                .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
-                .header(PublicationConfiguration.DISPLAY_FROM_HEADER, LocalDateTime.now())
-                .header(PublicationConfiguration.COURT_ID, COURT_ID)
-                .header(PublicationConfiguration.LIST_TYPE, ListType.CIVIL_DAILY_CAUSE_LIST)
-                .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
-                .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
-                .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
-                .content(mockFile.readAllBytes())
-                .contentType(MediaType.APPLICATION_JSON);
-
-            MvcResult artefactResponse = mockMvc.perform(mockHttpServletRequestBuilder)
-                .andExpect(status().isCreated()).andReturn();
-
-            Artefact artefact = objectMapper.readValue(
-                artefactResponse.getResponse().getContentAsString(), Artefact.class);
-
-            MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 =
-                MockMvcRequestBuilders.get(SEARCH_URL + PARTY_NAME_SEARCH);
-
-            MvcResult getResponse =
-                mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isOk()).andReturn();
-
-            assertTrue(
-                getResponse.getResponse().getContentAsString().contains(artefact.getArtefactId().toString()),
-                SHOULD_RETURN_EXPECTED_ARTEFACT
-            );
-        }
-    }
 
     @Test
     @WithMockUser(username = UNAUTHORIZED_USERNAME, authorities = {UNAUTHORIZED_ROLE})
