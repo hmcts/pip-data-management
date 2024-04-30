@@ -81,6 +81,12 @@
                                     ]
                                   }
                                 ]
+                              },
+                              {
+                                "partyRole": "CLAIMANT_PETITIONER",
+                                "individualDetails": {
+                                  "individualSurname": "Surname"
+                                }
                               }
                             ],
                             "informant": {

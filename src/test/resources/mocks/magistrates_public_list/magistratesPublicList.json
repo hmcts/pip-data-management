@@ -49,6 +49,12 @@
                                 "individualDetails": {
                                   "individualSurname": "Surname"
                                 }
+                              },
+                              {
+                                "partyRole": "CLAIMANT_PETITIONER",
+                                "individualDetails": {
+                                  "individualSurname": "Surname"
+                                }
                               }
                             ]
                           }
