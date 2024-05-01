@@ -52,7 +52,8 @@ import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ConstantsTestHelper.MESSAGES_MATCH;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ConstantsTestHelper.STATUS_CODE_MATCH;
 
-@SuppressWarnings({"PMD.UseConcurrentHashMap", "PMD.ExcessiveImports", "PMD.TooManyMethods"})
+@SuppressWarnings({"PMD.UseConcurrentHashMap", "PMD.ExcessiveImports",
+    "PMD.TooManyMethods", "PMD.CouplingBetweenObjects"})
 @ExtendWith(MockitoExtension.class)
 class PublicationControllerTest {
 

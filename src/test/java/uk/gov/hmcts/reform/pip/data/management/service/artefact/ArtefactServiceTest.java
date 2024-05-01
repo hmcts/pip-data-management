@@ -39,7 +39,6 @@ import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.ARTEFACT_ID;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.LOCATION_TYPE_MATCH;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.LOCATION_VENUE;
-import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.PAYLOAD;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.PROVENANCE;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.PROVENANCE_ID;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.SEARCH_VALUES;
@@ -83,8 +82,6 @@ class ArtefactServiceTest {
     private Artefact artefactWithPayloadUrlClassified;
     private Artefact artefactWithIdAndPayloadUrl;
 
-    private Location location;
-
     @BeforeAll
     public static void setupSearchValues() {
         SEARCH_VALUES.put(TEST_KEY, List.of(TEST_VALUE));
@@ -95,7 +92,7 @@ class ArtefactServiceTest {
         createPayloads();
         createClassifiedPayloads();
 
-        location = ArtefactConstantTestHelper.initialiseCourts();
+        Location location = ArtefactConstantTestHelper.initialiseCourts();
 
         lenient().when(artefactRepository.findArtefactByUpdateLogic(artefact.getLocationId(),
                                                                     artefact.getContentDate(),
@@ -119,7 +116,7 @@ class ArtefactServiceTest {
         artefactClassified = ArtefactConstantTestHelper.buildClassifiedPayloads();
         artefactWithPayloadUrlClassified = ArtefactConstantTestHelper.buildArtefactWithPayloadUrlClassified();
 
-        location = ArtefactConstantTestHelper.initialiseCourts();
+        Location location = ArtefactConstantTestHelper.initialiseCourts();
 
         lenient().when(artefactRepository.findArtefactByUpdateLogic(artefact.getLocationId(),
                                                                     artefact.getContentDate(),

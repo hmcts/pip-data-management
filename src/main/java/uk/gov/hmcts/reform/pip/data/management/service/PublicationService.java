@@ -47,6 +47,8 @@ public class PublicationService {
 
     private final ArtefactService artefactService;
 
+    private static final String MANUAL_UPLOAD_VALUE = "MANUAL_UPLOAD";
+
     @Autowired
     public PublicationService(ArtefactRepository artefactRepository,
                               AzureBlobService azureBlobService,
@@ -147,7 +149,7 @@ public class PublicationService {
     }
 
     public void applyInternalLocationId(Artefact artefact) {
-        if ("MANUAL_UPLOAD".equalsIgnoreCase(artefact.getProvenance())) {
+        if (MANUAL_UPLOAD_VALUE.equalsIgnoreCase(artefact.getProvenance())) {
             return;
         }
         Optional<Location> location = locationRepository.findByLocationIdByProvenance(
