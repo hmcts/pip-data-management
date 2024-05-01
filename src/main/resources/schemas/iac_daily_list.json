@@ -336,52 +336,6 @@
                                                         "title": "Organisation Name",
                                                         "type": "string",
                                                         "pattern": "^(?!.*<[^>]+>).*$"
-                                                      },
-                                                      "organisationAddress": {
-                                                        "title": "Organisation Address",
-                                                        "$ref": "#/$defs/address"
-                                                      },
-                                                      "offence": {
-                                                        "title": "offence",
-                                                        "type": "array",
-                                                        "items":{
-                                                          "type": "object",
-                                                          "properties": {
-                                                            "offenceTitle":{
-                                                              "title": "Offence title",
-                                                              "type": "string",
-                                                              "pattern": "^(?!.*<[^>]+>).*$"
-                                                            },
-                                                            "offenceSection":{
-                                                              "title": "Offence section",
-                                                              "type": "string",
-                                                              "pattern": "^(?!.*<[^>]+>).*$"
-                                                            },
-                                                            "offenceWording":{
-                                                              "title": "Offence wording",
-                                                              "type":"string",
-                                                              "pattern": "^(?!.*<[^>]+>).*$"
-                                                            },
-                                                            "plea":{
-                                                              "title": "Plea",
-                                                              "type": "string",
-                                                              "pattern": "^(?!.*<[^>]+>).*$"
-                                                            },
-                                                            "pleaDate":{
-                                                              "title": "Plea date",
-                                                              "type": "string",
-                                                              "pattern": "^(?!.*<[^>]+>).*$"
-                                                            },
-                                                            "reportingRestrictionDetail": {
-                                                              "title": "Reporting Restrictions Detail",
-                                                              "type": "array",
-                                                              "items": {
-                                                                "type": "string",
-                                                                "pattern": "^(?!.*<[^>]+>).*$"
-                                                              }
-                                                            }
-                                                          }
-                                                        }
                                                       }
                                                     }
                                                   }
