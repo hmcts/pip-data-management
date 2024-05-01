@@ -34,6 +34,8 @@ import java.util.Objects;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.http.HttpStatus.CONFLICT;
+import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -56,6 +58,7 @@ class TestingSupportApiTest {
     private static final String BLOB_PAYLOAD_URL = "https://localhost";
 
     private static final Integer LOCATION_ID = 123;
+    private static final Integer LOCATION_ID2 = 124;
     private static final String LOCATION_NAME_PREFIX = "TEST_789_";
     private static final String LOCATION_NAME = LOCATION_NAME_PREFIX + "Court123";
 
@@ -75,6 +78,8 @@ class TestingSupportApiTest {
     private static final String UNAUTHORIZED_ROLE = "APPROLE_unknown.authorized";
     private static final String UNAUTHORIZED_USERNAME = "unauthorized_isAuthorized";
 
+    private static final String CREATE_LOCATION_MESSAGE = "Create location response does not match";
+    private static final String STATUS_CODE_MESSAGE = "Status code does not match";
     @Autowired
     private MockMvc mockMvc;
 
@@ -91,10 +96,14 @@ class TestingSupportApiTest {
 
     @Test
     void testTestingSupportCreateLocation() throws Exception {
-        MvcResult postResponse = createLocationByIdAndName();
+        MvcResult postResponse = createLocationByIdAndName(LOCATION_ID);
+
+        assertThat(postResponse.getResponse().getStatus())
+            .as(STATUS_CODE_MESSAGE)
+            .isEqualTo(CREATED.value());
 
         assertThat(postResponse.getResponse().getContentAsString())
-            .as("Location create response does not match")
+            .as(CREATE_LOCATION_MESSAGE)
             .isEqualTo("Location with ID " + LOCATION_ID + " and name " + LOCATION_NAME
                            + " created successfully");
 
@@ -114,8 +123,28 @@ class TestingSupportApiTest {
     }
 
     @Test
+    void testTestingSupportCreateLocationWithExistingLocationName() throws Exception {
+        MvcResult postResponse = createLocationByIdAndName(LOCATION_ID);
+
+        assertThat(postResponse.getResponse().getStatus())
+            .as(STATUS_CODE_MESSAGE)
+            .isEqualTo(CREATED.value());
+
+        postResponse = createLocationByIdAndName(LOCATION_ID2);
+
+        assertThat(postResponse.getResponse().getStatus())
+            .as(STATUS_CODE_MESSAGE)
+            .isEqualTo(CONFLICT.value());
+
+        assertThat(postResponse.getResponse().getContentAsString())
+            .as(CREATE_LOCATION_MESSAGE)
+            .contains("Location with ID " + LOCATION_ID2 + " not created. The location name '" + LOCATION_NAME
+                          + "' already exists");
+    }
+
+    @Test
     void testTestingSupportDeleteLocationsByNamePrefix() throws Exception {
-        createLocationByIdAndName();
+        createLocationByIdAndName(LOCATION_ID);
 
         MvcResult deleteResponse = mockMvc.perform(delete(TESTING_SUPPORT_LOCATION_URL + LOCATION_NAME_PREFIX))
             .andExpect(status().isOk())
@@ -131,7 +160,7 @@ class TestingSupportApiTest {
 
     @Test
     void testTestingSupportDeletePublicationsByLocationNamePrefix() throws Exception {
-        createLocationByIdAndName();
+        createLocationByIdAndName(LOCATION_ID);
         uploadPublication();
 
         MockHttpServletRequestBuilder getRequest = get(PUBLICATION_BY_LOCATION_ID_URL + LOCATION_ID)
@@ -188,14 +217,13 @@ class TestingSupportApiTest {
             .andExpect(status().isForbidden());
     }
 
-    private MvcResult createLocationByIdAndName() throws Exception {
+    private MvcResult createLocationByIdAndName(Integer locationId) throws Exception {
         MockHttpServletRequestBuilder postRequest = MockMvcRequestBuilders
-            .post(TESTING_SUPPORT_LOCATION_URL + LOCATION_ID)
+            .post(TESTING_SUPPORT_LOCATION_URL + locationId)
             .content(LOCATION_NAME)
             .contentType(MediaType.APPLICATION_JSON);
 
         return mockMvc.perform(postRequest)
-            .andExpect(status().isCreated())
             .andReturn();
     }
 

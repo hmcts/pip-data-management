@@ -11,10 +11,12 @@ import com.opencsv.exceptions.CsvDataTypeMismatchException;
 import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.LocationRepository;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CreateLocationConflictException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CsvParseException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.LocationNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.helpers.TestingSupportLocationHelper;
@@ -53,6 +55,9 @@ import static uk.gov.hmcts.reform.pip.model.account.Roles.SYSTEM_ADMIN;
 @Slf4j
 @SuppressWarnings({"PMD"})
 public class LocationService {
+    private static final String LOCATION_NAME_CONSTRAINT = "unique_location_name_constraint";
+    private static final String WELSH_LOCATION_NAME_CONSTRAINT = "unique_welsh_location_name_constraint";
+
     private final LocationRepository locationRepository;
 
     private final ArtefactRepository artefactRepository;
@@ -154,7 +159,6 @@ public class LocationService {
 
             List<Location> savedLocations = new ArrayList<>();
             locations.values().forEach(groupedLocation -> {
-
                 Location location = new Location(groupedLocation.get(0));
 
                 groupedLocation.stream().skip(1).forEach(locationCsv ->
@@ -163,7 +167,14 @@ public class LocationService {
                         locationCsv.getProvenanceLocationId(),
                         LocationType.valueOfCsv(locationCsv.getProvenanceLocationType()))));
 
-                savedLocations.add(locationRepository.save(location));
+                try {
+                    savedLocations.add(locationRepository.save(location));
+                } catch (DataIntegrityViolationException e) {
+                    log.error(writeLog(String.format(
+                        "Record with ID %d not saved. The location name '%s' or Welsh location name '%s' already "
+                            + "exists", location.getLocationId(), location.getName(), location.getWelshName()
+                    )));
+                }
             });
 
             return savedLocations;
@@ -174,7 +185,13 @@ public class LocationService {
     }
 
     public String createLocation(Integer locationId, String locationName) {
-        locationRepository.save(TestingSupportLocationHelper.createLocation(locationId, locationName));
+        try {
+            locationRepository.save(TestingSupportLocationHelper.createLocation(locationId, locationName));
+        } catch (DataIntegrityViolationException e) {
+            throw new CreateLocationConflictException(String.format(
+                "Location with ID %d not created. The location name '%s' already exists", locationId, locationName)
+            );
+        }
         return String.format("Location with ID %s and name %s created successfully", locationId, locationName);
     }
 

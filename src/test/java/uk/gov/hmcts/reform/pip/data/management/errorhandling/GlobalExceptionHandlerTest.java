@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CreateArtefactConflictException;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CreateLocationConflictException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CsvParseException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.DataStorageNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.FlatFileException;
@@ -240,6 +241,16 @@ class GlobalExceptionHandlerTest {
     @Test
     void testCreateArtefactConflictException() {
         CreateArtefactConflictException conflictException = new CreateArtefactConflictException(TEST_MESSAGE);
+        ResponseEntity<ExceptionResponse> responseEntity = globalExceptionHandler.handle(conflictException);
+
+        assertEquals(HttpStatus.CONFLICT, responseEntity.getStatusCode(), CONFLICT_ASSERTION);
+        assertNotNull(responseEntity.getBody(), NOT_NULL_MESSAGE);
+        assertTrue(responseEntity.getBody().getMessage().contains(TEST_MESSAGE), EXCEPTION_BODY_NOT_MATCH);
+    }
+
+    @Test
+    void testCreateLocationConflictException() {
+        CreateLocationConflictException conflictException = new CreateLocationConflictException(TEST_MESSAGE);
         ResponseEntity<ExceptionResponse> responseEntity = globalExceptionHandler.handle(conflictException);
 
         assertEquals(HttpStatus.CONFLICT, responseEntity.getStatusCode(), CONFLICT_ASSERTION);

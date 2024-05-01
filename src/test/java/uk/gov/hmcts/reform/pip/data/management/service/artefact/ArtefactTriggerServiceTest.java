@@ -68,8 +68,6 @@ class ArtefactTriggerServiceTest {
     private Artefact artefactWithSameDateFromAndTo;
     private Artefact noMatchArtefact;
 
-    private Location location;
-
     @BeforeAll
     public static void setupSearchValues() {
         SEARCH_VALUES.put(TEST_KEY, List.of(TEST_VALUE));
@@ -80,7 +78,7 @@ class ArtefactTriggerServiceTest {
         createPayloads();
         createClassifiedPayloads();
 
-        location = ArtefactConstantTestHelper.initialiseCourts();
+        Location location = ArtefactConstantTestHelper.initialiseCourts();
 
         lenient().when(artefactRepository.findArtefactByUpdateLogic(artefact.getLocationId(),
                                                                     artefact.getContentDate(),
@@ -109,7 +107,7 @@ class ArtefactTriggerServiceTest {
 
     private void createClassifiedPayloads() {
 
-        location = ArtefactConstantTestHelper.initialiseCourts();
+        Location location = ArtefactConstantTestHelper.initialiseCourts();
 
         lenient().when(artefactRepository.findArtefactByUpdateLogic(artefact.getLocationId(),
                                                                     artefact.getContentDate(),

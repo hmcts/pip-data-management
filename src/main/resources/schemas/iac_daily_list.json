@@ -1,31 +1,5 @@
 {
   "$defs": {
-    "venueContact": {
-      "title": "Contact Details for a venue",
-      "type": "object",
-      "properties": {
-        "venueTelephone": {
-          "description": "Telephone number for the venue",
-          "title": "Venue Telephone",
-          "type": "string",
-          "default": "",
-          "examples": [
-            "01772 844700"
-          ],
-          "pattern": "^(?!.*<[^>]+>).*$"
-        },
-        "venueEmail": {
-          "description": "Email for the venue",
-          "title": "Venue Email",
-          "type": "string",
-          "default": "",
-          "examples": [
-            "court1@moj.gov.uk"
-          ],
-          "pattern": "^(?!.*<[^>]+>).*$"
-        }
-      }
-    },
     "judiciary": {
       "title": "Judiciary",
       "description": "An array of judiciary",
@@ -91,8 +65,7 @@
       "title": "venue",
       "type": "object",
       "required": [
-        "venueName",
-        "venueContact"
+        "venueName"
       ],
       "properties": {
         "venueName": {
@@ -104,12 +77,6 @@
             "Preston"
           ],
           "pattern": "^(?!.*<[^>]+>).*$"
-        },
-        "venueContact": {
-          "description": "Contact details for the venue",
-          "title": "Venue Contact",
-          "$ref": "#/$defs/venueContact",
-          "required": ["venueTelephone", "venueEmail"]
         }
       }
     },
@@ -283,32 +250,6 @@
                                                 "normal"
                                               ],
                                               "pattern": "^(?!.*<[^>]+>).*$"
-                                            },
-                                            "caseLinked": {
-                                              "title": "Information about linked cases",
-                                              "type": "array",
-                                              "items": {
-                                                "caseId": {
-                                                  "title": "Case Linked Id",
-                                                  "description": "If a case is linked to another case, Id of that case will appear here.",
-                                                  "type": "string",
-                                                  "default": "",
-                                                  "examples": [
-                                                    "offg35484"
-                                                  ],
-                                                  "pattern": "^(?!.*<[^>]+>).*$"
-                                                },
-                                                "name": {
-                                                  "title": "Case Name",
-                                                  "description": "Case name is not always present but should be where available displayed",
-                                                  "type": "string",
-                                                  "default": "",
-                                                  "examples": [
-                                                    "A Vs B"
-                                                  ],
-                                                  "pattern": "^(?!.*<[^>]+>).*$"
-                                                }
-                                              }
                                             },
                                             "language": {
                                               "title": "Interpreter Language",

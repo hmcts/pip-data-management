@@ -55,6 +55,46 @@
                             "caseUrn": "ABC12345"
                           }
                         ]
+                      },
+                      {
+                        "party": [
+                          {
+                            "partyRole": "ACCUSED",
+                            "individualDetails": {
+                              "individualForenames": "This is a forename 2",
+                              "individualSurname": "This is a surname 2",
+                              "address": {
+                                "county": "County A",
+                                "town": "Month A",
+                                "postCode": "AA1 AA1",
+                                "line": [
+                                  "Address Line 1",
+                                  "Address Line 2"
+                                ]
+                              },
+                              "title": "This is a title",
+                              "individualMiddleName": "This is a middle name"
+                            }
+                          },
+                          {
+                            "partyRole": "PROSECUTOR",
+                            "organisationDetails": {
+                              "organisationName": "This is an organisation"
+                            }
+                          }
+                        ],
+                        "offence": [
+                          {
+                            "offenceTitle": "This is an offence title",
+                            "offenceWording": "This is offence wording",
+                            "reportingRestriction": true
+                          }
+                        ],
+                        "case": [
+                          {
+                            "caseUrn": "ABC12346"
+                          }
+                        ]
                       }
                     ]
                   }

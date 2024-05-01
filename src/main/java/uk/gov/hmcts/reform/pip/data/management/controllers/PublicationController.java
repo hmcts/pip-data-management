@@ -71,7 +71,7 @@ import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
 @RestController
 @Tag(name = "Data Management Publications API")
 @RequestMapping("/publication")
-@SuppressWarnings({"PMD.ExcessiveImports"})
+@SuppressWarnings({"PMD.ExcessiveImports", "PMD.CouplingBetweenObjects"})
 public class PublicationController {
 
     private static final String USER_ID_HEADER = "x-user-id";

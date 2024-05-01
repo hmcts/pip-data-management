@@ -19,7 +19,6 @@
     <exclude name="MethodArgumentCouldBeFinal"/>
     <exclude name="OnlyOneReturn"/>
     <exclude name="TooManyStaticImports"/>
-    <exclude name="DefaultPackage"/>
     <exclude name="CommentDefaultAccessModifier"/>
   </rule>
   <rule ref="category/java/codestyle.xml/ClassNamingConventions">
@@ -53,12 +52,12 @@
   </rule>
   <rule ref="category/java/design.xml/LawOfDemeter">
     <properties>
-      <property name="violationSuppressRegex" value="(.*method chain calls.*|.*object not created locally.*)"/>
+      <property name="trustRadius" value="2" />
     </properties>
   </rule>
   <rule ref="category/java/design.xml/SignatureDeclareThrowsException">
     <properties>
-      <property name="IgnoreJUnitCompletely" value="true"/>
+      <property name="violationSuppressXPath" value="./ancestor::ClassDeclaration[contains(@SimpleName, 'Test')]"/>
     </properties>
   </rule>
   <rule ref="category/java/documentation.xml">
@@ -69,7 +68,6 @@
   <rule ref="category/java/errorprone.xml">
     <exclude name="NonSerializableClass"/>
     <exclude name="UseProperClassLoader"/>
-    <exclude name="DataflowAnomalyAnalysis"/>
     <exclude name="JUnitSpelling"/>
   </rule>
   <rule ref="category/java/multithreading.xml"/>
