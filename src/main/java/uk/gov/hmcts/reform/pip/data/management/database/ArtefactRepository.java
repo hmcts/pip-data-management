@@ -36,7 +36,6 @@ public interface ArtefactRepository extends JpaRepository<Artefact, Long> {
     String SEARCH_VAL_PARAM = "searchValue";
     String LOCATION_ID_PARAM = "location_id";
     String CASE_NAME_PARAM = "caseName";
-    String PARTY_NAME_PARAM = "partyName";
     String CONTENT_DATE_PARAM = "content_date";
     String LANGUAGE_PARAM = "language";
     String LIST_TYPE_PARAM = "list_type";
@@ -68,13 +67,6 @@ public interface ArtefactRepository extends JpaRepository<Artefact, Long> {
         + "null) and is_archived != true",
         nativeQuery = true)
     List<Artefact> findArtefactByCaseName(@Param(CASE_NAME_PARAM) String caseName,
-                                          @Param(CURRENT_DATE_PARAM) LocalDateTime currentDate);
-
-    @Query(value = INITIAL_SELECT_PARTY + "WHERE (LOWER(partyDetails ->> 'organisations') ~ LOWER(:partyName) or "
-        + "LOWER(individualDetails ->> 'surname') ~ LOWER(:partyName)) and display_from < :curr_date and "
-        + "(display_to > :curr_date or display_to is null) and is_archived != true",
-        nativeQuery = true)
-    List<Artefact> findArtefactsByPartyName(@Param(PARTY_NAME_PARAM) String partyName,
                                           @Param(CURRENT_DATE_PARAM) LocalDateTime currentDate);
 
     @Query(value = INITIAL_SELECT + "WHERE searchDetails.caseDetails ->> :searchTerm = :searchValue and "

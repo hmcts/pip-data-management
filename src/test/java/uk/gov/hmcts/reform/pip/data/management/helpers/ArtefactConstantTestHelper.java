@@ -35,7 +35,6 @@ public final class ArtefactConstantTestHelper {
     public static final CaseSearchTerm SEARCH_TERM_CASE_ID = CaseSearchTerm.CASE_ID;
     public static final CaseSearchTerm SEARCH_TERM_CASE_NAME = CaseSearchTerm.CASE_NAME;
     public static final CaseSearchTerm SEARCH_TERM_CASE_URN = CaseSearchTerm.CASE_URN;
-    public static final CaseSearchTerm SEARCH_TERM_PARTY_NAME = CaseSearchTerm.PARTY_NAME;
     public static final Map<String, List<Object>> SEARCH_VALUES = new ConcurrentHashMap<>();
     public static final MultipartFile FILE = new MockMultipartFile("test", (byte[]) null);
     public static final String VALIDATION_ARTEFACT_NOT_MATCH = "Artefacts do not match";
