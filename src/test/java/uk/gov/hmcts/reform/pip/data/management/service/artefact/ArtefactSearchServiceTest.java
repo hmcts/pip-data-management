@@ -41,7 +41,6 @@ import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTe
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.SEARCH_TERM_CASE_ID;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.SEARCH_TERM_CASE_NAME;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.SEARCH_TERM_CASE_URN;
-import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.SEARCH_TERM_PARTY_NAME;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.SEARCH_VALUES;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.SOURCE_ARTEFACT_ID;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.TEST_KEY;
@@ -407,58 +406,6 @@ class ArtefactSearchServiceTest {
             .thenReturn(true);
 
         List<Artefact> artefacts = artefactSearchService.findAllBySearch(SEARCH_TERM_CASE_URN, TEST_VALUE, null);
-
-        assertEquals(1, artefacts.size(), VALIDATION_MORE_THAN_PUBLIC);
-        assertEquals(artefactWithIdAndPayloadUrl, artefacts.get(0), VALIDATION_ARTEFACT_NOT_MATCH);
-    }
-
-    @Test
-    void testFindAllByPartyNameClassifiedAndAuthorised() {
-        List<Artefact> list = List.of(artefactWithIdAndPayloadUrl, artefactWithIdAndPayloadUrlClassified);
-        when(artefactRepository.findArtefactsByPartyName(eq(TEST_VALUE), any()))
-            .thenReturn(list);
-
-        when(artefactService.isAuthorised(artefactWithIdAndPayloadUrl, USER_ID))
-            .thenReturn(true);
-
-        when(artefactService.isAuthorised(artefactWithIdAndPayloadUrlClassified, USER_ID))
-            .thenReturn(true);
-
-        assertEquals(
-            list,
-            artefactSearchService.findAllBySearch(SEARCH_TERM_PARTY_NAME, TEST_VALUE, USER_ID),
-            VALIDATION_ARTEFACT_NOT_MATCH
-        );
-    }
-
-    @Test
-    void testFindAllByPartyNameClassifiedAndNotAuthorised() {
-        List<Artefact> list = List.of(artefactWithIdAndPayloadUrl, artefactWithIdAndPayloadUrlClassified);
-        when(artefactRepository.findArtefactsByPartyName(eq(TEST_VALUE), any()))
-            .thenReturn(list);
-
-        when(artefactService.isAuthorised(artefactWithIdAndPayloadUrl, USER_ID))
-            .thenReturn(true);
-
-        when(artefactService.isAuthorised(artefactWithIdAndPayloadUrlClassified, USER_ID))
-            .thenReturn(false);
-
-        List<Artefact> artefacts = artefactSearchService.findAllBySearch(SEARCH_TERM_PARTY_NAME, TEST_VALUE, USER_ID);
-
-        assertEquals(1, artefacts.size(), VALIDATION_MORE_THAN_PUBLIC);
-        assertEquals(artefactWithIdAndPayloadUrl, artefacts.get(0), VALIDATION_ARTEFACT_NOT_MATCH);
-    }
-
-    @Test
-    void testFindAllByPartyNameUnverified() {
-        List<Artefact> list = List.of(artefactWithIdAndPayloadUrl, artefactWithIdAndPayloadUrlClassified);
-        when(artefactRepository.findArtefactsByPartyName(eq(TEST_VALUE), any()))
-            .thenReturn(list);
-
-        when(artefactService.isAuthorised(artefactWithIdAndPayloadUrl, null))
-            .thenReturn(true);
-
-        List<Artefact> artefacts = artefactSearchService.findAllBySearch(SEARCH_TERM_PARTY_NAME, TEST_VALUE, null);
 
         assertEquals(1, artefacts.size(), VALIDATION_MORE_THAN_PUBLIC);
         assertEquals(artefactWithIdAndPayloadUrl, artefacts.get(0), VALIDATION_ARTEFACT_NOT_MATCH);
