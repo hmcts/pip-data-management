@@ -52,8 +52,8 @@
                               },
                               {
                                 "partyRole": "RESPONDENT",
-                                "individualDetails": {
-                                  "individualSurname": "Surname"
+                                "organisationDetails": {
+                                  "organisationName": "OrganisationName"
                                 }
                               },
                               {
