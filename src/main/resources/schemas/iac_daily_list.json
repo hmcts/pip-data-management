@@ -327,6 +327,17 @@
                                                         "pattern": "^(?!.*<[^>]+>).*$"
                                                       }
                                                     }
+                                                  },
+                                                  "organisationDetails": {
+                                                    "title": "Organisation Details",
+                                                    "type": "object",
+                                                    "properties": {
+                                                      "organisationName": {
+                                                        "title": "Organisation Name",
+                                                        "type": "string",
+                                                        "pattern": "^(?!.*<[^>]+>).*$"
+                                                      }
+                                                    }
                                                   }
                                                 }
                                               }

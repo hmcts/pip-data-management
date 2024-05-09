@@ -62,13 +62,13 @@
                               }
                             ],
                             "party": [
-                            {
-                              "partyRole": "PROSECUTING_AUTHORITY",
-                              "individualDetails": {
-                                "individualSurname": "Surname"
+                              {
+                                "partyRole": "PROSECUTING_AUTHORITY",
+                                "individualDetails": {
+                                  "individualSurname": "Surname"
+                                }
                               }
-                            }
-                          ]
+                            ]
                           }
                         ]
                       }
