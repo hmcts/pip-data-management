@@ -4,11 +4,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.DataStorageNotFoundException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class RootControllerTest {
 
@@ -21,16 +18,6 @@ class RootControllerTest {
         assertEquals(HttpStatus.OK, welcomeResponse.getStatusCode(), "An OK response code is returned");
         assertEquals("Welcome to pip-data-management", welcomeResponse.getBody(),
                      "The correct response body is returned");
-    }
-
-    @Test
-    @DisplayName("Check that an exception is thrown when the saveFile method is called")
-    void testSaveFileReturnsExpectedException() {
-        DataStorageNotFoundException dataStorageNotFoundException =
-            assertThrows(DataStorageNotFoundException.class, () -> rootController.saveFile(),
-                         "DataStorageNotFoundException has been thrown");
-
-        assertNotNull(dataStorageNotFoundException.getMessage(), "Exception contains a message");
     }
 
 }

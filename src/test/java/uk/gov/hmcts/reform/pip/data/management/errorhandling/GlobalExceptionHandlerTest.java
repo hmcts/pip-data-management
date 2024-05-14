@@ -2,7 +2,6 @@ package uk.gov.hmcts.reform.pip.data.management.errorhandling;
 
 import com.azure.storage.blob.models.BlobStorageException;
 import jakarta.validation.ConstraintViolationException;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -14,7 +13,6 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CreateArtefactConflictException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CreateLocationConflictException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CsvParseException;
-import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.DataStorageNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.FlatFileException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.HeaderValidationException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.LocationNotFoundException;
@@ -49,24 +47,6 @@ class GlobalExceptionHandlerTest {
     static final String ASSERTION_RESPONSE_BODY = "Response should contain a body";
     private static final String NOT_NULL_MESSAGE = "Exception body should not be null";
     private final GlobalExceptionHandler globalExceptionHandler = new GlobalExceptionHandler();
-
-    @Test
-    @DisplayName("Test that the response entity returned from the exception handler, "
-        + "contains the expected status code and body")
-    void testHandleSubscriptionNotFoundMethod() {
-
-        DataStorageNotFoundException dataStorageNotFoundException
-            = new DataStorageNotFoundException(TEST_MESSAGE);
-
-        ResponseEntity<ExceptionResponse> responseEntity =
-            globalExceptionHandler.handle(dataStorageNotFoundException);
-
-        assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode(), NOT_FOUND_ASSERTION);
-        assertNotNull(responseEntity.getBody(), ASSERTION_RESPONSE_BODY);
-        assertEquals(TEST_MESSAGE, responseEntity.getBody().getMessage(),
-                     ASSERTION_MESSAGE
-        );
-    }
 
     @Test
     void testHandleNotFoundException() {

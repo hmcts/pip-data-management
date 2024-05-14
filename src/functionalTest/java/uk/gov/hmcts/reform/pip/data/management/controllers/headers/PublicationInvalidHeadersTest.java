@@ -67,7 +67,6 @@ class PublicationInvalidHeadersTest {
     private static final String VALIDATION_EMPTY_RESPONSE = "Response should contain a Artefact";
     private static final String VALIDATION_EXCEPTION_RESPONSE = "Exception response does not contain correct message";
 
-    private static MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
     private static ObjectMapper objectMapper;
 
     @SuppressWarnings("PMD.LooseCoupling")
@@ -101,6 +100,7 @@ class PublicationInvalidHeadersTest {
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
     void testInvalidArtefactType(boolean isJson) throws Exception {
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
         if (isJson) {
             mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
         } else {
@@ -128,6 +128,7 @@ class PublicationInvalidHeadersTest {
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
     void testInvalidDisplayTo(boolean isJson) throws Exception {
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
         if (isJson) {
             mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
         } else {
@@ -155,6 +156,7 @@ class PublicationInvalidHeadersTest {
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
     void testInvalidDisplayFrom(boolean isJson) throws Exception {
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
         if (isJson) {
             mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
         } else {
@@ -182,6 +184,7 @@ class PublicationInvalidHeadersTest {
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
     void testInvalidContentDate(boolean isJson) throws Exception {
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
         if (isJson) {
             mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
         } else {
@@ -209,6 +212,7 @@ class PublicationInvalidHeadersTest {
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
     void testInvalidLanguageHeader(boolean isJson) throws Exception {
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
         if (isJson) {
             mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
         } else {
@@ -237,6 +241,7 @@ class PublicationInvalidHeadersTest {
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
     void testInvalidSensitivityHeader(boolean isJson) throws Exception {
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
         if (isJson) {
             mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
         } else {
