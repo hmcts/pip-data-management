@@ -262,3 +262,5 @@ rootProject.tasks.named("processFunctionalTestResources") {
 wrapper {
   distributionType = Wrapper.DistributionType.ALL
 }
+
+ext['log4j2.version'] = '2.23.1'
