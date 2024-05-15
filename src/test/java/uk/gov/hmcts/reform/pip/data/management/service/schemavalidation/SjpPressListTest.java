@@ -49,6 +49,8 @@ class SjpPressListTest {
     private static final String HEARING_SCHEMA = "hearing";
     private static final String PARTY_SCHEMA = "party";
     private static final String OFFENCE_SCHEMA = "offence";
+    private static final String OFFENCE_TITLE_SCHEMA = "offenceTitle";
+    private static final String OFFENCE_WORDING_SCHEMA = "offenceWording";
     private static final String INDIVIDUAL_DETAILS_SCHEMA  = "individualDetails";
     private static final String ADDRESS_SCHEMA  = "address";
     private static final String ORGANISATION_DETAILS_SCHEMA  = "organisationDetails";
@@ -281,6 +283,45 @@ class SjpPressListTest {
             assertThrows(PayloadValidationException.class, () ->
                              validationService.validateBody(listJson, headerGroup),
                          SJP_PRESS_INVALID_MESSAGE);
+        }
+    }
+
+    @Test
+    void testValidateWithErrorWhenOffenceTitleMissingInSjpPressList() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream(SJP_PRESS_LIST_VALID_JSON)) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            JsonNode node = OBJECT_MAPPER.readValue(text, JsonNode.class);
+            ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0).get(COURT_HOUSE_SCHEMA)
+                .get(COURT_ROOM_SCHEMA).get(0).get(SESSION_SCHEMA).get(0)
+                .get(SITTINGS_SCHEMA).get(0).get(HEARING_SCHEMA).get(0)
+                .get(OFFENCE_SCHEMA).get(0))
+                .remove(OFFENCE_TITLE_SCHEMA);
+
+            String listJson = node.toString();
+            assertThrows(PayloadValidationException.class, () ->
+                             validationService.validateBody(listJson, headerGroup),
+                         SJP_PRESS_INVALID_MESSAGE);
+        }
+    }
+
+    @Test
+    void testValidateWithSuccessWhenOffenceWordingMissingInSjpPressList() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream(SJP_PRESS_LIST_VALID_JSON)) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            JsonNode node = OBJECT_MAPPER.readValue(text, JsonNode.class);
+            ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0).get(COURT_HOUSE_SCHEMA)
+                .get(COURT_ROOM_SCHEMA).get(0).get(SESSION_SCHEMA).get(0)
+                .get(SITTINGS_SCHEMA).get(0).get(HEARING_SCHEMA).get(0)
+                .get(OFFENCE_SCHEMA).get(0))
+                .remove(OFFENCE_WORDING_SCHEMA);
+
+            String listJson = node.toString();
+            assertDoesNotThrow(() -> validationService.validateBody(listJson, headerGroup),
+                               SJP_PRESS_VALID_MESSAGE);
         }
     }
 
