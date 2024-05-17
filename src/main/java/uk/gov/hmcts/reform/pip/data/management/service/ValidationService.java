@@ -205,4 +205,10 @@ public class ValidationService {
         return header == null || header.toString().isEmpty();
     }
 
+    public void containsForbiddenCharacter(String inputField) {
+        if (inputField.indexOf('<') != -1) {
+            throw new PayloadValidationException("Input contains a forbidden character");
+        }
+    }
+
 }
