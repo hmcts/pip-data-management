@@ -37,9 +37,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -90,7 +88,6 @@ class LocationServiceTest {
     private static final String WELSH_LANGUAGE = "cy";
     private static final Integer LOCATION_ID = 123;
     private static final String LOCATION_NAME = "TEST_PIP_1234_Court123";
-//    private static final String INVALID_LOCATION_NAME = "Test <p>Court Name</p>";
     private static final String LOCATION_NAME_PREFIX = "TEST_PIP_1234_";
     private static final String LOCATION_NAME2 = "Test Location 2";
     private static final String WELSH_LOCATION_NAME2 = "Welsh Test Location 2";
@@ -495,8 +492,8 @@ class LocationServiceTest {
 
             assertThat(logCaptor.getErrorLogs().get(0))
                 .as(ERROR_LOG_MESSAGE)
-                .contains("Record with ID 2 not saved. The location name 'Test Location <p>Hello world</p>' " +
-                              "or Welsh location name 'Welsh Test Location other' contains a forbidden character");
+                .contains("Record with ID 2 not saved. The location name 'Test Location <p>Hello world</p>' or "
+                              + "Welsh location name 'Welsh Test Location other' contains a forbidden character");
 
             assertThat(locations)
                 .hasSize(1);

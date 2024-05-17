@@ -173,21 +173,21 @@ public class LocationService {
                         locationCsv.getProvenanceLocationId(),
                         LocationType.valueOfCsv(locationCsv.getProvenanceLocationType()))));
 
-                    try {
-                        validationService.containsForbiddenCharacter(location.getName());
-                        validationService.containsForbiddenCharacter(location.getWelshName());
-                        savedLocations.add(locationRepository.save(location));
-                    } catch (DataIntegrityViolationException e) {
-                        log.error(writeLog(String.format(
-                            "Record with ID %d not saved. The location name '%s' or Welsh location name '%s' already "
-                                + "exists", location.getLocationId(), location.getName(), location.getWelshName()
-                        )));
-                    } catch (PayloadValidationException e) {
-                        log.error(writeLog(String.format(
-                            "Record with ID %d not saved. The location name '%s' or Welsh location name '%s' contains "
-                                + "a forbidden character", location.getLocationId(), location.getName(), location.getWelshName()
-                        )));
-                    }
+                try {
+                    validationService.containsForbiddenCharacter(location.getName());
+                    validationService.containsForbiddenCharacter(location.getWelshName());
+                    savedLocations.add(locationRepository.save(location));
+                } catch (DataIntegrityViolationException e) {
+                    log.error(writeLog(String.format(
+                        "Record with ID %d not saved. The location name '%s' or Welsh location name '%s' already "
+                            + "exists", location.getLocationId(), location.getName(), location.getWelshName()
+                    )));
+                } catch (PayloadValidationException e) {
+                    log.error(writeLog(String.format(
+                        "Record with ID %d not saved. The location name '%s' or Welsh location name '%s' contains a "
+                        + "forbidden character", location.getLocationId(), location.getName(), location.getWelshName()
+                    )));
+                }
             });
 
             return savedLocations;
