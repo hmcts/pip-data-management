@@ -338,4 +338,12 @@ class ValidationServiceTest {
                          "mocks/opa-results/opaResults.json")
         );
     }
+
+    @Test
+    void testForbiddenCharacterThrows() {
+        String courtNameContainsHtml = "Test <p>Court Name</p>";
+        assertThrows(PayloadValidationException.class, () ->
+                         validationService.containsForbiddenCharacter(courtNameContainsHtml),
+                     "Input contains a forbidden character");
+    }
 }

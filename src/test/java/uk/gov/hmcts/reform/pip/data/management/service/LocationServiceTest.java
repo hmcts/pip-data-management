@@ -17,6 +17,7 @@ import uk.gov.hmcts.reform.pip.data.management.database.LocationRepository;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CreateLocationConflictException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CsvParseException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.LocationNotFoundException;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.PayloadValidationException;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationDeletion;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationReference;
@@ -36,7 +37,9 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -68,6 +71,9 @@ class LocationServiceTest {
     @Mock
     private PublicationServicesService publicationService;
 
+    @Mock
+    private ValidationService validationService;
+
     @InjectMocks
     private LocationService locationService;
 
@@ -84,6 +90,7 @@ class LocationServiceTest {
     private static final String WELSH_LANGUAGE = "cy";
     private static final Integer LOCATION_ID = 123;
     private static final String LOCATION_NAME = "TEST_PIP_1234_Court123";
+//    private static final String INVALID_LOCATION_NAME = "Test <p>Court Name</p>";
     private static final String LOCATION_NAME_PREFIX = "TEST_PIP_1234_";
     private static final String LOCATION_NAME2 = "Test Location 2";
     private static final String WELSH_LOCATION_NAME2 = "Welsh Test Location 2";
@@ -358,9 +365,13 @@ class LocationServiceTest {
 
             List<Location> locations = new ArrayList<>(locationService.uploadLocations(multipartFile));
 
+            Location firstLocation = locations.get(0);
+
+            validationService.containsForbiddenCharacter(firstLocation.getName());
+            validationService.containsForbiddenCharacter(firstLocation.getWelshName());
+
             assertEquals(2, locations.size(), "Unknown number of locations returned from parser");
 
-            Location firstLocation = locations.get(0);
             assertEquals(1, firstLocation.getLocationId(), "Location ID is not as expected");
             assertEquals("Test Location", firstLocation.getName(), "Location name does not match in first location");
             assertEquals(List.of("North West"), firstLocation.getRegion(),
@@ -458,6 +469,37 @@ class LocationServiceTest {
             );
 
             assertThrows(CsvParseException.class, () -> locationService.uploadLocations(multipartFile));
+        }
+    }
+
+
+    @Test
+    void testHandleUploadContainsInvalidCourtName() throws IOException {
+        when(locationRepository.save(any()))
+            .thenReturn(locationFirstExample)
+            .thenThrow(PayloadValidationException.class)
+            .thenReturn(locationSecondExample);
+
+        try (InputStream inputStream = this.getClass().getClassLoader()
+            .getResourceAsStream("csv/ValidCsvWithInvalidCourtName.csv");
+             LogCaptor logCaptor = LogCaptor.forClass(LocationService.class)) {
+
+            MultipartFile multipartFile = new MockMultipartFile(FILE, FILE_NAME, FILE_TYPE,
+                                                                IOUtils.toByteArray(inputStream));
+
+            List<Location> locations = new ArrayList<>(locationService.uploadLocations(multipartFile));
+
+            assertThat(logCaptor.getErrorLogs())
+                .as(ERROR_LOG_MESSAGE)
+                .hasSize(1);
+
+            assertThat(logCaptor.getErrorLogs().get(0))
+                .as(ERROR_LOG_MESSAGE)
+                .contains("Record with ID 2 not saved. The location name 'Test Location <p>Hello world</p>' " +
+                              "or Welsh location name 'Welsh Test Location other' contains a forbidden character");
+
+            assertThat(locations)
+                .hasSize(1);
         }
     }
 
