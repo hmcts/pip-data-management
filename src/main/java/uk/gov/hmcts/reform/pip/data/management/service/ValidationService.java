@@ -29,6 +29,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Class that guides the validation process.
@@ -205,9 +207,14 @@ public class ValidationService {
         return header == null || header.toString().isEmpty();
     }
 
-    public void containsForbiddenCharacter(String input, String secondInput) {
-        if (input.indexOf('<') != -1 || secondInput.indexOf('<') != -1) {
-            throw new PayloadValidationException("Input contains a forbidden character");
+    public void containsHtmlTag(String input, String secondInput) {
+        String regex = "<(\"[^\"]*\"|'[^']*'|[^'\">])*>";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(input);
+        Matcher secondMatcher = pattern.matcher(secondInput);
+
+        if (matcher.find() || secondMatcher.find()) {
+            throw new PayloadValidationException("Input contains a html tag");
         }
     }
 

@@ -174,7 +174,7 @@ public class LocationService {
                         LocationType.valueOfCsv(locationCsv.getProvenanceLocationType()))));
 
                 try {
-                    validationService.containsForbiddenCharacter(location.getName(), location.getWelshName());
+                    validationService.containsHtmlTag(location.getName(), location.getWelshName());
                     savedLocations.add(locationRepository.save(location));
                 } catch (DataIntegrityViolationException e) {
                     log.error(writeLog(String.format(
