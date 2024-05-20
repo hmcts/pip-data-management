@@ -364,8 +364,7 @@ class LocationServiceTest {
 
             Location firstLocation = locations.get(0);
 
-            validationService.containsForbiddenCharacter(firstLocation.getName());
-            validationService.containsForbiddenCharacter(firstLocation.getWelshName());
+            validationService.containsForbiddenCharacter(firstLocation.getName(), firstLocation.getWelshName());
 
             assertEquals(2, locations.size(), "Unknown number of locations returned from parser");
 

@@ -342,8 +342,17 @@ class ValidationServiceTest {
     @Test
     void testForbiddenCharacterThrows() {
         String courtNameContainsHtml = "Test <p>Court Name</p>";
+        String courtName = "Test Court Name";
+
         assertThrows(PayloadValidationException.class, () ->
-                         validationService.containsForbiddenCharacter(courtNameContainsHtml),
+                         validationService.containsForbiddenCharacter(courtNameContainsHtml, courtName),
                      "Input contains a forbidden character");
+        assertThrows(PayloadValidationException.class, () ->
+                         validationService.containsForbiddenCharacter(courtName, courtNameContainsHtml),
+                     "Input contains a forbidden character");
+        assertThrows(PayloadValidationException.class, () ->
+                         validationService.containsForbiddenCharacter(courtNameContainsHtml, courtNameContainsHtml),
+                     "Input contains a forbidden character");
+
     }
 }
