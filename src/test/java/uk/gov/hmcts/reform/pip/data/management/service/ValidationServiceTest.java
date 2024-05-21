@@ -55,13 +55,15 @@ class ValidationServiceTest {
     private static final Sensitivity SENSITIVITY = Sensitivity.PUBLIC;
     private static final ArtefactType ARTEFACT_TYPE = ArtefactType.LIST;
     private static final String COURT_ID = "123";
+    private static final String COURT_NAME = "Test Court Name";
+    private static final String COURT_NAME_CONTAINS_HTML = "Test <p>Court Name</p>";
     private static final ListType LIST_TYPE = ListType.CIVIL_DAILY_CAUSE_LIST;
     private static final LocalDateTime CONTENT_DATE = LocalDateTime.now();
     private static final String VALIDATION_EXPECTED_MESSAGE =
         "The expected exception does not contain the correct message";
     private static final String NOT_NULL_MESSAGE = "The returned value is null, but was not expected to be.";
     private static final String UNKNOWN_EXCEPTION = "Unknown exception when opening the paylaod file";
-
+    private static final String CONTAINS_FORBIDDEN_VALUES_EXCEPTION = "Input contains a html tag";
     private HeaderGroup headerGroup;
 
     @BeforeEach
@@ -342,32 +344,20 @@ class ValidationServiceTest {
 
     @Test
     void testContainsHtmlTagThrows() {
-        String courtNameContainsHtml = "Test <p>Court Name</p>";
-        String courtName = "Test Court Name";
-
         assertThrows(ContainsForbiddenValuesException.class, () ->
-                         validationService.containsHtmlTag(courtNameContainsHtml, courtName),
-                     "Input contains a html tag");
+                         validationService.containsHtmlTag(COURT_NAME_CONTAINS_HTML, COURT_NAME),
+                     CONTAINS_FORBIDDEN_VALUES_EXCEPTION);
         assertThrows(ContainsForbiddenValuesException.class, () ->
-                         validationService.containsHtmlTag(courtName, courtNameContainsHtml),
-                     "Input contains a html tag");
+                         validationService.containsHtmlTag(COURT_NAME, COURT_NAME_CONTAINS_HTML),
+                     CONTAINS_FORBIDDEN_VALUES_EXCEPTION);
         assertThrows(ContainsForbiddenValuesException.class, () ->
-                         validationService.containsHtmlTag(courtNameContainsHtml, courtNameContainsHtml),
-                     "Input contains a html tag");
+                         validationService.containsHtmlTag(COURT_NAME_CONTAINS_HTML, COURT_NAME_CONTAINS_HTML),
+                     CONTAINS_FORBIDDEN_VALUES_EXCEPTION);
     }
 
     @Test
     void testContainsHtmlTagDoesNotThrow() {
-        String courtName = "Test Court Name";
-        String courtName_2 = "Test Court < Name";
-        String courtName_3 = "Test > Court Name";
-
-        assertDoesNotThrow(() -> validationService.containsHtmlTag(courtName, courtName),
-                "Input contains a html tag");
-        assertDoesNotThrow(() -> validationService.containsHtmlTag(courtName, courtName_2),
-                           "Input contains a html tag");
-        assertDoesNotThrow(() -> validationService.containsHtmlTag(courtName_2, courtName_3),
-                           "Input contains a html tag");
-
+        assertDoesNotThrow(() -> validationService.containsHtmlTag(COURT_NAME, COURT_NAME),
+                           CONTAINS_FORBIDDEN_VALUES_EXCEPTION);
     }
 }

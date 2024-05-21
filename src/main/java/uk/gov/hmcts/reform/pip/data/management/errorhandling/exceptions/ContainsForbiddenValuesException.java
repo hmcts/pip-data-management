@@ -1,7 +1,7 @@
 package uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions;
 
 /**
- * This exception class handles fields that contain unwanted elements such as html tags
+ * This exception class handles fields that contain unwanted elements such as html tags.
  */
 public class ContainsForbiddenValuesException extends RuntimeException {
 
