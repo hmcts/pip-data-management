@@ -209,7 +209,7 @@ public class ValidationService {
     }
 
     public void containsHtmlTag(String input, String secondInput) {
-        String regex = "<(\"[^\"]*\"|'[^']*'|[^'\">])*>";
+        String regex = "<[^>]+>";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(input);
         Matcher secondMatcher = pattern.matcher(secondInput);
