@@ -14,6 +14,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.Application;
 import uk.gov.hmcts.reform.pip.data.management.config.AzureBlobConfigurationTestConfiguration;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ContainsForbiddenValuesException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.FlatFileException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.HeaderValidationException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.PayloadValidationException;
@@ -344,13 +345,13 @@ class ValidationServiceTest {
         String courtNameContainsHtml = "Test <p>Court Name</p>";
         String courtName = "Test Court Name";
 
-        assertThrows(PayloadValidationException.class, () ->
+        assertThrows(ContainsForbiddenValuesException.class, () ->
                          validationService.containsHtmlTag(courtNameContainsHtml, courtName),
                      "Input contains a html tag");
-        assertThrows(PayloadValidationException.class, () ->
+        assertThrows(ContainsForbiddenValuesException.class, () ->
                          validationService.containsHtmlTag(courtName, courtNameContainsHtml),
                      "Input contains a html tag");
-        assertThrows(PayloadValidationException.class, () ->
+        assertThrows(ContainsForbiddenValuesException.class, () ->
                          validationService.containsHtmlTag(courtNameContainsHtml, courtNameContainsHtml),
                      "Input contains a html tag");
     }

@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.testcontainers.shaded.org.apache.commons.io.IOUtils;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.LocationRepository;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ContainsForbiddenValuesException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CreateLocationConflictException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CsvParseException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.LocationNotFoundException;
@@ -77,6 +78,7 @@ class LocationServiceTest {
 
     Location locationFirstExample;
     Location locationSecondExample;
+    Location locationInvalidExample;
     LocationDeletion locationDeletion;
     AzureAccount azureAccount;
 
@@ -88,6 +90,7 @@ class LocationServiceTest {
     private static final String WELSH_LANGUAGE = "cy";
     private static final Integer LOCATION_ID = 123;
     private static final String LOCATION_NAME = "TEST_PIP_1234_Court123";
+    private static final String INVALID_LOCATION_NAME = "Test Location <p>Hello world</p>";
     private static final String LOCATION_NAME_PREFIX = "TEST_PIP_1234_";
     private static final String LOCATION_NAME2 = "Test Location 2";
     private static final String WELSH_LOCATION_NAME2 = "Welsh Test Location 2";
@@ -471,10 +474,17 @@ class LocationServiceTest {
 
     @Test
     void testHandleUploadContainsInvalidCourtName() throws IOException {
+        LocationCsv locationCsvInvalidExample = new LocationCsv();
+        locationCsvInvalidExample.setLocationName(INVALID_LOCATION_NAME);
+        locationCsvInvalidExample.setProvenanceLocationType("venue");
+        locationCsvInvalidExample.setWelshLocationName(WELSH_LOCATION_NAME2);
+        locationInvalidExample = new Location(locationCsvInvalidExample);
+        locationInvalidExample.setLocationId(2);
+
         when(locationRepository.save(any()))
             .thenReturn(locationFirstExample)
-            .thenThrow(PayloadValidationException.class)
-            .thenReturn(locationSecondExample);
+            .thenThrow(ContainsForbiddenValuesException.class)
+            .thenReturn(locationInvalidExample);
 
         try (InputStream inputStream = this.getClass().getClassLoader()
             .getResourceAsStream("csv/ValidCsvWithInvalidCourtName.csv");
