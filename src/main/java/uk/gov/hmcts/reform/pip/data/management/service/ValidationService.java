@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.config.ValidationConfiguration;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ContainsForbiddenValuesException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.DateValidationException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.EmptyRequiredHeaderException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.FlatFileException;
@@ -214,7 +215,7 @@ public class ValidationService {
         Matcher secondMatcher = pattern.matcher(secondInput);
 
         if (matcher.find() || secondMatcher.find()) {
-            throw new PayloadValidationException("Input contains a html tag");
+            throw new ContainsForbiddenValuesException("Input contains a html tag");
         }
     }
 

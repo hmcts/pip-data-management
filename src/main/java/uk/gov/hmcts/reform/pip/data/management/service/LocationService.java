@@ -16,10 +16,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.LocationRepository;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ContainsForbiddenValuesException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CreateLocationConflictException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CsvParseException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.LocationNotFoundException;
-import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.PayloadValidationException;
 import uk.gov.hmcts.reform.pip.data.management.helpers.TestingSupportLocationHelper;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationDeletion;
@@ -181,7 +181,7 @@ public class LocationService {
                         "Record with ID %d not saved. The location name '%s' or Welsh location name '%s' already "
                             + "exists", location.getLocationId(), location.getName(), location.getWelshName()
                     )));
-                } catch (PayloadValidationException e) {
+                } catch (ContainsForbiddenValuesException e) {
                     log.error(writeLog(String.format(
                         "Record with ID %d not saved. The location name '%s' or Welsh location name '%s' contains a "
                         + "forbidden character", location.getLocationId(), location.getName(), location.getWelshName()
