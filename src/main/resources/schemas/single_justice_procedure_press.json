@@ -317,7 +317,6 @@
                                           "type": "object",
                                           "required": [
                                             "offenceTitle",
-                                            "offenceWording",
                                             "reportingRestriction"
                                           ],
                                           "properties": {
