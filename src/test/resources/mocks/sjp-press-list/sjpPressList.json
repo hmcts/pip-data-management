@@ -76,7 +76,6 @@
                         "offence": [
                           {
                             "offenceTitle": "This is an offence title",
-                            "offenceWording": "This is offence wording",
                             "reportingRestriction": true
                           }
                         ],
