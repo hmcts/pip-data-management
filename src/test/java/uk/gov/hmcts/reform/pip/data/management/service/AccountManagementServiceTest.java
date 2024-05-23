@@ -27,8 +27,6 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
 class AccountManagementServiceTest {
 
-    private static MockWebServer mockAccountManagementEndpoint;
-
     @Autowired
     AccountManagementService accountManagementService;
 
@@ -36,94 +34,110 @@ class AccountManagementServiceTest {
 
     @Test
     void testIsAuthorised() throws IOException {
-        mockAccountManagementEndpoint = new MockWebServer();
-        mockAccountManagementEndpoint.start(6969);
-        mockAccountManagementEndpoint.enqueue(new MockResponse().setBody("true")
-                                                  .addHeader("Content-Type", "application/json"));
+        try (MockWebServer mockAccountManagementEndpoint = new MockWebServer()) {
+            mockAccountManagementEndpoint.start(6969);
+            mockAccountManagementEndpoint.enqueue(new MockResponse().setBody("true")
+                                                      .addHeader("Content-Type", "application/json"));
 
-        boolean isAuthorised =
-            accountManagementService.getIsAuthorised(UUID.randomUUID(),
-                                                     ListType.CIVIL_DAILY_CAUSE_LIST, Sensitivity.PUBLIC);
+            boolean isAuthorised =
+                accountManagementService.getIsAuthorised(UUID.randomUUID(),
+                                                         ListType.CIVIL_DAILY_CAUSE_LIST, Sensitivity.PUBLIC
+                );
 
-        assertTrue(isAuthorised, "Authorised has not been returned from the server");
+            assertTrue(isAuthorised, "Authorised has not been returned from the server");
 
-        mockAccountManagementEndpoint.shutdown();
+            mockAccountManagementEndpoint.shutdown();
+        }
     }
 
     @Test
     void testIsAuthorisedError() throws IOException {
-        mockAccountManagementEndpoint = new MockWebServer();
-        mockAccountManagementEndpoint.start(6969);
-        mockAccountManagementEndpoint.enqueue(new MockResponse().setResponseCode(BAD_REQUEST.value()));
+        try (MockWebServer mockAccountManagementEndpoint = new MockWebServer()) {
+            mockAccountManagementEndpoint.start(6969);
+            mockAccountManagementEndpoint.enqueue(new MockResponse().setResponseCode(BAD_REQUEST.value()));
 
-        boolean isAuthorised =
-            accountManagementService.getIsAuthorised(UUID.randomUUID(),
-                                                     ListType.CIVIL_DAILY_CAUSE_LIST, Sensitivity.PUBLIC);
+            boolean isAuthorised =
+                accountManagementService.getIsAuthorised(UUID.randomUUID(),
+                                                         ListType.CIVIL_DAILY_CAUSE_LIST, Sensitivity.PUBLIC
+                );
 
-        assertFalse(isAuthorised, "Not authorised has not been returned from the server");
+            assertFalse(isAuthorised, "Not authorised has not been returned from the server");
 
-        mockAccountManagementEndpoint.shutdown();
+            mockAccountManagementEndpoint.shutdown();
+        }
     }
 
     @Test
     void testGetUserInfo() throws IOException {
-        mockAccountManagementEndpoint = new MockWebServer();
-        mockAccountManagementEndpoint.start(6969);
-        mockAccountManagementEndpoint.enqueue(new MockResponse().setBody(TRIGGER_RECEIVED));
+        try (MockWebServer mockAccountManagementEndpoint = new MockWebServer()) {
+            mockAccountManagementEndpoint.start(6969);
+            mockAccountManagementEndpoint.enqueue(new MockResponse().setBody(TRIGGER_RECEIVED));
 
-        AzureAccount result =
-            accountManagementService.getUserInfo(UUID.randomUUID().toString());
+            AzureAccount result =
+                accountManagementService.getUserInfo(UUID.randomUUID().toString());
 
-        assertNotNull(result,
-                   "User information has not been returned from the server");
+            assertNotNull(
+                result,
+                "User information has not been returned from the server"
+            );
 
-        mockAccountManagementEndpoint.shutdown();
+            mockAccountManagementEndpoint.shutdown();
+        }
     }
 
     @Test
     void testGetUserInfoError() throws IOException {
-        mockAccountManagementEndpoint = new MockWebServer();
-        mockAccountManagementEndpoint.start(6969);
-        mockAccountManagementEndpoint.enqueue(new MockResponse().setResponseCode(BAD_REQUEST.value()));
+        try (MockWebServer mockAccountManagementEndpoint = new MockWebServer()) {
+            mockAccountManagementEndpoint.start(6969);
+            mockAccountManagementEndpoint.enqueue(new MockResponse().setResponseCode(BAD_REQUEST.value()));
 
-        AzureAccount result =
-            accountManagementService.getUserInfo(UUID.randomUUID().toString());
+            AzureAccount result =
+                accountManagementService.getUserInfo(UUID.randomUUID().toString());
 
-        assertNull(result.getDisplayName(),
-                   "User information has not been returned from the server");
+            assertNull(
+                result.getDisplayName(),
+                "User information has not been returned from the server"
+            );
 
-        mockAccountManagementEndpoint.shutdown();
+            mockAccountManagementEndpoint.shutdown();
+        }
     }
 
     @Test
     void testGetAllAccounts() throws IOException {
-        mockAccountManagementEndpoint = new MockWebServer();
-        mockAccountManagementEndpoint.start(6969);
-        mockAccountManagementEndpoint.enqueue(new MockResponse()
-            .setBody("{\"content\":[{\"email\":\"junaid335@yahoo.com\",\"roles\":\"SYSTEM_ADMIN\"}]}"));
+        try (MockWebServer mockAccountManagementEndpoint = new MockWebServer()) {
+            mockAccountManagementEndpoint.start(6969);
+            mockAccountManagementEndpoint.enqueue(new MockResponse().setBody(
+                "{\"content\":[{\"email\":\"test_email_account_pip@hmcts.net\",\"roles\":\"SYSTEM_ADMIN\"}]}"));
 
-        List<String> result =
-            accountManagementService.getAllAccounts("prov", "role");
+            List<String> result =
+                accountManagementService.getAllAccounts("prov", "role");
 
-        assertFalse(result.isEmpty(),
-                    "System admin users have not been returned from the server");
+            assertFalse(
+                result.isEmpty(),
+                "System admin users have not been returned from the server"
+            );
 
-        mockAccountManagementEndpoint.shutdown();
+            mockAccountManagementEndpoint.shutdown();
+        }
     }
 
     @Test
     void testGetAllAccountsError() throws IOException {
-        mockAccountManagementEndpoint = new MockWebServer();
-        mockAccountManagementEndpoint.start(6969);
-        mockAccountManagementEndpoint.enqueue(new MockResponse().setResponseCode(BAD_REQUEST.value()));
+        try (MockWebServer mockAccountManagementEndpoint = new MockWebServer()) {
+            mockAccountManagementEndpoint.start(6969);
+            mockAccountManagementEndpoint.enqueue(new MockResponse().setResponseCode(BAD_REQUEST.value()));
 
-        List<String> result =
-            accountManagementService.getAllAccounts("prov", "role");
+            List<String> result =
+                accountManagementService.getAllAccounts("prov", "role");
 
-        assertTrue(result.get(0).contains("Failed to find all the accounts"),
-                   "System admin users have not been returned from the server");
+            assertTrue(
+                result.get(0).contains("Failed to find all the accounts"),
+                "System admin users have not been returned from the server"
+            );
 
-        mockAccountManagementEndpoint.shutdown();
+            mockAccountManagementEndpoint.shutdown();
+        }
     }
 
 }

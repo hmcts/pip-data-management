@@ -6,8 +6,8 @@
     <cve>CVE-2023-36052</cve>
   </suppress>
   <suppress>
-    <notes><![CDATA[file name: spring-cloud-azure-starter-active-directory-5.11.0.jar]]></notes>
-    <packageUrl regex="true">^pkg:maven/com.azure.spring/spring-cloud-azure-starter-active-directory@5.11.0</packageUrl>
+    <notes><![CDATA[file name: spring-cloud-azure-starter-active-directory-5.12.0.jar]]></notes>
+    <packageUrl regex="true">^pkg:maven/com.azure.spring/spring-cloud-azure-starter-active-directory@5.12.0</packageUrl>
     <cve>CVE-2021-42306</cve>
   </suppress>
   <suppress>
