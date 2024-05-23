@@ -140,7 +140,6 @@ class PublicationTest {
         + "sensitivity,source_artefact_id,"
         + "superseded_count,type,content_date,court_id,court_name,list_type";
 
-    private static MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
     private static ObjectMapper objectMapper;
 
     @BeforeAll
@@ -231,6 +230,7 @@ class PublicationTest {
     @ValueSource(booleans = {true, false})
     @DisplayName("Should create a valid artefact and return the created artefact to the user")
     void creationOfAValidArtefact(boolean isJson) throws Exception {
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
         if (isJson) {
             mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
         } else {
@@ -293,8 +293,8 @@ class PublicationTest {
     @Test
     @DisplayName("Should create a valid artefact including the correct search criteria")
     void creationOfAValidArtefactPartiesExtraction() throws Exception {
-
-        mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder
+            = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
 
         mockHttpServletRequestBuilder.header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
             .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
@@ -388,6 +388,7 @@ class PublicationTest {
     void creationOfAValidArtefactWithOnlyMandatoryFields(boolean isJson) throws Exception {
         when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
         when(blobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
         if (isJson) {
             mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
         } else {
@@ -453,6 +454,7 @@ class PublicationTest {
     void testPopulateDefaultDateFrom(boolean isJson) throws Exception {
         when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
         when(blobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
         if (isJson) {
             mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
         } else {
@@ -486,6 +488,7 @@ class PublicationTest {
     void testPopulateDefaultSensitivity(boolean isJson) throws Exception {
         when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
         when(blobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
         if (isJson) {
             mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
         } else {
@@ -520,6 +523,7 @@ class PublicationTest {
         when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
         when(blobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
 
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
         if (isJson) {
             mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
         } else {
@@ -950,6 +954,7 @@ class PublicationTest {
     @ValueSource(booleans = {true, false})
     @DisplayName("File endpoint should return the file when artefact exists")
     void retrieveFileFromAnArtefactWhereFound(boolean isJson) throws Exception {
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
         if (isJson) {
             mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
         } else {
@@ -999,6 +1004,7 @@ class PublicationTest {
     @ValueSource(booleans = {true, false})
     @DisplayName("File endpoint should return the file when artefact exists")
     void retrieveFileFromAnArtefactWhereAdmin(boolean isJson) throws Exception {
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
         if (isJson) {
             mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
         } else {
@@ -1048,6 +1054,7 @@ class PublicationTest {
     @ValueSource(booleans = {true, false})
     @DisplayName("File endpoint should not return the payload when not authorized")
     void retrieveFileOfAnArtefactWhereNotAuthorized(boolean isJson) throws Exception {
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
         if (isJson) {
             mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
         } else {
@@ -1095,6 +1102,7 @@ class PublicationTest {
     @ValueSource(booleans = {true, false})
     @DisplayName("Payload endpoint should return the payload when artefact exists when verified")
     void retrievePayloadOfAnArtefactWhereFoundWhenVerified(boolean isJson) throws Exception {
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
         if (isJson) {
             mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
         } else {
@@ -1143,6 +1151,7 @@ class PublicationTest {
     @ValueSource(booleans = {true, false})
     @DisplayName("Payload endpoint should not return the payload when artefact out of range and user verified")
     void retrievePayloadOfAnArtefactWhereOutOfDateRangeWhenVerified(boolean isJson) throws Exception {
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
         if (isJson) {
             mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
         } else {
@@ -1185,6 +1194,7 @@ class PublicationTest {
     @ValueSource(booleans = {true, false})
     @DisplayName("Payload endpoint should not return the payload when not authorized")
     void retrievePayloadOfAnArtefactWhereNotAuthorized(boolean isJson) throws Exception {
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
         if (isJson) {
             mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
         } else {
@@ -1223,6 +1233,7 @@ class PublicationTest {
     @ValueSource(booleans = {true, false})
     @DisplayName("Payload endpoint should return the payload when artefact exists when unverified")
     void retrievePayloadOfAnArtefactWhereFoundWhenUnverified(boolean isJson) throws Exception {
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
         if (isJson) {
             mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
         } else {
@@ -1270,6 +1281,7 @@ class PublicationTest {
     @ValueSource(booleans = {true, false})
     @DisplayName("Payload endpoint should return the payload when artefact exists when an admin")
     void retrievePayloadOfAnArtefactWhenAdmin(boolean isJson) throws Exception {
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
         if (isJson) {
             mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
         } else {
@@ -1373,6 +1385,7 @@ class PublicationTest {
     @ValueSource(booleans = {true, false})
     @DisplayName("Metadata endpoint should return the artefact when artefact exists")
     void retrieveMetadataOfAnArtefactWhereFoundWhenVerified(boolean isJson) throws Exception {
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
         if (isJson) {
             mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
         } else {
@@ -1425,6 +1438,7 @@ class PublicationTest {
     @ValueSource(booleans = {true, false})
     @DisplayName("Metadata endpoint should return the artefact when artefact exists when unverified")
     void retrieveMetadataOfAnArtefactWhereFoundWhenUnverified(boolean isJson) throws Exception {
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
         if (isJson) {
             mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
         } else {
@@ -1476,6 +1490,7 @@ class PublicationTest {
     @ValueSource(booleans = {true, false})
     @DisplayName("Metadata endpoint should return the artefact when artefact exists")
     void retrieveMetadataOfAnArtefactWhereOutOfDateRangeAndVerified(boolean isJson) throws Exception {
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
         if (isJson) {
             mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
         } else {
@@ -1518,6 +1533,7 @@ class PublicationTest {
     @ValueSource(booleans = {true, false})
     @DisplayName("Metadata endpoint should return the artefact when artefact exists")
     void retrieveMetadataOfAnArtefactWhereOutOfDateRangeAndUnverified(boolean isJson) throws Exception {
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
         if (isJson) {
             mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
         } else {
@@ -1559,6 +1575,7 @@ class PublicationTest {
     @ValueSource(booleans = {true, false})
     @DisplayName("Metadata endpoint should not return the artefact when not authorized")
     void retrieveMetadataOfAnArtefactWhereNotAuthorized(boolean isJson) throws Exception {
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
         if (isJson) {
             mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
         } else {
@@ -1752,7 +1769,7 @@ class PublicationTest {
 
     @Test
     void testGetLocationTypeReturns() throws Exception {
-        mockHttpServletRequestBuilder = MockMvcRequestBuilders
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
             .get(LOCATION_TYPE_URL + ListType.CIVIL_DAILY_CAUSE_LIST);
 
         MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isOk()).andReturn();
@@ -1765,7 +1782,8 @@ class PublicationTest {
 
     @Test
     void testGetLocationTypeReturnsBadRequest() throws Exception {
-        mockHttpServletRequestBuilder = MockMvcRequestBuilders.get(LOCATION_TYPE_URL + "invalid");
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
+            MockMvcRequestBuilders.get(LOCATION_TYPE_URL + "invalid");
 
         mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isBadRequest());
     }
@@ -1775,7 +1793,7 @@ class PublicationTest {
         when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
         when(blobContainerClient.getBlobContainerUrl()).thenReturn(PAYLOAD_URL);
         createDailyList(Sensitivity.PRIVATE);
-        mockHttpServletRequestBuilder = MockMvcRequestBuilders.get(COUNT_ENDPOINT);
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders.get(COUNT_ENDPOINT);
         MvcResult result = mockMvc.perform(mockHttpServletRequestBuilder)
             .andExpect(status().isOk())
             .andReturn();
@@ -1787,7 +1805,7 @@ class PublicationTest {
         when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
         when(blobContainerClient.getBlobContainerUrl()).thenReturn(PAYLOAD_URL);
         createDailyList(Sensitivity.PRIVATE, DISPLAY_FROM.minusMonths(2), DISPLAY_TO, CONTENT_DATE, "ListAssist");
-        mockHttpServletRequestBuilder = MockMvcRequestBuilders.get(COUNT_ENDPOINT);
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders.get(COUNT_ENDPOINT);
         MvcResult result = mockMvc.perform(mockHttpServletRequestBuilder)
             .andExpect(status().isOk())
             .andReturn();
