@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions;
 
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -9,17 +8,6 @@ class CustomExceptionsTest {
 
     private static final String TEST_MESSAGE = "This is a test message";
     private static final String ASSERTION_MESSAGE = "The message should match the message passed in";
-
-    @Test
-    @DisplayName("Test that the creation of the custom exception, populates the relevant exception fields")
-    void testCreationOfDataStorageNotFoundException() {
-
-        DataStorageNotFoundException publicationNotFoundException
-            = new DataStorageNotFoundException(TEST_MESSAGE);
-        assertEquals(TEST_MESSAGE, publicationNotFoundException.getMessage(),
-                     ASSERTION_MESSAGE);
-
-    }
 
     @Test
     void testCreationOfReflectionException() {
