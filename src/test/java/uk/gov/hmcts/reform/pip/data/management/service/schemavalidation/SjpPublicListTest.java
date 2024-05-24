@@ -7,6 +7,8 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
@@ -447,8 +449,9 @@ class SjpPublicListTest {
         }
     }
 
-    @Test
-    void testValidateWithErrorWhenPostCodeForAccusedInWrongFormat() throws IOException {
+    @ParameterizedTest
+    @ValueSource(strings = { "AA1 1AA", "AA1", "A1A", "AAA", "1A"})
+    void testValidateWithErrorWhenPostCodeForAccusedIndividualInUnexpectedFormat(String postcode) throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(SJP_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
@@ -456,26 +459,9 @@ class SjpPublicListTest {
             ObjectMapper mapper = new ObjectMapper();
             JsonNode node = mapper.readValue(text, JsonNode.class);
 
-            String listJson = node.toString().replace("\"postCode\":\"AA1\"", "\"postCode\":\"1234\"");
-            assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup),
-                         SJP_PUBLIC_INVALID_MESSAGE
-            );
-        }
-    }
-
-    @Test
-    void testValidateWithErrorWhenPostCodeForAccusedIsFullPostcode() throws IOException {
-        try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(SJP_PUBLIC_LIST_VALID_JSON)) {
-            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
-
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode node = mapper.readValue(text, JsonNode.class);
-
-            String listJson = node.toString().replace("\"postCode\":\"AA1\"", "\"postCode\":\"AA1 1AA\"");
-            assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup),
+            String listJson = node.toString().replace("\"postCode\":\"AA\"", "\"postCode\":" + postcode);
+            assertThrows(PayloadValidationException.class,
+                         () -> validationService.validateBody(listJson, headerGroup),
                          SJP_PUBLIC_INVALID_MESSAGE
             );
         }
