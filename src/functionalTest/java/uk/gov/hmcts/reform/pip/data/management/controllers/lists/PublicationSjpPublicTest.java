@@ -7,7 +7,8 @@ import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -72,8 +73,9 @@ class PublicationSjpPublicTest {
     }
 
     @DisplayName("Should create a valid artefact and return the created artefact to the user")
-    @Test
-    void testCreationOfValidSjpPublicList() throws Exception {
+    @ParameterizedTest
+    @EnumSource(value = ListType.class, names = {"SJP_PUBLIC_LIST", "SJP_DELTA_PUBLIC_LIST"})
+    void testCreationOfValidSjpPublicList(ListType listType) throws Exception {
         try (InputStream mockFile = this.getClass().getClassLoader()
             .getResourceAsStream("data/sjp-public-list/sjpPublicList.json")) {
 
@@ -85,7 +87,7 @@ class PublicationSjpPublicTest {
                 .header(PublicationConfiguration.DISPLAY_FROM_HEADER, LocalDateTime.now())
                 .header(PublicationConfiguration.DISPLAY_TO_HEADER, LocalDateTime.now().plusMonths(1))
                 .header(PublicationConfiguration.COURT_ID, 1)
-                .header(PublicationConfiguration.LIST_TYPE, ListType.SJP_PUBLIC_LIST)
+                .header(PublicationConfiguration.LIST_TYPE, listType)
                 .header(PublicationConfiguration.CONTENT_DATE, LocalDateTime.now())
                 .header(PublicationConfiguration.LANGUAGE_HEADER, Language.ENGLISH)
                 .content(mockFile.readAllBytes())
@@ -104,8 +106,9 @@ class PublicationSjpPublicTest {
     }
 
     @DisplayName("Should return an error message back to the user when creating an invalid blob")
-    @Test
-    void testCreationOfInvalidSjpPublicList() throws Exception {
+    @ParameterizedTest
+    @EnumSource(value = ListType.class, names = {"SJP_PUBLIC_LIST", "SJP_DELTA_PUBLIC_LIST"})
+    void testCreationOfInvalidSjpPublicList(ListType listType) throws Exception {
         try (InputStream mockFile = this.getClass().getClassLoader()
             .getResourceAsStream("data/sjp-public-list/sjpPublicListInvalid.json")) {
 
@@ -117,7 +120,7 @@ class PublicationSjpPublicTest {
                 .header(PublicationConfiguration.DISPLAY_FROM_HEADER, LocalDateTime.now())
                 .header(PublicationConfiguration.DISPLAY_TO_HEADER, LocalDateTime.now().plusMonths(1))
                 .header(PublicationConfiguration.COURT_ID, 1)
-                .header(PublicationConfiguration.LIST_TYPE, ListType.SJP_PUBLIC_LIST)
+                .header(PublicationConfiguration.LIST_TYPE, listType)
                 .header(PublicationConfiguration.CONTENT_DATE, LocalDateTime.now())
                 .header(PublicationConfiguration.LANGUAGE_HEADER, Language.ENGLISH)
                 .content(mockFile.readAllBytes())
