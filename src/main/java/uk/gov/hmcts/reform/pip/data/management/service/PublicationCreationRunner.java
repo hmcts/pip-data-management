@@ -14,6 +14,7 @@ import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 
 import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
 
@@ -82,9 +83,7 @@ public class PublicationCreationRunner {
         preprocessPublicationForCreation(artefact);
 
         // Add 7 days to the expiry date if the list type is SJP
-        if (artefact.getListType().equals(ListType.SJP_PUBLIC_LIST)
-            || artefact.getListType().equals(ListType.SJP_PRESS_LIST)
-            || artefact.getListType().equals(ListType.SJP_DELTA_PRESS_LIST)) {
+        if (isListTypeWithLongerExpiry(artefact.getListType())) {
             artefact.setExpiryDate(artefact.getExpiryDate().plusDays(7));
         }
 
@@ -97,5 +96,14 @@ public class PublicationCreationRunner {
         publicationService.applyInternalLocationId(artefact);
         artefact.setContentDate(artefact.getContentDate().toLocalDate().atTime(LocalTime.MIN));
         artefact.setLastReceivedDate(LocalDateTime.now());
+    }
+
+    private boolean isListTypeWithLongerExpiry(ListType listType) {
+        return List.of(
+            ListType.SJP_PUBLIC_LIST,
+            ListType.SJP_DELTA_PUBLIC_LIST,
+            ListType.SJP_PRESS_LIST,
+            ListType.SJP_DELTA_PRESS_LIST
+        ).contains(listType);
     }
 }

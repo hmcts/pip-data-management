@@ -294,6 +294,8 @@ class ValidationServiceTest {
         return Stream.of(
             Arguments.of(ListType.SJP_PUBLIC_LIST,
                          "mocks/sjp-public-list/sjpPublicList.json"),
+            Arguments.of(ListType.SJP_DELTA_PUBLIC_LIST,
+                         "mocks/sjp-public-list/sjpPublicList.json"),
             Arguments.of(ListType.SJP_PRESS_LIST,
                          "mocks/sjp-press-list/sjpPressList.json"),
             Arguments.of(ListType.SJP_DELTA_PRESS_LIST,
