@@ -98,7 +98,6 @@ class PublicationInternalCourtIdTest {
 
     private static final String VALIDATION_EMPTY_RESPONSE = "Response should contain a Artefact";
 
-    private static MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
     private static ObjectMapper objectMapper;
 
     @BeforeAll
@@ -141,6 +140,7 @@ class PublicationInternalCourtIdTest {
     @DisplayName("Should create a valid artefact, updated court Id with internal "
         + "court Id and return the created artefact to the user")
     void creationOfAValidArtefactAndUpdateCourtId(boolean isJson) throws Exception {
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
         if (isJson) {
             mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
         } else {
@@ -208,6 +208,7 @@ class PublicationInternalCourtIdTest {
     @DisplayName("Should create a valid artefact, unable to find "
         + "internal court Id and return the created artefact to the user")
     void creationOfAValidArtefactAndUpdateCourtIdWithNoMatch(boolean isJson) throws Exception {
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
         if (isJson) {
             mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
         } else {

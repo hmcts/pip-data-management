@@ -13,7 +13,6 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CreateArtefactConflictException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CreateLocationConflictException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CsvParseException;
-import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.DataStorageNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.FlatFileException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.HeaderValidationException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.NotFoundException;
@@ -27,21 +26,6 @@ import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
 @ControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
-
-    /**
-     * Template exception handler, that handles a custom DataStorageNotFoundException,
-     * and returns a 404 in the standard format.
-     *
-     * @param ex The exception that has been thrown.
-     * @return The error response, modelled using the ExceptionResponse object.
-     */
-
-    @ExceptionHandler(DataStorageNotFoundException.class)
-    public ResponseEntity<ExceptionResponse> handle(DataStorageNotFoundException ex) {
-        log.error(writeLog("404, failure when connecting to Blob store"));
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-            .body(generateExceptionResponse(ex.getMessage()));
-    }
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<ExceptionResponse> handle(NotFoundException ex) {

@@ -118,6 +118,7 @@
               "type": "string",
               "enum": [
                 "SJP_PUBLIC_LIST",
+                "SJP_DELTA_PUBLIC_LIST",
                 "SJP_PRESS_LIST",
                 "SJP_DELTA_PRESS_LIST",
                 "SJP_PRESS_REGISTER",
