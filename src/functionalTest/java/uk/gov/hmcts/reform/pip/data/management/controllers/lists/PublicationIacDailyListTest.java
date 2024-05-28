@@ -8,6 +8,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -26,6 +28,8 @@ import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.model.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 import java.io.InputStream;
 import java.time.LocalDateTime;
@@ -72,8 +76,9 @@ class PublicationIacDailyListTest {
     }
 
     @DisplayName("Should create a valid artefact and return the created artefact to the user")
-    @Test
-    void testCreationOfValidIacDailyList() throws Exception {
+        @ParameterizedTest
+        @EnumSource(value = ListType.class, names = {"IAC_DAILY_CAUSE_LIST", "IAC_DAILY_CAUSE_LIST_ADDITIONAL_LIST"})
+        void testCreationOfValidSjpPublicList(ListType listType) throws Exception {
         try (InputStream mockFile = this.getClass().getClassLoader()
             .getResourceAsStream("data/iac-daily-list/iacDailyList.json")) {
 
@@ -85,7 +90,7 @@ class PublicationIacDailyListTest {
                 .header(PublicationConfiguration.DISPLAY_FROM_HEADER, LocalDateTime.now())
                 .header(PublicationConfiguration.DISPLAY_TO_HEADER, LocalDateTime.now().plusMonths(1))
                 .header(PublicationConfiguration.COURT_ID, 1)
-                .header(PublicationConfiguration.LIST_TYPE, ListType.IAC_DAILY_LIST)
+                .header(PublicationConfiguration.LIST_TYPE, listType)
                 .header(PublicationConfiguration.LANGUAGE_HEADER, Language.ENGLISH)
                 .header(PublicationConfiguration.CONTENT_DATE, LocalDateTime.now())
                 .content(mockFile.readAllBytes())
@@ -104,8 +109,9 @@ class PublicationIacDailyListTest {
     }
 
     @DisplayName("Should return an error message back to the user when creating an invalid blob")
-    @Test
-    void testCreationOfInvalidIacDailyList() throws Exception {
+    @ParameterizedTest
+    @EnumSource(value = ListType.class, names = {"IAC_DAILY_LIST", "IAC_DAILY_LIST_ADDITIONAL_LIST"})
+    void testCreationOfInvalidSjpPublicList(ListType listType) throws Exception {
         try (InputStream mockFile = this.getClass().getClassLoader()
             .getResourceAsStream("data/iac-daily-list/iacDailyListInvalid.json")) {
 
@@ -117,7 +123,7 @@ class PublicationIacDailyListTest {
                 .header(PublicationConfiguration.DISPLAY_FROM_HEADER, LocalDateTime.now())
                 .header(PublicationConfiguration.DISPLAY_TO_HEADER, LocalDateTime.now().plusMonths(1))
                 .header(PublicationConfiguration.COURT_ID, 1)
-                .header(PublicationConfiguration.LIST_TYPE, ListType.IAC_DAILY_LIST)
+                .header(PublicationConfiguration.LIST_TYPE, listType)
                 .header(PublicationConfiguration.LANGUAGE_HEADER, Language.ENGLISH)
                 .header(PublicationConfiguration.CONTENT_DATE, LocalDateTime.now())
                 .content(mockFile.readAllBytes())
