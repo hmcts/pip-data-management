@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.LocationRepository;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ContainsForbiddenValuesException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CreateLocationConflictException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CsvParseException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.LocationNotFoundException;
@@ -68,16 +69,20 @@ public class LocationService {
 
     private final PublicationServicesService publicationService;
 
+    private final ValidationService validationService;
+
     public LocationService(LocationRepository locationRepository,
                            ArtefactRepository artefactRepository,
                            SubscriptionManagementService subscriptionManagementService,
                            AccountManagementService accountManagementService,
-                           PublicationServicesService publicationService) {
+                           PublicationServicesService publicationService,
+                           ValidationService validationService) {
         this.locationRepository = locationRepository;
         this.artefactRepository = artefactRepository;
         this.subscriptionManagementService = subscriptionManagementService;
         this.accountManagementService = accountManagementService;
         this.publicationService = publicationService;
+        this.validationService = validationService;
     }
 
     /**
@@ -157,6 +162,7 @@ public class LocationService {
             Map<Integer, List<LocationCsv>> locations = locationCsvList.stream()
                 .collect(Collectors.groupingBy(LocationCsv::getUniqueId));
 
+
             List<Location> savedLocations = new ArrayList<>();
             locations.values().forEach(groupedLocation -> {
                 Location location = new Location(groupedLocation.get(0));
@@ -168,11 +174,17 @@ public class LocationService {
                         LocationType.valueOfCsv(locationCsv.getProvenanceLocationType()))));
 
                 try {
+                    validationService.containsHtmlTag(location.getName(), location.getWelshName());
                     savedLocations.add(locationRepository.save(location));
                 } catch (DataIntegrityViolationException e) {
                     log.error(writeLog(String.format(
                         "Record with ID %d not saved. The location name '%s' or Welsh location name '%s' already "
                             + "exists", location.getLocationId(), location.getName(), location.getWelshName()
+                    )));
+                } catch (ContainsForbiddenValuesException e) {
+                    log.error(writeLog(String.format(
+                        "Record with ID %d not saved. The location name '%s' or Welsh location name '%s' contains a "
+                        + "forbidden character", location.getLocationId(), location.getName(), location.getWelshName()
                     )));
                 }
             });
