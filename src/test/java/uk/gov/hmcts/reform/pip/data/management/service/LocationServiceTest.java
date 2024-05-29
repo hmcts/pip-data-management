@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.testcontainers.shaded.org.apache.commons.io.IOUtils;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.LocationRepository;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ContainsForbiddenValuesException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CreateLocationConflictException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CsvParseException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.LocationNotFoundException;
@@ -68,11 +69,15 @@ class LocationServiceTest {
     @Mock
     private PublicationServicesService publicationService;
 
+    @Mock
+    private ValidationService validationService;
+
     @InjectMocks
     private LocationService locationService;
 
     Location locationFirstExample;
     Location locationSecondExample;
+    Location locationInvalidExample;
     LocationDeletion locationDeletion;
     AzureAccount azureAccount;
 
@@ -84,6 +89,7 @@ class LocationServiceTest {
     private static final String WELSH_LANGUAGE = "cy";
     private static final Integer LOCATION_ID = 123;
     private static final String LOCATION_NAME = "TEST_PIP_1234_Court123";
+    private static final String INVALID_LOCATION_NAME = "Test Location <p>Hello world</p>";
     private static final String LOCATION_NAME_PREFIX = "TEST_PIP_1234_";
     private static final String LOCATION_NAME2 = "Test Location 2";
     private static final String WELSH_LOCATION_NAME2 = "Welsh Test Location 2";
@@ -358,9 +364,12 @@ class LocationServiceTest {
 
             List<Location> locations = new ArrayList<>(locationService.uploadLocations(multipartFile));
 
+            Location firstLocation = locations.get(0);
+
+            validationService.containsHtmlTag(firstLocation.getName(), firstLocation.getWelshName());
+
             assertEquals(2, locations.size(), "Unknown number of locations returned from parser");
 
-            Location firstLocation = locations.get(0);
             assertEquals(1, firstLocation.getLocationId(), "Location ID is not as expected");
             assertEquals("Test Location", firstLocation.getName(), "Location name does not match in first location");
             assertEquals(List.of("North West"), firstLocation.getRegion(),
@@ -458,6 +467,44 @@ class LocationServiceTest {
             );
 
             assertThrows(CsvParseException.class, () -> locationService.uploadLocations(multipartFile));
+        }
+    }
+
+
+    @Test
+    void testHandleUploadContainsInvalidCourtName() throws IOException {
+        LocationCsv locationCsvInvalidExample = new LocationCsv();
+        locationCsvInvalidExample.setLocationName(INVALID_LOCATION_NAME);
+        locationCsvInvalidExample.setProvenanceLocationType("venue");
+        locationCsvInvalidExample.setWelshLocationName(WELSH_LOCATION_NAME2);
+        locationInvalidExample = new Location(locationCsvInvalidExample);
+        locationInvalidExample.setLocationId(2);
+
+        when(locationRepository.save(any()))
+            .thenReturn(locationFirstExample)
+            .thenThrow(ContainsForbiddenValuesException.class)
+            .thenReturn(locationInvalidExample);
+
+        try (InputStream inputStream = this.getClass().getClassLoader()
+            .getResourceAsStream("csv/ValidCsvWithInvalidCourtName.csv");
+             LogCaptor logCaptor = LogCaptor.forClass(LocationService.class)) {
+
+            MultipartFile multipartFile = new MockMultipartFile(FILE, FILE_NAME, FILE_TYPE,
+                                                                IOUtils.toByteArray(inputStream));
+
+            List<Location> locations = new ArrayList<>(locationService.uploadLocations(multipartFile));
+
+            assertThat(logCaptor.getErrorLogs())
+                .as(ERROR_LOG_MESSAGE)
+                .hasSize(1);
+
+            assertThat(logCaptor.getErrorLogs().get(0))
+                .as(ERROR_LOG_MESSAGE)
+                .contains("Record with ID 2 not saved. The location name 'Test Location <p>Hello world</p>' or "
+                              + "Welsh location name 'Welsh Test Location other' contains a forbidden character");
+
+            assertThat(locations)
+                .hasSize(1);
         }
     }
 
