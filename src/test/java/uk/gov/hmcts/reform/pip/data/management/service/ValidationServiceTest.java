@@ -14,6 +14,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.Application;
 import uk.gov.hmcts.reform.pip.data.management.config.AzureBlobConfigurationTestConfiguration;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ContainsForbiddenValuesException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.FlatFileException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.HeaderValidationException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.PayloadValidationException;
@@ -54,13 +55,15 @@ class ValidationServiceTest {
     private static final Sensitivity SENSITIVITY = Sensitivity.PUBLIC;
     private static final ArtefactType ARTEFACT_TYPE = ArtefactType.LIST;
     private static final String COURT_ID = "123";
+    private static final String COURT_NAME = "Test Court Name";
+    private static final String COURT_NAME_CONTAINS_HTML = "Test <p>Court Name</p>";
     private static final ListType LIST_TYPE = ListType.CIVIL_DAILY_CAUSE_LIST;
     private static final LocalDateTime CONTENT_DATE = LocalDateTime.now();
     private static final String VALIDATION_EXPECTED_MESSAGE =
         "The expected exception does not contain the correct message";
     private static final String NOT_NULL_MESSAGE = "The returned value is null, but was not expected to be.";
     private static final String UNKNOWN_EXCEPTION = "Unknown exception when opening the paylaod file";
-
+    private static final String CONTAINS_FORBIDDEN_VALUES_EXCEPTION = "Input contains a html tag";
     private HeaderGroup headerGroup;
 
     @BeforeEach
@@ -343,5 +346,24 @@ class ValidationServiceTest {
             Arguments.of(ListType.OPA_RESULTS,
                          "mocks/opa-results/opaResults.json")
         );
+    }
+
+    @Test
+    void testContainsHtmlTagThrows() {
+        assertThrows(ContainsForbiddenValuesException.class, () ->
+                         validationService.containsHtmlTag(COURT_NAME_CONTAINS_HTML, COURT_NAME),
+                     CONTAINS_FORBIDDEN_VALUES_EXCEPTION);
+        assertThrows(ContainsForbiddenValuesException.class, () ->
+                         validationService.containsHtmlTag(COURT_NAME, COURT_NAME_CONTAINS_HTML),
+                     CONTAINS_FORBIDDEN_VALUES_EXCEPTION);
+        assertThrows(ContainsForbiddenValuesException.class, () ->
+                         validationService.containsHtmlTag(COURT_NAME_CONTAINS_HTML, COURT_NAME_CONTAINS_HTML),
+                     CONTAINS_FORBIDDEN_VALUES_EXCEPTION);
+    }
+
+    @Test
+    void testContainsHtmlTagDoesNotThrow() {
+        assertDoesNotThrow(() -> validationService.containsHtmlTag(COURT_NAME, COURT_NAME),
+                           CONTAINS_FORBIDDEN_VALUES_EXCEPTION);
     }
 }

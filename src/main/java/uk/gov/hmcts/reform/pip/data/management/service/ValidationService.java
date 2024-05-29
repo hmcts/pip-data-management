@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.config.ValidationConfiguration;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ContainsForbiddenValuesException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.DateValidationException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.EmptyRequiredHeaderException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.FlatFileException;
@@ -29,6 +30,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Class that guides the validation process.
@@ -203,6 +206,17 @@ public class ValidationService {
 
     private static boolean isNullOrEmpty(Object header) {
         return header == null || header.toString().isEmpty();
+    }
+
+    public void containsHtmlTag(String input, String secondInput) {
+        String regex = "<[^>]+>";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(input);
+        Matcher secondMatcher = pattern.matcher(secondInput);
+
+        if (matcher.find() || secondMatcher.find()) {
+            throw new ContainsForbiddenValuesException("Input contains a html tag");
+        }
     }
 
 }
