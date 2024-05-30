@@ -890,7 +890,7 @@
                                             "offenceWording":{
                                               "title": "Offence wording",
                                               "type":"string",
-                                              "pattern": "^(?!(.|\\r?\\n)*<[^>]+>)(.|\\r?\\n)*$"
+                                              "pattern": "^(?!(.|\\n)*<[^>]+>)(.|\\n)*$"
                                             },
                                             "offenceMaxPen":{
                                               "title": "Offence Max Penalty",
