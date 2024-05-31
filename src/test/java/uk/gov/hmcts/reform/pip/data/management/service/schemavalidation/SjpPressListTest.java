@@ -31,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @SpringBootTest(classes = {Application.class, AzureBlobConfigurationTestConfiguration.class})
 @ActiveProfiles(profiles = "test")
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
-
+@SuppressWarnings("PMD.TooManyMethods")
 class SjpPressListTest {
     @Autowired
     ValidationService validationService;
@@ -631,6 +631,24 @@ class SjpPressListTest {
             assertThrows(PayloadValidationException.class, () ->
                              validationService.validateBody(listJson, headerGroup),
                          SJP_PRESS_INVALID_MESSAGE);
+        }
+    }
+
+    @Test
+    void testValidateWithoutErrorWhenOffenceWordingContainsANewLineCharacter() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream(SJP_PRESS_LIST_VALID_JSON)) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            JsonNode node = OBJECT_MAPPER.readValue(text, JsonNode.class);
+            ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0).get(COURT_HOUSE_SCHEMA)
+                .get(COURT_ROOM_SCHEMA).get(0).get(SESSION_SCHEMA).get(0)
+                .get(SITTINGS_SCHEMA).get(0).get(HEARING_SCHEMA).get(0)
+                .get(OFFENCE_SCHEMA).get(0)).put("offenceWording", "Offence\nWording");
+
+            String listJson = node.toString();
+            assertDoesNotThrow(() -> validationService.validateBody(listJson, headerGroup),
+                               SJP_PRESS_VALID_MESSAGE);
         }
     }
 }
