@@ -338,7 +338,7 @@
                                               "examples": [
                                                 "driving whilst under the influence of alcohol"
                                               ],
-                                              "pattern": "^(?!(.|\\n)*<[^>]+>)(.|\\n)*$"
+                                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                             },
                                             "reportingRestriction": {
                                               "title": "Reporting Restriction",
