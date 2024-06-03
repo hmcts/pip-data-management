@@ -455,6 +455,37 @@
                                                               "type": "string",
                                                               "pattern": "^(?!.*<[^>]+>).*$"
                                                             },
+                                                            "decision": {
+                                                              "title": "Offence decision",
+                                                              "type": "object",
+                                                              "properties": {
+                                                                "decisionDate": {
+                                                                  "title": "Decision date",
+                                                                  "type": "string",
+                                                                  "pattern": "^(?!.*<[^>]+>).*$"
+                                                                },
+                                                                "decisionDetail": {
+                                                                  "title": "Decision detail",
+                                                                  "type": "string",
+                                                                  "pattern": "^(?!.*<[^>]+>).*$"
+                                                                }
+                                                              }
+                                                            },
+                                                            "bailStatus": {
+                                                              "title": "Bail status",
+                                                              "type":"string",
+                                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                                            },
+                                                            "nextHearingDate": {
+                                                              "title": "Next hearing date",
+                                                              "type": "string",
+                                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                                            },
+                                                            "nextHearingLocation": {
+                                                              "title": "Next hearing location",
+                                                              "type": "string",
+                                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                                            },
                                                             "reportingRestrictionDetail": {
                                                               "title": "Reporting Restrictions Detail",
                                                               "type": "array",
@@ -512,6 +543,37 @@
                                                               "type": "string",
                                                               "pattern": "^(?!.*<[^>]+>).*$"
                                                             },
+                                                            "decision": {
+                                                              "title": "Offence decision",
+                                                              "type": "object",
+                                                              "properties": {
+                                                                "decisionDate": {
+                                                                  "title": "Decision date",
+                                                                  "type": "string",
+                                                                  "pattern": "^(?!.*<[^>]+>).*$"
+                                                                },
+                                                                "decisionDetail": {
+                                                                  "title": "Decision detail",
+                                                                  "type": "string",
+                                                                  "pattern": "^(?!.*<[^>]+>).*$"
+                                                                }
+                                                              }
+                                                            },
+                                                            "bailStatus": {
+                                                              "title": "Bail status",
+                                                              "type":"string",
+                                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                                            },
+                                                            "nextHearingDate": {
+                                                              "title": "Next hearing date",
+                                                              "type": "string",
+                                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                                            },
+                                                            "nextHearingLocation": {
+                                                              "title": "Next hearing location",
+                                                              "type": "string",
+                                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                                            },
                                                             "reportingRestrictionDetail": {
                                                               "title": "Reporting Restrictions Detail",
                                                               "type": "array",
@@ -554,37 +616,6 @@
                                                         "offenceMaxPen":{
                                                           "title": "Offence Max Penalty",
                                                           "type":"string",
-                                                          "pattern": "^(?!.*<[^>]+>).*$"
-                                                        },
-                                                        "decision": {
-                                                          "title": "Offence decision",
-                                                          "type": "object",
-                                                          "properties": {
-                                                            "decisionDate": {
-                                                              "title": "Decision date",
-                                                              "type": "string",
-                                                              "pattern": "^(?!.*<[^>]+>).*$"
-                                                            },
-                                                            "decisionDetail": {
-                                                              "title": "Decision detail",
-                                                              "type": "string",
-                                                              "pattern": "^(?!.*<[^>]+>).*$"
-                                                            }
-                                                          }
-                                                        },
-                                                        "bailStatus": {
-                                                          "title": "Bail status",
-                                                          "type":"string",
-                                                          "pattern": "^(?!.*<[^>]+>).*$"
-                                                        },
-                                                        "nextHearingDate": {
-                                                          "title": "Next hearing date",
-                                                          "type": "string",
-                                                          "pattern": "^(?!.*<[^>]+>).*$"
-                                                        },
-                                                        "nextHearingLocation": {
-                                                          "title": "Next hearing location",
-                                                          "type": "string",
                                                           "pattern": "^(?!.*<[^>]+>).*$"
                                                         },
                                                         "reportingRestriction": {
@@ -890,7 +921,7 @@
                                             "offenceWording":{
                                               "title": "Offence wording",
                                               "type":"string",
-                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                             },
                                             "offenceMaxPen":{
                                               "title": "Offence Max Penalty",
