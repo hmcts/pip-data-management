@@ -259,6 +259,106 @@
                                                         ],
                                                         "default": "",
                                                         "pattern": "^(?!.*<[^>]+>).*$"
+                                                      },
+                                                      "offence": {
+                                                        "title": "offence",
+                                                        "description": "The offence and details of offences associated with the individual. It is also known as charges.",
+                                                        "type": "array",
+                                                        "items": {
+                                                          "type": "object",
+                                                          "properties": {
+                                                            "offenceTitle": {
+                                                              "description": "Short description of offence",
+                                                              "title": "Offence title",
+                                                              "type": "string",
+                                                              "default": "",
+                                                              "examples": [
+                                                                "drink driving"
+                                                              ],
+                                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                                            },
+                                                            "offenceSection": {
+                                                              "description": "Section for the offence",
+                                                              "title": "Offence section",
+                                                              "type": "string",
+                                                              "default": "",
+                                                              "examples": [
+                                                                "dd01-01"
+                                                              ],
+                                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                                            },
+                                                            "decision": {
+                                                              "title": "Offence decision",
+                                                              "description": "The decision of the offence",
+                                                              "type": "object",
+                                                              "properties": {
+                                                                "decisionDate": {
+                                                                  "description": "The date when the decision were made",
+                                                                  "title": "Decision date",
+                                                                  "type": "string",
+                                                                  "default": "",
+                                                                  "examples": [
+                                                                    "2024-01-02T23:30:52.123Z"
+                                                                  ],
+                                                                  "pattern": "^(?!.*<[^>]+>).*$"
+                                                                },
+                                                                "decisionDetail": {
+                                                                  "description": "The detail of the decision",
+                                                                  "title": "Decision detail",
+                                                                  "type": "string",
+                                                                  "default": "",
+                                                                  "examples": [
+                                                                    "Court direct trial by jury"
+                                                                  ],
+                                                                  "pattern": "^(?!.*<[^>]+>).*$"
+                                                                }
+                                                              }
+                                                            },
+                                                            "bailStatus": {
+                                                              "description": "The status of the given bail",
+                                                              "title": "Bail status",
+                                                              "type":"string",
+                                                              "default": "",
+                                                              "examples": [
+                                                                "Unconditional bail"
+                                                              ],
+                                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                                            },
+                                                            "nextHearingDate": {
+                                                              "description": "The date of the next hearing",
+                                                              "title": "Next hearing date",
+                                                              "type": "string",
+                                                              "default": "",
+                                                              "examples": [
+                                                                "2024-02-01T10:30:52.123Z"
+                                                              ],
+                                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                                            },
+                                                            "nextHearingLocation": {
+                                                              "description": "The location of the next hearing",
+                                                              "title": "Next hearing location",
+                                                              "type": "string",
+                                                              "default": "",
+                                                              "examples": [
+                                                                "Bristol Crown Court"
+                                                              ],
+                                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                                            },
+                                                            "reportingRestrictionDetail": {
+                                                              "title": "Reporting Restrictions Detail",
+                                                              "description": "The detail / wording of any reporting restrictions attached to the case",
+                                                              "type": "array",
+                                                              "items": {
+                                                                "type": "string",
+                                                                "default": "",
+                                                                "examples": [
+                                                                  "This is a reporting restrictions detail"
+                                                                ],
+                                                                "pattern": "^(?!.*<[^>]+>).*$"
+                                                              }
+                                                            }
+                                                          }
+                                                        }
                                                       }
                                                     }
                                                   },
@@ -276,104 +376,104 @@
                                                         ],
                                                         "default": "",
                                                         "pattern": "^(?!.*<[^>]+>).*$"
-                                                      }
-                                                    }
-                                                  },
-                                                  "offence": {
-                                                    "title": "offence",
-                                                    "description": "The offence and details of offences associated with the individual. It is also known as charges.",
-                                                    "type": "array",
-                                                    "items": {
-                                                      "type": "object",
-                                                      "properties": {
-                                                        "offenceTitle": {
-                                                          "description": "Short description of offence",
-                                                          "title": "Offence title",
-                                                          "type": "string",
-                                                          "default": "",
-                                                          "examples": [
-                                                            "drink driving"
-                                                          ],
-                                                          "pattern": "^(?!.*<[^>]+>).*$"
-                                                        },
-                                                        "offenceSection": {
-                                                          "description": "Section for the offence",
-                                                          "title": "Offence section",
-                                                          "type": "string",
-                                                          "default": "",
-                                                          "examples": [
-                                                            "dd01-01"
-                                                          ],
-                                                          "pattern": "^(?!.*<[^>]+>).*$"
-                                                        },
-                                                        "decision": {
-                                                          "title": "Offence decision",
-                                                          "description": "The decision of the offence",
+                                                      },
+                                                      "offence": {
+                                                        "title": "offence",
+                                                        "description": "The offence and details of offences associated with the individual. It is also known as charges.",
+                                                        "type": "array",
+                                                        "items": {
                                                           "type": "object",
                                                           "properties": {
-                                                            "decisionDate": {
-                                                              "description": "The date when the decision were made",
-                                                              "title": "Decision date",
+                                                            "offenceTitle": {
+                                                              "description": "Short description of offence",
+                                                              "title": "Offence title",
                                                               "type": "string",
                                                               "default": "",
                                                               "examples": [
-                                                                "2024-01-02T23:30:52.123Z"
+                                                                "drink driving"
                                                               ],
                                                               "pattern": "^(?!.*<[^>]+>).*$"
                                                             },
-                                                            "decisionDetail": {
-                                                              "description": "The detail of the decision",
-                                                              "title": "Decision detail",
+                                                            "offenceSection": {
+                                                              "description": "Section for the offence",
+                                                              "title": "Offence section",
                                                               "type": "string",
                                                               "default": "",
                                                               "examples": [
-                                                                "Court direct trial by jury"
+                                                                "dd01-01"
                                                               ],
                                                               "pattern": "^(?!.*<[^>]+>).*$"
+                                                            },
+                                                            "decision": {
+                                                              "title": "Offence decision",
+                                                              "description": "The decision of the offence",
+                                                              "type": "object",
+                                                              "properties": {
+                                                                "decisionDate": {
+                                                                  "description": "The date when the decision were made",
+                                                                  "title": "Decision date",
+                                                                  "type": "string",
+                                                                  "default": "",
+                                                                  "examples": [
+                                                                    "2024-01-02T23:30:52.123Z"
+                                                                  ],
+                                                                  "pattern": "^(?!.*<[^>]+>).*$"
+                                                                },
+                                                                "decisionDetail": {
+                                                                  "description": "The detail of the decision",
+                                                                  "title": "Decision detail",
+                                                                  "type": "string",
+                                                                  "default": "",
+                                                                  "examples": [
+                                                                    "Court direct trial by jury"
+                                                                  ],
+                                                                  "pattern": "^(?!.*<[^>]+>).*$"
+                                                                }
+                                                              }
+                                                            },
+                                                            "bailStatus": {
+                                                              "description": "The status of the given bail",
+                                                              "title": "Bail status",
+                                                              "type":"string",
+                                                              "default": "",
+                                                              "examples": [
+                                                                "Unconditional bail"
+                                                              ],
+                                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                                            },
+                                                            "nextHearingDate": {
+                                                              "description": "The date of the next hearing",
+                                                              "title": "Next hearing date",
+                                                              "type": "string",
+                                                              "default": "",
+                                                              "examples": [
+                                                                "2024-02-01T10:30:52.123Z"
+                                                              ],
+                                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                                            },
+                                                            "nextHearingLocation": {
+                                                              "description": "The location of the next hearing",
+                                                              "title": "Next hearing location",
+                                                              "type": "string",
+                                                              "default": "",
+                                                              "examples": [
+                                                                "Bristol Crown Court"
+                                                              ],
+                                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                                            },
+                                                            "reportingRestrictionDetail": {
+                                                              "title": "Reporting Restrictions Detail",
+                                                              "description": "The detail / wording of any reporting restrictions attached to the case",
+                                                              "type": "array",
+                                                              "items": {
+                                                                "type": "string",
+                                                                "default": "",
+                                                                "examples": [
+                                                                  "This is a reporting restrictions detail"
+                                                                ],
+                                                                "pattern": "^(?!.*<[^>]+>).*$"
+                                                              }
                                                             }
-                                                          }
-                                                        },
-                                                        "bailStatus": {
-                                                          "description": "The status of the given bail",
-                                                          "title": "Bail status",
-                                                          "type":"string",
-                                                          "default": "",
-                                                          "examples": [
-                                                            "Unconditional bail"
-                                                          ],
-                                                          "pattern": "^(?!.*<[^>]+>).*$"
-                                                        },
-                                                        "nextHearingDate": {
-                                                          "description": "The date of the next hearing",
-                                                          "title": "Next hearing date",
-                                                          "type": "string",
-                                                          "default": "",
-                                                          "examples": [
-                                                            "2024-02-01T10:30:52.123Z"
-                                                          ],
-                                                          "pattern": "^(?!.*<[^>]+>).*$"
-                                                        },
-                                                        "nextHearingLocation": {
-                                                          "description": "The location of the next hearing",
-                                                          "title": "Next hearing location",
-                                                          "type": "string",
-                                                          "default": "",
-                                                          "examples": [
-                                                            "Bristol Crown Court"
-                                                          ],
-                                                          "pattern": "^(?!.*<[^>]+>).*$"
-                                                        },
-                                                        "reportingRestrictionDetail": {
-                                                          "title": "Reporting Restrictions Detail",
-                                                          "description": "The detail / wording of any reporting restrictions attached to the case",
-                                                          "type": "array",
-                                                          "items": {
-                                                            "type": "string",
-                                                            "default": "",
-                                                            "examples": [
-                                                              "This is a reporting restrictions detail"
-                                                            ],
-                                                            "pattern": "^(?!.*<[^>]+>).*$"
                                                           }
                                                         }
                                                       }
