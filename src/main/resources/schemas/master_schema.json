@@ -10,7 +10,7 @@
           "items":{
             "title": "Items",
             "type": "string",
-            "pattern": "^(?!.*<[^>]+>).*$"
+            "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
           }
         },
         "town": {
