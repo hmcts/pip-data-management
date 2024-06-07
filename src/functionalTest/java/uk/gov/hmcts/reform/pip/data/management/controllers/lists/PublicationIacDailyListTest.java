@@ -74,8 +74,8 @@ class PublicationIacDailyListTest {
 
     @DisplayName("Should create a valid artefact and return the created artefact to the user")
     @ParameterizedTest
-    @EnumSource(value = ListType.class, names = {"IAC_DAILY_LIST", "IAC_DAILY_LIST_ADDITIONAL_LIST"})
-    void testCreationOfValidSjpPublicList(ListType listType) throws Exception {
+    @EnumSource(value = ListType.class, names = {"IAC_DAILY_LIST", "IAC_DAILY_LIST_ADDITIONAL_CASES"})
+    void testCreationOfValidIacList(ListType listType) throws Exception {
         try (InputStream mockFile = this.getClass().getClassLoader()
             .getResourceAsStream("data/iac-daily-list/iacDailyList.json")) {
 
@@ -107,8 +107,8 @@ class PublicationIacDailyListTest {
 
     @DisplayName("Should return an error message back to the user when creating an invalid blob")
     @ParameterizedTest
-    @EnumSource(value = ListType.class, names = {"IAC_DAILY_LIST", "IAC_DAILY_LIST_ADDITIONAL_LIST"})
-    void testCreationOfInvalidSjpPublicList(ListType listType) throws Exception {
+    @EnumSource(value = ListType.class, names = {"IAC_DAILY_LIST", "IAC_DAILY_LIST_ADDITIONAL_CASES"})
+    void testCreationOfInvalidIacList(ListType listType) throws Exception {
         try (InputStream mockFile = this.getClass().getClassLoader()
             .getResourceAsStream("data/iac-daily-list/iacDailyListInvalid.json")) {
 
@@ -120,7 +120,7 @@ class PublicationIacDailyListTest {
                 .header(PublicationConfiguration.DISPLAY_FROM_HEADER, LocalDateTime.now())
                 .header(PublicationConfiguration.DISPLAY_TO_HEADER, LocalDateTime.now().plusMonths(1))
                 .header(PublicationConfiguration.COURT_ID, 1)
-                .header(PublicationConfiguration.LIST_TYPE, ListType.IAC_DAILY_LIST)
+                .header(PublicationConfiguration.LIST_TYPE, listType)
                 .header(PublicationConfiguration.LANGUAGE_HEADER, Language.ENGLISH)
                 .header(PublicationConfiguration.CONTENT_DATE, LocalDateTime.now())
                 .content(mockFile.readAllBytes())
