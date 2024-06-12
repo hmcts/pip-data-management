@@ -331,6 +331,8 @@ class ValidationServiceTest {
                          "mocks/sscs-daily-list/sscsDailyList.json"),
             Arguments.of(ListType.IAC_DAILY_LIST,
                          "mocks/iac-daily-list/iacDailyList.json"),
+            Arguments.of(ListType.IAC_DAILY_LIST_ADDITIONAL_CASES,
+                         "mocks/iac-daily-list/iacDailyList.json"),
             Arguments.of(ListType.CARE_STANDARDS_LIST,
                          "mocks/care-standards-list/careStandardsList.json"),
             Arguments.of(ListType.PRIMARY_HEALTH_LIST,
