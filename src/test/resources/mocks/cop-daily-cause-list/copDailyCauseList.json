@@ -49,7 +49,11 @@
                           {
                             "caseNumber": "12341234",
                             "caseSuppressionName": "ThisIsACaseSupressionName",
-                            "caseSequenceIndicator": "1 of 2"
+                            "caseSequenceIndicator": "1 of 2",
+                            "reportingRestrictionDetail": [
+                              "Reporting restriction 1",
+                              "Reporting restriction 2"
+                            ]
                           }
                         ],
                         "hearingType": "Criminal"

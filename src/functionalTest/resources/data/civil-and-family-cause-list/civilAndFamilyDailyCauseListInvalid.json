@@ -50,6 +50,10 @@
                             "caseName": "This is a case name",
                             "caseJurisdictionET": "Family Law",
                             "caseSequenceIndicator": "2 of 3",
+                            "reportingRestrictionDetail": [
+                              "Reporting restriction 1",
+                              "Reporting restriction 2"
+                            ],
                             "party": [
                               {
                                 "partyRole": "APPLICANT_PETITIONER",
