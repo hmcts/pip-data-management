@@ -330,6 +330,19 @@
                                               ],
                                               "pattern": "^(?!.*<[^>]+>).*$"
                                             },
+                                            "reportingRestrictionDetail": {
+                                              "title": "Reporting Restrictions Detail",
+                                              "description": "The detail / wording of any reporting restrictions attached to the case",
+                                              "type": "array",
+                                              "items": {
+                                                "type": "string",
+                                                "default": "",
+                                                "examples": [
+                                                  "This is a reporting restrictions detail"
+                                                ],
+                                                "pattern": "^(?!.*<[^>]+>).*$"
+                                              }
+                                            },
                                             "party": {
                                               "title": "Party",
                                               "description": "Parties involved in the case (defence, prosecution)",
