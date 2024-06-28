@@ -20,4 +20,8 @@
     <packageUrl regex="true">^pkg:maven/com\.azure/azure\-identity@.*$</packageUrl>
     <cve>CVE-2023-36415</cve>
   </suppress>
+  <suppress>
+    <notes>This vulnerability exists across azure identity and microsoft authentication libraries </notes>
+    <cve>CVE-2024-35255</cve>
+  </suppress>
 </suppressions>
