@@ -15,6 +15,7 @@ import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Collections;
 import java.util.List;
 
 import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
@@ -94,6 +95,8 @@ public class PublicationCreationRunner {
 
         if (payload != null && artefactService.payloadWithinLimit(artefact.getPayloadSize())) {
             artefact.setSearch(jsonExtractor.extractSearchTerms(payload));
+        } else {
+            artefact.setSearch(Collections.emptyMap());
         }
     }
 

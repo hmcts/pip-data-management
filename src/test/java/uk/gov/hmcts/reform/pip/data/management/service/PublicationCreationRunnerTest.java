@@ -18,6 +18,7 @@ import uk.gov.hmcts.reform.pip.data.management.service.artefact.ArtefactService;
 import uk.gov.hmcts.reform.pip.data.management.utils.JsonExtractor;
 
 import java.time.LocalDate;
+import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -206,13 +207,14 @@ class PublicationCreationRunnerTest {
 
         softly.assertThat(returnedArtefact.getSearch())
             .as(SEARCH_VALUE_MESSAGE)
-            .isNull();
+            .isEqualTo(Collections.emptyMap());
 
         softly.assertThat(logCaptor.getInfoLogs().get(0))
             .as(LOG_MESSAGE)
             .contains(JSON_PUBLICATION_LOG);
 
         softly.assertAll();
+        verifyNoInteractions(jsonExtractor);
     }
 
     @Test
