@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CreateArtefactConflictException;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
+import uk.gov.hmcts.reform.pip.data.management.service.artefact.ArtefactService;
 import uk.gov.hmcts.reform.pip.data.management.utils.JsonExtractor;
 import uk.gov.hmcts.reform.pip.model.enums.UserActions;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
@@ -23,11 +24,15 @@ import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
 public class PublicationCreationRunner {
     private final PublicationService publicationService;
 
+    private final ArtefactService artefactService;
+
     private final JsonExtractor jsonExtractor;
 
     @Autowired
-    public PublicationCreationRunner(PublicationService publicationService, JsonExtractor jsonExtractor) {
+    public PublicationCreationRunner(PublicationService publicationService, ArtefactService artefactService,
+                                     JsonExtractor jsonExtractor) {
         this.publicationService = publicationService;
+        this.artefactService = artefactService;
         this.jsonExtractor = jsonExtractor;
     }
 
@@ -87,7 +92,7 @@ public class PublicationCreationRunner {
             artefact.setExpiryDate(artefact.getExpiryDate().plusDays(7));
         }
 
-        if (payload != null) {
+        if (payload != null && artefactService.payloadWithinLimit(artefact.getPayloadSize())) {
             artefact.setSearch(jsonExtractor.extractSearchTerms(payload));
         }
     }
