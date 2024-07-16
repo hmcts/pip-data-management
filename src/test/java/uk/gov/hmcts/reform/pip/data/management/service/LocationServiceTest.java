@@ -103,6 +103,10 @@ class LocationServiceTest {
     private static final String REQUESTER_NAME = "ReqName";
     private static final String EMAIL = "test@test.com";
     private static final String SSO_EMAIL = "sso@test.com";
+    private static final String SSO_PROVENANCE = "SSO";
+    private static final String PI_AAD_PROVENANCE = "PI_AAD";
+    private static final String SYSTEM_ADMIN = "SYSTEM_ADMIN";
+
 
     private static final String FILE = "file";
     private static final String FILE_NAME = "TestFileName";
@@ -627,7 +631,7 @@ class LocationServiceTest {
             .thenReturn(List.of());
         when(subscriptionManagementService.findSubscriptionsByLocationId(locationId.toString()))
             .thenReturn("[]");
-        when(accountManagementService.getAllAccounts("PI_AAD", "SYSTEM_ADMIN"))
+        when(accountManagementService.getAllAccounts(PI_AAD_PROVENANCE, SYSTEM_ADMIN))
             .thenReturn(List.of(EMAIL));
 
         doNothing().when(locationRepository).deleteById(locationId);
@@ -645,9 +649,9 @@ class LocationServiceTest {
             .thenReturn(Optional.of(locationFirstExample));
         when(artefactRepository.findActiveArtefactsForLocation(any(), eq(locationId.toString())))
             .thenReturn(List.of(new Artefact()));
-        when(accountManagementService.getAllAccounts("PI_AAD", "SYSTEM_ADMIN"))
+        when(accountManagementService.getAllAccounts(PI_AAD_PROVENANCE, SYSTEM_ADMIN))
             .thenReturn(List.of(EMAIL));
-        when(accountManagementService.getAllAccounts("SSO", "SYSTEM_ADMIN"))
+        when(accountManagementService.getAllAccounts(SSO_PROVENANCE, SYSTEM_ADMIN))
             .thenReturn(List.of(SSO_EMAIL));
 
         List<String> systemAdminEmails = List.of(EMAIL, SSO_EMAIL);
@@ -676,9 +680,9 @@ class LocationServiceTest {
             .thenReturn(List.of());
         when(subscriptionManagementService.findSubscriptionsByLocationId(locationId.toString()))
             .thenReturn("[{},{}]");
-        when(accountManagementService.getAllAccounts("PI_AAD", "SYSTEM_ADMIN"))
+        when(accountManagementService.getAllAccounts(PI_AAD_PROVENANCE, SYSTEM_ADMIN))
             .thenReturn(List.of(EMAIL));
-        when(accountManagementService.getAllAccounts("SSO", "SYSTEM_ADMIN"))
+        when(accountManagementService.getAllAccounts(SSO_PROVENANCE, SYSTEM_ADMIN))
             .thenReturn(List.of(SSO_EMAIL));
 
         List<String> systemAdminEmails = List.of(EMAIL, SSO_EMAIL);
