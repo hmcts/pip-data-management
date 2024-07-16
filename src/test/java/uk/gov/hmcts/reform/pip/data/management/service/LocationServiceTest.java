@@ -102,6 +102,8 @@ class LocationServiceTest {
     private static final String ERROR_LOG_MESSAGE = "Error log does not match";
     private static final String REQUESTER_NAME = "ReqName";
     private static final String EMAIL = "test@test.com";
+    private static final String SSO_EMAIL = "sso@test.com";
+
     private static final String FILE = "file";
     private static final String FILE_NAME = "TestFileName";
     private static final String FILE_TYPE = "text/plain";
@@ -645,9 +647,14 @@ class LocationServiceTest {
             .thenReturn(List.of(new Artefact()));
         when(accountManagementService.getAllAccounts("PI_AAD", "SYSTEM_ADMIN"))
             .thenReturn(List.of(EMAIL));
+        when(accountManagementService.getAllAccounts("SSO", "SYSTEM_ADMIN"))
+            .thenReturn(List.of(SSO_EMAIL));
+
+        List<String> systemAdminEmails = List.of(EMAIL, SSO_EMAIL);
+
         when(accountManagementService.getUserInfo(any()))
             .thenReturn(azureAccount);
-        when(publicationService.sendSystemAdminEmail(List.of(EMAIL), REQUESTER_NAME,
+        when(publicationService.sendSystemAdminEmail(systemAdminEmails, REQUESTER_NAME,
             ActionResult.ATTEMPTED,
 "There are active artefacts for following location: " + LOCATION_NAME2,
              ChangeType.DELETE_LOCATION))
@@ -671,7 +678,12 @@ class LocationServiceTest {
             .thenReturn("[{},{}]");
         when(accountManagementService.getAllAccounts("PI_AAD", "SYSTEM_ADMIN"))
             .thenReturn(List.of(EMAIL));
-        when(publicationService.sendSystemAdminEmail(List.of(EMAIL), REQUESTER_NAME,
+        when(accountManagementService.getAllAccounts("SSO", "SYSTEM_ADMIN"))
+            .thenReturn(List.of(SSO_EMAIL));
+
+        List<String> systemAdminEmails = List.of(EMAIL, SSO_EMAIL);
+
+        when(publicationService.sendSystemAdminEmail(systemAdminEmails, REQUESTER_NAME,
             ActionResult.ATTEMPTED,
 "There are active subscriptions for the following location: " + LOCATION_NAME2,
             ChangeType.DELETE_LOCATION))
