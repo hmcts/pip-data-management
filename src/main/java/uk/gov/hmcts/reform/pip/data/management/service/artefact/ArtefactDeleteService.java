@@ -26,6 +26,7 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
 
@@ -187,7 +188,9 @@ public class ArtefactDeleteService {
     private void notifySystemAdminAboutSubscriptionDeletion(String provenanceUserId, String additionalDetails)
         throws JsonProcessingException {
         AzureAccount userInfo = accountManagementService.getUserInfo(provenanceUserId);
-        List<String> systemAdmins = accountManagementService.getAllAccounts("PI_AAD", "SYSTEM_ADMIN");
+        List<String> systemAdminsAad = accountManagementService.getAllAccounts("PI_AAD", "SYSTEM_ADMIN");
+        List<String> systemAdminsSso = accountManagementService.getAllAccounts("SSO", "SYSTEM_ADMIN");
+        List<String> systemAdmins = Stream.concat(systemAdminsAad.stream(), systemAdminsSso.stream()).toList();
         publicationServicesService.sendSystemAdminEmail(systemAdmins, userInfo.getDisplayName(),
             ActionResult.SUCCEEDED, additionalDetails, ChangeType.DELETE_LOCATION_ARTEFACT);
     }
