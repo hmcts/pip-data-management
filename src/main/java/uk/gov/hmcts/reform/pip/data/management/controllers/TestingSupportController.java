@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.reform.pip.data.management.service.LocationService;
-import uk.gov.hmcts.reform.pip.data.management.service.artefact.ArtefactDeleteService;
+import uk.gov.hmcts.reform.pip.data.management.service.publication.ArtefactDeleteService;
 import uk.gov.hmcts.reform.pip.model.authentication.roles.IsAdmin;
 
 @RestController

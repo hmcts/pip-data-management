@@ -25,7 +25,12 @@ public class AzureBlobConfigurationProperties {
     private String storageAccountName;
 
     /**
-     * The name of the container to connect to.
+     * The name of the artefact container to connect to.
      */
-    private String containerName;
+    private String artefactContainerName;
+
+    /**
+     * The name of the publications container to connect to.
+     */
+    private String publicationsContainerName;
 }
