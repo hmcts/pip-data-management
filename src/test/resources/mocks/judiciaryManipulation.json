@@ -1,0 +1,174 @@
+[
+  {
+    "judiciary": [
+      {
+        "johKnownAs": "Judge 1",
+        "isPresiding": false
+      },
+      {
+        "johKnownAs": "Judge 2",
+        "isPresiding": false
+      },
+      {
+        "johKnownAs": "Judge 3",
+        "isPresiding": false
+      }
+    ]
+  },
+  {
+    "judiciary": [
+      {
+        "johKnownAs": "Judge 1"
+      },
+      {
+        "johKnownAs": "Judge 2"
+      },
+      {
+        "johKnownAs": "Judge 3"
+      }
+    ]
+  },
+  {
+    "judiciary": [
+      {
+        "johKnownAs": "Judge 1",
+        "isPresiding": false
+      },
+      {
+        "johKnownAs": "Judge 2",
+        "isPresiding": false
+      },
+      {
+        "johKnownAs": "Crown Judge",
+        "isPresiding": true
+      }
+    ]
+  },
+  {
+    "judiciary": [
+      {
+        "johKnownAs": "Crown Judge",
+        "isPresiding": true
+      }
+    ]
+  },
+  {
+    "judiciary": [
+      {
+        "johKnownAs": "Judge 2",
+        "isPresiding": false
+      },
+      {
+        "johKnownAs": "",
+        "isPresiding": false
+      },
+      {
+        "johKnownAs": "",
+        "isPresiding": true
+      },
+      {
+        "johKnownAs": "Judge 4",
+        "isPresiding": false
+      }
+    ]
+  },
+  {
+    "judiciary": [
+      {
+        "johTitle": "Judge",
+        "johNameSurname": "Test Name",
+        "isPresiding": false
+      },
+      {
+        "johTitle": "Judge",
+        "johNameSurname": "Test Name 2",
+        "isPresiding": false
+      },
+      {
+        "johTitle": "Judge",
+        "johNameSurname": "Test Name 3",
+        "isPresiding": false
+      }
+    ]
+  },
+  {
+    "judiciary": [
+      {
+        "johTitle": "Judge",
+        "johNameSurname": "Test Name"
+      },
+      {
+        "johTitle": "Judge",
+        "johNameSurname": "Test Name 2"
+      },
+      {
+        "johTitle": "Judge",
+        "johNameSurname": "Test Name 3"
+      }
+    ]
+  },
+  {
+    "judiciary": [
+      {
+        "johTitle": "Judge",
+        "johNameSurname": "Test Name",
+        "isPresiding": false
+      },
+      {
+        "johTitle": "Judge",
+        "johNameSurname": "Test Name 2",
+        "isPresiding": false
+      },
+      {
+        "johTitle": "Crown Judge",
+        "johNameSurname": "Test Name",
+        "isPresiding": true
+      }
+    ]
+  },
+  {
+    "judiciary": [
+      {
+        "johTitle": "Crown Judge",
+        "johNameSurname": "Test Name",
+        "isPresiding": true
+      }
+    ]
+  },
+  {
+    "judiciary": [
+      {
+        "johTitle": "Judge",
+        "johNameSurname": "Test Name 2",
+        "isPresiding": false
+      },
+      {
+        "johTitle": "",
+        "johNameSurname": "",
+        "isPresiding": false
+      },
+      {
+        "johTitle": "",
+        "johNameSurname": "",
+        "isPresiding": true
+      },
+      {
+        "johTitle": "Judge",
+        "johNameSurname": "Test Name 4",
+        "isPresiding": false
+      },
+      {
+        "johTitle": "",
+        "johNameSurname": "",
+        "johKnownAs": "Test KnownAs",
+        "isPresiding": false
+      },
+      {
+        "johTitle": "",
+        "johNameSurname": "",
+        "johKnownAs": "Test KnownAs 2",
+        "isPresiding": true
+      }
+    ]
+  }
+]

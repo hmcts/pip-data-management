@@ -2,7 +2,6 @@ service-to-service:
   subscription-management: http://localhost:4550
   account-management: http://localhost:6969
   publication-services: http://localhost:8081
-  channel-management: http://localhost:8181
 
 dbMigration:
   runOnStartup: true

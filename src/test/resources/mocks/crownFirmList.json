@@ -1,0 +1,588 @@
+{
+  "document": {
+    "publicationDate": "2023-03-03T14:07:33.871502Z",
+    "version": "3.4",
+    "documentName": "LACX9WOZGD"
+  },
+  "venue": {
+    "venueName": "York Family Court",
+    "venueContact": {
+      "venueEmail": "Minnie.Jaleesa@Ocie.co.uk",
+      "venueTelephone": "+44 289 910 9805"
+    },
+    "venueAddress": {
+      "postCode": "AA1 AA1",
+      "county": "Lancashire",
+      "town": "Town",
+      "line": [
+        "26 Diego Gardens",
+        "Address Line 2"
+      ]
+    }
+  },
+  "courtLists": [
+    {
+      "courtHouse": {
+        "courtHouseName": "Colchester Social Security and Child Support",
+        "courtRoom": [
+          {
+            "courtRoomName": "to be allocated [Colchester Social Security and Child Support]",
+            "session": [
+              {
+                "sessionChannel": [
+                  "Bethel"
+                ],
+                "sittings": [
+                  {
+                    "sittingStart": "2023-04-12T08:35:11.192108Z",
+                    "sittingEnd": "2023-04-12T10:00:14.123184Z",
+                    "channel": [
+                      "Teams",
+                      "Attended"
+                    ],
+                    "hearing": [
+                      {
+                        "hearingType": "Directions",
+                        "case": [
+                          {
+                            "reportingRestrictionDetail": [
+                              "Reporting Restriction detail line 1",
+                              "Reporting restriction detail line 2"
+                            ],
+                            "caseNumber": "I4Y416QE",
+                            "caseLinked": [
+                              {
+                                "caseId": "YRYCTRR3",
+                                "name": "Ned Vs Patience"
+                              }
+                            ],
+                            "caseSequenceIndicator": "6 of 6",
+                            "party": [
+                              {
+                                "partyRole": "PROSECUTING_AUTHORITY",
+                                "organisationDetails": {
+                                  "organisationName": "HMCTS"
+                                }
+                              },
+                              {
+                                "partyRole": "DEFENDANT",
+                                "individualDetails": {
+                                  "individualSurname": "Surname 1",
+                                  "individualForenames": "Forename 1"
+                                }
+                              },
+                              {
+                                "partyRole": "DEFENDANT_REPRESENTATIVE",
+                                "organisationDetails": {
+                                  "organisationName": "Defendant rep 1"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "courtRoomName": "Courtroom 2",
+            "session": [
+              {
+                "sessionChannel": [
+                  "Bethel"
+                ],
+                "judiciary": [
+                  {
+                    "johKnownAs": "Judge KnownAs"
+                  },
+                  {
+                    "johKnownAs": "Judge KnownAs 2"
+                  }
+                ],
+                "sittings": [
+                  {
+                    "sittingStart": "2023-04-12T08:00:11.192108Z",
+                    "sittingEnd": "2023-04-12T16:00:14.123184Z",
+                    "channel": [
+                      "Teams",
+                      "Attended"
+                    ],
+                    "hearing": [
+                      {
+                        "listingDetails": {
+                          "listingRepDeadline": "Listing details text"
+                        },
+                        "hearingType": "Directions",
+                        "case": [
+                          {
+                            "reportingRestrictionDetail": [
+                              "Reporting Restriction detail line 1",
+                              "Reporting restriction detail line 2"
+                            ],
+                            "caseNumber": "I4Y416QE",
+                            "caseLinked": [
+                              {
+                                "caseId": "YRYCTRR3",
+                                "name": "Ned Vs Patience"
+                              }
+                            ],
+                            "caseSequenceIndicator": "4 of 5",
+                            "party": [
+                              {
+                                "partyRole": "PROSECUTING_AUTHORITY",
+                                "organisationDetails": {
+                                  "organisationName": "Queen"
+                                }
+                              },
+                              {
+                                "partyRole": "DEFENDANT",
+                                "individualDetails": {
+                                  "individualSurname": "Surname 2",
+                                  "individualForenames": "Forename 2"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "hearingType": "Directions",
+                        "case": [
+                          {
+                            "reportingRestrictionDetail": [
+                              "Reporting Restriction detail line 1",
+                              "Reporting restriction detail line 2"
+                            ],
+                            "caseNumber": "I4Y416QE",
+                            "caseLinked": [
+                              {
+                                "caseId": "YRYCTRR3",
+                                "name": "Ned Vs Patience"
+                              }
+                            ],
+                            "caseSequenceIndicator": "1 of 4",
+                            "party": [
+                              {
+                                "partyRole": "PROSECUTING_AUTHORITY",
+                                "organisationDetails": {
+                                  "organisationName": "Queen"
+                                }
+                              },
+                              {
+                                "partyRole": "DEFENDANT",
+                                "individualDetails": {
+                                  "individualSurname": "Surname 3",
+                                  "individualForenames": "Forename 3"
+                                }
+                              },
+                              {
+                                "partyRole": "DEFENDANT_REPRESENTATIVE",
+                                "organisationDetails": {
+                                  "organisationName": "Defendant rep 2"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "courtHouse": {
+        "courtHouseName": "Glasgow Social Security and Child Support",
+        "courtRoom": [
+          {
+            "courtRoomName": "to be allocated [Glasgow Social Security and Child Support]",
+            "session": [
+              {
+                "sessionChannel": [
+                  "Bethel"
+                ],
+                "sittings": [
+                  {
+                    "sittingStart": "2023-04-15T13:41:11.192108Z",
+                    "sittingEnd": "2023-04-15T16:04:14.123184Z",
+                    "channel": [
+                      "Teams",
+                      "Attended"
+                    ],
+                    "hearing": [
+                      {
+                        "hearingType": "Deposition",
+                        "case": [
+                          {
+                            "reportingRestrictionDetail": [
+                              "Reporting Restriction detail line 1",
+                              "Reporting restriction detail line 2"
+                            ],
+                            "caseNumber": "I4Y416QE",
+                            "caseLinked": [
+                              {
+                                "caseId": "YRYCTRR3",
+                                "name": "Ned Vs Patience"
+                              },
+                              {
+                                "caseId": "YRYCTRR4",
+                                "name": "Ned Vs Patience"
+                              },
+                              {
+                                "caseId": "YRYCTRR5",
+                                "name": "Ned Vs Patience"
+                              }
+                            ],
+                            "caseSequenceIndicator": "7 of 9",
+                            "party": [
+                              {
+                                "partyRole": "PROSECUTING_AUTHORITY",
+                                "organisationDetails": {
+                                  "organisationName": "The Queen"
+                                }
+                              },
+                              {
+                                "partyRole": "DEFENDANT",
+                                "individualDetails": {
+                                  "individualSurname": "Surname 4",
+                                  "individualForenames": "Forename 4"
+                                }
+                              },
+                              {
+                                "partyRole": "DEFENDANT_REPRESENTATIVE",
+                                "organisationDetails": {
+                                  "organisationName": "Defendant rep 3"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "courtRoomName": "Elwood Room",
+            "session": [
+              {
+                "sessionChannel": [
+                  "Bethel"
+                ],
+                "judiciary": [
+                  {
+                    "johKnownAs": "Judge KnownAs"
+                  },
+                  {
+                    "johKnownAs": "Judge KnownAs 2"
+                  }
+                ],
+                "sittings": [
+                  {
+                    "sittingStart": "2023-04-14T10:35:11.192108Z",
+                    "sittingEnd": "2023-04-14T16:04:14.123184Z",
+                    "channel": [
+                      "Teams",
+                      "Attended"
+                    ],
+                    "hearing": [
+                      {
+                        "listingDetails": {
+                          "listingRepDeadline": "Listing details text"
+                        },
+                        "hearingType": "Directions",
+                        "case": [
+                          {
+                            "reportingRestrictionDetail": [
+                              "Reporting Restriction detail line 1",
+                              "Reporting restriction detail line 2"
+                            ],
+                            "caseNumber": "I4Y416QE",
+                            "caseLinked": [
+                              {
+                                "caseId": "YRYCTRR3",
+                                "name": "Ned Vs Patience"
+                              },
+                              {
+                                "caseId": "YRYNNR0Q",
+                                "name": "Ned Vs Patience"
+                              }
+                            ],
+                            "caseSequenceIndicator": "3 of 8",
+                            "party": [
+                              {
+                                "partyRole": "PROSECUTING_AUTHORITY",
+                                "organisationDetails": {
+                                  "organisationName": "Queen"
+                                }
+                              },
+                              {
+                                "partyRole": "DEFENDANT",
+                                "individualDetails": {
+                                  "individualSurname": "Surname 5",
+                                  "individualForenames": "Forename 5"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "hearingType": "Directions",
+                        "case": [
+                          {
+                            "reportingRestrictionDetail": [
+                              "Reporting Restriction detail line 1",
+                              "Reporting restriction detail line 2"
+                            ],
+                            "caseNumber": "I4Y416QE",
+                            "caseLinked": [
+                              {
+                                "caseId": "YRYCTRR3",
+                                "name": "Ned Vs Patience"
+                              }
+                            ],
+                            "caseSequenceIndicator": "2 of 3",
+                            "party": [
+                              {
+                                "partyRole": "PROSECUTING_AUTHORITY",
+                                "organisationDetails": {
+                                  "organisationName": "Queen"
+                                }
+                              },
+                              {
+                                "partyRole": "DEFENDANT",
+                                "individualDetails": {
+                                  "individualSurname": "Surname 6",
+                                  "individualForenames": "Forename 6"
+                                }
+                              },
+                              {
+                                "partyRole": "DEFENDANT_REPRESENTATIVE",
+                                "organisationDetails": {
+                                  "organisationName": "Defendant rep 4"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "sittingStart": "2023-04-15T10:35:11.192108Z",
+                    "sittingEnd": "2023-04-15T16:04:14.123184Z",
+                    "channel": [
+                      "Teams",
+                      "Attended"
+                    ],
+                    "hearing": [
+                      {
+                        "listingDetails": {
+                          "listingRepDeadline": "Listing details text"
+                        },
+                        "hearingType": "Directions",
+                        "case": [
+                          {
+                            "reportingRestrictionDetail": [
+                              "Reporting Restriction detail line 1",
+                              "Reporting restriction detail line 2"
+                            ],
+                            "caseNumber": "I4Y416QE",
+                            "caseLinked": [
+                              {
+                                "caseId": "YRYCTRR3",
+                                "name": "Ned Vs Patience"
+                              },
+                              {
+                                "caseId": "YRYNNR0Q",
+                                "name": "Ned Vs Patience"
+                              }
+                            ],
+                            "caseSequenceIndicator": "3 of 8",
+                            "party": [
+                              {
+                                "partyRole": "PROSECUTING_AUTHORITY",
+                                "organisationDetails": {
+                                  "organisationName": "DVSA"
+                                }
+                              },
+                              {
+                                "partyRole": "DEFENDANT",
+                                "individualDetails": {
+                                  "individualSurname": "Surname 7",
+                                  "individualForenames": "Forename 7"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "hearingType": "Directions",
+                        "case": [
+                          {
+                            "reportingRestrictionDetail": [
+                              "Reporting Restriction detail line 1",
+                              "Reporting restriction detail line 2"
+                            ],
+                            "caseNumber": "I4Y41625E",
+                            "caseLinked": [
+                              {
+                                "caseId": "YRYCTR19",
+                                "name": "Ned Vs Patience"
+                              }
+                            ],
+                            "caseSequenceIndicator": "2 of 3",
+                            "party": [
+                              {
+                                "partyRole": "PROSECUTING_AUTHORITY",
+                                "organisationDetails": {
+                                  "organisationName": "HMCTS"
+                                }
+                              },
+                              {
+                                "partyRole": "DEFENDANT",
+                                "individualDetails": {
+                                  "individualSurname": "Surname 8",
+                                  "individualForenames": "Forename 8"
+                                }
+                              },
+                              {
+                                "partyRole": "DEFENDANT_REPRESENTATIVE",
+                                "organisationDetails": {
+                                  "organisationName": "Defendant rep 5"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+
+                ]
+              }
+            ]
+          },
+          {
+            "courtRoomName": "Breakfast Suite",
+            "session": [
+              {
+                "sessionChannel": [
+                  "Bethel"
+                ],
+                "judiciary": [
+                  {
+                    "johKnownAs": "Judge KnownAs 2"
+                  },
+                  {
+                    "johKnownAs": "Judge KnownAs 3"
+                  }
+                ],
+                "sittings": [
+                  {
+                    "sittingStart": "2023-04-15T09:20:11.192108Z",
+                    "sittingEnd": "2023-04-15T16:50:14.123184Z",
+                    "channel": [
+                      "Teams",
+                      "Attended"
+                    ],
+                    "hearing": [
+                      {
+                        "listingDetails": {
+                          "listingRepDeadline": "Listing details text"
+                        },
+                        "hearingType": "Directions",
+                        "case": [
+                          {
+                            "reportingRestrictionDetail": [
+                              "Reporting Restriction detail line 1",
+                              "Reporting restriction detail line 2"
+                            ],
+                            "caseNumber": "I4Y416QE",
+                            "caseLinked": [
+                              {
+                                "caseId": "YRYCTRR3",
+                                "name": "Ned Vs Patience"
+                              }
+                            ],
+                            "caseSequenceIndicator": "2 of 2",
+                            "party": [
+                              {
+                                "partyRole": "PROSECUTING_AUTHORITY",
+                                "organisationDetails": {
+                                  "organisationName": "Queen"
+                                }
+                              },
+                              {
+                                "partyRole": "DEFENDANT",
+                                "individualDetails": {
+                                  "individualSurname": "Surname 9",
+                                  "individualForenames": "Forename 9"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "hearingType": "Directions",
+                        "case": [
+                          {
+                            "reportingRestrictionDetail": [
+                              "Reporting Restriction detail line 1",
+                              "Reporting restriction detail line 2"
+                            ],
+                            "caseNumber": "I4Y416QE",
+                            "caseLinked": [
+                              {
+                                "caseId": "YRYCTRR3",
+                                "name": "Ned Vs Patience"
+                              }
+                            ],
+                            "caseSequenceIndicator": "1 of 8",
+                            "party": [
+                              {
+                                "partyRole": "PROSECUTING_AUTHORITY",
+                                "organisationDetails": {
+                                  "organisationName": "Queen"
+                                }
+                              },
+                              {
+                                "partyRole": "DEFENDANT",
+                                "individualDetails": {
+                                  "individualSurname": "Surname 10",
+                                  "individualForenames": "Forename 10"
+                                }
+                              },
+                              {
+                                "partyRole": "DEFENDANT_REPRESENTATIVE",
+                                "organisationDetails": {
+                                  "organisationName": "Defendant rep 6"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
