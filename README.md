@@ -5,6 +5,8 @@
 
 - [Overview](#overview)
 - [Features and Functionality](#features-and-functionality)
+- [JSON to PDF + Summary Conversion](#json-to-pdf--summary-conversion)
+- [Roles](#roles)
 - [Architecture Diagram](#architecture-diagram)
 - [Getting Started](#getting-started)
   - [Prerequisites](#prerequisites)
@@ -35,37 +37,61 @@
 
 
 ## Overview
-`pip-data-management` is a microservice that deals with most operations relating to data persistence within the Court and Tribunal Hearings Service (CaTH hereafter) written with Spring Boot/Java.
+`pip-data-management` is a microservice that deals with most operations relating to data persistence. It sits within the Court and Tribunal Hearings Service (CaTH hereafter) written with Spring Boot/Java.
 
 In practice, the service is usually containerized within a hosted kubernetes environment within Azure.
 
-Broadly speaking, this service has two main components relating to the persistence, validation, retrieval and manipulation of court publications and canonical location information (reference data).
+Broadly speaking, this service has components relating to:
+- The persistence, validation, retrieval and manipulation of court publications and canonical location information (reference data).
+- The generation, retrieval and manipulation of alternative publishing formats used throughout the subscription process (such as PDFs).
 
 ##### Publications
+
 - Uploading publications to the service
 - Validation of publications before publication (JSON)
 - Retrieval of existing publications and metadata
 - Archival processes to handle mandated data retention periods
 
 ##### Locations
+
 - Retrieving individual locations or lists of locations
 - Uploading and validation of location reference data
 - Deletion of locations where appropriate.
+
+##### Alternative publishing formats
+
+- The generation (and associated CRUD operations) of PDFs and Excel spreadsheets for JSON publications.
+- The generation of a publication summary for JSON publications, which is used in the subscription process.
 
 Most interactions with `pip-data-management` are performed through the API (specified in [API Documentation](#api-documentation)) either as a standalone service or via connections to other microservices.
 
 ## Features and Functionality
 
 - Uploading/retrieval/deletion of publications into the service.
-- Request PDF/Excel generation for JSON payload if the payload size is less than the set limit (currently default to 2MB).
 - Interfacing with local or hosted Postgres instances for metadata and retrieval and Azure Blob Storage for raw files.
 - Parsing and validation of ingested json files.
+- Generation of PDFs from JSON payload for each list type if the payload size is less than the set limit (currently default to 2MB). These are used in the subscription process and also via the Frontend
+- Generation of publication summary, which contains details about a JSON publication. This is used in the subscription emails.
 - Flyway for database modifications via SQL ingestion.
 - Secure/Insecure Mode: Use of bearer tokens for authentication with the secure instance (if desired)
 - Azure Blob Storage: Handles interactions with the CaTH Azure Blob Storage instance (or local Azurite emulator/Azure Storage Explorer instances)
 - Endpoints which interact with scheduled cronjobs for daily tasks (e.g. retention period checks for archival purposes within `pip-cron-trigger`)
 - OpenAPI Spec/Swagger-UI: Documents and allows users or developers to access API resources within the browser.
 - Integration tests using TestContainers for dummy database operations.
+
+## JSON to PDF + Summary Conversion
+
+Each List Type has a related converter and summary generator. This is stored in the List Conversion Factory [here](./src/main/java/uk/gov/hmcts/reform/pip/data/management/service/ListConversionFactory.java)
+
+The converter does a very similar job to the frontend style guides. It maps the JSON data to an associated accessible PDF, and also Excel spreadsheets for certain list types.
+
+The summary generator produces a string that is used in the subscription email that contains key fields extracted from the blob. These fields vary depending on the list type.
+
+Note that the PDFs, Excel spreadsheet and email summary are only generated if the JSON publication uploaded to CaTH does not exceed the size limit.
+
+## Roles
+
+Any endpoint that should require authentication, needs to be annotated either at controller or endpoint level with @IsAdmin.
 
 ## Architecture Diagram
 
@@ -107,12 +133,12 @@ The above diagram is somewhat simplified for readability (e.g. it does not inclu
 
 Environment variables are used by the service to control its behaviour in various ways.
 
-
 These variables can be found within various separate CaTH Azure keyvaults. You may need to obtain access to this via a support ticket.
 - Runtime secrets are stored in `pip-ss-{env}-kv` (where {env} is the environment where the given instance is running (e.g. production, staging, test, sandbox)).
 - Test secrets are stored in `pip-bootstrap-{env}-kv` with the same convention.
 
 ##### Get environment variables with python scripts
+
 Python scripts to quickly grab all environment variables (subject to Azure permissions) are available for both [runtime](https://github.com/hmcts/pip-dev-env/blob/master/get_envs.py) and [test](https://github.com/hmcts/pip-secret-grabber/blob/master/main.py) secrets.
 
 ##### Runtime secrets
@@ -134,10 +160,8 @@ Below is a table of currently used environment variables for starting the servic
 | DB_USER                         | Postgres Username                                                                                                                                                                                                                                                                        | Yes       |
 | DB_PASS                         | Postgres Password                                                                                                                                                                                                                                                                        | Yes       |
 | ACCOUNT_MANAGEMENT_URL          | URL used for connecting to the pip-account-management service. Defaults to staging if not provided.                                                                                                                                                                                      | No        |
-| CHANNEL_MANAGEMENT_URL          | URL used for connecting to the pip-channel-management service. Defaults to staging if not provided.                                                                                                                                                                                      | No        |
 | PUBLICATION_SERVICES_URL        | URL used for connecting to the pip-publication-services service. Defaults to staging if not provided.                                                                                                                                                                                    | No        |
 | SUBSCRIPTION_MANAGEMENT_URL     | URL used for connecting to the pip-subscription-management service. Defaults to staging if not provided.                                                                                                                                                                                 | No        |
-| CHANNEL_MANAGEMENT_AZ_API       | Used as part of the `scope` parameter when requesting a token from Azure. Used for service-to-service communication with the pip-channel-management service                                                                                                                              | No        |
 | SUBSCRIPTION_MANAGEMENT_AZ_API  | Used as part of the `scope` parameter when requesting a token from Azure. Used for service-to-service communication with the pip-subscription-management service                                                                                                                         | No        |
 | PUBLICATION_SERVICES_AZ_API     | Used as part of the `scope` parameter when requesting a token from Azure. Used for service-to-service communication with the pip-publication-services service                                                                                                                            | No        |
 | ACCOUNT_MANAGEMENT_AZ_API       | Used as part of the `scope` parameter when requesting a token from Azure. Used for service-to-service communication with the account management service                                                                                                                                  | No        |
@@ -148,19 +172,20 @@ Below is a table of currently used environment variables for starting the servic
 
 Secrets required for getting tests to run correctly can be found in the below table:
 
-|Variable|Description|
-|:-------|:----------------|
-|CLIENT_ID|As above|
-|CLIENT_SECRET|As above|
-|APP_URI|As above|
-|SUBSCRIPTION_MANAGEMENT_AZ_API|As above|
-|TENANT_ID|As above|
-|ACCOUNT_MANAGEMENT_AZ_API|As above|
-|PUBLICATION_SERVICES_AZ_API|As above|
-|SYSTEM_ADMIN_PROVENANCE_ID|Value for the provenance of a system admin used as a header on authentication-bound tests.|
-|TEST_USER_ID|User ID for a test account used as a header for most publication tests.|
+| Variable                       | Description                                                                                |
+|:-------------------------------|:-------------------------------------------------------------------------------------------|
+| CLIENT_ID                      | As above                                                                                   |
+| CLIENT_SECRET                  | As above                                                                                   |
+| APP_URI                        | As above                                                                                   |
+| SUBSCRIPTION_MANAGEMENT_AZ_API | As above                                                                                   |
+| TENANT_ID                      | As above                                                                                   |
+| ACCOUNT_MANAGEMENT_AZ_API      | As above                                                                                   |
+| PUBLICATION_SERVICES_AZ_API    | As above                                                                                   |
+| SYSTEM_ADMIN_PROVENANCE_ID     | Value for the provenance of a system admin used as a header on authentication-bound tests. |
+| TEST_USER_ID                   | User ID for a test account used as a header for most publication tests.                    |
 
 #### Application.yaml files
+
 The service can also be adapted using the yaml files found in the following locations:
 - `src/main/resources/application.yaml` for changes to the behaviour of the service itself.
 - `src/main/resources/application-dev.yaml` for changes to the behaviour of the service when running locally.
@@ -173,6 +198,7 @@ The service can also be adapted using the yaml files found in the following loca
 We use Fortify to scan for security vulnerabilities. This is run as part of our nightly pipelines.
 
 ## API Documentation
+
 Our full API specification can be found within our Swagger-UI page.
 It can be accessed locally by starting the service and going to [http://localhost:8090/swagger-ui/swagger-ui/index.html](http://localhost:8090/swagger-ui/swagger-ui/index.html)
 Alternatively, if you're on our VPN, you can access the swagger endpoint at our staging URL (ask a teammate to give you this).
@@ -219,12 +245,14 @@ The 'parties' section is used for searching the matched publications when adding
 The legacy 'cases' section is used for search by case Number, URN or Name for publications created previously before "parties" were added.
 
 ## Examples
+
 As mentioned, the full api documentation can be found within swagger-ui, but some of the most common operations are highlighted below.
 
 Most of the communication with this service benefits from using secure authentication. While possible to stand up locally in insecure mode, to simulate a production environment it is better to use secure mode.
 Before sending in any requests to the service, you'll need to obtain a bearer token using the following approach:
 
 ### Requesting a bearer token
+
 To request a bearer token, sending a post request following this template:
 ```
 curl --request POST \
@@ -240,6 +268,7 @@ You can copy the above curl command into either Postman or Insomnia and they wil
 *Note - the `_FOR_ANOTHER_SERVICE` variables need to be extracted from another registered microservice within the broader CaTH umbrella (e.g. [pip-subscription-management](https://github.com/hmcts/pip-subscription-management))*
 
 ### Uploading a new publication
+
 The following request is a template which can be used to input a new list or publication at the `/publication` post endpoint.
 ```
 curl --request POST \
@@ -259,6 +288,7 @@ curl --request POST \
 ```
 
 ### Getting a list of all hearing locations
+
 The following request returns a list of all hearing locations with metadata such as region, location-type, jurisdiction, welsh names etc.
 Hearing locations are ingested into the system using the reference data endpoint.
 ```
@@ -268,6 +298,7 @@ curl --request GET \                                                            
 ```
 
 ### Getting a specific hearing location
+
 The following request returns location metadata for an individual court.
 ```
 curl --request GET \                                                                                                    13:40:44
@@ -277,13 +308,14 @@ curl --request GET \                                                            
 
 ## Azure Blob Storage
 
-This service uses Azure Blob storage to store the raw artefact data. This is configured in [AzureBlobConfiguration](./src/main/java/uk/gov/hmcts/reform/pip/data/management/config/AzureBlobConfiguration.java).
+This service uses Azure Blob storage to store the raw artefact data and the generated PDFs and Excel files. This is configured in [AzureBlobConfiguration](./src/main/java/uk/gov/hmcts/reform/pip/data/management/config/AzureBlobConfiguration.java).
 
 The Workload Identity is used by default to authenticate with Azure Blob Storage which is present in the Azure environments. If the workload identity is not present (such as in a local environment), a connection string can be used instead by setting the CONNECTION_STRING environment variable.
 
 For the local environment, Azurite docker images can be used to provide a local instance of Blob Storage.
 
 ## Deployment
+
 We use [Jenkins](https://www.jenkins.io/) as our CI/CD system. The deployment of this can be controlled within our application logic using the various `Jenkinsfile`-prepended files within the root directory of the repository.
 
 Our builds run against our `dev` environment during the Jenkins build process. As this is a microservice, the build process involves standing up the service in a docker container in a Kubernetes cluster with the current staging master copies of the other interconnected microservices.
@@ -291,6 +323,7 @@ Our builds run against our `dev` environment during the Jenkins build process. A
 If your debugging leads you to conclude that you need to implement a pipeline fix, this can be done in the [CNP Jenkins repo](https://github.com/hmcts/cnp-jenkins-library)
 
 ## Creating or debugging of SQL scripts with Flyway
+
 Flyway is used to apply incremental schema changes (migrations) to our database.
 
 Any modifications to the database schema must be done through flyway. Changes to the models will no longer be automatically applied to the database.
@@ -298,14 +331,17 @@ Any modifications to the database schema must be done through flyway. Changes to
 This behaviour can be overridden using the DB_UPDATE environment variable. This is useful for local development, but should not be used in production.
 
 ### Pipeline
+
 Flyway is enabled on the pipeline. It is only run on the pipeline, and not on startup. On startup, the app will validate that the flyway scripts have been applied.
 
 ### Local
+
 For local development, flyway is turned off by default. This is due to all tables existing within a single database locally. This can cause flyway to fail at startup due to mismatching scripts.
 
 If you wish to test a flyway script locally, you will first need to clear the `flyway_schema_history` table then set the environment variable `ENABLE_FLYWAY` to true.
 
 ## Monitoring and Logging
+
 We utilise [Azure Application Insights](https://learn.microsoft.com/en-us/azure/azure-monitor/app/app-insights-overview) to store our logs. Ask a teammate for the specific resource in Azure to access these.
 Locally, we use [Log4j](https://logging.apache.org/log4j/2.x/).
 
@@ -322,13 +358,14 @@ To connect to app insights a connection string is used. This is configured to re
 It is possible to connect to app insights locally, although somewhat tricky. The easiest way is to get the connection string from azure, set it as an environment variable (APPLICATIONINSIGHTS_CONNECTION_STRING), and add in the javaagent as VM argument. You will also need to remove / comment out the connection string line the config.
 
 ## Security & Quality Considerations
+
 We use a few automated tools to ensure quality and security within the service. A few examples can be found below:
 
- - SonarCloud - provides automated code analysis, finding vulnerabilities, bugs and code smells. Quality gates ensure that test coverage, code style and security are maintained where possible.
- - DependencyCheckAggregate - Ensures that dependencies are kept up to date and that those with known security vulnerabilities (based on the [National Vulnerability Database(NVD)](https://nvd.nist.gov/)) are flagged to developers for mitigation or suppression.
- - JaCoCo Test Coverage - Produces code coverage metrics which allows developers to determine which lines of code are covered (or not) by unit testing. This also makes up one of SonarCloud's quality gates.
- - PMD - Static code analysis tool providing code quality guidance and identifying potential issues relating to coding standards, performance or security.
- - CheckStyle - Enforces coding standards and conventions such as formatting, naming conventions and structure.
+- SonarCloud - provides automated code analysis, finding vulnerabilities, bugs and code smells. Quality gates ensure that test coverage, code style and security are maintained where possible.
+- DependencyCheckAggregate - Ensures that dependencies are kept up to date and that those with known security vulnerabilities (based on the [National Vulnerability Database(NVD)](https://nvd.nist.gov/)) are flagged to developers for mitigation or suppression.
+- JaCoCo Test Coverage - Produces code coverage metrics which allows developers to determine which lines of code are covered (or not) by unit testing. This also makes up one of SonarCloud's quality gates.
+- PMD - Static code analysis tool providing code quality guidance and identifying potential issues relating to coding standards, performance or security.
+- CheckStyle - Enforces coding standards and conventions such as formatting, naming conventions and structure.
 
 ## Test Suite
 
