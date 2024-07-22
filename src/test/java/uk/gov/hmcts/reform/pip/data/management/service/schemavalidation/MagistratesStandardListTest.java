@@ -36,7 +36,7 @@ class MagistratesStandardListTest {
     ValidationService validationService;
 
     private static final String MAGISTRATES_STANDARD_LIST_VALID_JSON =
-        "mocks/magistrates-standard-list/magistratesStandardList.json";
+        "mocks/magistratesStandardList.json";
     private static final String MAGISTRATES_STANDARD_LIST_INVALID_MESSAGE =
         "Invalid magistrates standard list marked as valid";
 
