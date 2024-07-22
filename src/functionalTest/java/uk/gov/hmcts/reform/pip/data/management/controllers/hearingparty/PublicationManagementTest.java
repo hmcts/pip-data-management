@@ -41,13 +41,12 @@ import static uk.gov.hmcts.reform.pip.model.publication.FileType.PDF;
 @WithMockUser(username = "admin", authorities = {"APPROLE_api.request.admin"})
 class PublicationManagementTest {
     private static final String ROOT_URL = "/publication";
-    private static final String GET_ARTEFACT_SUMMARY = ROOT_URL + "/summary";
-    private static final String GET_FILE_URL = ROOT_URL + "/file";
+    private static final String GET_ARTEFACT_SUMMARY = ROOT_URL + "/%s/summary";
+    private static final String GET_FILE_URL = ROOT_URL + "/%s/%s";
     private static final String ARTEFACT_ID_SSCS_DAILY_LIST = "1c96a1ca-3129-4e9b-aaeb-499ecd775e8c";
     private static final String ARTEFACT_ID_SSCS_DAILY_LIST_ADDITIONAL_HEARINGS
         = "a0071d36-af08-4638-a7b3-7ea65327b4dd";
     private static final String CONTENT_MISMATCH_ERROR = "Artefact summary content should match";
-    private static final String FILE_TYPE_HEADER = "x-file-type";
     private static final String SYSTEM_HEADER = "x-system";
     private static MockMultipartFile file;
 
@@ -81,7 +80,7 @@ class PublicationManagementTest {
 
     @Test
     void testGenerateArtefactSummarySscsDailyList() throws Exception {
-        MvcResult response = mockMvc.perform(get(GET_ARTEFACT_SUMMARY + "/" + ARTEFACT_ID_SSCS_DAILY_LIST))
+        MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, ARTEFACT_ID_SSCS_DAILY_LIST)))
             .andExpect(status().isOk()).andReturn();
 
         String responseContent = response.getResponse().getContentAsString();
@@ -94,7 +93,7 @@ class PublicationManagementTest {
     @Test
     void testGenerateArtefactSummarySscsDailyListAdditionalHearings() throws Exception {
         MvcResult response = mockMvc.perform(
-                get(GET_ARTEFACT_SUMMARY + "/" + ARTEFACT_ID_SSCS_DAILY_LIST_ADDITIONAL_HEARINGS))
+                get(String.format(GET_ARTEFACT_SUMMARY, ARTEFACT_ID_SSCS_DAILY_LIST_ADDITIONAL_HEARINGS)))
             .andExpect(status().isOk()).andReturn();
 
         String responseContent = response.getResponse().getContentAsString();
@@ -112,9 +111,8 @@ class PublicationManagementTest {
             BinaryData.fromString(new String(file.getBytes())));
 
         MvcResult response = mockMvc.perform(
-                get(GET_FILE_URL + "/" + listArtefactId)
+                get(String.format(GET_FILE_URL, listArtefactId, PDF))
                     .header(SYSTEM_HEADER, "true")
-                    .header(FILE_TYPE_HEADER, PDF)
                     .param("maxFileSize", "2048000"))
 
             .andExpect(status().isOk()).andReturn();

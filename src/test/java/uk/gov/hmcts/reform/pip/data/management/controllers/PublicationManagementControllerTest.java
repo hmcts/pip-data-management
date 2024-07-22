@@ -10,8 +10,6 @@ import org.springframework.http.ResponseEntity;
 import uk.gov.hmcts.reform.pip.data.management.models.PublicationFileSizes;
 import uk.gov.hmcts.reform.pip.data.management.service.PublicationManagementService;
 import uk.gov.hmcts.reform.pip.model.publication.FileType;
-import uk.gov.hmcts.reform.pip.model.publication.Language;
-import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
 import java.util.UUID;
 
@@ -25,8 +23,6 @@ class PublicationManagementControllerTest {
     private static final String FILE = "123";
     private static final String USER_ID = "test";
     private static final UUID ARTEFACT_ID = UUID.randomUUID();
-    private static final ListType LIST_TYPE = ListType.SJP_PUBLIC_LIST;
-    private static final Language LANGUAGE = Language.ENGLISH;
 
     private static final String STATUS_MESSAGE = "Status did not match";
     private static final String RESPONSE_BODY_MESSAGE = "Body did not match";
@@ -54,7 +50,7 @@ class PublicationManagementControllerTest {
         )).thenReturn(FILE);
 
         ResponseEntity<String> response = publicationManagementController.getFile(
-            UUID.randomUUID(), USER_ID, true, FileType.PDF, false, null
+            UUID.randomUUID(), FileType.PDF, USER_ID, true, false, null
         );
 
         assertEquals(HttpStatus.OK, response.getStatusCode(), STATUS_MESSAGE);

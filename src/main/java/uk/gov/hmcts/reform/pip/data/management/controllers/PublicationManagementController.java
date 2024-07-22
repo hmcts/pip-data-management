@@ -48,7 +48,7 @@ public class PublicationManagementController {
     @ApiResponse(responseCode = NOT_FOUND_CODE, description = NOT_FOUND_DESCRIPTION)
     @ApiResponse(responseCode = INTERNAL_ERROR_CODE, description = "Cannot process the artefact")
     @Operation(summary = "Takes in an artefact ID and returns an artefact summary")
-    @GetMapping("/summary/{artefactId}")
+    @GetMapping("/{artefactId}/summary")
     public ResponseEntity<String> generateArtefactSummary(@PathVariable UUID artefactId) {
         return ResponseEntity.ok(publicationManagementService.generateArtefactSummary(artefactId));
     }
@@ -57,12 +57,12 @@ public class PublicationManagementController {
     @ApiResponse(responseCode = NOT_FOUND_CODE, description = NOT_FOUND_DESCRIPTION)
     @ApiResponse(responseCode = PAYLOAD_TOO_LARGE_CODE, description = "File size too large")
     @Operation(summary = "Takes in an artefact ID and returns the stored PDF or Excel file ")
-    @GetMapping("/file/{artefactId}")
+    @GetMapping("/{artefactId}/{fileType}")
     public ResponseEntity<String> getFile(
         @PathVariable UUID artefactId,
+        @PathVariable  FileType fileType,
         @RequestHeader(value = "x-user-id", required = false) String userId,
         @RequestHeader(value = "x-system", required = false) boolean system,
-        @RequestHeader(name = "x-file-type") FileType fileType,
         @RequestHeader(name = "x-additional-pdf", defaultValue = "false") boolean additionalPdf,
         @RequestParam(name = "maxFileSize", required = false) Integer maxFileSize) {
         return ResponseEntity.ok(
