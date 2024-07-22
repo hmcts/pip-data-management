@@ -58,8 +58,8 @@ class PublicationManagementTest {
     private String verifiedUserId;
 
     private static final String ROOT_URL = "/publication";
-    private static final String GET_ARTEFACT_SUMMARY = ROOT_URL + "/summary";
-    private static final String GET_FILE_URL = ROOT_URL + "/file";
+    private static final String GET_ARTEFACT_SUMMARY = ROOT_URL + "/%s/summary";
+    private static final String GET_FILE_URL = ROOT_URL + "/%s/%s";
     private static final String ARTEFACT_ID = "48732761-5ab5-482a-ad98-3aa91e4d5d5a";
     private static final String ARTEFACT_ID_NOT_FOUND = "11111111-1111-1111-1111-111111111111";
     private static final String INPUT_PARAMETERS = "parameters";
@@ -144,7 +144,7 @@ class PublicationManagementTest {
     @Test
     void testGenerateArtefactSummaryCareStandardsList() throws Exception {
         MvcResult response = mockMvc.perform(
-                get(GET_ARTEFACT_SUMMARY + "/" + ARTEFACT_ID_CARE_STANDARDS_LIST))
+                get(String.format(GET_ARTEFACT_SUMMARY, ARTEFACT_ID_CARE_STANDARDS_LIST)))
             .andExpect(status().isOk()).andReturn();
         String responseContent = response.getResponse().getContentAsString();
 
@@ -156,7 +156,7 @@ class PublicationManagementTest {
     @Test
     void testGenerateArtefactSummaryCivilAndFamilyDailyCauseList() throws Exception {
         MvcResult response = mockMvc.perform(
-                get(GET_ARTEFACT_SUMMARY + "/" + ARTEFACT_ID_CIVIL_AND_FAMILY_DAILY_CAUSE_LIST_ENGLISH))
+                get(String.format(GET_ARTEFACT_SUMMARY, ARTEFACT_ID_CIVIL_AND_FAMILY_DAILY_CAUSE_LIST_ENGLISH)))
             .andExpect(status().isOk()).andReturn();
         String responseContent = response.getResponse().getContentAsString();
 
@@ -170,7 +170,7 @@ class PublicationManagementTest {
     @Test
     void testGenerateArtefactSummaryCivilDailyCauseList() throws Exception {
         MvcResult response = mockMvc.perform(
-                get(GET_ARTEFACT_SUMMARY + "/" + ARTEFACT_ID_CIVIL_DAILY_CAUSE_LIST))
+                get(String.format(GET_ARTEFACT_SUMMARY, ARTEFACT_ID_CIVIL_DAILY_CAUSE_LIST)))
             .andExpect(status().isOk()).andReturn();
 
         String responseContent = response.getResponse().getContentAsString();
@@ -183,7 +183,7 @@ class PublicationManagementTest {
     @Test
     void testGenerateArtefactSummaryCourtOfProtectionDailyCauseList() throws Exception {
         MvcResult response = mockMvc.perform(
-                get(GET_ARTEFACT_SUMMARY + "/" + ARTEFACT_ID_COP_DAILY_CAUSE_LIST))
+                get(String.format(GET_ARTEFACT_SUMMARY, ARTEFACT_ID_COP_DAILY_CAUSE_LIST)))
             .andExpect(status().isOk()).andReturn();
 
         String responseContent = response.getResponse().getContentAsString();
@@ -194,7 +194,7 @@ class PublicationManagementTest {
 
     @Test
     void testGenerateArtefactSummaryCrownDailyList() throws Exception {
-        MvcResult response = mockMvc.perform(get(GET_ARTEFACT_SUMMARY + "/" + ARTEFACT_ID_CROWN_DAILY_LIST))
+        MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, ARTEFACT_ID_CROWN_DAILY_LIST)))
             .andExpect(status().isOk()).andReturn();
 
         String responseContent = response.getResponse().getContentAsString();
@@ -209,7 +209,7 @@ class PublicationManagementTest {
 
     @Test
     void testGenerateArtefactSummaryCrownFirmList() throws Exception {
-        MvcResult response = mockMvc.perform(get(GET_ARTEFACT_SUMMARY + "/" + ARTEFACT_ID_CROWN_FIRM_LIST))
+        MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, ARTEFACT_ID_CROWN_FIRM_LIST)))
             .andExpect(status().isOk()).andReturn();
 
         String responseContent = response.getResponse().getContentAsString();
@@ -221,7 +221,7 @@ class PublicationManagementTest {
 
     @Test
     void testGenerateArtefactSummaryCrownWarnedList() throws Exception {
-        MvcResult response = mockMvc.perform(get(GET_ARTEFACT_SUMMARY + "/" + ARTEFACT_ID_CROWN_WARNED_LIST))
+        MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, ARTEFACT_ID_CROWN_WARNED_LIST)))
             .andExpect(status().isOk()).andReturn();
 
         String responseContent = response.getResponse().getContentAsString();
@@ -233,7 +233,7 @@ class PublicationManagementTest {
 
     @Test
     void testGenerateArtefactSummaryEmploymentTribunalsDailyList() throws Exception {
-        MvcResult response = mockMvc.perform(get(GET_ARTEFACT_SUMMARY + "/" + ARTEFACT_ID_ET_DAILY_LIST))
+        MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, ARTEFACT_ID_ET_DAILY_LIST)))
             .andExpect(status().isOk()).andReturn();
 
         String responseContent = response.getResponse().getContentAsString();
@@ -246,7 +246,7 @@ class PublicationManagementTest {
     @Test
     void testGenerateArtefactSummaryEmploymentTribunalsFortnightlyPressList() throws Exception {
         MvcResult response = mockMvc.perform(
-                get(GET_ARTEFACT_SUMMARY + "/" + ARTEFACT_ID_ET_FORTNIGHTLY_PRESS_LIST))
+                get(String.format(GET_ARTEFACT_SUMMARY, ARTEFACT_ID_ET_FORTNIGHTLY_PRESS_LIST)))
             .andExpect(status().isOk()).andReturn();
 
         String responseContent = response.getResponse().getContentAsString();
@@ -259,7 +259,7 @@ class PublicationManagementTest {
     @Test
     void testGenerateArtefactSummaryFamilyDailyCauseList() throws Exception {
         MvcResult response = mockMvc.perform(
-                get(GET_ARTEFACT_SUMMARY + "/" + ARTEFACT_ID_FAMILY_DAILY_CAUSE_LIST))
+                get(String.format(GET_ARTEFACT_SUMMARY, ARTEFACT_ID_FAMILY_DAILY_CAUSE_LIST)))
             .andExpect(status().isOk()).andReturn();
 
         String responseContent = response.getResponse().getContentAsString();
@@ -272,7 +272,7 @@ class PublicationManagementTest {
 
     @Test
     void testGenerateArtefactSummaryImmigrationAndAsylumChamberDailyList() throws Exception {
-        MvcResult response = mockMvc.perform(get(GET_ARTEFACT_SUMMARY + "/" + ARTEFACT_ID_IAC_DAILY_LIST))
+        MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, ARTEFACT_ID_IAC_DAILY_LIST)))
             .andExpect(status().isOk()).andReturn();
 
         String responseContent = response.getResponse().getContentAsString();
@@ -287,8 +287,8 @@ class PublicationManagementTest {
 
     @Test
     void testGenerateArtefactSummaryImmigrationAndAsylumChamberDailyListAdditionalCases() throws Exception {
-        MvcResult response = mockMvc.perform(get(GET_ARTEFACT_SUMMARY + "/"
-                                                     + ARTEFACT_ID_IAC_DAILY_LIST_ADDITIONAL_CASES))
+        MvcResult response = mockMvc.perform(
+                get(String.format(GET_ARTEFACT_SUMMARY, ARTEFACT_ID_IAC_DAILY_LIST_ADDITIONAL_CASES)))
             .andExpect(status().isOk()).andReturn();
 
         String responseContent = response.getResponse().getContentAsString();
@@ -304,7 +304,7 @@ class PublicationManagementTest {
     @Test
     void testGenerateArtefactSummaryMagistratesPublicList() throws Exception {
         MvcResult response = mockMvc.perform(
-                get(GET_ARTEFACT_SUMMARY + "/" + ARTEFACT_ID_MAGISTRATES_PUBLIC_LIST))
+                get(String.format(GET_ARTEFACT_SUMMARY, ARTEFACT_ID_MAGISTRATES_PUBLIC_LIST)))
             .andExpect(status().isOk()).andReturn();
 
         String responseContent = response.getResponse().getContentAsString();
@@ -320,7 +320,7 @@ class PublicationManagementTest {
     @Test
     void testGenerateArtefactSummaryMagistratesStandardList() throws Exception {
         MvcResult response = mockMvc.perform(
-                get(GET_ARTEFACT_SUMMARY + "/" + ARTEFACT_ID_MAGISTRATES_STANDARD_LIST))
+                get(String.format(GET_ARTEFACT_SUMMARY, ARTEFACT_ID_MAGISTRATES_STANDARD_LIST)))
             .andExpect(status().isOk()).andReturn();
 
         String responseContent = response.getResponse().getContentAsString();
@@ -334,7 +334,7 @@ class PublicationManagementTest {
     @Test
     void testGenerateArtefactSummaryPrimaryHealthTribunalHearingList() throws Exception {
         MvcResult response = mockMvc
-            .perform(get(GET_ARTEFACT_SUMMARY + "/" + ARTEFACT_ID_PRIMARY_HEALTH_LIST))
+            .perform(get(String.format(GET_ARTEFACT_SUMMARY, ARTEFACT_ID_PRIMARY_HEALTH_LIST)))
             .andExpect(status().isOk()).andReturn();
 
         String responseContent = response.getResponse().getContentAsString();
@@ -345,7 +345,7 @@ class PublicationManagementTest {
 
     @Test
     void testGenerateArtefactSummarySingleJusticeProcedurePressList() throws Exception {
-        MvcResult response = mockMvc.perform(get(GET_ARTEFACT_SUMMARY + "/" + ARTEFACT_ID_SJP_PRESS_LIST))
+        MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, ARTEFACT_ID_SJP_PRESS_LIST)))
             .andExpect(status().isOk()).andReturn();
         String responseContent = response.getResponse().getContentAsString();
 
@@ -362,7 +362,8 @@ class PublicationManagementTest {
 
     @Test
     void testGenerateArtefactSummarySingleJusticeProcedurePublicList() throws Exception {
-        MvcResult response = mockMvc.perform(get(GET_ARTEFACT_SUMMARY + "/" + ARTEFACT_ID_SJP_PUBLIC_LIST_ENGLISH))
+        MvcResult response = mockMvc
+            .perform(get(String.format(GET_ARTEFACT_SUMMARY, ARTEFACT_ID_SJP_PUBLIC_LIST_ENGLISH)))
             .andExpect(status().isOk()).andReturn();
 
         String responseContent = response.getResponse().getContentAsString();
@@ -375,7 +376,8 @@ class PublicationManagementTest {
 
     @Test
     void testGenerateArtefactSummarySingleJusticeProcedureDeltaPublicList() throws Exception {
-        MvcResult response = mockMvc.perform(get(GET_ARTEFACT_SUMMARY + "/" + ARTEFACT_ID_SJP_DELTA_PUBLIC_LIST))
+        MvcResult response = mockMvc
+            .perform(get(String.format(GET_ARTEFACT_SUMMARY, ARTEFACT_ID_SJP_DELTA_PUBLIC_LIST)))
             .andExpect(status().isOk()).andReturn();
 
         String responseContent = response.getResponse().getContentAsString();
@@ -388,7 +390,7 @@ class PublicationManagementTest {
 
     @Test
     void testGenerateArtefactSummarySscsDailyList() throws Exception {
-        MvcResult response = mockMvc.perform(get(GET_ARTEFACT_SUMMARY + "/" + ARTEFACT_ID_SSCS_DAILY_LIST))
+        MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, ARTEFACT_ID_SSCS_DAILY_LIST)))
             .andExpect(status().isOk()).andReturn();
 
         String responseContent = response.getResponse().getContentAsString();
@@ -401,7 +403,7 @@ class PublicationManagementTest {
     @Test
     void testGenerateArtefactSummarySscsDailyListAdditionalHearings() throws Exception {
         MvcResult response = mockMvc.perform(
-                get(GET_ARTEFACT_SUMMARY + "/" + ARTEFACT_ID_SSCS_DAILY_LIST_ADDITIONAL_HEARINGS))
+                get(String.format(GET_ARTEFACT_SUMMARY, ARTEFACT_ID_SSCS_DAILY_LIST_ADDITIONAL_HEARINGS)))
             .andExpect(status().isOk()).andReturn();
 
         String responseContent = response.getResponse().getContentAsString();
@@ -414,7 +416,7 @@ class PublicationManagementTest {
     @Test
     void testGenerateArtefactSummaryOpaPressList() throws Exception {
         MvcResult response = mockMvc.perform(
-                get(GET_ARTEFACT_SUMMARY + "/" + ARTEFACT_ID_OPA_PRESS_LIST))
+                get(String.format(GET_ARTEFACT_SUMMARY, ARTEFACT_ID_OPA_PRESS_LIST)))
             .andExpect(status().isOk()).andReturn();
 
         String responseContent = response.getResponse().getContentAsString();
@@ -429,7 +431,7 @@ class PublicationManagementTest {
     @Test
     void testGenerateArtefactSummaryOpaPublicList() throws Exception {
         MvcResult response = mockMvc.perform(
-                get(GET_ARTEFACT_SUMMARY + "/" + ARTEFACT_ID_OPA_PUBLIC_LIST))
+                get(String.format(GET_ARTEFACT_SUMMARY, ARTEFACT_ID_OPA_PUBLIC_LIST)))
             .andExpect(status().isOk()).andReturn();
 
         String responseContent = response.getResponse().getContentAsString();
@@ -445,7 +447,7 @@ class PublicationManagementTest {
     @Test
     void testGenerateArtefactSummaryOpaResults() throws Exception {
         MvcResult response = mockMvc.perform(
-                get(GET_ARTEFACT_SUMMARY + "/" + ARTEFACT_ID_OPA_RESULTS))
+                get(String.format(GET_ARTEFACT_SUMMARY, ARTEFACT_ID_OPA_RESULTS)))
             .andExpect(status().isOk()).andReturn();
 
         String responseContent = response.getResponse().getContentAsString();
@@ -456,7 +458,7 @@ class PublicationManagementTest {
 
     @Test
     void testGenerateArtefactSummaryNotFound() throws Exception {
-        MvcResult mvcResult = mockMvc.perform(get(GET_ARTEFACT_SUMMARY + "/" + ARTEFACT_ID_NOT_FOUND))
+        MvcResult mvcResult = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, ARTEFACT_ID_NOT_FOUND)))
             .andExpect(status().isNotFound()).andReturn();
 
         ExceptionResponse exceptionResponse = objectMapper.readValue(
@@ -472,7 +474,7 @@ class PublicationManagementTest {
     @Test
     @WithMockUser(username = UNAUTHORIZED_USERNAME, authorities = {UNAUTHORIZED_ROLE})
     void testGenerateArtefactSummaryUnauthorized() throws Exception {
-        mockMvc.perform(get(GET_ARTEFACT_SUMMARY + "/" + ARTEFACT_ID))
+        mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, ARTEFACT_ID)))
             .andExpect(status().isForbidden());
     }
 
@@ -516,7 +518,7 @@ class PublicationManagementTest {
             BinaryData.fromString(new String(file.getBytes())));
 
         MvcResult response = mockMvc.perform(
-                get(GET_FILE_URL + "/" + listArtefactId)
+                get(String.format(GET_FILE_URL, listArtefactId, PDF))
                     .header(SYSTEM_HEADER, "true")
                     .header(FILE_TYPE_HEADER, PDF)
                     .param("maxFileSize", "2048000"))
@@ -544,10 +546,9 @@ class PublicationManagementTest {
             BinaryData.fromString(new String(file.getBytes())));
 
         MockHttpServletRequestBuilder request =
-            get(GET_FILE_URL + "/" + listArtefactId)
+            get(String.format(GET_FILE_URL, listArtefactId, PDF))
                 .header("x-user-id", verifiedUserId)
                 .header(SYSTEM_HEADER, "false")
-                .header(FILE_TYPE_HEADER, PDF)
                 .param("maxFileSize", "2048000");
 
         MvcResult response = mockMvc.perform(request)
@@ -574,10 +575,9 @@ class PublicationManagementTest {
             BinaryData.fromString(new String(file.getBytes())));
 
         MockHttpServletRequestBuilder request =
-            get(GET_FILE_URL + "/" + listArtefactId)
+            get(String.format(GET_FILE_URL, listArtefactId, PDF))
                 .header("x-user-id", verifiedUserId)
                 .header(SYSTEM_HEADER, "false")
-                .header(FILE_TYPE_HEADER, PDF)
                 .param("maxFileSize", "10");
 
         MvcResult response = mockMvc.perform(request)
@@ -597,8 +597,7 @@ class PublicationManagementTest {
 
     @Test
     void testGetFileNotFound() throws Exception {
-        MvcResult mvcResult = mockMvc.perform(get(GET_FILE_URL + "/" + ARTEFACT_ID_NOT_FOUND)
-                                                  .header(FILE_TYPE_HEADER, PDF))
+        MvcResult mvcResult = mockMvc.perform(get(String.format(GET_FILE_URL, ARTEFACT_ID_NOT_FOUND, PDF)))
             .andExpect(status().isNotFound())
             .andReturn();
 
@@ -615,8 +614,7 @@ class PublicationManagementTest {
     @Test
     @WithMockUser(username = UNAUTHORIZED_USERNAME, authorities = {UNAUTHORIZED_ROLE})
     void testGetFileUnauthorized() throws Exception {
-        mockMvc.perform(get(GET_FILE_URL + "/" + ARTEFACT_ID)
-                            .header(FILE_TYPE_HEADER, PDF))
+        mockMvc.perform(get(String.format(GET_FILE_URL, ARTEFACT_ID, PDF)))
             .andExpect(status().isForbidden());
     }
 }
