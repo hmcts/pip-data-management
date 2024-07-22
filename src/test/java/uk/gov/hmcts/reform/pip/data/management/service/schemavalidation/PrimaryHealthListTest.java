@@ -36,7 +36,7 @@ class PrimaryHealthListTest {
     ValidationService validationService;
 
     private static final String PRIMARY_HEALTH_LIST_VALID_JSON =
-        "mocks/primary-health-list/primaryHealthList.json";
+        "mocks/primaryHealthList.json";
     private static final String PRIMARY_HEALTH_LIST_INVALID_MESSAGE =
         "Invalid primary health list marked as valid";
 

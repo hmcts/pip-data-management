@@ -32,7 +32,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
 class OpsResultsTest {
     private static final ObjectMapper MAPPER = new ObjectMapper();
-    private static final String OPA_RESULTS_VALID_JSON = "mocks/opa-results/opaResults.json";
+    private static final String OPA_RESULTS_VALID_JSON = "mocks/opaResults.json";
     private static final String OPA_RESULTS_INVALID_MESSAGE = "Invalid OPA results marked as valid";
 
     private static final String SOURCE_ARTEFACT_ID = "sourceArtefactId";
