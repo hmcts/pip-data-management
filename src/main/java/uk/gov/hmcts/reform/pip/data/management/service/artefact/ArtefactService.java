@@ -167,12 +167,12 @@ public class ArtefactService {
     }
 
     public void generatePublicationFiles(Artefact artefact, String payload) {
-        if (shouldGenerateFiles(artefact.getPayloadSize())) {
+        if (payloadWithinLimit(artefact.getPayloadSize())) {
             channelManagementService.requestFileGeneration(artefact.getArtefactId(), payload);
         }
     }
 
-    public boolean shouldGenerateFiles(Float artefactPayloadSize) {
+    public boolean payloadWithinLimit(Float artefactPayloadSize) {
         return artefactPayloadSize == null || artefactPayloadSize < maxPayloadSize;
     }
 
