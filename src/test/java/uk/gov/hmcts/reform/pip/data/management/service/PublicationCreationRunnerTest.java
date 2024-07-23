@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.pip.data.management.service;
 
 import nl.altindag.log.LogCaptor;
 import org.assertj.core.api.SoftAssertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -13,13 +14,16 @@ import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CreateArtefactConflictException;
 import uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
+import uk.gov.hmcts.reform.pip.data.management.service.artefact.ArtefactService;
 import uk.gov.hmcts.reform.pip.data.management.utils.JsonExtractor;
 
 import java.time.LocalDate;
+import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.FILE;
@@ -44,8 +48,14 @@ class PublicationCreationRunnerTest {
     private static final String FLAT_FILE_PUBLICATION_DEADLOCK = "Deadlock when creating flat file publication. "
         + "Please try again later.";
 
+    private static final Float PAYLOAD_SIZE_WITHIN_LIMIT = 90f;
+    private static final Float PAYLOAD_SIZE_OVER_LIMIT = 110f;
+
     @Mock
     private PublicationService publicationService;
+
+    @Mock
+    private ArtefactService artefactService;
 
     @Mock
     JsonExtractor jsonExtractor;
@@ -55,9 +65,16 @@ class PublicationCreationRunnerTest {
 
     private final LogCaptor logCaptor = LogCaptor.forClass(PublicationCreationRunner.class);
 
+    @BeforeEach
+    void setup() {
+        lenient().when(artefactService.payloadWithinLimit(PAYLOAD_SIZE_WITHIN_LIMIT)).thenReturn(true);
+        lenient().when(artefactService.payloadWithinLimit(PAYLOAD_SIZE_OVER_LIMIT)).thenReturn(false);
+    }
+
     @Test
     void testRunMethodForJsonPublicationWithNonSjpListType() {
         Artefact artefact = ArtefactConstantTestHelper.buildArtefact();
+        artefact.setPayloadSize(PAYLOAD_SIZE_WITHIN_LIMIT);
         when(publicationService.createPublication(artefact, PAYLOAD)).thenReturn(artefact);
         when(jsonExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
 
@@ -87,6 +104,7 @@ class PublicationCreationRunnerTest {
     @Test
     void testRunMethodForJsonPublicationWithSjpPublicListType() {
         Artefact artefact = ArtefactConstantTestHelper.buildSjpPublicArtefact();
+        artefact.setPayloadSize(PAYLOAD_SIZE_WITHIN_LIMIT);
         when(publicationService.createPublication(artefact, PAYLOAD)).thenReturn(artefact);
         when(jsonExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
 
@@ -116,6 +134,7 @@ class PublicationCreationRunnerTest {
     @Test
     void testRunMethodForJsonPublicationWithSjpPressListType() {
         Artefact artefact = ArtefactConstantTestHelper.buildSjpPressArtefact();
+        artefact.setPayloadSize(PAYLOAD_SIZE_WITHIN_LIMIT);
         when(publicationService.createPublication(artefact, PAYLOAD)).thenReturn(artefact);
         when(jsonExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
 
@@ -145,6 +164,7 @@ class PublicationCreationRunnerTest {
     @Test
     void testRunMethodForJsonPublicationWithCannotAcquireLockException() {
         Artefact artefact = ArtefactConstantTestHelper.buildArtefact();
+        artefact.setPayloadSize(PAYLOAD_SIZE_WITHIN_LIMIT);
         doThrow(CannotAcquireLockException.class).when(publicationService).createPublication(artefact, PAYLOAD);
         when(jsonExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
 
@@ -161,6 +181,7 @@ class PublicationCreationRunnerTest {
     @Test
     void testRunMethodForJsonPublicationWithDataIntegrityViolationException() {
         Artefact artefact = ArtefactConstantTestHelper.buildArtefact();
+        artefact.setPayloadSize(PAYLOAD_SIZE_WITHIN_LIMIT);
         doThrow(DataIntegrityViolationException.class).when(publicationService).createPublication(artefact, PAYLOAD);
         when(jsonExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
 
@@ -172,6 +193,28 @@ class PublicationCreationRunnerTest {
         assertThat(logCaptor.getInfoLogs())
             .as(LOG_MESSAGE)
             .isEmpty();
+    }
+
+    @Test
+    void testSearchValuesNotGeneratedFOrJsonPublicationWhenPayloadOverLimit() {
+        Artefact artefact = ArtefactConstantTestHelper.buildArtefact();
+        artefact.setPayloadSize(PAYLOAD_SIZE_OVER_LIMIT);
+        when(publicationService.createPublication(artefact, PAYLOAD)).thenReturn(artefact);
+
+        Artefact returnedArtefact = publicationCreationRunner.run(artefact, PAYLOAD);
+
+        SoftAssertions softly = new SoftAssertions();
+
+        softly.assertThat(returnedArtefact.getSearch())
+            .as(SEARCH_VALUE_MESSAGE)
+            .isEqualTo(Collections.emptyMap());
+
+        softly.assertThat(logCaptor.getInfoLogs().get(0))
+            .as(LOG_MESSAGE)
+            .contains(JSON_PUBLICATION_LOG);
+
+        softly.assertAll();
+        verifyNoInteractions(jsonExtractor);
     }
 
     @Test
