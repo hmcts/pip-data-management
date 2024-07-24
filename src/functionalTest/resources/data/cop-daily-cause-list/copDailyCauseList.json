@@ -48,7 +48,7 @@
                         "case": [
                           {
                             "caseNumber": "12341234",
-                            "caseSuppressionName": "ThisIsACaseSupressionName",
+                            "caseSuppressionName": "ThisIsACaseSuppressionName",
                             "caseSequenceIndicator": "1 of 2",
                             "reportingRestrictionDetail": [
                               "Reporting restriction 1",

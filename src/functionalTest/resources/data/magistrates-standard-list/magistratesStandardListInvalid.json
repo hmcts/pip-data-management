@@ -1,18 +1,7 @@
 {
   "document": {
+    "publicationDate": "2023-12-01T23:30:52.123Z",
     "version": "1.0"
-  },
-  "venue": {
-    "venueName": "Preston",
-    "venueAddress": {
-      "postCode": "AA1 AA1",
-      "county": "Lancashire",
-      "town": "Town",
-      "line": [
-        "Address Line 1",
-        "Address Line 2"
-      ]
-    }
   },
   "locationDetails": {
     "jurisdiction": "Crime court"
@@ -23,37 +12,84 @@
         "courtHouseName": "PRESTON",
         "courtRoom": [
           {
+            "courtRoomName": "Courtroom 1",
             "session": [
               {
                 "judiciary": [
-                  {}
+                  {
+                    "johTitle": "Judge",
+                    "johNameSurname": "Test Name",
+                    "role": "JUDGE",
+                    "isPresiding": true
+                  },
+                  {
+                    "johTitle": "Magistrate",
+                    "johNameSurname": "Test Name",
+                    "role": "MAGISTRATE",
+                    "isPresiding": false
+                  }
                 ],
                 "sittings": [
                   {
-                    "sittingStart": "2016-09-13T23:30:52.123Z",
-                    "sittingEnd": "2016-09-14T23:30:52.123Z",
+                    "sittingStart": "2023-12-13T13:30:52.123Z",
+                    "sittingEnd": "2023-12-13T16:00:52.123Z",
                     "hearing": [
                       {
                         "hearingType": "mda",
                         "case": [
                           {
                             "caseNumber": "45684548",
-                            "reportingRestrictionDetail": [
-                              "Reporting Restriction detail line 1",
-                              "Reporting restriction detail line 2"
-                            ],
                             "caseSequenceIndicator": "2 of 3",
                             "party": [
                               {
                                 "partyRole": "DEFENDANT",
-                                "friendlyRoleName": "Defendant",
+                                "friendlyRoleName": "Accused",
                                 "individualDetails": {
                                   "title": "Mr",
-                                  "individualForenames": "John Smith",
+                                  "individualForenames": "Forename1",
                                   "individualMiddleName": "MiddleName",
-                                  "individualSurname": "Surname",
-                                  "dateOfBirth": "01-01-1901",
-                                  "age": 1,
+                                  "individualSurname": "Surname1",
+                                  "dateOfBirth": "01/01/1983",
+                                  "age": 39,
+                                  "address": {
+                                    "county": "County A",
+                                    "town": "Month A",
+                                    "postCode": "AA1 AA1",
+                                    "line": [
+                                      "Address Line 1",
+                                      "Address Line 2"
+                                    ]
+                                  },
+                                  "plea": "NOT_GUILTY",
+                                  "gender": "male"
+                                },
+                                "offence": [
+                                  {
+                                    "offenceCode": "dd01-01",
+                                    "offenceTitle": "drink driving",
+                                    "offenceWording": "driving whilst under the influence of alcohol",
+                                    "offenceMaxPen": "100yrs",
+                                    "reportingRestriction": true
+                                  },
+                                  {
+                                    "offenceCode": "dd01-01",
+                                    "offenceTitle": "Assault by beating",
+                                    "offenceWording": "Assault by beating",
+                                    "offenceMaxPen": "100yrs",
+                                    "reportingRestriction": true
+                                  }
+                                ]
+                              },
+                              {
+                                "partyRole": "DEFENDANT",
+                                "friendlyRoleName": "Accused",
+                                "individualDetails": {
+                                  "title": "Mr",
+                                  "individualForenames": "Forename2",
+                                  "individualMiddleName": "MiddleName2",
+                                  "individualSurname": "Surname2",
+                                  "dateOfBirth": "01/01/1983",
+                                  "age": 39,
                                   "address": {
                                     "county": "County A",
                                     "town": "Month A",
@@ -73,11 +109,54 @@
                                     "offenceTitle": "drink driving",
                                     "offenceWording": "driving whilst under the influence of alcohol",
                                     "offenceMaxPen": "100yrs",
-                                    "reportingRestriction": true,
-                                    "reportingRestrictionDetail": [
-                                      "Reporting Restriction detail line 1",
-                                      "Reporting restriction detail line 2"
+                                    "reportingRestriction": true
+                                  },
+                                  {
+                                    "offenceCode": "dd01-01",
+                                    "offenceTitle": "Assault by beating",
+                                    "offenceWording": "Assault by beating",
+                                    "offenceMaxPen": "100yrs",
+                                    "reportingRestriction": true
+                                  }
+                                ]
+                              },
+                              {
+                                "partyRole": "DEFENDANT",
+                                "friendlyRoleName": "Accused",
+                                "individualDetails": {
+                                  "title": "Mr",
+                                  "individualForenames": "Forename3",
+                                  "individualMiddleName": "MiddleName",
+                                  "individualSurname": "Surname3",
+                                  "dateOfBirth": "01/01/1983",
+                                  "age": 39,
+                                  "address": {
+                                    "county": "",
+                                    "town": "Month A",
+                                    "postCode": "AA1 AA1",
+                                    "line": [
+                                      "Address Line 1",
+                                      "Address Line 2"
                                     ]
+                                  },
+                                  "inCustody": true,
+                                  "plea": "NOT_GUILTY",
+                                  "gender": "male"
+                                },
+                                "offence": [
+                                  {
+                                    "offenceCode": "dd01-01",
+                                    "offenceTitle": "drink driving",
+                                    "offenceWording": "driving whilst under the influence of alcohol",
+                                    "offenceMaxPen": "100yrs",
+                                    "reportingRestriction": true
+                                  },
+                                  {
+                                    "offenceCode": "dd01-01",
+                                    "offenceTitle": "Assault by beating",
+                                    "offenceWording": "Assault by beating",
+                                    "offenceMaxPen": "100yrs",
+                                    "reportingRestriction": true
                                   }
                                 ]
                               }
@@ -89,26 +168,14 @@
                               "prosecutionAuthorityName": "Test"
                             },
                             "hearingNumber": "12",
-                            "convictionDate": "2016-09-13T23:30:52.123Z",
-                            "adjournedDate": "2016-09-13T23:30:52.123Z",
+                            "convictionDate": "2023-12-13T23:30:52.123Z",
+                            "adjournedDate": "2023-12-13T23:30:52.123Z",
                             "panel": "ADULT"
                           }
                         ]
                       }
                     ],
                     "judiciary": [
-                      {
-                        "johTitle": "Judge",
-                        "johNameSurname": "Test Name",
-                        "role": "JUDGE",
-                        "isPresiding": true
-                      },
-                      {
-                        "johTitle": "Magistrate",
-                        "johNameSurname": "Test Name",
-                        "role": "MAGISTRATE",
-                        "isPresiding": false
-                      }
                     ],
                     "channel": [
                       "VIDEO HEARING"
@@ -123,3 +190,4 @@
     }
   ]
 }
+
