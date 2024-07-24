@@ -115,7 +115,7 @@ public class PublicationService {
 
     @Async
     public void processCreatedPublication(Artefact artefact, String payload) {
-        if (artefactService.shouldGenerateFiles(artefact.getPayloadSize())) {
+        if (artefactService.payloadWithinLimit(artefact.getPayloadSize())) {
             publicationManagementService.generateFiles(artefact.getArtefactId(), payload);
         }
         artefactTriggerService.checkAndTriggerSubscriptionManagement(artefact);
