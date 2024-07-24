@@ -45,6 +45,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
 import static uk.gov.hmcts.reform.pip.model.account.Roles.SYSTEM_ADMIN;
@@ -292,7 +293,9 @@ public class LocationService {
 
     private void sendEmailToAllSystemAdmins(String requesterName, ActionResult actionResult,
                                             String additionalDetails) throws JsonProcessingException {
-        List<String> systemAdmins = accountManagementService.getAllAccounts("PI_AAD", SYSTEM_ADMIN.toString());
+        List<String> systemAdminsAad = accountManagementService.getAllAccounts("PI_AAD", SYSTEM_ADMIN.toString());
+        List<String> systemAdminsSso = accountManagementService.getAllAccounts("SSO", SYSTEM_ADMIN.toString());
+        List<String> systemAdmins = Stream.concat(systemAdminsAad.stream(), systemAdminsSso.stream()).toList();
         publicationService.sendSystemAdminEmail(systemAdmins, requesterName, actionResult, additionalDetails,
                                                 ChangeType.DELETE_LOCATION);
     }

@@ -102,6 +102,8 @@ class ArtefactDeleteServiceTest {
 
     private static final String REQUESTER_NAME = "ReqName";
     private static final String EMAIL_ADDRESS = "test@test.com";
+    private static final String SSO_EMAIL = "sso@test.com";
+
     private static final Integer LOCATION_ID = 1;
     private static final String LOCATION_NAME_PREFIX = "TEST_PIP_1234_";
 
@@ -426,7 +428,12 @@ class ArtefactDeleteServiceTest {
                 .thenReturn(azureAccount);
             when(accountManagementService.getAllAccounts("PI_AAD", "SYSTEM_ADMIN"))
                 .thenReturn(List.of(EMAIL_ADDRESS));
-            when(publicationService.sendSystemAdminEmail(List.of(EMAIL_ADDRESS), REQUESTER_NAME, ActionResult.SUCCEEDED,
+            when(accountManagementService.getAllAccounts("SSO", "SYSTEM_ADMIN"))
+                .thenReturn(List.of(SSO_EMAIL));
+
+            List<String> systemAdminEmails = List.of(EMAIL_ADDRESS, SSO_EMAIL);
+
+            when(publicationService.sendSystemAdminEmail(systemAdminEmails, REQUESTER_NAME, ActionResult.SUCCEEDED,
                                                          "Total 1 artefact(s) for location NAME",
                                                          ChangeType.DELETE_LOCATION_ARTEFACT))
                 .thenReturn("System admin message");
