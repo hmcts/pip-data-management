@@ -59,11 +59,10 @@ class PublicationManagementTest {
     private static final String ROOT_URL = "/publication";
     private static final String GET_ARTEFACT_SUMMARY = ROOT_URL + "/%s/summary";
     private static final String GET_FILE_URL = ROOT_URL + "/%s/%s";
-    private static final String ARTEFACT_ID = "48732761-5ab5-482a-ad98-3aa91e4d5d5a";
-    private static final String ARTEFACT_ID_NOT_FOUND = "11111111-1111-1111-1111-111111111111";
+    private static final String ARTEFACT_ID = UUID.randomUUID().toString();
+    private static final String ARTEFACT_ID_NOT_FOUND = UUID.randomUUID().toString();
     private static final String ARTEFACT_NOT_FOUND_MESSAGE = "No artefact found with the ID: ";
     private static final String NOT_FOUND_RESPONSE_MESSAGE = "Artefact not found message does not match";
-    private static final String ARTEFACT_ID_SJP_PRESS_LIST = "5dea6753-7a1d-4b91-b3c7-06721e3332cd";
     private static final String CONTENT_MISMATCH_ERROR = "Artefact summary content should match";
     private static final String FILE_TYPE_HEADER = "x-file-type";
     private static final String UNAUTHORIZED_USERNAME = "unauthorized_username";
@@ -121,7 +120,7 @@ class PublicationManagementTest {
 
     private byte[] getTestData(String resourceName) throws IOException {
         byte[] data;
-        try (InputStream mockFile = PublicationManagementTest.class.getClassLoader()
+        try (InputStream mockFile = this.getClass().getClassLoader()
             .getResourceAsStream(resourceName)) {
             data = mockFile.readAllBytes();
         }
@@ -549,7 +548,7 @@ class PublicationManagementTest {
             BinaryData.fromString(new String(file.getBytes())));
 
         MvcResult response = mockMvc.perform(
-                get(ROOT_URL + "/" + ARTEFACT_ID_SJP_PRESS_LIST + "/exists"))
+                get(ROOT_URL + "/" + ARTEFACT_ID + "/exists"))
             .andExpect(status().isOk()).andReturn();
 
         assertNotNull(
@@ -564,7 +563,7 @@ class PublicationManagementTest {
             BinaryData.fromString(new String(file.getBytes())));
 
         MvcResult response = mockMvc.perform(
-                get(ROOT_URL + "/" + ARTEFACT_ID_SJP_PRESS_LIST + "/sizes"))
+                get(ROOT_URL + "/" + ARTEFACT_ID + "/sizes"))
             .andExpect(status().isOk()).andReturn();
 
         assertNotNull(
