@@ -1,5 +1,6 @@
 {
   "document": {
+    "publicationDate": "2024-07-20T20:00:00.001Z",
     "documentName": "This is a document name",
     "version": "This is a document version"
   },
@@ -29,13 +30,14 @@
               {
                 "sittings": [
                   {
-                    "sittingStart": "20-02-2020T20:00.001Z",
-                    "sittingEnd": "20-02-2020T20:00.001Z",
+                    "sittingStart": "2024-07-21T10:00:00.001Z",
+                    "sittingEnd": "2024-07-21T11:30:00.001Z",
                     "hearing": [
                       {
                         "hearingType": "Directions",
                         "case": [
                           {
+                            "caseNumber": "12341234",
                             "reportingRestrictionDetail": [
                               "Reporting Restriction detail line 1",
                               "Reporting restriction detail line 2"
@@ -44,8 +46,15 @@
                             "party": [
                               {
                                 "partyRole": "PROSECUTING_AUTHORITY",
-                                "individualDetails": {
-                                  "individualSurname": "Surname"
+                                "organisationDetails": {
+                                  "organisationName": "Authority org name"
+                                }
+                              },
+                              {
+                                "partyRole":"DEFENDANT",
+                                "individualDetails":{
+                                  "individualForenames":"Forename",
+                                  "individualSurname":"Surname"
                                 }
                               }
                             ]

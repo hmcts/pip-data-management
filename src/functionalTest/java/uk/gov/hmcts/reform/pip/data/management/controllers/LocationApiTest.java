@@ -65,7 +65,6 @@ class LocationApiTest {
     private static final String DELETE_LOCATIONS_CSV = "location/ValidCsvForDeleteCourt.csv";
     private static final String UPDATED_CSV = "location/UpdatedCsv.csv";
 
-
     private static final String REGIONS_PARAM = "regions";
     private static final String JURISDICTIONS_PARAM = "jurisdictions";
     private static final String LANGUAGE_PARAM = "language";
@@ -83,7 +82,6 @@ class LocationApiTest {
     private static final String VALID_ROLE = "APPROLE_api.request.admin";
     private static final String LOCATION_LIST = "locationList";
     private static final String PROVENANCE_USER_ID = "x-provenance-user-id";
-
 
     private final BiPredicate<Location, Location> compareLocationWithoutReference = (location, otherLocation) ->
         location.getLocationId().equals(otherLocation.getLocationId())

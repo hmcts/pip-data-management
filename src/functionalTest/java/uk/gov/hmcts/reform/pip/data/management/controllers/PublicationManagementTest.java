@@ -6,10 +6,10 @@ import com.azure.storage.blob.BlobContainerClient;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -22,12 +22,23 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import uk.gov.hmcts.reform.pip.data.management.Application;
+import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.ExceptionResponse;
+import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
+import uk.gov.hmcts.reform.pip.model.publication.ArtefactType;
+import uk.gov.hmcts.reform.pip.model.publication.Language;
+import uk.gov.hmcts.reform.pip.model.publication.ListType;
+import uk.gov.hmcts.reform.pip.model.publication.Sensitivity;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Base64;
-import java.util.stream.Stream;
+import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -43,13 +54,46 @@ import static uk.gov.hmcts.reform.pip.model.publication.FileType.PDF;
 @AutoConfigureMockMvc
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
 @WithMockUser(username = "admin", authorities = {"APPROLE_api.request.admin"})
-@SuppressWarnings("PMD.TooManyMethods")
+@SuppressWarnings({"PMD.TooManyMethods", "PMD.ExcessiveImports"})
 class PublicationManagementTest {
+    private static final String ROOT_URL = "/publication";
+    private static final String GET_ARTEFACT_SUMMARY = ROOT_URL + "/%s/summary";
+    private static final String GET_FILE_URL = ROOT_URL + "/%s/%s";
+    private static final String ARTEFACT_ID = "48732761-5ab5-482a-ad98-3aa91e4d5d5a";
+    private static final String ARTEFACT_ID_NOT_FOUND = "11111111-1111-1111-1111-111111111111";
+    private static final String ARTEFACT_NOT_FOUND_MESSAGE = "No artefact found with the ID: ";
+    private static final String NOT_FOUND_RESPONSE_MESSAGE = "Artefact not found message does not match";
+    private static final String ARTEFACT_ID_SJP_PRESS_LIST = "5dea6753-7a1d-4b91-b3c7-06721e3332cd";
+    private static final String CONTENT_MISMATCH_ERROR = "Artefact summary content should match";
+    private static final String FILE_TYPE_HEADER = "x-file-type";
+    private static final String UNAUTHORIZED_USERNAME = "unauthorized_username";
+    private static final String UNAUTHORIZED_ROLE = "APPROLE_unknown.role";
+    private static final String SYSTEM_HEADER = "x-system";
+    private static final String CASE_REFERENCE_FIELD = "Case reference - 12341234";
+    private static final String HEARING_TYPE_FIELD = "Hearing type - Directions";
+
+    private static final LocalDateTime DISPLAY_TO = LocalDateTime.now()
+        .truncatedTo(ChronoUnit.SECONDS);
+    private static final LocalDateTime DISPLAY_FROM = LocalDateTime.now().plusDays(1)
+        .truncatedTo(ChronoUnit.SECONDS);
+    private static final LocalDateTime CONTENT_DATE = LocalDateTime.now().toLocalDate().atStartOfDay()
+        .truncatedTo(ChronoUnit.SECONDS);
+    private static final String PROVENANCE = "MANUAL_UPLOAD";
+
+    private static final String BLOB_PAYLOAD_URL = "https://localhost";
+
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+
+    private static MockMultipartFile file;
+
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
-    BlobContainerClient blobContainerClient;
+    @MockBean(name = "artefact")
+    BlobContainerClient artefcatBlobContainerClient;
+
+    @MockBean(name = "publications")
+    BlobContainerClient publicationBlobContainerClient;
 
     @MockBean
     BlobClient blobClient;
@@ -57,196 +101,210 @@ class PublicationManagementTest {
     @Value("${TEST_USER_ID}")
     private String verifiedUserId;
 
-    private static final String ROOT_URL = "/publication";
-    private static final String GET_ARTEFACT_SUMMARY = ROOT_URL + "/%s/summary";
-    private static final String GET_FILE_URL = ROOT_URL + "/%s/%s";
-    private static final String ARTEFACT_ID = "48732761-5ab5-482a-ad98-3aa91e4d5d5a";
-    private static final String ARTEFACT_ID_NOT_FOUND = "11111111-1111-1111-1111-111111111111";
-    private static final String INPUT_PARAMETERS = "parameters";
-    private static final String ARTEFACT_NOT_FOUND_MESSAGE = "Artefact with id %s not found";
-    private static final String NOT_FOUND_RESPONSE_MESSAGE = "Artefact not found message does not match";
-    private static final String ARTEFACT_ID_CARE_STANDARDS_LIST = "877033f5-1435-461d-9f0b-eefaeb394b1b";
-    private static final String ARTEFACT_ID_CIVIL_DAILY_CAUSE_LIST = "3b757c55-413b-4da5-ab88-1611a61b6252";
-    private static final String ARTEFACT_ID_COP_DAILY_CAUSE_LIST = "9b5ea026-56fa-4b4e-a990-327ceec19841";
-    private static final String ARTEFACT_ID_CROWN_DAILY_LIST = "8d798ae9-0770-48a3-a615-18363ec2af41";
-    private static final String ARTEFACT_ID_CROWN_FIRM_LIST = "3b2f6c2d-e0ee-46f0-83cd-f048862e3e84";
-    private static final String ARTEFACT_ID_CROWN_WARNED_LIST = "ca685a57-dc4c-404c-9966-bd92b0953bd7";
-    private static final String ARTEFACT_ID_ET_DAILY_LIST = "026deb0e-c5ba-4c55-85ef-368e848712fa";
-    private static final String ARTEFACT_ID_ET_FORTNIGHTLY_PRESS_LIST = "50fb5f6a-c08b-4ea8-821d-d7b2e6b36e13";
-    private static final String ARTEFACT_ID_FAMILY_DAILY_CAUSE_LIST = "f0d3fd42-3a99-4bc1-bd24-975246a15422";
-    private static final String ARTEFACT_ID_IAC_DAILY_LIST = "1fe1a207-dc73-4481-b018-b2f3718f50a2";
-    private static final String ARTEFACT_ID_IAC_DAILY_LIST_ADDITIONAL_CASES = "2e7a6937-80b5-4e3e-b9f9-a97708001965";
-    private static final String ARTEFACT_ID_MAGISTRATES_PUBLIC_LIST = "a46d2ae9-22ff-4707-a83d-708ef5264bc3";
-    private static final String ARTEFACT_ID_MAGISTRATES_STANDARD_LIST = "d2a77de9-9af9-4256-ba05-ba9fad36745d";
-    private static final String ARTEFACT_ID_PRIMARY_HEALTH_LIST = "295179be-2437-45a7-9e3f-691b964f9f65";
-    private static final String ARTEFACT_ID_SJP_PRESS_LIST = "5dea6753-7a1d-4b91-b3c7-06721e3332cd";
-    private static final String ARTEFACT_ID_SSCS_DAILY_LIST = "b412f2b9-db2c-4e6a-8e7f-56087a6829ed";
-    private static final String ARTEFACT_ID_SSCS_DAILY_LIST_ADDITIONAL_HEARINGS
-        = "2c55ce4a-6323-4e8b-aa98-1ddf5d824407";
-    private static final String ARTEFACT_ID_OPA_PRESS_LIST = "c71bcbb7-08b1-4b2a-a0cd-5ae9137f855e";
-    private static final String ARTEFACT_ID_OPA_PUBLIC_LIST = "4a4d7c2c-612b-451d-a150-d7224e956ee4";
-    private static final String ARTEFACT_ID_OPA_RESULTS = "a6cbd858-2cb1-46a4-9052-34c3a2301772";
-    private static final String ARTEFACT_ID_CIVIL_AND_FAMILY_DAILY_CAUSE_LIST_ENGLISH
-        = "30304c47-942e-40aa-9134-35bb40386a0b";
-    private static final String ARTEFACT_ID_SJP_PUBLIC_LIST_ENGLISH = "e4bdc96d-a438-4f04-8475-1da17733f453";
-    private static final String ARTEFACT_ID_SJP_DELTA_PUBLIC_LIST = "f60f5568-0efd-4de3-b5aa-2e6418a9e878";
-    private static final String CONTENT_MISMATCH_ERROR = "Artefact summary content should match";
-    private static final String FILE_TYPE_HEADER = "x-file-type";
-    private static final String UNAUTHORIZED_USERNAME = "unauthorized_username";
-    private static final String UNAUTHORIZED_ROLE = "APPROLE_unknown.role";
-    private static final String SYSTEM_HEADER = "x-system";
-    private static final String CASE_REFERENCE_FIELD = "Case reference - 12341234";
-
-    private static ObjectMapper objectMapper;
-    private static MockMultipartFile file;
-
     @BeforeAll
-    public static void setup() {
+    static void setup() {
         file = new MockMultipartFile("file", "test.pdf",
                                      MediaType.APPLICATION_PDF_VALUE, "test content".getBytes(
             StandardCharsets.UTF_8)
         );
 
-        objectMapper = new ObjectMapper();
-        objectMapper.findAndRegisterModules();
+        OBJECT_MAPPER.findAndRegisterModules();
     }
 
-    @SuppressWarnings("PMD.UnusedPrivateMethod")
-    private static Stream<Arguments> parameters() {
-        return Stream.of(
-            Arguments.of(ARTEFACT_ID_CARE_STANDARDS_LIST), //Care Standards Tribunal Hearing List
-            Arguments.of(ARTEFACT_ID_CIVIL_AND_FAMILY_DAILY_CAUSE_LIST_ENGLISH), //Civil and Family Daily Cause List
-            Arguments.of(ARTEFACT_ID_CIVIL_DAILY_CAUSE_LIST), //Civil Daily Cause List
-            Arguments.of(ARTEFACT_ID_COP_DAILY_CAUSE_LIST), //Court of Protection Daily Cause List
-            Arguments.of(ARTEFACT_ID_CROWN_DAILY_LIST), //Crown Daily List
-            Arguments.of(ARTEFACT_ID_CROWN_FIRM_LIST), //Crown Firm List
-            Arguments.of(ARTEFACT_ID_CROWN_WARNED_LIST), //Crown Warned List
-            Arguments.of(ARTEFACT_ID_ET_DAILY_LIST), //Employment Tribunals Daily List
-            Arguments.of(ARTEFACT_ID_ET_FORTNIGHTLY_PRESS_LIST), //Employment Tribunals Fortnightly Press List
-            Arguments.of(ARTEFACT_ID_FAMILY_DAILY_CAUSE_LIST), //Family Daily Cause List
-            Arguments.of(ARTEFACT_ID_IAC_DAILY_LIST), //Immigration and Asylum Chamber Daily List
-            Arguments.of(ARTEFACT_ID_IAC_DAILY_LIST_ADDITIONAL_CASES),
-            //Immigration and Asylum Chamber Daily List Additional Cases
-            Arguments.of(ARTEFACT_ID_MAGISTRATES_PUBLIC_LIST), //Magistrates Public List
-            Arguments.of(ARTEFACT_ID_MAGISTRATES_STANDARD_LIST), //Magistrates Standard List
-            Arguments.of(ARTEFACT_ID_PRIMARY_HEALTH_LIST), //Primary Health Tribunal Hearing List
-            Arguments.of(ARTEFACT_ID_SJP_PRESS_LIST), //Single Justice Procedure Press List
-            Arguments.of(ARTEFACT_ID_SJP_PUBLIC_LIST_ENGLISH), //Single Justice Procedure Public List
-            Arguments.of(ARTEFACT_ID_SJP_DELTA_PUBLIC_LIST), //Single Justice Procedure Delta Public List
-            Arguments.of(ARTEFACT_ID_SSCS_DAILY_LIST), //SSCS Daily List
-            Arguments.of(ARTEFACT_ID_SSCS_DAILY_LIST_ADDITIONAL_HEARINGS), //SSCS Daily List - Additional Hearings
-            Arguments.of(ARTEFACT_ID_OPA_PRESS_LIST), //OPA Press List
-            Arguments.of(ARTEFACT_ID_OPA_PUBLIC_LIST), //OPA Public List
-            Arguments.of(ARTEFACT_ID_OPA_RESULTS) //OPA Results
-        );
+    @BeforeEach
+    void init() {
+        when(artefcatBlobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(artefcatBlobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
+
+        when(publicationBlobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+    }
+
+    private byte[] getTestData(String resourceName) throws IOException {
+        byte[] data;
+        try (InputStream mockFile = PublicationManagementTest.class.getClassLoader()
+            .getResourceAsStream(resourceName)) {
+            data = mockFile.readAllBytes();
+        }
+        return data;
+    }
+
+    private Artefact createPublication(ListType listType, byte[] data) throws Exception {
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+            .post("/publication")
+            .header(PublicationConfiguration.TYPE_HEADER, ArtefactType.LIST)
+            .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
+            .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
+            .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO)
+            .header(PublicationConfiguration.COURT_ID, "5")
+            .header(PublicationConfiguration.LIST_TYPE, listType)
+            .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
+            .header(PublicationConfiguration.SENSITIVITY_HEADER, Sensitivity.PUBLIC)
+            .header(PublicationConfiguration.LANGUAGE_HEADER, Language.ENGLISH)
+            .content(data)
+            .contentType(MediaType.APPLICATION_JSON);
+
+        MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
+            .andExpect(status().isCreated()).andReturn();
+
+        return OBJECT_MAPPER.readValue(
+            response.getResponse().getContentAsString(), Artefact.class);
+    }
+
+    private Artefact createSjpPublicListPublication() throws Exception {
+        byte[] testPublication = getTestData("data/sjp-public-list/sjpPublicList.json");
+        return createPublication(ListType.SJP_PUBLIC_LIST, testPublication);
     }
 
     @Test
     void testGenerateArtefactSummaryCareStandardsList() throws Exception {
+        byte[] data = getTestData("data/care-standards-list/careStandardsList.json");
+        Artefact artefact = createPublication(ListType.CARE_STANDARDS_LIST, data);
+
+        when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(data));
+
         MvcResult response = mockMvc.perform(
-                get(String.format(GET_ARTEFACT_SUMMARY, ARTEFACT_ID_CARE_STANDARDS_LIST)))
+                get(String.format(GET_ARTEFACT_SUMMARY, artefact.getArtefactId())))
             .andExpect(status().isOk()).andReturn();
         String responseContent = response.getResponse().getContentAsString();
 
         assertTrue(responseContent.contains("Case name - A Vs B"), CONTENT_MISMATCH_ERROR);
         assertTrue(responseContent.contains("Hearing date - 04 October"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Hearing type - Remote - Teams"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains("Hearing type - mda"), CONTENT_MISMATCH_ERROR);
     }
 
     @Test
     void testGenerateArtefactSummaryCivilAndFamilyDailyCauseList() throws Exception {
+        byte[] data = getTestData("data/civil-and-family-cause-list/civilAndFamilyDailyCauseList.json");
+        Artefact artefact = createPublication(ListType.CIVIL_AND_FAMILY_DAILY_CAUSE_LIST, data);
+
+        when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(data));
+
         MvcResult response = mockMvc.perform(
-                get(String.format(GET_ARTEFACT_SUMMARY, ARTEFACT_ID_CIVIL_AND_FAMILY_DAILY_CAUSE_LIST_ENGLISH)))
+                get(String.format(GET_ARTEFACT_SUMMARY, artefact.getArtefactId())))
             .andExpect(status().isOk()).andReturn();
         String responseContent = response.getResponse().getContentAsString();
 
-        assertTrue(responseContent.contains("Applicant - Applicant org name"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Case reference - 12341235"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Case name - This is a case name 2"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Case type - normal"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Hearing type - Directions"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains("Applicant - Surname"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(CASE_REFERENCE_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains("Case name - This is a case name"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains("Case type - Case type"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(HEARING_TYPE_FIELD), CONTENT_MISMATCH_ERROR);
     }
 
     @Test
     void testGenerateArtefactSummaryCivilDailyCauseList() throws Exception {
+        byte[] data = getTestData("data/civil-daily-cause-list/civilDailyCauseList.json");
+        Artefact artefact = createPublication(ListType.CIVIL_DAILY_CAUSE_LIST, data);
+
+        when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(data));
+
         MvcResult response = mockMvc.perform(
-                get(String.format(GET_ARTEFACT_SUMMARY, ARTEFACT_ID_CIVIL_DAILY_CAUSE_LIST)))
+                get(String.format(GET_ARTEFACT_SUMMARY, artefact.getArtefactId())))
             .andExpect(status().isOk()).andReturn();
 
         String responseContent = response.getResponse().getContentAsString();
-        assertTrue(responseContent.contains("Case reference - 112233445"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Case name - A2 Vs B2"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Case type - type"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Hearing type - FMPO"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains("Case reference - 45684548"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains("Case name - This is a case name"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains("Case type - Case Type"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains("Hearing type - Hearing Type"), CONTENT_MISMATCH_ERROR);
     }
 
     @Test
     void testGenerateArtefactSummaryCourtOfProtectionDailyCauseList() throws Exception {
+        byte[] data = getTestData("data/cop-daily-cause-list/copDailyCauseList.json");
+        Artefact artefact = createPublication(ListType.COP_DAILY_CAUSE_LIST, data);
+
+        when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(data));
+
         MvcResult response = mockMvc.perform(
-                get(String.format(GET_ARTEFACT_SUMMARY, ARTEFACT_ID_COP_DAILY_CAUSE_LIST)))
+                get(String.format(GET_ARTEFACT_SUMMARY, artefact.getArtefactId())))
             .andExpect(status().isOk()).andReturn();
 
         String responseContent = response.getResponse().getContentAsString();
-        assertTrue(responseContent.contains("Case reference - 12341235"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(CASE_REFERENCE_FIELD), CONTENT_MISMATCH_ERROR);
         assertTrue(responseContent.contains("Case details - ThisIsACaseSuppressionName"), CONTENT_MISMATCH_ERROR);
         assertTrue(responseContent.contains("Hearing type - Criminal"), CONTENT_MISMATCH_ERROR);
     }
 
     @Test
     void testGenerateArtefactSummaryCrownDailyList() throws Exception {
-        MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, ARTEFACT_ID_CROWN_DAILY_LIST)))
+        byte[] data = getTestData("data/crown-daily-list/crownDailyList.json");
+        Artefact artefact = createPublication(ListType.CROWN_DAILY_LIST, data);
+
+        when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(data));
+
+        MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, artefact.getArtefactId())))
             .andExpect(status().isOk()).andReturn();
 
         String responseContent = response.getResponse().getContentAsString();
         assertTrue(responseContent.contains("Defendant - Surname 1, Forename 1"), CONTENT_MISMATCH_ERROR);
         assertTrue(responseContent.contains("Prosecutor - Pro_Auth"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Case reference - 12345678"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains("Case reference - 1234"), CONTENT_MISMATCH_ERROR);
         assertTrue(
-            responseContent.contains("Hearing type - FHDRA1 (First Hearing and Dispute Resolution Appointment)"),
+            responseContent.contains(HEARING_TYPE_FIELD),
             CONTENT_MISMATCH_ERROR
         );
     }
 
     @Test
     void testGenerateArtefactSummaryCrownFirmList() throws Exception {
-        MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, ARTEFACT_ID_CROWN_FIRM_LIST)))
-            .andExpect(status().isOk()).andReturn();
+        byte[] data = getTestData("data/crown-firm-list/crownFirmList.json");
+        Artefact artefact = createPublication(ListType.CROWN_FIRM_LIST, data);
 
-        String responseContent = response.getResponse().getContentAsString();
-        assertTrue(responseContent.contains("Defendant - Surname 2, Forename 2"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Prosecutor - Queen"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Case reference - I4Y416QE"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Directions"), CONTENT_MISMATCH_ERROR);
-    }
+        when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(data));
 
-    @Test
-    void testGenerateArtefactSummaryCrownWarnedList() throws Exception {
-        MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, ARTEFACT_ID_CROWN_WARNED_LIST)))
+        MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, artefact.getArtefactId())))
             .andExpect(status().isOk()).andReturn();
 
         String responseContent = response.getResponse().getContentAsString();
         assertTrue(responseContent.contains("Defendant - Surname 1, Forename 1"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Prosecutor - Prosecutor"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Case reference - 12345678"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Hearing date - 27/07/2022"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains("Prosecutor - Prosecutor org"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains("Case reference - 1234"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(HEARING_TYPE_FIELD), CONTENT_MISMATCH_ERROR);
+    }
+
+    @Test
+    void testGenerateArtefactSummaryCrownWarnedList() throws Exception {
+        byte[] data = getTestData("data/crown-warned-list/crownWarnedList.json");
+        Artefact artefact = createPublication(ListType.CROWN_WARNED_LIST, data);
+
+        when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(data));
+
+        MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, artefact.getArtefactId())))
+            .andExpect(status().isOk()).andReturn();
+
+        String responseContent = response.getResponse().getContentAsString();
+        assertTrue(responseContent.contains("Defendant - Surname, Forenames"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains("Prosecutor - OrganisationName2"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(CASE_REFERENCE_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains("Hearing date - 21/07/2024"), CONTENT_MISMATCH_ERROR);
     }
 
     @Test
     void testGenerateArtefactSummaryEmploymentTribunalsDailyList() throws Exception {
-        MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, ARTEFACT_ID_ET_DAILY_LIST)))
+        byte[] data = getTestData("data/et-daily-list/etDailyList.json");
+        Artefact artefact = createPublication(ListType.ET_DAILY_LIST, data);
+
+        when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(data));
+
+        MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, artefact.getArtefactId())))
             .andExpect(status().isOk()).andReturn();
 
         String responseContent = response.getResponse().getContentAsString();
-        assertTrue(responseContent.contains("Claimant - Mr T Test Surname"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Respondent - Capt. T Test Surname 2"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains("Claimant - Claimant surname"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains("Respondent - Capt. T Test Surname"), CONTENT_MISMATCH_ERROR);
         assertTrue(responseContent.contains(CASE_REFERENCE_FIELD), CONTENT_MISMATCH_ERROR);
         assertTrue(responseContent.contains("Hearing type - This is a hearing type"), CONTENT_MISMATCH_ERROR);
     }
 
     @Test
     void testGenerateArtefactSummaryEmploymentTribunalsFortnightlyPressList() throws Exception {
-        MvcResult response = mockMvc.perform(
-                get(String.format(GET_ARTEFACT_SUMMARY, ARTEFACT_ID_ET_FORTNIGHTLY_PRESS_LIST)))
+        byte[] data = getTestData("data/et-fortnightly-press-list/etFortnightlyPressList.json");
+        Artefact artefact = createPublication(ListType.ET_FORTNIGHTLY_PRESS_LIST, data);
+
+        when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(data));
+
+        MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, artefact.getArtefactId())))
             .andExpect(status().isOk()).andReturn();
 
         String responseContent = response.getResponse().getContentAsString();
@@ -258,71 +316,72 @@ class PublicationManagementTest {
 
     @Test
     void testGenerateArtefactSummaryFamilyDailyCauseList() throws Exception {
-        MvcResult response = mockMvc.perform(
-                get(String.format(GET_ARTEFACT_SUMMARY, ARTEFACT_ID_FAMILY_DAILY_CAUSE_LIST)))
+        byte[] data = getTestData("data/family-daily-cause-list/familyDailyCauseList.json");
+        Artefact artefact = createPublication(ListType.FAMILY_DAILY_CAUSE_LIST, data);
+
+        when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(data));
+
+        MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, artefact.getArtefactId())))
             .andExpect(status().isOk()).andReturn();
 
         String responseContent = response.getResponse().getContentAsString();
-        assertTrue(responseContent.contains("Applicant - Applicant org name"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Case reference - 12341235"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Case name - This is a case name 2"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Case type - normal"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Hearing type - Directions"), CONTENT_MISMATCH_ERROR);
-    }
-
-    @Test
-    void testGenerateArtefactSummaryImmigrationAndAsylumChamberDailyList() throws Exception {
-        MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, ARTEFACT_ID_IAC_DAILY_LIST)))
-            .andExpect(status().isOk()).andReturn();
-
-        String responseContent = response.getResponse().getContentAsString();
-        assertTrue(responseContent.contains("Bail list"), CONTENT_MISMATCH_ERROR);
-        assertTrue(
-            responseContent.contains("Appellant - Mr Individual Forenames Individual Middlename Individual Surname"),
-            CONTENT_MISMATCH_ERROR
-        );
-        assertTrue(responseContent.contains("Prosecuting authority - Test Name"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains("Applicant - Applicant surname"), CONTENT_MISMATCH_ERROR);
         assertTrue(responseContent.contains(CASE_REFERENCE_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains("Case name - This is a case name"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains("Case type - Case type"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(HEARING_TYPE_FIELD), CONTENT_MISMATCH_ERROR);
     }
 
-    @Test
-    void testGenerateArtefactSummaryImmigrationAndAsylumChamberDailyListAdditionalCases() throws Exception {
-        MvcResult response = mockMvc.perform(
-                get(String.format(GET_ARTEFACT_SUMMARY, ARTEFACT_ID_IAC_DAILY_LIST_ADDITIONAL_CASES)))
+    @ParameterizedTest
+    @EnumSource(value = ListType.class, names = {"IAC_DAILY_LIST", "IAC_DAILY_LIST_ADDITIONAL_CASES"})
+    void testGenerateArtefactSummaryImmigrationAndAsylumChamberDailyList(ListType listType) throws Exception {
+        byte[] data = getTestData("data/iac-daily-list/iacDailyList.json");
+        Artefact artefact = createPublication(listType, data);
+
+        when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(data));
+
+        MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, artefact.getArtefactId())))
             .andExpect(status().isOk()).andReturn();
 
         String responseContent = response.getResponse().getContentAsString();
-        assertTrue(responseContent.contains("Bail list"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains("Bail List"), CONTENT_MISMATCH_ERROR);
         assertTrue(
-            responseContent.contains("Appellant - Mr Individual Forenames Individual Middlename Individual Surname"),
+            responseContent.contains("Appellant - Surname"),
             CONTENT_MISMATCH_ERROR
         );
-        assertTrue(responseContent.contains("Prosecuting authority - Test Name"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains("Prosecuting authority - Authority surname"), CONTENT_MISMATCH_ERROR);
         assertTrue(responseContent.contains(CASE_REFERENCE_FIELD), CONTENT_MISMATCH_ERROR);
     }
 
     @Test
     void testGenerateArtefactSummaryMagistratesPublicList() throws Exception {
-        MvcResult response = mockMvc.perform(
-                get(String.format(GET_ARTEFACT_SUMMARY, ARTEFACT_ID_MAGISTRATES_PUBLIC_LIST)))
+        byte[] data = getTestData("data/magistrates-public-list/magistratesPublicList.json");
+        Artefact artefact = createPublication(ListType.MAGISTRATES_PUBLIC_LIST, data);
+
+        when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(data));
+
+        MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, artefact.getArtefactId())))
             .andExpect(status().isOk()).andReturn();
 
         String responseContent = response.getResponse().getContentAsString();
-        assertTrue(responseContent.contains("Defendant - Surname 3"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Prosecutor - PROSECUTING_AUTHORITY"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Case reference - 12345678"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains("Defendant - Surname, Forename"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains("Prosecutor - Authority org name"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(CASE_REFERENCE_FIELD), CONTENT_MISMATCH_ERROR);
         assertTrue(
-            responseContent.contains("Hearing type - FHDRA1 (First Hearing and Dispute Resolution Appointment)"),
+            responseContent.contains(HEARING_TYPE_FIELD),
             CONTENT_MISMATCH_ERROR
         );
     }
 
     @Test
     void testGenerateArtefactSummaryMagistratesStandardList() throws Exception {
-        MvcResult response = mockMvc.perform(
-                get(String.format(GET_ARTEFACT_SUMMARY, ARTEFACT_ID_MAGISTRATES_STANDARD_LIST)))
-            .andExpect(status().isOk()).andReturn();
+        byte[] data = getTestData("data/magistrates-standard-list/magistratesStandardList.json");
+        Artefact artefact = createPublication(ListType.MAGISTRATES_STANDARD_LIST, data);
 
+        when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(data));
+
+        MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, artefact.getArtefactId())))
+            .andExpect(status().isOk()).andReturn();
         String responseContent = response.getResponse().getContentAsString();
         assertTrue(responseContent.contains("Defendant - Surname1, Forename1"), CONTENT_MISMATCH_ERROR);
         assertTrue(responseContent.contains("Prosecutor - Test1234"), CONTENT_MISMATCH_ERROR);
@@ -333,8 +392,12 @@ class PublicationManagementTest {
 
     @Test
     void testGenerateArtefactSummaryPrimaryHealthTribunalHearingList() throws Exception {
-        MvcResult response = mockMvc
-            .perform(get(String.format(GET_ARTEFACT_SUMMARY, ARTEFACT_ID_PRIMARY_HEALTH_LIST)))
+        byte[] data = getTestData("data/primary-health-list/primaryHealthList.json");
+        Artefact artefact = createPublication(ListType.PRIMARY_HEALTH_LIST, data);
+
+        when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(data));
+
+        MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, artefact.getArtefactId())))
             .andExpect(status().isOk()).andReturn();
 
         String responseContent = response.getResponse().getContentAsString();
@@ -343,12 +406,18 @@ class PublicationManagementTest {
         assertTrue(responseContent.contains("Hearing type - Remote - Teams"), CONTENT_MISMATCH_ERROR);
     }
 
-    @Test
-    void testGenerateArtefactSummarySingleJusticeProcedurePressList() throws Exception {
-        MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, ARTEFACT_ID_SJP_PRESS_LIST)))
-            .andExpect(status().isOk()).andReturn();
-        String responseContent = response.getResponse().getContentAsString();
+    @ParameterizedTest
+    @EnumSource(value = ListType.class, names = {"SJP_PRESS_LIST", "SJP_DELTA_PRESS_LIST"})
+    void testGenerateArtefactSummarySingleJusticeProcedurePressList(ListType listType) throws Exception {
+        byte[] data = getTestData("data/sjp-press-list/sjpPressList.json");
+        Artefact artefact = createPublication(listType, data);
 
+        when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(data));
+
+        MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, artefact.getArtefactId())))
+            .andExpect(status().isOk()).andReturn();
+
+        String responseContent = response.getResponse().getContentAsString();
         assertTrue(
             responseContent.contains(
                 "Name - This is a title This is a forename This is a middle name This is a surname"),
@@ -360,50 +429,34 @@ class PublicationManagementTest {
         assertTrue(responseContent.contains("Offence - This is an offence title"), CONTENT_MISMATCH_ERROR);
     }
 
-    @Test
-    void testGenerateArtefactSummarySingleJusticeProcedurePublicList() throws Exception {
-        MvcResult response = mockMvc
-            .perform(get(String.format(GET_ARTEFACT_SUMMARY, ARTEFACT_ID_SJP_PUBLIC_LIST_ENGLISH)))
+    @ParameterizedTest
+    @EnumSource(value = ListType.class, names = {"SJP_PUBLIC_LIST", "SJP_DELTA_PUBLIC_LIST"})
+    void testGenerateArtefactSummarySingleJusticeProcedurePublicList(ListType listType) throws Exception {
+        byte[] data = getTestData("data/sjp-public-list/sjpPublicList.json");
+        Artefact artefact = createPublication(listType, data);
+
+        when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(data));
+
+        MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, artefact.getArtefactId())))
             .andExpect(status().isOk()).andReturn();
 
         String responseContent = response.getResponse().getContentAsString();
         assertTrue(responseContent.contains("Name - A This is a surname"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Prosecutor - This is a prosecutor organisation"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Postcode - A1"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains("Prosecutor - This is an organisation"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains("Postcode - AA"), CONTENT_MISMATCH_ERROR);
         assertTrue(responseContent.contains("Offence - This is an offence title, This is an offence title 2"),
                    CONTENT_MISMATCH_ERROR);
     }
 
-    @Test
-    void testGenerateArtefactSummarySingleJusticeProcedureDeltaPublicList() throws Exception {
-        MvcResult response = mockMvc
-            .perform(get(String.format(GET_ARTEFACT_SUMMARY, ARTEFACT_ID_SJP_DELTA_PUBLIC_LIST)))
-            .andExpect(status().isOk()).andReturn();
+    @ParameterizedTest
+    @EnumSource(value = ListType.class, names = {"SSCS_DAILY_LIST", "SSCS_DAILY_LIST_ADDITIONAL_HEARINGS"})
+    void testGenerateArtefactSummarySscsDailyList(ListType listType) throws Exception {
+        byte[] data = getTestData("data/sscs-daily-list/sscsDailyList.json");
+        Artefact artefact = createPublication(listType, data);
 
-        String responseContent = response.getResponse().getContentAsString();
-        assertTrue(responseContent.contains("Name - A This is a surname"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Prosecutor - This is a prosecutor organisation"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Postcode - A1"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Offence - This is an offence title, This is an offence title 2"),
-                   CONTENT_MISMATCH_ERROR);
-    }
+        when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(data));
 
-    @Test
-    void testGenerateArtefactSummarySscsDailyList() throws Exception {
-        MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, ARTEFACT_ID_SSCS_DAILY_LIST)))
-            .andExpect(status().isOk()).andReturn();
-
-        String responseContent = response.getResponse().getContentAsString();
-        assertTrue(responseContent.contains("Appellant - Surname"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Respondent - Respondent Organisation, Respondent Organisation 2"),
-                   CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Appeal reference - 12341235"), CONTENT_MISMATCH_ERROR);
-    }
-
-    @Test
-    void testGenerateArtefactSummarySscsDailyListAdditionalHearings() throws Exception {
-        MvcResult response = mockMvc.perform(
-                get(String.format(GET_ARTEFACT_SUMMARY, ARTEFACT_ID_SSCS_DAILY_LIST_ADDITIONAL_HEARINGS)))
+        MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, artefact.getArtefactId())))
             .andExpect(status().isOk()).andReturn();
 
         String responseContent = response.getResponse().getContentAsString();
@@ -415,12 +468,16 @@ class PublicationManagementTest {
 
     @Test
     void testGenerateArtefactSummaryOpaPressList() throws Exception {
-        MvcResult response = mockMvc.perform(
-                get(String.format(GET_ARTEFACT_SUMMARY, ARTEFACT_ID_OPA_PRESS_LIST)))
+        byte[] data = getTestData("data/opa-press-list/opaPressList.json");
+        Artefact artefact = createPublication(ListType.OPA_PRESS_LIST, data);
+
+        when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(data));
+
+        MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, artefact.getArtefactId())))
             .andExpect(status().isOk()).andReturn();
 
         String responseContent = response.getResponse().getContentAsString();
-        assertTrue(responseContent.contains("Defendant - Surname2, Forename2 MiddleName2"),
+        assertTrue(responseContent.contains("Defendant - Surname, Forename MiddleName"),
                    CONTENT_MISMATCH_ERROR);
         assertTrue(responseContent.contains("Prosecuting authority ref"), CONTENT_MISMATCH_ERROR);
         assertTrue(responseContent.contains("Postcode - BB1 1BB"), CONTENT_MISMATCH_ERROR);
@@ -430,8 +487,12 @@ class PublicationManagementTest {
 
     @Test
     void testGenerateArtefactSummaryOpaPublicList() throws Exception {
-        MvcResult response = mockMvc.perform(
-                get(String.format(GET_ARTEFACT_SUMMARY, ARTEFACT_ID_OPA_PUBLIC_LIST)))
+        byte[] data = getTestData("data/opa-public-list/opaPublicList.json");
+        Artefact artefact = createPublication(ListType.OPA_PUBLIC_LIST, data);
+
+        when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(data));
+
+        MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, artefact.getArtefactId())))
             .andExpect(status().isOk()).andReturn();
 
         String responseContent = response.getResponse().getContentAsString();
@@ -446,8 +507,12 @@ class PublicationManagementTest {
 
     @Test
     void testGenerateArtefactSummaryOpaResults() throws Exception {
-        MvcResult response = mockMvc.perform(
-                get(String.format(GET_ARTEFACT_SUMMARY, ARTEFACT_ID_OPA_RESULTS)))
+        byte[] data = getTestData("data/opa-results/opaResults.json");
+        Artefact artefact = createPublication(ListType.OPA_RESULTS, data);
+
+        when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(data));
+
+        MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, artefact.getArtefactId())))
             .andExpect(status().isOk()).andReturn();
 
         String responseContent = response.getResponse().getContentAsString();
@@ -461,13 +526,13 @@ class PublicationManagementTest {
         MvcResult mvcResult = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, ARTEFACT_ID_NOT_FOUND)))
             .andExpect(status().isNotFound()).andReturn();
 
-        ExceptionResponse exceptionResponse = objectMapper.readValue(
+        ExceptionResponse exceptionResponse = OBJECT_MAPPER.readValue(
             mvcResult.getResponse().getContentAsString(), ExceptionResponse.class);
 
         assertEquals(
-            exceptionResponse.getMessage(),
-            String.format(ARTEFACT_NOT_FOUND_MESSAGE, ARTEFACT_ID_NOT_FOUND),
-            NOT_FOUND_RESPONSE_MESSAGE
+            NOT_FOUND_RESPONSE_MESSAGE,
+            ARTEFACT_NOT_FOUND_MESSAGE + ARTEFACT_ID_NOT_FOUND,
+            exceptionResponse.getMessage()
         );
     }
 
@@ -480,7 +545,6 @@ class PublicationManagementTest {
 
     @Test
     void testGetFileExists() throws Exception {
-        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
         when(blobClient.downloadContent()).thenReturn(
             BinaryData.fromString(new String(file.getBytes())));
 
@@ -496,7 +560,6 @@ class PublicationManagementTest {
 
     @Test
     void testGetFileSizes() throws Exception {
-        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
         when(blobClient.downloadContent()).thenReturn(
             BinaryData.fromString(new String(file.getBytes())));
 
@@ -510,15 +573,15 @@ class PublicationManagementTest {
         );
     }
 
-    @ParameterizedTest
-    @MethodSource(INPUT_PARAMETERS)
-    void testGetFileOK(String listArtefactId) throws Exception {
-        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+    @Test
+    void testGetFileOK() throws Exception {
+        UUID artefactId = createSjpPublicListPublication().getArtefactId();
+
         when(blobClient.downloadContent()).thenReturn(
             BinaryData.fromString(new String(file.getBytes())));
 
         MvcResult response = mockMvc.perform(
-                get(String.format(GET_FILE_URL, listArtefactId, PDF))
+                get(String.format(GET_FILE_URL, artefactId, PDF))
                     .header(SYSTEM_HEADER, "true")
                     .header(FILE_TYPE_HEADER, PDF)
                     .param("maxFileSize", "2048000"))
@@ -538,15 +601,15 @@ class PublicationManagementTest {
         );
     }
 
-    @ParameterizedTest
-    @MethodSource(INPUT_PARAMETERS)
-    void testGetFileForUserId(String listArtefactId) throws Exception {
-        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+    @Test
+    void testGetFileForUserId() throws Exception {
+        UUID artefactId = createSjpPublicListPublication().getArtefactId();
+
         when(blobClient.downloadContent()).thenReturn(
             BinaryData.fromString(new String(file.getBytes())));
 
         MockHttpServletRequestBuilder request =
-            get(String.format(GET_FILE_URL, listArtefactId, PDF))
+            get(String.format(GET_FILE_URL, artefactId, PDF))
                 .header("x-user-id", verifiedUserId)
                 .header(SYSTEM_HEADER, "false")
                 .param("maxFileSize", "2048000");
@@ -567,15 +630,15 @@ class PublicationManagementTest {
         );
     }
 
-    @ParameterizedTest
-    @MethodSource(INPUT_PARAMETERS)
-    void testGetFileSizeTooLarge(String listArtefactId) throws Exception {
-        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+    @Test
+    void testGetFileSizeTooLarge() throws Exception {
+        UUID artefactId = createSjpPublicListPublication().getArtefactId();
+
         when(blobClient.downloadContent()).thenReturn(
             BinaryData.fromString(new String(file.getBytes())));
 
         MockHttpServletRequestBuilder request =
-            get(String.format(GET_FILE_URL, listArtefactId, PDF))
+            get(String.format(GET_FILE_URL, artefactId, PDF))
                 .header("x-user-id", verifiedUserId)
                 .header(SYSTEM_HEADER, "false")
                 .param("maxFileSize", "10");
@@ -590,7 +653,7 @@ class PublicationManagementTest {
 
         assertTrue(
             response.getResponse().getContentAsString().contains("File with type PDF for artefact with id "
-                                                         + listArtefactId + " has size over the limit of 10 bytes"),
+                                                         + artefactId + " has size over the limit of 10 bytes"),
             "Response does not contain expected result"
         );
     }
@@ -601,13 +664,13 @@ class PublicationManagementTest {
             .andExpect(status().isNotFound())
             .andReturn();
 
-        ExceptionResponse exceptionResponse = objectMapper.readValue(
+        ExceptionResponse exceptionResponse = OBJECT_MAPPER.readValue(
             mvcResult.getResponse().getContentAsString(), ExceptionResponse.class);
 
         assertEquals(
-            exceptionResponse.getMessage(),
-            String.format(ARTEFACT_NOT_FOUND_MESSAGE, ARTEFACT_ID_NOT_FOUND),
-            NOT_FOUND_RESPONSE_MESSAGE
+            NOT_FOUND_RESPONSE_MESSAGE,
+            ARTEFACT_NOT_FOUND_MESSAGE + ARTEFACT_ID_NOT_FOUND,
+            exceptionResponse.getMessage()
         );
     }
 
