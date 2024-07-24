@@ -163,7 +163,7 @@ public class ArtefactService {
         return listType.getListLocationLevel();
     }
 
-    public boolean shouldGenerateFiles(Float artefactPayloadSize) {
+    public boolean payloadWithinLimit(Float artefactPayloadSize) {
         return artefactPayloadSize == null || artefactPayloadSize < maxPayloadSize;
     }
 

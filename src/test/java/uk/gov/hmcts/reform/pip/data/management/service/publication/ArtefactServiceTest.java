@@ -404,17 +404,17 @@ class ArtefactServiceTest {
 
     @Test
     void shouldGenerateFilesIfPayloadSizeWithinLimit() {
-        assertTrue(FILES_GENERATION_MESSAGE, artefactService.shouldGenerateFiles(99f));
+        assertTrue(FILES_GENERATION_MESSAGE, artefactService.payloadWithinLimit(99f));
     }
 
     @Test
     void shouldGenerateFilesIfNoPayloadSize() {
-        assertTrue(FILES_GENERATION_MESSAGE, artefactService.shouldGenerateFiles(null));
+        assertTrue(FILES_GENERATION_MESSAGE, artefactService.payloadWithinLimit(null));
     }
 
     @Test
     void shouldNotGenerateFilesIfPayloadSizeOverLimit() {
-        assertFalse(FILES_GENERATION_MESSAGE, artefactService.shouldGenerateFiles(101f));
+        assertFalse(FILES_GENERATION_MESSAGE, artefactService.payloadWithinLimit(101f));
     }
 
 }

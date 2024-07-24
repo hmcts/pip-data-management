@@ -107,7 +107,7 @@ public class ArtefactDeleteService {
         // Delete the generated files for the publications if it's not a flat file
         if (artefact.getIsFlatFile().equals(Boolean.FALSE)
             && !NoMatchArtefactHelper.isNoMatchLocationId(artefact.getLocationId())
-            && artefactService.shouldGenerateFiles(artefact.getPayloadSize())) {
+            && artefactService.payloadWithinLimit(artefact.getPayloadSize())) {
             publicationManagementService.deleteFiles(artefact.getArtefactId(), artefact.getListType(),
                                                      artefact.getLanguage());
         }
