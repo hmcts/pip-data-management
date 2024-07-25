@@ -63,15 +63,14 @@ public final class OpaResultsHelper {
                         sitting -> sitting.get(HEARING).forEach(hearing ->
                             hearing.get(CASE).forEach(hearingCase -> {
                                 String caseUrn = GeneralHelper.findAndReturnNodeText(hearingCase, CASE_URN);
-                                hearingCase.get(PARTY).forEach(party -> {
-                                    processParty(party)
-                                        .ifPresent(p -> {
-                                            p.setCaseUrn(caseUrn);
-                                            results.computeIfAbsent(p.getOffences().get(0).getDecisionDate(),
-                                                                   x -> new ArrayList<>())
-                                                .add(p);
-                                        });
-                                });
+                                hearingCase.get(PARTY).forEach(
+                                    party -> processParty(party).ifPresent(p -> {
+                                                p.setCaseUrn(caseUrn);
+                                                results.computeIfAbsent(p.getOffences().get(0).getDecisionDate(),
+                                                                       x -> new ArrayList<>())
+                                                    .add(p);
+                                    })
+                                );
                             })
                         )
                     )

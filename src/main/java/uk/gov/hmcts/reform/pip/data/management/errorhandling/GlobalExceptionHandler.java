@@ -124,14 +124,14 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(FileSizeLimitException.class)
     public ResponseEntity<ExceptionResponse> handle(FileSizeLimitException ex) {
-        log.error(writeLog(String.format("413, blob file too large")));
+        log.error(writeLog("413, blob file too large"));
         return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE)
             .body(generateExceptionResponse(ex.getMessage()));
     }
 
     @ExceptionHandler(ProcessingException.class)
     public ResponseEntity<ExceptionResponse> handle(ProcessingException ex) {
-        log.error(writeLog(String.format("500, error processing publication files/summary", ex.getCause())));
+        log.error(writeLog("500, error processing publication files/summary"));
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
             .body(generateExceptionResponse(ex.getMessage()));
     }

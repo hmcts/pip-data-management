@@ -301,16 +301,6 @@ class ArtefactServiceTest {
     }
 
     @Test
-    void testArtefactMetadataFromAzureWhenDoesNotExist() {
-        when(artefactRepository.findByArtefactId(any(), any())).thenReturn(Optional.empty());
-        assertThrows(
-            NotFoundException.class,
-            () -> artefactService.getPayloadByArtefactId(ARTEFACT_ID, USER_ID),
-            "Not Found exception has not been thrown when artefact does not exist"
-        );
-    }
-
-    @Test
     void testGetArtefactMetadataForAdmin() {
         when(artefactRepository.findArtefactByArtefactId(ARTEFACT_ID.toString()))
             .thenReturn(Optional.of(artefactWithIdAndPayloadUrl));

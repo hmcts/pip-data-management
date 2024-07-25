@@ -94,7 +94,7 @@ class MagistratesStandardListFileConverterTest {
     }
 
     @Test
-    void testGeneralListInformationInEnglish() throws IOException {
+    void testGeneralListInformationInEnglish() {
         String outputHtml = converter.convert(inputJson, englishMetadata, englishLanguageResource);
         Document document = Jsoup.parse(outputHtml);
         SoftAssertions softly = new SoftAssertions();
@@ -123,7 +123,7 @@ class MagistratesStandardListFileConverterTest {
     }
 
     @Test
-    void testGeneralListInformationInWelsh() throws IOException {
+    void testGeneralListInformationInWelsh() {
         String outputHtml = converter.convert(inputJson, welshMetadata, welshLanguageResource);
         Document document = Jsoup.parse(outputHtml);
         SoftAssertions softly = new SoftAssertions();

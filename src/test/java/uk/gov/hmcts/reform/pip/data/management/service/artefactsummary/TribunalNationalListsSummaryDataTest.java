@@ -48,7 +48,7 @@ class TribunalNationalListsSummaryDataTest {
             .as(SUMMARY_FIELDS_MESSAGE)
             .hasSize(3);
 
-        assertPrimaryHealthListSummaryFieldKeys(softly, summaryFields);
+        assertTribunalListSummaryFieldKeys(softly, summaryFields);
         assertPrimaryHealthListSummaryFieldValues(softly, summaryFields);
 
         softly.assertAll();
@@ -80,13 +80,13 @@ class TribunalNationalListsSummaryDataTest {
             .as(SUMMARY_FIELDS_MESSAGE)
             .hasSize(3);
 
-        assertCarStandardsListSummaryFieldKeys(softly, summaryFields);
+        assertTribunalListSummaryFieldKeys(softly, summaryFields);
         asserCarStandardsListSummaryFieldValues(softly, summaryFields);
 
         softly.assertAll();
     }
 
-    private void assertPrimaryHealthListSummaryFieldKeys(SoftAssertions softly, Map<String, String> summaryFields) {
+    private void assertTribunalListSummaryFieldKeys(SoftAssertions softly, Map<String, String> summaryFields) {
         List<String> keys = summaryFields.keySet()
             .stream()
             .toList();
@@ -120,24 +120,6 @@ class TribunalNationalListsSummaryDataTest {
         softly.assertThat(values.get(2))
             .as(SUMMARY_FIELD_VALUE_MESSAGE)
             .isEqualTo("Remote - Teams");
-    }
-
-    private void assertCarStandardsListSummaryFieldKeys(SoftAssertions softly, Map<String, String> summaryFields) {
-        List<String> keys = summaryFields.keySet()
-            .stream()
-            .toList();
-
-        softly.assertThat(keys.get(0))
-            .as(SUMMARY_FIELD_KEY_MESSAGE)
-            .isEqualTo("Case name");
-
-        softly.assertThat(keys.get(1))
-            .as(SUMMARY_FIELD_KEY_MESSAGE)
-            .isEqualTo("Hearing date");
-
-        softly.assertThat(keys.get(2))
-            .as(SUMMARY_FIELD_KEY_MESSAGE)
-            .isEqualTo("Hearing type");
     }
 
     private void asserCarStandardsListSummaryFieldValues(SoftAssertions softly, Map<String, String> summaryFields) {

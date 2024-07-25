@@ -76,7 +76,7 @@ public final class OpaPressListHelper {
                     session -> session.get(SITTINGS).forEach(
                         sitting -> sitting.get(HEARING).forEach(
                             hearing -> hearing.get(CASE).forEach(hearingCase -> {
-                                if (hearingCase.has("party")) {
+                                if (hearingCase.has(PARTY)) {
 
                                     processPartyRoles(hearingCase).forEach(defendant -> {
 

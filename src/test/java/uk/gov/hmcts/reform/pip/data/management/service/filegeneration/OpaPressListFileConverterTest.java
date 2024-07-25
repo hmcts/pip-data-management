@@ -49,7 +49,6 @@ class OpaPressListFileConverterTest {
     private static final String DEFENDANT_HEADING_MESSAGE = "Defendant heading does not match";
     private static final String DEFENDANT_INFO_MESSAGE = "Defendant info does not match";
     private static final String OFFENCE_INFO_MESSAGE = "Offence info does not match";
-    private static final String LINK_TITLE_MESSAGE = "Incorrect Title Text";
 
     private static final Map<String, String> METADATA = Map.of("contentDate", CONTENT_DATE,
                                                                "locationName", LOCATION_NAME,

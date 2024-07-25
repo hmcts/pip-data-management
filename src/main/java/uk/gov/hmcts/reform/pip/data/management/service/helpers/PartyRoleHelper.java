@@ -156,8 +156,8 @@ public final class PartyRoleHelper {
     }
 
     public static String createOrganisationDetails(JsonNode party) {
-        if (party.has("organisationDetails")) {
-            JsonNode organisationDetails = party.get("organisationDetails");
+        if (party.has(ORGANISATION_DETAILS)) {
+            JsonNode organisationDetails = party.get(ORGANISATION_DETAILS);
             return GeneralHelper.findAndReturnNodeText(organisationDetails, "organisationName");
         }
         return "";

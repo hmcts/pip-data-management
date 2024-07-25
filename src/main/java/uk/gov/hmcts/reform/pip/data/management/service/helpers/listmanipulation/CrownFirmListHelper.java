@@ -102,7 +102,7 @@ public final class CrownFirmListHelper {
                 courtList.get(COURT_HOUSE).get(COURT_ROOM).forEach(courtRoom -> {
                     ObjectNode courtRoomNode = MAPPER.createObjectNode();
                     ArrayNode hearingArray = MAPPER.createArrayNode();
-                    courtRoom.get("session").forEach(session -> {
+                    courtRoom.get(SESSION).forEach(session -> {
                         session.get(SITTINGS).forEach(
                             sitting -> SittingHelper.checkSittingDateAlreadyExists(
                             sitting, uniqueDates, hearingArray, finalI
