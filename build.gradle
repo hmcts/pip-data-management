@@ -207,7 +207,7 @@ dependencies {
 
   implementation group: 'com.github.hmcts', name: 'pip-data-models', version: '2.1.28'
   implementation group: 'com.google.guava', name: 'guava', version: '33.2.1-jre'
-  implementation group: 'org.apache.poi', name: 'poi-ooxml', version: '5.3.0'
+  implementation group: 'org.apache.poi', name: 'poi-ooxml', version: '5.2.5'
   implementation group: 'com.openhtmltopdf', name: 'openhtmltopdf-pdfbox', version: '1.0.10'
   implementation group: 'com.openhtmltopdf', name: 'openhtmltopdf-slf4j', version: '1.0.10'
   implementation 'com.networknt:json-schema-validator:1.4.0'

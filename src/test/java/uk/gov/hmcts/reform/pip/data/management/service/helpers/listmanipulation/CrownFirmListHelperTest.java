@@ -90,7 +90,7 @@ class CrownFirmListHelperTest {
         assertEquals("Defendant rep 1", hearingCase.get("defendantRepresentative").asText(),
                      "Unable to find defendant representative");
 
-        assertEquals("HMCTS", hearingCase.get("prosecutingAuthority").asText(),
+        assertEquals("Prosecutor org", hearingCase.get("prosecutingAuthority").asText(),
                      "Unable to find prosecuting authority");
 
         assertEquals("Directions", hearingCase.get("hearingType").asText(),
