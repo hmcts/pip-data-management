@@ -1,7 +1,18 @@
 {
   "document": {
-    "publicationDate": "2023-12-01T23:30:52.123Z",
     "version": "1.0"
+  },
+  "venue": {
+    "venueName": "Preston",
+    "venueAddress": {
+      "postCode": "AA1 AA1",
+      "county": "Lancashire",
+      "town": "Town",
+      "line": [
+        "Address Line 1",
+        "Address Line 2"
+      ]
+    }
   },
   "locationDetails": {
     "jurisdiction": "Crime court"

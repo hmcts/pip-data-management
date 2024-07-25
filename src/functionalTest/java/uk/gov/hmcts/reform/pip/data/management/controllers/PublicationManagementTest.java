@@ -114,7 +114,6 @@ class PublicationManagementTest {
     void init() {
         when(artefcatBlobContainerClient.getBlobClient(any())).thenReturn(blobClient);
         when(artefcatBlobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
-
         when(publicationBlobContainerClient.getBlobClient(any())).thenReturn(blobClient);
     }
 
