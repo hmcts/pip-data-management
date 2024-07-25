@@ -89,13 +89,13 @@ class PublicationManagementTest {
     private MockMvc mockMvc;
 
     @MockBean(name = "artefact")
-    BlobContainerClient artefcatBlobContainerClient;
+    private BlobContainerClient artefcatBlobContainerClient;
 
     @MockBean(name = "publications")
-    BlobContainerClient publicationBlobContainerClient;
+    private BlobContainerClient publicationBlobContainerClient;
 
     @MockBean
-    BlobClient blobClient;
+    private BlobClient blobClient;
 
     @Value("${TEST_USER_ID}")
     private String verifiedUserId;

@@ -85,10 +85,10 @@ class TestingSupportApiTest {
     private MockMvc mockMvc;
 
     @MockBean(name = "artefact")
-    BlobContainerClient artefcatBlobContainerClient;
+    private BlobContainerClient artefcatBlobContainerClient;
 
     @MockBean(name = "publications")
-    BlobContainerClient publicationBlobContainerClient;
+    private BlobContainerClient publicationBlobContainerClient;
 
     @MockBean
     private BlobClient blobClient;

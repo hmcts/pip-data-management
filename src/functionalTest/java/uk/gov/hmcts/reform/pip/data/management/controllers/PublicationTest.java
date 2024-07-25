@@ -74,13 +74,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class PublicationTest {
 
     @MockBean(name = "artefact")
-    BlobContainerClient artefcatBlobContainerClient;
+    private BlobContainerClient artefcatBlobContainerClient;
 
     @MockBean(name = "publications")
-    BlobContainerClient publicationBlobContainerClient;
+    private BlobContainerClient publicationBlobContainerClient;
 
     @MockBean
-    BlobClient blobClient;
+    private BlobClient blobClient;
 
     @Autowired
     private MockMvc mockMvc;
