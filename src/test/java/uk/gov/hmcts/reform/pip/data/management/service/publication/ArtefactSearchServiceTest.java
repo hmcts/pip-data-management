@@ -139,7 +139,7 @@ class ArtefactSearchServiceTest {
 
     @Test
     void testFindByCourtIdWhenVerifiedAndAuthorised() {
-        Artefact artefact = Artefact.builder()
+        Artefact artefactPublic = Artefact.builder()
             .sourceArtefactId(SOURCE_ARTEFACT_ID)
             .provenance(PROVENANCE)
             .language(Language.ENGLISH)
@@ -147,7 +147,7 @@ class ArtefactSearchServiceTest {
             .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
             .build();
 
-        Artefact artefact2 = Artefact.builder()
+        Artefact artefactClassified = Artefact.builder()
             .sourceArtefactId(SOURCE_ARTEFACT_ID)
             .provenance(PROVENANCE)
             .language(Language.WELSH)
@@ -156,16 +156,16 @@ class ArtefactSearchServiceTest {
             .build();
 
         List<Artefact> artefactList = new ArrayList<>();
-        artefactList.add(artefact);
-        artefactList.add(artefact2);
+        artefactList.add(artefactPublic);
+        artefactList.add(artefactClassified);
 
         when(artefactRepository.findArtefactsByLocationId(any(), any()))
             .thenReturn(artefactList);
 
-        when(artefactService.isAuthorised(artefact, USER_ID))
+        when(artefactService.isAuthorised(artefactPublic, USER_ID))
             .thenReturn(true);
 
-        when(artefactService.isAuthorised(artefact2, USER_ID))
+        when(artefactService.isAuthorised(artefactClassified, USER_ID))
             .thenReturn(true);
 
         assertEquals(artefactList, artefactSearchService.findAllByLocationId(ABC, USER_ID),
@@ -175,7 +175,7 @@ class ArtefactSearchServiceTest {
 
     @Test
     void testFindByCourtIdWhenVerifiedAndNotAuthorised() {
-        Artefact artefact = Artefact.builder()
+        Artefact artefactPublic = Artefact.builder()
             .sourceArtefactId(SOURCE_ARTEFACT_ID)
             .provenance(PROVENANCE)
             .language(Language.ENGLISH)
@@ -183,7 +183,7 @@ class ArtefactSearchServiceTest {
             .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
             .build();
 
-        Artefact artefact2 = Artefact.builder()
+        Artefact artefactClassified = Artefact.builder()
             .sourceArtefactId(SOURCE_ARTEFACT_ID)
             .provenance(PROVENANCE)
             .language(Language.WELSH)
@@ -192,34 +192,34 @@ class ArtefactSearchServiceTest {
             .build();
 
         List<Artefact> artefactList = new ArrayList<>();
-        artefactList.add(artefact);
-        artefactList.add(artefact2);
+        artefactList.add(artefactPublic);
+        artefactList.add(artefactClassified);
 
         when(artefactRepository.findArtefactsByLocationId(any(), any()))
             .thenReturn(artefactList);
 
-        when(artefactService.isAuthorised(artefact, USER_ID))
+        when(artefactService.isAuthorised(artefactPublic, USER_ID))
             .thenReturn(true);
 
-        when(artefactService.isAuthorised(artefact2, USER_ID))
+        when(artefactService.isAuthorised(artefactClassified, USER_ID))
             .thenReturn(false);
 
         List<Artefact> artefacts = artefactSearchService.findAllByLocationId(ABC, USER_ID);
 
         assertEquals(1, artefacts.size(), VALIDATION_MORE_THAN_PUBLIC);
-        assertEquals(artefact, artefacts.get(0), VALIDATION_ARTEFACT_NOT_MATCH);
+        assertEquals(artefactPublic, artefacts.get(0), VALIDATION_ARTEFACT_NOT_MATCH);
     }
 
     @Test
     void testFindByCourtIdWhenUnverified() {
-        Artefact artefact = Artefact.builder()
+        Artefact artefactClassified = Artefact.builder()
             .sourceArtefactId(SOURCE_ARTEFACT_ID)
             .provenance(PROVENANCE)
             .language(Language.ENGLISH)
             .sensitivity(Sensitivity.CLASSIFIED)
             .build();
 
-        Artefact artefact2 = Artefact.builder()
+        Artefact artefactPublic = Artefact.builder()
             .sourceArtefactId(SOURCE_ARTEFACT_ID)
             .provenance(PROVENANCE)
             .language(Language.WELSH)
@@ -227,22 +227,22 @@ class ArtefactSearchServiceTest {
             .build();
 
         List<Artefact> artefactList = new ArrayList<>();
-        artefactList.add(artefact);
-        artefactList.add(artefact2);
+        artefactList.add(artefactClassified);
+        artefactList.add(artefactPublic);
 
         when(artefactRepository.findArtefactsByLocationId(any(), any()))
             .thenReturn(artefactList);
 
-        when(artefactService.isAuthorised(artefact, USER_ID))
+        when(artefactService.isAuthorised(artefactClassified, USER_ID))
             .thenReturn(false);
 
-        when(artefactService.isAuthorised(artefact2, USER_ID))
+        when(artefactService.isAuthorised(artefactPublic, USER_ID))
             .thenReturn(true);
 
         List<Artefact> artefacts = artefactSearchService.findAllByLocationId(ABC, USER_ID);
 
         assertEquals(1, artefacts.size(), VALIDATION_MORE_THAN_PUBLIC);
-        assertEquals(artefact2, artefacts.get(0), VALIDATION_ARTEFACT_NOT_MATCH);
+        assertEquals(artefactPublic, artefacts.get(0), VALIDATION_ARTEFACT_NOT_MATCH);
     }
 
     @Test

@@ -458,6 +458,20 @@ class OpaPressListFileConverterTest {
             .as("Incorrect Case Reporting Restriction column")
             .isEqualTo("Case Reporting Restriction");
 
+        softly.assertAll();
+    }
+
+    @Test
+    void testSuccessfulExcelConversionOffenceColumnHeadings() throws IOException {
+        byte[] result = converter.convertToExcel(inputJson, ListType.OPA_PRESS_LIST);
+
+        ByteArrayInputStream file = new ByteArrayInputStream(result);
+        Workbook workbook = new XSSFWorkbook(file);
+
+        Sheet sheet = workbook.getSheetAt(0);
+        Row row = sheet.getRow(0);
+        SoftAssertions softly = new SoftAssertions();
+
         softly.assertThat(row.getCell(7).getStringCellValue())
             .as("Incorrect Offence [1] Title column")
             .isEqualTo("Offence[1] - Title");
@@ -548,6 +562,20 @@ class OpaPressListFileConverterTest {
             .as("Incorrect Case Reporting Restriction column")
             .isEqualTo("Case reporting Restriction detail line 1, Case reporting restriction detail line 2");
 
+        softly.assertAll();
+    }
+
+    @Test
+    void testSuccessfulExcelConversionOffenceValues() throws IOException {
+        byte[] result = converter.convertToExcel(inputJson, ListType.OPA_PRESS_LIST);
+
+        ByteArrayInputStream file = new ByteArrayInputStream(result);
+        Workbook workbook = new XSSFWorkbook(file);
+
+        Sheet sheet = workbook.getSheetAt(0);
+        Row row = sheet.getRow(1);
+        SoftAssertions softly = new SoftAssertions();
+
         softly.assertThat(row.getCell(7).getStringCellValue())
             .as("Incorrect Offence [1] Title column")
             .isEqualTo("Offence title 2");
@@ -600,5 +628,4 @@ class OpaPressListFileConverterTest {
 
         softly.assertAll();
     }
-
 }

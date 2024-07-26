@@ -13,8 +13,12 @@ import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 @Service
 public class RetryListenerForPublications implements RetryListener {
 
+    private final AzureArtefactBlobService azureArtefactBlobService;
+
     @Autowired
-    AzureArtefactBlobService azureArtefactBlobService;
+    public RetryListenerForPublications(AzureArtefactBlobService azureArtefactBlobService) {
+        this.azureArtefactBlobService = azureArtefactBlobService;
+    }
 
     @Override
     public <T, E extends Throwable> void onError(RetryContext context, RetryCallback<T, E> callback,

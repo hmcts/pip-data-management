@@ -193,8 +193,8 @@ class GeneralHelperTest {
         try (InputStream inputStream = GeneralHelperTest.class
             .getResourceAsStream("/mocks/hearingparty/civilAndFamilyDailyCauseList.json")) {
             String inputRaw = IOUtils.toString(inputStream, Charset.defaultCharset());
-            JsonNode inputJson = OBJECT_MAPPER.readTree(inputRaw);
-            assertThat(GeneralHelper.hearingHasParty(inputJson))
+            JsonNode json = OBJECT_MAPPER.readTree(inputRaw);
+            assertThat(GeneralHelper.hearingHasParty(json))
                 .as("hearing should have party")
                 .isTrue();
         }
@@ -205,8 +205,8 @@ class GeneralHelperTest {
         try (InputStream inputStream = GeneralHelperTest.class
             .getResourceAsStream("/mocks/crownDailyList.json")) {
             String inputRaw = IOUtils.toString(inputStream, Charset.defaultCharset());
-            JsonNode inputJson = OBJECT_MAPPER.readTree(inputRaw);
-            assertThat(GeneralHelper.hearingHasParty(inputJson))
+            JsonNode json = OBJECT_MAPPER.readTree(inputRaw);
+            assertThat(GeneralHelper.hearingHasParty(json))
                 .as("hearing should not have party")
                 .isFalse();
         }

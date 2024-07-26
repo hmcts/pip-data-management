@@ -346,10 +346,11 @@ class PublicationServiceTest {
 
     @Test
     void testApplyInternalLocationIdIfLocationDoesNotExist() {
-        Location location = new Location();
-        location.setLocationId(Integer.valueOf(LOCATION_ID));
         when(locationRepository.findByLocationIdByProvenance(PROVENANCE, PROVENANCE_ID, LOCATION_VENUE))
             .thenReturn(Optional.empty());
+
+        publicationService.applyInternalLocationId(artefact);
+        assertThat(artefact.getLocationId()).isEqualTo("NoMatch" + PROVENANCE_ID);
     }
 
     @Test

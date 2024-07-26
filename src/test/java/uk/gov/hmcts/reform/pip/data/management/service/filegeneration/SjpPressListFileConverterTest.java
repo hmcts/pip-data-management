@@ -229,7 +229,7 @@ class SjpPressListFileConverterTest {
 
     @ParameterizedTest
     @EnumSource(value = ListType.class, names = {"SJP_PRESS_LIST", "SJP_DELTA_PRESS_LIST"})
-    void testSuccessfulExcelConversion(ListType listType) throws IOException {
+    void testExcelConversionTableHeaders(ListType listType) throws IOException {
         byte[] result = sjpPressListConverter.convertToExcel(getInput("/mocks/sjpPressList.json"), listType);
 
         ByteArrayInputStream file = new ByteArrayInputStream(result);
@@ -286,6 +286,21 @@ class SjpPressListFileConverterTest {
         softly.assertThat(headingRow.getCell(9).getStringCellValue())
             .as("Offence 2 Wording column is different")
             .isEqualTo("Offence 2 Wording");
+
+        softly.assertAll();
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = ListType.class, names = {"SJP_PRESS_LIST", "SJP_DELTA_PRESS_LIST"})
+    void testExcelConversionTableValues(ListType listType) throws IOException {
+        byte[] result = sjpPressListConverter.convertToExcel(getInput("/mocks/sjpPressList.json"), listType);
+
+        ByteArrayInputStream file = new ByteArrayInputStream(result);
+        Workbook workbook = new XSSFWorkbook(file);
+        Sheet sheet = workbook.getSheetAt(0);
+        Row headingRow = sheet.getRow(0);
+
+        SoftAssertions softly = new SoftAssertions();
 
         softly.assertThat(headingRow.getCell(10).getStringCellValue())
             .as("Prosecutor Name column is different")

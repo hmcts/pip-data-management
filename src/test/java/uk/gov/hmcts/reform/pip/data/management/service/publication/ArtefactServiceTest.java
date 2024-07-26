@@ -32,6 +32,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.ARTEFACT_ID;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.LOCATION_TYPE_MATCH;
@@ -224,12 +226,14 @@ class ArtefactServiceTest {
     @Test
     void testArtefactPayloadFromAzureWhenUnauthorized() {
         when(artefactRepository.findByArtefactId(any(), any()))
-            .thenReturn(Optional.of(artefactWithPayloadUrl));
-        when(azureArtefactBlobService.getBlobData(any()))
-            .thenReturn(PAYLOAD);
-        assertEquals(PAYLOAD, artefactService.getPayloadByArtefactId(ARTEFACT_ID, USER_ID),
-                     VALIDATION_ARTEFACT_NOT_MATCH
-        );
+            .thenReturn(Optional.of(artefactWithPayloadUrlClassified));
+        when(accountManagementService.getIsAuthorised(USER_ID, ListType.CIVIL_DAILY_CAUSE_LIST,
+                                                       Sensitivity.CLASSIFIED))
+            .thenReturn(false);
+
+        assertThrows(NotFoundException.class, () -> artefactService.getPayloadByArtefactId(ARTEFACT_ID, USER_ID),
+                     VALIDATION_NOT_THROWN_MESSAGE);
+        verify(azureArtefactBlobService, never()).getBlobFile(any());
     }
 
     @Test
@@ -245,15 +249,15 @@ class ArtefactServiceTest {
 
     @Test
     void testArtefactFileFromAzureWhenUnauthorized() {
-        byte[] testData = TEST_FILE.getBytes();
         when(artefactRepository.findByArtefactId(any(), any()))
-            .thenReturn(Optional.of(artefactWithPayloadUrl));
-        when(azureArtefactBlobService.getBlobFile(any()))
-            .thenReturn(new ByteArrayResource(testData));
+            .thenReturn(Optional.of(artefactWithPayloadUrlClassified));
+        when(accountManagementService.getIsAuthorised(USER_ID, ListType.CIVIL_DAILY_CAUSE_LIST,
+                                                      Sensitivity.CLASSIFIED))
+            .thenReturn(false);
 
-        assertEquals(new ByteArrayResource(testData), artefactService.getFlatFileByArtefactID(ARTEFACT_ID, USER_ID),
-                     VALIDATION_ARTEFACT_NOT_MATCH
-        );
+        assertThrows(NotFoundException.class, () -> artefactService.getFlatFileByArtefactID(ARTEFACT_ID, USER_ID),
+                     VALIDATION_NOT_THROWN_MESSAGE);
+        verify(azureArtefactBlobService, never()).getBlobFile(any());
     }
 
     @Test

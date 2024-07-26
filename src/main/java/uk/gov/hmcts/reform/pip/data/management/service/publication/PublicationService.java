@@ -71,7 +71,7 @@ public class PublicationService {
      * @return Returns the artefact that was created.
      */
     @Transactional(isolation = Isolation.READ_COMMITTED)
-    @Retryable(value = { CannotAcquireLockException.class, DataIntegrityViolationException.class},
+    @Retryable(retryFor = { CannotAcquireLockException.class, DataIntegrityViolationException.class},
         maxAttempts = RETRY_MAX_ATTEMPTS)
     public Artefact createPublication(Artefact artefact, String payload) {
         String existingPayload = applyExistingArtefact(artefact) ? artefact.getPayload() : null;
@@ -96,7 +96,7 @@ public class PublicationService {
      * @return Returns the artefact that was created.
      */
     @Transactional(isolation = Isolation.READ_COMMITTED)
-    @Retryable(value = { CannotAcquireLockException.class, DataIntegrityViolationException.class },
+    @Retryable(retryFor = { CannotAcquireLockException.class, DataIntegrityViolationException.class },
         maxAttempts = RETRY_MAX_ATTEMPTS)
     public Artefact createPublication(Artefact artefact, MultipartFile file) {
         String existingPayload = applyExistingArtefact(artefact) ? artefact.getPayload() : null;
