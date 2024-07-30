@@ -18,7 +18,7 @@ import java.io.IOException;
 import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
 
 /**
- * Class with handles the interaction with the Azure Blob Service.
+ * Class with handles the interaction with Azure artefact blob service.
  */
 @Component
 @Slf4j

@@ -22,8 +22,8 @@ import java.util.UUID;
 
 @Slf4j
 @RestController
-@Tag(name = "Controller to handle the retrieval of publication files and file' properties, and generation of "
-    + "publication summaries")
+@Tag(name = "API to handle the retrieval of generated publication files in alternative file formats (PDF/Excel), "
+    + "and generation of publication summaries")
 @RequestMapping("/publication")
 @ApiResponse(responseCode = "401", description = "Invalid access credential")
 @ApiResponse(responseCode = "403", description = "User has not been authorized")

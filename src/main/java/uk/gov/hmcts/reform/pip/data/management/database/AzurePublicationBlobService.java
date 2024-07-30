@@ -14,7 +14,7 @@ import java.io.ByteArrayInputStream;
 import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
 
 /**
- * Class with handles the interaction with the Azure Blob Storage.
+ * Class with handles the interaction with Azure publications blob service.
  */
 @Component
 @Slf4j

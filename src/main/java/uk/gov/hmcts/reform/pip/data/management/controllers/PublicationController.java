@@ -205,8 +205,7 @@ public class PublicationController {
         Artefact createdItem = publicationCreationRunner.run(artefact, payload);
         logManualUpload(publicationService.maskEmail(issuerEmail), createdItem.getArtefactId().toString());
 
-        // Process the created artefact by requesting channel management to generate PDF/Excel files
-        // and check/trigger subscription management, async.
+        // Process the created artefact to generate PDF/Excel files and check/trigger subscription management
         if (!NoMatchArtefactHelper.isNoMatchLocationId(createdItem.getLocationId())) {
             publicationService.processCreatedPublication(createdItem, payload);
         }
