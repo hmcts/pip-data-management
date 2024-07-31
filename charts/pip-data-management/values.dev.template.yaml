@@ -17,4 +17,11 @@ java:
   #disableKeyVaults: true
   postgresql:
     enabled: true
+  blobstorage:
+    resourceGroup: pip-ss-{{ .Values.global.environment }}-rg
+    setup:
+      containers:
+        - artefact
+        - files
+        - publications
   devApplicationInsightsInstrumentKeyName: AZURE_APPLICATIONINSIGHTS_INSTRUMENTATIONKEY
