@@ -249,9 +249,9 @@
                                                     "title": "Party Role",
                                                     "type": "string",
                                                     "examples": [
-                                                      "CLAIMANT_PETITIONER", "RESPONDENT"
+                                                      "APPLICANT_PETITIONER", "RESPONDENT"
                                                     ],
-                                                    "enum": ["CLAIMANT_PETITIONER", "RESPONDENT"],
+                                                    "enum": ["APPLICANT_PETITIONER", "RESPONDENT"],
                                                     "default": "",
                                                     "pattern": "^(?!.*<[^>]+>).*$"
                                                   },
