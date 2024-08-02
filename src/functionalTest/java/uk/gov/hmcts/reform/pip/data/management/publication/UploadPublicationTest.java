@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.pip.data.management.publication;
 
 import io.restassured.response.Response;
+import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -33,6 +34,7 @@ import static uk.gov.hmcts.reform.pip.data.management.util.TestUtil.randomLocati
 
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles(profiles = "functional")
+@AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest(classes = {Application.class, OAuthClient.class},
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
