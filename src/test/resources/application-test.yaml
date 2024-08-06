@@ -10,3 +10,4 @@ dbMigration:
 payload:
   json:
     max-size-in-kb: 100
+    old-max-size-in-kb: 100

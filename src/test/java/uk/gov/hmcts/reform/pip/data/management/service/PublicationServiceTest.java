@@ -149,6 +149,8 @@ class PublicationServiceTest {
         lenient().when(artefactRepository.save(artefactWithPayloadUrl)).thenReturn(artefactWithIdAndPayloadUrl);
         lenient().when(artefactService.payloadWithinLimit(PAYLOAD_SIZE_WITHIN_LIMIT)).thenReturn(true);
         lenient().when(artefactService.payloadWithinLimit(PAYLOAD_SIZE_OVER_LIMIT)).thenReturn(false);
+        lenient().when(artefactService.payloadWithinLimitForDeletion(PAYLOAD_SIZE_WITHIN_LIMIT)).thenReturn(true);
+        lenient().when(artefactService.payloadWithinLimitForDeletion(PAYLOAD_SIZE_OVER_LIMIT)).thenReturn(false);
     }
 
     private void createPayloads() {

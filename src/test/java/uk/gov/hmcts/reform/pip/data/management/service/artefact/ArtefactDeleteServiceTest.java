@@ -130,6 +130,7 @@ class ArtefactDeleteServiceTest {
                                                                        LOCATION_VENUE))
             .thenReturn(Optional.of(location));
         lenient().when(artefactService.payloadWithinLimit(any())).thenReturn(true);
+        lenient().when(artefactService.payloadWithinLimitForDeletion(any())).thenReturn(true);
 
         azureAccount = new AzureAccount();
         azureAccount.setDisplayName(REQUESTER_NAME);
@@ -201,7 +202,7 @@ class ArtefactDeleteServiceTest {
         try (LogCaptor logCaptor = LogCaptor.forClass(ArtefactDeleteService.class)) {
             when(artefactRepository.findArtefactByArtefactId(ARTEFACT_ID.toString()))
                 .thenReturn(Optional.of(artefactWithIdAndPayloadUrl));
-            when(artefactService.payloadWithinLimit(any())).thenReturn(false);
+            when(artefactService.payloadWithinLimitForDeletion(any())).thenReturn(false);
 
             artefactDeleteService.deleteArtefactById(ARTEFACT_ID.toString(), TEST_VALUE);
             assertTrue(logCaptor.getInfoLogs().get(0).contains(String.format(DELETION_TRACK_LOG_MESSAGE, ARTEFACT_ID)),
@@ -288,7 +289,7 @@ class ArtefactDeleteServiceTest {
     @Test
     void testArchiveExpiredArtefactsWithPayloadSizeOverLimit() {
         when(artefactRepository.findOutdatedArtefacts(any())).thenReturn(List.of(artefactWithIdAndPayloadUrl));
-        when(artefactService.payloadWithinLimit(any())).thenReturn(false);
+        when(artefactService.payloadWithinLimitForDeletion(any())).thenReturn(false);
 
         artefactDeleteService.archiveExpiredArtefacts();
 
@@ -393,7 +394,7 @@ class ArtefactDeleteServiceTest {
     void testArchiveArtefactByIdWithPayloadSizeOverLimit() {
         when(artefactRepository.findArtefactByArtefactId(ARTEFACT_ID.toString()))
             .thenReturn(Optional.of(artefactWithIdAndPayloadUrl));
-        when(artefactService.payloadWithinLimit(any())).thenReturn(false);
+        when(artefactService.payloadWithinLimitForDeletion(any())).thenReturn(false);
 
         artefactDeleteService.archiveArtefactById(ARTEFACT_ID.toString(), UUID.randomUUID().toString());
 
@@ -473,7 +474,7 @@ class ArtefactDeleteServiceTest {
                                                          "Total 1 artefact(s) for location NAME",
                                                          ChangeType.DELETE_LOCATION_ARTEFACT))
                 .thenReturn("System admin message");
-            when(artefactService.payloadWithinLimit(any())).thenReturn(false);
+            when(artefactService.payloadWithinLimitForDeletion(any())).thenReturn(false);
 
             assertEquals("Total 1 artefact deleted for location id 1",
                          artefactDeleteService.deleteArtefactByLocation(LOCATION_ID, REQUESTER_NAME),

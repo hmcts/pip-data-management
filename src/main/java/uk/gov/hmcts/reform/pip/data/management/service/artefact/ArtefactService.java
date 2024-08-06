@@ -35,6 +35,9 @@ public class ArtefactService {
     @Value("${payload.json.max-size-in-kb}")
     private int maxPayloadSize;
 
+    @Value("${payload.json.old-max-size-in-kb}")
+    private int oldPayloadMaxSize;
+
     @Autowired
     public ArtefactService(ArtefactRepository artefactRepository,
                            AccountManagementService accountManagementService,
@@ -174,6 +177,18 @@ public class ArtefactService {
 
     public boolean payloadWithinLimit(Float artefactPayloadSize) {
         return artefactPayloadSize == null || artefactPayloadSize < maxPayloadSize;
+    }
+
+    /**
+     * This is required so that when adjusting the artefact size downwards, publications uploaded before this change
+     * that have a size between the old and new size, still get deleted from the blob store.
+     * The need for this will be reviewed once the merging of Data Management and Channel Management is complete.
+     *
+     * @param artefactPayloadSize The payload size of the artefact.
+     * @return Whether the payload is within size for deletion.
+     */
+    public boolean payloadWithinLimitForDeletion(Float artefactPayloadSize) {
+        return artefactPayloadSize == null || artefactPayloadSize < oldPayloadMaxSize;
     }
 
 }

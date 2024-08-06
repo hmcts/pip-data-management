@@ -437,4 +437,19 @@ class ArtefactServiceTest {
         assertFalse(FILES_GENERATION_MESSAGE, artefactService.payloadWithinLimit(101f));
     }
 
+    @Test
+    void shouldDeleteFilesIfPayloadSizeWithinOldLimit() {
+        assertTrue(FILES_GENERATION_MESSAGE, artefactService.payloadWithinLimitForDeletion(99f));
+    }
+
+    @Test
+    void shouldDeleteFilesIfNoPayloadSize() {
+        assertTrue(FILES_GENERATION_MESSAGE, artefactService.payloadWithinLimitForDeletion(null));
+    }
+
+    @Test
+    void shouldNotDeleteFilesIfPayloadSizeOverOldLimit() {
+        assertFalse(FILES_GENERATION_MESSAGE, artefactService.payloadWithinLimitForDeletion(101f));
+    }
+
 }

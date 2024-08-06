@@ -140,7 +140,7 @@ public class PublicationService {
             artefact.setPayload(value.getPayload());
             artefact.setSupersededCount(value.getSupersededCount() + 1);
             if (!artefactService.payloadWithinLimit(artefact.getPayloadSize())
-                && artefactService.payloadWithinLimit(value.getPayloadSize())) {
+                && artefactService.payloadWithinLimitForDeletion(value.getPayloadSize())) {
                 channelManagementService.deleteFiles(artefact.getArtefactId(), artefact.getListType(),
                                                      artefact.getLanguage());
             }
