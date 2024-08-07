@@ -42,7 +42,6 @@ public class ArtefactDeleteService {
     private final AccountManagementService accountManagementService;
     private final PublicationServicesService publicationServicesService;
     private final ChannelManagementService channelManagementService;
-    private final ArtefactService artefactService;
 
     public ArtefactDeleteService(ArtefactRepository artefactRepository, LocationRepository locationRepository,
                                  LocationService locationService, AzureBlobService azureBlobService,
