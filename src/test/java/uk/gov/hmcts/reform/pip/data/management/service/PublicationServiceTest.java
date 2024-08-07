@@ -268,7 +268,6 @@ class PublicationServiceTest {
         assertEquals(artefactToBeCreated, returnedArtefact, ROWID_RETURNS_UUID);
     }
 
-
     @Test
     void testCreationOfNewArtefactWithFile() {
         artefactWithPayloadUrl.setSearch(null);
