@@ -409,6 +409,7 @@ class ArtefactDeleteServiceTest {
                        "Expected log does not exist");
         }
     }
+
     @Test
     void testDeleteArtefactByLocationWhenNoArtefactFound() {
 
