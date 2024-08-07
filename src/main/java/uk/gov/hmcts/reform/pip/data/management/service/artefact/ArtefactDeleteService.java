@@ -48,8 +48,7 @@ public class ArtefactDeleteService {
                                  SubscriptionManagementService subscriptionManagementService,
                                  AccountManagementService accountManagementService,
                                  PublicationServicesService publicationServicesService,
-                                 ChannelManagementService channelManagementService,
-                                 ArtefactService artefactService) {
+                                 ChannelManagementService channelManagementService) {
         this.artefactRepository = artefactRepository;
         this.locationRepository = locationRepository;
         this.locationService = locationService;
@@ -58,7 +57,6 @@ public class ArtefactDeleteService {
         this.accountManagementService = accountManagementService;
         this.publicationServicesService = publicationServicesService;
         this.channelManagementService = channelManagementService;
-        this.artefactService = artefactService;
     }
 
     /**
