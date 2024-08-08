@@ -4,6 +4,7 @@ FROM hmctspublic.azurecr.io/base/java:21-distroless
 ENV APP pip-data-management.jar
 
 COPY lib/applicationinsights.json /opt/app/
+COPY ../pip-data-management/lib/openSans.ttf /opt/app/
 COPY build/libs/$APP /opt/app/
 
 EXPOSE 8090
