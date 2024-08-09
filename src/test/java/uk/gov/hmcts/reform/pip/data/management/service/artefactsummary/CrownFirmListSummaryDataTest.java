@@ -96,7 +96,7 @@ class CrownFirmListSummaryDataTest {
 
         softly.assertThat(values.get(1))
             .as(SUMMARY_FIELD_VALUE_MESSAGE)
-            .isEqualTo("Queen");
+            .isEqualTo("Test Name");
 
         softly.assertThat(values.get(2))
             .as(SUMMARY_FIELD_VALUE_MESSAGE)
