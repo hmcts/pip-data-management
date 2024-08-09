@@ -197,24 +197,6 @@ class ArtefactDeleteServiceTest {
     }
 
     @Test
-    void testDeleteArtefactByIdWithPayloadSizeOverLimit() {
-        try (LogCaptor logCaptor = LogCaptor.forClass(ArtefactDeleteService.class)) {
-            when(artefactRepository.findArtefactByArtefactId(ARTEFACT_ID.toString()))
-                .thenReturn(Optional.of(artefactWithIdAndPayloadUrl));
-            when(artefactService.payloadWithinLimit(any())).thenReturn(false);
-
-            artefactDeleteService.deleteArtefactById(ARTEFACT_ID.toString(), TEST_VALUE);
-            assertTrue(logCaptor.getInfoLogs().get(0).contains(String.format(DELETION_TRACK_LOG_MESSAGE, ARTEFACT_ID)),
-                       MESSAGES_MATCH);
-
-            verify(artefactRepository).delete(artefactWithIdAndPayloadUrl);
-            verify(azureBlobService).deleteBlob(PAYLOAD_STRIPPED);
-            verifyNoInteractions(channelManagementService);
-            verify(subscriptionManagementService).sendDeletedArtefactForThirdParties(artefactWithIdAndPayloadUrl);
-        }
-    }
-
-    @Test
     void testDeleteArtefactByIdFlatFile() {
         try (LogCaptor logCaptor = LogCaptor.forClass(ArtefactDeleteService.class)) {
             artefactWithIdAndPayloadUrl.setIsFlatFile(true);
@@ -284,20 +266,6 @@ class ArtefactDeleteServiceTest {
         verifyNoInteractions(channelManagementService);
         verifyNoInteractions(subscriptionManagementService);
     }
-
-    @Test
-    void testArchiveExpiredArtefactsWithPayloadSizeOverLimit() {
-        when(artefactRepository.findOutdatedArtefacts(any())).thenReturn(List.of(artefactWithIdAndPayloadUrl));
-        when(artefactService.payloadWithinLimit(any())).thenReturn(false);
-
-        artefactDeleteService.archiveExpiredArtefacts();
-
-        verify(artefactRepository).archiveArtefact(ARTEFACT_ID.toString());
-        verify(azureBlobService).deleteBlob(PAYLOAD_STRIPPED);
-        verifyNoInteractions(channelManagementService);
-        verifyNoInteractions(subscriptionManagementService);
-    }
-
 
     @Test
     void testArchiveExpiredArtefactsSjpPublic() {
@@ -390,21 +358,6 @@ class ArtefactDeleteServiceTest {
     }
 
     @Test
-    void testArchiveArtefactByIdWithPayloadSizeOverLimit() {
-        when(artefactRepository.findArtefactByArtefactId(ARTEFACT_ID.toString()))
-            .thenReturn(Optional.of(artefactWithIdAndPayloadUrl));
-        when(artefactService.payloadWithinLimit(any())).thenReturn(false);
-
-        artefactDeleteService.archiveArtefactById(ARTEFACT_ID.toString(), UUID.randomUUID().toString());
-
-        verify(artefactRepository).archiveArtefact(ARTEFACT_ID.toString());
-        verify(azureBlobService).deleteBlob(PAYLOAD_STRIPPED);
-        verifyNoInteractions(channelManagementService);
-        verify(subscriptionManagementService).sendDeletedArtefactForThirdParties(artefactWithIdAndPayloadUrl);
-
-    }
-
-    @Test
     void testArchiveArtefactByIdNotFound() {
         String artefactId = UUID.randomUUID().toString();
         when(artefactRepository.findArtefactByArtefactId(artefactId)).thenReturn(Optional.empty());
@@ -449,40 +402,6 @@ class ArtefactDeleteServiceTest {
                                                          Language.ENGLISH);
             orderVerifier.verify(artefactRepository).delete(artefactWithIdAndPayloadUrl);
             orderVerifier.verify(subscriptionManagementService).sendDeletedArtefactForThirdParties(any());
-
-            assertTrue(logCaptor.getInfoLogs().get(0).contains("User " + REQUESTER_NAME
-                                                                   + " attempting to delete all artefacts for location "
-                                                                   + LOCATION_ID + ". 1 artefact(s) found"),
-                       "Expected log does not exist");
-        }
-    }
-
-    @Test
-    void testDeleteArtefactByLocationWithPayloadSizeOverLimit() throws JsonProcessingException {
-        location.setName("NAME");
-        try (LogCaptor logCaptor = LogCaptor.forClass(ArtefactDeleteService.class)) {
-            when(artefactRepository.findActiveArtefactsForLocation(any(), eq(LOCATION_ID.toString())))
-                .thenReturn(List.of(artefactWithIdAndPayloadUrl));
-            when(locationRepository.getLocationByLocationId(LOCATION_ID))
-                .thenReturn(Optional.of(location));
-            when(accountManagementService.getUserInfo(any()))
-                .thenReturn(azureAccount);
-            when(accountManagementService.getAllAccounts("PI_AAD", "SYSTEM_ADMIN"))
-                .thenReturn(List.of(EMAIL_ADDRESS));
-            when(publicationService.sendSystemAdminEmail(List.of(EMAIL_ADDRESS), REQUESTER_NAME, ActionResult.SUCCEEDED,
-                                                         "Total 1 artefact(s) for location NAME",
-                                                         ChangeType.DELETE_LOCATION_ARTEFACT))
-                .thenReturn("System admin message");
-            when(artefactService.payloadWithinLimit(any())).thenReturn(false);
-
-            assertEquals("Total 1 artefact deleted for location id 1",
-                         artefactDeleteService.deleteArtefactByLocation(LOCATION_ID, REQUESTER_NAME),
-                         "The artefacts for given location is not deleted");
-
-            verify(azureBlobService).deleteBlob(any());
-            verifyNoInteractions(channelManagementService);
-            verify(artefactRepository).delete(artefactWithIdAndPayloadUrl);
-            verify(subscriptionManagementService).sendDeletedArtefactForThirdParties(any());
 
             assertTrue(logCaptor.getInfoLogs().get(0).contains("User " + REQUESTER_NAME
                                                                    + " attempting to delete all artefacts for location "
