@@ -8,7 +8,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.gov.hmcts.reform.pip.data.management.service.LocationService;
-import uk.gov.hmcts.reform.pip.data.management.service.artefact.ArtefactDeleteService;
+import uk.gov.hmcts.reform.pip.data.management.service.publication.ArtefactDeleteService;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;

@@ -1,0 +1,25 @@
+{
+  "title": "Rhestr Ddyddiol SSCS ar gyfer ",
+  "mainHeaderText": "Nawdd Cymdeithasol a Chynnal Plant",
+  "headerSubText": " gwrandawiadau ar gyfer ",
+  "warning": "Please note: There may be 2 hearing lists available for this date. Please make sure you look at both lists to see all hearings happening on this date for this location.",
+  "hearingOverleaf": "Mae gwybodaeth am yr achos dros y ddalen",
+  "dataSource": "Ffynhonnell y Data: ",
+  "serviceName": "Gwasanaeth Gwrandawiadau llys a thribiwnlys - Tudalen PDF/UA ",
+  "of": " o ",
+  "listFor": "Rhestr ar gyfer ",
+  "lastUpdated": "Diweddarwyd ddiwethaf ",
+  "tableHeaders": [
+    "Amser y Gwrandawiad",
+    "Cyfeirnod Apêl",
+    "Math o Dribiwnlys",
+    "Apelydd",
+    "FTA/Atebydd",
+    "Panel"
+  ],
+  "linkTitle": "Sut i arsylwi gwrandawiad llys neu dribiwnlys",
+  "legalAdvisor": "Cynghorydd Cyfreithiol: ",
+  "thanks": "Diolch am ddarllen y ddogfen hon yn fanwl.",
+  "legal1": "Noder bod y ddogfen hon yn cynnwys Data Categori Arbennig fel y’i diffinnir yn Neddf Gwarchod Data 2018, a elwid gynt yn Ddata Personol Sensitif, a dylid ei drin yn y ffordd briodol.",
+  "legal2": "Mae’r ddogfen hon yn cynnwys gwybodaeth a fwriedir i gynorthwyo i roi adroddiad manwl-gywir am achosion llys. Mae’n hanfodol eich bod yn sicrhau eich bod yn gwarchod y Data Categori Arbennig sydd ynddi ac yn cadw at gyfyngiadau adrodd (er enghraifft yn achos dioddefwyr a phlant). Bydd GLlTEF yn rhoi’r gorau i anfon y data os cyfyd pryder ynghylch sut y’i defnyddir."
+}

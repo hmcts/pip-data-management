@@ -1,0 +1,27 @@
+{
+  "serviceName": "Gwasanaeth Gwrandawiadau llys a thribiwnlys",
+  "pdfAccessibility": " Tudalen PDF/UA ",
+  "of": " o ",
+  "title": "OPA Rhestr Gyhoeddus",
+  "heading": "Achosion Pledio Ar-lein a Dyrannu ar gyfer ",
+  "listDetail": "Rhestr sy’n cynnwys CASES_COUNT case(s) a gynhyrchwyd ar",
+  "publishedAt": "am",
+  "restrictionInformationHeading": "Cyfyngiadau ar gyhoeddi neu ysgrifennu am yr achosion hyn.",
+  "restrictionInformationP1": "Rhaid i chi wirio a oes unrhyw gyfyngiadau riportio yn berthnasol cyn cyhoeddi manylion am unrhyw un o'r achosion a restrir yma, naill ai'n ysgrifenedig, mewn darllediad neu ar y rhyngrwyd, gan gynnwys y cyfryngau cymdeithasol.",
+  "restrictionInformationBoldText": "Byddwch yn euog o ddirmyg llys os byddwch yn cyhoeddi unrhyw wybodaeth sydd wedi'i diogelu gan gyfyngiad riportio. Gallwch gael dirwy, eich dedfrydu i garchar, neu'r ddau.",
+  "restrictionInformationP2": "Bydd cyfyngiadau penodol a orchmynnir gan y llys yn cael eu crybwyll ar yr achosion a restrir yma.",
+  "restrictionInformationP3": "Fodd bynnag, nid yw'r cyfyngiadau bob amser yn cael eu rhestru. Mae rhai yn berthnasol yn awtomatig. Er enghraifft, anhysbysrwydd a roddir i ddioddefwyr rhai troseddau rhywiol.",
+  "restrictionInformationP4": "I ganfod pa gyfyngiadau riportio sy'n berthnasol ar achos penodol, cysylltwch â'r:",
+  "restrictionBulletPoint1": "llys yn uniongyrchol",
+  "restrictionBulletPoint2": "Gwasanaeth Llysoedd a Thribiwnlysoedd EM ar 0330 808 4407",
+  "dataSource": "Ffynhonnell Data",
+  "tableHeadings": [
+    "Enw",
+    "URN",
+    "Trosedd",
+    "Erlynydd",
+    "Gwrandawiad Cyntaf Wedi’i Drefnu",
+    "Cyfyngiad adrodd"
+  ],
+  "thanks": "Diolch am ddarllen y ddogfen hon yn fanwl."
+}

@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
@@ -55,7 +56,6 @@ class TestingSupportApiTest {
     private static final String LOCATIONS_URL = "/locations/";
     private static final String PUBLICATION_URL = "/publication";
     private static final String PUBLICATION_BY_LOCATION_ID_URL = PUBLICATION_URL + "/locationId/";
-    private static final String BLOB_PAYLOAD_URL = "https://localhost";
 
     private static final Integer LOCATION_ID = 123;
     private static final Integer LOCATION_ID2 = 124;
@@ -80,13 +80,17 @@ class TestingSupportApiTest {
 
     private static final String CREATE_LOCATION_MESSAGE = "Create location response does not match";
     private static final String STATUS_CODE_MESSAGE = "Status code does not match";
+
     @Autowired
     private MockMvc mockMvc;
 
-    @Autowired
-    private BlobContainerClient blobContainerClient;
+    @MockBean(name = "artefact")
+    private BlobContainerClient artefcatBlobContainerClient;
 
-    @Autowired
+    @MockBean(name = "publications")
+    private BlobContainerClient publicationBlobContainerClient;
+
+    @MockBean
     private BlobClient blobClient;
 
     @BeforeAll
@@ -160,6 +164,9 @@ class TestingSupportApiTest {
 
     @Test
     void testTestingSupportDeletePublicationsByLocationNamePrefix() throws Exception {
+        when(artefcatBlobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(publicationBlobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+
         createLocationByIdAndName(LOCATION_ID);
         uploadPublication();
 
@@ -245,9 +252,6 @@ class TestingSupportApiTest {
                 .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
                 .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
                 .contentType(MediaType.APPLICATION_JSON);
-
-            when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
-            when(blobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
 
             return mockMvc.perform(postRequest)
                 .andExpect(status().isCreated())

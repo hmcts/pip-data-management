@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <style th:inline="text">
+    @page {
+      size: A4 landscape;
+      margin: 30px 20px;
+
+      @bottom-center {
+        font-family: 'openSans';
+        font-size: 16px;
+        color: grey;
+        content: "[[${i18n.serviceName + i18n.pdfAccessibility}]]" counter(page) "[[${i18n.of}]]" counter(pages) ".";
+      }
+    }
+
+    body {
+      font-family: 'openSans';
+      color: #0b0c0c;
+      padding: 2px;
+      font-size: 14px;
+    }
+
+    h1 {
+      font-family: "openSans";
+      color: black;
+    }
+
+    .govuk-body {
+      color: #0b0c0c;
+      font-family: "openSans";
+      font-weight: 400;
+      font-size: 16px;
+      line-height: 1.25;
+      margin-top: 0;
+      margin-bottom: 15px;
+    }
+
+    .govuk-table__header, .govuk-table__body, .govuk-table__cell {
+      padding: 10px 20px 10px 0;
+      border-bottom: 1px solid #b1b4b6;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    .govuk-table {
+      font-family: "openSans";
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 1.25;
+      color: #0b0c0c;
+      width: 100%;
+      margin-bottom: 20px;
+      border-spacing: 0;
+      border-collapse: collapse;
+    }
+
+    .no-wrap {
+      white-space: nowrap;
+    }
+
+    .wrap {
+      word-wrap: break-word;
+    }
+
+    .govuk-table__header {
+      font-weight: 700;
+    }
+
+    .restriction-list-section {
+      background-color: #f3f2f1;
+      padding: 5px 10px;
+    }
+
+    .align-warning-icon {
+      margin-top: 15px;
+    }
+
+    .govuk-warning-text {
+      position: relative;
+      padding: 10px 0;
+    }
+
+    .govuk-warning-text__icon {
+      font-weight: 300;
+      box-sizing: border-box;
+      display: inline-block;
+      position: absolute;
+      left: 0;
+      min-width: 35px;
+      min-height: 35px;
+      border: 1px solid #0b0c0c;
+      border-radius: 50%;
+      color: #ffffff;
+      background: #0b0c0c;
+      font-size: 30px;
+      line-height: 30px;
+      text-align: center;
+    }
+
+    .govuk-warning-text__text {
+      font-weight: 500;
+      color: #0b0c0c;
+      display: block;
+      padding-left: 45px;
+    }
+
+    .govuk-warning-text__assistive {
+      position: absolute !important;
+      width: 1px !important;
+      height: 1px !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      overflow: hidden !important;
+      clip-path: inset(50%) !important;
+      border: 0 !important;
+      white-space: nowrap !important;
+    }
+
+    .govuk-heading-l {
+      color: #0b0c0c;
+      font-family: "openSans";
+      font-weight: 700;
+      font-size: 24px;
+      line-height: 1.04167;
+      display: block;
+      margin-top: 0;
+      margin-bottom: 20px;
+    }
+  </style>
+  <meta charset="UTF-8"/>
+  <meta content="Accessible PDF template" name="subject"/>
+  <meta content="HMCTS Court and Tribunal Hearings" name="author"/>
+  <meta content="Document description - vital for compliance." name="description"/>
+  <title th:text="${i18n.title}" />
+</head>
+<body>
+  <h2 class="govuk-heading-l" id="page-heading" th:text="${i18n.heading + locationName}" />
+  <p class="govuk-body">
+    <span th:each="address : ${venueAddress}">
+      <td th:text="${address}"/>
+    </span>
+  </p>
+  <div class="govuk-grid restriction-list-section">
+    <div class="govuk-body">
+      <h3 th:text="${i18n.restrictionInformationHeading}" />
+      <p class="govuk-body" th:text="${i18n.restrictionInformationP1}" />
+      <div class="govuk-warning-text">
+        <span aria-hidden="true" class="govuk-warning-text__icon align-warning-icon">!</span>
+        <strong class="govuk-warning-text__text">
+          <span class="govuk-warning-text__assistive" />
+          <span th:text="${i18n.restrictionInformationBoldText}" />
+        </strong>
+      </div>
+      <p class="govuk-body" th:text="${i18n.restrictionInformationP2}" />
+      <p class="govuk-body" th:text="${i18n.restrictionInformationP3}" />
+      <p class="govuk-body" th:text="${i18n.restrictionInformationP4}" />
+      <ul class="govuk-list govuk-list--bullet">
+        <li th:text="${i18n.restrictionBulletPoint1}" />
+        <li th:text="${i18n.restrictionBulletPoint2}" />
+      </ul>
+    </div>
+  </div>
+  <br/>
+  <p class="govuk-body" th:text="${#strings.replace(i18n.listDetail, 'CASES_COUNT', length) + ' ' + publishedDate + ' ' + i18n.publishedAt + ' ' + publishedTime}"></p>
+  <table class="govuk-table">
+    <thead>
+    <tr class="govuk-table__row">
+      <th:block th:each="heading: ${i18n.tableHeadings}">
+        <th class="govuk-table__header" th:text="${heading}"/>
+      </th:block>
+    </tr>
+    </thead>
+    <tbody class="govuk-table__body">
+        <tr th:each="row : ${listData}" class="govuk-table__row">
+            <td class="govuk-table__cell wrap" th:text="${row.getDefendant().getName()}" />
+            <td class="govuk-table__cell" th:text="${row.getCaseInfo().getUrn()}" />
+            <td class="govuk-table__cell">
+              <span th:each="offence, iStat : ${row.defendant.offences}">
+                <span th:text="${offence.offenceTitle + ' - ' + offence.offenceSection}" />
+                <br th:if="${offence.offenceReportingRestriction.length() > 0 }" />
+                <br th:if="${offence.offenceReportingRestriction.length() > 0 }" />
+                <span th:if="${offence.offenceReportingRestriction.length() > 0 }" th:text="${'Reporting Restriction - ' + offence.offenceReportingRestriction}" />
+                <br th:if="${iStat.count < iStat.size }" />
+                <br th:if="${iStat.count < iStat.size }" />
+              </span>
+            </td>
+            <td class="govuk-table__cell" th:text="${row.getDefendant().getProsecutor()}" />
+            <td class="govuk-table__cell no-wrap" th:text="${row.getCaseInfo().getScheduledHearingDate()}" />
+            <td class="govuk-table__cell" th:text="${row.getCaseInfo().getCaseReportingRestriction()}" />
+          </tr>
+    </tbody>
+  </table>
+  <section>
+    <p class="govuk-body" th:text="${i18n.dataSource + provenance}" />
+    <hr/>
+    <p class="govuk-body" th:text="${i18n.thanks}" />
+  </section>
+</body>
+</html>

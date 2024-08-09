@@ -61,9 +61,9 @@ class ValidationServiceTest {
     private static Stream<Arguments> parameters() {
         return Stream.of(
             Arguments.of(ListType.FAMILY_DAILY_CAUSE_LIST,
-                         "mocks/hearing-party/familyDailyCauseList.json"),
+                         "mocks/hearingparty/familyDailyCauseList.json"),
             Arguments.of(ListType.CIVIL_AND_FAMILY_DAILY_CAUSE_LIST,
-                         "mocks/hearing-party/civilAndFamilyDailyCauseList.json")
+                         "mocks/hearingparty/civilAndFamilyDailyCauseList.json")
         );
     }
 }

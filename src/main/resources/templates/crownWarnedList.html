@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <style th:inline="text">
+    @page {
+      margin: 30px 20px;
+
+      @bottom-center {
+        font-family: 'openSans';
+        font-size: 16px;
+        color: grey;
+        content: "[[${i18n.serviceName + i18n.pdfAccessibility}]]" counter(page) "[[${i18n.of}]]" counter(pages) ".";
+      }
+    }
+
+    @page landscapePage {
+      size: A4 landscape;
+    }
+
+    .landscape {
+      page: landscapePage;
+    }
+
+    body {
+      font-family: 'openSans';
+      color: #0b0c0c;
+      padding: 2px;
+      font-size: 105%;
+    }
+
+    h1, h4 {
+      font-family: "openSans";
+      color: black;
+    }
+
+    .hearing-details {
+      position: relative;
+      top: 2em;
+    }
+
+    .restriction-list-section {
+      background-color: #f3f2f1;
+      padding: 5px 10px;
+    }
+
+    .additional-header {
+      font-weight: 700;
+    }
+
+    .govuk-accordion__section-heading {
+      margin-top: 0;
+      margin-bottom: 0;
+      padding-top: 15px;
+      padding-bottom: 15px;
+      font-family: "openSans";
+      font-weight: 700;
+      font-size: 20px;
+      font-size: 1.125rem;
+      line-height: 1.11111;
+      color: #0b0c0c;
+      display: block;
+    }
+
+    .govuk-accordion {
+      page-break-after: always;
+    }
+
+    .govuk-heading-l {
+      color: #0b0c0c;
+      font-family: "openSans";
+      font-weight: 700;
+      font-size: 24px;
+      line-height: 1.04167;
+      display: block;
+      margin-top: 0;
+      margin-bottom: 20px;
+    }
+
+    .govuk-body {
+      color: #0b0c0c;
+      font-family: "openSans";
+      font-weight: 400;
+      font-size: 16px;
+      line-height: 1.25;
+      margin-top: 0;
+      margin-bottom: 15px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .govuk-table {
+      table-layout: fixed;
+      font-family: "openSans";
+      font-weight: 400;
+      font-size: 16px;
+      line-height: 1.25;
+      color: #0b0c0c;
+      width: 1050px;
+      margin-bottom: 20px;
+      border-spacing: 0;
+      border-collapse: collapse;
+    }
+
+    .govuk-table__header, .govuk-table__cell {
+      padding: 10px 20px 10px 0;
+      border-bottom: 1px solid #b1b4b6;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    .no-border-bottom {
+      border-bottom: 0;
+    }
+
+    .no-wrap {
+      white-space: nowrap;
+    }
+
+    .govuk-table__header {
+      font-weight: 700;
+    }
+
+    .govuk-warning-text {
+      position: relative;
+      padding: 10px 0;
+    }
+
+    .govuk-warning-text__icon {
+      font-weight: 300;
+      box-sizing: border-box;
+      display: inline-block;
+      position: absolute;
+      left: 0;
+      min-width: 35px;
+      min-height: 35px;
+      border: 1px solid #0b0c0c;
+      border-radius: 50%;
+      color: #ffffff;
+      background: #0b0c0c;
+      font-size: 30px;
+      line-height: 30px;
+      text-align: center;
+    }
+
+    .govuk-warning-text__text {
+      font-weight: 500;
+      color: #0b0c0c;
+      display: block;
+      padding-left: 45px;
+    }
+
+    .govuk-warning-text__assistive {
+      position: absolute !important;
+      width: 1px !important;
+      height: 1px !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      overflow: hidden !important;
+      clip-path: inset(50%) !important;
+      border: 0 !important;
+      white-space: nowrap !important;
+    }
+  </style>
+  <meta charset="UTF-8"/>
+  <meta name="subject" content="Accessible PDF template"/>
+  <meta name="author" content="HMCTS Court and Tribunal Hearings"/>
+  <meta name="description" content="Document description - vital for compliance."/>
+  <title th:text="${i18n.listName}" />
+</head>
+
+<body>
+  <div class = "header">
+    <h2 class="govuk-heading-l" id="list-name" th:text="${i18n.heading + venueName}"/>
+    <p id="publication-date" class="govuk-body" th:text="${i18n.listUpdated + publicationDate + i18n.at + publicationTime}"/>
+    <p id="list-version" class="govuk-body" th:text="${i18n.draft + i18n.versionText + version}"/>
+
+    <p id="venue-address" class="govuk-body">
+      <span th:each="address : ${venueAddress}">
+        <td th:text="${address}"/>
+      </span>
+    </p>
+
+    <p class="govuk-body heading-note" th:text="${i18n.headingP1 + contentDate}"/>
+    <p class="govuk-body heading-note" th:text="${i18n.headingP2}"/>
+    <p class="govuk-body heading-note" th:text="${i18n.headingP3}"/>
+    <p class="govuk-body heading-note" th:text="${i18n.headingP4}"/>
+
+    <div class="restriction-list-section">
+      <div class="govuk-body">
+        <h3 th:text="${i18n.restrictionInformationHeading}" />
+        <p class="govuk-body" th:text="${i18n.restrictionInformationP1}" />
+        <div class="govuk-warning-text">
+          <span class="govuk-warning-text__icon align-warning-icon" aria-hidden="true">!</span>
+          <strong class="govuk-warning-text__text">
+            <span class="govuk-warning-text__assistive" />
+            <span th:text="${i18n.restrictionInformationBoldText}" />
+          </strong>
+        </div>
+        <p class="govuk-body" th:text="${i18n.restrictionInformationP2}"/>
+        <p class="govuk-body" th:text="${i18n.restrictionInformationP3}"/>
+        <p class="govuk-body" th:text="${i18n.restrictionInformationP4}"/>
+        <ul class="govuk-list govuk-list--bullet">
+          <li th:text="${i18n.restrictionBulletPoint1}"/>
+          <li th:text="${i18n.restrictionBulletPoint2}"/>
+        </ul>
+      </div>
+    </div>
+
+    <div aria-label="Court Lists" class="landscape">
+      <div class="hearing-details" aria-label="Hearing Details" th:each="entry: ${cases}">
+        <div th:if="${#strings.toLowerCase(entry.key) == 'to be allocated'}">
+          <h2 class="govuk-heading-l govuk-accordion__section-heading" tabindex="0" th:text="${entry.key}"/>
+        </div>
+        <div th:unless="${#strings.toLowerCase(entry.key) == 'to be allocated'}">
+          <h2 class="govuk-accordion__section-heading govuk-heading-l" tabindex="0" th:text="${i18n.for + entry.key}"/>
+        </div>
+        <div class="govuk-accordion" id="accordion-default">
+          <div class="govuk-accordion__section-content">
+            <div class="parent-box overflow-table">
+              <table class="govuk-table">
+                <thead class="govuk-table__head">
+                  <tr class="govuk-table__row">
+                    <th:block th:each="header:${i18n.tableHeaders}">
+                      <th th:text="${header}" scope="col" class="govuk-table__header"/>
+                    </th:block>
+                  </tr>
+                </thead>
+                <tbody class="govuk-table__body">
+                  <th:block th:each="row: ${entry.value}", th:with="rowBorder=${row.linkedCases != '' OR row.listingNotes != ''} ? 'no-border-bottom' : '',
+                    linkedCasesBorder=${row.listingNotes != ''} ? 'no-border-bottom' : ''">
+                    <tr class="govuk-table__row">
+                      <td class="govuk-table__cell no-wrap" th:classappend="${rowBorder}" th:text="${row.caseReference}"/>
+                      <td class="govuk-table__cell" th:classappend="${rowBorder}" th:text="${row.defendant}"/>
+                      <td class="govuk-table__cell no-wrap" th:classappend="${rowBorder}" th:text="${row.hearingDate}"/>
+                      <td class="govuk-table__cell" th:classappend="${rowBorder}" th:text="${row.defendantRepresentative}"/>
+                      <td class="govuk-table__cell" th:classappend="${rowBorder}" th:text="${row.prosecutingAuthority}"/>
+                    </tr>
+                    <tr class="govuk-table__row" th:if="${row.linkedCases != ''}">
+                      <td class="govuk-table__cell" th:classappend="${linkedCasesBorder}" colspan="5">
+                        <span class="additional-header" th:text="${i18n.linkedCases}" />
+                        <span th:text="${row.linkedCases}" />
+                      </td>
+                    </tr>
+                    <tr class="govuk-table__row" th:if="${row.listingNotes != ''}">
+                      <td class="govuk-table__cell" colspan="5">
+                        <span class="additional-header" th:text="${i18n.listingNotes}" />
+                        <span th:text="${row.listingNotes}" />
+                      </td>
+                    </tr>
+                  </th:block>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section>
+      <p class="govuk-body" th:text="${i18n.dataSource + provenance}" />
+      <hr/>
+      <p class="govuk-body" th:text="${i18n.legal1}" />
+      <p class="govuk-body" th:text="${i18n.legal2}" />
+      <hr/>
+      <p class="govuk-body" th:text="${i18n.endText}" />
+    </section>
+  </div>
+</body>
+</html>

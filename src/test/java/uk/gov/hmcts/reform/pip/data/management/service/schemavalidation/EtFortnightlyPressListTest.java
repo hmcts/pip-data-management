@@ -38,7 +38,7 @@ class EtFortnightlyPressListTest {
     ValidationService validationService;
 
     private static final String ET_FORTNIGHTLY_PRESS_LIST_VALID_JSON =
-        "mocks/et-fortnightly-press-list/etFortnightlyPressList.json";
+        "mocks/etFortnightlyPressList.json";
     private static final String SOURCE_ARTEFACT_ID = "sourceArtefactId";
     private static final LocalDateTime DISPLAY_FROM = LocalDateTime.now();
     private static final LocalDateTime DISPLAY_TO = LocalDateTime.now();

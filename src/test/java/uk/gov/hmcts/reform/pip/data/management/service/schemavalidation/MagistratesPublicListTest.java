@@ -36,7 +36,7 @@ class MagistratesPublicListTest {
     ValidationService validationService;
 
     private static final String MAGISTRATES_PUBLIC_LIST_VALID_JSON =
-        "mocks/magistrates_public_list/magistratesPublicList.json";
+        "mocks/magistratesPublicList.json";
     private static final String MAGISTRATES_PUBLIC_LIST_INVALID_MESSAGE =
         "Invalid crime magistrates public list marked as valid";
 

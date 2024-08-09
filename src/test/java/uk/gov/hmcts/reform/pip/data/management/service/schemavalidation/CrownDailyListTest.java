@@ -36,7 +36,7 @@ class CrownDailyListTest {
     ValidationService validationService;
 
     private static final String CROWN_DAILY_LIST_VALID_JSON =
-        "mocks/crown-daily-list/crownDailyList.json";
+        "mocks/crownDailyList.json";
     private static final String CROWN_DAILY_LIST_INVALID_MESSAGE =
         "Invalid crown daily list marked as valid";
 

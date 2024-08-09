@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pip.data.management.Application;
-import uk.gov.hmcts.reform.pip.data.management.models.NoMatchArtefact;
+import uk.gov.hmcts.reform.pip.data.management.models.publication.NoMatchArtefact;
 import uk.gov.hmcts.reform.pip.model.system.admin.ActionResult;
 import uk.gov.hmcts.reform.pip.model.system.admin.ChangeType;
 

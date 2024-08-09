@@ -36,7 +36,7 @@ class OpaPublicListTest {
     ValidationService validationService;
 
     private static final String OPA_PUBLIC_LIST_VALID_JSON =
-        "mocks/opa-public-list/opaPublicList.json";
+        "mocks/opaPublicList.json";
 
     private static final String OPA_PUBLIC_LIST_INVALID_MESSAGE =
         "Invalid OPA public list marked as valid";

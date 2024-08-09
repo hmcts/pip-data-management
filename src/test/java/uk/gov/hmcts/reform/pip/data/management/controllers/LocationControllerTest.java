@@ -1,21 +1,17 @@
 package uk.gov.hmcts.reform.pip.data.management.controllers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.multipart.MultipartFile;
 import org.testcontainers.shaded.org.apache.commons.io.IOUtils;
-import uk.gov.hmcts.reform.pip.data.management.Application;
-import uk.gov.hmcts.reform.pip.data.management.config.AzureBlobConfigurationTestConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationDeletion;
 import uk.gov.hmcts.reform.pip.data.management.service.LocationService;
@@ -30,10 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest(classes = {Application.class, AzureBlobConfigurationTestConfiguration.class})
-@ActiveProfiles(profiles = "test")
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
-@AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
+@ExtendWith(MockitoExtension.class)
 class LocationControllerTest {
 
     @Mock

@@ -35,7 +35,7 @@ class CopDailyCauseListTest {
     @Autowired
     ValidationService validationService;
 
-    private static final String COP_DAILY_LIST_VALID_JSON = "mocks/cop-daily-cause-list/copDailyCauseList.json";
+    private static final String COP_DAILY_LIST_VALID_JSON = "mocks/copDailyCauseList.json";
     private static final String COP_DAILY_LIST_INVALID_MESSAGE = "COP daily list marked as valid";
 
     private static final String COURT_LIST_SCHEMA = "courtLists";

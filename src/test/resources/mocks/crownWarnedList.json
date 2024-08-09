@@ -1,0 +1,454 @@
+{
+  "document": {
+    "version": "1.0",
+    "publicationDate": "2022-09-13T11:30:52.123Z"
+  },
+  "venue": {
+    "venueName": "Manchester Court",
+    "venueAddress": {
+      "line": [
+        "Princess Square"
+      ],
+      "town": "Manchester",
+      "postCode": "M1 1AA"
+    }
+  },
+  "courtLists": [
+    {
+      "courtHouse": {
+        "courtRoom": [
+          {
+            "courtRoomName": "Room 1",
+            "session": [
+              {
+                "sessionStartTime": "",
+                "sittings": [
+                  {
+                    "sittingStart": "2022-07-27T09:40:17.496Z",
+                    "sittingEnd": "2022-07-27T10:45:17.496Z",
+                    "hearing": [
+                      {
+                        "hearingType": "Trial",
+                        "listNote": "Note 1",
+                        "case": [
+                          {
+                            "caseNumber": "12345678",
+                            "caseLinked": [
+                              {
+                                "caseId": "123456"
+                              },
+                              {
+                                "caseId": "123457"
+                              }
+                            ],
+                            "party": [
+                              {
+                                "partyRole": "DEFENDANT",
+                                "individualDetails": {
+                                  "individualForenames": "Forename 1",
+                                  "individualSurname": "Surname 1"
+                                }
+                              },
+                              {
+                                "partyRole": "DEFENDANT_REPRESENTATIVE",
+                                "organisationDetails": {
+                                  "organisationName": "Defendant rep 1"
+                                }
+                              },
+                              {
+                                "partyRole": "PROSECUTING_AUTHORITY",
+                                "organisationDetails": {
+                                  "organisationName": "Prosecutor"
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "caseNumber": "112233445",
+                            "party": [
+                              {
+                                "partyRole": "DEFENDANT",
+                                "individualDetails": {
+                                  "individualForenames": "Forename 2",
+                                  "individualSurname": "Surname 2"
+                                }
+                              },
+                              {
+                                "partyRole": "DEFENDANT_REPRESENTATIVE",
+                                "organisationDetails": {
+                                  "organisationName": "Defendant rep 2"
+                                }
+                              },
+                              {
+                                "partyRole": "PROSECUTING_AUTHORITY",
+                                "organisationDetails": {
+                                  "organisationName": "Prosecutor"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "hearingType": "Pre-Trial review",
+                        "listNote": "Note 2",
+                        "case": [
+                          {
+                            "caseNumber": "112233450",
+                            "caseLinked": [
+                              {
+                                "caseId": "22222",
+                                "name": "case name 22222"
+                              }
+                            ],
+                            "party": [
+                              {
+                                "partyRole": "DEFENDANT",
+                                "individualDetails": {
+                                  "individualForenames": "Forename 3",
+                                  "individualSurname": "Surname 3"
+                                }
+                              },
+                              {
+                                "partyRole": "DEFENDANT_REPRESENTATIVE",
+                                "organisationDetails": {
+                                  "organisationName": "Defendant rep 2"
+                                }
+                              },
+                              {
+                                "partyRole": "PROSECUTING_AUTHORITY",
+                                "organisationDetails": {
+                                  "organisationName": "Prosecutor"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "sittingStart": "2022-01-27T08:05:17.496Z",
+                    "sittingEnd": "2022-01-27T10:45:17.496Z",
+                    "hearing": [
+                      {
+                        "hearingType": "Appeal",
+                        "listNote": "Note 3",
+                        "case": [
+                          {
+                            "caseNumber": "353634435",
+                            "party": [
+                              {
+                                "partyRole": "DEFENDANT",
+                                "individualDetails": {
+                                  "individualForenames": "Forename 4",
+                                  "individualSurname": "Surname 4"
+                                }
+                              },
+                              {
+                                "partyRole": "DEFENDANT_REPRESENTATIVE",
+                                "organisationDetails": {
+                                  "organisationName": "Defendant rep 3"
+                                }
+                              },
+                              {
+                                "partyRole": "PROSECUTING_AUTHORITY",
+                                "organisationDetails": {
+                                  "organisationName": "Prosecutor"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "hearingType": "Appeal against Conviction",
+                        "case": [
+                          {
+                            "caseNumber": "6355622",
+                            "caseLinked": [
+                              {
+                                "caseId": "4646456"
+                              },
+                              {
+                                "caseId": "4633234"
+                              }
+                            ],
+                            "party": [
+                              {
+                                "partyRole": "DEFENDANT",
+                                "individualDetails": {
+                                  "individualForenames": "Forename 5",
+                                  "individualSurname": "Surname 5"
+                                }
+                              },
+                              {
+                                "partyRole": "PROSECUTING_AUTHORITY",
+                                "organisationDetails": {
+                                  "organisationName": "Prosecutor"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "courtRoomName": "to be allocated",
+            "session": [
+              {
+                "sessionStartTime": "",
+                "sittings": [
+                  {
+                    "sittingStart": "2022-07-27T09:40:17.496Z",
+                    "sittingEnd": "2022-07-27T10:45:17.496Z",
+                    "hearing": [
+                      {
+                        "hearingType": "Sentence",
+                        "listNote": "Note 4",
+                        "case": [
+                          {
+                            "caseNumber": "12345678",
+                            "caseLinked": [
+                              {
+                                "caseId": "5646546546"
+                              },
+                              {
+                                "caseId": "6436456546"
+                              }
+                            ],
+                            "party": [
+                              {
+                                "partyRole": "DEFENDANT",
+                                "individualDetails": {
+                                  "individualForenames": "Forename 6",
+                                  "individualSurname": "Surname 6"
+                                }
+                              },
+                              {
+                                "partyRole": "DEFENDANT_REPRESENTATIVE",
+                                "organisationDetails": {
+                                  "organisationName": "Defendant rep 4"
+                                }
+                              },
+                              {
+                                "partyRole": "PROSECUTING_AUTHORITY",
+                                "organisationDetails": {
+                                  "organisationName": "Prosecutor"
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "caseNumber": "86643534",
+                            "party": [
+                              {
+                                "partyRole": "DEFENDANT",
+                                "individualDetails": {
+                                  "individualForenames": "Forename 7",
+                                  "individualSurname": "Surname 7"
+                                }
+                              },
+                              {
+                                "partyRole": "DEFENDANT_REPRESENTATIVE",
+                                "organisationDetails": {
+                                  "organisationName": "Defendant rep 5"
+                                }
+                              },
+                              {
+                                "partyRole": "PROSECUTING_AUTHORITY",
+                                "organisationDetails": {
+                                  "organisationName": "Prosecutor"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "hearingType": "Trial",
+                        "case": [
+                          {
+                            "caseNumber": "0435435435",
+                            "party": [
+                              {
+                                "partyRole": "DEFENDANT",
+                                "individualDetails": {
+                                  "individualSurname": "Surname 8"
+                                }
+                              },
+                              {
+                                "partyRole": "DEFENDANT_REPRESENTATIVE",
+                                "organisationDetails": {
+                                  "organisationName": "Defendant rep 5"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "hearingType": "To be allocated",
+                        "case": [
+                          {
+                            "caseNumber": "3321414",
+                            "caseLinked": [
+                              {
+                                "caseId": "5646546546"
+                              },
+                              {
+                                "caseId": "6436456546"
+                              }
+                            ],
+                            "party": [
+                              {
+                                "partyRole": "DEFENDANT",
+                                "individualDetails": {
+                                  "individualSurname": "Surname 9",
+                                  "individualForenames": "Forename 9"
+                                }
+                              },
+                              {
+                                "partyRole": "DEFENDANT_REPRESENTATIVE",
+                                "organisationDetails": {
+                                  "organisationName": "Defendant rep 6"
+                                }
+                              },
+                              {
+                                "partyRole": "PROSECUTING_AUTHORITY",
+                                "organisationDetails": {
+                                  "organisationName": "Prosecutor"
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "caseNumber": "56646456",
+                            "party": [
+                              {
+                                "partyRole": "DEFENDANT",
+                                "individualDetails": {
+                                  "individualSurname": "Surname 10",
+                                  "individualForenames": "Forename 10"
+                                }
+                              },
+                              {
+                                "partyRole": "DEFENDANT_REPRESENTATIVE",
+                                "organisationDetails": {
+                                  "organisationName": "Defendant rep 7"
+                                }
+                              },
+                              {
+                                "partyRole": "PROSECUTING_AUTHORITY",
+                                "organisationDetails": {
+                                  "organisationName": "Prosecutor"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "courtHouse": {
+        "courtRoom": [
+          {
+            "courtRoomName": "1",
+            "session": [
+              {
+                "sessionStartTime": "",
+                "sittings": [
+                  {
+                    "sittingStart": "2022-01-27T09:00:17.496Z",
+                    "sittingEnd": "2022-01-27T10:30:17.496Z",
+                    "hearing": [
+                      {
+                        "hearingType": "Appeal",
+                        "listNote": "Note 5",
+                        "case": [
+                          {
+                            "caseNumber": "214324",
+                            "caseLinked": [
+                              {
+                                "caseId": "2354544A"
+                              }
+                            ],
+                            "party": [
+                              {
+                                "partyRole": "DEFENDANT",
+                                "individualDetails": {
+                                  "individualForenames": "Forename 11",
+                                  "individualSurname": "Surname 11"
+                                }
+                              },
+                              {
+                                "partyRole": "DEFENDANT_REPRESENTATIVE",
+                                "organisationDetails": {
+                                  "organisationName": "Defendant rep 8"
+                                }
+                              },
+                              {
+                                "partyRole": "PROSECUTING_AUTHORITY",
+                                "organisationDetails": {
+                                  "organisationName": "Prosecutor"
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "caseNumber": "124411",
+                            "party": [
+                              {
+                                "partyRole": "DEFENDANT",
+                                "individualDetails": {
+                                  "individualForenames": "Forename 12",
+                                  "individualSurname": "Surname 12"
+                                }
+                              },
+                              {
+                                "partyRole": "DEFENDANT_REPRESENTATIVE",
+                                "organisationDetails": {
+                                  "organisationName": "Defendant rep 8"
+                                }
+                              },
+                              {
+                                "partyRole": "PROSECUTING_AUTHORITY",
+                                "organisationDetails": {
+                                  "organisationName": "Prosecutor"
+                                }
+                              },
+                              {
+                                "partyRole": "DEFENDANT",
+                                "individualDetails": {
+                                  "individualForenames": "Forename 13",
+                                  "individualSurname": "Surname 13"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

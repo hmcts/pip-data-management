@@ -44,8 +44,8 @@
               {
                 "sittings": [
                   {
-                    "sittingStart": "20-02-2020T20:00.001Z",
-                    "sittingEnd": "20-02-2020T20:00.001Z",
+                    "sittingStart": "2024-07-21T10:00:00.001Z",
+                    "sittingEnd": "2024-07-21T11:30:00.001Z",
                     "hearing": [
                       {
                         "hearingType": "Directions",

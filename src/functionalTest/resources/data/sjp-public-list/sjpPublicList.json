@@ -36,6 +36,9 @@
                         "offence": [
                           {
                             "offenceTitle": "This is an offence title"
+                          },
+                          {
+                            "offenceTitle": "This is an offence title 2"
                           }
                         ]
                       }

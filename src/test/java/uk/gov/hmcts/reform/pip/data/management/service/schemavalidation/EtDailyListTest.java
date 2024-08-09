@@ -37,7 +37,7 @@ class EtDailyListTest {
     @Autowired
     ValidationService validationService;
 
-    private static final String ET_DAILY_LIST_VALID = "mocks/et-daily-list/etDailyList.json";
+    private static final String ET_DAILY_LIST_VALID = "mocks/etDailyList.json";
     private static final String SOURCE_ARTEFACT_ID = "sourceArtefactId";
     private static final LocalDateTime DISPLAY_FROM = LocalDateTime.now();
     private static final LocalDateTime DISPLAY_TO = LocalDateTime.now();

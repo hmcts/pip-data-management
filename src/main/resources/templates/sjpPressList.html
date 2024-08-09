@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <style th:inline="text">
+    @page {
+      margin: 30px 20px;
+
+      @bottom-center {
+        font-family: 'openSans';
+        font-size: 16px;
+        color: grey;
+        content: "[[${i18n.serviceName + i18n.pdfAccessibility}]]" counter(page) "[[${i18n.of}]]" counter(pages) ".";
+      }
+    }
+
+    body {
+      font-family: 'openSans';
+      color: #0b0c0c;
+      padding: 2px;
+      font-size: 105%;
+    }
+
+    .pageSeparatedCase {
+      page-break-after: always;
+      border: black solid 1px;
+      text-align: center;
+    }
+
+    .pageSeperated {
+      page-break-after: always;
+    }
+
+    .dateContainer {
+      font-size: 12px;
+      margin-top: 33px;
+      padding: 0;
+      line-height: 0.6;
+    }
+
+    .logoDatesContainer {
+      vertical-align: middle;
+      display: inline-block;
+      width: 190px;
+    }
+
+    .logoHeaderWrapper {
+      width: 680px;
+      vertical-align: middle;
+    }
+
+    .mainHeaderText {
+      font-family: "openSans";
+      display: inline-block;
+      width: 475px;
+      text-align: center;
+      vertical-align: top;
+    }
+
+    h1 {
+      padding: 0;
+      font-size: 28px;
+    }
+
+    h4 {
+      font-family: "openSans";
+      color: black;
+    }
+
+    h5 {
+      font-family: "openSans";
+      color: grey;
+    }
+
+    table {
+      table-layout: fixed;
+      width: 680px;
+      padding-top: 20px;
+    }
+
+    td, th {
+      padding-bottom: 0.8em;
+    }
+
+    .stop:last-child {
+      page-break-before: avoid;
+      page-break-after: avoid;
+    }
+
+    th {
+      width: 160px;
+      overflow: hidden;
+      font-size: 20px;
+      padding-left: 10px;
+      text-align: left;
+    }
+
+    td {
+      width: 480px;
+      overflow: hidden;
+      text-align: left;
+      font-size: 20px;
+    }
+
+    .govuk-details {
+      font-weight: 400;
+      font-size: 16px;
+      line-height: 1.25;
+      margin-bottom: 45px;
+    }
+
+  </style>
+  <meta charset="UTF-8"/>
+  <meta name="subject" content="Accessible PDF template"/>
+  <meta name="author" content="HMCTS Court and Tribunal Hearings"/>
+  <meta name="description" content="Document description - vital for compliance."/>
+  <title th:text="${i18n.titleText + contentDate}"/>
+</head>
+<body>
+<div class="logoHeaderWrapper pageSeperated">
+  <div class="logoDatesContainer">
+    <div class="dateContainer">
+      <h4 th:text="${i18n.listFor + contentDate}"/>
+      <h5 th:text="${i18n.published + publishedDate}"/>
+    </div>
+  </div>
+
+  <div class="mainHeaderText">
+    <h1 th:text="${i18n.titleText}"/>
+    <h3 th:text="${i18n.subHeader}"/>
+    <details class="govuk-details">
+      <summary>
+        <b><p th:text="${i18n.importantInformationHeading}"/></b>
+      </summary>
+      <div>
+        <p>
+          <span th:text="${i18n.importantInformationPart1}"/><a th:href="${i18n.importantInformationPart2}" th:title="${i18n.importantInformationPart3}" th:text="${i18n.importantInformationPart3}"/>
+        </p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<div class="stop">
+  <div class="pageSeparatedCase" th:each="case : ${cases}">
+    <table>
+      <tr>
+        <th th:text="${i18n.tableHeaders[0]}"/>
+        <td th:text="${case.name}"/>
+      </tr>
+      <tr>
+        <th th:text="${i18n.tableHeaders[1]}"/>
+        <td th:text="${#strings.isEmpty(case.age) ? case.dateOfBirth : case.dateOfBirth + ' (' + case.age + ')'}"/>
+      </tr>
+      <tr>
+        <th th:text="${i18n.tableHeaders[2]}"/>
+        <td th:text="${case.addressLine1}"/>
+      </tr>
+      <tr th:each="addressLine : ${case.addressRemainder}">
+        <th/>
+        <td th:text="${addressLine}"/>
+      </tr>
+      <tr>
+        <th th:text="${i18n.tableHeaders[3]}"/>
+        <td th:text="${case.prosecutor}"/>
+      </tr>
+      <tr>
+        <th th:text="${i18n.tableHeaders[4]}"/>
+        <td th:text="${case.reference1}"/>
+      </tr>
+      <tr th:each="reference: ${case.referenceRemainder}">
+        <th/>
+        <td th:text="${reference}"/>
+      </tr>
+      <span th:each="case: ${case.offences}">
+      <tr><th th:text="${i18n.offenceHeaders[0]}"/><td th:text="${case.offence}"/></tr>
+      <tr><th th:text="${i18n.offenceHeaders[1]}"/><td th:text="${case.wording}"/></tr>
+      <tr><th th:text="${i18n.offenceHeaders[2]}"/><td th:text="${case.reportingRestriction}"/></tr>
+    </span>
+    </table>
+  </div>
+</div>
+
+<hr/>
+<p th:text="${i18n.legal1}" style="font-family: 'openSans'; font-size: 24px;"/>
+<p th:text="${i18n.legal2}" style="font-family: 'openSans'; font-size: 24px;"/>
+<hr/>
+<p th:text="${i18n.endText}" style="text-align: center;"/>
+</body>
+</html>

@@ -32,18 +32,18 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
-import uk.gov.hmcts.reform.pip.data.management.helpers.LocationHelper;
+import uk.gov.hmcts.reform.pip.data.management.helpers.NoMatchArtefactHelper;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationArtefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.HeaderGroup;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.views.ArtefactView;
-import uk.gov.hmcts.reform.pip.data.management.service.PublicationCreationRunner;
-import uk.gov.hmcts.reform.pip.data.management.service.PublicationService;
 import uk.gov.hmcts.reform.pip.data.management.service.ValidationService;
-import uk.gov.hmcts.reform.pip.data.management.service.artefact.ArtefactDeleteService;
-import uk.gov.hmcts.reform.pip.data.management.service.artefact.ArtefactSearchService;
-import uk.gov.hmcts.reform.pip.data.management.service.artefact.ArtefactService;
-import uk.gov.hmcts.reform.pip.data.management.service.artefact.ArtefactTriggerService;
+import uk.gov.hmcts.reform.pip.data.management.service.publication.ArtefactDeleteService;
+import uk.gov.hmcts.reform.pip.data.management.service.publication.ArtefactSearchService;
+import uk.gov.hmcts.reform.pip.data.management.service.publication.ArtefactService;
+import uk.gov.hmcts.reform.pip.data.management.service.publication.ArtefactTriggerService;
+import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationCreationRunner;
+import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationService;
 import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
 import uk.gov.hmcts.reform.pip.model.authentication.roles.IsAdmin;
 import uk.gov.hmcts.reform.pip.model.authentication.roles.IsPublisher;
@@ -205,9 +205,8 @@ public class PublicationController {
         Artefact createdItem = publicationCreationRunner.run(artefact, payload);
         logManualUpload(publicationService.maskEmail(issuerEmail), createdItem.getArtefactId().toString());
 
-        // Process the created artefact by requesting channel management to generate PDF/Excel files
-        // and check/trigger subscription management, async.
-        if (!LocationHelper.isNoMatchLocationId(createdItem.getLocationId())) {
+        // Process the created artefact to generate PDF/Excel files and check/trigger subscription management
+        if (!NoMatchArtefactHelper.isNoMatchLocationId(createdItem.getLocationId())) {
             publicationService.processCreatedPublication(createdItem, payload);
         }
 
@@ -288,7 +287,7 @@ public class PublicationController {
         Artefact createdItem =  publicationCreationRunner.run(artefact, file);
         logManualUpload(publicationService.maskEmail(issuerEmail), createdItem.getArtefactId().toString());
 
-        if (!LocationHelper.isNoMatchLocationId(createdItem.getLocationId())) {
+        if (!NoMatchArtefactHelper.isNoMatchLocationId(createdItem.getLocationId())) {
             artefactTriggerService.checkAndTriggerSubscriptionManagement(artefact);
         }
 

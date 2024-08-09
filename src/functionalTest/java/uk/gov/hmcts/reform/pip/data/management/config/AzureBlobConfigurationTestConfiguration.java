@@ -6,6 +6,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 
 /**
@@ -19,15 +20,24 @@ public class AzureBlobConfigurationTestConfiguration {
     BlobClient blobClientMock;
 
     @Mock
-    BlobContainerClient blobContainerClientMock;
+    BlobContainerClient artefactBlobContainerClientMock;
+
+    @Mock
+    BlobContainerClient publicationsBlobContainerClientMock;
 
     public AzureBlobConfigurationTestConfiguration() {
         MockitoAnnotations.openMocks(this);
     }
 
-    @Bean
-    public BlobContainerClient blobContainerClient() {
-        return blobContainerClientMock;
+    @Bean(name = "artefact")
+    @Primary
+    public BlobContainerClient artefactBlobContainerClient() {
+        return artefactBlobContainerClientMock;
+    }
+
+    @Bean(name = "publications")
+    public BlobContainerClient publicationsBlobContainerClient() {
+        return publicationsBlobContainerClientMock;
     }
 
     @Bean

@@ -42,8 +42,6 @@ payload:
 service-to-service:
   subscription-management: ${SUBSCRIPTION_MANAGEMENT_URL:https://pip-subscription-management.staging.platform.hmcts.net/}
   account-management: ${ACCOUNT_MANAGEMENT_URL:https://pip-account-management.staging.platform.hmcts.net/}
-  channel-management: ${CHANNEL_MANAGEMENT_URL:https://pip-channel-management.staging.platform.hmcts.net/}
-
 dbMigration:
   runOnStartup: true
 
