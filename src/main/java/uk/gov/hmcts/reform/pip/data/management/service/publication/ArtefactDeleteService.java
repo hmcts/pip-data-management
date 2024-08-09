@@ -42,7 +42,6 @@ public class ArtefactDeleteService {
     private final SubscriptionManagementService subscriptionManagementService;
     private final AccountManagementService accountManagementService;
     private final PublicationServicesService publicationServicesService;
-    private final ArtefactService artefactService;
 
     public ArtefactDeleteService(ArtefactRepository artefactRepository, LocationRepository locationRepository,
                                  LocationService locationService,
@@ -50,8 +49,7 @@ public class ArtefactDeleteService {
                                  AzureArtefactBlobService azureArtefactBlobService,
                                  SubscriptionManagementService subscriptionManagementService,
                                  AccountManagementService accountManagementService,
-                                 PublicationServicesService publicationServicesService,
-                                 ArtefactService artefactService) {
+                                 PublicationServicesService publicationServicesService) {
         this.artefactRepository = artefactRepository;
         this.locationRepository = locationRepository;
         this.locationService = locationService;
@@ -60,7 +58,6 @@ public class ArtefactDeleteService {
         this.subscriptionManagementService = subscriptionManagementService;
         this.accountManagementService = accountManagementService;
         this.publicationServicesService = publicationServicesService;
-        this.artefactService = artefactService;
     }
 
     /**
@@ -107,8 +104,7 @@ public class ArtefactDeleteService {
 
         // Delete the generated files for the publications if it's not a flat file
         if (artefact.getIsFlatFile().equals(Boolean.FALSE)
-            && !NoMatchArtefactHelper.isNoMatchLocationId(artefact.getLocationId())
-            && artefactService.payloadWithinLimit(artefact.getPayloadSize())) {
+            && !NoMatchArtefactHelper.isNoMatchLocationId(artefact.getLocationId())) {
             publicationManagementService.deleteFiles(artefact.getArtefactId(), artefact.getListType(),
                                                      artefact.getLanguage());
         }

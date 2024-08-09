@@ -224,7 +224,7 @@ class PublicationServiceTest {
     }
 
     @Test
-    void testUpdatingOfExistingArtefactWithPayloadOverLimitAndNewArtefactWithPayloadOverLimit() {
+    void testUpdatingOfExistingArtefactWithNewPayloadNotWithinLimit() {
         Artefact existingArtefact = Artefact.builder()
             .artefactId(ARTEFACT_ID)
             .provenance(PROVENANCE)
@@ -234,47 +234,6 @@ class PublicationServiceTest {
             .language(Language.ENGLISH)
             .payload(PAYLOAD_URL)
             .payloadSize(PAYLOAD_SIZE_OVER_LIMIT)
-            .build();
-
-        Artefact artefactToBeCreated = Artefact.builder()
-            .artefactId(ARTEFACT_ID)
-            .provenance(PROVENANCE)
-            .contentDate(START_OF_TODAY_CONTENT_DATE)
-            .locationId(PROVENANCE_ID)
-            .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
-            .language(Language.ENGLISH)
-            .payload(PAYLOAD_URL)
-            .payloadSize(PAYLOAD_SIZE_OVER_LIMIT)
-            .build();
-
-        when(artefactRepository.findArtefactByUpdateLogic(artefactToBeCreated.getLocationId(),
-                                                          artefactToBeCreated.getContentDate(),
-                                                          artefactToBeCreated.getLanguage(),
-                                                          artefactToBeCreated.getListType(),
-                                                          artefactToBeCreated.getProvenance()))
-            .thenReturn(Optional.of(existingArtefact));
-        when(azureArtefactBlobService.createPayload(any(), eq(PAYLOAD))).thenReturn(PAYLOAD_URL);
-        when(artefactRepository.save(any())).thenReturn(artefactToBeCreated);
-
-        Artefact returnedArtefact = publicationService.createPublication(artefactToBeCreated, PAYLOAD);
-
-        verify(azureArtefactBlobService).deleteBlob(anyString());
-        verifyNoInteractions(publicationManagementService);
-
-        assertEquals(artefactToBeCreated, returnedArtefact, ROWID_RETURNS_UUID);
-    }
-
-    @Test
-    void testUpdatingOfExistingArtefactWithPayloadWithinLimitAndNewArtefactWithPayloadOverLimit() {
-        Artefact existingArtefact = Artefact.builder()
-            .artefactId(ARTEFACT_ID)
-            .provenance(PROVENANCE)
-            .locationId(PROVENANCE_ID)
-            .contentDate(START_OF_TODAY_CONTENT_DATE)
-            .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
-            .language(Language.ENGLISH)
-            .payload(PAYLOAD_URL)
-            .payloadSize(PAYLOAD_SIZE_WITHIN_LIMIT)
             .build();
 
         Artefact artefactToBeCreated = Artefact.builder()
