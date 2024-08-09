@@ -251,7 +251,9 @@ class ValidationServiceTest {
                              validationService.validateBody(text, headerGroup),
                          "Valid JSON string marked as not valid");
 
-            assertEquals("$.venue.venueAddress.town: does not match the regex pattern ^(?!.*<[^>]+>).*$",
+            assertEquals("$.venue.venueAddress.town: does not match the regex pattern ^(?!.*<[^>]+>).*$, "
+                             + "$.venue.venueAddress.town: does not match the regex pattern ^(?!(.|\\r|\\n)*<[^>]+>)"
+                             + "(.|\\r|\\n)*$",
                          payloadValidationException.getMessage(),
                          "JSON Payload message does not match expected exception");
         } catch (IOException exception) {

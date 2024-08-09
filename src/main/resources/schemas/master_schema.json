@@ -16,12 +16,12 @@
         "town": {
           "title": "Town",
           "type": "string",
-          "pattern": "^(?!.*<[^>]+>).*$"
+          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
         },
         "county": {
           "title": "County",
           "type": "string",
-          "pattern": "^(?!.*<[^>]+>).*$"
+          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
         },
         "postCode": {
           "title": "Address Postcode",

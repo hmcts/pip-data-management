@@ -145,7 +145,7 @@
                                                     "A"
                                                   ],
                                                   "default": "",
-                                                  "pattern": "^[a-zA-Z]$"
+                                                  "pattern": "^.?$"
                                                 },
                                                 "individualSurname": {
                                                   "description": "Surname of party",

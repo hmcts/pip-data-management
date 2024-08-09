@@ -671,4 +671,27 @@ class SjpPressListTest {
                                SJP_PRESS_VALID_MESSAGE);
         }
     }
+
+    @Test
+    void testValidateWithoutErrorWhenTownAndCountyContainNewLineCharacters() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream(SJP_PRESS_LIST_VALID_JSON)) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            JsonNode node = OBJECT_MAPPER.readValue(text, JsonNode.class);
+
+            ObjectNode addressNode = (ObjectNode) node.get(COURT_LIST_SCHEMA).get(0).get(COURT_HOUSE_SCHEMA)
+                .get(COURT_ROOM_SCHEMA).get(0).get(SESSION_SCHEMA).get(0)
+                .get(SITTINGS_SCHEMA).get(0).get(HEARING_SCHEMA).get(0)
+                .get(PARTY_SCHEMA).get(0).get(INDIVIDUAL_DETAILS_SCHEMA)
+                .get(ADDRESS_SCHEMA);
+
+            addressNode.put("town", "A\nB");
+            addressNode.put("county", "C\rD");
+
+            String listJson = node.toString();
+            assertDoesNotThrow(() -> validationService.validateBody(listJson, headerGroup),
+                               SJP_PRESS_VALID_MESSAGE);
+        }
+    }
 }
