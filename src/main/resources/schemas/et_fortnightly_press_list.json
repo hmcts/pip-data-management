@@ -251,7 +251,7 @@
                                                     "examples": [
                                                       "ACCUSED", "PROSECUTOR"
                                                     ],
-                                                    "enum": ["CLAIMANT_PETITIONER", "CLAIMANT_PETITIONER_REPRESENTATIVE", "RESPONDENT", "RESPONDENT_REPRESENTATIVE"],
+                                                    "enum": ["APPLICANT_PETITIONER", "APPLICANT_PETITIONER_REPRESENTATIVE", "RESPONDENT", "RESPONDENT_REPRESENTATIVE"],
                                                     "default": "",
                                                     "pattern": "^(?!.*<[^>]+>).*$"
                                                   },

@@ -24,9 +24,9 @@
                 "caseSequenceIndicator": "2 of 3",
                 "party": [
                   {
-                    "partyRole": "CLAIMANT_PETITIONER",
-                    "OrganisationDetails": {
-                      "OrganisationName": "Test Organisation"
+                    "partyRole": "APPLICANT_PETITIONER",
+                    "organisationDetails": {
+                      "organisationName": "Test Organisation"
                     }
                   },
                   {
@@ -79,7 +79,7 @@
                   "caseNumber": "12341234",
                   "party": [
                     {
-                      "partyRole": "CLAIMANT_PETITIONER",
+                      "partyRole": "APPLICANT_PETITIONER",
                       "individualDetails": {
                         "title": "Ms",
                         "individualForenames": "Test forename",
@@ -110,7 +110,7 @@
                     "caseNumber": "12341234",
                     "party": [
                       {
-                        "partyRole": "CLAIMANT_PETITIONER",
+                        "partyRole": "APPLICANT_PETITIONER",
                         "individualDetails": {
                           "title": "Ms",
                           "individualForenames": "Test forename",
@@ -146,7 +146,7 @@
                     "caseSequenceIndicator": "2 of 3",
                     "party": [
                       {
-                        "partyRole": "CLAIMANT_PETITIONER",
+                        "partyRole": "APPLICANT_PETITIONER",
                         "individualDetails": {
                           "title": "Ms",
                           "individualForenames": "Test forename",
@@ -178,7 +178,7 @@
                       "caseSequenceIndicator": "2 of 3",
                       "party": [
                         {
-                          "partyRole": "CLAIMANT_PETITIONER",
+                          "partyRole": "APPLICANT_PETITIONER",
                           "individualDetails": {
                             "title": "Ms",
                             "individualForenames": "Test forename",

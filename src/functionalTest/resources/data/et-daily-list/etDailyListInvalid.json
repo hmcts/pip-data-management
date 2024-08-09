@@ -24,7 +24,7 @@
               }],
               "party": [
                 {
-                  "partyRole": "CLAIMANT_PETITIONER",
+                  "partyRole": "APPLICANT_PETITIONER",
                   "OrganisationDetails": {
                     "OrganisationName": "Test Organisation"
                   }
@@ -79,7 +79,7 @@
                 }],
                 "party": [
                   {
-                    "partyRole": "CLAIMANT_PETITIONER",
+                    "partyRole": "APPLICANT_PETITIONER",
                     "individualDetails": {
                       "title": "Ms",
                       "individualForenames": "Test forename",
@@ -110,7 +110,7 @@
                   }],
                   "party": [
                     {
-                      "partyRole": "CLAIMANT_PETITIONER",
+                      "partyRole": "APPLICANT_PETITIONER",
                       "individualDetails": {
                         "title": "Ms",
                         "individualForenames": "Test forename",
@@ -146,7 +146,7 @@
                   }],
                   "party": [
                     {
-                      "partyRole": "CLAIMANT_PETITIONER",
+                      "partyRole": "APPLICANT_PETITIONER",
                       "individualDetails": {
                         "title": "Ms",
                         "individualForenames": "Test forename",
@@ -178,7 +178,7 @@
                     }],
                     "party": [
                       {
-                        "partyRole": "CLAIMANT_PETITIONER",
+                        "partyRole": "APPLICANT_PETITIONER",
                         "individualDetails": {
                           "title": "Ms",
                           "individualForenames": "Test forename",

@@ -22,13 +22,13 @@
                 "caseNumber": "12341234",
                 "caseSequenceIndicator": "2 of 3",
                 "party": [{
-                  "partyRole": "CLAIMANT_PETITIONER",
-                  "OrganisationDetails": {
-                    "OrganisationName": "Test Organisation"
+                  "partyRole": "APPLICANT_PETITIONER",
+                  "organisationDetails": {
+                    "organisationName": "Test Organisation"
                   }
                 },
                   {
-                    "partyRole": "CLAIMANT_PETITIONER_REPRESENTATIVE",
+                    "partyRole": "APPLICANT_PETITIONER_REPRESENTATIVE",
                     "individualDetails": {
                       "title": "Mr",
                       "individualForenames": "Test forename 2",
@@ -93,7 +93,7 @@
                 "case": [{
                   "caseNumber": "12341234",
                   "party": [{
-                    "partyRole": "CLAIMANT_PETITIONER",
+                    "partyRole": "APPLICANT_PETITIONER",
                     "individualDetails": {
                       "title": "Ms",
                       "individualForenames": "Test forename",
@@ -101,7 +101,7 @@
                     }
                   },
                     {
-                      "partyRole": "CLAIMANT_PETITIONER_REPRESENTATIVE",
+                      "partyRole": "APPLICANT_PETITIONER_REPRESENTATIVE",
                       "individualDetails": {
                         "title": "Sir",
                         "individualForenames": "Test forename",
@@ -141,7 +141,7 @@
                   "case": [{
                     "caseNumber": "12341234",
                     "party": [{
-                      "partyRole": "CLAIMANT_PETITIONER",
+                      "partyRole": "APPLICANT_PETITIONER",
                       "individualDetails": {
                         "title": "Ms",
                         "individualForenames": "Test forename",
@@ -149,7 +149,7 @@
                       }
                     },
                       {
-                        "partyRole": "CLAIMANT_PETITIONER_REPRESENTATIVE",
+                        "partyRole": "APPLICANT_PETITIONER_REPRESENTATIVE",
                         "individualDetails": {
                           "title": "Sir",
                           "individualForenames": "Test forename",
@@ -193,7 +193,7 @@
                     "caseNumber": "12341234",
                     "caseSequenceIndicator": "2 of 3",
                     "party": [{
-                      "partyRole": "CLAIMANT_PETITIONER",
+                      "partyRole": "APPLICANT_PETITIONER",
                       "individualDetails": {
                         "title": "Ms",
                         "individualForenames": "Test forename",
@@ -201,7 +201,7 @@
                       }
                     },
                       {
-                        "partyRole": "CLAIMANT_PETITIONER_REPRESENTATIVE",
+                        "partyRole": "APPLICANT_PETITIONER_REPRESENTATIVE",
                         "individualDetails": {
                           "title": "Sir",
                           "individualForenames": "Test forename",
@@ -242,7 +242,7 @@
                       "caseNumber": "12341234",
                       "caseSequenceIndicator": "2 of 3",
                       "party": [{
-                        "partyRole": "CLAIMANT_PETITIONER",
+                        "partyRole": "APPLICANT_PETITIONER",
                         "individualDetails": {
                           "title": "Ms",
                           "individualForenames": "Test forename",
@@ -250,7 +250,7 @@
                         }
                       },
                         {
-                          "partyRole": "CLAIMANT_PETITIONER_REPRESENTATIVE",
+                          "partyRole": "APPLICANT_PETITIONER_REPRESENTATIVE",
                           "individualDetails": {
                             "title": "Sir",
                             "individualForenames": "Test forename",
