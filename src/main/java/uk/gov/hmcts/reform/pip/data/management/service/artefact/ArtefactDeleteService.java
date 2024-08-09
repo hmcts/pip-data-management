@@ -42,15 +42,13 @@ public class ArtefactDeleteService {
     private final AccountManagementService accountManagementService;
     private final PublicationServicesService publicationServicesService;
     private final ChannelManagementService channelManagementService;
-    private final ArtefactService artefactService;
 
     public ArtefactDeleteService(ArtefactRepository artefactRepository, LocationRepository locationRepository,
                                  LocationService locationService, AzureBlobService azureBlobService,
                                  SubscriptionManagementService subscriptionManagementService,
                                  AccountManagementService accountManagementService,
                                  PublicationServicesService publicationServicesService,
-                                 ChannelManagementService channelManagementService,
-                                 ArtefactService artefactService) {
+                                 ChannelManagementService channelManagementService) {
         this.artefactRepository = artefactRepository;
         this.locationRepository = locationRepository;
         this.locationService = locationService;
@@ -59,7 +57,6 @@ public class ArtefactDeleteService {
         this.accountManagementService = accountManagementService;
         this.publicationServicesService = publicationServicesService;
         this.channelManagementService = channelManagementService;
-        this.artefactService = artefactService;
     }
 
     /**
@@ -106,8 +103,7 @@ public class ArtefactDeleteService {
 
         // Delete the generated files for the publications if it's not a flat file
         if (artefact.getIsFlatFile().equals(Boolean.FALSE)
-            && !LocationHelper.isNoMatchLocationId(artefact.getLocationId())
-            && artefactService.payloadWithinLimit(artefact.getPayloadSize())) {
+            && !LocationHelper.isNoMatchLocationId(artefact.getLocationId())) {
             channelManagementService.deleteFiles(artefact.getArtefactId(), artefact.getListType(),
                                                  artefact.getLanguage());
         }

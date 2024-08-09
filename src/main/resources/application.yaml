@@ -101,7 +101,7 @@ service-to-service:
 
 payload:
   json:
-    max-size-in-kb: ${MAX_PAYLOAD_SIZE:2048}
+    max-size-in-kb: ${MAX_PAYLOAD_SIZE:256}
     party-search-config:
       hearings-path: "$['courtLists'][*]['courtHouse']['courtRoom'][*]['session'][*]['sittings'][*]['hearing'][*]"
       cases-path: "$['case'][*]['caseNumber', 'caseName', 'caseUrn']"
