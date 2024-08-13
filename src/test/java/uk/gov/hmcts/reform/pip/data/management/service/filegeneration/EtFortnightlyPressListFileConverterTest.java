@@ -78,7 +78,7 @@ class EtFortnightlyPressListFileConverterTest {
             .startsWith("9:30am",
                         "2 hours [2 of 3]",
                         "12341234",
-                        "Rep: Mr T Test Surname 2",
+                        "Test Organisation Rep: Mr T Test Surname 2",
                         "Capt. T Test Surname Rep: Dr T Test Surname 2",
                         "This is a hearing type",
                         "This is a sitting channel"

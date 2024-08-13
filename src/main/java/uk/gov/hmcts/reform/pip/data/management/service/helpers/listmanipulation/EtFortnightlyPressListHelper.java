@@ -28,7 +28,7 @@ public final class EtFortnightlyPressListHelper {
     private static final String SESSION = "session";
     private static final String HEARING = "hearing";
     private static final String CASE = "case";
-    private static final String CLAIMANT = "claimant";
+    private static final String APPLICANT = "claimant";
     private static final String RESPONDENT = "respondent";
     private static final String TIME_FORMAT = "h:mma";
     private static final String REP = "rep";
@@ -102,11 +102,11 @@ public final class EtFortnightlyPressListHelper {
     }
 
     public static void moveTablePartyValuesToCase(ObjectNode hearingCase, Map<String, Object> language) {
-        hearingCase.put(CLAIMANT,
-                        GeneralHelper.findAndReturnNodeText(hearingCase, CLAIMANT));
-        hearingCase.put("claimantRepresentative",
+        hearingCase.put(APPLICANT,
+                        GeneralHelper.findAndReturnNodeText(hearingCase, APPLICANT));
+        hearingCase.put("applicantRepresentative",
                         language.get(REP) + GeneralHelper.findAndReturnNodeText(hearingCase,
-                                                                                "claimantRepresentative"));
+                                                                                "applicantRepresentative"));
         hearingCase.put("RESPONDENT",
                         GeneralHelper.findAndReturnNodeText(hearingCase, "RESPONDENT"));
         hearingCase.put("respondentRepresentative",
@@ -131,7 +131,7 @@ public final class EtFortnightlyPressListHelper {
                                     PartyRoleHelper.findAndManipulatePartyInformation(hearingCase, initialised);
                                 } else {
                                     ObjectNode hearingObj = (ObjectNode) hearingCase;
-                                    hearingObj.put(CLAIMANT, "");
+                                    hearingObj.put(APPLICANT, "");
                                     hearingObj.put(RESPONDENT, "");
                                 }
                             })

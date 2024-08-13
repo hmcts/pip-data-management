@@ -192,7 +192,7 @@
                                 th:text="${hearing.get('formattedDuration').asText()}"/>
                             </th:block>
                             <td class="govuk-table__cell" th:text="${case.get('caseNumber').asText()}" />
-                            <td class="govuk-table__cell" th:utext="${case.get('claimant').asText() + '<br/>' + case.get('claimantRepresentative').asText()}"/>
+                            <td class="govuk-table__cell" th:utext="${case.get('applicant').asText() + '<br/>' + case.get('applicantRepresentative').asText()}"/>
                             <td class="govuk-table__cell" th:utext="${case.get('respondent').asText() + '<br/>' + case.get('respondentRepresentative').asText()}"/>
                             <td class="govuk-table__cell" th:text="${hearing.get('hearingType').asText()}" />
                             <td class="govuk-table__cell" th:text="${hearing.get('caseHearingChannel').asText()}" />

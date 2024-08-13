@@ -27,7 +27,7 @@ public class EtDailyListSummaryData implements ArtefactSummaryData {
                             hearing -> hearing.get("case").forEach(hearingCase -> {
                                 Map<String, String> fields = ImmutableMap.of(
                                     "Claimant",
-                                    GeneralHelper.findAndReturnNodeText(hearingCase, "claimant"),
+                                    GeneralHelper.findAndReturnNodeText(hearingCase, "applicant"),
                                     "Respondent",
                                     GeneralHelper.findAndReturnNodeText(hearingCase, "respondent"),
                                     "Case reference",

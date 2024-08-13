@@ -82,11 +82,11 @@ class EtFortnightlyPressListHelperTest {
         assertEquals("12341234", hearing.get(CASE).get(0).get("caseNumber").asText(),
                      "Unable to find case number");
 
-        assertEquals("", hearing.get(CASE).get(0).get("claimant").asText(),
-                     "Unable to find claimant");
+        assertEquals("Test Organisation", hearing.get(CASE).get(0).get("applicant").asText(),
+                     "Unable to find applicant");
 
-        assertEquals("Rep: Mr T Test Surname 2", hearing.get(CASE).get(0).get("claimantRepresentative").asText(),
-                     "Unable to find claimant representative");
+        assertEquals("Rep: Mr T Test Surname 2", hearing.get(CASE).get(0).get("applicantRepresentative").asText(),
+                     "Unable to find applicant representative");
 
         assertEquals("Capt. T Test Surname", hearing.get(CASE).get(0).get("respondent").asText(),
                      "Unable to find respondent");
@@ -131,11 +131,11 @@ class EtFortnightlyPressListHelperTest {
         assertEquals("12341234", hearing.get(CASE).get(0).get("caseNumber").asText(),
                      "Unable to find case number");
 
-        assertEquals("", hearing.get(CASE).get(0).get("claimant").asText(),
-                     "Unable to find claimant");
+        assertEquals("Test Organisation", hearing.get(CASE).get(0).get("applicant").asText(),
+                     "Unable to find applicant");
 
-        assertEquals("Rep: Mr T Test Surname 2", hearing.get(CASE).get(0).get("claimantRepresentative").asText(),
-                     "Unable to find claimant representative");
+        assertEquals("Rep: Mr T Test Surname 2", hearing.get(CASE).get(0).get("applicantRepresentative").asText(),
+                     "Unable to find applicant representative");
 
         assertEquals("Capt. T Test Surname", hearing.get(CASE).get(0).get("respondent").asText(),
                      "Unable to find respondent");
