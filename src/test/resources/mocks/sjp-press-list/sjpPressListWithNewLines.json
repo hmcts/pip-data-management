@@ -1,0 +1,71 @@
+{
+  "document": {
+    "publicationDate": "2016-09-13T23:30:52.123Z",
+    "documentName": "This is a document\r\nname",
+    "version": "This is a\r\nversion"
+  },
+  "courtLists": [
+    {
+      "courtHouse": {
+        "courtRoom": [
+          {
+            "session": [
+              {
+                "sittings": [
+                  {
+                    "hearing": [
+                      {
+                        "party": [
+                          {
+                            "partyRole": "ACCUSED",
+                            "individualDetails": {
+                              "individualSurname": "This is a\r\nsurname",
+                              "dateOfBirth": "01/01/1800",
+                              "age": 50,
+                              "address": {
+                                "town": "Month\r\nA",
+                                "postCode": "AA1\r\nAA1",
+                                "line": [
+                                  "Address Line\r\n1",
+                                  "Address Line\r\n2"
+                                ]
+                              },
+                              "title": "This is a\r\ntitle"
+                            }
+                          },
+                          {
+                            "partyRole": "PROSECUTOR",
+                            "organisationDetails": {
+                              "organisationName": "This is an\r\norganisation",
+                              "organisationAddress": {
+                                "county": "County\r\nA",
+                                "town": "Month\r\nA",
+                                "postCode": "AA1\r\nAA1"
+                              }
+                            }
+                          }
+                        ],
+                        "offence": [
+                          {
+                            "offenceTitle": "This is an offence\r\ntitle",
+                            "offenceWording": "This is offence\r\nwording",
+                            "reportingRestriction": true
+                          }
+                        ],
+                        "case": [
+                          {
+                            "caseUrn": "ABC1234\r\n5"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

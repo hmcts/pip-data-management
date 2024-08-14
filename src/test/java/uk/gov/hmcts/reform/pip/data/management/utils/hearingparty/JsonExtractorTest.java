@@ -33,7 +33,6 @@ class JsonExtractorTest {
     @Autowired
     JsonExtractor jsonExtractor;
 
-    private static final String VALID_PAYLOAD = "{\"test\":\"test-1234\"}";
     private static final String CASES_KEY = "cases";
     private static final String CASE_NUMBER = "caseNumber";
     private static final String CASE_NAME = "caseName";

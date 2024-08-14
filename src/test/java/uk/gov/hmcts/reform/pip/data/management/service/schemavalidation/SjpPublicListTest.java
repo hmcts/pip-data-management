@@ -38,7 +38,9 @@ class SjpPublicListTest {
     @Autowired
     ValidationService validationService;
 
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private static final String SJP_PUBLIC_LIST_VALID_JSON = "mocks/sjp-public-list/sjpPublicList.json";
+    private static final String SJP_PUBLIC_LIST_WITH_NEW_LINES = "mocks/sjp-public-list/sjpPublicListWithNewLines.json";
     private static final String SJP_PUBLIC_VALID_MESSAGE = "SJP public list should be valid";
     private static final String SJP_PUBLIC_INVALID_MESSAGE = "Invalid sjp public";
 
@@ -66,8 +68,7 @@ class SjpPublicListTest {
     private HeaderGroup headerGroup;
 
     private JsonNode getJsonNode(String json) throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
-        return mapper.readValue(json, JsonNode.class);
+        return OBJECT_MAPPER.readValue(json, JsonNode.class);
     }
 
     @BeforeEach
@@ -125,8 +126,7 @@ class SjpPublicListTest {
             .getResourceAsStream(SJP_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode node = mapper.readValue(text, JsonNode.class);
+            JsonNode node = OBJECT_MAPPER.readValue(text, JsonNode.class);
             ((ObjectNode) node.get("document")).remove("publicationDate");
 
             String listJson = node.toString();
@@ -142,8 +142,7 @@ class SjpPublicListTest {
             .getResourceAsStream(SJP_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode node = mapper.readValue(text, JsonNode.class);
+            JsonNode node = OBJECT_MAPPER.readValue(text, JsonNode.class);
             ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0)).remove(COURT_HOUSE_SCHEMA);
 
             String listJson = node.toString();
@@ -159,8 +158,7 @@ class SjpPublicListTest {
             .getResourceAsStream(SJP_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode node = mapper.readValue(text, JsonNode.class);
+            JsonNode node = OBJECT_MAPPER.readValue(text, JsonNode.class);
             ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0).get(COURT_HOUSE_SCHEMA))
                 .remove(COURT_ROOM_SCHEMA);
 
@@ -177,8 +175,7 @@ class SjpPublicListTest {
             .getResourceAsStream(SJP_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode node = mapper.readValue(text, JsonNode.class);
+            JsonNode node = OBJECT_MAPPER.readValue(text, JsonNode.class);
             ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0).get(COURT_HOUSE_SCHEMA)
                 .get(COURT_ROOM_SCHEMA).get(0)).remove(SESSION_SCHEMA);
 
@@ -195,8 +192,7 @@ class SjpPublicListTest {
             .getResourceAsStream(SJP_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode node = mapper.readValue(text, JsonNode.class);
+            JsonNode node = OBJECT_MAPPER.readValue(text, JsonNode.class);
             ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0).get(COURT_HOUSE_SCHEMA)
                 .get(COURT_ROOM_SCHEMA).get(0).get(SESSION_SCHEMA).get(0)).remove(SITTINGS_SCHEMA);
 
@@ -213,8 +209,7 @@ class SjpPublicListTest {
             .getResourceAsStream(SJP_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode node = mapper.readValue(text, JsonNode.class);
+            JsonNode node = OBJECT_MAPPER.readValue(text, JsonNode.class);
             ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0).get(COURT_HOUSE_SCHEMA)
                 .get(COURT_ROOM_SCHEMA).get(0).get(SESSION_SCHEMA).get(0)
                 .get(SITTINGS_SCHEMA).get(0)).remove(HEARING_SCHEMA);
@@ -232,8 +227,7 @@ class SjpPublicListTest {
             .getResourceAsStream(SJP_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode node = mapper.readValue(text, JsonNode.class);
+            JsonNode node = OBJECT_MAPPER.readValue(text, JsonNode.class);
             ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0).get(COURT_HOUSE_SCHEMA)
                 .get(COURT_ROOM_SCHEMA).get(0).get(SESSION_SCHEMA).get(0)
                 .get(SITTINGS_SCHEMA).get(0).get(HEARING_SCHEMA).get(0)).remove(PARTY_SCHEMA);
@@ -251,8 +245,7 @@ class SjpPublicListTest {
             .getResourceAsStream(SJP_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode node = mapper.readValue(text, JsonNode.class);
+            JsonNode node = OBJECT_MAPPER.readValue(text, JsonNode.class);
             ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0).get(COURT_HOUSE_SCHEMA)
                 .get(COURT_ROOM_SCHEMA).get(0).get(SESSION_SCHEMA).get(0)
                 .get(SITTINGS_SCHEMA).get(0).get(HEARING_SCHEMA).get(0))
@@ -271,8 +264,7 @@ class SjpPublicListTest {
             .getResourceAsStream(SJP_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode node = mapper.readValue(text, JsonNode.class);
+            JsonNode node = OBJECT_MAPPER.readValue(text, JsonNode.class);
             ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0).get(COURT_HOUSE_SCHEMA)
                 .get(COURT_ROOM_SCHEMA).get(0).get(SESSION_SCHEMA).get(0)
                 .get(SITTINGS_SCHEMA).get(0).get(HEARING_SCHEMA).get(0)
@@ -292,8 +284,7 @@ class SjpPublicListTest {
             .getResourceAsStream(SJP_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode node = mapper.readValue(text, JsonNode.class);
+            JsonNode node = OBJECT_MAPPER.readValue(text, JsonNode.class);
             ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0).get(COURT_HOUSE_SCHEMA)
                 .get(COURT_ROOM_SCHEMA).get(0).get(SESSION_SCHEMA).get(0)
                 .get(SITTINGS_SCHEMA).get(0).get(HEARING_SCHEMA).get(0)
@@ -313,8 +304,7 @@ class SjpPublicListTest {
             .getResourceAsStream(SJP_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode node = mapper.readValue(text, JsonNode.class);
+            JsonNode node = OBJECT_MAPPER.readValue(text, JsonNode.class);
             ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0).get(COURT_HOUSE_SCHEMA)
                 .get(COURT_ROOM_SCHEMA).get(0).get(SESSION_SCHEMA).get(0)
                 .get(SITTINGS_SCHEMA).get(0).get(HEARING_SCHEMA).get(0)
@@ -333,8 +323,7 @@ class SjpPublicListTest {
             .getResourceAsStream(SJP_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode node = mapper.readValue(text, JsonNode.class);
+            JsonNode node = OBJECT_MAPPER.readValue(text, JsonNode.class);
             ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0).get(COURT_HOUSE_SCHEMA)
                 .get(COURT_ROOM_SCHEMA).get(0).get(SESSION_SCHEMA).get(0)
                 .get(SITTINGS_SCHEMA).get(0).get(HEARING_SCHEMA).get(0)
@@ -353,8 +342,7 @@ class SjpPublicListTest {
             .getResourceAsStream(SJP_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode node = mapper.readValue(text, JsonNode.class);
+            JsonNode node = OBJECT_MAPPER.readValue(text, JsonNode.class);
             ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0).get(COURT_HOUSE_SCHEMA)
                 .get(COURT_ROOM_SCHEMA).get(0).get(SESSION_SCHEMA).get(0)
                 .get(SITTINGS_SCHEMA).get(0).get(HEARING_SCHEMA).get(0)
@@ -373,8 +361,7 @@ class SjpPublicListTest {
             .getResourceAsStream(SJP_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode node = mapper.readValue(text, JsonNode.class);
+            JsonNode node = OBJECT_MAPPER.readValue(text, JsonNode.class);
             ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0).get(COURT_HOUSE_SCHEMA)
                 .get(COURT_ROOM_SCHEMA).get(0).get(SESSION_SCHEMA).get(0)
                 .get(SITTINGS_SCHEMA).get(0).get(HEARING_SCHEMA).get(0)
@@ -393,8 +380,7 @@ class SjpPublicListTest {
             .getResourceAsStream(SJP_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode node = mapper.readValue(text, JsonNode.class);
+            JsonNode node = OBJECT_MAPPER.readValue(text, JsonNode.class);
             ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0).get(COURT_HOUSE_SCHEMA)
                 .get(COURT_ROOM_SCHEMA).get(0).get(SESSION_SCHEMA).get(0)
                 .get(SITTINGS_SCHEMA).get(0).get(HEARING_SCHEMA).get(0)
@@ -414,8 +400,7 @@ class SjpPublicListTest {
             .getResourceAsStream(SJP_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode node = mapper.readValue(text, JsonNode.class);
+            JsonNode node = OBJECT_MAPPER.readValue(text, JsonNode.class);
             ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0).get(COURT_HOUSE_SCHEMA)
                 .get(COURT_ROOM_SCHEMA).get(0).get(SESSION_SCHEMA).get(0)
                 .get(SITTINGS_SCHEMA).get(0).get(HEARING_SCHEMA).get(0)
@@ -435,8 +420,7 @@ class SjpPublicListTest {
             .getResourceAsStream(SJP_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode node = mapper.readValue(text, JsonNode.class);
+            JsonNode node = OBJECT_MAPPER.readValue(text, JsonNode.class);
             ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0).get(COURT_HOUSE_SCHEMA)
                 .get(COURT_ROOM_SCHEMA).get(0).get(SESSION_SCHEMA).get(0)
                 .get(SITTINGS_SCHEMA).get(0).get(HEARING_SCHEMA).get(0)
@@ -456,8 +440,7 @@ class SjpPublicListTest {
             .getResourceAsStream(SJP_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode node = mapper.readValue(text, JsonNode.class);
+            JsonNode node = OBJECT_MAPPER.readValue(text, JsonNode.class);
 
             String listJson = node.toString().replace("\"postCode\":\"AA\"", "\"postCode\":" + postcode);
             assertThrows(PayloadValidationException.class,
@@ -473,8 +456,7 @@ class SjpPublicListTest {
             .getResourceAsStream(SJP_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode node = mapper.readValue(text, JsonNode.class);
+            JsonNode node = OBJECT_MAPPER.readValue(text, JsonNode.class);
 
             String listJson = node.toString().replace(
                 "\"individualForenames\":\"A\"",
@@ -494,13 +476,24 @@ class SjpPublicListTest {
             .getResourceAsStream(SJP_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode node = mapper.readValue(text, JsonNode.class);
+            JsonNode node = OBJECT_MAPPER.readValue(text, JsonNode.class);
 
             String listJson = node.toString().replace(
                 "\"individualForenames\":\"A\"",
                 "\"individualForenames\":\"" + forename + "\""
             );
+            assertDoesNotThrow(() -> validationService.validateBody(listJson, headerGroup),
+                               SJP_PUBLIC_VALID_MESSAGE);
+        }
+    }
+
+    @Test
+    void testValidateWithSuccessWhenFieldsContainNewLineCharacters() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream(SJP_PUBLIC_LIST_WITH_NEW_LINES)) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            String listJson = OBJECT_MAPPER.readValue(text, JsonNode.class).toString();
             assertDoesNotThrow(() -> validationService.validateBody(listJson, headerGroup),
                                SJP_PUBLIC_VALID_MESSAGE);
         }
