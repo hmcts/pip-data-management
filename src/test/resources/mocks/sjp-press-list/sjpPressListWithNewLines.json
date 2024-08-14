@@ -1,6 +1,6 @@
 {
   "document": {
-    "publicationDate": "2016-09-13T23:30:52.123Z",
+    "publicationDate": "2016-09-13T23:30:52.123\r\nZ",
     "documentName": "This is a document\r\nname",
     "version": "This is a\r\nversion"
   },
@@ -20,7 +20,7 @@
                             "partyRole": "ACCUSED",
                             "individualDetails": {
                               "individualSurname": "This is a\r\nsurname",
-                              "dateOfBirth": "01/01/1800",
+                              "dateOfBirth": "01/01/\r\n1800",
                               "age": 50,
                               "address": {
                                 "town": "Month\r\nA",

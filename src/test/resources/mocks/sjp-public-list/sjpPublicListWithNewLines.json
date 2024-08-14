@@ -2,7 +2,7 @@
   "document": {
     "version": "This is a\r\nversion",
     "documentName": "This is a\r\ndocument name",
-    "publicationDate": "2023-09-01T10:00:00.001Z"
+    "publicationDate": "2023-09-01T10:00:00.001\r\nZ"
   },
   "courtLists": [
     {
