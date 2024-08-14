@@ -478,7 +478,7 @@ class SjpPublicListTest {
 
             String listJson = node.toString().replace(
                 "\"individualForenames\":\"A\"",
-                "\"individualForenames\":\"ABC\""
+                "\"individualForenames\":\"AB\""
             );
             assertThrows(PayloadValidationException.class, () ->
                              validationService.validateBody(listJson, headerGroup),
@@ -487,8 +487,9 @@ class SjpPublicListTest {
         }
     }
 
-    @Test
-    void testValidateWithSuccessWhenForenameForAccusedIsLowerCaseInitial() throws IOException {
+    @ParameterizedTest
+    @ValueSource(strings = {"Z", "a", ".", "-", ""})
+    void testValidateWithSuccessWhenForenameForAccusedIsEmptyOrASingleCharacter(String forename) throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(SJP_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
@@ -498,7 +499,7 @@ class SjpPublicListTest {
 
             String listJson = node.toString().replace(
                 "\"individualForenames\":\"A\"",
-                "\"individualForenames\":\"a\""
+                "\"individualForenames\":\"" + forename + "\""
             );
             assertDoesNotThrow(() -> validationService.validateBody(listJson, headerGroup),
                                SJP_PUBLIC_VALID_MESSAGE);
