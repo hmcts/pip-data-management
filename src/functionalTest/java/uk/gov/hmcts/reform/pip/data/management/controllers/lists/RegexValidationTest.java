@@ -109,7 +109,7 @@ class RegexValidationTest {
 
             assertTrue(
                 exceptionResponse.getMessage().equals("$.document.documentName: does not match the regex"
-                                                            + " pattern ^(?!.*<[^>]+>).*$"),
+                                                            + " pattern ^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"),
                 "Publication date is not displayed in the exception response"
             );
         }
