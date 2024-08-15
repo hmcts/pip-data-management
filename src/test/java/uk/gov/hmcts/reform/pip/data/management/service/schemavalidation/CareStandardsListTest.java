@@ -36,7 +36,7 @@ class CareStandardsListTest {
     ValidationService validationService;
 
     private static final String CARE_STANDARDS_LIST_VALID_JSON =
-        "mocks/care-standards-list/careStandardsList.json";
+        "mocks/careStandardsList.json";
     private static final String CARE_STANDARDS_LIST_INVALID_MESSAGE =
         "Invalid care standards list marked as valid";
 
