@@ -38,7 +38,7 @@ class CrownWarnedListTest {
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
     private static final String CROWN_WARNED_LIST_VALID_JSON =
-        "mocks/crown-warned-list/crownWarnedList.json";
+        "mocks/crownWarnedList.json";
     private static final String CROWN_WARNED_LIST_INVALID_MESSAGE =
         "Invalid crown warned list marked as valid";
 

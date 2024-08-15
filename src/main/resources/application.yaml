@@ -14,7 +14,6 @@ management:
       exposure:
         include: health, info, prometheus
 
-#If you use a database then uncomment below lines and update db properties accordingly
 spring:
   cloud:
     azure:
@@ -39,10 +38,6 @@ spring:
             authorization-grant-type: client_credentials
             scopes:
               - ${PUBLICATION_SERVICES_AZ_API}/.default
-          channelManagementApi:
-            authorization-grant-type: client_credentials
-            scopes:
-              - ${CHANNEL_MANAGEMENT_AZ_API}/.default
   jackson:
     serialization.write_dates_as_timestamps: false
     mapper:
@@ -89,7 +84,8 @@ azure:
   blob:
     connection-string: ${CONNECTION_STRING}
     storage-account-name: ${STORAGE_ACCOUNT_NAME}
-    container-name: artefact
+    artefact-container-name: artefact
+    publications-container-name: publications
   managed-identity:
     client-id: ${MANAGED_IDENTITY_CLIENT_ID:}
 
@@ -97,7 +93,6 @@ service-to-service:
   subscription-management: ${SUBSCRIPTION_MANAGEMENT_URL:https://pip-subscription-management.staging.platform.hmcts.net}
   account-management: ${ACCOUNT_MANAGEMENT_URL:https://pip-account-management.staging.platform.hmcts.net}
   publication-services: ${PUBLICATION_SERVICES_URL:https://pip-publication-services.staging.platform.hmcts.net}
-  channel-management: ${CHANNEL_MANAGEMENT_URL:https://pip-channel-management.staging.platform.hmcts.net}
 
 payload:
   json:
@@ -111,6 +106,7 @@ payload:
       parties-org-name-path: "$['party'][?(@.partyRole != null && !(@.partyRole size 0) && !(@.partyRole =~ /^.*representative.*$/i))]['organisationDetails']['organisationName']"
     search-values:
       cases: "$['courtLists'][*]['courtHouse']['courtRoom'][*]['session'][*]['sittings'][*]['hearing'][*]['case'][*]['caseNumber', 'caseName', 'caseUrn']"
+
 validations:
   master-schema: "schemas/master_schema.json"
   validation-schemas:
@@ -146,6 +142,14 @@ springdoc:
 # Used for flyway to run DB migration on startup
 dbMigration:
   runOnStartup: ${RUN_DB_MIGRATION_ON_STARTUP:true}
+
+pdf:
+  font: /opt/app/openSans.ttf
+
+logging:
+  level:
+    com.openhtmltopdf.match: WARN
+    com.openhtmltopdf.load: WARN
 
 # Used to conditionally enable testing support API
 testingSupport:

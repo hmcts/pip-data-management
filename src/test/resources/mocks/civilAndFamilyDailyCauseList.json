@@ -1,0 +1,338 @@
+{
+  "document": {
+    "publicationDate": "2022-07-21T14:01:43Z",
+    "documentName": "This is a document name",
+    "version": "This is a document version"
+  },
+  "venue": {
+    "venueName": "This is the venue name",
+    "venueAddress": {
+      "line": [
+        "Address Line 1",
+        ""
+      ],
+      "town": "Venue Town",
+      "county": "Venue County",
+      "postCode": "AA1 AA1"
+    },
+    "venueContact": {
+      "venueTelephone": "01234 123 123",
+      "venueEmail": "a@b.com"
+    }
+  },
+  "courtLists": [
+    {
+      "courtHouse": {
+        "courtHouseName": "This is the site name",
+        "courtHouseContact": {
+          "venueTelephone": "01234 123 123",
+          "venueEmail": "a@b.com"
+        },
+        "courtHouseAddress": {
+          "line": [
+            "Address Line 1",
+            ""
+          ],
+          "town": "Venue Town",
+          "county": "Venue County",
+          "postCode": "AA1 AA1"
+        },
+        "courtRoom": [
+          {
+            "courtRoomName": "This is the court room name",
+            "session": [
+              {
+                "sessionChannel": [
+                  "VIDEO HEARING"
+                ],
+                "sittings": [
+                  {
+                    "sittingStart": "2022-08-19T09:30:00Z",
+                    "sittingEnd": "2022-08-19T10:55:00Z",
+                    "hearing": [
+                      {
+                        "hearingType": "Directions",
+                        "case": [
+                          {
+                            "caseName": "This is a case name",
+                            "caseNumber": "12341234",
+                            "caseType": "normal",
+                            "caseJurisdictionET": "Family Law",
+                            "caseSequenceIndicator": "2 of 3",
+                            "reportingRestrictionDetail": [
+                              "Reporting restriction 1",
+                              "Reporting restriction 2"
+                            ],
+                            "party": [
+                              {
+                                "partyRole": "APPLICANT_PETITIONER",
+                                "individualDetails": {
+                                  "individualSurname": "Applicant Surname 1"
+                                }
+                              },
+                              {
+                                "partyRole": "RESPONDENT",
+                                "individualDetails": {
+                                  "individualSurname": "Respondent Surname 1"
+                                }
+                              },
+                              {
+                                "partyRole": "APPLICANT_PETITIONER_REPRESENTATIVE",
+                                "friendlyRoleName": "Legal Advisor",
+                                "individualDetails": {
+                                  "individualForenames": "Rep Forenames 1",
+                                  "individualMiddleName": "Rep Middlename 1",
+                                  "individualSurname": "Rep Surname 1",
+                                  "title": "Mr"
+                                }
+                              },
+                              {
+                                "partyRole": "RESPONDENT_REPRESENTATIVE",
+                                "friendlyRoleName": "Legal Advisor"
+                              }
+                            ]
+                          },
+                          {
+                            "caseName": "This is a case name",
+                            "caseNumber": "12341234",
+                            "caseJurisdictionET": "Family Law",
+                            "caseSequenceIndicator": "2 of 3",
+                            "party": [
+                              {
+                                "partyRole": "APPLICANT_PETITIONER",
+                                "individualDetails": {
+                                  "individualSurname": "Applicant Surname 2"
+                                }
+                              },
+                              {
+                                "partyRole": "RESPONDENT",
+                                "individualDetails": {
+                                  "individualSurname": "Respondent Surname 2"
+                                }
+                              },
+                              {
+                                "partyRole": "APPLICANT_PETITIONER_REPRESENTATIVE",
+                                "friendlyRoleName": "Legal Advisor",
+                                "individualDetails": {
+                                  "individualForenames": "Rep Forenames 2",
+                                  "individualMiddleName": "Rep Middlename 2",
+                                  "individualSurname": "Rep Surname 2",
+                                  "title": "Mr"
+                                }
+                              },
+                              {
+                                "partyRole": "RESPONDENT_REPRESENTATIVE",
+                                "friendlyRoleName": "Legal Advisor"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "hearingType": "Directions",
+                        "case": [
+                          {
+                            "caseName": "This is a case name 2",
+                            "caseNumber": "12341235",
+                            "caseType": "normal",
+                            "caseJurisdictionET": "Family Law",
+                            "party": [
+                              {
+                                "partyRole": "APPLICANT_PETITIONER",
+                                "organisationDetails": {
+                                  "organisationName": "Applicant org name"
+                                }
+                              },
+                              {
+                                "partyRole": "RESPONDENT",
+                                "organisationDetails": {
+                                  "organisationName": "Respondent org name"
+                                }
+                              },
+                              {
+                                "partyRole": "APPLICANT_PETITIONER_REPRESENTATIVE",
+                                "friendlyRoleName": "Legal Advisor",
+                                "organisationDetails": {
+                                  "organisationName": "Applicant rep org name"
+                                }
+                              },
+                              {
+                                "partyRole": "RESPONDENT_REPRESENTATIVE",
+                                "friendlyRoleName": "Legal Advisor",
+                                "organisationDetails": {
+                                  "organisationName": "Respondent rep org name"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "channel": [
+                      "Teams",
+                      "Attended"
+                    ]
+                  }
+                ],
+                "judiciary": [
+                  {
+                    "isPresiding": true,
+                    "johKnownAs": "Judge KnownAs Presiding"
+                  },
+                  {
+                    "isPresiding": false,
+                    "johKnownAs": "Judge KnownAs 2"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "courtHouse": {
+        "courtHouseName": "This is the site name",
+        "courtHouseContact": {
+          "venueTelephone": "01234 123 123",
+          "venueEmail": "a@b.com"
+        },
+        "courtRoom": [
+          {
+            "courtRoomName": "This is another court room name",
+            "session": [
+              {
+                "sittings": [
+                  {
+                    "sittingStart": "2022-08-19T09:30:00Z",
+                    "sittingEnd": "2022-08-19T10:55:00Z",
+                    "hearing": [
+                      {
+                        "hearingType": "Directions",
+                        "case": [
+                          {
+                            "caseName": "This is a case name",
+                            "caseNumber": "12341236",
+                            "caseType": "normal",
+                            "caseJurisdictionET": "Family Law",
+                            "caseSequenceIndicator": "2 of 3"
+                          }
+                        ]
+                      }
+                    ],
+                    "channel": [
+                      "Teams",
+                      "Attended"
+                    ]
+                  }
+                ],
+                "judiciary": [
+                  {
+                    "johKnownAs": "Judge KnownAs 3",
+                    "isPresiding": false
+                  },
+                  {
+                    "johKnownAs": "Judge KnownAs 4",
+                    "isPresiding": false
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "courtHouse": {
+        "courtHouseName": "This is the site name",
+        "courtHouseContact": {
+          "venueTelephone": "01234 123 123",
+          "venueEmail": "a@b.com"
+        },
+        "courtHouseAddress": {
+          "line": [
+            "Address Line 1"
+          ],
+          "postCode": "AA1 AA1"
+        },
+        "courtRoom": [
+          {
+            "courtRoomName": "This is the court room name",
+            "session": [
+              {
+                "sittings": [
+                  {
+                    "sittingStart": "2022-08-19T09:30:00Z",
+                    "sittingEnd": "2022-08-19T10:55:00Z",
+                    "hearing": [
+                      {
+                        "hearingType": "Directions",
+                        "case": [
+                          {
+                            "caseName": "This is a case name",
+                            "caseNumber": "12341234",
+                            "caseType": "normal",
+                            "caseJurisdictionET": "Family Law",
+                            "caseSequenceIndicator": "2 of 3",
+                            "party": [
+                              {
+                                "partyRole": "APPLICANT_PETITIONER",
+                                "individualDetails": {
+                                  "individualSurname": "Applicant Surname 3"
+                                }
+                              },
+                              {
+                                "partyRole": "RESPONDENT",
+                                "individualDetails": {
+                                  "individualSurname": "Respondent Surname 3"
+                                }
+                              },
+                              {
+                                "partyRole": "APPLICANT_PETITIONER_REPRESENTATIVE",
+                                "friendlyRoleName": "Legal Advisor",
+                                "individualDetails": {
+                                  "individualForenames": "Rep Forenames 3",
+                                  "individualMiddleName": "Rep Middlename 3",
+                                  "individualSurname": "Rep Surname 3",
+                                  "title": "Mr"
+                                }
+                              },
+                              {
+                                "partyRole": "RESPONDENT_REPRESENTATIVE",
+                                "friendlyRoleName": "Legal Advisor",
+                                "individualDetails": {
+                                  "individualForenames": "Rep Forenames 4",
+                                  "individualMiddleName": "Rep Middlename 4",
+                                  "individualSurname": "Rep Surname 4",
+                                  "title": "Mr"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "channel": [
+                      "Teams",
+                      "Attended"
+                    ]
+                  }
+                ],
+                "judiciary": [
+                  {
+                    "johKnownAs": "Judge KnownAs 1",
+                    "isPresiding": false
+                  },
+                  {
+                    "johKnownAs": "Judge KnownAs 2",
+                    "isPresiding": false
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

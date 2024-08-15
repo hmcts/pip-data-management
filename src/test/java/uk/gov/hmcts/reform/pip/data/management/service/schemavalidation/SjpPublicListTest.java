@@ -38,7 +38,7 @@ class SjpPublicListTest {
     @Autowired
     ValidationService validationService;
 
-    private static final String SJP_PUBLIC_LIST_VALID_JSON = "mocks/sjp-public-list/sjpPublicList.json";
+    private static final String SJP_PUBLIC_LIST_VALID_JSON = "mocks/sjpPublicList.json";
     private static final String SJP_PUBLIC_VALID_MESSAGE = "SJP public list should be valid";
     private static final String SJP_PUBLIC_INVALID_MESSAGE = "Invalid sjp public";
 

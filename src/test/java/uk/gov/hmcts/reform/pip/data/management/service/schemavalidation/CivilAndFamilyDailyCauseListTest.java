@@ -35,7 +35,7 @@ class CivilAndFamilyDailyCauseListTest {
     ValidationService validationService;
 
     private static final String CIVIL_AND_FAMILY_CAUSE_LIST_VALID_JSON =
-        "mocks/civil-and-family-cause-list/civilAndFamilyDailyCauseList.json";
+        "mocks/civilAndFamilyDailyCauseList.json";
     private static final String CIVIL_AND_FAMILY_CAUSE_LIST_INVALID_MESSAGE =
         "Invalid civil and family daily cause list marked as valid";
 

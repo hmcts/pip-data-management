@@ -105,6 +105,12 @@ pmd {
 }
 
 configurations {
+  functionalTestImplementation.extendsFrom testImplementation
+  functionalTestRuntimeOnly.extendsFrom runtimeOnly
+
+  smokeTestImplementation.extendsFrom testImplementation
+  smokeTestRuntimeOnly.extendsFrom runtimeOnly
+
   all {
     exclude group: 'commons-logging', module: 'commons-logging'
   }
@@ -184,20 +190,27 @@ dependencies {
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-aop'
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-json'
+  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-thymeleaf'
+
   implementation group: 'com.azure', name: 'azure-storage-blob', version: '12.26.1'
   implementation group: 'com.jayway.jsonpath', name: 'json-path', version: '2.9.0'
   implementation group: 'io.hypersistence', name: 'hypersistence-utils-hibernate-63', version: '3.8.0'
   implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: '2.6.0'
+
   implementation group: 'com.github.hmcts.java-logging', name: 'logging', version: reformLoggingVersion
   implementation group: 'com.github.hmcts.java-logging', name: 'logging-appinsights', version: reformLoggingVersion
-
   implementation group: 'org.apache.logging.log4j', name: 'log4j-api', version: log4JVersion
   implementation group: 'org.apache.logging.log4j', name: 'log4j-to-slf4j', version: log4JVersion
-
   implementation group: 'net.logstash.logback', name: 'logstash-logback-encoder', version: '7.4'
   implementation group: 'org.postgresql', name: 'postgresql', version: '42.7.3'
+
   implementation group: 'com.github.hmcts', name: 'pip-data-models', version: '2.1.29'
+  implementation group: 'com.google.guava', name: 'guava', version: '33.2.1-jre'
+  implementation group: 'org.apache.poi', name: 'poi-ooxml', version: '5.3.0'
+  implementation group: 'com.openhtmltopdf', name: 'openhtmltopdf-pdfbox', version: '1.0.10'
+  implementation group: 'com.openhtmltopdf', name: 'openhtmltopdf-slf4j', version: '1.0.10'
   implementation 'com.networknt:json-schema-validator:1.4.3'
+
   implementation 'org.springframework.boot:spring-boot-starter-validation'
   implementation 'org.springframework.boot:spring-boot-starter-jdbc'
   implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
@@ -229,12 +242,7 @@ dependencies {
   testImplementation group: 'io.github.hakky54', name: 'logcaptor', version: '2.9.3'
   testImplementation group: 'org.apiguardian', name: 'apiguardian-api', version: '1.1.2'
   testImplementation group: 'com.github.hmcts', name: 'fortify-client', version: '1.4.3', classifier: 'all'
-
-  functionalTestImplementation sourceSets.main.runtimeClasspath
-  functionalTestImplementation sourceSets.test.runtimeClasspath
-
-  smokeTestImplementation sourceSets.main.runtimeClasspath
-  smokeTestImplementation sourceSets.test.runtimeClasspath
+  testImplementation group: 'org.jsoup', name: 'jsoup', version: '1.17.2'
 }
 
 task fortifyScan(type: JavaExec)  {
