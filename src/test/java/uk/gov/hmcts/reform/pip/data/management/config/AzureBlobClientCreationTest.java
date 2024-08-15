@@ -27,7 +27,8 @@ class AzureBlobClientCreationTest {
         + LOCAL_STORAGE_ACCOUNT_NAME
         + "; AccountKey=123/456; BlobEndpoint="
         + LOCAL_BLOB_ENDPOINT;
-    private static final String CONTAINER_NAME = "artefact";
+    private static final String ARTEFACT_CONTAINER_NAME = "artefact";
+    private static final String PUBLICATIONS_CONTAINER_NAME = "publications";
 
     @Mock
     private AzureBlobConfigurationProperties blobConfigProperties;
@@ -41,38 +42,83 @@ class AzureBlobClientCreationTest {
     }
 
     @Test
-    void testCreationOfAzureBlobClientWithManagedIdentity() {
+    void testCreationOfAzureArtefactBlobClientWithManagedIdentity() {
         ReflectionTestUtils.setField(azureBlobConfiguration, MANAGED_IDENTITY_CLIENT_ID_KEY,
                                      MANAGED_IDENTITY_CLIENT_ID);
         when(blobConfigProperties.getStorageAccountName()).thenReturn(AZURE_STORAGE_ACCOUNT_NAME);
-        when(blobConfigProperties.getContainerName()).thenReturn(CONTAINER_NAME);
+        when(blobConfigProperties.getArtefactContainerName()).thenReturn(ARTEFACT_CONTAINER_NAME);
 
-        BlobContainerClient blobContainerClient = azureBlobConfiguration.blobContainerClient(blobConfigProperties);
+        BlobContainerClient blobContainerClient = azureBlobConfiguration.artefactBlobContainerClient(
+            blobConfigProperties
+        );
 
         SoftAssertions softly = new SoftAssertions();
 
         softly.assertThat(blobContainerClient).isNotNull();
         softly.assertThat(blobContainerClient.getAccountUrl()).isEqualTo(AZURE_BLOB_ENDPOINT);
         softly.assertThat(blobContainerClient.getAccountName()).isEqualTo(AZURE_STORAGE_ACCOUNT_NAME);
-        softly.assertThat(blobContainerClient.getBlobContainerName()).isEqualTo(CONTAINER_NAME);
+        softly.assertThat(blobContainerClient.getBlobContainerName()).isEqualTo(ARTEFACT_CONTAINER_NAME);
 
         softly.assertAll();
     }
 
     @Test
-    void testCreationOfAzureBlobClientWithoutManagedIdentity() {
+    void testCreationOfAzureArtefactBlobClientWithoutManagedIdentity() {
         ReflectionTestUtils.setField(azureBlobConfiguration, MANAGED_IDENTITY_CLIENT_ID_KEY, "");
         when(blobConfigProperties.getConnectionString()).thenReturn(CONNECTION_STRING);
-        when(blobConfigProperties.getContainerName()).thenReturn(CONTAINER_NAME);
+        when(blobConfigProperties.getArtefactContainerName()).thenReturn(ARTEFACT_CONTAINER_NAME);
 
-        BlobContainerClient blobContainerClient = azureBlobConfiguration.blobContainerClient(blobConfigProperties);
+        BlobContainerClient blobContainerClient = azureBlobConfiguration.artefactBlobContainerClient(
+            blobConfigProperties
+        );
 
         SoftAssertions softly = new SoftAssertions();
 
         softly.assertThat(blobContainerClient).isNotNull();
         softly.assertThat(blobContainerClient.getAccountUrl()).isEqualTo(LOCAL_BLOB_ENDPOINT);
         softly.assertThat(blobContainerClient.getAccountName()).isEqualTo(LOCAL_STORAGE_ACCOUNT_NAME);
-        softly.assertThat(blobContainerClient.getBlobContainerName()).isEqualTo(CONTAINER_NAME);
+        softly.assertThat(blobContainerClient.getBlobContainerName()).isEqualTo(ARTEFACT_CONTAINER_NAME);
+
+        softly.assertAll();
+    }
+
+    @Test
+    void testCreationOfAzurePublicationsBlobClientWithManagedIdentity() {
+        ReflectionTestUtils.setField(azureBlobConfiguration, MANAGED_IDENTITY_CLIENT_ID_KEY,
+                                     MANAGED_IDENTITY_CLIENT_ID);
+        when(blobConfigProperties.getStorageAccountName()).thenReturn(AZURE_STORAGE_ACCOUNT_NAME);
+        when(blobConfigProperties.getPublicationsContainerName()).thenReturn(PUBLICATIONS_CONTAINER_NAME);
+
+        BlobContainerClient blobContainerClient = azureBlobConfiguration.publicationsBlobContainerClient(
+            blobConfigProperties
+        );
+
+        SoftAssertions softly = new SoftAssertions();
+
+        softly.assertThat(blobContainerClient).isNotNull();
+        softly.assertThat(blobContainerClient.getAccountUrl()).isEqualTo(AZURE_BLOB_ENDPOINT);
+        softly.assertThat(blobContainerClient.getAccountName()).isEqualTo(AZURE_STORAGE_ACCOUNT_NAME);
+        softly.assertThat(blobContainerClient.getBlobContainerName()).isEqualTo(PUBLICATIONS_CONTAINER_NAME);
+
+        softly.assertAll();
+    }
+
+    @Test
+    void testCreationOfAzurePublicationsBlobClientWithoutManagedIdentity() {
+        ReflectionTestUtils.setField(azureBlobConfiguration, MANAGED_IDENTITY_CLIENT_ID_KEY, "");
+        when(blobConfigProperties.getConnectionString()).thenReturn(CONNECTION_STRING);
+        when(blobConfigProperties.getPublicationsContainerName()).thenReturn(PUBLICATIONS_CONTAINER_NAME);
+
+        BlobContainerClient blobContainerClient = azureBlobConfiguration.publicationsBlobContainerClient(
+            blobConfigProperties
+        );
+
+        SoftAssertions softly = new SoftAssertions();
+
+        softly.assertThat(blobContainerClient).isNotNull();
+        softly.assertThat(blobContainerClient.getAccountUrl()).isEqualTo(LOCAL_BLOB_ENDPOINT);
+        softly.assertThat(blobContainerClient.getAccountName()).isEqualTo(LOCAL_STORAGE_ACCOUNT_NAME);
+        softly.assertThat(blobContainerClient.getBlobContainerName()).isEqualTo(PUBLICATIONS_CONTAINER_NAME);
 
         softly.assertAll();
     }

@@ -20,12 +20,26 @@ public class AzureBlobConfiguration {
     @Value("${azure.managed-identity.client-id}")
     private String managedIdentityClientId;
 
-    @Bean
-    public BlobContainerClient blobContainerClient(AzureBlobConfigurationProperties azureBlobConfigurationProperties) {
+    @Bean(name = "artefact")
+    public BlobContainerClient artefactBlobContainerClient(AzureBlobConfigurationProperties configurationProperties) {
+        return configureBlobContainerClient(configurationProperties,
+                                            configurationProperties.getArtefactContainerName());
+    }
+
+    @Bean(name = "publications")
+    public BlobContainerClient publicationsBlobContainerClient(
+        AzureBlobConfigurationProperties configurationProperties
+    ) {
+        return configureBlobContainerClient(configurationProperties,
+                                            configurationProperties.getPublicationsContainerName());
+    }
+
+    private BlobContainerClient configureBlobContainerClient(AzureBlobConfigurationProperties configurationProperties,
+                                                             String containerName) {
         if (managedIdentityClientId.isEmpty()) {
             return new BlobContainerClientBuilder()
-                .connectionString(azureBlobConfigurationProperties.getConnectionString())
-                .containerName(azureBlobConfigurationProperties.getContainerName())
+                .connectionString(configurationProperties.getConnectionString())
+                .containerName(containerName)
                 .buildClient();
         }
 
@@ -35,9 +49,9 @@ public class AzureBlobConfiguration {
             .build();
 
         return new BlobContainerClientBuilder()
-            .endpoint(String.format(BLOB_ENDPOINT, azureBlobConfigurationProperties.getStorageAccountName()))
+            .endpoint(String.format(BLOB_ENDPOINT, configurationProperties.getStorageAccountName()))
             .credential(defaultCredential)
-            .containerName(azureBlobConfigurationProperties.getContainerName())
+            .containerName(containerName)
             .buildClient();
     }
 }

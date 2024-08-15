@@ -37,8 +37,8 @@ class SjpPressListTest {
     ValidationService validationService;
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
-    private static final String SJP_PRESS_LIST_VALID_JSON = "mocks/sjp-press-list/sjpPressList.json";
-    private static final String SJP_PRESS_LIST_WITH_NEW_LINES = "mocks/sjp-press-list/sjpPressListWithNewLines.json";
+    private static final String SJP_PRESS_LIST_VALID_JSON = "mocks/sjpPressList.json";
+    private static final String SJP_PRESS_LIST_WITH_NEW_LINES = "mocks/sjpPressListWithNewLines.json";
     private static final String SJP_PRESS_INVALID_MESSAGE = "Invalid SJP press";
     private static final String SJP_PRESS_VALID_MESSAGE = "Exception should not be thrown for SJP press";
 

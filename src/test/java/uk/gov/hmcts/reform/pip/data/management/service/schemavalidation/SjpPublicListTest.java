@@ -39,8 +39,8 @@ class SjpPublicListTest {
     ValidationService validationService;
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
-    private static final String SJP_PUBLIC_LIST_VALID_JSON = "mocks/sjp-public-list/sjpPublicList.json";
-    private static final String SJP_PUBLIC_LIST_WITH_NEW_LINES = "mocks/sjp-public-list/sjpPublicListWithNewLines.json";
+    private static final String SJP_PUBLIC_LIST_VALID_JSON = "mocks/sjpPublicList.json";
+    private static final String SJP_PUBLIC_LIST_WITH_NEW_LINES = "mocks/sjpPublicListWithNewLines.json";
     private static final String SJP_PUBLIC_VALID_MESSAGE = "SJP public list should be valid";
     private static final String SJP_PUBLIC_INVALID_MESSAGE = "Invalid sjp public";
 

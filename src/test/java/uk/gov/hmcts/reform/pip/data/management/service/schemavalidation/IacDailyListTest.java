@@ -35,7 +35,7 @@ class IacDailyListTest {
     ValidationService validationService;
 
     private static final String IAC_DAILY_LIST_VALID_JSON =
-        "mocks/iac-daily-list/iacDailyList.json";
+        "mocks/iacDailyList.json";
     private static final String IAC_DAILY_LIST_INVALID_MESSAGE =
         "Invalid magistrates standard list marked as valid";
 

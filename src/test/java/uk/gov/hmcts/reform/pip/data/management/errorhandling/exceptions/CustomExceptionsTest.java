@@ -69,4 +69,22 @@ class CustomExceptionsTest {
         CreateLocationConflictException conflictException = new CreateLocationConflictException(TEST_MESSAGE);
         assertEquals(TEST_MESSAGE, conflictException.getMessage(), ASSERTION_MESSAGE);
     }
+
+    @Test
+    void testPublicationFilesNotFoundException() {
+        PublicationFileNotFoundException notFoundException = new PublicationFileNotFoundException(TEST_MESSAGE);
+        assertEquals(TEST_MESSAGE, notFoundException.getMessage(), ASSERTION_MESSAGE);
+    }
+
+    @Test
+    void testFileSizeLimitExceptionException() {
+        FileSizeLimitException fileSizeLimitException = new FileSizeLimitException(TEST_MESSAGE);
+        assertEquals(TEST_MESSAGE, fileSizeLimitException.getMessage(), ASSERTION_MESSAGE);
+    }
+
+    @Test
+    void testProcessingException() {
+        ProcessingException processingException = new ProcessingException(TEST_MESSAGE);
+        assertEquals(TEST_MESSAGE, processingException.getMessage(), ASSERTION_MESSAGE);
+    }
 }

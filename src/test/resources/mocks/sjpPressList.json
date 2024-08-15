@@ -1,0 +1,208 @@
+{
+  "document": {
+    "publicationDate": "2016-09-13T23:30:52.123Z",
+    "documentName": "This is a document name",
+    "version": "This is a version"
+  },
+  "courtLists": [
+    {
+      "courtHouse": {
+        "courtRoom": [
+          {
+            "session": [
+              {
+                "sittings": [
+                  {
+                    "hearing": [
+                      {
+                        "party": [
+                          {
+                            "partyRole": "ACCUSED",
+                            "individualDetails": {
+                              "individualForenames": "This is a forename",
+                              "individualSurname": "This is a surname",
+                              "dateOfBirth": "01/01/1800",
+                              "age": 50,
+                              "address": {
+                                "town": "Town A",
+                                "postCode": "AA1 AA1",
+                                "line": [
+                                  "Address Line 1",
+                                  "Address Line 2"
+                                ]
+                              },
+                              "title": "This is a title"
+                            }
+                          },
+                          {
+                            "partyRole": "PROSECUTOR",
+                            "organisationDetails": {
+                              "organisationName": "This is an organisation",
+                              "organisationAddress": {
+                                "county": "County A",
+                                "town": "Month A",
+                                "postCode": "AA1 AA1",
+                                "line": [
+                                  "Organisation Line 1",
+                                  "Organisation Line 2"
+                                ]
+                              }
+                            }
+                          }
+                        ],
+                        "offence": [
+                          {
+                            "offenceTitle": "This is an offence title",
+                            "offenceWording": "This is offence wording",
+                            "reportingRestriction": true
+                          },
+                          {
+                            "offenceTitle": "This is another offence title",
+                            "reportingRestriction": false
+                          }
+                        ],
+                        "case": [
+                          {
+                            "caseUrn": "ABC12345"
+                          }
+                        ]
+                      },
+                      {
+                        "party": [
+                          {
+                            "partyRole": "ACCUSED",
+                            "organisationDetails": {
+                              "organisationName": "Accused's organisation",
+                              "organisationAddress": {
+                                "county": "County A",
+                                "town": "Month A",
+                                "postCode": "AA1 AA1",
+                                "line": [
+                                  "Organisation Line 1",
+                                  "Organisation Line 2"
+                                ]
+                              }
+                            }
+                          },
+                          {
+                            "partyRole": "PROSECUTOR",
+                            "organisationDetails": {
+                              "organisationName": "This is an organisation"
+                            }
+                          }
+                        ],
+                        "offence": [
+                          {
+                            "offenceTitle": "This is an offence title",
+                            "offenceWording": "This is offence wording",
+                            "reportingRestriction": true
+                          }
+                        ],
+                        "case": [
+                          {
+                            "caseUrn": "ABC12346"
+                          },
+                          {
+                            "caseUrn": "ABC12347"
+                          },
+                          {
+                            "caseUrn": "ABC12348"
+                          }
+                        ]
+                      },
+                      {
+                        "party": [
+                          {
+                            "partyRole": "ACCUSED",
+                            "individualDetails": {
+                              "individualMiddleName": "This is a middlename",
+                              "dateOfBirth": "01/01/1980",
+                              "title": "This is a title"
+                            }
+                          },
+                          {
+                            "partyRole": "PROSECUTOR",
+                            "organisationDetails": {
+                              "organisationName": "This is an organisation",
+                              "organisationAddress": {
+                                "county": "County A",
+                                "town": "Month A",
+                                "postCode": "AA1 AA1",
+                                "line": [
+                                  "Organisation Line 1",
+                                  "Organisation Line 2"
+                                ]
+                              }
+                            }
+                          }
+                        ],
+                        "offence": [
+                          {
+                            "offenceTitle": "This is an offence title",
+                            "offenceWording": "This is offence wording",
+                            "reportingRestriction": true
+                          }
+                        ],
+                        "case": [
+                          {
+                            "caseUrn": "ABC12345"
+                          }
+                        ]
+                      },
+                      {
+                        "party": [
+                          {
+                            "partyRole": "ACCUSED",
+                            "individualDetails": {
+                              "individualForenames": "This is a forename",
+                              "individualSurname": "This is a surname",
+                              "address": {
+                              },
+                              "title": "This is a title"
+                            }
+                          },
+                          {
+                            "partyRole": "PROSECUTOR",
+                            "organisationDetails": {
+                              "organisationName": "This is an organisation",
+                              "organisationAddress": {
+                                "county": "County A",
+                                "town": "Month A",
+                                "postCode": "AA1 AA1",
+                                "line": [
+                                  "Organisation Line 1",
+                                  "Organisation Line 2"
+                                ]
+                              }
+                            }
+                          }
+                        ],
+                        "offence": [
+                          {
+                            "offenceTitle": "This is an offence title",
+                            "offenceWording": "This is offence wording",
+                            "reportingRestriction": true
+                          },
+                          {
+                            "offenceTitle": "This is another offence title",
+                            "offenceWording": "This is another offence wording",
+                            "reportingRestriction": true
+                          }
+                        ],
+                        "case": [
+                          {
+                            "caseUrn": "ABC12345"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
