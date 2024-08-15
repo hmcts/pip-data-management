@@ -23,8 +23,8 @@
               }],
               "party": [{
                 "partyRole": "APPLICANT_PETITIONER",
-                "OrganisationDetails": {
-                  "OrganisationName": "Test Organisation"
+                "organisationDetails": {
+                  "organisationName": "Test Organisation"
                 }
               },
                 {

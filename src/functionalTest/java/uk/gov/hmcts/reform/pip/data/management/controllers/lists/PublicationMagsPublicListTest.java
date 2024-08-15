@@ -75,7 +75,7 @@ class PublicationMagsPublicListTest {
     @Test
     void testCreationOfValidSscsDailyList() throws Exception {
         try (InputStream mockFile = this.getClass().getClassLoader()
-            .getResourceAsStream("data/magistrates_public_list/magistratesPublicList.json")) {
+            .getResourceAsStream("data/magistrates-public-list/magistratesPublicList.json")) {
 
             MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
                 .post(POST_URL)
@@ -107,7 +107,7 @@ class PublicationMagsPublicListTest {
     @Test
     void testCreationOfInvalidSscsDailyList() throws Exception {
         try (InputStream mockFile = this.getClass().getClassLoader()
-            .getResourceAsStream("data/magistrates_public_list/magistratesPublicListInvalid.json")) {
+            .getResourceAsStream("data/magistrates-public-list/magistratesPublicListInvalid.json")) {
 
             MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
                 .post(POST_URL)

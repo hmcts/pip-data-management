@@ -33,8 +33,6 @@ java:
           alias: ACCOUNT_MANAGEMENT_AZ_API
         - name: app-pip-publication-services-scope
           alias: PUBLICATION_SERVICES_AZ_API
-        - name: app-pip-channel-management-scope
-          alias: CHANNEL_MANAGEMENT_AZ_API
         - name: app-insights-java-connection-string
           alias: APP_INSIGHTS_CONNECTION_STRING
   environment:
