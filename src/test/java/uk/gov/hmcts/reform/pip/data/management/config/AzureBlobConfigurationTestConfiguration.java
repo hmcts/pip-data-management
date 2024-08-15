@@ -20,7 +20,10 @@ public class AzureBlobConfigurationTestConfiguration {
     BlobClient blobClientMock;
 
     @Mock
-    BlobContainerClient blobContainerClientMock;
+    BlobContainerClient artefactBlobContainerClientMock;
+
+    @Mock
+    BlobContainerClient publicationsBlobContainerClientMock;
 
     public AzureBlobConfigurationTestConfiguration() {
         MockitoAnnotations.openMocks(this);
@@ -29,12 +32,12 @@ public class AzureBlobConfigurationTestConfiguration {
     @Bean(name = "artefact")
     @Primary
     public BlobContainerClient artefactBlobContainerClient() {
-        return blobContainerClientMock;
+        return artefactBlobContainerClientMock;
     }
 
     @Bean(name = "publications")
     public BlobContainerClient publicationsBlobContainerClient() {
-        return blobContainerClientMock;
+        return publicationsBlobContainerClientMock;
     }
 
     @Bean

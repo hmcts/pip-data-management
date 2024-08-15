@@ -1,0 +1,87 @@
+{
+  "document": {
+    "version": "This is a version",
+    "documentName": "This is a document name",
+    "publicationDate": "2023-09-01T10:00:00.001Z"
+  },
+  "courtLists": [
+    {
+      "courtHouse": {
+        "courtRoom": [
+          {
+            "session": [
+              {
+                "sittings": [
+                  {
+                    "hearing": [
+                      {
+                        "party": [
+                          {
+                            "partyRole": "ACCUSED",
+                            "individualDetails": {
+                              "individualForenames": "A",
+                              "individualSurname": "This is a surname",
+                              "address": {
+                                "postCode": "AA"
+                              }
+                            }
+                          },
+                          {
+                            "partyRole": "PROSECUTOR",
+                            "organisationDetails": {
+                              "organisationName": "This is a prosecutor organisation"
+                            }
+                          }
+                        ],
+                        "offence": [
+                          {
+                            "offenceTitle": "This is an offence title"
+                          },
+                          {
+                            "offenceTitle": "This is an offence title 2"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "sittings": [
+                  {
+                    "hearing": [
+                      {
+                        "party": [
+                          {
+                            "partyRole": "ACCUSED",
+                            "organisationDetails": {
+                              "organisationName": "This is an accused organisation name",
+                              "organisationAddress": {
+                                "postCode": "A9"
+                              }
+                            }
+                          },
+                          {
+                            "partyRole": "PROSECUTOR",
+                            "organisationDetails": {
+                              "organisationName": "This is a prosecutor organisation 2"
+                            }
+                          }
+                        ],
+                        "offence": [
+                          {
+                            "offenceTitle": "This is an offence title 3"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

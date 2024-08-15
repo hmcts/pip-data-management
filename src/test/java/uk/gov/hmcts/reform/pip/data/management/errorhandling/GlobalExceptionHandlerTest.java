@@ -13,11 +13,14 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CreateArtefactConflictException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CreateLocationConflictException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CsvParseException;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.FileSizeLimitException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.FlatFileException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.HeaderValidationException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.LocationNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.NotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.PayloadValidationException;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ProcessingException;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.PublicationFileNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.UnauthorisedRequestException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -43,6 +46,9 @@ class GlobalExceptionHandlerTest {
     private static final String BAD_REQUEST_ASSERTION = "Status code should be of type: Bad Request";
     private static final String NOT_FOUND_ASSERTION = "Status code should be of type: Not Found";
     private static final String CONFLICT_ASSERTION = "Status code should be of type: Conflict";
+    private static final String PAYLOAD_TOO_LARGE_ASSERTION = "Status code should be of type: Payload Too Large";
+    private static final String INTERNAL_SERVER_ERROR_ASSERTION = "Status code should be of type: Internal Server "
+        + "Error";
     private static final String EXCEPTION_BODY_NOT_MATCH = "Exception body doesn't match test message";
     static final String ASSERTION_RESPONSE_BODY = "Response should contain a body";
     private static final String NOT_NULL_MESSAGE = "Exception body should not be null";
@@ -236,5 +242,42 @@ class GlobalExceptionHandlerTest {
         assertEquals(HttpStatus.CONFLICT, responseEntity.getStatusCode(), CONFLICT_ASSERTION);
         assertNotNull(responseEntity.getBody(), NOT_NULL_MESSAGE);
         assertTrue(responseEntity.getBody().getMessage().contains(TEST_MESSAGE), EXCEPTION_BODY_NOT_MATCH);
+    }
+
+    @Test
+    void testHandleNPublicationFilesNotFoundException() {
+        PublicationFileNotFoundException notFoundException = new PublicationFileNotFoundException(TEST_MESSAGE);
+
+        ResponseEntity<ExceptionResponse> responseEntity =
+            globalExceptionHandler.handle(notFoundException);
+
+        assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode(), NOT_FOUND_ASSERTION);
+        assertNotNull(responseEntity.getBody(), ASSERTION_RESPONSE_BODY);
+        assertEquals(TEST_MESSAGE, responseEntity.getBody().getMessage(),
+                     ASSERTION_MESSAGE
+        );
+    }
+
+    @Test
+    void testHandleFileSizeLimitException() {
+        FileSizeLimitException exception = new FileSizeLimitException(TEST_MESSAGE);
+
+        ResponseEntity<ExceptionResponse> responseEntity = globalExceptionHandler.handle(exception);
+
+        assertEquals(HttpStatus.PAYLOAD_TOO_LARGE, responseEntity.getStatusCode(), PAYLOAD_TOO_LARGE_ASSERTION);
+        assertNotNull(responseEntity.getBody(), ASSERTION_RESPONSE_BODY);
+        assertEquals(TEST_MESSAGE, responseEntity.getBody().getMessage(), ASSERTION_MESSAGE);
+    }
+
+    @Test
+    void testHandleProcessingException() {
+        ProcessingException exception = new ProcessingException(TEST_MESSAGE);
+
+        ResponseEntity<ExceptionResponse> responseEntity = globalExceptionHandler.handle(exception);
+
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, responseEntity.getStatusCode(), INTERNAL_SERVER_ERROR_ASSERTION);
+        assertNotNull(responseEntity.getBody(), ASSERTION_RESPONSE_BODY);
+        assertEquals(TEST_MESSAGE, responseEntity.getBody().getMessage(),
+                     ASSERTION_MESSAGE);
     }
 }

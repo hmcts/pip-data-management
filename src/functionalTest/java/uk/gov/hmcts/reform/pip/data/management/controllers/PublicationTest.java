@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
@@ -72,11 +73,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WithMockUser(username = "admin", authorities = {"APPROLE_api.request.admin"})
 class PublicationTest {
 
-    @Autowired
-    BlobContainerClient blobContainerClient;
+    @MockBean(name = "artefact")
+    private BlobContainerClient artefcatBlobContainerClient;
 
-    @Autowired
-    BlobClient blobClient;
+    @MockBean(name = "publications")
+    private BlobContainerClient publicationBlobContainerClient;
+
+    @MockBean
+    private BlobClient blobClient;
 
     @Autowired
     private MockMvc mockMvc;
@@ -249,8 +253,8 @@ class PublicationTest {
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
             .contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
 
-        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
-        when(blobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
+        when(artefcatBlobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(artefcatBlobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
 
         MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
 
@@ -309,8 +313,8 @@ class PublicationTest {
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
             .contentType(MediaType.APPLICATION_JSON);
 
-        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
-        when(blobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
+        when(artefcatBlobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(artefcatBlobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
 
         MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
 
@@ -369,8 +373,8 @@ class PublicationTest {
     @DisplayName("Should create a valid artefact with provenance different from manual_upload")
     @Test
     void testUploadPublicationWithDifferentProvenance() throws Exception {
-        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
-        when(blobContainerClient.getBlobContainerUrl()).thenReturn(PAYLOAD_URL);
+        when(artefcatBlobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(artefcatBlobContainerClient.getBlobContainerUrl()).thenReturn(PAYLOAD_URL);
 
         Artefact artefact = createSscsDailyList(Sensitivity.PUBLIC, "TestProvenance");
 
@@ -386,8 +390,8 @@ class PublicationTest {
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
     void creationOfAValidArtefactWithOnlyMandatoryFields(boolean isJson) throws Exception {
-        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
-        when(blobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
+        when(artefcatBlobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(artefcatBlobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
         if (isJson) {
             mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
@@ -452,8 +456,8 @@ class PublicationTest {
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
     void testPopulateDefaultDateFrom(boolean isJson) throws Exception {
-        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
-        when(blobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
+        when(artefcatBlobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(artefcatBlobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
         if (isJson) {
             mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
@@ -486,8 +490,8 @@ class PublicationTest {
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
     void testPopulateDefaultSensitivity(boolean isJson) throws Exception {
-        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
-        when(blobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
+        when(artefcatBlobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(artefcatBlobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
         if (isJson) {
             mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
@@ -520,8 +524,8 @@ class PublicationTest {
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
     void updatingOfAnArtefactThatAlreadyExists(boolean isJson) throws Exception {
-        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
-        when(blobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
+        when(artefcatBlobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(artefcatBlobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
         if (isJson) {
@@ -586,8 +590,8 @@ class PublicationTest {
     @DisplayName("Should throw a 400 bad request when payload is not of JSON through the JSON endpoint")
     @Test
     void creationOfAJsonArtefactThatIsNotJson() throws Exception {
-        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
-        when(blobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
+        when(artefcatBlobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(artefcatBlobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
             .post(PUBLICATION_URL)
@@ -613,7 +617,7 @@ class PublicationTest {
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
     void checkStatusUpdatesWithNullDateTo(boolean isJson) throws Exception {
-        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(artefcatBlobContainerClient.getBlobClient(any())).thenReturn(blobClient);
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
 
@@ -655,8 +659,8 @@ class PublicationTest {
     @DisplayName("Should create a valid artefact and return the created artefact to the user")
     @Test
     void testCreationOfInvalidDailyCauseList() throws Exception {
-        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
-        when(blobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
+        when(artefcatBlobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(artefcatBlobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
 
         try (InputStream mockFile = this.getClass().getClassLoader()
             .getResourceAsStream("data/civil-daily-cause-list/civilDailyCauseListInvalid.json")) {
@@ -695,7 +699,7 @@ class PublicationTest {
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
     void verifyThatArtefactsAreReturnedForVerifiedUserWhenPublic(boolean isJson) throws Exception {
-        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(artefcatBlobContainerClient.getBlobClient(any())).thenReturn(blobClient);
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
 
@@ -747,8 +751,8 @@ class PublicationTest {
     @DisplayName("Should create a valid artefact and return the created artefact to the user")
     @Test
     void testCreationOfValidDailyCauseList() throws Exception {
-        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
-        when(blobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
+        when(artefcatBlobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(artefcatBlobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
 
         try (InputStream mockFile = this.getClass().getClassLoader()
             .getResourceAsStream("data/civil-daily-cause-list/civilDailyCauseList.json")) {
@@ -784,7 +788,7 @@ class PublicationTest {
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
     void verifyThatArtefactsAreReturnedForUnverifiedUserWhenPublic(boolean isJson) throws Exception {
-        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(artefcatBlobContainerClient.getBlobClient(any())).thenReturn(blobClient);
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
 
@@ -839,7 +843,7 @@ class PublicationTest {
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
     void verifyThatArtefactsAreNotReturnedForUnverifiedUserWhenClassified(boolean isJson) throws Exception {
-        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(artefcatBlobContainerClient.getBlobClient(any())).thenReturn(blobClient);
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
 
@@ -890,7 +894,7 @@ class PublicationTest {
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
     void verifyThatArtefactsAreNotReturnedForUnverifiedUserWhenPrivate(boolean isJson) throws Exception {
-        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(artefcatBlobContainerClient.getBlobClient(any())).thenReturn(blobClient);
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
 
@@ -973,8 +977,8 @@ class PublicationTest {
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
             .contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
 
-        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
-        when(blobContainerClient.getBlobContainerUrl()).thenReturn(PAYLOAD_URL);
+        when(artefcatBlobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(artefcatBlobContainerClient.getBlobContainerUrl()).thenReturn(PAYLOAD_URL);
 
         MvcResult response =
             mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
@@ -1023,8 +1027,8 @@ class PublicationTest {
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
             .contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
 
-        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
-        when(blobContainerClient.getBlobContainerUrl()).thenReturn(PAYLOAD_URL);
+        when(artefcatBlobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(artefcatBlobContainerClient.getBlobContainerUrl()).thenReturn(PAYLOAD_URL);
 
         MvcResult response =
             mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
@@ -1073,8 +1077,8 @@ class PublicationTest {
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
             .contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
 
-        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
-        when(blobContainerClient.getBlobContainerUrl()).thenReturn(PAYLOAD_URL);
+        when(artefcatBlobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(artefcatBlobContainerClient.getBlobContainerUrl()).thenReturn(PAYLOAD_URL);
 
         MvcResult response =
             mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
@@ -1121,8 +1125,8 @@ class PublicationTest {
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
             .contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
 
-        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
-        when(blobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
+        when(artefcatBlobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(artefcatBlobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
 
         MvcResult response =
             mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
@@ -1170,8 +1174,8 @@ class PublicationTest {
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
             .contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
 
-        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
-        when(blobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
+        when(artefcatBlobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(artefcatBlobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
 
         MvcResult response =
             mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
@@ -1213,8 +1217,8 @@ class PublicationTest {
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
             .contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
 
-        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
-        when(blobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
+        when(artefcatBlobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(artefcatBlobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
 
         MvcResult response =
             mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
@@ -1252,8 +1256,8 @@ class PublicationTest {
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
             .contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
 
-        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
-        when(blobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
+        when(artefcatBlobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(artefcatBlobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
 
         MvcResult response =
             mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
@@ -1300,8 +1304,8 @@ class PublicationTest {
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
             .contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
 
-        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
-        when(blobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
+        when(artefcatBlobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(artefcatBlobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
 
         MvcResult response =
             mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
@@ -1330,7 +1334,7 @@ class PublicationTest {
     @ValueSource(booleans = {true, false})
     @DisplayName("Payload endpoint should not return the payload when artefact out of range and user unverified")
     void retrievePayloadOfAnArtefactWhereOutOfDateRangeWhenUnverified(boolean isJson) throws Exception {
-        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(artefcatBlobContainerClient.getBlobClient(any())).thenReturn(blobClient);
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
 
@@ -1353,8 +1357,8 @@ class PublicationTest {
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
             .contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
 
-        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
-        when(blobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
+        when(artefcatBlobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(artefcatBlobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
 
         MvcResult response =
             mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
@@ -1404,8 +1408,8 @@ class PublicationTest {
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
             .contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
 
-        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
-        when(blobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
+        when(artefcatBlobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(artefcatBlobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
 
         MvcResult response =
             mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
@@ -1457,8 +1461,8 @@ class PublicationTest {
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
             .contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
 
-        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
-        when(blobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
+        when(artefcatBlobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(artefcatBlobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
 
         MvcResult response =
             mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
@@ -1509,8 +1513,8 @@ class PublicationTest {
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
             .contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
 
-        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
-        when(blobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
+        when(artefcatBlobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(artefcatBlobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
 
         MvcResult response =
             mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
@@ -1552,8 +1556,8 @@ class PublicationTest {
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
             .contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
 
-        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
-        when(blobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
+        when(artefcatBlobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(artefcatBlobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
 
         MvcResult response =
             mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
@@ -1594,8 +1598,8 @@ class PublicationTest {
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
             .contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
 
-        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
-        when(blobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
+        when(artefcatBlobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(artefcatBlobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
 
 
         MvcResult response =
@@ -1623,7 +1627,7 @@ class PublicationTest {
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     @Test
     void testGetCourtByIdShowsAllCourtsForAdmin() throws Exception {
-        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(artefcatBlobContainerClient.getBlobClient(any())).thenReturn(blobClient);
 
         Artefact inDateArtefact = createDailyList(Sensitivity.PUBLIC);
         Artefact futureArtefact = createDailyList(Sensitivity.PUBLIC, DISPLAY_FROM.plusMonths(1),
@@ -1660,7 +1664,9 @@ class PublicationTest {
 
     @Test
     void testDeleteArtefactByIdSuccess() throws Exception {
-        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(artefcatBlobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(publicationBlobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+
         Artefact artefactToDelete = createDailyList(Sensitivity.PUBLIC);
 
         MockHttpServletRequestBuilder preDeleteRequest = MockMvcRequestBuilders
@@ -1682,7 +1688,7 @@ class PublicationTest {
 
     @Test
     void testDeleteArtefactByIdArtefactIdNotFound() throws Exception {
-        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(artefcatBlobContainerClient.getBlobClient(any())).thenReturn(blobClient);
 
         String invalidId = UUID.randomUUID().toString();
 
@@ -1715,7 +1721,7 @@ class PublicationTest {
 
     @Test
     void testGetArtefactMetadataAdmin() throws Exception {
-        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(artefcatBlobContainerClient.getBlobClient(any())).thenReturn(blobClient);
         Artefact artefactToFind = createDailyList(Sensitivity.PUBLIC, DISPLAY_FROM.plusMonths(1),
                                                   CONTENT_DATE.plusDays(1)
         );
@@ -1743,7 +1749,7 @@ class PublicationTest {
 
     @Test
     void testGetArtefactMetadataReturnsNotFound() throws Exception {
-        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(artefcatBlobContainerClient.getBlobClient(any())).thenReturn(blobClient);
         MockHttpServletRequestBuilder adminRequest = MockMvcRequestBuilders
             .get(PUBLICATION_URL + "/" + UUID.randomUUID())
             .header(USER_ID_HEADER, userId)
@@ -1790,8 +1796,8 @@ class PublicationTest {
 
     @Test
     void testCountByLocationManualUpload() throws Exception {
-        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
-        when(blobContainerClient.getBlobContainerUrl()).thenReturn(PAYLOAD_URL);
+        when(artefcatBlobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(artefcatBlobContainerClient.getBlobContainerUrl()).thenReturn(PAYLOAD_URL);
         createDailyList(Sensitivity.PRIVATE);
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders.get(COUNT_ENDPOINT);
         MvcResult result = mockMvc.perform(mockHttpServletRequestBuilder)
@@ -1802,8 +1808,8 @@ class PublicationTest {
 
     @Test
     void testCountByLocationListAssist() throws Exception {
-        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
-        when(blobContainerClient.getBlobContainerUrl()).thenReturn(PAYLOAD_URL);
+        when(artefcatBlobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(artefcatBlobContainerClient.getBlobContainerUrl()).thenReturn(PAYLOAD_URL);
         createDailyList(Sensitivity.PRIVATE, DISPLAY_FROM.minusMonths(2), DISPLAY_TO, CONTENT_DATE, "ListAssist");
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders.get(COUNT_ENDPOINT);
         MvcResult result = mockMvc.perform(mockHttpServletRequestBuilder)
@@ -1870,7 +1876,9 @@ class PublicationTest {
 
     @Test
     void testArchiveExpiredArtefactsSuccess() throws Exception {
-        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(artefcatBlobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(publicationBlobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+
         Artefact artefactToExpire = createDailyList(Sensitivity.PUBLIC, DISPLAY_FROM.minusMonths(9),
                                                     DISPLAY_FROM.minusMonths(6),
                                                     DISPLAY_FROM.minusMonths(10), PROVENANCE
@@ -1922,7 +1930,7 @@ class PublicationTest {
 
     @Test
     void testGetMiDataRequestSuccess() throws Exception {
-        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(artefcatBlobContainerClient.getBlobClient(any())).thenReturn(blobClient);
         Artefact artefact = createDailyList(Sensitivity.PUBLIC);
 
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
@@ -1959,7 +1967,9 @@ class PublicationTest {
 
     @Test
     void testArchiveArtefactSuccess() throws Exception {
-        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(artefcatBlobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(publicationBlobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+
         Artefact artefactToArchive = createDailyList(Sensitivity.PUBLIC);
 
         MockHttpServletRequestBuilder preArchiveRequest = MockMvcRequestBuilders
@@ -1981,7 +1991,7 @@ class PublicationTest {
 
     @Test
     void testArchiveArtefactNotFound() throws Exception {
-        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(artefcatBlobContainerClient.getBlobClient(any())).thenReturn(blobClient);
 
         String invalidArtefactId = UUID.randomUUID().toString();
 
@@ -2017,8 +2027,8 @@ class PublicationTest {
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     void testGetAllNoMatchArtefacts() throws Exception {
-        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
-        when(blobContainerClient.getBlobContainerUrl()).thenReturn(PAYLOAD_URL);
+        when(artefcatBlobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(artefcatBlobContainerClient.getBlobContainerUrl()).thenReturn(PAYLOAD_URL);
         Artefact expectedArtefact = createDailyList(Sensitivity.PRIVATE, DISPLAY_FROM.minusMonths(2), DISPLAY_TO,
                                                     CONTENT_DATE, "NoMatch"
         );
@@ -2085,7 +2095,9 @@ class PublicationTest {
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     void testDeleteArtefactsByLocation() throws Exception {
-        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(artefcatBlobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(publicationBlobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+
         Artefact artefactToDelete = createDailyList(Sensitivity.PUBLIC);
 
         MockHttpServletRequestBuilder preDeleteRequest = MockMvcRequestBuilders

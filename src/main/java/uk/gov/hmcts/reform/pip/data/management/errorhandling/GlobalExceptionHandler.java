@@ -13,10 +13,12 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CreateArtefactConflictException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CreateLocationConflictException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CsvParseException;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.FileSizeLimitException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.FlatFileException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.HeaderValidationException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.NotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.PayloadValidationException;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ProcessingException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.UnauthorisedRequestException;
 
 import java.time.LocalDateTime;
@@ -29,7 +31,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<ExceptionResponse> handle(NotFoundException ex) {
-        log.error(writeLog("404, unable to find artefact. Details: " + ex.getMessage()));
+        log.error(writeLog("404, unable to find entity. Details: " + ex.getMessage()));
         return ResponseEntity.status(HttpStatus.NOT_FOUND).contentType(MediaType.APPLICATION_JSON)
             .body(generateExceptionResponse(ex.getMessage()));
     }
@@ -117,6 +119,20 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ExceptionResponse> handle(CreateLocationConflictException ex) {
         log.error(writeLog("409, conflict while creating location"));
         return ResponseEntity.status(HttpStatus.CONFLICT)
+            .body(generateExceptionResponse(ex.getMessage()));
+    }
+
+    @ExceptionHandler(FileSizeLimitException.class)
+    public ResponseEntity<ExceptionResponse> handle(FileSizeLimitException ex) {
+        log.error(writeLog("413, blob file too large"));
+        return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE)
+            .body(generateExceptionResponse(ex.getMessage()));
+    }
+
+    @ExceptionHandler(ProcessingException.class)
+    public ResponseEntity<ExceptionResponse> handle(ProcessingException ex) {
+        log.error(writeLog("500, error processing publication files/summary"));
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
             .body(generateExceptionResponse(ex.getMessage()));
     }
 

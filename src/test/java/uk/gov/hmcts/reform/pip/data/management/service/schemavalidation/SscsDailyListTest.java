@@ -35,7 +35,7 @@ class SscsDailyListTest {
     @Autowired
     ValidationService validationService;
 
-    private static final String SSCS_DAILY_LIST_VALID_JSON = "mocks/sscs-daily-list/sscsDailyList.json";
+    private static final String SSCS_DAILY_LIST_VALID_JSON = "mocks/sscsDailyList.json";
     private static final String SSCS_DAILY_LIST_INVALID_MESSAGE = "Invalid sscs daily list marked as valid";
 
     private static final String COURT_LIST_SCHEMA = "courtLists";
