@@ -198,7 +198,6 @@ public class PublicationController {
             .listType(headers.getListType())
             .locationId(headers.getCourtId())
             .contentDate(headers.getContentDate())
-            .expiryDate(headers.getDisplayTo())
             .payloadSize((float) payload.length() / 1024)
             .build();
 
@@ -278,7 +277,6 @@ public class PublicationController {
             .listType(headers.getListType())
             .locationId(headers.getCourtId())
             .contentDate(headers.getContentDate())
-            .expiryDate(headers.getDisplayTo())
             .isFlatFile(true)
             .payloadSize((float) file.getSize() / 1024)
             .search(search)
