@@ -11,9 +11,6 @@ import org.jsoup.select.Elements;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,8 +19,6 @@ import java.time.Instant;
 import java.util.Map;
 import java.util.Objects;
 
-@SpringBootTest
-@ActiveProfiles("test")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SuppressWarnings("PMD.LooseCoupling")
 class MagistratesStandardListFileConverterTest {
@@ -45,8 +40,9 @@ class MagistratesStandardListFileConverterTest {
     private static final String OFFENCE_MESSAGE = "Offence info does not match";
 
     private static final String HEADING_CLASS = "govuk-heading-l";
-    @Autowired
-    MagistratesStandardListFileConverter converter;
+
+    private final MagistratesStandardListFileConverter converter = new MagistratesStandardListFileConverter();
+
     private JsonNode inputJson;
     private Map<String, Object> englishLanguageResource;
     private Map<String, Object> welshLanguageResource;

@@ -9,9 +9,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,12 +22,9 @@ import java.util.Objects;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest
-@ActiveProfiles("test")
 class CopCauseListFileConverterTest {
 
-    @Autowired
-    CopDailyCauseListFileConverter copDailyCauseListConverter;
+    CopDailyCauseListFileConverter copDailyCauseListConverter = new CopDailyCauseListFileConverter();
 
     private static final String CONTENT_DATE = "contentDate";
     private static final String PROVENANCE = "provenance";

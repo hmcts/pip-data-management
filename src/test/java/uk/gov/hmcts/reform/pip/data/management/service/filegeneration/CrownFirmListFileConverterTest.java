@@ -7,9 +7,6 @@ import org.apache.commons.io.IOUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,11 +20,9 @@ import java.util.Objects;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest
-@ActiveProfiles("test")
 class CrownFirmListFileConverterTest {
-    @Autowired
-    CrownFirmListFileConverter crownFirmListConverter;
+
+    CrownFirmListFileConverter crownFirmListConverter = new CrownFirmListFileConverter();
 
     private static final String HEADER_TEXT = "Incorrect header text";
     private static final String PROVENANCE = "provenance";

@@ -9,9 +9,6 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,11 +20,9 @@ import java.time.Instant;
 import java.util.Map;
 import java.util.Objects;
 
-@SpringBootTest
-@ActiveProfiles("test")
 class MagistratesPublicListFileConverterTest {
-    @Autowired
-    MagistratesPublicListFileConverter magistratesPublicListFileConverter;
+
+    MagistratesPublicListFileConverter magistratesPublicListFileConverter = new MagistratesPublicListFileConverter();
 
     private static final String HEADER_TEXT = "Incorrect header text";
     private static final String PROVENANCE = "provenance";
