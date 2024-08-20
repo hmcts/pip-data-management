@@ -22,7 +22,8 @@ import java.util.Objects;
 
 class MagistratesPublicListFileConverterTest {
 
-    MagistratesPublicListFileConverter magistratesPublicListFileConverter = new MagistratesPublicListFileConverter();
+    private final MagistratesPublicListFileConverter magistratesPublicListFileConverter
+        = new MagistratesPublicListFileConverter();
 
     private static final String HEADER_TEXT = "Incorrect header text";
     private static final String PROVENANCE = "provenance";

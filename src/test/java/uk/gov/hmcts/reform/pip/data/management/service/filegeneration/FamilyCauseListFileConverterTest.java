@@ -25,7 +25,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class FamilyCauseListFileConverterTest {
 
-    FamilyDailyCauseListFileConverter familyDailyCauseListConverter = new FamilyDailyCauseListFileConverter();
+    private final FamilyDailyCauseListFileConverter familyDailyCauseListConverter
+        = new FamilyDailyCauseListFileConverter();
 
     private static final String HEADER_TEXT = "Incorrect header text";
     private static final String TITLE_TEXT = "Incorrect Title Text";

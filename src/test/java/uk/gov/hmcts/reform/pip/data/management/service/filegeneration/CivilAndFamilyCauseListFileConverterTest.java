@@ -24,7 +24,7 @@ import java.util.Objects;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class CivilAndFamilyCauseListFileConverterTest {
-    CivilAndFamilyDailyCauseListFileConverter civilAndFamilyDailyCauseListConverter
+    private final CivilAndFamilyDailyCauseListFileConverter civilAndFamilyDailyCauseListConverter
         = new CivilAndFamilyDailyCauseListFileConverter();
 
     private static final String PROVENANCE = "provenance";

@@ -24,7 +24,6 @@ import java.util.Objects;
 class MagistratesStandardListFileConverterTest {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
-
     private static final String BODY_CLASS = "govuk-body";
     private static final String CONTENT_DATE = "contentDate";
     private static final String PROVENANCE = "provenance";

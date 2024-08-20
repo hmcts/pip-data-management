@@ -23,7 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class CrownDailyListFileConverterTest {
 
-    CrownDailyListFileConverter crownDailyListConverter = new CrownDailyListFileConverter();
+    private final CrownDailyListFileConverter crownDailyListConverter = new CrownDailyListFileConverter();
 
     private static final String HEADER_TEXT = "Incorrect header text";
     private static final String PROVENANCE = "provenance";

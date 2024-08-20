@@ -22,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class CrownFirmListFileConverterTest {
 
-    CrownFirmListFileConverter crownFirmListConverter = new CrownFirmListFileConverter();
+    private final CrownFirmListFileConverter crownFirmListConverter = new CrownFirmListFileConverter();
 
     private static final String HEADER_TEXT = "Incorrect header text";
     private static final String PROVENANCE = "provenance";

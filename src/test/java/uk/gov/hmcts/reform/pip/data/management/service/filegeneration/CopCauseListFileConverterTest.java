@@ -24,7 +24,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class CopCauseListFileConverterTest {
 
-    CopDailyCauseListFileConverter copDailyCauseListConverter = new CopDailyCauseListFileConverter();
+    private final CopDailyCauseListFileConverter copDailyCauseListConverter = new CopDailyCauseListFileConverter();
 
     private static final String CONTENT_DATE = "contentDate";
     private static final String PROVENANCE = "provenance";
