@@ -8,11 +8,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-import uk.gov.hmcts.reform.pip.data.management.Application;
-import uk.gov.hmcts.reform.pip.data.management.config.WebClientTestConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.service.ListConversionFactory;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
@@ -27,8 +22,6 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@ActiveProfiles("test")
-@SpringBootTest(classes = {Application.class, WebClientTestConfiguration.class})
 class SscsDailyListFileConverterTest {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
@@ -37,8 +30,7 @@ class SscsDailyListFileConverterTest {
 
     private static final String TITLE_TEXT = "Incorrect Title Text";
 
-    @Autowired
-    private ListConversionFactory listConversionFactory;
+    private final ListConversionFactory listConversionFactory = new ListConversionFactory();
 
     @ParameterizedTest
     @EnumSource(value = ListType.class, names = {"SSCS_DAILY_LIST", "SSCS_DAILY_LIST_ADDITIONAL_HEARINGS"})
