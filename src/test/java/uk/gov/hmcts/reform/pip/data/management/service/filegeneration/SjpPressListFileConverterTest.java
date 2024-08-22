@@ -13,11 +13,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-import uk.gov.hmcts.reform.pip.data.management.Application;
-import uk.gov.hmcts.reform.pip.data.management.config.WebClientTestConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.service.ListConversionFactory;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
@@ -30,16 +25,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-@ActiveProfiles("test")
-@SpringBootTest(classes = {Application.class, WebClientTestConfiguration.class})
 @SuppressWarnings("PMD.LooseCoupling")
 class SjpPressListFileConverterTest {
 
-    @Autowired
-    SjpPressListFileConverter sjpPressListConverter;
+    private final SjpPressListFileConverter sjpPressListConverter = new SjpPressListFileConverter();
 
-    @Autowired
-    private ListConversionFactory listConversionFactory;
+    private final ListConversionFactory listConversionFactory = new ListConversionFactory();
 
     private JsonNode getInput(String resourcePath) throws IOException {
         try (InputStream inputStream = getClass().getResourceAsStream(resourcePath)) {
