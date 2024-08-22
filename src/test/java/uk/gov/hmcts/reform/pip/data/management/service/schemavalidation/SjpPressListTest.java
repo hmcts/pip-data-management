@@ -3,7 +3,6 @@ package uk.gov.hmcts.reform.pip.data.management.service.schemavalidation;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,6 +38,7 @@ class SjpPressListTest {
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private static final String SJP_PRESS_LIST_VALID_JSON = "mocks/sjpPressList.json";
+    private static final String SJP_PRESS_LIST_WITH_NEW_LINES = "mocks/sjpPressListWithNewLines.json";
     private static final String SJP_PRESS_INVALID_MESSAGE = "Invalid SJP press";
     private static final String SJP_PRESS_VALID_MESSAGE = "Exception should not be thrown for SJP press";
 
@@ -636,60 +636,12 @@ class SjpPressListTest {
     }
 
     @Test
-    void testValidateWithoutErrorWhenOffenceWordingContainsANewLineCharacter() throws IOException {
+    void testValidateWithSuccessWhenFieldsContainNewLineCharacters() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(SJP_PRESS_LIST_VALID_JSON)) {
+            .getResourceAsStream(SJP_PRESS_LIST_WITH_NEW_LINES)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
-            JsonNode node = OBJECT_MAPPER.readValue(text, JsonNode.class);
-            ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0).get(COURT_HOUSE_SCHEMA)
-                .get(COURT_ROOM_SCHEMA).get(0).get(SESSION_SCHEMA).get(0)
-                .get(SITTINGS_SCHEMA).get(0).get(HEARING_SCHEMA).get(0)
-                .get(OFFENCE_SCHEMA).get(0)).put("offenceWording", "Offence\nWording");
-
-            String listJson = node.toString();
-            assertDoesNotThrow(() -> validationService.validateBody(listJson, headerGroup),
-                               SJP_PRESS_VALID_MESSAGE);
-        }
-    }
-
-    @Test
-    void testValidateWithoutErrorWhenAddressLineContainsANewLineCharacter() throws IOException {
-        try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(SJP_PRESS_LIST_VALID_JSON)) {
-            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
-
-            JsonNode node = OBJECT_MAPPER.readValue(text, JsonNode.class);
-            ((ArrayNode) node.get(COURT_LIST_SCHEMA).get(0).get(COURT_HOUSE_SCHEMA)
-                .get(COURT_ROOM_SCHEMA).get(0).get(SESSION_SCHEMA).get(0)
-                .get(SITTINGS_SCHEMA).get(0).get(HEARING_SCHEMA).get(0)
-                .get(PARTY_SCHEMA).get(0).get(INDIVIDUAL_DETAILS_SCHEMA).get(ADDRESS_SCHEMA).get("line"))
-                .add("Address\rLine");
-
-            String listJson = node.toString();
-            assertDoesNotThrow(() -> validationService.validateBody(listJson, headerGroup),
-                               SJP_PRESS_VALID_MESSAGE);
-        }
-    }
-
-    @Test
-    void testValidateWithoutErrorWhenTownAndCountyContainNewLineCharacters() throws IOException {
-        try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(SJP_PRESS_LIST_VALID_JSON)) {
-            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
-
-            JsonNode node = OBJECT_MAPPER.readValue(text, JsonNode.class);
-
-            ObjectNode addressNode = (ObjectNode) node.get(COURT_LIST_SCHEMA).get(0).get(COURT_HOUSE_SCHEMA)
-                .get(COURT_ROOM_SCHEMA).get(0).get(SESSION_SCHEMA).get(0)
-                .get(SITTINGS_SCHEMA).get(0).get(HEARING_SCHEMA).get(0)
-                .get(PARTY_SCHEMA).get(0).get(INDIVIDUAL_DETAILS_SCHEMA)
-                .get(ADDRESS_SCHEMA);
-
-            addressNode.put("town", "A\nB");
-            addressNode.put("county", "C\rD");
-
-            String listJson = node.toString();
+            String listJson = OBJECT_MAPPER.readValue(text, JsonNode.class).toString();
             assertDoesNotThrow(() -> validationService.validateBody(listJson, headerGroup),
                                SJP_PRESS_VALID_MESSAGE);
         }
