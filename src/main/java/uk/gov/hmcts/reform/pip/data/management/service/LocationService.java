@@ -57,9 +57,6 @@ import static uk.gov.hmcts.reform.pip.model.account.Roles.SYSTEM_ADMIN;
 @Slf4j
 @SuppressWarnings({"PMD"})
 public class LocationService {
-    private static final String LOCATION_NAME_CONSTRAINT = "unique_location_name_constraint";
-    private static final String WELSH_LOCATION_NAME_CONSTRAINT = "unique_welsh_location_name_constraint";
-
     private final LocationRepository locationRepository;
 
     private final ArtefactRepository artefactRepository;

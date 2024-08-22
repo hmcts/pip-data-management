@@ -26,7 +26,7 @@
         "postCode": {
           "title": "Address Postcode",
           "type": "string",
-          "pattern": "^(?!.*<[^>]+>).*$"
+          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
         }
       }
     },
@@ -37,22 +37,22 @@
         "venueTelephone": {
           "title": "Venue Telephone",
           "type": "string",
-          "pattern": "^(?!.*<[^>]+>).*$"
+          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
         },
         "venueEmail": {
           "title": "Venue Email",
           "type": "string",
-          "pattern": "^(?!.*<[^>]+>).*$"
+          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
         },
         "primaryContactName": {
           "title": "Primary Contact Name",
           "type": "string",
-          "pattern": "^(?!.*<[^>]+>).*$"
+          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
         },
         "venueSupport": {
           "title": "Venue Support",
           "type": "string",
-          "pattern": "^(?!.*<[^>]+>).*$"
+          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
         }
       }
     },
@@ -63,12 +63,12 @@
         "johTitle": {
           "title": "Judiciary Title",
           "type": "string",
-          "pattern": "^(?!.*<[^>]+>).*$"
+          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
         },
         "johNameSurname": {
           "title": "JOH Name",
           "type": "string",
-          "pattern": "^(?!.*<[^>]+>).*$"
+          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
         },
         "role": {
           "title": "Role",
@@ -78,17 +78,17 @@
             "MAGISTRATE",
             "CLERK"
           ],
-          "pattern": "^(?!.*<[^>]+>).*$"
+          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
         },
         "johKnownAs": {
           "title": "JOH Known As",
           "type": "string",
-          "pattern": "^(?!.*<[^>]+>).*$"
+          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
         },
         "isPresiding": {
           "title": "Is Presiding",
           "type": "boolean",
-          "pattern": "^(?!.*<[^>]+>).*$"
+          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
         }
       }
     }
@@ -104,17 +104,17 @@
         "documentName": {
           "title": "Document Name",
           "type": "string",
-          "pattern": "^(?!.*<[^>]+>).*$"
+          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
         },
         "publicationDate": {
           "title": "Publication date",
           "type": "string",
-          "pattern": "^(?!.*<[^>]+>).*$"
+          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
         },
         "version": {
           "title": "Version",
           "type": "string",
-          "pattern": "^(?!.*<[^>]+>).*$"
+          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
         }
       }
     },
@@ -125,7 +125,7 @@
         "venueType": {
           "title": "Venue Type",
           "type": "string",
-          "pattern": "^(?!.*<[^>]+>).*$"
+          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
         },
         "venueCode": {
           "title": "Venue Code",
@@ -134,19 +134,19 @@
             "@venueShortName": {
               "title": "@venueshortname",
               "type": "string",
-              "pattern": "^(?!.*<[^>]+>).*$"
+              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
             },
             "venueId": {
               "title": "Venue ID",
               "type": "string",
-              "pattern": "^(?!.*<[^>]+>).*$"
+              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
             }
           }
         },
         "venueName": {
           "title": "Venue Name",
           "type": "string",
-          "pattern": "^(?!.*<[^>]+>).*$"
+          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
         },
         "venueAddress": {
           "$ref": "#/$defs/address"
@@ -154,7 +154,7 @@
         "venueDX": {
           "title": "venuedx",
           "type": "string",
-          "pattern": "^(?!.*<[^>]+>).*$"
+          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
         },
         "venueContact": {
           "title": "Venue Contact",
@@ -169,12 +169,12 @@
         "location": {
           "title": "Location Name",
           "type": "string",
-          "pattern": "^(?!.*<[^>]+>).*$"
+          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
         },
         "jurisdiction": {
           "title": "Jurisdiction",
           "type": "string",
-          "pattern": "^(?!.*<[^>]+>).*$"
+          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
 
         },
         "region": {
@@ -184,7 +184,7 @@
             "name": {
               "title": "Region name",
               "type": "string",
-              "pattern": "^(?!.*<[^>]+>).*$"
+              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
             },
             "regionalJOH": {
               "type": "array",
@@ -208,7 +208,7 @@
           "courtListName": {
             "title": "Sub-list Name",
             "type": "string",
-            "pattern": "^(?!.*<[^>]+>).*$"
+            "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
           },
           "courtHouse": {
             "title": "Court House",
@@ -217,7 +217,7 @@
               "courtHouseName": {
                 "title": "Court House Name",
                 "type": "string",
-                "pattern": "^(?!.*<[^>]+>).*$"
+                "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
               },
               "courtHouseContact": {
                 "title": "Court House Contact",
@@ -236,7 +236,7 @@
                     "courtRoomName": {
                       "title": "Court Room Name",
                       "type": "string",
-                      "pattern": "^(?!.*<[^>]+>).*$"
+                      "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                     },
                     "venueContact": {
                       "title": "Venue Contact",
@@ -253,13 +253,13 @@
                             "items": {
                               "title": "Session Channel",
                               "type": "string",
-                              "pattern": "^(?!.*<[^>]+>).*$"
+                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                             }
                           },
                           "sessionStartTime": {
                             "title": "Session start time",
                             "type": "string",
-                            "pattern": "^(?!.*<[^>]+>).*$"
+                            "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                           },
                           "judiciary": {
                             "type": "array",
@@ -278,12 +278,12 @@
                                 "sittingStart": {
                                   "title": "Sitting Start",
                                   "type": "string",
-                                  "pattern": "^(?!.*<[^>]+>).*$"
+                                  "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                 },
                                 "sittingEnd": {
                                   "title": "Sitting End",
                                   "type": "string",
-                                  "pattern": "^(?!.*<[^>]+>).*$"
+                                  "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                 },
                                 "hearing": {
                                   "type": "array",
@@ -294,17 +294,17 @@
                                       "hearingId": {
                                         "title": "Hearing ID",
                                         "type": "string",
-                                        "pattern": "^(?!.*<[^>]+>).*$"
+                                        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                       },
                                       "hearingType": {
                                         "title": "Hearing Type",
                                         "type": "string",
-                                        "pattern": "^(?!.*<[^>]+>).*$"
+                                        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                       },
                                       "listNote": {
                                         "title": "List Note",
                                         "type": "string",
-                                        "pattern": "^(?!.*<[^>]+>).*$"
+                                        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                       },
                                       "case": {
                                         "type": "array",
@@ -315,40 +315,40 @@
                                             "caseUrn": {
                                               "title": "Case Number",
                                               "type": "string",
-                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                             },
                                             "caseName": {
                                               "title": "Case Name",
                                               "type": "string",
-                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                             },
                                             "reportingRestriction": {
                                               "title": "Reporting Restriction",
                                               "type": "boolean",
-                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                             },
                                             "reportingRestrictionDetail": {
                                               "title": "Reporting Restrictions Detail",
                                               "type": "array",
                                               "items": {
                                                 "type": "string",
-                                                "pattern": "^(?!.*<[^>]+>).*$"
+                                                "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                               }
                                             },
                                             "caseJurisdictionET": {
                                               "title": "Case Jurisdiction ET",
                                               "type": "string",
-                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                             },
                                             "caseNumber": {
                                               "title": "Case Number",
                                               "type": "string",
-                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                             },
                                             "caseSequenceIndicator": {
                                               "title": "Case Sequence Indicator",
                                               "type": "string",
-                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                             },
                                             "party": {
                                               "title": "Party",
@@ -360,17 +360,17 @@
                                                   "partyRole": {
                                                     "title": "Party Role",
                                                     "type": "string",
-                                                    "pattern": "^(?!.*<[^>]+>).*$"
+                                                    "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                   },
                                                   "friendlyRoleName": {
                                                     "title": "Friendly Role Name",
                                                     "type": "string",
-                                                    "pattern": "^(?!.*<[^>]+>).*$"
+                                                    "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                   },
                                                   "attendanceMethod": {
                                                     "title": "Attendance Method",
                                                     "type": "string",
-                                                    "pattern": "^(?!.*<[^>]+>).*$"
+                                                    "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                   },
                                                   "individualDetails": {
                                                     "title": "Individual Details",
@@ -379,32 +379,32 @@
                                                       "title": {
                                                         "title": "Title",
                                                         "type": "string",
-                                                        "pattern": "^(?!.*<[^>]+>).*$"
+                                                        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                       },
                                                       "individualForenames": {
                                                         "title": "Individual Forenames",
                                                         "type": "string",
-                                                        "pattern": "^(?!.*<[^>]+>).*$"
+                                                        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                       },
                                                       "individualMiddleName": {
                                                         "title": "Individual Middle Name",
                                                         "type": "string",
-                                                        "pattern": "^(?!.*<[^>]+>).*$"
+                                                        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                       },
                                                       "individualSurname": {
                                                         "title": "Individual Surname",
                                                         "type": "string",
-                                                        "pattern": "^(?!.*<[^>]+>).*$"
+                                                        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                       },
                                                       "dateOfBirth": {
                                                         "title": "Date Of Birth",
                                                         "type": "string",
-                                                        "pattern": "^(?!.*<[^>]+>).*$"
+                                                        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                       },
                                                       "age": {
                                                         "title": "Age",
                                                         "type": "integer",
-                                                        "pattern": "^(?!.*<[^>]+>).*$"
+                                                        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                       },
                                                       "address": {
                                                         "title": "Address",
@@ -422,7 +422,7 @@
                                                       "gender": {
                                                         "title": "Gender",
                                                         "type": "string",
-                                                        "pattern": "^(?!.*<[^>]+>).*$"
+                                                        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                       },
                                                       "offence": {
                                                         "title": "offence",
@@ -433,27 +433,27 @@
                                                             "offenceTitle":{
                                                               "title": "Offence title",
                                                               "type": "string",
-                                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                             },
                                                             "offenceSection":{
                                                               "title": "Offence section",
                                                               "type": "string",
-                                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                             },
                                                             "offenceWording":{
                                                               "title": "Offence wording",
                                                               "type":"string",
-                                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                             },
                                                             "plea":{
                                                               "title": "Plea",
                                                               "type": "string",
-                                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                             },
                                                             "pleaDate":{
                                                               "title": "Plea date",
                                                               "type": "string",
-                                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                             },
                                                             "decision": {
                                                               "title": "Offence decision",
@@ -462,36 +462,36 @@
                                                                 "decisionDate": {
                                                                   "title": "Decision date",
                                                                   "type": "string",
-                                                                  "pattern": "^(?!.*<[^>]+>).*$"
+                                                                  "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                                 },
                                                                 "decisionDetail": {
                                                                   "title": "Decision detail",
                                                                   "type": "string",
-                                                                  "pattern": "^(?!.*<[^>]+>).*$"
+                                                                  "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                                 }
                                                               }
                                                             },
                                                             "bailStatus": {
                                                               "title": "Bail status",
                                                               "type":"string",
-                                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                             },
                                                             "nextHearingDate": {
                                                               "title": "Next hearing date",
                                                               "type": "string",
-                                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                             },
                                                             "nextHearingLocation": {
                                                               "title": "Next hearing location",
                                                               "type": "string",
-                                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                             },
                                                             "reportingRestrictionDetail": {
                                                               "title": "Reporting Restrictions Detail",
                                                               "type": "array",
                                                               "items": {
                                                                 "type": "string",
-                                                                "pattern": "^(?!.*<[^>]+>).*$"
+                                                                "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                               }
                                                             }
                                                           }
@@ -506,7 +506,7 @@
                                                       "organisationName": {
                                                         "title": "Organisation Name",
                                                         "type": "string",
-                                                        "pattern": "^(?!.*<[^>]+>).*$"
+                                                        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                       },
                                                       "organisationAddress": {
                                                         "title": "Organisation Address",
@@ -521,27 +521,27 @@
                                                             "offenceTitle":{
                                                               "title": "Offence title",
                                                               "type": "string",
-                                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                             },
                                                             "offenceSection":{
                                                               "title": "Offence section",
                                                               "type": "string",
-                                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                             },
                                                             "offenceWording":{
                                                               "title": "Offence wording",
                                                               "type":"string",
-                                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                             },
                                                             "plea":{
                                                               "title": "Plea",
                                                               "type": "string",
-                                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                             },
                                                             "pleaDate":{
                                                               "title": "Plea date",
                                                               "type": "string",
-                                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                             },
                                                             "decision": {
                                                               "title": "Offence decision",
@@ -550,36 +550,36 @@
                                                                 "decisionDate": {
                                                                   "title": "Decision date",
                                                                   "type": "string",
-                                                                  "pattern": "^(?!.*<[^>]+>).*$"
+                                                                  "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                                 },
                                                                 "decisionDetail": {
                                                                   "title": "Decision detail",
                                                                   "type": "string",
-                                                                  "pattern": "^(?!.*<[^>]+>).*$"
+                                                                  "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                                 }
                                                               }
                                                             },
                                                             "bailStatus": {
                                                               "title": "Bail status",
                                                               "type":"string",
-                                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                             },
                                                             "nextHearingDate": {
                                                               "title": "Next hearing date",
                                                               "type": "string",
-                                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                             },
                                                             "nextHearingLocation": {
                                                               "title": "Next hearing location",
                                                               "type": "string",
-                                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                             },
                                                             "reportingRestrictionDetail": {
                                                               "title": "Reporting Restrictions Detail",
                                                               "type": "array",
                                                               "items": {
                                                                 "type": "string",
-                                                                "pattern": "^(?!.*<[^>]+>).*$"
+                                                                "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                               }
                                                             }
                                                           }
@@ -596,39 +596,39 @@
                                                         "offenceCode":{
                                                           "title": "Offence code",
                                                           "type": "string",
-                                                          "pattern": "^(?!.*<[^>]+>).*$"
+                                                          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                         },
                                                         "offenceTitle":{
                                                           "title": "Offence title",
                                                           "type": "string",
-                                                          "pattern": "^(?!.*<[^>]+>).*$"
+                                                          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                         },
                                                         "offenceSection":{
                                                           "title": "Offence section",
                                                           "type": "string",
-                                                          "pattern": "^(?!.*<[^>]+>).*$"
+                                                          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                         },
                                                         "offenceWording":{
                                                           "title": "Offence wording",
                                                           "type":"string",
-                                                          "pattern": "^(?!.*<[^>]+>).*$"
+                                                          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                         },
                                                         "offenceMaxPen":{
                                                           "title": "Offence Max Penalty",
                                                           "type":"string",
-                                                          "pattern": "^(?!.*<[^>]+>).*$"
+                                                          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                         },
                                                         "reportingRestriction": {
                                                           "title": "Reporting Restriction",
                                                           "type": "boolean",
-                                                          "pattern": "^(?!.*<[^>]+>).*$"
+                                                          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                         },
                                                         "reportingRestrictionDetail": {
                                                           "title": "Reporting Restrictions Detail",
                                                           "type": "array",
                                                           "items": {
                                                             "type": "string",
-                                                            "pattern": "^(?!.*<[^>]+>).*$"
+                                                            "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                           }
                                                         }
                                                       }
@@ -645,23 +645,23 @@
                                                 "prosecutionAuthorityRef": {
                                                   "title": "Prosecution Authority Ref",
                                                   "type": "string",
-                                                  "pattern": "^(?!.*<[^>]+>).*$"
+                                                  "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                 },
                                                 "prosecutionAuthorityId":{
                                                   "title": "Prosecution Authority Id",
                                                   "type": "string",
-                                                  "pattern": "^(?!.*<[^>]+>).*$"
+                                                  "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                 },
                                                 "prosecutionAuthorityCode":{
                                                   "title": "Prosecution Authority Code",
                                                   "type": "string",
-                                                  "pattern": "^(?!.*<[^>]+>).*$"
+                                                  "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
 
                                                 },
                                                 "prosecutionAuthorityName":{
                                                   "title": "Prosecution Authority Name",
                                                   "type": "string",
-                                                  "pattern": "^(?!.*<[^>]+>).*$"
+                                                  "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
 
                                                 }
                                               }
@@ -669,7 +669,7 @@
                                             "caseType": {
                                               "title": "Case Type",
                                               "type": "string",
-                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                             },
                                             "caseLinked": {
                                               "title": "Information about linked cases",
@@ -678,48 +678,48 @@
                                                 "caseId": {
                                                   "title": "Case Linked Id",
                                                   "type": "string",
-                                                  "pattern": "^(?!.*<[^>]+>).*$"
+                                                  "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                 },
                                                 "name": {
                                                   "title": "Case Name",
                                                   "type": "string",
-                                                  "pattern": "^(?!.*<[^>]+>).*$"
+                                                  "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                 }
                                               }
                                             },
                                             "caseSuppressionName": {
                                               "title": "Case Suppression Name",
                                               "type": "string",
-                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                             },
                                             "hearingNumber": {
                                               "title": "Hearing number",
                                               "type": "string",
-                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                             },
                                             "convictionDate": {
                                               "title": "Conviction Date",
                                               "type": "string",
-                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                             },
                                             "adjournedDate": {
                                               "title": "Adjourned Date",
                                               "type": "string",
-                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                             },
                                             "panel": {
                                               "type": "string",
-                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                             },
                                             "language": {
                                               "title": "Interpreter Language",
                                               "type": "string",
-                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                             },
                                             "scheduledHearingDate": {
                                               "title": "Scheduled hearing date",
                                               "type": "string",
-                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                             }
                                           }
                                         }
@@ -734,17 +734,17 @@
                                             "partyRole": {
                                               "title": "Party Role",
                                               "type": "string",
-                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                             },
                                             "friendlyRoleName": {
                                               "title": "Friendly Role Name",
                                               "type": "string",
-                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                             },
                                             "attendanceMethod": {
                                               "title": "Attendance Method",
                                               "type": "string",
-                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                             },
                                             "individualDetails": {
                                               "title": "Individual Details",
@@ -753,27 +753,27 @@
                                                 "title": {
                                                   "title": "Title",
                                                   "type": "string",
-                                                  "pattern": "^(?!.*<[^>]+>).*$"
+                                                  "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                 },
                                                 "individualForenames": {
                                                   "title": "Individual Forenames",
                                                   "type": "string",
-                                                  "pattern": "^(?!.*<[^>]+>).*$"
+                                                  "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                 },
                                                 "individualMiddleName": {
                                                   "title": "Individual Middle Name",
                                                   "type": "string",
-                                                  "pattern": "^(?!.*<[^>]+>).*$"
+                                                  "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                 },
                                                 "individualSurname": {
                                                   "title": "Individual Surname",
                                                   "type": "string",
-                                                  "pattern": "^(?!.*<[^>]+>).*$"
+                                                  "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                 },
                                                 "dateOfBirth": {
                                                   "title": "Date Of Birth",
                                                   "type": "string",
-                                                  "pattern": "^(?!.*<[^>]+>).*$"
+                                                  "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                 },
                                                 "age": {
                                                   "title": "Age",
@@ -795,7 +795,7 @@
                                                 "gender": {
                                                   "title": "Gender",
                                                   "type": "string",
-                                                  "pattern": "^(?!.*<[^>]+>).*$"
+                                                  "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                 },
                                                 "offence": {
                                                   "title": "offence",
@@ -806,34 +806,34 @@
                                                       "offenceTitle":{
                                                         "title": "Offence title",
                                                         "type": "string",
-                                                        "pattern": "^(?!.*<[^>]+>).*$"
+                                                        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                       },
                                                       "offenceSection":{
                                                         "title": "Offence section",
                                                         "type": "string",
-                                                        "pattern": "^(?!.*<[^>]+>).*$"
+                                                        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                       },
                                                       "offenceWording":{
                                                         "title": "Offence wording",
                                                         "type":"string",
-                                                        "pattern": "^(?!.*<[^>]+>).*$"
+                                                        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                       },
                                                       "plea":{
                                                         "title": "Plea",
                                                         "type": "string",
-                                                        "pattern": "^(?!.*<[^>]+>).*$"
+                                                        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                       },
                                                       "pleaDate":{
                                                         "title": "Plea date",
                                                         "type": "string",
-                                                        "pattern": "^(?!.*<[^>]+>).*$"
+                                                        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                       },
                                                       "reportingRestrictionDetail": {
                                                         "title": "Reporting Restrictions Detail",
                                                         "type": "array",
                                                         "items": {
                                                           "type": "string",
-                                                          "pattern": "^(?!.*<[^>]+>).*$"
+                                                          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                         }
                                                       }
                                                     }
@@ -848,7 +848,7 @@
                                                 "organisationName": {
                                                   "title": "Organisation Name",
                                                   "type": "string",
-                                                  "pattern": "^(?!.*<[^>]+>).*$"
+                                                  "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                 },
                                                 "organisationAddress": {
                                                   "title": "Organisation Address",
@@ -863,34 +863,34 @@
                                                       "offenceTitle":{
                                                         "title": "Offence title",
                                                         "type": "string",
-                                                        "pattern": "^(?!.*<[^>]+>).*$"
+                                                        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                       },
                                                       "offenceSection":{
                                                         "title": "Offence section",
                                                         "type": "string",
-                                                        "pattern": "^(?!.*<[^>]+>).*$"
+                                                        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                       },
                                                       "offenceWording":{
                                                         "title": "Offence wording",
                                                         "type":"string",
-                                                        "pattern": "^(?!.*<[^>]+>).*$"
+                                                        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                       },
                                                       "plea":{
                                                         "title": "Plea",
                                                         "type": "string",
-                                                        "pattern": "^(?!.*<[^>]+>).*$"
+                                                        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                       },
                                                       "pleaDate":{
                                                         "title": "Plea date",
                                                         "type": "string",
-                                                        "pattern": "^(?!.*<[^>]+>).*$"
+                                                        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                       },
                                                       "reportingRestrictionDetail": {
                                                         "title": "Reporting Restrictions Detail",
                                                         "type": "array",
                                                         "items": {
                                                           "type": "string",
-                                                          "pattern": "^(?!.*<[^>]+>).*$"
+                                                          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                         }
                                                       }
                                                     }
@@ -911,12 +911,12 @@
                                             "offenceCode":{
                                               "title": "Offence code",
                                               "type": "string",
-                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                             },
                                             "offenceTitle":{
                                               "title": "Offence title",
                                               "type": "string",
-                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                             },
                                             "offenceWording":{
                                               "title": "Offence wording",
@@ -926,19 +926,19 @@
                                             "offenceMaxPen":{
                                               "title": "Offence Max Penalty",
                                               "type":"string",
-                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                             },
                                             "reportingRestriction": {
                                               "title": "Reporting Restriction",
                                               "type": "boolean",
-                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                             },
                                             "reportingRestrictionDetail": {
                                               "title": "Reporting Restrictions Detail",
                                               "type": "array",
                                               "items": {
                                                 "type": "string",
-                                                "pattern": "^(?!.*<[^>]+>).*$"
+                                                "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                               }
                                             }
                                           }
@@ -951,7 +951,7 @@
                                           "listingRepDeadline": {
                                             "title": "",
                                             "type":"string",
-                                            "pattern": "^(?!.*<[^>]+>).*$"
+                                            "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                           }
                                         }
                                       }
@@ -971,7 +971,7 @@
                                   "items": {
                                     "title": "Sitting Channel",
                                     "type": "string",
-                                    "pattern": "^(?!.*<[^>]+>).*$"
+                                    "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                   }
                                 }
                               }

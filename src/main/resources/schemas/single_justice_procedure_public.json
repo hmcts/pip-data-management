@@ -36,7 +36,7 @@
           "examples": [
             "Standard List FINAL V4"
           ],
-          "pattern": "^(?!.*<[^>]+>).*$"
+          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
         },
         "publicationDate": {
           "title": "Publication date",
@@ -45,7 +45,7 @@
           "examples": [
             "2016-09-13T23:30:52.123Z"
           ],
-          "pattern": "^(?!.*<[^>]+>).*$"
+          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
         },
         "version": {
           "title": "Version",
@@ -54,7 +54,7 @@
           "examples": [
             "1.0"
           ],
-          "pattern": "^(?!.*<[^>]+>).*$"
+          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
         }
       }
     },
@@ -130,7 +130,7 @@
                                                 "PROSECUTOR"
                                               ],
                                               "default": "",
-                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                             },
                                             "individualDetails": {
                                               "title": "Individual Details",
@@ -155,7 +155,7 @@
                                                     "Surname"
                                                   ],
                                                   "default": "",
-                                                  "pattern": "^(?!.*<[^>]+>).*$"
+                                                  "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                 },
                                                 "address": {
                                                   "title": "Address",
@@ -180,7 +180,7 @@
                                                     "A & B Solicitors"
                                                   ],
                                                   "default": "",
-                                                  "pattern": "^(?!.*<[^>]+>).*$"
+                                                  "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                 },
                                                 "organisationAddress": {
                                                   "title": "Organisation Address",
@@ -234,7 +234,7 @@
                                               "examples": [
                                                 "drink driving"
                                               ],
-                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                             }
                                           }
                                         }

@@ -45,7 +45,7 @@
           "examples": [
             "PR1 2LL"
           ],
-          "pattern": "^(?!.*<[^>]+>).*$"
+          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
         }
       }
     }
@@ -68,7 +68,7 @@
           "examples": [
             "Standard List FINAL V4"
           ],
-          "pattern": "^(?!.*<[^>]+>).*$"
+          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
         },
         "publicationDate": {
           "title": "Publication date",
@@ -77,7 +77,7 @@
           "examples": [
             "2016-09-13T23:30:52.123Z"
           ],
-          "pattern": "^(?!.*<[^>]+>).*$"
+          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
         },
         "version": {
           "title": "Version",
@@ -86,7 +86,7 @@
           "examples": [
             "1.0"
           ],
-          "pattern": "^(?!.*<[^>]+>).*$"
+          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
         }
       }
     },
@@ -156,7 +156,7 @@
                                               "examples": [
                                                 "offg35484"
                                               ],
-                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                             }
                                           }
                                         }
@@ -184,7 +184,7 @@
                                                 "PROSECUTOR"
                                               ],
                                               "default": "",
-                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                             },
                                             "individualDetails": {
                                               "title": "Individual Details",
@@ -199,7 +199,7 @@
                                                     "Mr"
                                                   ],
                                                   "default": "",
-                                                  "pattern": "^(?!.*<[^>]+>).*$"
+                                                  "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                 },
                                                 "individualForenames": {
                                                   "description": "Forename of party",
@@ -209,7 +209,7 @@
                                                     "John Smith"
                                                   ],
                                                   "default": "",
-                                                  "pattern": "^(?!.*<[^>]+>).*$"
+                                                  "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                 },
                                                 "individualMiddleName": {
                                                   "description": "Middle name of the individual",
@@ -219,7 +219,7 @@
                                                     "MiddleName"
                                                   ],
                                                   "default": "",
-                                                  "pattern": "^(?!.*<[^>]+>).*$"
+                                                  "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                 },
                                                 "individualSurname": {
                                                   "description": "Surname of party",
@@ -229,7 +229,7 @@
                                                     "Surname"
                                                   ],
                                                   "default": "",
-                                                  "pattern": "^(?!.*<[^>]+>).*$"
+                                                  "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                 },
                                                 "dateOfBirth": {
                                                   "description": "Date of birth for user (not mandated for all parties)",
@@ -239,7 +239,7 @@
                                                     "01-01-1901"
                                                   ],
                                                   "default": "",
-                                                  "pattern": "^(?!.*<[^>]+>).*$"
+                                                  "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                 },
                                                 "age": {
                                                   "description": "Date of birth for user (not mandated for all parties)",
@@ -273,7 +273,7 @@
                                                     "A & B Solicitors"
                                                   ],
                                                   "default": "",
-                                                  "pattern": "^(?!.*<[^>]+>).*$"
+                                                  "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                 },
                                                 "organisationAddress": {
                                                   "title": "Organisation Address",
@@ -328,7 +328,7 @@
                                               "examples": [
                                                 "drink driving"
                                               ],
-                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                             },
                                             "offenceWording": {
                                               "description": "Long description of offence",
@@ -348,7 +348,7 @@
                                               "examples": [
                                                 "true"
                                               ],
-                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                             }
                                           }
                                         }
