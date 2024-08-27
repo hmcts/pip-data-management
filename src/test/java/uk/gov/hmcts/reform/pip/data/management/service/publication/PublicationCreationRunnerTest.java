@@ -34,7 +34,6 @@ import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTe
 @ExtendWith(MockitoExtension.class)
 class PublicationCreationRunnerTest {
     private static final String LAST_RECEIVED_DATE_MESSAGE = "Last received date does not match";
-    private static final String EXPIRY_DATE_MESSAGE = "Expiry date does not match";
     private static final String SEARCH_VALUE_MESSAGE = "Search value does not match";
     private static final String LOG_MESSAGE = "Log message does not match";
     private static final String EXCEPTION_MESSAGE = "Exception does not match";
@@ -71,7 +70,7 @@ class PublicationCreationRunnerTest {
     }
 
     @Test
-    void testRunMethodForJsonPublicationWithNonSjpListType() {
+    void testRunMethodForJsonPublication() {
         Artefact artefact = ArtefactConstantTestHelper.buildArtefact();
         artefact.setPayloadSize(PAYLOAD_SIZE_WITHIN_LIMIT);
         when(publicationService.createPublication(artefact, PAYLOAD)).thenReturn(artefact);
@@ -84,70 +83,6 @@ class PublicationCreationRunnerTest {
         softly.assertThat(returnedArtefact.getLastReceivedDate().toLocalDate())
             .as(LAST_RECEIVED_DATE_MESSAGE)
             .isEqualTo(LocalDate.now());
-
-        softly.assertThat(returnedArtefact.getExpiryDate().toLocalDate())
-            .as(EXPIRY_DATE_MESSAGE)
-            .isEqualTo(LocalDate.now());
-
-        softly.assertThat(returnedArtefact.getSearch())
-            .as(SEARCH_VALUE_MESSAGE)
-            .isEqualTo(SEARCH_VALUES);
-
-        softly.assertThat(logCaptor.getInfoLogs().get(0))
-            .as(LOG_MESSAGE)
-            .contains(JSON_PUBLICATION_LOG);
-
-        softly.assertAll();
-    }
-
-    @Test
-    void testRunMethodForJsonPublicationWithSjpPublicListType() {
-        Artefact artefact = ArtefactConstantTestHelper.buildSjpPublicArtefact();
-        artefact.setPayloadSize(PAYLOAD_SIZE_WITHIN_LIMIT);
-        when(publicationService.createPublication(artefact, PAYLOAD)).thenReturn(artefact);
-        when(jsonExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
-
-        Artefact returnedArtefact = publicationCreationRunner.run(artefact, PAYLOAD);
-
-        SoftAssertions softly = new SoftAssertions();
-
-        softly.assertThat(returnedArtefact.getLastReceivedDate().toLocalDate())
-            .as(LAST_RECEIVED_DATE_MESSAGE)
-            .isEqualTo(LocalDate.now());
-
-        softly.assertThat(returnedArtefact.getExpiryDate().toLocalDate())
-            .as(EXPIRY_DATE_MESSAGE)
-            .isEqualTo(LocalDate.now().plusDays(7));
-
-        softly.assertThat(returnedArtefact.getSearch())
-            .as(SEARCH_VALUE_MESSAGE)
-            .isEqualTo(SEARCH_VALUES);
-
-        softly.assertThat(logCaptor.getInfoLogs().get(0))
-            .as(LOG_MESSAGE)
-            .contains(JSON_PUBLICATION_LOG);
-
-        softly.assertAll();
-    }
-
-    @Test
-    void testRunMethodForJsonPublicationWithSjpPressListType() {
-        Artefact artefact = ArtefactConstantTestHelper.buildSjpPressArtefact();
-        artefact.setPayloadSize(PAYLOAD_SIZE_WITHIN_LIMIT);
-        when(publicationService.createPublication(artefact, PAYLOAD)).thenReturn(artefact);
-        when(jsonExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
-
-        Artefact returnedArtefact = publicationCreationRunner.run(artefact, PAYLOAD);
-
-        SoftAssertions softly = new SoftAssertions();
-
-        softly.assertThat(returnedArtefact.getLastReceivedDate().toLocalDate())
-            .as(LAST_RECEIVED_DATE_MESSAGE)
-            .isEqualTo(LocalDate.now());
-
-        softly.assertThat(returnedArtefact.getExpiryDate().toLocalDate())
-            .as(EXPIRY_DATE_MESSAGE)
-            .isEqualTo(LocalDate.now().plusDays(7));
 
         softly.assertThat(returnedArtefact.getSearch())
             .as(SEARCH_VALUE_MESSAGE)
@@ -227,10 +162,6 @@ class PublicationCreationRunnerTest {
 
         softly.assertThat(returnedArtefact.getLastReceivedDate().toLocalDate())
             .as(LAST_RECEIVED_DATE_MESSAGE)
-            .isEqualTo(LocalDate.now());
-
-        softly.assertThat(returnedArtefact.getExpiryDate().toLocalDate())
-            .as(EXPIRY_DATE_MESSAGE)
             .isEqualTo(LocalDate.now());
 
         softly.assertThat(logCaptor.getInfoLogs().get(0))

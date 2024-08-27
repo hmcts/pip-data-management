@@ -128,7 +128,6 @@ class PublicationControllerTest {
             .listType(LIST_TYPE)
             .locationId(LOCATION_ID)
             .contentDate(CONTENT_DATE)
-            .expiryDate(DISPLAY_TO)
             .payloadSize(PAYLOAD_SIZE)
             .build();
 
@@ -145,7 +144,6 @@ class PublicationControllerTest {
             .listType(LIST_TYPE)
             .locationId(LOCATION_ID)
             .contentDate(CONTENT_DATE)
-            .expiryDate(DISPLAY_TO)
             .search(new ConcurrentHashMap<>())
             .payloadSize(PAYLOAD_SIZE)
             .build();
@@ -163,7 +161,6 @@ class PublicationControllerTest {
             .listType(LIST_TYPE)
             .locationId(NO_MATCH + LOCATION_ID)
             .contentDate(CONTENT_DATE)
-            .expiryDate(DISPLAY_TO)
             .search(new ConcurrentHashMap<>())
             .payloadSize(PAYLOAD_SIZE)
             .build();

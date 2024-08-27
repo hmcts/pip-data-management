@@ -62,7 +62,6 @@ public final class ArtefactConstantTestHelper {
             .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
             .language(Language.ENGLISH)
             .sensitivity(Sensitivity.PUBLIC)
-            .expiryDate(LocalDateTime.now())
             .build();
     }
 
@@ -121,7 +120,6 @@ public final class ArtefactConstantTestHelper {
             .sensitivity(Sensitivity.PUBLIC)
             .displayFrom(LocalDateTime.now().plusDays(1))
             .displayTo(LocalDateTime.now().plusDays(2))
-            .expiryDate(LocalDateTime.now())
             .build();
     }
 
@@ -136,7 +134,6 @@ public final class ArtefactConstantTestHelper {
             .sensitivity(Sensitivity.PUBLIC)
             .displayFrom(LocalDateTime.now().plusDays(1))
             .displayTo(LocalDateTime.now().plusDays(2))
-            .expiryDate(LocalDateTime.now())
             .build();
     }
 

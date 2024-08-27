@@ -155,11 +155,6 @@ public class Artefact {
     private int supersededCount;
 
     /**
-     * Date / Time of when the artefact will expire.
-     */
-    private LocalDateTime expiryDate;
-
-    /**
      * The size of the input payload.
      */
     @JsonView(ArtefactView.Internal.class)
