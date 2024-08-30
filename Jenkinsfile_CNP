@@ -74,7 +74,7 @@ withPipeline(type, product, component) {
     sh swaggerValidate(branchName)
   }
 
-  after('test') {
+  afterAlways('test') {
     builder.gradle('integration')
   }
 }
@@ -89,6 +89,6 @@ static String swaggerValidate(String branchName){
   '  exit 1;' +
   'fi;'
 
-  return script;
+  return script
 
 }
