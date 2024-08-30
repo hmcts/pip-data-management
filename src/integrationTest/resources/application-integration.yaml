@@ -28,7 +28,7 @@ spring:
       spring.jpa.database-platform: org.hibernate.dialect.H2Dialect
   jpa:
     hibernate:
-      # Set to update for functional tests, so it creates the environment in H2
+      # Set to update for integration tests, so it creates the environment in H2
       ddl-auto: update
   flyway:
     enabled: true

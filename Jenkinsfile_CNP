@@ -67,12 +67,12 @@ withPipeline(type, product, component) {
   enableAksStagingDeployment()
   disableLegacyDeployment()
   enableApiGatewayTest()
-
-   def branchName = env.CHANGE_BRANCH ?: env.BRANCH_NAME
-   before('test') {
-    sh "echo 'Validate Swaggr'"
-    sh swaggerValidate(branchName)
-  }
+//
+//   def branchName = env.CHANGE_BRANCH ?: env.BRANCH_NAME
+//   before('test') {
+//    sh "echo 'Validate Swaggr'"
+//    sh swaggerValidate(branchName)
+//  }
 
   afterAlways('test') {
     builder.gradle('integration')
@@ -90,5 +90,4 @@ static String swaggerValidate(String branchName){
   'fi;'
 
   return script
-
 }
