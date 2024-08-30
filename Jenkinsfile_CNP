@@ -2,10 +2,14 @@
 
 @Library("Infrastructure")
 
+import uk.gov.hmcts.contino.GradleBuilder
+
 def type = "java"
 def product = "pip"
 def component = "data-management"
 def kv = product + '-ss-kv'
+
+GradleBuilder builder = new GradleBuilder(this, product)
 
 def setupTestSecrets() {
   def bootstap_env = env.ENV == "prod" || env.ENV == "demo" || env.ENV == "sbox" ? env.ENV : "stg"
@@ -67,12 +71,12 @@ withPipeline(type, product, component) {
   enableAksStagingDeployment()
   disableLegacyDeployment()
   enableApiGatewayTest()
-//
-//   def branchName = env.CHANGE_BRANCH ?: env.BRANCH_NAME
-//   before('test') {
-//    sh "echo 'Validate Swaggr'"
-//    sh swaggerValidate(branchName)
-//  }
+
+   def branchName = env.CHANGE_BRANCH ?: env.BRANCH_NAME
+   before('test') {
+    sh "echo 'Validate Swaggr'"
+    sh swaggerValidate(branchName)
+  }
 
   afterAlways('test') {
     builder.gradle('integration')
