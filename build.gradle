@@ -17,7 +17,6 @@ plugins {
   id 'org.flywaydb.flyway' version '10.17.1'
   id 'io.freefair.lombok' version '8.7.1'
   id 'org.jetbrains.kotlin.jvm' version '2.0.10'
-  id 'idea'
 }
 
 application {
@@ -64,12 +63,6 @@ sourceSets {
       srcDir file('src/smokeTest/java')
     }
     resources.srcDir file('src/smokeTest/resources')
-  }
-}
-
-idea {
-  module {
-    sourceSets.integrationTest.allSource.srcDirs.each { srcDir -> module.testSourceDirs += srcDir }
   }
 }
 
