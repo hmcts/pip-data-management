@@ -32,6 +32,8 @@ spring:
       ddl-auto: update
   flyway:
     enabled: true
+test-user-id: ${TEST_USER_ID}
+system-admin-provenance-id: ${SYSTEM_ADMIN_PROVENANCE_ID}
 payload:
   json:
     search-values:
