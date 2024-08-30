@@ -73,10 +73,10 @@ withPipeline(type, product, component) {
     sh "echo 'Validate Swaggr'"
     sh swaggerValidate(branchName)
   }
-
-  afterAlways('test') {
-    builder.gradle('integration')
-  }
+//
+//  afterAlways('test') {
+//    builder.gradle('integration')
+//  }
 }
 
 static String swaggerValidate(String branchName){
