@@ -91,7 +91,8 @@ class PublicationFileGenerationServiceTest {
         LOCATION.setLocationId(LOCATION_ID);
         LOCATION.setName("Test");
         LOCATION.setWelshName("Test");
-        LOCATION.setRegion(Collections.singletonList("Test"));
+        LOCATION.setRegion(Collections.singletonList("Region"));
+        LOCATION.setWelshRegion(Collections.singletonList("Welsh region"));
     }
 
     @Test

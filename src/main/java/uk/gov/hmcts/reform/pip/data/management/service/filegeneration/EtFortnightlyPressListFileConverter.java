@@ -27,7 +27,6 @@ public class EtFortnightlyPressListFileConverter implements FileConverter {
         JsonNode artefact, Map<String, String> metadata, Map<String, Object> languageResources) {
         Context context = new Context();
         LocationHelper.formatCourtAddress(artefact, "|", false);
-        context.setVariable("metadata", metadata);
         context.setVariable("i18n", languageResources);
         Language language = Language.valueOf(metadata.get("language"));
         String publicationDate = artefact.get("document").get("publicationDate").asText();
@@ -37,8 +36,8 @@ public class EtFortnightlyPressListFileConverter implements FileConverter {
                                                                                true, false));
         context.setVariable("contentDate", metadata.get("contentDate"));
         context.setVariable("locationName", metadata.get("locationName"));
+        context.setVariable("region", metadata.get("region"));
         context.setVariable("provenance", metadata.get("provenance"));
-        context.setVariable("venueAddress", LocationHelper.formatFullVenueAddress(artefact));
         context.setVariable("artefact", artefact);
         if (artefact.get(VENUE).has(VENUE_CONTACT)) {
             context.setVariable("phone", artefact.get(VENUE).get(VENUE_CONTACT).get("venueTelephone").asText());

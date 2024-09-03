@@ -164,13 +164,14 @@ public class PublicationFileGenerationService {
 
     private Map<String, String> buildArtefactMetadata(Artefact artefact, Location location, Language language) {
         String locationName = (language == Language.ENGLISH) ? location.getName() : location.getWelshName();
+        String region = (language == Language.ENGLISH) ? String.join(", ", location.getRegion())
+            : String.join(", ", location.getWelshRegion());
         String provenance = maskDataSourceName(artefact.getProvenance());
         return Map.of(
             "contentDate", DateHelper.formatLocalDateTimeToBst(artefact.getContentDate()),
             "provenance", provenance,
             "locationName", locationName,
-            "region", String.join(", ", location.getRegion()),
-            "regionName", String.join(", ", location.getRegion()),
+            "region", region,
             "language", language.toString(),
             "listType", artefact.getListType().name()
         );
