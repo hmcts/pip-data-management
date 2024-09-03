@@ -31,7 +31,6 @@ import static org.springframework.http.HttpStatus.CREATED;
 import static uk.gov.hmcts.reform.pip.data.management.utils.TestUtil.BEARER;
 import static uk.gov.hmcts.reform.pip.data.management.utils.TestUtil.randomLocationId;
 
-
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles(profiles = "functional")
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)

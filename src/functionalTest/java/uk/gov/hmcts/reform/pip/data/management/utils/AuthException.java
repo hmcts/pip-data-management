@@ -1,8 +1,7 @@
 package uk.gov.hmcts.reform.pip.data.management.utils;
 
-@SuppressWarnings("PMD.JUnit5TestShouldBePackagePrivate")
 public class AuthException extends RuntimeException {
-    public static final long serialVersionUID = 42L;
+    private static final long serialVersionUID = -6991745899622330407L;
 
     public AuthException(String error) {
         super(error);

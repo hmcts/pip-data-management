@@ -18,7 +18,6 @@ import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 
 @SpringBootTest(classes = {Application.class, OAuthClient.class},
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@SuppressWarnings("PMD.JUnit5TestShouldBePackagePrivate")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class FunctionalTestBase {
 

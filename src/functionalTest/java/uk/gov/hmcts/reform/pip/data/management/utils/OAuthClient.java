@@ -35,11 +35,7 @@ public class OAuthClient {
             .get("access_token");
 
         if (token == null) {
-            throw new AuthException(
-                String.format(
-                    "Unable to get token with %s %s %s %s %s", clientId, clientSecret, tenantId, scope
-                )
-            );
+            throw new AuthException("Unable to generate access token for the API");
         }
         return token;
     }
