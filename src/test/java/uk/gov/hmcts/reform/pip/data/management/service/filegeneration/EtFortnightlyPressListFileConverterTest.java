@@ -27,6 +27,7 @@ class EtFortnightlyPressListFileConverterTest {
 
     private static final String HEADER_TEXT = "Incorrect header text";
     private static final String PROVENANCE = "provenance";
+    private static final String REGION = "regionName";
 
     @Test
     void testEtFortnightlyPressListTemplate() throws IOException {
@@ -46,6 +47,7 @@ class EtFortnightlyPressListFileConverterTest {
         Map<String, String> metadataMap = Map.of("contentDate", Instant.now().toString(),
                                                  PROVENANCE, PROVENANCE,
                                                  "locationName", "location",
+                                                 "region", REGION,
                                                  "language", "ENGLISH",
                                                  "listType", "ET_FORTNIGHTLY_PRESS_LIST"
         );
@@ -60,7 +62,7 @@ class EtFortnightlyPressListFileConverterTest {
 
         assertThat(document.getElementsByClass("govuk-heading-l")
                        .get(0).text())
-            .as(HEADER_TEXT).contains("Employment Tribunals Fortnightly List");
+            .as(HEADER_TEXT).contains("Employment Tribunals Fortnightly List: " + REGION);
 
         assertThat(document.getElementsByClass("govuk-body")
                        .get(2).text())
@@ -109,6 +111,7 @@ class EtFortnightlyPressListFileConverterTest {
         Map<String, String> metadataMap = Map.of("contentDate", Instant.now().toString(),
                                                  PROVENANCE, PROVENANCE,
                                                  "locationName", "location",
+                                                 "region", REGION,
                                                  "language", "WELSH",
                                                  "listType", "ET_FORTNIGHTLY_PRESS_LIST"
         );
@@ -123,7 +126,7 @@ class EtFortnightlyPressListFileConverterTest {
 
         assertThat(document.getElementsByClass("govuk-heading-l")
                        .get(0).text())
-            .as(HEADER_TEXT).contains("Tribiwnlysoedd Cyflogaeth Rhestr Ddyddiol");
+            .as(HEADER_TEXT).contains("Tribiwnlysoedd Cyflogaeth Rhestr Ddyddiol: " + REGION);
 
         assertThat(document.getElementsByClass("govuk-body")
                        .get(2).text())

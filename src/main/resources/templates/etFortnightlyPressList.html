@@ -134,7 +134,7 @@
 </head>
 <body>
 <div>
-  <h2 id="page-heading" class="govuk-heading-l" th:text="${i18n.listName} + ': ' + ${regionName}"/>
+  <h2 id="page-heading" class="govuk-heading-l" th:text="${i18n.listName} + ': ' + ${region}"/>
   <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-1" th:text="${i18n.listFor + contentDate}" />
   <p class="govuk-body" th:text="${i18n.lastUpdated + publicationDate + i18n.at + publicationTime}" />
   <details class="govuk-details" data-module="govuk-details" open="">
@@ -209,7 +209,7 @@
       </div>
     </div>
     <section>
-      <p class="govuk-body govuk-font-14" th:text="${i18n.dataSource + metadata.provenance}"/>
+      <p class="govuk-body govuk-font-14" th:text="${i18n.dataSource + provenance}"/>
       <hr/>
       <p th:text="${i18n.bottomLegal1}" style="font-family: 'openSans'; font-size: 24px;"/>
       <p th:text="${i18n.bottomLegal2}" style="font-family: 'openSans'; font-size: 24px;"/>
