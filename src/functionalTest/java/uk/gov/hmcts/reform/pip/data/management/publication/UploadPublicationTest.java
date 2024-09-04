@@ -72,7 +72,7 @@ class UploadPublicationTest extends FunctionalTestBase {
         headerMap.put(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE);
         headerMap.put(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID);
         headerMap.put(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM.toString());
-        headerMap.put(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_FROM.plusMonths(1).toString());
+        headerMap.put(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_FROM.plusDays(1).toString());
         headerMap.put(PublicationConfiguration.COURT_ID, COURT_ID);
         headerMap.put(PublicationConfiguration.LIST_TYPE, LIST_TYPE.toString());
         headerMap.put(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE.toString());

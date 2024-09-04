@@ -27,6 +27,7 @@ def setupTestSecrets() {
       secret('b2c-test-system-admin-account-provenance-id', 'SYSTEM_ADMIN_PROVENANCE_ID'),
       secret('app-pip-subscription-management-id', 'CLIENT_ID_FT'),
       secret('app-pip-subscription-management-pwd', 'CLIENT_SECRET_FT'),
+      secret('shared-storageaccount-name', 'STORAGE_ACCOUNT_NAME'),
     ]) {
     env.CLIENT_ID = "${CLIENT_ID}"
     env.CLIENT_SECRET = "${CLIENT_SECRET}"
@@ -39,6 +40,7 @@ def setupTestSecrets() {
     env.TEST_USER_ID = "${TEST_USER_ID}"
     env.CLIENT_ID_FT = "${CLIENT_ID_FT}"
     env.CLIENT_SECRET_FT = "${CLIENT_SECRET_FT}"
+    env.STORAGE_ACCOUNT_NAME = "${STORAGE_ACCOUNT_NAME}"
   }
 }
 
