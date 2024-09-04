@@ -41,6 +41,7 @@ def setupTestSecrets() {
     env.CLIENT_ID_FT = "${CLIENT_ID_FT}"
     env.CLIENT_SECRET_FT = "${CLIENT_SECRET_FT}"
     env.STORAGE_ACCOUNT_NAME = "${STORAGE_ACCOUNT_NAME}"
+//    env.MANAGED_IDENTITY_CLIENT_ID = "8d0ead51-3b31-44df-a78e-ada4eea9fe87"
   }
 }
 
