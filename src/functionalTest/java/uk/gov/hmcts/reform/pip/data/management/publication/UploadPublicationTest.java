@@ -10,6 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.gov.hmcts.reform.pip.data.management.Application;
+import uk.gov.hmcts.reform.pip.data.management.config.AzureBlobConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.utils.FunctionalTestBase;
 import uk.gov.hmcts.reform.pip.data.management.utils.OAuthClient;
@@ -35,7 +36,7 @@ import static uk.gov.hmcts.reform.pip.data.management.utils.TestUtil.randomLocat
 @ActiveProfiles(profiles = "functional")
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@SpringBootTest(classes = {Application.class, OAuthClient.class},
+@SpringBootTest(classes = {Application.class, OAuthClient.class, AzureBlobConfiguration.class},
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class UploadPublicationTest extends FunctionalTestBase {
 
