@@ -13,9 +13,6 @@ spring:
       ddl-auto: update
   flyway:
     enabled: true
-azure:
-  managed-identity:
-    client-id: ${MANAGED_IDENTITY_CLIENT_ID}
 payload:
   json:
     search-values:
