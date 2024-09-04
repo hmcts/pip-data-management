@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.pip.data.management.publication;
 
 import io.restassured.response.Response;
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -41,7 +42,8 @@ import static uk.gov.hmcts.reform.pip.data.management.utils.TestUtil.randomLocat
 class UploadPublicationTest extends FunctionalTestBase {
 
     private static final String UPLOAD_PUBLICATION_URL = "/publication";
-    private static final String CREATE_LOCATION_URL = "/testing-support/location/";
+    private static final String TESTING_SUPPORT_LOCATION_URL = "/testing-support/location/";
+    private static final String TESTING_SUPPORT_PUBLICATION_URL = "/testing-support/publication/";
     private static final ArtefactType ARTEFACT_TYPE = ArtefactType.LIST;
     private static final Sensitivity SENSITIVITY = Sensitivity.PUBLIC;
     private static final String PROVENANCE = "MANUAL_UPLOAD";
@@ -58,9 +60,15 @@ class UploadPublicationTest extends FunctionalTestBase {
     @BeforeAll
     public void setup() {
         doPostRequest(
-            CREATE_LOCATION_URL + COURT_ID,
+            TESTING_SUPPORT_LOCATION_URL + COURT_ID,
             Map.of(AUTHORIZATION, BEARER + accessToken), COURT_NAME
         );
+    }
+
+    @AfterAll
+    public void teardown() {
+        doDeleteRequest(TESTING_SUPPORT_PUBLICATION_URL + COURT_NAME, Map.of(AUTHORIZATION, BEARER + accessToken), "");
+        doDeleteRequest(TESTING_SUPPORT_LOCATION_URL + COURT_NAME, Map.of(AUTHORIZATION, BEARER + accessToken), "");
     }
 
     @Test
