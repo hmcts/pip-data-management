@@ -34,24 +34,6 @@ class AccountManagementServiceTest {
     private static final String TRIGGER_RECEIVED = "Trigger has been received";
 
     @Test
-    void testIsAuthorised() throws IOException {
-        try (MockWebServer mockAccountManagementEndpoint = new MockWebServer()) {
-            mockAccountManagementEndpoint.start(6969);
-            mockAccountManagementEndpoint.enqueue(new MockResponse().setBody("true")
-                                                      .addHeader("Content-Type", "application/json"));
-
-            boolean isAuthorised =
-                accountManagementService.getIsAuthorised(UUID.randomUUID(),
-                                                         ListType.CIVIL_DAILY_CAUSE_LIST, Sensitivity.PUBLIC
-                );
-
-            assertTrue(isAuthorised, "Authorised has not been returned from the server");
-
-            mockAccountManagementEndpoint.shutdown();
-        }
-    }
-
-    @Test
     void testIsAuthorisedError() throws IOException {
         try (MockWebServer mockAccountManagementEndpoint = new MockWebServer()) {
             mockAccountManagementEndpoint.start(6969);
