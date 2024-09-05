@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
 @Configuration
-@Profile("!test & !integration")
+@Profile("!test & !integration & !functional")
 public class AzureBlobConfiguration {
     private static final String BLOB_ENDPOINT = "https://%s.blob.core.windows.net/";
 
