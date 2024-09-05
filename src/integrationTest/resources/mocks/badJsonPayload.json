@@ -1,0 +1,86 @@
+{
+  "courtLists": [
+    {
+      "courtHouse": {
+        "courtHouseName": ""
+      },
+      "courtRoom": {
+        "session": {
+          "sessionChannel": "VIDEO HEARING",
+          "sittings": [
+            {
+              "sittingEnd": "",
+              "channel": "VIDEO HEARING",
+              "judiciary": {
+                "description": "If a separate or associated joh is required to be in attendance for sitting against a single case",
+                "title": "Judiciary"
+              },
+              "hearing": {
+                "listNote": "reserved – defendant in custody",
+                "hearingType": "",
+                "offence": [{
+                  "offenceTitle": "",
+                  "offenceMaxPen": "10yrs",
+                  "offenceWording": "",
+                  "offenceCode": ""
+                }],
+                "hearingId": "",
+                "case": {
+                  "caseUrn": "",
+                  "reportingRestriction": "Closed hearing",
+                  "informant": {
+                    "prosecutionAuthorityCode": "",
+                    "prosecutionAuthorityRef": ""
+                  },
+                  "caseName": "A Vs B",
+                  "caseJurisdictionET": "",
+                  "caseNumber": "CASE1234"
+                }
+              },
+              "sittingStart": ""
+            },
+            {
+              "judiciary": {
+                "description": "If a separate or associated joh is required to be in attendance for sitting against a single case",
+                "title": "Judiciary"
+              },
+              "sittingStart": ""
+            }
+          ],
+          "judiciary": [
+            {
+              "role": "magistrate",
+              "johTitle": "Other",
+              "johNameSurname": "John Smith",
+              "johKnownAs": "judge"
+            },
+            {
+              "johTitle": "Mr"
+            },
+            {
+              "johKnownAs": "",
+              "role": "judge",
+              "johTitle": "Other",
+              "johNameSurname": "John Smith"
+            }
+          ],
+          "sessionStartTime": "",
+          "sessionId": "0023"
+        }
+      }
+    },
+    {
+      "courtHouse": {
+        "courtHouseName": ""
+      },
+      "courtRoom": {
+        "venueContact": {
+          "venueSupport": ""
+        },
+        "session": {
+          "sessionSequenceNumber": 3
+        }
+      }
+    }
+  ]
+}

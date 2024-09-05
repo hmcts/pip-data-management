@@ -2,7 +2,6 @@ package uk.gov.hmcts.reform.pip.data.management.controllers.tests;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import nl.altindag.log.LogCaptor;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -52,9 +51,6 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
-import static uk.gov.hmcts.reform.pip.data.management.controllers.tests.helpers.ConstantsTestHelper.MESSAGES_MATCH;
-import static uk.gov.hmcts.reform.pip.data.management.controllers.tests.helpers.ConstantsTestHelper.STATUS_CODE_MATCH;
 
 @SuppressWarnings({"PMD.UseConcurrentHashMap", "PMD.ExcessiveImports",
     "PMD.TooManyMethods", "PMD.CouplingBetweenObjects"})
@@ -184,7 +180,8 @@ class PublicationControllerTest {
 
         verify(publicationService).processCreatedPublication(any(Artefact.class), eq(PAYLOAD));
 
-        Assertions.assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode(), ConstantsTestHelper.STATUS_CODE_MATCH);
+        assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode(),
+                                ConstantsTestHelper.STATUS_CODE_MATCH);
         assertEquals(artefactWithId, responseEntity.getBody(), "The expected return ID is returned");
     }
 
@@ -200,38 +197,40 @@ class PublicationControllerTest {
 
         verify(publicationService, never()).processCreatedPublication(any(Artefact.class), eq(PAYLOAD));
 
-        Assertions.assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode(), ConstantsTestHelper.STATUS_CODE_MATCH);
-        assertEquals(artefactWithNoMatchLocationId, responseEntity.getBody(), "The expected return ID is returned");
+        assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode(),
+                                ConstantsTestHelper.STATUS_CODE_MATCH);
+        assertEquals(artefactWithNoMatchLocationId, responseEntity.getBody(),
+                     "The expected return ID is returned");
     }
 
     @Test
     void testGetMetadataEndpointReturnsOk() {
-        Assertions.assertEquals(HttpStatus.OK, publicationController.getArtefactMetadata(ARTEFACT_ID, USER_ID, false)
+        assertEquals(HttpStatus.OK, publicationController.getArtefactMetadata(ARTEFACT_ID, USER_ID, false)
             .getStatusCode(), ConstantsTestHelper.STATUS_CODE_MATCH);
     }
 
     @Test
     void testGetPayloadEndpointReturnsOkWhenAdmin() {
-        Assertions.assertEquals(HttpStatus.OK, publicationController.getArtefactPayload(ARTEFACT_ID, USER_ID, true)
+        assertEquals(HttpStatus.OK, publicationController.getArtefactPayload(ARTEFACT_ID, USER_ID, true)
             .getStatusCode(), ConstantsTestHelper.STATUS_CODE_MATCH);
     }
 
     @Test
     void testGetPayloadEndpointReturnsOkWhenNotAdmin() {
-        Assertions.assertEquals(HttpStatus.OK, publicationController.getArtefactPayload(ARTEFACT_ID, USER_ID, false)
+        assertEquals(HttpStatus.OK, publicationController.getArtefactPayload(ARTEFACT_ID, USER_ID, false)
             .getStatusCode(), ConstantsTestHelper.STATUS_CODE_MATCH);
     }
 
     @Test
     void testSearchEndpointReturnsOkWithTrue() {
-        Assertions.assertEquals(HttpStatus.OK, publicationController.getAllRelevantArtefactsByLocationId(
+        assertEquals(HttpStatus.OK, publicationController.getAllRelevantArtefactsByLocationId(
                 EMPTY_FIELD, USER_ID, true)
             .getStatusCode(), ConstantsTestHelper.STATUS_CODE_MATCH);
     }
 
     @Test
     void testSearchEndpointReturnsOkWithFalse() {
-        Assertions.assertEquals(HttpStatus.OK, publicationController.getAllRelevantArtefactsByLocationId(
+        assertEquals(HttpStatus.OK, publicationController.getAllRelevantArtefactsByLocationId(
                 EMPTY_FIELD, USER_ID, false)
             .getStatusCode(), ConstantsTestHelper.STATUS_CODE_MATCH);
     }
@@ -240,9 +239,9 @@ class PublicationControllerTest {
     void testGetArtefactsBySearchReturnsWhenTrue() {
         when(artefactSearchService.findAllBySearch(SEARCH_TERM, TEST_STRING, USER_ID))
             .thenReturn(List.of(artefactWithId));
-        Assertions.assertEquals(HttpStatus.OK, publicationController.getAllRelevantArtefactsBySearchValue(SEARCH_TERM, TEST_STRING,
-                                                                                               USER_ID
-                     ).getStatusCode(),
+        assertEquals(HttpStatus.OK, publicationController
+                                    .getAllRelevantArtefactsBySearchValue(SEARCH_TERM, TEST_STRING, USER_ID)
+                                    .getStatusCode(),
                      ConstantsTestHelper.STATUS_CODE_MATCH
         );
     }
@@ -251,7 +250,7 @@ class PublicationControllerTest {
     void testGetArtefactsBySearchReturnsWhenFalse() {
         when(artefactSearchService.findAllBySearch(SEARCH_TERM, TEST_STRING, USER_ID))
             .thenReturn(List.of(artefactWithId));
-        Assertions.assertEquals(HttpStatus.OK, publicationController
+        assertEquals(HttpStatus.OK, publicationController
                          .getAllRelevantArtefactsBySearchValue(SEARCH_TERM, TEST_STRING, USER_ID)
                          .getStatusCode(),
                      ConstantsTestHelper.STATUS_CODE_MATCH
@@ -265,7 +264,7 @@ class PublicationControllerTest {
         ResponseEntity<Artefact> unmappedBlob = publicationController
             .getArtefactMetadata(UUID.randomUUID(), USER_ID, false);
 
-        Assertions.assertEquals(HttpStatus.OK, unmappedBlob.getStatusCode(),
+        assertEquals(HttpStatus.OK, unmappedBlob.getStatusCode(),
                      ConstantsTestHelper.STATUS_CODE_MATCH
         );
         assertEquals(artefactWithId, unmappedBlob.getBody(), VALIDATION_EXPECTED_MESSAGE);
@@ -278,7 +277,7 @@ class PublicationControllerTest {
         ResponseEntity<Artefact> unmappedBlob = publicationController
             .getArtefactMetadata(UUID.randomUUID(), USER_ID, true);
 
-        Assertions.assertEquals(HttpStatus.OK, unmappedBlob.getStatusCode(),
+        assertEquals(HttpStatus.OK, unmappedBlob.getStatusCode(),
                      ConstantsTestHelper.STATUS_CODE_MATCH
         );
         assertEquals(artefactWithId, unmappedBlob.getBody(), VALIDATION_EXPECTED_MESSAGE);
@@ -289,7 +288,7 @@ class PublicationControllerTest {
         COURT_PER_LOCATION.add(new LocationArtefact("1", 2));
         when(artefactService.countArtefactsByLocation()).thenReturn(COURT_PER_LOCATION);
         ResponseEntity<List<LocationArtefact>> result = publicationController.countByLocation();
-        Assertions.assertEquals(HttpStatus.OK, result.getStatusCode(), ConstantsTestHelper.STATUS_CODE_MATCH);
+        assertEquals(HttpStatus.OK, result.getStatusCode(), ConstantsTestHelper.STATUS_CODE_MATCH);
         assertEquals(COURT_PER_LOCATION, result.getBody(), NOT_EQUAL_MESSAGE);
     }
 
@@ -299,7 +298,7 @@ class PublicationControllerTest {
         when(artefactService.getPayloadByArtefactId(any(), any())).thenReturn(String.valueOf(artefactWithId));
         ResponseEntity<String> unmappedBlob =
             publicationController.getArtefactPayload(UUID.randomUUID(), USER_ID, false);
-        Assertions.assertEquals(HttpStatus.OK, unmappedBlob.getStatusCode(),
+        assertEquals(HttpStatus.OK, unmappedBlob.getStatusCode(),
                      ConstantsTestHelper.STATUS_CODE_MATCH
         );
         assertEquals(artefactWithId.toString(), unmappedBlob.getBody(), NOT_EQUAL_MESSAGE);
@@ -317,7 +316,7 @@ class PublicationControllerTest {
             USER_ID,
             false
         );
-        Assertions.assertEquals(HttpStatus.OK, flatFileBlob.getStatusCode(), ConstantsTestHelper.STATUS_CODE_MATCH);
+        assertEquals(HttpStatus.OK, flatFileBlob.getStatusCode(), ConstantsTestHelper.STATUS_CODE_MATCH);
         assertEquals(new ByteArrayResource(testData), flatFileBlob.getBody(), NOT_EQUAL_MESSAGE);
         String filename = flatFileBlob.getHeaders().get("Content-Disposition").toString();
         assertTrue(filename.contains(artefactWithId.getSourceArtefactId()), NOT_EQUAL_MESSAGE);
@@ -334,7 +333,7 @@ class PublicationControllerTest {
             USER_ID,
             true
         );
-        Assertions.assertEquals(HttpStatus.OK, flatFileBlob.getStatusCode(), ConstantsTestHelper.STATUS_CODE_MATCH);
+        assertEquals(HttpStatus.OK, flatFileBlob.getStatusCode(), ConstantsTestHelper.STATUS_CODE_MATCH);
         assertEquals(new ByteArrayResource(testData), flatFileBlob.getBody(), NOT_EQUAL_MESSAGE);
         String filename = flatFileBlob.getHeaders().get("Content-Disposition").toString();
         assertTrue(filename.contains(artefactWithId.getSourceArtefactId()), NOT_EQUAL_MESSAGE);
@@ -344,24 +343,26 @@ class PublicationControllerTest {
     void checkGetArtefactsByCourtIdReturnsWhenTrue() {
         List<Artefact> artefactList = List.of(artefactWithId);
 
-        when(artefactSearchService.findAllByLocationIdAdmin(EMPTY_FIELD, USER_ID, true)).thenReturn(artefactList);
+        when(artefactSearchService.findAllByLocationIdAdmin(EMPTY_FIELD, USER_ID, true))
+            .thenReturn(artefactList);
         ResponseEntity<List<Artefact>> unmappedArtefact = publicationController
             .getAllRelevantArtefactsByLocationId(EMPTY_FIELD, USER_ID, true);
 
         assertEquals(artefactList, unmappedArtefact.getBody(), VALIDATION_EXPECTED_MESSAGE);
-        Assertions.assertEquals(HttpStatus.OK, unmappedArtefact.getStatusCode(), ConstantsTestHelper.STATUS_CODE_MATCH);
+        assertEquals(HttpStatus.OK, unmappedArtefact.getStatusCode(), ConstantsTestHelper.STATUS_CODE_MATCH);
     }
 
     @Test
     void checkGetArtefactsByCourtIdReturnsOkWhenFalse() {
         List<Artefact> artefactList = List.of(artefactWithId);
 
-        when(artefactSearchService.findAllByLocationIdAdmin(EMPTY_FIELD, USER_ID, false)).thenReturn(artefactList);
+        when(artefactSearchService.findAllByLocationIdAdmin(EMPTY_FIELD, USER_ID, false))
+            .thenReturn(artefactList);
         ResponseEntity<List<Artefact>> unmappedArtefact = publicationController
             .getAllRelevantArtefactsByLocationId(EMPTY_FIELD, USER_ID, false);
 
         assertEquals(artefactList, unmappedArtefact.getBody(), VALIDATION_EXPECTED_MESSAGE);
-        Assertions.assertEquals(HttpStatus.OK, unmappedArtefact.getStatusCode(), ConstantsTestHelper.STATUS_CODE_MATCH);
+        assertEquals(HttpStatus.OK, unmappedArtefact.getStatusCode(), ConstantsTestHelper.STATUS_CODE_MATCH);
     }
 
     @Test
@@ -385,7 +386,8 @@ class PublicationControllerTest {
 
         verify(artefactTriggerService).checkAndTriggerSubscriptionManagement(any(Artefact.class));
 
-        Assertions.assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode(), ConstantsTestHelper.STATUS_CODE_MATCH);
+        assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode(),
+                                ConstantsTestHelper.STATUS_CODE_MATCH);
         assertEquals(artefactWithId, responseEntity.getBody(), "Artefacts should match");
     }
 
@@ -410,17 +412,19 @@ class PublicationControllerTest {
 
         verify(artefactTriggerService, never()).checkAndTriggerSubscriptionManagement(any(Artefact.class));
 
-        Assertions.assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode(), ConstantsTestHelper.STATUS_CODE_MATCH);
+        assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode(),
+                                ConstantsTestHelper.STATUS_CODE_MATCH);
         assertEquals(artefactWithNoMatchLocationId, responseEntity.getBody(), "Artefacts should match");
     }
 
     @Test
     void testDeleteArtefactReturnsOk() {
         doNothing().when(artefactDeleteService).deleteArtefactById(any(), any());
-        Assertions.assertEquals(HttpStatus.OK, publicationController.deleteArtefact(TEST_STRING, TEST_STRING).getStatusCode(),
+        assertEquals(HttpStatus.OK, publicationController.deleteArtefact(TEST_STRING, TEST_STRING)
+                                    .getStatusCode(),
                      ConstantsTestHelper.STATUS_CODE_MATCH
         );
-        Assertions.assertEquals(
+        assertEquals(
             DELETED_MESSAGE + TEST_STRING,
             publicationController.deleteArtefact(TEST_STRING, TEST_STRING).getBody(),
             ConstantsTestHelper.MESSAGES_MATCH
@@ -430,7 +434,7 @@ class PublicationControllerTest {
     @Test
     void testGetLocationTypeReturnsOk() {
         when(artefactService.getLocationType(ListType.CIVIL_DAILY_CAUSE_LIST)).thenReturn(LocationType.VENUE);
-        Assertions.assertEquals(
+        assertEquals(
             HttpStatus.OK,
             publicationController.getLocationType(ListType.CIVIL_DAILY_CAUSE_LIST).getStatusCode(),
             ConstantsTestHelper.STATUS_CODE_MATCH
@@ -457,7 +461,7 @@ class PublicationControllerTest {
 
     @Test
     void testMiDataReturnsOk() {
-        Assertions.assertEquals(
+        assertEquals(
             HttpStatus.OK,
             publicationController.getMiData().getStatusCode(),
             ConstantsTestHelper.STATUS_CODE_MATCH
@@ -497,7 +501,7 @@ class PublicationControllerTest {
 
         ResponseEntity<String> response = publicationController.archiveArtefact(issuerId, artefactId);
 
-        Assertions.assertEquals(HttpStatus.OK, response.getStatusCode(), ConstantsTestHelper.STATUS_CODE_MATCH);
+        assertEquals(HttpStatus.OK, response.getStatusCode(), ConstantsTestHelper.STATUS_CODE_MATCH);
         assertEquals(String.format("Artefact of ID %s has been archived", artefactId),
                      response.getBody(), "Response from archiving does not match expected message"
         );
@@ -522,7 +526,7 @@ class PublicationControllerTest {
 
         ResponseEntity<List<Artefact>> response = publicationController.getAllNoMatchArtefacts();
 
-        Assertions.assertEquals(HttpStatus.OK, response.getStatusCode(), ConstantsTestHelper.STATUS_CODE_MATCH);
+        assertEquals(HttpStatus.OK, response.getStatusCode(), ConstantsTestHelper.STATUS_CODE_MATCH);
         assertEquals(artefactList, response.getBody(), "Body should match");
     }
 }

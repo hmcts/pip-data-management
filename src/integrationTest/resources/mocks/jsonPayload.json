@@ -1,0 +1,151 @@
+{
+  "document": {
+    "version": "",
+    "documentName": "Standard List FINAL V4"
+  },
+  "venue": {
+    "venueName": "PRESTON",
+    "venueContact": {
+      "venueTelephone": "",
+      "primaryContactName": "",
+      "venueEmail": "",
+      "venueSupport": ""
+    },
+    "welshVenueName": "PRESTON",
+    "venueDX": "",
+    "venueAddress": {
+      "line": [
+        "THE LAW COURTS",
+        "THE LAW COURTS"
+      ],
+      "postCode": "PR1 2LL"
+    }
+  },
+  "courtLists": [
+    {
+      "courtHouse": {
+        "courtHouseName": "",
+        "welshCourtHouseName": "",
+        "courtRoom": [
+          {
+            "venueContact": {
+              "primaryContactName": "",
+              "venueTelephone": "01772 844700",
+              "venueEmail": "court1@moj.gov.uk"
+            }
+          },
+          {
+            "session": [
+              {
+                "sessionStartTime": "2021-09-09t16:41:07.394",
+                "sessionChannel": [
+                  "",
+                  ""
+                ],
+                "sessionSequenceNumber": 3,
+                "sittings": [
+                  {
+                    "judiciary": [
+                      {
+                        "johKnownAs": "judge"
+                      },
+                      {
+                        "johTitle": "Other",
+                        "role": "JUDGE",
+                        "johNameSurname": "",
+                        "johKnownAs": ""
+                      }
+                    ],
+                    "channel": [
+                      "VIDEO HEARING",
+                      ""
+                    ],
+                    "sittingEnd": "",
+                    "hearing": [
+                      {
+                        "hearingType": "mda"
+                      }
+                    ],
+                    "sittingStart": ""
+                  },
+                  {
+                    "sittingStart": "",
+                    "channel": [
+                      "",
+                      "VIDEO HEARING"
+                    ],
+                    "hearing": [
+                      {
+                        "hearingType": "mda"
+                      },
+                      {
+                        "offence": [
+                          {
+                            "reportingRestriction": true,
+                            "offenceMaxPen": "10yrs"
+                          }
+                        ],
+                        "hearingId": "",
+                        "hearingType": "mda",
+                        "listNote": "",
+                        "case": [
+                          {
+                            "reportingRestriction": true,
+                            "caseJurisdictionET": "",
+                            "caseNumber": "CASE1234",
+                            "caseName": "",
+                            "party": [
+                              {
+                                "individualDetails": {
+                                  "individualSurname": "Surname",
+                                  "individualForenames": "John Smith",
+                                  "individualMiddleName": "MiddleName",
+                                  "plea": "NOT_GUILTY"
+                                },
+                                "organisationDetails": {
+                                  "organisationAddress": {
+                                    "description": "Address for organisation",
+                                    "title": "Organisation Address"
+                                  },
+                                  "organisationName": "A & B Solicitors"
+                                }
+                              },
+                              {
+                                "organisationDetails": {},
+                                "individualDetails": {
+                                  "title": "Mr",
+                                  "individualMiddleName": "MiddleName",
+                                  "dateOfBirth": "",
+                                  "individualForenames": "",
+                                  "individualSurname": "",
+                                  "plea": "NONE",
+                                  "address": {
+                                    "title": "Address",
+                                    "description": "Party Address"
+                                  },
+                                  "inCustody": true
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "sittingEnd": ""
+                  }
+                ]
+              }
+            ],
+            "venueContact": {
+              "venueTelephone": "01772 844700",
+              "venueEmail": "court1@moj.gov.uk",
+              "primaryContactName": "Name",
+              "venueSupport": ""
+            },
+            "courtRoomName": ""
+          }
+        ]
+      }
+    }
+  ]
+}

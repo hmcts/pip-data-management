@@ -1,0 +1,55 @@
+{
+  "document": {
+    "version": "This is a\r\nversion",
+    "documentName": "This is a\r\ndocument name",
+    "publicationDate": "2023-09-01T10:00:00.001\r\nZ"
+  },
+  "courtLists": [
+    {
+      "courtHouse": {
+        "courtRoom": [
+          {
+            "session": [
+              {
+                "sittings": [
+                  {
+                    "hearing": [
+                      {
+                        "party": [
+                          {
+                            "partyRole": "ACCUSED",
+                            "individualDetails": {
+                              "individualForenames": "A",
+                              "individualSurname": "This is a\r\nsurname",
+                              "address": {
+                                "postCode": "AA"
+                              }
+                            }
+                          },
+                          {
+                            "partyRole": "PROSECUTOR",
+                            "organisationDetails": {
+                              "organisationName": "This is a\r\nprosecutor organisation",
+                              "organisationAddress": {
+                                "postCode": "A1"
+                              }
+                            }
+                          }
+                        ],
+                        "offence": [
+                          {
+                            "offenceTitle": "This is an offence\r\ntitle"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
