@@ -15,16 +15,16 @@ java:
     DB_PORT: "5432"
   postgresql:
     enabled: true
-  secrets:
-    STORAGE_ACCOUNT_NAME:
-      secretRef: storage-account-{{ .Release.Name }}-blobstorage
-      key: storage_account_name
-    STORAGE_ACCOUNT_URL:
-      secretRef: storage-secret-{{ .Release.Name }}-blobstorage
-      key: blobEndpoint
-    STORAGE_ACCOUNT_KEY:
-      secretRef: storage-secret-{{ .Release.Name }}-blobstorage
-      key: accessKey
+#  secrets:
+#    STORAGE_ACCOUNT_NAME:
+#      secretRef: storage-account-{{ .Release.Name }}-blobstorage
+#      key: storage_account_name
+#    STORAGE_ACCOUNT_URL:
+#      secretRef: storage-secret-{{ .Release.Name }}-blobstorage
+#      key: blobEndpoint
+#    STORAGE_ACCOUNT_KEY:
+#      secretRef: storage-secret-{{ .Release.Name }}-blobstorage
+#      key: accessKey
   blobstorage:
     resourceGroup: pip-ss-{{ .Values.global.environment }}-rg
     setup:
