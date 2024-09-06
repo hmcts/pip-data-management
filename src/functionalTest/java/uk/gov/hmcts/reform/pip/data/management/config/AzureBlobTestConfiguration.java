@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Profile;
 @Profile("functional")
 public class AzureBlobTestConfiguration {
     private static final String BLOB_ENDPOINT = "https://%s.blob.core.windows.net/";
+    private static final String DEV = "dev";
 
     @Value("${azure.blob.storage-account-name}")
     private String storageAccountName;
@@ -45,7 +46,7 @@ public class AzureBlobTestConfiguration {
     }
 
     private BlobContainerClient configureBlobContainerClient(String containerName) {
-        if ("dev".equals(testEnv)) {
+        if (DEV.equals(testEnv)) {
             StorageSharedKeyCredential storageCredential = new StorageSharedKeyCredential(
                 storageAccountName,
                 storageAccountKey
