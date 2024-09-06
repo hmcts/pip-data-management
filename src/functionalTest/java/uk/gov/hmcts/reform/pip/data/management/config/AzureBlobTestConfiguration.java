@@ -32,7 +32,7 @@ public class AzureBlobTestConfiguration {
     private String managedIdentityClientId;
 
     @Value("${test-env}")
-    private String TEST_ENV;
+    private String testEnv;
 
     @Bean(name = "artefact")
     public BlobContainerClient artefactBlobContainerClient() {
@@ -45,7 +45,7 @@ public class AzureBlobTestConfiguration {
     }
 
     private BlobContainerClient configureBlobContainerClient(String containerName) {
-        if ("dev".equals(TEST_ENV)) {
+        if ("dev".equals(testEnv)) {
             StorageSharedKeyCredential storageCredential = new StorageSharedKeyCredential(
                 storageAccountName,
                 storageAccountKey
