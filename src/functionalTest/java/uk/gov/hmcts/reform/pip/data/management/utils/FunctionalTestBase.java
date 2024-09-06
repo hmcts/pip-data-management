@@ -28,7 +28,7 @@ public class FunctionalTestBase {
 
     protected String accessToken;
 
-    @Value("${TEST_URL:http://localhost:8090}")
+    @Value("${test-url}")
     private String testUrl;
 
     @BeforeAll

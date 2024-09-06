@@ -3,6 +3,9 @@
 @Library("Infrastructure")
 
 import uk.gov.hmcts.contino.GradleBuilder
+import uk.gov.hmcts.contino.Kubectl
+import uk.gov.hmcts.contino.DockerImage
+import uk.gov.hmcts.pipeline.TeamConfig
 
 def type = "java"
 def product = "pip"
@@ -27,7 +30,7 @@ def setupTestSecrets() {
       secret('b2c-test-system-admin-account-provenance-id', 'SYSTEM_ADMIN_PROVENANCE_ID'),
       secret('app-pip-subscription-management-id', 'CLIENT_ID_FT'),
       secret('app-pip-subscription-management-pwd', 'CLIENT_SECRET_FT'),
-//      secret('shared-storageaccount-name', 'STORAGE_ACCOUNT_NAME'),
+      secret('shared-storageaccount-connection-string', 'CONNECTION_STRING'),
     ]) {
     env.CLIENT_ID = "${CLIENT_ID}"
     env.CLIENT_SECRET = "${CLIENT_SECRET}"
@@ -40,8 +43,36 @@ def setupTestSecrets() {
     env.TEST_USER_ID = "${TEST_USER_ID}"
     env.CLIENT_ID_FT = "${CLIENT_ID_FT}"
     env.CLIENT_SECRET_FT = "${CLIENT_SECRET_FT}"
-//    env.STORAGE_ACCOUNT_NAME = "${STORAGE_ACCOUNT_NAME}"
-//    env.MANAGED_IDENTITY_CLIENT_ID = "8d0ead51-3b31-44df-a78e-ada4eea9fe87"
+    env.CONNECTION_STRING = "${CONNECTION_STRING}"
+  }
+}
+
+def setupDevTestSecrets(product, component) {
+  withAksClient('nonprod', product) {
+    def dockerImage = new DockerImage(product, component, null, env.BRANCH_NAME, env.GIT_COMMIT, env.LAST_COMMIT_TIMESTAMP)
+    def subscription = env.SUBSCRIPTION_NAME
+    def aksServiceName = dockerImage.getAksServiceName().toLowerCase()
+    def storageSecretRef = "storage-secret-${aksServiceName}-blobstorage"
+    def namespace = new TeamConfig(this).getNameSpace(product)
+    def kubectl = new Kubectl(this, subscription, namespace)
+
+    kubectl.login()
+
+    env.STORAGE_ACCOUNT_NAME = kubectl.getSecret("storage-account-${aksServiceName}-blobstorage", namespace, "{.data.storage_account_name}")
+    env.STORAGE_ACCOUNT_URL = kubectl.getSecret(storageSecretRef, namespace, "{.data.blobEndpoint}")
+    env.STORAGE_ACCOUNT_KEY = kubectl.getSecret(storageSecretRef, namespace, "{.data.accessKey}")
+  }
+}
+
+def setupStgTestSecrets() {
+  def bootstap_env = env.ENV == "prod" || env.ENV == "demo" || env.ENV == "sbox" ? env.ENV : "stg"
+  azureKeyVault(
+    keyVaultURL: "https://pip-bootstrap-${bootstap_env}-kv.vault.azure.net/",
+    secrets: [
+      secret('shared-storageaccount-name', 'STORAGE_ACCOUNT_NAME'),
+    ]) {
+    env.STORAGE_ACCOUNT_NAME = "${STORAGE_ACCOUNT_NAME}"
+    env.MANAGED_IDENTITY_CLIENT_ID = "8d0ead51-3b31-44df-a78e-ada4eea9fe87"
   }
 }
 
@@ -83,6 +114,14 @@ withPipeline(type, product, component) {
    before('test') {
     sh "echo 'Validate Swaggr'"
     sh swaggerValidate(branchName)
+  }
+
+  before('functionalTest:dev') {
+    setupDevTestSecrets(product, component)
+  }
+
+  before('functionalTest:stg') {
+    setupStgTestSecrets()
   }
 
   afterAlways('test') {

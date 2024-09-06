@@ -13,6 +13,14 @@ spring:
       ddl-auto: update
   flyway:
     enabled: true
+azure:
+  blob:
+    connection-string: ${CONNECTION_STRING:}
+    storage-account-name: ${STORAGE_ACCOUNT_NAME:}
+    storage-account-url: ${STORAGE_ACCOUNT_URL:}
+    storage-account-key: ${STORAGE_ACCOUNT_KEY:}
+  managed-identity:
+    client-id: ${MANAGED_IDENTITY_CLIENT_ID:}
 payload:
   json:
     search-values:
@@ -23,4 +31,6 @@ service-to-service:
   account-management: ${ACCOUNT_MANAGEMENT_URL:https://pip-account-management.staging.platform.hmcts.net/}
 dbMigration:
   runOnStartup: true
+env: ${ENV:local}
+test-url: ${TEST_URL:http://localhost:8090}
 
