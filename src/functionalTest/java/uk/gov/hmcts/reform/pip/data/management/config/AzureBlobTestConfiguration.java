@@ -32,7 +32,7 @@ public class AzureBlobTestConfiguration {
     @Value("${azure.managed-identity.client-id}")
     private String managedIdentityClientId;
 
-    @Value("${test-env}")
+    @Value("${env}")
     private String testEnv;
 
     @Bean(name = "artefact")
