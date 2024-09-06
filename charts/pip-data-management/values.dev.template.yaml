@@ -25,11 +25,11 @@ java:
     STORAGE_ACCOUNT_KEY:
       secretRef: storage-secret-{{ .Release.Name }}-blobstorage
       key: accessKey
-  blobstorage:
-    resourceGroup: pip-aso-dev-rg
-    setup:
-      containers:
-        - artefact
-        - files
-        - publications
   devApplicationInsightsInstrumentKeyName: AZURE_APPLICATIONINSIGHTS_INSTRUMENTATIONKEY
+blobstorage:
+  resourceGroup: pip-aso-dev-rg
+  setup:
+    containers:
+      - artefact
+      - files
+      - publications
