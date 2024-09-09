@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
 
 @Profile("functional")
+@SuppressWarnings("PMD.SystemPrintln")
 public class AzureBlobTestConfiguration {
     private static final String BLOB_ENDPOINT = "https://%s.blob.core.windows.net/";
     private static final String DEV = "dev";
