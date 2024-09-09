@@ -2,7 +2,7 @@
 
 @Library("Infrastructure")
 
-import uk.gov.hmcts.contino.GradleBuilder
+//import uk.gov.hmcts.contino.GradleBuilder
 import uk.gov.hmcts.contino.Kubectl
 import uk.gov.hmcts.contino.DockerImage
 import uk.gov.hmcts.pipeline.TeamConfig
@@ -12,7 +12,7 @@ def product = "pip"
 def component = "data-management"
 def kv = product + '-ss-kv'
 
-GradleBuilder builder = new GradleBuilder(this, product)
+//GradleBuilder builder = new GradleBuilder(this, product)
 
 def setupTestSecrets() {
   def bootstap_env = env.ENV == "prod" || env.ENV == "demo" || env.ENV == "sbox" ? env.ENV : "stg"
@@ -124,9 +124,9 @@ withPipeline(type, product, component) {
     setupStgTestSecrets()
   }
 
-  afterAlways('test') {
-    builder.gradle('integration')
-  }
+//  afterAlways('test') {
+//    builder.gradle('integration')
+//  }
 }
 
 static String swaggerValidate(String branchName){
