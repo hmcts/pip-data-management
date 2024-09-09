@@ -41,10 +41,7 @@ public class AzureArtefactBlobService {
      * @return The URL to where the payload has been created
      */
     public String createPayload(String payloadId, String payload) {
-        System.out.println("*****Blob 1");
         BlobClient blobClient = blobContainerClient.getBlobClient(payloadId);
-
-        System.out.println("*****Blob 2");
 
         byte[] payloadBytes = payload.getBytes();
         blobClient.upload(new ByteArrayInputStream(payloadBytes), payloadBytes.length, true);
@@ -78,13 +75,11 @@ public class AzureArtefactBlobService {
      * @return the data contained within the blob in String format.
      */
     public String getBlobData(String payloadId) {
-        System.out.println("*****Blob 3");
         BlobClient blobClient = blobContainerClient.getBlobClient(payloadId);
         return blobClient.downloadContent().toString();
     }
 
     public Resource getBlobFile(String payloadId) {
-        System.out.println("*****Blob 4");
         BlobClient blobClient = blobContainerClient.getBlobClient(payloadId);
         byte[] data = blobClient.downloadContent().toBytes();
         return new ByteArrayResource(data);

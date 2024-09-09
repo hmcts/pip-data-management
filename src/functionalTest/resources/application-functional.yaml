@@ -10,7 +10,7 @@ spring:
   jpa:
     hibernate:
       # Set to update for functional tests, so it creates the environment in H2
-      ddl-auto: create
+      ddl-auto: update
   flyway:
     enabled: true
 azure:
