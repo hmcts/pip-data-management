@@ -27,7 +27,6 @@ import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
 
 @ControllerAdvice
 @Slf4j
-@SuppressWarnings("PMD.SystemPrintln")
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(NotFoundException.class)
@@ -77,7 +76,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BlobStorageException.class)
     public ResponseEntity<ExceptionResponse> handle(BlobStorageException ex) {
         log.error(writeLog("404, error while communicating with blob store"));
-        System.out.println(ex);
+        log.error(ex.toString());
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
             .body(generateExceptionResponse(ex.getMessage()));
     }
