@@ -13,6 +13,7 @@ java:
     DB_USER: "{{ .Values.postgresql.auth.username}}"
     DB_PASS: "{{ .Values.postgresql.auth.password}}"
     DB_PORT: "5432"
+    SPRING_PROFILES_ACTIVE: blobStorageDev
   postgresql:
     enabled: true
   secrets:
