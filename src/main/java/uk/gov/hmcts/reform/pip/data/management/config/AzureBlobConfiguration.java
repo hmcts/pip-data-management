@@ -16,7 +16,6 @@ import java.util.Arrays;
 
 @Configuration
 @Profile("!test & !integration")
-@SuppressWarnings("PMD.SystemPrintln")
 public class AzureBlobConfiguration {
     private static final String BLOB_ENDPOINT = "https://%s.blob.core.windows.net/";
     private static final String DEV_PROFILE = "blobStorageDev";
@@ -46,12 +45,6 @@ public class AzureBlobConfiguration {
 
     private BlobContainerClient configureBlobContainerClient(AzureBlobConfigurationProperties configurationProperties,
                                                              String containerName) {
-        System.out.println("Storage account name: " + configurationProperties.getStorageAccountName());
-        System.out.println("Storage account url: " + configurationProperties.getStorageAccountUrl());
-        System.out.println("Storage account key: " + configurationProperties.getStorageAccountKey());
-
-        System.out.println("Active profile: " + env.getActiveProfiles());
-
         if (Arrays.stream(env.getActiveProfiles())
             .anyMatch(DEV_PROFILE::equals)) {
             StorageSharedKeyCredential storageCredential = new StorageSharedKeyCredential(
