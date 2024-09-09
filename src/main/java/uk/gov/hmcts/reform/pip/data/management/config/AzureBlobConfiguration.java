@@ -30,15 +30,6 @@ public class AzureBlobConfiguration {
     @Value("${azure.managed-identity.client-id}")
     private String managedIdentityClientId;
 
-    @Value("${azure.blob.storage-account-name}")
-    private String storageAccountName;
-
-    @Value("${azure.blob.storage-account-url}")
-    private String storageAccountUrl;
-
-    @Value("${azure.blob.storage-account-key}")
-    private String storageAccountKey;
-
     @Bean(name = "artefact")
     public BlobContainerClient artefactBlobContainerClient(AzureBlobConfigurationProperties configurationProperties) {
         return configureBlobContainerClient(configurationProperties,
@@ -55,21 +46,21 @@ public class AzureBlobConfiguration {
 
     private BlobContainerClient configureBlobContainerClient(AzureBlobConfigurationProperties configurationProperties,
                                                              String containerName) {
-        System.out.println("Storage account name: " + storageAccountName);
-        System.out.println("Storage account url: " + storageAccountUrl);
-        System.out.println("Storage account key: " + storageAccountKey);
+        System.out.println("Storage account name: " + configurationProperties.getStorageAccountName());
+        System.out.println("Storage account url: " + configurationProperties.getStorageAccountUrl());
+        System.out.println("Storage account key: " + configurationProperties.getStorageAccountKey());
 
         System.out.println("Active profile: " + env.getActiveProfiles());
 
         if (Arrays.stream(env.getActiveProfiles())
             .anyMatch(DEV_PROFILE::equals)) {
             StorageSharedKeyCredential storageCredential = new StorageSharedKeyCredential(
-                storageAccountName,
-                storageAccountKey
+                configurationProperties.getStorageAccountName(),
+                configurationProperties.getStorageAccountKey()
             );
 
             return new BlobContainerClientBuilder()
-                .endpoint(storageAccountUrl)
+                .endpoint(configurationProperties.getStorageAccountUrl())
                 .credential(storageCredential)
                 .containerName(containerName)
                 .buildClient();
