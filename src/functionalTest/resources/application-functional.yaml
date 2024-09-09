@@ -7,12 +7,6 @@ spring:
     embedded-directory: build
     jpa:
       spring.jpa.database-platform: org.hibernate.dialect.H2Dialect
-#  jpa:
-#    hibernate:
-#      # Set to update for functional tests, so it creates the environment in H2
-#      ddl-auto: update
-#  flyway:
-#    enabled: true
 azure:
   blob:
     connection-string: ${CONNECTION_STRING:}
@@ -29,8 +23,6 @@ payload:
 service-to-service:
   subscription-management: ${SUBSCRIPTION_MANAGEMENT_URL:https://pip-subscription-management.staging.platform.hmcts.net/}
   account-management: ${ACCOUNT_MANAGEMENT_URL:https://pip-account-management.staging.platform.hmcts.net/}
-#dbMigration:
-#  runOnStartup: true
 env: ${ENV:local}
 test-url: ${TEST_URL:http://localhost:8090}
 
