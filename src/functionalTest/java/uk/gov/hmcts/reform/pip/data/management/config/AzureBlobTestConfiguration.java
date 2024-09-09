@@ -46,6 +46,13 @@ public class AzureBlobTestConfiguration {
     }
 
     private BlobContainerClient configureBlobContainerClient(String containerName) {
+        System.out.println("Test env: " + testEnv);
+        System.out.println("Storage account name: " + storageAccountName);
+        System.out.println("Storage account url: " + storageAccountUrl);
+        System.out.println("Storage account key: " + storageAccountKey);
+        System.out.println("Storage account connection string: " + storageAccountConnectionString);
+        System.out.println("Manage identity ID: " + managedIdentityClientId);
+
         if (DEV.equals(testEnv)) {
             StorageSharedKeyCredential storageCredential = new StorageSharedKeyCredential(
                 storageAccountName,
