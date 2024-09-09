@@ -185,6 +185,7 @@ Secrets required for getting tests to run correctly can be found in the below ta
 | TEST_USER_ID                   | User ID for a test account used as a header for most publication tests.                                                                |
 | CLIENT_ID_FT                   | Client ID of external service used for authentication with data-management application in the functional tests.                        |
 | CLIENT_SECRET_FT               | Client secret of external service.used for authentication with data-management application in the functional tests.                    |
+| CONNECTION_STRING              | As above                                                                                                                               |
 | STORAGE_ACCOUNT_NAME           | As above. Only required when running the functional tests in the staging environment in pipeline.                                      |
 | MANAGED_IDENTITY_CLIENT_ID     | Azure Blob Storage managed identity client ID. Only required when running the functional tests in the staging environment in pipeline. |
 
