@@ -47,35 +47,6 @@ def setupTestSecrets() {
   }
 }
 
-//def setupDevTestSecrets(product, component) {
-//  withAksClient('nonprod', product) {
-//    def dockerImage = new DockerImage(product, component, null, env.BRANCH_NAME, env.GIT_COMMIT, env.LAST_COMMIT_TIMESTAMP)
-//    def subscription = env.SUBSCRIPTION_NAME
-//    def aksServiceName = dockerImage.getAksServiceName().toLowerCase()
-//    def storageSecretRef = "storage-secret-${aksServiceName}-blobstorage"
-//    def namespace = new TeamConfig(this).getNameSpace(product)
-//    def kubectl = new Kubectl(this, subscription, namespace)
-//
-//    kubectl.login()
-//
-//    env.STORAGE_ACCOUNT_NAME = kubectl.getSecret("storage-account-${aksServiceName}-blobstorage", namespace, "{.data.storage_account_name}")
-//    env.STORAGE_ACCOUNT_URL = kubectl.getSecret(storageSecretRef, namespace, "{.data.blobEndpoint}")
-//    env.STORAGE_ACCOUNT_KEY = kubectl.getSecret(storageSecretRef, namespace, "{.data.accessKey}")
-//  }
-//}
-//
-//def setupStgTestSecrets() {
-//  def bootstap_env = env.ENV == "prod" || env.ENV == "demo" || env.ENV == "sbox" ? env.ENV : "stg"
-//  azureKeyVault(
-//    keyVaultURL: "https://pip-bootstrap-${bootstap_env}-kv.vault.azure.net/",
-//    secrets: [
-//      secret('shared-storageaccount-name', 'STORAGE_ACCOUNT_NAME'),
-//    ]) {
-//    env.STORAGE_ACCOUNT_NAME = "${STORAGE_ACCOUNT_NAME}"
-//    env.MANAGED_IDENTITY_CLIENT_ID = "8d0ead51-3b31-44df-a78e-ada4eea9fe87"
-//  }
-//}
-
 static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
   [ $class: 'AzureKeyVaultSecret',
     secretType: 'Secret',
@@ -115,14 +86,6 @@ withPipeline(type, product, component) {
     sh "echo 'Validate Swaggr'"
     sh swaggerValidate(branchName)
   }
-
-//  before('functionalTest:dev') {
-//    setupDevTestSecrets(product, component)
-//  }
-//
-//  before('functionalTest:stg') {
-//    setupStgTestSecrets()
-//  }
 
   afterAlways('test') {
     builder.gradle('integration')
