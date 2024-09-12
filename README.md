@@ -172,17 +172,21 @@ Below is a table of currently used environment variables for starting the servic
 
 Secrets required for getting tests to run correctly can be found in the below table:
 
-| Variable                       | Description                                                                                |
-|:-------------------------------|:-------------------------------------------------------------------------------------------|
-| CLIENT_ID                      | As above                                                                                   |
-| CLIENT_SECRET                  | As above                                                                                   |
-| APP_URI                        | As above                                                                                   |
-| SUBSCRIPTION_MANAGEMENT_AZ_API | As above                                                                                   |
-| TENANT_ID                      | As above                                                                                   |
-| ACCOUNT_MANAGEMENT_AZ_API      | As above                                                                                   |
-| PUBLICATION_SERVICES_AZ_API    | As above                                                                                   |
-| SYSTEM_ADMIN_PROVENANCE_ID     | Value for the provenance of a system admin used as a header on authentication-bound tests. |
-| TEST_USER_ID                   | User ID for a test account used as a header for most publication tests.                    |
+| Variable                       | Description                                                                                                                            |
+|:-------------------------------|:---------------------------------------------------------------------------------------------------------------------------------------|
+| CLIENT_ID                      | As above                                                                                                                               |
+| CLIENT_SECRET                  | As above                                                                                                                               |
+| APP_URI                        | As above                                                                                                                               |
+| SUBSCRIPTION_MANAGEMENT_AZ_API | As above                                                                                                                               |
+| TENANT_ID                      | As above                                                                                                                               |
+| ACCOUNT_MANAGEMENT_AZ_API      | As above                                                                                                                               |
+| PUBLICATION_SERVICES_AZ_API    | As above                                                                                                                               |
+| SYSTEM_ADMIN_PROVENANCE_ID     | Value for the provenance of a system admin used as a header on authentication-bound tests.                                             |
+| TEST_USER_ID                   | User ID for a test account used as a header for most publication tests.                                                                |
+| CLIENT_ID_FT                   | Client ID of external service used for authentication with data-management application in the functional tests.                        |
+| CLIENT_SECRET_FT               | Client secret of external service.used for authentication with data-management application in the functional tests.                    |
+| CONNECTION_STRING              | As above                                                                                                                               |
+| STORAGE_ACCOUNT_NAME           | As above. Only required when running the functional tests in the staging environment in pipeline.                                      |
 
 #### Application.yaml files
 
@@ -190,7 +194,8 @@ The service can also be adapted using the yaml files found in the following loca
 - `src/main/resources/application.yaml` for changes to the behaviour of the service itself.
 - `src/main/resources/application-dev.yaml` for changes to the behaviour of the service when running locally.
 - `src/functionalTest/resources/application-functional.yaml` for changes to the application when it's running functional tests.
-- `src/functionalTest/resources/application-view.yaml` for changes to postgres view tests.
+- `src/integrationTest/resources/application-integration.yaml` for changes to the application when it's running integration tests.
+- `src/integrationTest/resources/application-view.yaml` for changes to postgres view integration tests.
 - `src/test/resources/application-test.yaml` for changes to other test types (e.g. unit tests).
 
 ### Fortify

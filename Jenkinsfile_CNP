@@ -2,10 +2,14 @@
 
 @Library("Infrastructure")
 
+import uk.gov.hmcts.contino.GradleBuilder
+
 def type = "java"
 def product = "pip"
 def component = "data-management"
 def kv = product + '-ss-kv'
+
+GradleBuilder builder = new GradleBuilder(this, product)
 
 def setupTestSecrets() {
   def bootstap_env = env.ENV == "prod" || env.ENV == "demo" || env.ENV == "sbox" ? env.ENV : "stg"
@@ -21,6 +25,9 @@ def setupTestSecrets() {
       secret('app-tenant', 'TENANT_ID'),
       secret('test-user-id', 'TEST_USER_ID'),
       secret('b2c-test-system-admin-account-provenance-id', 'SYSTEM_ADMIN_PROVENANCE_ID'),
+      secret('app-pip-subscription-management-id', 'CLIENT_ID_FT'),
+      secret('app-pip-subscription-management-pwd', 'CLIENT_SECRET_FT'),
+      secret('shared-storageaccount-connection-string', 'CONNECTION_STRING'),
     ]) {
     env.CLIENT_ID = "${CLIENT_ID}"
     env.CLIENT_SECRET = "${CLIENT_SECRET}"
@@ -31,6 +38,9 @@ def setupTestSecrets() {
     env.SYSTEM_ADMIN_PROVENANCE_ID = "${SYSTEM_ADMIN_PROVENANCE_ID}"
     env.TENANT_ID = "${TENANT_ID}"
     env.TEST_USER_ID = "${TEST_USER_ID}"
+    env.CLIENT_ID_FT = "${CLIENT_ID_FT}"
+    env.CLIENT_SECRET_FT = "${CLIENT_SECRET_FT}"
+    env.CONNECTION_STRING = "${CONNECTION_STRING}"
   }
 }
 
@@ -73,6 +83,10 @@ withPipeline(type, product, component) {
     sh "echo 'Validate Swaggr'"
     sh swaggerValidate(branchName)
   }
+
+  afterAlways('test') {
+    builder.gradle('integration')
+  }
 }
 
 static String swaggerValidate(String branchName){
@@ -85,6 +99,5 @@ static String swaggerValidate(String branchName){
   '  exit 1;' +
   'fi;'
 
-  return script;
-
+  return script
 }

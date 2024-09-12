@@ -84,6 +84,8 @@ azure:
   blob:
     connection-string: ${CONNECTION_STRING}
     storage-account-name: ${STORAGE_ACCOUNT_NAME}
+    storage-account-url: ${STORAGE_ACCOUNT_URL:}
+    storage-account-key: ${STORAGE_ACCOUNT_KEY:}
     artefact-container-name: artefact
     publications-container-name: publications
   managed-identity:

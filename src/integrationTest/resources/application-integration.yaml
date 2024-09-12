@@ -1,0 +1,28 @@
+spring:
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:testdb
+    username: my-db
+    password: my-db
+    embedded-directory: build
+    jpa:
+      spring.jpa.database-platform: org.hibernate.dialect.H2Dialect
+  jpa:
+    hibernate:
+      # Set to update for integration tests, so it creates the environment in H2
+      ddl-auto: update
+  flyway:
+    enabled: true
+test-user-id: ${TEST_USER_ID}
+system-admin-provenance-id: ${SYSTEM_ADMIN_PROVENANCE_ID}
+payload:
+  json:
+    search-values:
+      array-value: "$['root-value']['inner-value'][*]['array-value']"
+      case-urn: "$['unknown-attribute']"
+service-to-service:
+  subscription-management: ${SUBSCRIPTION_MANAGEMENT_URL:https://pip-subscription-management.staging.platform.hmcts.net/}
+  account-management: ${ACCOUNT_MANAGEMENT_URL:https://pip-account-management.staging.platform.hmcts.net/}
+dbMigration:
+  runOnStartup: true
+
