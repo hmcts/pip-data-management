@@ -41,5 +41,5 @@ java:
     ENABLE_TESTING_SUPPORT_API: false
   autoscaling:
     enabled: false #To be enabled as part of PUB-1692
-  blobstorage:
-    enabled: false
+blobstorage:
+  enabled: false
