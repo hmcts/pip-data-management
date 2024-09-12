@@ -13,8 +13,24 @@ java:
     DB_USER: "{{ .Values.postgresql.auth.username}}"
     DB_PASS: "{{ .Values.postgresql.auth.password}}"
     DB_PORT: "5432"
-    #AZURE_APPLICATIONINSIGHTS_INSTRUMENTATIONKEY: '3c3bacb7-64e0-476c-aeaa-657657b063fd'
-  #disableKeyVaults: true
+    SPRING_PROFILES_ACTIVE: blobStorageDev
   postgresql:
     enabled: true
+  secrets:
+    STORAGE_ACCOUNT_NAME:
+      secretRef: storage-account-{{ .Release.Name }}-blobstorage
+      key: storage_account_name
+    STORAGE_ACCOUNT_URL:
+      secretRef: storage-secret-{{ .Release.Name }}-blobstorage
+      key: blobEndpoint
+    STORAGE_ACCOUNT_KEY:
+      secretRef: storage-secret-{{ .Release.Name }}-blobstorage
+      key: accessKey
   devApplicationInsightsInstrumentKeyName: AZURE_APPLICATIONINSIGHTS_INSTRUMENTATIONKEY
+blobstorage:
+  resourceGroup: pip-aso-dev-rg
+  setup:
+    containers:
+      - artefact
+      - files
+      - publications

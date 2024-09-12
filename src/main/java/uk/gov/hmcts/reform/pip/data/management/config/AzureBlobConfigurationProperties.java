@@ -25,6 +25,16 @@ public class AzureBlobConfigurationProperties {
     private String storageAccountName;
 
     /**
+     * The url of the storage account containing the blob (only required when running in the dev pod).
+     */
+    private String storageAccountUrl;
+
+    /**
+     * The access key of the storage account containing the blob (only required when running in the dev pod).
+     */
+    private String storageAccountKey;
+
+    /**
      * The name of the artefact container to connect to.
      */
     private String artefactContainerName;
