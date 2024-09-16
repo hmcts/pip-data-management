@@ -15,7 +15,7 @@
             "examples": [
               "THE LAW COURTS"
             ],
-            "pattern": "^(?!.*<[^>]+>).*$"
+            "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
           }
         },
         "town": {
@@ -26,7 +26,7 @@
           "examples": [
             "Cambridge"
           ],
-          "pattern": "^(?!.*<[^>]+>).*$"
+          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
         },
         "county": {
           "title": "County",
@@ -36,7 +36,7 @@
           "examples": [
             "Cambridgeshire"
           ],
-          "pattern": "^(?!.*<[^>]+>).*$"
+          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
         },
         "postCode": {
           "title": "Address Postcode",
@@ -45,7 +45,7 @@
           "examples": [
             "PR1 2LL"
           ],
-          "pattern": "^(?!.*<[^>]+>).*$"
+          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
         }
       }
     },
@@ -61,7 +61,7 @@
           "examples": [
             "01772 844700"
           ],
-          "pattern": "^(?!.*<[^>]+>).*$"
+          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
         },
         "venueEmail": {
           "description": "Email for the venue",
@@ -71,7 +71,7 @@
           "examples": [
             "court1@moj.gov.uk"
           ],
-          "pattern": "^(?!.*<[^>]+>).*$"
+          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
         }
       }
     }
@@ -99,7 +99,7 @@
           "examples": [
             "2016-09-13T23:30:52.123Z"
           ],
-          "pattern": "^(?!.*<[^>]+>).*$"
+          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
         }
       }
     },
@@ -130,7 +130,7 @@
           "examples": [
             "Family court"
           ],
-          "pattern": "^(?!.*<[^>]+>).*$"
+          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
         }
       }
     },
@@ -161,7 +161,7 @@
                 "examples": [
                   "PRESTON"
                 ],
-                "pattern": "^(?!.*<[^>]+>).*$"
+                "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
               },
               "courtHouseAddress": {
                 "description": "The address for the court house",
@@ -197,7 +197,7 @@
                               "2021-09-09t16:41:07.394"
                             ],
                             "default": "",
-                            "pattern": "^(?!.*<[^>]+>).*$"
+                            "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                           },
                           "sittings": {
                             "title": "Sittings",
@@ -217,7 +217,7 @@
                                   "type": "string",
                                   "default": "",
                                   "examples": [],
-                                  "pattern": "^(?!.*<[^>]+>).*$"
+                                  "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                 },
                                 "sittingEnd": {
                                   "description": "Sitting End Time",
@@ -225,7 +225,7 @@
                                   "type": "string",
                                   "default": "",
                                   "examples": [],
-                                  "pattern": "^(?!.*<[^>]+>).*$"
+                                  "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                 },
                                 "hearing": {
                                   "type": "array",
@@ -245,7 +245,7 @@
                                           "mda"
                                         ],
                                         "default": "",
-                                        "pattern": "^(?!.*<[^>]+>).*$"
+                                        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                       },
                                       "case": {
                                         "type": "array",
@@ -266,7 +266,7 @@
                                               "examples": [
                                                 "A Vs B"
                                               ],
-                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                             },
                                             "caseNumber": {
                                               "title": "Case Number",
@@ -276,7 +276,7 @@
                                               "examples": [
                                                 "45684548"
                                               ],
-                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                             },
                                             "caseSequenceIndicator": {
                                               "title": "Case Sequence Indicator",
@@ -286,7 +286,7 @@
                                               "examples": [
                                                 "2 of 3"
                                               ],
-                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                             }
                                           }
                                         }
