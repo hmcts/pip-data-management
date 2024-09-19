@@ -214,7 +214,7 @@
                                                     ],
                                                     "enum": ["DEFENDANT", "PROSECUTING_AUTHORITY"],
                                                     "default": "",
-                                                    "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+                                                    "pattern": "^(?!.*<[^>]+>).*$"
                                                   },
                                                   "individualDetails": {
                                                     "title": "Individual Details",

@@ -253,7 +253,7 @@
                                                     ],
                                                     "enum": ["APPLICANT_PETITIONER", "APPLICANT_PETITIONER_REPRESENTATIVE", "RESPONDENT", "RESPONDENT_REPRESENTATIVE"],
                                                     "default": "",
-                                                    "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+                                                    "pattern": "^(?!.*<[^>]+>).*$"
                                                   },
                                                   "individualDetails": {
                                                     "title": "Individual Details",

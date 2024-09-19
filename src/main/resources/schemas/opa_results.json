@@ -223,7 +223,7 @@
                                                     ],
                                                     "enum": ["DEFENDANT"],
                                                     "default": "",
-                                                    "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+                                                    "pattern": "^(?!.*<[^>]+>).*$"
                                                   },
                                                   "individualDetails": {
                                                     "title": "Individual Details",
