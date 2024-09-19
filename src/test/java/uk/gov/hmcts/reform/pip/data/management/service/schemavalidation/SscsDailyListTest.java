@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest(classes = {Application.class, AzureBlobConfigurationTestConfiguration.class})
@@ -36,6 +37,8 @@ class SscsDailyListTest {
     ValidationService validationService;
 
     private static final String SSCS_DAILY_LIST_VALID_JSON = "mocks/sscsDailyList.json";
+    private static final String SSCS_DAILY_LIST_WITH_NEW_LINES =
+        "mocks/sscsDailyListWithNewLines.json";
     private static final String SSCS_DAILY_LIST_INVALID_MESSAGE = "Invalid sscs daily list marked as valid";
 
     private static final String COURT_LIST_SCHEMA = "courtLists";
@@ -396,6 +399,19 @@ class SscsDailyListTest {
             assertThrows(PayloadValidationException.class, () -> validationService.validateBody(listJson,
                 headerGroup),
                          SSCS_DAILY_LIST_INVALID_MESSAGE);
+        }
+    }
+
+    @Test
+    void testValidateWithSuccessWhenFieldsContainNewLineCharacters() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream(SSCS_DAILY_LIST_WITH_NEW_LINES)) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            ObjectMapper mapper = new ObjectMapper();
+            String listJson = mapper.readValue(text, JsonNode.class).toString();
+            assertDoesNotThrow(() -> validationService.validateBody(listJson, headerGroup),
+                               SSCS_DAILY_LIST_INVALID_MESSAGE);
         }
     }
 }

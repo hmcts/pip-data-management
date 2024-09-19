@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest(classes = {Application.class, AzureBlobConfigurationTestConfiguration.class})
@@ -37,6 +38,8 @@ class CrownDailyListTest {
 
     private static final String CROWN_DAILY_LIST_VALID_JSON =
         "mocks/crownDailyList.json";
+    private static final String CROWN_DAILY_LIST_WITH_NEW_LINES =
+        "mocks/crownDailyListWithNewLines.json";
     private static final String CROWN_DAILY_LIST_INVALID_MESSAGE =
         "Invalid crown daily list marked as valid";
 
@@ -481,6 +484,19 @@ class CrownDailyListTest {
                              validationService.validateBody(listJson,
                                                             headerGroup),
                          CROWN_DAILY_LIST_INVALID_MESSAGE);
+        }
+    }
+
+    @Test
+    void testValidateWithSuccessWhenFieldsContainNewLineCharacters() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream(CROWN_DAILY_LIST_WITH_NEW_LINES)) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            ObjectMapper mapper = new ObjectMapper();
+            String listJson = mapper.readValue(text, JsonNode.class).toString();
+            assertDoesNotThrow(() -> validationService.validateBody(listJson, headerGroup),
+                               CROWN_DAILY_LIST_INVALID_MESSAGE);
         }
     }
 }
