@@ -101,7 +101,7 @@
             true
           ],
           "default": "",
-          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+          "pattern": "^(?!.*<[^>]+>).*$"
         }
       }
     }
@@ -514,7 +514,7 @@
                                                           "examples": [
                                                             "true"
                                                           ],
-                                                          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+                                                          "pattern": "^(?!.*<[^>]+>).*$"
                                                         },
                                                         "reportingRestrictionDetail": {
                                                           "title": "Reporting Restrictions Detail",

@@ -62,7 +62,7 @@
             true
           ],
           "default": "",
-          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+          "pattern": "^(?!.*<[^>]+>).*$"
         },
         "johKnownAs": {
           "description": "Name and salutations, titles to be presented on publications",

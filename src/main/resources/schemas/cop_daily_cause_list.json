@@ -137,7 +137,6 @@
             "Family court"
           ],
           "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
-
         },
         "region": {
           "description": "Region details",
@@ -266,7 +265,7 @@
                                     true
                                   ],
                                   "default": "",
-                                  "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+                                  "pattern": "^(?!.*<[^>]+>).*$"
                                 }
                               }
                             }
