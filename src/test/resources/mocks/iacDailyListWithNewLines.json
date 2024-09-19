@@ -1,0 +1,75 @@
+{
+  "document": {
+    "publicationDate": "2022-10-20T20:00:00.001\r\nZ"
+  },
+  "venue": {
+    "venueName": "This is the \r\nvenue name"
+  },
+  "courtLists": [
+    {
+      "courtListName": "Bail \r\nList",
+      "courtHouse": {
+        "courtRoom": [
+          {
+            "courtRoomName": "\r\nCourt Room A",
+            "session": [
+              {
+                "sessionChannel": [
+                  "VIDEO HEARING\r\n",
+                  "\r\n"
+                ],
+                "judiciary": [
+                  {
+                    "johTitle": "\r\nJudge",
+                    "johNameSurname": "Test\r\n Name",
+                    "isPresiding": true
+                  }
+                ],
+                "sittings": [
+                  {
+                    "sittingStart": "2020-10-20T20:00:00.001\r\nZ",
+                    "sittingEnd": "2020-02-20T22:00:00.001\r\nZ",
+                    "hearing": [
+                      {
+                        "hearingType": "Directions\r\n",
+                        "case": [
+                          {
+                            "caseNumber": "1234123\r\n4",
+                            "caseSequenceIndicator": "2\r\n of 3",
+                            "caseType": "case \r\ntype",
+                            "language": "French\r\n",
+                            "party": [
+                              {
+                                "partyRole": "\r\nCLAIMANT_PETITIONER",
+                                "individualDetails": {
+                                  "individualForenames": "Individua\r\nl Forenames",
+                                  "individualMiddleName": "Individua\r\nl MiddleName",
+                                  "individualSurname": "\r\nIndividual Surname",
+                                  "title": "\r\nMr"
+                                }
+                              },
+                              {
+                                "partyRole": "RESPONDENT\r\n",
+                                "organisationDetails": {
+                                  "organisationName": "Organisation\r\n Name"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "channel": [
+                      "Teams\r\n",
+                      "\r\nAttended"
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

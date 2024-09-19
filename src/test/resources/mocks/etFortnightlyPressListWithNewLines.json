@@ -1,0 +1,90 @@
+{
+  "document": {
+    "publicationDate": "2022-02-13T09:30:52.123\r\nZ"
+  },
+  "venue": {
+    "venueName": "Regional Venue\r\n South",
+    "venueContact": {
+      "venueEmail": "a@b.com\r\n",
+      "venueTelephone": "+44 \r\n1234 1234 1234"
+    }
+  },
+  "courtLists": [
+    {
+      "courtHouse": {
+        "courtHouseName": "Leicester \r\nCrown Court",
+        "courtRoom": [
+          {
+            "session": [
+              {
+                "sittings": [
+                  {
+                    "sittingStart": "2022-02-13T09:30:32.123\r\nZ",
+                    "sittingEnd": "2022-02-13T11:30:32.123\r\nZ",
+                    "hearing": [
+                      {
+                        "case": [
+                          {
+                            "caseNumber": "123\r\n41234",
+                            "caseSequenceIndicator": "\r\n2 of 3",
+                            "party": [
+                              {
+                                "partyRole": "APPLICANT_PETITIONER",
+                                "organisationDetails": {
+                                  "organisationName": "Test\r\n Organisation"
+                                }
+                              },
+                              {
+                                "partyRole": "APPLICANT_PETITIONER_REPRESENTATIVE",
+                                "individualDetails": {
+                                  "title": "\r\nMr",
+                                  "individualForenames": "\r\nTest forename 2",
+                                  "individualSurname": "Test\r\n Surname 2"
+                                },
+                                "friendlyRoleName": "This is a \r\nrole name"
+                              },
+                              {
+                                "partyRole": "RESPONDENT",
+                                "individualDetails": {
+                                  "title": "\r\nCapt.",
+                                  "individualForenames": "Test \r\nforename",
+                                  "individualSurname": "Tes\r\nt Surname"
+                                },
+                                "friendlyRoleName": "This is\r\n a role name"
+                              },
+                              {
+                                "partyRole": "RESPONDENT_REPRESENTATIVE",
+                                "individualDetails": {
+                                  "title": "\r\nDr",
+                                  "individualForenames": "Tes\r\nt forename 2",
+                                  "individualSurname": "Test S\r\nurname 2"
+                                },
+                                "friendlyRoleName": "This is \r\na role name"
+                              }
+                            ]
+                          }
+                        ],
+                        "hearingType": "This is a hea\r\nring type"
+                      }
+                    ],
+                    "channel": [
+                      "This is a sitting\r\n channel"
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "courtHouseAddress": {
+          "town": "Leicester\r\n",
+          "postCode": "SW1H \r\n9AJ",
+          "line": [
+            "5 Test\r\n Street"
+          ],
+          "county": "\r\n"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,133 @@
+{
+  "document": {
+    "publicationDate": "2023-12-01T23:30:52.123\r\nZ",
+    "version": "1.\r\n0"
+  },
+  "venue": {
+    "venueName": "Prest\r\non",
+    "venueAddress": {
+      "postCode": "AA1 AA\r\n1",
+      "county": "Lancash\r\nire",
+      "town": "Town\r\n",
+      "line": [
+        "Address Line\r\n 1",
+        "Address\r\n Line 2"
+      ]
+    }
+  },
+  "locationDetails": {
+    "jurisdiction": "Cri\r\nme court"
+  },
+  "courtLists": [
+    {
+      "courtHouse": {
+        "courtHouseName": "\r\nPRESTON",
+        "courtRoom": [
+          {
+            "courtRoomName": "\r\nCourtroom 1",
+            "session": [
+              {
+                "judiciary": [
+                  {
+                    "johTitle": "J\r\nudge",
+                    "johNameSurname": "Test\r\n Name",
+                    "role": "JUDGE",
+                    "johKnownAs": "Judge Known \r\nAs",
+                    "isPresiding": true
+                  },
+                  {
+                    "johTitle": "Magistrate\r\n",
+                    "johNameSurname": "Test \r\nName",
+                    "role": "MAGISTRATE",
+                    "isPresiding": false
+                  }
+                ],
+                "sittings": [
+                  {
+                    "sittingStart": "2023-12-13T13:30:52.123\r\nZ",
+                    "sittingEnd": "2023-12-13T16:00:52.123\r\nZ",
+                    "hearing": [
+                      {
+                        "hearingType": "mda\r\n",
+                        "case": [
+                          {
+                            "caseNumber": "45\r\n684548",
+                            "caseSequenceIndicator": "2\r\n of 3",
+                            "party": [
+                              {
+                                "partyRole": "DEFENDANT\r\n",
+                                "friendlyRoleName": "\r\nAccused",
+                                "individualDetails": {
+                                  "title": "Mr\r\n",
+                                  "individualForenames": "Forena\r\nme1",
+                                  "individualMiddleName": "MiddleN\r\name",
+                                  "individualSurname": "Surna\r\nme1",
+                                  "dateOfBirth": "01/01/1983\r\n",
+                                  "age": 39,
+                                  "address": {
+                                    "county": "County A\r\n",
+                                    "town": "Month A\r\n",
+                                    "postCode": "AA1 AA1\r\n",
+                                    "line": [
+                                      "Address Line 1\r\n",
+                                      "Address Line\r\n 2"
+                                    ]
+                                  },
+                                  "plea": "NOT_GUILTY",
+                                  "gender": "\r\nmale"
+                                },
+                                "offence": [
+                                  {
+                                    "offenceCode": "dd01-01\r\n",
+                                    "offenceTitle": "drink\r\n driving",
+                                    "offenceWording": "driving\r\n whilst under the influence of alcohol",
+                                    "offenceMaxPen": "100yrs\r\n",
+                                    "reportingRestriction": true,
+                                    "reportingRestrictionDetail": "Reporting Restrictions \r\nDetail"
+                                  },
+                                  {
+                                    "offenceCode": "dd01-01\r\n",
+                                    "offenceTitle": "Assault\r\n by beating",
+                                    "offenceWording": "Assaul\r\nt by beating",
+                                    "offenceMaxPen": "100yr\r\ns",
+                                    "reportingRestriction": true
+                                  }
+                                ]
+                              }
+                            ],
+                            "informant": {
+                              "prosecutionAuthorityRef": "\r\nTest",
+                              "prosecutionAuthorityId": "123\r\n4",
+                              "prosecutionAuthorityCode": "T\r\nest1234",
+                              "prosecutionAuthorityName": "Te\r\nst"
+                            },
+                            "hearingNumber": "12\r\n",
+                            "convictionDate": "2023-12-13T23:30:52.123\r\nZ",
+                            "adjournedDate": "2023-12-13T23:30:52.123\r\nZ",
+                            "panel": "\r\nADULT"
+                          }
+                        ]
+                      }
+                    ],
+                    "judiciary": [
+                      {
+                        "johTitle": "\r\nJudge",
+                        "johNameSurname": "Test\r\n Name 2",
+                        "role": "JUDGE",
+                        "isPresiding": true
+                      }
+                    ],
+                    "channel": [
+                      "VIDEO HEARING\r\n"
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
+
