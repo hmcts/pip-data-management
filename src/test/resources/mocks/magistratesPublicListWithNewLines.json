@@ -45,7 +45,9 @@
                         "case": [
                           {
                             "caseNumber": "123\r\n45678",
-                            "reportingRestrictionDetail": "Reporting Restrictions \r\nDetail",
+                            "reportingRestrictionDetail": [
+                              "Reporting Restrictions \r\nDetail"
+                            ],
                             "caseSequenceIndicator": "2 \r\nof 3",
                             "party": [
                               {

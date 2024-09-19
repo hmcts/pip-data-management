@@ -33,7 +33,9 @@
                         "case": [
                           {
                             "caseNumber": "123\r\n45678",
-                            "reportingRestrictionDetail": "This is a reporting\r\n restrictions detail",
+                            "reportingRestrictionDetail": [
+                              "This is a reporting\r\n restrictions detail"
+                            ],
                             "caseLinked": [
                               {
                                 "caseId": "\r\n123456",

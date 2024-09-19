@@ -83,7 +83,9 @@
                                     "offenceWording": "driving\r\n whilst under the influence of alcohol",
                                     "offenceMaxPen": "100yrs\r\n",
                                     "reportingRestriction": true,
-                                    "reportingRestrictionDetail": "Reporting Restrictions \r\nDetail"
+                                    "reportingRestrictionDetail": [
+                                      "Reporting Restrictions \r\nDetail"
+                                    ]
                                   },
                                   {
                                     "offenceCode": "dd01-01\r\n",
