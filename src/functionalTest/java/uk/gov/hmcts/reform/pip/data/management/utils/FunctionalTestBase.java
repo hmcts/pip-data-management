@@ -10,6 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.util.CollectionUtils;
 import uk.gov.hmcts.reform.pip.data.management.Application;
 
+import java.io.File;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -57,6 +58,27 @@ public class FunctionalTestBase {
             .thenReturn();
     }
 
+    protected Response doPostRequestMultiPart(final String path, final Map<String, String> additionalHeaders,
+                                              String multiPartKey, final File multipartFile) {
+        return given()
+            .relaxedHTTPSValidation()
+            .headers(additionalHeaders)
+            .accept("*/*")
+            .multiPart(multiPartKey, multipartFile)
+            .when()
+            .post(path)
+            .thenReturn();
+    }
+
+    protected Response doDeleteRequest(final String path, final Map<String, String> additionalHeaders) {
+        return given()
+            .relaxedHTTPSValidation()
+            .headers(getRequestHeaders(additionalHeaders))
+            .when()
+            .delete(path)
+            .thenReturn();
+    }
+
     protected Response doDeleteRequest(final String path, final Map<String, String> additionalHeaders,
                                        final String body) {
         return given()
@@ -68,7 +90,7 @@ public class FunctionalTestBase {
             .thenReturn();
     }
 
-    private static Map<String, String> getRequestHeaders(final Map<String, String> additionalHeaders) {
+    protected static Map<String, String> getRequestHeaders(final Map<String, String> additionalHeaders) {
         final Map<String, String> headers = new ConcurrentHashMap<>(Map.of(CONTENT_TYPE, CONTENT_TYPE_VALUE));
         if (!CollectionUtils.isEmpty(additionalHeaders)) {
             headers.putAll(additionalHeaders);
