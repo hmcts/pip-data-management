@@ -1,7 +1,7 @@
 {
   "document": {
     "version": "1.0\r\n",
-    "publicationDate": "\r\n2022-09-13T11:30:52.123Z",
+    "publicationDate": "2022-09-13T11:30:52.123Z",
     "documentName": "Document \r\n Name"
   },
   "venue": {
@@ -24,8 +24,8 @@
               {
                 "sittings": [
                   {
-                    "sittingStart": "2022-07-27T09:40:17.496Z\r\n",
-                    "sittingEnd": "2022-07-27T10:45:17.496\r\nZ",
+                    "sittingStart": "2022-07-27T09:40:17.496Z",
+                    "sittingEnd": "2022-07-27T10:45:17.496Z",
                     "hearing": [
                       {
                         "hearingType": "Trial\r\n",
