@@ -109,7 +109,7 @@
         "publicationDate": {
           "title": "Publication date",
           "type": "string",
-          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}([.]\\d{1,9})?Z$"
         },
         "version": {
           "title": "Version",
@@ -278,7 +278,7 @@
                                 "sittingStart": {
                                   "title": "Sitting Start",
                                   "type": "string",
-                                  "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+                                  "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}([.]\\d{1,9})?Z$"
                                 },
                                 "sittingEnd": {
                                   "title": "Sitting End",
