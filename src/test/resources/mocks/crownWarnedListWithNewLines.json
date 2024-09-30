@@ -1,0 +1,76 @@
+{
+  "document": {
+    "version": "1.0\r\n",
+    "publicationDate": "\r\n2022-09-13T11:30:52.123Z",
+    "documentName": "Document \r\n Name"
+  },
+  "venue": {
+    "venueName": "Manchester \r\nCourt",
+    "venueAddress": {
+      "line": [
+        "Princess \r\nSquare"
+      ],
+      "town": "Manchester\r\n",
+      "county": "County\r\n",
+      "postCode": "M1 \r\n1AA"
+    }
+  },
+  "courtLists": [
+    {
+      "courtHouse": {
+        "courtRoom": [
+          {
+            "session": [
+              {
+                "sittings": [
+                  {
+                    "sittingStart": "2022-07-27T09:40:17.496Z\r\n",
+                    "sittingEnd": "2022-07-27T10:45:17.496\r\nZ",
+                    "hearing": [
+                      {
+                        "hearingType": "Trial\r\n",
+                        "listNote": "Not\r\ne 1",
+                        "case": [
+                          {
+                            "caseNumber": "123\r\n45678",
+                            "reportingRestrictionDetail": [
+                              "This is a reporting\r\n restrictions detail"
+                            ],
+                            "caseLinked": [
+                              {
+                                "caseId": "\r\n123456",
+                                "name": "Case Name\r\n"
+                              }
+                            ],
+                            "party": [
+                              {
+                                "partyRole": "DEFENDANT\r\n",
+                                "individualDetails": {
+                                  "individualForenames": "\r\nForename 1",
+                                  "individualMiddleName": "\r\nMiddlename 1",
+                                  "individualSurname": "\r\nSurname 1",
+                                  "title": "\r\nMr"
+                                }
+                              },
+                              {
+                                "partyRole": "\r\nDEFENDANT_REPRESENTATIVE",
+                                "friendlyRoleName": "Friendly Role Name \r\n",
+                                "organisationDetails": {
+                                  "organisationName": "Defendant \r\nrep 1"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -10,7 +10,7 @@
           "title": "Judiciary Title",
           "type": "string",
           "default": "",
-          "pattern": "^(?!.*<[^>]+>).*$"
+          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
         },
         "johNameSurname": {
           "description": "First and Surname of the JOH",
@@ -20,7 +20,7 @@
             "John Smith"
           ],
           "default": "",
-          "pattern": "^(?!.*<[^>]+>).*$"
+          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
         },
         "isPresiding": {
           "description": "A flag to indicate whether a judiciary is presiding",
@@ -76,7 +76,7 @@
           "examples": [
             "Preston"
           ],
-          "pattern": "^(?!.*<[^>]+>).*$"
+          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
         }
       }
     },
@@ -99,7 +99,7 @@
             "examples": [
               "Case Management Review"
             ],
-            "pattern": "^(?!.*<[^>]+>).*$"
+            "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
           },
           "courtHouse": {
             "title": "Court House",
@@ -128,7 +128,7 @@
                       "examples": [
                         "1"
                       ],
-                      "pattern": "^(?!.*<[^>]+>).*$"
+                      "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                     },
                     "session": {
                       "type": "array",
@@ -151,7 +151,7 @@
                                 "VIDEO HEARING"
                               ],
                               "default": "",
-                              "pattern": "^(?!.*<[^>]+>).*$"
+                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                             }
                           },
                           "judiciary": {
@@ -181,7 +181,7 @@
                                   "type": "string",
                                   "default": "",
                                   "examples": [],
-                                  "pattern": "^(?!.*<[^>]+>).*$"
+                                  "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                 },
                                 "sittingEnd": {
                                   "description": "Sitting End Time",
@@ -189,7 +189,7 @@
                                   "type": "string",
                                   "default": "",
                                   "examples": [],
-                                  "pattern": "^(?!.*<[^>]+>).*$"
+                                  "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                 },
                                 "hearing": {
                                   "type": "array",
@@ -209,7 +209,7 @@
                                           "mda"
                                         ],
                                         "default": "",
-                                        "pattern": "^(?!.*<[^>]+>).*$"
+                                        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                       },
                                       "case": {
                                         "type": "array",
@@ -229,7 +229,7 @@
                                               "examples": [
                                                 "45684548"
                                               ],
-                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                             },
                                             "caseSequenceIndicator": {
                                               "title": "Case Sequence Indicator",
@@ -239,7 +239,7 @@
                                               "examples": [
                                                 "2 of 3"
                                               ],
-                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                             },
                                             "caseType": {
                                               "title": "Case Type",
@@ -249,7 +249,7 @@
                                               "examples": [
                                                 "normal"
                                               ],
-                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                             },
                                             "language": {
                                               "title": "Interpreter Language",
@@ -259,7 +259,7 @@
                                               "examples": [
                                                 "French"
                                               ],
-                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                             },
                                             "party": {
                                               "title": "Party",
@@ -279,7 +279,7 @@
                                                       "PROSECUTOR"
                                                     ],
                                                     "default": "",
-                                                    "pattern": "^(?!.*<[^>]+>).*$"
+                                                    "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                   },
                                                   "individualDetails": {
                                                     "title": "Individual Details",
@@ -294,7 +294,7 @@
                                                           "Mr"
                                                         ],
                                                         "default": "",
-                                                        "pattern": "^(?!.*<[^>]+>).*$"
+                                                        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                       },
                                                       "individualForenames": {
                                                         "description": "Forename of party",
@@ -304,7 +304,7 @@
                                                           "John Smith"
                                                         ],
                                                         "default": "",
-                                                        "pattern": "^(?!.*<[^>]+>).*$"
+                                                        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                       },
                                                       "individualMiddleName": {
                                                         "description": "Middle name of the individual",
@@ -314,7 +314,7 @@
                                                           "MiddleName"
                                                         ],
                                                         "default": "",
-                                                        "pattern": "^(?!.*<[^>]+>).*$"
+                                                        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                       },
                                                       "individualSurname": {
                                                         "description": "Surname of party",
@@ -324,7 +324,7 @@
                                                           "Surname"
                                                         ],
                                                         "default": "",
-                                                        "pattern": "^(?!.*<[^>]+>).*$"
+                                                        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                       }
                                                     }
                                                   },
@@ -335,7 +335,7 @@
                                                       "organisationName": {
                                                         "title": "Organisation Name",
                                                         "type": "string",
-                                                        "pattern": "^(?!.*<[^>]+>).*$"
+                                                        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                       }
                                                     }
                                                   }
@@ -358,7 +358,7 @@
                                       "VIDEO HEARING"
                                     ],
                                     "default": "",
-                                    "pattern": "^(?!.*<[^>]+>).*$"
+                                    "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                   }
                                 }
                               }

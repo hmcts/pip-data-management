@@ -1,0 +1,99 @@
+{
+  "document": {
+    "publicationDate": "2023-03-03T14:07:33.871502\r\nZ",
+    "version": "3.4\r\n",
+    "documentName": "LACX9WOZGD\r\n"
+  },
+  "venue": {
+    "venueName": "York Family\r\n Court",
+    "venueContact": {
+      "venueEmail": "Minnie.Jaleesa@Ocie.co.uk\r\n",
+      "venueTelephone": "+44 289\r\n 910 9805"
+    },
+    "venueAddress": {
+      "postCode": "AA1 \r\nAA1",
+      "county": "\r\nLancashire",
+      "town": "Town\r\n",
+      "line": [
+        "26 Diego \r\nGardens",
+        "\r\nAddress Line 2"
+      ]
+    }
+  },
+  "locationDetails": {
+    "location": "Location Name\r\n",
+    "jurisdiction": "Family court\r\n"
+  },
+  "courtLists": [
+    {
+      "courtHouse": {
+        "courtHouseName": "Colchester Social Security and Child \r\nSupport",
+        "courtRoom": [
+          {
+            "courtRoomName": "to be allocated\r\n [Colchester Social Security and Child Support]",
+            "session": [
+              {
+                "judiciary": [
+                  {
+                    "johKnownAs": "Judge \r\nKnownAs",
+                    "isPresiding": true
+                  }
+                ],
+                "sittings": [
+                  {
+                    "sittingStart": "2023-04-12T08:35:11.192108\r\nZ",
+                    "sittingEnd": "2023-04-12T10:00:14.123184\r\nZ",
+                    "channel": [
+                      "\r\nTeams",
+                      "Attended\r\n"
+                    ],
+                    "hearing": [
+                      {
+                        "listingDetails": {
+                          "listingRepDeadline": "Listing \r\ndetails text"
+                        },
+                        "hearingType": "\r\nDirections",
+                        "case": [
+                          {
+                            "reportingRestrictionDetail": [
+                              "Reporting Restriction detail\r\n line 1"
+                            ],
+                            "caseNumber": "I4Y416QE\r\n",
+                            "caseLinked": [
+                              {
+                                "caseId": "YRYCTRR3\r\n",
+                                "name": "Ned Vs\r\n Patience"
+                              }
+                            ],
+                            "caseSequenceIndicator": "6 \r\nof 6",
+                            "party": [
+                              {
+                                "partyRole": "\r\nPROSECUTING_AUTHORITY",
+                                "organisationDetails": {
+                                  "organisationName": "Prosecutor \r\norg"
+                                }
+                              },
+                              {
+                                "partyRole": "DEFENDANT\r\n",
+                                "individualDetails": {
+                                  "individualSurname": "Surname \r\n1",
+                                  "individualForenames": "\r\nForename 1",
+                                  "individualMiddleName": "\r\nMiddlename 1",
+                                  "title": "\r\nMr"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

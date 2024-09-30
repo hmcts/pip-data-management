@@ -15,7 +15,7 @@
             "examples": [
               "THE LAW COURTS"
             ],
-            "pattern": "^(?!.*<[^>]+>).*$"
+            "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
           }
         },
         "town": {
@@ -26,7 +26,7 @@
           "examples": [
             "Cambridge"
           ],
-          "pattern": "^(?!.*<[^>]+>).*$"
+          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
         },
         "county": {
           "title": "County",
@@ -36,7 +36,7 @@
           "examples": [
             "Cambridgeshire"
           ],
-          "pattern": "^(?!.*<[^>]+>).*$"
+          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
         },
         "postCode": {
           "title": "Address Postcode",
@@ -45,7 +45,7 @@
           "examples": [
             "PR1 2LL"
           ],
-          "pattern": "^(?!.*<[^>]+>).*$"
+          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
         }
       }
     },
@@ -61,7 +61,7 @@
           "examples": [
             "01772 844700"
           ],
-          "pattern": "^(?!.*<[^>]+>).*$"
+          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
         },
         "venueEmail": {
           "description": "Email for the venue",
@@ -71,7 +71,7 @@
           "examples": [
             "court1@moj.gov.uk"
           ],
-          "pattern": "^(?!.*<[^>]+>).*$"
+          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
         }
       }
     }
@@ -94,7 +94,7 @@
           "examples": [
             "Standard List FINAL V4"
           ],
-          "pattern": "^(?!.*<[^>]+>).*$"
+          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
         },
         "publicationDate": {
           "title": "Publication date",
@@ -103,7 +103,7 @@
           "examples": [
             "2016-09-13T23:30:52.123Z"
           ],
-          "pattern": "^(?!.*<[^>]+>).*$"
+          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
         },
         "version": {
           "title": "Version",
@@ -112,7 +112,7 @@
           "examples": [
             "1.0"
           ],
-          "pattern": "^(?!.*<[^>]+>).*$"
+          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
         }
       }
     },
@@ -129,7 +129,7 @@
           "examples": [
             "Preston"
           ],
-          "pattern": "^(?!.*<[^>]+>).*$"
+          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
         },
         "venueAddress": {
           "description": "Full venue address",
@@ -203,7 +203,7 @@
                                               "examples": [
                                                 "offg35484"
                                               ],
-                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                             },
                                             "party": {
                                               "title": "Party",
@@ -238,7 +238,7 @@
                                                           "John Smith"
                                                         ],
                                                         "default": "",
-                                                        "pattern": "^(?!.*<[^>]+>).*$"
+                                                        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                       },
                                                       "individualMiddleName": {
                                                         "description": "Middle name of the individual",
@@ -248,7 +248,7 @@
                                                           "MiddleName"
                                                         ],
                                                         "default": "",
-                                                        "pattern": "^(?!.*<[^>]+>).*$"
+                                                        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                       },
                                                       "individualSurname": {
                                                         "description": "Surname of party",
@@ -258,7 +258,7 @@
                                                           "Surname"
                                                         ],
                                                         "default": "",
-                                                        "pattern": "^(?!.*<[^>]+>).*$"
+                                                        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                       },
                                                       "offence": {
                                                         "title": "offence",
@@ -275,7 +275,7 @@
                                                               "examples": [
                                                                 "drink driving"
                                                               ],
-                                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                             },
                                                             "offenceSection": {
                                                               "description": "Section for the offence",
@@ -285,7 +285,7 @@
                                                               "examples": [
                                                                 "dd01-01"
                                                               ],
-                                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                             },
                                                             "decision": {
                                                               "title": "Offence decision",
@@ -300,7 +300,7 @@
                                                                   "examples": [
                                                                     "2024-01-02T23:30:52.123Z"
                                                                   ],
-                                                                  "pattern": "^(?!.*<[^>]+>).*$"
+                                                                  "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                                 },
                                                                 "decisionDetail": {
                                                                   "description": "The detail of the decision",
@@ -310,7 +310,7 @@
                                                                   "examples": [
                                                                     "Court direct trial by jury"
                                                                   ],
-                                                                  "pattern": "^(?!.*<[^>]+>).*$"
+                                                                  "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                                 }
                                                               }
                                                             },
@@ -322,7 +322,7 @@
                                                               "examples": [
                                                                 "Unconditional bail"
                                                               ],
-                                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                             },
                                                             "nextHearingDate": {
                                                               "description": "The date of the next hearing",
@@ -332,7 +332,7 @@
                                                               "examples": [
                                                                 "2024-02-01T10:30:52.123Z"
                                                               ],
-                                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                             },
                                                             "nextHearingLocation": {
                                                               "description": "The location of the next hearing",
@@ -342,7 +342,7 @@
                                                               "examples": [
                                                                 "Bristol Crown Court"
                                                               ],
-                                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                             },
                                                             "reportingRestrictionDetail": {
                                                               "title": "Reporting Restrictions Detail",
@@ -354,7 +354,7 @@
                                                                 "examples": [
                                                                   "This is a reporting restrictions detail"
                                                                 ],
-                                                                "pattern": "^(?!.*<[^>]+>).*$"
+                                                                "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                               }
                                                             }
                                                           }
@@ -375,7 +375,7 @@
                                                           "A & B Solicitors"
                                                         ],
                                                         "default": "",
-                                                        "pattern": "^(?!.*<[^>]+>).*$"
+                                                        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                       },
                                                       "offence": {
                                                         "title": "offence",
@@ -392,7 +392,7 @@
                                                               "examples": [
                                                                 "drink driving"
                                                               ],
-                                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                             },
                                                             "offenceSection": {
                                                               "description": "Section for the offence",
@@ -402,7 +402,7 @@
                                                               "examples": [
                                                                 "dd01-01"
                                                               ],
-                                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                             },
                                                             "decision": {
                                                               "title": "Offence decision",
@@ -417,7 +417,7 @@
                                                                   "examples": [
                                                                     "2024-01-02T23:30:52.123Z"
                                                                   ],
-                                                                  "pattern": "^(?!.*<[^>]+>).*$"
+                                                                  "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                                 },
                                                                 "decisionDetail": {
                                                                   "description": "The detail of the decision",
@@ -427,7 +427,7 @@
                                                                   "examples": [
                                                                     "Court direct trial by jury"
                                                                   ],
-                                                                  "pattern": "^(?!.*<[^>]+>).*$"
+                                                                  "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                                 }
                                                               }
                                                             },
@@ -439,7 +439,7 @@
                                                               "examples": [
                                                                 "Unconditional bail"
                                                               ],
-                                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                             },
                                                             "nextHearingDate": {
                                                               "description": "The date of the next hearing",
@@ -449,7 +449,7 @@
                                                               "examples": [
                                                                 "2024-02-01T10:30:52.123Z"
                                                               ],
-                                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                             },
                                                             "nextHearingLocation": {
                                                               "description": "The location of the next hearing",
@@ -459,7 +459,7 @@
                                                               "examples": [
                                                                 "Bristol Crown Court"
                                                               ],
-                                                              "pattern": "^(?!.*<[^>]+>).*$"
+                                                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                             },
                                                             "reportingRestrictionDetail": {
                                                               "title": "Reporting Restrictions Detail",
@@ -471,7 +471,7 @@
                                                                 "examples": [
                                                                   "This is a reporting restrictions detail"
                                                                 ],
-                                                                "pattern": "^(?!.*<[^>]+>).*$"
+                                                                "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                               }
                                                             }
                                                           }
