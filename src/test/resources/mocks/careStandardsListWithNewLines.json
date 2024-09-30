@@ -1,0 +1,56 @@
+{
+  "document": {
+    "publicationDate": "2022-10-04T09:00:52.123\r\nZ"
+  },
+  "venue": {
+    "venueContact": {
+      "venueTelephone": "01772\r\n 844700",
+      "venueEmail": "court1@moj.gov\r\n.uk"
+    }
+  },
+  "locationDetails": {
+    "jurisdiction": "Tribunal\r\n"
+  },
+  "courtLists": [
+    {
+      "courtHouse": {
+        "courtHouseName": "The Court \r\nHouse",
+        "courtHouseAddress": {
+          "line": [
+            "Court\r\n Street"
+          ],
+          "town": "Court \r\nTown",
+          "county": "Court \r\n County",
+          "postCode": "SK4\r\n 5LE"
+        },
+        "courtRoom": [
+          {
+            "session": [
+              {
+                "sessionStartTime": "2022-10-05T09:00:52.123\r\nZ",
+                "sittings": [
+                  {
+                    "sittingStart": "2022-10-05T11:00:52.123\r\nZ",
+                    "sittingEnd": "2022-10-06T11:30:52.123\r\nZ",
+                    "hearing": [
+                      {
+                        "hearingType": "Remote - \r\nTeams",
+                        "case": [
+                          {
+                            "caseName": "A Vs \r\nB",
+                            "caseNumber": "4568\r\n4548",
+                            "caseSequenceIndicator": "1 of\r\n 2"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

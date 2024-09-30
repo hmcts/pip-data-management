@@ -38,6 +38,8 @@ class EtDailyListTest {
     ValidationService validationService;
 
     private static final String ET_DAILY_LIST_VALID = "mocks/etDailyList.json";
+    private static final String ET_DAILY_LIST_WITH_NEW_LINES =
+        "mocks/etDailyListWithNewLines.json";
     private static final String SOURCE_ARTEFACT_ID = "sourceArtefactId";
     private static final LocalDateTime DISPLAY_FROM = LocalDateTime.now();
     private static final LocalDateTime DISPLAY_TO = LocalDateTime.now();
@@ -90,6 +92,18 @@ class EtDailyListTest {
             assertThatExceptionOfType(PayloadValidationException.class)
                 .as("should fail")
                 .isThrownBy(() -> validationService.validateBody(output, headerGroup));
+        }
+    }
+
+    @Test
+    void testValidateWithSuccessWhenFieldsContainNewLineCharacters() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream(ET_DAILY_LIST_WITH_NEW_LINES)) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            ObjectMapper mapper = new ObjectMapper();
+            String listJson = mapper.readValue(text, JsonNode.class).toString();
+            assertDoesNotThrow(() -> validationService.validateBody(listJson, headerGroup));
         }
     }
 }

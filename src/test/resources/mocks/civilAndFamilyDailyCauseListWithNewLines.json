@@ -1,0 +1,106 @@
+{
+  "document": {
+    "publicationDate": "2022-07-21T14:01:43\r\nZ",
+    "documentName": "This is a \r\ndocument name",
+    "version": "This is a \r\n document version"
+  },
+  "venue": {
+    "venueName": "This is the venue name",
+    "venueAddress": {
+      "line": [
+        "Address Line 1",
+        "\r\n"
+      ],
+      "town": "Venue \r\n Town",
+      "county": "Venue \r\nCounty",
+      "postCode": "AA1 \r\nAA1"
+    },
+    "venueContact": {
+      "venueTelephone": "01234 \r\n123 123",
+      "venueEmail": "a@b.\r\ncom"
+    }
+  },
+  "locationDetails": {
+    "location": "Location Name\r\n",
+    "jurisdiction": "Family court\r\n"
+  },
+  "courtLists": [
+    {
+      "courtHouse": {
+        "courtHouseName": "This is\r\n the site name",
+        "courtHouseContact": {
+          "venueTelephone": "01234 \r\n123 123",
+          "venueEmail": "a@b.com\r\n"
+        },
+        "courtHouseAddress": {
+          "line": [
+            "Address Line\r\n 1"
+          ],
+          "town": "Venue \r\n Town",
+          "county": "Venue \r\n County",
+          "postCode": "AA1 \r\n AA1"
+        },
+        "courtRoom": [
+          {
+            "courtRoomName": "This is the court \r\n room name",
+            "session": [
+              {
+                "sittings": [
+                  {
+                    "sittingStart": "2022-08-19T09:30:00\r\nZ",
+                    "sittingEnd": "2022-08-19T10:55:00\r\nZ",
+                    "hearing": [
+                      {
+                        "hearingType": "Directions\r\n",
+                        "case": [
+                          {
+                            "caseName": "This is a case name\r\n",
+                            "caseNumber": "12341234\r\n",
+                            "caseType": "\r\nnormal",
+                            "caseJurisdictionET": "Family\r\n Law",
+                            "caseSequenceIndicator": "2 \r\nof 3",
+                            "reportingRestrictionDetail": [
+                              "Reporting restriction \r\n 1"
+                            ],
+                            "party": [
+                              {
+                                "partyRole": "RESPONDENT\r\n",
+                                "friendlyRoleName": "Friendly Role Name \r\n",
+                                "organisationDetails": {
+                                  "organisationName": "Respondent\r\n org name"
+                                }
+                              },
+                              {
+                                "partyRole": "APPLICANT_PETITIONER\r\n",
+                                "individualDetails": {
+                                  "individualForenames": "Rep Forenames \r\n1",
+                                  "individualMiddleName": "Rep \r\nMiddlename 1",
+                                  "individualSurname": "Rep \r\nSurname 1",
+                                  "title": "Mr\r\n"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "channel": [
+                      "Teams\r\n",
+                      "Attended\r\n"
+                    ]
+                  }
+                ],
+                "judiciary": [
+                  {
+                    "isPresiding": true,
+                    "johKnownAs": "Judge KnownAs \r\nPresiding"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

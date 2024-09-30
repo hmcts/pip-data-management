@@ -1,0 +1,81 @@
+{
+  "document": {
+    "version": "\r\n",
+    "publicationDate":"2020-09-13T23:30:00\r\nZ",
+    "documentName": "Document Name\r\n"
+  },
+  "venue": {
+    "venueName": "PRESTO\r\nN",
+    "venueContact": {
+      "venueTelephone":"017\r\n72 844700",
+      "venueEmail": "court1@m\r\noj.gov.uk"
+    },
+    "venueAddress": {
+      "line": [
+        "THE LAW COU\r\nRTS",
+        "\r\n",
+        "Main \r\nRoad"
+      ],
+      "town":"Court \r\nTown",
+      "county":"Court \r\nCounty",
+      "postCode": "PR1\r\n 2LL"
+    }
+  },
+  "courtLists": [
+    {
+      "courtHouse": {
+        "courtHouseName": "C\r\nourt A",
+        "courtRoom": [
+          {
+            "courtRoomName": "1\r\n",
+            "session": [
+              {
+                "judiciary": [
+                  {
+                    "johKnownAs": "Judge \r\nKnownAs"
+                  }
+                ],
+                "sittings": [
+                  {
+                    "sittingStart": "2022-07-27T09:40:00\r\nZ",
+                    "sittingEnd": "2022-07-27T10:45:00\r\nZ",
+                    "hearing": [
+                      {
+                        "hearingType": "FHDRA1 \r\n(First Hearing and Dispute Resolution Appointment)",
+                        "case": [
+                          {
+                            "caseNumber": "123\r\n45678",
+                            "reportingRestrictionDetail": [
+                              "Reporting Restrictions \r\nDetail"
+                            ],
+                            "caseSequenceIndicator": "2 \r\nof 3",
+                            "party": [
+                              {
+                                "partyRole":"DEFENDANT\r\n",
+                                "individualDetails":{
+                                  "individualForenames":"\r\nForename 1",
+                                  "individualSurname":"S\r\nurname 1"
+                                }
+                              }
+                            ]
+                          }
+                        ],
+                        "listingDetails": {
+                          "listingRepDeadline":"Listing det\r\nails text"
+                        }
+                      }
+                    ],
+                    "channel": [
+                      "Remote\r\n",
+                      "T\r\neams"
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

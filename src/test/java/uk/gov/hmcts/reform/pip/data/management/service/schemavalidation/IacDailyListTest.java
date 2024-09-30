@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest(classes = {Application.class, AzureBlobConfigurationTestConfiguration.class})
@@ -36,6 +37,8 @@ class IacDailyListTest {
 
     private static final String IAC_DAILY_LIST_VALID_JSON =
         "mocks/iacDailyList.json";
+    private static final String IAC_DAILY_LIST_WITH_NEW_LINES =
+        "mocks/iacDailyListWithNewLines.json";
     private static final String IAC_DAILY_LIST_INVALID_MESSAGE =
         "Invalid magistrates standard list marked as valid";
 
@@ -371,6 +374,19 @@ class IacDailyListTest {
                              validationService.validateBody(listJson, headerGroup),
                          IAC_DAILY_LIST_INVALID_MESSAGE
             );
+        }
+    }
+
+    @Test
+    void testValidateWithSuccessWhenFieldsContainNewLineCharacters() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream(IAC_DAILY_LIST_WITH_NEW_LINES)) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            ObjectMapper mapper = new ObjectMapper();
+            String listJson = mapper.readValue(text, JsonNode.class).toString();
+            assertDoesNotThrow(() -> validationService.validateBody(listJson, headerGroup),
+                               IAC_DAILY_LIST_INVALID_MESSAGE);
         }
     }
 }
