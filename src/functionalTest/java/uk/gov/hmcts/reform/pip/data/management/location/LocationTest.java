@@ -111,21 +111,21 @@ class LocationTest extends FunctionalTestBase {
         List<? extends Location> returnedLocations = Arrays.asList(responseGetAllLocations.getBody()
                                                                        .as(Location[].class));
 
-        boolean correctLocationsReturned = returnedLocations.stream().anyMatch((location) ->
-                                                                                   TEST_LOCATION_NAME_ONE.equals(
-                                                                                       location.getName())
-                                                                                    && TEST_LOCATION_ID_ONE.equals(
-                                                                                       location.getLocationId())
-                                                                                   || TEST_LOCATION_NAME_TWO.equals(
-                                                                                       location.getName())
-                                                                                    && TEST_LOCATION_ID_TWO.equals(
-                                                                                       location.getLocationId())
-                                                                                    || TEST_LOCATION_NAME_THREE.equals(
-                                                                                       location.getName())
-                                                                                    && TEST_LOCATION_ID_THREE.equals(
-                                                                                       location.getLocationId())
+        boolean testCourtOneReturned = returnedLocations.stream().anyMatch((location) -> TEST_LOCATION_NAME_ONE.equals(
+            location.getName()) && TEST_LOCATION_ID_ONE.equals(location.getLocationId())
+
         );
-        assertTrue(correctLocationsReturned,"Should return all locations");
+        boolean testCourtTwoReturned = returnedLocations.stream().anyMatch((location) -> TEST_LOCATION_NAME_TWO.equals(
+            location.getName()) && TEST_LOCATION_ID_TWO.equals(location.getLocationId())
+
+        );
+        boolean testCourtThreeReturned = returnedLocations.stream().anyMatch((location) ->
+                                                                                 TEST_LOCATION_NAME_THREE.equals(
+            location.getName()) && TEST_LOCATION_ID_THREE.equals(location.getLocationId())
+        );
+        assertTrue(testCourtOneReturned,"Should return " + TEST_LOCATION_NAME_ONE);
+        assertTrue(testCourtTwoReturned,"Should return " + TEST_LOCATION_NAME_TWO);
+        assertTrue(testCourtThreeReturned,"Should return " + TEST_LOCATION_NAME_THREE);
 
         final Response responseGetLocationByName = doGetRequest(
             GET_LOCATION_BY_NAME_URL,
