@@ -44,3 +44,5 @@ java:
     maxReplicas: 5
     minReplicas: 2
     targetCPUUtilizationPercentage: 80
+blobstorage:
+  enabled: false

@@ -1,0 +1,105 @@
+{
+  "document": {
+    "publicationDate": "2022-07-21T14:01:43\r\nZ",
+    "documentName": "This is a document \r\nname",
+    "version": "This is a d\r\nocument version"
+  },
+  "venue": {
+    "venueName": "This is \r\nthe venue name",
+    "venueAddress": {
+      "line": [
+        "Add\r\nress Line 1",
+        "\r\n"
+      ],
+      "town": "Venue\r\n Town",
+      "county": "Venue\r\n County",
+      "postCode": "AA1\r\n AA1"
+    },
+    "venueContact": {
+      "venueTelephone": "01234 \r\n123 123",
+      "venueEmail": "a@b.co\r\nm"
+    }
+  },
+  "courtLists": [
+    {
+      "courtHouse": {
+        "courtHouseName": "This is the\r\n site name",
+        "courtHouseContact": {
+          "venueTelephone": "01\r\n234 123 123",
+          "venueEmail": "a@b.co\r\nm"
+        },
+        "courtHouseAddress": {
+          "line": [
+            "Address \r\nLine 1",
+            "\r\n"
+          ],
+          "town": "Venue \r\nTown",
+          "county": "Venu\r\ne County",
+          "postCode": "AA\r\n1 AA1"
+        },
+        "courtRoom": [
+          {
+            "courtRoomName": "This is the court\r\n room name",
+            "session": [
+              {
+                "sessionChannel": [
+                  "VIDEO HEARING"
+                ],
+                "sittings": [
+                  {
+                    "sittingStart": "2022-08-19T09:30:00\r\nZ",
+                    "sittingEnd": "2022-08-19T10:55:00\r\nZ",
+                    "hearing": [
+                      {
+                        "hearingType": "Direction\r\ns",
+                        "case": [
+                          {
+                            "caseName": "This is a \r\ncase name",
+                            "caseNumber": "12341\r\n234",
+                            "caseType": "normal\r\n",
+                            "caseSequenceIndicator": "2\r\n of 3",
+                            "reportingRestrictionDetail": [
+                              "Reporting restriction \r\n1"
+                            ],
+                            "party": [
+                              {
+                                "partyRole": "RESPONDENT\r\n",
+                                "organisationDetails": {
+                                  "organisationName": "Respondent \r\norg name"
+                                }
+                              },
+                              {
+                                "partyRole": "\r\nAPPLICANT_PETITIONER",
+                                "friendlyRoleName": "Legal\r\n Advisor",
+                                "individualDetails": {
+                                  "individualForenames": "Rep\r\n Forenames 1",
+                                  "individualMiddleName": "\r\nRep Middlename 1",
+                                  "individualSurname": "Rep \r\nSurname 1",
+                                  "title": "Mr\r\n"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "channel": [
+                      "Teams\r\n",
+                      "Attend\r\ned"
+                    ]
+                  }
+                ],
+                "judiciary": [
+                  {
+                    "isPresiding": true,
+                    "johKnownAs": "Judge \r\nKnownAs Presiding"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

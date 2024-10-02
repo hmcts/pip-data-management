@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest(classes = {Application.class, AzureBlobConfigurationTestConfiguration.class})
@@ -37,7 +38,8 @@ class OpaPublicListTest {
 
     private static final String OPA_PUBLIC_LIST_VALID_JSON =
         "mocks/opaPublicList.json";
-
+    private static final String OPA_PUBLIC_LIST_WITH_NEW_LINES =
+        "mocks/opaPublicListWithNewLines.json";
     private static final String OPA_PUBLIC_LIST_INVALID_MESSAGE =
         "Invalid OPA public list marked as valid";
 
@@ -316,6 +318,19 @@ class OpaPublicListTest {
                              validationService.validateBody(listJson,
                                                             headerGroup),
                          OPA_PUBLIC_LIST_INVALID_MESSAGE);
+        }
+    }
+
+    @Test
+    void testValidateWithSuccessWhenFieldsContainNewLineCharacters() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream(OPA_PUBLIC_LIST_WITH_NEW_LINES)) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            ObjectMapper mapper = new ObjectMapper();
+            String listJson = mapper.readValue(text, JsonNode.class).toString();
+            assertDoesNotThrow(() -> validationService.validateBody(listJson, headerGroup),
+                               OPA_PUBLIC_LIST_INVALID_MESSAGE);
         }
     }
 }

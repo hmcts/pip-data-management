@@ -1,0 +1,60 @@
+{
+  "document": {
+    "publicationDate": "2022-02-13T09:30:52.123\r\nZ"
+  },
+  "venue": {
+    "venueName": "Regional Venue \r\nSouth",
+    "venueContact": {
+      "venueEmail": "a@b.com\r\n",
+      "venueTelephone": "+44 \r\n1234 1234 1234"
+    }
+  },
+  "courtLists": [{
+    "courtHouse": {
+      "courtHouseName": "Leicester \r\nCrown Court",
+      "courtRoom": [{
+        "courtRoomName": "C\r\nourt 1",
+        "session": [{
+          "sittings": [{
+            "sittingStart": "2022-02-13T09:30:32.123\r\nZ",
+            "sittingEnd": "2022-02-13T\r\n11:30:32.123Z",
+            "hearing": [{
+              "case": [{
+                "caseNumber": "123412\r\n34",
+                "caseSequenceIndicator": "2 of\r\n 3",
+                "party": [
+                  {
+                    "partyRole": "APPLICANT_PETITIONER",
+                    "individualDetails": {
+                      "title": "Mr\r\n",
+                      "individualForenames": "Te\r\nst forename",
+                      "individualSurname": "Test \r\nSurname"
+                    }
+                  },
+                  {
+                    "partyRole": "RESPONDENT",
+                    "organisationDetails": {
+                      "organisationName": "Organisation \r\nName"
+                    }
+                  }
+                ]
+              }],
+              "hearingType": "This is a hearing \r\ntype"
+            }],
+            "channel": [
+              "This is a sitting \r\nchannel"
+            ]
+          }]
+        }]
+      }],
+      "courtHouseAddress": {
+        "town": "Leiceste\r\nr",
+        "postCode": "SW\r\n1H 9AJ",
+        "line": [
+          "5 Test\r\n Street"
+        ],
+        "county": "\r\n"
+      }
+    }
+  }]
+}

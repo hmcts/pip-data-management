@@ -1,0 +1,68 @@
+{
+  "document": {
+    "version": "Version \r\n",
+    "publicationDate": "2023-08-21T01:01:01\r\nZ",
+    "documentName": "Document Name\r\n"
+  },
+  "venue": {
+    "venueName": "This is the venue \r\n name",
+    "venueContact": {
+      "venueTelephone": "Test\r\n Telephone",
+      "venueEmail": "court1@moj.gov.uk\r\n"
+    },
+    "venueAddress": {
+      "line": [
+        "The venue line 1\r\n"
+      ],
+      "town": "town\r\n name",
+      "county": "county\r\n name",
+      "postCode": "AAA\r\n AAA"
+    }
+  },
+  "courtLists": [{
+    "courtHouse": {
+      "courtHouseName": "This is a \r\ncourt house name",
+      "courtHouseAddress": {
+        "line": [
+          "Address \r\nLine 1"
+        ],
+        "postCode": "AAA\r\n AAB"
+      },
+      "courtRoom": [
+        {
+        "courtRoomName": "Court\r\nroom 1",
+        "session": [{
+          "sessionChannel": [
+            "This is\r\n a session channel"
+          ],
+          "judiciary": [{
+              "johKnownAs": "Judge KnownAs \r\nPresiding",
+              "isPresiding": true
+            }
+          ],
+          "sittings": [
+            {
+              "sittingStart": "2023-08-21T01:01:01\r\nZ",
+              "sittingEnd": "2023-08-21T02:01:01\r\nZ",
+              "hearing": [
+                {
+                  "hearingType": "This is hearing type\r\n 1",
+                  "case": [
+                    {
+                      "caseName": "This is case name \r\n1",
+                      "caseNumber": "This is case\r\n number 1",
+                      "caseSequenceIndicator": "1 \r\nof 2",
+                      "caseType": "This is a case\r\n type"
+                    }
+                  ]
+                }
+              ],
+              "channel": [
+                "Channel A\r\n"
+              ]
+            }]
+        }]
+      }]
+    }
+  }]
+}

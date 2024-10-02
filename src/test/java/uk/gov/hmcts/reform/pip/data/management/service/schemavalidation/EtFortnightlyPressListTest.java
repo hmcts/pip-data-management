@@ -39,6 +39,8 @@ class EtFortnightlyPressListTest {
 
     private static final String ET_FORTNIGHTLY_PRESS_LIST_VALID_JSON =
         "mocks/etFortnightlyPressList.json";
+    private static final String ET_FORTNIGHTLY_PRESS_LIST_WITH_NEW_LINES =
+        "mocks/etFortnightlyPressListWithNewLines.json";
     private static final String SOURCE_ARTEFACT_ID = "sourceArtefactId";
     private static final LocalDateTime DISPLAY_FROM = LocalDateTime.now();
     private static final LocalDateTime DISPLAY_TO = LocalDateTime.now();
@@ -100,6 +102,18 @@ class EtFortnightlyPressListTest {
             assertThatExceptionOfType(PayloadValidationException.class)
                 .as("should fail")
                 .isThrownBy(() -> validationService.validateBody(output, headerGroup));
+        }
+    }
+
+    @Test
+    void testValidateWithSuccessWhenFieldsContainNewLineCharacters() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream(ET_FORTNIGHTLY_PRESS_LIST_WITH_NEW_LINES)) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            ObjectMapper mapper = new ObjectMapper();
+            String listJson = mapper.readValue(text, JsonNode.class).toString();
+            assertDoesNotThrow(() -> validationService.validateBody(listJson, headerGroup));
         }
     }
 }

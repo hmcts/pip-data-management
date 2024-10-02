@@ -1,0 +1,107 @@
+{
+  "document": {
+    "version": "\r\n",
+    "publicationDate":"2020-09-13T23:30:00\r\nZ",
+    "documentName": "Document Name \r\n"
+  },
+  "venue": {
+    "venueName": "PRESTON\r\n",
+    "venueContact": {
+      "venueTelephone":"01772 844700\r\n",
+      "venueEmail": "court1@moj.gov.uk\r\n"
+    },
+    "venueAddress": {
+      "line": [
+        "THE LAW COURTS\r\n"
+      ],
+      "town": "Court\r\n Town",
+      "county": "Court\r\n County",
+      "postCode": "PR1\r\n 2LL"
+    }
+  },
+  "locationDetails": {
+    "location": "Location Name\r\n",
+    "jurisdiction": "Family court\r\n"
+  },
+  "courtLists": [
+    {
+      "courtHouse": {
+        "courtHouseName": "Court\r\n A",
+        "courtHouseAddress": {
+          "line": [
+            "Address Line\r\n 1",
+            "Address\r\n Line 2"
+          ],
+          "town": "Town\r\n A",
+          "county": "County A\r\n",
+          "postCode": "AA1 AA1\r\n"
+        },
+        "courtRoom": [
+          {
+            "courtRoomName": "1\r\n",
+            "session": [
+              {
+                "judiciary": [
+                  {
+                    "johKnownAs": "Judge KnownAs\r\n",
+                    "isPresiding": false
+                  }
+                ],
+                "sittings": [
+                  {
+                    "sittingStart": "2022-07-27T09:40:00\r\nZ",
+                    "sittingEnd": "2022-07-27T10:45:00\r\nZ",
+                    "hearing": [
+                      {
+                        "hearingType": "FHDRA1 \r\n(First Hearing and Dispute Resolution Appointment)",
+                        "case": [
+                          {
+                            "caseNumber": "1234\r\n5678",
+                            "caseLinked":[
+                              {
+                                "caseId": "caseid111\r\n",
+                                "name": "\r\ncasename111"
+                              }
+                            ],
+                            "reportingRestrictionDetail": [
+                              "This is a\r\n reporting restriction detail"
+                            ],
+                            "party": [
+                              {
+                                "partyRole": "PROSECUTING_AUTHORITY\r\n",
+                                "friendlyRoleName": "Friendly Role Name \r\n",
+                                "organisationDetails": {
+                                  "organisationName": "\r\nPro_Auth"
+                                }
+                              },
+                              {
+                                "partyRole":"DEFENDANT\r\n",
+                                "individualDetails":{
+                                  "individualForenames":"\r\nForename 1",
+                                  "individualMiddleName":"Middlename\r\n 1",
+                                  "title":"Title\r\n 1",
+                                  "individualSurname":"Surname\r\n 1"
+                                }
+                              }
+                            ]
+                          }
+                        ],
+                        "listingDetails": {
+                          "listingRepDeadline":"Listing details text\r\n"
+                        }
+                      }
+                    ],
+                    "channel": [
+                      "Remote\r\n",
+                      "Teams\r\n"
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

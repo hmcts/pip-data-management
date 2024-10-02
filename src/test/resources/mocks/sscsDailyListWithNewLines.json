@@ -1,0 +1,83 @@
+{
+  "document": {
+    "publicationDate": "2024-02-23T01:01:01\r\nZ"
+  },
+  "venue": {
+    "venueName": "This is the\r\n venue name",
+    "venueContact": {
+      "venueTelephone": "0177\r\n2 844700",
+      "venueEmail": "court1@m\r\noj.gov.uk"
+    }
+  },
+  "courtLists": [
+    {
+      "courtHouse": {
+        "courtHouseName": "Test \r\ncourt house name",
+        "courtHouseContact": {
+          "venueTelephone": "0123\r\n4 123 123",
+          "venueEmail": "a@b.co\r\nm"
+        },
+        "courtRoom": [
+          {
+            "courtRoomName": "1\r\n",
+            "session": [
+              {
+                "sessionChannel": [
+                  "VIDEO HEARING\r\n"
+                ],
+                "sittings": [
+                  {
+                    "sittingStart": "\r\n2024-02-23T01:01:01\r\nZ",
+                    "hearing": [
+                      {
+                        "case": [
+                          {
+                            "caseNumber": "12341\r\n234",
+                            "party": [
+                              {
+                                "partyRole": "APPLICANT_PETITIONER\r\n",
+                                "individualDetails": {
+                                  "individualSurname": "Surname\r\n"
+                                }
+                              },
+                              {
+                                "partyRole": "APPLICANT_PETITIONER_REPRESENTATIVE\r\n",
+                                "friendlyRoleName": "Legal Advisor\r\n",
+                                "individualDetails": {
+                                  "individualForenames": "Individual\r\n Forenames",
+                                  "individualMiddleName": "Indiv\r\nidual Middlename",
+                                  "individualSurname": "Individu\r\nal Surname",
+                                  "title": "Mr\r\n"
+                                }
+                              },
+                              {
+                                "partyRole": "RESPONDENT\r\n",
+                                "organisationDetails": {
+                                  "organisationName": "Respondent\r\n Organisation"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "channel": [
+                      "Teams\r\n",
+                      "\r\nAttended"
+                    ]
+                  }
+                ],
+                "judiciary": [
+                  {
+                    "johKnownAs": "Judge TestName\r\n Presiding",
+                    "isPresiding": true
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

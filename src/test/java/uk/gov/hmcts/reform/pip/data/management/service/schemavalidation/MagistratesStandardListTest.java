@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest(classes = {Application.class, AzureBlobConfigurationTestConfiguration.class})
@@ -37,6 +38,8 @@ class MagistratesStandardListTest {
 
     private static final String MAGISTRATES_STANDARD_LIST_VALID_JSON =
         "mocks/magistratesStandardList.json";
+    private static final String MAGISTRATES_STANDARD_LIST_WITH_NEW_LINES =
+        "mocks/magistratesStandardListWithNewLines.json";
     private static final String MAGISTRATES_STANDARD_LIST_INVALID_MESSAGE =
         "Invalid magistrates standard list marked as valid";
 
@@ -336,6 +339,19 @@ class MagistratesStandardListTest {
             assertThrows(PayloadValidationException.class, () ->
                              validationService.validateBody(listJson, headerGroup),
                          MAGISTRATES_STANDARD_LIST_INVALID_MESSAGE);
+        }
+    }
+
+    @Test
+    void testValidateWithSuccessWhenFieldsContainNewLineCharacters() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream(MAGISTRATES_STANDARD_LIST_WITH_NEW_LINES)) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            ObjectMapper mapper = new ObjectMapper();
+            String listJson = mapper.readValue(text, JsonNode.class).toString();
+            assertDoesNotThrow(() -> validationService.validateBody(listJson, headerGroup),
+                               MAGISTRATES_STANDARD_LIST_INVALID_MESSAGE);
         }
     }
 }

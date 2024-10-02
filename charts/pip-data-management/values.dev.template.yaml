@@ -28,6 +28,7 @@ java:
       key: accessKey
   devApplicationInsightsInstrumentKeyName: AZURE_APPLICATIONINSIGHTS_INSTRUMENTATIONKEY
 blobstorage:
+  enabled: true
   resourceGroup: pip-aso-dev-rg
   setup:
     containers:

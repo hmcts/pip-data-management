@@ -1,0 +1,85 @@
+{
+  "document": {
+    "publicationDate": "2022-02-14T10:30:52.123/r/nZ"
+  },
+  "locationDetails": {
+    "region": {
+      "regionalJOH": [
+        {
+          "johKnownAs": "Judge KnownAs/r/n Regional"
+        }
+      ],
+      "name": "Regional COP\r\n Court"
+    },
+    "jurisdiction": "Criminal\r\n"
+  },
+  "venue": {
+    "venueName": "Regional Venue\r\n South",
+    "venueContact": {
+      "venueEmail": "a@b.com\r\n",
+      "venueTelephone": "+44 1234\r\n 1234 1234"
+    },
+    "venueAddress": {
+      "postCode": "AA1 \r\nAA1",
+      "county": "Lancashire\r\n",
+      "town": "Town\r\n",
+      "line": ["Address Line 1\r\n", "Address \r\nLine 2"]
+    }
+  },
+  "courtLists": [
+    {
+      "courtHouse": {
+        "courtHouseName": "Regional Venue \r\nNorth",
+        "courtHouseContact": {
+          "venueEmail": "a@c.com\r\n",
+          "venueTelephone": "+44 1234 1234 \r\n1234"
+        },
+        "courtRoom": [
+          {
+            "courtRoomName": "Room 1\r\n",
+            "session": [
+              {
+                "sittings": [
+                  {
+                    "sittingStart": "2022-02-13T14:30:52.123\r\nZ",
+                    "sittingEnd": "2022-02-13T15:30:52.123\r\nZ",
+                    "hearing": [
+                      {
+                        "case": [
+                          {
+                            "caseNumber": "1234\r\n1234",
+                            "caseSuppressionName": "ThisIsACaseSuppressionName\r\n",
+                            "caseSequenceIndicator": "1 of \r\n2",
+                            "reportingRestrictionDetail": [
+                              "Reporting restriction\r\n 1"
+                            ]
+                          }
+                        ],
+                        "hearingType": "Criminal\r\n"
+                      }
+                    ],
+                    "channel": [
+                      "Teams\r\n"
+                    ]
+                  }
+                ],
+                "judiciary": [
+                  {
+                    "johKnownAs": "Judge KnownAs \r\nPresiding",
+                    "isPresiding": true
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "courtHouseAddress": {
+          "town": "Address\r\n Town",
+          "county": "Lancashire\r\n",
+          "postCode": "AA1 \r\nAA1",
+          "line": ["Address Line\r\n 1", "\r\nAddress Line 2"]
+        }
+      }
+    }
+  ]
+}

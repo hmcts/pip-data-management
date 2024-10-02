@@ -1,0 +1,98 @@
+{
+  "document": {
+    "publicationDate": "2024-01-09T23:30:52.123\r\nZ",
+    "documentName": "This is a \r\ndocument name",
+    "version": "1.0\r\n"
+  },
+  "venue": {
+    "venueName": "This is\r\n the venue name",
+    "venueContact": {
+      "venueEmail": "a@b.\r\ncom",
+      "venueTelephone": "+44 \r\n1234 1234 1234"
+    },
+    "venueAddress": {
+      "line": [
+        "Address Line \r\n1",
+        "Address\r\n Line 2"
+      ],
+      "town": "\r\nTown",
+      "county": "\r\nCounty",
+      "postCode": "AA\r\n1 1AA"
+    }
+  },
+  "courtLists": [
+    {
+      "courtHouse": {
+        "courtRoom": [
+          {
+            "session": [
+              {
+                "sittings": [
+                  {
+                    "hearing": [
+                      {
+                        "case": [
+                          {
+                            "caseUrn": "\r\nURN123",
+                            "party": [
+                              {
+                                "partyRole": "DEFENDANT",
+                                "individualDetails": {
+                                  "individualForenames": "\r\nForename",
+                                  "individualMiddleName": "MiddleName\r\n",
+                                  "individualSurname": "Surname\r\n",
+                                  "offence": [
+                                    {
+                                      "offenceTitle": "\r\nOffence title 1",
+                                      "offenceSection": "Offence\r\n section 1",
+                                      "decision": {
+                                        "decisionDate": "\r\n2024-01-05T08:00:00.123Z",
+                                        "decisionDetail": "Decision \r\ndetail 1"
+                                      },
+                                      "bailStatus": "Unconditional \r\nbail",
+                                      "nextHearingDate": "2024-02-05T09:00:00.123\r\nZ",
+                                      "nextHearingLocation": "Hearing location\r\n 1",
+                                      "reportingRestrictionDetail": [
+                                        "Reporting restriction detail 1\r\n"
+                                      ]
+                                    }
+                                  ]
+                                }
+                              },
+                              {
+                                "partyRole": "DEFENDANT",
+                                "organisationDetails": {
+                                  "organisationName": "\r\nOrganisation name",
+                                  "offence": [
+                                    {
+                                      "offenceTitle": "Offence \r\ntitle 2A",
+                                      "offenceSection": "Offenc\r\ne section 2A",
+                                      "decision": {
+                                        "decisionDate": "2024-01-07T09:0\r\n0:00.123Z",
+                                        "decisionDetail": "Decision \r\ndetail 2A"
+                                      },
+                                      "bailStatus": "Unconditional \r\nbail",
+                                      "nextHearingDate": "2024-02-10T09:00:00.123\r\nZ",
+                                      "nextHearingLocation": "Hearing location\r\n 2",
+                                      "reportingRestrictionDetail": [
+                                        "Reporting restriction\r\n detail 2"
+                                      ]
+                                    }
+                                  ]
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
