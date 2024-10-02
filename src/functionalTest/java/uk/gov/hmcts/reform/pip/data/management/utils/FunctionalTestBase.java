@@ -47,6 +47,17 @@ public class FunctionalTestBase {
             .thenReturn();
     }
 
+    protected Response doGetRequest(final String path, final Map<String, String> additionalHeaders,
+                                    Map<String, Object> queryParams) {
+        return given()
+            .relaxedHTTPSValidation()
+            .headers(getRequestHeaders(additionalHeaders))
+            .queryParams(queryParams)
+            .when()
+            .get(path)
+            .thenReturn();
+    }
+
     protected Response doPostRequest(final String path, final Map<String, String> additionalHeaders,
                                      final String body) {
         return given()
@@ -74,17 +85,6 @@ public class FunctionalTestBase {
         return given()
             .relaxedHTTPSValidation()
             .headers(getRequestHeaders(additionalHeaders))
-            .when()
-            .delete(path)
-            .thenReturn();
-    }
-
-    protected Response doDeleteRequest(final String path, final Map<String, String> additionalHeaders,
-                                       final String body) {
-        return given()
-            .relaxedHTTPSValidation()
-            .headers(getRequestHeaders(additionalHeaders))
-            .body(body)
             .when()
             .delete(path)
             .thenReturn();
