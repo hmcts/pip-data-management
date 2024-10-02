@@ -22,8 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.github.dockerjava.zerodep.shaded.org.apache.hc.core5.http.HttpHeaders.AUTHORIZATION;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpStatus.OK;
 import static uk.gov.hmcts.reform.pip.data.management.utils.TestUtil.BEARER;
 
@@ -108,24 +107,21 @@ class LocationTest extends FunctionalTestBase {
             headerMap
         );
         assertThat(responseGetAllLocations.getStatusCode()).isEqualTo(OK.value());
-        List<? extends Location> returnedLocations = Arrays.asList(responseGetAllLocations.getBody()
+        List<Location> returnedLocations = Arrays.asList(responseGetAllLocations.getBody()
                                                                        .as(Location[].class));
 
-        boolean testCourtOneReturned = returnedLocations.stream().anyMatch((location) -> TEST_LOCATION_NAME_ONE.equals(
-            location.getName()) && TEST_LOCATION_ID_ONE.equals(location.getLocationId())
-
+        assertThat(returnedLocations).anyMatch(
+            location -> TEST_LOCATION_NAME_ONE.equals(location.getName())
+                && TEST_LOCATION_ID_ONE.equals(location.getLocationId())
         );
-        boolean testCourtTwoReturned = returnedLocations.stream().anyMatch((location) -> TEST_LOCATION_NAME_TWO.equals(
-            location.getName()) && TEST_LOCATION_ID_TWO.equals(location.getLocationId())
-
+        assertThat(returnedLocations).anyMatch(
+            location -> TEST_LOCATION_NAME_TWO.equals(location.getName())
+                && TEST_LOCATION_ID_TWO.equals(location.getLocationId())
         );
-        boolean testCourtThreeReturned = returnedLocations.stream().anyMatch((location) ->
-                                                                                 TEST_LOCATION_NAME_THREE.equals(
-            location.getName()) && TEST_LOCATION_ID_THREE.equals(location.getLocationId())
+        assertThat(returnedLocations).anyMatch(
+            location -> TEST_LOCATION_NAME_THREE.equals(location.getName())
+                && TEST_LOCATION_ID_THREE.equals(location.getLocationId())
         );
-        assertTrue(testCourtOneReturned,"Should return " + TEST_LOCATION_NAME_ONE);
-        assertTrue(testCourtTwoReturned,"Should return " + TEST_LOCATION_NAME_TWO);
-        assertTrue(testCourtThreeReturned,"Should return " + TEST_LOCATION_NAME_THREE);
 
         final Response responseGetLocationByName = doGetRequest(
             GET_LOCATION_BY_NAME_URL,
