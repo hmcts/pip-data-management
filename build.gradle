@@ -225,7 +225,7 @@ dependencies {
   implementation group: 'org.postgresql', name: 'postgresql', version: '42.7.3'
 
   implementation group: 'com.github.hmcts', name: 'pip-data-models', version: '2.1.30'
-  implementation 'com.networknt:json-schema-validator:1.5.1'
+  implementation 'com.networknt:json-schema-validator:1.5.2'
   implementation group: 'com.google.guava', name: 'guava', version: '33.2.1-jre'
   implementation group: 'org.apache.poi', name: 'poi-ooxml', version: '5.3.0'
   implementation group: 'com.openhtmltopdf', name: 'openhtmltopdf-pdfbox', version: '1.0.10'
