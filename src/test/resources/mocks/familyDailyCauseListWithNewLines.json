@@ -1,6 +1,6 @@
 {
   "document": {
-    "publicationDate": "2022-07-21T14:01:43\r\nZ",
+    "publicationDate": "2022-07-21T14:01:43Z",
     "documentName": "This is a document \r\nname",
     "version": "This is a d\r\nocument version"
   },
@@ -47,8 +47,8 @@
                 ],
                 "sittings": [
                   {
-                    "sittingStart": "2022-08-19T09:30:00\r\nZ",
-                    "sittingEnd": "2022-08-19T10:55:00\r\nZ",
+                    "sittingStart": "2022-08-19T09:30:00Z",
+                    "sittingEnd": "2022-08-19T10:55:00Z",
                     "hearing": [
                       {
                         "hearingType": "Direction\r\ns",

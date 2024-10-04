@@ -30,7 +30,6 @@
         {
         "courtRoomName": "Courtroom 1",
         "session": [{
-          "sessionStartTime":"",
           "sessionChannel": [
             "This is a session channel"
           ],
@@ -115,7 +114,6 @@
       {
         "courtRoomName": "Courtroom 2",
         "session": [{
-          "sessionStartTime": "",
           "sessionChannel": [
             "This is a session channel"
           ],

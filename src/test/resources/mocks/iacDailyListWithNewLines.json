@@ -1,6 +1,6 @@
 {
   "document": {
-    "publicationDate": "2022-10-20T20:00:00.001\r\nZ"
+    "publicationDate": "2022-10-20T20:00:00.001Z"
   },
   "venue": {
     "venueName": "This is the \r\nvenue name"
@@ -27,8 +27,8 @@
                 ],
                 "sittings": [
                   {
-                    "sittingStart": "2020-10-20T20:00:00.001\r\nZ",
-                    "sittingEnd": "2020-02-20T22:00:00.001\r\nZ",
+                    "sittingStart": "2020-10-20T20:00:00.001Z",
+                    "sittingEnd": "2020-02-20T22:00:00.001Z",
                     "hearing": [
                       {
                         "hearingType": "Directions\r\n",

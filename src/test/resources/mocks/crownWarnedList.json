@@ -21,7 +21,6 @@
             "courtRoomName": "Room 1",
             "session": [
               {
-                "sessionStartTime": "",
                 "sittings": [
                   {
                     "sittingStart": "2022-07-27T09:40:17.496Z",
@@ -202,7 +201,6 @@
             "courtRoomName": "to be allocated",
             "session": [
               {
-                "sessionStartTime": "",
                 "sittings": [
                   {
                     "sittingStart": "2022-07-27T09:40:17.496Z",
@@ -369,7 +367,6 @@
             "courtRoomName": "1",
             "session": [
               {
-                "sessionStartTime": "",
                 "sittings": [
                   {
                     "sittingStart": "2022-01-27T09:00:17.496Z",

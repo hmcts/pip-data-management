@@ -103,7 +103,7 @@
           "examples": [
             "2016-09-13T23:30:52.123Z"
           ],
-          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}([.]\\d{1,9})?Z$"
         },
         "version": {
           "title": "Version",
@@ -300,7 +300,7 @@
                                                                   "examples": [
                                                                     "2024-01-02T23:30:52.123Z"
                                                                   ],
-                                                                  "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+                                                                  "pattern": "^(\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}([.]\\d{1,9})?Z)?$"
                                                                 },
                                                                 "decisionDetail": {
                                                                   "description": "The detail of the decision",
@@ -332,7 +332,7 @@
                                                               "examples": [
                                                                 "2024-02-01T10:30:52.123Z"
                                                               ],
-                                                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+                                                              "pattern": "^(\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}([.]\\d{1,9})?Z)?$"
                                                             },
                                                             "nextHearingLocation": {
                                                               "description": "The location of the next hearing",
@@ -417,7 +417,7 @@
                                                                   "examples": [
                                                                     "2024-01-02T23:30:52.123Z"
                                                                   ],
-                                                                  "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+                                                                  "pattern": "^(\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}([.]\\d{1,9})?Z)?$"
                                                                 },
                                                                 "decisionDetail": {
                                                                   "description": "The detail of the decision",
@@ -449,7 +449,7 @@
                                                               "examples": [
                                                                 "2024-02-01T10:30:52.123Z"
                                                               ],
-                                                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+                                                              "pattern": "^(\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}([.]\\d{1,9})?Z)?$"
                                                             },
                                                             "nextHearingLocation": {
                                                               "description": "The location of the next hearing",

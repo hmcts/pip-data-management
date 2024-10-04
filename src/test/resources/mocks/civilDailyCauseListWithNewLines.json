@@ -1,7 +1,7 @@
 {
   "document": {
     "version": "Version \r\n",
-    "publicationDate": "2023-08-21T01:01:01\r\nZ",
+    "publicationDate": "2023-08-21T01:01:01Z",
     "documentName": "Document Name\r\n"
   },
   "venue": {
@@ -42,8 +42,8 @@
           ],
           "sittings": [
             {
-              "sittingStart": "2023-08-21T01:01:01\r\nZ",
-              "sittingEnd": "2023-08-21T02:01:01\r\nZ",
+              "sittingStart": "2023-08-21T01:01:01Z",
+              "sittingEnd": "2023-08-21T02:01:01Z",
               "hearing": [
                 {
                   "hearingType": "This is hearing type\r\n 1",

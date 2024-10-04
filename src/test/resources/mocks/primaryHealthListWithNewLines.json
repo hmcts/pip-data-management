@@ -1,6 +1,6 @@
 {
   "document": {
-    "publicationDate": "2022-10-04T09:00:52.123\r\nZ"
+    "publicationDate": "2022-10-04T09:00:52.123Z"
   },
   "venue": {
     "venueContact": {
@@ -27,11 +27,11 @@
           {
             "session": [
               {
-                "sessionStartTime": "2022-10-05T09:00:52.123\r\nZ",
+                "sessionStartTime": "2022-10-05T09:00:52.123Z",
                 "sittings": [
                   {
-                    "sittingStart": "2022-10-05T11:00:52.123\r\nZ",
-                    "sittingEnd": "2022-10-06T11:30:52.123\r\nZ",
+                    "sittingStart": "2022-10-05T11:00:52.123Z",
+                    "sittingEnd": "2022-10-06T11:30:52.123Z",
                     "hearing": [
                       {
                         "hearingType": "Remote -\r\n Teams",

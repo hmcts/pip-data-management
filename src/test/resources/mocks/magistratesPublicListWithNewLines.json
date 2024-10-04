@@ -1,7 +1,7 @@
 {
   "document": {
     "version": "\r\n",
-    "publicationDate":"2020-09-13T23:30:00\r\nZ",
+    "publicationDate":"2020-09-13T23:30:00Z",
     "documentName": "Document Name\r\n"
   },
   "venue": {
@@ -37,8 +37,8 @@
                 ],
                 "sittings": [
                   {
-                    "sittingStart": "2022-07-27T09:40:00\r\nZ",
-                    "sittingEnd": "2022-07-27T10:45:00\r\nZ",
+                    "sittingStart": "2022-07-27T09:40:00Z",
+                    "sittingEnd": "2022-07-27T10:45:00Z",
                     "hearing": [
                       {
                         "hearingType": "FHDRA1 \r\n(First Hearing and Dispute Resolution Appointment)",
