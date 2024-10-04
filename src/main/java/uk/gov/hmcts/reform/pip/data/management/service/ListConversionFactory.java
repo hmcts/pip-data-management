@@ -138,8 +138,6 @@ public class ListConversionFactory {
         }
     }
 
-
-
     public Optional<FileConverter> getFileConverter(ListType listType) {
         if (LIST_MAP.containsKey(listType) && LIST_MAP.get(listType).getFileConverter() != null) {
             return Optional.of(LIST_MAP.get(listType).getFileConverter());

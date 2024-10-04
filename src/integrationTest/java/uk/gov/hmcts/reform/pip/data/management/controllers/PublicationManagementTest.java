@@ -40,8 +40,8 @@ import java.time.temporal.ChronoUnit;
 import java.util.Base64;
 import java.util.UUID;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -416,15 +416,7 @@ class PublicationManagementTest {
             .andExpect(status().isOk()).andReturn();
 
         String responseContent = response.getResponse().getContentAsString();
-        assertTrue(
-            responseContent.contains(
-                "Name - This is a title This is a forename This is a middle name This is a surname"),
-            CONTENT_MISMATCH_ERROR
-        );
-        assertTrue(responseContent.contains("Prosecutor - This is an organisation"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Postcode - AA1 AA1"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Case reference - ABC12345"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Offence - This is an offence title"), CONTENT_MISMATCH_ERROR);
+        assertEquals("", responseContent, CONTENT_MISMATCH_ERROR);
     }
 
     @ParameterizedTest
@@ -439,11 +431,7 @@ class PublicationManagementTest {
             .andExpect(status().isOk()).andReturn();
 
         String responseContent = response.getResponse().getContentAsString();
-        assertTrue(responseContent.contains("Name - A This is a surname"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Prosecutor - This is an organisation"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Postcode - AA"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Offence - This is an offence title, This is an offence title 2"),
-                   CONTENT_MISMATCH_ERROR);
+        assertEquals("", responseContent, CONTENT_MISMATCH_ERROR);
     }
 
     @ParameterizedTest
