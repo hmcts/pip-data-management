@@ -19,6 +19,7 @@ import uk.gov.hmcts.reform.pip.model.publication.ListType;
 import uk.gov.hmcts.reform.pip.model.publication.Sensitivity;
 
 import java.util.Base64;
+import java.util.Optional;
 import java.util.UUID;
 
 import static uk.gov.hmcts.reform.pip.model.publication.FileType.EXCEL;
@@ -85,16 +86,17 @@ public class PublicationManagementService {
      */
     public String generateArtefactSummary(UUID artefactId) {
         Artefact artefact = artefactService.getMetadataByArtefactId(artefactId);
-        ArtefactSummaryData artefactSummaryData = listConversionFactory.getArtefactSummaryData(artefact.getListType());
+        Optional<ArtefactSummaryData> artefactSummaryData =
+            listConversionFactory.getArtefactSummaryData(artefact.getListType());
 
-        if (artefactSummaryData == null) {
-            log.error("Failed to retrieve summary data for list type");
+        if (artefactSummaryData.isEmpty()) {
             return "";
         }
 
         try {
             String rawJson = artefactService.getPayloadByArtefactId(artefactId);
-            return publicationSummaryGenerationService.generate(artefactSummaryData.get(MAPPER.readTree(rawJson)));
+            return publicationSummaryGenerationService.generate(artefactSummaryData.get()
+                                                                    .get(MAPPER.readTree(rawJson)));
         } catch (JsonProcessingException ex) {
             throw new ProcessingException(String.format("Failed to generate summary for artefact id %s", artefactId));
         }

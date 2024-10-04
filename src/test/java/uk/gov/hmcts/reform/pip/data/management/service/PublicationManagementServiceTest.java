@@ -188,17 +188,26 @@ class PublicationManagementServiceTest {
 
     @Test
     void testGenerateArtefactSummary() {
+        ARTEFACT.setListType(ListType.CIVIL_DAILY_CAUSE_LIST);
+        when(artefactService.getPayloadByArtefactId(any())).thenReturn(civilDailyListInput);
+        when(artefactService.getMetadataByArtefactId(any())).thenReturn(ARTEFACT);
+
+        String response = publicationManagementService.generateArtefactSummary(TEST_ARTEFACT_ID);
+
+        assertTrue(response.contains("Case reference - This is case number"), RESPONSE_MESSAGE);
+        assertTrue(response.contains("Case name - This is case name"), RESPONSE_MESSAGE);
+        assertTrue(response.contains("Case type - This is a case type"), RESPONSE_MESSAGE);
+        assertTrue(response.contains("Hearing type - This is hearing type"), RESPONSE_MESSAGE);
+    }
+
+    @Test
+    void testGenerateArtefactSummaryWhenSummaryNotPresent() {
         when(artefactService.getPayloadByArtefactId(any())).thenReturn(sjpPublicListInput);
         when(artefactService.getMetadataByArtefactId(any())).thenReturn(ARTEFACT);
 
         String response = publicationManagementService.generateArtefactSummary(TEST_ARTEFACT_ID);
 
-        assertTrue(response.contains("Name - A This is a surname"), RESPONSE_MESSAGE);
-        assertTrue(response.contains("Prosecutor - This is a prosecutor organisation"), RESPONSE_MESSAGE);
-        assertTrue(response.contains("Postcode - AA"),
-                   RESPONSE_MESSAGE);
-        assertTrue(response.contains("Offence - This is an offence title, This is an offence title 2"),
-                   RESPONSE_MESSAGE);
+        assertTrue(response.isEmpty(), "Response message should be empty when no summary generator available");
     }
 
     @Test

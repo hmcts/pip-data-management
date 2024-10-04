@@ -71,17 +71,17 @@ public class PublicationFileGenerationService {
 
         try {
             topLevelNode = MAPPER.readTree(rawJson);
-            FileConverter fileConverter = listConversionFactory.getFileConverter(artefact.getListType());
+            Optional<FileConverter> fileConverter = listConversionFactory.getFileConverter(artefact.getListType());
 
-            if (fileConverter == null) {
+            if (fileConverter.isEmpty()) {
                 log.error("Failed to find converter for list type");
                 return Optional.empty();
             }
 
-            byte[] excel = fileConverter.convertToExcel(topLevelNode, artefact.getListType());
+            byte[] excel = fileConverter.get().convertToExcel(topLevelNode, artefact.getListType());
 
             // Generate the English and/or Welsh PDFs and store in Azure blob storage
-            Pair<byte[], byte[]> pdfs = generatePdfs(topLevelNode, artefact, location);
+            Pair<byte[], byte[]> pdfs = generatePdfs(fileConverter.get(), topLevelNode, artefact, location);
             return Optional.of(new PublicationFiles(pdfs.getLeft(), pdfs.getRight(), excel));
 
         } catch (IOException ex) {
@@ -92,33 +92,35 @@ public class PublicationFileGenerationService {
     /**
      * Generate the English and/or Welsh PDF for a given artefact.
      *
+     * @param fileConverter The file converter to use for the transformation.
      * @param topLevelNode The data node.
      * @param artefact The artefact.
      * @param location The location.
      * @return a byte array of the generated pdf.
      * @throws IOException error.
      */
-    private Pair<byte[], byte[]> generatePdfs(JsonNode topLevelNode, Artefact artefact, Location location)
+    private Pair<byte[], byte[]> generatePdfs(FileConverter fileConverter, JsonNode topLevelNode,
+                                              Artefact artefact, Location location)
         throws IOException {
         Language language = artefact.getLanguage();
 
         if (artefact.getListType().hasAdditionalPdf() && language != Language.ENGLISH) {
-            byte[] englishPdf = generatePdf(topLevelNode, artefact, location, Language.ENGLISH, true);
+            byte[] englishPdf = generatePdf(fileConverter, topLevelNode, artefact, location, Language.ENGLISH, true);
             if (englishPdf.length > MAX_FILE_SIZE) {
-                englishPdf = generatePdf(topLevelNode, artefact, location, Language.ENGLISH, false);
+                englishPdf = generatePdf(fileConverter, topLevelNode, artefact, location, Language.ENGLISH, false);
             }
 
-            byte[] welshPdf = generatePdf(topLevelNode, artefact, location, Language.WELSH, true);
+            byte[] welshPdf = generatePdf(fileConverter, topLevelNode, artefact, location, Language.WELSH, true);
             if (welshPdf.length > MAX_FILE_SIZE) {
-                welshPdf = generatePdf(topLevelNode, artefact, location, Language.WELSH, false);
+                welshPdf = generatePdf(fileConverter, topLevelNode, artefact, location, Language.WELSH, false);
             }
 
             return Pair.of(englishPdf, welshPdf);
         }
 
-        byte[] pdf = generatePdf(topLevelNode, artefact, location, language, true);
+        byte[] pdf = generatePdf(fileConverter, topLevelNode, artefact, location, language, true);
         if (pdf.length > MAX_FILE_SIZE) {
-            pdf = generatePdf(topLevelNode, artefact, location, language, false);
+            pdf = generatePdf(fileConverter, topLevelNode, artefact, location, language, false);
         }
 
         return Pair.of(pdf, new byte[0]);
@@ -127,6 +129,7 @@ public class PublicationFileGenerationService {
     /**
      * Generate the PDF for a given artefact.
      *
+     * @param fileConverter The file converter to use to generate the PDF
      * @param topLevelNode The data node.
      * @param artefact The artefact.
      * @param location The location where the artefact is uploaded to.
@@ -135,11 +138,12 @@ public class PublicationFileGenerationService {
      * @return a byte array of the generated pdf.
      * @throws IOException Throw if error generating.
      */
-    private byte[] generatePdf(JsonNode topLevelNode, Artefact artefact, Location location, Language language,
+    private byte[] generatePdf(FileConverter fileConverter, JsonNode topLevelNode,
+                               Artefact artefact, Location location, Language language,
                                boolean accessibility) throws IOException {
         Map<String, Object> languageResource = LanguageResourceHelper.getLanguageResources(
             artefact.getListType(), language);
-        String html = listConversionFactory.getFileConverter(artefact.getListType())
+        String html = fileConverter
             .convert(topLevelNode, buildArtefactMetadata(artefact, location, language), languageResource);
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 
