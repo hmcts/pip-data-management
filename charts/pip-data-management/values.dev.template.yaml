@@ -4,7 +4,6 @@ java:
   ingressHost: ${SERVICE_FQDN}
   environment:
     MANAGED_IDENTITY_CLIENT_ID: 8d0ead51-3b31-44df-a78e-ada4eea9fe87
-    DB_UPDATE: update
     ENABLE_FLYWAY: true
     RUN_DB_MIGRATION_ON_STARTUP: true
     ENABLE_TESTING_SUPPORT_API: true
