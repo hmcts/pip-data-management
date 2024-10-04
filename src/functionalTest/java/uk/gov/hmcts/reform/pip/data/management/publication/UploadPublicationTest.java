@@ -66,8 +66,8 @@ class UploadPublicationTest extends FunctionalTestBase {
 
     @AfterAll
     public void teardown() {
-        doDeleteRequest(TESTING_SUPPORT_PUBLICATION_URL + COURT_NAME, Map.of(AUTHORIZATION, BEARER + accessToken), "");
-        doDeleteRequest(TESTING_SUPPORT_LOCATION_URL + COURT_NAME, Map.of(AUTHORIZATION, BEARER + accessToken), "");
+        doDeleteRequest(TESTING_SUPPORT_PUBLICATION_URL + COURT_NAME, Map.of(AUTHORIZATION, BEARER + accessToken));
+        doDeleteRequest(TESTING_SUPPORT_LOCATION_URL + COURT_NAME, Map.of(AUTHORIZATION, BEARER + accessToken));
     }
 
     @Test
