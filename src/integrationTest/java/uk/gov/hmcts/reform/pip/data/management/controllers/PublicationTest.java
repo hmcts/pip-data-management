@@ -330,7 +330,7 @@ class PublicationTest {
             new TypeReference<>() {
             }
         );
-        assertEquals(2, parties.size(), "Party array not expected size");
+        assertEquals(4, parties.size(), "Party array not expected size");
 
         Map<String, Object> firstParty = parties.get(0);
         assertTrue(firstParty.containsKey(CASES_KEY), "Parties does not contain cases key");

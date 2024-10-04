@@ -98,11 +98,8 @@ public final class SscsListHelper {
             Iterator<JsonNode> caseIterator = currentHearingNode.get(CASE).elements();
             while (caseIterator.hasNext()) {
                 JsonNode currentCaseNode = caseIterator.next();
-                if (currentCaseNode.has(PARTY)) {
-                    currentCase = caseBuilder(currentCaseNode);
-                } else {
-                    currentCase = caseBuilder(currentHearingNode);
-                }
+                currentCase = caseBuilder(currentCaseNode);
+
                 currentCase.setRespondent(formatRespondent(currentCaseNode, currentHearingNode));
                 currentCase.setAppealRef(GeneralHelper.safeGet("caseNumber", currentCaseNode));
                 currentCase.setHearingTime(node.get("time").asText());

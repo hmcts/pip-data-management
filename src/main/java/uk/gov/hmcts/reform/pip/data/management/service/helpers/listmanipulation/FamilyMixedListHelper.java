@@ -57,38 +57,6 @@ public final class FamilyMixedListHelper {
                 })));
     }
 
-    @Deprecated
-    public static void manipulatedListDataPartyAtHearingLevel(JsonNode artefact, Language language) {
-        artefact.get(COURT_LIST)
-            .forEach(courtList -> courtList.get(COURT_HOUSE).get(COURT_ROOM)
-                .forEach(courtRoom -> courtRoom.get(SESSION).forEach(session -> {
-                    ((ObjectNode) session).put("formattedSessionJudiciary",
-                                               JudiciaryHelper.findAndManipulateJudiciary(session));
-                    session.get(SITTINGS).forEach(sitting -> {
-                        DateHelper.calculateDuration(sitting, language);
-                        DateHelper.formatStartTime(sitting, "h:mma");
-                        SittingHelper.findAndConcatenateHearingPlatform(sitting, session);
-
-                        sitting.get(HEARING).forEach(hearing -> {
-                            if (hearing.has(CASE)
-                                && hearing.get(CASE).size() == 1) {
-                                handleParties(hearing);
-                            } else {
-                                setEmptyParties(hearing);
-                            }
-                            hearing.get(CASE).forEach(hearingCase -> {
-                                CaseHelper.manipulateCaseInformation((ObjectNode) hearingCase);
-                                ((ObjectNode) hearingCase).put(
-                                    "formattedReportingRestriction",
-                                    GeneralHelper.formatNodeArray(hearingCase, REPORTING_RESTRICTION_DETAIL, ", ")
-                                );
-                            });
-                        });
-                    });
-                }))
-            );
-    }
-
     private static void handleParties(JsonNode node) {
         StringBuilder applicant = new StringBuilder();
         StringBuilder applicantRepresentative = new StringBuilder();
@@ -128,14 +96,6 @@ public final class FamilyMixedListHelper {
                        GeneralHelper.trimAnyCharacterFromStringEnd(respondent.toString()));
         nodeObj.put(RESPONDENT_REPRESENTATIVE,
                        GeneralHelper.trimAnyCharacterFromStringEnd(respondentRepresentative.toString()));
-    }
-
-    private static void setEmptyParties(JsonNode node) {
-        ObjectNode nodeObj = (ObjectNode) node;
-        nodeObj.put(APPLICANT, "");
-        nodeObj.put(APPLICANT_REPRESENTATIVE, "");
-        nodeObj.put(RESPONDENT, "");
-        nodeObj.put(RESPONDENT_REPRESENTATIVE, "");
     }
 
     private static String createPartyDetails(JsonNode party) {

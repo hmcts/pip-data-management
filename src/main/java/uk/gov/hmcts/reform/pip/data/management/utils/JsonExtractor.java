@@ -1,7 +1,6 @@
 package uk.gov.hmcts.reform.pip.data.management.utils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.DocumentContext;
@@ -27,8 +26,6 @@ import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
 @Slf4j
 @SuppressWarnings("PMD.LooseCoupling")
 public class JsonExtractor {
-    private static final int SINGLE_CASE_COUNT = 1;
-
     private final Configuration jsonConfiguration;
     private final SearchConfiguration searchConfiguration;
     private final ObjectMapper objectMapper;
@@ -70,46 +67,13 @@ public class JsonExtractor {
     }
 
     private void extractPartiesUsingJPath(Map<String, List<Object>> searchTermsMap, String payload) {
-        String hearingsPath = searchConfiguration.getPartySearchConfig().getHearingsPath();
         DocumentContext jsonPayload = JsonPath
             .using(jsonConfiguration)
             .parse(payload);
 
-        List<Object> hearings = jsonPayload.read(hearingsPath);
-        List<Map<String, Object>> hearingMaps = objectMapper.convertValue(jsonPayload.read(hearingsPath),
-                                                                          new TypeReference<>() {});
-        if (hearingHasParty(hearingMaps)) {
-            extractPartiesFromHearings(searchTermsMap, hearings);
-        } else {
-            String allCasesPath = searchConfiguration.getPartySearchConfig().getAllCasesPath();
-            List<Object> allCases = jsonPayload.read(allCasesPath);
-            extractPartiesFromCases(searchTermsMap, allCases);
-        }
-    }
-
-    private void extractPartiesFromHearings(Map<String, List<Object>> searchTermsMap, List<Object> hearings) {
-        List<Object> parties = new ArrayList<>();
-        hearings.forEach(hearing -> {
-            try {
-                DocumentContext hearingsPayload = JsonPath
-                    .using(jsonConfiguration)
-                    .parse(objectMapper.writeValueAsString(hearing));
-
-                String casesPath = searchConfiguration.getPartySearchConfig().getCasesPath();
-                List<Object> caseValues = hearingsPayload.read(casesPath);
-
-                if (caseValues.size() <= SINGLE_CASE_COUNT) {
-                    JSONObject partiesJson = new JSONObject();
-                    partiesJson.put("cases", caseValues);
-                    constructPartyValues(hearingsPayload, partiesJson);
-                    parties.add(partiesJson);
-                }
-            } catch (JsonProcessingException e) {
-                log.warn(writeLog("Failed to extract parties from JSON payload"));
-            }
-        });
-
-        searchTermsMap.put("parties", parties);
+        String allCasesPath = searchConfiguration.getPartySearchConfig().getAllCasesPath();
+        List<Object> allCases = jsonPayload.read(allCasesPath);
+        extractPartiesFromCases(searchTermsMap, allCases);
     }
 
     private void extractPartiesFromCases(Map<String, List<Object>> searchTermsMap, List<Object> allCases) {
@@ -133,11 +97,6 @@ public class JsonExtractor {
         });
 
         searchTermsMap.put("parties", parties);
-    }
-
-    private boolean hearingHasParty(List<Map<String, Object>> hearings) {
-        return hearings.stream()
-            .anyMatch(h -> h.containsKey("party"));
     }
 
     private void constructPartyValues(DocumentContext payload, JSONObject partiesJson) {

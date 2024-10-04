@@ -40,47 +40,47 @@
                     "hearing": [
                       {
                         "hearingType": "Hearing Type",
-                        "party": [
-                          {
-                            "individualDetails": {
-                              "individualSurname": "Missing party role"
-                            }
-                          },
-                          {
-                            "partyRole": "",
-                            "individualDetails": {
-                              "individualSurname": "Empty party role"
-                            }
-                          },
-                          {
-                            "partyRole": "APPLICANT",
-                            "individualDetails": {
-                              "individualSurname": "Applicant Surname"
-                            }
-                          },
-                          {
-                            "partyRole": "RESPONDENT",
-                            "organisationDetails": {
-                              "organisationName": "Respondent Org Name"
-                            }
-                          },
-                          {
-                            "partyRole": "APPLICANT_REPRESENTATIVE",
-                            "individualDetails": {
-                              "individualSurname": "Applicant Rep Surname"
-                            }
-                          },
-                          {
-                            "partyRole": "RESPONDENT_REPRESENTATIVE",
-                            "organisationDetails": {
-                              "organisationName": "Respondent Rep Surname"
-                            }
-                          }
-                        ],
                         "case": [
                           {
                             "caseName": "This is a case name",
-                            "caseNumber": "45684548"
+                            "caseNumber": "45684548",
+                            "party": [
+                              {
+                                "individualDetails": {
+                                  "individualSurname": "Missing party role"
+                                }
+                              },
+                              {
+                                "partyRole": "",
+                                "individualDetails": {
+                                  "individualSurname": "Empty party role"
+                                }
+                              },
+                              {
+                                "partyRole": "APPLICANT",
+                                "individualDetails": {
+                                  "individualSurname": "Applicant Surname"
+                                }
+                              },
+                              {
+                                "partyRole": "RESPONDENT",
+                                "organisationDetails": {
+                                  "organisationName": "Respondent Org Name"
+                                }
+                              },
+                              {
+                                "partyRole": "APPLICANT_REPRESENTATIVE",
+                                "individualDetails": {
+                                  "individualSurname": "Applicant Rep Surname"
+                                }
+                              },
+                              {
+                                "partyRole": "RESPONDENT_REPRESENTATIVE",
+                                "organisationDetails": {
+                                  "organisationName": "Respondent Rep Surname"
+                                }
+                              }
+                            ]
                           }
                         ]
                       },
