@@ -214,7 +214,7 @@ dependencies {
   implementation group: 'com.azure', name: 'azure-storage-blob', version: '12.27.0'
 
   implementation group: 'com.jayway.jsonpath', name: 'json-path', version: '2.9.0'
-  implementation group: 'io.hypersistence', name: 'hypersistence-utils-hibernate-63', version: '3.8.2'
+  implementation group: 'io.hypersistence', name: 'hypersistence-utils-hibernate-63', version: '3.8.3'
   implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: '2.6.0'
   implementation group: 'com.github.hmcts.java-logging', name: 'logging', version: reformLoggingVersion
   implementation group: 'com.github.hmcts.java-logging', name: 'logging-appinsights', version: reformLoggingVersion
