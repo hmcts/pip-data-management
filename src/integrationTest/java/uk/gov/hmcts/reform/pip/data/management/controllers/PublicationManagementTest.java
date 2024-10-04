@@ -516,9 +516,9 @@ class PublicationManagementTest {
             mvcResult.getResponse().getContentAsString(), ExceptionResponse.class);
 
         assertEquals(
-            NOT_FOUND_RESPONSE_MESSAGE,
             ARTEFACT_NOT_FOUND_MESSAGE + ARTEFACT_ID_NOT_FOUND,
-            exceptionResponse.getMessage()
+            exceptionResponse.getMessage(),
+            NOT_FOUND_RESPONSE_MESSAGE
         );
     }
 
@@ -654,9 +654,9 @@ class PublicationManagementTest {
             mvcResult.getResponse().getContentAsString(), ExceptionResponse.class);
 
         assertEquals(
-            NOT_FOUND_RESPONSE_MESSAGE,
             ARTEFACT_NOT_FOUND_MESSAGE + ARTEFACT_ID_NOT_FOUND,
-            exceptionResponse.getMessage()
+            exceptionResponse.getMessage(),
+            NOT_FOUND_RESPONSE_MESSAGE
         );
     }
 
