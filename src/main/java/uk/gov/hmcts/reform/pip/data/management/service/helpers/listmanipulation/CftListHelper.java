@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.thymeleaf.context.Context;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.CaseHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.DateHelper;
-import uk.gov.hmcts.reform.pip.data.management.service.helpers.GeneralHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.JudiciaryHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.LocationHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.PartyRoleHelper;
@@ -68,13 +67,7 @@ public final class CftListHelper {
         String listType = metadata.get("listType");
         if (FAMILY_DAILY_CAUSE_LIST.name().equals(listType)
             || CIVIL_AND_FAMILY_DAILY_CAUSE_LIST.name().equals(listType)) {
-            if (GeneralHelper.hearingHasParty(artefact)) {
-                FamilyMixedListHelper.manipulatedListDataPartyAtHearingLevel(artefact, language);
-                context.setVariable("partyAtHearingLevel", true);
-            } else {
-                FamilyMixedListHelper.manipulatedListData(artefact, language);
-                context.setVariable("partyAtHearingLevel", false);
-            }
+            FamilyMixedListHelper.manipulatedListData(artefact, language);
         } else {
             manipulatedListData(artefact, language, initialised);
         }
