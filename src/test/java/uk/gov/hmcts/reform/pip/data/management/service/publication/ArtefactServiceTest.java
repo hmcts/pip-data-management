@@ -26,10 +26,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.never;
@@ -397,18 +397,48 @@ class ArtefactServiceTest {
     }
 
     @Test
-    void shouldGenerateFilesIfPayloadSizeWithinLimit() {
-        assertTrue(FILES_GENERATION_MESSAGE, artefactService.payloadWithinLimit(99f));
+    void shouldGenerateJsonSearchIfPayloadSizeWithinLimit() {
+        assertTrue(artefactService.payloadWithinJsonSearchLimit(255f), FILES_GENERATION_MESSAGE);
     }
 
     @Test
-    void shouldGenerateFilesIfNoPayloadSize() {
-        assertTrue(FILES_GENERATION_MESSAGE, artefactService.payloadWithinLimit(null));
+    void shouldGenerateJsonSearchIfNoPayloadSize() {
+        assertTrue(artefactService.payloadWithinJsonSearchLimit(null), FILES_GENERATION_MESSAGE);
     }
 
     @Test
-    void shouldNotGenerateFilesIfPayloadSizeOverLimit() {
-        assertFalse(FILES_GENERATION_MESSAGE, artefactService.payloadWithinLimit(101f));
+    void shouldNotGenerateJsonSearchIfPayloadSizeOverLimit() {
+        assertFalse(artefactService.payloadWithinJsonSearchLimit(256f), FILES_GENERATION_MESSAGE);
+    }
+
+    @Test
+    void shouldGenerateExcelIfPayloadSizeWithinLimit() {
+        assertTrue(artefactService.payloadWithinExcelLimit(2047f), FILES_GENERATION_MESSAGE);
+    }
+
+    @Test
+    void shouldGenerateExcelIfNoPayloadSize() {
+        assertTrue(artefactService.payloadWithinExcelLimit(null), FILES_GENERATION_MESSAGE);
+    }
+
+    @Test
+    void shouldNotGenerateExcelIfPayloadSizeOverLimit() {
+        assertFalse(artefactService.payloadWithinExcelLimit(2048f), FILES_GENERATION_MESSAGE);
+    }
+
+    @Test
+    void shouldGeneratePdfIfPayloadSizeWithinLimit() {
+        assertTrue(artefactService.payloadWithinPdfLimit(255f), FILES_GENERATION_MESSAGE);
+    }
+
+    @Test
+    void shouldGeneratePdfIfNoPayloadSize() {
+        assertTrue(artefactService.payloadWithinPdfLimit(null), FILES_GENERATION_MESSAGE);
+    }
+
+    @Test
+    void shouldNotGeneratePdfIfPayloadSizeOverLimit() {
+        assertFalse(artefactService.payloadWithinPdfLimit(256f), FILES_GENERATION_MESSAGE);
     }
 
 }

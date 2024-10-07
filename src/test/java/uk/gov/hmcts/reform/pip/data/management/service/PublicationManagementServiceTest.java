@@ -43,6 +43,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
@@ -114,6 +115,7 @@ class PublicationManagementServiceTest {
         ARTEFACT.setProvenance("france");
         ARTEFACT.setLanguage(Language.ENGLISH);
         ARTEFACT.setListType(ListType.SJP_PUBLIC_LIST);
+        ARTEFACT.setPayloadSize(100F);
 
         WELSH_ARTEFACT.setArtefactId(TEST_ARTEFACT_ID);
         WELSH_ARTEFACT.setContentDate(LocalDateTime.now());
@@ -121,12 +123,16 @@ class PublicationManagementServiceTest {
         WELSH_ARTEFACT.setProvenance("france");
         WELSH_ARTEFACT.setLanguage(Language.WELSH);
         WELSH_ARTEFACT.setListType(ListType.SJP_PUBLIC_LIST);
+        WELSH_ARTEFACT.setPayloadSize(100F);
 
         LOCATION.setLocationId(1);
         LOCATION.setName("Test");
         LOCATION.setWelshName("Test");
         LOCATION.setRegion(Collections.singletonList("Region"));
         LOCATION.setWelshRegion(Collections.singletonList("Welsh region"));
+
+        when(artefactService.payloadWithinExcelLimit(argThat(arg -> arg <= 2048))).thenReturn(true);
+        when(artefactService.payloadWithinPdfLimit(argThat(arg -> arg <= 256))).thenReturn(true);
     }
 
     @Test
@@ -183,6 +189,36 @@ class PublicationManagementServiceTest {
 
         verify(azureBlobService).uploadFile(eq(TEST_ARTEFACT_ID + PDF.getExtension()), any());
         verify(azureBlobService).uploadFile(eq(TEST_ARTEFACT_ID + WELSH_PDF_SUFFIX + PDF.getExtension()), any());
+        verify(azureBlobService, never()).uploadFile(eq(TEST_ARTEFACT_ID + EXCEL.getExtension()), any());
+    }
+
+    @Test
+    void testGenerateFilesWhenWithinExcelOutsidePdf() {
+        ARTEFACT.setPayloadSize(1000F);
+        when(artefactService.getMetadataByArtefactId(any())).thenReturn(ARTEFACT);
+        when(locationService.getLocationById(any())).thenReturn(LOCATION);
+        when(azureBlobService.uploadFile(any(), any())).thenReturn(UPLOADED);
+
+        publicationManagementService.generateFiles(TEST_ARTEFACT_ID, sjpPublicListInput);
+
+        verify(azureBlobService, never()).uploadFile(eq(TEST_ARTEFACT_ID + PDF.getExtension()), any());
+        verify(azureBlobService, never()).uploadFile(
+            eq(TEST_ARTEFACT_ID + WELSH_PDF_SUFFIX + PDF.getExtension()), any());
+        verify(azureBlobService).uploadFile(eq(TEST_ARTEFACT_ID + EXCEL.getExtension()), any());
+    }
+
+    @Test
+    void testGenerateFilesWhenOutsideExcelAndPdf() {
+        ARTEFACT.setPayloadSize(4000F);
+        when(artefactService.getMetadataByArtefactId(any())).thenReturn(ARTEFACT);
+        when(locationService.getLocationById(any())).thenReturn(LOCATION);
+        when(azureBlobService.uploadFile(any(), any())).thenReturn(UPLOADED);
+
+        publicationManagementService.generateFiles(TEST_ARTEFACT_ID, sjpPublicListInput);
+
+        verify(azureBlobService, never()).uploadFile(eq(TEST_ARTEFACT_ID + PDF.getExtension()), any());
+        verify(azureBlobService, never()).uploadFile(
+            eq(TEST_ARTEFACT_ID + WELSH_PDF_SUFFIX + PDF.getExtension()), any());
         verify(azureBlobService, never()).uploadFile(eq(TEST_ARTEFACT_ID + EXCEL.getExtension()), any());
     }
 

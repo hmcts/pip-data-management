@@ -8,4 +8,6 @@ dbMigration:
 
 payload:
   json:
-    max-size-in-kb: 100
+    max-size-search: 256
+    max-size-excel: 2048
+    max-size-pdf: 256
