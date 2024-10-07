@@ -77,11 +77,16 @@ public class PublicationFileGenerationService {
                 log.error("Failed to find converter for list type");
                 return Optional.empty();
             }
+            byte[] excel = new byte[0];
+            if (artefactService.payloadWithinExcelLimit(artefact.getPayloadSize())) {
+                excel = fileConverter.get().convertToExcel(topLevelNode, artefact.getListType());
+            }
 
-            byte[] excel = fileConverter.get().convertToExcel(topLevelNode, artefact.getListType());
+            Pair<byte[], byte[]> pdfs = Pair.of(new byte[0], new byte[0]);
+            if (artefactService.payloadWithinPdfLimit(artefact.getPayloadSize())) {
+                pdfs = generatePdfs(fileConverter.get(), topLevelNode, artefact, location);
+            }
 
-            // Generate the English and/or Welsh PDFs and store in Azure blob storage
-            Pair<byte[], byte[]> pdfs = generatePdfs(fileConverter.get(), topLevelNode, artefact, location);
             return Optional.of(new PublicationFiles(pdfs.getLeft(), pdfs.getRight(), excel));
 
         } catch (IOException ex) {
