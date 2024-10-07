@@ -17,6 +17,9 @@ test-user-id: ${TEST_USER_ID}
 system-admin-provenance-id: ${SYSTEM_ADMIN_PROVENANCE_ID}
 payload:
   json:
+    max-size-search: ${JSON_SEARCH_MAX_INBOUND_SIZE:50}
+    max-size-excel: ${EXCEL_MAX_INBOUND_SIZE:100}
+    max-size-pdf: ${PDF_MAX_INBOUND_SIZE:50}
     search-values:
       array-value: "$['root-value']['inner-value'][*]['array-value']"
       case-urn: "$['unknown-attribute']"
