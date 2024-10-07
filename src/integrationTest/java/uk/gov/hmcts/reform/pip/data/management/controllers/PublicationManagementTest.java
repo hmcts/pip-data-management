@@ -100,7 +100,7 @@ class PublicationManagementTest {
     private MockMvc mockMvc;
 
     @MockBean(name = "artefact")
-    private BlobContainerClient artefcatBlobContainerClient;
+    private BlobContainerClient artefactBlobContainerClient;
 
     @MockBean(name = "publications")
     private BlobContainerClient publicationBlobContainerClient;
@@ -123,8 +123,8 @@ class PublicationManagementTest {
 
     @BeforeEach
     void init() {
-        when(artefcatBlobContainerClient.getBlobClient(any())).thenReturn(blobClient);
-        when(artefcatBlobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
+        when(artefactBlobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(artefactBlobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
         when(publicationBlobContainerClient.getBlobClient(any())).thenReturn(blobClient);
     }
 

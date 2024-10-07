@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -49,12 +50,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WithMockUser(username = "admin", authorities = {"APPROLE_api.request.admin"})
 class PublicationSubscriptionSearchTest {
 
-    @Autowired
-    @Qualifier("artefact")
+    @MockBean(name = "artefact")
     BlobContainerClient artefactBlobContainerClient;
 
-    @Autowired
-    @Qualifier("publications")
+    @MockBean(name = "publications")
     BlobContainerClient publicationsBlobContainerClient;
 
     @Autowired
