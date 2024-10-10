@@ -35,7 +35,7 @@ class OpaResultsSummaryDataTest {
 
         JsonNode payload = new ObjectMapper().readTree(writer.toString());
         Map<String, List<Map<String, String>>> output = new ListConversionFactory()
-            .getArtefactSummaryData(OPA_RESULTS)
+            .getArtefactSummaryData(OPA_RESULTS).get()
             .get(payload);
 
         SoftAssertions softly = new SoftAssertions();

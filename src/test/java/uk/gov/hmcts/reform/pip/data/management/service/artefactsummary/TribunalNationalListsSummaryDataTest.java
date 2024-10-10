@@ -28,7 +28,7 @@ class TribunalNationalListsSummaryDataTest {
         try (InputStream mockFile = Thread.currentThread().getContextClassLoader()
             .getResourceAsStream("mocks/primaryHealthList.json")) {
             JsonNode payload = MAPPER.readTree(new String(mockFile.readAllBytes()));
-            output = new ListConversionFactory().getArtefactSummaryData(ListType.PRIMARY_HEALTH_LIST)
+            output = new ListConversionFactory().getArtefactSummaryData(ListType.PRIMARY_HEALTH_LIST).get()
                 .get(payload);
         }
 
@@ -60,7 +60,7 @@ class TribunalNationalListsSummaryDataTest {
         try (InputStream mockFile = Thread.currentThread().getContextClassLoader()
             .getResourceAsStream("mocks/careStandardsList.json")) {
             JsonNode payload = MAPPER.readTree(new String(mockFile.readAllBytes()));
-            output = new ListConversionFactory().getArtefactSummaryData(ListType.CARE_STANDARDS_LIST)
+            output = new ListConversionFactory().getArtefactSummaryData(ListType.CARE_STANDARDS_LIST).get()
                 .get(payload);
         }
 

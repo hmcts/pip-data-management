@@ -28,7 +28,7 @@ class CivilDailyCauseListSummaryDataTest {
         try (InputStream mockFile = Thread.currentThread().getContextClassLoader()
             .getResourceAsStream("mocks/civilDailyCauseList.json")) {
             JsonNode payload = new ObjectMapper().readTree(new String(mockFile.readAllBytes()));
-            output = new ListConversionFactory().getArtefactSummaryData(CIVIL_DAILY_CAUSE_LIST)
+            output = new ListConversionFactory().getArtefactSummaryData(CIVIL_DAILY_CAUSE_LIST).get()
                 .get(payload);
         }
 

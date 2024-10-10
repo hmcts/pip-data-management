@@ -31,7 +31,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<ExceptionResponse> handle(NotFoundException ex) {
-        log.error(writeLog("404, unable to find entity. Details: " + ex.getMessage()));
+        log.trace(writeLog("404, unable to find entity. Details: " + ex.getMessage()));
         return ResponseEntity.status(HttpStatus.NOT_FOUND).contentType(MediaType.APPLICATION_JSON)
             .body(generateExceptionResponse(ex.getMessage()));
     }

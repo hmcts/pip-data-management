@@ -5,11 +5,13 @@ import com.azure.storage.blob.BlobContainerClient;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -47,8 +49,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WithMockUser(username = "admin", authorities = {"APPROLE_api.request.admin"})
 class PublicationSubscriptionSearchTest {
 
-    @Autowired
-    BlobContainerClient blobContainerClient;
+    @MockBean(name = "artefact")
+    BlobContainerClient artefactBlobContainerClient;
+
+    @MockBean(name = "publications")
+    BlobContainerClient publicationsBlobContainerClient;
 
     @Autowired
     BlobClient blobClient;
@@ -85,6 +90,13 @@ class PublicationSubscriptionSearchTest {
     public static void setup() throws IOException {
         objectMapper = new ObjectMapper();
         objectMapper.findAndRegisterModules();
+    }
+
+    @BeforeEach
+    public void setupMocks() {
+        when(artefactBlobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(artefactBlobContainerClient.getBlobContainerUrl()).thenReturn(PAYLOAD_URL);
+        when(publicationsBlobContainerClient.getBlobClient(any())).thenReturn(blobClient);
     }
 
     Artefact createDailyList(Sensitivity sensitivity) throws Exception {
@@ -128,9 +140,6 @@ class PublicationSubscriptionSearchTest {
 
     @Test
     void testGetArtefactByCaseIdSearchVerified() throws Exception {
-        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
-        when(blobContainerClient.getBlobContainerUrl()).thenReturn(PAYLOAD_URL);
-
         Artefact artefact = createDailyList(Sensitivity.PRIVATE);
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 =
@@ -150,9 +159,6 @@ class PublicationSubscriptionSearchTest {
 
     @Test
     void testGetArtefactByCaseIdSearchUnverified() throws Exception {
-        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
-        when(blobContainerClient.getBlobContainerUrl()).thenReturn(PAYLOAD_URL);
-
         Artefact artefact = createDailyList(Sensitivity.PUBLIC);
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 =
@@ -169,9 +175,6 @@ class PublicationSubscriptionSearchTest {
 
     @Test
     void testGetArtefactByCaseIdSearchUnverifiedNotFound() throws Exception {
-        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
-        when(blobContainerClient.getBlobContainerUrl()).thenReturn(PAYLOAD_URL);
-
         createDailyList(Sensitivity.CLASSIFIED);
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 =
@@ -183,9 +186,6 @@ class PublicationSubscriptionSearchTest {
 
     @Test
     void testGetArtefactByCaseNameSearchVerified() throws Exception {
-        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
-        when(blobContainerClient.getBlobContainerUrl()).thenReturn(PAYLOAD_URL);
-
         Artefact artefact = createDailyList(Sensitivity.PRIVATE);
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 =
@@ -205,9 +205,6 @@ class PublicationSubscriptionSearchTest {
 
     @Test
     void testGetArtefactByCaseNameSearchUnverified() throws Exception {
-        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
-        when(blobContainerClient.getBlobContainerUrl()).thenReturn(PAYLOAD_URL);
-
         Artefact artefact = createDailyList(Sensitivity.PUBLIC);
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 =
@@ -224,9 +221,6 @@ class PublicationSubscriptionSearchTest {
 
     @Test
     void testGetArtefactByCaseNameSearchUnverifiedNotFound() throws Exception {
-        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
-        when(blobContainerClient.getBlobContainerUrl()).thenReturn(PAYLOAD_URL);
-
         createDailyList(Sensitivity.CLASSIFIED);
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 =

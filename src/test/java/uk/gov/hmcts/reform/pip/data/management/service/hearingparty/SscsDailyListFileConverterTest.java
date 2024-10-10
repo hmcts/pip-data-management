@@ -55,7 +55,7 @@ class SscsDailyListFileConverterTest {
         );
         JsonNode inputJson = OBJECT_MAPPER.readTree(writer.toString());
         String outputHtml = listConversionFactory.getFileConverter(listType)
-            .convert(inputJson, metadataMap, language);
+            .get().convert(inputJson, metadataMap, language);
         Document document = Jsoup.parse(outputHtml);
         assertThat(outputHtml).as("no HTML found").isNotEmpty();
 
@@ -137,7 +137,7 @@ class SscsDailyListFileConverterTest {
         );
         JsonNode inputJson = OBJECT_MAPPER.readTree(writer.toString());
         String outputHtml = listConversionFactory.getFileConverter(listType)
-            .convert(inputJson, metadataMap, language);
+            .get().convert(inputJson, metadataMap, language);
         Document document = Jsoup.parse(outputHtml);
         assertThat(outputHtml).as("no HTML found").isNotEmpty();
 
@@ -183,8 +183,8 @@ class SscsDailyListFileConverterTest {
         StringWriter writer = new StringWriter();
         JsonNode inputJson = OBJECT_MAPPER.readTree(writer.toString());
 
-        assertEquals(0, listConversionFactory.getFileConverter(listType).convertToExcel(inputJson, listType).length,
-                     "byte array wasn't empty"
+        assertEquals(0, listConversionFactory.getFileConverter(listType)
+                         .get().convertToExcel(inputJson, listType).length, "byte array wasn't empty"
         );
     }
 }

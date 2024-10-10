@@ -27,7 +27,7 @@ class CrownWarnedListSummaryDataTest {
         try (InputStream mockFile = Thread.currentThread().getContextClassLoader()
             .getResourceAsStream("mocks/crownWarnedList.json")) {
             JsonNode payload = new ObjectMapper().readTree(new String(mockFile.readAllBytes()));
-            output = new ListConversionFactory().getArtefactSummaryData(ListType.CROWN_WARNED_LIST)
+            output = new ListConversionFactory().getArtefactSummaryData(ListType.CROWN_WARNED_LIST).get()
                 .get(payload);
         }
 

@@ -27,6 +27,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -80,6 +81,7 @@ class PublicationFileGenerationServiceTest {
         ARTEFACT.setProvenance("france");
         ARTEFACT.setLanguage(Language.ENGLISH);
         ARTEFACT.setListType(ListType.SJP_PUBLIC_LIST);
+        ARTEFACT.setPayloadSize(100F);
 
         WELSH_ARTEFACT.setArtefactId(ARTEFACT_ID);
         WELSH_ARTEFACT.setContentDate(LocalDateTime.now());
@@ -87,12 +89,16 @@ class PublicationFileGenerationServiceTest {
         WELSH_ARTEFACT.setProvenance("france");
         WELSH_ARTEFACT.setLanguage(Language.WELSH);
         WELSH_ARTEFACT.setListType(ListType.SJP_PUBLIC_LIST);
+        WELSH_ARTEFACT.setPayloadSize(100F);
 
         LOCATION.setLocationId(LOCATION_ID);
         LOCATION.setName("Test");
         LOCATION.setWelshName("Test");
         LOCATION.setRegion(Collections.singletonList("Region"));
         LOCATION.setWelshRegion(Collections.singletonList("Welsh region"));
+
+        when(artefactService.payloadWithinExcelLimit(argThat(arg -> arg <= 2048))).thenReturn(true);
+        when(artefactService.payloadWithinPdfLimit(argThat(arg -> arg <= 256))).thenReturn(true);
     }
 
     @Test
@@ -204,6 +210,64 @@ class PublicationFileGenerationServiceTest {
 
         softly.assertThat(files.get().getExcel())
             .as(FILE_EMPTY_MESSAGE)
+            .isEmpty();
+
+        softly.assertAll();
+    }
+
+    @Test
+    void testGenerateFilesWhenWithinExcelOutsidePdf() {
+        ARTEFACT.setPayloadSize(1000F);
+        when(artefactService.getMetadataByArtefactId(ARTEFACT_ID)).thenReturn(ARTEFACT);
+        when(locationService.getLocationById(LOCATION_ID)).thenReturn(LOCATION);
+
+        Optional<PublicationFiles> files = publicationFileGenerationService.generate(ARTEFACT_ID, sjpPublicListInput);
+        verify(artefactService, never()).getPayloadByArtefactId(ARTEFACT_ID);
+
+        SoftAssertions softly = new SoftAssertions();
+        softly.assertThat(files)
+            .as(FILE_PRESENT_MESSAGE)
+            .isPresent();
+
+        softly.assertThat(files.get().getPrimaryPdf())
+            .as(FILE_NOT_EMPTY_MESSAGE)
+            .isEmpty();
+
+        softly.assertThat(files.get().getAdditionalPdf())
+            .as(FILE_EMPTY_MESSAGE)
+            .isEmpty();
+
+        softly.assertThat(files.get().getExcel())
+            .as(FILE_NOT_EMPTY_MESSAGE)
+            .isNotEmpty();
+
+        softly.assertAll();
+    }
+
+    @Test
+    void testGenerateFilesWhenOutsideExcelAndPdf() {
+        ARTEFACT.setPayloadSize(4000F);
+        when(artefactService.getMetadataByArtefactId(ARTEFACT_ID)).thenReturn(ARTEFACT);
+        when(locationService.getLocationById(LOCATION_ID)).thenReturn(LOCATION);
+
+        Optional<PublicationFiles> files = publicationFileGenerationService.generate(ARTEFACT_ID, sjpPublicListInput);
+        verify(artefactService, never()).getPayloadByArtefactId(ARTEFACT_ID);
+
+        SoftAssertions softly = new SoftAssertions();
+        softly.assertThat(files)
+            .as(FILE_PRESENT_MESSAGE)
+            .isPresent();
+
+        softly.assertThat(files.get().getPrimaryPdf())
+            .as(FILE_NOT_EMPTY_MESSAGE)
+            .isEmpty();
+
+        softly.assertThat(files.get().getAdditionalPdf())
+            .as(FILE_EMPTY_MESSAGE)
+            .isEmpty();
+
+        softly.assertThat(files.get().getExcel())
+            .as(FILE_NOT_EMPTY_MESSAGE)
             .isEmpty();
 
         softly.assertAll();

@@ -38,7 +38,7 @@ class MagistratesStandardListSummaryDataTest {
 
         JsonNode payload = new ObjectMapper().readTree(writer.toString());
         Map<String, List<Map<String, String>>> output = new ListConversionFactory()
-            .getArtefactSummaryData(MAGISTRATES_STANDARD_LIST)
+            .getArtefactSummaryData(MAGISTRATES_STANDARD_LIST).get()
             .get(payload);
 
         SoftAssertions softly = new SoftAssertions();

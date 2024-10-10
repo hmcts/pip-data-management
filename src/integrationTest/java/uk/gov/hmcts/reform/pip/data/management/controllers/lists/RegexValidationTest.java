@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.DirtiesContext;
@@ -46,8 +47,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WithMockUser(username = "admin", authorities = { "APPROLE_api.request.admin" })
 class RegexValidationTest {
 
-    @Autowired
-    BlobContainerClient blobContainerClient;
+    @MockBean(name = "artefact")
+    private BlobContainerClient artefactBlobContainerClient;
+
+    @MockBean(name = "publications")
+    private BlobContainerClient publicationBlobContainerClient;
 
     @Autowired
     BlobClient blobClient;
@@ -86,8 +90,9 @@ class RegexValidationTest {
 
     @BeforeEach
     public void beforeTests() {
-        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
-        when(blobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
+        when(artefactBlobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(artefactBlobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
+        when(publicationBlobContainerClient.getBlobClient(any())).thenReturn(blobClient);
     }
 
     @DisplayName("Should throw a validation error due to containing a tag with content")

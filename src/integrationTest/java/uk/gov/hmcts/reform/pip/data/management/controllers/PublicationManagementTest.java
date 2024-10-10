@@ -4,7 +4,11 @@ import com.azure.core.util.BinaryData;
 import com.azure.storage.blob.BlobClient;
 import com.azure.storage.blob.BlobContainerClient;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
+import org.apache.commons.math3.random.RandomDataGenerator;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,23 +38,28 @@ import uk.gov.hmcts.reform.pip.model.publication.Sensitivity;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Base64;
 import java.util.UUID;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static uk.gov.hmcts.reform.pip.model.publication.FileType.PDF;
 
-@SpringBootTest(classes = Application.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles("integration")
+@SpringBootTest(classes = {Application.class}, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@ActiveProfiles({"integration", "disable-async"})
 @AutoConfigureMockMvc
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
 @WithMockUser(username = "admin", authorities = {"APPROLE_api.request.admin"})
@@ -83,13 +92,15 @@ class PublicationManagementTest {
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
+    private static final String SJP_MOCK = "data/sjp-public-list/sjpPublicList.json";
+
     private static MockMultipartFile file;
 
     @Autowired
     private MockMvc mockMvc;
 
     @MockBean(name = "artefact")
-    private BlobContainerClient artefcatBlobContainerClient;
+    private BlobContainerClient artefactBlobContainerClient;
 
     @MockBean(name = "publications")
     private BlobContainerClient publicationBlobContainerClient;
@@ -112,8 +123,8 @@ class PublicationManagementTest {
 
     @BeforeEach
     void init() {
-        when(artefcatBlobContainerClient.getBlobClient(any())).thenReturn(blobClient);
-        when(artefcatBlobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
+        when(artefactBlobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(artefactBlobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
         when(publicationBlobContainerClient.getBlobClient(any())).thenReturn(blobClient);
     }
 
@@ -133,9 +144,10 @@ class PublicationManagementTest {
             .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
             .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
             .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO)
-            .header(PublicationConfiguration.COURT_ID, "5")
+            .header(PublicationConfiguration.COURT_ID, "1")
             .header(PublicationConfiguration.LIST_TYPE, listType)
-            .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
+            .header(PublicationConfiguration.CONTENT_DATE,
+                    CONTENT_DATE.plusDays(new RandomDataGenerator().nextLong(1, 100_000)))
             .header(PublicationConfiguration.SENSITIVITY_HEADER, Sensitivity.PUBLIC)
             .header(PublicationConfiguration.LANGUAGE_HEADER, Language.ENGLISH)
             .content(data)
@@ -148,8 +160,20 @@ class PublicationManagementTest {
             response.getResponse().getContentAsString(), Artefact.class);
     }
 
+    private void createLocations() throws Exception {
+        try (InputStream csvInputStream = this.getClass().getClassLoader()
+            .getResourceAsStream("location/ValidCsv.csv")) {
+            MockMultipartFile csvFile
+                = new MockMultipartFile("locationList", csvInputStream);
+
+            mockMvc.perform(multipart("/locations/upload").file(csvFile))
+                .andExpect(status().isOk()).andReturn();
+
+        }
+    }
+
     private Artefact createSjpPublicListPublication() throws Exception {
-        byte[] testPublication = getTestData("data/sjp-public-list/sjpPublicList.json");
+        byte[] testPublication = getTestData(SJP_MOCK);
         return createPublication(ListType.SJP_PUBLIC_LIST, testPublication);
     }
 
@@ -416,21 +440,13 @@ class PublicationManagementTest {
             .andExpect(status().isOk()).andReturn();
 
         String responseContent = response.getResponse().getContentAsString();
-        assertTrue(
-            responseContent.contains(
-                "Name - This is a title This is a forename This is a middle name This is a surname"),
-            CONTENT_MISMATCH_ERROR
-        );
-        assertTrue(responseContent.contains("Prosecutor - This is an organisation"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Postcode - AA1 AA1"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Case reference - ABC12345"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Offence - This is an offence title"), CONTENT_MISMATCH_ERROR);
+        assertEquals("", responseContent, CONTENT_MISMATCH_ERROR);
     }
 
     @ParameterizedTest
     @EnumSource(value = ListType.class, names = {"SJP_PUBLIC_LIST", "SJP_DELTA_PUBLIC_LIST"})
     void testGenerateArtefactSummarySingleJusticeProcedurePublicList(ListType listType) throws Exception {
-        byte[] data = getTestData("data/sjp-public-list/sjpPublicList.json");
+        byte[] data = getTestData(SJP_MOCK);
         Artefact artefact = createPublication(listType, data);
 
         when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(data));
@@ -439,11 +455,7 @@ class PublicationManagementTest {
             .andExpect(status().isOk()).andReturn();
 
         String responseContent = response.getResponse().getContentAsString();
-        assertTrue(responseContent.contains("Name - A This is a surname"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Prosecutor - This is an organisation"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Postcode - AA"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Offence - This is an offence title, This is an offence title 2"),
-                   CONTENT_MISMATCH_ERROR);
+        assertEquals("", responseContent, CONTENT_MISMATCH_ERROR);
     }
 
     @ParameterizedTest
@@ -528,9 +540,9 @@ class PublicationManagementTest {
             mvcResult.getResponse().getContentAsString(), ExceptionResponse.class);
 
         assertEquals(
-            NOT_FOUND_RESPONSE_MESSAGE,
             ARTEFACT_NOT_FOUND_MESSAGE + ARTEFACT_ID_NOT_FOUND,
-            exceptionResponse.getMessage()
+            exceptionResponse.getMessage(),
+            NOT_FOUND_RESPONSE_MESSAGE
         );
     }
 
@@ -666,9 +678,9 @@ class PublicationManagementTest {
             mvcResult.getResponse().getContentAsString(), ExceptionResponse.class);
 
         assertEquals(
-            NOT_FOUND_RESPONSE_MESSAGE,
             ARTEFACT_NOT_FOUND_MESSAGE + ARTEFACT_ID_NOT_FOUND,
-            exceptionResponse.getMessage()
+            exceptionResponse.getMessage(),
+            NOT_FOUND_RESPONSE_MESSAGE
         );
     }
 
@@ -678,4 +690,49 @@ class PublicationManagementTest {
         mockMvc.perform(get(String.format(GET_FILE_URL, ARTEFACT_ID, PDF)))
             .andExpect(status().isForbidden());
     }
+
+    @Test
+    void testGenerateNoExcelWhenFileTooBig() throws Exception {
+        createLocations();
+
+        try (InputStream mockFile = this.getClass().getClassLoader().getResourceAsStream(SJP_MOCK)) {
+
+            JsonElement jsonParser = JsonParser.parseReader(new InputStreamReader(mockFile));
+            JsonArray jsonArray = jsonParser.getAsJsonObject().get("courtLists").getAsJsonArray();
+            JsonElement jsonElement = jsonArray.get(0);
+            for (int i = 0; i <= 400; i++) {
+                jsonArray.add(jsonElement);
+            }
+
+            Artefact artefact =
+                createPublication(ListType.SJP_PUBLIC_LIST, jsonParser.toString().getBytes(StandardCharsets.UTF_8));
+
+            verify(publicationBlobContainerClient, never()).getBlobClient(artefact.getArtefactId() + ".pdf");
+            verify(publicationBlobContainerClient, never()).getBlobClient(artefact.getArtefactId() + ".xlsx");
+
+        }
+    }
+
+    @Test
+    void testGenerateNoPdfWhenFileTooBig() throws Exception {
+        createLocations();
+
+        try (InputStream mockFile = this.getClass().getClassLoader().getResourceAsStream(SJP_MOCK)) {
+
+            JsonElement jsonParser = JsonParser.parseReader(new InputStreamReader(mockFile));
+            JsonArray jsonArray = jsonParser.getAsJsonObject().get("courtLists").getAsJsonArray();
+            JsonElement jsonElement = jsonArray.get(0);
+            for (int i = 0; i <= 200; i++) {
+                jsonArray.add(jsonElement);
+            }
+
+            Artefact artefact =
+                createPublication(ListType.SJP_PUBLIC_LIST, jsonParser.toString().getBytes(StandardCharsets.UTF_8));
+
+            verify(publicationBlobContainerClient, never()).getBlobClient(artefact.getArtefactId() + ".pdf");
+            verify(publicationBlobContainerClient, times(1))
+                .getBlobClient(artefact.getArtefactId() + ".xlsx");
+        }
+    }
+
 }

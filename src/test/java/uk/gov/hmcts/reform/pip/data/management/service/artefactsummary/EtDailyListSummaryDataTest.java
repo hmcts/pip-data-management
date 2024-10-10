@@ -27,7 +27,7 @@ class EtDailyListSummaryDataTest {
         try (InputStream mockFile = Thread.currentThread().getContextClassLoader()
             .getResourceAsStream("mocks/etDailyList.json")) {
             JsonNode payload = new ObjectMapper().readTree(new String(mockFile.readAllBytes()));
-            output = new ListConversionFactory().getArtefactSummaryData(ListType.ET_DAILY_LIST)
+            output = new ListConversionFactory().getArtefactSummaryData(ListType.ET_DAILY_LIST).get()
                 .get(payload);
         }
 

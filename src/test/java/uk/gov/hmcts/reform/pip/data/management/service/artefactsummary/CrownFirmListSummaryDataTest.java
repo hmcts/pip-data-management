@@ -38,7 +38,7 @@ class CrownFirmListSummaryDataTest {
 
         JsonNode payload = new ObjectMapper().readTree(writer.toString());
         Map<String, List<Map<String, String>>> output = new ListConversionFactory()
-            .getArtefactSummaryData(CROWN_FIRM_LIST)
+            .getArtefactSummaryData(CROWN_FIRM_LIST).get()
             .get(payload);
 
         SoftAssertions softly = new SoftAssertions();

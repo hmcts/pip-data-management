@@ -129,7 +129,7 @@ class ArtefactDeleteServiceTest {
         lenient().when(locationRepository.findByLocationIdByProvenance(PROVENANCE, PROVENANCE_ID,
                                                                        LOCATION_VENUE))
             .thenReturn(Optional.of(location));
-        lenient().when(artefactService.payloadWithinLimit(any())).thenReturn(true);
+        lenient().when(artefactService.payloadWithinJsonSearchLimit(any())).thenReturn(true);
 
         azureAccount = new AzureAccount();
         azureAccount.setDisplayName(REQUESTER_NAME);
