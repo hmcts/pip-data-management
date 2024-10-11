@@ -103,7 +103,7 @@
           "examples": [
             "2016-09-13T23:30:52.123Z"
           ],
-          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}([.]\\d{1,9})?Z$"
         },
         "version": {
           "title": "Version",
@@ -252,7 +252,7 @@
                                                         "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                       },
                                                       "dateOfBirth": {
-                                                        "description": "Date of birth for user (not mandated for all parties)",
+                                                        "description": "Date of birth of the individual",
                                                         "title": "Date Of Birth",
                                                         "type": "string",
                                                         "examples": [
@@ -262,7 +262,7 @@
                                                         "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                                       },
                                                       "age": {
-                                                        "description": "Date of birth for user (not mandated for all parties)",
+                                                        "description": "Age of the individual",
                                                         "title": "Age",
                                                         "type": "integer",
                                                         "examples": [
@@ -340,7 +340,7 @@
                                                               "examples": [
                                                                 "2023-09-13T23:30:52.123Z"
                                                               ],
-                                                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+                                                              "pattern": "^(\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}([.]\\d{1,9})?Z)?$"
                                                             },
                                                             "reportingRestrictionDetail": {
                                                               "title": "Reporting Restrictions Detail",
@@ -435,7 +435,7 @@
                                                               "examples": [
                                                                 "2023-09-13T23:30:52.123Z"
                                                               ],
-                                                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+                                                              "pattern": "^(\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}([.]\\d{1,9})?Z)?$"
                                                             },
                                                             "reportingRestrictionDetail": {
                                                               "title": "Reporting Restrictions Detail",
@@ -489,7 +489,7 @@
                                               "examples": [
                                                 "2023-09-13T23:30:52.123Z"
                                               ],
-                                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+                                              "pattern": "^(\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}([.]\\d{1,9})?Z)?$"
                                             },
                                             "informant": {
                                               "description": "Object representing an informant",

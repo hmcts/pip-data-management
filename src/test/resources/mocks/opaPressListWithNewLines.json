@@ -1,6 +1,6 @@
 {
   "document": {
-    "publicationDate": "2023-09-13T23:30:52.123\r\nZ",
+    "publicationDate": "2023-09-13T23:30:52.123Z",
     "documentName": "This is a documen\r\nt name",
     "version": "\r\n1.0"
   },
@@ -60,7 +60,7 @@
                                       "offenceSection": "Offence se\r\nction 1",
                                       "offenceWording": "Offenc\r\ne wording 1",
                                       "plea": "NOT_GUILTY\r\n",
-                                      "pleaDate": "2023-09-20T09:00:00.123\r\nZ",
+                                      "pleaDate": "2023-09-20T09:00:00.123Z",
                                       "reportingRestrictionDetail": [
                                         "Offence reporting \r\nrestriction detail 1"
                                       ]
@@ -73,7 +73,7 @@
                               "Case reporting \r\nRestriction detail line 1",
                               "Case reporting restriction de\r\ntail line 2"
                             ],
-                            "scheduledHearingDate": "2023-10-01T09:30:00.123\r\nZ",
+                            "scheduledHearingDate": "2023-10-01T09:30:00.123Z",
                             "informant": {
                               "prosecutionAuthorityRef": "Prosecuting authori\r\nty ref"
                             }
