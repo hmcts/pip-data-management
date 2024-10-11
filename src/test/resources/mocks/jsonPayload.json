@@ -37,7 +37,7 @@
           {
             "session": [
               {
-                "sessionStartTime": "2021-09-09t16:41:07.394",
+                "sessionStartTime": "2024-09-27T10:30:00Z",
                 "sessionChannel": [
                   "",
                   ""
@@ -60,16 +60,16 @@
                       "VIDEO HEARING",
                       ""
                     ],
-                    "sittingEnd": "",
+                    "sittingEnd": "2024-09-27T12:30:00Z",
                     "hearing": [
                       {
                         "hearingType": "mda"
                       }
                     ],
-                    "sittingStart": ""
+                    "sittingStart": "2024-09-27T10:30:00Z"
                   },
                   {
-                    "sittingStart": "",
+                    "sittingStart": "2024-09-27T10:30:00Z",
                     "channel": [
                       "",
                       "VIDEO HEARING"
@@ -131,7 +131,7 @@
                         ]
                       }
                     ],
-                    "sittingEnd": ""
+                    "sittingEnd": "2024-09-27T12:30:00Z"
                   }
                 ]
               }

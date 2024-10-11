@@ -109,7 +109,7 @@
         "publicationDate": {
           "title": "Publication date",
           "type": "string",
-          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}([.]\\d{1,9})?Z$"
         },
         "version": {
           "title": "Version",
@@ -259,7 +259,7 @@
                           "sessionStartTime": {
                             "title": "Session start time",
                             "type": "string",
-                            "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+                            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}([.]\\d{1,9})?Z$"
                           },
                           "judiciary": {
                             "type": "array",
@@ -278,12 +278,12 @@
                                 "sittingStart": {
                                   "title": "Sitting Start",
                                   "type": "string",
-                                  "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+                                  "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}([.]\\d{1,9})?Z$"
                                 },
                                 "sittingEnd": {
                                   "title": "Sitting End",
                                   "type": "string",
-                                  "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+                                  "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}([.]\\d{1,9})?Z$"
                                 },
                                 "hearing": {
                                   "type": "array",
@@ -453,7 +453,7 @@
                                                             "pleaDate":{
                                                               "title": "Plea date",
                                                               "type": "string",
-                                                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+                                                              "pattern": "^(\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}([.]\\d{1,9})?Z)?$"
                                                             },
                                                             "decision": {
                                                               "title": "Offence decision",
@@ -462,7 +462,7 @@
                                                                 "decisionDate": {
                                                                   "title": "Decision date",
                                                                   "type": "string",
-                                                                  "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+                                                                  "pattern": "^(\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}([.]\\d{1,9})?Z)?$"
                                                                 },
                                                                 "decisionDetail": {
                                                                   "title": "Decision detail",
@@ -479,7 +479,7 @@
                                                             "nextHearingDate": {
                                                               "title": "Next hearing date",
                                                               "type": "string",
-                                                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+                                                              "pattern": "^(\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}([.]\\d{1,9})?Z)?$"
                                                             },
                                                             "nextHearingLocation": {
                                                               "title": "Next hearing location",
@@ -541,7 +541,7 @@
                                                             "pleaDate":{
                                                               "title": "Plea date",
                                                               "type": "string",
-                                                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+                                                              "pattern": "^(\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}([.]\\d{1,9})?Z)?$"
                                                             },
                                                             "decision": {
                                                               "title": "Offence decision",
@@ -550,7 +550,7 @@
                                                                 "decisionDate": {
                                                                   "title": "Decision date",
                                                                   "type": "string",
-                                                                  "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+                                                                  "pattern": "^(\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}([.]\\d{1,9})?Z)?$"
                                                                 },
                                                                 "decisionDetail": {
                                                                   "title": "Decision detail",
@@ -567,7 +567,7 @@
                                                             "nextHearingDate": {
                                                               "title": "Next hearing date",
                                                               "type": "string",
-                                                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+                                                              "pattern": "^(\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}([.]\\d{1,9})?Z)?$"
                                                             },
                                                             "nextHearingLocation": {
                                                               "title": "Next hearing location",
@@ -700,12 +700,12 @@
                                             "convictionDate": {
                                               "title": "Conviction Date",
                                               "type": "string",
-                                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+                                              "pattern": "^(\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}([.]\\d{1,9})?Z)?$"
                                             },
                                             "adjournedDate": {
                                               "title": "Adjourned Date",
                                               "type": "string",
-                                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+                                              "pattern": "^(\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}([.]\\d{1,9})?Z)?$"
                                             },
                                             "panel": {
                                               "type": "string",
@@ -719,7 +719,7 @@
                                             "scheduledHearingDate": {
                                               "title": "Scheduled hearing date",
                                               "type": "string",
-                                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+                                              "pattern": "^(\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}([.]\\d{1,9})?Z)?$"
                                             }
                                           }
                                         }
@@ -826,7 +826,7 @@
                                                       "pleaDate":{
                                                         "title": "Plea date",
                                                         "type": "string",
-                                                        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+                                                        "pattern": "^(\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}([.]\\d{1,9})?Z)?$"
                                                       },
                                                       "reportingRestrictionDetail": {
                                                         "title": "Reporting Restrictions Detail",
@@ -883,7 +883,7 @@
                                                       "pleaDate":{
                                                         "title": "Plea date",
                                                         "type": "string",
-                                                        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+                                                        "pattern": "^(\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}([.]\\d{1,9})?Z)?$"
                                                       },
                                                       "reportingRestrictionDetail": {
                                                         "title": "Reporting Restrictions Detail",
