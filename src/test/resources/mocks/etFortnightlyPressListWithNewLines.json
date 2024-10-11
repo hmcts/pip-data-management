@@ -1,6 +1,6 @@
 {
   "document": {
-    "publicationDate": "2022-02-13T09:30:52.123\r\nZ"
+    "publicationDate": "2022-02-13T09:30:52.123Z"
   },
   "venue": {
     "venueName": "Regional Venue\r\n South",
@@ -19,8 +19,8 @@
               {
                 "sittings": [
                   {
-                    "sittingStart": "2022-02-13T09:30:32.123\r\nZ",
-                    "sittingEnd": "2022-02-13T11:30:32.123\r\nZ",
+                    "sittingStart": "2022-02-13T09:30:32.123Z",
+                    "sittingEnd": "2022-02-13T11:30:32.123Z",
                     "hearing": [
                       {
                         "case": [

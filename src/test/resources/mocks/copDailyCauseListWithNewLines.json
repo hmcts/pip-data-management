@@ -1,6 +1,6 @@
 {
   "document": {
-    "publicationDate": "2022-02-14T10:30:52.123/r/nZ"
+    "publicationDate": "2022-02-14T10:30:52.123Z"
   },
   "locationDetails": {
     "region": {
@@ -41,8 +41,8 @@
               {
                 "sittings": [
                   {
-                    "sittingStart": "2022-02-13T14:30:52.123\r\nZ",
-                    "sittingEnd": "2022-02-13T15:30:52.123\r\nZ",
+                    "sittingStart": "2022-02-13T14:30:52.123Z",
+                    "sittingEnd": "2022-02-13T15:30:52.123Z",
                     "hearing": [
                       {
                         "case": [
