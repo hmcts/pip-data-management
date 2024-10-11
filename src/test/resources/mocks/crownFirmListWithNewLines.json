@@ -1,6 +1,6 @@
 {
   "document": {
-    "publicationDate": "2023-03-03T14:07:33.871502\r\nZ",
+    "publicationDate": "2023-03-03T14:07:33.871502Z",
     "version": "3.4\r\n",
     "documentName": "LACX9WOZGD\r\n"
   },
@@ -41,8 +41,8 @@
                 ],
                 "sittings": [
                   {
-                    "sittingStart": "2023-04-12T08:35:11.192108\r\nZ",
-                    "sittingEnd": "2023-04-12T10:00:14.123184\r\nZ",
+                    "sittingStart": "2023-04-12T08:35:11.192108Z",
+                    "sittingEnd": "2023-04-12T10:00:14.123184Z",
                     "channel": [
                       "\r\nTeams",
                       "Attended\r\n"

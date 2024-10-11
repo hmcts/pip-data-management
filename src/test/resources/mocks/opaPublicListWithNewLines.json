@@ -1,7 +1,7 @@
 {
   "document": {
     "version": "\r\n",
-    "publicationDate": "2022-02-13T09:30:52.123Z\r\n",
+    "publicationDate": "2022-02-13T09:30:52.123Z",
     "documentName": "\r\n"
   },
   "venue": {
@@ -78,7 +78,7 @@
                             "reportingRestrictionDetail": [
                               "Case Reporting Restriction detail \r\nline 1"
                             ],
-                            "scheduledHearingDate": "2016-09-13T23:30:52.123\r\nZ",
+                            "scheduledHearingDate": "2016-09-13T23:30:52.123Z",
                             "informant": {
                               "prosecutionAuthorityRef": "Prosecution\r\n Authority ref 1"
                             }

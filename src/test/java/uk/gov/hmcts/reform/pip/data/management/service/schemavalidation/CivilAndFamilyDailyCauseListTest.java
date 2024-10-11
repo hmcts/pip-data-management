@@ -7,6 +7,8 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
@@ -62,6 +64,7 @@ class CivilAndFamilyDailyCauseListTest {
     private static final String COURT_ID = "123";
     private static final ListType LIST_TYPE = ListType.CIVIL_AND_FAMILY_DAILY_CAUSE_LIST;
     private static final LocalDateTime CONTENT_DATE = LocalDateTime.now();
+    private static final String PUBLICATION_DATE_REGEX = "\"publicationDate\":\"[^\"]+\"";
 
     private HeaderGroup headerGroup;
 
@@ -538,6 +541,49 @@ class CivilAndFamilyDailyCauseListTest {
             String listJson = mapper.readValue(text, JsonNode.class).toString();
             assertDoesNotThrow(() -> validationService.validateBody(listJson, headerGroup),
                                CIVIL_AND_FAMILY_CAUSE_LIST_INVALID_MESSAGE);
+        }
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+        "2024-10-01T09:30:15Z",
+        "2024-10-01T09:30:15.123Z",
+        "2024-10-01T09:30:15.123456789Z",
+    })
+    void testValidateWithSuccessWhenValidPublicationDateFormat(String publicationDate) throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream(CIVIL_AND_FAMILY_CAUSE_LIST_VALID_JSON)) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode node = mapper.readValue(text, JsonNode.class);
+
+            String listJson = node.toString()
+                .replaceAll(PUBLICATION_DATE_REGEX, String.format("\"publicationDate\":\"%s\"", publicationDate));
+            assertDoesNotThrow(() -> validationService.validateBody(listJson, headerGroup),
+                               CIVIL_AND_FAMILY_CAUSE_LIST_INVALID_MESSAGE);
+        }
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+        "2024-10-1T09:30:15Z",
+        "2024-10-01T09:30:15.1234567890Z",
+        "2024-10-01T09:30:15.123",
+        ""
+    })
+    void testValidateWithErrorWhenInvalidPublicationDateFormat(String publicationDate) throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream(CIVIL_AND_FAMILY_CAUSE_LIST_VALID_JSON)) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode node = mapper.readValue(text, JsonNode.class);
+
+            String listJson = node.toString()
+                .replaceAll(PUBLICATION_DATE_REGEX, String.format("\"publicationDate\":\"%s\"", publicationDate));
+            assertThrows(PayloadValidationException.class, () -> validationService.validateBody(listJson, headerGroup),
+                         CIVIL_AND_FAMILY_CAUSE_LIST_INVALID_MESSAGE);
         }
     }
 }
