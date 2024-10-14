@@ -1,6 +1,6 @@
 package uk.gov.hmcts.reform.pip.data.management.service;
 
-import org.apache.commons.lang3.tuple.Pair;
+import lombok.Getter;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.ArtefactSummaryData;
 import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.CivilDailyCauseListSummaryData;
@@ -17,8 +17,6 @@ import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.Magistrat
 import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.OpaPressListSummaryData;
 import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.OpaPublicListSummaryData;
 import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.OpaResultsSummaryData;
-import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.SjpPressListSummaryData;
-import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.SjpPublicListSummaryData;
 import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.SscsDailyListSummaryData;
 import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.TribunalNationalListsSummaryData;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.CareStandardsListFileConverter;
@@ -45,6 +43,7 @@ import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.SscsDailyL
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
 import java.util.Map;
+import java.util.Optional;
 
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.CARE_STANDARDS_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.CIVIL_AND_FAMILY_DAILY_CAUSE_LIST;
@@ -74,65 +73,82 @@ import static uk.gov.hmcts.reform.pip.model.publication.ListType.SSCS_DAILY_LIST
 @Component
 @SuppressWarnings({"PMD.ExcessiveImports", "PMD.UseConcurrentHashMap"})
 public class ListConversionFactory {
-    private static final Map<ListType, Pair<FileConverter, ArtefactSummaryData>> LIST_MAP = Map.ofEntries(
-        Map.entry(SJP_PUBLIC_LIST, Pair.of(new SjpPublicListFileConverter(),
-                                           new SjpPublicListSummaryData())),
-        Map.entry(SJP_DELTA_PUBLIC_LIST, Pair.of(new SjpPublicListFileConverter(),
-                                                 new SjpPublicListSummaryData())),
-        Map.entry(SJP_PRESS_LIST, Pair.of(new SjpPressListFileConverter(),
-                                          new SjpPressListSummaryData())),
-        Map.entry(SJP_DELTA_PRESS_LIST, Pair.of(new SjpPressListFileConverter(),
-                                                new SjpPressListSummaryData())),
-        Map.entry(CROWN_DAILY_LIST, Pair.of(new CrownDailyListFileConverter(),
-                                            new CrownDailyListSummaryData())),
-        Map.entry(CROWN_FIRM_LIST, Pair.of(new CrownFirmListFileConverter(),
-                                           new CrownFirmListSummaryData())),
-        Map.entry(CROWN_WARNED_LIST, Pair.of(new CrownWarnedListFileConverter(),
-                                             new CrownWarnedListSummaryData())),
-        Map.entry(MAGISTRATES_STANDARD_LIST, Pair.of(new MagistratesStandardListFileConverter(),
-                                                     new MagistratesStandardListSummaryData())),
-        Map.entry(MAGISTRATES_PUBLIC_LIST, Pair.of(new MagistratesPublicListFileConverter(),
-                                                   new MagistratesPublicListSummaryData())),
-        Map.entry(CIVIL_DAILY_CAUSE_LIST, Pair.of(new CivilDailyCauseListFileConverter(),
-                                                  new CivilDailyCauseListSummaryData())),
-        Map.entry(FAMILY_DAILY_CAUSE_LIST, Pair.of(new FamilyDailyCauseListFileConverter(),
-                                                   new FamilyMixedDailyCauseListSummaryData())),
-        Map.entry(CIVIL_AND_FAMILY_DAILY_CAUSE_LIST, Pair.of(new CivilAndFamilyDailyCauseListFileConverter(),
-                                                             new FamilyMixedDailyCauseListSummaryData())),
-        Map.entry(COP_DAILY_CAUSE_LIST, Pair.of(new CopDailyCauseListFileConverter(),
-                                                new CopDailyCauseListSummaryData())),
-        Map.entry(SSCS_DAILY_LIST, Pair.of(new SscsDailyListFileConverter(),
-                                           new SscsDailyListSummaryData())),
-        Map.entry(SSCS_DAILY_LIST_ADDITIONAL_HEARINGS, Pair.of(new SscsDailyListFileConverter(),
-                                                               new SscsDailyListSummaryData())),
-        Map.entry(IAC_DAILY_LIST, Pair.of(new IacDailyListFileConverter(),
-                                          new IacDailyListSummaryData())),
-        Map.entry(IAC_DAILY_LIST_ADDITIONAL_CASES, Pair.of(new IacDailyListFileConverter(),
-                                          new IacDailyListSummaryData())),
-        Map.entry(PRIMARY_HEALTH_LIST, Pair.of(new PrimaryHealthListFileConverter(),
-                                               new TribunalNationalListsSummaryData())),
-        Map.entry(CARE_STANDARDS_LIST, Pair.of(new CareStandardsListFileConverter(),
-                                               new TribunalNationalListsSummaryData())),
-        Map.entry(ET_DAILY_LIST, Pair.of(new EtDailyListFileConverter(),
-                                         new EtDailyListSummaryData())),
-        Map.entry(ET_FORTNIGHTLY_PRESS_LIST, Pair.of(new EtFortnightlyPressListFileConverter(),
-                                                     new EtFortnightlyPressListSummaryData())),
-        Map.entry(OPA_PUBLIC_LIST, Pair.of(new OpaPublicListFileConverter(), new OpaPublicListSummaryData())),
-        Map.entry(OPA_PRESS_LIST, Pair.of(new OpaPressListFileConverter(), new OpaPressListSummaryData())),
-        Map.entry(OPA_RESULTS, Pair.of(new OpaResultsFileConverter(), new OpaResultsSummaryData()))
+
+    private static final Map<ListType, ConversionPair> LIST_MAP = Map.ofEntries(
+        Map.entry(SJP_PUBLIC_LIST, new ConversionPair(new SjpPublicListFileConverter())),
+        Map.entry(SJP_DELTA_PUBLIC_LIST, new ConversionPair(new SjpPublicListFileConverter())),
+        Map.entry(SJP_PRESS_LIST, new ConversionPair(new SjpPressListFileConverter())),
+        Map.entry(SJP_DELTA_PRESS_LIST, new ConversionPair(new SjpPressListFileConverter())),
+        Map.entry(CROWN_DAILY_LIST, new ConversionPair(new CrownDailyListFileConverter(),
+                                                       new CrownDailyListSummaryData())),
+        Map.entry(CROWN_FIRM_LIST, new ConversionPair(new CrownFirmListFileConverter(),
+                                                      new CrownFirmListSummaryData())),
+        Map.entry(CROWN_WARNED_LIST, new ConversionPair(new CrownWarnedListFileConverter(),
+                                                        new CrownWarnedListSummaryData())),
+        Map.entry(MAGISTRATES_STANDARD_LIST, new ConversionPair(new MagistratesStandardListFileConverter(),
+                                                                new MagistratesStandardListSummaryData())),
+        Map.entry(MAGISTRATES_PUBLIC_LIST, new ConversionPair(new MagistratesPublicListFileConverter(),
+                                                              new MagistratesPublicListSummaryData())),
+        Map.entry(CIVIL_DAILY_CAUSE_LIST, new ConversionPair(new CivilDailyCauseListFileConverter(),
+                                                             new CivilDailyCauseListSummaryData())),
+        Map.entry(FAMILY_DAILY_CAUSE_LIST, new ConversionPair(new FamilyDailyCauseListFileConverter(),
+                                                              new FamilyMixedDailyCauseListSummaryData())),
+        Map.entry(CIVIL_AND_FAMILY_DAILY_CAUSE_LIST, new ConversionPair(new CivilAndFamilyDailyCauseListFileConverter(),
+                                                                        new FamilyMixedDailyCauseListSummaryData())),
+        Map.entry(COP_DAILY_CAUSE_LIST, new ConversionPair(new CopDailyCauseListFileConverter(),
+                                                           new CopDailyCauseListSummaryData())),
+        Map.entry(SSCS_DAILY_LIST, new ConversionPair(new SscsDailyListFileConverter(),
+                                                      new SscsDailyListSummaryData())),
+        Map.entry(SSCS_DAILY_LIST_ADDITIONAL_HEARINGS, new ConversionPair(new SscsDailyListFileConverter(),
+                                                                          new SscsDailyListSummaryData())),
+        Map.entry(IAC_DAILY_LIST, new ConversionPair(new IacDailyListFileConverter(),
+                                                     new IacDailyListSummaryData())),
+        Map.entry(IAC_DAILY_LIST_ADDITIONAL_CASES, new ConversionPair(new IacDailyListFileConverter(),
+                                                                      new IacDailyListSummaryData())),
+        Map.entry(PRIMARY_HEALTH_LIST, new ConversionPair(new PrimaryHealthListFileConverter(),
+                                                          new TribunalNationalListsSummaryData())),
+        Map.entry(CARE_STANDARDS_LIST, new ConversionPair(new CareStandardsListFileConverter(),
+                                                          new TribunalNationalListsSummaryData())),
+        Map.entry(ET_DAILY_LIST, new ConversionPair(new EtDailyListFileConverter(),
+                                                    new EtDailyListSummaryData())),
+        Map.entry(ET_FORTNIGHTLY_PRESS_LIST, new ConversionPair(new EtFortnightlyPressListFileConverter(),
+                                                                new EtFortnightlyPressListSummaryData())),
+        Map.entry(OPA_PUBLIC_LIST, new ConversionPair(new OpaPublicListFileConverter(),
+                                                      new OpaPublicListSummaryData())),
+        Map.entry(OPA_PRESS_LIST, new ConversionPair(new OpaPressListFileConverter(), new OpaPressListSummaryData())),
+        Map.entry(OPA_RESULTS, new ConversionPair(new OpaResultsFileConverter(), new OpaResultsSummaryData()))
     );
 
-    public FileConverter getFileConverter(ListType listType) {
-        if (LIST_MAP.containsKey(listType)) {
-            return LIST_MAP.get(listType).getLeft();
+    /**
+     * Inner class, that provides a wrapper for the file and artefact summary converters.
+     */
+    @Getter
+    static class ConversionPair {
+
+        private final FileConverter fileConverter;
+        private ArtefactSummaryData artefactSummaryData;
+
+        public ConversionPair(FileConverter fileConverter, ArtefactSummaryData artefactSummaryData) {
+            this.fileConverter = fileConverter;
+            this.artefactSummaryData = artefactSummaryData;
         }
-        return null;
+
+        public ConversionPair(FileConverter fileConverter) {
+            this.fileConverter = fileConverter;
+        }
     }
 
-    public ArtefactSummaryData getArtefactSummaryData(ListType listType) {
-        if (LIST_MAP.containsKey(listType)) {
-            return LIST_MAP.get(listType).getRight();
+    public Optional<FileConverter> getFileConverter(ListType listType) {
+        if (LIST_MAP.containsKey(listType) && LIST_MAP.get(listType).getFileConverter() != null) {
+            return Optional.of(LIST_MAP.get(listType).getFileConverter());
         }
-        return null;
+        return Optional.empty();
+    }
+
+    public Optional<ArtefactSummaryData> getArtefactSummaryData(ListType listType) {
+        if (LIST_MAP.containsKey(listType) && LIST_MAP.get(listType).getArtefactSummaryData() != null) {
+            return Optional.of(LIST_MAP.get(listType).getArtefactSummaryData());
+        }
+        return Optional.empty();
     }
 }

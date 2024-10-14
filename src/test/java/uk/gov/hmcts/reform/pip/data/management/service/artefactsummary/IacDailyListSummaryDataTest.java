@@ -44,7 +44,7 @@ class IacDailyListSummaryDataTest {
 
         JsonNode payload = new ObjectMapper().readTree(writer.toString());
         Map<String, List<Map<String, String>>> output = new ListConversionFactory().getArtefactSummaryData(listType)
-            .get(payload);
+            .get().get(payload);
 
         SoftAssertions softly = new SoftAssertions();
 

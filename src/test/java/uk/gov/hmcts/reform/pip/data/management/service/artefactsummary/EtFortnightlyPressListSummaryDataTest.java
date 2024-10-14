@@ -38,7 +38,7 @@ class EtFortnightlyPressListSummaryDataTest {
 
         JsonNode payload = new ObjectMapper().readTree(writer.toString());
         Map<String, List<Map<String, String>>> output = new ListConversionFactory()
-            .getArtefactSummaryData(ET_FORTNIGHTLY_PRESS_LIST)
+            .getArtefactSummaryData(ET_FORTNIGHTLY_PRESS_LIST).get()
             .get(payload);
 
         SoftAssertions softly = new SoftAssertions();

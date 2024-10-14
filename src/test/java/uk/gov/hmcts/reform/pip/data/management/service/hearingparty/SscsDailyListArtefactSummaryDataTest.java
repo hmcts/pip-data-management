@@ -29,7 +29,7 @@ class SscsDailyListArtefactSummaryDataTest {
         try (InputStream mockFile = Thread.currentThread().getContextClassLoader()
             .getResourceAsStream("mocks/hearingparty/sscsDailyList.json")) {
             JsonNode payload = new ObjectMapper().readTree(new String(mockFile.readAllBytes()));
-            output = new ListConversionFactory().getArtefactSummaryData(listType)
+            output = new ListConversionFactory().getArtefactSummaryData(listType).get()
                 .get(payload);
         }
 

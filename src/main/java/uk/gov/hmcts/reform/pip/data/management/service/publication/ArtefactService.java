@@ -30,9 +30,14 @@ public class ArtefactService {
     private final AccountManagementService accountManagementService;
     private final AzureArtefactBlobService azureArtefactBlobService;
 
+    @Value("${payload.json.max-size-search}")
+    private int maxPayloadSizeForJsonSearch;
 
-    @Value("${payload.json.max-size-in-kb}")
-    private int maxPayloadSize;
+    @Value("${payload.json.max-size-excel}")
+    private int maxPayloadSizeForExcel;
+
+    @Value("${payload.json.max-size-pdf}")
+    private int maxPayloadSizeForPdf;
 
     @Autowired
     public ArtefactService(ArtefactRepository artefactRepository,
@@ -163,8 +168,16 @@ public class ArtefactService {
         return listType.getListLocationLevel();
     }
 
-    public boolean payloadWithinLimit(Float artefactPayloadSize) {
-        return artefactPayloadSize == null || artefactPayloadSize < maxPayloadSize;
+    public boolean payloadWithinJsonSearchLimit(Float artefactPayloadSize) {
+        return artefactPayloadSize == null || artefactPayloadSize < maxPayloadSizeForJsonSearch;
+    }
+
+    public boolean payloadWithinExcelLimit(Float artefactPayloadSize) {
+        return artefactPayloadSize == null || artefactPayloadSize < maxPayloadSizeForExcel;
+    }
+
+    public boolean payloadWithinPdfLimit(Float artefactPayloadSize) {
+        return artefactPayloadSize == null || artefactPayloadSize < maxPayloadSizeForPdf;
     }
 
 }
