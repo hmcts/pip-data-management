@@ -115,9 +115,7 @@ public class PublicationService {
 
     @Async
     public void processCreatedPublication(Artefact artefact, String payload) {
-        if (artefactService.payloadWithinLimit(artefact.getPayloadSize())) {
-            publicationManagementService.generateFiles(artefact.getArtefactId(), payload);
-        }
+        publicationManagementService.generateFiles(artefact.getArtefactId(), payload);
         artefactTriggerService.checkAndTriggerSubscriptionManagement(artefact);
     }
 
@@ -140,10 +138,8 @@ public class PublicationService {
             artefact.setArtefactId(value.getArtefactId());
             artefact.setPayload(value.getPayload());
             artefact.setSupersededCount(value.getSupersededCount() + 1);
-            if (!artefactService.payloadWithinLimit(artefact.getPayloadSize())) {
-                publicationManagementService.deleteFiles(artefact.getArtefactId(), artefact.getListType(),
-                                                         artefact.getLanguage());
-            }
+            publicationManagementService.deleteFiles(artefact.getArtefactId(), artefact.getListType(),
+                                                     artefact.getLanguage());
         });
         return foundArtefact.isPresent();
     }

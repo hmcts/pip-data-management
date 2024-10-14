@@ -38,7 +38,7 @@ class CivilAndFamilyDailyCauseListSummaryDataTest {
 
         JsonNode payload = new ObjectMapper().readTree(writer.toString());
         Map<String, List<Map<String, String>>> output = new ListConversionFactory()
-            .getArtefactSummaryData(CIVIL_AND_FAMILY_DAILY_CAUSE_LIST)
+            .getArtefactSummaryData(CIVIL_AND_FAMILY_DAILY_CAUSE_LIST).get()
             .get(payload);
 
         SoftAssertions softly = new SoftAssertions();

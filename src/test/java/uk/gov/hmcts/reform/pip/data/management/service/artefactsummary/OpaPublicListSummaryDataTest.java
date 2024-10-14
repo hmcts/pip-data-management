@@ -35,7 +35,7 @@ class OpaPublicListSummaryDataTest {
 
         JsonNode payload = new ObjectMapper().readTree(writer.toString());
         Map<String, List<Map<String, String>>> output = new ListConversionFactory()
-            .getArtefactSummaryData(OPA_PUBLIC_LIST)
+            .getArtefactSummaryData(OPA_PUBLIC_LIST).get()
             .get(payload);
 
         SoftAssertions softly = new SoftAssertions();
