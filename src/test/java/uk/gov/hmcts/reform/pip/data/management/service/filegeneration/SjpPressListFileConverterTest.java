@@ -50,7 +50,7 @@ class SjpPressListFileConverterTest {
                                                  "listType", listType.name()
         );
 
-        String outputHtml =  listConversionFactory.getFileConverter(listType)
+        String outputHtml =  listConversionFactory.getFileConverter(listType).get()
             .convert(getInput("/mocks/sjpPressList.json"), metadataMap, language);
         Document document = Jsoup.parse(outputHtml);
 

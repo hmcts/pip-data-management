@@ -65,8 +65,8 @@ class PublicationCreationRunnerTest {
 
     @BeforeEach
     void setup() {
-        lenient().when(artefactService.payloadWithinLimit(PAYLOAD_SIZE_WITHIN_LIMIT)).thenReturn(true);
-        lenient().when(artefactService.payloadWithinLimit(PAYLOAD_SIZE_OVER_LIMIT)).thenReturn(false);
+        lenient().when(artefactService.payloadWithinJsonSearchLimit(PAYLOAD_SIZE_WITHIN_LIMIT)).thenReturn(true);
+        lenient().when(artefactService.payloadWithinJsonSearchLimit(PAYLOAD_SIZE_OVER_LIMIT)).thenReturn(false);
     }
 
     @Test
