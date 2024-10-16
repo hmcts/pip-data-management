@@ -130,7 +130,7 @@
           "examples": [
             "2016-09-13T23:30:52.123Z"
           ],
-          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}([.]\\d{1,9})?Z$"
         },
         "version": {
           "title": "Version",
@@ -280,7 +280,7 @@
                                   "type": "string",
                                   "default": "",
                                   "examples": [],
-                                  "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+                                  "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}([.]\\d{1,9})?Z$"
                                 },
                                 "sittingEnd": {
                                   "description": "Sitting End Time",
@@ -288,7 +288,7 @@
                                   "type": "string",
                                   "default": "",
                                   "examples": [],
-                                  "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+                                  "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}([.]\\d{1,9})?Z$"
                                 },
                                 "hearing": {
                                   "type": "array",

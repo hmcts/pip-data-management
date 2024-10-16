@@ -95,10 +95,11 @@ service-to-service:
   subscription-management: ${SUBSCRIPTION_MANAGEMENT_URL:https://pip-subscription-management.staging.platform.hmcts.net}
   account-management: ${ACCOUNT_MANAGEMENT_URL:https://pip-account-management.staging.platform.hmcts.net}
   publication-services: ${PUBLICATION_SERVICES_URL:https://pip-publication-services.staging.platform.hmcts.net}
-
 payload:
   json:
-    max-size-in-kb: ${MAX_PAYLOAD_SIZE:256}
+    max-size-search: ${JSON_SEARCH_MAX_INBOUND_SIZE:256}
+    max-size-excel: ${EXCEL_MAX_INBOUND_SIZE:4096}
+    max-size-pdf: ${PDF_MAX_INBOUND_SIZE:256}
     party-search-config:
       hearings-path: "$['courtLists'][*]['courtHouse']['courtRoom'][*]['session'][*]['sittings'][*]['hearing'][*]"
       cases-path: "$['case'][*]['caseNumber', 'caseName', 'caseUrn']"

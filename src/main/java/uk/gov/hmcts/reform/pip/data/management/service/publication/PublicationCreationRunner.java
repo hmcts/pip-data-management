@@ -84,7 +84,7 @@ public class PublicationCreationRunner {
 
     private void preprocessJsonPublicationForCreation(Artefact artefact, String payload) {
         preprocessPublicationForCreation(artefact);
-        if (payload != null && artefactService.payloadWithinLimit(artefact.getPayloadSize())) {
+        if (payload != null && artefactService.payloadWithinJsonSearchLimit(artefact.getPayloadSize())) {
             artefact.setSearch(jsonExtractor.extractSearchTerms(payload));
         } else {
             artefact.setSearch(Collections.emptyMap());
