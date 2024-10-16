@@ -16,13 +16,7 @@ import java.util.Map;
 public class FamilyMixedDailyCauseListSummaryData implements ArtefactSummaryData {
     @Override
     public Map<String, List<Map<String, String>>> get(JsonNode payload) {
-        boolean hearingHasParty = GeneralHelper.hearingHasParty(payload);
-        if (hearingHasParty) {
-            FamilyMixedListHelper.manipulatedListDataPartyAtHearingLevel(payload, Language.ENGLISH);
-        } else {
-            FamilyMixedListHelper.manipulatedListData(payload, Language.ENGLISH);
-        }
-
+        FamilyMixedListHelper.manipulatedListData(payload, Language.ENGLISH);
         List<Map<String, String>> summaryCases = new ArrayList<>();
         payload.get("courtLists").forEach(
             courtList -> courtList.get("courtHouse").get("courtRoom").forEach(
@@ -31,10 +25,7 @@ public class FamilyMixedDailyCauseListSummaryData implements ArtefactSummaryData
                         sitting -> sitting.get("hearing").forEach(
                             hearing -> hearing.get("case").forEach(
                                 hearingCase -> {
-                                    String applicant = hearingHasParty
-                                        ? GeneralHelper.findAndReturnNodeText(hearing, "applicant")
-                                        : GeneralHelper.findAndReturnNodeText(hearingCase, "applicant");
-
+                                    String applicant = GeneralHelper.findAndReturnNodeText(hearingCase, "applicant");
                                     Map<String, String> fields = ImmutableMap.of(
                                         "Applicant", applicant,
                                         "Case reference",

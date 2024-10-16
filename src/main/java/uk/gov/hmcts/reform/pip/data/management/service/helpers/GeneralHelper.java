@@ -11,7 +11,6 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 import static java.util.Map.Entry.comparingByKey;
@@ -112,24 +111,5 @@ public final class GeneralHelper {
             .sorted(comparingByKey(Comparator.naturalOrder()))
             .collect(Collectors.toMap(
                 Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
-    }
-
-    // TODO: To be removed once all lists have party field on the case level.
-    public static boolean hearingHasParty(JsonNode jsonData) {
-        AtomicBoolean hearingHasParty = new AtomicBoolean(false);
-        jsonData.get("courtLists").forEach(
-            courtList -> courtList.get("courtHouse").get("courtRoom").forEach(
-                courtRoom -> courtRoom.get("session").forEach(
-                    session -> session.get("sittings").forEach(
-                        sitting -> sitting.get("hearing").forEach(hearing -> {
-                            if (hearing.has("party")) {
-                                hearingHasParty.set(true);
-                            }
-                        })
-                    )
-                )
-            )
-        );
-        return hearingHasParty.get();
     }
 }
