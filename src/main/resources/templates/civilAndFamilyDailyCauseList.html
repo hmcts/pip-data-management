@@ -223,29 +223,27 @@
                           <td class="govuk-table__cell" th:classappend="${noBorder}" th:text="${sitting.get('caseHearingChannel').asText()}"/>
                           <td class="govuk-table__cell no-wrap" th:classappend="${noBorder}" th:text="${sitting.get('formattedDuration').asText()}"/>
 
-                          <th:block th:with="node=${partyAtHearingLevel} ? ${hearing} : ${case} ">
-                            <th:block th:if="${#strings.isEmpty(node.get('applicantRepresentative').asText())}">
-                              <td class="govuk-table__cell" th:classappend="${noBorder}" th:text="${node.get('applicant').asText()}"/>
+                          <th:block th:if="${#strings.isEmpty(case.get('applicantRepresentative').asText())}">
+                            <td class="govuk-table__cell" th:classappend="${noBorder}" th:text="${case.get('applicant').asText()}"/>
+                          </th:block>
+                          <th:block th:if="!${#strings.isEmpty(case.get('applicantRepresentative').asText())}">
+                            <th:block th:if="${#strings.isEmpty(case.get('applicant').asText())}">
+                              <td class="govuk-table__cell" th:classappend="${noBorder}" th:text="${i18n.legalAdvisor + case.get('applicantRepresentative').asText()}" />
                             </th:block>
-                            <th:block th:if="!${#strings.isEmpty(node.get('applicantRepresentative').asText())}">
-                              <th:block th:if="${#strings.isEmpty(node.get('applicant').asText())}">
-                                <td class="govuk-table__cell" th:classappend="${noBorder}" th:text="${i18n.legalAdvisor + node.get('applicantRepresentative').asText()}" />
-                              </th:block>
-                              <th:block th:if="!${#strings.isEmpty(node.get('applicant').asText())}">
-                                <td class="govuk-table__cell" th:classappend="${noBorder}" th:text="${node.get('applicant').asText() + ', ' + i18n.legalAdvisor + node.get('applicantRepresentative').asText()}" />
-                              </th:block>
+                            <th:block th:if="!${#strings.isEmpty(case.get('applicant').asText())}">
+                              <td class="govuk-table__cell" th:classappend="${noBorder}" th:text="${case.get('applicant').asText() + ', ' + i18n.legalAdvisor + case.get('applicantRepresentative').asText()}" />
                             </th:block>
+                          </th:block>
 
-                            <th:block th:if="${#strings.isEmpty(node.get('respondentRepresentative').asText())}">
-                              <td class="govuk-table__cell" th:classappend="${noBorder}" th:text="${node.get('respondent').asText()}"/>
+                          <th:block th:if="${#strings.isEmpty(case.get('respondentRepresentative').asText())}">
+                            <td class="govuk-table__cell" th:classappend="${noBorder}" th:text="${case.get('respondent').asText()}"/>
+                          </th:block>
+                          <th:block th:if="!${#strings.isEmpty(case.get('respondentRepresentative').asText())}">
+                            <th:block th:if="${#strings.isEmpty(case.get('respondent').asText())}">
+                              <td class="govuk-table__cell" th:classappend="${noBorder}" th:text="${i18n.legalAdvisor + case.get('respondentRepresentative').asText()}" />
                             </th:block>
-                            <th:block th:if="!${#strings.isEmpty(node.get('respondentRepresentative').asText())}">
-                              <th:block th:if="${#strings.isEmpty(node.get('respondent').asText())}">
-                                <td class="govuk-table__cell" th:classappend="${noBorder}" th:text="${i18n.legalAdvisor + node.get('respondentRepresentative').asText()}" />
-                              </th:block>
-                              <th:block th:if="!${#strings.isEmpty(node.get('respondent').asText())}">
-                                <td class="govuk-table__cell" th:classappend="${noBorder}" th:text="${node.get('respondent').asText() + ', ' + i18n.legalAdvisor + node.get('respondentRepresentative').asText()}" />
-                              </th:block>
+                            <th:block th:if="!${#strings.isEmpty(case.get('respondent').asText())}">
+                              <td class="govuk-table__cell" th:classappend="${noBorder}" th:text="${case.get('respondent').asText() + ', ' + i18n.legalAdvisor + case.get('respondentRepresentative').asText()}" />
                             </th:block>
                           </th:block>
                         </tr>
