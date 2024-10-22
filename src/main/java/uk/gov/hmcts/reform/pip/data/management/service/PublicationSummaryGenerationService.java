@@ -25,17 +25,22 @@ public class PublicationSummaryGenerationService {
                 if (summarySection.getKey() == null) {
                     summarySection.getValue().forEach(
                         summaryCase -> output
-                            .append("---")
+                            .append("---\n")
                             .append(formatSummaryField(summaryCase))
+                            .append("\n\n")
                     );
                 } else {
                     output
-                        .append("---\n\n##")
+                        .append("---\n##")
                         .append(summarySection.getKey())
                         .append('\n');
 
                     summarySection.getValue()
-                        .forEach(summaryCase -> output.append(formatSummaryField(summaryCase)));
+                        .forEach(
+                            summaryCase -> output
+                                .append(formatSummaryField(summaryCase))
+                                .append("\n\n")
+                        );
                 }
             });
 
@@ -44,8 +49,6 @@ public class PublicationSummaryGenerationService {
 
     private String formatSummaryField(Map<String, String> summaryCase) {
         StringBuilder summaryFields = new StringBuilder(20);
-        summaryFields.append("\n•");
-
         summaryCase.entrySet().forEach(
             field -> summaryFields
                 .append(field.getKey())
