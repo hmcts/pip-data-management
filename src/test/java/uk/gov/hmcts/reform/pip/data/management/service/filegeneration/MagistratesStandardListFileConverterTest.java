@@ -247,7 +247,7 @@ class MagistratesStandardListFileConverterTest {
 
         softly.assertThat(body.get(17).text())
             .as(CASE_INFO_MESSAGE)
-            .contains("Hearing of Type:");
+            .contains("Hearing Type:");
 
         softly.assertThat(body.get(18).text())
             .as(CASE_INFO_MESSAGE)
