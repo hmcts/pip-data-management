@@ -508,7 +508,7 @@ class PublicationManagementTest {
 
         String responseContent = response.getResponse().getContentAsString();
         assertTrue(
-            responseContent.contains("Defendant - individualFirstName individualMiddleName IndividualSurname"),
+            responseContent.contains("Name - individualFirstName individualMiddleName IndividualSurname"),
             CONTENT_MISMATCH_ERROR
         );
         assertTrue(responseContent.contains("Prosecutor - Prosecution Authority ref 1"), CONTENT_MISMATCH_ERROR);
