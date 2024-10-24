@@ -28,7 +28,7 @@ public class OpaPressListSummaryData implements ArtefactSummaryData {
 
                 Map<String, String> fields = ImmutableMap.of(
                     "Defendant", item.getDefendantInfo().getName(),
-                    "Prosecutor", item.getDefendantInfo().getProsecutor(),
+                    "Prosecuting authority", item.getDefendantInfo().getProsecutor(),
                     "Postcode", item.getDefendantInfo().getPostcode(),
                     "Case reference", item.getCaseInfo().getUrn(),
                     "Offence", offenceTitles

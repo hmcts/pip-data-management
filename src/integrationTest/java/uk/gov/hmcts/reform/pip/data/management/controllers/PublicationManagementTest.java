@@ -260,7 +260,7 @@ class PublicationManagementTest {
 
         String responseContent = response.getResponse().getContentAsString();
         assertTrue(responseContent.contains("Defendant - Surname 1, Forename 1"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Prosecutor - Pro_Auth"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains("Prosecuting authority - Pro_Auth"), CONTENT_MISMATCH_ERROR);
         assertTrue(responseContent.contains("Case reference - 1234"), CONTENT_MISMATCH_ERROR);
         assertTrue(
             responseContent.contains(HEARING_TYPE_FIELD),
@@ -280,7 +280,7 @@ class PublicationManagementTest {
 
         String responseContent = response.getResponse().getContentAsString();
         assertTrue(responseContent.contains("Defendant - Surname 1, Forename 1"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Prosecutor - Prosecutor org"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains("Prosecuting authority - Prosecutor org"), CONTENT_MISMATCH_ERROR);
         assertTrue(responseContent.contains("Case reference - 1234"), CONTENT_MISMATCH_ERROR);
         assertTrue(responseContent.contains(HEARING_TYPE_FIELD), CONTENT_MISMATCH_ERROR);
     }
@@ -297,7 +297,7 @@ class PublicationManagementTest {
 
         String responseContent = response.getResponse().getContentAsString();
         assertTrue(responseContent.contains("Defendant - Surname, Forenames"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Prosecutor - OrganisationName2"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains("Prosecuting authority - OrganisationName2"), CONTENT_MISMATCH_ERROR);
         assertTrue(responseContent.contains(CASE_REFERENCE_FIELD), CONTENT_MISMATCH_ERROR);
         assertTrue(responseContent.contains("Hearing date - 21/07/2024"), CONTENT_MISMATCH_ERROR);
     }
@@ -368,7 +368,7 @@ class PublicationManagementTest {
         String responseContent = response.getResponse().getContentAsString();
         assertTrue(responseContent.contains("Bail List"), CONTENT_MISMATCH_ERROR);
         assertTrue(
-            responseContent.contains("Appellant - Surname"),
+            responseContent.contains("Appellant/Applicant - Surname"),
             CONTENT_MISMATCH_ERROR
         );
         assertTrue(responseContent.contains("Prosecuting authority - Authority surname"), CONTENT_MISMATCH_ERROR);
@@ -387,7 +387,7 @@ class PublicationManagementTest {
 
         String responseContent = response.getResponse().getContentAsString();
         assertTrue(responseContent.contains("Defendant - Surname, Forename"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Prosecutor - Authority org name"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains("Prosecuting authority - Authority org name"), CONTENT_MISMATCH_ERROR);
         assertTrue(responseContent.contains(CASE_REFERENCE_FIELD), CONTENT_MISMATCH_ERROR);
         assertTrue(
             responseContent.contains(HEARING_TYPE_FIELD),
@@ -406,7 +406,7 @@ class PublicationManagementTest {
             .andExpect(status().isOk()).andReturn();
         String responseContent = response.getResponse().getContentAsString();
         assertTrue(responseContent.contains("Defendant - Surname1, Forename1"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Prosecutor - Test1234"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains("Prosecuting authority - Test1234"), CONTENT_MISMATCH_ERROR);
         assertTrue(responseContent.contains("Case reference - 45684548"), CONTENT_MISMATCH_ERROR);
         assertTrue(responseContent.contains("Hearing type - mda"), CONTENT_MISMATCH_ERROR);
         assertTrue(responseContent.contains("Offence - drink driving, Assault by beating"), CONTENT_MISMATCH_ERROR);
@@ -473,7 +473,7 @@ class PublicationManagementTest {
         assertTrue(responseContent.contains("Appellant - Surname"), CONTENT_MISMATCH_ERROR);
         assertTrue(responseContent.contains("Respondent - Respondent Organisation, Respondent Organisation 2"),
                    CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Appeal reference - 12341235"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains("Case reference - 12341235"), CONTENT_MISMATCH_ERROR);
     }
 
     @Test
@@ -489,7 +489,8 @@ class PublicationManagementTest {
         String responseContent = response.getResponse().getContentAsString();
         assertTrue(responseContent.contains("Defendant - Surname, Forename MiddleName"),
                    CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Prosecuting authority ref"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains("Prosecuting authority - Prosecuting authority ref"),
+                   CONTENT_MISMATCH_ERROR);
         assertTrue(responseContent.contains("Postcode - BB1 1BB"), CONTENT_MISMATCH_ERROR);
         assertTrue(responseContent.contains("Case reference - URN8888"), CONTENT_MISMATCH_ERROR);
         assertTrue(responseContent.contains("Offence - Offence title 2"), CONTENT_MISMATCH_ERROR);
@@ -507,7 +508,7 @@ class PublicationManagementTest {
 
         String responseContent = response.getResponse().getContentAsString();
         assertTrue(
-            responseContent.contains("Defendant - individualFirstName individualMiddleName IndividualSurname"),
+            responseContent.contains("Name - individualFirstName individualMiddleName IndividualSurname"),
             CONTENT_MISMATCH_ERROR
         );
         assertTrue(responseContent.contains("Prosecutor - Prosecution Authority ref 1"), CONTENT_MISMATCH_ERROR);

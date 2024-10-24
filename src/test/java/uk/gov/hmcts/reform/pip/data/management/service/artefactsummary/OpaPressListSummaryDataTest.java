@@ -71,7 +71,7 @@ class OpaPressListSummaryDataTest {
 
         softly.assertThat(keys.get(1))
             .as(SUMMARY_FIELD_KEY_MESSAGE)
-            .isEqualTo("Prosecutor");
+            .isEqualTo("Prosecuting authority");
 
         softly.assertThat(keys.get(2))
             .as(SUMMARY_FIELD_KEY_MESSAGE)

@@ -33,7 +33,7 @@ public class MagistratesStandardListSummaryData implements ArtefactSummaryData {
 
                         Map<String, String> fields = ImmutableMap.of(
                             "Defendant", sitting.getDefendantInfo().getName(),
-                            "Prosecutor", caseInfo.getProsecutingAuthorityCode(),
+                            "Prosecuting authority", caseInfo.getProsecutingAuthorityCode(),
                             "Case reference", caseInfo.getCaseNumber(),
                             "Hearing type", caseInfo.getHearingType(),
                             "Offence", offenceTitles

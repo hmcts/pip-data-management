@@ -26,7 +26,7 @@ public class CrownWarnedListSummaryData implements ArtefactSummaryData {
             .forEach(row -> {
                 Map<String, String> fields = ImmutableMap.of(
                     "Defendant", row.getDefendant(),
-                    "Prosecutor", row.getProsecutingAuthority(),
+                    "Prosecuting authority", row.getProsecutingAuthority(),
                     "Case reference", row.getCaseReference(),
                     "Hearing date", row.getHearingDate()
                 );

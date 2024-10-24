@@ -32,7 +32,7 @@ public class IacDailyListSummaryData implements ArtefactSummaryData {
                                 PartyRoleHelper.findAndManipulatePartyInformation(hearingCase, false);
 
                                 Map<String, String> fields = ImmutableMap.of(
-                                    "Appellant",
+                                    "Appellant/Applicant",
                                     GeneralHelper.findAndReturnNodeText(hearingCase, "claimant"),
                                     "Prosecuting authority",
                                     GeneralHelper.findAndReturnNodeText(hearingCase, "prosecutingAuthority"),

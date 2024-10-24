@@ -56,15 +56,15 @@ class PublicationSummaryGenerationServiceTest {
             .as(SUMMARY_MESSAGE)
             .containsExactly(
                 LINE_SEPARATOR,
-                "•key1 - value1",
+                "key1 - value1",
                 "key2 - value2",
                 "key3 - value3",
                 LINE_SEPARATOR,
-                "•key1 - value4",
+                "key1 - value4",
                 "key2 - value5",
                 "key3 - value6",
                 LINE_SEPARATOR,
-                "•key1 - value7",
+                "key1 - value7",
                 "key2 - value8",
                 "key3 - value9"
             );
@@ -86,15 +86,15 @@ class PublicationSummaryGenerationServiceTest {
             .containsExactly(
                 LINE_SEPARATOR,
                 "##heading1",
-                "•key1 - value1",
+                "key1 - value1",
                 "key2 - value2",
                 "key3 - value3",
                 LINE_SEPARATOR,
                 "##heading2",
-                "•key1 - value4",
+                "key1 - value4",
                 "key2 - value5",
                 "key3 - value6",
-                "•key1 - value7",
+                "key1 - value7",
                 "key2 - value8",
                 "key3 - value9"
             );
