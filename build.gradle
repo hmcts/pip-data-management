@@ -263,6 +263,7 @@ dependencies {
   testImplementation group: 'org.apiguardian', name: 'apiguardian-api', version: '1.1.2'
   testImplementation group: 'com.github.hmcts', name: 'fortify-client', version: '1.4.4', classifier: 'all'
   testImplementation group: 'org.jsoup', name: 'jsoup', version: '1.18.1'
+  testImplementation group: 'com.google.code.gson', name: 'gson', version: '2.11.0'
 
   functionalTestImplementation group: 'io.rest-assured', name: 'rest-assured'
 
