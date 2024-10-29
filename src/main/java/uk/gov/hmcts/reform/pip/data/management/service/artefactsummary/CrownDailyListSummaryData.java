@@ -32,7 +32,7 @@ public class CrownDailyListSummaryData implements ArtefactSummaryData {
                                 Map<String, String> fields = ImmutableMap.of(
                                     "Defendant",
                                     GeneralHelper.findAndReturnNodeText(hearingCase, "defendant"),
-                                    "Prosecutor",
+                                    "Prosecuting authority",
                                     GeneralHelper.findAndReturnNodeText(hearingCase, "prosecutingAuthority"),
                                     "Case reference",
                                     GeneralHelper.findAndReturnNodeText(hearingCase, "caseNumber"),
