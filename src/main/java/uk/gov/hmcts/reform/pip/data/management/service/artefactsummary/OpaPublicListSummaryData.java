@@ -26,7 +26,7 @@ public class OpaPublicListSummaryData implements ArtefactSummaryData {
                 .collect(Collectors.joining(", "));
 
             Map<String, String> fields = ImmutableMap.of(
-                "Defendant", item.getDefendant().getName(),
+                "Name", item.getDefendant().getName(),
                 "Prosecutor", item.getDefendant().getProsecutor(),
                 "Case reference", item.getCaseInfo().getUrn(),
                 "Offence", offenceTitles
