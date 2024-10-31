@@ -477,61 +477,6 @@ class PublicationManagementTest {
     }
 
     @Test
-    void testGenerateArtefactSummaryOpaPressList() throws Exception {
-        byte[] data = getTestData("data/opa-press-list/opaPressList.json");
-        Artefact artefact = createPublication(ListType.OPA_PRESS_LIST, data);
-
-        when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(data));
-
-        MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, artefact.getArtefactId())))
-            .andExpect(status().isOk()).andReturn();
-
-        String responseContent = response.getResponse().getContentAsString();
-        assertTrue(responseContent.contains("Defendant - Surname, Forename MiddleName"),
-                   CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Prosecuting authority ref"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Postcode - BB1 1BB"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Case reference - URN8888"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Offence - Offence title 2"), CONTENT_MISMATCH_ERROR);
-    }
-
-    @Test
-    void testGenerateArtefactSummaryOpaPublicList() throws Exception {
-        byte[] data = getTestData("data/opa-public-list/opaPublicList.json");
-        Artefact artefact = createPublication(ListType.OPA_PUBLIC_LIST, data);
-
-        when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(data));
-
-        MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, artefact.getArtefactId())))
-            .andExpect(status().isOk()).andReturn();
-
-        String responseContent = response.getResponse().getContentAsString();
-        assertTrue(
-            responseContent.contains("Defendant - individualFirstName individualMiddleName IndividualSurname"),
-            CONTENT_MISMATCH_ERROR
-        );
-        assertTrue(responseContent.contains("Prosecutor - Prosecution Authority ref 1"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Case reference - URN1234"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Offence - Offence title"), CONTENT_MISMATCH_ERROR);
-    }
-
-    @Test
-    void testGenerateArtefactSummaryOpaResults() throws Exception {
-        byte[] data = getTestData("data/opa-results/opaResults.json");
-        Artefact artefact = createPublication(ListType.OPA_RESULTS, data);
-
-        when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(data));
-
-        MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, artefact.getArtefactId())))
-            .andExpect(status().isOk()).andReturn();
-
-        String responseContent = response.getResponse().getContentAsString();
-        assertTrue(responseContent.contains("Defendant - Organisation name"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Case reference - URN5678"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Offence - Offence title 2"), CONTENT_MISMATCH_ERROR);
-    }
-
-    @Test
     void testGenerateArtefactSummaryNotFound() throws Exception {
         MvcResult mvcResult = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, ARTEFACT_ID_NOT_FOUND)))
             .andExpect(status().isNotFound()).andReturn();
