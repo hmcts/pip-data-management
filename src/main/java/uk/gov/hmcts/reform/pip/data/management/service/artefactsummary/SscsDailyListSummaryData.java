@@ -51,7 +51,7 @@ public class SscsDailyListSummaryData implements ArtefactSummaryData {
             Map<String, String> fields = ImmutableMap.of(
                 "Appellant", hearingCase.getAppellant(),
                 "Respondent", hearingCase.getRespondent(),
-                "Appeal reference", hearingCase.getAppealRef()
+                "Case reference", hearingCase.getAppealRef()
             );
             summaryCases.add(fields);
         }

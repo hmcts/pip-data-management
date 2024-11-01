@@ -70,7 +70,7 @@ class SscsDailyListArtefactSummaryDataTest {
 
         softly.assertThat(keys.get(2))
             .as(SUMMARY_FIELD_KEY_MESSAGE)
-            .isEqualTo("Appeal reference");
+            .isEqualTo("Case reference");
     }
 
     private void assertSummaryFieldValues(SoftAssertions softly, Map<String, String> summaryFields) {
