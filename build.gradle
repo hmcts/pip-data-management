@@ -211,7 +211,7 @@ dependencies {
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-json'
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-thymeleaf'
 
-  implementation group: 'com.azure', name: 'azure-storage-blob', version: '12.28.0'
+  implementation group: 'com.azure', name: 'azure-storage-blob', version: '12.28.1'
 
   implementation group: 'com.jayway.jsonpath', name: 'json-path', version: '2.9.0'
   implementation group: 'io.hypersistence', name: 'hypersistence-utils-hibernate-63', version: '3.8.3'
