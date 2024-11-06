@@ -134,9 +134,6 @@ validations:
     IAC_DAILY_LIST_ADDITIONAL_CASES: "schemas/iac_daily_list.json"
     CARE_STANDARDS_LIST: "schemas/care_standards_list.json"
     PRIMARY_HEALTH_LIST: "schemas/primary_health_list.json"
-    OPA_PRESS_LIST: "schemas/opa_press_list.json"
-    OPA_PUBLIC_LIST: "schemas/opa_public_list.json"
-    OPA_RESULTS: "schemas/opa_results.json"
 
 springdoc:
   swagger-ui:
