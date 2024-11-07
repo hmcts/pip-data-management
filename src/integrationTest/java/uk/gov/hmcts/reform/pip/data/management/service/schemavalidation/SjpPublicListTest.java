@@ -30,17 +30,16 @@ import java.time.LocalDateTime;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@ActiveProfiles("integration")
 @SpringBootTest(classes = {Application.class, AzureBlobConfigurationTestConfiguration.class})
-@ActiveProfiles(profiles = "test")
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
-
 class SjpPublicListTest {
     @Autowired
     ValidationService validationService;
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
-    private static final String SJP_PUBLIC_LIST_VALID_JSON = "mocks/sjpPublicList.json";
-    private static final String SJP_PUBLIC_LIST_WITH_NEW_LINES = "mocks/sjpPublicListWithNewLines.json";
+    private static final String SJP_PUBLIC_LIST_VALID_JSON = "data/sjp-public-list//sjpPublicList.json";
+    private static final String SJP_PUBLIC_LIST_WITH_NEW_LINES = "data/sjp-public-list//sjpPublicListWithNewLines.json";
     private static final String SJP_PUBLIC_VALID_MESSAGE = "SJP public list should be valid";
     private static final String SJP_PUBLIC_INVALID_MESSAGE = "Invalid sjp public";
 

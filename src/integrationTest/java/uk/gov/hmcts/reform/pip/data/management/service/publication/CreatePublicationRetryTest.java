@@ -7,16 +7,21 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.dao.CannotAcquireLockException;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.Application;
 import uk.gov.hmcts.reform.pip.data.management.config.AzureBlobConfigurationTestConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.AzureArtefactBlobService;
-import uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
+import uk.gov.hmcts.reform.pip.model.publication.Language;
+import uk.gov.hmcts.reform.pip.model.publication.ListType;
+import uk.gov.hmcts.reform.pip.model.publication.Sensitivity;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThatCode;
@@ -28,17 +33,23 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.FILE;
-import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.PAYLOAD;
-import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.PAYLOAD_STRIPPED;
-import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.PAYLOAD_URL;
 
-@ActiveProfiles(profiles = "test")
+@ActiveProfiles("integration")
 @SpringBootTest(classes = {Application.class, AzureBlobConfigurationTestConfiguration.class})
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
 @EnableRetry
 class CreatePublicationRetryTest {
     private static final int RETRY_MAX_ATTEMPTS = 5;
+    private static final String SOURCE_ARTEFACT_ID = "1234";
+    private static final String PROVENANCE = "provenance";
+    private static final String PROVENANCE_ID = "1234";
+    private static final LocalDateTime START_OF_TODAY_CONTENT_DATE = LocalDateTime.now().toLocalDate().atStartOfDay();
+    private static final String PAYLOAD = "This is a payload";
+    private static final String PAYLOAD_URL = "https://ThisIsATestPayload";
+    private static final String PAYLOAD_STRIPPED = "ThisIsATestPayload";
+    private static final MultipartFile FILE = new MockMultipartFile("test", (byte[]) null);
+
+    private final Artefact artefact = buildArtefact();
 
     @MockBean
     AzureArtefactBlobService azureArtefactBlobService;
@@ -51,7 +62,6 @@ class CreatePublicationRetryTest {
 
     @Test
     void testCreateJsonPublicationMaxAttemptsWithCannotAcquireLockException() {
-        Artefact artefact = ArtefactConstantTestHelper.buildArtefact();
         when(artefactRepository.findArtefactByUpdateLogic(artefact.getLocationId(), artefact.getContentDate(),
                                                           artefact.getLanguage(), artefact.getListType(),
                                                           artefact.getProvenance()))
@@ -66,7 +76,6 @@ class CreatePublicationRetryTest {
 
     @Test
     void testCreateJsonPublicationMaxAttemptsWithDataIntegrityViolationException() {
-        Artefact artefact = ArtefactConstantTestHelper.buildArtefact();
         when(artefactRepository.findArtefactByUpdateLogic(artefact.getLocationId(), artefact.getContentDate(),
                                                           artefact.getLanguage(), artefact.getListType(),
                                                           artefact.getProvenance()))
@@ -81,7 +90,6 @@ class CreatePublicationRetryTest {
 
     @Test
     void testCreateJsonPublicationStopRetryIfSuccess() {
-        Artefact artefact = ArtefactConstantTestHelper.buildArtefact();
         when(artefactRepository.findArtefactByUpdateLogic(artefact.getLocationId(), artefact.getContentDate(),
                                                           artefact.getLanguage(), artefact.getListType(),
                                                           artefact.getProvenance()))
@@ -98,7 +106,6 @@ class CreatePublicationRetryTest {
 
     @Test
     void testCreateJsonPublicationDeleteBlobOnErrorIfPayloadUrlExists() {
-        Artefact artefact = ArtefactConstantTestHelper.buildArtefact();
         when(azureArtefactBlobService.createPayload(any(), eq(PAYLOAD))).thenReturn(PAYLOAD_URL);
         when(artefactRepository.save(artefact)).thenThrow(new JpaSystemException(new RuntimeException()));
 
@@ -111,7 +118,6 @@ class CreatePublicationRetryTest {
 
     @Test
     void testCreateJsonPublicationDoesNotDeleteBlobOnErrorIfNoPayloadUrl() {
-        Artefact artefact = ArtefactConstantTestHelper.buildArtefact();
         when(azureArtefactBlobService.createPayload(any(), eq(PAYLOAD))).thenThrow(new RuntimeException());
 
         assertThatThrownBy(() -> publicationService.createPublication(artefact, PAYLOAD))
@@ -123,7 +129,6 @@ class CreatePublicationRetryTest {
 
     @Test
     void testCreateFlatFilePublicationMaxAttemptsWithCannotAcquireLockException() {
-        Artefact artefact = ArtefactConstantTestHelper.buildArtefact();
         when(artefactRepository.findArtefactByUpdateLogic(artefact.getLocationId(), artefact.getContentDate(),
                                                           artefact.getLanguage(), artefact.getListType(),
                                                           artefact.getProvenance()))
@@ -138,7 +143,6 @@ class CreatePublicationRetryTest {
 
     @Test
     void testCreateFlatFilePublicationMaxAttemptsWithDataIntegrityViolationException() {
-        Artefact artefact = ArtefactConstantTestHelper.buildArtefact();
         when(artefactRepository.findArtefactByUpdateLogic(artefact.getLocationId(), artefact.getContentDate(),
                                                           artefact.getLanguage(), artefact.getListType(),
                                                           artefact.getProvenance()))
@@ -153,7 +157,6 @@ class CreatePublicationRetryTest {
 
     @Test
     void testCreateFlatFilePublicationStopRetryIfSuccess() {
-        Artefact artefact = ArtefactConstantTestHelper.buildArtefact();
         when(artefactRepository.findArtefactByUpdateLogic(artefact.getLocationId(), artefact.getContentDate(),
                                                           artefact.getLanguage(), artefact.getListType(),
                                                           artefact.getProvenance()))
@@ -170,7 +173,6 @@ class CreatePublicationRetryTest {
 
     @Test
     void testCreateFlatFilePublicationDeleteBlobOnErrorIfPayloadUrlExists() {
-        Artefact artefact = ArtefactConstantTestHelper.buildArtefact();
         when(azureArtefactBlobService.uploadFlatFile(any(), eq(FILE))).thenReturn(PAYLOAD_URL);
         when(artefactRepository.save(artefact)).thenThrow(new JpaSystemException(new RuntimeException()));
 
@@ -183,7 +185,6 @@ class CreatePublicationRetryTest {
 
     @Test
     void testCreateFlatFilePublicationDoesNotDeleteBlobOnErrorIfNoPayloadUrl() {
-        Artefact artefact = ArtefactConstantTestHelper.buildArtefact();
         when(azureArtefactBlobService.uploadFlatFile(any(), eq(FILE))).thenThrow(new RuntimeException());
 
         assertThatThrownBy(() -> publicationService.createPublication(artefact, FILE))
@@ -191,5 +192,17 @@ class CreatePublicationRetryTest {
 
         verify(azureArtefactBlobService, never()).deleteBlob(anyString());
         verify(artefactRepository, never()).save(any());
+    }
+
+    private Artefact buildArtefact() {
+        return Artefact.builder()
+            .sourceArtefactId(SOURCE_ARTEFACT_ID)
+            .provenance(PROVENANCE)
+            .locationId(PROVENANCE_ID)
+            .contentDate(START_OF_TODAY_CONTENT_DATE)
+            .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
+            .language(Language.ENGLISH)
+            .sensitivity(Sensitivity.PUBLIC)
+            .build();
     }
 }

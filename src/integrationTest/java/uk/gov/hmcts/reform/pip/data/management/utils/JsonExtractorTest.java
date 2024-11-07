@@ -23,8 +23,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
+@ActiveProfiles("integration")
 @SpringBootTest(classes = {Application.class, AzureBlobConfigurationTestConfiguration.class})
-@ActiveProfiles(profiles = "test")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
 class JsonExtractorTest {
@@ -46,7 +46,7 @@ class JsonExtractorTest {
 
     private static final String TEST_KEY_NOT_FOUND = "test-id-not-found";
     private static final String UNKNOWN_EXCEPTION = "Unknown exception when opening the paylaod file";
-    private static final String MOCK_PARTIES_FILE = "mocks/jsonPayloadWithParties.json";
+    private static final String MOCK_PARTIES_FILE = "data/jsonPayloadWithParties.json";
 
     private static final String SEARCH_TERM_MESSAGE = "Search term does not contain expected key";
     private static final String ORGANISATION_KEY_MESSAGE = "Parties does not contain organisations key";
@@ -67,7 +67,7 @@ class JsonExtractorTest {
     @Test
     void testExtractSearchTerms() {
         try (InputStream mockFile = this.getClass().getClassLoader()
-            .getResourceAsStream("mocks/jsonPayload.json")) {
+            .getResourceAsStream("data/jsonPayload.json")) {
             String textJson = new String(mockFile.readAllBytes(), StandardCharsets.UTF_8);
             Map<String, List<Object>> searchTerms = jsonExtractor.extractSearchTerms(textJson);
 
@@ -253,7 +253,7 @@ class JsonExtractorTest {
     @Test
     void testExtractSearchTermWhereMissing() {
         try (InputStream mockFile = this.getClass().getClassLoader()
-            .getResourceAsStream("mocks/jsonPayload.json")) {
+            .getResourceAsStream("data/jsonPayload.json")) {
             String textJson = new String(mockFile.readAllBytes(), StandardCharsets.UTF_8);
             Map<String, List<Object>> searchTerms = jsonExtractor.extractSearchTerms(textJson);
 

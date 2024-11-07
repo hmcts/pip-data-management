@@ -30,8 +30,8 @@ import java.time.LocalDateTime;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@ActiveProfiles("integration")
 @SpringBootTest(classes = {Application.class, AzureBlobConfigurationTestConfiguration.class})
-@ActiveProfiles(profiles = "test")
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
 @SuppressWarnings("PMD.TooManyMethods")
 class SjpPressListTest {
@@ -39,8 +39,8 @@ class SjpPressListTest {
     ValidationService validationService;
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
-    private static final String SJP_PRESS_LIST_VALID_JSON = "mocks/sjpPressList.json";
-    private static final String SJP_PRESS_LIST_WITH_NEW_LINES = "mocks/sjpPressListWithNewLines.json";
+    private static final String SJP_PRESS_LIST_VALID_JSON = "data/sjp-press-list/sjpPressList.json";
+    private static final String SJP_PRESS_LIST_WITH_NEW_LINES = "data/sjp-press-list/sjpPressListWithNewLines.json";
     private static final String SJP_PRESS_INVALID_MESSAGE = "Invalid SJP press";
     private static final String SJP_PRESS_VALID_MESSAGE = "Exception should not be thrown for SJP press";
 
@@ -551,7 +551,7 @@ class SjpPressListTest {
             ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0).get(COURT_HOUSE_SCHEMA)
                 .get(COURT_ROOM_SCHEMA).get(0).get(SESSION_SCHEMA).get(0)
                 .get(SITTINGS_SCHEMA).get(0).get(HEARING_SCHEMA).get(1)
-                .get(PARTY_SCHEMA).get(0).get(ORGANISATION_DETAILS_SCHEMA)
+                .get(PARTY_SCHEMA).get(1).get(ORGANISATION_DETAILS_SCHEMA)
                 .get(ORGANISATION_ADDRESS_SCHEMA)).remove("town");
 
             String listJson = node.toString();
@@ -570,7 +570,7 @@ class SjpPressListTest {
             ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0).get(COURT_HOUSE_SCHEMA)
                 .get(COURT_ROOM_SCHEMA).get(0).get(SESSION_SCHEMA).get(0)
                 .get(SITTINGS_SCHEMA).get(0).get(HEARING_SCHEMA).get(1)
-                .get(PARTY_SCHEMA).get(0).get(ORGANISATION_DETAILS_SCHEMA)
+                .get(PARTY_SCHEMA).get(1).get(ORGANISATION_DETAILS_SCHEMA)
                 .get(ORGANISATION_ADDRESS_SCHEMA)).remove("county");
 
             String listJson = node.toString();
@@ -589,7 +589,7 @@ class SjpPressListTest {
             ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0).get(COURT_HOUSE_SCHEMA)
                 .get(COURT_ROOM_SCHEMA).get(0).get(SESSION_SCHEMA).get(0)
                 .get(SITTINGS_SCHEMA).get(0).get(HEARING_SCHEMA).get(1)
-                .get(PARTY_SCHEMA).get(0).get(ORGANISATION_DETAILS_SCHEMA)
+                .get(PARTY_SCHEMA).get(1).get(ORGANISATION_DETAILS_SCHEMA)
                 .get(ORGANISATION_ADDRESS_SCHEMA)).remove("postCode");
 
             String listJson = node.toString();

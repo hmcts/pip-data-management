@@ -30,23 +30,16 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@ActiveProfiles("integration")
 @SpringBootTest(classes = {Application.class, AzureBlobConfigurationTestConfiguration.class})
-@ActiveProfiles(profiles = "test")
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
-class CrownWarnedListTest {
+class EtDailyListTest {
 
     @Autowired
     ValidationService validationService;
 
-    private static final ObjectMapper MAPPER = new ObjectMapper();
-
-    private static final String CROWN_WARNED_LIST_VALID_JSON =
-        "mocks/crownWarnedList.json";
-    private static final String CROWN_WARNED_LIST_WITH_NEW_LINES =
-        "mocks/crownWarnedListWithNewLines.json";
-    private static final String CROWN_WARNED_LIST_INVALID_MESSAGE =
-        "Invalid crown warned list marked as valid";
-
+    private static final String ET_DAILY_LIST_VALID = "data/et-daily-list/etDailyList.json";
+    private static final String ET_DAILY_LIST_WITH_NEW_LINES = "data/et-daily-list/etDailyListWithNewLines.json";
     private static final String SOURCE_ARTEFACT_ID = "sourceArtefactId";
     private static final LocalDateTime DISPLAY_FROM = LocalDateTime.now();
     private static final LocalDateTime DISPLAY_TO = LocalDateTime.now();
@@ -55,11 +48,12 @@ class CrownWarnedListTest {
     private static final Sensitivity SENSITIVITY = Sensitivity.PUBLIC;
     private static final ArtefactType ARTEFACT_TYPE = ArtefactType.LIST;
     private static final String COURT_ID = "123";
-    private static final ListType LIST_TYPE = ListType.CROWN_WARNED_LIST;
+    private static final ListType LIST_TYPE = ListType.ET_DAILY_LIST;
     private static final LocalDateTime CONTENT_DATE = LocalDateTime.now();
     private static final String PUBLICATION_DATE_REGEX = "\"publicationDate\":\"[^\"]+\"";
 
     private HeaderGroup headerGroup;
+    ObjectMapper mapper = new ObjectMapper();
 
     @BeforeEach
     void setup() {
@@ -67,32 +61,37 @@ class CrownWarnedListTest {
                                       DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, COURT_ID, CONTENT_DATE);
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {
-        "document",
-        "document.publicationDate",
-        "venue",
-        "venue.venueName",
-        "venue.venueAddress",
-        "courtLists",
-        "courtLists.0.courtHouse",
-        "courtLists.0.courtHouse.courtRoom",
-        "courtLists.0.courtHouse.courtRoom.0.session",
-        "courtLists.0.courtHouse.courtRoom.0.session.0.sittings",
-        "courtLists.0.courtHouse.courtRoom.0.session.0.sittings.0.hearing",
-        "courtLists.0.courtHouse.courtRoom.0.session.0.sittings.0.hearing.0.case",
-        "courtLists.0.courtHouse.courtRoom.0.session.0.sittings.0.hearing.0.case.0.caseNumber"
-    })
-    void testValidateWithErrorWhenRequiredFieldMissing(String jsonpath) throws IOException {
+    @Test
+    void testValidPayloadPasses() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CROWN_WARNED_LIST_VALID_JSON)) {
+            .getResourceAsStream(ET_DAILY_LIST_VALID)) {
             assert jsonInput != null;
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
-            JsonNode topLevelNode = MAPPER.readTree(text);
+            assertDoesNotThrow(() -> validationService.validateBody(text, headerGroup));
+        }
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+        "venue",
+        "venue.venueName",
+        "courtLists.0.courtHouse.courtHouseName",
+        "courtLists.0.courtHouse.courtRoom.0.session.0.sittings.0.sittingStart",
+        "courtLists.0.courtHouse.courtRoom.0.session.0.sittings.0.sittingEnd",
+        "courtLists.0.courtHouse.courtRoom.0.session.0.sittings.0.hearing.0.case.0.caseNumber",
+        "courtLists.0.courtHouse.courtRoom.0.session.0.sittings.0.hearing.0.case.0.party.0.partyRole",
+        "courtLists.0.courtHouse.courtRoom.0.session.0.sittings.0.hearing.0.hearingType",
+        })
+    void testRequiredFieldsAreCaught(String jsonpath) throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream(ET_DAILY_LIST_VALID)) {
+            assert jsonInput != null;
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+            JsonNode topLevelNode = mapper.readTree(text);
             JsonHelper.safeRemoveNode(jsonpath, topLevelNode);
-            String output = MAPPER.writeValueAsString(topLevelNode);
+            String output = mapper.writeValueAsString(topLevelNode);
             assertThatExceptionOfType(PayloadValidationException.class)
-                .as(CROWN_WARNED_LIST_INVALID_MESSAGE)
+                .as("should fail")
                 .isThrownBy(() -> validationService.validateBody(output, headerGroup));
         }
     }
@@ -100,13 +99,12 @@ class CrownWarnedListTest {
     @Test
     void testValidateWithSuccessWhenFieldsContainNewLineCharacters() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CROWN_WARNED_LIST_WITH_NEW_LINES)) {
+            .getResourceAsStream(ET_DAILY_LIST_WITH_NEW_LINES)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             ObjectMapper mapper = new ObjectMapper();
             String listJson = mapper.readValue(text, JsonNode.class).toString();
-            assertDoesNotThrow(() -> validationService.validateBody(listJson, headerGroup),
-                               CROWN_WARNED_LIST_INVALID_MESSAGE);
+            assertDoesNotThrow(() -> validationService.validateBody(listJson, headerGroup));
         }
     }
 
@@ -118,7 +116,7 @@ class CrownWarnedListTest {
     })
     void testValidateWithSuccessWhenValidPublicationDateFormat(String publicationDate) throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CROWN_WARNED_LIST_VALID_JSON)) {
+            .getResourceAsStream(ET_DAILY_LIST_VALID)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             ObjectMapper mapper = new ObjectMapper();
@@ -126,8 +124,7 @@ class CrownWarnedListTest {
 
             String listJson = node.toString()
                 .replaceAll(PUBLICATION_DATE_REGEX, String.format("\"publicationDate\":\"%s\"", publicationDate));
-            assertDoesNotThrow(() -> validationService.validateBody(listJson, headerGroup),
-                               CROWN_WARNED_LIST_INVALID_MESSAGE);
+            assertDoesNotThrow(() -> validationService.validateBody(listJson, headerGroup));
         }
     }
 
@@ -140,7 +137,7 @@ class CrownWarnedListTest {
     })
     void testValidateWithErrorWhenInvalidPublicationDateFormat(String publicationDate) throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CROWN_WARNED_LIST_VALID_JSON)) {
+            .getResourceAsStream(ET_DAILY_LIST_VALID)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             ObjectMapper mapper = new ObjectMapper();
@@ -148,8 +145,8 @@ class CrownWarnedListTest {
 
             String listJson = node.toString()
                 .replaceAll(PUBLICATION_DATE_REGEX, String.format("\"publicationDate\":\"%s\"", publicationDate));
-            assertThrows(PayloadValidationException.class, () -> validationService.validateBody(listJson, headerGroup),
-                         CROWN_WARNED_LIST_INVALID_MESSAGE);
+            assertThrows(PayloadValidationException.class,
+                         () -> validationService.validateBody(listJson, headerGroup));
         }
     }
 }

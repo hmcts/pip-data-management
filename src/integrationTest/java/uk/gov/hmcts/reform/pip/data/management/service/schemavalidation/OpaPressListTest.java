@@ -30,79 +30,62 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@ActiveProfiles("integration")
 @SpringBootTest(classes = {Application.class, AzureBlobConfigurationTestConfiguration.class})
-@ActiveProfiles(profiles = "test")
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
-class EtFortnightlyPressListTest {
+class OpaPressListTest {
+    private static final ObjectMapper MAPPER = new ObjectMapper();
+    private static final String OPA_PRESS_LIST_VALID_JSON =
+        "data/opa-press-list/opaPressList.json";
+    private static final String OPA_PRESS_LIST_WITH_NEW_LINES =
+        "data/opa-press-list/opaPressListWithNewLines.json";
+    private static final String OPA_PRESS_LIST_INVALID_MESSAGE = "Invalid OPA press list marked as valid";
 
-    @Autowired
-    ValidationService validationService;
-
-    private static final String ET_FORTNIGHTLY_PRESS_LIST_VALID_JSON =
-        "mocks/etFortnightlyPressList.json";
-    private static final String ET_FORTNIGHTLY_PRESS_LIST_WITH_NEW_LINES =
-        "mocks/etFortnightlyPressListWithNewLines.json";
     private static final String SOURCE_ARTEFACT_ID = "sourceArtefactId";
     private static final LocalDateTime DISPLAY_FROM = LocalDateTime.now();
-    private static final LocalDateTime DISPLAY_TO = LocalDateTime.now();
-    private static final Language LANGUAGE = Language.ENGLISH;
+    private static final LocalDateTime DISPLAY_TO = LocalDateTime.now().plusDays(1);
     private static final String PROVENANCE = "provenance";
-    private static final Sensitivity SENSITIVITY = Sensitivity.PUBLIC;
-    private static final ArtefactType ARTEFACT_TYPE = ArtefactType.LIST;
     private static final String COURT_ID = "123";
-    private static final ListType LIST_TYPE = ListType.ET_FORTNIGHTLY_PRESS_LIST;
     private static final LocalDateTime CONTENT_DATE = LocalDateTime.now();
     private static final String PUBLICATION_DATE_REGEX = "\"publicationDate\":\"[^\"]+\"";
 
     private HeaderGroup headerGroup;
-    ObjectMapper mapper = new ObjectMapper();
+
+    @Autowired
+    ValidationService validationService;
 
     @BeforeEach
     void setup() {
-        headerGroup = new HeaderGroup(PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE, SENSITIVITY, LANGUAGE,
-                                      DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, COURT_ID, CONTENT_DATE);
-    }
-
-    @Test
-    void testValidPayloadPasses() throws IOException {
-        try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(ET_FORTNIGHTLY_PRESS_LIST_VALID_JSON)) {
-            assert jsonInput != null;
-            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
-            assertDoesNotThrow(() -> validationService.validateBody(text, headerGroup));
-        }
+        headerGroup = new HeaderGroup(PROVENANCE, SOURCE_ARTEFACT_ID, ArtefactType.LIST, Sensitivity.PUBLIC,
+                                      Language.ENGLISH, DISPLAY_FROM, DISPLAY_TO, ListType.OPA_PRESS_LIST, COURT_ID,
+                                      CONTENT_DATE);
     }
 
     @ParameterizedTest
     @ValueSource(strings = {
         "document",
         "document.publicationDate",
-        "courtLists",
         "venue",
         "venue.venueName",
+        "venue.venueContact",
+        "courtLists",
         "courtLists.0.courtHouse",
-        "courtLists.0.courtHouse.courtHouseName",
         "courtLists.0.courtHouse.courtRoom",
         "courtLists.0.courtHouse.courtRoom.0.session",
         "courtLists.0.courtHouse.courtRoom.0.session.0.sittings",
-        "courtLists.0.courtHouse.courtRoom.0.session.0.sittings.0.sittingStart",
-        "courtLists.0.courtHouse.courtRoom.0.session.0.sittings.0.sittingEnd",
         "courtLists.0.courtHouse.courtRoom.0.session.0.sittings.0.hearing",
-        "courtLists.0.courtHouse.courtRoom.0.session.0.sittings.0.hearing.0.case",
-        "courtLists.0.courtHouse.courtRoom.0.session.0.sittings.0.hearing.0.case.0.caseNumber",
-        "courtLists.0.courtHouse.courtRoom.0.session.0.sittings.0.hearing.0.hearingType",
-        "courtLists.0.courtHouse.courtRoom.0.session.0.sittings.0.hearing.0.case.0.party.0.partyRole",
+        "courtLists.0.courtHouse.courtRoom.0.session.0.sittings.0.hearing.0.case"
     })
-    void testRequiredFieldsAreCaught(String jsonpath) throws IOException {
-        try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(ET_FORTNIGHTLY_PRESS_LIST_VALID_JSON)) {
+    void testValidateWithErrorWhenRequiredFieldMissing(String jsonpath) throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader().getResourceAsStream(OPA_PRESS_LIST_VALID_JSON)) {
             assert jsonInput != null;
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
-            JsonNode topLevelNode = mapper.readTree(text);
+            JsonNode topLevelNode = MAPPER.readTree(text);
             JsonHelper.safeRemoveNode(jsonpath, topLevelNode);
-            String output = mapper.writeValueAsString(topLevelNode);
+            String output = MAPPER.writeValueAsString(topLevelNode);
+
             assertThatExceptionOfType(PayloadValidationException.class)
-                .as("should fail")
+                .as(OPA_PRESS_LIST_INVALID_MESSAGE)
                 .isThrownBy(() -> validationService.validateBody(output, headerGroup));
         }
     }
@@ -110,12 +93,13 @@ class EtFortnightlyPressListTest {
     @Test
     void testValidateWithSuccessWhenFieldsContainNewLineCharacters() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(ET_FORTNIGHTLY_PRESS_LIST_WITH_NEW_LINES)) {
+            .getResourceAsStream(OPA_PRESS_LIST_WITH_NEW_LINES)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             ObjectMapper mapper = new ObjectMapper();
             String listJson = mapper.readValue(text, JsonNode.class).toString();
-            assertDoesNotThrow(() -> validationService.validateBody(listJson, headerGroup));
+            assertDoesNotThrow(() -> validationService.validateBody(listJson, headerGroup),
+                               OPA_PRESS_LIST_INVALID_MESSAGE);
         }
     }
 
@@ -127,15 +111,15 @@ class EtFortnightlyPressListTest {
     })
     void testValidateWithSuccessWhenValidPublicationDateFormat(String publicationDate) throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(ET_FORTNIGHTLY_PRESS_LIST_VALID_JSON)) {
+            .getResourceAsStream(OPA_PRESS_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode node = mapper.readValue(text, JsonNode.class);
+            JsonNode node = MAPPER.readValue(text, JsonNode.class);
 
             String listJson = node.toString()
                 .replaceAll(PUBLICATION_DATE_REGEX, String.format("\"publicationDate\":\"%s\"", publicationDate));
-            assertDoesNotThrow(() -> validationService.validateBody(listJson, headerGroup));
+            assertDoesNotThrow(() -> validationService.validateBody(listJson, headerGroup),
+                               OPA_PRESS_LIST_INVALID_MESSAGE);
         }
     }
 
@@ -148,16 +132,15 @@ class EtFortnightlyPressListTest {
     })
     void testValidateWithErrorWhenInvalidPublicationDateFormat(String publicationDate) throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(ET_FORTNIGHTLY_PRESS_LIST_VALID_JSON)) {
+            .getResourceAsStream(OPA_PRESS_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode node = mapper.readValue(text, JsonNode.class);
+            JsonNode node = MAPPER.readValue(text, JsonNode.class);
 
             String listJson = node.toString()
                 .replaceAll(PUBLICATION_DATE_REGEX, String.format("\"publicationDate\":\"%s\"", publicationDate));
-            assertThrows(PayloadValidationException.class,
-                         () -> validationService.validateBody(listJson, headerGroup));
+            assertThrows(PayloadValidationException.class, () -> validationService.validateBody(listJson, headerGroup),
+                         OPA_PRESS_LIST_INVALID_MESSAGE);
         }
     }
 }

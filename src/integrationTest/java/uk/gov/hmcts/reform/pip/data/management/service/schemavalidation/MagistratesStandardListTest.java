@@ -30,25 +30,22 @@ import java.time.LocalDateTime;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@ActiveProfiles("integration")
 @SpringBootTest(classes = {Application.class, AzureBlobConfigurationTestConfiguration.class})
-@ActiveProfiles(profiles = "test")
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
+class MagistratesStandardListTest {
 
-class FamilyCauseListTest {
     @Autowired
     ValidationService validationService;
 
-    private static final String FAMILY_CAUSE_LIST_VALID_JSON =
-        "mocks/familyDailyCauseList.json";
-    private static final String FAMILY_CAUSE_LIST_WITH_NEW_LINES =
-        "mocks/familyDailyCauseListWithNewLines.json";
-    private static final String FAMILY_CAUSE_LIST_INVALID_MESSAGE =
-        "Invalid daily cause list marked as valid";
+    private static final String MAGISTRATES_STANDARD_LIST_VALID_JSON =
+        "data/magistrates-standard-list/magistratesStandardList.json";
+    private static final String MAGISTRATES_STANDARD_LIST_WITH_NEW_LINES =
+        "data/magistrates-standard-list/magistratesStandardListWithNewLines.json";
+    private static final String MAGISTRATES_STANDARD_LIST_INVALID_MESSAGE =
+        "Invalid magistrates standard list marked as valid";
 
     private static final String COURT_LIST_SCHEMA = "courtLists";
-    private static final String VENUE_SCHEMA = "venue";
-    private static final String VENUE_ADDRESS_SCHEMA = "venueAddress";
-    private static final String VENUE_CONTACT_SCHEMA = "venueContact";
     private static final String COURT_HOUSE_SCHEMA = "courtHouse";
     private static final String COURT_ROOM_SCHEMA = "courtRoom";
     private static final String SESSION_SCHEMA = "session";
@@ -63,11 +60,16 @@ class FamilyCauseListTest {
     private static final Sensitivity SENSITIVITY = Sensitivity.PUBLIC;
     private static final ArtefactType ARTEFACT_TYPE = ArtefactType.LIST;
     private static final String COURT_ID = "123";
-    private static final ListType LIST_TYPE = ListType.FAMILY_DAILY_CAUSE_LIST;
+    private static final ListType LIST_TYPE = ListType.MAGISTRATES_STANDARD_LIST;
     private static final LocalDateTime CONTENT_DATE = LocalDateTime.now();
     private static final String PUBLICATION_DATE_REGEX = "\"publicationDate\":\"[^\"]+\"";
 
     private HeaderGroup headerGroup;
+
+    private JsonNode getJsonNode(String json) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.readValue(json, JsonNode.class);
+    }
 
     @BeforeEach
     void setup() {
@@ -75,15 +77,10 @@ class FamilyCauseListTest {
                                       DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, COURT_ID, CONTENT_DATE);
     }
 
-    private JsonNode getJsonNode(String json) throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
-        return mapper.readValue(json, JsonNode.class);
-    }
-
     @Test
-    void testValidateWithErrorsWhenDocumentMissingInFamilyDailyCauseList() throws IOException {
+    void testValidateWithErrorWhenDocumentMissingInMagistratesStandardList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(FAMILY_CAUSE_LIST_VALID_JSON)) {
+            .getResourceAsStream(MAGISTRATES_STANDARD_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
@@ -92,46 +89,14 @@ class FamilyCauseListTest {
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
                              validationService.validateBody(listJson, headerGroup),
-                         FAMILY_CAUSE_LIST_INVALID_MESSAGE);
+                         MAGISTRATES_STANDARD_LIST_INVALID_MESSAGE);
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenVenueMissingInFamilyDailyCauseList() throws IOException {
+    void testValidateWithErrorWhenPublicationDateMissingInMagistratesStandardList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(FAMILY_CAUSE_LIST_VALID_JSON)) {
-            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
-
-            JsonNode node = getJsonNode(text);
-            ((ObjectNode) node).remove(VENUE_SCHEMA);
-
-            String listJson = node.toString();
-            assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup),
-                         FAMILY_CAUSE_LIST_INVALID_MESSAGE);
-        }
-    }
-
-    @Test
-    void testValidateWithErrorsWhenCourtListMissingInFamilyDailyCauseList() throws IOException {
-        try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(FAMILY_CAUSE_LIST_VALID_JSON)) {
-            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
-
-            JsonNode node = getJsonNode(text);
-            ((ObjectNode) node).remove(COURT_LIST_SCHEMA);
-
-            String listJson = node.toString();
-            assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup),
-                         FAMILY_CAUSE_LIST_INVALID_MESSAGE);
-        }
-    }
-
-    @Test
-    void testValidateWithErrorsWhenPublicationDateMissingInFamilyDailyCauseList() throws IOException {
-        try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(FAMILY_CAUSE_LIST_VALID_JSON)) {
+            .getResourceAsStream(MAGISTRATES_STANDARD_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             ObjectMapper mapper = new ObjectMapper();
@@ -141,133 +106,63 @@ class FamilyCauseListTest {
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
                              validationService.validateBody(listJson, headerGroup),
-                         FAMILY_CAUSE_LIST_INVALID_MESSAGE);
+                         MAGISTRATES_STANDARD_LIST_INVALID_MESSAGE);
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenVenueNameMissingInFamilyDailyCauseList() throws IOException {
+    void testValidateWithErrorsWhenVenueMissingInMagistratesStandardList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(FAMILY_CAUSE_LIST_VALID_JSON)) {
+            .getResourceAsStream(MAGISTRATES_STANDARD_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode node = mapper.readValue(text, JsonNode.class);
-            ((ObjectNode) node.get(VENUE_SCHEMA)).remove("venueName");
+            JsonNode node = getJsonNode(text);
+            ((ObjectNode) node).remove("venue");
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
                              validationService.validateBody(listJson, headerGroup),
-                         FAMILY_CAUSE_LIST_INVALID_MESSAGE);
+                         MAGISTRATES_STANDARD_LIST_INVALID_MESSAGE);
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenVenueAddressMissingInFamilyDailyCauseList() throws IOException {
+    void testValidateWithErrorsWhenVenueNameMissingInMagistratesStandardList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(FAMILY_CAUSE_LIST_VALID_JSON)) {
+            .getResourceAsStream(MAGISTRATES_STANDARD_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             ObjectMapper mapper = new ObjectMapper();
             JsonNode node = mapper.readValue(text, JsonNode.class);
-            ((ObjectNode) node.get(VENUE_SCHEMA)).remove(VENUE_ADDRESS_SCHEMA);
+            ((ObjectNode) node.get("venue")).remove("venueName");
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
                              validationService.validateBody(listJson, headerGroup),
-                         FAMILY_CAUSE_LIST_INVALID_MESSAGE);
+                         MAGISTRATES_STANDARD_LIST_INVALID_MESSAGE);
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenLineMissingInFamilyDailyCauseList() throws IOException {
+    void testValidateWithErrorsWhenCourtListMissingInMagistratesStandardList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(FAMILY_CAUSE_LIST_VALID_JSON)) {
+            .getResourceAsStream(MAGISTRATES_STANDARD_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode node = mapper.readValue(text, JsonNode.class);
-            ((ObjectNode) node.get(VENUE_SCHEMA).get(VENUE_ADDRESS_SCHEMA)).remove("line");
+            JsonNode node = getJsonNode(text);
+            ((ObjectNode) node).remove(COURT_LIST_SCHEMA);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
                              validationService.validateBody(listJson, headerGroup),
-                         FAMILY_CAUSE_LIST_INVALID_MESSAGE);
+                         MAGISTRATES_STANDARD_LIST_INVALID_MESSAGE);
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenPostCodeMissingInFamilyDailyCauseList() throws IOException {
+    void testValidateWithErrorsWhenCourtHouseMissingInMagistratesStandardList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(FAMILY_CAUSE_LIST_VALID_JSON)) {
-            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
-
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode node = mapper.readValue(text, JsonNode.class);
-            ((ObjectNode) node.get(VENUE_SCHEMA).get(VENUE_ADDRESS_SCHEMA)).remove("postCode");
-
-            String listJson = node.toString();
-            assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup),
-                         FAMILY_CAUSE_LIST_INVALID_MESSAGE);
-        }
-    }
-
-    @Test
-    void testValidateWithErrorsWhenVenueContactMissingInFamilyDailyCauseList() throws IOException {
-        try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(FAMILY_CAUSE_LIST_VALID_JSON)) {
-            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
-
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode node = mapper.readValue(text, JsonNode.class);
-            ((ObjectNode) node.get(VENUE_SCHEMA)).remove(VENUE_CONTACT_SCHEMA);
-
-            String listJson = node.toString();
-            assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup),
-                         FAMILY_CAUSE_LIST_INVALID_MESSAGE);
-        }
-    }
-
-    @Test
-    void testValidateWithErrorsWhenVenueTelephoneMissingInFamilyDailyCauseList() throws IOException {
-        try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(FAMILY_CAUSE_LIST_VALID_JSON)) {
-            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
-
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode node = mapper.readValue(text, JsonNode.class);
-            ((ObjectNode) node.get(VENUE_SCHEMA).get(VENUE_CONTACT_SCHEMA)).remove("venueTelephone");
-
-            String listJson = node.toString();
-            assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup),
-                         FAMILY_CAUSE_LIST_INVALID_MESSAGE);
-        }
-    }
-
-    @Test
-    void testValidateWithErrorsWhenVenueEmailMissingInFamilyDailyCauseList() throws IOException {
-        try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(FAMILY_CAUSE_LIST_VALID_JSON)) {
-            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
-
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode node = mapper.readValue(text, JsonNode.class);
-            ((ObjectNode) node.get(VENUE_SCHEMA).get(VENUE_CONTACT_SCHEMA)).remove("venueEmail");
-
-            String listJson = node.toString();
-            assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup),
-                         FAMILY_CAUSE_LIST_INVALID_MESSAGE);
-        }
-    }
-
-    @Test
-    void testValidateWithErrorsWhenCourtHouseMissingInFamilyDailyCauseList() throws IOException {
-        try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(FAMILY_CAUSE_LIST_VALID_JSON)) {
+            .getResourceAsStream(MAGISTRATES_STANDARD_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             ObjectMapper mapper = new ObjectMapper();
@@ -277,14 +172,14 @@ class FamilyCauseListTest {
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
                              validationService.validateBody(listJson, headerGroup),
-                         FAMILY_CAUSE_LIST_INVALID_MESSAGE);
+                         MAGISTRATES_STANDARD_LIST_INVALID_MESSAGE);
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenCourtHouseNameMissingInFamilyDailyCauseList() throws IOException {
+    void testValidateWithErrorsWhenCourtHouseNameMissingInMagistratesStandardList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(FAMILY_CAUSE_LIST_VALID_JSON)) {
+            .getResourceAsStream(MAGISTRATES_STANDARD_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             ObjectMapper mapper = new ObjectMapper();
@@ -294,14 +189,14 @@ class FamilyCauseListTest {
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
                              validationService.validateBody(listJson, headerGroup),
-                         FAMILY_CAUSE_LIST_INVALID_MESSAGE);
+                         MAGISTRATES_STANDARD_LIST_INVALID_MESSAGE);
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenCourtRoomMissingInFamilyDailyCauseList() throws IOException {
+    void testValidateWithErrorsWhenCourtRoomMissingInMagistratesStandardList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(FAMILY_CAUSE_LIST_VALID_JSON)) {
+            .getResourceAsStream(MAGISTRATES_STANDARD_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             ObjectMapper mapper = new ObjectMapper();
@@ -312,32 +207,14 @@ class FamilyCauseListTest {
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
                              validationService.validateBody(listJson, headerGroup),
-                         FAMILY_CAUSE_LIST_INVALID_MESSAGE);
+                         MAGISTRATES_STANDARD_LIST_INVALID_MESSAGE);
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenCourtRoomNameMissingInFamilyDailyCauseList() throws IOException {
+    void testValidateWithErrorsWhenSessionMissingInMagistratesStandardList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(FAMILY_CAUSE_LIST_VALID_JSON)) {
-            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
-
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode node = mapper.readValue(text, JsonNode.class);
-            ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0)
-                .get(COURT_HOUSE_SCHEMA).get(COURT_ROOM_SCHEMA).get(0)).remove("courtRoomName");
-
-            String listJson = node.toString();
-            assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup),
-                         FAMILY_CAUSE_LIST_INVALID_MESSAGE);
-        }
-    }
-
-    @Test
-    void testValidateWithErrorsWhenSessionMissingInFamilyDailyCauseList() throws IOException {
-        try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(FAMILY_CAUSE_LIST_VALID_JSON)) {
+            .getResourceAsStream(MAGISTRATES_STANDARD_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             ObjectMapper mapper = new ObjectMapper();
@@ -348,14 +225,14 @@ class FamilyCauseListTest {
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
                              validationService.validateBody(listJson, headerGroup),
-                         FAMILY_CAUSE_LIST_INVALID_MESSAGE);
+                         MAGISTRATES_STANDARD_LIST_INVALID_MESSAGE);
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenSittingsMissingInFamilyDailyCauseList() throws IOException {
+    void testValidateWithErrorsWhenSittingsMissingInMagistratesStandardList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(FAMILY_CAUSE_LIST_VALID_JSON)) {
+            .getResourceAsStream(MAGISTRATES_STANDARD_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             ObjectMapper mapper = new ObjectMapper();
@@ -367,14 +244,14 @@ class FamilyCauseListTest {
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
                              validationService.validateBody(listJson, headerGroup),
-                         FAMILY_CAUSE_LIST_INVALID_MESSAGE);
+                         MAGISTRATES_STANDARD_LIST_INVALID_MESSAGE);
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenSittingStartMissingInFamilyDailyCauseList() throws IOException {
+    void testValidateWithErrorsWhenSittingStartMissingInMagistratesStandardList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(FAMILY_CAUSE_LIST_VALID_JSON)) {
+            .getResourceAsStream(MAGISTRATES_STANDARD_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             ObjectMapper mapper = new ObjectMapper();
@@ -386,14 +263,14 @@ class FamilyCauseListTest {
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
                              validationService.validateBody(listJson, headerGroup),
-                         FAMILY_CAUSE_LIST_INVALID_MESSAGE);
+                         MAGISTRATES_STANDARD_LIST_INVALID_MESSAGE);
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenSittingEndMissingInFamilyDailyCauseList() throws IOException {
+    void testValidateWithErrorsWhenSittingEndMissingInMagistratesStandardList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(FAMILY_CAUSE_LIST_VALID_JSON)) {
+            .getResourceAsStream(MAGISTRATES_STANDARD_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             ObjectMapper mapper = new ObjectMapper();
@@ -405,14 +282,14 @@ class FamilyCauseListTest {
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
                              validationService.validateBody(listJson, headerGroup),
-                         FAMILY_CAUSE_LIST_INVALID_MESSAGE);
+                         MAGISTRATES_STANDARD_LIST_INVALID_MESSAGE);
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenHearingMissingInFamilyDailyCauseList() throws IOException {
+    void testValidateWithErrorsWhenHearingMissingInMagistratesStandardList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(FAMILY_CAUSE_LIST_VALID_JSON)) {
+            .getResourceAsStream(MAGISTRATES_STANDARD_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             ObjectMapper mapper = new ObjectMapper();
@@ -424,34 +301,14 @@ class FamilyCauseListTest {
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
                              validationService.validateBody(listJson, headerGroup),
-                         FAMILY_CAUSE_LIST_INVALID_MESSAGE);
+                         MAGISTRATES_STANDARD_LIST_INVALID_MESSAGE);
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenHearingTypeMissingInFamilyDailyCauseList() throws IOException {
+    void testValidateWithErrorsWhenCaseMissingInMagistratesStandardList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(FAMILY_CAUSE_LIST_VALID_JSON)) {
-            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
-
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode node = mapper.readValue(text, JsonNode.class);
-            ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0)
-                .get(COURT_HOUSE_SCHEMA).get(COURT_ROOM_SCHEMA).get(0)
-                .get(SESSION_SCHEMA).get(0).get(SITTINGS_SCHEMA).get(0)
-                .get(HEARING_SCHEMA).get(0)).remove("hearingType");
-
-            String listJson = node.toString();
-            assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup),
-                         FAMILY_CAUSE_LIST_INVALID_MESSAGE);
-        }
-    }
-
-    @Test
-    void testValidateWithErrorsWhenCaseMissingInFamilyDailyCauseList() throws IOException {
-        try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(FAMILY_CAUSE_LIST_VALID_JSON)) {
+            .getResourceAsStream(MAGISTRATES_STANDARD_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             ObjectMapper mapper = new ObjectMapper();
@@ -464,34 +321,14 @@ class FamilyCauseListTest {
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
                              validationService.validateBody(listJson, headerGroup),
-                         FAMILY_CAUSE_LIST_INVALID_MESSAGE);
+                         MAGISTRATES_STANDARD_LIST_INVALID_MESSAGE);
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenCaseNameMissingInFamilyDailyCauseList() throws IOException {
+    void testValidateWithErrorsWhenCaseNumberMissingInMagistratesStandardList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(FAMILY_CAUSE_LIST_VALID_JSON)) {
-            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
-
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode node = mapper.readValue(text, JsonNode.class);
-            ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0).get(COURT_HOUSE_SCHEMA)
-                .get(COURT_ROOM_SCHEMA).get(0).get(SESSION_SCHEMA).get(0)
-                .get(SITTINGS_SCHEMA).get(0).get(HEARING_SCHEMA).get(0)
-                .get(CASE_SCHEMA).get(0)).remove("caseName");
-
-            String listJson = node.toString();
-            assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup),
-                         FAMILY_CAUSE_LIST_INVALID_MESSAGE);
-        }
-    }
-
-    @Test
-    void testValidateWithErrorsWhenCaseNumberMissingInFamilyDailyCauseList() throws IOException {
-        try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(FAMILY_CAUSE_LIST_VALID_JSON)) {
+            .getResourceAsStream(MAGISTRATES_STANDARD_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             ObjectMapper mapper = new ObjectMapper();
@@ -504,20 +341,20 @@ class FamilyCauseListTest {
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
                              validationService.validateBody(listJson, headerGroup),
-                         FAMILY_CAUSE_LIST_INVALID_MESSAGE);
+                         MAGISTRATES_STANDARD_LIST_INVALID_MESSAGE);
         }
     }
 
     @Test
     void testValidateWithSuccessWhenFieldsContainNewLineCharacters() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(FAMILY_CAUSE_LIST_WITH_NEW_LINES)) {
+            .getResourceAsStream(MAGISTRATES_STANDARD_LIST_WITH_NEW_LINES)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             ObjectMapper mapper = new ObjectMapper();
             String listJson = mapper.readValue(text, JsonNode.class).toString();
             assertDoesNotThrow(() -> validationService.validateBody(listJson, headerGroup),
-                               FAMILY_CAUSE_LIST_INVALID_MESSAGE);
+                               MAGISTRATES_STANDARD_LIST_INVALID_MESSAGE);
         }
     }
 
@@ -529,7 +366,7 @@ class FamilyCauseListTest {
     })
     void testValidateWithSuccessWhenValidPublicationDateFormat(String publicationDate) throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(FAMILY_CAUSE_LIST_VALID_JSON)) {
+            .getResourceAsStream(MAGISTRATES_STANDARD_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             ObjectMapper mapper = new ObjectMapper();
@@ -538,7 +375,7 @@ class FamilyCauseListTest {
             String listJson = node.toString()
                 .replaceAll(PUBLICATION_DATE_REGEX, String.format("\"publicationDate\":\"%s\"", publicationDate));
             assertDoesNotThrow(() -> validationService.validateBody(listJson, headerGroup),
-                               FAMILY_CAUSE_LIST_INVALID_MESSAGE);
+                               MAGISTRATES_STANDARD_LIST_INVALID_MESSAGE);
         }
     }
 
@@ -551,7 +388,7 @@ class FamilyCauseListTest {
     })
     void testValidateWithErrorWhenInvalidPublicationDateFormat(String publicationDate) throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(FAMILY_CAUSE_LIST_VALID_JSON)) {
+            .getResourceAsStream(MAGISTRATES_STANDARD_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             ObjectMapper mapper = new ObjectMapper();
@@ -560,7 +397,7 @@ class FamilyCauseListTest {
             String listJson = node.toString()
                 .replaceAll(PUBLICATION_DATE_REGEX, String.format("\"publicationDate\":\"%s\"", publicationDate));
             assertThrows(PayloadValidationException.class, () -> validationService.validateBody(listJson, headerGroup),
-                         FAMILY_CAUSE_LIST_INVALID_MESSAGE);
+                         MAGISTRATES_STANDARD_LIST_INVALID_MESSAGE);
         }
     }
 }

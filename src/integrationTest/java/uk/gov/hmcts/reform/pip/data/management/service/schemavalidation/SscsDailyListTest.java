@@ -30,29 +30,26 @@ import java.time.LocalDateTime;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@ActiveProfiles("integration")
 @SpringBootTest(classes = {Application.class, AzureBlobConfigurationTestConfiguration.class})
-@ActiveProfiles(profiles = "test")
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
-class CareStandardsListTest {
+class SscsDailyListTest {
 
     @Autowired
     ValidationService validationService;
 
-    private static final String CARE_STANDARDS_LIST_VALID_JSON =
-        "mocks/careStandardsList.json";
-    private static final String CARE_STANDARDS_LIST_WITH_NEW_LINES =
-        "mocks/careStandardsListWithNewLines.json";
-    private static final String CARE_STANDARDS_LIST_INVALID_MESSAGE =
-        "Invalid care standards list marked as valid";
+    private static final String SSCS_DAILY_LIST_VALID_JSON = "data/sscs-daily-list/sscsDailyList.json";
+    private static final String SSCS_DAILY_LIST_WITH_NEW_LINES = "data/sscs-daily-list/sscsDailyListWithNewLines.json";
+    private static final String SSCS_DAILY_LIST_INVALID_MESSAGE = "Invalid sscs daily list marked as valid";
 
     private static final String COURT_LIST_SCHEMA = "courtLists";
+    private static final String VENUE_SCHEMA = "venue";
     private static final String COURT_HOUSE_SCHEMA = "courtHouse";
     private static final String COURT_ROOM_SCHEMA = "courtRoom";
     private static final String SESSION_SCHEMA = "session";
     private static final String SITTINGS_SCHEMA = "sittings";
     private static final String HEARING_SCHEMA = "hearing";
     private static final String CASE_SCHEMA  = "case";
-
     private static final String SOURCE_ARTEFACT_ID = "sourceArtefactId";
     private static final LocalDateTime DISPLAY_FROM = LocalDateTime.now();
     private static final LocalDateTime DISPLAY_TO = LocalDateTime.now();
@@ -61,7 +58,7 @@ class CareStandardsListTest {
     private static final Sensitivity SENSITIVITY = Sensitivity.PUBLIC;
     private static final ArtefactType ARTEFACT_TYPE = ArtefactType.LIST;
     private static final String COURT_ID = "123";
-    private static final ListType LIST_TYPE = ListType.CARE_STANDARDS_LIST;
+    private static final ListType LIST_TYPE = ListType.SSCS_DAILY_LIST;
     private static final LocalDateTime CONTENT_DATE = LocalDateTime.now();
     private static final String PUBLICATION_DATE_REGEX = "\"publicationDate\":\"[^\"]+\"";
 
@@ -79,341 +76,344 @@ class CareStandardsListTest {
     }
 
     @Test
-    void testValidateWithErrorsWhenDocumentMissingInCareStandardsList() throws IOException {
+    void testValidateWithErrorsWhenDocumentMissingInSscsDailyList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CARE_STANDARDS_LIST_VALID_JSON)) {
+            .getResourceAsStream(SSCS_DAILY_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
             ((ObjectNode) node).remove("document");
 
             String listJson = node.toString();
-            assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson,
-                                                            headerGroup),
-                         CARE_STANDARDS_LIST_INVALID_MESSAGE);
+            assertThrows(PayloadValidationException.class, () -> validationService.validateBody(listJson,
+                headerGroup),
+                         SSCS_DAILY_LIST_INVALID_MESSAGE);
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenVenueMissingInPrimaryHealthList() throws IOException {
+    void testValidateWithErrorsWhenPublicationDateMissingInSscsDailyList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CARE_STANDARDS_LIST_VALID_JSON)) {
+            .getResourceAsStream(SSCS_DAILY_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node).remove("venue");
+            ((ObjectNode) node.get("document")).remove("publicationDate");
 
             String listJson = node.toString();
-            assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson,
-                                                            headerGroup),
-                         CARE_STANDARDS_LIST_INVALID_MESSAGE
-            );
+            assertThrows(PayloadValidationException.class, () -> validationService.validateBody(listJson,
+                headerGroup),
+                         SSCS_DAILY_LIST_INVALID_MESSAGE);
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenVenueContactMissingInPrimaryHealthList() throws IOException {
+    void testValidateWithErrorsWhenVenueMissingInSscsDailyList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CARE_STANDARDS_LIST_VALID_JSON)) {
+            .getResourceAsStream(SSCS_DAILY_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get("venue")).remove("venueContact");
-            String listJson = node.toString();
+            ((ObjectNode) node).remove(VENUE_SCHEMA);
 
-            assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson,
-                                                            headerGroup),
-                         CARE_STANDARDS_LIST_INVALID_MESSAGE
-            );
+            String listJson = node.toString();
+            assertThrows(PayloadValidationException.class, () -> validationService.validateBody(listJson,
+                headerGroup),
+                         SSCS_DAILY_LIST_INVALID_MESSAGE);
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenCourtListMissingInCareStandardsList() throws IOException {
+    void testValidateWithErrorsWhenVenueNameMissingInSscsDailyList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CARE_STANDARDS_LIST_VALID_JSON)) {
+            .getResourceAsStream(SSCS_DAILY_LIST_VALID_JSON)) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            JsonNode node = getJsonNode(text);
+            ((ObjectNode) node.get(VENUE_SCHEMA)).remove("venueName");
+
+            String listJson = node.toString();
+            assertThrows(PayloadValidationException.class, () -> validationService.validateBody(listJson,
+                headerGroup),
+                         SSCS_DAILY_LIST_INVALID_MESSAGE);
+        }
+    }
+
+    @Test
+    void testValidateWithErrorsWhenVenueContactMissingInSscsDailyList() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream(SSCS_DAILY_LIST_VALID_JSON)) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            JsonNode node = getJsonNode(text);
+            ((ObjectNode) node.get(VENUE_SCHEMA)).remove("venueContact");
+
+            String listJson = node.toString();
+            assertThrows(PayloadValidationException.class, () -> validationService.validateBody(listJson,
+                headerGroup),
+                         SSCS_DAILY_LIST_INVALID_MESSAGE);
+        }
+    }
+
+    @Test
+    void testValidateWithErrorsWhenCourtListsMissingInSscsDailyList() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream(SSCS_DAILY_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
             ((ObjectNode) node).remove(COURT_LIST_SCHEMA);
-            String listJson = node.toString();
 
-            assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson,
-                                                            headerGroup),
-                         CARE_STANDARDS_LIST_INVALID_MESSAGE);
+            String listJson = node.toString();
+            assertThrows(PayloadValidationException.class, () -> validationService.validateBody(listJson,
+                headerGroup),
+                    SSCS_DAILY_LIST_INVALID_MESSAGE);
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenPublicationDateMissingInCareStandardsList() throws IOException {
+    void testValidateWithErrorsWhenCourtHouseMissingInSscsDailyList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CARE_STANDARDS_LIST_VALID_JSON)) {
+            .getResourceAsStream(SSCS_DAILY_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             ObjectMapper mapper = new ObjectMapper();
             JsonNode node = mapper.readValue(text, JsonNode.class);
-            ((ObjectNode) node.get("document")).remove("publicationDate");
-            String listJson = node.toString();
 
-            assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson,
-                                                            headerGroup),
-                         CARE_STANDARDS_LIST_INVALID_MESSAGE);
-        }
-    }
-
-    @Test
-    void testValidateWithErrorsWhenCourtHouseMissingInCareStandardsList() throws IOException {
-        try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CARE_STANDARDS_LIST_VALID_JSON)) {
-            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
-
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode node = mapper.readValue(text, JsonNode.class);
             ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0)).remove(COURT_HOUSE_SCHEMA);
 
             String listJson = node.toString();
-            assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson,
-                                                            headerGroup),
-                         CARE_STANDARDS_LIST_INVALID_MESSAGE);
+            assertThrows(PayloadValidationException.class, () -> validationService.validateBody(listJson,
+                headerGroup),
+                    SSCS_DAILY_LIST_INVALID_MESSAGE);
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenCourtHouseNameMissingInCareStandardsList() throws IOException {
+    void testValidateWithErrorsWhenCourtHouseNameMissingInSscsDailyList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CARE_STANDARDS_LIST_VALID_JSON)) {
+            .getResourceAsStream(SSCS_DAILY_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             ObjectMapper mapper = new ObjectMapper();
             JsonNode node = mapper.readValue(text, JsonNode.class);
-            ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0).get(COURT_HOUSE_SCHEMA)).remove("courtHouseName");
+
+            ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0).get(COURT_HOUSE_SCHEMA))
+                .remove("courtHouseName");
 
             String listJson = node.toString();
-            assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson,
-                                                            headerGroup),
-                         CARE_STANDARDS_LIST_INVALID_MESSAGE);
+            assertThrows(PayloadValidationException.class, () -> validationService.validateBody(listJson,
+                headerGroup),
+                    SSCS_DAILY_LIST_INVALID_MESSAGE);
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenCourtRoomMissingInCareStandardsList() throws IOException {
+    void testValidateWithErrorsWhenCourtHouseContactMissingInSscsDailyList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CARE_STANDARDS_LIST_VALID_JSON)) {
+            .getResourceAsStream(SSCS_DAILY_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             ObjectMapper mapper = new ObjectMapper();
             JsonNode node = mapper.readValue(text, JsonNode.class);
-            ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0)
-                .get(COURT_HOUSE_SCHEMA)).remove(COURT_ROOM_SCHEMA);
+
+            ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0).get(COURT_HOUSE_SCHEMA))
+                .remove("courtHouseContact");
 
             String listJson = node.toString();
-            assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson,
-                                                            headerGroup),
-                         CARE_STANDARDS_LIST_INVALID_MESSAGE);
+            assertThrows(PayloadValidationException.class, () -> validationService.validateBody(listJson,
+                headerGroup),
+                    SSCS_DAILY_LIST_INVALID_MESSAGE);
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenSessionMissingInCareStandardsList() throws IOException {
+    void testValidateWithErrorsWhenCourtRoomMissingInSscsDailyList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CARE_STANDARDS_LIST_VALID_JSON)) {
+            .getResourceAsStream(SSCS_DAILY_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             ObjectMapper mapper = new ObjectMapper();
             JsonNode node = mapper.readValue(text, JsonNode.class);
-            ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0)
-                .get(COURT_HOUSE_SCHEMA).get(COURT_ROOM_SCHEMA).get(0)).remove(SESSION_SCHEMA);
+
+            ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0).get(COURT_HOUSE_SCHEMA))
+                .remove(COURT_ROOM_SCHEMA);
 
             String listJson = node.toString();
-            assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson,
-                                                            headerGroup),
-                         CARE_STANDARDS_LIST_INVALID_MESSAGE);
+            assertThrows(PayloadValidationException.class, () -> validationService.validateBody(listJson,
+                headerGroup),
+                    SSCS_DAILY_LIST_INVALID_MESSAGE);
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenSessionStartTimeMissingInCareStandardsList() throws IOException {
+    void testValidateWithErrorsWhenSessionMissingInSscsDailyList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CARE_STANDARDS_LIST_VALID_JSON)) {
+            .getResourceAsStream(SSCS_DAILY_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             ObjectMapper mapper = new ObjectMapper();
             JsonNode node = mapper.readValue(text, JsonNode.class);
-            ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0)
-                .get(COURT_HOUSE_SCHEMA).get(COURT_ROOM_SCHEMA).get(0)
-                .get(SESSION_SCHEMA).get(0)).remove("sessionStartTime");
 
-            String listJson = node.toString();
-            assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson,
-                                                            headerGroup),
-                         CARE_STANDARDS_LIST_INVALID_MESSAGE
-            );
-        }
-    }
-
-    @Test
-    void testValidateWithErrorsWhenSittingsMissingInCareStandardsList() throws IOException {
-        try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CARE_STANDARDS_LIST_VALID_JSON)) {
-            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
-
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode node = mapper.readValue(text, JsonNode.class);
-            ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0)
-                .get(COURT_HOUSE_SCHEMA).get(COURT_ROOM_SCHEMA).get(0)
-                .get(SESSION_SCHEMA).get(0)).remove(SITTINGS_SCHEMA);
-
-            String listJson = node.toString();
-            assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson,
-                                                            headerGroup),
-                         CARE_STANDARDS_LIST_INVALID_MESSAGE);
-        }
-    }
-
-    @Test
-    void testValidateWithErrorsWhenSittingStartMissingInCareStandardsList() throws IOException {
-        try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CARE_STANDARDS_LIST_VALID_JSON)) {
-            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
-
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode node = mapper.readValue(text, JsonNode.class);
-            ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0)
-                .get(COURT_HOUSE_SCHEMA).get(COURT_ROOM_SCHEMA).get(0)
-                .get(SESSION_SCHEMA).get(0).get(SITTINGS_SCHEMA).get(0)).remove("sittingStart");
-
-            String listJson = node.toString();
-            assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson,
-                                                            headerGroup),
-                         CARE_STANDARDS_LIST_INVALID_MESSAGE);
-        }
-    }
-
-    @Test
-    void testValidateWithErrorsWhenSittingEndMissingInCareStandardsList() throws IOException {
-        try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CARE_STANDARDS_LIST_VALID_JSON)) {
-            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
-
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode node = mapper.readValue(text, JsonNode.class);
-            ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0)
-                .get(COURT_HOUSE_SCHEMA).get(COURT_ROOM_SCHEMA).get(0)
-                .get(SESSION_SCHEMA).get(0).get(SITTINGS_SCHEMA).get(0)).remove("sittingEnd");
-
-            String listJson = node.toString();
-            assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson,
-                                                            headerGroup),
-                         CARE_STANDARDS_LIST_INVALID_MESSAGE);
-        }
-    }
-
-    @Test
-    void testValidateWithErrorsWhenHearingMissingInCareStandardsList() throws IOException {
-        try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CARE_STANDARDS_LIST_VALID_JSON)) {
-            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
-
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode node = mapper.readValue(text, JsonNode.class);
-            ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0)
-                .get(COURT_HOUSE_SCHEMA).get(COURT_ROOM_SCHEMA).get(0)
-                .get(SESSION_SCHEMA).get(0).get(SITTINGS_SCHEMA).get(0)).remove(HEARING_SCHEMA);
-
-            String listJson = node.toString();
-            assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson,
-                                                            headerGroup),
-                         CARE_STANDARDS_LIST_INVALID_MESSAGE);
-        }
-    }
-
-    @Test
-    void testValidateWithErrorsWhenCaseMissingInCareStandardsList() throws IOException {
-        try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CARE_STANDARDS_LIST_VALID_JSON)) {
-            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
-
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode node = mapper.readValue(text, JsonNode.class);
-            ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0)
-                .get(COURT_HOUSE_SCHEMA).get(COURT_ROOM_SCHEMA).get(0)
-                .get(SESSION_SCHEMA).get(0).get(SITTINGS_SCHEMA).get(0)
-                .get(HEARING_SCHEMA).get(0)).remove(CASE_SCHEMA);
-
-            String listJson = node.toString();
-            assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson,
-                                                            headerGroup),
-                         CARE_STANDARDS_LIST_INVALID_MESSAGE);
-        }
-    }
-
-    @Test
-    void testValidateWithErrorsWhenCaseNameMissingInCareStandardsList() throws IOException {
-        try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CARE_STANDARDS_LIST_VALID_JSON)) {
-            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
-
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode node = mapper.readValue(text, JsonNode.class);
             ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0).get(COURT_HOUSE_SCHEMA)
-                .get(COURT_ROOM_SCHEMA).get(0).get(SESSION_SCHEMA).get(0)
-                .get(SITTINGS_SCHEMA).get(0).get(HEARING_SCHEMA).get(0)
-                .get(CASE_SCHEMA).get(0)).remove("caseName");
+                .get(COURT_ROOM_SCHEMA).get(0)).remove(SESSION_SCHEMA);
 
             String listJson = node.toString();
-            assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson,
-                                                            headerGroup),
-                         CARE_STANDARDS_LIST_INVALID_MESSAGE);
+            assertThrows(PayloadValidationException.class, () -> validationService.validateBody(listJson,
+                headerGroup),
+                    SSCS_DAILY_LIST_INVALID_MESSAGE);
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenCaseNumberMissingInCareStandardsList() throws IOException {
+    void testValidateWithErrorsWhenSessionChannelMissingInSscsDailyList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CARE_STANDARDS_LIST_VALID_JSON)) {
+            .getResourceAsStream(SSCS_DAILY_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             ObjectMapper mapper = new ObjectMapper();
             JsonNode node = mapper.readValue(text, JsonNode.class);
-            ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0)
-                .get(COURT_HOUSE_SCHEMA).get(COURT_ROOM_SCHEMA).get(0)
-                .get(SESSION_SCHEMA).get(0).get(SITTINGS_SCHEMA).get(0)
-                .get(HEARING_SCHEMA).get(0).get(CASE_SCHEMA).get(0)).remove("caseNumber");
+
+            ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0).get(COURT_HOUSE_SCHEMA)
+                .get(COURT_ROOM_SCHEMA).get(0).get(SESSION_SCHEMA).get(0))
+                .remove("sessionChannel");
 
             String listJson = node.toString();
-            assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson,
-                                                            headerGroup),
-                         CARE_STANDARDS_LIST_INVALID_MESSAGE);
+            assertThrows(PayloadValidationException.class, () -> validationService.validateBody(listJson,
+                headerGroup),
+                    SSCS_DAILY_LIST_INVALID_MESSAGE);
+        }
+    }
+
+    @Test
+    void testValidateWithErrorsWhenSittingsMissingInSscsDailyList() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream(SSCS_DAILY_LIST_VALID_JSON)) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode node = mapper.readValue(text, JsonNode.class);
+
+            ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0).get(COURT_HOUSE_SCHEMA)
+                .get(COURT_ROOM_SCHEMA).get(0).get(SESSION_SCHEMA).get(0))
+                .remove(SITTINGS_SCHEMA);
+
+            String listJson = node.toString();
+            assertThrows(PayloadValidationException.class, () -> validationService.validateBody(listJson,
+                headerGroup),
+                    SSCS_DAILY_LIST_INVALID_MESSAGE);
+        }
+    }
+
+    @Test
+    void testValidateWithErrorsWhenSittingStartMissingInSscsDailyList() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream(SSCS_DAILY_LIST_VALID_JSON)) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode node = mapper.readValue(text, JsonNode.class);
+
+            ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0).get(COURT_HOUSE_SCHEMA).get(COURT_ROOM_SCHEMA)
+                .get(0).get(SESSION_SCHEMA).get(0).get(SITTINGS_SCHEMA).get(0))
+                .remove("sittingStart");
+
+            String listJson = node.toString();
+            assertThrows(PayloadValidationException.class, () -> validationService.validateBody(listJson,
+                headerGroup),
+                    SSCS_DAILY_LIST_INVALID_MESSAGE);
+        }
+    }
+
+    @Test
+    void testValidateWithErrorsWhenHearingMissingInSscsDailyList() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream(SSCS_DAILY_LIST_VALID_JSON)) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode node = mapper.readValue(text, JsonNode.class);
+
+            ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0).get(COURT_HOUSE_SCHEMA)
+                .get(COURT_ROOM_SCHEMA).get(0).get(SESSION_SCHEMA).get(0).get(SITTINGS_SCHEMA).get(0))
+                .remove(HEARING_SCHEMA);
+
+            String listJson = node.toString();
+            assertThrows(PayloadValidationException.class, () -> validationService.validateBody(listJson,
+                headerGroup),
+                    SSCS_DAILY_LIST_INVALID_MESSAGE);
+        }
+    }
+
+    @Test
+    void testValidateWithErrorsWhenCaseMissingInSscsDailyList() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream(SSCS_DAILY_LIST_VALID_JSON)) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode node = mapper.readValue(text, JsonNode.class);
+
+            ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0).get(COURT_HOUSE_SCHEMA).get(COURT_ROOM_SCHEMA)
+                .get(0).get(SESSION_SCHEMA).get(0).get(SITTINGS_SCHEMA).get(0).get(HEARING_SCHEMA).get(0))
+                .remove(CASE_SCHEMA);
+
+            String listJson = node.toString();
+            assertThrows(PayloadValidationException.class, () -> validationService.validateBody(listJson,
+                headerGroup),
+                    SSCS_DAILY_LIST_INVALID_MESSAGE);
+        }
+    }
+
+    @Test
+    void testValidateWithErrorsWhenCaseNumberMissingInSscsDailyList() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream(SSCS_DAILY_LIST_VALID_JSON)) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode node = mapper.readValue(text, JsonNode.class);
+
+            ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0).get(COURT_HOUSE_SCHEMA).get(COURT_ROOM_SCHEMA)
+                .get(0).get(SESSION_SCHEMA).get(0).get(SITTINGS_SCHEMA).get(0).get(HEARING_SCHEMA)
+                .get(0).get(CASE_SCHEMA).get(0)).remove("caseNumber");
+
+            String listJson = node.toString();
+            assertThrows(PayloadValidationException.class, () -> validationService.validateBody(listJson,
+                headerGroup),
+                    SSCS_DAILY_LIST_INVALID_MESSAGE);
+        }
+    }
+
+    @Test
+    void testValidateWithErrorsWhenCourtRoomNameMissingInSscsDailyList() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream(SSCS_DAILY_LIST_VALID_JSON)) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode node = mapper.readValue(text, JsonNode.class);
+
+            ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0).get(COURT_HOUSE_SCHEMA).get(COURT_ROOM_SCHEMA)
+                .get(0)).remove("courtRoomName");
+
+            String listJson = node.toString();
+            assertThrows(PayloadValidationException.class, () -> validationService.validateBody(listJson,
+                headerGroup),
+                         SSCS_DAILY_LIST_INVALID_MESSAGE);
         }
     }
 
     @Test
     void testValidateWithSuccessWhenFieldsContainNewLineCharacters() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CARE_STANDARDS_LIST_WITH_NEW_LINES)) {
+            .getResourceAsStream(SSCS_DAILY_LIST_WITH_NEW_LINES)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             ObjectMapper mapper = new ObjectMapper();
             String listJson = mapper.readValue(text, JsonNode.class).toString();
             assertDoesNotThrow(() -> validationService.validateBody(listJson, headerGroup),
-                               CARE_STANDARDS_LIST_INVALID_MESSAGE);
+                               SSCS_DAILY_LIST_INVALID_MESSAGE);
         }
     }
 
@@ -425,7 +425,7 @@ class CareStandardsListTest {
     })
     void testValidateWithSuccessWhenValidPublicationDateFormat(String publicationDate) throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CARE_STANDARDS_LIST_VALID_JSON)) {
+            .getResourceAsStream(SSCS_DAILY_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             ObjectMapper mapper = new ObjectMapper();
@@ -434,7 +434,7 @@ class CareStandardsListTest {
             String listJson = node.toString()
                 .replaceAll(PUBLICATION_DATE_REGEX, String.format("\"publicationDate\":\"%s\"", publicationDate));
             assertDoesNotThrow(() -> validationService.validateBody(listJson, headerGroup),
-                               CARE_STANDARDS_LIST_INVALID_MESSAGE);
+                               SSCS_DAILY_LIST_INVALID_MESSAGE);
         }
     }
 
@@ -447,7 +447,7 @@ class CareStandardsListTest {
     })
     void testValidateWithErrorWhenInvalidPublicationDateFormat(String publicationDate) throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CARE_STANDARDS_LIST_VALID_JSON)) {
+            .getResourceAsStream(SSCS_DAILY_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             ObjectMapper mapper = new ObjectMapper();
@@ -456,7 +456,7 @@ class CareStandardsListTest {
             String listJson = node.toString()
                 .replaceAll(PUBLICATION_DATE_REGEX, String.format("\"publicationDate\":\"%s\"", publicationDate));
             assertThrows(PayloadValidationException.class, () -> validationService.validateBody(listJson, headerGroup),
-                         CARE_STANDARDS_LIST_INVALID_MESSAGE);
+                         SSCS_DAILY_LIST_INVALID_MESSAGE);
         }
     }
 }

@@ -37,8 +37,8 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
 
+@ActiveProfiles("integration")
 @SpringBootTest(classes = {Application.class, AzureBlobConfigurationTestConfiguration.class})
-@ActiveProfiles(profiles = "test")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
 @SuppressWarnings("PMD.TooManyMethods")
@@ -232,7 +232,7 @@ class ValidationServiceTest {
     @Test
     void testValidateMasterSchemaWithErrors() {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream("mocks/badJsonPayload.json")) {
+            .getResourceAsStream("data/badJsonPayload.json")) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
             assertThrows(PayloadValidationException.class, () ->
                              validationService.validateBody(text, headerGroup),
@@ -256,7 +256,7 @@ class ValidationServiceTest {
     @Test
     void testValidateMasterSchemaWithoutErrors() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream("mocks/jsonPayload.json")) {
+            .getResourceAsStream("data/jsonPayload.json")) {
             headerGroup.setListType(ListType.SJP_PRESS_REGISTER);
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
             assertDoesNotThrow(() -> validationService.validateBody(text, headerGroup),
@@ -279,53 +279,53 @@ class ValidationServiceTest {
     private static Stream<Arguments> parameters() {
         return Stream.of(
             Arguments.of(ListType.SJP_PUBLIC_LIST,
-                         "mocks/sjpPublicList.json"),
+                         "data/sjp-public-list/sjpPublicList.json"),
             Arguments.of(ListType.SJP_DELTA_PUBLIC_LIST,
-                         "mocks/sjpPublicList.json"),
+                         "data/sjp-public-list/sjpPublicList.json"),
             Arguments.of(ListType.SJP_PRESS_LIST,
-                         "mocks/sjpPressList.json"),
+                         "data/sjp-press-list/sjpPressList.json"),
             Arguments.of(ListType.SJP_DELTA_PRESS_LIST,
-                         "mocks/sjpPressList.json"),
+                         "data/sjp-press-list/sjpPressList.json"),
             Arguments.of(ListType.CROWN_DAILY_LIST,
-                         "mocks/crownDailyList.json"),
+                         "data/crown-daily-list/crownDailyList.json"),
             Arguments.of(ListType.CROWN_FIRM_LIST,
-                         "mocks/crownFirmList.json"),
+                         "data/crown-firm-list/crownFirmList.json"),
             Arguments.of(ListType.CROWN_WARNED_LIST,
-                         "mocks/crownWarnedList.json"),
+                         "data/crown-warned-list/crownWarnedList.json"),
             Arguments.of(ListType.MAGISTRATES_PUBLIC_LIST,
-                         "mocks/magistratesPublicList.json"),
+                         "data/magistrates-public-list/magistratesPublicList.json"),
             Arguments.of(ListType.MAGISTRATES_STANDARD_LIST,
-                         "mocks/magistratesStandardList.json"),
+                         "data/magistrates-standard-list/magistratesStandardList.json"),
             Arguments.of(ListType.CIVIL_DAILY_CAUSE_LIST,
-                         "mocks/civilDailyCauseList.json"),
+                         "data/civil-daily-cause-list/civilDailyCauseList.json"),
             Arguments.of(ListType.FAMILY_DAILY_CAUSE_LIST,
-                         "mocks/familyDailyCauseList.json"),
+                         "data/family-daily-cause-list/familyDailyCauseList.json"),
             Arguments.of(ListType.CIVIL_AND_FAMILY_DAILY_CAUSE_LIST,
-                         "mocks/civilAndFamilyDailyCauseList.json"),
+                         "data/civil-and-family-cause-list/civilAndFamilyDailyCauseList.json"),
             Arguments.of(ListType.COP_DAILY_CAUSE_LIST,
-                         "mocks/copDailyCauseList.json"),
+                         "data/cop-daily-cause-list/copDailyCauseList.json"),
             Arguments.of(ListType.ET_FORTNIGHTLY_PRESS_LIST,
-                         "mocks/etFortnightlyPressList.json"),
+                         "data/et-fortnightly-press-list/etFortnightlyPressList.json"),
             Arguments.of(ListType.ET_DAILY_LIST,
-                         "mocks/etDailyList.json"),
+                         "data/et-daily-list/etDailyList.json"),
             Arguments.of(ListType.SSCS_DAILY_LIST,
-                         "mocks/sscsDailyList.json"),
+                         "data/sscs-daily-list/sscsDailyList.json"),
             Arguments.of(ListType.SSCS_DAILY_LIST_ADDITIONAL_HEARINGS,
-                         "mocks/sscsDailyList.json"),
+                         "data/sscs-daily-list/sscsDailyList.json"),
             Arguments.of(ListType.IAC_DAILY_LIST,
-                         "mocks/iacDailyList.json"),
+                         "data/iac-daily-list/iacDailyList.json"),
             Arguments.of(ListType.IAC_DAILY_LIST_ADDITIONAL_CASES,
-                         "mocks/iacDailyList.json"),
+                         "data/iac-daily-list/iacDailyList.json"),
             Arguments.of(ListType.CARE_STANDARDS_LIST,
-                         "mocks/careStandardsList.json"),
+                         "data/care-standards-list/careStandardsList.json"),
             Arguments.of(ListType.PRIMARY_HEALTH_LIST,
-                         "mocks/primaryHealthList.json"),
+                         "data/primary-health-list/primaryHealthList.json"),
             Arguments.of(ListType.OPA_PRESS_LIST,
-                         "mocks/opaPressList.json"),
+                         "data/opa-press-list/opaPressList.json"),
             Arguments.of(ListType.OPA_PUBLIC_LIST,
-                         "mocks/opaPublicList.json"),
+                         "data/opa-public-list/opaPublicList.json"),
             Arguments.of(ListType.OPA_RESULTS,
-                         "mocks/opaResults.json")
+                         "data/opa-results/opaResults.json")
         );
     }
 

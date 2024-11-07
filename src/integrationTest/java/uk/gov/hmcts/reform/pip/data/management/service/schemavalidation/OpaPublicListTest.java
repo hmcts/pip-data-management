@@ -30,28 +30,32 @@ import java.time.LocalDateTime;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@ActiveProfiles("integration")
 @SpringBootTest(classes = {Application.class, AzureBlobConfigurationTestConfiguration.class})
-@ActiveProfiles(profiles = "test")
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
-class IacDailyListTest {
+class OpaPublicListTest {
+
     @Autowired
     ValidationService validationService;
 
-    private static final String IAC_DAILY_LIST_VALID_JSON =
-        "mocks/iacDailyList.json";
-    private static final String IAC_DAILY_LIST_WITH_NEW_LINES =
-        "mocks/iacDailyListWithNewLines.json";
-    private static final String IAC_DAILY_LIST_INVALID_MESSAGE =
-        "Invalid magistrates standard list marked as valid";
+    private static final String OPA_PUBLIC_LIST_VALID_JSON =
+        "data/opa-public-list/opaPublicList.json";
+    private static final String OPA_PUBLIC_LIST_WITH_NEW_LINES =
+        "data/opa-public-list/opaPublicListWithNewLines.json";
+    private static final String OPA_PUBLIC_LIST_INVALID_MESSAGE =
+        "Invalid OPA public list marked as valid";
 
+    private static final String VENUE_SCHEMA = "venue";
+    private static final String VENUE_NAME_SCHEMA = "venueName";
+    private static final String VENUE_CONTACT_SCHEMA = "venueContact";
     private static final String COURT_LIST_SCHEMA = "courtLists";
-    private static final String COURT_LIST_NAME_SCHEMA = "courtListName";
     private static final String COURT_HOUSE_SCHEMA = "courtHouse";
     private static final String COURT_ROOM_SCHEMA = "courtRoom";
     private static final String SESSION_SCHEMA = "session";
     private static final String SITTINGS_SCHEMA = "sittings";
     private static final String HEARING_SCHEMA = "hearing";
-    private static final String CASE_SCHEMA = "case";
+    private static final String CASE_SCHEMA  = "case";
+    private static final String CASE_URN_SCHEMA  = "caseUrn";
     private static final String SOURCE_ARTEFACT_ID = "sourceArtefactId";
     private static final LocalDateTime DISPLAY_FROM = LocalDateTime.now();
     private static final LocalDateTime DISPLAY_TO = LocalDateTime.now();
@@ -60,7 +64,7 @@ class IacDailyListTest {
     private static final Sensitivity SENSITIVITY = Sensitivity.PUBLIC;
     private static final ArtefactType ARTEFACT_TYPE = ArtefactType.LIST;
     private static final String COURT_ID = "123";
-    private static final ListType LIST_TYPE = ListType.IAC_DAILY_LIST;
+    private static final ListType LIST_TYPE = ListType.OPA_PUBLIC_LIST;
     private static final LocalDateTime CONTENT_DATE = LocalDateTime.now();
     private static final String PUBLICATION_DATE_REGEX = "\"publicationDate\":\"[^\"]+\"";
 
@@ -74,14 +78,13 @@ class IacDailyListTest {
     @BeforeEach
     void setup() {
         headerGroup = new HeaderGroup(PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE, SENSITIVITY, LANGUAGE,
-                                      DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, COURT_ID, CONTENT_DATE
-        );
+                                      DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, COURT_ID, CONTENT_DATE);
     }
 
     @Test
-    void testValidateWithErrorWhenDocumentMissingInIacDailyList() throws IOException {
+    void testValidateWithErrorsWhenDocumentMissingInOpaPublicList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(IAC_DAILY_LIST_VALID_JSON)) {
+            .getResourceAsStream(OPA_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
@@ -89,16 +92,16 @@ class IacDailyListTest {
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup),
-                         IAC_DAILY_LIST_INVALID_MESSAGE
-            );
+                             validationService.validateBody(listJson,
+                                                            headerGroup),
+                         OPA_PUBLIC_LIST_INVALID_MESSAGE);
         }
     }
 
     @Test
-    void testValidateWithErrorWhenPublicationDateMissingInIacDailyList() throws IOException {
+    void testValidateWithErrorsWhenPublicationDateMissingInOpaPublicList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(IAC_DAILY_LIST_VALID_JSON)) {
+            .getResourceAsStream(OPA_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             ObjectMapper mapper = new ObjectMapper();
@@ -107,51 +110,69 @@ class IacDailyListTest {
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup),
-                         IAC_DAILY_LIST_INVALID_MESSAGE
-            );
+                             validationService.validateBody(listJson,
+                                                            headerGroup),
+                         OPA_PUBLIC_LIST_INVALID_MESSAGE);
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenVenueMissingInIacDailyList() throws IOException {
+    void testValidateWithErrorsWhenVenueMissingInOpaPublicList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(IAC_DAILY_LIST_VALID_JSON)) {
+            .getResourceAsStream(OPA_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node).remove("venue");
+            ((ObjectNode) node).remove(VENUE_SCHEMA);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup),
-                         IAC_DAILY_LIST_INVALID_MESSAGE
-            );
+                             validationService.validateBody(listJson,
+                                                            headerGroup),
+                         OPA_PUBLIC_LIST_INVALID_MESSAGE);
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenVenueNameMissingInIacDailyList() throws IOException {
+    void testValidateWithErrorsWhenVenueNameMissingInOpaPublicList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(IAC_DAILY_LIST_VALID_JSON)) {
+            .getResourceAsStream(OPA_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             ObjectMapper mapper = new ObjectMapper();
             JsonNode node = mapper.readValue(text, JsonNode.class);
-            ((ObjectNode) node.get("venue")).remove("venueName");
+            ((ObjectNode) node.get(VENUE_SCHEMA)).remove(VENUE_NAME_SCHEMA);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup),
-                         IAC_DAILY_LIST_INVALID_MESSAGE
-            );
+                             validationService.validateBody(listJson,
+                                                            headerGroup),
+                         OPA_PUBLIC_LIST_INVALID_MESSAGE);
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenCourtListMissingInIacDailyList() throws IOException {
+    void testValidateWithErrorsWhenVenueContactMissingInOpaPublicList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(IAC_DAILY_LIST_VALID_JSON)) {
+            .getResourceAsStream(OPA_PUBLIC_LIST_VALID_JSON)) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode node = mapper.readValue(text, JsonNode.class);
+            ((ObjectNode) node.get(VENUE_SCHEMA)).remove(VENUE_CONTACT_SCHEMA);
+
+            String listJson = node.toString();
+            assertThrows(PayloadValidationException.class, () ->
+                             validationService.validateBody(listJson,
+                                                            headerGroup),
+                         OPA_PUBLIC_LIST_INVALID_MESSAGE);
+        }
+    }
+
+    @Test
+    void testValidateWithErrorsWhenCourtListMissingInOpaPublicList() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream(OPA_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
@@ -159,33 +180,16 @@ class IacDailyListTest {
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup),
-                         IAC_DAILY_LIST_INVALID_MESSAGE
-            );
+                             validationService.validateBody(listJson,
+                                                            headerGroup),
+                         OPA_PUBLIC_LIST_INVALID_MESSAGE);
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenCourtListNameMissingInIacDailyList() throws IOException {
+    void testValidateWithErrorsWhenCourtHouseMissingInOpaPublicList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(IAC_DAILY_LIST_VALID_JSON)) {
-            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
-
-            JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0)).remove(COURT_LIST_NAME_SCHEMA);
-
-            String listJson = node.toString();
-            assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup),
-                         IAC_DAILY_LIST_INVALID_MESSAGE
-            );
-        }
-    }
-
-    @Test
-    void testValidateWithErrorsWhenCourtHouseMissingInIacDailyList() throws IOException {
-        try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(IAC_DAILY_LIST_VALID_JSON)) {
+            .getResourceAsStream(OPA_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             ObjectMapper mapper = new ObjectMapper();
@@ -194,16 +198,16 @@ class IacDailyListTest {
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup),
-                         IAC_DAILY_LIST_INVALID_MESSAGE
-            );
+                             validationService.validateBody(listJson,
+                                                            headerGroup),
+                         OPA_PUBLIC_LIST_INVALID_MESSAGE);
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenCourtRoomMissingInIacDailyList() throws IOException {
+    void testValidateWithErrorsWhenCourtRoomMissingInOpaPublicList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(IAC_DAILY_LIST_VALID_JSON)) {
+            .getResourceAsStream(OPA_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             ObjectMapper mapper = new ObjectMapper();
@@ -213,16 +217,16 @@ class IacDailyListTest {
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup),
-                         IAC_DAILY_LIST_INVALID_MESSAGE
-            );
+                             validationService.validateBody(listJson,
+                                                            headerGroup),
+                         OPA_PUBLIC_LIST_INVALID_MESSAGE);
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenSessionMissingInIacDailyList() throws IOException {
+    void testValidateWithErrorsWhenSessionMissingInOpaPublicList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(IAC_DAILY_LIST_VALID_JSON)) {
+            .getResourceAsStream(OPA_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             ObjectMapper mapper = new ObjectMapper();
@@ -232,16 +236,16 @@ class IacDailyListTest {
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup),
-                         IAC_DAILY_LIST_INVALID_MESSAGE
-            );
+                             validationService.validateBody(listJson,
+                                                            headerGroup),
+                         OPA_PUBLIC_LIST_INVALID_MESSAGE);
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenSittingsMissingInIacDailyList() throws IOException {
+    void testValidateWithErrorsWhenSittingsMissingInOpaPublicList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(IAC_DAILY_LIST_VALID_JSON)) {
+            .getResourceAsStream(OPA_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             ObjectMapper mapper = new ObjectMapper();
@@ -252,56 +256,16 @@ class IacDailyListTest {
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup),
-                         IAC_DAILY_LIST_INVALID_MESSAGE
-            );
+                             validationService.validateBody(listJson,
+                                                            headerGroup),
+                         OPA_PUBLIC_LIST_INVALID_MESSAGE);
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenSittingStartMissingInIacDailyList() throws IOException {
+    void testValidateWithErrorsWhenHearingMissingInOpaPublicList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(IAC_DAILY_LIST_VALID_JSON)) {
-            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
-
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode node = mapper.readValue(text, JsonNode.class);
-            ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0)
-                .get(COURT_HOUSE_SCHEMA).get(COURT_ROOM_SCHEMA).get(0)
-                .get(SESSION_SCHEMA).get(0).get(SITTINGS_SCHEMA).get(0)).remove("sittingStart");
-
-            String listJson = node.toString();
-            assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup),
-                         IAC_DAILY_LIST_INVALID_MESSAGE
-            );
-        }
-    }
-
-    @Test
-    void testValidateWithErrorsWhenSittingEndMissingInIacDailyList() throws IOException {
-        try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(IAC_DAILY_LIST_VALID_JSON)) {
-            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
-
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode node = mapper.readValue(text, JsonNode.class);
-            ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0)
-                .get(COURT_HOUSE_SCHEMA).get(COURT_ROOM_SCHEMA).get(0)
-                .get(SESSION_SCHEMA).get(0).get(SITTINGS_SCHEMA).get(0)).remove("sittingEnd");
-
-            String listJson = node.toString();
-            assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup),
-                         IAC_DAILY_LIST_INVALID_MESSAGE
-            );
-        }
-    }
-
-    @Test
-    void testValidateWithErrorsWhenHearingMissingInIacDailyList() throws IOException {
-        try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(IAC_DAILY_LIST_VALID_JSON)) {
+            .getResourceAsStream(OPA_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             ObjectMapper mapper = new ObjectMapper();
@@ -312,16 +276,16 @@ class IacDailyListTest {
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup),
-                         IAC_DAILY_LIST_INVALID_MESSAGE
-            );
+                             validationService.validateBody(listJson,
+                                                            headerGroup),
+                         OPA_PUBLIC_LIST_INVALID_MESSAGE);
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenCaseMissingInIacDailyList() throws IOException {
+    void testValidateWithErrorsWhenCaseMissingInOpaPublicList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(IAC_DAILY_LIST_VALID_JSON)) {
+            .getResourceAsStream(OPA_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             ObjectMapper mapper = new ObjectMapper();
@@ -333,16 +297,16 @@ class IacDailyListTest {
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup),
-                         IAC_DAILY_LIST_INVALID_MESSAGE
-            );
+                             validationService.validateBody(listJson,
+                                                            headerGroup),
+                         OPA_PUBLIC_LIST_INVALID_MESSAGE);
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenCaseNumberMissingInIacDailyList() throws IOException {
+    void testValidateWithErrorsWhenCaseNumberMissingInOpaPublicList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(IAC_DAILY_LIST_VALID_JSON)) {
+            .getResourceAsStream(OPA_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             ObjectMapper mapper = new ObjectMapper();
@@ -350,46 +314,26 @@ class IacDailyListTest {
             ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0)
                 .get(COURT_HOUSE_SCHEMA).get(COURT_ROOM_SCHEMA).get(0)
                 .get(SESSION_SCHEMA).get(0).get(SITTINGS_SCHEMA).get(0)
-                .get(HEARING_SCHEMA).get(0).get(CASE_SCHEMA).get(0)).remove("caseNumber");
+                .get(HEARING_SCHEMA).get(0).get(CASE_SCHEMA).get(0)).remove(CASE_URN_SCHEMA);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup),
-                         IAC_DAILY_LIST_INVALID_MESSAGE
-            );
-        }
-    }
-
-    @Test
-    void testValidateWithErrorsWhenSessionChannelMissingInIacDailyList() throws IOException {
-        try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(IAC_DAILY_LIST_VALID_JSON)) {
-            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
-
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode node = mapper.readValue(text, JsonNode.class);
-            ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0)
-                .get(COURT_HOUSE_SCHEMA).get(COURT_ROOM_SCHEMA).get(0)
-                .get(SESSION_SCHEMA).get(0)).remove("sessionChannel");
-
-            String listJson = node.toString();
-            assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup),
-                         IAC_DAILY_LIST_INVALID_MESSAGE
-            );
+                             validationService.validateBody(listJson,
+                                                            headerGroup),
+                         OPA_PUBLIC_LIST_INVALID_MESSAGE);
         }
     }
 
     @Test
     void testValidateWithSuccessWhenFieldsContainNewLineCharacters() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(IAC_DAILY_LIST_WITH_NEW_LINES)) {
+            .getResourceAsStream(OPA_PUBLIC_LIST_WITH_NEW_LINES)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             ObjectMapper mapper = new ObjectMapper();
             String listJson = mapper.readValue(text, JsonNode.class).toString();
             assertDoesNotThrow(() -> validationService.validateBody(listJson, headerGroup),
-                               IAC_DAILY_LIST_INVALID_MESSAGE);
+                               OPA_PUBLIC_LIST_INVALID_MESSAGE);
         }
     }
 
@@ -401,7 +345,7 @@ class IacDailyListTest {
     })
     void testValidateWithSuccessWhenValidPublicationDateFormat(String publicationDate) throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(IAC_DAILY_LIST_VALID_JSON)) {
+            .getResourceAsStream(OPA_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             ObjectMapper mapper = new ObjectMapper();
@@ -410,7 +354,7 @@ class IacDailyListTest {
             String listJson = node.toString()
                 .replaceAll(PUBLICATION_DATE_REGEX, String.format("\"publicationDate\":\"%s\"", publicationDate));
             assertDoesNotThrow(() -> validationService.validateBody(listJson, headerGroup),
-                               IAC_DAILY_LIST_INVALID_MESSAGE);
+                               OPA_PUBLIC_LIST_INVALID_MESSAGE);
         }
     }
 
@@ -423,7 +367,7 @@ class IacDailyListTest {
     })
     void testValidateWithErrorWhenInvalidPublicationDateFormat(String publicationDate) throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(IAC_DAILY_LIST_VALID_JSON)) {
+            .getResourceAsStream(OPA_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             ObjectMapper mapper = new ObjectMapper();
@@ -432,7 +376,7 @@ class IacDailyListTest {
             String listJson = node.toString()
                 .replaceAll(PUBLICATION_DATE_REGEX, String.format("\"publicationDate\":\"%s\"", publicationDate));
             assertThrows(PayloadValidationException.class, () -> validationService.validateBody(listJson, headerGroup),
-                         IAC_DAILY_LIST_INVALID_MESSAGE);
+                         OPA_PUBLIC_LIST_INVALID_MESSAGE);
         }
     }
 }
