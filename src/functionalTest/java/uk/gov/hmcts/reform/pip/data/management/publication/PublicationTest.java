@@ -158,6 +158,10 @@ class PublicationTest extends FunctionalTestBase {
             headerMapUploadFlatFile, "", pdfFile
         );
         assertThat(responseUploadFlatFile.getStatusCode()).isEqualTo(CREATED.value());
+        Artefact returnedFlatFileArtefact = responseUploadFlatFile.as(Artefact.class);
+        assertThat(returnedFlatFileArtefact.getContentDate()).isEqualTo(CONTENT_DATE);
+        assertThat(returnedFlatFileArtefact.getListType()).isEqualTo(ListType.ET_DAILY_LIST);
+        assertThat(returnedFlatFileArtefact.getLocationId()).contains(COURT_ID);
 
         final Response responseGetAllRelevantArtefactsBySearchValue = doGetRequest(
             ARTEFACT_BY_SEARCH_VALUE_URL + SearchType.CASE_ID + '/' + CASE_NUMBER, headerMap
