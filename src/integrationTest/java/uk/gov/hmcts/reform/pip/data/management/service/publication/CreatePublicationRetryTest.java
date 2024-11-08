@@ -12,8 +12,6 @@ import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.multipart.MultipartFile;
-import uk.gov.hmcts.reform.pip.data.management.Application;
-import uk.gov.hmcts.reform.pip.data.management.config.AzureBlobConfigurationTestConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.AzureArtefactBlobService;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
@@ -35,7 +33,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ActiveProfiles("integration")
-@SpringBootTest(classes = {Application.class, AzureBlobConfigurationTestConfiguration.class})
+@SpringBootTest
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
 @EnableRetry
 class CreatePublicationRetryTest {

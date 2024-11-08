@@ -6,10 +6,7 @@ import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
-import uk.gov.hmcts.reform.pip.data.management.Application;
-import uk.gov.hmcts.reform.pip.data.management.config.AzureBlobConfigurationTestConfiguration;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,8 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 @ActiveProfiles("integration")
-@SpringBootTest(classes = {Application.class, AzureBlobConfigurationTestConfiguration.class})
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
+@SpringBootTest
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
 class JsonExtractorTest {
 
@@ -267,5 +263,4 @@ class JsonExtractorTest {
             fail(UNKNOWN_EXCEPTION);
         }
     }
-
 }

@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
-import uk.gov.hmcts.reform.pip.data.management.Application;
 import uk.gov.hmcts.reform.pip.data.management.database.AzurePublicationBlobService;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
@@ -36,7 +35,7 @@ import static uk.gov.hmcts.reform.pip.model.publication.FileType.EXCEL;
 import static uk.gov.hmcts.reform.pip.model.publication.FileType.PDF;
 
 @ActiveProfiles("integration")
-@SpringBootTest(classes = {Application.class})
+@SpringBootTest
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class PublicationManagementServiceTest {
