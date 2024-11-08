@@ -224,7 +224,7 @@ dependencies {
   implementation group: 'net.logstash.logback', name: 'logstash-logback-encoder', version: '8.0'
   implementation group: 'org.postgresql', name: 'postgresql', version: '42.7.4'
 
-  implementation group: 'com.github.hmcts', name: 'pip-data-models', version: '2.1.31'
+  implementation group: 'com.github.hmcts', name: 'pip-data-models', version: '2.1.32'
   implementation 'com.networknt:json-schema-validator:1.5.3'
   implementation group: 'com.google.guava', name: 'guava', version: '33.3.1-jre'
   implementation group: 'org.apache.poi', name: 'poi-ooxml', version: '5.3.0'
