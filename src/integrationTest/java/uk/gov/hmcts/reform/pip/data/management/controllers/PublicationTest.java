@@ -70,7 +70,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = {Application.class, AzureBlobConfigurationTestConfiguration.class},
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @ActiveProfiles(profiles = "integration")
 @SuppressWarnings({"PMD.ExcessiveImports", "PMD.ExcessiveClassLength",
     "PMD.CyclomaticComplexity", "PMD.TooManyMethods", "PMD.CouplingBetweenObjects", "PMD.LooseCoupling"})
