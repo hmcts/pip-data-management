@@ -1,7 +1,6 @@
 package uk.gov.hmcts.reform.pip.data.management.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,9 +33,8 @@ import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.pip.model.publication.FileType.EXCEL;
 import static uk.gov.hmcts.reform.pip.model.publication.FileType.PDF;
 
-@ActiveProfiles("integration")
+@ActiveProfiles("integration-basic")
 @SpringBootTest
-@AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class PublicationManagementServiceTest {
     @MockBean
