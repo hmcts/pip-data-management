@@ -1756,6 +1756,26 @@ class PublicationTest {
     }
 
     @Test
+    @WithMockUser(username = UNAUTHORIZED_USERNAME, authorities = {UNAUTHORIZED_ROLE})
+    void testUnauthorizedGetArtefactPayload() throws Exception {
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+            .get("/publication/2dde8f1e-bfb6-11ec-9d64-0242ac120002/payload")
+            .header(ADMIN_HEADER, true);
+
+        mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isForbidden()).andReturn();
+    }
+
+    @Test
+    @WithMockUser(username = UNAUTHORIZED_USERNAME, authorities = {UNAUTHORIZED_ROLE})
+    void testUnauthorizedGetArtefactFile() throws Exception {
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+            .get("/publication/2dde8f1e-bfb6-11ec-9d64-0242ac120002/file")
+            .header(ADMIN_HEADER, true);
+
+        mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isForbidden()).andReturn();
+    }
+
+    @Test
     void testGetLocationTypeReturns() throws Exception {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
             .get(LOCATION_TYPE_URL + ListType.CIVIL_DAILY_CAUSE_LIST);

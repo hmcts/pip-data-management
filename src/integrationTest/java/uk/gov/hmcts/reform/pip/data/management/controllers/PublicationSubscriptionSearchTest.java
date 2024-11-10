@@ -66,7 +66,6 @@ class PublicationSubscriptionSearchTest {
 
     private static final String VALID_CASE_ID_SEARCH = "/CASE_ID/45684548";
     private static final String PROVENANCE = "MANUAL_UPLOAD";
-    private static final Sensitivity SENSITIVITY = Sensitivity.PUBLIC;
     private static final String SHOULD_RETURN_EXPECTED_ARTEFACT = "Should return expected artefact";
     private static final LocalDateTime CONTENT_DATE = LocalDateTime.now().toLocalDate().atStartOfDay()
         .truncatedTo(ChronoUnit.SECONDS);
