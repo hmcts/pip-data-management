@@ -24,7 +24,6 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import uk.gov.hmcts.reform.pip.data.management.Application;
 import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
-import uk.gov.hmcts.reform.pip.data.management.database.LocationRepository;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.model.location.Location;
 import uk.gov.hmcts.reform.pip.model.publication.ArtefactType;
@@ -67,9 +66,6 @@ class PublicationInternalCourtIdTest {
 
     @Autowired
     BlobClient blobClient;
-
-    @Autowired
-    LocationRepository locationRepository;
 
     @Autowired
     private MockMvc mockMvc;
