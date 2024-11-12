@@ -1,16 +1,13 @@
 package uk.gov.hmcts.reform.pip.data.management.service;
 
-import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import nl.altindag.log.LogCaptor;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import uk.gov.hmcts.reform.pip.data.management.Application;
+import org.springframework.web.reactive.function.client.WebClient;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.NoMatchArtefact;
 import uk.gov.hmcts.reform.pip.model.system.admin.ActionResult;
 import uk.gov.hmcts.reform.pip.model.system.admin.ChangeType;
@@ -25,29 +22,24 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 @ActiveProfiles("test")
-@SpringBootTest(classes = {Application.class})
-@AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
 class PublicationServicesServiceTest {
-    private static MockWebServer mockPublicationServicesEndpoint;
-
-    @Autowired
-    PublicationServicesService publicationServicesService;
-
-    LogCaptor logCaptor = LogCaptor.forClass(PublicationServicesService.class);
 
     private static final List<NoMatchArtefact> TEST_LIST = new ArrayList<>();
     private static final String EMAIL_SENT = "Email has been sent";
 
-    @BeforeEach
-    void setup() throws IOException {
-        TEST_LIST.add(new NoMatchArtefact(
-            UUID.randomUUID(),
-            "TEST",
-            "1"
-        ));
+    private final MockWebServer mockPublicationServicesEndpoint = new MockWebServer();
+    private PublicationServicesService publicationServicesService;
 
-        mockPublicationServicesEndpoint = new MockWebServer();
-        mockPublicationServicesEndpoint.start(8081);
+    LogCaptor logCaptor = LogCaptor.forClass(PublicationServicesService.class);
+
+    @BeforeEach
+    void setup() {
+        TEST_LIST.add(new NoMatchArtefact(UUID.randomUUID(), "TEST", "1"));
+
+        WebClient mockedWebClient = WebClient.builder()
+            .baseUrl(mockPublicationServicesEndpoint.url("/").toString())
+            .build();
+        publicationServicesService = new PublicationServicesService(mockedWebClient);
     }
 
     @AfterEach
