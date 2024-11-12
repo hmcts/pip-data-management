@@ -1,7 +1,5 @@
 package uk.gov.hmcts.reform.pip.data.management.controllers;
 
-import com.azure.storage.blob.BlobClient;
-import com.azure.storage.blob.BlobContainerClient;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.junit.jupiter.api.BeforeAll;
@@ -11,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -24,6 +21,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import uk.gov.hmcts.reform.pip.data.management.Application;
 import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
+import uk.gov.hmcts.reform.pip.data.management.utils.IntegrationTestBase;
 import uk.gov.hmcts.reform.pip.model.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
@@ -47,16 +45,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("integration")
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
 @WithMockUser(username = "admin", authorities = {"APPROLE_api.request.admin"})
-class PublicationSubscriptionSearchTest {
-
-    @MockBean(name = "artefact")
-    BlobContainerClient artefactBlobContainerClient;
-
-    @MockBean(name = "publications")
-    BlobContainerClient publicationsBlobContainerClient;
-
-    @Autowired
-    BlobClient blobClient;
+class PublicationSubscriptionSearchTest extends IntegrationTestBase {
 
     @Autowired
     private MockMvc mockMvc;
@@ -95,7 +84,7 @@ class PublicationSubscriptionSearchTest {
     public void setupMocks() {
         when(artefactBlobContainerClient.getBlobClient(any())).thenReturn(blobClient);
         when(artefactBlobContainerClient.getBlobContainerUrl()).thenReturn(PAYLOAD_URL);
-        when(publicationsBlobContainerClient.getBlobClient(any())).thenReturn(blobClient);
+        when(publicationBlobContainerClient.getBlobClient(any())).thenReturn(blobClient);
     }
 
     Artefact createDailyList(Sensitivity sensitivity) throws Exception {
