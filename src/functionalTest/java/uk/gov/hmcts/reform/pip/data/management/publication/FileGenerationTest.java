@@ -180,7 +180,7 @@ class FileGenerationTest extends FunctionalTestBase {
         PublicationFileSizes publicationFileSizes = sizesResponse.getBody().as(PublicationFileSizes.class);
         assertNotNull(publicationFileSizes.getPrimaryPdf(), "Primary PDF has not been generated");
         assertNull(publicationFileSizes.getAdditionalPdf(), "Additional PDF has been generated");
-        assertNotNull(publicationFileSizes.getExcel(), "Excel has been generated");
+        assertNotNull(publicationFileSizes.getExcel(), "Excel has not been generated");
 
         headerMap.put(X_SYSTEM_FILE_HEADER, Boolean.TRUE.toString());
 
@@ -206,7 +206,7 @@ class FileGenerationTest extends FunctionalTestBase {
 
         PublicationFileSizes publicationFileSizes = sizesResponse.getBody().as(PublicationFileSizes.class);
         assertNotNull(publicationFileSizes.getPrimaryPdf(), "Primary PDF has not been generated");
-        assertNotNull(publicationFileSizes.getAdditionalPdf(), "Additional PDF has been generated");
+        assertNotNull(publicationFileSizes.getAdditionalPdf(), "Additional PDF has not been generated");
         assertNull(publicationFileSizes.getExcel(), "Excel has been generated");
 
         headerMap.put(X_SYSTEM_FILE_HEADER, Boolean.TRUE.toString());
