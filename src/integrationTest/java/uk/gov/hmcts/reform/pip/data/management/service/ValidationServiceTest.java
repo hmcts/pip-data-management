@@ -15,6 +15,7 @@ import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.FlatFile
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.HeaderValidationException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.PayloadValidationException;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.HeaderGroup;
+import uk.gov.hmcts.reform.pip.data.management.utils.IntegrationBasicTestBase;
 import uk.gov.hmcts.reform.pip.model.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
@@ -36,7 +37,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 @ActiveProfiles("integration-basic")
 @SpringBootTest
 @SuppressWarnings("PMD.TooManyMethods")
-class ValidationServiceTest {
+class ValidationServiceTest extends IntegrationBasicTestBase {
 
     @Autowired
     ValidationService validationService;

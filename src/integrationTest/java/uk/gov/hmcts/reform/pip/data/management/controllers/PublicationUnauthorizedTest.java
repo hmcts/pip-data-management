@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.pip.data.management.controllers.headers;
+package uk.gov.hmcts.reform.pip.data.management.controllers;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +12,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
+import uk.gov.hmcts.reform.pip.data.management.utils.IntegrationBasicTestBase;
 import uk.gov.hmcts.reform.pip.model.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
@@ -26,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @ActiveProfiles("integration-basic")
 @WithMockUser(username = "admin", authorities = { "APPROLE_api.request.unknown" })
-class PublicationUnauthorizedTest {
+class PublicationUnauthorizedTest extends IntegrationBasicTestBase {
 
     @Autowired
     private MockMvc mockMvc;

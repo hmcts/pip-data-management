@@ -4,13 +4,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import uk.gov.hmcts.reform.pip.data.management.utils.IntegrationBasicTestBase;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ActiveProfiles("integration-basic")
 @SpringBootTest
-class ArtefactServiceTest {
+class ArtefactServiceTest extends IntegrationBasicTestBase {
     private static final String PAYLOAD_LIMIT_MESSAGE = "Payload limit result does not match";
 
     @Autowired

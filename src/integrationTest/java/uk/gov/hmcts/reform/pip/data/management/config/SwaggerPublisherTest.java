@@ -7,6 +7,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import uk.gov.hmcts.reform.pip.data.management.utils.IntegrationBasicTestBase;
 
 import java.io.OutputStream;
 import java.nio.file.Files;
@@ -22,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("integration-basic")
-class SwaggerPublisherTest {
+class SwaggerPublisherTest extends IntegrationBasicTestBase {
 
     @Autowired
     private MockMvc mvc;
