@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -12,8 +11,6 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import uk.gov.hmcts.reform.pip.data.management.Application;
-import uk.gov.hmcts.reform.pip.data.management.config.AzureBlobConfigurationTestConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.PayloadValidationException;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.HeaderGroup;
 import uk.gov.hmcts.reform.pip.data.management.service.ValidationService;
@@ -30,25 +27,23 @@ import java.time.LocalDateTime;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@SpringBootTest(classes = {Application.class, AzureBlobConfigurationTestConfiguration.class})
-@ActiveProfiles(profiles = "test")
-@AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
-class CivilDailyCauseListTest {
-
+@ActiveProfiles("integration-basic")
+@SpringBootTest
+class MagistratesPublicListTest {
     @Autowired
     ValidationService validationService;
 
-    private static final String DAILY_CIVIL_CAUSE_LIST_VALID_JSON =
-        "mocks/civilDailyCauseList.json";
-    private static final String DAILY_CIVIL_CAUSE_LIST_WITH_NEW_LINES =
-        "mocks/civilDailyCauseListWithNewLines.json";
-    private static final String DAILY_CIVIL_CAUSE_LIST_INVALID_MESSAGE =
-        "Invalid daily cause list marked as valid";
+    private static final String MAGISTRATES_PUBLIC_LIST_VALID_JSON =
+        "data/magistrates-public-list/magistratesPublicList.json";
+    private static final String MAGISTRATES_PUBLIC_LIST_WITH_NEW_LINES =
+        "data/magistrates-public-list/magistratesPublicListWithNewLines.json";
+    private static final String MAGISTRATES_PUBLIC_LIST_INVALID_MESSAGE =
+        "Invalid crime magistrates public list marked as valid";
 
     private static final String COURT_LIST_SCHEMA = "courtLists";
     private static final String VENUE_SCHEMA = "venue";
-    private static final String VENUE_CONTACT_SCHEMA = "venueContact";
     private static final String VENUE_ADDRESS_SCHEMA = "venueAddress";
+    private static final String VENUE_CONTACT_SCHEMA = "venueContact";
     private static final String COURT_HOUSE_SCHEMA = "courtHouse";
     private static final String COURT_ROOM_SCHEMA = "courtRoom";
     private static final String SESSION_SCHEMA = "session";
@@ -63,7 +58,7 @@ class CivilDailyCauseListTest {
     private static final Sensitivity SENSITIVITY = Sensitivity.PUBLIC;
     private static final ArtefactType ARTEFACT_TYPE = ArtefactType.LIST;
     private static final String COURT_ID = "123";
-    private static final ListType LIST_TYPE = ListType.CIVIL_DAILY_CAUSE_LIST;
+    private static final ListType LIST_TYPE = ListType.MAGISTRATES_PUBLIC_LIST;
     private static final LocalDateTime CONTENT_DATE = LocalDateTime.now();
     private static final String PUBLICATION_DATE_REGEX = "\"publicationDate\":\"[^\"]+\"";
 
@@ -81,9 +76,9 @@ class CivilDailyCauseListTest {
     }
 
     @Test
-    void testValidateWithErrorsWhenDocumentMissingInCivilDailyCauseList() throws IOException {
+    void testValidateWithErrorsWhenDocumentMissingInMagistratesPublicList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(DAILY_CIVIL_CAUSE_LIST_VALID_JSON)) {
+            .getResourceAsStream(MAGISTRATES_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
@@ -91,15 +86,16 @@ class CivilDailyCauseListTest {
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup),
-                         DAILY_CIVIL_CAUSE_LIST_INVALID_MESSAGE);
+                             validationService.validateBody(listJson,
+                                                            headerGroup),
+                         MAGISTRATES_PUBLIC_LIST_INVALID_MESSAGE);
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenVenueMissingInCivilDailyCauseList() throws IOException {
+    void testValidateWithErrorsWhenVenueMissingInMagistratesPublicList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(DAILY_CIVIL_CAUSE_LIST_VALID_JSON)) {
+            .getResourceAsStream(MAGISTRATES_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
@@ -107,15 +103,16 @@ class CivilDailyCauseListTest {
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup),
-                         DAILY_CIVIL_CAUSE_LIST_INVALID_MESSAGE);
+                             validationService.validateBody(listJson,
+                                                            headerGroup),
+                         MAGISTRATES_PUBLIC_LIST_INVALID_MESSAGE);
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenCourtListMissingInCivilDailyCauseList() throws IOException {
+    void testValidateWithErrorsWhenCourtListMissingInMagistratesPublicList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(DAILY_CIVIL_CAUSE_LIST_VALID_JSON)) {
+            .getResourceAsStream(MAGISTRATES_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
@@ -123,15 +120,16 @@ class CivilDailyCauseListTest {
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup),
-                         DAILY_CIVIL_CAUSE_LIST_INVALID_MESSAGE);
+                             validationService.validateBody(listJson,
+                                                            headerGroup),
+                         MAGISTRATES_PUBLIC_LIST_INVALID_MESSAGE);
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenPublicationDateMissingInCivilDailyCauseList() throws IOException {
+    void testValidateWithErrorsWhenPublicationDateMissingInMagistratesPublicList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(DAILY_CIVIL_CAUSE_LIST_VALID_JSON)) {
+            .getResourceAsStream(MAGISTRATES_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             ObjectMapper mapper = new ObjectMapper();
@@ -140,15 +138,16 @@ class CivilDailyCauseListTest {
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup),
-                         DAILY_CIVIL_CAUSE_LIST_INVALID_MESSAGE);
+                             validationService.validateBody(listJson,
+                                                            headerGroup),
+                         MAGISTRATES_PUBLIC_LIST_INVALID_MESSAGE);
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenVenueNameMissingInCivilDailyCauseList() throws IOException {
+    void testValidateWithErrorsWhenVenueNameMissingInMagistratesPublicList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(DAILY_CIVIL_CAUSE_LIST_VALID_JSON)) {
+            .getResourceAsStream(MAGISTRATES_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             ObjectMapper mapper = new ObjectMapper();
@@ -157,15 +156,16 @@ class CivilDailyCauseListTest {
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup),
-                         DAILY_CIVIL_CAUSE_LIST_INVALID_MESSAGE);
+                             validationService.validateBody(listJson,
+                                                            headerGroup),
+                         MAGISTRATES_PUBLIC_LIST_INVALID_MESSAGE);
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenVenueAddressMissingInCivilDailyCauseList() throws IOException {
+    void testValidateWithErrorsWhenVenueAddressMissingInMagistratesPublicList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(DAILY_CIVIL_CAUSE_LIST_VALID_JSON)) {
+            .getResourceAsStream(MAGISTRATES_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             ObjectMapper mapper = new ObjectMapper();
@@ -174,15 +174,16 @@ class CivilDailyCauseListTest {
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup),
-                         DAILY_CIVIL_CAUSE_LIST_INVALID_MESSAGE);
+                             validationService.validateBody(listJson,
+                                                            headerGroup),
+                         MAGISTRATES_PUBLIC_LIST_INVALID_MESSAGE);
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenLineMissingInCivilDailyCauseList() throws IOException {
+    void testValidateWithErrorsWhenLineMissingInMagistratesPublicList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(DAILY_CIVIL_CAUSE_LIST_VALID_JSON)) {
+            .getResourceAsStream(MAGISTRATES_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             ObjectMapper mapper = new ObjectMapper();
@@ -191,15 +192,16 @@ class CivilDailyCauseListTest {
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup),
-                         DAILY_CIVIL_CAUSE_LIST_INVALID_MESSAGE);
+                             validationService.validateBody(listJson,
+                                                            headerGroup),
+                         MAGISTRATES_PUBLIC_LIST_INVALID_MESSAGE);
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenPostCodeMissingInCivilDailyCauseList() throws IOException {
+    void testValidateWithErrorsWhenPostCodeMissingInMagistratesPublicList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(DAILY_CIVIL_CAUSE_LIST_VALID_JSON)) {
+            .getResourceAsStream(MAGISTRATES_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             ObjectMapper mapper = new ObjectMapper();
@@ -208,15 +210,16 @@ class CivilDailyCauseListTest {
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup),
-                         DAILY_CIVIL_CAUSE_LIST_INVALID_MESSAGE);
+                             validationService.validateBody(listJson,
+                                                            headerGroup),
+                         MAGISTRATES_PUBLIC_LIST_INVALID_MESSAGE);
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenVenueContactMissingInCivilDailyCauseList() throws IOException {
+    void testValidateWithErrorsWhenVenueContactMissingInMagistratesPublicList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(DAILY_CIVIL_CAUSE_LIST_VALID_JSON)) {
+            .getResourceAsStream(MAGISTRATES_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             ObjectMapper mapper = new ObjectMapper();
@@ -225,15 +228,16 @@ class CivilDailyCauseListTest {
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup),
-                         DAILY_CIVIL_CAUSE_LIST_INVALID_MESSAGE);
+                             validationService.validateBody(listJson,
+                                                            headerGroup),
+                         MAGISTRATES_PUBLIC_LIST_INVALID_MESSAGE);
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenVenueTelephoneMissingInCivilDailyCauseList() throws IOException {
+    void testValidateWithErrorsWhenVenueTelephoneMissingInMagistratesPublicList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(DAILY_CIVIL_CAUSE_LIST_VALID_JSON)) {
+            .getResourceAsStream(MAGISTRATES_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             ObjectMapper mapper = new ObjectMapper();
@@ -242,15 +246,16 @@ class CivilDailyCauseListTest {
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup),
-                         DAILY_CIVIL_CAUSE_LIST_INVALID_MESSAGE);
+                             validationService.validateBody(listJson,
+                                                            headerGroup),
+                         MAGISTRATES_PUBLIC_LIST_INVALID_MESSAGE);
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenVenueEmailMissingInCivilDailyCauseList() throws IOException {
+    void testValidateWithErrorsWhenVenueEmailMissingInMagistratesPublicList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(DAILY_CIVIL_CAUSE_LIST_VALID_JSON)) {
+            .getResourceAsStream(MAGISTRATES_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             ObjectMapper mapper = new ObjectMapper();
@@ -259,15 +264,16 @@ class CivilDailyCauseListTest {
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup),
-                         DAILY_CIVIL_CAUSE_LIST_INVALID_MESSAGE);
+                             validationService.validateBody(listJson,
+                                                            headerGroup),
+                         MAGISTRATES_PUBLIC_LIST_INVALID_MESSAGE);
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenCourtHouseMissingInCivilDailyCauseList() throws IOException {
+    void testValidateWithErrorsWhenCourtHouseMissingInMagistratesPublicList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(DAILY_CIVIL_CAUSE_LIST_VALID_JSON)) {
+            .getResourceAsStream(MAGISTRATES_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             ObjectMapper mapper = new ObjectMapper();
@@ -276,15 +282,16 @@ class CivilDailyCauseListTest {
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup),
-                         DAILY_CIVIL_CAUSE_LIST_INVALID_MESSAGE);
+                             validationService.validateBody(listJson,
+                                                            headerGroup),
+                         MAGISTRATES_PUBLIC_LIST_INVALID_MESSAGE);
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenCourtHouseNameMissingInCivilDailyCauseList() throws IOException {
+    void testValidateWithErrorsWhenCourtHouseNameMissingInMagistratesPublicList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(DAILY_CIVIL_CAUSE_LIST_VALID_JSON)) {
+            .getResourceAsStream(MAGISTRATES_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             ObjectMapper mapper = new ObjectMapper();
@@ -293,15 +300,16 @@ class CivilDailyCauseListTest {
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup),
-                         DAILY_CIVIL_CAUSE_LIST_INVALID_MESSAGE);
+                             validationService.validateBody(listJson,
+                                                            headerGroup),
+                         MAGISTRATES_PUBLIC_LIST_INVALID_MESSAGE);
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenCourtRoomMissingInCivilDailyCauseList() throws IOException {
+    void testValidateWithErrorsWhenCourtRoomMissingInMagistratesPublicList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(DAILY_CIVIL_CAUSE_LIST_VALID_JSON)) {
+            .getResourceAsStream(MAGISTRATES_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             ObjectMapper mapper = new ObjectMapper();
@@ -311,15 +319,16 @@ class CivilDailyCauseListTest {
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup),
-                         DAILY_CIVIL_CAUSE_LIST_INVALID_MESSAGE);
+                             validationService.validateBody(listJson,
+                                                            headerGroup),
+                         MAGISTRATES_PUBLIC_LIST_INVALID_MESSAGE);
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenCourtRoomNameMissingInCivilDailyCauseList() throws IOException {
+    void testValidateWithErrorsWhenCourtRoomNameMissingInMagistratesPublicList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(DAILY_CIVIL_CAUSE_LIST_VALID_JSON)) {
+            .getResourceAsStream(MAGISTRATES_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             ObjectMapper mapper = new ObjectMapper();
@@ -329,15 +338,16 @@ class CivilDailyCauseListTest {
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup),
-                         DAILY_CIVIL_CAUSE_LIST_INVALID_MESSAGE);
+                             validationService.validateBody(listJson,
+                                                            headerGroup),
+                         MAGISTRATES_PUBLIC_LIST_INVALID_MESSAGE);
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenSessionMissingInCivilDailyCauseList() throws IOException {
+    void testValidateWithErrorsWhenSessionMissingInMagistratesPublicList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(DAILY_CIVIL_CAUSE_LIST_VALID_JSON)) {
+            .getResourceAsStream(MAGISTRATES_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             ObjectMapper mapper = new ObjectMapper();
@@ -347,34 +357,16 @@ class CivilDailyCauseListTest {
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup),
-                         DAILY_CIVIL_CAUSE_LIST_INVALID_MESSAGE);
+                             validationService.validateBody(listJson,
+                                                            headerGroup),
+                         MAGISTRATES_PUBLIC_LIST_INVALID_MESSAGE);
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenSessionChannelMissingInCivilDailyCauseList() throws IOException {
+    void testValidateWithErrorsWhenSittingsMissingInMagistratesPublicList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(DAILY_CIVIL_CAUSE_LIST_VALID_JSON)) {
-            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
-
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode node = mapper.readValue(text, JsonNode.class);
-            ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0)
-                .get(COURT_HOUSE_SCHEMA).get(COURT_ROOM_SCHEMA).get(0)
-                .get(SESSION_SCHEMA).get(0)).remove("sessionChannel");
-
-            String listJson = node.toString();
-            assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup),
-                         DAILY_CIVIL_CAUSE_LIST_INVALID_MESSAGE);
-        }
-    }
-
-    @Test
-    void testValidateWithErrorsWhenSittingsMissingInCivilDailyCauseList() throws IOException {
-        try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(DAILY_CIVIL_CAUSE_LIST_VALID_JSON)) {
+            .getResourceAsStream(MAGISTRATES_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             ObjectMapper mapper = new ObjectMapper();
@@ -385,15 +377,16 @@ class CivilDailyCauseListTest {
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup),
-                         DAILY_CIVIL_CAUSE_LIST_INVALID_MESSAGE);
+                             validationService.validateBody(listJson,
+                                                            headerGroup),
+                         MAGISTRATES_PUBLIC_LIST_INVALID_MESSAGE);
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenSittingStartMissingInCivilDailyCauseList() throws IOException {
+    void testValidateWithErrorsWhenSittingStartMissingInMagistratesPublicList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(DAILY_CIVIL_CAUSE_LIST_VALID_JSON)) {
+            .getResourceAsStream(MAGISTRATES_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             ObjectMapper mapper = new ObjectMapper();
@@ -404,15 +397,16 @@ class CivilDailyCauseListTest {
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup),
-                         DAILY_CIVIL_CAUSE_LIST_INVALID_MESSAGE);
+                             validationService.validateBody(listJson,
+                                                            headerGroup),
+                         MAGISTRATES_PUBLIC_LIST_INVALID_MESSAGE);
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenSittingEndMissingInCivilDailyCauseList() throws IOException {
+    void testValidateWithErrorsWhenSittingEndMissingInMagistratesPublicList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(DAILY_CIVIL_CAUSE_LIST_VALID_JSON)) {
+            .getResourceAsStream(MAGISTRATES_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             ObjectMapper mapper = new ObjectMapper();
@@ -423,15 +417,16 @@ class CivilDailyCauseListTest {
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup),
-                         DAILY_CIVIL_CAUSE_LIST_INVALID_MESSAGE);
+                             validationService.validateBody(listJson,
+                                                            headerGroup),
+                         MAGISTRATES_PUBLIC_LIST_INVALID_MESSAGE);
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenHearingMissingInCivilDailyCauseList() throws IOException {
+    void testValidateWithErrorsWhenHearingMissingInMagistratesPublicList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(DAILY_CIVIL_CAUSE_LIST_VALID_JSON)) {
+            .getResourceAsStream(MAGISTRATES_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             ObjectMapper mapper = new ObjectMapper();
@@ -442,35 +437,16 @@ class CivilDailyCauseListTest {
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup),
-                         DAILY_CIVIL_CAUSE_LIST_INVALID_MESSAGE);
+                             validationService.validateBody(listJson,
+                                                            headerGroup),
+                         MAGISTRATES_PUBLIC_LIST_INVALID_MESSAGE);
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenHearingTypeMissingInCivilDailyCauseList() throws IOException {
+    void testValidateWithErrorsWhenCaseMissingInMagistratesPublicList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(DAILY_CIVIL_CAUSE_LIST_VALID_JSON)) {
-            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
-
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode node = mapper.readValue(text, JsonNode.class);
-            ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0)
-                .get(COURT_HOUSE_SCHEMA).get(COURT_ROOM_SCHEMA).get(0)
-                .get(SESSION_SCHEMA).get(0).get(SITTINGS_SCHEMA).get(0)
-                .get(HEARING_SCHEMA).get(0)).remove("hearingType");
-
-            String listJson = node.toString();
-            assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup),
-                         DAILY_CIVIL_CAUSE_LIST_INVALID_MESSAGE);
-        }
-    }
-
-    @Test
-    void testValidateWithErrorsWhenCaseMissingInCivilDailyCauseList() throws IOException {
-        try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(DAILY_CIVIL_CAUSE_LIST_VALID_JSON)) {
+            .getResourceAsStream(MAGISTRATES_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             ObjectMapper mapper = new ObjectMapper();
@@ -482,35 +458,16 @@ class CivilDailyCauseListTest {
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup),
-                         DAILY_CIVIL_CAUSE_LIST_INVALID_MESSAGE);
+                             validationService.validateBody(listJson,
+                                                            headerGroup),
+                         MAGISTRATES_PUBLIC_LIST_INVALID_MESSAGE);
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenCaseNameMissingInCivilDailyCauseList() throws IOException {
+    void testValidateWithErrorsWhenCaseNumberMissingInMagistratesPublicList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(DAILY_CIVIL_CAUSE_LIST_VALID_JSON)) {
-            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
-
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode node = mapper.readValue(text, JsonNode.class);
-            ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0).get(COURT_HOUSE_SCHEMA)
-                .get(COURT_ROOM_SCHEMA).get(0).get(SESSION_SCHEMA).get(0)
-                .get(SITTINGS_SCHEMA).get(0).get(HEARING_SCHEMA).get(0)
-                .get(CASE_SCHEMA).get(0)).remove("caseName");
-
-            String listJson = node.toString();
-            assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup),
-                         DAILY_CIVIL_CAUSE_LIST_INVALID_MESSAGE);
-        }
-    }
-
-    @Test
-    void testValidateWithErrorsWhenCaseNumberMissingInCivilDailyCauseList() throws IOException {
-        try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(DAILY_CIVIL_CAUSE_LIST_VALID_JSON)) {
+            .getResourceAsStream(MAGISTRATES_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             ObjectMapper mapper = new ObjectMapper();
@@ -522,21 +479,22 @@ class CivilDailyCauseListTest {
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup),
-                         DAILY_CIVIL_CAUSE_LIST_INVALID_MESSAGE);
+                             validationService.validateBody(listJson,
+                                                            headerGroup),
+                         MAGISTRATES_PUBLIC_LIST_INVALID_MESSAGE);
         }
     }
 
     @Test
     void testValidateWithSuccessWhenFieldsContainNewLineCharacters() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(DAILY_CIVIL_CAUSE_LIST_WITH_NEW_LINES)) {
+            .getResourceAsStream(MAGISTRATES_PUBLIC_LIST_WITH_NEW_LINES)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             ObjectMapper mapper = new ObjectMapper();
             String listJson = mapper.readValue(text, JsonNode.class).toString();
             assertDoesNotThrow(() -> validationService.validateBody(listJson, headerGroup),
-                               DAILY_CIVIL_CAUSE_LIST_INVALID_MESSAGE);
+                               MAGISTRATES_PUBLIC_LIST_INVALID_MESSAGE);
         }
     }
 
@@ -548,7 +506,7 @@ class CivilDailyCauseListTest {
     })
     void testValidateWithSuccessWhenValidPublicationDateFormat(String publicationDate) throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(DAILY_CIVIL_CAUSE_LIST_VALID_JSON)) {
+            .getResourceAsStream(MAGISTRATES_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             ObjectMapper mapper = new ObjectMapper();
@@ -557,7 +515,7 @@ class CivilDailyCauseListTest {
             String listJson = node.toString()
                 .replaceAll(PUBLICATION_DATE_REGEX, String.format("\"publicationDate\":\"%s\"", publicationDate));
             assertDoesNotThrow(() -> validationService.validateBody(listJson, headerGroup),
-                               DAILY_CIVIL_CAUSE_LIST_INVALID_MESSAGE);
+                               MAGISTRATES_PUBLIC_LIST_INVALID_MESSAGE);
         }
     }
 
@@ -570,7 +528,7 @@ class CivilDailyCauseListTest {
     })
     void testValidateWithErrorWhenInvalidPublicationDateFormat(String publicationDate) throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(DAILY_CIVIL_CAUSE_LIST_VALID_JSON)) {
+            .getResourceAsStream(MAGISTRATES_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             ObjectMapper mapper = new ObjectMapper();
@@ -579,7 +537,7 @@ class CivilDailyCauseListTest {
             String listJson = node.toString()
                 .replaceAll(PUBLICATION_DATE_REGEX, String.format("\"publicationDate\":\"%s\"", publicationDate));
             assertThrows(PayloadValidationException.class, () -> validationService.validateBody(listJson, headerGroup),
-                         DAILY_CIVIL_CAUSE_LIST_INVALID_MESSAGE);
+                         MAGISTRATES_PUBLIC_LIST_INVALID_MESSAGE);
         }
     }
 }

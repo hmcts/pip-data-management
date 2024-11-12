@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -12,8 +11,6 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import uk.gov.hmcts.reform.pip.data.management.Application;
-import uk.gov.hmcts.reform.pip.data.management.config.AzureBlobConfigurationTestConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.PayloadValidationException;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.HeaderGroup;
 import uk.gov.hmcts.reform.pip.data.management.service.ValidationService;
@@ -30,20 +27,18 @@ import java.time.LocalDateTime;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@SpringBootTest(classes = {Application.class, AzureBlobConfigurationTestConfiguration.class})
-@ActiveProfiles(profiles = "test")
-@AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
-
-class CrownFirmListTest {
+@ActiveProfiles("integration-basic")
+@SpringBootTest
+class FamilyCauseListTest {
     @Autowired
     ValidationService validationService;
 
-    private static final String CROWN_FIRM_LIST_VALID_JSON =
-        "mocks/crownFirmList.json";
-    private static final String CROWN_FIRM_LIST_WITH_NEW_LINES =
-        "mocks/crownFirmListWithNewLines.json";
-    private static final String CROWN_FIRM_LIST_INVALID_MESSAGE =
-        "Invalid crown firm list marked as valid";
+    private static final String FAMILY_CAUSE_LIST_VALID_JSON =
+        "data/family-daily-cause-list/familyDailyCauseList.json";
+    private static final String FAMILY_CAUSE_LIST_WITH_NEW_LINES =
+        "data/family-daily-cause-list/familyDailyCauseListWithNewLines.json";
+    private static final String FAMILY_CAUSE_LIST_INVALID_MESSAGE =
+        "Invalid daily cause list marked as valid";
 
     private static final String COURT_LIST_SCHEMA = "courtLists";
     private static final String VENUE_SCHEMA = "venue";
@@ -63,16 +58,11 @@ class CrownFirmListTest {
     private static final Sensitivity SENSITIVITY = Sensitivity.PUBLIC;
     private static final ArtefactType ARTEFACT_TYPE = ArtefactType.LIST;
     private static final String COURT_ID = "123";
-    private static final ListType LIST_TYPE = ListType.CROWN_FIRM_LIST;
+    private static final ListType LIST_TYPE = ListType.FAMILY_DAILY_CAUSE_LIST;
     private static final LocalDateTime CONTENT_DATE = LocalDateTime.now();
     private static final String PUBLICATION_DATE_REGEX = "\"publicationDate\":\"[^\"]+\"";
 
     private HeaderGroup headerGroup;
-
-    private JsonNode getJsonNode(String json) throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
-        return mapper.readValue(json, JsonNode.class);
-    }
 
     @BeforeEach
     void setup() {
@@ -80,11 +70,15 @@ class CrownFirmListTest {
                                       DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, COURT_ID, CONTENT_DATE);
     }
 
+    private JsonNode getJsonNode(String json) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.readValue(json, JsonNode.class);
+    }
 
     @Test
-    void testValidateWithErrorsWhenDocumentMissingInCrownFirmList() throws IOException {
+    void testValidateWithErrorsWhenDocumentMissingInFamilyDailyCauseList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CROWN_FIRM_LIST_VALID_JSON)) {
+            .getResourceAsStream(FAMILY_CAUSE_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
@@ -92,16 +86,15 @@ class CrownFirmListTest {
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson,
-                                                            headerGroup),
-                         CROWN_FIRM_LIST_INVALID_MESSAGE);
+                             validationService.validateBody(listJson, headerGroup),
+                         FAMILY_CAUSE_LIST_INVALID_MESSAGE);
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenVenueMissingInCrownFirmList() throws IOException {
+    void testValidateWithErrorsWhenVenueMissingInFamilyDailyCauseList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CROWN_FIRM_LIST_VALID_JSON)) {
+            .getResourceAsStream(FAMILY_CAUSE_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
@@ -109,16 +102,15 @@ class CrownFirmListTest {
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson,
-                                                            headerGroup),
-                         CROWN_FIRM_LIST_INVALID_MESSAGE);
+                             validationService.validateBody(listJson, headerGroup),
+                         FAMILY_CAUSE_LIST_INVALID_MESSAGE);
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenCourtListMissingInCrownFirmList() throws IOException {
+    void testValidateWithErrorsWhenCourtListMissingInFamilyDailyCauseList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CROWN_FIRM_LIST_VALID_JSON)) {
+            .getResourceAsStream(FAMILY_CAUSE_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
@@ -126,16 +118,15 @@ class CrownFirmListTest {
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson,
-                                                            headerGroup),
-                         CROWN_FIRM_LIST_INVALID_MESSAGE);
+                             validationService.validateBody(listJson, headerGroup),
+                         FAMILY_CAUSE_LIST_INVALID_MESSAGE);
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenPublicationDateMissingInCrownFirmList() throws IOException {
+    void testValidateWithErrorsWhenPublicationDateMissingInFamilyDailyCauseList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CROWN_FIRM_LIST_VALID_JSON)) {
+            .getResourceAsStream(FAMILY_CAUSE_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             ObjectMapper mapper = new ObjectMapper();
@@ -144,16 +135,15 @@ class CrownFirmListTest {
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson,
-                                                            headerGroup),
-                         CROWN_FIRM_LIST_INVALID_MESSAGE);
+                             validationService.validateBody(listJson, headerGroup),
+                         FAMILY_CAUSE_LIST_INVALID_MESSAGE);
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenVenueNameMissingInCrownFirmList() throws IOException {
+    void testValidateWithErrorsWhenVenueNameMissingInFamilyDailyCauseList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CROWN_FIRM_LIST_VALID_JSON)) {
+            .getResourceAsStream(FAMILY_CAUSE_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             ObjectMapper mapper = new ObjectMapper();
@@ -162,16 +152,15 @@ class CrownFirmListTest {
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson,
-                                                            headerGroup),
-                         CROWN_FIRM_LIST_INVALID_MESSAGE);
+                             validationService.validateBody(listJson, headerGroup),
+                         FAMILY_CAUSE_LIST_INVALID_MESSAGE);
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenVenueAddressMissingInCrownFirmList() throws IOException {
+    void testValidateWithErrorsWhenVenueAddressMissingInFamilyDailyCauseList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CROWN_FIRM_LIST_VALID_JSON)) {
+            .getResourceAsStream(FAMILY_CAUSE_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             ObjectMapper mapper = new ObjectMapper();
@@ -180,16 +169,15 @@ class CrownFirmListTest {
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson,
-                                                            headerGroup),
-                         CROWN_FIRM_LIST_INVALID_MESSAGE);
+                             validationService.validateBody(listJson, headerGroup),
+                         FAMILY_CAUSE_LIST_INVALID_MESSAGE);
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenLineMissingInCrownFirmList() throws IOException {
+    void testValidateWithErrorsWhenLineMissingInFamilyDailyCauseList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CROWN_FIRM_LIST_VALID_JSON)) {
+            .getResourceAsStream(FAMILY_CAUSE_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             ObjectMapper mapper = new ObjectMapper();
@@ -198,16 +186,15 @@ class CrownFirmListTest {
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson,
-                                                            headerGroup),
-                         CROWN_FIRM_LIST_INVALID_MESSAGE);
+                             validationService.validateBody(listJson, headerGroup),
+                         FAMILY_CAUSE_LIST_INVALID_MESSAGE);
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenPostCodeMissingInCrownFirmList() throws IOException {
+    void testValidateWithErrorsWhenPostCodeMissingInFamilyDailyCauseList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CROWN_FIRM_LIST_VALID_JSON)) {
+            .getResourceAsStream(FAMILY_CAUSE_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             ObjectMapper mapper = new ObjectMapper();
@@ -216,16 +203,15 @@ class CrownFirmListTest {
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson,
-                                                            headerGroup),
-                         CROWN_FIRM_LIST_INVALID_MESSAGE);
+                             validationService.validateBody(listJson, headerGroup),
+                         FAMILY_CAUSE_LIST_INVALID_MESSAGE);
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenVenueContactMissingInCrownFirmList() throws IOException {
+    void testValidateWithErrorsWhenVenueContactMissingInFamilyDailyCauseList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CROWN_FIRM_LIST_VALID_JSON)) {
+            .getResourceAsStream(FAMILY_CAUSE_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             ObjectMapper mapper = new ObjectMapper();
@@ -234,16 +220,15 @@ class CrownFirmListTest {
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson,
-                                                            headerGroup),
-                         CROWN_FIRM_LIST_INVALID_MESSAGE);
+                             validationService.validateBody(listJson, headerGroup),
+                         FAMILY_CAUSE_LIST_INVALID_MESSAGE);
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenVenueTelephoneMissingInCrownFirmList() throws IOException {
+    void testValidateWithErrorsWhenVenueTelephoneMissingInFamilyDailyCauseList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CROWN_FIRM_LIST_VALID_JSON)) {
+            .getResourceAsStream(FAMILY_CAUSE_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             ObjectMapper mapper = new ObjectMapper();
@@ -252,16 +237,15 @@ class CrownFirmListTest {
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson,
-                                                            headerGroup),
-                         CROWN_FIRM_LIST_INVALID_MESSAGE);
+                             validationService.validateBody(listJson, headerGroup),
+                         FAMILY_CAUSE_LIST_INVALID_MESSAGE);
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenVenueEmailMissingInCrownFirmList() throws IOException {
+    void testValidateWithErrorsWhenVenueEmailMissingInFamilyDailyCauseList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CROWN_FIRM_LIST_VALID_JSON)) {
+            .getResourceAsStream(FAMILY_CAUSE_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             ObjectMapper mapper = new ObjectMapper();
@@ -270,16 +254,15 @@ class CrownFirmListTest {
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson,
-                                                            headerGroup),
-                         CROWN_FIRM_LIST_INVALID_MESSAGE);
+                             validationService.validateBody(listJson, headerGroup),
+                         FAMILY_CAUSE_LIST_INVALID_MESSAGE);
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenCourtHouseMissingInCrownFirmList() throws IOException {
+    void testValidateWithErrorsWhenCourtHouseMissingInFamilyDailyCauseList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CROWN_FIRM_LIST_VALID_JSON)) {
+            .getResourceAsStream(FAMILY_CAUSE_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             ObjectMapper mapper = new ObjectMapper();
@@ -288,16 +271,15 @@ class CrownFirmListTest {
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson,
-                                                            headerGroup),
-                         CROWN_FIRM_LIST_INVALID_MESSAGE);
+                             validationService.validateBody(listJson, headerGroup),
+                         FAMILY_CAUSE_LIST_INVALID_MESSAGE);
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenCourtHouseNameMissingInCrownFirmList() throws IOException {
+    void testValidateWithErrorsWhenCourtHouseNameMissingInFamilyDailyCauseList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CROWN_FIRM_LIST_VALID_JSON)) {
+            .getResourceAsStream(FAMILY_CAUSE_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             ObjectMapper mapper = new ObjectMapper();
@@ -306,16 +288,15 @@ class CrownFirmListTest {
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson,
-                                                            headerGroup),
-                         CROWN_FIRM_LIST_INVALID_MESSAGE);
+                             validationService.validateBody(listJson, headerGroup),
+                         FAMILY_CAUSE_LIST_INVALID_MESSAGE);
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenCourtRoomMissingInCrownFirmList() throws IOException {
+    void testValidateWithErrorsWhenCourtRoomMissingInFamilyDailyCauseList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CROWN_FIRM_LIST_VALID_JSON)) {
+            .getResourceAsStream(FAMILY_CAUSE_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             ObjectMapper mapper = new ObjectMapper();
@@ -325,16 +306,15 @@ class CrownFirmListTest {
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson,
-                                                            headerGroup),
-                         CROWN_FIRM_LIST_INVALID_MESSAGE);
+                             validationService.validateBody(listJson, headerGroup),
+                         FAMILY_CAUSE_LIST_INVALID_MESSAGE);
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenCourtRoomNameMissingInCrownFirmList() throws IOException {
+    void testValidateWithErrorsWhenCourtRoomNameMissingInFamilyDailyCauseList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CROWN_FIRM_LIST_VALID_JSON)) {
+            .getResourceAsStream(FAMILY_CAUSE_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             ObjectMapper mapper = new ObjectMapper();
@@ -344,16 +324,15 @@ class CrownFirmListTest {
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson,
-                                                            headerGroup),
-                         CROWN_FIRM_LIST_INVALID_MESSAGE);
+                             validationService.validateBody(listJson, headerGroup),
+                         FAMILY_CAUSE_LIST_INVALID_MESSAGE);
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenSessionMissingInCrownFirmList() throws IOException {
+    void testValidateWithErrorsWhenSessionMissingInFamilyDailyCauseList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CROWN_FIRM_LIST_VALID_JSON)) {
+            .getResourceAsStream(FAMILY_CAUSE_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             ObjectMapper mapper = new ObjectMapper();
@@ -363,16 +342,15 @@ class CrownFirmListTest {
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson,
-                                                            headerGroup),
-                         CROWN_FIRM_LIST_INVALID_MESSAGE);
+                             validationService.validateBody(listJson, headerGroup),
+                         FAMILY_CAUSE_LIST_INVALID_MESSAGE);
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenSittingsMissingInCrownFirmList() throws IOException {
+    void testValidateWithErrorsWhenSittingsMissingInFamilyDailyCauseList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CROWN_FIRM_LIST_VALID_JSON)) {
+            .getResourceAsStream(FAMILY_CAUSE_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             ObjectMapper mapper = new ObjectMapper();
@@ -383,16 +361,15 @@ class CrownFirmListTest {
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson,
-                                                            headerGroup),
-                         CROWN_FIRM_LIST_INVALID_MESSAGE);
+                             validationService.validateBody(listJson, headerGroup),
+                         FAMILY_CAUSE_LIST_INVALID_MESSAGE);
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenSittingStartMissingInCrownFirmList() throws IOException {
+    void testValidateWithErrorsWhenSittingStartMissingInFamilyDailyCauseList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CROWN_FIRM_LIST_VALID_JSON)) {
+            .getResourceAsStream(FAMILY_CAUSE_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             ObjectMapper mapper = new ObjectMapper();
@@ -403,16 +380,15 @@ class CrownFirmListTest {
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson,
-                                                            headerGroup),
-                         CROWN_FIRM_LIST_INVALID_MESSAGE);
+                             validationService.validateBody(listJson, headerGroup),
+                         FAMILY_CAUSE_LIST_INVALID_MESSAGE);
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenSittingEndMissingInCrownFirmList() throws IOException {
+    void testValidateWithErrorsWhenSittingEndMissingInFamilyDailyCauseList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CROWN_FIRM_LIST_VALID_JSON)) {
+            .getResourceAsStream(FAMILY_CAUSE_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             ObjectMapper mapper = new ObjectMapper();
@@ -423,16 +399,15 @@ class CrownFirmListTest {
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson,
-                                                            headerGroup),
-                         CROWN_FIRM_LIST_INVALID_MESSAGE);
+                             validationService.validateBody(listJson, headerGroup),
+                         FAMILY_CAUSE_LIST_INVALID_MESSAGE);
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenHearingMissingInCrownFirmList() throws IOException {
+    void testValidateWithErrorsWhenHearingMissingInFamilyDailyCauseList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CROWN_FIRM_LIST_VALID_JSON)) {
+            .getResourceAsStream(FAMILY_CAUSE_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             ObjectMapper mapper = new ObjectMapper();
@@ -443,16 +418,35 @@ class CrownFirmListTest {
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson,
-                                                            headerGroup),
-                         CROWN_FIRM_LIST_INVALID_MESSAGE);
+                             validationService.validateBody(listJson, headerGroup),
+                         FAMILY_CAUSE_LIST_INVALID_MESSAGE);
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenCaseMissingInCrownFirmList() throws IOException {
+    void testValidateWithErrorsWhenHearingTypeMissingInFamilyDailyCauseList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CROWN_FIRM_LIST_VALID_JSON)) {
+            .getResourceAsStream(FAMILY_CAUSE_LIST_VALID_JSON)) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode node = mapper.readValue(text, JsonNode.class);
+            ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0)
+                .get(COURT_HOUSE_SCHEMA).get(COURT_ROOM_SCHEMA).get(0)
+                .get(SESSION_SCHEMA).get(0).get(SITTINGS_SCHEMA).get(0)
+                .get(HEARING_SCHEMA).get(0)).remove("hearingType");
+
+            String listJson = node.toString();
+            assertThrows(PayloadValidationException.class, () ->
+                             validationService.validateBody(listJson, headerGroup),
+                         FAMILY_CAUSE_LIST_INVALID_MESSAGE);
+        }
+    }
+
+    @Test
+    void testValidateWithErrorsWhenCaseMissingInFamilyDailyCauseList() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream(FAMILY_CAUSE_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             ObjectMapper mapper = new ObjectMapper();
@@ -464,16 +458,35 @@ class CrownFirmListTest {
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson,
-                                                            headerGroup),
-                         CROWN_FIRM_LIST_INVALID_MESSAGE);
+                             validationService.validateBody(listJson, headerGroup),
+                         FAMILY_CAUSE_LIST_INVALID_MESSAGE);
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenCaseNumberMissingInCrownFirmList() throws IOException {
+    void testValidateWithErrorsWhenCaseNameMissingInFamilyDailyCauseList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CROWN_FIRM_LIST_VALID_JSON)) {
+            .getResourceAsStream(FAMILY_CAUSE_LIST_VALID_JSON)) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode node = mapper.readValue(text, JsonNode.class);
+            ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0).get(COURT_HOUSE_SCHEMA)
+                .get(COURT_ROOM_SCHEMA).get(0).get(SESSION_SCHEMA).get(0)
+                .get(SITTINGS_SCHEMA).get(0).get(HEARING_SCHEMA).get(0)
+                .get(CASE_SCHEMA).get(0)).remove("caseName");
+
+            String listJson = node.toString();
+            assertThrows(PayloadValidationException.class, () ->
+                             validationService.validateBody(listJson, headerGroup),
+                         FAMILY_CAUSE_LIST_INVALID_MESSAGE);
+        }
+    }
+
+    @Test
+    void testValidateWithErrorsWhenCaseNumberMissingInFamilyDailyCauseList() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream(FAMILY_CAUSE_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             ObjectMapper mapper = new ObjectMapper();
@@ -485,22 +498,21 @@ class CrownFirmListTest {
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson,
-                                                            headerGroup),
-                         CROWN_FIRM_LIST_INVALID_MESSAGE);
+                             validationService.validateBody(listJson, headerGroup),
+                         FAMILY_CAUSE_LIST_INVALID_MESSAGE);
         }
     }
 
     @Test
     void testValidateWithSuccessWhenFieldsContainNewLineCharacters() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CROWN_FIRM_LIST_WITH_NEW_LINES)) {
+            .getResourceAsStream(FAMILY_CAUSE_LIST_WITH_NEW_LINES)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             ObjectMapper mapper = new ObjectMapper();
             String listJson = mapper.readValue(text, JsonNode.class).toString();
             assertDoesNotThrow(() -> validationService.validateBody(listJson, headerGroup),
-                               CROWN_FIRM_LIST_INVALID_MESSAGE);
+                               FAMILY_CAUSE_LIST_INVALID_MESSAGE);
         }
     }
 
@@ -512,7 +524,7 @@ class CrownFirmListTest {
     })
     void testValidateWithSuccessWhenValidPublicationDateFormat(String publicationDate) throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CROWN_FIRM_LIST_VALID_JSON)) {
+            .getResourceAsStream(FAMILY_CAUSE_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             ObjectMapper mapper = new ObjectMapper();
@@ -521,7 +533,7 @@ class CrownFirmListTest {
             String listJson = node.toString()
                 .replaceAll(PUBLICATION_DATE_REGEX, String.format("\"publicationDate\":\"%s\"", publicationDate));
             assertDoesNotThrow(() -> validationService.validateBody(listJson, headerGroup),
-                               CROWN_FIRM_LIST_INVALID_MESSAGE);
+                               FAMILY_CAUSE_LIST_INVALID_MESSAGE);
         }
     }
 
@@ -534,7 +546,7 @@ class CrownFirmListTest {
     })
     void testValidateWithErrorWhenInvalidPublicationDateFormat(String publicationDate) throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CROWN_FIRM_LIST_VALID_JSON)) {
+            .getResourceAsStream(FAMILY_CAUSE_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             ObjectMapper mapper = new ObjectMapper();
@@ -543,7 +555,7 @@ class CrownFirmListTest {
             String listJson = node.toString()
                 .replaceAll(PUBLICATION_DATE_REGEX, String.format("\"publicationDate\":\"%s\"", publicationDate));
             assertThrows(PayloadValidationException.class, () -> validationService.validateBody(listJson, headerGroup),
-                         CROWN_FIRM_LIST_INVALID_MESSAGE);
+                         FAMILY_CAUSE_LIST_INVALID_MESSAGE);
         }
     }
 }

@@ -19,7 +19,7 @@ payload:
   json:
     max-size-search: 50
     max-size-excel: 100
-    max-size-pdf: 50
+    max-size-pdf: 60
     search-values:
       array-value: "$['root-value']['inner-value'][*]['array-value']"
       case-urn: "$['unknown-attribute']"
