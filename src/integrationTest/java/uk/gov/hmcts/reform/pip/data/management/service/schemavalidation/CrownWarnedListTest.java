@@ -2,7 +2,6 @@ package uk.gov.hmcts.reform.pip.data.management.service.schemavalidation;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -10,8 +9,6 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import uk.gov.hmcts.reform.pip.data.management.Application;
-import uk.gov.hmcts.reform.pip.data.management.config.AzureBlobConfigurationTestConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.PayloadValidationException;
 import uk.gov.hmcts.reform.pip.data.management.helpers.JsonHelper;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.HeaderGroup;
@@ -30,9 +27,8 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@SpringBootTest(classes = {Application.class, AzureBlobConfigurationTestConfiguration.class})
-@ActiveProfiles(profiles = "test")
-@AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
+@ActiveProfiles("integration-basic")
+@SpringBootTest
 class CrownWarnedListTest {
 
     @Autowired
@@ -41,9 +37,9 @@ class CrownWarnedListTest {
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
     private static final String CROWN_WARNED_LIST_VALID_JSON =
-        "mocks/crownWarnedList.json";
+        "data/crown-warned-list/crownWarnedList.json";
     private static final String CROWN_WARNED_LIST_WITH_NEW_LINES =
-        "mocks/crownWarnedListWithNewLines.json";
+        "data/crown-warned-list/crownWarnedListWithNewLines.json";
     private static final String CROWN_WARNED_LIST_INVALID_MESSAGE =
         "Invalid crown warned list marked as valid";
 
