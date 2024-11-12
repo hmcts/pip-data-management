@@ -79,7 +79,16 @@
                           {
                             "partyRole": "PROSECUTOR",
                             "organisationDetails": {
-                              "organisationName": "This is an organisation"
+                              "organisationName": "This is an organisation",
+                              "organisationAddress": {
+                                "county": "County A",
+                                "town": "Month A",
+                                "postCode": "AA1 AA1",
+                                "line": [
+                                  "Organisation Line 1",
+                                  "Organisation Line 2"
+                                ]
+                              }
                             }
                           }
                         ],

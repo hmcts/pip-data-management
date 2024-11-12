@@ -1,16 +1,13 @@
 package uk.gov.hmcts.reform.pip.data.management.service;
 
-import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import nl.altindag.log.LogCaptor;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import uk.gov.hmcts.reform.pip.data.management.Application;
+import org.springframework.web.reactive.function.client.WebClient;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 
 import java.io.IOException;
@@ -20,8 +17,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 @ActiveProfiles("test")
-@SpringBootTest(classes = {Application.class})
-@AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
 class SubscriptionManagementServiceTest {
 
     private static final Artefact ARTEFACT = Artefact.builder()
@@ -30,19 +25,19 @@ class SubscriptionManagementServiceTest {
         .build();
 
     private static final String LOCATION_ID = "1";
-    private static MockWebServer mockSubscriptionManagementEndpoint;
-
     private static final String TRIGGER_RECEIVED = "Trigger has been received";
 
-    @Autowired
+    private final MockWebServer mockSubscriptionManagementEndpoint = new MockWebServer();
     SubscriptionManagementService subscriptionManagementService;
 
     LogCaptor logCaptor = LogCaptor.forClass(SubscriptionManagementService.class);
 
     @BeforeEach
-    void setup() throws IOException {
-        mockSubscriptionManagementEndpoint = new MockWebServer();
-        mockSubscriptionManagementEndpoint.start(4550);
+    void setup() {
+        WebClient mockedWebClient = WebClient.builder()
+            .baseUrl(mockSubscriptionManagementEndpoint.url("/").toString())
+            .build();
+        subscriptionManagementService = new SubscriptionManagementService(mockedWebClient);
     }
 
     @AfterEach
