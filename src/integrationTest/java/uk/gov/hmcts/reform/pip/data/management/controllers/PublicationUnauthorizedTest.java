@@ -212,9 +212,9 @@ class PublicationUnauthorizedTest extends IntegrationBasicTestBase {
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
             .get(MI_REPORTING_DATA_URL);
 
-       mockMvc.perform(request)
-           .andExpect(status().isForbidden())
-           .andReturn();
+        mockMvc.perform(request)
+            .andExpect(status().isForbidden())
+            .andReturn();
     }
 
     @Test
