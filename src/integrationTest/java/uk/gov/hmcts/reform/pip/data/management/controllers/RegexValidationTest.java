@@ -3,7 +3,6 @@ package uk.gov.hmcts.reform.pip.data.management.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,8 +30,6 @@ import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(classes = {Application.class},
@@ -45,7 +42,6 @@ class RegexValidationTest extends IntegrationTestBase {
     @Autowired
     private MockMvc mockMvc;
 
-    private static final String BLOB_PAYLOAD_URL = "https://localhost";
     private static final String POST_URL = "/publication";
     private static final String TEST_CONTENT_MESSAGE = "Response is not populated";
     private static final String TEST_ARTEFACT_ID_MESSAGE = "Artefact ID is not populated";
@@ -72,13 +68,6 @@ class RegexValidationTest extends IntegrationTestBase {
     public static void setup() {
         objectMapper = new ObjectMapper();
         objectMapper.findAndRegisterModules();
-    }
-
-    @BeforeEach
-    public void beforeTests() {
-        when(artefactBlobContainerClient.getBlobClient(any())).thenReturn(blobClient);
-        when(artefactBlobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
-        when(publicationBlobContainerClient.getBlobClient(any())).thenReturn(blobClient);
     }
 
     @DisplayName("Should throw a validation error due to containing a tag with content")

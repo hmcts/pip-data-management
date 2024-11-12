@@ -61,7 +61,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -104,7 +103,6 @@ class PublicationTest extends IntegrationTestBase {
     private static final LocalDateTime DISPLAY_TO = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
     private static final LocalDateTime DISPLAY_FROM = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
     private static final Language LANGUAGE = Language.ENGLISH;
-    private static final String BLOB_PAYLOAD_URL = "https://localhost";
     private static final ListType LIST_TYPE = ListType.CIVIL_DAILY_CAUSE_LIST;
     private static final String COURT_ID = "123";
     private static final LocalDateTime CONTENT_DATE = LocalDateTime.now().toLocalDate().atStartOfDay()
@@ -151,12 +149,6 @@ class PublicationTest extends IntegrationTestBase {
 
         objectMapper = new ObjectMapper();
         objectMapper.findAndRegisterModules();
-    }
-
-    private void setupMocks() {
-        when(artefactBlobContainerClient.getBlobClient(any())).thenReturn(blobClient);
-        when(artefactBlobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
-        when(publicationBlobContainerClient.getBlobClient(any())).thenReturn(blobClient);
     }
 
     Artefact createDailyList(Sensitivity sensitivity) throws Exception {
@@ -249,8 +241,6 @@ class PublicationTest extends IntegrationTestBase {
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
             .contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
 
-        setupMocks();
-
         MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
@@ -307,8 +297,6 @@ class PublicationTest extends IntegrationTestBase {
             .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
             .contentType(MediaType.APPLICATION_JSON);
-
-        setupMocks();
 
         MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
 
@@ -367,8 +355,6 @@ class PublicationTest extends IntegrationTestBase {
     @DisplayName("Should create a valid artefact with provenance different from manual_upload")
     @Test
     void testUploadPublicationWithDifferentProvenance() throws Exception {
-        setupMocks();
-
         Artefact artefact = createSscsDailyList(Sensitivity.PUBLIC, "TestProvenance");
 
         assertNotNull(artefact.getArtefactId(), "Artefact IDs do not match");
@@ -383,7 +369,6 @@ class PublicationTest extends IntegrationTestBase {
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
     void creationOfAValidArtefactWithOnlyMandatoryFields(boolean isJson) throws Exception {
-        setupMocks();
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
         if (isJson) {
             mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
@@ -423,7 +408,6 @@ class PublicationTest extends IntegrationTestBase {
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
     void testPopulateDefaultDateFrom(boolean isJson) throws Exception {
-        setupMocks();
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
         if (isJson) {
             mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
@@ -456,7 +440,6 @@ class PublicationTest extends IntegrationTestBase {
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
     void testPopulateDefaultSensitivity(boolean isJson) throws Exception {
-        setupMocks();
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
         if (isJson) {
             mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
@@ -489,8 +472,6 @@ class PublicationTest extends IntegrationTestBase {
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
     void updatingOfAnArtefactThatAlreadyExists(boolean isJson) throws Exception {
-        setupMocks();
-
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
         if (isJson) {
             mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
@@ -554,8 +535,6 @@ class PublicationTest extends IntegrationTestBase {
     @DisplayName("Should throw a 400 bad request when payload is not of JSON through the JSON endpoint")
     @Test
     void creationOfAJsonArtefactThatIsNotJson() throws Exception {
-        setupMocks();
-
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
             .post(PUBLICATION_URL)
             .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
@@ -580,8 +559,6 @@ class PublicationTest extends IntegrationTestBase {
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
     void checkStatusUpdatesWithNullDateTo(boolean isJson) throws Exception {
-        setupMocks();
-
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
 
         if (isJson) {
@@ -622,8 +599,6 @@ class PublicationTest extends IntegrationTestBase {
     @DisplayName("Should create a valid artefact and return the created artefact to the user")
     @Test
     void testCreationOfInvalidDailyCauseList() throws Exception {
-        setupMocks();
-
         try (InputStream mockFile = this.getClass().getClassLoader()
             .getResourceAsStream("data/civil-daily-cause-list/civilDailyCauseListInvalid.json")) {
             MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
@@ -661,8 +636,6 @@ class PublicationTest extends IntegrationTestBase {
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
     void verifyThatArtefactsAreReturnedForVerifiedUserWhenPublic(boolean isJson) throws Exception {
-        setupMocks();
-
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
 
         if (isJson) {
@@ -713,8 +686,6 @@ class PublicationTest extends IntegrationTestBase {
     @DisplayName("Should create a valid artefact and return the created artefact to the user")
     @Test
     void testCreationOfValidDailyCauseList() throws Exception {
-        setupMocks();
-
         try (InputStream mockFile = this.getClass().getClassLoader()
             .getResourceAsStream("data/civil-daily-cause-list/civilDailyCauseList.json")) {
 
@@ -749,8 +720,6 @@ class PublicationTest extends IntegrationTestBase {
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
     void verifyThatArtefactsAreReturnedForUnverifiedUserWhenPublic(boolean isJson) throws Exception {
-        setupMocks();
-
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
 
         if (isJson) {
@@ -804,8 +773,6 @@ class PublicationTest extends IntegrationTestBase {
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
     void verifyThatArtefactsAreNotReturnedForUnverifiedUserWhenClassified(boolean isJson) throws Exception {
-        setupMocks();
-
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
 
         if (isJson) {
@@ -855,8 +822,6 @@ class PublicationTest extends IntegrationTestBase {
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
     void verifyThatArtefactsAreNotReturnedForUnverifiedUserWhenPrivate(boolean isJson) throws Exception {
-        setupMocks();
-
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
 
         if (isJson) {
@@ -925,8 +890,6 @@ class PublicationTest extends IntegrationTestBase {
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
             .contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
 
-        setupMocks();
-
         MvcResult response =
             mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
 
@@ -973,8 +936,6 @@ class PublicationTest extends IntegrationTestBase {
             .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
             .contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
-
-        setupMocks();
 
         MvcResult response =
             mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
@@ -1023,8 +984,6 @@ class PublicationTest extends IntegrationTestBase {
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
             .contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
 
-        setupMocks();
-
         MvcResult response =
             mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
 
@@ -1069,8 +1028,6 @@ class PublicationTest extends IntegrationTestBase {
             .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
             .contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
-
-        setupMocks();
 
         MvcResult response =
             mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
@@ -1118,8 +1075,6 @@ class PublicationTest extends IntegrationTestBase {
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
             .contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
 
-        setupMocks();
-
         MvcResult response =
             mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
 
@@ -1160,8 +1115,6 @@ class PublicationTest extends IntegrationTestBase {
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
             .contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
 
-        setupMocks();
-
         MvcResult response =
             mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
 
@@ -1197,8 +1150,6 @@ class PublicationTest extends IntegrationTestBase {
             .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
             .contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
-
-        setupMocks();
 
         MvcResult response =
             mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
@@ -1244,8 +1195,6 @@ class PublicationTest extends IntegrationTestBase {
             .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
             .contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
-
-        setupMocks();
 
         MvcResult response =
             mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
@@ -1295,8 +1244,6 @@ class PublicationTest extends IntegrationTestBase {
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
             .contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
 
-        setupMocks();
-
         MvcResult response =
             mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
 
@@ -1344,8 +1291,6 @@ class PublicationTest extends IntegrationTestBase {
             .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
             .contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
-
-        setupMocks();
 
         MvcResult response =
             mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
@@ -1397,8 +1342,6 @@ class PublicationTest extends IntegrationTestBase {
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
             .contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
 
-        setupMocks();
-
         MvcResult response =
             mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
 
@@ -1448,8 +1391,6 @@ class PublicationTest extends IntegrationTestBase {
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
             .contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
 
-        setupMocks();
-
         MvcResult response =
             mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
 
@@ -1490,8 +1431,6 @@ class PublicationTest extends IntegrationTestBase {
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
             .contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
 
-        setupMocks();
-
         MvcResult response =
             mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
 
@@ -1531,8 +1470,6 @@ class PublicationTest extends IntegrationTestBase {
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
             .contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
 
-        setupMocks();
-
         MvcResult response =
             mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
 
@@ -1558,8 +1495,6 @@ class PublicationTest extends IntegrationTestBase {
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     @Test
     void testGetCourtByIdShowsAllCourtsForAdmin() throws Exception {
-        setupMocks();
-
         Artefact inDateArtefact = createDailyList(Sensitivity.PUBLIC);
         Artefact futureArtefact = createDailyList(Sensitivity.PUBLIC, DISPLAY_FROM.plusMonths(1),
                                                   CONTENT_DATE.plusDays(1)
@@ -1595,8 +1530,6 @@ class PublicationTest extends IntegrationTestBase {
 
     @Test
     void testDeleteArtefactByIdSuccess() throws Exception {
-        setupMocks();
-
         Artefact artefactToDelete = createDailyList(Sensitivity.PUBLIC);
 
         MockHttpServletRequestBuilder preDeleteRequest = MockMvcRequestBuilders
@@ -1618,8 +1551,6 @@ class PublicationTest extends IntegrationTestBase {
 
     @Test
     void testDeleteArtefactByIdArtefactIdNotFound() throws Exception {
-        setupMocks();
-
         String invalidId = UUID.randomUUID().toString();
 
         MockHttpServletRequestBuilder deleteRequest = MockMvcRequestBuilders
@@ -1637,7 +1568,6 @@ class PublicationTest extends IntegrationTestBase {
 
     @Test
     void testGetArtefactMetadataAdmin() throws Exception {
-        setupMocks();
         Artefact artefactToFind = createDailyList(Sensitivity.PUBLIC, DISPLAY_FROM.plusMonths(1),
                                                   CONTENT_DATE.plusDays(1)
         );
@@ -1665,7 +1595,6 @@ class PublicationTest extends IntegrationTestBase {
 
     @Test
     void testGetArtefactMetadataReturnsNotFound() throws Exception {
-        setupMocks();
         MockHttpServletRequestBuilder adminRequest = MockMvcRequestBuilders
             .get(PUBLICATION_URL + "/" + UUID.randomUUID())
             .header(USER_ID_HEADER, userId)
@@ -1697,7 +1626,6 @@ class PublicationTest extends IntegrationTestBase {
 
     @Test
     void testCountByLocationManualUpload() throws Exception {
-        setupMocks();
         createDailyList(Sensitivity.PRIVATE);
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders.get(COUNT_ENDPOINT);
         MvcResult result = mockMvc.perform(mockHttpServletRequestBuilder)
@@ -1708,8 +1636,6 @@ class PublicationTest extends IntegrationTestBase {
 
     @Test
     void testCountByLocationListAssist() throws Exception {
-        setupMocks();
-        createDailyList(Sensitivity.PRIVATE, DISPLAY_FROM.minusMonths(2), DISPLAY_TO, CONTENT_DATE, "ListAssist");
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders.get(COUNT_ENDPOINT);
         MvcResult result = mockMvc.perform(mockHttpServletRequestBuilder)
             .andExpect(status().isOk())
@@ -1737,8 +1663,6 @@ class PublicationTest extends IntegrationTestBase {
 
     @Test
     void testArchiveExpiredArtefactsSuccess() throws Exception {
-        setupMocks();
-
         Artefact artefactToExpire = createDailyList(Sensitivity.PUBLIC, DISPLAY_FROM.minusMonths(9),
                                                     DISPLAY_FROM.minusMonths(6),
                                                     DISPLAY_FROM.minusMonths(10), PROVENANCE
@@ -1777,7 +1701,6 @@ class PublicationTest extends IntegrationTestBase {
 
     @Test
     void testGetMiDataRequestSuccess() throws Exception {
-        setupMocks();
         Artefact artefact = createDailyList(Sensitivity.PUBLIC);
 
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
@@ -1801,8 +1724,6 @@ class PublicationTest extends IntegrationTestBase {
 
     @Test
     void testArchiveArtefactSuccess() throws Exception {
-        setupMocks();
-
         Artefact artefactToArchive = createDailyList(Sensitivity.PUBLIC);
 
         MockHttpServletRequestBuilder preArchiveRequest = MockMvcRequestBuilders
@@ -1824,8 +1745,6 @@ class PublicationTest extends IntegrationTestBase {
 
     @Test
     void testArchiveArtefactNotFound() throws Exception {
-        setupMocks();
-
         String invalidArtefactId = UUID.randomUUID().toString();
 
         MockHttpServletRequestBuilder archiveRequest = MockMvcRequestBuilders
@@ -1844,7 +1763,6 @@ class PublicationTest extends IntegrationTestBase {
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     void testGetAllNoMatchArtefacts() throws Exception {
-        setupMocks();
         Artefact expectedArtefact = createDailyList(Sensitivity.PRIVATE, DISPLAY_FROM.minusMonths(2), DISPLAY_TO,
                                                     CONTENT_DATE, "NoMatch"
         );
@@ -1897,8 +1815,6 @@ class PublicationTest extends IntegrationTestBase {
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     void testDeleteArtefactsByLocation() throws Exception {
-        setupMocks();
-
         Artefact artefactToDelete = createDailyList(Sensitivity.PUBLIC);
 
         MockHttpServletRequestBuilder preDeleteRequest = MockMvcRequestBuilders
@@ -1944,8 +1860,6 @@ class PublicationTest extends IntegrationTestBase {
             for (int i = 0; i <= 200; i++) {
                 jsonArray.add(jsonElement);
             }
-
-            setupMocks();
 
             MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
                 .post(PUBLICATION_URL)

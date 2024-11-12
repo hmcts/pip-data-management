@@ -8,7 +8,6 @@ import com.google.gson.JsonParser;
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.apache.commons.math3.random.RandomDataGenerator;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
@@ -46,7 +45,6 @@ import java.util.UUID;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -86,8 +84,6 @@ class PublicationManagementTest extends IntegrationTestBase {
         .truncatedTo(ChronoUnit.SECONDS);
     private static final String PROVENANCE = "MANUAL_UPLOAD";
 
-    private static final String BLOB_PAYLOAD_URL = "https://localhost";
-
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     private static final String SJP_MOCK = "data/sjp-public-list/sjpPublicList.json";
@@ -108,13 +104,6 @@ class PublicationManagementTest extends IntegrationTestBase {
         );
 
         OBJECT_MAPPER.findAndRegisterModules();
-    }
-
-    @BeforeEach
-    void init() {
-        when(artefactBlobContainerClient.getBlobClient(any())).thenReturn(blobClient);
-        when(artefactBlobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
-        when(publicationBlobContainerClient.getBlobClient(any())).thenReturn(blobClient);
     }
 
     private byte[] getTestData(String resourceName) throws IOException {
