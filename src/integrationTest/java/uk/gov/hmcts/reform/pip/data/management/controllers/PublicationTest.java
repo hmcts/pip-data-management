@@ -54,7 +54,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 
 import static org.junit.Assert.fail;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -68,8 +67,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 @ActiveProfiles("integration")
-@SuppressWarnings({"PMD.ExcessiveImports", "PMD.ExcessiveClassLength",
-    "PMD.CyclomaticComplexity", "PMD.TooManyMethods", "PMD.CouplingBetweenObjects", "PMD.LooseCoupling"})
+@SuppressWarnings({"PMD.ExcessiveImports", "PMD.CyclomaticComplexity", "PMD.TooManyMethods",
+    "PMD.CouplingBetweenObjects"})
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
 @WithMockUser(username = "admin", authorities = {"APPROLE_api.request.admin"})
 class PublicationTest extends IntegrationTestBase {
@@ -319,14 +318,14 @@ class PublicationTest extends IntegrationTestBase {
         assertTrue(firstParty.containsKey(ORGANISATION_KEY), "Parties does not contain organisations key");
         assertTrue(firstParty.containsKey(INDIVIDUAL_KEY), "Parties does not contain individuals key");
 
-        List<ConcurrentHashMap<String, Object>> cases = new ObjectMapper()
+        List<Map<String, Object>> cases = new ObjectMapper()
             .setSerializationInclusion(JsonInclude.Include.NON_NULL)
             .convertValue(firstParty.get(CASES_KEY), new TypeReference<>() {
             });
 
         assertEquals(1, cases.size(), "Unexpected number of cases returned");
 
-        ConcurrentHashMap<String, String> firstCase = new ObjectMapper().convertValue(
+        Map<String, String> firstCase = new ObjectMapper().convertValue(
             cases.get(0),
             new TypeReference<>() {
             }
