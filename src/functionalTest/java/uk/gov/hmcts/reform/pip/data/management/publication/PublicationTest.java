@@ -40,7 +40,6 @@ import static uk.gov.hmcts.reform.pip.data.management.utils.TestUtil.randomLocat
 
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles(profiles = "functional")
-@SuppressWarnings({"PMD.NcssCount"})
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest(classes = {Application.class, OAuthClient.class},
@@ -63,9 +62,11 @@ class PublicationTest extends FunctionalTestBase {
     private static final Language LANGUAGE = Language.ENGLISH;
     private static final ListType LIST_TYPE = ListType.CIVIL_DAILY_CAUSE_LIST;
     private static final String COURT_ID = randomLocationId();
+    private static final String COURT_ID_UPLOAD_JSON = randomLocationId();
     private static final String USER_ID_HEADER = "x-user-id";
     private static final String ISSUER_HEADER = "x-issuer-id";
     private static final String COURT_NAME = "TestLocation" + COURT_ID;
+    private static final String COURT_NAME_UPLOAD_JSON = COURT_NAME + "One";
     private static final String CASE_NUMBER = "4568454842";
     private static final String EMAIL = "test@hmcts.net";
 
@@ -87,7 +88,12 @@ class PublicationTest extends FunctionalTestBase {
     }
 
     @Test
-    void shouldAbleToUploadThePublication() throws Exception {
+    void testPublicationEndpointsWithJsonFileUpload() throws Exception {
+        doPostRequest(
+            TESTING_SUPPORT_LOCATION_URL + COURT_ID_UPLOAD_JSON,
+            Map.of(AUTHORIZATION, BEARER + accessToken), COURT_NAME_UPLOAD_JSON
+        );
+
         Map<String, String> headerMapUploadJsonFile = new ConcurrentHashMap<>();
         headerMapUploadJsonFile.put(AUTHORIZATION, BEARER + accessToken);
         headerMapUploadJsonFile.put(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE.toString());
@@ -95,7 +101,7 @@ class PublicationTest extends FunctionalTestBase {
         headerMapUploadJsonFile.put(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID);
         headerMapUploadJsonFile.put(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM.toString());
         headerMapUploadJsonFile.put(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_FROM.plusDays(1).toString());
-        headerMapUploadJsonFile.put(PublicationConfiguration.COURT_ID, COURT_ID);
+        headerMapUploadJsonFile.put(PublicationConfiguration.COURT_ID, COURT_ID_UPLOAD_JSON);
         headerMapUploadJsonFile.put(PublicationConfiguration.LIST_TYPE, LIST_TYPE.toString());
         headerMapUploadJsonFile.put(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE.toString());
         headerMapUploadJsonFile.put(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY.toString());
@@ -128,14 +134,46 @@ class PublicationTest extends FunctionalTestBase {
             );
             assertThat(responseGetArtefactPayload.getStatusCode()).isEqualTo(OK.value());
             assertThat(responseGetArtefactPayload.asString()).isEqualTo(jsonString);
-
-            final Response responseGetArtefactFile = doGetRequest(
-                PUBLICATION_URL + '/' + artefactId + "/file", headerMap
-            );
-            assertThat(responseGetArtefactFile.getStatusCode()).isEqualTo(OK.value());
-            assertThat(responseGetArtefactFile.asString()).isEqualTo(jsonString);
         }
 
+        final Response responseGetAllRelevantArtefactsBySearchValue = doGetRequest(
+            ARTEFACT_BY_SEARCH_VALUE_URL + SearchType.CASE_ID + '/' + CASE_NUMBER, headerMap
+        );
+        assertThat(responseGetAllRelevantArtefactsBySearchValue.getStatusCode()).isEqualTo(OK.value());
+        Artefact[] returnedGetAllRelevantArtefactsBySearchValue = responseGetAllRelevantArtefactsBySearchValue.as(
+            Artefact[].class);
+        assertThat(returnedGetAllRelevantArtefactsBySearchValue[0].getArtefactId().toString()).isEqualTo(artefactId);
+
+        final Response responseGetArtefactMetadata = doGetRequest(
+            PUBLICATION_URL + '/' + artefactId, headerMap
+        );
+        assertThat(responseGetArtefactMetadata.getStatusCode()).isEqualTo(OK.value());
+        Artefact returnedGetArtefactMetadata = responseGetArtefactMetadata.as(Artefact.class);
+        assertThat(returnedGetArtefactMetadata.getArtefactId().toString()).isEqualTo(artefactId);
+
+        Map<String, String> deleteArtefactHeaderMap = new ConcurrentHashMap<>();
+        deleteArtefactHeaderMap.put(AUTHORIZATION, BEARER + accessToken);
+        deleteArtefactHeaderMap.put(ISSUER_HEADER, EMAIL);
+
+        final Response responseGetAllRelevantArtefactsByLocationId = doGetRequest(
+            ARTEFACT_BY_LOCATION_ID_URL + COURT_ID_UPLOAD_JSON, headerMap
+        );
+        assertThat(responseGetAllRelevantArtefactsByLocationId.getStatusCode()).isEqualTo(OK.value());
+        Artefact[] returnedGetAllRelevantArtefacts = responseGetAllRelevantArtefactsByLocationId.as(Artefact[].class);
+
+        assertThat(returnedGetAllRelevantArtefacts.length).isEqualTo(1);
+        assertThat(returnedGetAllRelevantArtefacts[0].getLocationId()).isEqualTo(COURT_ID_UPLOAD_JSON);
+
+        final Response responseDeleteArtefact = doDeleteRequest(
+            PUBLICATION_URL + '/' + artefactId, deleteArtefactHeaderMap
+        );
+        assertThat(responseDeleteArtefact.getStatusCode()).isEqualTo(OK.value());
+        assertThat(responseDeleteArtefact.asString()).isEqualTo("Successfully deleted artefact: "
+                                                                    + artefactId);
+    }
+
+    @Test
+    void testPublicationEndpointsWithFlatFileUpload() throws Exception {
         Map<String, String> headerMapUploadFlatFile = new ConcurrentHashMap<>();
         headerMapUploadFlatFile.put(AUTHORIZATION, BEARER + accessToken);
         headerMapUploadFlatFile.put(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE.toString());
@@ -163,13 +201,21 @@ class PublicationTest extends FunctionalTestBase {
         assertThat(returnedFlatFileArtefact.getListType()).isEqualTo(ListType.ET_DAILY_LIST);
         assertThat(returnedFlatFileArtefact.getLocationId()).contains(COURT_ID);
 
-        final Response responseGetAllRelevantArtefactsBySearchValue = doGetRequest(
-            ARTEFACT_BY_SEARCH_VALUE_URL + SearchType.CASE_ID + '/' + CASE_NUMBER, headerMap
-        );
-        assertThat(responseGetAllRelevantArtefactsBySearchValue.getStatusCode()).isEqualTo(OK.value());
-        Artefact[] returnedGetAllRelevantArtefactsBySearchValue = responseGetAllRelevantArtefactsBySearchValue.as(
-            Artefact[].class);
-        assertThat(returnedGetAllRelevantArtefactsBySearchValue[0].getArtefactId().toString()).isEqualTo(artefactId);
+        String artefactId = returnedFlatFileArtefact.getArtefactId().toString();
+        Map<String, String> headerMap = new ConcurrentHashMap<>();
+        headerMap.put(AUTHORIZATION, BEARER + accessToken);
+        headerMap.put(USER_ID_HEADER, userId);
+
+        try (InputStream pdfTestFile = this.getClass().getClassLoader()
+            .getResourceAsStream("data/testFlatFile.pdf")) {
+            final String pdfFileContent = new String(pdfTestFile.readAllBytes(), StandardCharsets.UTF_8);
+
+            final Response responseGetArtefactFile = doGetRequest(
+                PUBLICATION_URL + '/' + artefactId + "/file", headerMap
+            );
+            assertThat(responseGetArtefactFile.getStatusCode()).isEqualTo(OK.value());
+            assertThat(responseGetArtefactFile.asString()).isEqualTo(pdfFileContent);
+        }
 
         final Response responseGetArtefactMetadata = doGetRequest(
             PUBLICATION_URL + '/' + artefactId, headerMap
@@ -188,14 +234,5 @@ class PublicationTest extends FunctionalTestBase {
         assertThat(responseDeleteArtefact.getStatusCode()).isEqualTo(OK.value());
         assertThat(responseDeleteArtefact.asString()).isEqualTo("Successfully deleted artefact: "
                                                                     + artefactId);
-
-        final Response responseGetAllRelevantArtefactsByLocationId = doGetRequest(
-            ARTEFACT_BY_LOCATION_ID_URL + COURT_ID, headerMap
-        );
-        assertThat(responseGetAllRelevantArtefactsByLocationId.getStatusCode()).isEqualTo(OK.value());
-        Artefact[] returnedGetAllRelevantArtefacts = responseGetAllRelevantArtefactsByLocationId.as(Artefact[].class);
-
-        assertThat(returnedGetAllRelevantArtefacts.length).isEqualTo(1);
-        assertThat(returnedGetAllRelevantArtefacts[0].getLocationId()).isEqualTo(COURT_ID);
     }
 }
