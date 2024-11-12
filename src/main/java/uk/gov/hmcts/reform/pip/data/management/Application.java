@@ -16,7 +16,7 @@ import java.util.TimeZone;
 @EnableConfigurationProperties({
     AzureBlobConfigurationProperties.class,
     SearchConfiguration.class,
-    ValidationConfiguration.class
+    ValidationConfiguration.class,
 })
 @EnableAsync
 @EnableRetry

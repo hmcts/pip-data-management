@@ -2,14 +2,10 @@ package uk.gov.hmcts.reform.pip.data.management.utils;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
-import uk.gov.hmcts.reform.pip.data.management.Application;
-import uk.gov.hmcts.reform.pip.data.management.config.AzureBlobConfigurationTestConfiguration;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,10 +19,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-@SpringBootTest(classes = {Application.class, AzureBlobConfigurationTestConfiguration.class})
-@ActiveProfiles(profiles = "test")
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
-@AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
+@ActiveProfiles("integration-basic")
+@SpringBootTest
 class JsonExtractorTest {
 
     @Autowired
@@ -46,7 +40,7 @@ class JsonExtractorTest {
 
     private static final String TEST_KEY_NOT_FOUND = "test-id-not-found";
     private static final String UNKNOWN_EXCEPTION = "Unknown exception when opening the paylaod file";
-    private static final String MOCK_PARTIES_FILE = "mocks/jsonPayloadWithParties.json";
+    private static final String MOCK_PARTIES_FILE = "data/jsonPayloadWithParties.json";
 
     private static final String SEARCH_TERM_MESSAGE = "Search term does not contain expected key";
     private static final String ORGANISATION_KEY_MESSAGE = "Parties does not contain organisations key";
@@ -67,7 +61,7 @@ class JsonExtractorTest {
     @Test
     void testExtractSearchTerms() {
         try (InputStream mockFile = this.getClass().getClassLoader()
-            .getResourceAsStream("mocks/jsonPayload.json")) {
+            .getResourceAsStream("data/jsonPayload.json")) {
             String textJson = new String(mockFile.readAllBytes(), StandardCharsets.UTF_8);
             Map<String, List<Object>> searchTerms = jsonExtractor.extractSearchTerms(textJson);
 
@@ -253,7 +247,7 @@ class JsonExtractorTest {
     @Test
     void testExtractSearchTermWhereMissing() {
         try (InputStream mockFile = this.getClass().getClassLoader()
-            .getResourceAsStream("mocks/jsonPayload.json")) {
+            .getResourceAsStream("data/jsonPayload.json")) {
             String textJson = new String(mockFile.readAllBytes(), StandardCharsets.UTF_8);
             Map<String, List<Object>> searchTerms = jsonExtractor.extractSearchTerms(textJson);
 
@@ -267,5 +261,4 @@ class JsonExtractorTest {
             fail(UNKNOWN_EXCEPTION);
         }
     }
-
 }

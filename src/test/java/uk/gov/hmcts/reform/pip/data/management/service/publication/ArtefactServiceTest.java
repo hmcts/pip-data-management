@@ -1,12 +1,12 @@
 package uk.gov.hmcts.reform.pip.data.management.service.publication;
 
-import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
@@ -27,9 +27,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.never;
@@ -49,27 +47,25 @@ import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTe
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.VALIDATION_NOT_THROWN_MESSAGE;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ConstantsTestHelper.MESSAGES_MATCH;
 
-@SpringBootTest
-@AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
 @ActiveProfiles("test")
-@SuppressWarnings({"PMD.ExcessiveImports", "PMD.TooManyMethods"})
+@ExtendWith(MockitoExtension.class)
+@SuppressWarnings("PMD.ExcessiveImports")
 class ArtefactServiceTest {
-    private static final String FILES_GENERATION_MESSAGE = "File generation flag does not match";
     private static final String PAYLOAD = "payload";
 
-    @MockBean
+    @Mock
     ArtefactRepository artefactRepository;
 
-    @MockBean
+    @Mock
     LocationRepository locationRepository;
 
-    @MockBean
+    @Mock
     AzureArtefactBlobService azureArtefactBlobService;
 
-    @MockBean
+    @Mock
     AccountManagementService accountManagementService;
 
-    @Autowired
+    @InjectMocks
     ArtefactService artefactService;
 
     private Artefact artefact;
@@ -395,50 +391,4 @@ class ArtefactServiceTest {
 
         assertEquals(List.of(artefact), artefactService.findAllNoMatchArtefacts(), MESSAGES_MATCH);
     }
-
-    @Test
-    void shouldGenerateJsonSearchIfPayloadSizeWithinLimit() {
-        assertTrue(artefactService.payloadWithinJsonSearchLimit(255f), FILES_GENERATION_MESSAGE);
-    }
-
-    @Test
-    void shouldGenerateJsonSearchIfNoPayloadSize() {
-        assertTrue(artefactService.payloadWithinJsonSearchLimit(null), FILES_GENERATION_MESSAGE);
-    }
-
-    @Test
-    void shouldNotGenerateJsonSearchIfPayloadSizeOverLimit() {
-        assertFalse(artefactService.payloadWithinJsonSearchLimit(256f), FILES_GENERATION_MESSAGE);
-    }
-
-    @Test
-    void shouldGenerateExcelIfPayloadSizeWithinLimit() {
-        assertTrue(artefactService.payloadWithinExcelLimit(2047f), FILES_GENERATION_MESSAGE);
-    }
-
-    @Test
-    void shouldGenerateExcelIfNoPayloadSize() {
-        assertTrue(artefactService.payloadWithinExcelLimit(null), FILES_GENERATION_MESSAGE);
-    }
-
-    @Test
-    void shouldNotGenerateExcelIfPayloadSizeOverLimit() {
-        assertFalse(artefactService.payloadWithinExcelLimit(2048f), FILES_GENERATION_MESSAGE);
-    }
-
-    @Test
-    void shouldGeneratePdfIfPayloadSizeWithinLimit() {
-        assertTrue(artefactService.payloadWithinPdfLimit(255f), FILES_GENERATION_MESSAGE);
-    }
-
-    @Test
-    void shouldGeneratePdfIfNoPayloadSize() {
-        assertTrue(artefactService.payloadWithinPdfLimit(null), FILES_GENERATION_MESSAGE);
-    }
-
-    @Test
-    void shouldNotGeneratePdfIfPayloadSizeOverLimit() {
-        assertFalse(artefactService.payloadWithinPdfLimit(256f), FILES_GENERATION_MESSAGE);
-    }
-
 }

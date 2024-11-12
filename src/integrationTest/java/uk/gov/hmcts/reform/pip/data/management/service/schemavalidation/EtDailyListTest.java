@@ -2,7 +2,6 @@ package uk.gov.hmcts.reform.pip.data.management.service.schemavalidation;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -10,8 +9,6 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import uk.gov.hmcts.reform.pip.data.management.Application;
-import uk.gov.hmcts.reform.pip.data.management.config.AzureBlobConfigurationTestConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.PayloadValidationException;
 import uk.gov.hmcts.reform.pip.data.management.helpers.JsonHelper;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.HeaderGroup;
@@ -30,18 +27,15 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@SpringBootTest(classes = {Application.class, AzureBlobConfigurationTestConfiguration.class})
-@ActiveProfiles(profiles = "test")
-@AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
-class EtFortnightlyPressListTest {
+@ActiveProfiles("integration-basic")
+@SpringBootTest
+class EtDailyListTest {
 
     @Autowired
     ValidationService validationService;
 
-    private static final String ET_FORTNIGHTLY_PRESS_LIST_VALID_JSON =
-        "mocks/etFortnightlyPressList.json";
-    private static final String ET_FORTNIGHTLY_PRESS_LIST_WITH_NEW_LINES =
-        "mocks/etFortnightlyPressListWithNewLines.json";
+    private static final String ET_DAILY_LIST_VALID = "data/et-daily-list/etDailyList.json";
+    private static final String ET_DAILY_LIST_WITH_NEW_LINES = "data/et-daily-list/etDailyListWithNewLines.json";
     private static final String SOURCE_ARTEFACT_ID = "sourceArtefactId";
     private static final LocalDateTime DISPLAY_FROM = LocalDateTime.now();
     private static final LocalDateTime DISPLAY_TO = LocalDateTime.now();
@@ -50,7 +44,7 @@ class EtFortnightlyPressListTest {
     private static final Sensitivity SENSITIVITY = Sensitivity.PUBLIC;
     private static final ArtefactType ARTEFACT_TYPE = ArtefactType.LIST;
     private static final String COURT_ID = "123";
-    private static final ListType LIST_TYPE = ListType.ET_FORTNIGHTLY_PRESS_LIST;
+    private static final ListType LIST_TYPE = ListType.ET_DAILY_LIST;
     private static final LocalDateTime CONTENT_DATE = LocalDateTime.now();
     private static final String PUBLICATION_DATE_REGEX = "\"publicationDate\":\"[^\"]+\"";
 
@@ -66,7 +60,7 @@ class EtFortnightlyPressListTest {
     @Test
     void testValidPayloadPasses() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(ET_FORTNIGHTLY_PRESS_LIST_VALID_JSON)) {
+            .getResourceAsStream(ET_DAILY_LIST_VALID)) {
             assert jsonInput != null;
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
             assertDoesNotThrow(() -> validationService.validateBody(text, headerGroup));
@@ -75,27 +69,18 @@ class EtFortnightlyPressListTest {
 
     @ParameterizedTest
     @ValueSource(strings = {
-        "document",
-        "document.publicationDate",
-        "courtLists",
         "venue",
         "venue.venueName",
-        "courtLists.0.courtHouse",
         "courtLists.0.courtHouse.courtHouseName",
-        "courtLists.0.courtHouse.courtRoom",
-        "courtLists.0.courtHouse.courtRoom.0.session",
-        "courtLists.0.courtHouse.courtRoom.0.session.0.sittings",
         "courtLists.0.courtHouse.courtRoom.0.session.0.sittings.0.sittingStart",
         "courtLists.0.courtHouse.courtRoom.0.session.0.sittings.0.sittingEnd",
-        "courtLists.0.courtHouse.courtRoom.0.session.0.sittings.0.hearing",
-        "courtLists.0.courtHouse.courtRoom.0.session.0.sittings.0.hearing.0.case",
         "courtLists.0.courtHouse.courtRoom.0.session.0.sittings.0.hearing.0.case.0.caseNumber",
-        "courtLists.0.courtHouse.courtRoom.0.session.0.sittings.0.hearing.0.hearingType",
         "courtLists.0.courtHouse.courtRoom.0.session.0.sittings.0.hearing.0.case.0.party.0.partyRole",
-    })
+        "courtLists.0.courtHouse.courtRoom.0.session.0.sittings.0.hearing.0.hearingType",
+        })
     void testRequiredFieldsAreCaught(String jsonpath) throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(ET_FORTNIGHTLY_PRESS_LIST_VALID_JSON)) {
+            .getResourceAsStream(ET_DAILY_LIST_VALID)) {
             assert jsonInput != null;
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
             JsonNode topLevelNode = mapper.readTree(text);
@@ -110,7 +95,7 @@ class EtFortnightlyPressListTest {
     @Test
     void testValidateWithSuccessWhenFieldsContainNewLineCharacters() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(ET_FORTNIGHTLY_PRESS_LIST_WITH_NEW_LINES)) {
+            .getResourceAsStream(ET_DAILY_LIST_WITH_NEW_LINES)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             ObjectMapper mapper = new ObjectMapper();
@@ -127,7 +112,7 @@ class EtFortnightlyPressListTest {
     })
     void testValidateWithSuccessWhenValidPublicationDateFormat(String publicationDate) throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(ET_FORTNIGHTLY_PRESS_LIST_VALID_JSON)) {
+            .getResourceAsStream(ET_DAILY_LIST_VALID)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             ObjectMapper mapper = new ObjectMapper();
@@ -148,7 +133,7 @@ class EtFortnightlyPressListTest {
     })
     void testValidateWithErrorWhenInvalidPublicationDateFormat(String publicationDate) throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(ET_FORTNIGHTLY_PRESS_LIST_VALID_JSON)) {
+            .getResourceAsStream(ET_DAILY_LIST_VALID)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             ObjectMapper mapper = new ObjectMapper();
