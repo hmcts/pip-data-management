@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -12,8 +11,6 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import uk.gov.hmcts.reform.pip.data.management.Application;
-import uk.gov.hmcts.reform.pip.data.management.config.AzureBlobConfigurationTestConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.PayloadValidationException;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.HeaderGroup;
 import uk.gov.hmcts.reform.pip.data.management.service.ValidationService;
@@ -30,17 +27,16 @@ import java.time.LocalDateTime;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@SpringBootTest(classes = {Application.class, AzureBlobConfigurationTestConfiguration.class})
-@ActiveProfiles(profiles = "test")
-@AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
+@ActiveProfiles("integration-basic")
+@SpringBootTest
 @SuppressWarnings("PMD.TooManyMethods")
 class SjpPressListTest {
     @Autowired
     ValidationService validationService;
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
-    private static final String SJP_PRESS_LIST_VALID_JSON = "mocks/sjpPressList.json";
-    private static final String SJP_PRESS_LIST_WITH_NEW_LINES = "mocks/sjpPressListWithNewLines.json";
+    private static final String SJP_PRESS_LIST_VALID_JSON = "data/sjp-press-list/sjpPressList.json";
+    private static final String SJP_PRESS_LIST_WITH_NEW_LINES = "data/sjp-press-list/sjpPressListWithNewLines.json";
     private static final String SJP_PRESS_INVALID_MESSAGE = "Invalid SJP press";
     private static final String SJP_PRESS_VALID_MESSAGE = "Exception should not be thrown for SJP press";
 
@@ -551,7 +547,7 @@ class SjpPressListTest {
             ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0).get(COURT_HOUSE_SCHEMA)
                 .get(COURT_ROOM_SCHEMA).get(0).get(SESSION_SCHEMA).get(0)
                 .get(SITTINGS_SCHEMA).get(0).get(HEARING_SCHEMA).get(1)
-                .get(PARTY_SCHEMA).get(0).get(ORGANISATION_DETAILS_SCHEMA)
+                .get(PARTY_SCHEMA).get(1).get(ORGANISATION_DETAILS_SCHEMA)
                 .get(ORGANISATION_ADDRESS_SCHEMA)).remove("town");
 
             String listJson = node.toString();
@@ -570,7 +566,7 @@ class SjpPressListTest {
             ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0).get(COURT_HOUSE_SCHEMA)
                 .get(COURT_ROOM_SCHEMA).get(0).get(SESSION_SCHEMA).get(0)
                 .get(SITTINGS_SCHEMA).get(0).get(HEARING_SCHEMA).get(1)
-                .get(PARTY_SCHEMA).get(0).get(ORGANISATION_DETAILS_SCHEMA)
+                .get(PARTY_SCHEMA).get(1).get(ORGANISATION_DETAILS_SCHEMA)
                 .get(ORGANISATION_ADDRESS_SCHEMA)).remove("county");
 
             String listJson = node.toString();
@@ -589,7 +585,7 @@ class SjpPressListTest {
             ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0).get(COURT_HOUSE_SCHEMA)
                 .get(COURT_ROOM_SCHEMA).get(0).get(SESSION_SCHEMA).get(0)
                 .get(SITTINGS_SCHEMA).get(0).get(HEARING_SCHEMA).get(1)
-                .get(PARTY_SCHEMA).get(0).get(ORGANISATION_DETAILS_SCHEMA)
+                .get(PARTY_SCHEMA).get(1).get(ORGANISATION_DETAILS_SCHEMA)
                 .get(ORGANISATION_ADDRESS_SCHEMA)).remove("postCode");
 
             String listJson = node.toString();
