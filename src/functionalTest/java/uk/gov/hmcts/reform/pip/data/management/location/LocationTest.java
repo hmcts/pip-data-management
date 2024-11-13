@@ -1,17 +1,14 @@
 package uk.gov.hmcts.reform.pip.data.management.location;
 
 import io.restassured.response.Response;
-import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import uk.gov.hmcts.reform.pip.data.management.Application;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.utils.FunctionalTestBase;
 import uk.gov.hmcts.reform.pip.data.management.utils.OAuthClient;
@@ -28,10 +25,7 @@ import static uk.gov.hmcts.reform.pip.data.management.utils.TestUtil.BEARER;
 
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles(profiles = "functional")
-@AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@SpringBootTest(classes = {Application.class, OAuthClient.class},
-    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(classes = {OAuthClient.class})
 class LocationTest extends FunctionalTestBase {
 
     @Value("${system-admin-provenance-id}")
