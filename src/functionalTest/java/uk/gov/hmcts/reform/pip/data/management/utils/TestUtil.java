@@ -10,7 +10,7 @@ public final class TestUtil {
     }
 
     public static String randomLocationId() {
-        Random number = new Random(System.currentTimeMillis());
+        Random number = new Random();
         Integer randomNumber = 10_000 + number.nextInt(20_000);
         return randomNumber.toString();
     }
