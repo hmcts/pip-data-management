@@ -128,14 +128,13 @@ class FileGenerationTest extends FunctionalTestBase {
             artefact = response.getBody().as(Artefact.class);
         }
 
-        Awaitility.with().pollInterval(1, TimeUnit.SECONDS).await().until(() -> {
-            Response existsResponse = doGetRequest(String.format(FILE_EXISTS_URL, artefact.getArtefactId()), headerMap);
-            return existsResponse.getStatusCode() == OK.value() && existsResponse.getBody().as(Boolean.class);
-        });
-
-        Response existsResponse = doGetRequest(String.format(FILE_EXISTS_URL, artefact.getArtefactId()), headerMap);
-        assertThat(existsResponse.getStatusCode()).isEqualTo(OK.value());
-        assertTrue(existsResponse.getBody().as(Boolean.class), "Files have not been generated");
+        assertDoesNotThrow(() ->
+            Awaitility.with().pollInterval(1, TimeUnit.SECONDS).await().until(() -> {
+                Response existsResponse =
+                    doGetRequest(String.format(FILE_EXISTS_URL, artefact.getArtefactId()), headerMap);
+                return existsResponse.getStatusCode() == OK.value() && existsResponse.getBody().as(Boolean.class);
+            })
+        );
 
         return artefact;
     }

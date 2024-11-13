@@ -70,14 +70,26 @@ public class FunctionalTestBase {
 
     protected Response doPostRequestMultiPart(final String path, final Map<String, String> additionalHeaders,
                                               String multiPartKey, final File multipartFile) {
-        return given()
-            .relaxedHTTPSValidation()
-            .headers(additionalHeaders)
-            .accept("*/*")
-            .multiPart(multiPartKey, multipartFile)
-            .when()
-            .post(path)
-            .thenReturn();
+
+        if (multiPartKey.isBlank()) {
+            return given()
+                .relaxedHTTPSValidation()
+                .headers(additionalHeaders)
+                .accept("*/*")
+                .multiPart(multipartFile)
+                .when()
+                .post(path)
+                .thenReturn();
+        } else {
+            return given()
+                .relaxedHTTPSValidation()
+                .headers(additionalHeaders)
+                .accept("*/*")
+                .multiPart(multiPartKey, multipartFile)
+                .when()
+                .post(path)
+                .thenReturn();
+        }
     }
 
     protected Response doDeleteRequest(final String path, final Map<String, String> additionalHeaders) {
