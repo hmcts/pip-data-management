@@ -1,10 +1,7 @@
 package uk.gov.hmcts.reform.pip.data.management.database;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -16,7 +13,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
-import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,7 +28,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class ArtefactRepositorySearchTest {
+class ArtefactRepositorySearchTest {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     private static final String CASE_NAME = "Test case name";
@@ -56,10 +52,8 @@ public class ArtefactRepositorySearchTest {
     void setup() throws IOException {
         OBJECT_MAPPER.findAndRegisterModules();
 
-        Map<String, List<Object>> caseNumberSearchValues = getSearchData("data/caseNumberSearchValues.json");
-        Map<String, List<Object>> caseUrnSearchValues = getSearchData("data/caseUrnSearchValues.json");
-
         Artefact artefact1 = new Artefact();
+        Map<String, List<Object>> caseNumberSearchValues = getSearchData("data/caseNumberSearchValues.json");
         artefact1.setSearch(caseNumberSearchValues);
         artefact1.setDisplayFrom(YESTERDAY);
         artefact1.setDisplayTo(TOMORROW);
@@ -69,6 +63,7 @@ public class ArtefactRepositorySearchTest {
         artefactId1 = savedArtefact.getArtefactId();
 
         Artefact artefact2 = new Artefact();
+        Map<String, List<Object>> caseUrnSearchValues = getSearchData("data/caseUrnSearchValues.json");
         artefact2.setSearch(caseUrnSearchValues);
         artefact2.setDisplayFrom(YESTERDAY);
         artefact2.setDisplayTo(TOMORROW);
@@ -83,7 +78,7 @@ public class ArtefactRepositorySearchTest {
         artefactRepository.deleteAll();
     }
 
-    private Map <String, List<Object>> getSearchData(String resourcePath) throws IOException {
+    private Map<String, List<Object>> getSearchData(String resourcePath) throws IOException {
         try (InputStream inputStream = this.getClass()
             .getClassLoader()
             .getResourceAsStream(resourcePath)) {
