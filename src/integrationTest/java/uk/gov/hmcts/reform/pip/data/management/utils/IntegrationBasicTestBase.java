@@ -5,7 +5,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.LocationRepository;
 
-public class IntegrationBasicTestBase {
+public class IntegrationBasicTestBase extends IntegrationCommonTestBase {
     @MockBean
     LocationRepository locationRepository;
 
