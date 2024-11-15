@@ -13,8 +13,10 @@ import java.io.File;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static com.github.dockerjava.zerodep.shaded.org.apache.hc.core5.http.HttpHeaders.AUTHORIZATION;
 import static io.restassured.RestAssured.given;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
+import static uk.gov.hmcts.reform.pip.data.management.utils.TestUtil.BEARER;
 
 @SpringBootTest(classes = {OAuthClient.class},
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -35,6 +37,12 @@ public class FunctionalTestBase {
     void setUp() {
         RestAssured.baseURI = testUrl;
         accessToken = authClient.generateAccessToken();
+    }
+
+    protected Map<String, String> getBaseHeaderMap() {
+        Map<String, String> headerMap = new ConcurrentHashMap<>();
+        headerMap.put(AUTHORIZATION, BEARER + accessToken);
+        return headerMap;
     }
 
     protected Response doGetRequest(final String path, final Map<String, String> additionalHeaders) {
