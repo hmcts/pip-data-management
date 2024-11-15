@@ -1,8 +1,6 @@
 package uk.gov.hmcts.reform.pip.data.management.controllers;
 
 import com.azure.core.util.BinaryData;
-import com.azure.storage.blob.BlobClient;
-import com.azure.storage.blob.BlobContainerClient;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -10,7 +8,6 @@ import com.google.gson.JsonParser;
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.apache.commons.math3.random.RandomDataGenerator;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
@@ -18,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -31,6 +27,7 @@ import uk.gov.hmcts.reform.pip.data.management.Application;
 import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.ExceptionResponse;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
+import uk.gov.hmcts.reform.pip.data.management.utils.IntegrationTestBase;
 import uk.gov.hmcts.reform.pip.model.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
@@ -48,7 +45,6 @@ import java.util.UUID;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -64,7 +60,7 @@ import static uk.gov.hmcts.reform.pip.model.publication.FileType.PDF;
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
 @WithMockUser(username = "admin", authorities = {"APPROLE_api.request.admin"})
 @SuppressWarnings({"PMD.TooManyMethods", "PMD.ExcessiveImports"})
-class PublicationManagementTest {
+class PublicationManagementTest extends IntegrationTestBase {
     private static final String ROOT_URL = "/publication";
     private static final String GET_ARTEFACT_SUMMARY = ROOT_URL + "/%s/summary";
     private static final String GET_FILE_URL = ROOT_URL + "/%s/%s";
@@ -88,8 +84,6 @@ class PublicationManagementTest {
         .truncatedTo(ChronoUnit.SECONDS);
     private static final String PROVENANCE = "MANUAL_UPLOAD";
 
-    private static final String BLOB_PAYLOAD_URL = "https://localhost";
-
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     private static final String SJP_MOCK = "data/sjp-public-list/sjpPublicList.json";
@@ -98,15 +92,6 @@ class PublicationManagementTest {
 
     @Autowired
     private MockMvc mockMvc;
-
-    @MockBean(name = "artefact")
-    private BlobContainerClient artefactBlobContainerClient;
-
-    @MockBean(name = "publications")
-    private BlobContainerClient publicationBlobContainerClient;
-
-    @MockBean
-    private BlobClient blobClient;
 
     @Value("${TEST_USER_ID}")
     private String verifiedUserId;
@@ -119,13 +104,6 @@ class PublicationManagementTest {
         );
 
         OBJECT_MAPPER.findAndRegisterModules();
-    }
-
-    @BeforeEach
-    void init() {
-        when(artefactBlobContainerClient.getBlobClient(any())).thenReturn(blobClient);
-        when(artefactBlobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
-        when(publicationBlobContainerClient.getBlobClient(any())).thenReturn(blobClient);
     }
 
     private byte[] getTestData(String resourceName) throws IOException {

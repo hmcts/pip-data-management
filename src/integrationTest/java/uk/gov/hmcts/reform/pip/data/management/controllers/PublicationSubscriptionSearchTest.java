@@ -1,17 +1,13 @@
 package uk.gov.hmcts.reform.pip.data.management.controllers;
 
-import com.azure.storage.blob.BlobClient;
-import com.azure.storage.blob.BlobContainerClient;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -24,6 +20,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import uk.gov.hmcts.reform.pip.data.management.Application;
 import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
+import uk.gov.hmcts.reform.pip.data.management.utils.IntegrationTestBase;
 import uk.gov.hmcts.reform.pip.model.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
@@ -36,27 +33,16 @@ import java.time.temporal.ChronoUnit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(classes = {Application.class},
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
-@ActiveProfiles(profiles = "integration")
+@ActiveProfiles("integration")
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
 @WithMockUser(username = "admin", authorities = {"APPROLE_api.request.admin"})
-class PublicationSubscriptionSearchTest {
-
-    @MockBean(name = "artefact")
-    BlobContainerClient artefactBlobContainerClient;
-
-    @MockBean(name = "publications")
-    BlobContainerClient publicationsBlobContainerClient;
-
-    @Autowired
-    BlobClient blobClient;
+class PublicationSubscriptionSearchTest extends IntegrationTestBase {
 
     @Autowired
     private MockMvc mockMvc;
@@ -66,11 +52,9 @@ class PublicationSubscriptionSearchTest {
 
     private static final String VALID_CASE_ID_SEARCH = "/CASE_ID/45684548";
     private static final String PROVENANCE = "MANUAL_UPLOAD";
-    private static final Sensitivity SENSITIVITY = Sensitivity.PUBLIC;
     private static final String SHOULD_RETURN_EXPECTED_ARTEFACT = "Should return expected artefact";
     private static final LocalDateTime CONTENT_DATE = LocalDateTime.now().toLocalDate().atStartOfDay()
         .truncatedTo(ChronoUnit.SECONDS);
-    private static final String PAYLOAD_URL = "/payload";
     private static final String SEARCH_URL = "/publication/search";
     private static final String USER_ID_HEADER = "x-user-id";
     private static final String VALID_CASE_NAME_SEARCH = "/CASE_NAME/Smith";
@@ -90,13 +74,6 @@ class PublicationSubscriptionSearchTest {
     public static void setup() throws IOException {
         objectMapper = new ObjectMapper();
         objectMapper.findAndRegisterModules();
-    }
-
-    @BeforeEach
-    public void setupMocks() {
-        when(artefactBlobContainerClient.getBlobClient(any())).thenReturn(blobClient);
-        when(artefactBlobContainerClient.getBlobContainerUrl()).thenReturn(PAYLOAD_URL);
-        when(publicationsBlobContainerClient.getBlobClient(any())).thenReturn(blobClient);
     }
 
     Artefact createDailyList(Sensitivity sensitivity) throws Exception {

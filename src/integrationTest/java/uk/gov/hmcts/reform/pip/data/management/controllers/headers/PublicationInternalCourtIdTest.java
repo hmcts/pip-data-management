@@ -1,7 +1,5 @@
 package uk.gov.hmcts.reform.pip.data.management.controllers.headers;
 
-import com.azure.storage.blob.BlobClient;
-import com.azure.storage.blob.BlobContainerClient;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microsoft.applicationinsights.web.dependencies.apachecommons.io.IOUtils;
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
@@ -24,8 +22,8 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import uk.gov.hmcts.reform.pip.data.management.Application;
 import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
-import uk.gov.hmcts.reform.pip.data.management.database.LocationRepository;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
+import uk.gov.hmcts.reform.pip.data.management.utils.IntegrationTestBase;
 import uk.gov.hmcts.reform.pip.model.location.Location;
 import uk.gov.hmcts.reform.pip.model.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
@@ -46,8 +44,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -55,22 +51,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-@ActiveProfiles(profiles = "integration")
+@ActiveProfiles("integration")
 @SuppressWarnings({"PMD.ExcessiveImports", "PMD.ExcessiveClassLength",
     "PMD.CyclomaticComplexity", "PMD.TooManyMethods"})
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
 @WithMockUser(username = "admin", authorities = { "APPROLE_api.request.admin" })
-class PublicationInternalCourtIdTest {
-
-    @Autowired
-    BlobContainerClient blobContainerClient;
-
-    @Autowired
-    BlobClient blobClient;
-
-    @Autowired
-    LocationRepository locationRepository;
-
+class PublicationInternalCourtIdTest extends IntegrationTestBase {
     @Autowired
     private MockMvc mockMvc;
 
@@ -84,7 +70,6 @@ class PublicationInternalCourtIdTest {
     private static final LocalDateTime DISPLAY_TO = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
     private static final LocalDateTime DISPLAY_FROM = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
     private static final Language LANGUAGE = Language.ENGLISH;
-    private static final String BLOB_PAYLOAD_URL = "https://localhost";
     private static final ListType LIST_TYPE = ListType.CIVIL_DAILY_CAUSE_LIST;
     private static final String PROVENANCE_COURT_ID_MATCH = "123";
     private static final String PROVENANCE_COURT_ID_DOESNOT_MATCH = "111";
@@ -158,9 +143,6 @@ class PublicationInternalCourtIdTest {
         mockHttpServletRequestBuilder.header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE);
         mockHttpServletRequestBuilder.contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
 
-        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
-        when(blobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
-
         MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
@@ -225,9 +207,6 @@ class PublicationInternalCourtIdTest {
         mockHttpServletRequestBuilder.header(PublicationConfiguration.COURT_ID, PROVENANCE_COURT_ID_DOESNOT_MATCH);
         mockHttpServletRequestBuilder.header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE);
         mockHttpServletRequestBuilder.contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
-
-        when(blobContainerClient.getBlobClient(any())).thenReturn(blobClient);
-        when(blobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
 
         MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
 

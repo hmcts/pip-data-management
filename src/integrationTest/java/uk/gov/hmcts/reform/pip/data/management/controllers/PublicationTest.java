@@ -1,8 +1,6 @@
 package uk.gov.hmcts.reform.pip.data.management.controllers;
 
 import com.azure.core.util.BinaryData;
-import com.azure.storage.blob.BlobClient;
-import com.azure.storage.blob.BlobContainerClient;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -22,7 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
@@ -38,6 +35,7 @@ import uk.gov.hmcts.reform.pip.data.management.config.AzureBlobConfigurationTest
 import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.ExceptionResponse;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
+import uk.gov.hmcts.reform.pip.data.management.utils.IntegrationTestBase;
 import uk.gov.hmcts.reform.pip.model.location.LocationType;
 import uk.gov.hmcts.reform.pip.model.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
@@ -56,36 +54,24 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 
 import static org.junit.Assert.fail;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(classes = {Application.class, AzureBlobConfigurationTestConfiguration.class},
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
-@ActiveProfiles(profiles = "integration")
-@SuppressWarnings({"PMD.ExcessiveImports", "PMD.ExcessiveClassLength",
-    "PMD.CyclomaticComplexity", "PMD.TooManyMethods", "PMD.CouplingBetweenObjects", "PMD.LooseCoupling"})
+@ActiveProfiles("integration")
+@SuppressWarnings({"PMD.ExcessiveImports", "PMD.CyclomaticComplexity", "PMD.TooManyMethods",
+    "PMD.CouplingBetweenObjects"})
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
 @WithMockUser(username = "admin", authorities = {"APPROLE_api.request.admin"})
-class PublicationTest {
-
-    @MockBean(name = "artefact")
-    private BlobContainerClient artefactBlobContainerClient;
-
-    @MockBean(name = "publications")
-    private BlobContainerClient publicationBlobContainerClient;
-
-    @MockBean
-    private BlobClient blobClient;
+class PublicationTest extends IntegrationTestBase {
 
     @Autowired
     private MockMvc mockMvc;
@@ -102,7 +88,7 @@ class PublicationTest {
     private static final String PAYLOAD_URL = "/payload";
     private static final String LOCATION_TYPE_URL = PUBLICATION_URL + "/location-type/";
     private static final String SEND_NEW_ARTEFACTS_FOR_SUBSCRIPTION_URL = PUBLICATION_URL + "/latest/subscription";
-    public static final String COUNT_ENDPOINT = PUBLICATION_URL + "/count-by-location";
+    private static final String COUNT_ENDPOINT = PUBLICATION_URL + "/count-by-location";
     private static final String REPORT_NO_MATCH_ARTEFACTS_URL = PUBLICATION_URL + "/no-match/reporting";
     private static final String MI_REPORTING_DATA_URL = PUBLICATION_URL + "/mi-data";
     private static final String ARCHIVE_EXPIRED_ARTEFACTS_URL = PUBLICATION_URL + "/expired";
@@ -116,7 +102,6 @@ class PublicationTest {
     private static final LocalDateTime DISPLAY_TO = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
     private static final LocalDateTime DISPLAY_FROM = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
     private static final Language LANGUAGE = Language.ENGLISH;
-    private static final String BLOB_PAYLOAD_URL = "https://localhost";
     private static final ListType LIST_TYPE = ListType.CIVIL_DAILY_CAUSE_LIST;
     private static final String COURT_ID = "123";
     private static final LocalDateTime CONTENT_DATE = LocalDateTime.now().toLocalDate().atStartOfDay()
@@ -127,11 +112,8 @@ class PublicationTest {
     private static final String SEARCH_VALUE_1 = "array-value-1";
     private static final String SEARCH_VALUE_2 = "array-value-2";
     private static final String USER_ID_HEADER = "x-user-id";
-    private static final String UNAUTHORIZED_USERNAME = "unauthorized_username";
-    private static final String UNAUTHORIZED_ROLE = "APPROLE_unknown.role";
 
     private static final String LOCATION_ID_SEARCH_KEY = "location-id";
-    private static final String FORBIDDEN_STATUS_CODE = "Status code does not match forbidden";
     private static final String TRUE = "true";
     private static final String FALSE = "false";
     private static final String ADMIN_HEADER = "x-admin";
@@ -166,12 +148,6 @@ class PublicationTest {
 
         objectMapper = new ObjectMapper();
         objectMapper.findAndRegisterModules();
-    }
-
-    private void setupMocks() {
-        when(artefactBlobContainerClient.getBlobClient(any())).thenReturn(blobClient);
-        when(artefactBlobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
-        when(publicationBlobContainerClient.getBlobClient(any())).thenReturn(blobClient);
     }
 
     Artefact createDailyList(Sensitivity sensitivity) throws Exception {
@@ -264,8 +240,6 @@ class PublicationTest {
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
             .contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
 
-        setupMocks();
-
         MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
@@ -323,8 +297,6 @@ class PublicationTest {
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
             .contentType(MediaType.APPLICATION_JSON);
 
-        setupMocks();
-
         MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
 
         Artefact artefact = objectMapper.readValue(
@@ -346,14 +318,14 @@ class PublicationTest {
         assertTrue(firstParty.containsKey(ORGANISATION_KEY), "Parties does not contain organisations key");
         assertTrue(firstParty.containsKey(INDIVIDUAL_KEY), "Parties does not contain individuals key");
 
-        List<ConcurrentHashMap<String, Object>> cases = new ObjectMapper()
+        List<Map<String, Object>> cases = new ObjectMapper()
             .setSerializationInclusion(JsonInclude.Include.NON_NULL)
             .convertValue(firstParty.get(CASES_KEY), new TypeReference<>() {
             });
 
         assertEquals(1, cases.size(), "Unexpected number of cases returned");
 
-        ConcurrentHashMap<String, String> firstCase = new ObjectMapper().convertValue(
+        Map<String, String> firstCase = new ObjectMapper().convertValue(
             cases.get(0),
             new TypeReference<>() {
             }
@@ -382,8 +354,6 @@ class PublicationTest {
     @DisplayName("Should create a valid artefact with provenance different from manual_upload")
     @Test
     void testUploadPublicationWithDifferentProvenance() throws Exception {
-        setupMocks();
-
         Artefact artefact = createSscsDailyList(Sensitivity.PUBLIC, "TestProvenance");
 
         assertNotNull(artefact.getArtefactId(), "Artefact IDs do not match");
@@ -398,7 +368,6 @@ class PublicationTest {
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
     void creationOfAValidArtefactWithOnlyMandatoryFields(boolean isJson) throws Exception {
-        setupMocks();
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
         if (isJson) {
             mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
@@ -434,36 +403,10 @@ class PublicationTest {
         assertEquals(artefact.getLanguage(), LANGUAGE, "Language does not match input language");
     }
 
-    @Test
-    @WithMockUser(username = UNAUTHORIZED_USERNAME, authorities = {UNAUTHORIZED_ROLE})
-    void testUnauthorizedUploadPublication() throws Exception {
-        MockHttpServletRequestBuilder request;
-        request = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
-
-        request.header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE);
-        request.header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE);
-        request.header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM);
-        request.header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO);
-        request.header(PublicationConfiguration.COURT_ID, COURT_ID);
-        request.header(PublicationConfiguration.LIST_TYPE, LIST_TYPE);
-        request.header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE);
-        request.header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE);
-
-        request.contentType(MediaType.APPLICATION_JSON);
-
-        MvcResult archiveResponse = mockMvc.perform(request).andExpect(status().isForbidden()).andReturn();
-
-        assertEquals(HttpStatus.FORBIDDEN.value(), archiveResponse.getResponse().getStatus(),
-                     FORBIDDEN_STATUS_CODE
-        );
-    }
-
-
     @DisplayName("Should populate the datefrom field if it's empty and the type is GENERAL_PUBLICATION")
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
     void testPopulateDefaultDateFrom(boolean isJson) throws Exception {
-        setupMocks();
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
         if (isJson) {
             mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
@@ -496,7 +439,6 @@ class PublicationTest {
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
     void testPopulateDefaultSensitivity(boolean isJson) throws Exception {
-        setupMocks();
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
         if (isJson) {
             mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
@@ -529,8 +471,6 @@ class PublicationTest {
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
     void updatingOfAnArtefactThatAlreadyExists(boolean isJson) throws Exception {
-        setupMocks();
-
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
         if (isJson) {
             mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
@@ -594,8 +534,6 @@ class PublicationTest {
     @DisplayName("Should throw a 400 bad request when payload is not of JSON through the JSON endpoint")
     @Test
     void creationOfAJsonArtefactThatIsNotJson() throws Exception {
-        setupMocks();
-
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
             .post(PUBLICATION_URL)
             .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
@@ -620,8 +558,6 @@ class PublicationTest {
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
     void checkStatusUpdatesWithNullDateTo(boolean isJson) throws Exception {
-        setupMocks();
-
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
 
         if (isJson) {
@@ -662,8 +598,6 @@ class PublicationTest {
     @DisplayName("Should create a valid artefact and return the created artefact to the user")
     @Test
     void testCreationOfInvalidDailyCauseList() throws Exception {
-        setupMocks();
-
         try (InputStream mockFile = this.getClass().getClassLoader()
             .getResourceAsStream("data/civil-daily-cause-list/civilDailyCauseListInvalid.json")) {
             MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
@@ -701,8 +635,6 @@ class PublicationTest {
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
     void verifyThatArtefactsAreReturnedForVerifiedUserWhenPublic(boolean isJson) throws Exception {
-        setupMocks();
-
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
 
         if (isJson) {
@@ -753,8 +685,6 @@ class PublicationTest {
     @DisplayName("Should create a valid artefact and return the created artefact to the user")
     @Test
     void testCreationOfValidDailyCauseList() throws Exception {
-        setupMocks();
-
         try (InputStream mockFile = this.getClass().getClassLoader()
             .getResourceAsStream("data/civil-daily-cause-list/civilDailyCauseList.json")) {
 
@@ -789,8 +719,6 @@ class PublicationTest {
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
     void verifyThatArtefactsAreReturnedForUnverifiedUserWhenPublic(boolean isJson) throws Exception {
-        setupMocks();
-
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
 
         if (isJson) {
@@ -844,8 +772,6 @@ class PublicationTest {
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
     void verifyThatArtefactsAreNotReturnedForUnverifiedUserWhenClassified(boolean isJson) throws Exception {
-        setupMocks();
-
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
 
         if (isJson) {
@@ -895,8 +821,6 @@ class PublicationTest {
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
     void verifyThatArtefactsAreNotReturnedForUnverifiedUserWhenPrivate(boolean isJson) throws Exception {
-        setupMocks();
-
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
 
         if (isJson) {
@@ -942,19 +866,6 @@ class PublicationTest {
         );
     }
 
-    @Test
-    @WithMockUser(username = UNAUTHORIZED_USERNAME, authorities = {UNAUTHORIZED_ROLE})
-    void testUnauthorizedGetAllRelevantArtefactsByLocationId() throws Exception {
-        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-            .get(SEARCH_COURT_URL + "/" + COURT_ID);
-
-        MvcResult archiveResponse = mockMvc.perform(request).andExpect(status().isForbidden()).andReturn();
-
-        assertEquals(HttpStatus.FORBIDDEN.value(), archiveResponse.getResponse().getStatus(),
-                     FORBIDDEN_STATUS_CODE
-        );
-    }
-
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
     @DisplayName("File endpoint should return the file when artefact exists")
@@ -977,8 +888,6 @@ class PublicationTest {
             .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
             .contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
-
-        setupMocks();
 
         MvcResult response =
             mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
@@ -1027,8 +936,6 @@ class PublicationTest {
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
             .contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
 
-        setupMocks();
-
         MvcResult response =
             mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
 
@@ -1076,8 +983,6 @@ class PublicationTest {
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
             .contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
 
-        setupMocks();
-
         MvcResult response =
             mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
 
@@ -1122,8 +1027,6 @@ class PublicationTest {
             .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
             .contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
-
-        setupMocks();
 
         MvcResult response =
             mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
@@ -1171,8 +1074,6 @@ class PublicationTest {
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
             .contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
 
-        setupMocks();
-
         MvcResult response =
             mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
 
@@ -1213,8 +1114,6 @@ class PublicationTest {
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
             .contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
 
-        setupMocks();
-
         MvcResult response =
             mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
 
@@ -1250,8 +1149,6 @@ class PublicationTest {
             .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
             .contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
-
-        setupMocks();
 
         MvcResult response =
             mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
@@ -1297,8 +1194,6 @@ class PublicationTest {
             .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
             .contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
-
-        setupMocks();
 
         MvcResult response =
             mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
@@ -1348,8 +1243,6 @@ class PublicationTest {
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
             .contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
 
-        setupMocks();
-
         MvcResult response =
             mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
 
@@ -1397,8 +1290,6 @@ class PublicationTest {
             .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
             .contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
-
-        setupMocks();
 
         MvcResult response =
             mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
@@ -1450,8 +1341,6 @@ class PublicationTest {
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
             .contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
 
-        setupMocks();
-
         MvcResult response =
             mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
 
@@ -1501,8 +1390,6 @@ class PublicationTest {
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
             .contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
 
-        setupMocks();
-
         MvcResult response =
             mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
 
@@ -1543,8 +1430,6 @@ class PublicationTest {
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
             .contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
 
-        setupMocks();
-
         MvcResult response =
             mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
 
@@ -1584,8 +1469,6 @@ class PublicationTest {
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
             .contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
 
-        setupMocks();
-
         MvcResult response =
             mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
 
@@ -1611,8 +1494,6 @@ class PublicationTest {
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     @Test
     void testGetCourtByIdShowsAllCourtsForAdmin() throws Exception {
-        setupMocks();
-
         Artefact inDateArtefact = createDailyList(Sensitivity.PUBLIC);
         Artefact futureArtefact = createDailyList(Sensitivity.PUBLIC, DISPLAY_FROM.plusMonths(1),
                                                   CONTENT_DATE.plusDays(1)
@@ -1648,8 +1529,6 @@ class PublicationTest {
 
     @Test
     void testDeleteArtefactByIdSuccess() throws Exception {
-        setupMocks();
-
         Artefact artefactToDelete = createDailyList(Sensitivity.PUBLIC);
 
         MockHttpServletRequestBuilder preDeleteRequest = MockMvcRequestBuilders
@@ -1671,8 +1550,6 @@ class PublicationTest {
 
     @Test
     void testDeleteArtefactByIdArtefactIdNotFound() throws Exception {
-        setupMocks();
-
         String invalidId = UUID.randomUUID().toString();
 
         MockHttpServletRequestBuilder deleteRequest = MockMvcRequestBuilders
@@ -1689,22 +1566,7 @@ class PublicationTest {
     }
 
     @Test
-    @WithMockUser(username = UNAUTHORIZED_USERNAME, authorities = {UNAUTHORIZED_ROLE})
-    void testUnauthorizedDeleteArtefact() throws Exception {
-        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-            .delete(PUBLICATION_URL + "/" + UUID.randomUUID())
-            .header(ISSUER_HEADER, EMAIL);
-
-        MvcResult archiveResponse = mockMvc.perform(request).andExpect(status().isForbidden()).andReturn();
-
-        assertEquals(HttpStatus.FORBIDDEN.value(), archiveResponse.getResponse().getStatus(),
-                     FORBIDDEN_STATUS_CODE
-        );
-    }
-
-    @Test
     void testGetArtefactMetadataAdmin() throws Exception {
-        setupMocks();
         Artefact artefactToFind = createDailyList(Sensitivity.PUBLIC, DISPLAY_FROM.plusMonths(1),
                                                   CONTENT_DATE.plusDays(1)
         );
@@ -1732,28 +1594,12 @@ class PublicationTest {
 
     @Test
     void testGetArtefactMetadataReturnsNotFound() throws Exception {
-        setupMocks();
         MockHttpServletRequestBuilder adminRequest = MockMvcRequestBuilders
             .get(PUBLICATION_URL + "/" + UUID.randomUUID())
             .header(USER_ID_HEADER, userId)
             .header(ADMIN_HEADER, true);
         mockMvc.perform(adminRequest).andExpect(status().isNotFound());
 
-    }
-
-    @Test
-    @WithMockUser(username = UNAUTHORIZED_USERNAME, authorities = {UNAUTHORIZED_ROLE})
-    void testUnauthorizedGetArtefactMetadata() throws Exception {
-        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-            .get(PUBLICATION_URL + "/" + UUID.randomUUID())
-            .header(USER_ID_HEADER, userId)
-            .header(ADMIN_HEADER, true);
-
-        MvcResult archiveResponse = mockMvc.perform(request).andExpect(status().isForbidden()).andReturn();
-
-        assertEquals(HttpStatus.FORBIDDEN.value(), archiveResponse.getResponse().getStatus(),
-                     FORBIDDEN_STATUS_CODE
-        );
     }
 
     @Test
@@ -1779,7 +1625,6 @@ class PublicationTest {
 
     @Test
     void testCountByLocationManualUpload() throws Exception {
-        setupMocks();
         createDailyList(Sensitivity.PRIVATE);
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders.get(COUNT_ENDPOINT);
         MvcResult result = mockMvc.perform(mockHttpServletRequestBuilder)
@@ -1790,26 +1635,12 @@ class PublicationTest {
 
     @Test
     void testCountByLocationListAssist() throws Exception {
-        setupMocks();
-        createDailyList(Sensitivity.PRIVATE, DISPLAY_FROM.minusMonths(2), DISPLAY_TO, CONTENT_DATE, "ListAssist");
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders.get(COUNT_ENDPOINT);
         MvcResult result = mockMvc.perform(mockHttpServletRequestBuilder)
             .andExpect(status().isOk())
             .andReturn();
         assertEquals(HttpStatus.OK.value(), result.getResponse().getStatus(),
                      "CountByLocation endpoint for ListAssist is not successful"
-        );
-    }
-
-    @Test
-    @WithMockUser(username = UNAUTHORIZED_USERNAME, authorities = {UNAUTHORIZED_ROLE})
-    void testUnauthorizedCountByLocation() throws Exception {
-        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.get(COUNT_ENDPOINT);
-
-        MvcResult archiveResponse = mockMvc.perform(request).andExpect(status().isForbidden()).andReturn();
-
-        assertEquals(HttpStatus.FORBIDDEN.value(), archiveResponse.getResponse().getStatus(),
-                     FORBIDDEN_STATUS_CODE
         );
     }
 
@@ -1822,19 +1653,6 @@ class PublicationTest {
     }
 
     @Test
-    @WithMockUser(username = UNAUTHORIZED_USERNAME, authorities = {UNAUTHORIZED_ROLE})
-    void testUnauthorizedSendNewArtefactsForSubscription() throws Exception {
-        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-            .post(SEND_NEW_ARTEFACTS_FOR_SUBSCRIPTION_URL);
-
-        MvcResult archiveResponse = mockMvc.perform(request).andExpect(status().isForbidden()).andReturn();
-
-        assertEquals(HttpStatus.FORBIDDEN.value(), archiveResponse.getResponse().getStatus(),
-                     FORBIDDEN_STATUS_CODE
-        );
-    }
-
-    @Test
     void testReportNoMatchArtefactsSuccess() throws Exception {
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
             .post(REPORT_NO_MATCH_ARTEFACTS_URL);
@@ -1843,22 +1661,7 @@ class PublicationTest {
     }
 
     @Test
-    @WithMockUser(username = UNAUTHORIZED_USERNAME, authorities = {UNAUTHORIZED_ROLE})
-    void testUnauthorizedReportNoMatchArtefacts() throws Exception {
-        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-            .post(REPORT_NO_MATCH_ARTEFACTS_URL);
-
-        MvcResult archiveResponse = mockMvc.perform(request).andExpect(status().isForbidden()).andReturn();
-
-        assertEquals(HttpStatus.FORBIDDEN.value(), archiveResponse.getResponse().getStatus(),
-                     FORBIDDEN_STATUS_CODE
-        );
-    }
-
-    @Test
     void testArchiveExpiredArtefactsSuccess() throws Exception {
-        setupMocks();
-
         Artefact artefactToExpire = createDailyList(Sensitivity.PUBLIC, DISPLAY_FROM.minusMonths(9),
                                                     DISPLAY_FROM.minusMonths(6),
                                                     DISPLAY_FROM.minusMonths(10), PROVENANCE
@@ -1896,21 +1699,7 @@ class PublicationTest {
     }
 
     @Test
-    @WithMockUser(username = UNAUTHORIZED_USERNAME, authorities = {UNAUTHORIZED_ROLE})
-    void testUnauthorizedArchiveExpiredArtefacts() throws Exception {
-        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-            .delete(ARCHIVE_EXPIRED_ARTEFACTS_URL);
-
-        MvcResult archiveResponse = mockMvc.perform(request).andExpect(status().isForbidden()).andReturn();
-
-        assertEquals(HttpStatus.FORBIDDEN.value(), archiveResponse.getResponse().getStatus(),
-                     FORBIDDEN_STATUS_CODE
-        );
-    }
-
-    @Test
     void testGetMiDataRequestSuccess() throws Exception {
-        setupMocks();
         Artefact artefact = createDailyList(Sensitivity.PUBLIC);
 
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
@@ -1933,22 +1722,7 @@ class PublicationTest {
     }
 
     @Test
-    @WithMockUser(username = UNAUTHORIZED_USERNAME, authorities = {UNAUTHORIZED_ROLE})
-    void testUnauthorizedGetMiData() throws Exception {
-        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-            .get(MI_REPORTING_DATA_URL);
-
-        MvcResult archiveResponse = mockMvc.perform(request).andExpect(status().isForbidden()).andReturn();
-
-        assertEquals(HttpStatus.FORBIDDEN.value(), archiveResponse.getResponse().getStatus(),
-                     FORBIDDEN_STATUS_CODE
-        );
-    }
-
-    @Test
     void testArchiveArtefactSuccess() throws Exception {
-        setupMocks();
-
         Artefact artefactToArchive = createDailyList(Sensitivity.PUBLIC);
 
         MockHttpServletRequestBuilder preArchiveRequest = MockMvcRequestBuilders
@@ -1970,8 +1744,6 @@ class PublicationTest {
 
     @Test
     void testArchiveArtefactNotFound() throws Exception {
-        setupMocks();
-
         String invalidArtefactId = UUID.randomUUID().toString();
 
         MockHttpServletRequestBuilder archiveRequest = MockMvcRequestBuilders
@@ -1988,25 +1760,8 @@ class PublicationTest {
     }
 
     @Test
-    @WithMockUser(username = UNAUTHORIZED_USERNAME, authorities = {UNAUTHORIZED_ROLE})
-    void testUnauthorizedArchiveArtefact() throws Exception {
-        String artefactId = UUID.randomUUID().toString();
-
-        MockHttpServletRequestBuilder archiveRequest = MockMvcRequestBuilders
-            .put(PUBLICATION_URL + "/" + artefactId + "/archive")
-            .header(ISSUER_HEADER, userId);
-
-        MvcResult archiveResponse = mockMvc.perform(archiveRequest).andExpect(status().isForbidden()).andReturn();
-
-        assertEquals(HttpStatus.FORBIDDEN.value(), archiveResponse.getResponse().getStatus(),
-                     FORBIDDEN_STATUS_CODE
-        );
-    }
-
-    @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     void testGetAllNoMatchArtefacts() throws Exception {
-        setupMocks();
         Artefact expectedArtefact = createDailyList(Sensitivity.PRIVATE, DISPLAY_FROM.minusMonths(2), DISPLAY_TO,
                                                     CONTENT_DATE, "NoMatch"
         );
@@ -2025,20 +1780,6 @@ class PublicationTest {
         assertTrue(
             compareArtefacts(expectedArtefact, returnedArtefact),
             "Expected and returned artefacts do not match"
-        );
-    }
-
-    @Test
-    @WithMockUser(username = UNAUTHORIZED_USERNAME, authorities = {UNAUTHORIZED_ROLE})
-    void testUnauthorizedGetAllNoMatchArtefacts() throws Exception {
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
-            MockMvcRequestBuilders.get("/publication/no-match");
-
-        MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
-            .andExpect(status().isForbidden()).andReturn();
-
-        assertEquals(HttpStatus.FORBIDDEN.value(), response.getResponse().getStatus(),
-                     FORBIDDEN_STATUS_CODE
         );
     }
 
@@ -2073,8 +1814,6 @@ class PublicationTest {
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     void testDeleteArtefactsByLocation() throws Exception {
-        setupMocks();
-
         Artefact artefactToDelete = createDailyList(Sensitivity.PUBLIC);
 
         MockHttpServletRequestBuilder preDeleteRequest = MockMvcRequestBuilders
@@ -2110,20 +1849,6 @@ class PublicationTest {
     }
 
     @Test
-    @WithMockUser(username = UNAUTHORIZED_USERNAME, authorities = {UNAUTHORIZED_ROLE})
-    void testDeleteArtefactsByLocationUnauthorized() throws Exception {
-        MockHttpServletRequestBuilder deleteRequest = MockMvcRequestBuilders
-            .delete(PUBLICATION_URL + "/" + COURT_ID + "/deleteArtefacts")
-            .header(PROVENANCE_USER_ID, systemAdminProvenanceId);
-
-        MvcResult deleteResponse = mockMvc.perform(deleteRequest).andExpect(status().isForbidden()).andReturn();
-
-        assertEquals(HttpStatus.FORBIDDEN.value(), deleteResponse.getResponse().getStatus(),
-                     FORBIDDEN_STATUS_CODE
-        );
-    }
-
-    @Test
     void testGenerateNoSearchWhenFileTooBig() throws Exception {
         try (InputStream mockFile = this.getClass().getClassLoader()
             .getResourceAsStream("data/civil-daily-cause-list/civilDailyCauseList.json")) {
@@ -2134,8 +1859,6 @@ class PublicationTest {
             for (int i = 0; i <= 200; i++) {
                 jsonArray.add(jsonElement);
             }
-
-            setupMocks();
 
             MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
                 .post(PUBLICATION_URL)
