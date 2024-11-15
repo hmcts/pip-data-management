@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import uk.gov.hmcts.reform.pip.data.management.dto.MiReportData;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
@@ -107,11 +108,12 @@ public interface ArtefactRepository extends JpaRepository<Artefact, Long> {
         + "true", nativeQuery = true)
     Integer countNoMatchArtefacts();
 
-    @Query(value = "SELECT cast(artefact_id as text), display_from, display_to, language, "
-        + "provenance, sensitivity, source_artefact_id, superseded_count, type, content_date, location_id, list_type "
-        + "FROM artefact",
-        nativeQuery = true)
-    List<String> getMiData();
+    @Query("SELECT new uk.gov.hmcts.reform.pip.data.management.dto.MiReportData("
+        + "a.artefactId, a.displayFrom, a.displayTo, a.language, a.provenance, a.sensitivity, a.sourceArtefactId, "
+        + "a.supersededCount, a.type, a.contentDate, a.locationId, l.name, a.listType) "
+        + "FROM Artefact a "
+        + "LEFT JOIN Location l ON cast(a.locationId as Integer) = l.locationId")
+    List<MiReportData> getMiData();
 
     @Query(value = "SELECT * FROM Artefact "
         + "WHERE display_to >= :curr_date "

@@ -32,6 +32,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
+import uk.gov.hmcts.reform.pip.data.management.dto.MiReportData;
 import uk.gov.hmcts.reform.pip.data.management.helpers.NoMatchArtefactHelper;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationArtefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
@@ -432,23 +433,14 @@ public class PublicationController {
         }
     }
 
-    @ApiResponse(responseCode = OK_CODE, description = "A CSV like structure which contains the data. "
-        + "See example for headers", content = {
-            @Content(examples = {@ExampleObject("artefact_id,display_from,display_to,language,provenance,"
-                    + "sensitivity,source_artefact_id,"
-                    + "superseded_count,type,content_date,court_id,court_name,list_type")},
-                    mediaType = MediaType.TEXT_PLAIN_VALUE,
-                    schema = @Schema(implementation = String.class))
-        }
-    )
+    @ApiResponse(responseCode = OK_CODE, description = "A JSON model which contains the data. ")
     @ApiResponse(responseCode = UNAUTHORISED_CODE, description = UNAUTHORISED_MESSAGE)
     @ApiResponse(responseCode = FORBIDDEN_CODE, description = FORBIDDEN_MESSAGE)
-    @Operation(summary = "Return the MI data for artefacts. This endpoint will be "
-        + "deprecated in the future, in favour of returning a JSON model")
+    @Operation(summary = "Return the MI data for artefacts")
     @GetMapping("/mi-data")
     @IsAdmin
     @SecurityRequirement(name = BEARER_AUTHENTICATION)
-    public ResponseEntity<String> getMiData() {
+    public ResponseEntity<List<MiReportData>> getMiData() {
         return ResponseEntity.ok().body(publicationService.getMiData());
     }
 
