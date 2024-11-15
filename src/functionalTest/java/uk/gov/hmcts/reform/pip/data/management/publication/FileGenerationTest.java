@@ -32,7 +32,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import static com.github.dockerjava.zerodep.shaded.org.apache.hc.core5.http.HttpHeaders.AUTHORIZATION;
@@ -43,6 +43,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 import static uk.gov.hmcts.reform.pip.data.management.utils.TestUtil.BEARER;
 import static uk.gov.hmcts.reform.pip.data.management.utils.TestUtil.randomLocationId;
 
@@ -88,8 +89,7 @@ class FileGenerationTest extends FunctionalTestBase {
 
     @BeforeEach
     public void setupEach() {
-        headerMap = new ConcurrentHashMap<>();
-        headerMap.put(AUTHORIZATION, BEARER + accessToken);
+        headerMap = getBaseHeaderMap();
     }
 
     @AfterAll
@@ -100,8 +100,7 @@ class FileGenerationTest extends FunctionalTestBase {
 
     private Artefact uploadPublication(
         ListType listType, String file, Language language, Sensitivity sensitivity) throws IOException {
-        Map<String, String> headerMap = new ConcurrentHashMap<>();
-        headerMap.put(AUTHORIZATION, BEARER + accessToken);
+        Map<String, String> headerMap = getBaseHeaderMap();
         headerMap.put(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE.toString());
         headerMap.put(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE);
         headerMap.put(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID);
@@ -264,7 +263,33 @@ class FileGenerationTest extends FunctionalTestBase {
         Response additionalPdfResponse = doGetRequest(
             String.format(GET_FILE_URL, artefact.getArtefactId(), FileType.PDF.name()), headerMap);
         assertThat(additionalPdfResponse.getStatusCode()).isEqualTo(OK.value());
-
     }
 
+    @Test
+    void shouldReturnUnauthorisedIfUserDoesNotHavePermission() throws Exception {
+        Artefact artefact = uploadPublication(ListType.CIVIL_DAILY_CAUSE_LIST,
+                                              CIVIL_CAUSE_LIST_FILE,
+                                              Language.ENGLISH,
+                                              Sensitivity.CLASSIFIED
+        );
+
+        headerMap.put("x-user-id", testUserId);
+        Response additionalPdfResponse = doGetRequest(
+            String.format(GET_FILE_URL, artefact.getArtefactId(), FileType.PDF.name()), headerMap);
+        assertThat(additionalPdfResponse.getStatusCode()).isEqualTo(UNAUTHORIZED.value());
+    }
+
+    @Test
+    void shouldReturnUnauthorisedIfUserDoesNotExist() throws Exception {
+        Artefact artefact = uploadPublication(ListType.CIVIL_DAILY_CAUSE_LIST,
+                                              CIVIL_CAUSE_LIST_FILE,
+                                              Language.ENGLISH,
+                                              Sensitivity.CLASSIFIED
+        );
+
+        headerMap.put("x-user-id", UUID.randomUUID().toString());
+        Response additionalPdfResponse = doGetRequest(
+            String.format(GET_FILE_URL, artefact.getArtefactId(), FileType.PDF.name()), headerMap);
+        assertThat(additionalPdfResponse.getStatusCode()).isEqualTo(UNAUTHORIZED.value());
+    }
 }
