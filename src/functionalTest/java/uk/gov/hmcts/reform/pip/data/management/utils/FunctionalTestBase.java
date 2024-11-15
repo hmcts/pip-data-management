@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.util.CollectionUtils;
-import uk.gov.hmcts.reform.pip.data.management.Application;
 
 import java.io.File;
 import java.util.Map;
@@ -17,7 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import static io.restassured.RestAssured.given;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 
-@SpringBootTest(classes = {Application.class, OAuthClient.class},
+@SpringBootTest(classes = {OAuthClient.class},
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class FunctionalTestBase {
@@ -71,14 +70,26 @@ public class FunctionalTestBase {
 
     protected Response doPostRequestMultiPart(final String path, final Map<String, String> additionalHeaders,
                                               String multiPartKey, final File multipartFile) {
-        return given()
-            .relaxedHTTPSValidation()
-            .headers(additionalHeaders)
-            .accept("*/*")
-            .multiPart(multiPartKey, multipartFile)
-            .when()
-            .post(path)
-            .thenReturn();
+
+        if (multiPartKey.isBlank()) {
+            return given()
+                .relaxedHTTPSValidation()
+                .headers(additionalHeaders)
+                .accept("*/*")
+                .multiPart(multipartFile)
+                .when()
+                .post(path)
+                .thenReturn();
+        } else {
+            return given()
+                .relaxedHTTPSValidation()
+                .headers(additionalHeaders)
+                .accept("*/*")
+                .multiPart(multiPartKey, multipartFile)
+                .when()
+                .post(path)
+                .thenReturn();
+        }
     }
 
     protected Response doDeleteRequest(final String path, final Map<String, String> additionalHeaders) {

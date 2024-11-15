@@ -2,6 +2,8 @@
 java:
   image: ${IMAGE_NAME}
   ingressHost: ${SERVICE_FQDN}
+  devmemoryRequests: 1024Mi
+  devmemoryLimits: 2048Mi
   environment:
     ENABLE_TESTING_SUPPORT_API: true
     MANAGED_IDENTITY_CLIENT_ID: 8d0ead51-3b31-44df-a78e-ada4eea9fe87

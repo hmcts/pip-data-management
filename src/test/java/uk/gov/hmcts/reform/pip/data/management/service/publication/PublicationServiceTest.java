@@ -1,15 +1,14 @@
 package uk.gov.hmcts.reform.pip.data.management.service.publication;
 
-import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.ActiveProfiles;
-import uk.gov.hmcts.reform.pip.data.management.Application;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.AzureArtefactBlobService;
 import uk.gov.hmcts.reform.pip.data.management.database.LocationRepository;
@@ -18,7 +17,6 @@ import uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelpe
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.service.PublicationManagementService;
-import uk.gov.hmcts.reform.pip.data.management.utils.JsonExtractor;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
 import java.util.List;
@@ -68,50 +66,42 @@ import static uk.gov.hmcts.reform.pip.model.publication.ListType.SJP_PUBLIC_LIST
 import static uk.gov.hmcts.reform.pip.model.publication.Sensitivity.PUBLIC;
 
 @ActiveProfiles("test")
-@SpringBootTest(classes = {Application.class})
-@AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
+@ExtendWith(MockitoExtension.class)
 @SuppressWarnings({"PMD.ExcessiveImports"})
 class PublicationServiceTest {
 
-    @MockBean
+    @Mock
     ArtefactRepository artefactRepository;
 
-    @MockBean
+    @Mock
     LocationRepository locationRepository;
 
-    @MockBean
+    @Mock
     AzureArtefactBlobService azureArtefactBlobService;
 
-    @MockBean
-    JsonExtractor jsonExtractor;
-
-    @MockBean
+    @Mock
     PublicationManagementService publicationManagementService;
 
-    @MockBean
-    ArtefactTriggerService artefactTriggerService;
-
-    @MockBean
+    @Mock
     ArtefactService artefactService;
 
-    @Autowired
+    @InjectMocks
     PublicationService publicationService;
+
 
     private Artefact artefact;
     private Artefact artefactWithPayloadUrl;
     private Artefact artefactWithIdAndPayloadUrl;
-    private Artefact sjpPressArtefact;
 
-    private static final String LOCATION_NAME_WITH_ID_3 = "Oxford Combined Court Centre";
-    private static final String LOCATION_NAME_WITH_ID_9 = "Single Justice Procedure";
     private static final Float PAYLOAD_SIZE_WITHIN_LIMIT = 90f;
     private static final Float PAYLOAD_SIZE_OVER_LIMIT = 110f;
+    private static final String LOCATION_NAME_WITH_ID_3 = "Oxford Combined Court Centre";
+    private static final String LOCATION_NAME_WITH_ID_9 = "Single Justice Procedure";
     private static final String ERROR_SIZE = "The MI Report should contain 3 entries";
     private static final String ERROR_LOCATION_ID = "The location ID is incorrect";
     private static final String ERROR_LOCATION_NAME = "The location name is incorrect";
     private static final String ERROR_NOT_NULL = "This field should be null";
     private static final String ERROR_NULL = "This field should not be null";
-
 
     @BeforeAll
     public static void setupSearchValues() {
@@ -137,7 +127,6 @@ class PublicationServiceTest {
         artefact = ArtefactConstantTestHelper.buildArtefact();
         artefactWithPayloadUrl = ArtefactConstantTestHelper.buildArtefactWithPayloadUrl();
         artefactWithIdAndPayloadUrl = ArtefactConstantTestHelper.buildArtefactWithIdAndPayloadUrl();
-        sjpPressArtefact = ArtefactConstantTestHelper.buildSjpPressArtefact();
     }
 
     @Test
@@ -297,9 +286,6 @@ class PublicationServiceTest {
 
     @Test
     void testCreationOfNewArtefactWhenListTypeSjpPress() {
-        when(azureArtefactBlobService.createPayload(any(), eq(PAYLOAD))).thenReturn(PAYLOAD_URL);
-        when(artefactRepository.save(sjpPressArtefact)).thenReturn(sjpPressArtefact);
-
         publicationService.applyInternalLocationId(artefact);
         assertThat(artefact.getLocationId()).isEqualTo(NO_COURT_EXISTS_IN_REFERENCE_DATA);
     }
