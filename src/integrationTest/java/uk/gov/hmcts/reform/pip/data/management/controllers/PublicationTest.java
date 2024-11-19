@@ -36,6 +36,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import uk.gov.hmcts.reform.pip.data.management.Application;
 import uk.gov.hmcts.reform.pip.data.management.config.AzureBlobConfigurationTestConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
+import uk.gov.hmcts.reform.pip.data.management.dto.MiReportData;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.ExceptionResponse;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.model.location.LocationType;
@@ -52,6 +53,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -140,14 +142,12 @@ class PublicationTest {
 
     private static final String VALIDATION_EMPTY_RESPONSE = "Response should contain a Artefact";
     private static final String VALIDATION_DISPLAY_FROM = "The expected Display From has not been returned";
+    private static final String VALIDATION_MI_REPORT = "Should successfully retrieve MI data";
     private static final String SHOULD_RETURN_EXPECTED_ARTEFACT = "Should return expected artefact";
     private static final String PARTIES_KEY = "parties";
     private static final String ORGANISATION_KEY = "organisations";
     private static final String INDIVIDUAL_KEY = "individuals";
     private static final String CASES_KEY = "cases";
-    private static final String EXPECTED_MI_DATA_HEADERS = "artefact_id,display_from,display_to,language,provenance,"
-        + "sensitivity,source_artefact_id,"
-        + "superseded_count,type,content_date,court_id,court_name,list_type";
 
     private static ObjectMapper objectMapper;
 
@@ -1916,19 +1916,23 @@ class PublicationTest {
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
             .get(MI_REPORTING_DATA_URL);
 
-        String responseMiData = mockMvc.perform(request).andExpect(status().isOk()).andReturn()
-            .getResponse().getContentAsString();
+        MvcResult responseMiData = mockMvc.perform(request).andExpect(status().isOk()).andReturn();
 
-        assertEquals(EXPECTED_MI_DATA_HEADERS, responseMiData.split("\n")[0],
-                     "Should successfully retrieve MI data headers"
+        assertNotNull(responseMiData.getResponse(), VALIDATION_MI_REPORT);
+
+        List<MiReportData> miData =
+            Arrays.asList(
+                objectMapper.readValue(responseMiData.getResponse().getContentAsString(), MiReportData[].class)
+            );
+
+        assertEquals(1, miData.size(), VALIDATION_MI_REPORT);
+        assertEquals(artefact.getArtefactId(),
+            miData.get(0).getArtefactId(),
+            VALIDATION_MI_REPORT
         );
-        assertTrue(
-            responseMiData.contains(artefact.getArtefactId().toString()),
-            "Should successfully retrieve MI data"
-        );
-        assertTrue(
-            responseMiData.contains(artefact.getLocationId()),
-            "Should successfully retrieve MI data"
+        assertEquals(artefact.getLocationId(),
+            miData.get(0).getLocationId(),
+            VALIDATION_MI_REPORT
         );
     }
 
