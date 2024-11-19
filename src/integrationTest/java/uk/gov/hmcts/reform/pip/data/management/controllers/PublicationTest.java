@@ -17,7 +17,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
@@ -36,6 +35,7 @@ import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.ExceptionResponse;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.utils.IntegrationTestBase;
+import uk.gov.hmcts.reform.pip.model.account.AzureAccount;
 import uk.gov.hmcts.reform.pip.model.location.LocationType;
 import uk.gov.hmcts.reform.pip.model.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
@@ -60,8 +60,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static uk.gov.hmcts.reform.pip.model.account.Roles.SYSTEM_ADMIN;
 
 @SpringBootTest(classes = {Application.class, AzureBlobConfigurationTestConfiguration.class},
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -76,15 +79,9 @@ class PublicationTest extends IntegrationTestBase {
     @Autowired
     private MockMvc mockMvc;
 
-    @Value("${test-user-id}")
-    private String userId;
-
-    @Value("${system-admin-provenance-id}")
-    private String systemAdminProvenanceId;
-
     private static final String PUBLICATION_URL = "/publication";
-
     private static final String SEARCH_COURT_URL = "/publication/locationId";
+    private static final String FILE_URL = "/file";
     private static final String PAYLOAD_URL = "/payload";
     private static final String LOCATION_TYPE_URL = PUBLICATION_URL + "/location-type/";
     private static final String SEND_NEW_ARTEFACTS_FOR_SUBSCRIPTION_URL = PUBLICATION_URL + "/latest/subscription";
@@ -94,6 +91,8 @@ class PublicationTest extends IntegrationTestBase {
     private static final String ARCHIVE_EXPIRED_ARTEFACTS_URL = PUBLICATION_URL + "/expired";
     private static final ArtefactType ARTEFACT_TYPE = ArtefactType.LIST;
     private static final Sensitivity SENSITIVITY = Sensitivity.PUBLIC;
+    private static final String USER_ID = UUID.randomUUID().toString();
+    private static final String PROVENANCE_USER_ID = UUID.randomUUID().toString();
     private static final String PROVENANCE = "MANUAL_UPLOAD";
     private static String payload = "payload";
     private static MockMultipartFile file;
@@ -106,7 +105,7 @@ class PublicationTest extends IntegrationTestBase {
     private static final String COURT_ID = "123";
     private static final LocalDateTime CONTENT_DATE = LocalDateTime.now().toLocalDate().atStartOfDay()
         .truncatedTo(ChronoUnit.SECONDS);
-    private static final String PROVENANCE_USER_ID = "x-provenance-user-id";
+    private static final String PROVENANCE_USER_ID_HEADER = "x-provenance-user-id";
     private static final String SEARCH_KEY_FOUND = "array-value";
     private static final String SEARCH_KEY_NOT_FOUND = "case-urn";
     private static final String SEARCH_VALUE_1 = "array-value-1";
@@ -119,6 +118,7 @@ class PublicationTest extends IntegrationTestBase {
     private static final String ADMIN_HEADER = "x-admin";
     private static final String ISSUER_HEADER = "x-issuer-id";
     private static final String EMAIL = "test@email.com";
+    private static final String DISPLAY_NAME = "Test name";
 
     private static final String VALIDATION_EMPTY_RESPONSE = "Response should contain a Artefact";
     private static final String VALIDATION_DISPLAY_FROM = "The expected Display From has not been returned";
@@ -582,7 +582,7 @@ class PublicationTest extends IntegrationTestBase {
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 = MockMvcRequestBuilders
             .get(SEARCH_COURT_URL + "/" + COURT_ID)
-            .header(USER_ID_HEADER, userId);
+            .header(USER_ID_HEADER, USER_ID);
         MvcResult getResponse =
             mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isOk()).andReturn();
 
@@ -668,7 +668,7 @@ class PublicationTest extends IntegrationTestBase {
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 = MockMvcRequestBuilders
             .get(SEARCH_COURT_URL + "/" + COURT_ID)
-            .header(USER_ID_HEADER, userId);
+            .header(USER_ID_HEADER, USER_ID);
         MvcResult getResponse =
             mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isOk()).andReturn();
 
@@ -753,7 +753,7 @@ class PublicationTest extends IntegrationTestBase {
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 = MockMvcRequestBuilders
             .get(SEARCH_COURT_URL + "/" + COURT_ID)
-            .header(USER_ID_HEADER, userId);
+            .header(USER_ID_HEADER, USER_ID);
         MvcResult getResponse =
             mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isOk()).andReturn();
 
@@ -866,16 +866,13 @@ class PublicationTest extends IntegrationTestBase {
         );
     }
 
-    @ParameterizedTest
-    @ValueSource(booleans = {true, false})
+    @Test
     @DisplayName("File endpoint should return the file when artefact exists")
-    void retrieveFileFromAnArtefactWhereFound(boolean isJson) throws Exception {
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
-        if (isJson) {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
-        } else {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(PUBLICATION_URL).file(file);
-        }
+    void retrieveFileFromAnArtefactWhereFound() throws Exception {
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+            .multipart(PUBLICATION_URL)
+            .file(file);
+
         mockHttpServletRequestBuilder.header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
             .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
@@ -887,42 +884,34 @@ class PublicationTest extends IntegrationTestBase {
             .header(PublicationConfiguration.COURT_ID, COURT_ID)
             .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
-            .contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
+            .contentType(MediaType.MULTIPART_FORM_DATA);
 
         MvcResult response =
             mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
 
-        Artefact artefact = objectMapper.readValue(
-            response.getResponse().getContentAsString(), Artefact.class);
+        Artefact artefact = objectMapper.readValue(response.getResponse().getContentAsString(), Artefact.class);
 
-        when(blobClient.downloadContent()).thenReturn(
-            BinaryData.fromString(isJson ? payload : new String(file.getBytes())));
+        when(blobClient.downloadContent()).thenReturn(BinaryData.fromString(new String(file.getBytes())));
 
         response = mockMvc.perform(MockMvcRequestBuilders
-                                       .get(PUBLICATION_URL + "/" + artefact.getArtefactId() + "/file")
-                                       .header(USER_ID_HEADER, userId))
+                                       .get(PUBLICATION_URL + "/" + artefact.getArtefactId() + FILE_URL)
+                                       .header(USER_ID_HEADER, USER_ID))
             .andExpect(status().isOk()).andReturn();
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
-
-        assertEquals(isJson ? payload : new String(file.getBytes()),
-                     response.getResponse().getContentAsString(), "File does not match expected content"
-        );
-
+        assertEquals(new String(file.getBytes()),
+                     response.getResponse().getContentAsString(), "File does not match expected content");
     }
 
-    @ParameterizedTest
-    @ValueSource(booleans = {true, false})
+    @Test
     @DisplayName("File endpoint should return the file when artefact exists")
-    void retrieveFileFromAnArtefactWhereAdmin(boolean isJson) throws Exception {
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
-        if (isJson) {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
-        } else {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(PUBLICATION_URL).file(file);
-        }
+    void retrieveFileFromAnArtefactWhereAdmin() throws Exception {
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+            .multipart(PUBLICATION_URL)
+            .file(file);
+
         mockHttpServletRequestBuilder.header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
             .header(PublicationConfiguration.SENSITIVITY_HEADER, Sensitivity.CLASSIFIED)
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
@@ -934,42 +923,35 @@ class PublicationTest extends IntegrationTestBase {
             .header(PublicationConfiguration.COURT_ID, COURT_ID)
             .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
-            .contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
+            .contentType(MediaType.MULTIPART_FORM_DATA);
 
         MvcResult response =
             mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
 
-        Artefact artefact = objectMapper.readValue(
-            response.getResponse().getContentAsString(), Artefact.class);
+        Artefact artefact = objectMapper.readValue(response.getResponse().getContentAsString(), Artefact.class);
 
-        when(blobClient.downloadContent()).thenReturn(
-            BinaryData.fromString(isJson ? payload : new String(file.getBytes())));
+        when(blobClient.downloadContent()).thenReturn(BinaryData.fromString(new String(file.getBytes())));
 
         response = mockMvc.perform(MockMvcRequestBuilders
-                                       .get(PUBLICATION_URL + "/" + artefact.getArtefactId() + "/file")
+                                       .get(PUBLICATION_URL + "/" + artefact.getArtefactId() + FILE_URL)
                                        .header(ADMIN_HEADER, true))
             .andExpect(status().isOk()).andReturn();
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
 
-        assertEquals(isJson ? payload : new String(file.getBytes()),
-                     response.getResponse().getContentAsString(), "File does not match expected content"
-        );
-
+        assertEquals(new String(file.getBytes()),
+                     response.getResponse().getContentAsString(), "File does not match expected content");
     }
 
-    @ParameterizedTest
-    @ValueSource(booleans = {true, false})
-    @DisplayName("File endpoint should not return the payload when not authorized")
-    void retrieveFileOfAnArtefactWhereNotAuthorized(boolean isJson) throws Exception {
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
-        if (isJson) {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
-        } else {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(PUBLICATION_URL).file(file);
-        }
+    @Test
+    @DisplayName("File endpoint should not return the file when user not supplied")
+    void retrieveFileOfAnArtefactWhereUserNotSupplied() throws Exception {
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+            .multipart(PUBLICATION_URL)
+            .file(file);
+
         mockHttpServletRequestBuilder.header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
             .header(PublicationConfiguration.SENSITIVITY_HEADER, Sensitivity.CLASSIFIED)
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
@@ -981,7 +963,81 @@ class PublicationTest extends IntegrationTestBase {
             .header(PublicationConfiguration.COURT_ID, COURT_ID)
             .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
-            .contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
+            .contentType(MediaType.MULTIPART_FORM_DATA);
+
+        MvcResult response =
+            mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
+
+        assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
+
+        Artefact artefact = objectMapper.readValue(response.getResponse().getContentAsString(), Artefact.class);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                            .get(PUBLICATION_URL + "/" + artefact.getArtefactId() + FILE_URL))
+            .andExpect(status().isNotFound()).andReturn();
+    }
+
+    @Test
+    @DisplayName("File endpoint should return the file when user is authorised")
+    void retrieveFileOfAnArtefactWhereUserAuthorized() throws Exception {
+        when(accountManagementService.getIsAuthorised(UUID.fromString(USER_ID), LIST_TYPE, Sensitivity.CLASSIFIED))
+            .thenReturn(true);
+        when(blobClient.downloadContent()).thenReturn(BinaryData.fromString(new String(file.getBytes())));
+
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+            .multipart(PUBLICATION_URL)
+            .file(file);
+
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
+            .header(PublicationConfiguration.SENSITIVITY_HEADER, Sensitivity.CLASSIFIED)
+            .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
+            .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
+            .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
+            .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO.plusMonths(1))
+            .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
+            .header(PublicationConfiguration.LIST_TYPE, LIST_TYPE)
+            .header(PublicationConfiguration.COURT_ID, COURT_ID)
+            .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
+            .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
+            .contentType(MediaType.MULTIPART_FORM_DATA);
+
+        MvcResult response =
+            mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
+
+        assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
+
+        Artefact artefact = objectMapper.readValue(response.getResponse().getContentAsString(), Artefact.class);
+
+        response = mockMvc.perform(MockMvcRequestBuilders
+                                       .get(PUBLICATION_URL + "/" + artefact.getArtefactId() + FILE_URL)
+                                       .header(USER_ID_HEADER, USER_ID))
+            .andExpect(status().isOk()).andReturn();
+
+        assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
+    }
+
+    @Test
+    @DisplayName("File endpoint should not return the file when user is not authorised")
+    void retrieveFileOfAnArtefactWhereUserNotAuthorized() throws Exception {
+        when(accountManagementService.getIsAuthorised(UUID.fromString(USER_ID), LIST_TYPE, Sensitivity.CLASSIFIED))
+            .thenReturn(false);
+
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+            .multipart(PUBLICATION_URL)
+            .file(file);
+
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
+            .header(PublicationConfiguration.SENSITIVITY_HEADER, Sensitivity.CLASSIFIED)
+            .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
+            .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
+            .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
+            .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO.plusMonths(1))
+            .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
+            .header(PublicationConfiguration.LIST_TYPE, LIST_TYPE)
+            .header(PublicationConfiguration.COURT_ID, COURT_ID)
+            .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
+            .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
+            .contentType(MediaType.MULTIPART_FORM_DATA);
 
         MvcResult response =
             mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
@@ -992,7 +1048,8 @@ class PublicationTest extends IntegrationTestBase {
             response.getResponse().getContentAsString(), Artefact.class);
 
         mockMvc.perform(MockMvcRequestBuilders
-                            .get(PUBLICATION_URL + "/" + artefact.getArtefactId() + "/file"))
+                            .get(PUBLICATION_URL + "/" + artefact.getArtefactId() + FILE_URL)
+                            .header(USER_ID_HEADER, USER_ID))
             .andExpect(status().isNotFound()).andReturn();
     }
 
@@ -1001,20 +1058,17 @@ class PublicationTest extends IntegrationTestBase {
     void retrieveFileOfAnArtefactWhereNotFound() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders
                             .get("/publication/7d734e8d-ba1d-4730-bd8b-09a970be00cc/file")
-                            .header(USER_ID_HEADER, userId))
+                            .header(USER_ID_HEADER, USER_ID))
             .andExpect(status().isNotFound()).andReturn();
     }
 
-    @ParameterizedTest
-    @ValueSource(booleans = {true, false})
+    @Test
     @DisplayName("Payload endpoint should return the payload when artefact exists when verified")
-    void retrievePayloadOfAnArtefactWhereFoundWhenVerified(boolean isJson) throws Exception {
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
-        if (isJson) {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
-        } else {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(PUBLICATION_URL).file(file);
-        }
+    void retrievePayloadOfAnArtefactWhereFoundWhenVerified() throws Exception {
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+            .post(PUBLICATION_URL)
+            .content(payload);
+
         mockHttpServletRequestBuilder.header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
             .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
@@ -1026,41 +1080,35 @@ class PublicationTest extends IntegrationTestBase {
             .header(PublicationConfiguration.COURT_ID, COURT_ID)
             .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
-            .contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
+            .contentType(MediaType.APPLICATION_JSON);
 
         MvcResult response =
             mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
 
-        Artefact artefact = objectMapper.readValue(
-            response.getResponse().getContentAsString(), Artefact.class);
+        Artefact artefact = objectMapper.readValue(response.getResponse().getContentAsString(), Artefact.class);
 
-        when(blobClient.downloadContent()).thenReturn(
-            BinaryData.fromString(isJson ? payload : new String(file.getBytes())));
+        when(blobClient.downloadContent()).thenReturn(BinaryData.fromString(payload));
 
         response = mockMvc.perform(MockMvcRequestBuilders
                                        .get(PUBLICATION_URL + "/" + artefact.getArtefactId() + PAYLOAD_URL)
-                                       .header(USER_ID_HEADER, userId))
+                                       .header(USER_ID_HEADER, USER_ID))
             .andExpect(status().isOk()).andReturn();
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
 
-        assertEquals(isJson ? payload : new String(file.getBytes()),
-                     response.getResponse().getContentAsString(), "Payload does not match expected content"
-        );
+        assertEquals(payload, response.getResponse().getContentAsString(),
+                     "Payload does not match expected content");
     }
 
-    @ParameterizedTest
-    @ValueSource(booleans = {true, false})
+    @Test
     @DisplayName("Payload endpoint should not return the payload when artefact out of range and user verified")
-    void retrievePayloadOfAnArtefactWhereOutOfDateRangeWhenVerified(boolean isJson) throws Exception {
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
-        if (isJson) {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
-        } else {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(PUBLICATION_URL).file(file);
-        }
+    void retrievePayloadOfAnArtefactWhereOutOfDateRangeWhenVerified() throws Exception {
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+            .post(PUBLICATION_URL)
+            .content(payload);
+
         mockHttpServletRequestBuilder.header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
             .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
@@ -1072,35 +1120,30 @@ class PublicationTest extends IntegrationTestBase {
             .header(PublicationConfiguration.COURT_ID, COURT_ID)
             .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
-            .contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
+            .contentType(MediaType.APPLICATION_JSON);
 
         MvcResult response =
             mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
 
-        Artefact artefact = objectMapper.readValue(
-            response.getResponse().getContentAsString(), Artefact.class);
+        Artefact artefact = objectMapper.readValue(response.getResponse().getContentAsString(), Artefact.class);
 
-        when(blobClient.downloadContent()).thenReturn(
-            BinaryData.fromString(isJson ? payload : new String(file.getBytes())));
+        when(blobClient.downloadContent()).thenReturn(BinaryData.fromString(payload));
 
         mockMvc.perform(MockMvcRequestBuilders
                             .get(PUBLICATION_URL + "/" + artefact.getArtefactId() + PAYLOAD_URL)
-                            .header(USER_ID_HEADER, userId))
+                            .header(USER_ID_HEADER, USER_ID))
             .andExpect(status().isNotFound()).andReturn();
     }
 
-    @ParameterizedTest
-    @ValueSource(booleans = {true, false})
-    @DisplayName("Payload endpoint should not return the payload when not authorized")
-    void retrievePayloadOfAnArtefactWhereNotAuthorized(boolean isJson) throws Exception {
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
-        if (isJson) {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
-        } else {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(PUBLICATION_URL).file(file);
-        }
+    @Test
+    @DisplayName("Payload endpoint should not return the payload when user not supplied")
+    void retrievePayloadOfAnArtefactWhereUserNotSupplied() throws Exception {
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+            .post(PUBLICATION_URL)
+            .content(payload);
+
         mockHttpServletRequestBuilder.header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
             .header(PublicationConfiguration.SENSITIVITY_HEADER, Sensitivity.CLASSIFIED)
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
@@ -1112,31 +1155,102 @@ class PublicationTest extends IntegrationTestBase {
             .header(PublicationConfiguration.COURT_ID, COURT_ID)
             .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
-            .contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
+            .contentType(MediaType.APPLICATION_JSON);
 
         MvcResult response =
             mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
 
-        Artefact artefact = objectMapper.readValue(
-            response.getResponse().getContentAsString(), Artefact.class);
+        Artefact artefact = objectMapper.readValue(response.getResponse().getContentAsString(), Artefact.class);
 
         mockMvc.perform(MockMvcRequestBuilders
                             .get(PUBLICATION_URL + "/" + artefact.getArtefactId() + PAYLOAD_URL))
             .andExpect(status().isNotFound()).andReturn();
     }
 
-    @ParameterizedTest
-    @ValueSource(booleans = {true, false})
+    @Test
+    @DisplayName("Payload endpoint should return the payload when user is authorised")
+    void retrievePayloadOfAnArtefactWhereUserAuthorized() throws Exception {
+        when(accountManagementService.getIsAuthorised(UUID.fromString(USER_ID), LIST_TYPE, Sensitivity.CLASSIFIED))
+            .thenReturn(true);
+        when(blobClient.downloadContent()).thenReturn(BinaryData.fromString(payload));
+
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+            .post(PUBLICATION_URL)
+            .content(payload);
+
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
+            .header(PublicationConfiguration.SENSITIVITY_HEADER, Sensitivity.CLASSIFIED)
+            .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
+            .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
+            .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
+            .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO.plusMonths(1))
+            .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
+            .header(PublicationConfiguration.LIST_TYPE, LIST_TYPE)
+            .header(PublicationConfiguration.COURT_ID, COURT_ID)
+            .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
+            .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
+            .contentType(MediaType.APPLICATION_JSON);
+
+        MvcResult response =
+            mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
+
+        assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
+
+        Artefact artefact = objectMapper.readValue(response.getResponse().getContentAsString(), Artefact.class);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                            .get(PUBLICATION_URL + "/" + artefact.getArtefactId() + PAYLOAD_URL)
+                            .header(USER_ID_HEADER, USER_ID))
+            .andExpect(status().isOk()).andReturn();
+
+        assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
+    }
+
+    @Test
+    @DisplayName("Payload endpoint should not return the payload when user is not authorised")
+    void retrievePayloadOfAnArtefactWhereUserNotAuthorized() throws Exception {
+        when(accountManagementService.getIsAuthorised(UUID.fromString(USER_ID), LIST_TYPE, Sensitivity.CLASSIFIED))
+            .thenReturn(false);
+
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+            .post(PUBLICATION_URL)
+            .content(payload);
+
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
+            .header(PublicationConfiguration.SENSITIVITY_HEADER, Sensitivity.CLASSIFIED)
+            .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
+            .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
+            .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
+            .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO.plusMonths(1))
+            .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
+            .header(PublicationConfiguration.LIST_TYPE, LIST_TYPE)
+            .header(PublicationConfiguration.COURT_ID, COURT_ID)
+            .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
+            .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
+            .contentType(MediaType.APPLICATION_JSON);
+
+        MvcResult response =
+            mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
+
+        assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
+
+        Artefact artefact = objectMapper.readValue(response.getResponse().getContentAsString(), Artefact.class);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                            .get(PUBLICATION_URL + "/" + artefact.getArtefactId() + PAYLOAD_URL)
+                            .header(USER_ID_HEADER, USER_ID))
+            .andExpect(status().isNotFound()).andReturn();
+    }
+
+    @Test
     @DisplayName("Payload endpoint should return the payload when artefact exists when unverified")
-    void retrievePayloadOfAnArtefactWhereFoundWhenUnverified(boolean isJson) throws Exception {
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
-        if (isJson) {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
-        } else {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(PUBLICATION_URL).file(file);
-        }
+    void retrievePayloadOfAnArtefactWhereFoundWhenUnverified() throws Exception {
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+            .post(PUBLICATION_URL)
+            .content(payload);
+
         mockHttpServletRequestBuilder.header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
             .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
@@ -1148,7 +1262,7 @@ class PublicationTest extends IntegrationTestBase {
             .header(PublicationConfiguration.COURT_ID, COURT_ID)
             .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
-            .contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
+            .contentType(MediaType.APPLICATION_JSON);
 
         MvcResult response =
             mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
@@ -1158,8 +1272,7 @@ class PublicationTest extends IntegrationTestBase {
         Artefact artefact = objectMapper.readValue(
             response.getResponse().getContentAsString(), Artefact.class);
 
-        when(blobClient.downloadContent()).thenReturn(
-            BinaryData.fromString(isJson ? payload : new String(file.getBytes())));
+        when(blobClient.downloadContent()).thenReturn(BinaryData.fromString(payload));
 
         response = mockMvc.perform(MockMvcRequestBuilders
                                        .get(PUBLICATION_URL + "/" + artefact.getArtefactId() + PAYLOAD_URL))
@@ -1167,21 +1280,17 @@ class PublicationTest extends IntegrationTestBase {
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
 
-        assertEquals(isJson ? payload : new String(file.getBytes()),
-                     response.getResponse().getContentAsString(), "Payload does not match expected content"
-        );
+        assertEquals(payload, response.getResponse().getContentAsString(),
+                     "Payload does not match expected content");
     }
 
-    @ParameterizedTest
-    @ValueSource(booleans = {true, false})
+    @Test
     @DisplayName("Payload endpoint should return the payload when artefact exists when an admin")
-    void retrievePayloadOfAnArtefactWhenAdmin(boolean isJson) throws Exception {
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
-        if (isJson) {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
-        } else {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(PUBLICATION_URL).file(file);
-        }
+    void retrievePayloadOfAnArtefactWhenAdmin() throws Exception {
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+            .post(PUBLICATION_URL)
+            .content(payload);
+
         mockHttpServletRequestBuilder.header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
             .header(PublicationConfiguration.SENSITIVITY_HEADER, Sensitivity.CLASSIFIED)
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
@@ -1193,7 +1302,7 @@ class PublicationTest extends IntegrationTestBase {
             .header(PublicationConfiguration.COURT_ID, COURT_ID)
             .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
-            .contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
+            .contentType(MediaType.APPLICATION_JSON);
 
         MvcResult response =
             mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
@@ -1203,8 +1312,7 @@ class PublicationTest extends IntegrationTestBase {
         Artefact artefact = objectMapper.readValue(
             response.getResponse().getContentAsString(), Artefact.class);
 
-        when(blobClient.downloadContent()).thenReturn(
-            BinaryData.fromString(isJson ? payload : new String(file.getBytes())));
+        when(blobClient.downloadContent()).thenReturn(BinaryData.fromString(payload));
 
         response = mockMvc.perform(MockMvcRequestBuilders
                                        .get(PUBLICATION_URL + "/" + artefact.getArtefactId() + PAYLOAD_URL)
@@ -1213,22 +1321,16 @@ class PublicationTest extends IntegrationTestBase {
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
 
-        assertEquals(isJson ? payload : new String(file.getBytes()),
-                     response.getResponse().getContentAsString(), "Payload does not match expected content"
-        );
+        assertEquals(payload, response.getResponse().getContentAsString(),
+                     "Payload does not match expected content");
     }
 
-    @ParameterizedTest
-    @ValueSource(booleans = {true, false})
+    @Test
     @DisplayName("Payload endpoint should not return the payload when artefact out of range and user unverified")
-    void retrievePayloadOfAnArtefactWhereOutOfDateRangeWhenUnverified(boolean isJson) throws Exception {
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
-
-        if (isJson) {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
-        } else {
-            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(PUBLICATION_URL).file(file);
-        }
+    void retrievePayloadOfAnArtefactWhereOutOfDateRangeWhenUnverified() throws Exception {
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+            .post(PUBLICATION_URL)
+            .content(payload);
 
         mockHttpServletRequestBuilder.header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
             .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
@@ -1241,7 +1343,7 @@ class PublicationTest extends IntegrationTestBase {
             .header(PublicationConfiguration.COURT_ID, COURT_ID)
             .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
-            .contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
+            .contentType(MediaType.APPLICATION_JSON);
 
         MvcResult response =
             mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
@@ -1251,8 +1353,7 @@ class PublicationTest extends IntegrationTestBase {
         Artefact artefact = objectMapper.readValue(
             response.getResponse().getContentAsString(), Artefact.class);
 
-        when(blobClient.downloadContent()).thenReturn(
-            BinaryData.fromString(isJson ? payload : new String(file.getBytes())));
+        when(blobClient.downloadContent()).thenReturn(BinaryData.fromString(payload));
 
         mockMvc.perform(MockMvcRequestBuilders
                             .get(PUBLICATION_URL + "/" + artefact.getArtefactId() + PAYLOAD_URL))
@@ -1264,7 +1365,7 @@ class PublicationTest extends IntegrationTestBase {
     void retrievePayloadOfAnArtefactWhereNotFound() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders
                             .get("/publication/7d734e8d-ba1d-4730-bd8b-09a970be00cc/payload")
-                            .header(USER_ID_HEADER, userId))
+                            .header(USER_ID_HEADER, USER_ID))
             .andExpect(status().isNotFound()).andReturn();
     }
 
@@ -1304,7 +1405,7 @@ class PublicationTest extends IntegrationTestBase {
 
         response = mockMvc.perform(MockMvcRequestBuilders
                                        .get(PUBLICATION_URL + "/" + artefact.getArtefactId())
-                                       .header(USER_ID_HEADER, userId))
+                                       .header(USER_ID_HEADER, USER_ID))
             .andExpect(status().isOk()).andReturn();
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
@@ -1403,7 +1504,7 @@ class PublicationTest extends IntegrationTestBase {
 
         mockMvc.perform(MockMvcRequestBuilders
                             .get(PUBLICATION_URL + "/" + artefact.getArtefactId())
-                            .header(USER_ID_HEADER, userId))
+                            .header(USER_ID_HEADER, USER_ID))
             .andExpect(status().isNotFound()).andReturn();
     }
 
@@ -1448,8 +1549,8 @@ class PublicationTest extends IntegrationTestBase {
 
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
-    @DisplayName("Metadata endpoint should not return the artefact when not authorized")
-    void retrieveMetadataOfAnArtefactWhereNotAuthorized(boolean isJson) throws Exception {
+    @DisplayName("Metadata endpoint should not return the artefact when user not supplied")
+    void retrieveMetadataOfAnArtefactWhereUserNotSupplied(boolean isJson) throws Exception {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
         if (isJson) {
             mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
@@ -1482,16 +1583,99 @@ class PublicationTest extends IntegrationTestBase {
             .andExpect(status().isNotFound()).andReturn();
     }
 
+    @ParameterizedTest
+    @ValueSource(booleans = {true, false})
+    @DisplayName("Metadata endpoint should return the artefact when user is authorised")
+    void retrieveMetadataOfAnArtefactWhereUserAuthorised(boolean isJson) throws Exception {
+        when(accountManagementService.getIsAuthorised(UUID.fromString(USER_ID), LIST_TYPE, Sensitivity.CLASSIFIED))
+            .thenReturn(true);
+        when(blobClient.downloadContent())
+            .thenReturn(BinaryData.fromString(isJson ? payload : new String(file.getBytes())));
+
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
+        if (isJson) {
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
+        } else {
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(PUBLICATION_URL).file(file);
+        }
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
+            .header(PublicationConfiguration.SENSITIVITY_HEADER, Sensitivity.CLASSIFIED)
+            .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
+            .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
+            .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
+            .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO.plusMonths(1))
+            .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
+            .header(PublicationConfiguration.LIST_TYPE, LIST_TYPE)
+            .header(PublicationConfiguration.COURT_ID, COURT_ID)
+            .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
+            .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
+            .contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
+
+        MvcResult response =
+            mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
+
+        assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
+
+        Artefact artefact = objectMapper.readValue(
+            response.getResponse().getContentAsString(), Artefact.class);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                            .get(PUBLICATION_URL + "/" + artefact.getArtefactId())
+                            .header(USER_ID_HEADER, USER_ID))
+            .andExpect(status().isOk()).andReturn();
+
+        assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
+    }
+
+    @ParameterizedTest
+    @ValueSource(booleans = {true, false})
+    @DisplayName("Metadata endpoint should return the artefact when not authorised")
+    void retrieveMetadataOfAnArtefactWhereUserNotAuthorized(boolean isJson) throws Exception {
+        when(accountManagementService.getIsAuthorised(UUID.fromString(USER_ID), LIST_TYPE, Sensitivity.CLASSIFIED))
+            .thenReturn(false);
+
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
+        if (isJson) {
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
+        } else {
+            mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(PUBLICATION_URL).file(file);
+        }
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
+            .header(PublicationConfiguration.SENSITIVITY_HEADER, Sensitivity.CLASSIFIED)
+            .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
+            .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
+            .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
+            .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO.plusMonths(1))
+            .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
+            .header(PublicationConfiguration.LIST_TYPE, LIST_TYPE)
+            .header(PublicationConfiguration.COURT_ID, COURT_ID)
+            .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
+            .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
+            .contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
+
+        MvcResult response =
+            mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
+
+        assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
+
+        Artefact artefact = objectMapper.readValue(
+            response.getResponse().getContentAsString(), Artefact.class);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                            .get(PUBLICATION_URL + "/" + artefact.getArtefactId())
+                            .header(USER_ID_HEADER, USER_ID))
+            .andExpect(status().isNotFound()).andReturn();
+    }
+
     @Test
     @DisplayName("Metadata endpoint should return 404 when artefact does not exist")
     void retrieveMetadataOfAnArtefactWhereNotFound() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders
                             .get("/publication/7d734e8d-ba1d-4730-bd8b-09a970be00cc")
-                            .header(USER_ID_HEADER, userId))
+                            .header(USER_ID_HEADER, USER_ID))
             .andExpect(status().isNotFound()).andReturn();
     }
 
-    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     @Test
     void testGetCourtByIdShowsAllCourtsForAdmin() throws Exception {
         Artefact inDateArtefact = createDailyList(Sensitivity.PUBLIC);
@@ -1533,7 +1717,7 @@ class PublicationTest extends IntegrationTestBase {
 
         MockHttpServletRequestBuilder preDeleteRequest = MockMvcRequestBuilders
             .get(PUBLICATION_URL + "/" + artefactToDelete.getArtefactId())
-            .header(USER_ID_HEADER, userId);
+            .header(USER_ID_HEADER, USER_ID);
 
         mockMvc.perform(preDeleteRequest).andExpect(status().isOk());
 
@@ -1573,12 +1757,12 @@ class PublicationTest extends IntegrationTestBase {
 
         MockHttpServletRequestBuilder expectedFailRequest = MockMvcRequestBuilders
             .get(PUBLICATION_URL + "/" + artefactToFind.getArtefactId())
-            .header(USER_ID_HEADER, userId);
+            .header(USER_ID_HEADER, USER_ID);
         mockMvc.perform(expectedFailRequest).andExpect(status().isNotFound());
 
         MockHttpServletRequestBuilder adminRequest = MockMvcRequestBuilders
             .get(PUBLICATION_URL + "/" + artefactToFind.getArtefactId())
-            .header(USER_ID_HEADER, userId)
+            .header(USER_ID_HEADER, USER_ID)
             .header(ADMIN_HEADER, true);
         MvcResult response = mockMvc.perform(adminRequest).andExpect(status().isOk()).andReturn();
 
@@ -1596,7 +1780,7 @@ class PublicationTest extends IntegrationTestBase {
     void testGetArtefactMetadataReturnsNotFound() throws Exception {
         MockHttpServletRequestBuilder adminRequest = MockMvcRequestBuilders
             .get(PUBLICATION_URL + "/" + UUID.randomUUID())
-            .header(USER_ID_HEADER, userId)
+            .header(USER_ID_HEADER, USER_ID)
             .header(ADMIN_HEADER, true);
         mockMvc.perform(adminRequest).andExpect(status().isNotFound());
 
@@ -1669,7 +1853,7 @@ class PublicationTest extends IntegrationTestBase {
 
         MockHttpServletRequestBuilder adminGetRequest = MockMvcRequestBuilders
             .get(PUBLICATION_URL + "/" + artefactToExpire.getArtefactId())
-            .header(USER_ID_HEADER, userId)
+            .header(USER_ID_HEADER, USER_ID)
             .header(ADMIN_HEADER, true);
         MvcResult response = mockMvc.perform(adminGetRequest).andExpect(status().isOk()).andReturn();
 
@@ -1685,7 +1869,7 @@ class PublicationTest extends IntegrationTestBase {
 
         MockHttpServletRequestBuilder adminGetRequestAfterDelete = MockMvcRequestBuilders
             .get(PUBLICATION_URL + "/" + artefactToExpire.getArtefactId())
-            .header(USER_ID_HEADER, userId)
+            .header(USER_ID_HEADER, USER_ID)
             .header(ADMIN_HEADER, true);
 
         MvcResult archiveResponse = mockMvc.perform(adminGetRequestAfterDelete).andExpect(status().isOk()).andReturn();
@@ -1727,13 +1911,13 @@ class PublicationTest extends IntegrationTestBase {
 
         MockHttpServletRequestBuilder preArchiveRequest = MockMvcRequestBuilders
             .get(PUBLICATION_URL + "/" + artefactToArchive.getArtefactId())
-            .header(USER_ID_HEADER, userId);
+            .header(USER_ID_HEADER, USER_ID);
 
         mockMvc.perform(preArchiveRequest).andExpect(status().isOk());
 
         MockHttpServletRequestBuilder archiveRequest = MockMvcRequestBuilders
             .put(PUBLICATION_URL + "/" + artefactToArchive.getArtefactId() + "/archive")
-            .header(ISSUER_HEADER, userId);
+            .header(ISSUER_HEADER, USER_ID);
 
         MvcResult archiveResponse = mockMvc.perform(archiveRequest).andExpect(status().isOk()).andReturn();
 
@@ -1748,7 +1932,7 @@ class PublicationTest extends IntegrationTestBase {
 
         MockHttpServletRequestBuilder archiveRequest = MockMvcRequestBuilders
             .put(PUBLICATION_URL + "/" + invalidArtefactId + "/archive")
-            .header(ISSUER_HEADER, userId);
+            .header(ISSUER_HEADER, USER_ID);
 
         MvcResult archiveResponse = mockMvc.perform(archiveRequest).andExpect(status().isNotFound()).andReturn();
 
@@ -1814,17 +1998,23 @@ class PublicationTest extends IntegrationTestBase {
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     void testDeleteArtefactsByLocation() throws Exception {
+        AzureAccount account = new AzureAccount();
+        account.setDisplayName(DISPLAY_NAME);
+        when(accountManagementService.getUserInfo(PROVENANCE_USER_ID)).thenReturn(account);
+        when(accountManagementService.getAllAccounts(anyString(), eq(SYSTEM_ADMIN.toString())))
+            .thenReturn(List.of(EMAIL));
+
         Artefact artefactToDelete = createDailyList(Sensitivity.PUBLIC);
 
         MockHttpServletRequestBuilder preDeleteRequest = MockMvcRequestBuilders
             .get(PUBLICATION_URL + "/" + artefactToDelete.getArtefactId())
-            .header(USER_ID_HEADER, userId);
+            .header(USER_ID_HEADER, USER_ID);
 
         mockMvc.perform(preDeleteRequest).andExpect(status().isOk());
 
         MockHttpServletRequestBuilder deleteRequest = MockMvcRequestBuilders
             .delete(PUBLICATION_URL + "/" + COURT_ID + "/deleteArtefacts")
-            .header(PROVENANCE_USER_ID, systemAdminProvenanceId);
+            .header(PROVENANCE_USER_ID_HEADER, PROVENANCE_USER_ID);
 
         MvcResult deleteResponse = mockMvc.perform(deleteRequest).andExpect(status().isOk()).andReturn();
 
@@ -1837,7 +2027,7 @@ class PublicationTest extends IntegrationTestBase {
     void testDeleteArtefactsByLocationNotFound() throws Exception {
         MockHttpServletRequestBuilder deleteRequest = MockMvcRequestBuilders
             .delete(PUBLICATION_URL + "/" + 11 + "/deleteArtefacts")
-            .header(PROVENANCE_USER_ID, systemAdminProvenanceId);
+            .header(PROVENANCE_USER_ID_HEADER, PROVENANCE_USER_ID);
 
         MvcResult deleteResponse = mockMvc.perform(deleteRequest).andExpect(status().isNotFound()).andReturn();
 

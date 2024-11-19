@@ -5,7 +5,6 @@ import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
@@ -30,9 +29,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(classes = {Application.class},
@@ -47,10 +48,8 @@ class PublicationSubscriptionSearchTest extends IntegrationTestBase {
     @Autowired
     private MockMvc mockMvc;
 
-    @Value("${test-user-id}")
-    private String userId;
-
     private static final String VALID_CASE_ID_SEARCH = "/CASE_ID/45684548";
+    private static final String USER_ID = UUID.randomUUID().toString();
     private static final String PROVENANCE = "MANUAL_UPLOAD";
     private static final String SHOULD_RETURN_EXPECTED_ARTEFACT = "Should return expected artefact";
     private static final LocalDateTime CONTENT_DATE = LocalDateTime.now().toLocalDate().atStartOfDay()
@@ -116,20 +115,49 @@ class PublicationSubscriptionSearchTest extends IntegrationTestBase {
     }
 
     @Test
-    void testGetArtefactByCaseIdSearchVerified() throws Exception {
+    void testAuthorisedGetArtefactByCaseIdSearchVerified() throws Exception {
+        when(accountManagementService.getIsAuthorised(
+            UUID.fromString(USER_ID), ListType.CIVIL_DAILY_CAUSE_LIST, Sensitivity.PRIVATE
+        )).thenReturn(true);
+
         Artefact artefact = createDailyList(Sensitivity.PRIVATE);
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 =
             MockMvcRequestBuilders.get(SEARCH_URL + VALID_CASE_ID_SEARCH);
 
         mockHttpServletRequestBuilder1
-            .header(USER_ID_HEADER, userId);
+            .header(USER_ID_HEADER, USER_ID);
 
-        MvcResult getResponse =
-            mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isOk()).andReturn();
+        MvcResult getResponse = mockMvc.perform(mockHttpServletRequestBuilder1)
+            .andExpect(status().isOk())
+            .andReturn();
 
         assertTrue(
             getResponse.getResponse().getContentAsString().contains(artefact.getArtefactId().toString()),
+            SHOULD_RETURN_EXPECTED_ARTEFACT
+        );
+    }
+
+    @Test
+    void testUnauthorisedGetArtefactByCaseIdSearchVerified() throws Exception {
+        when(accountManagementService.getIsAuthorised(
+            UUID.fromString(USER_ID), ListType.CIVIL_DAILY_CAUSE_LIST, Sensitivity.PRIVATE
+        )).thenReturn(false);
+
+        createDailyList(Sensitivity.PRIVATE);
+
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 =
+            MockMvcRequestBuilders.get(SEARCH_URL + VALID_CASE_ID_SEARCH);
+
+        mockHttpServletRequestBuilder1
+            .header(USER_ID_HEADER, USER_ID);
+
+        MvcResult getResponse = mockMvc.perform(mockHttpServletRequestBuilder1)
+            .andExpect(status().isNotFound())
+            .andReturn();
+
+        assertTrue(
+            getResponse.getResponse().getContentAsString().contains("No Artefacts found"),
             SHOULD_RETURN_EXPECTED_ARTEFACT
         );
     }
@@ -162,20 +190,49 @@ class PublicationSubscriptionSearchTest extends IntegrationTestBase {
     }
 
     @Test
-    void testGetArtefactByCaseNameSearchVerified() throws Exception {
+    void testAuthorisedGetArtefactByCaseNameSearchVerified() throws Exception {
+        when(accountManagementService.getIsAuthorised(
+            UUID.fromString(USER_ID), ListType.CIVIL_DAILY_CAUSE_LIST, Sensitivity.PRIVATE
+        )).thenReturn(true);
+
         Artefact artefact = createDailyList(Sensitivity.PRIVATE);
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 =
             MockMvcRequestBuilders.get(SEARCH_URL + VALID_CASE_NAME_SEARCH);
 
         mockHttpServletRequestBuilder1
-            .header(USER_ID_HEADER, userId);
+            .header(USER_ID_HEADER, USER_ID);
 
-        MvcResult getResponse =
-            mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isOk()).andReturn();
+        MvcResult getResponse = mockMvc.perform(mockHttpServletRequestBuilder1)
+            .andExpect(status().isOk())
+            .andReturn();
 
         assertTrue(
             getResponse.getResponse().getContentAsString().contains(artefact.getArtefactId().toString()),
+            SHOULD_RETURN_EXPECTED_ARTEFACT
+        );
+    }
+
+    @Test
+    void testUnauthorisedGetArtefactByCaseNameSearchVerified() throws Exception {
+        when(accountManagementService.getIsAuthorised(
+            UUID.fromString(USER_ID), ListType.CIVIL_DAILY_CAUSE_LIST, Sensitivity.PRIVATE
+        )).thenReturn(false);
+
+        createDailyList(Sensitivity.PRIVATE);
+
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 =
+            MockMvcRequestBuilders.get(SEARCH_URL + VALID_CASE_NAME_SEARCH);
+
+        mockHttpServletRequestBuilder1
+            .header(USER_ID_HEADER, USER_ID);
+
+        MvcResult getResponse = mockMvc.perform(mockHttpServletRequestBuilder1)
+            .andExpect(status().isNotFound())
+            .andReturn();
+
+        assertTrue(
+            getResponse.getResponse().getContentAsString().contains("No Artefacts found"),
             SHOULD_RETURN_EXPECTED_ARTEFACT
         );
     }
