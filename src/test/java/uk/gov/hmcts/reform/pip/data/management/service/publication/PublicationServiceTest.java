@@ -12,12 +12,12 @@ import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.AzureArtefactBlobService;
 import uk.gov.hmcts.reform.pip.data.management.database.LocationRepository;
-import uk.gov.hmcts.reform.pip.data.management.dto.MiReportData;
 import uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.service.PublicationManagementService;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
+import uk.gov.hmcts.reform.pip.model.report.PublicationMiData;
 
 import java.util.List;
 import java.util.Optional;
@@ -313,20 +313,20 @@ class PublicationServiceTest {
 
     @Test
     void testGetMiDataWithValidLocationId() {
-        List<MiReportData> miDataWithValidLocationId = List.of(
-            new MiReportData(ARTEFACT_ID, DISPLAY_FROM, DISPLAY_TO, BI_LINGUAL, MANUAL_UPLOAD_PROVENANCE, PUBLIC,
+        List<PublicationMiData> miDataWithValidLocationId = List.of(
+            new PublicationMiData(ARTEFACT_ID, DISPLAY_FROM, DISPLAY_TO, BI_LINGUAL, MANUAL_UPLOAD_PROVENANCE, PUBLIC,
                              SOURCE_ARTEFACT_ID, SUPERSEDED_COUNT, LIST, CONTENT_DATE, "3", LOCATION_NAME_WITH_ID_3,
                              FAMILY_DAILY_CAUSE_LIST),
-            new MiReportData(ARTEFACT_ID, DISPLAY_FROM, DISPLAY_TO, ENGLISH, MANUAL_UPLOAD_PROVENANCE, PUBLIC,
+            new PublicationMiData(ARTEFACT_ID, DISPLAY_FROM, DISPLAY_TO, ENGLISH, MANUAL_UPLOAD_PROVENANCE, PUBLIC,
                              SOURCE_ARTEFACT_ID, SUPERSEDED_COUNT, LIST, CONTENT_DATE, "3", LOCATION_NAME_WITH_ID_3,
                              SJP_PUBLIC_LIST),
-            new MiReportData(ARTEFACT_ID, DISPLAY_FROM, DISPLAY_TO, WELSH, MANUAL_UPLOAD_PROVENANCE, PUBLIC,
+            new PublicationMiData(ARTEFACT_ID, DISPLAY_FROM, DISPLAY_TO, WELSH, MANUAL_UPLOAD_PROVENANCE, PUBLIC,
                              SOURCE_ARTEFACT_ID, SUPERSEDED_COUNT, LIST, CONTENT_DATE, "9", LOCATION_NAME_WITH_ID_9,
                              SJP_PUBLIC_LIST)
         );
 
         when(artefactRepository.getMiData()).thenReturn(miDataWithValidLocationId);
-        List<MiReportData> miReportData = publicationService.getMiData();
+        List<PublicationMiData> miReportData = publicationService.getMiData();
 
         verifyNoInteractions(locationRepository);
 
@@ -341,20 +341,20 @@ class PublicationServiceTest {
 
     @Test
     void testGetMiDataWithInValidLocationId() {
-        List<MiReportData> miDataWithInvalidLocationId = List.of(
-            new MiReportData(ARTEFACT_ID, DISPLAY_FROM, DISPLAY_TO, BI_LINGUAL, MANUAL_UPLOAD_PROVENANCE, PUBLIC,
+        List<PublicationMiData> miDataWithInvalidLocationId = List.of(
+            new PublicationMiData(ARTEFACT_ID, DISPLAY_FROM, DISPLAY_TO, BI_LINGUAL, MANUAL_UPLOAD_PROVENANCE, PUBLIC,
                              SOURCE_ARTEFACT_ID, SUPERSEDED_COUNT, LIST, CONTENT_DATE, "3333", null,
                              FAMILY_DAILY_CAUSE_LIST),
-            new MiReportData(ARTEFACT_ID, DISPLAY_FROM, DISPLAY_TO, ENGLISH, MANUAL_UPLOAD_PROVENANCE, PUBLIC,
+            new PublicationMiData(ARTEFACT_ID, DISPLAY_FROM, DISPLAY_TO, ENGLISH, MANUAL_UPLOAD_PROVENANCE, PUBLIC,
                              SOURCE_ARTEFACT_ID, SUPERSEDED_COUNT, LIST, CONTENT_DATE, "1815", null,
                              SJP_PUBLIC_LIST),
-            new MiReportData(ARTEFACT_ID, DISPLAY_FROM, DISPLAY_TO, WELSH, MANUAL_UPLOAD_PROVENANCE, PUBLIC,
+            new PublicationMiData(ARTEFACT_ID, DISPLAY_FROM, DISPLAY_TO, WELSH, MANUAL_UPLOAD_PROVENANCE, PUBLIC,
                              SOURCE_ARTEFACT_ID, SUPERSEDED_COUNT, LIST, CONTENT_DATE, "202020", null,
                              SJP_PUBLIC_LIST)
         );
 
         when(artefactRepository.getMiData()).thenReturn(miDataWithInvalidLocationId);
-        List<MiReportData> miReportData = publicationService.getMiData();
+        List<PublicationMiData> miReportData = publicationService.getMiData();
 
         verifyNoInteractions(locationRepository);
 
@@ -369,20 +369,20 @@ class PublicationServiceTest {
 
     @Test
     void testGetMiDataWithNonDigitsLocationId() {
-        List<MiReportData> miDataWithNonDigitsLocationId = List.of(
-            new MiReportData(ARTEFACT_ID, DISPLAY_FROM, DISPLAY_TO, BI_LINGUAL, MANUAL_UPLOAD_PROVENANCE, PUBLIC,
+        List<PublicationMiData> miDataWithNonDigitsLocationId = List.of(
+            new PublicationMiData(ARTEFACT_ID, DISPLAY_FROM, DISPLAY_TO, BI_LINGUAL, MANUAL_UPLOAD_PROVENANCE, PUBLIC,
                              SOURCE_ARTEFACT_ID, SUPERSEDED_COUNT, LIST, CONTENT_DATE, null, null,
                              FAMILY_DAILY_CAUSE_LIST),
-            new MiReportData(ARTEFACT_ID, DISPLAY_FROM, DISPLAY_TO, ENGLISH, MANUAL_UPLOAD_PROVENANCE, PUBLIC,
+            new PublicationMiData(ARTEFACT_ID, DISPLAY_FROM, DISPLAY_TO, ENGLISH, MANUAL_UPLOAD_PROVENANCE, PUBLIC,
                              SOURCE_ARTEFACT_ID, SUPERSEDED_COUNT, LIST, CONTENT_DATE, NO_MATCH_LOCATION_ID, null,
                              SJP_PUBLIC_LIST),
-            new MiReportData(ARTEFACT_ID, DISPLAY_FROM, DISPLAY_TO, WELSH, MANUAL_UPLOAD_PROVENANCE, PUBLIC,
+            new PublicationMiData(ARTEFACT_ID, DISPLAY_FROM, DISPLAY_TO, WELSH, MANUAL_UPLOAD_PROVENANCE, PUBLIC,
                              SOURCE_ARTEFACT_ID, SUPERSEDED_COUNT, LIST, CONTENT_DATE, "", null,
                              SJP_PUBLIC_LIST)
         );
 
         when(artefactRepository.getMiData()).thenReturn(miDataWithNonDigitsLocationId);
-        List<MiReportData> miReportData = publicationService.getMiData();
+        List<PublicationMiData> miReportData = publicationService.getMiData();
 
         verifyNoInteractions(locationRepository);
 

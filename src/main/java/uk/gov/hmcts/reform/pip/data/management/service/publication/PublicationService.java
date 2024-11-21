@@ -13,12 +13,12 @@ import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.AzureArtefactBlobService;
 import uk.gov.hmcts.reform.pip.data.management.database.LocationRepository;
-import uk.gov.hmcts.reform.pip.data.management.dto.MiReportData;
 import uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactHelper;
 import uk.gov.hmcts.reform.pip.data.management.helpers.NoMatchArtefactHelper;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.service.PublicationManagementService;
+import uk.gov.hmcts.reform.pip.model.report.PublicationMiData;
 
 import java.util.List;
 import java.util.Optional;
@@ -180,7 +180,7 @@ public class PublicationService {
      * Retrieve artefact data for MI reporting.
      * @return MI artefact data as MiReportData object
      */
-    public List<MiReportData> getMiData() {
+    public List<PublicationMiData> getMiData() {
         return artefactRepository.getMiData();
     }
 

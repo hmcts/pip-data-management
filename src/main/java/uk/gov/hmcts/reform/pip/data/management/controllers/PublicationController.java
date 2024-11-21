@@ -29,7 +29,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
-import uk.gov.hmcts.reform.pip.data.management.dto.MiReportData;
 import uk.gov.hmcts.reform.pip.data.management.helpers.NoMatchArtefactHelper;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationArtefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
@@ -51,6 +50,7 @@ import uk.gov.hmcts.reform.pip.model.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 import uk.gov.hmcts.reform.pip.model.publication.Sensitivity;
+import uk.gov.hmcts.reform.pip.model.report.PublicationMiData;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -437,7 +437,7 @@ public class PublicationController {
     @GetMapping("/mi-data")
     @IsAdmin
     @SecurityRequirement(name = BEARER_AUTHENTICATION)
-    public ResponseEntity<List<MiReportData>> getMiData() {
+    public ResponseEntity<List<PublicationMiData>> getMiData() {
         return ResponseEntity.ok().body(publicationService.getMiData());
     }
 
