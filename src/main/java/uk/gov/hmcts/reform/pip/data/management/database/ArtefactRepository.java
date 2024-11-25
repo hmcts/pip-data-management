@@ -108,7 +108,7 @@ public interface ArtefactRepository extends JpaRepository<Artefact, Long> {
         + "true", nativeQuery = true)
     Integer countNoMatchArtefacts();
 
-    @Query("SELECT new uk.gov.hmcts.reform.pip.data.management.dto.MiReportData("
+    @Query("SELECT new uk.gov.hmcts.reform.pip.model.report.PublicationMiData("
         + "a.artefactId, a.displayFrom, a.displayTo, a.language, a.provenance, a.sensitivity, a.sourceArtefactId, "
         + "a.supersededCount, a.type, a.contentDate, a.locationId, l.name, a.listType) "
         + "FROM Artefact a "
