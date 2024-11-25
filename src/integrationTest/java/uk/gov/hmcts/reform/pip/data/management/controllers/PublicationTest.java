@@ -43,6 +43,7 @@ import uk.gov.hmcts.reform.pip.model.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 import uk.gov.hmcts.reform.pip.model.publication.Sensitivity;
+import uk.gov.hmcts.reform.pip.model.report.PublicationMiData;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -1919,18 +1920,18 @@ class PublicationTest {
 
         assertNotNull(responseMiData.getResponse(), VALIDATION_MI_REPORT);
 
-        List<MiReportData> miData =
+        List<PublicationMiData> miData =
             Arrays.asList(
-                objectMapper.readValue(responseMiData.getResponse().getContentAsString(), MiReportData[].class)
+                objectMapper.readValue(responseMiData.getResponse().getContentAsString(), PublicationMiData[].class)
             );
 
         assertEquals(1, miData.size(), VALIDATION_MI_REPORT);
         assertEquals(artefact.getArtefactId(),
-            miData.get(0).getArtefactId(),
+            miData.getFirst().getArtefactId(),
             VALIDATION_MI_REPORT
         );
         assertEquals(artefact.getLocationId(),
-            miData.get(0).getLocationId(),
+            miData.getFirst().getLocationId(),
             VALIDATION_MI_REPORT
         );
     }
