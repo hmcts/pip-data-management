@@ -38,8 +38,8 @@ public final class TestingSupportLocationHelper {
         location.setWelshJurisdiction(List.of(
             "Llys Sifil",
             "Llys Teulu",
-            "Tribunal",
-            "Magistrates",
+            "Tribiwnlys",
+            "Llys Ynado",
             "Llys y Goron",
             "Tribiwnlys Nawdd Cymdeithasol a Chynnal Plant"
         ));
