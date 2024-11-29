@@ -36,7 +36,6 @@ import java.util.List;
 @Tag(name = "Data Management location list API")
 @RequestMapping("/locations")
 public class LocationController {
-
     private static final String OK_CODE = "200";
     private static final String BAD_REQUEST_CODE = "400";
     private static final String UNAUTHORISED_CODE = "401";

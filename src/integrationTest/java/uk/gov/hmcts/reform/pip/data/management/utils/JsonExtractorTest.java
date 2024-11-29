@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 @ActiveProfiles("integration-basic")
 @SpringBootTest
-class JsonExtractorTest {
+class JsonExtractorTest extends IntegrationBasicTestBase {
 
     @Autowired
     JsonExtractor jsonExtractor;

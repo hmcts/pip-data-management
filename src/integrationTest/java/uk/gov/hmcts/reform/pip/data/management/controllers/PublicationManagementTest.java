@@ -1,8 +1,6 @@
 package uk.gov.hmcts.reform.pip.data.management.controllers;
 
 import com.azure.core.util.BinaryData;
-import com.azure.storage.blob.BlobClient;
-import com.azure.storage.blob.BlobContainerClient;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -10,15 +8,12 @@ import com.google.gson.JsonParser;
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.apache.commons.math3.random.RandomDataGenerator;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -31,6 +26,7 @@ import uk.gov.hmcts.reform.pip.data.management.Application;
 import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.ExceptionResponse;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
+import uk.gov.hmcts.reform.pip.data.management.utils.IntegrationTestBase;
 import uk.gov.hmcts.reform.pip.model.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
@@ -48,7 +44,6 @@ import java.util.UUID;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -64,7 +59,7 @@ import static uk.gov.hmcts.reform.pip.model.publication.FileType.PDF;
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
 @WithMockUser(username = "admin", authorities = {"APPROLE_api.request.admin"})
 @SuppressWarnings({"PMD.TooManyMethods", "PMD.ExcessiveImports"})
-class PublicationManagementTest {
+class PublicationManagementTest extends IntegrationTestBase {
     private static final String ROOT_URL = "/publication";
     private static final String GET_ARTEFACT_SUMMARY = ROOT_URL + "/%s/summary";
     private static final String GET_FILE_URL = ROOT_URL + "/%s/%s";
@@ -74,6 +69,7 @@ class PublicationManagementTest {
     private static final String NOT_FOUND_RESPONSE_MESSAGE = "Artefact not found message does not match";
     private static final String CONTENT_MISMATCH_ERROR = "Artefact summary content should match";
     private static final String FILE_TYPE_HEADER = "x-file-type";
+    private static final String MAX_FILE_SIZE_HEADER = "maxFileSize";
     private static final String UNAUTHORIZED_USERNAME = "unauthorized_username";
     private static final String UNAUTHORIZED_ROLE = "APPROLE_unknown.role";
     private static final String SYSTEM_HEADER = "x-system";
@@ -87,8 +83,7 @@ class PublicationManagementTest {
     private static final LocalDateTime CONTENT_DATE = LocalDateTime.now().toLocalDate().atStartOfDay()
         .truncatedTo(ChronoUnit.SECONDS);
     private static final String PROVENANCE = "MANUAL_UPLOAD";
-
-    private static final String BLOB_PAYLOAD_URL = "https://localhost";
+    private static final String USER_ID = UUID.randomUUID().toString();
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
@@ -99,18 +94,6 @@ class PublicationManagementTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean(name = "artefact")
-    private BlobContainerClient artefactBlobContainerClient;
-
-    @MockBean(name = "publications")
-    private BlobContainerClient publicationBlobContainerClient;
-
-    @MockBean
-    private BlobClient blobClient;
-
-    @Value("${TEST_USER_ID}")
-    private String verifiedUserId;
-
     @BeforeAll
     static void setup() {
         file = new MockMultipartFile("file", "test.pdf",
@@ -119,13 +102,6 @@ class PublicationManagementTest {
         );
 
         OBJECT_MAPPER.findAndRegisterModules();
-    }
-
-    @BeforeEach
-    void init() {
-        when(artefactBlobContainerClient.getBlobClient(any())).thenReturn(blobClient);
-        when(artefactBlobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
-        when(publicationBlobContainerClient.getBlobClient(any())).thenReturn(blobClient);
     }
 
     private byte[] getTestData(String resourceName) throws IOException {
@@ -138,6 +114,10 @@ class PublicationManagementTest {
     }
 
     private Artefact createPublication(ListType listType, byte[] data) throws Exception {
+        return createPublication(listType, Sensitivity.PUBLIC, data);
+    }
+
+    private Artefact createPublication(ListType listType, Sensitivity sensitivity, byte[] data) throws Exception {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
             .post("/publication")
             .header(PublicationConfiguration.TYPE_HEADER, ArtefactType.LIST)
@@ -148,7 +128,7 @@ class PublicationManagementTest {
             .header(PublicationConfiguration.LIST_TYPE, listType)
             .header(PublicationConfiguration.CONTENT_DATE,
                     CONTENT_DATE.plusDays(new RandomDataGenerator().nextLong(1, 100_000)))
-            .header(PublicationConfiguration.SENSITIVITY_HEADER, Sensitivity.PUBLIC)
+            .header(PublicationConfiguration.SENSITIVITY_HEADER, sensitivity)
             .header(PublicationConfiguration.LANGUAGE_HEADER, Language.ENGLISH)
             .content(data)
             .contentType(MediaType.APPLICATION_JSON);
@@ -595,7 +575,7 @@ class PublicationManagementTest {
                 get(String.format(GET_FILE_URL, artefactId, PDF))
                     .header(SYSTEM_HEADER, "true")
                     .header(FILE_TYPE_HEADER, PDF)
-                    .param("maxFileSize", "2048000"))
+                    .param(MAX_FILE_SIZE_HEADER, "2048000"))
 
             .andExpect(status().isOk()).andReturn();
 
@@ -613,17 +593,20 @@ class PublicationManagementTest {
     }
 
     @Test
-    void testGetFileForUserId() throws Exception {
-        UUID artefactId = createSjpPublicListPublication().getArtefactId();
+    void testGetFileWithAuthorisedUser() throws Exception {
 
-        when(blobClient.downloadContent()).thenReturn(
-            BinaryData.fromString(new String(file.getBytes())));
+        when(accountManagementService.getIsAuthorised(
+            UUID.fromString(USER_ID), ListType.SJP_PRESS_LIST, Sensitivity.CLASSIFIED
+        )).thenReturn(true);
+        when(blobClient.downloadContent()).thenReturn(BinaryData.fromString(new String(file.getBytes())));
 
+        byte[] data = getTestData("data/sjp-press-list/sjpPressList.json");
+        Artefact artefact = createPublication(ListType.SJP_PRESS_LIST, Sensitivity.CLASSIFIED, data);
         MockHttpServletRequestBuilder request =
-            get(String.format(GET_FILE_URL, artefactId, PDF))
-                .header("x-user-id", verifiedUserId)
+            get(String.format(GET_FILE_URL, artefact.getArtefactId(), PDF))
+                .header("x-user-id", USER_ID)
                 .header(SYSTEM_HEADER, "false")
-                .param("maxFileSize", "2048000");
+                .param(MAX_FILE_SIZE_HEADER, "2048000");
 
         MvcResult response = mockMvc.perform(request)
             .andExpect(status().isOk()).andReturn();
@@ -642,6 +625,30 @@ class PublicationManagementTest {
     }
 
     @Test
+    void testGetFileWithUnauthorisedUser() throws Exception {
+        when(accountManagementService.getIsAuthorised(
+            UUID.fromString(USER_ID), ListType.SJP_PRESS_LIST, Sensitivity.CLASSIFIED
+        )).thenReturn(false);
+
+        byte[] data = getTestData("data/sjp-press-list/sjpPressList.json");
+        Artefact artefact = createPublication(ListType.SJP_PRESS_LIST, Sensitivity.CLASSIFIED, data);
+        MockHttpServletRequestBuilder request =
+            get(String.format(GET_FILE_URL, artefact.getArtefactId(), PDF))
+                .header("x-user-id", USER_ID)
+                .header(SYSTEM_HEADER, "false")
+                .param(MAX_FILE_SIZE_HEADER, "2048000");
+
+        MvcResult response = mockMvc.perform(request)
+            .andExpect(status().isUnauthorized()).andReturn();
+
+        assertTrue(
+            response.getResponse().getContentAsString().contains("not authorised to access artefact with id "
+                                                                     + artefact.getArtefactId()),
+            "Response does not match"
+        );
+    }
+
+    @Test
     void testGetFileSizeTooLarge() throws Exception {
         UUID artefactId = createSjpPublicListPublication().getArtefactId();
 
@@ -650,9 +657,9 @@ class PublicationManagementTest {
 
         MockHttpServletRequestBuilder request =
             get(String.format(GET_FILE_URL, artefactId, PDF))
-                .header("x-user-id", verifiedUserId)
+                .header("x-user-id", USER_ID)
                 .header(SYSTEM_HEADER, "false")
-                .param("maxFileSize", "10");
+                .param(MAX_FILE_SIZE_HEADER, "10");
 
         MvcResult response = mockMvc.perform(request)
             .andExpect(status().isPayloadTooLarge()).andReturn();
@@ -735,5 +742,4 @@ class PublicationManagementTest {
                 .getBlobClient(artefact.getArtefactId() + ".xlsx");
         }
     }
-
 }
