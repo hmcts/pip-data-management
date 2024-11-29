@@ -1,7 +1,5 @@
 package uk.gov.hmcts.reform.pip.data.management.controllers;
 
-import com.azure.storage.blob.BlobClient;
-import com.azure.storage.blob.BlobContainerClient;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microsoft.applicationinsights.web.dependencies.apachecommons.io.IOUtils;
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
@@ -10,7 +8,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
@@ -21,20 +18,18 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import uk.gov.hmcts.reform.pip.data.management.Application;
 import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
+import uk.gov.hmcts.reform.pip.data.management.utils.IntegrationTestBase;
 import uk.gov.hmcts.reform.pip.model.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 import uk.gov.hmcts.reform.pip.model.publication.Sensitivity;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpStatus.CONFLICT;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -43,10 +38,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest(classes = {Application.class}, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
-@ActiveProfiles(profiles = "integration")
+@ActiveProfiles("integration")
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
 @WithMockUser(username = "admin", authorities = {"APPROLE_api.request.admin"})
-class TestingSupportApiTest {
+class TestingSupportApiTest extends IntegrationTestBase {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     private static final String TESTING_SUPPORT_BASE_URL = "/testing-support/";
@@ -84,17 +79,8 @@ class TestingSupportApiTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean(name = "artefact")
-    private BlobContainerClient artefcatBlobContainerClient;
-
-    @MockBean(name = "publications")
-    private BlobContainerClient publicationBlobContainerClient;
-
-    @MockBean
-    private BlobClient blobClient;
-
     @BeforeAll
-    public static void setup() throws IOException {
+    static void setup() {
         OBJECT_MAPPER.findAndRegisterModules();
     }
 
@@ -164,9 +150,6 @@ class TestingSupportApiTest {
 
     @Test
     void testTestingSupportDeletePublicationsByLocationNamePrefix() throws Exception {
-        when(artefcatBlobContainerClient.getBlobClient(any())).thenReturn(blobClient);
-        when(publicationBlobContainerClient.getBlobClient(any())).thenReturn(blobClient);
-
         createLocationByIdAndName(LOCATION_ID);
         uploadPublication();
 

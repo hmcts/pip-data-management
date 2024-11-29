@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.AzureArtefactBlobService;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
+import uk.gov.hmcts.reform.pip.data.management.utils.IntegrationCommonTestBase;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 import uk.gov.hmcts.reform.pip.model.publication.Sensitivity;
@@ -36,7 +37,7 @@ import static org.mockito.Mockito.when;
 @SpringBootTest
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
 @EnableRetry
-class CreatePublicationRetryTest {
+class CreatePublicationRetryTest extends IntegrationCommonTestBase {
     private static final int RETRY_MAX_ATTEMPTS = 5;
     private static final String SOURCE_ARTEFACT_ID = "1234";
     private static final String PROVENANCE = "provenance";

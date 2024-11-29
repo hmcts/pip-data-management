@@ -15,6 +15,7 @@ import uk.gov.hmcts.reform.pip.data.management.models.PublicationFiles;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.service.publication.ArtefactService;
+import uk.gov.hmcts.reform.pip.data.management.utils.IntegrationBasicTestBase;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
@@ -35,7 +36,7 @@ import static org.mockito.Mockito.when;
 @ActiveProfiles("integration-basic")
 @SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class PublicationFileGenerationServiceTest {
+class PublicationFileGenerationServiceTest extends IntegrationBasicTestBase {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private static final Artefact ARTEFACT = new Artefact();
     private static final Artefact WELSH_ARTEFACT = new Artefact();

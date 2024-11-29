@@ -1,0 +1,22 @@
+{
+  "parties": [
+    {
+      "cases": [
+        {
+          "caseNumber": "Test case number",
+          "caseName": "Test case name",
+          "caseUrn": null
+        }
+      ],
+      "organisations": [],
+      "individuals": []
+    }
+  ],
+  "cases": [
+    {
+      "caseNumber": "Test case number",
+      "caseName": "Test case name",
+      "caseUrn": null
+    }
+  ]
+}
