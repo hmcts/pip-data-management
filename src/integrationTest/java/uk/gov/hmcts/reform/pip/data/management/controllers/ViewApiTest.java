@@ -12,15 +12,16 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import uk.gov.hmcts.reform.pip.data.management.Application;
+import uk.gov.hmcts.reform.pip.data.management.utils.IntegrationCommonTestBase;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(classes = {Application.class},
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
-@ActiveProfiles(profiles = {"integration", "view"})
+@ActiveProfiles({"integration", "view"})
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
-class ViewApiTest {
+class ViewApiTest extends IntegrationCommonTestBase {
 
     @Autowired
     private transient MockMvc mockMvc;

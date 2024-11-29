@@ -1,20 +1,15 @@
-package uk.gov.hmcts.reform.pip.data.management.controllers.lists;
+package uk.gov.hmcts.reform.pip.data.management.controllers;
 
-import com.azure.storage.blob.BlobClient;
-import com.azure.storage.blob.BlobContainerClient;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -24,6 +19,7 @@ import uk.gov.hmcts.reform.pip.data.management.Application;
 import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.ExceptionResponse;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
+import uk.gov.hmcts.reform.pip.data.management.utils.IntegrationTestBase;
 import uk.gov.hmcts.reform.pip.model.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
@@ -34,32 +30,18 @@ import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(classes = {Application.class},
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
-@ActiveProfiles(profiles = "integration")
+@ActiveProfiles("integration")
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
 @WithMockUser(username = "admin", authorities = { "APPROLE_api.request.admin" })
-class RegexValidationTest {
-
-    @MockBean(name = "artefact")
-    private BlobContainerClient artefactBlobContainerClient;
-
-    @MockBean(name = "publications")
-    private BlobContainerClient publicationBlobContainerClient;
-
-    @Autowired
-    BlobClient blobClient;
-
+class RegexValidationTest extends IntegrationTestBase {
     @Autowired
     private MockMvc mockMvc;
 
-    private static final String BLOB_PAYLOAD_URL = "https://localhost";
     private static final String POST_URL = "/publication";
     private static final String TEST_CONTENT_MESSAGE = "Response is not populated";
     private static final String TEST_ARTEFACT_ID_MESSAGE = "Artefact ID is not populated";
@@ -86,13 +68,6 @@ class RegexValidationTest {
     public static void setup() {
         objectMapper = new ObjectMapper();
         objectMapper.findAndRegisterModules();
-    }
-
-    @BeforeEach
-    public void beforeTests() {
-        when(artefactBlobContainerClient.getBlobClient(any())).thenReturn(blobClient);
-        when(artefactBlobContainerClient.getBlobContainerUrl()).thenReturn(BLOB_PAYLOAD_URL);
-        when(publicationBlobContainerClient.getBlobClient(any())).thenReturn(blobClient);
     }
 
     @DisplayName("Should throw a validation error due to containing a tag with content")

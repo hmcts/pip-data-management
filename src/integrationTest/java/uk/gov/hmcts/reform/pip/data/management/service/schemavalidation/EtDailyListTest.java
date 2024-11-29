@@ -10,9 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.PayloadValidationException;
-import uk.gov.hmcts.reform.pip.data.management.helpers.JsonHelper;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.HeaderGroup;
 import uk.gov.hmcts.reform.pip.data.management.service.ValidationService;
+import uk.gov.hmcts.reform.pip.data.management.utils.IntegrationBasicTestBase;
+import uk.gov.hmcts.reform.pip.data.management.utils.JsonHelper;
 import uk.gov.hmcts.reform.pip.model.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
@@ -29,7 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ActiveProfiles("integration-basic")
 @SpringBootTest
-class EtDailyListTest {
+class EtDailyListTest extends IntegrationBasicTestBase {
 
     @Autowired
     ValidationService validationService;

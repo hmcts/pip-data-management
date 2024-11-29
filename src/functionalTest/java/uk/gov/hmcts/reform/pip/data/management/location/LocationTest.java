@@ -10,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
+import uk.gov.hmcts.reform.pip.data.management.models.location.LocationDeletion;
 import uk.gov.hmcts.reform.pip.data.management.utils.FunctionalTestBase;
 import uk.gov.hmcts.reform.pip.data.management.utils.OAuthClient;
 
@@ -17,21 +18,25 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import static com.github.dockerjava.zerodep.shaded.org.apache.hc.core5.http.HttpHeaders.AUTHORIZATION;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.OK;
 import static uk.gov.hmcts.reform.pip.data.management.utils.TestUtil.BEARER;
+import static uk.gov.hmcts.reform.pip.data.management.utils.TestUtil.randomLocationId;
 
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles(profiles = "functional")
 @SpringBootTest(classes = {OAuthClient.class})
 class LocationTest extends FunctionalTestBase {
 
-    @Value("${system-admin-provenance-id}")
+    @Value("${test-system-admin-provenance-id}")
     private String systemAdminProvenanceId;
 
     private static final String LOCATION_LIST = "locationList";
+    private static final String BASE_LOCATION_NAME = "LocationTestLocation";
     private static final String TEST_LOCATION_NAME_ONE = "LocationTestLocationOne";
     private static final Integer TEST_LOCATION_ID_ONE = 2001;
     private static final String TEST_LOCATION_NAME_TWO = "LocationTestLocationTwo";
@@ -60,8 +65,6 @@ class LocationTest extends FunctionalTestBase {
 
     @Test
     void locationControllerHappyPathTests() throws Exception {
-        Map<String, String> headerMap = Map.of(AUTHORIZATION, BEARER + accessToken);
-
         Map<String, String> headerMapUploadLocations = Map.of(AUTHORIZATION, BEARER + accessToken,
                                                               "Content-Type", MediaType.MULTIPART_FORM_DATA_VALUE
         );
@@ -77,18 +80,18 @@ class LocationTest extends FunctionalTestBase {
         assertThat(responseUploadLocations.getStatusCode()).isEqualTo(OK.value());
         assertThat(responseUploadLocations.as(Location[].class)).hasSize(3);
 
-        List createdLocations = Arrays.asList(responseUploadLocations.getBody().as(Location[].class));
+        List<Location> createdLocations = Arrays.asList(responseUploadLocations.getBody().as(Location[].class));
 
-        assertThat(((Location) createdLocations.get(0)).getLocationId()).isEqualTo(TEST_LOCATION_ID_ONE);
-        assertThat(((Location) createdLocations.get(0)).getName()).isEqualTo(TEST_LOCATION_NAME_ONE);
-        assertThat(((Location) createdLocations.get(1)).getLocationId()).isEqualTo(TEST_LOCATION_ID_TWO);
-        assertThat(((Location) createdLocations.get(1)).getName()).isEqualTo(TEST_LOCATION_NAME_TWO);
-        assertThat(((Location) createdLocations.get(2)).getLocationId()).isEqualTo(TEST_LOCATION_ID_THREE);
-        assertThat(((Location) createdLocations.get(2)).getName()).isEqualTo(TEST_LOCATION_NAME_THREE);
+        assertThat(createdLocations.get(0).getLocationId()).isEqualTo(TEST_LOCATION_ID_ONE);
+        assertThat(createdLocations.get(0).getName()).isEqualTo(TEST_LOCATION_NAME_ONE);
+        assertThat(createdLocations.get(1).getLocationId()).isEqualTo(TEST_LOCATION_ID_TWO);
+        assertThat(createdLocations.get(1).getName()).isEqualTo(TEST_LOCATION_NAME_TWO);
+        assertThat(createdLocations.get(2).getLocationId()).isEqualTo(TEST_LOCATION_ID_THREE);
+        assertThat(createdLocations.get(2).getName()).isEqualTo(TEST_LOCATION_NAME_THREE);
 
         final Response responseGetLocationById = doGetRequest(
             GET_LOCATION_BY_ID_URL,
-            headerMap
+            getBaseHeaderMap()
         );
 
         assertThat(responseGetLocationById.getStatusCode()).isEqualTo(OK.value());
@@ -98,7 +101,7 @@ class LocationTest extends FunctionalTestBase {
 
         final Response responseGetAllLocations = doGetRequest(
             BASE_LOCATIONS_URL,
-            headerMap
+            getBaseHeaderMap()
         );
         assertThat(responseGetAllLocations.getStatusCode()).isEqualTo(OK.value());
         List<Location> returnedLocations = Arrays.asList(responseGetAllLocations.getBody()
@@ -119,7 +122,7 @@ class LocationTest extends FunctionalTestBase {
 
         final Response responseGetLocationByName = doGetRequest(
             GET_LOCATION_BY_NAME_URL,
-            headerMap
+            getBaseHeaderMap()
         );
         assertThat(responseGetLocationByName.getStatusCode()).isEqualTo(OK.value());
         Location returnedLocationByName = responseGetLocationByName.as(Location.class);
@@ -136,7 +139,7 @@ class LocationTest extends FunctionalTestBase {
         final Response responseGetLocationByRegionAndJurisdiction =
             doGetRequest(
                 GET_LOCATION_BY_REGION_AND_JURISDICTION_URL,
-                headerMap, queryParameters
+                getBaseHeaderMap(), queryParameters
             );
 
         assertThat(responseGetLocationByRegionAndJurisdiction.getStatusCode()).isEqualTo(OK.value());
@@ -147,12 +150,12 @@ class LocationTest extends FunctionalTestBase {
 
         final Response responseDownloadCsv = doGetRequest(
             DOWNLOAD_CSV_LOCATIONS_URL,
-            headerMap
+            getBaseHeaderMap()
         );
         assertThat(responseDownloadCsv.getStatusCode()).isEqualTo(OK.value());
-        assertThat(responseDownloadCsv.asString().contains(TEST_LOCATION_NAME_ONE));
-        assertThat(responseDownloadCsv.asString().contains(TEST_LOCATION_NAME_TWO));
-        assertThat(responseDownloadCsv.asString().contains(TEST_LOCATION_NAME_THREE));
+        assertThat(responseDownloadCsv.asString()).contains(TEST_LOCATION_NAME_ONE);
+        assertThat(responseDownloadCsv.asString()).contains(TEST_LOCATION_NAME_TWO);
+        assertThat(responseDownloadCsv.asString()).contains(TEST_LOCATION_NAME_THREE);
 
         Map<String, String> deleteHeaderMap = Map.of(AUTHORIZATION, BEARER + accessToken,
                                                      "x-provenance-user-id", systemAdminProvenanceId
@@ -163,8 +166,36 @@ class LocationTest extends FunctionalTestBase {
             deleteHeaderMap
         );
         assertThat(responseDeleteLocationById.getStatusCode()).isEqualTo(OK.value());
-        assertThat(responseDeleteLocationById.asString().contains("Location with id " + TEST_LOCATION_ID_ONE
-                                                                      + " has been deleted"));
+        assertThat(responseDeleteLocationById.as(LocationDeletion.class).isExists()).isFalse();
     }
-}
 
+    /**
+     * For now, this will return an OK Response code. Ticket to be raised to add a check for this.
+     */
+    @Test
+    void testDeleteLocationByLocationIdWhenUserDoesNotExist() {
+        String courtId = randomLocationId();
+        doPostRequest(
+            TESTING_SUPPORT_LOCATION_URL + courtId,
+            Map.of(AUTHORIZATION, BEARER + accessToken), BASE_LOCATION_NAME + "-" + courtId
+        );
+
+        Map<String, String> deleteHeaderMap = Map.of(AUTHORIZATION, BEARER + accessToken,
+                                                     "x-provenance-user-id", UUID.randomUUID().toString()
+        );
+        final Response responseDeleteLocationById = doDeleteRequest(
+            "/locations/" + courtId,
+            deleteHeaderMap
+        );
+
+        assertThat(responseDeleteLocationById.getStatusCode()).isEqualTo(OK.value());
+
+        final Response responseGetLocationById = doGetRequest(
+            "/locations/" + courtId,
+            getBaseHeaderMap()
+        );
+
+        assertThat(responseGetLocationById.getStatusCode()).isEqualTo(NOT_FOUND.value());
+    }
+
+}
