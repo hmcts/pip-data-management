@@ -1,9 +1,13 @@
 package uk.gov.hmcts.reform.pip.data.management.service.publication;
 
+import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -16,17 +20,16 @@ import uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelpe
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.service.PublicationManagementService;
+import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
-import uk.gov.hmcts.reform.pip.model.report.PublicationMiData;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -36,15 +39,11 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.ARTEFACT_ID;
-import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.CONTENT_DATE;
-import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.DISPLAY_FROM;
-import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.DISPLAY_TO;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.FILE;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.LOCATION_ID;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.LOCATION_VENUE;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.MANUAL_UPLOAD_PROVENANCE;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.NO_COURT_EXISTS_IN_REFERENCE_DATA;
-import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.NO_MATCH_LOCATION_ID;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.PAYLOAD;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.PAYLOAD_URL;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.PROVENANCE;
@@ -53,17 +52,9 @@ import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTe
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.SEARCH_VALUES;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.SOURCE_ARTEFACT_ID;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.START_OF_TODAY_CONTENT_DATE;
-import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.SUPERSEDED_COUNT;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.TEST_KEY;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.TEST_VALUE;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.VALIDATION_ARTEFACT_NOT_MATCH;
-import static uk.gov.hmcts.reform.pip.model.publication.ArtefactType.LIST;
-import static uk.gov.hmcts.reform.pip.model.publication.Language.BI_LINGUAL;
-import static uk.gov.hmcts.reform.pip.model.publication.Language.ENGLISH;
-import static uk.gov.hmcts.reform.pip.model.publication.Language.WELSH;
-import static uk.gov.hmcts.reform.pip.model.publication.ListType.FAMILY_DAILY_CAUSE_LIST;
-import static uk.gov.hmcts.reform.pip.model.publication.ListType.SJP_PUBLIC_LIST;
-import static uk.gov.hmcts.reform.pip.model.publication.Sensitivity.PUBLIC;
 
 @ActiveProfiles("test")
 @ExtendWith(MockitoExtension.class)
@@ -93,15 +84,42 @@ class PublicationServiceTest {
     private Artefact artefactWithPayloadUrl;
     private Artefact artefactWithIdAndPayloadUrl;
 
-    private static final Float PAYLOAD_SIZE_WITHIN_LIMIT = 90f;
-    private static final Float PAYLOAD_SIZE_OVER_LIMIT = 110f;
+    private static final char DELIMITER = ',';
     private static final String LOCATION_NAME_WITH_ID_3 = "Oxford Combined Court Centre";
     private static final String LOCATION_NAME_WITH_ID_9 = "Single Justice Procedure";
-    private static final String ERROR_SIZE = "The MI Report should contain 3 entries";
-    private static final String ERROR_LOCATION_ID = "The location ID is incorrect";
-    private static final String ERROR_LOCATION_NAME = "The location name is incorrect";
-    private static final String ERROR_NOT_NULL = "This field should be null";
-    private static final String ERROR_NULL = "This field should not be null";
+
+    private static final List<String> MI_DATA_WITH_VALID_LOCATION_ID =
+        List.of(
+            "0beac960-68a3-41db-9f51-8c71826eaf30,2022-07-25 14:45:18.836,2022-09-29 14:45:18.836,BI_LINGUAL,"
+                + "MANUAL_UPLOAD,PUBLIC,MANUAL_UPLOAD,LIST,2022-06-29 00:00:00.0,0,3,FAMILY_DAILY_CAUSE_LIST",
+            "165ca91d-1e58-412a-80f5-1e5475a093e4,2022-06-29 14:45:18.836,2022-09-29 14:45:18.836,WELSH,"
+                + "MANUAL_UPLOAD,PUBLIC,MANUAL_UPLOAD,GENERAL_PUBLICATION,2022-06-29 00:00:00.0,1,9,SJP_PUBLIC_LIST",
+            "10238a0f-d398-4356-9af4-a4dbbb17d455,2022-06-29 14:45:18.836,2022-09-29 14:45:18.836,ENGLISH,"
+                + "MANUAL_UPLOAD,PUBLIC,MANUAL_UPLOAD,GENERAL_PUBLICATION,2022-06-29 00:00:00.0,2,9,SJP_PUBLIC_LIST"
+        );
+
+    private static final List<String> MI_DATA_WITH_INVALID_LOCATION_ID =
+        List.of(
+            "0beac960-68a3-41db-9f51-8c71826eaf30,2022-07-25 14:45:18.836,2022-09-29 14:45:18.836,BI_LINGUAL,"
+                + "MANUAL_UPLOAD,PUBLIC,MANUAL_UPLOAD,LIST,2022-06-29 00:00:00.0,0,1823,FAMILY_DAILY_CAUSE_LIST",
+            "165ca91d-1e58-412a-80f5-1e5475a093e4,2022-06-29 14:45:18.836,2022-09-29 14:45:18.836,WELSH,"
+                + "MANUAL_UPLOAD,PUBLIC,MANUAL_UPLOAD,GENERAL_PUBLICATION,2022-06-29 00:00:00.0,1,1815,SJP_PUBLIC_LIST",
+            "10238a0f-d398-4356-9af4-a4dbbb17d455,2022-06-29 14:45:18.836,2022-09-29 14:45:18.836,ENGLISH,"
+                + "MANUAL_UPLOAD,PUBLIC,MANUAL_UPLOAD,GENERAL_PUBLICATION,2022-06-29 00:00:00.0,2,1815,SJP_PUBLIC_LIST"
+        );
+
+    private static final List<String> MI_DATA_WITH_NON_DIGITS_LOCATION_ID =
+        List.of(
+            "0beac960-68a3-41db-9f51-8c71826eaf30,2022-07-25 14:45:18.836,2022-09-29 14:45:18.836,BI_LINGUAL,"
+                + "MANUAL_UPLOAD,PUBLIC,MANUAL_UPLOAD,LIST,2022-06-29 00:00:00.0,0,null,FAMILY_DAILY_CAUSE_LIST",
+            "165ca91d-1e58-412a-80f5-1e5475a093e4,2022-06-29 14:45:18.836,2022-09-29 14:45:18.836,WELSH,MANUAL_UPLOAD,"
+                + "PUBLIC,MANUAL_UPLOAD,GENERAL_PUBLICATION,2022-06-29 00:00:00.0,1,NoMatch3,SJP_PUBLIC_LIST",
+            "10238a0f-d398-4356-9af4-a4dbbb17d455,2022-06-29 14:45:18.836,2022-09-29 14:45:18.836,ENGLISH,"
+                + "MANUAL_UPLOAD,PUBLIC,MANUAL_UPLOAD,GENERAL_PUBLICATION,2022-06-29 00:00:00.0,2,,SJP_PUBLIC_LIST"
+        );
+
+    private static final Float PAYLOAD_SIZE_WITHIN_LIMIT = 90f;
+    private static final Float PAYLOAD_SIZE_OVER_LIMIT = 110f;
 
     @BeforeAll
     public static void setupSearchValues() {
@@ -163,7 +181,7 @@ class PublicationServiceTest {
             .locationId(PROVENANCE_ID)
             .contentDate(START_OF_TODAY_CONTENT_DATE)
             .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
-            .language(ENGLISH)
+            .language(Language.ENGLISH)
             .payload(PAYLOAD_URL)
             .payloadSize(PAYLOAD_SIZE_WITHIN_LIMIT)
             .build();
@@ -174,7 +192,7 @@ class PublicationServiceTest {
             .contentDate(START_OF_TODAY_CONTENT_DATE)
             .locationId(PROVENANCE_ID)
             .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
-            .language(ENGLISH)
+            .language(Language.ENGLISH)
             .payload(PAYLOAD_URL)
             .search(SEARCH_VALUES)
             .payloadSize(PAYLOAD_SIZE_WITHIN_LIMIT)
@@ -203,7 +221,7 @@ class PublicationServiceTest {
             .locationId(PROVENANCE_ID)
             .contentDate(START_OF_TODAY_CONTENT_DATE)
             .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
-            .language(ENGLISH)
+            .language(Language.ENGLISH)
             .payload(PAYLOAD_URL)
             .payloadSize(PAYLOAD_SIZE_OVER_LIMIT)
             .build();
@@ -214,7 +232,7 @@ class PublicationServiceTest {
             .contentDate(START_OF_TODAY_CONTENT_DATE)
             .locationId(PROVENANCE_ID)
             .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
-            .language(ENGLISH)
+            .language(Language.ENGLISH)
             .payload(PAYLOAD_URL)
             .payloadSize(PAYLOAD_SIZE_OVER_LIMIT)
             .build();
@@ -311,88 +329,82 @@ class PublicationServiceTest {
                      "Email was not masked correctly");
     }
 
-    @Test
-    void testGetMiDataWithValidLocationId() {
-        List<PublicationMiData> miDataWithValidLocationId = List.of(
-            new PublicationMiData(ARTEFACT_ID, DISPLAY_FROM, DISPLAY_TO, BI_LINGUAL, MANUAL_UPLOAD_PROVENANCE, PUBLIC,
-                             SOURCE_ARTEFACT_ID, SUPERSEDED_COUNT, LIST, CONTENT_DATE, "3", LOCATION_NAME_WITH_ID_3,
-                             FAMILY_DAILY_CAUSE_LIST),
-            new PublicationMiData(ARTEFACT_ID, DISPLAY_FROM, DISPLAY_TO, ENGLISH, MANUAL_UPLOAD_PROVENANCE, PUBLIC,
-                             SOURCE_ARTEFACT_ID, SUPERSEDED_COUNT, LIST, CONTENT_DATE, "3", LOCATION_NAME_WITH_ID_3,
-                             SJP_PUBLIC_LIST),
-            new PublicationMiData(ARTEFACT_ID, DISPLAY_FROM, DISPLAY_TO, WELSH, MANUAL_UPLOAD_PROVENANCE, PUBLIC,
-                             SOURCE_ARTEFACT_ID, SUPERSEDED_COUNT, LIST, CONTENT_DATE, "9", LOCATION_NAME_WITH_ID_9,
-                             SJP_PUBLIC_LIST)
-        );
+    @ParameterizedTest
+    @MethodSource("parametersForGetMiData")
+    void testGetMiData(List<String> miData, String firstLocationName, String secondLocationName) {
+        when(artefactRepository.getMiData()).thenReturn(miData);
 
-        when(artefactRepository.getMiData()).thenReturn(miDataWithValidLocationId);
-        List<PublicationMiData> miReportData = publicationService.getMiData();
+        Location locationWithId3 = new Location();
+        locationWithId3.setLocationId(3);
+        locationWithId3.setName(LOCATION_NAME_WITH_ID_3);
 
-        verifyNoInteractions(locationRepository);
+        Location locationWithId9 = new Location();
+        locationWithId9.setLocationId(9);
+        locationWithId9.setName(LOCATION_NAME_WITH_ID_9);
 
-        assertEquals(3, miReportData.size(), ERROR_SIZE);
-        assertEquals("3", miReportData.get(0).getLocationId(), ERROR_LOCATION_ID);
-        assertEquals("Oxford Combined Court Centre", miReportData.get(0).getLocationName(), ERROR_LOCATION_NAME);
-        assertEquals("3", miReportData.get(1).getLocationId(), ERROR_LOCATION_ID);
-        assertEquals("Oxford Combined Court Centre", miReportData.get(1).getLocationName(), ERROR_LOCATION_NAME);
-        assertEquals("9", miReportData.get(2).getLocationId(), ERROR_LOCATION_ID);
-        assertEquals("Single Justice Procedure", miReportData.get(2).getLocationName(), ERROR_LOCATION_NAME);
+        lenient().when(locationRepository.getLocationByLocationId(3)).thenReturn(Optional.of(locationWithId3));
+        lenient().when(locationRepository.getLocationByLocationId(9)).thenReturn(Optional.of(locationWithId9));
+        lenient().when(locationRepository.getLocationByLocationId(1823)).thenReturn(Optional.empty());
+        lenient().when(locationRepository.getLocationByLocationId(1815)).thenReturn(Optional.empty());
+
+        String testString = publicationService.getMiData();
+        String[] splitLineString = testString.split(System.lineSeparator());
+        long countLine1 = splitLineString[0].chars().filter(character -> character == ',').count();
+
+        assertThat(testString)
+            .as("Header row missing")
+            .contains("source_artefact_id");
+
+        assertThat(splitLineString)
+            .as("Only one line exists - data must be missing, as only headers are printing")
+            .as("Wrong comma count compared to header row!")
+            .hasSize(4)
+            .allSatisfy(
+                e -> assertThat(e.chars().filter(character -> character == ',').count()).isEqualTo(countLine1));
+
+        assertThat(getLocationName(splitLineString[1]))
+            .isEqualTo(firstLocationName);
+
+        assertThat(getLocationName(splitLineString[2]))
+            .isEqualTo(secondLocationName);
+
+        assertThat(splitLineString[0]).contains("superseded_count");
     }
 
-    @Test
-    void testGetMiDataWithInValidLocationId() {
-        List<PublicationMiData> miDataWithInvalidLocationId = List.of(
-            new PublicationMiData(ARTEFACT_ID, DISPLAY_FROM, DISPLAY_TO, BI_LINGUAL, MANUAL_UPLOAD_PROVENANCE, PUBLIC,
-                             SOURCE_ARTEFACT_ID, SUPERSEDED_COUNT, LIST, CONTENT_DATE, "3333", null,
-                             FAMILY_DAILY_CAUSE_LIST),
-            new PublicationMiData(ARTEFACT_ID, DISPLAY_FROM, DISPLAY_TO, ENGLISH, MANUAL_UPLOAD_PROVENANCE, PUBLIC,
-                             SOURCE_ARTEFACT_ID, SUPERSEDED_COUNT, LIST, CONTENT_DATE, "1815", null,
-                             SJP_PUBLIC_LIST),
-            new PublicationMiData(ARTEFACT_ID, DISPLAY_FROM, DISPLAY_TO, WELSH, MANUAL_UPLOAD_PROVENANCE, PUBLIC,
-                             SOURCE_ARTEFACT_ID, SUPERSEDED_COUNT, LIST, CONTENT_DATE, "202020", null,
-                             SJP_PUBLIC_LIST)
+    private String getLocationName(String line) {
+        return line.substring(
+            line.lastIndexOf(DELIMITER, line.lastIndexOf(DELIMITER) - 1) + 1,
+            line.lastIndexOf(DELIMITER)
         );
+    }
 
-        when(artefactRepository.getMiData()).thenReturn(miDataWithInvalidLocationId);
-        List<PublicationMiData> miReportData = publicationService.getMiData();
-
-        verifyNoInteractions(locationRepository);
-
-        assertEquals(3, miReportData.size(), ERROR_SIZE);
-        assertEquals("3333", miReportData.get(0).getLocationId(), ERROR_LOCATION_ID);
-        assertNull(miReportData.get(0).getLocationName(), ERROR_NOT_NULL);
-        assertEquals("1815", miReportData.get(1).getLocationId(), ERROR_LOCATION_ID);
-        assertNull(miReportData.get(1).getLocationName(), ERROR_NOT_NULL);
-        assertEquals("202020", miReportData.get(2).getLocationId(), ERROR_LOCATION_ID);
-        assertNull(miReportData.get(2).getLocationName(), ERROR_NOT_NULL);
+    private static Stream<Arguments> parametersForGetMiData() {
+        return Stream.of(
+            Arguments.of(MI_DATA_WITH_VALID_LOCATION_ID, LOCATION_NAME_WITH_ID_3, LOCATION_NAME_WITH_ID_9),
+            Arguments.of(MI_DATA_WITH_INVALID_LOCATION_ID, "", "")
+        );
     }
 
     @Test
     void testGetMiDataWithNonDigitsLocationId() {
-        List<PublicationMiData> miDataWithNonDigitsLocationId = List.of(
-            new PublicationMiData(ARTEFACT_ID, DISPLAY_FROM, DISPLAY_TO, BI_LINGUAL, MANUAL_UPLOAD_PROVENANCE, PUBLIC,
-                             SOURCE_ARTEFACT_ID, SUPERSEDED_COUNT, LIST, CONTENT_DATE, null, null,
-                             FAMILY_DAILY_CAUSE_LIST),
-            new PublicationMiData(ARTEFACT_ID, DISPLAY_FROM, DISPLAY_TO, ENGLISH, MANUAL_UPLOAD_PROVENANCE, PUBLIC,
-                             SOURCE_ARTEFACT_ID, SUPERSEDED_COUNT, LIST, CONTENT_DATE, NO_MATCH_LOCATION_ID, null,
-                             SJP_PUBLIC_LIST),
-            new PublicationMiData(ARTEFACT_ID, DISPLAY_FROM, DISPLAY_TO, WELSH, MANUAL_UPLOAD_PROVENANCE, PUBLIC,
-                             SOURCE_ARTEFACT_ID, SUPERSEDED_COUNT, LIST, CONTENT_DATE, "", null,
-                             SJP_PUBLIC_LIST)
-        );
-
-        when(artefactRepository.getMiData()).thenReturn(miDataWithNonDigitsLocationId);
-        List<PublicationMiData> miReportData = publicationService.getMiData();
+        when(artefactRepository.getMiData()).thenReturn(MI_DATA_WITH_NON_DIGITS_LOCATION_ID);
+        String result = publicationService.getMiData();
 
         verifyNoInteractions(locationRepository);
 
-        assertEquals(3, miReportData.size(), ERROR_SIZE);
-        assertNotNull(miReportData.get(0), ERROR_NULL);
-        assertNull(miReportData.get(0).getLocationName(), ERROR_NOT_NULL);
-        assertNotNull(miReportData.get(1), ERROR_NULL);
-        assertNull(miReportData.get(1).getLocationName(), ERROR_NOT_NULL);
-        assertNotNull(miReportData.get(2), ERROR_NULL);
-        assertNull(miReportData.get(2).getLocationName(), ERROR_NOT_NULL);
+        String[] splitLineString = result.split(System.lineSeparator());
+        SoftAssertions softly = new SoftAssertions();
+
+        softly.assertThat(getLocationName(splitLineString[1]))
+            .isEmpty();
+
+        softly.assertThat(getLocationName(splitLineString[2]))
+            .isEmpty();
+
+        softly.assertThat(getLocationName(splitLineString[3]))
+            .isEmpty();
+
+        softly.assertAll();
     }
 
     @Test
