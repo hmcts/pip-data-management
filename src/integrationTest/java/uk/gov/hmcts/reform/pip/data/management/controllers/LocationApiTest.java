@@ -20,7 +20,7 @@ import uk.gov.hmcts.reform.pip.data.management.errorhandling.ExceptionResponse;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationReference;
 import uk.gov.hmcts.reform.pip.data.management.utils.IntegrationTestBase;
-import uk.gov.hmcts.reform.pip.model.account.AzureAccount;
+import uk.gov.hmcts.reform.pip.model.account.PiUser;
 import uk.gov.hmcts.reform.pip.model.location.LocationType;
 
 import java.io.BufferedReader;
@@ -71,6 +71,7 @@ class LocationApiTest extends IntegrationTestBase {
     private static final String UPDATED_CSV = "location/UpdatedCsv.csv";
 
     private static final String PROVENANCE_USER_ID = UUID.randomUUID().toString();
+    private static final String USER_ID = UUID.randomUUID().toString();
     private static final String REGIONS_PARAM = "regions";
     private static final String JURISDICTIONS_PARAM = "jurisdictions";
     private static final String LANGUAGE_PARAM = "language";
@@ -87,6 +88,7 @@ class LocationApiTest extends IntegrationTestBase {
     private static final String USERNAME = "admin";
     private static final String VALID_ROLE = "APPROLE_api.request.admin";
     private static final String LOCATION_LIST = "locationList";
+    private static final String USER_ID_HEADER = "x-user-id";
     private static final String PROVENANCE_USER_ID_HEADER = "x-provenance-user-id";
     private static final String DISPLAY_NAME = "Test name";
     private static final String EMAIL = "test@justice.gov.uk";
@@ -812,10 +814,11 @@ class LocationApiTest extends IntegrationTestBase {
     @Test
     @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})
     void testDeleteLocation() throws Exception {
-        AzureAccount account = new AzureAccount();
-        account.setDisplayName(DISPLAY_NAME);
+        PiUser piUser = new PiUser();
+        piUser.setUserId(USER_ID);
+        piUser.setEmail(EMAIL);
 
-        when(accountManagementService.getUserInfo(PROVENANCE_USER_ID)).thenReturn(account);
+        when(accountManagementService.getUserById(USER_ID)).thenReturn(piUser);
         when(accountManagementService.getAllAccounts(anyString(), eq(SYSTEM_ADMIN.toString())))
             .thenReturn(List.of(EMAIL));
         when(subscriptionManagementService.findSubscriptionsByLocationId(any()))
@@ -825,7 +828,7 @@ class LocationApiTest extends IntegrationTestBase {
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
             .delete(GET_LOCATION_BY_ID_ENDPOINT + createdLocations.get(0).getLocationId())
-            .header(PROVENANCE_USER_ID_HEADER, PROVENANCE_USER_ID);
+            .header(USER_ID_HEADER, USER_ID);
 
         mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isOk()).andReturn();
 
@@ -842,7 +845,7 @@ class LocationApiTest extends IntegrationTestBase {
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
             .delete(GET_LOCATION_BY_ID_ENDPOINT + "1234")
-            .header(PROVENANCE_USER_ID_HEADER, PROVENANCE_USER_ID);
+            .header(USER_ID_HEADER, USER_ID);
 
         mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isNotFound()).andReturn();
     }
@@ -852,7 +855,7 @@ class LocationApiTest extends IntegrationTestBase {
     void testDeleteLocationNotAuthorised() throws Exception {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
             .delete(GET_LOCATION_BY_ID_ENDPOINT + "1234")
-            .header(PROVENANCE_USER_ID_HEADER, PROVENANCE_USER_ID);
+            .header(USER_ID_HEADER, USER_ID);
 
         mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isForbidden()).andReturn();
     }

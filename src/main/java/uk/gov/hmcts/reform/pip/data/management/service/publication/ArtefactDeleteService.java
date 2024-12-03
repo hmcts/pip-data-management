@@ -17,7 +17,6 @@ import uk.gov.hmcts.reform.pip.data.management.service.LocationService;
 import uk.gov.hmcts.reform.pip.data.management.service.PublicationManagementService;
 import uk.gov.hmcts.reform.pip.data.management.service.PublicationServicesService;
 import uk.gov.hmcts.reform.pip.data.management.service.SubscriptionManagementService;
-import uk.gov.hmcts.reform.pip.model.account.AzureAccount;
 import uk.gov.hmcts.reform.pip.model.account.PiUser;
 import uk.gov.hmcts.reform.pip.model.enums.UserActions;
 import uk.gov.hmcts.reform.pip.model.system.admin.ActionResult;
