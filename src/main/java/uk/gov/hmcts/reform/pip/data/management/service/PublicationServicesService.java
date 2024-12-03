@@ -46,13 +46,13 @@ public class PublicationServicesService {
         }
     }
 
-    public String sendSystemAdminEmail(List<String> emails, String requesterName, ActionResult actionResult,
+    public String sendSystemAdminEmail(List<String> emails, String requesterEmail, ActionResult actionResult,
                                        String additionalDetails, ChangeType changeType) {
         Object payload;
         if (changeType.equals(ChangeType.DELETE_LOCATION)) {
-            payload = formatDeleteLocationSystemAdminAction(emails, requesterName, actionResult, additionalDetails);
+            payload = formatDeleteLocationSystemAdminAction(emails, requesterEmail, actionResult, additionalDetails);
         } else {
-            payload = formatDeleteLocationArtefactSystemAdminAction(emails, requesterName,
+            payload = formatDeleteLocationArtefactSystemAdminAction(emails, requesterEmail,
                                                                     actionResult, additionalDetails);
         }
 
@@ -71,20 +71,20 @@ public class PublicationServicesService {
     }
 
     private DeleteLocationAction formatDeleteLocationSystemAdminAction(List<String> emails,
-            String requesterName, ActionResult actionResult, String additionalDetails) {
+            String requesterEmail, ActionResult actionResult, String additionalDetails) {
         DeleteLocationAction systemAdminAction = new DeleteLocationAction();
         systemAdminAction.setEmailList(emails);
-        systemAdminAction.setRequesterName(requesterName);
+        systemAdminAction.setRequesterEmail(requesterEmail);
         systemAdminAction.setActionResult(actionResult);
         systemAdminAction.setDetailString(additionalDetails);
         return systemAdminAction;
     }
 
     private DeleteLocationArtefactAction formatDeleteLocationArtefactSystemAdminAction(List<String> emails,
-        String requesterName, ActionResult actionResult, String additionalDetails) {
+        String requesterEmail, ActionResult actionResult, String additionalDetails) {
         DeleteLocationArtefactAction systemAdminAction = new DeleteLocationArtefactAction();
         systemAdminAction.setEmailList(emails);
-        systemAdminAction.setRequesterName(requesterName);
+        systemAdminAction.setRequesterEmail(requesterEmail);
         systemAdminAction.setActionResult(actionResult);
         systemAdminAction.setDetailString(additionalDetails);
         return systemAdminAction;

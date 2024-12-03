@@ -18,6 +18,7 @@ import uk.gov.hmcts.reform.pip.data.management.service.PublicationManagementServ
 import uk.gov.hmcts.reform.pip.data.management.service.PublicationServicesService;
 import uk.gov.hmcts.reform.pip.data.management.service.SubscriptionManagementService;
 import uk.gov.hmcts.reform.pip.model.account.AzureAccount;
+import uk.gov.hmcts.reform.pip.model.account.PiUser;
 import uk.gov.hmcts.reform.pip.model.enums.UserActions;
 import uk.gov.hmcts.reform.pip.model.system.admin.ActionResult;
 import uk.gov.hmcts.reform.pip.model.system.admin.ChangeType;
@@ -124,14 +125,14 @@ public class ArtefactDeleteService {
         log.info(writeLog(issuerId, UserActions.REMOVE, artefactId));
     }
 
-    public String deleteArtefactByLocation(Integer locationId, String provenanceUserId)
+    public String deleteArtefactByLocation(Integer locationId, String userId)
         throws JsonProcessingException {
         List<Artefact> activeArtefacts = artefactRepository.findActiveArtefactsForLocation(LocalDateTime.now(),
                                                                                            locationId.toString());
         if (activeArtefacts.isEmpty()) {
             log.info(writeLog(String.format("User %s attempting to delete all artefacts for location %s. "
                                                 + "No artefacts found",
-                                            provenanceUserId, locationId)));
+                                            userId, locationId)));
             throw new ArtefactNotFoundException(String.format(
                 "No artefacts found with the location ID %s",
                 locationId
@@ -139,17 +140,17 @@ public class ArtefactDeleteService {
         }
         log.info(writeLog(String.format("User %s attempting to delete all artefacts for location %s. "
                                             + "%s artefact(s) found",
-                                        provenanceUserId, locationId, activeArtefacts.size())));
+                                        userId, locationId, activeArtefacts.size())));
 
         activeArtefacts.forEach(artefact -> {
             handleArtefactDeletion(artefact);
             log.info(writeLog(
                 String.format("Artefact deleted by %s, with artefact id: %s",
-                              provenanceUserId, artefact.getArtefactId())
+                              userId, artefact.getArtefactId())
             ));
         });
         Optional<Location> location = locationRepository.getLocationByLocationId(locationId);
-        notifySystemAdminAboutSubscriptionDeletion(provenanceUserId,
+        notifySystemAdminAboutSubscriptionDeletion(userId,
             String.format("Total %s artefact(s) for location %s", activeArtefacts.size(),
                           location.isPresent() ? location.get().getName() : ""));
         return String.format("Total %s artefact deleted for location id %s", activeArtefacts.size(), locationId);
@@ -182,13 +183,13 @@ public class ArtefactDeleteService {
         artefactRepository.archiveArtefact(artefact.getArtefactId().toString());
     }
 
-    private void notifySystemAdminAboutSubscriptionDeletion(String provenanceUserId, String additionalDetails)
+    private void notifySystemAdminAboutSubscriptionDeletion(String userId, String additionalDetails)
         throws JsonProcessingException {
-        AzureAccount userInfo = accountManagementService.getUserInfo(provenanceUserId);
+        PiUser userInfo = accountManagementService.getUserById(userId);
         List<String> systemAdminsAad = accountManagementService.getAllAccounts("PI_AAD", "SYSTEM_ADMIN");
         List<String> systemAdminsSso = accountManagementService.getAllAccounts("SSO", "SYSTEM_ADMIN");
         List<String> systemAdmins = Stream.concat(systemAdminsAad.stream(), systemAdminsSso.stream()).toList();
-        publicationServicesService.sendSystemAdminEmail(systemAdmins, userInfo.getDisplayName(),
+        publicationServicesService.sendSystemAdminEmail(systemAdmins, userInfo.getEmail(),
             ActionResult.SUCCEEDED, additionalDetails, ChangeType.DELETE_LOCATION_ARTEFACT);
     }
 }
