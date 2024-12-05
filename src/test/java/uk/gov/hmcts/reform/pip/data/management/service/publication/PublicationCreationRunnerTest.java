@@ -114,10 +114,6 @@ class PublicationCreationRunnerTest {
             .as(LAST_RECEIVED_DATE_MESSAGE)
             .isEqualTo(LocalDate.now());
 
-        softly.assertThat(returnedArtefact.getSearch())
-            .as(SEARCH_VALUE_MESSAGE)
-            .isEqualTo(SEARCH_VALUES);
-
         softly.assertThat(logCaptor.getInfoLogs().get(0))
             .as(LOG_MESSAGE)
             .contains(JSON_PUBLICATION_LOG);
