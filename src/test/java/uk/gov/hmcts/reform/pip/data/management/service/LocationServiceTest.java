@@ -22,7 +22,7 @@ import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationDeletion;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationReference;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
-import uk.gov.hmcts.reform.pip.model.account.AzureAccount;
+import uk.gov.hmcts.reform.pip.model.account.PiUser;
 import uk.gov.hmcts.reform.pip.model.location.LocationCsv;
 import uk.gov.hmcts.reform.pip.model.location.LocationType;
 import uk.gov.hmcts.reform.pip.model.system.admin.ActionResult;
@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -79,7 +80,8 @@ class LocationServiceTest {
     Location locationSecondExample;
     Location locationInvalidExample;
     LocationDeletion locationDeletion;
-    AzureAccount azureAccount;
+    PiUser piUser;
+    String userId;
 
     private static final String FAMILY_LOCATION =  "Family Location";
     private static final String MAGISTRATES_LOCATION = "Magistrates Location";
@@ -100,13 +102,11 @@ class LocationServiceTest {
     private static final String SECOND_LOCATION_NOT_FOUND = "Second location has not been found";
     private static final String CREATE_LOCATION_MESSAGE = "Location created message does not match";
     private static final String ERROR_LOG_MESSAGE = "Error log does not match";
-    private static final String REQUESTER_NAME = "ReqName";
     private static final String EMAIL = "test@test.com";
     private static final String SSO_EMAIL = "sso@test.com";
     private static final String SSO_PROVENANCE = "SSO";
     private static final String PI_AAD_PROVENANCE = "PI_AAD";
     private static final String SYSTEM_ADMIN = "SYSTEM_ADMIN";
-
 
     private static final String FILE = "file";
     private static final String FILE_NAME = "TestFileName";
@@ -129,8 +129,10 @@ class LocationServiceTest {
 
         locationDeletion = new LocationDeletion();
 
-        azureAccount = new AzureAccount();
-        azureAccount.setDisplayName("ReqName");
+        userId = UUID.randomUUID().toString();
+        piUser = new PiUser();
+        piUser.setEmail(EMAIL);
+        piUser.setUserId(userId);
     }
 
     @Test
@@ -625,18 +627,24 @@ class LocationServiceTest {
 
         when(locationRepository.getLocationByLocationId(locationId))
             .thenReturn(Optional.of(locationFirstExample));
-        when(accountManagementService.getUserInfo(any()))
-            .thenReturn(azureAccount);
+        when(accountManagementService.getUserById(userId))
+            .thenReturn(piUser);
         when(artefactRepository.findActiveArtefactsForLocation(any(), eq(locationId.toString())))
             .thenReturn(List.of());
         when(subscriptionManagementService.findSubscriptionsByLocationId(locationId.toString()))
             .thenReturn("[]");
         when(accountManagementService.getAllAccounts(PI_AAD_PROVENANCE, SYSTEM_ADMIN))
             .thenReturn(List.of(EMAIL));
+        when(publicationService.sendSystemAdminEmail(List.of(EMAIL), EMAIL,
+                                                     ActionResult.SUCCEEDED,
+                                                     String.format(
+                                                         "Location %s with Id %s has been deleted.",
+                                                         "NAME", locationId),
+                                                     ChangeType.DELETE_LOCATION)).thenReturn("");
 
         doNothing().when(locationRepository).deleteById(locationId);
 
-        locationService.deleteLocation(locationId, REQUESTER_NAME);
+        locationService.deleteLocation(locationId, userId);
 
         verify(locationRepository, times(1)).deleteById(locationId);
     }
@@ -656,15 +664,15 @@ class LocationServiceTest {
 
         List<String> systemAdminEmails = List.of(EMAIL, SSO_EMAIL);
 
-        when(accountManagementService.getUserInfo(any()))
-            .thenReturn(azureAccount);
-        when(publicationService.sendSystemAdminEmail(systemAdminEmails, REQUESTER_NAME,
+        when(accountManagementService.getUserById(userId))
+            .thenReturn(piUser);
+        when(publicationService.sendSystemAdminEmail(systemAdminEmails, EMAIL,
             ActionResult.ATTEMPTED,
 "There are active artefacts for following location: " + LOCATION_NAME2,
              ChangeType.DELETE_LOCATION))
             .thenReturn("");
 
-        LocationDeletion result = locationService.deleteLocation(locationId, REQUESTER_NAME);
+        LocationDeletion result = locationService.deleteLocation(locationId, userId);
         assertTrue(result.isExists(), "Found active artefact for a court");
     }
 
@@ -674,8 +682,8 @@ class LocationServiceTest {
 
         when(locationRepository.getLocationByLocationId(locationId))
             .thenReturn(Optional.of(locationFirstExample));
-        when(accountManagementService.getUserInfo(any()))
-            .thenReturn(azureAccount);
+        when(accountManagementService.getUserById(userId))
+            .thenReturn(piUser);
         when(artefactRepository.findActiveArtefactsForLocation(any(), eq(locationId.toString())))
             .thenReturn(List.of());
         when(subscriptionManagementService.findSubscriptionsByLocationId(locationId.toString()))
@@ -687,13 +695,13 @@ class LocationServiceTest {
 
         List<String> systemAdminEmails = List.of(EMAIL, SSO_EMAIL);
 
-        when(publicationService.sendSystemAdminEmail(systemAdminEmails, REQUESTER_NAME,
+        when(publicationService.sendSystemAdminEmail(systemAdminEmails, EMAIL,
             ActionResult.ATTEMPTED,
 "There are active subscriptions for the following location: " + LOCATION_NAME2,
             ChangeType.DELETE_LOCATION))
             .thenReturn("");
 
-        LocationDeletion result = locationService.deleteLocation(locationId, REQUESTER_NAME);
+        LocationDeletion result = locationService.deleteLocation(locationId, userId);
 
         assertTrue(result.isExists(), "Found active subscription for a court");
     }
@@ -707,7 +715,7 @@ class LocationServiceTest {
 
         LocationNotFoundException locationNotFoundException =
             assertThrows(LocationNotFoundException.class, () ->
-                locationService.deleteLocation(locationId, REQUESTER_NAME));
+                locationService.deleteLocation(locationId, UUID.randomUUID().toString()));
 
         assertEquals("No location found with the id: 1", locationNotFoundException.getMessage(),
                      "Exception does not contain expected message");

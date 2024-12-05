@@ -112,10 +112,10 @@ public class LocationController {
     @IsAdmin
     @SecurityRequirement(name = BEARER_AUTHENTICATION)
     public ResponseEntity<LocationDeletion> deleteLocation(
-        @RequestHeader("x-provenance-user-id") String provenanceUserId,
+        @RequestHeader("x-user-id") String userId,
         @PathVariable Integer locationId)
         throws JsonProcessingException {
-        return ResponseEntity.ok(locationService.deleteLocation(locationId, provenanceUserId));
+        return ResponseEntity.ok(locationService.deleteLocation(locationId, userId));
     }
 
     @ApiResponse(responseCode = OK_CODE, description = "CSV of the reference data")

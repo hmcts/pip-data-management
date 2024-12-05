@@ -55,7 +55,6 @@ class PublicationTest extends FunctionalTestBase {
     private static final String TESTING_SUPPORT_LOCATION_URL = "/testing-support/location/";
     private static final String TESTING_SUPPORT_PUBLICATION_URL = "/testing-support/publication/";
     private static final ArtefactType ARTEFACT_TYPE = ArtefactType.LIST;
-    private static final Sensitivity SENSITIVITY = Sensitivity.PUBLIC;
     private static final String PROVENANCE = "MANUAL_UPLOAD";
     private static final String SOURCE_ARTEFACT_ID = "sourceArtefactId";
     private static final LocalDateTime DISPLAY_FROM = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
@@ -263,7 +262,7 @@ class PublicationTest extends FunctionalTestBase {
         assertThat(responseGetArtefactMetadata.getStatusCode()).isEqualTo(OK.value());
 
         Map<String, String> deleteArtefactHeaderMap = getBaseHeaderMap();
-        deleteArtefactHeaderMap.put("x-provenance-user-id", userId);
+        deleteArtefactHeaderMap.put(USER_ID_HEADER, userId);
 
         Response deleteByLocationResponse = doDeleteRequest(String.format(DELETE_ARTEFACTS_BY_LOCATION_ID,
                                                                           courtId),
@@ -430,7 +429,7 @@ class PublicationTest extends FunctionalTestBase {
         Artefact artefact = uploadFlatFile(courtId, Sensitivity.PUBLIC);
 
         Map<String, String> headerMap = getBaseHeaderMap();
-        headerMap.put("x-provenance-user-id", UUID.randomUUID().toString());
+        headerMap.put(USER_ID_HEADER, UUID.randomUUID().toString());
 
         final Response deleteArtefactsByLocationId = doDeleteRequest(
             PUBLICATION_URL + "/" + courtId + "/deleteArtefacts", headerMap

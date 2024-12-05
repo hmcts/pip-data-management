@@ -32,8 +32,8 @@ import static uk.gov.hmcts.reform.pip.data.management.utils.TestUtil.randomLocat
 @SpringBootTest(classes = {OAuthClient.class})
 class LocationTest extends FunctionalTestBase {
 
-    @Value("${test-system-admin-provenance-id}")
-    private String systemAdminProvenanceId;
+    @Value("${test-system-admin-id}")
+    private String systemAdminUserId;
 
     private static final String LOCATION_LIST = "locationList";
     private static final String BASE_LOCATION_NAME = "LocationTestLocation";
@@ -158,7 +158,7 @@ class LocationTest extends FunctionalTestBase {
         assertThat(responseDownloadCsv.asString()).contains(TEST_LOCATION_NAME_THREE);
 
         Map<String, String> deleteHeaderMap = Map.of(AUTHORIZATION, BEARER + accessToken,
-                                                     "x-provenance-user-id", systemAdminProvenanceId
+                                                     "x-user-id", systemAdminUserId
         );
 
         final Response responseDeleteLocationById = doDeleteRequest(
@@ -181,7 +181,7 @@ class LocationTest extends FunctionalTestBase {
         );
 
         Map<String, String> deleteHeaderMap = Map.of(AUTHORIZATION, BEARER + accessToken,
-                                                     "x-provenance-user-id", UUID.randomUUID().toString()
+                                                     "x-user-id", UUID.randomUUID().toString()
         );
         final Response responseDeleteLocationById = doDeleteRequest(
             "/locations/" + courtId,

@@ -23,7 +23,7 @@ import uk.gov.hmcts.reform.pip.data.management.service.LocationService;
 import uk.gov.hmcts.reform.pip.data.management.service.PublicationManagementService;
 import uk.gov.hmcts.reform.pip.data.management.service.PublicationServicesService;
 import uk.gov.hmcts.reform.pip.data.management.service.SubscriptionManagementService;
-import uk.gov.hmcts.reform.pip.model.account.AzureAccount;
+import uk.gov.hmcts.reform.pip.model.account.PiUser;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 import uk.gov.hmcts.reform.pip.model.system.admin.ActionResult;
@@ -98,7 +98,8 @@ class ArtefactDeleteServiceTest {
     private Artefact artefactWithNoMatchLocationId;
 
     private Location location;
-    AzureAccount azureAccount;
+    private PiUser piUser;
+    private String userId;
 
     private static final String REQUESTER_NAME = "ReqName";
     private static final String EMAIL_ADDRESS = "test@test.com";
@@ -131,8 +132,11 @@ class ArtefactDeleteServiceTest {
             .thenReturn(Optional.of(location));
         lenient().when(artefactService.payloadWithinJsonSearchLimit(any())).thenReturn(true);
 
-        azureAccount = new AzureAccount();
-        azureAccount.setDisplayName(REQUESTER_NAME);
+        userId = UUID.randomUUID().toString();
+        piUser = new PiUser();
+        piUser.setEmail(EMAIL_ADDRESS);
+        piUser.setUserId(userId);
+
     }
 
     private void createPayloads() {
@@ -379,8 +383,8 @@ class ArtefactDeleteServiceTest {
                 .thenReturn(List.of(artefactWithIdAndPayloadUrl));
             when(locationRepository.getLocationByLocationId(LOCATION_ID))
                 .thenReturn(Optional.of(location));
-            when(accountManagementService.getUserInfo(any()))
-                .thenReturn(azureAccount);
+            when(accountManagementService.getUserById(any()))
+                .thenReturn(piUser);
             when(accountManagementService.getAllAccounts("PI_AAD", "SYSTEM_ADMIN"))
                 .thenReturn(List.of(EMAIL_ADDRESS));
             when(accountManagementService.getAllAccounts("SSO", "SYSTEM_ADMIN"))
@@ -388,13 +392,13 @@ class ArtefactDeleteServiceTest {
 
             List<String> systemAdminEmails = List.of(EMAIL_ADDRESS, SSO_EMAIL);
 
-            when(publicationService.sendSystemAdminEmail(systemAdminEmails, REQUESTER_NAME, ActionResult.SUCCEEDED,
+            when(publicationService.sendSystemAdminEmail(systemAdminEmails, EMAIL_ADDRESS, ActionResult.SUCCEEDED,
                                                          "Total 1 artefact(s) for location NAME",
                                                          ChangeType.DELETE_LOCATION_ARTEFACT))
                 .thenReturn("System admin message");
 
             assertEquals("Total 1 artefact deleted for location id 1",
-                         artefactDeleteService.deleteArtefactByLocation(LOCATION_ID, REQUESTER_NAME),
+                         artefactDeleteService.deleteArtefactByLocation(LOCATION_ID, userId),
                          "The artefacts for given location is not deleted");
 
             InOrder orderVerifier = inOrder(azureArtefactBlobService, publicationManagementService,
@@ -405,7 +409,7 @@ class ArtefactDeleteServiceTest {
             orderVerifier.verify(artefactRepository).delete(artefactWithIdAndPayloadUrl);
             orderVerifier.verify(subscriptionManagementService).sendDeletedArtefactForThirdParties(any());
 
-            assertTrue(logCaptor.getInfoLogs().get(0).contains("User " + REQUESTER_NAME
+            assertTrue(logCaptor.getInfoLogs().get(0).contains("User " + userId
                                                                    + " attempting to delete all artefacts for location "
                                                                    + LOCATION_ID + ". 1 artefact(s) found"),
                        "Expected log does not exist");
@@ -419,12 +423,12 @@ class ArtefactDeleteServiceTest {
             when(artefactRepository.findActiveArtefactsForLocation(any(), eq(LOCATION_ID.toString())))
                 .thenReturn(List.of());
             assertThrows(ArtefactNotFoundException.class, () ->
-                             artefactDeleteService.deleteArtefactByLocation(LOCATION_ID, REQUESTER_NAME),
+                             artefactDeleteService.deleteArtefactByLocation(LOCATION_ID, userId),
                          "ArtefactNotFoundException not thrown when trying to delete a artefact"
                              + " that does not exist"
             );
 
-            assertTrue(logCaptor.getInfoLogs().get(0).contains("User " + REQUESTER_NAME
+            assertTrue(logCaptor.getInfoLogs().get(0).contains("User " + userId
                                                                    + " attempting to delete all artefacts for location "
                                                                    + LOCATION_ID + ". No artefacts found"),
                        "Expected log does not exist");
@@ -438,13 +442,13 @@ class ArtefactDeleteServiceTest {
             .thenReturn(List.of(artefactWithIdAndPayloadUrl));
         when(locationRepository.getLocationByLocationId(LOCATION_ID))
             .thenReturn(Optional.of(location));
-        when(accountManagementService.getUserInfo(any()))
-            .thenReturn(azureAccount);
+        when(accountManagementService.getUserById(userId))
+            .thenReturn(piUser);
         when(accountManagementService.getAllAccounts(any(), any()))
             .thenThrow(JsonProcessingException.class);
 
         assertThrows(JsonProcessingException.class, () ->
-                         artefactDeleteService.deleteArtefactByLocation(LOCATION_ID, REQUESTER_NAME),
+                         artefactDeleteService.deleteArtefactByLocation(LOCATION_ID, userId),
                      "JsonProcessingException not thrown when trying to get errored system admin"
                          + " api response");
     }

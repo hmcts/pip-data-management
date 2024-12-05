@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -256,11 +257,11 @@ class LocationControllerTest {
     @Test
     void testDeleteLocationReturnsOk() throws JsonProcessingException {
         int locationId = 1;
-        String requesterName = "ReqName";
+        String requesterId = UUID.randomUUID().toString();
         LocationDeletion locationDeletion = new LocationDeletion();
-        when(locationService.deleteLocation(locationId, requesterName)).thenReturn(locationDeletion);
+        when(locationService.deleteLocation(locationId, requesterId)).thenReturn(locationDeletion);
 
-        assertEquals(HttpStatus.OK, locationController.deleteLocation(requesterName, locationId).getStatusCode(),
+        assertEquals(HttpStatus.OK, locationController.deleteLocation(requesterId, locationId).getStatusCode(),
                      "Delete location endpoint has not returned OK");
     }
 

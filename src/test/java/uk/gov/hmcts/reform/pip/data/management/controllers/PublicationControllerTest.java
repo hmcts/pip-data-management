@@ -502,11 +502,11 @@ class PublicationControllerTest {
     @Test
     void testDeleteArtefactsByLocationReturnsOk() throws JsonProcessingException {
         int locationId = 1;
-        String requesterName = "ReqName";
-        when(artefactDeleteService.deleteArtefactByLocation(locationId, requesterName)).thenReturn("Success");
+        String requesterId = UUID.randomUUID().toString();
+        when(artefactDeleteService.deleteArtefactByLocation(locationId, requesterId)).thenReturn("Success");
 
         assertEquals(HttpStatus.OK,
-                     publicationController.deleteArtefactsByLocation(requesterName, locationId).getStatusCode(),
+                     publicationController.deleteArtefactsByLocation(requesterId, locationId).getStatusCode(),
                      "Delete artefacts for location endpoint has not returned OK");
     }
 

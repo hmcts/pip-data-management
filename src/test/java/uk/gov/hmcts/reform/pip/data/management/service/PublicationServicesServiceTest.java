@@ -26,6 +26,7 @@ class PublicationServicesServiceTest {
 
     private static final List<NoMatchArtefact> TEST_LIST = new ArrayList<>();
     private static final String EMAIL_SENT = "Email has been sent";
+    private static final String TEST_EMAIL = "test_eamil@justice.gov.uk";
 
     private final MockWebServer mockPublicationServicesEndpoint = new MockWebServer();
     private PublicationServicesService publicationServicesService;
@@ -70,7 +71,7 @@ class PublicationServicesServiceTest {
         mockPublicationServicesEndpoint.enqueue(new MockResponse().setBody(EMAIL_SENT));
 
         assertEquals(EMAIL_SENT, publicationServicesService
-            .sendSystemAdminEmail(List.of("test@test.com"), "Name",
+            .sendSystemAdminEmail(List.of("test@test.com"), TEST_EMAIL,
                                   ActionResult.ATTEMPTED, "Error", ChangeType.DELETE_LOCATION),
                      "Email has not been sent");
     }
@@ -80,7 +81,7 @@ class PublicationServicesServiceTest {
         mockPublicationServicesEndpoint.enqueue(new MockResponse().setBody(EMAIL_SENT));
 
         assertEquals(EMAIL_SENT, publicationServicesService
-                         .sendSystemAdminEmail(List.of("test@test.com"), "Name",
+                         .sendSystemAdminEmail(List.of("test@test.com"), TEST_EMAIL,
                                                ActionResult.ATTEMPTED, "Error", ChangeType.DELETE_LOCATION_ARTEFACT),
                      "Email has not been sent");
     }
@@ -90,7 +91,7 @@ class PublicationServicesServiceTest {
         mockPublicationServicesEndpoint.enqueue(new MockResponse()
                                                     .setResponseCode(BAD_REQUEST.value()));
 
-        publicationServicesService.sendSystemAdminEmail(List.of("test@test.com"), "Name",
+        publicationServicesService.sendSystemAdminEmail(List.of("test@test.com"), TEST_EMAIL,
                                                         ActionResult.ATTEMPTED, "Error", ChangeType.DELETE_LOCATION);
         assertTrue(logCaptor.getErrorLogs().get(0)
                        .contains("System admin notification email failed to send with error:"),
