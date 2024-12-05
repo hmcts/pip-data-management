@@ -1,8 +1,6 @@
 package uk.gov.hmcts.reform.pip.data.management.controllers;
 
 import com.azure.core.util.BinaryData;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonArray;
@@ -80,6 +78,7 @@ class PublicationTest extends IntegrationTestBase {
     private MockMvc mockMvc;
 
     private static final String PUBLICATION_URL = "/publication";
+    private static final String NON_STRATEGIC_PUBLICATION_UPLOAD_URL = PUBLICATION_URL + "/non-strategic";
     private static final String SEARCH_COURT_URL = "/publication/locationId";
     private static final String FILE_URL = "/file";
     private static final String PAYLOAD_URL = "/payload";
@@ -96,6 +95,7 @@ class PublicationTest extends IntegrationTestBase {
     private static final String PROVENANCE = "MANUAL_UPLOAD";
     private static String payload = "payload";
     private static MockMultipartFile file;
+    private static MockMultipartFile excelFile;
     private static final String PAYLOAD_UNKNOWN = "Unknown-Payload";
     private static final String SOURCE_ARTEFACT_ID = "sourceArtefactId";
     private static final LocalDateTime DISPLAY_TO = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
@@ -119,14 +119,12 @@ class PublicationTest extends IntegrationTestBase {
     private static final String ISSUER_HEADER = "x-issuer-id";
     private static final String EMAIL = "test@email.com";
     private static final String DISPLAY_NAME = "Test name";
+    private static final String EXCEL_FILE_TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 
     private static final String VALIDATION_EMPTY_RESPONSE = "Response should contain a Artefact";
     private static final String VALIDATION_DISPLAY_FROM = "The expected Display From has not been returned";
     private static final String SHOULD_RETURN_EXPECTED_ARTEFACT = "Should return expected artefact";
-    private static final String PARTIES_KEY = "parties";
-    private static final String ORGANISATION_KEY = "organisations";
-    private static final String INDIVIDUAL_KEY = "individuals";
-    private static final String CASES_KEY = "cases";
+    private static final String ARTEFACT_ID_POPULATED_MESSAGE = "Artefact ID should be populated";
     private static final String EXPECTED_MI_DATA_HEADERS = "artefact_id,display_from,display_to,language,provenance,"
         + "sensitivity,source_artefact_id,"
         + "superseded_count,type,content_date,court_id,court_name,list_type";
@@ -146,8 +144,20 @@ class PublicationTest extends IntegrationTestBase {
                 Objects.requireNonNull(is)));
         }
 
+        excelFile = createExcelMultipartFile();
+
         objectMapper = new ObjectMapper();
         objectMapper.findAndRegisterModules();
+    }
+
+    private static MockMultipartFile createExcelMultipartFile() throws IOException {
+        try (InputStream inputStream = PublicationTest.class.getClassLoader()
+            .getResourceAsStream("data/excelTable.xlsx")) {
+            return new MockMultipartFile(
+                "file", "TestFileName.xlsx", EXCEL_FILE_TYPE,
+                org.testcontainers.shaded.org.apache.commons.io.IOUtils.toByteArray(inputStream)
+            );
+        }
     }
 
     Artefact createDailyList(Sensitivity sensitivity) throws Exception {
@@ -247,7 +257,7 @@ class PublicationTest extends IntegrationTestBase {
         Artefact artefact = objectMapper.readValue(
             response.getResponse().getContentAsString(), Artefact.class);
 
-        assertNotNull(artefact.getArtefactId(), "Artefact ID is not populated");
+        assertNotNull(artefact.getArtefactId(), ARTEFACT_ID_POPULATED_MESSAGE);
         assertEquals(artefact.getSourceArtefactId(), SOURCE_ARTEFACT_ID, "Source artefact ID "
             + "does not match input source artefact id");
         assertEquals(artefact.getType(), ARTEFACT_TYPE, "Artefact type does not match input artefact type");
@@ -277,79 +287,6 @@ class PublicationTest extends IntegrationTestBase {
             );
         }
     }
-
-    @Test
-    @DisplayName("Should create a valid artefact including the correct search criteria")
-    void creationOfAValidArtefactPartiesExtraction() throws Exception {
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder
-            = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
-
-        mockHttpServletRequestBuilder.header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
-            .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
-            .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
-            .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
-            .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
-            .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO)
-            .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
-            .header(PublicationConfiguration.LIST_TYPE, LIST_TYPE)
-            .header(PublicationConfiguration.COURT_ID, COURT_ID)
-            .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
-            .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
-            .contentType(MediaType.APPLICATION_JSON);
-
-        MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
-
-        Artefact artefact = objectMapper.readValue(
-            response.getResponse().getContentAsString(), Artefact.class);
-
-
-        Map<String, List<Object>> searchResult = artefact.getSearch();
-        assertTrue(searchResult.containsKey("parties"), "Returned search result does not contain the correct key");
-
-        List<Map<String, Object>> parties = new ObjectMapper().convertValue(
-            searchResult.get(PARTIES_KEY),
-            new TypeReference<>() {
-            }
-        );
-        assertEquals(4, parties.size(), "Party array not expected size");
-
-        Map<String, Object> firstParty = parties.get(0);
-        assertTrue(firstParty.containsKey(CASES_KEY), "Parties does not contain cases key");
-        assertTrue(firstParty.containsKey(ORGANISATION_KEY), "Parties does not contain organisations key");
-        assertTrue(firstParty.containsKey(INDIVIDUAL_KEY), "Parties does not contain individuals key");
-
-        List<Map<String, Object>> cases = new ObjectMapper()
-            .setSerializationInclusion(JsonInclude.Include.NON_NULL)
-            .convertValue(firstParty.get(CASES_KEY), new TypeReference<>() {
-            });
-
-        assertEquals(1, cases.size(), "Unexpected number of cases returned");
-
-        Map<String, String> firstCase = new ObjectMapper().convertValue(
-            cases.get(0),
-            new TypeReference<>() {
-            }
-        );
-        assertEquals("45684548", firstCase.get("caseNumber"), "Unexpected case number returned");
-        assertEquals("This is a case name", firstCase.get("caseName"), "Unexpected case name returned");
-
-        List<String> organisationNames = new ObjectMapper().convertValue(
-            firstParty.get(ORGANISATION_KEY),
-            new TypeReference<>() {
-            }
-        );
-        assertEquals(1, organisationNames.size(), "Unexpected number of organisations returned");
-        assertTrue(organisationNames.contains("Respondent Org Name"), "Respondent not present");
-
-        List<Map<String, Object>> individualNames = new ObjectMapper().convertValue(
-            firstParty.get(INDIVIDUAL_KEY),
-            new TypeReference<>() {
-            }
-        );
-        assertEquals(1, individualNames.size(), "Unexpected number of individuals returned");
-        assertEquals("Applicant Surname", individualNames.get(0).get("surname"), "Individual surname does not present");
-    }
-
 
     @DisplayName("Should create a valid artefact with provenance different from manual_upload")
     @Test
@@ -392,7 +329,7 @@ class PublicationTest extends IntegrationTestBase {
         Artefact artefact = objectMapper.readValue(
             response.getResponse().getContentAsString(), Artefact.class);
 
-        assertNotNull(artefact.getArtefactId(), "Artefact ID is not populated");
+        assertNotNull(artefact.getArtefactId(), ARTEFACT_ID_POPULATED_MESSAGE);
         assertEquals(artefact.getType(), ARTEFACT_TYPE, "Artefact type does not match input artefact type");
         assertEquals(artefact.getProvenance(), PROVENANCE, "Provenance does not match input provenance");
         assertEquals(artefact.getDisplayFrom(), DISPLAY_FROM, "Display from does not match input display from");
@@ -553,6 +490,71 @@ class PublicationTest extends IntegrationTestBase {
         mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isBadRequest()).andReturn();
     }
 
+    @Test
+    void testNonStrategicPublicationUpload() throws Exception {
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+            .multipart(NON_STRATEGIC_PUBLICATION_UPLOAD_URL)
+            .file(excelFile);
+
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
+            .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
+            .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
+            .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
+            .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
+            .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO)
+            .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
+            .header(PublicationConfiguration.LIST_TYPE, LIST_TYPE)
+            .header(PublicationConfiguration.COURT_ID, COURT_ID)
+            .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
+            .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
+            .contentType(MediaType.MULTIPART_FORM_DATA);
+
+        MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
+            .andExpect(status().isCreated())
+            .andReturn();
+
+        assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
+
+        Artefact artefact = objectMapper.readValue(
+            response.getResponse().getContentAsString(), Artefact.class);
+
+        assertNotNull(artefact.getArtefactId(), ARTEFACT_ID_POPULATED_MESSAGE);
+        assertEquals(artefact.getSourceArtefactId(), SOURCE_ARTEFACT_ID, "Source artefact ID "
+            + "does not match input source artefact id");
+        assertEquals(artefact.getType(), ARTEFACT_TYPE, "Artefact type does not match input artefact type");
+        assertEquals(artefact.getDisplayFrom(), DISPLAY_FROM, "Display from does not match input display from");
+        assertEquals(artefact.getDisplayTo(), DISPLAY_TO, "Display to does not match input display to");
+        assertEquals(artefact.getProvenance(), PROVENANCE, "Provenance does not match input provenance");
+        assertEquals(artefact.getLanguage(), LANGUAGE, "Language does not match input language");
+        assertEquals(artefact.getSensitivity(), SENSITIVITY, "Sensitivity does not match input sensitivity");
+    }
+
+    @Test
+    void testNonStrategicPublicationUploadWithIncorrectFileType() throws Exception {
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+            .multipart(NON_STRATEGIC_PUBLICATION_UPLOAD_URL)
+            .file(file);
+
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
+            .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
+            .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
+            .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
+            .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
+            .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO)
+            .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
+            .header(PublicationConfiguration.LIST_TYPE, LIST_TYPE)
+            .header(PublicationConfiguration.COURT_ID, COURT_ID)
+            .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
+            .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
+            .contentType(MediaType.MULTIPART_FORM_DATA);
+
+        MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
+            .andExpect(status().isBadRequest())
+            .andReturn();
+
+        assertTrue(response.getResponse().getContentAsString().contains("Invalid Excel file type"),
+                   "Returned message does not match");
+    }
 
     @DisplayName("Check that null date for general_publication still allows us to return the relevant artefact")
     @ParameterizedTest
@@ -593,6 +595,37 @@ class PublicationTest extends IntegrationTestBase {
         );
 
         assertEquals(COURT_ID, retrievedArtefact.getLocationId(), "Artefact not found.");
+    }
+
+    @DisplayName("Should create a valid artefact and return the created artefact to the user")
+    @Test
+    void testCreationOfValidDailyCauseList() throws Exception {
+        try (InputStream mockFile = this.getClass().getClassLoader()
+            .getResourceAsStream("data/civil-daily-cause-list/civilDailyCauseList.json")) {
+
+            MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .post(PUBLICATION_URL)
+                .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
+                .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
+                .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
+                .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
+                .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO)
+                .header(PublicationConfiguration.COURT_ID, COURT_ID)
+                .header(PublicationConfiguration.LIST_TYPE, ListType.CIVIL_DAILY_CAUSE_LIST)
+                .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
+                .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
+                .content(mockFile.readAllBytes())
+                .contentType(MediaType.APPLICATION_JSON);
+
+
+            MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
+                .andExpect(status().isCreated()).andReturn();
+
+            assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
+
+            Artefact artefact = objectMapper.readValue(response.getResponse().getContentAsString(), Artefact.class);
+            assertNotNull(artefact.getArtefactId(), ARTEFACT_ID_POPULATED_MESSAGE);
+        }
     }
 
     @DisplayName("Should create a valid artefact and return the created artefact to the user")
@@ -680,39 +713,6 @@ class PublicationTest extends IntegrationTestBase {
         assertEquals(COURT_ID, retrievedArtefact.getLocationId(),
                      "Incorrect court ID has been retrieved from the database"
         );
-    }
-
-    @DisplayName("Should create a valid artefact and return the created artefact to the user")
-    @Test
-    void testCreationOfValidDailyCauseList() throws Exception {
-        try (InputStream mockFile = this.getClass().getClassLoader()
-            .getResourceAsStream("data/civil-daily-cause-list/civilDailyCauseList.json")) {
-
-            MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-                .post(PUBLICATION_URL)
-                .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
-                .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
-                .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
-                .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
-                .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO)
-                .header(PublicationConfiguration.COURT_ID, COURT_ID)
-                .header(PublicationConfiguration.LIST_TYPE, ListType.CIVIL_DAILY_CAUSE_LIST)
-                .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
-                .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
-                .content(mockFile.readAllBytes())
-                .contentType(MediaType.APPLICATION_JSON);
-
-
-            MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
-                .andExpect(status().isCreated()).andReturn();
-
-            assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
-
-            Artefact artefact = objectMapper.readValue(
-                response.getResponse().getContentAsString(), Artefact.class);
-
-            assertNotNull(artefact.getArtefactId(), "Artefact ID is not populated");
-        }
     }
 
     @DisplayName("Verify that artefact is returned when user is unverified and sensitivity is public")

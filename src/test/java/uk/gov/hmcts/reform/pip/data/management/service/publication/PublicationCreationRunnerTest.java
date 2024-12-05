@@ -23,6 +23,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.FILE;
@@ -77,6 +79,34 @@ class PublicationCreationRunnerTest {
         when(jsonExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
 
         Artefact returnedArtefact = publicationCreationRunner.run(artefact, PAYLOAD);
+
+        SoftAssertions softly = new SoftAssertions();
+
+        softly.assertThat(returnedArtefact.getLastReceivedDate().toLocalDate())
+            .as(LAST_RECEIVED_DATE_MESSAGE)
+            .isEqualTo(LocalDate.now());
+
+        softly.assertThat(returnedArtefact.getSearch())
+            .as(SEARCH_VALUE_MESSAGE)
+            .isEqualTo(SEARCH_VALUES);
+
+        softly.assertThat(logCaptor.getInfoLogs().get(0))
+            .as(LOG_MESSAGE)
+            .contains(JSON_PUBLICATION_LOG);
+
+        softly.assertAll();
+    }
+
+    @Test
+    void testRunMethodForJsonPublicationWithoutExtractingSearchTerms() {
+        Artefact artefact = ArtefactConstantTestHelper.buildArtefact();
+        artefact.setPayloadSize(PAYLOAD_SIZE_WITHIN_LIMIT);
+        when(publicationService.createPublication(artefact, PAYLOAD)).thenReturn(artefact);
+
+        Artefact returnedArtefact = publicationCreationRunner.run(artefact, PAYLOAD, false);
+
+        verify(publicationService).applyInternalLocationId(returnedArtefact);
+        verify(jsonExtractor, never()).extractSearchTerms(PAYLOAD);
 
         SoftAssertions softly = new SoftAssertions();
 
