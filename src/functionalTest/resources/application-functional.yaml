@@ -1,4 +1,4 @@
 test-url: ${TEST_URL:http://localhost:8090}
 test-user-id: ${TEST_USER_ID:}
-test-system-admin-provenance-id: ${SYSTEM_ADMIN_PROVENANCE_ID:}
+test-system-admin-id: ${SYSTEM_ADMIN_ID:}
 
