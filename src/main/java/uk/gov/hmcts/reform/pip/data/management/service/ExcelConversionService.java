@@ -25,9 +25,9 @@ public class ExcelConversionService {
 
     public String convert(MultipartFile file) {
         String contentType = file.getContentType();
-        if (contentType == null
-            || (!SPREADSHEET_CONTENT_TYPE.equals(file.getContentType())
-            && !file.getContentType().contains(EXCEL_CONTENT_TYPE))) {
+        if (contentType != null
+            && !SPREADSHEET_CONTENT_TYPE.equals(contentType)
+            && !contentType.contains(EXCEL_CONTENT_TYPE)) {
             throw new ExcelConversionException("Invalid Excel file type");
         }
 
