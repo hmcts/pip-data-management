@@ -24,8 +24,10 @@ public class ExcelConversionService {
     private static final String EXCEL_CONTENT_TYPE = "application/vnd.ms-excel";
 
     public String convert(MultipartFile file) {
-        if (!SPREADSHEET_CONTENT_TYPE.equals(file.getContentType())
-            && !file.getContentType().contains(EXCEL_CONTENT_TYPE)) {
+        String contentType = file.getContentType();
+        if (contentType == null
+            || (!SPREADSHEET_CONTENT_TYPE.equals(file.getContentType())
+            && !file.getContentType().contains(EXCEL_CONTENT_TYPE))) {
             throw new ExcelConversionException("Invalid Excel file type");
         }
 

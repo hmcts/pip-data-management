@@ -86,7 +86,6 @@ public class PublicationController {
     private static final String CONFLICT_MESSAGE = "Conflict while uploading publication";
 
     private static final String OK_CODE = "200";
-    private static final String BAD_REQUEST_CODE = "400";
     private static final String NOT_FOUND_CODE = "404";
     private static final String NO_CONTENT_CODE = "204";
     private static final String UNAUTHORISED_CODE = "401";
