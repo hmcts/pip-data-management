@@ -33,7 +33,7 @@ class PublicationUnauthorizedTest extends IntegrationBasicTestBase {
     private MockMvc mockMvc;
 
     private static final String PUBLICATION_URL = "/publication";
-    private static final String NON_STRATEGIC_PUBLICATION_UPLOAD_URL = PUBLICATION_URL + "/non-strategic";
+    private static final String NON_STRATEGIC_PUBLICATION_URL = PUBLICATION_URL + "/non-strategic";
     private static final String PUBLICATION_BY_LOCATION_URL = PUBLICATION_URL + "/locationId/";
     private static final String PUBLICATION_SEARCH_URL = PUBLICATION_URL + "/search/";
     private static final String ARCHIVE_EXPIRED_ARTEFACTS_URL = PUBLICATION_URL + "/expired";
@@ -99,14 +99,14 @@ class PublicationUnauthorizedTest extends IntegrationBasicTestBase {
     }
 
     @Test
-    void testUnauthorizedNonStrategicUpload() throws Exception {
+    void testUnauthorizedNonStrategicPublicationUpload() throws Exception {
         MockMultipartFile file = new MockMultipartFile(
             "file", "file.xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
             "test content".getBytes(StandardCharsets.UTF_8)
         );
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .multipart(NON_STRATEGIC_PUBLICATION_UPLOAD_URL)
+            .multipart(NON_STRATEGIC_PUBLICATION_URL)
             .file(file)
             .header(PublicationConfiguration.TYPE_HEADER, ArtefactType.LIST)
             .header(PublicationConfiguration.PROVENANCE_HEADER, "Provenance")

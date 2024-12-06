@@ -78,7 +78,7 @@ class PublicationTest extends IntegrationTestBase {
     private MockMvc mockMvc;
 
     private static final String PUBLICATION_URL = "/publication";
-    private static final String NON_STRATEGIC_PUBLICATION_UPLOAD_URL = PUBLICATION_URL + "/non-strategic";
+    private static final String NON_STRATEGIC_PUBLICATION_URL = PUBLICATION_URL + "/non-strategic";
     private static final String SEARCH_COURT_URL = "/publication/locationId";
     private static final String FILE_URL = "/file";
     private static final String PAYLOAD_URL = "/payload";
@@ -493,7 +493,7 @@ class PublicationTest extends IntegrationTestBase {
     @Test
     void testNonStrategicPublicationUpload() throws Exception {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .multipart(NON_STRATEGIC_PUBLICATION_UPLOAD_URL)
+            .multipart(NON_STRATEGIC_PUBLICATION_URL)
             .file(excelFile);
 
         mockHttpServletRequestBuilder.header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
@@ -527,12 +527,69 @@ class PublicationTest extends IntegrationTestBase {
         assertEquals(artefact.getProvenance(), PROVENANCE, "Provenance does not match input provenance");
         assertEquals(artefact.getLanguage(), LANGUAGE, "Language does not match input language");
         assertEquals(artefact.getSensitivity(), SENSITIVITY, "Sensitivity does not match input sensitivity");
+        assertTrue(artefact.getSearch().isEmpty(), "Search value does not match");
+    }
+
+    @Test
+    void testNonStrategicUploadOfExistingPublication() throws Exception {
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+            .multipart(NON_STRATEGIC_PUBLICATION_URL)
+            .file(excelFile);
+
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE);
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY);
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE);
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID);
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO);
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM);
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.LIST_TYPE, LIST_TYPE);
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.COURT_ID, COURT_ID);
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE);
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE);
+        mockHttpServletRequestBuilder.contentType(MediaType.MULTIPART_FORM_DATA);
+
+        final MvcResult createResponse = mockMvc.perform(mockHttpServletRequestBuilder)
+            .andExpect(status().isCreated())
+            .andReturn();
+
+        mockHttpServletRequestBuilder = MockMvcRequestBuilders
+            .multipart(NON_STRATEGIC_PUBLICATION_URL)
+            .file(excelFile);
+
+        // Update the Display To header and resend publication
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE);
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY);
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE);
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID);
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO.plusMonths(1));
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM);
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.LIST_TYPE, LIST_TYPE);
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.COURT_ID, COURT_ID);
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE);
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE);
+        mockHttpServletRequestBuilder.contentType(MediaType.MULTIPART_FORM_DATA);
+
+        final MvcResult updatedResponse = mockMvc.perform(mockHttpServletRequestBuilder)
+            .andExpect(status().isCreated())
+            .andReturn();
+
+        Artefact createdArtefact = objectMapper.readValue(createResponse.getResponse().getContentAsString(),
+                                                          Artefact.class);
+
+        Artefact updatedArtefact = objectMapper.readValue(updatedResponse.getResponse().getContentAsString(),
+                                                          Artefact.class);
+
+        assertEquals(createdArtefact.getArtefactId(), updatedArtefact.getArtefactId(), "A new artefact has "
+            + "been created rather than it being updated");
+
+        assertEquals(DISPLAY_TO.plusMonths(1), updatedArtefact.getDisplayTo(), "The updated artefact does "
+            + "not contain the new Display To value");
     }
 
     @Test
     void testNonStrategicPublicationUploadWithIncorrectFileType() throws Exception {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .multipart(NON_STRATEGIC_PUBLICATION_UPLOAD_URL)
+            .multipart(NON_STRATEGIC_PUBLICATION_URL)
             .file(file);
 
         mockHttpServletRequestBuilder.header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
