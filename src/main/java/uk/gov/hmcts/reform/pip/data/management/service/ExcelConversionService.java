@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.pip.data.management.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.CaseFormat;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -14,6 +15,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 @Service
@@ -55,8 +57,13 @@ public class ExcelConversionService {
         // Link hashmap is used to ensure insertion order on the row values
         Map<String, String> values = new LinkedHashMap<>();
         for (int headerNumber = 0; headerNumber < headers.size(); headerNumber++) {
+            String upperUnderscoreHeader = headers.get(headerNumber)
+                .toUpperCase(Locale.ENGLISH)
+                .replaceAll(" ", "_");
+            String formattedHeader = CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, upperUnderscoreHeader);
+
             String rowCell = headerNumber < row.size() ? row.get(headerNumber) : "";
-            values.put(headers.get(headerNumber), rowCell);
+            values.put(formattedHeader, rowCell);
         }
         return values;
     }

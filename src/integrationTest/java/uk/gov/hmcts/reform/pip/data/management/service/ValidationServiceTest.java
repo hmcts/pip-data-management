@@ -271,6 +271,18 @@ class ValidationServiceTest extends IntegrationBasicTestBase {
         }
     }
 
+    @ParameterizedTest
+    @MethodSource("nonStrategicParameters")
+    void testNonStrategicValidateWithoutErrorsForValidArtefact(ListType listType, String resource) throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader().getResourceAsStream(resource)) {
+            headerGroup.setListType(listType);
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            assertDoesNotThrow(() -> validationService.validateBody(text, headerGroup, false),
+                               String.format("Valid %s marked as invalid", listType));
+        }
+    }
+
     private static Stream<Arguments> parameters() {
         return Stream.of(
             Arguments.of(ListType.SJP_PUBLIC_LIST,
@@ -321,6 +333,15 @@ class ValidationServiceTest extends IntegrationBasicTestBase {
                          "data/opa-public-list/opaPublicList.json"),
             Arguments.of(ListType.OPA_RESULTS,
                          "data/opa-results/opaResults.json")
+        );
+    }
+
+    private static Stream<Arguments> nonStrategicParameters() {
+        return Stream.of(
+            Arguments.of(ListType.CST_WEEKLY_HEARING_LIST,
+                         "data/non-strategic/cst-weekly-hearing-list/cstWeeklyHearingList.json"),
+            Arguments.of(ListType.PHT_WEEKLY_HEARING_LIST,
+                         "data/non-strategic/pht-weekly-hearing-list/phtWeeklyHearingList.json")
         );
     }
 

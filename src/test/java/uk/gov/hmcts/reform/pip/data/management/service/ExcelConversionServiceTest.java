@@ -23,8 +23,8 @@ class ExcelConversionServiceTest {
     private static final String CELL_MATCH_MESSAGE = "Cell value does not match";
     private static final String CELL_EMPTY_MESSAGE = "Cell value is not empty";
 
-    private static final String HEADER1 = "Header1";
-    private static final String HEADER2 = "Header2";
+    private static final String HEADER1 = "header1";
+    private static final String HEADER2 = "header2";
     private static final String ROW1A = "Row1a";
     private static final String ROW1B = "Row1b";
     private static final String ROW2A = "Row2a";
