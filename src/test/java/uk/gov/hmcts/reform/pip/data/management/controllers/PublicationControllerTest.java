@@ -179,7 +179,7 @@ class PublicationControllerTest {
     @Test
     void testCreationOfPublication() {
         when(validationService.validateHeaders(any())).thenReturn(headers);
-        when(publicationCreationRunner.run(artefact, PAYLOAD)).thenReturn(artefactWithId);
+        when(publicationCreationRunner.run(artefact, PAYLOAD, true)).thenReturn(artefactWithId);
 
         ResponseEntity<Artefact> responseEntity = publicationController.uploadPublication(
             PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE, SENSITIVITY, LANGUAGE,
@@ -195,7 +195,7 @@ class PublicationControllerTest {
     @Test
     void testCreationOfPublicationWithNonExistentLocationId() {
         when(validationService.validateHeaders(any())).thenReturn(headers);
-        when(publicationCreationRunner.run(artefact, PAYLOAD)).thenReturn(artefactWithNoMatchLocationId);
+        when(publicationCreationRunner.run(artefact, PAYLOAD, true)).thenReturn(artefactWithNoMatchLocationId);
 
         ResponseEntity<Artefact> responseEntity = publicationController.uploadPublication(
             PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE, SENSITIVITY, LANGUAGE,
@@ -485,7 +485,7 @@ class PublicationControllerTest {
     @Test
     void testCreatePublicationLogsWhenHeaderIsPresent() throws IOException {
         when(validationService.validateHeaders(any())).thenReturn(headers);
-        when(publicationCreationRunner.run(artefact, PAYLOAD)).thenReturn(artefactWithId);
+        when(publicationCreationRunner.run(artefact, PAYLOAD, true)).thenReturn(artefactWithId);
         when(publicationService.maskEmail(TEST_STRING)).thenReturn(TEST_STRING);
 
         try (LogCaptor logCaptor = LogCaptor.forClass(PublicationController.class)) {
