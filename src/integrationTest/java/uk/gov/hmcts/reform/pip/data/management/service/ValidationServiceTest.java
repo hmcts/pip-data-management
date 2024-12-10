@@ -230,7 +230,7 @@ class ValidationServiceTest extends IntegrationBasicTestBase {
             .getResourceAsStream("data/badJsonPayload.json")) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(text, headerGroup),
+                             validationService.validateBody(text, headerGroup, true),
                                "Valid JSON string marked as not valid");
         } catch (IOException exception) {
             fail(UNKNOWN_EXCEPTION);
@@ -240,7 +240,7 @@ class ValidationServiceTest extends IntegrationBasicTestBase {
     @Test
     void testExceptionWhenValidatingPayload() {
         PayloadValidationException payloadValidationException = assertThrows(PayloadValidationException.class, () ->
-            validationService.validateBody("abcd", headerGroup), "Validation exception not thrown "
+            validationService.validateBody("abcd", headerGroup, true), "Validation exception not thrown "
                                                                                  + "when value not JSON");
 
         assertEquals("Error while parsing JSON Payload", payloadValidationException.getMessage(),
@@ -254,7 +254,7 @@ class ValidationServiceTest extends IntegrationBasicTestBase {
             .getResourceAsStream("data/jsonPayload.json")) {
             headerGroup.setListType(ListType.SJP_PRESS_REGISTER);
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
-            assertDoesNotThrow(() -> validationService.validateBody(text, headerGroup),
+            assertDoesNotThrow(() -> validationService.validateBody(text, headerGroup, true),
                                "Valid master schema marked as invalid");
         }
     }
@@ -266,7 +266,7 @@ class ValidationServiceTest extends IntegrationBasicTestBase {
             headerGroup.setListType(listType);
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
-            assertDoesNotThrow(() -> validationService.validateBody(text, headerGroup),
+            assertDoesNotThrow(() -> validationService.validateBody(text, headerGroup, true),
                                String.format("Valid %s marked as invalid", listType));
         }
     }

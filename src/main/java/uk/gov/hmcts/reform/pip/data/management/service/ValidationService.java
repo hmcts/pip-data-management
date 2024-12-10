@@ -152,11 +152,9 @@ public class ValidationService {
      * Validates a JSON body.
      *
      * @param jsonPayload The JSON body to validate.
+     * @param headers The headers of the publication.
+     * @param validateMasterSchema True if master schema should be used in validation too
      */
-    public void validateBody(String jsonPayload, HeaderGroup headers) {
-        validateBody(jsonPayload, headers, true);
-    }
-
     public void validateBody(String jsonPayload, HeaderGroup headers, boolean validateMasterSchema) {
         Map<String, String> propertiesMap = headers.getAppInsightsHeaderMap();
         try {
@@ -168,7 +166,9 @@ public class ValidationService {
             }
 
             if (validationSchemas.containsKey(headers.getListType())) {
-                validationSchemas.get(headers.getListType()).validate(json).forEach(vm ->  errors.add(vm.getMessage()));
+                validationSchemas.get(headers.getListType())
+                    .validate(json)
+                    .forEach(vm ->  errors.add(vm.getMessage()));
             }
 
             if (!errors.isEmpty()) {

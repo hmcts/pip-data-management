@@ -190,7 +190,7 @@ public class PublicationController {
         );
 
         HeaderGroup headers = validationService.validateHeaders(initialHeaders);
-        validationService.validateBody(payload, initialHeaders);
+        validationService.validateBody(payload, initialHeaders, true);
         Artefact artefact = createPublicationMetadataFromHeaders(headers, payload.length());
 
         Artefact createdItem = publicationCreationRunner.run(artefact, payload, true);
