@@ -78,7 +78,7 @@ class PublicationCreationRunnerTest {
         when(publicationService.createPublication(artefact, PAYLOAD)).thenReturn(artefact);
         when(jsonExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
 
-        Artefact returnedArtefact = publicationCreationRunner.run(artefact, PAYLOAD);
+        Artefact returnedArtefact = publicationCreationRunner.run(artefact, PAYLOAD, true);
 
         SoftAssertions softly = new SoftAssertions();
 
@@ -128,7 +128,7 @@ class PublicationCreationRunnerTest {
         doThrow(CannotAcquireLockException.class).when(publicationService).createPublication(artefact, PAYLOAD);
         when(jsonExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
 
-        assertThatThrownBy(() -> publicationCreationRunner.run(artefact, PAYLOAD))
+        assertThatThrownBy(() -> publicationCreationRunner.run(artefact, PAYLOAD, true))
             .as(EXCEPTION_MESSAGE)
             .isInstanceOf(CreateArtefactConflictException.class)
             .hasMessage(JSON_PUBLICATION_DEADLOCK);
@@ -145,7 +145,7 @@ class PublicationCreationRunnerTest {
         doThrow(DataIntegrityViolationException.class).when(publicationService).createPublication(artefact, PAYLOAD);
         when(jsonExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
 
-        assertThatThrownBy(() -> publicationCreationRunner.run(artefact, PAYLOAD))
+        assertThatThrownBy(() -> publicationCreationRunner.run(artefact, PAYLOAD, true))
             .as(EXCEPTION_MESSAGE)
             .isInstanceOf(CreateArtefactConflictException.class)
             .hasMessage(JSON_PUBLICATION_DEADLOCK);
@@ -161,7 +161,7 @@ class PublicationCreationRunnerTest {
         artefact.setPayloadSize(PAYLOAD_SIZE_OVER_LIMIT);
         when(publicationService.createPublication(artefact, PAYLOAD)).thenReturn(artefact);
 
-        Artefact returnedArtefact = publicationCreationRunner.run(artefact, PAYLOAD);
+        Artefact returnedArtefact = publicationCreationRunner.run(artefact, PAYLOAD, true);
 
         SoftAssertions softly = new SoftAssertions();
 

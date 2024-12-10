@@ -193,7 +193,7 @@ public class PublicationController {
         validationService.validateBody(payload, initialHeaders);
         Artefact artefact = createPublicationMetadataFromHeaders(headers, payload.length());
 
-        Artefact createdItem = publicationCreationRunner.run(artefact, payload);
+        Artefact createdItem = publicationCreationRunner.run(artefact, payload, true);
         logManualUpload(publicationService.maskEmail(issuerEmail), createdItem.getArtefactId().toString());
 
         // Process the created artefact to generate PDF/Excel files and check/trigger subscription management

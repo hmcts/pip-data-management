@@ -39,17 +39,6 @@ public class PublicationCreationRunner {
      *
      * @param artefact The artefact that needs to be created.
      * @param payload  The payload for the artefact that needs to be created.
-     * @return Returns the artefact that was created.
-     */
-    public Artefact run(Artefact artefact, String payload) {
-        return run(artefact, payload, true);
-    }
-
-    /**
-     * Starts the json publication creation process.
-     *
-     * @param artefact The artefact that needs to be created.
-     * @param payload  The payload for the artefact that needs to be created.
      * @param extractSearchTerms  TRUE if extracting the search terms for subscription search.
      * @return Returns the artefact that was created.
      */
