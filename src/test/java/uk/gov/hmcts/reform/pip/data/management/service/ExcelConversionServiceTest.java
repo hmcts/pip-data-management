@@ -168,4 +168,41 @@ class ExcelConversionServiceTest {
             softly.assertAll();
         }
     }
+
+    @Test
+    void shouldConvertExcelTableWithCellsInVariousFormatToJsonString() throws IOException {
+        try (InputStream inputStream = this.getClass()
+            .getClassLoader()
+            .getResourceAsStream("excel/tableCellsInVariousFormats.xlsx")) {
+            MultipartFile file = new MockMultipartFile(FILE, FILE_NAME, FILE_TYPE, IOUtils.toByteArray(inputStream));
+
+            String json = excelConversionService.convert(file);
+            List<Map<String, String>> results = OBJECT_MAPPER.readValue(json, new TypeReference<>(){});
+
+            SoftAssertions softly = new SoftAssertions();
+            Map<String, String> firstRow = results.get(0);
+
+            softly.assertThat(firstRow.get("date"))
+                .as(CELL_MATCH_MESSAGE)
+                .isEqualTo("11/01/2025");
+
+            softly.assertThat(firstRow.get("time"))
+                .as(CELL_MATCH_MESSAGE)
+                .isEqualTo("10:30am");
+
+            softly.assertThat(firstRow.get("number"))
+                .as(CELL_MATCH_MESSAGE)
+                .isEqualTo("1");
+
+            softly.assertThat(firstRow.get("boolean"))
+                .as(CELL_MATCH_MESSAGE)
+                .isEqualTo("True");
+
+            softly.assertThat(firstRow.get("string"))
+                .as(CELL_MATCH_MESSAGE)
+                .isEqualTo("Test string");
+
+            softly.assertAll();
+        }
+    }
 }

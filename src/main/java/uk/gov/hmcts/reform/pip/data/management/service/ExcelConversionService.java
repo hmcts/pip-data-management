@@ -3,6 +3,8 @@ package uk.gov.hmcts.reform.pip.data.management.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.CaseFormat;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -12,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ExcelConversionException;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -73,9 +76,29 @@ public class ExcelConversionService {
 
         for (int colNumber = firstColumnNumber; colNumber < row.getLastCellNum(); colNumber++) {
             Cell cell = row.getCell(colNumber, Row.MissingCellPolicy.RETURN_NULL_AND_BLANK);
-            String value = cell == null ? "" : cell.getStringCellValue();
-            rowData.add(value);
+
+
+            String cellValue = cell == null ? "" : switch (cell.getCellType()) {
+                case CellType.NUMERIC -> formatNumericCell(cell);
+                case CellType.BOOLEAN -> {
+                    cell.setCellType(CellType.STRING);
+                    yield CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL, cell.getStringCellValue());
+                }
+                default -> cell.getStringCellValue();
+            };
+
+            rowData.add(cellValue);
         }
         return rowData;
+    }
+
+    private String formatNumericCell(Cell cell) {
+        if (DateUtil.isCellDateFormatted(cell)) {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.UK);
+            return dateFormat.format(cell.getDateCellValue());
+        } else {
+            cell.setCellType(CellType.STRING);
+            return cell.getStringCellValue();
+        }
     }
 }
