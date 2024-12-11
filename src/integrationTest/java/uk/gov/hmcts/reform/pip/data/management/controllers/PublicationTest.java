@@ -152,7 +152,7 @@ class PublicationTest extends IntegrationTestBase {
 
     private static MockMultipartFile createExcelMultipartFile() throws IOException {
         try (InputStream inputStream = PublicationTest.class.getClassLoader()
-            .getResourceAsStream("data/excelTable.xlsx")) {
+            .getResourceAsStream("data/non-strategic/cst-weekly-hearing-list/cstWeeklyHearingList.xlsx")) {
             return new MockMultipartFile(
                 "file", "TestFileName.xlsx", EXCEL_FILE_TYPE,
                 org.testcontainers.shaded.org.apache.commons.io.IOUtils.toByteArray(inputStream)
@@ -503,7 +503,7 @@ class PublicationTest extends IntegrationTestBase {
             .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
             .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO)
             .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
-            .header(PublicationConfiguration.LIST_TYPE, LIST_TYPE)
+            .header(PublicationConfiguration.LIST_TYPE, ListType.CST_WEEKLY_HEARING_LIST)
             .header(PublicationConfiguration.COURT_ID, COURT_ID)
             .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
@@ -542,7 +542,7 @@ class PublicationTest extends IntegrationTestBase {
         mockHttpServletRequestBuilder.header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID);
         mockHttpServletRequestBuilder.header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO);
         mockHttpServletRequestBuilder.header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM);
-        mockHttpServletRequestBuilder.header(PublicationConfiguration.LIST_TYPE, LIST_TYPE);
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.LIST_TYPE, ListType.CST_WEEKLY_HEARING_LIST);
         mockHttpServletRequestBuilder.header(PublicationConfiguration.COURT_ID, COURT_ID);
         mockHttpServletRequestBuilder.header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE);
         mockHttpServletRequestBuilder.header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE);
@@ -563,7 +563,7 @@ class PublicationTest extends IntegrationTestBase {
         mockHttpServletRequestBuilder.header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID);
         mockHttpServletRequestBuilder.header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO.plusMonths(1));
         mockHttpServletRequestBuilder.header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM);
-        mockHttpServletRequestBuilder.header(PublicationConfiguration.LIST_TYPE, LIST_TYPE);
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.LIST_TYPE, ListType.CST_WEEKLY_HEARING_LIST);
         mockHttpServletRequestBuilder.header(PublicationConfiguration.COURT_ID, COURT_ID);
         mockHttpServletRequestBuilder.header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE);
         mockHttpServletRequestBuilder.header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE);

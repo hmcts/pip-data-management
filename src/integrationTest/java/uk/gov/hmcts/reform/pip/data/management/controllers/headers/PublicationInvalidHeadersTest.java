@@ -99,14 +99,13 @@ class PublicationInvalidHeadersTest extends IntegrationBasicTestBase {
         httpHeaders.add(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO.toString());
         httpHeaders.add(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM.toString());
         httpHeaders.add(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE.toString());
-        httpHeaders.add(PublicationConfiguration.LIST_TYPE, LIST_TYPE.toString());
         httpHeaders.add(PublicationConfiguration.COURT_ID, COURT_ID);
         httpHeaders.add(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE.toString());
     }
 
     private static MockMultipartFile createExcelMultipartFile() throws IOException {
         try (InputStream inputStream = PublicationInvalidHeadersTest.class.getClassLoader()
-            .getResourceAsStream("data/excelTable.xlsx")) {
+            .getResourceAsStream("data/non-strategic/cst-weekly-hearing-list/cstWeeklyHearingList.xlsx")) {
             return new MockMultipartFile(
                 "file", "TestFileName.xlsx", EXCEL_FILE_TYPE,
                 org.testcontainers.shaded.org.apache.commons.io.IOUtils.toByteArray(inputStream)
@@ -117,11 +116,13 @@ class PublicationInvalidHeadersTest extends IntegrationBasicTestBase {
     @DisplayName("Should return a 400 Bad Request if an invalid artefact type is provided")
     @ParameterizedTest
     @MethodSource(PARAMETERS)
-    void testInvalidArtefactType(String path, Object content, MediaType mediaType) throws Exception {
+    void testInvalidArtefactType(String path, Object content, MediaType mediaType, ListType listType)
+        throws Exception {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MediaType.APPLICATION_JSON.equals(mediaType)
             ? MockMvcRequestBuilders.post(path).content((String) content)
             : MockMvcRequestBuilders.multipart(path).file((MockMultipartFile) content);
 
+        httpHeaders.add(PublicationConfiguration.LIST_TYPE, listType.toString());
         httpHeaders.set(PublicationConfiguration.TYPE_HEADER, TEST_VALUE);
         mockHttpServletRequestBuilder.headers(httpHeaders);
         mockHttpServletRequestBuilder.contentType(mediaType);
@@ -142,11 +143,12 @@ class PublicationInvalidHeadersTest extends IntegrationBasicTestBase {
     @DisplayName("Should return a 400 Bad Request if an invalid display to is provided")
     @ParameterizedTest
     @MethodSource(PARAMETERS)
-    void testInvalidDisplayTo(String path, Object content, MediaType mediaType) throws Exception {
+    void testInvalidDisplayTo(String path, Object content, MediaType mediaType, ListType listType) throws Exception {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MediaType.APPLICATION_JSON.equals(mediaType)
             ? MockMvcRequestBuilders.post(path).content((String) content)
             : MockMvcRequestBuilders.multipart(path).file((MockMultipartFile) content);
 
+        httpHeaders.add(PublicationConfiguration.LIST_TYPE, listType.toString());
         httpHeaders.set(PublicationConfiguration.DISPLAY_TO_HEADER, TEST_VALUE);
         mockHttpServletRequestBuilder.headers(httpHeaders);
         mockHttpServletRequestBuilder.contentType(mediaType);
@@ -167,11 +169,12 @@ class PublicationInvalidHeadersTest extends IntegrationBasicTestBase {
     @DisplayName("Should return a 400 Bad Request if an invalid display from is provided")
     @ParameterizedTest
     @MethodSource(PARAMETERS)
-    void testInvalidDisplayFrom(String path, Object content, MediaType mediaType) throws Exception {
+    void testInvalidDisplayFrom(String path, Object content, MediaType mediaType, ListType listType) throws Exception {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MediaType.APPLICATION_JSON.equals(mediaType)
             ? MockMvcRequestBuilders.post(path).content((String) content)
             : MockMvcRequestBuilders.multipart(path).file((MockMultipartFile) content);
 
+        httpHeaders.add(PublicationConfiguration.LIST_TYPE, listType.toString());
         httpHeaders.set(PublicationConfiguration.DISPLAY_FROM_HEADER, TEST_VALUE);
         mockHttpServletRequestBuilder.headers(httpHeaders);
         mockHttpServletRequestBuilder.contentType(mediaType);
@@ -192,11 +195,12 @@ class PublicationInvalidHeadersTest extends IntegrationBasicTestBase {
     @DisplayName("Should return a 400 Bad Request if an invalid content date is provided")
     @ParameterizedTest
     @MethodSource(PARAMETERS)
-    void testInvalidContentDate(String path, Object content, MediaType mediaType) throws Exception {
+    void testInvalidContentDate(String path, Object content, MediaType mediaType, ListType listType) throws Exception {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MediaType.APPLICATION_JSON.equals(mediaType)
             ? MockMvcRequestBuilders.post(path).content((String) content)
             : MockMvcRequestBuilders.multipart(path).file((MockMultipartFile) content);
 
+        httpHeaders.add(PublicationConfiguration.LIST_TYPE, listType.toString());
         httpHeaders.set(PublicationConfiguration.CONTENT_DATE, TEST_VALUE);
         mockHttpServletRequestBuilder.headers(httpHeaders);
         mockHttpServletRequestBuilder.contentType(mediaType);
@@ -217,11 +221,13 @@ class PublicationInvalidHeadersTest extends IntegrationBasicTestBase {
     @DisplayName("Should return a 400 Bad Request if an invalid language is provided")
     @ParameterizedTest
     @MethodSource(PARAMETERS)
-    void testInvalidLanguageHeader(String path, Object content, MediaType mediaType) throws Exception {
+    void testInvalidLanguageHeader(String path, Object content, MediaType mediaType, ListType listType)
+        throws Exception {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MediaType.APPLICATION_JSON.equals(mediaType)
             ? MockMvcRequestBuilders.post(path).content((String) content)
             : MockMvcRequestBuilders.multipart(path).file((MockMultipartFile) content);
 
+        httpHeaders.add(PublicationConfiguration.LIST_TYPE, listType.toString());
         httpHeaders.set(PublicationConfiguration.LANGUAGE_HEADER, TEST_VALUE);
         mockHttpServletRequestBuilder.headers(httpHeaders);
         mockHttpServletRequestBuilder.contentType(mediaType);
@@ -243,11 +249,13 @@ class PublicationInvalidHeadersTest extends IntegrationBasicTestBase {
     @DisplayName("Should return a 400 Bad Request if an invalid sensitivity is provided")
     @ParameterizedTest
     @MethodSource(PARAMETERS)
-    void testInvalidSensitivityHeader(String path, Object content, MediaType mediaType) throws Exception {
+    void testInvalidSensitivityHeader(String path, Object content, MediaType mediaType, ListType listType)
+        throws Exception {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MediaType.APPLICATION_JSON.equals(mediaType)
             ? MockMvcRequestBuilders.post(path).content((String) content)
             : MockMvcRequestBuilders.multipart(path).file((MockMultipartFile) content);
 
+        httpHeaders.add(PublicationConfiguration.LIST_TYPE, listType.toString());
         httpHeaders.set(PublicationConfiguration.SENSITIVITY_HEADER, TEST_VALUE);
         mockHttpServletRequestBuilder.headers(httpHeaders);
         mockHttpServletRequestBuilder.contentType(mediaType);
@@ -269,9 +277,10 @@ class PublicationInvalidHeadersTest extends IntegrationBasicTestBase {
 
     private static Stream<Arguments> parameters() {
         return Stream.of(
-            Arguments.of(PUBLICATION_URL, payload, MediaType.APPLICATION_JSON),
-            Arguments.of(PUBLICATION_URL, file, MediaType.MULTIPART_FORM_DATA),
-            Arguments.of(NON_STRATEGIC_PUBLICATION_URL, excelFile, MediaType.MULTIPART_FORM_DATA)
+            Arguments.of(PUBLICATION_URL, payload, MediaType.APPLICATION_JSON, LIST_TYPE),
+            Arguments.of(PUBLICATION_URL, file, MediaType.MULTIPART_FORM_DATA, LIST_TYPE),
+            Arguments.of(NON_STRATEGIC_PUBLICATION_URL, excelFile, MediaType.MULTIPART_FORM_DATA,
+                         ListType.CST_WEEKLY_HEARING_LIST)
         );
     }
 }

@@ -86,7 +86,6 @@ public class ValidationService {
         return headers;
     }
 
-
     /**
      * By default, spring does not validate empty strings using the required flags in the @RequestHeader. Therefore
      * this check is required to validate that they are not empty
@@ -153,17 +152,23 @@ public class ValidationService {
      * Validates a JSON body.
      *
      * @param jsonPayload The JSON body to validate.
+     * @param headers The headers of the publication.
+     * @param validateMasterSchema True if master schema should be used in validation too
      */
-    public void validateBody(String jsonPayload, HeaderGroup headers) {
+    public void validateBody(String jsonPayload, HeaderGroup headers, boolean validateMasterSchema) {
         Map<String, String> propertiesMap = headers.getAppInsightsHeaderMap();
         try {
             Set<String> errors = new HashSet<>();
             JsonNode json = new ObjectMapper().readTree(jsonPayload);
 
-            masterSchema.validate(json).forEach(vm ->  errors.add(vm.getMessage()));
+            if (validateMasterSchema) {
+                masterSchema.validate(json).forEach(vm -> errors.add(vm.getMessage()));
+            }
 
             if (validationSchemas.containsKey(headers.getListType())) {
-                validationSchemas.get(headers.getListType()).validate(json).forEach(vm ->  errors.add(vm.getMessage()));
+                validationSchemas.get(headers.getListType())
+                    .validate(json)
+                    .forEach(vm ->  errors.add(vm.getMessage()));
             }
 
             if (!errors.isEmpty()) {
@@ -171,7 +176,6 @@ public class ValidationService {
                 telemetry.trackTrace(jsonPayload, SeverityLevel.Error, propertiesMap);
                 throw new PayloadValidationException(String.join(", ", errors));
             }
-
         } catch (IOException exception) {
             propertiesMap.put("ERROR", exception.getMessage());
             telemetry.trackTrace(jsonPayload, SeverityLevel.Error, propertiesMap);

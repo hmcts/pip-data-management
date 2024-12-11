@@ -137,6 +137,8 @@ validations:
     OPA_PRESS_LIST: "schemas/opa_press_list.json"
     OPA_PUBLIC_LIST: "schemas/opa_public_list.json"
     OPA_RESULTS: "schemas/opa_results.json"
+    CST_WEEKLY_HEARING_LIST: "schemas/non-strategic/cst_weekly_hearing_list.json"
+    PHT_WEEKLY_HEARING_LIST: "schemas/non-strategic/pht_weekly_hearing_list.json"
 
 springdoc:
   swagger-ui:

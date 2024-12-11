@@ -23,8 +23,8 @@ class ExcelConversionServiceTest {
     private static final String CELL_MATCH_MESSAGE = "Cell value does not match";
     private static final String CELL_EMPTY_MESSAGE = "Cell value is not empty";
 
-    private static final String HEADER1 = "Header1";
-    private static final String HEADER2 = "Header2";
+    private static final String HEADER1 = "header1";
+    private static final String HEADER2 = "header2";
     private static final String ROW1A = "Row1a";
     private static final String ROW1B = "Row1b";
     private static final String ROW2A = "Row2a";
@@ -164,6 +164,53 @@ class ExcelConversionServiceTest {
             softly.assertThat(thirdRow.get(HEADER2))
                 .as(CELL_MATCH_MESSAGE)
                 .isEqualTo(ROW3B);
+
+            softly.assertAll();
+        }
+    }
+
+    @Test
+    void shouldConvertExcelTableWithCellsInVariousFormatToJsonString() throws IOException {
+        try (InputStream inputStream = this.getClass()
+            .getClassLoader()
+            .getResourceAsStream("excel/tableCellsInVariousFormats.xlsx")) {
+            MultipartFile file = new MockMultipartFile(FILE, FILE_NAME, FILE_TYPE, IOUtils.toByteArray(inputStream));
+
+            String json = excelConversionService.convert(file);
+            List<Map<String, String>> results = OBJECT_MAPPER.readValue(json, new TypeReference<>(){});
+
+            SoftAssertions softly = new SoftAssertions();
+            Map<String, String> firstRow = results.get(0);
+
+            softly.assertThat(firstRow.get("date"))
+                .as(CELL_MATCH_MESSAGE)
+                .isEqualTo("11/01/2025");
+
+            softly.assertThat(firstRow.get("time"))
+                .as(CELL_MATCH_MESSAGE)
+                .isEqualTo("10:30am");
+
+            softly.assertThat(firstRow.get("number"))
+                .as(CELL_MATCH_MESSAGE)
+                .isEqualTo("1");
+
+            softly.assertThat(firstRow.get("boolean"))
+                .as(CELL_MATCH_MESSAGE)
+                .isEqualTo("TRUE");
+
+            softly.assertThat(firstRow.get("string"))
+                .as(CELL_MATCH_MESSAGE)
+                .isEqualTo("Test string");
+
+            Map<String, String> secondRow = results.get(1);
+
+            softly.assertThat(secondRow.get("date"))
+                .as(CELL_MATCH_MESSAGE)
+                .isEqualTo("12/01/2025");
+
+            softly.assertThat(secondRow.get("time"))
+                .as(CELL_MATCH_MESSAGE)
+                .isEqualTo("3:30pm");
 
             softly.assertAll();
         }

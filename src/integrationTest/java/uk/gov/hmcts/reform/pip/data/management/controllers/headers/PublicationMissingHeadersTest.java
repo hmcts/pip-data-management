@@ -94,14 +94,13 @@ class PublicationMissingHeadersTest extends IntegrationBasicTestBase {
         httpHeaders.add(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO.toString());
         httpHeaders.add(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM.toString());
         httpHeaders.add(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE.toString());
-        httpHeaders.add(PublicationConfiguration.LIST_TYPE, LIST_TYPE.toString());
         httpHeaders.add(PublicationConfiguration.COURT_ID, COURT_ID);
         httpHeaders.add(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE.toString());
     }
 
     private static MockMultipartFile createExcelMultipartFile() throws IOException {
         try (InputStream inputStream = PublicationInvalidHeadersTest.class.getClassLoader()
-            .getResourceAsStream("data/excelTable.xlsx")) {
+            .getResourceAsStream("data/non-strategic/cst-weekly-hearing-list/cstWeeklyHearingList.xlsx")) {
             return new MockMultipartFile(
                 "file", "TestFileName.xlsx", EXCEL_FILE_TYPE,
                 org.testcontainers.shaded.org.apache.commons.io.IOUtils.toByteArray(inputStream)
@@ -112,11 +111,12 @@ class PublicationMissingHeadersTest extends IntegrationBasicTestBase {
     @DisplayName("Should return a 400 Bad Request if the provenance header is empty")
     @ParameterizedTest
     @MethodSource(PARAMETERS)
-    void testEmptyProvenance(String path, Object content, MediaType mediaType) throws Exception {
+    void testEmptyProvenance(String path, Object content, MediaType mediaType, ListType listType) throws Exception {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MediaType.APPLICATION_JSON.equals(mediaType)
             ? MockMvcRequestBuilders.post(path).content((String) content)
             : MockMvcRequestBuilders.multipart(path).file((MockMultipartFile) content);
 
+        httpHeaders.add(PublicationConfiguration.LIST_TYPE, listType.toString());
         httpHeaders.set(PublicationConfiguration.PROVENANCE_HEADER, EMPTY_VALUE);
         mockHttpServletRequestBuilder.headers(httpHeaders);
         mockHttpServletRequestBuilder.contentType(mediaType);
@@ -136,11 +136,12 @@ class PublicationMissingHeadersTest extends IntegrationBasicTestBase {
     @DisplayName("Should return a 400 Bad Request if the provenance header is missing")
     @ParameterizedTest
     @MethodSource(PARAMETERS)
-    void testMissingProvenance(String path, Object content, MediaType mediaType) throws Exception {
+    void testMissingProvenance(String path, Object content, MediaType mediaType, ListType listType) throws Exception {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MediaType.APPLICATION_JSON.equals(mediaType)
             ? MockMvcRequestBuilders.post(path).content((String) content)
             : MockMvcRequestBuilders.multipart(path).file((MockMultipartFile) content);
 
+        httpHeaders.add(PublicationConfiguration.LIST_TYPE, listType.toString());
         httpHeaders.remove(PublicationConfiguration.PROVENANCE_HEADER);
         mockHttpServletRequestBuilder.headers(httpHeaders);
         mockHttpServletRequestBuilder.contentType(mediaType);
@@ -160,11 +161,12 @@ class PublicationMissingHeadersTest extends IntegrationBasicTestBase {
     @DisplayName("Should return a 400 Bad Request if the language header is empty")
     @ParameterizedTest
     @MethodSource(PARAMETERS)
-    void testEmptyLanguage(String path, Object content, MediaType mediaType) throws Exception {
+    void testEmptyLanguage(String path, Object content, MediaType mediaType, ListType listType) throws Exception {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MediaType.APPLICATION_JSON.equals(mediaType)
             ? MockMvcRequestBuilders.post(path).content((String) content)
             : MockMvcRequestBuilders.multipart(path).file((MockMultipartFile) content);
 
+        httpHeaders.add(PublicationConfiguration.LIST_TYPE, listType.toString());
         httpHeaders.set(PublicationConfiguration.LANGUAGE_HEADER, EMPTY_VALUE);
         mockHttpServletRequestBuilder.headers(httpHeaders);
         mockHttpServletRequestBuilder.contentType(mediaType);
@@ -184,11 +186,12 @@ class PublicationMissingHeadersTest extends IntegrationBasicTestBase {
     @DisplayName("Should return a 400 Bad Request if the language header is missing")
     @ParameterizedTest
     @MethodSource(PARAMETERS)
-    void testMissingLanguage(String path, Object content, MediaType mediaType) throws Exception {
+    void testMissingLanguage(String path, Object content, MediaType mediaType, ListType listType) throws Exception {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MediaType.APPLICATION_JSON.equals(mediaType)
             ? MockMvcRequestBuilders.post(path).content((String) content)
             : MockMvcRequestBuilders.multipart(path).file((MockMultipartFile) content);
 
+        httpHeaders.add(PublicationConfiguration.LIST_TYPE, listType.toString());
         httpHeaders.remove(PublicationConfiguration.LANGUAGE_HEADER);
         mockHttpServletRequestBuilder.headers(httpHeaders);
         mockHttpServletRequestBuilder.contentType(mediaType);
@@ -208,11 +211,12 @@ class PublicationMissingHeadersTest extends IntegrationBasicTestBase {
     @DisplayName("Should return a 400 Bad Request if the artefact type header is empty")
     @ParameterizedTest
     @MethodSource(PARAMETERS)
-    void testEmptyArtefactType(String path, Object content, MediaType mediaType) throws Exception {
+    void testEmptyArtefactType(String path, Object content, MediaType mediaType, ListType listType) throws Exception {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MediaType.APPLICATION_JSON.equals(mediaType)
             ? MockMvcRequestBuilders.post(path).content((String) content)
             : MockMvcRequestBuilders.multipart(path).file((MockMultipartFile) content);
 
+        httpHeaders.add(PublicationConfiguration.LIST_TYPE, listType.toString());
         httpHeaders.set(PublicationConfiguration.TYPE_HEADER, EMPTY_VALUE);
         mockHttpServletRequestBuilder.headers(httpHeaders);
         mockHttpServletRequestBuilder.contentType(mediaType);
@@ -232,11 +236,12 @@ class PublicationMissingHeadersTest extends IntegrationBasicTestBase {
     @DisplayName("Should return a 400 Bad Request if the artefact type header is missing")
     @ParameterizedTest
     @MethodSource(PARAMETERS)
-    void testMissingArtefactType(String path, Object content, MediaType mediaType) throws Exception {
+    void testMissingArtefactType(String path, Object content, MediaType mediaType, ListType listType) throws Exception {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MediaType.APPLICATION_JSON.equals(mediaType)
             ? MockMvcRequestBuilders.post(path).content((String) content)
             : MockMvcRequestBuilders.multipart(path).file((MockMultipartFile) content);
 
+        httpHeaders.add(PublicationConfiguration.LIST_TYPE, listType.toString());
         httpHeaders.remove(PublicationConfiguration.TYPE_HEADER);
         mockHttpServletRequestBuilder.headers(httpHeaders);
         mockHttpServletRequestBuilder.contentType(mediaType);
@@ -256,7 +261,7 @@ class PublicationMissingHeadersTest extends IntegrationBasicTestBase {
     @DisplayName("Should return a 400 Bad Request if the list type header is empty")
     @ParameterizedTest
     @MethodSource(PARAMETERS)
-    void testEmptyListType(String path, Object content, MediaType mediaType) throws Exception {
+    void testEmptyListType(String path, Object content, MediaType mediaType, ListType listType) throws Exception {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MediaType.APPLICATION_JSON.equals(mediaType)
             ? MockMvcRequestBuilders.post(path).content((String) content)
             : MockMvcRequestBuilders.multipart(path).file((MockMultipartFile) content);
@@ -280,12 +285,11 @@ class PublicationMissingHeadersTest extends IntegrationBasicTestBase {
     @DisplayName("Should return a 400 Bad Request if the list type header is missing")
     @ParameterizedTest
     @MethodSource(PARAMETERS)
-    void testMissingListType(String path, Object content, MediaType mediaType) throws Exception {
+    void testMissingListType(String path, Object content, MediaType mediaType, ListType listType) throws Exception {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MediaType.APPLICATION_JSON.equals(mediaType)
             ? MockMvcRequestBuilders.post(path).content((String) content)
             : MockMvcRequestBuilders.multipart(path).file((MockMultipartFile) content);
 
-        httpHeaders.remove(PublicationConfiguration.LIST_TYPE);
         mockHttpServletRequestBuilder.headers(httpHeaders);
         mockHttpServletRequestBuilder.contentType(mediaType);
 
@@ -304,11 +308,12 @@ class PublicationMissingHeadersTest extends IntegrationBasicTestBase {
     @DisplayName("Should return a 400 Bad Request if the content date header is empty")
     @ParameterizedTest
     @MethodSource(PARAMETERS)
-    void testEmptyContentDate(String path, Object content, MediaType mediaType) throws Exception {
+    void testEmptyContentDate(String path, Object content, MediaType mediaType, ListType listType) throws Exception {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MediaType.APPLICATION_JSON.equals(mediaType)
             ? MockMvcRequestBuilders.post(path).content((String) content)
             : MockMvcRequestBuilders.multipart(path).file((MockMultipartFile) content);
 
+        httpHeaders.add(PublicationConfiguration.LIST_TYPE, listType.toString());
         httpHeaders.set(PublicationConfiguration.CONTENT_DATE, EMPTY_VALUE);
         mockHttpServletRequestBuilder.headers(httpHeaders);
         mockHttpServletRequestBuilder.contentType(mediaType);
@@ -328,11 +333,12 @@ class PublicationMissingHeadersTest extends IntegrationBasicTestBase {
     @DisplayName("Should return a 400 Bad Request if the content date header is missing")
     @ParameterizedTest
     @MethodSource(PARAMETERS)
-    void testMissingContentDate(String path, Object content, MediaType mediaType) throws Exception {
+    void testMissingContentDate(String path, Object content, MediaType mediaType, ListType listType) throws Exception {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MediaType.APPLICATION_JSON.equals(mediaType)
             ? MockMvcRequestBuilders.post(path).content((String) content)
             : MockMvcRequestBuilders.multipart(path).file((MockMultipartFile) content);
 
+        httpHeaders.add(PublicationConfiguration.LIST_TYPE, listType.toString());
         httpHeaders.remove(PublicationConfiguration.CONTENT_DATE);
         mockHttpServletRequestBuilder.headers(httpHeaders);
         mockHttpServletRequestBuilder.contentType(mediaType);
@@ -352,11 +358,12 @@ class PublicationMissingHeadersTest extends IntegrationBasicTestBase {
     @DisplayName("Should return a 400 Bad Request if the court id header is empty")
     @ParameterizedTest
     @MethodSource(PARAMETERS)
-    void testEmptyCourtId(String path, Object content, MediaType mediaType) throws Exception {
+    void testEmptyCourtId(String path, Object content, MediaType mediaType, ListType listType) throws Exception {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MediaType.APPLICATION_JSON.equals(mediaType)
             ? MockMvcRequestBuilders.post(path).content((String) content)
             : MockMvcRequestBuilders.multipart(path).file((MockMultipartFile) content);
 
+        httpHeaders.add(PublicationConfiguration.LIST_TYPE, listType.toString());
         httpHeaders.set(PublicationConfiguration.COURT_ID, EMPTY_VALUE);
         mockHttpServletRequestBuilder.headers(httpHeaders);
         mockHttpServletRequestBuilder.contentType(mediaType);
@@ -376,11 +383,12 @@ class PublicationMissingHeadersTest extends IntegrationBasicTestBase {
     @DisplayName("Should return a 400 Bad Request if the court id header is missing")
     @ParameterizedTest
     @MethodSource(PARAMETERS)
-    void testMissingCourtId(String path, Object content, MediaType mediaType) throws Exception {
+    void testMissingCourtId(String path, Object content, MediaType mediaType, ListType listType) throws Exception {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MediaType.APPLICATION_JSON.equals(mediaType)
             ? MockMvcRequestBuilders.post(path).content((String) content)
             : MockMvcRequestBuilders.multipart(path).file((MockMultipartFile) content);
 
+        httpHeaders.add(PublicationConfiguration.LIST_TYPE, listType.toString());
         httpHeaders.remove(PublicationConfiguration.COURT_ID);
         mockHttpServletRequestBuilder.headers(httpHeaders);
         mockHttpServletRequestBuilder.contentType(mediaType);
@@ -400,11 +408,12 @@ class PublicationMissingHeadersTest extends IntegrationBasicTestBase {
     @DisplayName("Should return a 400 bad request if artefact type is list and date to is empty")
     @ParameterizedTest
     @MethodSource(PARAMETERS)
-    void testDateToAbsenceList(String path, Object content, MediaType mediaType) throws Exception {
+    void testDateToAbsenceList(String path, Object content, MediaType mediaType, ListType listType) throws Exception {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MediaType.APPLICATION_JSON.equals(mediaType)
             ? MockMvcRequestBuilders.post(path).content((String) content)
             : MockMvcRequestBuilders.multipart(path).file((MockMultipartFile) content);
 
+        httpHeaders.add(PublicationConfiguration.LIST_TYPE, listType.toString());
         httpHeaders.remove(PublicationConfiguration.DISPLAY_TO_HEADER);
         mockHttpServletRequestBuilder.headers(httpHeaders);
         mockHttpServletRequestBuilder.contentType(mediaType);
@@ -423,11 +432,12 @@ class PublicationMissingHeadersTest extends IntegrationBasicTestBase {
     @DisplayName("Should return a 400 bad request if artefact type is list and date from is empty")
     @ParameterizedTest
     @MethodSource(PARAMETERS)
-    void testDateFromAbsenceList(String path, Object content, MediaType mediaType) throws Exception {
+    void testDateFromAbsenceList(String path, Object content, MediaType mediaType, ListType listType) throws Exception {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MediaType.APPLICATION_JSON.equals(mediaType)
             ? MockMvcRequestBuilders.post(path).content((String) content)
             : MockMvcRequestBuilders.multipart(path).file((MockMultipartFile) content);
 
+        httpHeaders.add(PublicationConfiguration.LIST_TYPE, listType.toString());
         httpHeaders.remove(PublicationConfiguration.DISPLAY_FROM_HEADER);
         mockHttpServletRequestBuilder.headers(httpHeaders);
         mockHttpServletRequestBuilder.contentType(mediaType);
@@ -445,9 +455,10 @@ class PublicationMissingHeadersTest extends IntegrationBasicTestBase {
 
     private static Stream<Arguments> parameters() {
         return Stream.of(
-            Arguments.of(PUBLICATION_URL, payload, MediaType.APPLICATION_JSON),
-            Arguments.of(PUBLICATION_URL, file, MediaType.MULTIPART_FORM_DATA),
-            Arguments.of(NON_STRATEGIC_PUBLICATION_URL, excelFile, MediaType.MULTIPART_FORM_DATA)
+            Arguments.of(PUBLICATION_URL, payload, MediaType.APPLICATION_JSON, LIST_TYPE),
+            Arguments.of(PUBLICATION_URL, file, MediaType.MULTIPART_FORM_DATA, LIST_TYPE),
+            Arguments.of(NON_STRATEGIC_PUBLICATION_URL, excelFile, MediaType.MULTIPART_FORM_DATA,
+                         ListType.CST_WEEKLY_HEARING_LIST)
         );
     }
 }

@@ -85,8 +85,7 @@ class PrimaryHealthListTest extends IntegrationBasicTestBase {
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson,
-                                                            headerGroup),
+                             validationService.validateBody(listJson, headerGroup, true),
                          PRIMARY_HEALTH_LIST_INVALID_MESSAGE
             );
         }
@@ -103,8 +102,7 @@ class PrimaryHealthListTest extends IntegrationBasicTestBase {
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson,
-                                                            headerGroup),
+                             validationService.validateBody(listJson, headerGroup, true),
                          PRIMARY_HEALTH_LIST_INVALID_MESSAGE
             );
         }
@@ -121,8 +119,7 @@ class PrimaryHealthListTest extends IntegrationBasicTestBase {
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson,
-                                                            headerGroup),
+                             validationService.validateBody(listJson, headerGroup, true),
                          PRIMARY_HEALTH_LIST_INVALID_MESSAGE
             );
         }
@@ -139,8 +136,7 @@ class PrimaryHealthListTest extends IntegrationBasicTestBase {
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson,
-                                                            headerGroup),
+                             validationService.validateBody(listJson, headerGroup, true),
                          PRIMARY_HEALTH_LIST_INVALID_MESSAGE
             );
         }
@@ -158,8 +154,7 @@ class PrimaryHealthListTest extends IntegrationBasicTestBase {
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson,
-                                                            headerGroup),
+                             validationService.validateBody(listJson, headerGroup, true),
                          PRIMARY_HEALTH_LIST_INVALID_MESSAGE
             );
         }
@@ -177,8 +172,7 @@ class PrimaryHealthListTest extends IntegrationBasicTestBase {
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson,
-                                                            headerGroup),
+                             validationService.validateBody(listJson, headerGroup, true),
                          PRIMARY_HEALTH_LIST_INVALID_MESSAGE
             );
         }
@@ -196,8 +190,7 @@ class PrimaryHealthListTest extends IntegrationBasicTestBase {
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson,
-                                                            headerGroup),
+                             validationService.validateBody(listJson, headerGroup, true),
                          PRIMARY_HEALTH_LIST_INVALID_MESSAGE
             );
         }
@@ -216,8 +209,7 @@ class PrimaryHealthListTest extends IntegrationBasicTestBase {
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson,
-                                                            headerGroup),
+                             validationService.validateBody(listJson, headerGroup, true),
                          PRIMARY_HEALTH_LIST_INVALID_MESSAGE
             );
         }
@@ -236,8 +228,7 @@ class PrimaryHealthListTest extends IntegrationBasicTestBase {
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson,
-                                                            headerGroup),
+                             validationService.validateBody(listJson, headerGroup, true),
                          PRIMARY_HEALTH_LIST_INVALID_MESSAGE
             );
         }
@@ -257,8 +248,7 @@ class PrimaryHealthListTest extends IntegrationBasicTestBase {
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson,
-                                                            headerGroup),
+                             validationService.validateBody(listJson, headerGroup, true),
                          PRIMARY_HEALTH_LIST_INVALID_MESSAGE
             );
         }
@@ -278,8 +268,7 @@ class PrimaryHealthListTest extends IntegrationBasicTestBase {
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson,
-                                                            headerGroup),
+                             validationService.validateBody(listJson, headerGroup, true),
                          PRIMARY_HEALTH_LIST_INVALID_MESSAGE
             );
         }
@@ -299,8 +288,7 @@ class PrimaryHealthListTest extends IntegrationBasicTestBase {
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson,
-                                                            headerGroup),
+                             validationService.validateBody(listJson, headerGroup, true),
                          PRIMARY_HEALTH_LIST_INVALID_MESSAGE
             );
         }
@@ -320,8 +308,7 @@ class PrimaryHealthListTest extends IntegrationBasicTestBase {
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson,
-                                                            headerGroup),
+                             validationService.validateBody(listJson, headerGroup, true),
                          PRIMARY_HEALTH_LIST_INVALID_MESSAGE
             );
         }
@@ -341,8 +328,7 @@ class PrimaryHealthListTest extends IntegrationBasicTestBase {
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson,
-                                                            headerGroup),
+                             validationService.validateBody(listJson, headerGroup, true),
                          PRIMARY_HEALTH_LIST_INVALID_MESSAGE
             );
         }
@@ -363,8 +349,7 @@ class PrimaryHealthListTest extends IntegrationBasicTestBase {
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson,
-                                                            headerGroup),
+                             validationService.validateBody(listJson, headerGroup, true),
                          PRIMARY_HEALTH_LIST_INVALID_MESSAGE
             );
         }
@@ -385,8 +370,7 @@ class PrimaryHealthListTest extends IntegrationBasicTestBase {
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson,
-                                                            headerGroup),
+                             validationService.validateBody(listJson, headerGroup, true),
                          PRIMARY_HEALTH_LIST_INVALID_MESSAGE
             );
         }
@@ -407,8 +391,7 @@ class PrimaryHealthListTest extends IntegrationBasicTestBase {
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson,
-                                                            headerGroup),
+                             validationService.validateBody(listJson, headerGroup, true),
                          PRIMARY_HEALTH_LIST_INVALID_MESSAGE
             );
         }
@@ -422,7 +405,7 @@ class PrimaryHealthListTest extends IntegrationBasicTestBase {
 
             ObjectMapper mapper = new ObjectMapper();
             String listJson = mapper.readValue(text, JsonNode.class).toString();
-            assertDoesNotThrow(() -> validationService.validateBody(listJson, headerGroup),
+            assertDoesNotThrow(() -> validationService.validateBody(listJson, headerGroup, true),
                                PRIMARY_HEALTH_LIST_INVALID_MESSAGE);
         }
     }
@@ -443,7 +426,7 @@ class PrimaryHealthListTest extends IntegrationBasicTestBase {
 
             String listJson = node.toString()
                 .replaceAll(PUBLICATION_DATE_REGEX, String.format("\"publicationDate\":\"%s\"", publicationDate));
-            assertDoesNotThrow(() -> validationService.validateBody(listJson, headerGroup),
+            assertDoesNotThrow(() -> validationService.validateBody(listJson, headerGroup, true),
                                PRIMARY_HEALTH_LIST_INVALID_MESSAGE);
         }
     }
@@ -465,7 +448,8 @@ class PrimaryHealthListTest extends IntegrationBasicTestBase {
 
             String listJson = node.toString()
                 .replaceAll(PUBLICATION_DATE_REGEX, String.format("\"publicationDate\":\"%s\"", publicationDate));
-            assertThrows(PayloadValidationException.class, () -> validationService.validateBody(listJson, headerGroup),
+            assertThrows(PayloadValidationException.class,
+                         () -> validationService.validateBody(listJson, headerGroup, true),
                          PRIMARY_HEALTH_LIST_INVALID_MESSAGE);
         }
     }

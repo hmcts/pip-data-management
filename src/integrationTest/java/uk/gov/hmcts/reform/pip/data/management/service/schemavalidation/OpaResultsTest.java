@@ -30,7 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ActiveProfiles("integration-basic")
 @SpringBootTest
-class OpsResultsTest extends IntegrationBasicTestBase {
+class OpaResultsTest extends IntegrationBasicTestBase {
     private static final ObjectMapper MAPPER = new ObjectMapper();
     private static final String OPA_RESULTS_VALID_JSON = "data/opa-results/opaResults.json";
     private static final String OPA_RESULTS_LIST_WITH_NEW_LINES = "data/opa-results/opaResultsWithNewLines.json";
@@ -80,7 +80,7 @@ class OpsResultsTest extends IntegrationBasicTestBase {
 
             assertThatExceptionOfType(PayloadValidationException.class)
                 .as(OPA_RESULTS_INVALID_MESSAGE)
-                .isThrownBy(() -> validationService.validateBody(output, headerGroup));
+                .isThrownBy(() -> validationService.validateBody(output, headerGroup, true));
         }
     }
 
@@ -92,7 +92,7 @@ class OpsResultsTest extends IntegrationBasicTestBase {
 
             ObjectMapper mapper = new ObjectMapper();
             String listJson = mapper.readValue(text, JsonNode.class).toString();
-            assertDoesNotThrow(() -> validationService.validateBody(listJson, headerGroup),
+            assertDoesNotThrow(() -> validationService.validateBody(listJson, headerGroup, true),
                                OPA_RESULTS_INVALID_MESSAGE);
         }
     }
@@ -113,7 +113,7 @@ class OpsResultsTest extends IntegrationBasicTestBase {
 
             String listJson = node.toString()
                 .replaceAll(PUBLICATION_DATE_REGEX, String.format("\"publicationDate\":\"%s\"", publicationDate));
-            assertDoesNotThrow(() -> validationService.validateBody(listJson, headerGroup),
+            assertDoesNotThrow(() -> validationService.validateBody(listJson, headerGroup, true),
                                OPA_RESULTS_INVALID_MESSAGE);
         }
     }
@@ -135,7 +135,8 @@ class OpsResultsTest extends IntegrationBasicTestBase {
 
             String listJson = node.toString()
                 .replaceAll(PUBLICATION_DATE_REGEX, String.format("\"publicationDate\":\"%s\"", publicationDate));
-            assertThrows(PayloadValidationException.class, () -> validationService.validateBody(listJson, headerGroup),
+            assertThrows(PayloadValidationException.class,
+                         () -> validationService.validateBody(listJson, headerGroup, true),
                          OPA_RESULTS_INVALID_MESSAGE);
         }
     }
