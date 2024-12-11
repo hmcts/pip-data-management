@@ -87,7 +87,7 @@ public class ExcelConversionService {
                 case CellType.STRING -> cell.getStringCellValue();
                 case CellType.BLANK -> "";
                 default -> throw new ExcelConversionException(
-                    String.format("Unexpected cell type on row %s, column %s",rowNumber + 1, columnNumber + 1 ));
+                    String.format("Unexpected cell type on row %s, column %s",rowNumber + 1, columnNumber + 1));
             };
 
             rowData.add(cellValue);
@@ -98,7 +98,13 @@ public class ExcelConversionService {
     private String formatNumericCell(Cell cell) {
         if (DateUtil.isCellDateFormatted(cell)) {
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.UK);
-            return dateFormat.format(cell.getDateCellValue());
+            String value = dateFormat.format(cell.getDateCellValue());
+
+            if (value.endsWith("1899")) {
+                SimpleDateFormat timeFormat = new SimpleDateFormat("h:mma", Locale.UK);
+                value = timeFormat.format(cell.getDateCellValue());
+            }
+            return value;
         } else {
             cell.setCellType(CellType.STRING);
             return cell.getStringCellValue();

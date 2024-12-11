@@ -196,11 +196,21 @@ class ExcelConversionServiceTest {
 
             softly.assertThat(firstRow.get("boolean"))
                 .as(CELL_MATCH_MESSAGE)
-                .isEqualTo("True");
+                .isEqualTo("TRUE");
 
             softly.assertThat(firstRow.get("string"))
                 .as(CELL_MATCH_MESSAGE)
                 .isEqualTo("Test string");
+
+            Map<String, String> secondRow = results.get(1);
+
+            softly.assertThat(secondRow.get("date"))
+                .as(CELL_MATCH_MESSAGE)
+                .isEqualTo("12/01/2025");
+
+            softly.assertThat(secondRow.get("time"))
+                .as(CELL_MATCH_MESSAGE)
+                .isEqualTo("3:30pm");
 
             softly.assertAll();
         }
