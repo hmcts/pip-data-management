@@ -39,14 +39,14 @@ public class ExcelConversionService {
         try (Workbook workbook = new XSSFWorkbook(file.getInputStream())) {
             Sheet sheet = workbook.getSheetAt(0);
             int headerRowNumber = sheet.getFirstRowNum();
-            Row headerRow = sheet.getRow(headerRowNumber);
-            int firstColumnNumber = headerRow.getFirstCellNum();
+            int firstColumnNumber = sheet.getRow(headerRowNumber)
+                .getFirstCellNum();
 
-            List<String> headers = getExcelRow(headerRow, firstColumnNumber);
+            List<String> headers = getExcelRow(sheet, headerRowNumber, firstColumnNumber);
             List<Map<String, String>> data = new ArrayList<>();
 
             for (int rowNumber = headerRowNumber + 1; rowNumber <= sheet.getLastRowNum(); rowNumber++) {
-                List<String> row = getExcelRow(sheet.getRow(rowNumber), firstColumnNumber);
+                List<String> row = getExcelRow(sheet, rowNumber, firstColumnNumber);
                 data.add(buildRowMap(headers, row));
             }
             return OBJECT_MAPPER.writeValueAsString(data);
@@ -71,20 +71,23 @@ public class ExcelConversionService {
         return values;
     }
 
-    private List<String> getExcelRow(Row row, int firstColumnNumber) {
+    private List<String> getExcelRow(Sheet sheet, int rowNumber, int firstColumnNumber) {
         List<String> rowData = new ArrayList<>();
+        Row row = sheet.getRow(rowNumber);
 
-        for (int colNumber = firstColumnNumber; colNumber < row.getLastCellNum(); colNumber++) {
-            Cell cell = row.getCell(colNumber, Row.MissingCellPolicy.RETURN_NULL_AND_BLANK);
-
+        for (int columnNumber = firstColumnNumber; columnNumber < row.getLastCellNum(); columnNumber++) {
+            Cell cell = row.getCell(columnNumber, Row.MissingCellPolicy.RETURN_NULL_AND_BLANK);
 
             String cellValue = cell == null ? "" : switch (cell.getCellType()) {
                 case CellType.NUMERIC -> formatNumericCell(cell);
                 case CellType.BOOLEAN -> {
                     cell.setCellType(CellType.STRING);
-                    yield CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL, cell.getStringCellValue());
+                    yield cell.getStringCellValue();
                 }
-                default -> cell.getStringCellValue();
+                case CellType.STRING -> cell.getStringCellValue();
+                case CellType.BLANK -> "";
+                default -> throw new ExcelConversionException(
+                    String.format("Unexpected cell type on row %s, column %s",rowNumber + 1, columnNumber + 1 ));
             };
 
             rowData.add(cellValue);
