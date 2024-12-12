@@ -97,14 +97,10 @@ public class ExcelConversionService {
 
     private String formatNumericCell(Cell cell) {
         if (DateUtil.isCellDateFormatted(cell)) {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.UK);
-            String value = dateFormat.format(cell.getDateCellValue());
-
-            if (value.endsWith("1899")) {
-                SimpleDateFormat timeFormat = new SimpleDateFormat("h:mma", Locale.UK);
-                value = timeFormat.format(cell.getDateCellValue());
-            }
-            return value;
+            SimpleDateFormat formatter = cell.getNumericCellValue() < 1
+                ? new SimpleDateFormat("h:mma", Locale.UK)
+                : new SimpleDateFormat("dd/MM/yyyy", Locale.UK);
+            return formatter.format(cell.getDateCellValue());
         } else {
             cell.setCellType(CellType.STRING);
             return cell.getStringCellValue();
