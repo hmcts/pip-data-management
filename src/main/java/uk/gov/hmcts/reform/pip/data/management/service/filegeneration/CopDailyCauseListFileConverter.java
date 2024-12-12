@@ -19,7 +19,7 @@ public class CopDailyCauseListFileConverter implements FileConverter {
         throws IOException {
         Context context = new Context();
         Language language = Language.valueOf(metadata.get("language"));
-        languageResources.putAll(LanguageResourceHelper.readResourcesFromPath("openJusticeStatement", language));
+        languageResources.putAll(LanguageResourceHelper.readResourcesFromPath("common/openJusticeStatement", language));
 
         String publicationDate = artefact.get("document").get("publicationDate").asText();
         context.setVariable("publicationDate", DateHelper.formatTimeStampToBst(publicationDate, language,

@@ -148,8 +148,8 @@ public class PublicationFileGenerationService {
                                boolean accessibility) throws IOException {
         Map<String, Object> languageResource = LanguageResourceHelper.getLanguageResources(
             artefact.getListType(), language);
-        String html = fileConverter
-            .convert(topLevelNode, buildArtefactMetadata(artefact, location, language), languageResource);
+        String html = fileConverter.convert(topLevelNode, buildArtefactMetadata(artefact, location, language),
+                                            languageResource);
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 
             PdfRendererBuilder builder = new PdfRendererBuilder();

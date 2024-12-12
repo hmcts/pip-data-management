@@ -2,14 +2,19 @@ package uk.gov.hmcts.reform.pip.data.management.service.helpers;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ProcessingException;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.Locale;
 
 @SuppressWarnings("PMD.TooManyMethods")
@@ -143,5 +148,17 @@ public final class DateHelper {
 
         String time = dtf.format(sittingStart);
         ((ObjectNode) sitting).put("time", time);
+    }
+
+    public static String convertDateFormat(String date, String inputFormat, String outputFormat) {
+        try {
+            DateFormat originalFormat = new SimpleDateFormat(inputFormat, Locale.UK);
+            Date convertedDate = originalFormat.parse(date);
+
+            DateFormat targetFormat = new SimpleDateFormat(outputFormat, Locale.UK);
+            return targetFormat.format(convertedDate);
+        } catch (ParseException e) {
+            throw new ProcessingException("Failed to convert date format");
+        }
     }
 }

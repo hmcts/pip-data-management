@@ -47,7 +47,7 @@ class LanguageResourceHelperTest {
 
     @Test
     void shouldReadResourcesFromPath() throws IOException {
-        assertThat(LanguageResourceHelper.readResourcesFromPath("openJusticeStatement", Language.ENGLISH))
+        assertThat(LanguageResourceHelper.readResourcesFromPath("common/openJusticeStatement", Language.ENGLISH))
             .as("Result should not be empty")
             .isNotEmpty();
     }
