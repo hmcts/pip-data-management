@@ -24,15 +24,12 @@ import java.util.Map;
 @Service
 public class ExcelConversionService {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
-    private static final String SPREADSHEET_CONTENT_TYPE
+    private static final String XLSX_CONTENT_TYPE
         = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-    private static final String EXCEL_CONTENT_TYPE = "application/vnd.ms-excel";
 
     public String convert(MultipartFile file) {
         String contentType = file.getContentType();
-        if (contentType != null
-            && !SPREADSHEET_CONTENT_TYPE.equals(contentType)
-            && !contentType.contains(EXCEL_CONTENT_TYPE)) {
+        if (contentType != null && !XLSX_CONTENT_TYPE.equals(contentType)) {
             throw new ExcelConversionException("Invalid Excel file type");
         }
 
