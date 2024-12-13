@@ -22,7 +22,7 @@ public class NonStrategicListFileConverter implements FileConverter {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     @Override
-    public String convert(JsonNode jsonNode, Map<String, String> metadata, Map<String, Object> languageResources)
+    public String convert(JsonNode payload, Map<String, String> metadata, Map<String, Object> languageResources)
         throws IOException {
         Context context = new Context();
         context.setVariable("contentDate", metadata.get("contentDate"));
@@ -34,7 +34,7 @@ public class NonStrategicListFileConverter implements FileConverter {
         String resourceName = "non-strategic/" + UPPER_UNDERSCORE.to(LOWER_CAMEL, listType);
         languageResources.putAll(LanguageResourceHelper.readResourcesFromPath(resourceName, language));
 
-        List<Map<String, String>> data = OBJECT_MAPPER.convertValue(jsonNode, new TypeReference<>(){});
+        List<Map<String, String>> data = OBJECT_MAPPER.convertValue(payload, new TypeReference<>(){});
         List<Map<String, String>> formattedData = NonStrategicListFormatter.formatFields(
             data, ListType.valueOf(listType)
         );
