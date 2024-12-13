@@ -20,6 +20,9 @@ public final class NonStrategicListFormatter {
         Map.of("date", NonStrategicFieldFormattingHelper::formatDateField)
     );
 
+    private NonStrategicListFormatter() {
+    }
+
     public static List<Map<String, String>> formatFields(List<Map<String, String>> data, ListType listType) {
         List<Map<String, String>> formattedData = new ArrayList<>();
         data.forEach(hearing -> {
@@ -33,7 +36,7 @@ public final class NonStrategicListFormatter {
                         String formattedValue = fieldFormatter.get().apply(v);
                         formattedDataEntry.put(k, formattedValue);
                     } else {
-                        formattedDataEntry.put (k, v);
+                        formattedDataEntry.put(k, v);
                     }
                 });
                 formattedData.add(formattedDataEntry);

@@ -23,6 +23,15 @@ import java.util.Objects;
 class NonStrategicListFileConverterTest {
     private static final String CONTENT_DATE = "12 December 2024";
     private static final String PROVENANCE = "provenance";
+    private static final String CONTENT_DATE_METADATA = "contentDate";
+    private static final String PROVENANCE_METADATA = "provenance";
+    private static final String LANGUAGE_METADATA = "language";
+    private static final String LIST_TYPE_METADATA = "listType";
+
+    private static final String HEADER_ELEMENT = "page-heading";
+    private static final String LIST_DATE_ELEMENT = "list-date";
+    private static final String CONTACT_MESSAGE_ELEMENT = "contact-message";
+    private static final String OBSERVE_HEARING_ELEMENT =  "observe-hearing";
 
     private static final String TITLE_MESSAGE = "Title does not match";
     private static final String HEADER_MESSAGE = "Header does not match";
@@ -61,10 +70,10 @@ class NonStrategicListFileConverterTest {
                 });
         }
 
-        Map<String, String> metadata = Map.of("contentDate", CONTENT_DATE,
-                                                 "provenance", PROVENANCE,
-                                                 "language", "ENGLISH",
-                                                 "listType", ListType.CST_WEEKLY_HEARING_LIST.name()
+        Map<String, String> metadata = Map.of(CONTENT_DATE_METADATA, CONTENT_DATE,
+                                              PROVENANCE_METADATA, PROVENANCE,
+                                              LANGUAGE_METADATA, "ENGLISH",
+                                              LIST_TYPE_METADATA, ListType.CST_WEEKLY_HEARING_LIST.name()
         );
 
         String result = converter.convert(cstInputJson, metadata, languageResource);
@@ -76,23 +85,23 @@ class NonStrategicListFileConverterTest {
             .as(TITLE_MESSAGE)
             .isEqualTo("Care Standards Tribunal Weekly Hearing List");
 
-        softly.assertThat(document.getElementById("page-heading"))
+        softly.assertThat(document.getElementById(HEADER_ELEMENT))
             .as(HEADER_MESSAGE)
             .extracting(Element::text)
             .isEqualTo("Care Standards Tribunal Weekly Hearing List");
 
-        softly.assertThat(document.getElementById("list-date"))
+        softly.assertThat(document.getElementById(LIST_DATE_ELEMENT))
             .as(LIST_DATE_MESSAGE)
             .extracting(Element::text)
             .isEqualTo("List for 12 December 2024");
 
-        softly.assertThat(document.getElementById("contact-message"))
+        softly.assertThat(document.getElementById(CONTACT_MESSAGE_ELEMENT))
             .as(BODY_MESSAGE)
             .extracting(Element::text)
             .isEqualTo("Please contact the Care Standards Office at cst@justice.gov.uk for details of how to "
                            + "access video hearings");
 
-        softly.assertThat(document.getElementById("observe-hearing"))
+        softly.assertThat(document.getElementById(OBSERVE_HEARING_ELEMENT))
             .as(BODY_MESSAGE)
             .extracting(Element::text)
             .isEqualTo("Observe a court or tribunal hearing as a journalist, researcher or member of the public");
@@ -124,10 +133,10 @@ class NonStrategicListFileConverterTest {
                 });
         }
 
-        Map<String, String> metadata = Map.of("contentDate", CONTENT_DATE,
-                                              "provenance", PROVENANCE,
-                                              "language", "WELSH",
-                                              "listType", ListType.CST_WEEKLY_HEARING_LIST.name()
+        Map<String, String> metadata = Map.of(CONTENT_DATE_METADATA, CONTENT_DATE,
+                                              PROVENANCE_METADATA, PROVENANCE,
+                                              LANGUAGE_METADATA, "WELSH",
+                                              LIST_TYPE_METADATA, ListType.CST_WEEKLY_HEARING_LIST.name()
         );
 
         String result = converter.convert(cstInputJson, metadata, languageResource);
@@ -139,23 +148,23 @@ class NonStrategicListFileConverterTest {
             .as(TITLE_MESSAGE)
             .isEqualTo("Rhestr Gwrandawiadau Wythnosol y Tribiwnlys Safonau Gofal");
 
-        softly.assertThat(document.getElementById("page-heading"))
+        softly.assertThat(document.getElementById(HEADER_ELEMENT))
             .as(HEADER_MESSAGE)
             .extracting(Element::text)
             .isEqualTo("Rhestr Gwrandawiadau Wythnosol y Tribiwnlys Safonau Gofal");
 
-        softly.assertThat(document.getElementById("list-date"))
+        softly.assertThat(document.getElementById(LIST_DATE_ELEMENT))
             .as(LIST_DATE_MESSAGE)
             .extracting(Element::text)
             .isEqualTo("Rhestr ar gyfer 12 December 2024");
 
-        softly.assertThat(document.getElementById("contact-message"))
+        softly.assertThat(document.getElementById(CONTACT_MESSAGE_ELEMENT))
             .as(BODY_MESSAGE)
             .extracting(Element::text)
             .isEqualTo("Cysylltwch â'r Swyddfa Safonau Gofal yn cst@justice.gov.uk i gael manylion am sut i gael "
                            + "mynediad at wrandawiadau fideo");
 
-        softly.assertThat(document.getElementById("observe-hearing"))
+        softly.assertThat(document.getElementById(OBSERVE_HEARING_ELEMENT))
             .as(BODY_MESSAGE)
             .extracting(Element::text)
             .isEqualTo("Arsylwi gwrandawiad llys neu dribiwnlys fel newyddiadurwr, ymchwilydd neu aelod o'r cyhoedd");
@@ -187,10 +196,10 @@ class NonStrategicListFileConverterTest {
                 });
         }
 
-        Map<String, String> metadata = Map.of("contentDate", CONTENT_DATE,
-                                              "provenance", PROVENANCE,
-                                              "language", "ENGLISH",
-                                              "listType", ListType.PHT_WEEKLY_HEARING_LIST.name()
+        Map<String, String> metadata = Map.of(CONTENT_DATE_METADATA, CONTENT_DATE,
+                                              PROVENANCE_METADATA, PROVENANCE,
+                                              LANGUAGE_METADATA, "ENGLISH",
+                                              LIST_TYPE_METADATA, ListType.PHT_WEEKLY_HEARING_LIST.name()
         );
 
         String result = converter.convert(phtInputJson, metadata, languageResource);
@@ -202,23 +211,23 @@ class NonStrategicListFileConverterTest {
             .as(TITLE_MESSAGE)
             .isEqualTo("Primary Health Tribunal Weekly Hearing List");
 
-        softly.assertThat(document.getElementById("page-heading"))
+        softly.assertThat(document.getElementById(HEADER_ELEMENT))
             .as(HEADER_MESSAGE)
             .extracting(Element::text)
             .isEqualTo("Primary Health Tribunal Weekly Hearing List");
 
-        softly.assertThat(document.getElementById("list-date"))
+        softly.assertThat(document.getElementById(LIST_DATE_ELEMENT))
             .as(LIST_DATE_MESSAGE)
             .extracting(Element::text)
             .isEqualTo("List for 12 December 2024");
 
-        softly.assertThat(document.getElementById("contact-message"))
+        softly.assertThat(document.getElementById(CONTACT_MESSAGE_ELEMENT))
             .as(BODY_MESSAGE)
             .extracting(Element::text)
             .isEqualTo("Please contact the Primary Health Lists at primaryhealthlists@justice.gov.uk for details of "
                            + "how to access video hearings");
 
-        softly.assertThat(document.getElementById("observe-hearing"))
+        softly.assertThat(document.getElementById(OBSERVE_HEARING_ELEMENT))
             .as(BODY_MESSAGE)
             .extracting(Element::text)
             .isEqualTo("Observe a court or tribunal hearing as a journalist, researcher or member of the public");
@@ -250,10 +259,10 @@ class NonStrategicListFileConverterTest {
                 });
         }
 
-        Map<String, String> metadata = Map.of("contentDate", CONTENT_DATE,
-                                              "provenance", PROVENANCE,
-                                              "language", "WELSH",
-                                              "listType", ListType.PHT_WEEKLY_HEARING_LIST.name()
+        Map<String, String> metadata = Map.of(CONTENT_DATE_METADATA, CONTENT_DATE,
+                                              PROVENANCE_METADATA, PROVENANCE,
+                                              LANGUAGE_METADATA, "WELSH",
+                                              LIST_TYPE_METADATA, ListType.PHT_WEEKLY_HEARING_LIST.name()
         );
 
         String result = converter.convert(phtInputJson, metadata, languageResource);
@@ -265,23 +274,23 @@ class NonStrategicListFileConverterTest {
             .as(TITLE_MESSAGE)
             .isEqualTo("Rhestr Gwrandawiadau Wythnosol y Tribiwnlys Iechyd Sylfaenol");
 
-        softly.assertThat(document.getElementById("page-heading"))
+        softly.assertThat(document.getElementById(HEADER_ELEMENT))
             .as(HEADER_MESSAGE)
             .extracting(Element::text)
             .isEqualTo("Rhestr Gwrandawiadau Wythnosol y Tribiwnlys Iechyd Sylfaenol");
 
-        softly.assertThat(document.getElementById("list-date"))
+        softly.assertThat(document.getElementById(LIST_DATE_ELEMENT))
             .as(LIST_DATE_MESSAGE)
             .extracting(Element::text)
             .isEqualTo("Rhestr ar gyfer 12 December 2024");
 
-        softly.assertThat(document.getElementById("contact-message"))
+        softly.assertThat(document.getElementById(CONTACT_MESSAGE_ELEMENT))
             .as(BODY_MESSAGE)
             .extracting(Element::text)
             .isEqualTo("Cysylltwch â'r Rhestrau Iechyd Sylfaenol yn primaryhealthlists@justice.gov.uk i gael "
                            + "manylion am sut i gael mynediad at wrandawiadau fideo");
 
-        softly.assertThat(document.getElementById("observe-hearing"))
+        softly.assertThat(document.getElementById(OBSERVE_HEARING_ELEMENT))
             .as(BODY_MESSAGE)
             .extracting(Element::text)
             .isEqualTo("Arsylwi gwrandawiad llys neu dribiwnlys fel newyddiadurwr, ymchwilydd neu aelod o'r cyhoedd");

@@ -35,7 +35,9 @@ public class NonStrategicListFileConverter implements FileConverter {
         languageResources.putAll(LanguageResourceHelper.readResourcesFromPath(resourceName, language));
 
         List<Map<String, String>> data = OBJECT_MAPPER.convertValue(jsonNode, new TypeReference<>(){});
-        List<Map<String, String>> formattedData = NonStrategicListFormatter.formatFields(data, ListType.valueOf(listType));
+        List<Map<String, String>> formattedData = NonStrategicListFormatter.formatFields(
+            data, ListType.valueOf(listType)
+        );
         context.setVariable("data", formattedData);
 
         return TemplateEngine.processNonStrategicTemplate(listType, context);
