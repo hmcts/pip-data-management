@@ -2,19 +2,14 @@ package uk.gov.hmcts.reform.pip.data.management.service.helpers;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ProcessingException;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.Locale;
 
 @SuppressWarnings("PMD.TooManyMethods")

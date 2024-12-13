@@ -5,8 +5,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
-import uk.gov.hmcts.reform.pip.data.management.service.helpers.NonStrategicFieldFormatter;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.LanguageResourceHelper;
+import uk.gov.hmcts.reform.pip.data.management.service.helpers.NonStrategicFieldFormatter;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 

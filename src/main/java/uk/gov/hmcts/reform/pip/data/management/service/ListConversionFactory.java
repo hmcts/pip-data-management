@@ -26,7 +26,6 @@ import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.CopDailyCa
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.CrownDailyListFileConverter;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.CrownFirmListFileConverter;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.CrownWarnedListFileConverter;
-import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.NonStrategicListFileConverter;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.EtDailyListFileConverter;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.EtFortnightlyPressListFileConverter;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.FamilyDailyCauseListFileConverter;
@@ -34,6 +33,7 @@ import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.FileConver
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.IacDailyListFileConverter;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.MagistratesPublicListFileConverter;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.MagistratesStandardListFileConverter;
+import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.NonStrategicListFileConverter;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.OpaPressListFileConverter;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.OpaPublicListFileConverter;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.OpaResultsFileConverter;
