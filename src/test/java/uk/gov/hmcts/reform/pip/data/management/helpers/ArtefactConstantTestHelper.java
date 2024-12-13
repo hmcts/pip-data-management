@@ -32,9 +32,6 @@ public final class ArtefactConstantTestHelper {
     public static final String NO_MATCH_LOCATION_ID = "NoMatch" + LOCATION_ID;
     public static final String TEST_KEY = "TestKey";
     public static final String TEST_VALUE = "TestValue";
-    public static final Integer SUPERSEDED_COUNT = 0;
-    public static final LocalDateTime DISPLAY_FROM = LocalDateTime.of(2022,1, 19, 13, 45, 50);
-    public static final LocalDateTime DISPLAY_TO = LocalDateTime.of(2025,1, 19, 13, 45, 50);
     public static final CaseSearchTerm SEARCH_TERM_CASE_ID = CaseSearchTerm.CASE_ID;
     public static final CaseSearchTerm SEARCH_TERM_CASE_NAME = CaseSearchTerm.CASE_NAME;
     public static final CaseSearchTerm SEARCH_TERM_CASE_URN = CaseSearchTerm.CASE_URN;
