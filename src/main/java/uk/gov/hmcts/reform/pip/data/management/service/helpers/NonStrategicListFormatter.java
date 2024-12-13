@@ -45,13 +45,12 @@ public final class NonStrategicListFormatter {
         return formattedData;
     }
 
-    private static Optional<Function<String, String>> getFieldFormatter(ListType listTYpe, String field) {
-        Map<String, Function<String, String>> listTypeFormatters = LIST_TYPE_MAP.get(listTYpe);
+    private static Optional<Function<String, String>> getFieldFormatter(ListType listType, String field) {
 
-        if (listTypeFormatters != null) {
-            Function<String, String> fieldFormatter = listTypeFormatters.get(field);
-
-            if (fieldFormatter != null) {
+        if (LIST_TYPE_MAP.containsKey(listType)) {
+            Map<String, Function<String, String>> listTypeFormatters = LIST_TYPE_MAP.get(listType);
+            if (listTypeFormatters.containsKey(field)) {
+                Function<String, String> fieldFormatter = listTypeFormatters.get(field);
                 return Optional.of(fieldFormatter);
             }
         }
