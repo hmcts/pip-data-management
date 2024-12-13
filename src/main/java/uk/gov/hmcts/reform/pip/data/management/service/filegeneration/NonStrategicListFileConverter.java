@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.LanguageResourceHelper;
-import uk.gov.hmcts.reform.pip.data.management.service.helpers.NonStrategicFieldFormatter;
+import uk.gov.hmcts.reform.pip.data.management.service.helpers.NonStrategicListFormatter;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
@@ -35,7 +35,7 @@ public class NonStrategicListFileConverter implements FileConverter {
         languageResources.putAll(LanguageResourceHelper.readResourcesFromPath(resourceName, language));
 
         List<Map<String, String>> data = OBJECT_MAPPER.convertValue(jsonNode, new TypeReference<>(){});
-        List<Map<String, String>> formattedData = NonStrategicFieldFormatter.formatFields(data, ListType.valueOf(listType));
+        List<Map<String, String>> formattedData = NonStrategicListFormatter.formatFields(data, ListType.valueOf(listType));
         context.setVariable("data", formattedData);
 
         return TemplateEngine.processNonStrategicTemplate(listType, context);

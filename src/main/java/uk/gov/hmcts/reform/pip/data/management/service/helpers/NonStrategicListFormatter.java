@@ -12,12 +12,12 @@ import java.util.function.Function;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.CST_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.PHT_WEEKLY_HEARING_LIST;
 
-public final class NonStrategicFieldFormatter {
+public final class NonStrategicListFormatter {
     public static final Map<ListType, Map<String, Function<String, String>>> LIST_TYPE_MAP = Map.of(
         CST_WEEKLY_HEARING_LIST,
-        Map.of("date", NonStrategicFieldHelper::convertDateFormat),
+        Map.of("date", NonStrategicFieldFormattingHelper::formatDateField),
         PHT_WEEKLY_HEARING_LIST,
-        Map.of("date", NonStrategicFieldHelper::convertDateFormat)
+        Map.of("date", NonStrategicFieldFormattingHelper::formatDateField)
     );
 
     public static List<Map<String, String>> formatFields(List<Map<String, String>> data, ListType listType) {

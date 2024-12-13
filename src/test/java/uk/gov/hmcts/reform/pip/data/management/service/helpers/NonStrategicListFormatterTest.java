@@ -8,7 +8,7 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class NonStrategicFieldFormatterTest {
+class NonStrategicListFormatterTest {
     private static final String DATE_FIELD = "date";
     private static final String OTHER_FIELD = "other";
     private static final String DATE_VALUE1 = "01/01/2025";
@@ -21,7 +21,7 @@ class NonStrategicFieldFormatterTest {
             Map.of(DATE_FIELD, DATE_VALUE1),
             Map.of(DATE_FIELD, DATE_VALUE2)
         );
-        List<Map<String, String>> result = NonStrategicFieldFormatter.formatFields(
+        List<Map<String, String>> result = NonStrategicListFormatter.formatFields(
             data, ListType.CST_WEEKLY_HEARING_LIST
         );
 
@@ -40,7 +40,7 @@ class NonStrategicFieldFormatterTest {
             Map.of(DATE_FIELD, DATE_VALUE1),
             Map.of(DATE_FIELD, DATE_VALUE2)
         );
-        List<Map<String, String>> result = NonStrategicFieldFormatter.formatFields(
+        List<Map<String, String>> result = NonStrategicListFormatter.formatFields(
             data, ListType.CARE_STANDARDS_LIST
         );
 
@@ -59,7 +59,7 @@ class NonStrategicFieldFormatterTest {
             Map.of(OTHER_FIELD, DATE_VALUE1),
             Map.of(OTHER_FIELD, DATE_VALUE2)
         );
-        List<Map<String, String>> result = NonStrategicFieldFormatter.formatFields(
+        List<Map<String, String>> result = NonStrategicListFormatter.formatFields(
             data, ListType.CARE_STANDARDS_LIST
         );
 

@@ -8,11 +8,11 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-public final class NonStrategicFieldHelper {
-    private NonStrategicFieldHelper() {
+public final class NonStrategicFieldFormattingHelper {
+    private NonStrategicFieldFormattingHelper() {
     }
 
-    public static String convertDateFormat(String date) {
+    public static String formatDateField(String date) {
         try {
             DateFormat originalFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.UK);
             Date convertedDate = originalFormat.parse(date);
