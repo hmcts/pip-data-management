@@ -1,23 +1,28 @@
 package uk.gov.hmcts.reform.pip.data.management.service.filegeneration;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
-import uk.gov.hmcts.reform.pip.data.management.service.helpers.DateHelper;
+import uk.gov.hmcts.reform.pip.data.management.service.helpers.NonStrategicFieldFormatter;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.LanguageResourceHelper;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
+import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 import static com.google.common.base.CaseFormat.LOWER_CAMEL;
 import static com.google.common.base.CaseFormat.UPPER_UNDERSCORE;
 
 @Service
-public class CstWeeklyHearingListFileConverter implements FileConverter {
+public class NonStrategicListFileConverter implements FileConverter {
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+
     @Override
-    public String convert(JsonNode data, Map<String, String> metadata, Map<String, Object> languageResources)
+    public String convert(JsonNode jsonNode, Map<String, String> metadata, Map<String, Object> languageResources)
         throws IOException {
         Context context = new Context();
         context.setVariable("contentDate", metadata.get("contentDate"));
@@ -29,14 +34,10 @@ public class CstWeeklyHearingListFileConverter implements FileConverter {
         String resourceName = "non-strategic/" + UPPER_UNDERSCORE.to(LOWER_CAMEL, listType);
         languageResources.putAll(LanguageResourceHelper.readResourcesFromPath(resourceName, language));
 
-        data.forEach(hearing -> {
-            String date = hearing.get("date").asText();
-            if (!date.isEmpty()) {
-                ((ObjectNode) hearing).put("formattedDate",
-                                           DateHelper.convertDateFormat(date, "dd/MM/yyyy", "d MMMM yyyy"));
-            }
-        });
-        context.setVariable("data", data);
+        List<Map<String, String>> data = OBJECT_MAPPER.convertValue(jsonNode, new TypeReference<>(){});
+        List<Map<String, String>> formattedData = NonStrategicFieldFormatter.formatFields(data, ListType.valueOf(listType));
+        context.setVariable("data", formattedData);
+
         return TemplateEngine.processNonStrategicTemplate(listType, context);
     }
 }

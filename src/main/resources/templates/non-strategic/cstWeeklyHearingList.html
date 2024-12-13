@@ -111,12 +111,12 @@
           </thead>
           <tbody class="govuk-table__body">
             <tr th:each="hearing : ${data}">
-              <td class="govuk-table__cell" th:text="${hearing.get('formattedDate').asText()}"/>
-              <td class="govuk-table__cell" th:text="${hearing.get('caseName').asText()}"/>
-              <td class="govuk-table__cell" th:text="${hearing.get('hearingLength').asText()}"/>
-              <td class="govuk-table__cell" th:text="${hearing.get('hearingType').asText()}"/>
-              <td class="govuk-table__cell" th:text="${hearing.get('venue').asText()}" />
-              <td class="govuk-table__cell" th:text="${hearing.get('additionalInformation').asText()}" />
+              <td class="govuk-table__cell" th:text="${hearing.get('date')}"/>
+              <td class="govuk-table__cell" th:text="${hearing.get('caseName')}"/>
+              <td class="govuk-table__cell" th:text="${hearing.get('hearingLength')}"/>
+              <td class="govuk-table__cell" th:text="${hearing.get('hearingType')}"/>
+              <td class="govuk-table__cell" th:text="${hearing.get('venue')}" />
+              <td class="govuk-table__cell" th:text="${hearing.get('additionalInformation')}" />
             </tr>
           </tbody>
         </table>

@@ -149,16 +149,4 @@ public final class DateHelper {
         String time = dtf.format(sittingStart);
         ((ObjectNode) sitting).put("time", time);
     }
-
-    public static String convertDateFormat(String date, String inputFormat, String outputFormat) {
-        try {
-            DateFormat originalFormat = new SimpleDateFormat(inputFormat, Locale.UK);
-            Date convertedDate = originalFormat.parse(date);
-
-            DateFormat targetFormat = new SimpleDateFormat(outputFormat, Locale.UK);
-            return targetFormat.format(convertedDate);
-        } catch (ParseException e) {
-            throw new ProcessingException("Failed to convert date format");
-        }
-    }
 }

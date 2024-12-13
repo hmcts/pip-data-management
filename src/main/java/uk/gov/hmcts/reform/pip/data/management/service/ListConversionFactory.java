@@ -26,7 +26,7 @@ import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.CopDailyCa
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.CrownDailyListFileConverter;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.CrownFirmListFileConverter;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.CrownWarnedListFileConverter;
-import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.CstWeeklyHearingListFileConverter;
+import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.NonStrategicListFileConverter;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.EtDailyListFileConverter;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.EtFortnightlyPressListFileConverter;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.FamilyDailyCauseListFileConverter;
@@ -37,7 +37,6 @@ import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.Magistrate
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.OpaPressListFileConverter;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.OpaPublicListFileConverter;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.OpaResultsFileConverter;
-import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.PhtWeeklyHearingListFileConverter;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.PrimaryHealthListFileConverter;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.SjpPressListFileConverter;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.SjpPublicListFileConverter;
@@ -77,7 +76,6 @@ import static uk.gov.hmcts.reform.pip.model.publication.ListType.SSCS_DAILY_LIST
 @Component
 @SuppressWarnings({"PMD.ExcessiveImports", "PMD.UseConcurrentHashMap"})
 public class ListConversionFactory {
-
     private static final Map<ListType, ConversionPair> LIST_MAP = Map.ofEntries(
         Map.entry(SJP_PUBLIC_LIST, new ConversionPair(new SjpPublicListFileConverter())),
         Map.entry(SJP_DELTA_PUBLIC_LIST, new ConversionPair(new SjpPublicListFileConverter())),
@@ -121,8 +119,8 @@ public class ListConversionFactory {
                                                       new OpaPublicListSummaryData())),
         Map.entry(OPA_PRESS_LIST, new ConversionPair(new OpaPressListFileConverter(), new OpaPressListSummaryData())),
         Map.entry(OPA_RESULTS, new ConversionPair(new OpaResultsFileConverter(), new OpaResultsSummaryData())),
-        Map.entry(CST_WEEKLY_HEARING_LIST, new ConversionPair(new CstWeeklyHearingListFileConverter())),
-        Map.entry(PHT_WEEKLY_HEARING_LIST, new ConversionPair(new PhtWeeklyHearingListFileConverter()))
+        Map.entry(CST_WEEKLY_HEARING_LIST, new ConversionPair(new NonStrategicListFileConverter())),
+        Map.entry(PHT_WEEKLY_HEARING_LIST, new ConversionPair(new NonStrategicListFileConverter()))
     );
 
     /**
