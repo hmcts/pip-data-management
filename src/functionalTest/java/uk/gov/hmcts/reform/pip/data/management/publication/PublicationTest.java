@@ -55,7 +55,6 @@ class PublicationTest extends FunctionalTestBase {
     private static final String TESTING_SUPPORT_LOCATION_URL = "/testing-support/location/";
     private static final String TESTING_SUPPORT_PUBLICATION_URL = "/testing-support/publication/";
     private static final ArtefactType ARTEFACT_TYPE = ArtefactType.LIST;
-    private static final Sensitivity SENSITIVITY = Sensitivity.PUBLIC;
     private static final String PROVENANCE = "MANUAL_UPLOAD";
     private static final String SOURCE_ARTEFACT_ID = "sourceArtefactId";
     private static final LocalDateTime DISPLAY_FROM = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
