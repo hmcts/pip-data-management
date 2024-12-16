@@ -12,6 +12,7 @@ import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.Unauthor
 import uk.gov.hmcts.reform.pip.data.management.models.PublicationFileSizes;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.ArtefactSummaryData;
+import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.NonStrategicArtefactSummaryData;
 import uk.gov.hmcts.reform.pip.data.management.service.publication.ArtefactService;
 import uk.gov.hmcts.reform.pip.model.publication.FileType;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
@@ -19,6 +20,8 @@ import uk.gov.hmcts.reform.pip.model.publication.ListType;
 import uk.gov.hmcts.reform.pip.model.publication.Sensitivity;
 
 import java.util.Base64;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -94,9 +97,16 @@ public class PublicationManagementService {
         }
 
         try {
+            ArtefactSummaryData listTypeSummaryData = artefactSummaryData.get();
             String rawJson = artefactService.getPayloadByArtefactId(artefactId);
-            return publicationSummaryGenerationService.generate(artefactSummaryData.get()
-                                                                    .get(MAPPER.readTree(rawJson)));
+
+            Map<String, List<Map<String, String>>> summaryValues =
+                artefactSummaryData.get() instanceof NonStrategicArtefactSummaryData
+                    ? ((NonStrategicArtefactSummaryData) listTypeSummaryData).get(MAPPER.readTree(rawJson),
+                                                                              artefact.getListType())
+                    : listTypeSummaryData.get(MAPPER.readTree(rawJson));
+
+            return publicationSummaryGenerationService.generate(summaryValues);
         } catch (JsonProcessingException ex) {
             throw new ProcessingException(String.format("Failed to generate summary for artefact id %s", artefactId));
         }

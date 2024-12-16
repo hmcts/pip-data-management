@@ -23,7 +23,14 @@ public final class NonStrategicListFormatter {
     private NonStrategicListFormatter() {
     }
 
-    public static List<Map<String, String>> formatFields(List<Map<String, String>> data, ListType listType) {
+    public static Optional<Map<String, Function<String, String>>> getListTypeFormatter(ListType listType) {
+        if (LIST_TYPE_MAP.containsKey(listType)) {
+            return Optional.of(LIST_TYPE_MAP.get(listType));
+        }
+        return Optional.empty();
+    }
+
+    public static List<Map<String, String>> formatAllFields(List<Map<String, String>> data, ListType listType) {
         List<Map<String, String>> formattedData = new ArrayList<>();
         data.forEach(hearing -> {
                 Map<String, String> formattedDataEntry = new ConcurrentHashMap<>();
@@ -45,14 +52,20 @@ public final class NonStrategicListFormatter {
         return formattedData;
     }
 
-    private static Optional<Function<String, String>> getFieldFormatter(ListType listType, String field) {
+    public static String formatField(String field, String value, Map<String, Function<String, String>> formatter) {
+        if (formatter.containsKey(field)) {
+            Function<String, String> fieldFormatter = formatter.get(field);
+            return fieldFormatter.apply(value);
+        }
+        return value;
+    }
 
-        if (LIST_TYPE_MAP.containsKey(listType)) {
-            Map<String, Function<String, String>> listTypeFormatters = LIST_TYPE_MAP.get(listType);
-            if (listTypeFormatters.containsKey(field)) {
-                Function<String, String> fieldFormatter = listTypeFormatters.get(field);
-                return Optional.of(fieldFormatter);
-            }
+    private static Optional<Function<String, String>> getFieldFormatter(ListType listType, String field) {
+        Optional<Map<String, Function<String, String>>> listTypeFormatters = getListTypeFormatter(listType);
+
+        if (listTypeFormatters.isPresent() && listTypeFormatters.get().containsKey(field)) {
+            Function<String, String> fieldFormatter = listTypeFormatters.get().get(field);
+            return Optional.of(fieldFormatter);
         }
         return Optional.empty();
     }

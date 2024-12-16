@@ -21,6 +21,7 @@ import uk.gov.hmcts.reform.pip.data.management.models.PublicationFileSizes;
 import uk.gov.hmcts.reform.pip.data.management.models.PublicationFiles;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.CivilDailyCauseListSummaryData;
+import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.NonStrategicListSummaryData;
 import uk.gov.hmcts.reform.pip.data.management.service.publication.ArtefactService;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
@@ -72,6 +73,9 @@ class PublicationManagementServiceTest {
 
     @Mock
     private CivilDailyCauseListSummaryData civilDailyCauseListSummaryData;
+
+    @Mock
+    private NonStrategicListSummaryData nonStrategicListSummaryData;
 
     @InjectMocks
     private PublicationManagementService publicationManagementService;
@@ -186,6 +190,26 @@ class PublicationManagementServiceTest {
 
         String response = publicationManagementService.generateArtefactSummary(TEST_ARTEFACT_ID);
         assertFalse(response.isEmpty(), RESPONSE_MESSAGE);
+
+        verify(civilDailyCauseListSummaryData).get(any());
+    }
+
+    @Test
+    void testGenerateArtefactSummaryNonStrategicPublishing() {
+        Artefact artefact = new Artefact();
+        artefact.setArtefactId(TEST_ARTEFACT_ID);
+        artefact.setListType(ListType.CST_WEEKLY_HEARING_LIST);
+
+        when(artefactService.getMetadataByArtefactId(any())).thenReturn(artefact);
+        when(listConversionFactory.getArtefactSummaryData(any(ListType.class)))
+            .thenReturn(Optional.of(nonStrategicListSummaryData));
+        when(artefactService.getPayloadByArtefactId(any())).thenReturn("{}");
+        when(publicationSummaryGenerationService.generate(any())).thenReturn(TEST);
+
+        String response = publicationManagementService.generateArtefactSummary(TEST_ARTEFACT_ID);
+        assertFalse(response.isEmpty(), RESPONSE_MESSAGE);
+
+        verify(nonStrategicListSummaryData).get(any(), eq(ListType.CST_WEEKLY_HEARING_LIST));
     }
 
     @Test

@@ -14,6 +14,7 @@ import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.FamilyMix
 import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.IacDailyListSummaryData;
 import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.MagistratesPublicListSummaryData;
 import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.MagistratesStandardListSummaryData;
+import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.NonStrategicListSummaryData;
 import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.OpaPressListSummaryData;
 import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.OpaPublicListSummaryData;
 import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.OpaResultsSummaryData;
@@ -119,8 +120,10 @@ public class ListConversionFactory {
                                                       new OpaPublicListSummaryData())),
         Map.entry(OPA_PRESS_LIST, new ConversionPair(new OpaPressListFileConverter(), new OpaPressListSummaryData())),
         Map.entry(OPA_RESULTS, new ConversionPair(new OpaResultsFileConverter(), new OpaResultsSummaryData())),
-        Map.entry(CST_WEEKLY_HEARING_LIST, new ConversionPair(new NonStrategicListFileConverter())),
-        Map.entry(PHT_WEEKLY_HEARING_LIST, new ConversionPair(new NonStrategicListFileConverter()))
+        Map.entry(CST_WEEKLY_HEARING_LIST, new ConversionPair(new NonStrategicListFileConverter(),
+                                                              new NonStrategicListSummaryData())),
+        Map.entry(PHT_WEEKLY_HEARING_LIST, new ConversionPair(new NonStrategicListFileConverter(),
+                                                              new NonStrategicListSummaryData()))
     );
 
     /**

@@ -35,7 +35,7 @@ public class NonStrategicListFileConverter implements FileConverter {
         languageResources.putAll(LanguageResourceHelper.readResourcesFromPath(resourceName, language));
 
         List<Map<String, String>> data = OBJECT_MAPPER.convertValue(payload, new TypeReference<>(){});
-        List<Map<String, String>> formattedData = NonStrategicListFormatter.formatFields(
+        List<Map<String, String>> formattedData = NonStrategicListFormatter.formatAllFields(
             data, ListType.valueOf(listType)
         );
         context.setVariable("data", formattedData);
