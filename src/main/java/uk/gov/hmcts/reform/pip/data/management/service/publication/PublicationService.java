@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.pip.data.management.service.publication;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.CannotAcquireLockException;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -18,9 +19,7 @@ import uk.gov.hmcts.reform.pip.data.management.helpers.NoMatchArtefactHelper;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.service.PublicationManagementService;
-import uk.gov.hmcts.reform.pip.model.report.PublicationMiData;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -32,6 +31,7 @@ import java.util.UUID;
 @Service
 public class PublicationService {
 
+    private static final char DELIMITER = ',';
     private static final int RETRY_MAX_ATTEMPTS = 5;
 
     private final ArtefactRepository artefactRepository;
@@ -173,11 +173,37 @@ public class PublicationService {
     }
 
     /**
-     * Retrieve artefact data for MI reporting.
-     * @return MI artefact data as MiReportData object
+     * Retrieve artefact data for MI reporting. Insert court name before returning the data.
+     * @return MI artefact data as comma delimited string
      */
-    public List<PublicationMiData> getMiData() {
-        return artefactRepository.getMiData();
+    public String getMiData() {
+        StringBuilder builder = new StringBuilder(200);
+        builder
+            .append("artefact_id,display_from,display_to,language,provenance,sensitivity,source_artefact_id,"
+                        + "superseded_count,type,content_date,court_id,court_name,list_type")
+            .append(System.lineSeparator());
+
+        artefactRepository.getMiData()
+            .stream()
+            // Insert an extra field for court name before the list type
+            .map(line -> new StringBuilder(line)
+                .insert(line.lastIndexOf(DELIMITER), DELIMITER + getLocationNameFromMiData(line))
+                .toString())
+            .forEach(line -> builder.append(line)
+                .append(System.lineSeparator()));
+        return builder.toString();
     }
 
+    private String getLocationNameFromMiData(String line) {
+        // Find the second to last index of the delimiter then advance a place for the location ID index
+        int locationIdIndex = line.lastIndexOf(DELIMITER, line.lastIndexOf(DELIMITER) - 1) + 1;
+        String locationId = line.substring(locationIdIndex, line.lastIndexOf(DELIMITER));
+
+        if (NumberUtils.isCreatable(locationId)) {
+            return locationRepository.getLocationByLocationId(Integer.valueOf(locationId))
+                .map(Location::getName)
+                .orElse("");
+        }
+        return "";
+    }
 }
