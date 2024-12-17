@@ -77,6 +77,7 @@ import static uk.gov.hmcts.reform.pip.model.publication.ListType.SSCS_DAILY_LIST
 @Component
 @SuppressWarnings({"PMD.ExcessiveImports", "PMD.UseConcurrentHashMap"})
 public class ListConversionFactory {
+
     private static final Map<ListType, ConversionPair> LIST_MAP = Map.ofEntries(
         Map.entry(SJP_PUBLIC_LIST, new ConversionPair(new SjpPublicListFileConverter())),
         Map.entry(SJP_DELTA_PUBLIC_LIST, new ConversionPair(new SjpPublicListFileConverter())),
