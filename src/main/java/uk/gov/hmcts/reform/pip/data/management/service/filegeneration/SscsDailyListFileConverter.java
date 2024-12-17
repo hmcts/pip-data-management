@@ -25,7 +25,7 @@ public class SscsDailyListFileConverter implements FileConverter {
                           Map<String, Object> languageResources) throws IOException {
         Context context = new Context();
         Language language = Language.valueOf(metadata.get("language"));
-        languageResources.putAll(LanguageResourceHelper.readResourcesFromPath("openJusticeStatement", language));
+        languageResources.putAll(LanguageResourceHelper.readResourcesFromPath("common/openJusticeStatement", language));
 
         context.setVariable("i18n", languageResources);
         context.setVariable("metadata", metadata);

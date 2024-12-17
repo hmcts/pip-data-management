@@ -33,6 +33,7 @@ import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.FileConver
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.IacDailyListFileConverter;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.MagistratesPublicListFileConverter;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.MagistratesStandardListFileConverter;
+import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.NonStrategicListFileConverter;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.OpaPressListFileConverter;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.OpaPublicListFileConverter;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.OpaResultsFileConverter;
@@ -52,6 +53,7 @@ import static uk.gov.hmcts.reform.pip.model.publication.ListType.COP_DAILY_CAUSE
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.CROWN_DAILY_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.CROWN_FIRM_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.CROWN_WARNED_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.CST_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.ET_DAILY_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.ET_FORTNIGHTLY_PRESS_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.FAMILY_DAILY_CAUSE_LIST;
@@ -62,6 +64,7 @@ import static uk.gov.hmcts.reform.pip.model.publication.ListType.MAGISTRATES_STA
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.OPA_PRESS_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.OPA_PUBLIC_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.OPA_RESULTS;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.PHT_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.PRIMARY_HEALTH_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.SJP_DELTA_PRESS_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.SJP_DELTA_PUBLIC_LIST;
@@ -73,7 +76,6 @@ import static uk.gov.hmcts.reform.pip.model.publication.ListType.SSCS_DAILY_LIST
 @Component
 @SuppressWarnings({"PMD.ExcessiveImports", "PMD.UseConcurrentHashMap"})
 public class ListConversionFactory {
-
     private static final Map<ListType, ConversionPair> LIST_MAP = Map.ofEntries(
         Map.entry(SJP_PUBLIC_LIST, new ConversionPair(new SjpPublicListFileConverter())),
         Map.entry(SJP_DELTA_PUBLIC_LIST, new ConversionPair(new SjpPublicListFileConverter())),
@@ -116,7 +118,9 @@ public class ListConversionFactory {
         Map.entry(OPA_PUBLIC_LIST, new ConversionPair(new OpaPublicListFileConverter(),
                                                       new OpaPublicListSummaryData())),
         Map.entry(OPA_PRESS_LIST, new ConversionPair(new OpaPressListFileConverter(), new OpaPressListSummaryData())),
-        Map.entry(OPA_RESULTS, new ConversionPair(new OpaResultsFileConverter(), new OpaResultsSummaryData()))
+        Map.entry(OPA_RESULTS, new ConversionPair(new OpaResultsFileConverter(), new OpaResultsSummaryData())),
+        Map.entry(CST_WEEKLY_HEARING_LIST, new ConversionPair(new NonStrategicListFileConverter())),
+        Map.entry(PHT_WEEKLY_HEARING_LIST, new ConversionPair(new NonStrategicListFileConverter()))
     );
 
     /**
