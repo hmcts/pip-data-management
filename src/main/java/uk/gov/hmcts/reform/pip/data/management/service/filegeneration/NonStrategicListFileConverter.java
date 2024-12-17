@@ -3,7 +3,6 @@ package uk.gov.hmcts.reform.pip.data.management.service.filegeneration;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.LanguageResourceHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.NonStrategicListFormatter;
@@ -17,7 +16,6 @@ import java.util.Map;
 import static com.google.common.base.CaseFormat.LOWER_CAMEL;
 import static com.google.common.base.CaseFormat.UPPER_UNDERSCORE;
 
-@Service
 public class NonStrategicListFileConverter implements FileConverter {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 

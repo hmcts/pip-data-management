@@ -120,10 +120,12 @@ public class ListConversionFactory {
                                                       new OpaPublicListSummaryData())),
         Map.entry(OPA_PRESS_LIST, new ConversionPair(new OpaPressListFileConverter(), new OpaPressListSummaryData())),
         Map.entry(OPA_RESULTS, new ConversionPair(new OpaResultsFileConverter(), new OpaResultsSummaryData())),
-        Map.entry(CST_WEEKLY_HEARING_LIST, new ConversionPair(new NonStrategicListFileConverter(),
-                                                              new NonStrategicListSummaryData())),
-        Map.entry(PHT_WEEKLY_HEARING_LIST, new ConversionPair(new NonStrategicListFileConverter(),
-                                                              new NonStrategicListSummaryData()))
+        Map.entry(CST_WEEKLY_HEARING_LIST, new ConversionPair(
+            new NonStrategicListFileConverter(), new NonStrategicListSummaryData(CST_WEEKLY_HEARING_LIST)
+        )),
+        Map.entry(PHT_WEEKLY_HEARING_LIST, new ConversionPair(
+            new NonStrategicListFileConverter(), new NonStrategicListSummaryData(PHT_WEEKLY_HEARING_LIST)
+        ))
     );
 
     /**

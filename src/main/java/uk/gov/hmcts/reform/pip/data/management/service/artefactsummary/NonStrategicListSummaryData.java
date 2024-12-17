@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.NonStrategicListFormatter;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
@@ -20,9 +19,8 @@ import java.util.function.Function;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.CST_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.PHT_WEEKLY_HEARING_LIST;
 
-@Service
 @SuppressWarnings("PMD.UseConcurrentHashMap")
-public class NonStrategicListSummaryData implements NonStrategicArtefactSummaryData {
+public class NonStrategicListSummaryData implements ArtefactSummaryData {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     private static final Map<ListType, List<String>> LIST_TYPE_SUMMARY_FIELDS = Map.of(
@@ -30,8 +28,14 @@ public class NonStrategicListSummaryData implements NonStrategicArtefactSummaryD
         PHT_WEEKLY_HEARING_LIST, List.of("date", "caseName")
     );
 
+    private final ListType listType;
+
+    public NonStrategicListSummaryData(ListType listType) {
+        this.listType = listType;
+    }
+
     @Override
-    public Map<String, List<Map<String, String>>> get(JsonNode payload, ListType listType) {
+    public Map<String, List<Map<String, String>>> get(JsonNode payload) {
         List<Map<String, String>> data = OBJECT_MAPPER.convertValue(payload, new TypeReference<>(){});
         Optional<Map<String, Function<String, String>>> listTypeFormatter = NonStrategicListFormatter
             .getListTypeFormatter(listType);

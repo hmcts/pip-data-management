@@ -74,9 +74,6 @@ class PublicationManagementServiceTest {
     @Mock
     private CivilDailyCauseListSummaryData civilDailyCauseListSummaryData;
 
-    @Mock
-    private NonStrategicListSummaryData nonStrategicListSummaryData;
-
     @InjectMocks
     private PublicationManagementService publicationManagementService;
 
@@ -200,16 +197,18 @@ class PublicationManagementServiceTest {
         artefact.setArtefactId(TEST_ARTEFACT_ID);
         artefact.setListType(ListType.CST_WEEKLY_HEARING_LIST);
 
+        NonStrategicListSummaryData nonStrategicListSummaryData = new NonStrategicListSummaryData(
+            ListType.CST_WEEKLY_HEARING_LIST
+        );
+
         when(artefactService.getMetadataByArtefactId(any())).thenReturn(artefact);
         when(listConversionFactory.getArtefactSummaryData(any(ListType.class)))
             .thenReturn(Optional.of(nonStrategicListSummaryData));
-        when(artefactService.getPayloadByArtefactId(any())).thenReturn("{}");
+        when(artefactService.getPayloadByArtefactId(any())).thenReturn("[{\"date\":\"01/01/2025\"}]");
         when(publicationSummaryGenerationService.generate(any())).thenReturn(TEST);
 
         String response = publicationManagementService.generateArtefactSummary(TEST_ARTEFACT_ID);
         assertFalse(response.isEmpty(), RESPONSE_MESSAGE);
-
-        verify(nonStrategicListSummaryData).get(any(), eq(ListType.CST_WEEKLY_HEARING_LIST));
     }
 
     @Test

@@ -38,10 +38,10 @@ class NonStrategicListSummaryDataTest {
         );
 
         JsonNode payload = new ObjectMapper().readTree(writer.toString());
-        NonStrategicArtefactSummaryData cstSummaryData = (NonStrategicArtefactSummaryData) new ListConversionFactory()
+        ArtefactSummaryData cstSummaryData = new ListConversionFactory()
             .getArtefactSummaryData(CST_WEEKLY_HEARING_LIST)
             .get();
-        Map<String, List<Map<String, String>>> output = cstSummaryData.get(payload, CST_WEEKLY_HEARING_LIST);
+        Map<String, List<Map<String, String>>> output = cstSummaryData.get(payload);
 
         SoftAssertions softly = new SoftAssertions();
 
@@ -97,10 +97,10 @@ class NonStrategicListSummaryDataTest {
         );
 
         JsonNode payload = new ObjectMapper().readTree(writer.toString());
-        NonStrategicArtefactSummaryData cstSummaryData = (NonStrategicArtefactSummaryData) new ListConversionFactory()
+        ArtefactSummaryData cstSummaryData = new ListConversionFactory()
             .getArtefactSummaryData(PHT_WEEKLY_HEARING_LIST)
             .get();
-        Map<String, List<Map<String, String>>> output = cstSummaryData.get(payload, PHT_WEEKLY_HEARING_LIST);
+        Map<String, List<Map<String, String>>> output = cstSummaryData.get(payload);
 
         SoftAssertions softly = new SoftAssertions();
 
