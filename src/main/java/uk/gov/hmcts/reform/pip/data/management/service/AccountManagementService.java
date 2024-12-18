@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientException;
-import uk.gov.hmcts.reform.pip.model.account.AzureAccount;
+import uk.gov.hmcts.reform.pip.model.account.PiUser;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 import uk.gov.hmcts.reform.pip.model.publication.Sensitivity;
 
@@ -75,17 +75,17 @@ public class AccountManagementService {
         }
     }
 
-    public AzureAccount getUserInfo(String provenanceUserId) {
+    public PiUser getUserById(String userId) {
         try {
-            return webClient.get().uri(url + "/account/azure/" + provenanceUserId)
+            return webClient.get().uri(url + "/account/" + userId)
                 .attributes(clientRegistrationId(ACCOUNT_MANAGEMENT_API))
-                .retrieve().bodyToMono(AzureAccount.class).block();
+                .retrieve().bodyToMono(PiUser.class).block();
         } catch (WebClientException ex) {
             log.error(writeLog(
-                String.format("Request to Account Management to get Azure account failed with error: %s",
+                String.format("Request to Account Management to get PI User account failed with error: %s",
                               ex.getMessage())
             ));
-            return new AzureAccount();
+            return new PiUser();
         }
     }
 
