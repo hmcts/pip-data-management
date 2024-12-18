@@ -1,0 +1,22 @@
+[
+  {
+    "hearingTime": "10am",
+    "appellant": "Appellant A",
+    "representative": "Rep A",
+    "appealReferenceNumber": "1234",
+    "judges": "Judge A",
+    "typeOfHearing": "Substantive",
+    "location": "This is a venue name",
+    "additionalInformation": "This is additional information"
+  },
+  {
+    "hearingTime": "10:30am",
+    "appellant": "Appellant B",
+    "representative": "Rep B",
+    "appealReferenceNumber": "1235",
+    "judges": "Judge B",
+    "typeOfHearing": "Substantive",
+    "location": "This is a venue name",
+    "additionalInformation": "This is another additional information"
+  }
+]

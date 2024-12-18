@@ -31,6 +31,8 @@ public class NonStrategicListFileConverter implements FileConverter {
         String listType = metadata.get("listType");
         String resourceName = "non-strategic/" + UPPER_UNDERSCORE.to(LOWER_CAMEL, listType);
         languageResources.putAll(LanguageResourceHelper.readResourcesFromPath(resourceName, language));
+        languageResources.putAll(LanguageResourceHelper.readResourcesFromPath("common/nonStrategicCommon",
+                                                                              language));
 
         List<Map<String, String>> data = OBJECT_MAPPER.convertValue(payload, new TypeReference<>(){});
         List<Map<String, String>> formattedData = NonStrategicListFormatter.formatAllFields(

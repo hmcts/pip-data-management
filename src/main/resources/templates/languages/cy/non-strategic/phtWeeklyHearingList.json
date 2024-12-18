@@ -1,13 +1,6 @@
 {
-  "serviceName": "Gwasanaeth Gwrandawiadau llys a thribiwnlys",
-  "pdfAccessibility": " Tudalen PDF/UA ",
-  "of": " o ",
   "listName": "Rhestr Gwrandawiadau Wythnosol y Tribiwnlys Iechyd Sylfaenol",
-  "listDate": "Rhestr ar gyfer ",
-  "contactMessage": "Cysylltwch â'r Rhestrau Iechyd Sylfaenol yn primaryhealthlists@justice.gov.uk i gael manylion am sut i gael mynediad at wrandawiadau fideo",
-  "observeHearingLinkText": "Arsylwi gwrandawiad llys neu dribiwnlys fel newyddiadurwr, ymchwilydd neu aelod o'r cyhoedd",
-  "observeHearingLink": "https://www.gov.uk/guidance/observe-a-court-or-tribunal-hearing",
-  "linkTitle": "Sut i arsylwi gwrandawiad llys neu dribiwnlys",
+  "contactMessage": "Cysylltwch â'r Rhestrau Iechyd Sylfaenol yn primaryhealthlists@justice.gov.uk i gael manylion am sut i gael mynediad at wrandawiadau fideo.",
   "tableHeadings": [
     "Dyddiad",
     "Enw’r achos",
@@ -15,9 +8,5 @@
     "Math o wrandawiad",
     "Lleoliad",
     "Gwybodaeth ychwanegol"
-  ],
-  "dataSource": "Ffynhonnell y Data: ",
-  "thanks": "Diolch am ddarllen y ddogfen hon yn fanwl.",
-  "bottomLegal1": "Noder bod y ddogfen hon yn cynnwys Data Categori Arbennig fel y’i diffinnir yn Neddf Gwarchod Data 2018, a elwid gynt yn Ddata Personol Sensitif, a dylid ei drin yn y ffordd briodol.",
-  "bottomLegal2": "Mae’r ddogfen hon yn cynnwys gwybodaeth a fwriedir i gynorthwyo i roi adroddiad manwl-gywir am achosion llys. Mae’n hanfodol eich bod yn sicrhau eich bod yn gwarchod y Data Categori Arbennig sydd ynddi ac yn cadw at gyfyngiadau adrodd (er enghraifft yn achos dioddefwyr a phlant). Bydd GLlTEF yn rhoi’r gorau i anfon y data os cyfyd pryder ynghylch sut y’i defnyddir."
+  ]
 }

@@ -1,0 +1,15 @@
+{
+  "listName": "Upper Tribunal (Immigration and Asylum) Chamber Statutory Daily Hearing List",
+  "listUpdateMessage": "We update this list by 5pm for the following day. If there are late changes to the list, we’ll update no later than 9am on the day of the hearing.",
+  "attendHearingMessage": "For details on attending a UTIAC remote hearing, please email uppertribunallistingteam@justice.gov.uk.",
+  "tableHeadings": [
+    "Hearing time",
+    "Appellant",
+    "Representative",
+    "Appeal reference number",
+    "Judge(s)",
+    "Type of hearing",
+    "Location",
+    "Additional information"
+  ]
+}

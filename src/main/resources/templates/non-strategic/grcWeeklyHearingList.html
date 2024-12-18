@@ -97,8 +97,10 @@
 <div>
   <h2 id="page-heading" class="govuk-heading-l" th:text="${i18n.listName}"/>
   <p id="list-date" class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-1" th:text="${i18n.listDate + contentDate}"/>
-  <p id="contact-message" class="govuk-body" th:text="${i18n.contactMessage}"/>
-  <a id="observe-hearing" th:href="${i18n.observeHearingLink}" class="govuk-link" th:title="${i18n.observeHearingLinkText}" th:text="${i18n.observeHearingLinkText}" />
+  <p id="message-line-1" class="govuk-body" th:text="${i18n.messageLine1}"/>
+  <p id="message-line-2" class="govuk-body" th:text="${i18n.messageLine2}"/>
+  <p><a id="join-hearing" th:href="${i18n.joinHearingLink}" class="govuk-link" th:title="${i18n.joinHearingLinkText}" th:text="${i18n.joinHearingLinkText}" /></p>
+  <p><a id="observe-hearing" th:href="${i18n.observeHearingLink}" class="govuk-link" th:title="${i18n.observeHearingLinkText}" th:text="${i18n.observeHearingLinkText}" /></p>
 
   <div aria-label="Hearing list" class="landscape">
     <table class="govuk-table">
@@ -112,9 +114,12 @@
       <tbody class="govuk-table__body">
       <tr th:each="hearing : ${data}">
         <td class="govuk-table__cell" th:text="${hearing.get('date')}"/>
+        <td class="govuk-table__cell" th:text="${hearing.get('hearingTime')}"/>
+        <td class="govuk-table__cell" th:text="${hearing.get('caseReferenceNumber')}"/>
         <td class="govuk-table__cell" th:text="${hearing.get('caseName')}"/>
-        <td class="govuk-table__cell" th:text="${hearing.get('hearingLength')}"/>
-        <td class="govuk-table__cell" th:text="${hearing.get('hearingType')}"/>
+        <td class="govuk-table__cell" th:text="${hearing.get('judges')}"/>
+        <td class="govuk-table__cell" th:text="${hearing.get('members')}"/>
+        <td class="govuk-table__cell" th:text="${hearing.get('modeOfHearing')}" />
         <td class="govuk-table__cell" th:text="${hearing.get('venue')}" />
         <td class="govuk-table__cell" th:text="${hearing.get('additionalInformation')}" />
       </tr>

@@ -198,7 +198,11 @@ class ExcelConversionServiceTest {
                 .as(CELL_MATCH_MESSAGE)
                 .isEqualTo("TRUE");
 
-            softly.assertThat(firstRow.get("string"))
+            softly.assertThat(firstRow.containsKey("strings"))
+                .as(CELL_MATCH_MESSAGE)
+                .isTrue();
+
+            softly.assertThat(firstRow.get("strings"))
                 .as(CELL_MATCH_MESSAGE)
                 .isEqualTo("Test string");
 
