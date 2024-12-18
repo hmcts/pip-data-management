@@ -1,7 +1,7 @@
 {
   "listName": "Primary Health Tribunal Weekly Hearing List",
   "contactMessage": "Please contact the Primary Health Lists at primaryhealthlists@justice.gov.uk for details of how to access video hearings.",
-  "tableHeadings": [
+  "tableHeaders": [
     "Date",
     "Case name",
     "Hearing length",
