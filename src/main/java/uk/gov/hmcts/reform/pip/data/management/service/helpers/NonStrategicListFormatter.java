@@ -15,15 +15,17 @@ import static uk.gov.hmcts.reform.pip.model.publication.ListType.PHT_WEEKLY_HEAR
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.WPAFCC_WEEKLY_HEARING_LIST;
 
 public final class NonStrategicListFormatter {
+    private static final String DATE = "date";
+
     public static final Map<ListType, Map<String, Function<String, String>>> LIST_TYPE_MAP = Map.of(
         CST_WEEKLY_HEARING_LIST,
-        Map.of("date", NonStrategicFieldFormattingHelper::formatDateField),
+        Map.of(DATE, NonStrategicFieldFormattingHelper::formatDateField),
         PHT_WEEKLY_HEARING_LIST,
-        Map.of("date", NonStrategicFieldFormattingHelper::formatDateField),
+        Map.of(DATE, NonStrategicFieldFormattingHelper::formatDateField),
         GRC_WEEKLY_HEARING_LIST,
-        Map.of("date", NonStrategicFieldFormattingHelper::formatDateField),
+        Map.of(DATE, NonStrategicFieldFormattingHelper::formatDateField),
         WPAFCC_WEEKLY_HEARING_LIST,
-        Map.of("date", NonStrategicFieldFormattingHelper::formatDateField)
+        Map.of(DATE, NonStrategicFieldFormattingHelper::formatDateField)
     );
 
     private NonStrategicListFormatter() {

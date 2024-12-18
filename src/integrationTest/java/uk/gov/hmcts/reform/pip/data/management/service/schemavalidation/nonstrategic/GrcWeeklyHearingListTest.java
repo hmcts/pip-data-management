@@ -29,7 +29,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 @ActiveProfiles("integration-basic")
 @SpringBootTest
-public class GrcWeeklyHearingListTest extends IntegrationBasicTestBase {
+class GrcWeeklyHearingListTest extends IntegrationBasicTestBase {
     private static final String VALID_JSON =
         "data/non-strategic/grc-weekly-hearing-list/grcWeeklyHearingList.json";
     private static final String INVALID_MESSAGE = "Invalid JSON list marked as valid";

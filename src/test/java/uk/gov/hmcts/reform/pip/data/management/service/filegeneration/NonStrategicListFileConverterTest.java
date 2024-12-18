@@ -99,12 +99,12 @@ class NonStrategicListFileConverterTest {
             .as(BODY_MESSAGE)
             .extracting(Element::text)
             .isEqualTo("Please contact the Care Standards Office at cst@justice.gov.uk for details of how to "
-                           + "access video hearings");
+                           + "access video hearings.");
 
         softly.assertThat(document.getElementById(OBSERVE_HEARING_ELEMENT))
             .as(BODY_MESSAGE)
             .extracting(Element::text)
-            .isEqualTo("Observe a court or tribunal hearing as a journalist, researcher or member of the public");
+            .isEqualTo("Observe a court or tribunal hearing as a journalist, researcher or member of the public.");
 
         softly.assertThat(document.getElementsByTag("th"))
             .as(TABLE_HEADERS_MESSAGE)
@@ -162,12 +162,12 @@ class NonStrategicListFileConverterTest {
             .as(BODY_MESSAGE)
             .extracting(Element::text)
             .isEqualTo("Cysylltwch â'r Swyddfa Safonau Gofal yn cst@justice.gov.uk i gael manylion am sut i gael "
-                           + "mynediad at wrandawiadau fideo");
+                           + "mynediad at wrandawiadau fideo.");
 
         softly.assertThat(document.getElementById(OBSERVE_HEARING_ELEMENT))
             .as(BODY_MESSAGE)
             .extracting(Element::text)
-            .isEqualTo("Arsylwi gwrandawiad llys neu dribiwnlys fel newyddiadurwr, ymchwilydd neu aelod o'r cyhoedd");
+            .isEqualTo("Arsylwi gwrandawiad llys neu dribiwnlys fel newyddiadurwr, ymchwilydd neu aelod o'r cyhoedd.");
 
         softly.assertThat(document.getElementsByTag("th"))
             .as(TABLE_HEADERS_MESSAGE)
@@ -225,12 +225,12 @@ class NonStrategicListFileConverterTest {
             .as(BODY_MESSAGE)
             .extracting(Element::text)
             .isEqualTo("Please contact the Primary Health Lists at primaryhealthlists@justice.gov.uk for details of "
-                           + "how to access video hearings");
+                           + "how to access video hearings.");
 
         softly.assertThat(document.getElementById(OBSERVE_HEARING_ELEMENT))
             .as(BODY_MESSAGE)
             .extracting(Element::text)
-            .isEqualTo("Observe a court or tribunal hearing as a journalist, researcher or member of the public");
+            .isEqualTo("Observe a court or tribunal hearing as a journalist, researcher or member of the public.");
 
         softly.assertThat(document.getElementsByTag("th"))
             .as(TABLE_HEADERS_MESSAGE)
@@ -288,12 +288,12 @@ class NonStrategicListFileConverterTest {
             .as(BODY_MESSAGE)
             .extracting(Element::text)
             .isEqualTo("Cysylltwch â'r Rhestrau Iechyd Sylfaenol yn primaryhealthlists@justice.gov.uk i gael "
-                           + "manylion am sut i gael mynediad at wrandawiadau fideo");
+                           + "manylion am sut i gael mynediad at wrandawiadau fideo.");
 
         softly.assertThat(document.getElementById(OBSERVE_HEARING_ELEMENT))
             .as(BODY_MESSAGE)
             .extracting(Element::text)
-            .isEqualTo("Arsylwi gwrandawiad llys neu dribiwnlys fel newyddiadurwr, ymchwilydd neu aelod o'r cyhoedd");
+            .isEqualTo("Arsylwi gwrandawiad llys neu dribiwnlys fel newyddiadurwr, ymchwilydd neu aelod o'r cyhoedd.");
 
         softly.assertThat(document.getElementsByTag("th"))
             .as(TABLE_HEADERS_MESSAGE)

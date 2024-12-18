@@ -348,11 +348,11 @@ class ValidationServiceTest extends IntegrationBasicTestBase {
                          "data/non-strategic/wpafcc-weekly-hearing-list/wpafccWeeklyHearingList.json"
             ),
             Arguments.of(ListType.UT_IAC_JUDICIAL_REVIEW_DAILY_HEARING_LIST,
-                         "data/non-strategic/utiac-judicial-reviews-daily-hearing-list/"
-                             + "utiacJudicialReviewsDailyHearingList.json"),
+                         "data/non-strategic/ut-iac-judicial-reviews-daily-hearing-list/"
+                             + "utIacJudicialReviewsDailyHearingList.json"),
             Arguments.of(ListType.UT_IAC_STATUTORY_APPEALS_DAILY_HEARING_LIST,
-                         "data/non-strategic/utiac-statutory-appeals-daily-hearing-list/"
-                             + "utiacStatutoryAppealsDailyHearingList.json")
+                         "data/non-strategic/ut-iac-statutory-appeals-daily-hearing-list/"
+                             + "utIacStatutoryAppealsDailyHearingList.json")
         );
     }
 
