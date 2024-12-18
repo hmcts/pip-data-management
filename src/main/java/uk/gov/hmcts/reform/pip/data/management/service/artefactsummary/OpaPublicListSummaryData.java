@@ -3,7 +3,6 @@ package uk.gov.hmcts.reform.pip.data.management.service.artefactsummary;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.collect.ImmutableMap;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.opapubliclist.Offence;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.listmanipulation.OpaPublicListHelper;
 
@@ -13,7 +12,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@Service
 public class OpaPublicListSummaryData implements ArtefactSummaryData {
     @Override
     public Map<String, List<Map<String, String>>> get(JsonNode payload) {
