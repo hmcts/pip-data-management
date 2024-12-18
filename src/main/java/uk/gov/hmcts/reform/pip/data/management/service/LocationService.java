@@ -25,7 +25,7 @@ import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationDeletion;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationReference;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
-import uk.gov.hmcts.reform.pip.model.account.AzureAccount;
+import uk.gov.hmcts.reform.pip.model.account.PiUser;
 import uk.gov.hmcts.reform.pip.model.enums.UserActions;
 import uk.gov.hmcts.reform.pip.model.location.LocationCsv;
 import uk.gov.hmcts.reform.pip.model.location.LocationType;
@@ -248,8 +248,9 @@ public class LocationService {
     /**
      * This method will delete a location from the database.
      * @param locationId The ID of the location to delete.
+     * @param userId The ID of the user who is deleting the location.
      */
-    public LocationDeletion deleteLocation(Integer locationId, String provenanceUserId)
+    public LocationDeletion deleteLocation(Integer locationId, String userId)
         throws JsonProcessingException {
         LocationDeletion locationDeletion;
         Location location = locationRepository.getLocationByLocationId(locationId)
@@ -257,13 +258,13 @@ public class LocationService {
                 String.format("No location found with the id: %s", locationId)
             ));
 
-        AzureAccount userInfo = accountManagementService.getUserInfo(provenanceUserId);
-        locationDeletion = checkActiveArtefactForLocation(location, userInfo.getDisplayName());
+        PiUser userInfo = accountManagementService.getUserById(userId);
+        locationDeletion = checkActiveArtefactForLocation(location, userInfo.getEmail());
         if (!locationDeletion.isExists()) {
-            locationDeletion = checkActiveSubscriptionForLocation(location, userInfo.getDisplayName());
+            locationDeletion = checkActiveSubscriptionForLocation(location, userInfo.getEmail());
             if (!locationDeletion.isExists()) {
                 locationRepository.deleteById(locationId);
-                sendEmailToAllSystemAdmins(userInfo.getDisplayName(), ActionResult.SUCCEEDED,
+                sendEmailToAllSystemAdmins(userInfo.getEmail(), ActionResult.SUCCEEDED,
                     String.format("Location %s with Id %s has been deleted.",
                             location.getName(), location.getLocationId()));
             }
@@ -288,16 +289,16 @@ public class LocationService {
             .toList();
     }
 
-    private void sendEmailToAllSystemAdmins(String requesterName, ActionResult actionResult,
+    private void sendEmailToAllSystemAdmins(String requesterEmail, ActionResult actionResult,
                                             String additionalDetails) throws JsonProcessingException {
         List<String> systemAdminsAad = accountManagementService.getAllAccounts("PI_AAD", SYSTEM_ADMIN.toString());
         List<String> systemAdminsSso = accountManagementService.getAllAccounts("SSO", SYSTEM_ADMIN.toString());
         List<String> systemAdmins = Stream.concat(systemAdminsAad.stream(), systemAdminsSso.stream()).toList();
-        publicationService.sendSystemAdminEmail(systemAdmins, requesterName, actionResult, additionalDetails,
+        publicationService.sendSystemAdminEmail(systemAdmins, requesterEmail, actionResult, additionalDetails,
                                                 ChangeType.DELETE_LOCATION);
     }
 
-    private LocationDeletion checkActiveArtefactForLocation(Location location, String requesterName)
+    private LocationDeletion checkActiveArtefactForLocation(Location location, String requestEmail)
         throws JsonProcessingException {
         LocalDateTime searchDateTime = LocalDateTime.now();
         LocationDeletion locationDeletion = new LocationDeletion();
@@ -306,13 +307,13 @@ public class LocationService {
         if (!activeArtefacts.isEmpty()) {
             locationDeletion = new LocationDeletion("There are active artefacts for the given location.",
                                                     true);
-            sendEmailToAllSystemAdmins(requesterName, ActionResult.ATTEMPTED,
+            sendEmailToAllSystemAdmins(requestEmail, ActionResult.ATTEMPTED,
                 String.format("There are active artefacts for following location: %s", location.getName()));
         }
         return locationDeletion;
     }
 
-    private LocationDeletion checkActiveSubscriptionForLocation(Location location, String requesterName)
+    private LocationDeletion checkActiveSubscriptionForLocation(Location location, String requesterEmail)
         throws JsonProcessingException {
         LocationDeletion locationDeletion = new LocationDeletion();
         String result =
@@ -323,7 +324,7 @@ public class LocationService {
             if (!node.isEmpty()) {
                 locationDeletion = new LocationDeletion("There are active subscriptions for the given location.",
                                                         true);
-                sendEmailToAllSystemAdmins(requesterName, ActionResult.ATTEMPTED,
+                sendEmailToAllSystemAdmins(requesterEmail, ActionResult.ATTEMPTED,
                     String.format("There are active subscriptions for the following location: %s", location.getName()));
             }
         }
