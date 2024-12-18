@@ -172,7 +172,7 @@ class PublicationTest extends FunctionalTestBase {
         headerMapUploadNonStrategicFile.put(PublicationConfiguration.SENSITIVITY_HEADER, sensitivity.toString());
         headerMapUploadNonStrategicFile.put(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE.toString());
 
-        String filePath = this.getClass().getClassLoader().getResource("data/testExceFile.xlsx").getPath();
+        String filePath = this.getClass().getClassLoader().getResource("data/testExcelFile.xlsx").getPath();
         File excelFile = new File(filePath);
 
         final Response responseUploadNonStrategicFile = doPostRequestMultiPartWithMimeType(
