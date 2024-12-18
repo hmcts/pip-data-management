@@ -1,9 +1,9 @@
 [
   {
     "hearingTime": "10:30am",
-    "appellant": "Appellant A",
+    "applicant": "Applicant A",
     "representative": "Rep A",
-    "appealReferenceNumber": "1234",
+    "caseReferenceNumber": "1234",
     "judges": "Judge A",
     "typeOfHearing": "Substantive",
     "location": "This is a venue name",
@@ -11,9 +11,9 @@
   },
   {
     "hearingTime": "11am",
-    "appellant": "Appellant B",
+    "applicant": "Applicant B",
     "representative": "Rep B",
-    "appealReferenceNumber": "1235",
+    "caseReferenceNumber": "1235",
     "judges": "Judge B",
     "typeOfHearing": "Substantive",
     "location": "This is a venue name",

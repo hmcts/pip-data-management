@@ -31,7 +31,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 @SpringBootTest
 class UtIacStatutoryAppealsDailyHearingListTest extends IntegrationBasicTestBase {
     private static final String VALID_JSON =
-        "data/non-strategic/ut-iac-judicial-reviews-daily-hearing-list/utIacJudicialReviewsDailyHearingList.json";
+        "data/non-strategic/ut-iac-statutory-appeals-daily-hearing-list/utIacStatutoryAppealsDailyHearingList.json";
     private static final String INVALID_MESSAGE = "Invalid JSON list marked as valid";
 
     private static final String SOURCE_ARTEFACT_ID = "sourceArtefactId";
