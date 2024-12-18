@@ -347,10 +347,10 @@ class ValidationServiceTest extends IntegrationBasicTestBase {
             Arguments.of(ListType.WPAFCC_WEEKLY_HEARING_LIST,
                          "data/non-strategic/wpafcc-weekly-hearing-list/wpafccWeeklyHearingList.json"
             ),
-            Arguments.of(ListType.UTIAC_JUDICIAL_REVIEW_DAILY_HEARING_LIST,
+            Arguments.of(ListType.UT_IAC_JUDICIAL_REVIEW_DAILY_HEARING_LIST,
                          "data/non-strategic/utiac-judicial-reviews-daily-hearing-list/"
                              + "utiacJudicialReviewsDailyHearingList.json"),
-            Arguments.of(ListType.UTIAC_STATUTORY_APPEALS_DAILY_HEARING_LIST,
+            Arguments.of(ListType.UT_IAC_STATUTORY_APPEALS_DAILY_HEARING_LIST,
                          "data/non-strategic/utiac-statutory-appeals-daily-hearing-list/"
                              + "utiacStatutoryAppealsDailyHearingList.json")
         );

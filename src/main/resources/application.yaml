@@ -141,8 +141,8 @@ validations:
     PHT_WEEKLY_HEARING_LIST: "schemas/non-strategic/pht_weekly_hearing_list.json"
     GRC_WEEKLY_HEARING_LIST: "schemas/non-strategic/grc_weekly_hearing_list.json"
     WPAFCC_WEEKLY_HEARING_LIST: "schemas/non-strategic/wpafcc_weekly_hearing_list.json"
-    UTIAC_STATUTORY_APPEALS_DAILY_HEARING_LIST: "schemas/non-strategic/utiac_statutory_appeals_daily_hearing_list.json"
-    UTIAC_JUDICIAL_REVIEW_DAILY_HEARING_LIST: "schemas/non-strategic/utiac_judicial_reviews_daily_hearing_list.json"
+    UT_IAC_STATUTORY_APPEALS_DAILY_HEARING_LIST: "schemas/non-strategic/utiac_statutory_appeals_daily_hearing_list.json"
+    UT_IAC_JUDICIAL_REVIEW_DAILY_HEARING_LIST: "schemas/non-strategic/utiac_judicial_reviews_daily_hearing_list.json"
 
 springdoc:
   swagger-ui:
