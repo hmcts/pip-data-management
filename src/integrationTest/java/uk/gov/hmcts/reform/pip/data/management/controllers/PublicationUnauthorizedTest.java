@@ -42,7 +42,7 @@ class PublicationUnauthorizedTest extends IntegrationBasicTestBase {
     private static final String SEND_NEW_ARTEFACTS_FOR_SUBSCRIPTION_URL = PUBLICATION_URL + "/latest/subscription";
     private static final String REPORT_NO_MATCH_ARTEFACTS_URL = PUBLICATION_URL + "/no-match/reporting";
     private static final String ISSUER_HEADER = "x-issuer-id";
-    private static final String PROVENANCE_USER_ID_HEADER = "x-provenance-user-id";
+    private static final String USER_ID_HEADER = "x-user-id";
     private static final String VERIFICATION_HEADER = "verification";
     private static final String VERIFICATION_TRUE = "true";
 
@@ -216,7 +216,7 @@ class PublicationUnauthorizedTest extends IntegrationBasicTestBase {
     void testDeleteArtefactsByLocationUnauthorized() throws Exception {
         MockHttpServletRequestBuilder deleteRequest = MockMvcRequestBuilders
             .delete("/publication/1/deleteArtefacts")
-            .header(PROVENANCE_USER_ID_HEADER, "123");
+            .header(USER_ID_HEADER, "123");
 
         mockMvc.perform(deleteRequest)
             .andExpect(status().isForbidden())

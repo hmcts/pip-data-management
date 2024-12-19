@@ -33,7 +33,7 @@ import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.ExceptionResponse;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.utils.IntegrationTestBase;
-import uk.gov.hmcts.reform.pip.model.account.AzureAccount;
+import uk.gov.hmcts.reform.pip.model.account.PiUser;
 import uk.gov.hmcts.reform.pip.model.location.LocationType;
 import uk.gov.hmcts.reform.pip.model.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
@@ -2055,9 +2055,11 @@ class PublicationTest extends IntegrationTestBase {
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     void testDeleteArtefactsByLocation() throws Exception {
-        AzureAccount account = new AzureAccount();
-        account.setDisplayName(DISPLAY_NAME);
-        when(accountManagementService.getUserInfo(PROVENANCE_USER_ID)).thenReturn(account);
+        PiUser piUser = new PiUser();
+        piUser.setUserId(USER_ID);
+        piUser.setEmail(EMAIL);
+
+        when(accountManagementService.getUserById(USER_ID)).thenReturn(piUser);
         when(accountManagementService.getAllAccounts(anyString(), eq(SYSTEM_ADMIN.toString())))
             .thenReturn(List.of(EMAIL));
 
@@ -2071,7 +2073,7 @@ class PublicationTest extends IntegrationTestBase {
 
         MockHttpServletRequestBuilder deleteRequest = MockMvcRequestBuilders
             .delete(PUBLICATION_URL + "/" + COURT_ID + "/deleteArtefacts")
-            .header(PROVENANCE_USER_ID_HEADER, PROVENANCE_USER_ID);
+            .header(USER_ID_HEADER, USER_ID);
 
         MvcResult deleteResponse = mockMvc.perform(deleteRequest).andExpect(status().isOk()).andReturn();
 
@@ -2084,7 +2086,7 @@ class PublicationTest extends IntegrationTestBase {
     void testDeleteArtefactsByLocationNotFound() throws Exception {
         MockHttpServletRequestBuilder deleteRequest = MockMvcRequestBuilders
             .delete(PUBLICATION_URL + "/" + 11 + "/deleteArtefacts")
-            .header(PROVENANCE_USER_ID_HEADER, PROVENANCE_USER_ID);
+            .header(USER_ID_HEADER, USER_ID);
 
         MvcResult deleteResponse = mockMvc.perform(deleteRequest).andExpect(status().isNotFound()).andReturn();
 

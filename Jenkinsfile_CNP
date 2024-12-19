@@ -16,25 +16,15 @@ def setupTestSecrets() {
   azureKeyVault(
     keyVaultURL: "https://pip-bootstrap-${bootstap_env}-kv.vault.azure.net/",
     secrets: [
-      secret('app-pip-data-management-id', 'CLIENT_ID'),
-      secret('app-pip-data-management-pwd', 'CLIENT_SECRET'),
       secret('app-pip-data-management-scope', 'APP_URI'),
-      secret('app-pip-subscription-management-scope', 'SUBSCRIPTION_MANAGEMENT_AZ_API'),
-      secret('app-pip-account-management-scope', 'ACCOUNT_MANAGEMENT_AZ_API'),
-      secret('app-pip-publication-services-scope', 'PUBLICATION_SERVICES_AZ_API'),
       secret('app-tenant', 'TENANT_ID'),
       secret('test-user-id', 'TEST_USER_ID'),
-      secret('b2c-test-system-admin-account-provenance-id', 'SYSTEM_ADMIN_PROVENANCE_ID'),
+      secret('test-system-admin-id', 'SYSTEM_ADMIN_ID'),
       secret('app-pip-subscription-management-id', 'CLIENT_ID_FT'),
       secret('app-pip-subscription-management-pwd', 'CLIENT_SECRET_FT')
     ]) {
-    env.CLIENT_ID = "${CLIENT_ID}"
-    env.CLIENT_SECRET = "${CLIENT_SECRET}"
     env.APP_URI = "${APP_URI}"
-    env.SUBSCRIPTION_MANAGEMENT_AZ_API = "${SUBSCRIPTION_MANAGEMENT_AZ_API}"
-    env.ACCOUNT_MANAGEMENT_AZ_API = "${ACCOUNT_MANAGEMENT_AZ_API}"
-    env.PUBLICATION_SERVICES_AZ_API = "${PUBLICATION_SERVICES_AZ_API}"
-    env.SYSTEM_ADMIN_PROVENANCE_ID = "${SYSTEM_ADMIN_PROVENANCE_ID}"
+    env.SYSTEM_ADMIN_ID = "${SYSTEM_ADMIN_ID}"
     env.TENANT_ID = "${TENANT_ID}"
     env.TEST_USER_ID = "${TEST_USER_ID}"
     env.CLIENT_ID_FT = "${CLIENT_ID_FT}"

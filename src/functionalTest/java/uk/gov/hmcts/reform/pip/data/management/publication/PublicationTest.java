@@ -172,7 +172,7 @@ class PublicationTest extends FunctionalTestBase {
         headerMapUploadNonStrategicFile.put(PublicationConfiguration.SENSITIVITY_HEADER, sensitivity.toString());
         headerMapUploadNonStrategicFile.put(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE.toString());
 
-        String filePath = this.getClass().getClassLoader().getResource("data/testExceFile.xlsx").getPath();
+        String filePath = this.getClass().getClassLoader().getResource("data/testExcelFile.xlsx").getPath();
         File excelFile = new File(filePath);
 
         final Response responseUploadNonStrategicFile = doPostRequestMultiPartWithMimeType(
@@ -309,7 +309,7 @@ class PublicationTest extends FunctionalTestBase {
         assertThat(responseGetArtefactMetadata.getStatusCode()).isEqualTo(OK.value());
 
         Map<String, String> deleteArtefactHeaderMap = getBaseHeaderMap();
-        deleteArtefactHeaderMap.put("x-provenance-user-id", userId);
+        deleteArtefactHeaderMap.put(USER_ID_HEADER, userId);
 
         Response deleteByLocationResponse = doDeleteRequest(
             String.format(
@@ -480,7 +480,7 @@ class PublicationTest extends FunctionalTestBase {
         Artefact artefact = uploadFlatFile(courtId, Sensitivity.PUBLIC);
 
         Map<String, String> headerMap = getBaseHeaderMap();
-        headerMap.put("x-provenance-user-id", UUID.randomUUID().toString());
+        headerMap.put(USER_ID_HEADER, UUID.randomUUID().toString());
 
         final Response deleteArtefactsByLocationId = doDeleteRequest(
             PUBLICATION_URL + "/" + courtId + "/deleteArtefacts", headerMap
