@@ -5,7 +5,7 @@
     "representative": "Rep A",
     "caseReferenceNumber": "1234",
     "judges": "Judge A",
-    "typeOfHearing": "Substantive",
+    "hearingType": "Substantive",
     "location": "This is a venue name",
     "additionalInformation": "This is additional information"
   },
@@ -15,7 +15,7 @@
     "representative": "Rep B",
     "caseReferenceNumber": "1235",
     "judges": "Judge B",
-    "typeOfHearing": "Substantive",
+    "hearingType": "Substantive",
     "location": "This is a venue name",
     "additionalInformation": "This is another additional information"
   }

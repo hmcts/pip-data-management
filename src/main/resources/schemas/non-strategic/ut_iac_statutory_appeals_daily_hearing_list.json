@@ -11,7 +11,7 @@
       "representative",
       "appealReferenceNumber",
       "judges",
-      "typeOfHearing",
+      "hearingType",
       "location",
       "additionalInformation"
     ],
@@ -61,7 +61,7 @@
         ],
         "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
       },
-      "typeOfHearing": {
+      "hearingType": {
         "title": "Type of hearing being presented",
         "type": "string",
         "default": "",

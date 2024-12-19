@@ -42,7 +42,8 @@ class NonStrategicListFileConverterTest {
     private static final String CASE_NAME = "Case name";
     private static final String CASE_REFERENCE_NUMBER = "Case reference number";
     private static final String JUDGES = "Judge(s)";
-    private static final String TYPE_OF_HEARING = "Type of hearing";
+    private static final String HEARING_TYPE = "Hearing type";
+    private static final String HEARING_TYPE_WELSH = "Math o wrandawiad";
     private static final String VENUE = "Venue";
     private static final String ADDITIONAL_INFORMATION = "Additional information";
 
@@ -58,7 +59,6 @@ class NonStrategicListFileConverterTest {
     private static final String CONTACT_MESSAGE_ELEMENT = "contact-message";
     private static final String OBSERVE_HEARING_ELEMENT =  "observe-hearing";
     private static final String MESSAGE_LINE1_ELEMENT =  "message-line-1";
-    private static final String MESSAGE_LINE2_ELEMENT =  "message-line-2";
     private static final String JOIN_HEARING_ELEMENT =  "join-hearing";
     private static final String JOIN_HEARING_MESSAGE_ELEMENT =  "join-hearing-message";
     private static final String LIST_UPDATE_MESSAGE_ELEMENT = "list-update-message";
@@ -173,7 +173,7 @@ class NonStrategicListFileConverterTest {
                 DATE,
                 CASE_NAME,
                 "Hearing length",
-                "Hearing type",
+                HEARING_TYPE,
                 VENUE,
                 ADDITIONAL_INFORMATION
             );
@@ -236,7 +236,7 @@ class NonStrategicListFileConverterTest {
                 "Dyddiad",
                 "Enw’r achos",
                 "Hyd y gwrandawiad",
-                "Math o wrandawiad",
+                HEARING_TYPE_WELSH,
                 "Lleoliad",
                 "Gwybodaeth ychwanegol"
             );
@@ -299,7 +299,7 @@ class NonStrategicListFileConverterTest {
                 DATE,
                 CASE_NAME,
                 "Hearing length",
-                "Hearing type",
+                HEARING_TYPE,
                 VENUE,
                 ADDITIONAL_INFORMATION
             );
@@ -362,7 +362,7 @@ class NonStrategicListFileConverterTest {
                 "Dyddiad",
                 "Enw’r achos",
                 "Hyd y gwrandawiad",
-                "Math o wrandawiad",
+                HEARING_TYPE_WELSH,
                 "Lleoliad",
                 "Gwybodaeth ychwanegol"
             );
@@ -678,7 +678,7 @@ class NonStrategicListFileConverterTest {
                 "Representative",
                 CASE_REFERENCE_NUMBER,
                 JUDGES,
-                TYPE_OF_HEARING,
+                HEARING_TYPE,
                 "Location",
                 ADDITIONAL_INFORMATION
             );
@@ -801,7 +801,7 @@ class NonStrategicListFileConverterTest {
                 "Representative",
                 "Appeal reference number",
                 JUDGES,
-                TYPE_OF_HEARING,
+                HEARING_TYPE,
                 "Location",
                 ADDITIONAL_INFORMATION
             );
