@@ -581,6 +581,85 @@ class PublicationManagementTest extends IntegrationTestBase {
     }
 
     @Test
+    void testGenerateArtefactSummaryGrcWeeklyHearingList() throws Exception {
+        Artefact artefact = createNonStrategicPublication(
+            ListType.GRC_WEEKLY_HEARING_LIST, "data/non-strategic/grc-weekly-hearing-list/grcWeeklyHearingList.xlsx"
+        );
+
+        byte[] jsonData = getTestData("data/non-strategic/grc-weekly-hearing-list/grcWeeklyHearingList.json");
+        when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(jsonData));
+
+        MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, artefact.getArtefactId())))
+            .andExpect(status().isOk()).andReturn();
+
+        String responseContent = response.getResponse().getContentAsString();
+        assertTrue(responseContent.contains("Date - 16 December 2024"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains("Hearing time - 10am"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains("Case reference number - 1234"), CONTENT_MISMATCH_ERROR);
+    }
+
+    @Test
+    void testGenerateArtefactSummaryWpafccWeeklyHearingList() throws Exception {
+        Artefact artefact = createNonStrategicPublication(
+            ListType.WPAFCC_WEEKLY_HEARING_LIST,
+            "data/non-strategic/wpafcc-weekly-hearing-list/wpafccWeeklyHearingList.xlsx"
+        );
+
+        byte[] jsonData = getTestData(
+            "data/non-strategic/wpafcc-weekly-hearing-list/wpafccWeeklyHearingList.json"
+        );
+        when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(jsonData));
+
+        MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, artefact.getArtefactId())))
+            .andExpect(status().isOk()).andReturn();
+
+        String responseContent = response.getResponse().getContentAsString();
+        assertTrue(responseContent.contains("Date - 16 December 2024"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains("Hearing time - 10am"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains("Case reference number - 1234"), CONTENT_MISMATCH_ERROR);
+    }
+
+    @Test
+    void testGenerateArtefactSummaryUtIacJudicialReviewDailyHearingList() throws Exception {
+        Artefact artefact = createNonStrategicPublication(
+            ListType.UT_IAC_JUDICIAL_REVIEW_DAILY_HEARING_LIST,
+            "data/non-strategic/ut-iac-judicial-review-daily-hearing-list/utIacJudicialReviewDailyHearingList.xlsx"
+        );
+
+        byte[] jsonData = getTestData(
+            "data/non-strategic/ut-iac-judicial-review-daily-hearing-list/utIacJudicialReviewDailyHearingList.json"
+        );
+        when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(jsonData));
+
+        MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, artefact.getArtefactId())))
+            .andExpect(status().isOk()).andReturn();
+
+        String responseContent = response.getResponse().getContentAsString();
+        assertTrue(responseContent.contains("Hearing time - 10:30am"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains("Case reference number - 1234"), CONTENT_MISMATCH_ERROR);
+    }
+
+    @Test
+    void testGenerateArtefactSummaryUtIacStatutoryAppealsDailyHearingList() throws Exception {
+        Artefact artefact = createNonStrategicPublication(
+            ListType.UT_IAC_STATUTORY_APPEALS_DAILY_HEARING_LIST,
+            "data/non-strategic/ut-iac-statutory-appeals-daily-hearing-list/utIacStatutoryAppealsDailyHearingList.xlsx"
+        );
+
+        byte[] jsonData = getTestData(
+            "data/non-strategic/ut-iac-statutory-appeals-daily-hearing-list/utIacStatutoryAppealsDailyHearingList.json"
+        );
+        when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(jsonData));
+
+        MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, artefact.getArtefactId())))
+            .andExpect(status().isOk()).andReturn();
+
+        String responseContent = response.getResponse().getContentAsString();
+        assertTrue(responseContent.contains("Hearing time - 10:30am"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains("Appeal reference number - 1234"), CONTENT_MISMATCH_ERROR);
+    }
+
+    @Test
     void testGenerateArtefactSummaryNotFound() throws Exception {
         MvcResult mvcResult = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, ARTEFACT_ID_NOT_FOUND)))
             .andExpect(status().isNotFound()).andReturn();

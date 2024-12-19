@@ -59,7 +59,8 @@ public class ExcelConversionService {
         for (int headerNumber = 0; headerNumber < headers.size(); headerNumber++) {
             String upperUnderscoreHeader = headers.get(headerNumber)
                 .toUpperCase(Locale.ENGLISH)
-                .replaceAll(" ", "_");
+                .replaceAll(" ", "_")
+                .replaceAll("[()]", "");
             String formattedHeader = CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, upperUnderscoreHeader);
 
             String rowCell = headerNumber < row.size() ? row.get(headerNumber) : "";
