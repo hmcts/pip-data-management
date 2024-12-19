@@ -56,9 +56,9 @@ class NonStrategicListFileConverterTest {
     private static final String LIST_DATE_ENGLISH = "List for 12 December 2024";
     private static final String LIST_DATE_WELSH = "Rhestr ar gyfer 12 December 2024";
     private static final String OBSERVE_HEARING_ENGLISH = "Observe a court or tribunal hearing as a journalist, "
-        + "researcher or member of the public.";
+        + "researcher or member of the public";
     private static final String OBSERVE_HEARING_WELSH = "Arsylwi gwrandawiad llys neu dribiwnlys fel newyddiadurwr, "
-        + "ymchwilydd neu aelod o'r cyhoedd.";
+        + "ymchwilydd neu aelod o'r cyhoedd";
 
     private static final String HEADER_ELEMENT = "page-heading";
     private static final String LIST_DATE_ELEMENT = "list-date";
@@ -427,7 +427,7 @@ class NonStrategicListFileConverterTest {
         softly.assertThat(document.getElementById(JOIN_HEARING_ELEMENT))
             .as(BODY_MESSAGE)
             .extracting(Element::text)
-            .isEqualTo("What to expect when joining a telephone or video hearing.");
+            .isEqualTo("What to expect when joining a telephone or video hearing");
 
         softly.assertThat(document.getElementsByTag("th"))
             .as(TABLE_HEADERS_MESSAGE)
@@ -500,7 +500,7 @@ class NonStrategicListFileConverterTest {
         softly.assertThat(document.getElementById(JOIN_HEARING_ELEMENT))
             .as(BODY_MESSAGE)
             .extracting(Element::text)
-            .isEqualTo("Beth i’w ddisgwyl pan fyddwch yn ymuno â gwrandawiad dros y ffôn neu drwy fideo.");
+            .isEqualTo("Beth i’w ddisgwyl pan fyddwch yn ymuno â gwrandawiad dros y ffôn neu drwy fideo");
 
         softly.assertThat(document.getElementsByTag("th"))
             .as(TABLE_HEADERS_MESSAGE)
