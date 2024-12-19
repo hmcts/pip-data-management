@@ -66,7 +66,7 @@ class EtFortnightlyPressListTest extends IntegrationBasicTestBase {
             .getResourceAsStream(ET_FORTNIGHTLY_PRESS_LIST_VALID_JSON)) {
             assert jsonInput != null;
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
-            assertDoesNotThrow(() -> validationService.validateBody(text, headerGroup));
+            assertDoesNotThrow(() -> validationService.validateBody(text, headerGroup, true));
         }
     }
 
@@ -100,7 +100,7 @@ class EtFortnightlyPressListTest extends IntegrationBasicTestBase {
             String output = mapper.writeValueAsString(topLevelNode);
             assertThatExceptionOfType(PayloadValidationException.class)
                 .as("should fail")
-                .isThrownBy(() -> validationService.validateBody(output, headerGroup));
+                .isThrownBy(() -> validationService.validateBody(output, headerGroup, true));
         }
     }
 
@@ -112,7 +112,7 @@ class EtFortnightlyPressListTest extends IntegrationBasicTestBase {
 
             ObjectMapper mapper = new ObjectMapper();
             String listJson = mapper.readValue(text, JsonNode.class).toString();
-            assertDoesNotThrow(() -> validationService.validateBody(listJson, headerGroup));
+            assertDoesNotThrow(() -> validationService.validateBody(listJson, headerGroup, true));
         }
     }
 
@@ -132,7 +132,7 @@ class EtFortnightlyPressListTest extends IntegrationBasicTestBase {
 
             String listJson = node.toString()
                 .replaceAll(PUBLICATION_DATE_REGEX, String.format("\"publicationDate\":\"%s\"", publicationDate));
-            assertDoesNotThrow(() -> validationService.validateBody(listJson, headerGroup));
+            assertDoesNotThrow(() -> validationService.validateBody(listJson, headerGroup, true));
         }
     }
 
@@ -154,7 +154,7 @@ class EtFortnightlyPressListTest extends IntegrationBasicTestBase {
             String listJson = node.toString()
                 .replaceAll(PUBLICATION_DATE_REGEX, String.format("\"publicationDate\":\"%s\"", publicationDate));
             assertThrows(PayloadValidationException.class,
-                         () -> validationService.validateBody(listJson, headerGroup));
+                         () -> validationService.validateBody(listJson, headerGroup, true));
         }
     }
 }

@@ -74,6 +74,7 @@ class PublicationManagementTest extends IntegrationTestBase {
     private static final String UNAUTHORIZED_ROLE = "APPROLE_unknown.role";
     private static final String SYSTEM_HEADER = "x-system";
     private static final String CASE_REFERENCE_FIELD = "Case reference - 12341234";
+    private static final String CASE_NAME_FIELD = "Case name - This is a case name";
     private static final String HEARING_TYPE_FIELD = "Hearing type - Directions";
 
     private static final LocalDateTime DISPLAY_TO = LocalDateTime.now()
@@ -90,6 +91,7 @@ class PublicationManagementTest extends IntegrationTestBase {
     private static final String SJP_MOCK = "data/sjp-public-list/sjpPublicList.json";
 
     private static MockMultipartFile file;
+    private static final String EXCEL_FILE_TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 
     @Autowired
     private MockMvc mockMvc;
@@ -140,6 +142,38 @@ class PublicationManagementTest extends IntegrationTestBase {
             response.getResponse().getContentAsString(), Artefact.class);
     }
 
+    private Artefact createNonStrategicPublication(ListType listType, String filePath) throws Exception {
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = multipart("/publication/non-strategic")
+            .file(getMockMultipartFile(filePath))
+            .header(PublicationConfiguration.TYPE_HEADER, ArtefactType.LIST)
+            .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
+            .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
+            .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO)
+            .header(PublicationConfiguration.COURT_ID, "1")
+            .header(PublicationConfiguration.LIST_TYPE, listType)
+            .header(PublicationConfiguration.CONTENT_DATE,
+                    CONTENT_DATE.plusDays(new RandomDataGenerator().nextLong(1, 100_000)))
+            .header(PublicationConfiguration.SENSITIVITY_HEADER, Sensitivity.PUBLIC)
+            .header(PublicationConfiguration.LANGUAGE_HEADER, Language.ENGLISH)
+            .contentType(MediaType.MULTIPART_FORM_DATA);
+
+        MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
+            .andExpect(status().isCreated()).andReturn();
+
+        return OBJECT_MAPPER.readValue(
+            response.getResponse().getContentAsString(), Artefact.class);
+    }
+
+    private MockMultipartFile getMockMultipartFile(String filePath) throws IOException {
+        try (InputStream inputStream = this.getClass().getClassLoader()
+            .getResourceAsStream(filePath)) {
+            return new MockMultipartFile(
+                "file", "TestFileName.xlsx", EXCEL_FILE_TYPE,
+                org.testcontainers.shaded.org.apache.commons.io.IOUtils.toByteArray(inputStream)
+            );
+        }
+    }
+
     private void createLocations() throws Exception {
         try (InputStream csvInputStream = this.getClass().getClassLoader()
             .getResourceAsStream("location/ValidCsv.csv")) {
@@ -188,7 +222,7 @@ class PublicationManagementTest extends IntegrationTestBase {
 
         assertTrue(responseContent.contains("Applicant - Surname"), CONTENT_MISMATCH_ERROR);
         assertTrue(responseContent.contains(CASE_REFERENCE_FIELD), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Case name - This is a case name"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(CASE_NAME_FIELD), CONTENT_MISMATCH_ERROR);
         assertTrue(responseContent.contains("Case type - Case type"), CONTENT_MISMATCH_ERROR);
         assertTrue(responseContent.contains(HEARING_TYPE_FIELD), CONTENT_MISMATCH_ERROR);
     }
@@ -206,7 +240,7 @@ class PublicationManagementTest extends IntegrationTestBase {
 
         String responseContent = response.getResponse().getContentAsString();
         assertTrue(responseContent.contains("Case reference - 45684548"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Case name - This is a case name"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(CASE_NAME_FIELD), CONTENT_MISMATCH_ERROR);
         assertTrue(responseContent.contains("Case type - Case Type"), CONTENT_MISMATCH_ERROR);
         assertTrue(responseContent.contains("Hearing type - Hearing Type"), CONTENT_MISMATCH_ERROR);
     }
@@ -329,7 +363,7 @@ class PublicationManagementTest extends IntegrationTestBase {
         String responseContent = response.getResponse().getContentAsString();
         assertTrue(responseContent.contains("Applicant - Applicant surname"), CONTENT_MISMATCH_ERROR);
         assertTrue(responseContent.contains(CASE_REFERENCE_FIELD), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Case name - This is a case name"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(CASE_NAME_FIELD), CONTENT_MISMATCH_ERROR);
         assertTrue(responseContent.contains("Case type - Case type"), CONTENT_MISMATCH_ERROR);
         assertTrue(responseContent.contains(HEARING_TYPE_FIELD), CONTENT_MISMATCH_ERROR);
     }
@@ -510,6 +544,40 @@ class PublicationManagementTest extends IntegrationTestBase {
         assertTrue(responseContent.contains("Defendant - Organisation name"), CONTENT_MISMATCH_ERROR);
         assertTrue(responseContent.contains("Case reference - URN5678"), CONTENT_MISMATCH_ERROR);
         assertTrue(responseContent.contains("Offence - Offence title 2"), CONTENT_MISMATCH_ERROR);
+    }
+
+    @Test
+    void testGenerateArtefactSummaryCstWeeklyHearingList() throws Exception {
+        Artefact artefact = createNonStrategicPublication(
+            ListType.CST_WEEKLY_HEARING_LIST, "data/non-strategic/cst-weekly-hearing-list/cstWeeklyHearingList.xlsx"
+        );
+
+        byte[] jsonData = getTestData("data/non-strategic/cst-weekly-hearing-list/cstWeeklyHearingList.json");
+        when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(jsonData));
+
+        MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, artefact.getArtefactId())))
+            .andExpect(status().isOk()).andReturn();
+
+        String responseContent = response.getResponse().getContentAsString();
+        assertTrue(responseContent.contains("Date - 10 December 2024"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(CASE_NAME_FIELD), CONTENT_MISMATCH_ERROR);
+    }
+
+    @Test
+    void testGenerateArtefactSummaryPhtWeeklyHearingList() throws Exception {
+        Artefact artefact = createNonStrategicPublication(
+            ListType.PHT_WEEKLY_HEARING_LIST, "data/non-strategic/pht-weekly-hearing-list/phtWeeklyHearingList.xlsx"
+        );
+
+        byte[] jsonData = getTestData("data/non-strategic/pht-weekly-hearing-list/phtWeeklyHearingList.json");
+        when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(jsonData));
+
+        MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, artefact.getArtefactId())))
+            .andExpect(status().isOk()).andReturn();
+
+        String responseContent = response.getResponse().getContentAsString();
+        assertTrue(responseContent.contains("Date - 10 December 2024"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(CASE_NAME_FIELD), CONTENT_MISMATCH_ERROR);
     }
 
     @Test

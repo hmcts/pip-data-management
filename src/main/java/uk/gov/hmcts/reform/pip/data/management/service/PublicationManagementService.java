@@ -19,6 +19,8 @@ import uk.gov.hmcts.reform.pip.model.publication.ListType;
 import uk.gov.hmcts.reform.pip.model.publication.Sensitivity;
 
 import java.util.Base64;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -95,8 +97,10 @@ public class PublicationManagementService {
 
         try {
             String rawJson = artefactService.getPayloadByArtefactId(artefactId);
-            return publicationSummaryGenerationService.generate(artefactSummaryData.get()
-                                                                    .get(MAPPER.readTree(rawJson)));
+            Map<String, List<Map<String, String>>> summaryData = artefactSummaryData.get()
+                .get(MAPPER.readTree(rawJson));
+
+            return publicationSummaryGenerationService.generate(summaryData);
         } catch (JsonProcessingException ex) {
             throw new ProcessingException(String.format("Failed to generate summary for artefact id %s", artefactId));
         }

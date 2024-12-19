@@ -2,7 +2,6 @@ package uk.gov.hmcts.reform.pip.data.management.service.filegeneration;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.sscsdailylist.CourtHouse;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.DateHelper;
@@ -17,7 +16,6 @@ import java.util.List;
 import java.util.Map;
 
 @Slf4j
-@Service
 public class SscsDailyListFileConverter implements FileConverter {
 
     @Override
@@ -25,7 +23,7 @@ public class SscsDailyListFileConverter implements FileConverter {
                           Map<String, Object> languageResources) throws IOException {
         Context context = new Context();
         Language language = Language.valueOf(metadata.get("language"));
-        languageResources.putAll(LanguageResourceHelper.readResourcesFromPath("openJusticeStatement", language));
+        languageResources.putAll(LanguageResourceHelper.readResourcesFromPath("common/openJusticeStatement", language));
 
         context.setVariable("i18n", languageResources);
         context.setVariable("metadata", metadata);

@@ -7,7 +7,6 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.SjpPressList;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.DateHelper;
@@ -30,7 +29,6 @@ import java.util.stream.Collectors;
  * template (found in resources/mocks). Uses Thymeleaf to take in variables from model and build appropriately. Final
  * output string is passed in to PDF Creation Service.
  */
-@Service
 public class SjpPressListFileConverter extends ExcelAbstractList implements FileConverter {
 
     private static final String INDIVIDUAL_DETAILS = "individualDetails";

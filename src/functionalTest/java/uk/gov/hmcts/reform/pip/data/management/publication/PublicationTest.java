@@ -48,6 +48,7 @@ class PublicationTest extends FunctionalTestBase {
     private String userId;
 
     private static final String PUBLICATION_URL = "/publication";
+    private static final String NON_STRATEGIC_UPLOAD_PUBLICATION_URL = PUBLICATION_URL + "/non-strategic";
     private static final String ARTEFACT_BY_LOCATION_ID_URL = PUBLICATION_URL + "/locationId/";
     private static final String ARTEFACT_BY_SEARCH_VALUE_URL = PUBLICATION_URL + "/search/";
     private static final String DELETE_ARTEFACTS_BY_LOCATION_ID = PUBLICATION_URL + "/%s/deleteArtefacts";
@@ -100,8 +101,8 @@ class PublicationTest extends FunctionalTestBase {
             String jsonString = new String(jsonFile.readAllBytes(), StandardCharsets.UTF_8);
 
             return JsonPath.parse(jsonString).set("$.courtLists[0].courtHouse"
-                                               + ".courtRoom[0].session[0].sittings[0]"
-                                               + ".hearing[0].case[0].caseNumber", caseNumber).jsonString();
+                                                      + ".courtRoom[0].session[0].sittings[0]"
+                                                      + ".hearing[0].case[0].caseNumber", caseNumber).jsonString();
         }
     }
 
@@ -155,9 +156,40 @@ class PublicationTest extends FunctionalTestBase {
         return responseUploadFlatFile.as(Artefact.class);
     }
 
+    private Artefact uploadNonStrategicFile(String courtId, Sensitivity sensitivity, String listType) {
+        Map<String, String> headerMapUploadNonStrategicFile = getBaseHeaderMap();
+        headerMapUploadNonStrategicFile.put(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE.toString());
+        headerMapUploadNonStrategicFile.put(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE);
+        headerMapUploadNonStrategicFile.put(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID);
+        headerMapUploadNonStrategicFile.put(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM.toString());
+        headerMapUploadNonStrategicFile.put(
+            PublicationConfiguration.DISPLAY_TO_HEADER,
+            DISPLAY_FROM.plusDays(1).toString()
+        );
+        headerMapUploadNonStrategicFile.put(PublicationConfiguration.COURT_ID, courtId);
+        headerMapUploadNonStrategicFile.put(PublicationConfiguration.LIST_TYPE, listType);
+        headerMapUploadNonStrategicFile.put(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE.toString());
+        headerMapUploadNonStrategicFile.put(PublicationConfiguration.SENSITIVITY_HEADER, sensitivity.toString());
+        headerMapUploadNonStrategicFile.put(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE.toString());
+
+        String filePath = this.getClass().getClassLoader().getResource("data/testExcelFile.xlsx").getPath();
+        File excelFile = new File(filePath);
+
+        final Response responseUploadNonStrategicFile = doPostRequestMultiPartWithMimeType(
+            NON_STRATEGIC_UPLOAD_PUBLICATION_URL,
+            headerMapUploadNonStrategicFile,
+            "file",
+            excelFile,
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        );
+
+        assertThat(responseUploadNonStrategicFile.getStatusCode()).isEqualTo(CREATED.value());
+        return responseUploadNonStrategicFile.as(Artefact.class);
+    }
+
     @Test
     void testPublicationEndpointsWithJsonFileUpload() throws Exception {
-        String randomCaseNumber = Integer.toString(ThreadLocalRandom.current().nextInt(100_000,200_000));
+        String randomCaseNumber = Integer.toString(ThreadLocalRandom.current().nextInt(100_000, 200_000));
         String jsonString = getJsonString(randomCaseNumber);
         Artefact returnedArtefact = uploadArtefact(jsonString, courtId, Sensitivity.PUBLIC);
 
@@ -179,6 +211,7 @@ class PublicationTest extends FunctionalTestBase {
             ARTEFACT_BY_SEARCH_VALUE_URL + SearchType.CASE_ID + '/' + randomCaseNumber, headerMap
         );
         assertThat(responseGetAllRelevantArtefactsBySearchValue.getStatusCode()).isEqualTo(OK.value());
+
         Artefact[] returnedGetAllRelevantArtefactsBySearchValue = responseGetAllRelevantArtefactsBySearchValue.as(
             Artefact[].class);
         assertThat(returnedGetAllRelevantArtefactsBySearchValue[0].getArtefactId().toString()).isEqualTo(artefactId);
@@ -252,6 +285,20 @@ class PublicationTest extends FunctionalTestBase {
     }
 
     @Test
+    void testNonStrategicFileUpload() throws Exception {
+        Artefact returnedNonStrategicFileArtefact = uploadNonStrategicFile(
+            courtId,
+            Sensitivity.PUBLIC,
+            ListType.PHT_WEEKLY_HEARING_LIST.toString()
+        );
+
+        assertThat(returnedNonStrategicFileArtefact.getContentDate()).isEqualTo(CONTENT_DATE);
+        assertThat(returnedNonStrategicFileArtefact.getListType()).isEqualTo(ListType.PHT_WEEKLY_HEARING_LIST);
+        assertThat(returnedNonStrategicFileArtefact.getLocationId()).contains(courtId);
+    }
+
+
+    @Test
     void testDeleteArtefactByLocationId() throws Exception {
         Artefact returnedArtefact = uploadArtefact(getJsonString(), courtId, Sensitivity.PUBLIC);
         String artefactId = returnedArtefact.getArtefactId().toString();
@@ -264,9 +311,13 @@ class PublicationTest extends FunctionalTestBase {
         Map<String, String> deleteArtefactHeaderMap = getBaseHeaderMap();
         deleteArtefactHeaderMap.put(USER_ID_HEADER, userId);
 
-        Response deleteByLocationResponse = doDeleteRequest(String.format(DELETE_ARTEFACTS_BY_LOCATION_ID,
-                                                                          courtId),
-                                                            deleteArtefactHeaderMap);
+        Response deleteByLocationResponse = doDeleteRequest(
+            String.format(
+                DELETE_ARTEFACTS_BY_LOCATION_ID,
+                courtId
+            ),
+            deleteArtefactHeaderMap
+        );
 
         assertThat(deleteByLocationResponse.getStatusCode()).isEqualTo(OK.value());
         assertThat(deleteByLocationResponse.asString()).isEqualTo(
@@ -364,7 +415,7 @@ class PublicationTest extends FunctionalTestBase {
 
     @Test
     void testGetArtefactsBySearchValueWhenUserIsUnauthorised() throws IOException {
-        String randomCaseNumber = Integer.toString(ThreadLocalRandom.current().nextInt(100_000,200_000));
+        String randomCaseNumber = Integer.toString(ThreadLocalRandom.current().nextInt(100_000, 200_000));
         uploadArtefact(getJsonString(randomCaseNumber), courtId, Sensitivity.CLASSIFIED);
 
         Map<String, String> headerMap = getBaseHeaderMap();
@@ -379,7 +430,7 @@ class PublicationTest extends FunctionalTestBase {
 
     @Test
     void testGetArtefactsBySearchValueWhenUserDoesNotExist() throws IOException {
-        String randomCaseNumber = Integer.toString(ThreadLocalRandom.current().nextInt(100_000,200_000));
+        String randomCaseNumber = Integer.toString(ThreadLocalRandom.current().nextInt(100_000, 200_000));
         uploadArtefact(getJsonString(randomCaseNumber), courtId, Sensitivity.CLASSIFIED);
 
         Map<String, String> headerMap = getBaseHeaderMap();

@@ -2,7 +2,6 @@ package uk.gov.hmcts.reform.pip.data.management.service.artefactsummary;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.collect.ImmutableMap;
-import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.CrownWarnedList;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.listmanipulation.CrownWarnedListHelper;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
@@ -13,7 +12,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-@Service
 public class CrownWarnedListSummaryData implements ArtefactSummaryData {
     @Override
     public Map<String, List<Map<String, String>>> get(JsonNode payload) {
