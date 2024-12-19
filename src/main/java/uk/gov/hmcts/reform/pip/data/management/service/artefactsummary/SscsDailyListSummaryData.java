@@ -3,7 +3,6 @@ package uk.gov.hmcts.reform.pip.data.management.service.artefactsummary;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.collect.ImmutableMap;
-import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.sscsdailylist.CourtHouse;
 import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.sscsdailylist.CourtRoom;
 import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.sscsdailylist.Hearing;
@@ -17,7 +16,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-@Service
 public class SscsDailyListSummaryData implements ArtefactSummaryData {
     @Override
     public Map<String, List<Map<String, String>>> get(JsonNode payload) throws JsonProcessingException {

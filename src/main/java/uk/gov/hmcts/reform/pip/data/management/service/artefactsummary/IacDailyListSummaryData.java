@@ -2,7 +2,6 @@ package uk.gov.hmcts.reform.pip.data.management.service.artefactsummary;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.collect.ImmutableMap;
-import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.GeneralHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.PartyRoleHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.SittingHelper;
@@ -15,7 +14,6 @@ import java.util.Map;
 /**
  * Summary class for the IAC Daily List that generates the summary in the email.
  */
-@Service
 public class IacDailyListSummaryData implements ArtefactSummaryData {
     @Override
     @SuppressWarnings("PMD.UseConcurrentHashMap")

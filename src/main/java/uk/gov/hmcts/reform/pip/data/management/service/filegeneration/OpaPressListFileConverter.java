@@ -6,7 +6,6 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.DateHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.LocationHelper;
@@ -20,7 +19,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.OPA_PRESS_LIST;
 
-@Service
 public class OpaPressListFileConverter extends ExcelAbstractList implements FileConverter {
 
     @Override

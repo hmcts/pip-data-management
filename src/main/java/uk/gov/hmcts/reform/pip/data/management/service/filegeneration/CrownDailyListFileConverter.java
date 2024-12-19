@@ -1,7 +1,6 @@
 package uk.gov.hmcts.reform.pip.data.management.service.filegeneration;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.DateHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.LocationHelper;
@@ -10,7 +9,6 @@ import uk.gov.hmcts.reform.pip.model.publication.Language;
 
 import java.util.Map;
 
-@Service
 public class CrownDailyListFileConverter implements FileConverter {
     @Override
     public String convert(JsonNode artefact, Map<String, String> metadata, Map<String, Object> language) {

@@ -33,6 +33,7 @@ class PublicationUnauthorizedTest extends IntegrationBasicTestBase {
     private MockMvc mockMvc;
 
     private static final String PUBLICATION_URL = "/publication";
+    private static final String NON_STRATEGIC_PUBLICATION_URL = PUBLICATION_URL + "/non-strategic";
     private static final String PUBLICATION_BY_LOCATION_URL = PUBLICATION_URL + "/locationId/";
     private static final String PUBLICATION_SEARCH_URL = PUBLICATION_URL + "/search/";
     private static final String ARCHIVE_EXPIRED_ARTEFACTS_URL = PUBLICATION_URL + "/expired";
@@ -64,7 +65,6 @@ class PublicationUnauthorizedTest extends IntegrationBasicTestBase {
                 .content(mockFile.readAllBytes())
                 .contentType(MediaType.APPLICATION_JSON);
 
-
             mockMvc.perform(mockHttpServletRequestBuilder)
                 .andExpect(status().isForbidden())
                 .andReturn();
@@ -90,7 +90,33 @@ class PublicationUnauthorizedTest extends IntegrationBasicTestBase {
             .header(PublicationConfiguration.LIST_TYPE, ListType.FAMILY_DAILY_CAUSE_LIST)
             .header(PublicationConfiguration.LANGUAGE_HEADER, Language.ENGLISH)
             .header(PublicationConfiguration.CONTENT_DATE, LocalDateTime.now())
+            .contentType(MediaType.MULTIPART_FORM_DATA);
 
+        mockMvc.perform(mockHttpServletRequestBuilder)
+            .andExpect(status().isForbidden())
+            .andReturn();
+
+    }
+
+    @Test
+    void testUnauthorizedNonStrategicPublicationUpload() throws Exception {
+        MockMultipartFile file = new MockMultipartFile(
+            "file", "file.xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            "test content".getBytes(StandardCharsets.UTF_8)
+        );
+
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+            .multipart(NON_STRATEGIC_PUBLICATION_URL)
+            .file(file)
+            .header(PublicationConfiguration.TYPE_HEADER, ArtefactType.LIST)
+            .header(PublicationConfiguration.PROVENANCE_HEADER, "Provenance")
+            .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, "12345")
+            .header(PublicationConfiguration.DISPLAY_FROM_HEADER, LocalDateTime.now())
+            .header(PublicationConfiguration.DISPLAY_TO_HEADER, LocalDateTime.now().plusMonths(1))
+            .header(PublicationConfiguration.COURT_ID, 1)
+            .header(PublicationConfiguration.LIST_TYPE, ListType.FAMILY_DAILY_CAUSE_LIST)
+            .header(PublicationConfiguration.LANGUAGE_HEADER, Language.ENGLISH)
+            .header(PublicationConfiguration.CONTENT_DATE, LocalDateTime.now())
             .contentType(MediaType.MULTIPART_FORM_DATA);
 
         mockMvc.perform(mockHttpServletRequestBuilder)

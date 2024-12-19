@@ -14,7 +14,7 @@ public class CivilDailyCauseListFileConverter implements FileConverter {
     public String convert(JsonNode artefact, Map<String, String> metadata, Map<String, Object> languageResources)
         throws IOException {
         Language language = Language.valueOf(metadata.get("language"));
-        languageResources.putAll(LanguageResourceHelper.readResourcesFromPath("openJusticeStatement", language));
+        languageResources.putAll(LanguageResourceHelper.readResourcesFromPath("common/openJusticeStatement", language));
 
         return TemplateEngine.processTemplate(
             metadata.get("listType"),
