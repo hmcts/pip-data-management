@@ -38,14 +38,20 @@ class NonStrategicListFileConverterTest {
     private static final String WELSH = "WELSH";
 
     private static final String DATE = "Date";
+    private static final String DATE_WELSH = "Dyddiad";
     private static final String HEARING_TIME = "Hearing time";
+    private static final String HEARING_TIME_WELSH = "Amser y Gwrandawiad";
     private static final String CASE_NAME = "Case name";
+    private static final String CASE_NAME_WELSH = "Enw’r achos";
     private static final String CASE_REFERENCE_NUMBER = "Case reference number";
     private static final String JUDGES = "Judge(s)";
+    private static final String JUDGES_WELSH = "Barnwr/Barnwyr";
     private static final String HEARING_TYPE = "Hearing type";
     private static final String HEARING_TYPE_WELSH = "Math o wrandawiad";
     private static final String VENUE = "Venue";
+    private static final String VENUE_WELSH = "Lleoliad";
     private static final String ADDITIONAL_INFORMATION = "Additional information";
+    private static final String ADDITIONAL_INFORMATION_WELSH = "Gwybodaeth ychwanegol";
 
     private static final String LIST_DATE_ENGLISH = "List for 12 December 2024";
     private static final String LIST_DATE_WELSH = "Rhestr ar gyfer 12 December 2024";
@@ -233,12 +239,12 @@ class NonStrategicListFileConverterTest {
             .hasSize(6)
             .extracting(Element::text)
             .containsExactly(
-                "Dyddiad",
-                "Enw’r achos",
+                DATE_WELSH,
+                CASE_NAME_WELSH,
                 "Hyd y gwrandawiad",
                 HEARING_TYPE_WELSH,
-                "Lleoliad",
-                "Gwybodaeth ychwanegol"
+                VENUE_WELSH,
+                ADDITIONAL_INFORMATION_WELSH
             );
 
         softly.assertAll();
@@ -359,12 +365,12 @@ class NonStrategicListFileConverterTest {
             .hasSize(6)
             .extracting(Element::text)
             .containsExactly(
-                "Dyddiad",
-                "Enw’r achos",
+                DATE_WELSH,
+                CASE_NAME_WELSH,
                 "Hyd y gwrandawiad",
                 HEARING_TYPE_WELSH,
-                "Lleoliad",
-                "Gwybodaeth ychwanegol"
+                VENUE_WELSH,
+                ADDITIONAL_INFORMATION_WELSH
             );
 
         softly.assertAll();
@@ -496,6 +502,22 @@ class NonStrategicListFileConverterTest {
             .extracting(Element::text)
             .isEqualTo("Beth i’w ddisgwyl pan fyddwch yn ymuno â gwrandawiad dros y ffôn neu drwy fideo.");
 
+        softly.assertThat(document.getElementsByTag("th"))
+            .as(TABLE_HEADERS_MESSAGE)
+            .hasSize(9)
+            .extracting(Element::text)
+            .containsExactly(
+                DATE_WELSH,
+                HEARING_TIME_WELSH,
+                "Cyfeirnod yr Achos",
+                CASE_NAME_WELSH,
+                JUDGES_WELSH,
+                "Aelod(au)",
+                HEARING_TYPE_WELSH,
+                VENUE_WELSH,
+                ADDITIONAL_INFORMATION_WELSH
+            );
+
         softly.assertAll();
     }
 
@@ -616,6 +638,22 @@ class NonStrategicListFileConverterTest {
             .extracting(Element::text)
             .isEqualTo(OBSERVE_HEARING_WELSH);
 
+        softly.assertThat(document.getElementsByTag("th"))
+            .as(TABLE_HEADERS_MESSAGE)
+            .hasSize(9)
+            .extracting(Element::text)
+            .containsExactly(
+                DATE_WELSH,
+                HEARING_TIME_WELSH,
+                "Cyfeirnod yr Achos",
+                CASE_NAME_WELSH,
+                JUDGES_WELSH,
+                "Aelod(au)",
+                HEARING_TYPE_WELSH,
+                VENUE_WELSH,
+                ADDITIONAL_INFORMATION_WELSH
+            );
+
         softly.assertAll();
     }
 
@@ -734,6 +772,21 @@ class NonStrategicListFileConverterTest {
             .as(BODY_MESSAGE)
             .extracting(Element::text)
             .isEqualTo(OBSERVE_HEARING_WELSH);
+
+        softly.assertThat(document.getElementsByTag("th"))
+            .as(TABLE_HEADERS_MESSAGE)
+            .hasSize(8)
+            .extracting(Element::text)
+            .containsExactly(
+                HEARING_TIME_WELSH,
+                "Ymgeisydd",
+                "Cynrychiolir gan",
+                "Cyfeirnod yr Achos",
+                JUDGES_WELSH,
+                HEARING_TYPE_WELSH,
+                VENUE_WELSH,
+                ADDITIONAL_INFORMATION_WELSH
+            );
 
         softly.assertAll();
     }
@@ -861,6 +914,21 @@ class NonStrategicListFileConverterTest {
             .as(BODY_MESSAGE)
             .extracting(Element::text)
             .isEqualTo(OBSERVE_HEARING_WELSH);
+
+        softly.assertThat(document.getElementsByTag("th"))
+            .as(TABLE_HEADERS_MESSAGE)
+            .hasSize(8)
+            .extracting(Element::text)
+            .containsExactly(
+                HEARING_TIME_WELSH,
+                "Apelydd",
+                "Cynrychiolir gan",
+                "Cyfeirnod yr apêl",
+                JUDGES_WELSH,
+                HEARING_TYPE_WELSH,
+                VENUE_WELSH,
+                ADDITIONAL_INFORMATION_WELSH
+            );
 
         softly.assertAll();
     }
