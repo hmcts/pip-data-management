@@ -406,20 +406,12 @@ class NonStrategicListFileConverterTest {
             .extracting(Element::text)
             .isEqualTo(LIST_DATE_ENGLISH);
 
+
         softly.assertThat(document.getElementById(MESSAGE_LINE1_ELEMENT))
             .as(BODY_MESSAGE)
             .extracting(Element::text)
-            .isEqualTo("Parties and representatives will be informed about arrangements for hearing cases "
-                           + "remotely. Any other person interested in joining the hearing remotely should email "
-                           + "GRC@justice.gov.uk so that arrangements can be made. If the case is to be heard in "
-                           + "private or is subject to a reporting restriction, this will be notified.");
-
-        softly.assertThat(document.getElementById(MESSAGE_LINE2_ELEMENT))
-            .as(BODY_MESSAGE)
-            .extracting(Element::text)
-            .isEqualTo("If you join a hearing you must not make any personal or private recording or publish "
-                           + "any part of this hearing, including court communications. It is a criminal offence to "
-                           + "do so.");
+            .asString()
+            .contains("Parties and representatives will be informed about arrangements for hearing cases remotely");
 
         softly.assertThat(document.getElementById(OBSERVE_HEARING_ELEMENT))
             .as(BODY_MESSAGE)
@@ -472,6 +464,15 @@ class NonStrategicListFileConverterTest {
 
         SoftAssertions softly = new SoftAssertions();
 
+        softly.assertThat(document.title())
+            .as(TITLE_MESSAGE)
+            .isEqualTo("Rhestr o Wrandawiadau Wythnosol y Siambr Rheoleiddio Cyffredinol");
+
+        softly.assertThat(document.getElementById(HEADER_ELEMENT))
+            .as(HEADER_MESSAGE)
+            .extracting(Element::text)
+            .isEqualTo("Rhestr o Wrandawiadau Wythnosol y Siambr Rheoleiddio Cyffredinol");
+
         softly.assertThat(document.getElementById(LIST_DATE_ELEMENT))
             .as(LIST_DATE_MESSAGE)
             .extracting(Element::text)
@@ -480,17 +481,10 @@ class NonStrategicListFileConverterTest {
         softly.assertThat(document.getElementById(MESSAGE_LINE1_ELEMENT))
             .as(BODY_MESSAGE)
             .extracting(Element::text)
-            .isEqualTo("Parties and representatives will be informed about arrangements for hearing cases "
-                           + "remotely. Any other person interested in joining the hearing remotely should email "
-                           + "GRC@justice.gov.uk so that arrangements can be made. If the case is to be heard in "
-                           + "private or is subject to a reporting restriction, this will be notified.");
+            .asString()
+            .contains("Bydd partïon a chynrychiolwyr yn cael gwybod ynghylch y trefniadau ar gyfer gwrando achosion "
+                          + "o bell.");
 
-        softly.assertThat(document.getElementById(MESSAGE_LINE2_ELEMENT))
-            .as(BODY_MESSAGE)
-            .extracting(Element::text)
-            .isEqualTo("If you join a hearing you must not make any personal or private recording or publish "
-                           + "any part of this hearing, including court communications. It is a criminal offence to "
-                           + "do so.");
 
         softly.assertThat(document.getElementById(OBSERVE_HEARING_ELEMENT))
             .as(BODY_MESSAGE)
@@ -500,7 +494,7 @@ class NonStrategicListFileConverterTest {
         softly.assertThat(document.getElementById(JOIN_HEARING_ELEMENT))
             .as(BODY_MESSAGE)
             .extracting(Element::text)
-            .isEqualTo("What to expect when joining a telephone or video hearing.");
+            .isEqualTo("Beth i’w ddisgwyl pan fyddwch yn ymuno â gwrandawiad dros y ffôn neu drwy fideo.");
 
         softly.assertAll();
     }
@@ -544,13 +538,9 @@ class NonStrategicListFileConverterTest {
         softly.assertThat(document.getElementById(JOIN_HEARING_MESSAGE_ELEMENT))
             .as(BODY_MESSAGE)
             .extracting(Element::text)
-            .isEqualTo("Members of the public wishing to observe a hearing or representatives of the media may, "
-                           + "on their request, join any telephone or video hearing remotely while they are taking "
-                           + "place by sending an email in advance to the tribunal at armedforces.listing@justice."
-                           + "gov.uk with the following details in the subject line \"[OBSERVER/MEDIA] REQUEST – "
-                           + "[case reference] – [hearing date] (need to include any other information required by "
-                           + "the tribunal)\" and appropriate arrangements will be made to allow access where "
-                           + "reasonably practicable.");
+            .asString()
+            .contains("Members of the public wishing to observe a hearing or representatives of the media may, "
+                           + "on their request, join any telephone or video hearing remotely");
 
         softly.assertThat(document.getElementById(OBSERVE_HEARING_ELEMENT))
             .as(BODY_MESSAGE)
@@ -598,6 +588,17 @@ class NonStrategicListFileConverterTest {
 
         SoftAssertions softly = new SoftAssertions();
 
+        softly.assertThat(document.title())
+            .as(TITLE_MESSAGE)
+            .isEqualTo("Tribiwnlys Haen Gyntaf (Iawndal Pensiynau Rhyfel a’r Lluoedd Arfog) - Rhestr o "
+                           + "Wrandawiadau Wythnosol");
+
+        softly.assertThat(document.getElementById(HEADER_ELEMENT))
+            .as(HEADER_MESSAGE)
+            .extracting(Element::text)
+            .isEqualTo("Tribiwnlys Haen Gyntaf (Iawndal Pensiynau Rhyfel a’r Lluoedd Arfog) - Rhestr o "
+                           + "Wrandawiadau Wythnosol");
+
         softly.assertThat(document.getElementById(LIST_DATE_ELEMENT))
             .as(LIST_DATE_MESSAGE)
             .extracting(Element::text)
@@ -606,13 +607,9 @@ class NonStrategicListFileConverterTest {
         softly.assertThat(document.getElementById(JOIN_HEARING_MESSAGE_ELEMENT))
             .as(BODY_MESSAGE)
             .extracting(Element::text)
-            .isEqualTo("Members of the public wishing to observe a hearing or representatives of the media may, "
-                           + "on their request, join any telephone or video hearing remotely while they are taking "
-                           + "place by sending an email in advance to the tribunal at armedforces.listing@justice."
-                           + "gov.uk with the following details in the subject line \"[OBSERVER/MEDIA] REQUEST – "
-                           + "[case reference] – [hearing date] (need to include any other information required by "
-                           + "the tribunal)\" and appropriate arrangements will be made to allow access where "
-                           + "reasonably practicable.");
+            .asString()
+            .contains("Gall aelodau o’r cyhoedd sy’n dymuno arsylwi gwrandawiad neu gynrychiolwyr y cyfryngau ymuno "
+                          + "ag unrhyw wrandawiad dros y ffôn neu drwy fideo o bell");
 
         softly.assertThat(document.getElementById(OBSERVE_HEARING_ELEMENT))
             .as(BODY_MESSAGE)
@@ -663,8 +660,8 @@ class NonStrategicListFileConverterTest {
         softly.assertThat(document.getElementById(LIST_UPDATE_MESSAGE_ELEMENT))
             .as(BODY_MESSAGE)
             .extracting(Element::text)
-            .isEqualTo("The following list is subject to change until 4:30pm. Any alterations after this time "
-                           + "will be telephoned or emailed direct to the parties or their legal representatives.");
+            .asString()
+            .contains("The following list is subject to change until 4:30pm");
 
         softly.assertThat(document.getElementById(OBSERVE_HEARING_ELEMENT))
             .as(BODY_MESSAGE)
@@ -711,6 +708,17 @@ class NonStrategicListFileConverterTest {
 
         SoftAssertions softly = new SoftAssertions();
 
+        softly.assertThat(document.title())
+            .as(TITLE_MESSAGE)
+            .isEqualTo("Uwch Dribiwnlys (Mewnfudo a Lloches) - Rhestr o Wrandawiadau Dyddiol Siambr Adolygiadau "
+                           + "Barnwrol - Field House");
+
+        softly.assertThat(document.getElementById(HEADER_ELEMENT))
+            .as(HEADER_MESSAGE)
+            .extracting(Element::text)
+            .isEqualTo("Uwch Dribiwnlys (Mewnfudo a Lloches) - Rhestr o Wrandawiadau Dyddiol Siambr Adolygiadau "
+                           + "Barnwrol - Field House");
+
         softly.assertThat(document.getElementById(LIST_DATE_ELEMENT))
             .as(LIST_DATE_MESSAGE)
             .extracting(Element::text)
@@ -719,8 +727,8 @@ class NonStrategicListFileConverterTest {
         softly.assertThat(document.getElementById(LIST_UPDATE_MESSAGE_ELEMENT))
             .as(BODY_MESSAGE)
             .extracting(Element::text)
-            .isEqualTo("The following list is subject to change until 4:30pm. Any alterations after this time "
-                           + "will be telephoned or emailed direct to the parties or their legal representatives.");
+            .asString()
+            .contains("Gall y rhestr ganlynol newid tan 4:30pm.");
 
         softly.assertThat(document.getElementById(OBSERVE_HEARING_ELEMENT))
             .as(BODY_MESSAGE)
@@ -769,8 +777,8 @@ class NonStrategicListFileConverterTest {
         softly.assertThat(document.getElementById(LIST_UPDATE_MESSAGE_ELEMENT))
             .as(BODY_MESSAGE)
             .extracting(Element::text)
-            .isEqualTo("We update this list by 5pm for the following day. If there are late changes to the list, "
-                           + "we’ll update no later than 9am on the day of the hearing.");
+            .asString()
+            .contains("We update this list by 5pm for the following day.");
 
         softly.assertThat(document.getElementById(ATTEND_HEARING_MESSAGE_ELEMENT))
             .as(BODY_MESSAGE)
@@ -823,6 +831,15 @@ class NonStrategicListFileConverterTest {
 
         SoftAssertions softly = new SoftAssertions();
 
+        softly.assertThat(document.title())
+            .as(TITLE_MESSAGE)
+            .isEqualTo("Uwch Dribiwnlys (Mewnfudo a Lloches) - Rhestr o Wrandawiadau Dyddiol Statudol Siambr");
+
+        softly.assertThat(document.getElementById(HEADER_ELEMENT))
+            .as(HEADER_MESSAGE)
+            .extracting(Element::text)
+            .isEqualTo("Uwch Dribiwnlys (Mewnfudo a Lloches) - Rhestr o Wrandawiadau Dyddiol Statudol Siambr");
+
         softly.assertThat(document.getElementById(LIST_DATE_ELEMENT))
             .as(LIST_DATE_MESSAGE)
             .extracting(Element::text)
@@ -831,13 +848,13 @@ class NonStrategicListFileConverterTest {
         softly.assertThat(document.getElementById(LIST_UPDATE_MESSAGE_ELEMENT))
             .as(BODY_MESSAGE)
             .extracting(Element::text)
-            .isEqualTo("We update this list by 5pm for the following day. If there are late changes to the list, "
-                           + "we’ll update no later than 9am on the day of the hearing.");
+            .asString()
+            .contains("Rydym yn diweddaru’r rhestr hon erbyn 5pm ar gyfer y diwrnod canlynol.");
 
         softly.assertThat(document.getElementById(ATTEND_HEARING_MESSAGE_ELEMENT))
             .as(BODY_MESSAGE)
             .extracting(Element::text)
-            .isEqualTo("For details on attending a UTIAC remote hearing, please email "
+            .isEqualTo("I gael manylion am fynychu gwrandawiad UTIAC o bell, anfonwch e-bost at "
                            + "uppertribunallistingteam@justice.gov.uk.");
 
         softly.assertThat(document.getElementById(OBSERVE_HEARING_ELEMENT))

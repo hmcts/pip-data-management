@@ -1,15 +1,15 @@
 {
-  "listName": "Upper Tribunal (Immigration and Asylum) Chamber Statutory Daily Hearing List",
-  "listUpdateMessage": "We update this list by 5pm for the following day. If there are late changes to the list, we’ll update no later than 9am on the day of the hearing.",
-  "attendHearingMessage": "For details on attending a UTIAC remote hearing, please email uppertribunallistingteam@justice.gov.uk.",
+  "listName": "Uwch Dribiwnlys (Mewnfudo a Lloches) - Rhestr o Wrandawiadau Dyddiol Statudol Siambr",
+  "listUpdateMessage": "Rydym yn diweddaru’r rhestr hon erbyn 5pm ar gyfer y diwrnod canlynol. Os bydd newidiadau hwyr i’r rhestr, byddwn yn ei diweddaru dim hwyrach na 9am ar ddiwrnod y gwrandawiad.",
+  "attendHearingMessage": "I gael manylion am fynychu gwrandawiad UTIAC o bell, anfonwch e-bost at uppertribunallistingteam@justice.gov.uk.",
   "tableHeaders": [
-    "Hearing time",
-    "Appellant",
-    "Representative",
-    "Appeal reference number",
+    "Amser y Gwrandawiad",
+    "Apelydd",
+    "Cynrychiolir gan",
+    "Cyfeirnod yr apêl",
     "Judge(s)",
-    "Type of hearing",
-    "Location",
-    "Additional information"
+    "Math o wrandawiad",
+    "Lleoliad",
+    "Gwybodaeth ychwanegol"
   ]
 }
