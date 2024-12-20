@@ -40,7 +40,7 @@ class NonStrategicListFileConverterTest {
     private static final String DATE = "Date";
     private static final String DATE_WELSH = "Dyddiad";
     private static final String HEARING_TIME = "Hearing time";
-    private static final String HEARING_TIME_WELSH = "Amser y Gwrandawiad";
+    private static final String HEARING_TIME_WELSH = "Amser y gwrandawiad";
     private static final String CASE_NAME = "Case name";
     private static final String CASE_NAME_WELSH = "Enw’r achos";
     private static final String CASE_REFERENCE_NUMBER = "Case reference number";
@@ -509,7 +509,7 @@ class NonStrategicListFileConverterTest {
             .containsExactly(
                 DATE_WELSH,
                 HEARING_TIME_WELSH,
-                "Cyfeirnod yr Achos",
+                "Cyfeirnod yr achos",
                 CASE_NAME_WELSH,
                 JUDGES_WELSH,
                 "Aelod(au)",
@@ -645,7 +645,7 @@ class NonStrategicListFileConverterTest {
             .containsExactly(
                 DATE_WELSH,
                 HEARING_TIME_WELSH,
-                "Cyfeirnod yr Achos",
+                "Cyfeirnod yr achos",
                 CASE_NAME_WELSH,
                 JUDGES_WELSH,
                 "Aelod(au)",
@@ -781,7 +781,7 @@ class NonStrategicListFileConverterTest {
                 HEARING_TIME_WELSH,
                 "Ymgeisydd",
                 "Cynrychiolir gan",
-                "Cyfeirnod yr Achos",
+                "Cyfeirnod yr achos",
                 JUDGES_WELSH,
                 HEARING_TYPE_WELSH,
                 VENUE_WELSH,
