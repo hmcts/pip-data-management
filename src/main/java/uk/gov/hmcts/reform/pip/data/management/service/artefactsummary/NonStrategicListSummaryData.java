@@ -19,6 +19,7 @@ import java.util.function.Function;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.CST_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.GRC_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.PHT_WEEKLY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.SIAC_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_IAC_JUDICIAL_REVIEW_DAILY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_IAC_STATUTORY_APPEALS_DAILY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.WPAFCC_WEEKLY_HEARING_LIST;
@@ -28,6 +29,7 @@ public class NonStrategicListSummaryData implements ArtefactSummaryData {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private static final String DATE = "date";
     private static final String HEARING_TIME = "hearingTime";
+    private static final String TIME = "time";
     private static final String CASE_NAME = "caseName";
     private static final String CASE_REFERENCE_NUMBER = "caseReferenceNumber";
     private static final String APPEAL_REFERENCE_NUMBER = "appealReferenceNumber";
@@ -38,7 +40,8 @@ public class NonStrategicListSummaryData implements ArtefactSummaryData {
         GRC_WEEKLY_HEARING_LIST, List.of(DATE, HEARING_TIME, CASE_REFERENCE_NUMBER),
         WPAFCC_WEEKLY_HEARING_LIST, List.of(DATE, HEARING_TIME, CASE_REFERENCE_NUMBER),
         UT_IAC_JUDICIAL_REVIEW_DAILY_HEARING_LIST, List.of(HEARING_TIME, CASE_REFERENCE_NUMBER),
-        UT_IAC_STATUTORY_APPEALS_DAILY_HEARING_LIST, List.of(HEARING_TIME, APPEAL_REFERENCE_NUMBER)
+        UT_IAC_STATUTORY_APPEALS_DAILY_HEARING_LIST, List.of(HEARING_TIME, APPEAL_REFERENCE_NUMBER),
+        SIAC_WEEKLY_HEARING_LIST, List.of(DATE, TIME, CASE_REFERENCE_NUMBER)
     );
 
     private final ListType listType;

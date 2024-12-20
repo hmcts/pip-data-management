@@ -351,7 +351,10 @@ class ValidationServiceTest extends IntegrationBasicTestBase {
                              + "utIacJudicialReviewDailyHearingList.json"),
             Arguments.of(ListType.UT_IAC_STATUTORY_APPEALS_DAILY_HEARING_LIST,
                          "data/non-strategic/ut-iac-statutory-appeals-daily-hearing-list/"
-                             + "utIacStatutoryAppealsDailyHearingList.json")
+                             + "utIacStatutoryAppealsDailyHearingList.json"),
+            Arguments.of(ListType.SIAC_WEEKLY_HEARING_LIST,
+                         "data/non-strategic/siac-weekly-hearing-list/"
+                             + "siacWeeklyHearingList.json")
         );
     }
 

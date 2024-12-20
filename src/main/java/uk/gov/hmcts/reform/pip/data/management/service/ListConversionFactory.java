@@ -68,6 +68,7 @@ import static uk.gov.hmcts.reform.pip.model.publication.ListType.OPA_PUBLIC_LIST
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.OPA_RESULTS;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.PHT_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.PRIMARY_HEALTH_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.SIAC_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.SJP_DELTA_PRESS_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.SJP_DELTA_PUBLIC_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.SJP_PRESS_LIST;
@@ -144,6 +145,10 @@ public class ListConversionFactory {
         Map.entry(UT_IAC_STATUTORY_APPEALS_DAILY_HEARING_LIST, new ConversionPair(
             new NonStrategicListFileConverter(),
             new NonStrategicListSummaryData(UT_IAC_STATUTORY_APPEALS_DAILY_HEARING_LIST)
+        )),
+        Map.entry(SIAC_WEEKLY_HEARING_LIST, new ConversionPair(
+            new NonStrategicListFileConverter(),
+            new NonStrategicListSummaryData(SIAC_WEEKLY_HEARING_LIST)
         ))
     );
 

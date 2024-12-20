@@ -19,6 +19,7 @@ import java.util.Map;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.CST_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.GRC_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.PHT_WEEKLY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.SIAC_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_IAC_JUDICIAL_REVIEW_DAILY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_IAC_STATUTORY_APPEALS_DAILY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.WPAFCC_WEEKLY_HEARING_LIST;
@@ -27,8 +28,10 @@ import static uk.gov.hmcts.reform.pip.model.publication.ListType.WPAFCC_WEEKLY_H
 class NonStrategicListSummaryDataTest {
     private static final String NON_STRATEGIC_RESOURCE_FOLDER = "src/test/resources/mocks/non-strategic/";
     private static final String DATE = "Date";
+    private static final String TIME = "Time";
     private static final String HEARING_TIME = "Hearing time";
     private static final String CASE_NUMBER_VALUE = "1234";
+    private static final String CASE_REFERENCE_NUMBER_VALUE = "1234";
 
     private static final String SUMMARY_SECTIONS_MESSAGE = "Summary sections count does not match";
     private static final String SUMMARY_CASES_MESSAGE = "Summary cases count does not match";
@@ -402,6 +405,69 @@ class NonStrategicListSummaryDataTest {
         softly.assertThat(values.get(1))
             .as(SUMMARY_FIELD_VALUE_MESSAGE)
             .isEqualTo(CASE_NUMBER_VALUE);
+
+        softly.assertAll();
+    }
+
+    @Test
+    void testSiacWeeklyHearingListSummaryData() throws IOException {
+        StringWriter writer = new StringWriter();
+        IOUtils.copy(Files.newInputStream(Paths.get(
+                         NON_STRATEGIC_RESOURCE_FOLDER,
+                         "siacWeeklyHearingList.json"
+                     )), writer,
+                     Charset.defaultCharset()
+        );
+
+        JsonNode payload = new ObjectMapper().readTree(writer.toString());
+        ArtefactSummaryData cstSummaryData = new ListConversionFactory()
+            .getArtefactSummaryData(SIAC_WEEKLY_HEARING_LIST)
+            .get();
+        Map<String, List<Map<String, String>>> output = cstSummaryData.get(payload);
+
+        SoftAssertions softly = new SoftAssertions();
+
+        softly.assertThat(output)
+            .as(SUMMARY_SECTIONS_MESSAGE)
+            .hasSize(1);
+
+        List<Map<String, String>> summaryCases = output.get(null);
+        softly.assertThat(summaryCases)
+            .as(SUMMARY_CASES_MESSAGE)
+            .hasSize(1);
+
+        Map<String, String> summaryFields = summaryCases.get(0);
+        softly.assertThat(summaryFields)
+            .as(SUMMARY_FIELDS_MESSAGE)
+            .hasSize(3);
+
+        List<String> keys = summaryFields.keySet()
+            .stream()
+            .toList();
+
+        softly.assertThat(keys.get(0))
+            .as(SUMMARY_FIELD_KEY_MESSAGE)
+            .isEqualTo(DATE);
+
+        softly.assertThat(keys.get(1))
+            .as(SUMMARY_FIELD_KEY_MESSAGE)
+            .isEqualTo(TIME);
+
+        List<String> values = summaryFields.values()
+            .stream()
+            .toList();
+
+        softly.assertThat(values.get(0))
+            .as(SUMMARY_FIELD_VALUE_MESSAGE)
+            .isEqualTo("11 December 2024");
+
+        softly.assertThat(values.get(1))
+            .as(SUMMARY_FIELD_VALUE_MESSAGE)
+            .isEqualTo("10am");
+
+        softly.assertThat(values.get(2))
+            .as(SUMMARY_FIELD_VALUE_MESSAGE)
+            .isEqualTo(CASE_REFERENCE_NUMBER_VALUE);
 
         softly.assertAll();
     }

@@ -12,6 +12,7 @@ import java.util.function.Function;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.CST_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.GRC_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.PHT_WEEKLY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.SIAC_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.WPAFCC_WEEKLY_HEARING_LIST;
 
 public final class NonStrategicListFormatter {
@@ -25,6 +26,8 @@ public final class NonStrategicListFormatter {
         GRC_WEEKLY_HEARING_LIST,
         Map.of(DATE, NonStrategicFieldFormattingHelper::formatDateField),
         WPAFCC_WEEKLY_HEARING_LIST,
+        Map.of(DATE, NonStrategicFieldFormattingHelper::formatDateField),
+        SIAC_WEEKLY_HEARING_LIST,
         Map.of(DATE, NonStrategicFieldFormattingHelper::formatDateField)
     );
 
