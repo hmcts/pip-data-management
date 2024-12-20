@@ -106,8 +106,8 @@
     <table class="govuk-table">
       <thead class="govuk-table__header">
       <tr>
-        <th:block th:each="heading: ${i18n.tableHeaders}">
-          <th th:text="${heading}" scope="col" class="govuk-table__header"/>
+        <th:block th:each="header: ${i18n.tableHeaders}">
+          <th th:text="${header}" scope="col" class="govuk-table__header"/>
         </th:block>
       </tr>
       </thead>

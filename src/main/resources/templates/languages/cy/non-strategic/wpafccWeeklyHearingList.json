@@ -1,15 +1,15 @@
 {
-  "listName": "First-tier Tribunal (War Pensions and Armed Forces Compensation) Weekly Hearing List",
-  "joinHearingMessage": "Members of the public wishing to observe a hearing or representatives of the media may, on their request, join any telephone or video hearing remotely while they are taking place by sending an email in advance to the tribunal at armedforces.listing@justice.gov.uk with the following details in the subject line \"[OBSERVER/MEDIA] REQUEST – [case reference] – [hearing date] (need to include any other information required by the tribunal)\" and appropriate arrangements will be made to allow access where reasonably practicable.",
+  "listName": "Tribiwnlys Haen Gyntaf (Iawndal Pensiynau Rhyfel a’r Lluoedd Arfog) - Rhestr o Wrandawiadau Wythnosol",
+  "joinHearingMessage": "Gall aelodau o’r cyhoedd sy’n dymuno arsylwi gwrandawiad neu gynrychiolwyr y cyfryngau ymuno ag unrhyw wrandawiad dros y ffôn neu drwy fideo o bell ar gais tra’u bod yn cael eu cynnal drwy anfon e-bost ymlaen llaw at y tribiwnlys yn armedforces.listing@justice.gov.uk gyda’r manylion canlynol yn y llinell bwnc \"CAIS [ARSYLLWR/CYFRYNGAU] – [cyfeirnod yr achos] – [dyddiad y gwrandawiad] (angen cynnwys unrhyw wybodaeth arall sy’n ofynnol gan y tribiwnlys)\" a gwneir trefniadau priodol i ganiatáu mynediad lle bo hynny’n rhesymol ymarferol.",
   "tableHeaders": [
-    "Date",
-    "Hearing time",
-    "Case reference number",
-    "Case name",
-    "Judge(s)",
-    "Member(s)",
-    "Mode of hearing",
-    "Venue",
-    "Additional information"
+    "Dyddiad",
+    "Amser y gwrandawiad",
+    "Cyfeirnod yr achos",
+    "Enw’r achos",
+    "Barnwr/Barnwyr",
+    "Aelod(au)",
+    "Math o wrandawiad",
+    "Lleoliad",
+    "Gwybodaeth ychwanegol"
   ]
 }

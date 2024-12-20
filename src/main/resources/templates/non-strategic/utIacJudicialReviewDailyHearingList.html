@@ -104,8 +104,8 @@
     <table class="govuk-table">
       <thead class="govuk-table__header">
       <tr>
-        <th:block th:each="heading: ${i18n.tableHeaders}">
-          <th th:text="${heading}" scope="col" class="govuk-table__header"/>
+        <th:block th:each="header: ${i18n.tableHeaders}">
+          <th th:text="${header}" scope="col" class="govuk-table__header"/>
         </th:block>
       </tr>
       </thead>
@@ -116,7 +116,7 @@
         <td class="govuk-table__cell" th:text="${hearing.get('representative')}"/>
         <td class="govuk-table__cell" th:text="${hearing.get('caseReferenceNumber')}"/>
         <td class="govuk-table__cell" th:text="${hearing.get('judges')}"/>
-        <td class="govuk-table__cell" th:text="${hearing.get('typeOfHearing')}" />
+        <td class="govuk-table__cell" th:text="${hearing.get('hearingType')}" />
         <td class="govuk-table__cell" th:text="${hearing.get('location')}" />
         <td class="govuk-table__cell" th:text="${hearing.get('additionalInformation')}" />
       </tr>

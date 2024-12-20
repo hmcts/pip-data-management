@@ -137,13 +137,13 @@ class UtIacStatutoryAppealsDailyHearingListTest extends IntegrationBasicTestBase
     }
 
     @Test
-    void testValidateWithErrorsWhenTypeOfHearingMissingInList() throws IOException {
+    void testValidateWithErrorsWhenHearingTypeMissingInList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(0)).remove("typeOfHearing");
+            ((ObjectNode) node.get(0)).remove("hearingType");
 
             assertThatExceptionOfType(PayloadValidationException.class)
                 .as(INVALID_MESSAGE)

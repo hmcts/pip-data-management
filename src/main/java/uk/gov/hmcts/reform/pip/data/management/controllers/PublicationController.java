@@ -559,9 +559,9 @@ public class PublicationController {
     @IsAdmin
     @SecurityRequirement(name = BEARER_AUTHENTICATION)
     public ResponseEntity<String> deleteArtefactsByLocation(
-        @RequestHeader("x-provenance-user-id") String provenanceUserId,
+        @RequestHeader("x-user-id") String userId,
         @PathVariable Integer locationId) throws JsonProcessingException {
-        return ResponseEntity.ok(artefactDeleteService.deleteArtefactByLocation(locationId, provenanceUserId));
+        return ResponseEntity.ok(artefactDeleteService.deleteArtefactByLocation(locationId, userId));
     }
 
     @ApiResponse(responseCode = OK_CODE, description = "List of all artefacts that are noMatch in their id")
