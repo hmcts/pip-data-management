@@ -21,6 +21,7 @@ import java.util.Objects;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.CST_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.GRC_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.PHT_WEEKLY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.SIAC_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_IAC_JUDICIAL_REVIEW_DAILY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_IAC_STATUTORY_APPEALS_DAILY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.WPAFCC_WEEKLY_HEARING_LIST;
@@ -39,6 +40,7 @@ class NonStrategicListFileConverterTest {
 
     private static final String DATE = "Date";
     private static final String DATE_WELSH = "Dyddiad";
+    private static final String TIME = "Time";
     private static final String HEARING_TIME = "Hearing time";
     private static final String HEARING_TIME_WELSH = "Amser y gwrandawiad";
     private static final String CASE_NAME = "Case name";
@@ -59,10 +61,13 @@ class NonStrategicListFileConverterTest {
         + "researcher or member of the public";
     private static final String OBSERVE_HEARING_WELSH = "Arsylwi gwrandawiad llys neu dribiwnlys fel newyddiadurwr, "
         + "ymchwilydd neu aelod o'r cyhoedd";
+    private static final String CST_LIST_WELSH_NAME = "Rhestr Gwrandawiadau Wythnosol y Tribiwnlys Safonau Gofal";
 
     private static final String HEADER_ELEMENT = "page-heading";
     private static final String LIST_DATE_ELEMENT = "list-date";
     private static final String CONTACT_MESSAGE_ELEMENT = "contact-message";
+    private static final String CONTACT_MESSAGE_ELEMENT_1 = "contact-message-1";
+    private static final String CONTACT_MESSAGE_ELEMENT_2 = "contact-message-2";
     private static final String OBSERVE_HEARING_ELEMENT =  "observe-hearing";
     private static final String MESSAGE_LINE1_ELEMENT =  "message-line-1";
     private static final String JOIN_HEARING_ELEMENT =  "join-hearing";
@@ -84,6 +89,7 @@ class NonStrategicListFileConverterTest {
     private JsonNode wpafccInputJson;
     private JsonNode utIacJudicialReviewInputJson;
     private JsonNode utIacStatutoryAppealsInputJson;
+    private JsonNode siacInputJson;
 
     @BeforeAll
     void setup() throws IOException {
@@ -121,6 +127,12 @@ class NonStrategicListFileConverterTest {
             .getResourceAsStream("/mocks/non-strategic/utIacStatutoryAppealsDailyHearingList.json")) {
             String inputRaw = IOUtils.toString(inputStream, Charset.defaultCharset());
             utIacStatutoryAppealsInputJson = new ObjectMapper().readTree(inputRaw);
+        }
+
+        try (InputStream inputStream = getClass()
+            .getResourceAsStream("/mocks/non-strategic/siacWeeklyHearingList.json")) {
+            String inputRaw = IOUtils.toString(inputStream, Charset.defaultCharset());
+            siacInputJson = new ObjectMapper().readTree(inputRaw);
         }
     }
 
@@ -211,12 +223,12 @@ class NonStrategicListFileConverterTest {
 
         softly.assertThat(document.title())
             .as(TITLE_MESSAGE)
-            .isEqualTo("Rhestr Gwrandawiadau Wythnosol y Tribiwnlys Safonau Gofal");
+            .isEqualTo(CST_LIST_WELSH_NAME);
 
         softly.assertThat(document.getElementById(HEADER_ELEMENT))
             .as(HEADER_MESSAGE)
             .extracting(Element::text)
-            .isEqualTo("Rhestr Gwrandawiadau Wythnosol y Tribiwnlys Safonau Gofal");
+            .isEqualTo(CST_LIST_WELSH_NAME);
 
         softly.assertThat(document.getElementById(LIST_DATE_ELEMENT))
             .as(LIST_DATE_MESSAGE)
@@ -928,6 +940,144 @@ class NonStrategicListFileConverterTest {
                 HEARING_TYPE_WELSH,
                 VENUE_WELSH,
                 ADDITIONAL_INFORMATION_WELSH
+            );
+
+        softly.assertAll();
+    }
+
+    @Test
+    void testSiacWeeklyHearingListFileConversionInEnglish() throws IOException {
+        Map<String, Object> languageResource;
+        try (InputStream languageFile = Thread.currentThread()
+            .getContextClassLoader()
+            .getResourceAsStream("templates/languages/en/non-strategic/siacWeeklyHearingList.json")) {
+            languageResource = new ObjectMapper().readValue(
+                Objects.requireNonNull(languageFile).readAllBytes(), new TypeReference<>() {
+                });
+        }
+
+        Map<String, String> metadata = Map.of(CONTENT_DATE_METADATA, CONTENT_DATE,
+                                              PROVENANCE_METADATA, PROVENANCE,
+                                              LANGUAGE_METADATA, ENGLISH,
+                                              LIST_TYPE_METADATA, SIAC_WEEKLY_HEARING_LIST.name()
+        );
+
+        String result = converter.convert(siacInputJson, metadata, languageResource);
+        Document document = Jsoup.parse(result);
+
+        SoftAssertions softly = new SoftAssertions();
+
+        softly.assertThat(document.title())
+            .as(TITLE_MESSAGE)
+            .isEqualTo("Special Immigration Appeals Commission Weekly Hearing List");
+
+        softly.assertThat(document.getElementById(HEADER_ELEMENT))
+            .as(HEADER_MESSAGE)
+            .extracting(Element::text)
+            .isEqualTo("Special Immigration Appeals Commission Weekly Hearing List");
+
+        softly.assertThat(document.getElementById(LIST_DATE_ELEMENT))
+            .as(LIST_DATE_MESSAGE)
+            .extracting(Element::text)
+            .isEqualTo(LIST_DATE_ENGLISH);
+
+        softly.assertThat(document.getElementById(CONTACT_MESSAGE_ELEMENT_1))
+            .as(BODY_MESSAGE)
+            .extracting(Element::text)
+            .isEqualTo("The tribunal sometimes uses reference numbers or initials to protect the anonymity "
+                           + "of those involved in the appeal.");
+        softly.assertThat(document.getElementById(CONTACT_MESSAGE_ELEMENT_2))
+            .as(BODY_MESSAGE)
+            .extracting(Element::text)
+            .isEqualTo("All hearings take place at Field House, 15-25 Bream’s Buildings, London EC4A 1DZ.");
+
+        softly.assertThat(document.getElementById(OBSERVE_HEARING_ELEMENT))
+            .as(BODY_MESSAGE)
+            .extracting(Element::text)
+            .isEqualTo(OBSERVE_HEARING_ENGLISH);
+
+        softly.assertThat(document.getElementsByTag("th"))
+            .as(TABLE_HEADERS_MESSAGE)
+            .hasSize(7)
+            .extracting(Element::text)
+            .containsExactly(
+                DATE,
+                TIME,
+                "Appellant",
+                CASE_REFERENCE_NUMBER,
+                HEARING_TYPE,
+                "Courtroom",
+                ADDITIONAL_INFORMATION
+            );
+
+        softly.assertAll();
+    }
+
+    @Test
+    void testSiacWeeklyHearingListFileConversionInWelsh() throws IOException {
+        Map<String, Object> languageResource;
+        try (InputStream languageFile = Thread.currentThread()
+            .getContextClassLoader()
+            .getResourceAsStream("templates/languages/cy/non-strategic/siacWeeklyHearingList.json")) {
+            languageResource = new ObjectMapper().readValue(
+                Objects.requireNonNull(languageFile).readAllBytes(), new TypeReference<>() {
+                });
+        }
+
+        Map<String, String> metadata = Map.of(CONTENT_DATE_METADATA, CONTENT_DATE,
+                                              PROVENANCE_METADATA, PROVENANCE,
+                                              LANGUAGE_METADATA, WELSH,
+                                              LIST_TYPE_METADATA, SIAC_WEEKLY_HEARING_LIST.name()
+        );
+
+        String result = converter.convert(siacInputJson, metadata, languageResource);
+        Document document = Jsoup.parse(result);
+
+        SoftAssertions softly = new SoftAssertions();
+
+        softly.assertThat(document.title())
+            .as(TITLE_MESSAGE)
+            .isEqualTo(CST_LIST_WELSH_NAME);
+
+        softly.assertThat(document.getElementById(HEADER_ELEMENT))
+            .as(HEADER_MESSAGE)
+            .extracting(Element::text)
+            .isEqualTo(CST_LIST_WELSH_NAME);
+
+        softly.assertThat(document.getElementById(LIST_DATE_ELEMENT))
+            .as(LIST_DATE_MESSAGE)
+            .extracting(Element::text)
+            .isEqualTo(LIST_DATE_WELSH);
+
+        softly.assertThat(document.getElementById(CONTACT_MESSAGE_ELEMENT_1))
+            .as(BODY_MESSAGE)
+            .extracting(Element::text)
+            .isEqualTo("Weithiau bydd y tribiwnlys yn defnyddio cyfeirnodau neu flaenlythrennau "
+                           + "i sicrhau bod y rhai sy’n ymwneud â’r apêl yn aros yn ddienw.");
+
+        softly.assertThat(document.getElementById(CONTACT_MESSAGE_ELEMENT_2))
+            .as(BODY_MESSAGE)
+            .extracting(Element::text)
+            .isEqualTo("Cynhelir pob gwrandawiad "
+                           + "yn Field House, 15-25 Bream’s Buildings, Llundain EC4A 1DZ.");
+
+        softly.assertThat(document.getElementById(OBSERVE_HEARING_ELEMENT))
+            .as(BODY_MESSAGE)
+            .extracting(Element::text)
+            .isEqualTo(OBSERVE_HEARING_WELSH);
+
+        softly.assertThat(document.getElementsByTag("th"))
+            .as(TABLE_HEADERS_MESSAGE)
+            .hasSize(7)
+            .extracting(Element::text)
+            .containsExactly(
+                "Dyddiad",
+                "Amser",
+                "Appellant",
+                CASE_REFERENCE_NUMBER,
+                HEARING_TYPE,
+                "Courtroom",
+                "Gwybodaeth ychwanegol"
             );
 
         softly.assertAll();
