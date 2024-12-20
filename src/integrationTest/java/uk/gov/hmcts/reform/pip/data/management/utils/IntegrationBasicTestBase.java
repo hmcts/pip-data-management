@@ -1,14 +1,13 @@
 package uk.gov.hmcts.reform.pip.data.management.utils;
 
-
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.LocationRepository;
 
 public class IntegrationBasicTestBase extends IntegrationCommonTestBase {
-    @MockBean
+    @MockitoBean
     LocationRepository locationRepository;
 
-    @MockBean
+    @MockitoBean
     ArtefactRepository artefactRepository;
 }
