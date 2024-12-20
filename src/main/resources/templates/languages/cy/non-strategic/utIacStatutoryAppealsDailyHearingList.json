@@ -1,0 +1,15 @@
+{
+  "listName": "Uwch Dribiwnlys (Mewnfudo a Lloches) - Rhestr o Wrandawiadau Dyddiol Statudol Siambr",
+  "listUpdateMessage": "Rydym yn diweddaru’r rhestr hon erbyn 5pm ar gyfer y diwrnod canlynol. Os bydd newidiadau hwyr i’r rhestr, byddwn yn ei diweddaru dim hwyrach na 9am ar ddiwrnod y gwrandawiad.",
+  "attendHearingMessage": "I gael manylion am fynychu gwrandawiad UTIAC o bell, anfonwch e-bost at uppertribunallistingteam@justice.gov.uk.",
+  "tableHeaders": [
+    "Amser y gwrandawiad",
+    "Apelydd",
+    "Cynrychiolir gan",
+    "Cyfeirnod yr apêl",
+    "Barnwr/Barnwyr",
+    "Math o wrandawiad",
+    "Lleoliad",
+    "Gwybodaeth ychwanegol"
+  ]
+}
