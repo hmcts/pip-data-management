@@ -5,10 +5,10 @@
   "tableHeaders": [
     "Dyddiad",
     "Amser",
-    "Appellant",
-    "Case reference number",
-    "Hearing type",
-    "Courtroom",
+    "Apelydd",
+    "Cyfeirnod yr achos",
+    "Math o wrandawiad",
+    "Ystafell llys",
     "Gwybodaeth ychwanegol"
   ]
 }

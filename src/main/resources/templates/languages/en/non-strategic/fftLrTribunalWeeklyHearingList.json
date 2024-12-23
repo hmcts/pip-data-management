@@ -1,0 +1,12 @@
+{
+  "listName": "First-tier Tribunal (Lands Registration Tribunal) Weekly Hearing list",
+  "contactMessage": "Members of the public wishing to observe a hearing or representatives of the media may, on their request, join any telephone or video hearing remotely while they are taking place by sending an email in advance to the tribunal at [insert office email] with the following details in the subject line “[OBSERVER/MEDIA] REQUEST – [case reference] – [hearing date] (need to include any other infromation required by the tribunal)” and appropriate arrangements will be made to allow access where reasonably practicable",
+  "tableHeaders": [
+    "Date",
+    "Hearing Time",
+    "Case name",
+    "Case reference number",
+    "Judge",
+    "Venue/Platform"
+  ]
+}

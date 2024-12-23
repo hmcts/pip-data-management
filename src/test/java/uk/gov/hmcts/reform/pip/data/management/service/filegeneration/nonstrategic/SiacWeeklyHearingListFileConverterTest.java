@@ -45,7 +45,7 @@ class SiacWeeklyHearingListFileConverterTest {
         + "researcher or member of the public";
     private static final String OBSERVE_HEARING_WELSH = "Arsylwi gwrandawiad llys neu dribiwnlys fel newyddiadurwr, "
         + "ymchwilydd neu aelod o'r cyhoedd";
-    private static final String CST_LIST_WELSH_NAME = "Rhestr Gwrandawiadau Wythnosol y Tribiwnlys Safonau Gofal";
+    private static final String SIAC_LIST_WELSH_NAME = "Rhestr Gwrandawiadau Wythnosol y Tribiwnlys Safonau Gofal";
 
     private static final String HEADER_ELEMENT = "page-heading";
     private static final String LIST_DATE_ELEMENT = "list-date";
@@ -164,12 +164,12 @@ class SiacWeeklyHearingListFileConverterTest {
 
         softly.assertThat(document.title())
             .as(TITLE_MESSAGE)
-            .isEqualTo(CST_LIST_WELSH_NAME);
+            .isEqualTo(SIAC_LIST_WELSH_NAME);
 
         softly.assertThat(document.getElementById(HEADER_ELEMENT))
             .as(HEADER_MESSAGE)
             .extracting(Element::text)
-            .isEqualTo(CST_LIST_WELSH_NAME);
+            .isEqualTo(SIAC_LIST_WELSH_NAME);
 
         softly.assertThat(document.getElementById(LIST_DATE_ELEMENT))
             .as(LIST_DATE_MESSAGE)
@@ -200,10 +200,10 @@ class SiacWeeklyHearingListFileConverterTest {
             .containsExactly(
                 "Dyddiad",
                 "Amser",
-                "Appellant",
-                CASE_REFERENCE_NUMBER,
-                HEARING_TYPE,
-                "Courtroom",
+                "Apelydd",
+                "Cyfeirnod yr achos",
+                "Math o wrandawiad",
+                "Ystafell llys",
                 "Gwybodaeth ychwanegol"
             );
 

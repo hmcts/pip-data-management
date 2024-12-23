@@ -678,6 +678,146 @@ class PublicationManagementTest extends IntegrationTestBase {
     }
 
     @Test
+    void testGenerateArtefactFftTaxChamberSummaryWeeklyHearingList() throws Exception {
+        Artefact artefact = createNonStrategicPublication(
+            ListType.FFT_TAX_WEEKLY_HEARING_LIST,
+            "data/non-strategic/fft-tax-chamber-tribunal-weekly-hearing-list/fftTaxChamberWeeklyHearingList.xlsx"
+        );
+
+        byte[] jsonData = getTestData(
+            "data/non-strategic/fft-tax-chamber-tribunal-weekly-hearing-list/fftTaxChamberWeeklyHearingList.json");
+        when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(jsonData));
+
+        MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, artefact.getArtefactId())))
+            .andExpect(status().isOk()).andReturn();
+
+        String responseContent = response.getResponse().getContentAsString();
+        assertTrue(responseContent.contains("Date - 16 December 2024"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains("Hearing time - 10am"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains("Case reference number - 1234"), CONTENT_MISMATCH_ERROR);
+    }
+
+    @Test
+    void testGenerateArtefactFftLandRegistryChamberSummaryWeeklyHearingList() throws Exception {
+        Artefact artefact = createNonStrategicPublication(
+            ListType.FFT_LR_WEEKLY_HEARING_LIST,
+            "data/non-strategic/fft-land-registry-tribunal-weekly-hearing-list/fftLandRegistryTribunalWeeklyHearingList.xlsx"
+        );
+
+        byte[] jsonData = getTestData(
+            "data/non-strategic/fft-land-registry-tribunal-weekly-hearing-list/fftLandRegistryTribunalWeeklyHearingList.json");
+        when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(jsonData));
+
+        MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, artefact.getArtefactId())))
+            .andExpect(status().isOk()).andReturn();
+
+        String responseContent = response.getResponse().getContentAsString();
+        assertTrue(responseContent.contains("Date - 16 December 2024"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains("Hearing time - 10am"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains("Case reference number - 1234"), CONTENT_MISMATCH_ERROR);
+    }
+
+    @Test
+    void testGenerateArtefactRptEasternLandRegistryChamberSummaryWeeklyHearingList() throws Exception {
+        Artefact artefact = createNonStrategicPublication(
+            ListType.RPT_EASTERN_WEEKLY_HEARING_LIST,
+            "data/non-strategic/fft-residential-property-tribunal-weekly-hearing-list/fftResidentialPropertyTribunalWeeklyHearingList.xlsx"
+        );
+
+        byte[] jsonData = getTestData(
+            "data/non-strategic/fft-residential-property-tribunal-weekly-hearing-list/fftResidentialPropertyTribunalWeeklyHearingList.json");
+        when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(jsonData));
+
+        MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, artefact.getArtefactId())))
+            .andExpect(status().isOk()).andReturn();
+
+        String responseContent = response.getResponse().getContentAsString();
+        assertTrue(responseContent.contains("Date - 16 December 2024"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains("Time - 10am"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains("Case reference number - 1234"), CONTENT_MISMATCH_ERROR);
+    }
+
+    @Test
+    void testGenerateArtefactRptLondonLandRegistryChamberSummaryWeeklyHearingList() throws Exception {
+        Artefact artefact = createNonStrategicPublication(
+            ListType.RPT_LONDON_WEEKLY_HEARING_LIST,
+            "data/non-strategic/fft-residential-property-tribunal-weekly-hearing-list/fftResidentialPropertyTribunalWeeklyHearingList.xlsx"
+        );
+
+        byte[] jsonData = getTestData(
+            "data/non-strategic/fft-residential-property-tribunal-weekly-hearing-list/fftResidentialPropertyTribunalWeeklyHearingList.json");
+        when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(jsonData));
+
+        MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, artefact.getArtefactId())))
+            .andExpect(status().isOk()).andReturn();
+
+        String responseContent = response.getResponse().getContentAsString();
+        assertTrue(responseContent.contains("Date - 16 December 2024"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains("Time - 10am"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains("Case reference number - 1234"), CONTENT_MISMATCH_ERROR);
+    }
+
+    @Test
+    void testGenerateArtefactRptMidlandsLandRegistryChamberSummaryWeeklyHearingList() throws Exception {
+        Artefact artefact = createNonStrategicPublication(
+            ListType.RPT_MIDLANDS_WEEKLY_HEARING_LIST,
+            "data/non-strategic/fft-residential-property-tribunal-weekly-hearing-list/fftResidentialPropertyTribunalWeeklyHearingList.xlsx"
+        );
+
+        byte[] jsonData = getTestData(
+            "data/non-strategic/fft-residential-property-tribunal-weekly-hearing-list/fftResidentialPropertyTribunalWeeklyHearingList.json");
+        when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(jsonData));
+
+        MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, artefact.getArtefactId())))
+            .andExpect(status().isOk()).andReturn();
+
+        String responseContent = response.getResponse().getContentAsString();
+        assertTrue(responseContent.contains("Date - 16 December 2024"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains("Time - 10am"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains("Case reference number - 1234"), CONTENT_MISMATCH_ERROR);
+    }
+
+    @Test
+    void testGenerateArtefactRptNorthernLandRegistryChamberSummaryWeeklyHearingList() throws Exception {
+        Artefact artefact = createNonStrategicPublication(
+            ListType.RPT_NORTHERN_WEEKLY_HEARING_LIST,
+            "data/non-strategic/fft-residential-property-tribunal-weekly-hearing-list/fftResidentialPropertyTribunalWeeklyHearingList.xlsx"
+        );
+
+        byte[] jsonData = getTestData(
+            "data/non-strategic/fft-residential-property-tribunal-weekly-hearing-list/fftResidentialPropertyTribunalWeeklyHearingList.json");
+        when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(jsonData));
+
+        MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, artefact.getArtefactId())))
+            .andExpect(status().isOk()).andReturn();
+
+        String responseContent = response.getResponse().getContentAsString();
+        assertTrue(responseContent.contains("Date - 16 December 2024"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains("Time - 10am"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains("Case reference number - 1234"), CONTENT_MISMATCH_ERROR);
+    }
+
+    @Test
+    void testGenerateArtefactRptSouthernLandRegistryChamberSummaryWeeklyHearingList() throws Exception {
+        Artefact artefact = createNonStrategicPublication(
+            ListType.RPT_SOUTHERN_WEEKLY_HEARING_LIST,
+            "data/non-strategic/fft-residential-property-tribunal-weekly-hearing-list/fftResidentialPropertyTribunalWeeklyHearingList.xlsx"
+        );
+
+        byte[] jsonData = getTestData(
+            "data/non-strategic/fft-residential-property-tribunal-weekly-hearing-list/fftResidentialPropertyTribunalWeeklyHearingList.json");
+        when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(jsonData));
+
+        MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, artefact.getArtefactId())))
+            .andExpect(status().isOk()).andReturn();
+
+        String responseContent = response.getResponse().getContentAsString();
+        assertTrue(responseContent.contains("Date - 16 December 2024"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains("Time - 10am"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains("Case reference number - 1234"), CONTENT_MISMATCH_ERROR);
+    }
+
+    @Test
     void testGenerateArtefactSummaryNotFound() throws Exception {
         MvcResult mvcResult = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, ARTEFACT_ID_NOT_FOUND)))
             .andExpect(status().isNotFound()).andReturn();

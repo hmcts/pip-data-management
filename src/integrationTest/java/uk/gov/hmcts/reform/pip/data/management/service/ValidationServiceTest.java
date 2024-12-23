@@ -354,7 +354,28 @@ class ValidationServiceTest extends IntegrationBasicTestBase {
                              + "utIacStatutoryAppealsDailyHearingList.json"),
             Arguments.of(ListType.SIAC_WEEKLY_HEARING_LIST,
                          "data/non-strategic/siac-weekly-hearing-list/"
-                             + "siacWeeklyHearingList.json")
+                             + "siacWeeklyHearingList.json"),
+            Arguments.of(ListType.FFT_TAX_WEEKLY_HEARING_LIST,
+                         "data/non-strategic/fft-tax-chamber-tribunal-weekly-hearing-list/"
+                             + "fftTaxChamberWeeklyHearingList.json"),
+            Arguments.of(ListType.FFT_LR_WEEKLY_HEARING_LIST,
+                         "data/non-strategic/fft-land-registry-tribunal-weekly-hearing-list/"
+                             + "fftLandRegistryTribunalWeeklyHearingList.json"),
+            Arguments.of(ListType.RPT_EASTERN_WEEKLY_HEARING_LIST,
+                         "data/non-strategic/fft-residential-property-tribunal-weekly-hearing-list/"
+                             + "fftResidentialPropertyTribunalWeeklyHearingList.json"),
+            Arguments.of(ListType.RPT_LONDON_WEEKLY_HEARING_LIST,
+                         "data/non-strategic/fft-residential-property-tribunal-weekly-hearing-list/"
+                             + "fftResidentialPropertyTribunalWeeklyHearingList.json"),
+            Arguments.of(ListType.RPT_MIDLANDS_WEEKLY_HEARING_LIST,
+                         "data/non-strategic/fft-residential-property-tribunal-weekly-hearing-list/"
+                             + "fftResidentialPropertyTribunalWeeklyHearingList.json"),
+            Arguments.of(ListType.RPT_SOUTHERN_WEEKLY_HEARING_LIST,
+                         "data/non-strategic/fft-residential-property-tribunal-weekly-hearing-list/"
+                             + "fftResidentialPropertyTribunalWeeklyHearingList.json"),
+            Arguments.of(ListType.RPT_NORTHERN_WEEKLY_HEARING_LIST,
+                         "data/non-strategic/fft-residential-property-tribunal-weekly-hearing-list/"
+                             + "fftResidentialPropertyTribunalWeeklyHearingList.json")
         );
     }
 
