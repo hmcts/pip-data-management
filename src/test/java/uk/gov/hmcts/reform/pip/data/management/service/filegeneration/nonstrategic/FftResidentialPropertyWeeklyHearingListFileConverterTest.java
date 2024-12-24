@@ -234,7 +234,7 @@ class FftResidentialPropertyWeeklyHearingListFileConverterTest {
                 "Dyddiad",
                 "Amser",
                 "Lleoliad",
-                "Case Type",
+                "Math o achos",
                 "Cyfeirnod yr achos",
                 "Barnwr/Barnwyr",
                 "Aelod(au)",
