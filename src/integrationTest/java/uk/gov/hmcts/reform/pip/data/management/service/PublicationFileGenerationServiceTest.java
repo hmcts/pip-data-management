@@ -9,8 +9,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import uk.gov.hmcts.reform.pip.data.management.models.PublicationFiles;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
@@ -53,10 +53,10 @@ class PublicationFileGenerationServiceTest extends IntegrationBasicTestBase {
     private String sjpPublicListInput;
     private String civilDailyListInput;
 
-    @MockBean
+    @MockitoBean
     private ArtefactService artefactService;
 
-    @MockBean
+    @MockitoBean
     private LocationService locationService;
 
     @Autowired

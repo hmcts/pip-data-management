@@ -4,13 +4,13 @@ import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.dao.CannotAcquireLockException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.AzureArtefactBlobService;
@@ -50,10 +50,10 @@ class CreatePublicationRetryTest extends IntegrationCommonTestBase {
 
     private final Artefact artefact = buildArtefact();
 
-    @MockBean
+    @MockitoBean
     AzureArtefactBlobService azureArtefactBlobService;
 
-    @MockBean
+    @MockitoBean
     ArtefactRepository artefactRepository;
 
     @Autowired
