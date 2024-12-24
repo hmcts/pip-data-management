@@ -130,7 +130,7 @@ class FftLrWeeklyHearingListFileConverterTest {
             .extracting(Element::text)
             .containsExactly(
                 "Date",
-                "Hearing Time",
+                "Hearing time",
                 "Case name",
                 "Case reference number",
                 "Judge",

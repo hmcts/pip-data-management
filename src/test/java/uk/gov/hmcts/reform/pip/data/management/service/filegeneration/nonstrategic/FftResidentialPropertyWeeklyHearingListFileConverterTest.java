@@ -159,11 +159,11 @@ class FftResidentialPropertyWeeklyHearingListFileConverterTest {
                 "Date",
                 "Time",
                 "Venue",
-                "Case Type",
+                "Case type",
                 "Case reference number",
                 "Judge(s)",
                 "Member(s)",
-                "Hearing Method",
+                "Hearing method",
                 "Additional information"
             );
 
