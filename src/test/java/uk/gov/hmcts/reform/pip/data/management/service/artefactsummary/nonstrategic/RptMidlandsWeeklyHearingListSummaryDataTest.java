@@ -17,7 +17,6 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 
-import static uk.gov.hmcts.reform.pip.model.publication.ListType.RPT_LONDON_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.RPT_MIDLANDS_WEEKLY_HEARING_LIST;
 
 @ActiveProfiles("test")

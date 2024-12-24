@@ -19,10 +19,11 @@ import java.nio.charset.Charset;
 import java.util.Map;
 import java.util.Objects;
 
-import static uk.gov.hmcts.reform.pip.model.publication.ListType.CST_WEEKLY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.FFT_LR_WEEKLY_HEARING_LIST;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class CstWeeklyHearingListFileConverterTest {
+class FftLrWeeklyHearingListFileConverterTest {
+
     private static final String CONTENT_DATE = "12 December 2024";
     private static final String PROVENANCE = "provenance";
     private static final String CONTENT_DATE_METADATA = "contentDate";
@@ -33,25 +34,17 @@ class CstWeeklyHearingListFileConverterTest {
     private static final String ENGLISH = "ENGLISH";
     private static final String WELSH = "WELSH";
 
-    private static final String DATE = "Date";
-    private static final String DATE_WELSH = "Dyddiad";
-    private static final String CASE_NAME = "Case name";
-    private static final String CASE_NAME_WELSH = "Enw’r achos";
-    private static final String HEARING_TYPE = "Hearing type";
-    private static final String HEARING_TYPE_WELSH = "Math o wrandawiad";
-    private static final String VENUE = "Venue";
-    private static final String VENUE_WELSH = "Lleoliad";
-    private static final String ADDITIONAL_INFORMATION = "Additional information";
-    private static final String ADDITIONAL_INFORMATION_WELSH = "Gwybodaeth ychwanegol";
-
+    private static final String LIST_NAME = FFT_LR_WEEKLY_HEARING_LIST.name();
+    private static final String LIST_ENGLISH_NAME = "First-tier Tribunal "
+        + "(Lands Registration Tribunal) Weekly Hearing list";
     private static final String LIST_DATE_ENGLISH = "List for 12 December 2024";
     private static final String LIST_DATE_WELSH = "Rhestr ar gyfer 12 December 2024";
     private static final String OBSERVE_HEARING_ENGLISH = "Observe a court or tribunal hearing as a journalist, "
         + "researcher or member of the public";
     private static final String OBSERVE_HEARING_WELSH = "Arsylwi gwrandawiad llys neu dribiwnlys fel newyddiadurwr, "
         + "ymchwilydd neu aelod o'r cyhoedd";
-    private static final String CST_LIST_WELSH_NAME = "Rhestr Gwrandawiadau Wythnosol y "
-        + "Tribiwnlys Safonau Gofal";
+    private static final String LIST_WELSH_NAME = "Rhestr o Wrandawiadau "
+        + "Wythnosol Tribiwnlys Haen Gyntaf (Tribiwnlys Cofrestru Tir)";
 
     private static final String HEADER_ELEMENT = "page-heading";
     private static final String LIST_DATE_ELEMENT = "list-date";
@@ -66,24 +59,23 @@ class CstWeeklyHearingListFileConverterTest {
 
     private final NonStrategicListFileConverter converter = new NonStrategicListFileConverter();
 
-    private JsonNode cstInputJson;
+    private JsonNode listInputJson;
 
     @BeforeAll
     void setup() throws IOException {
         try (InputStream inputStream = getClass()
-            .getResourceAsStream("/mocks/non-strategic/cstWeeklyHearingList.json")) {
+            .getResourceAsStream("/mocks/non-strategic/fftLandRegistryTribunalWeeklyHearingList.json")) {
             String inputRaw = IOUtils.toString(inputStream, Charset.defaultCharset());
-            cstInputJson = new ObjectMapper().readTree(inputRaw);
+            listInputJson = new ObjectMapper().readTree(inputRaw);
         }
     }
 
-
     @Test
-    void testCstWeeklyHearingListFileConversionInEnglish() throws IOException {
+    void testLandRegistryWeeklyHearingListFileConversionInEnglish() throws IOException {
         Map<String, Object> languageResource;
         try (InputStream languageFile = Thread.currentThread()
             .getContextClassLoader()
-            .getResourceAsStream("templates/languages/en/non-strategic/cstWeeklyHearingList.json")) {
+            .getResourceAsStream("templates/languages/en/non-strategic/fftLrWeeklyHearingList.json")) {
             languageResource = new ObjectMapper().readValue(
                 Objects.requireNonNull(languageFile).readAllBytes(), new TypeReference<>() {
                 });
@@ -92,22 +84,22 @@ class CstWeeklyHearingListFileConverterTest {
         Map<String, String> metadata = Map.of(CONTENT_DATE_METADATA, CONTENT_DATE,
                                               PROVENANCE_METADATA, PROVENANCE,
                                               LANGUAGE_METADATA, ENGLISH,
-                                              LIST_TYPE_METADATA, CST_WEEKLY_HEARING_LIST.name()
+                                              LIST_TYPE_METADATA, LIST_NAME
         );
 
-        String result = converter.convert(cstInputJson, metadata, languageResource);
+        String result = converter.convert(listInputJson, metadata, languageResource);
         Document document = Jsoup.parse(result);
 
         SoftAssertions softly = new SoftAssertions();
 
         softly.assertThat(document.title())
             .as(TITLE_MESSAGE)
-            .isEqualTo("Care Standards Tribunal Weekly Hearing List");
+            .isEqualTo(LIST_ENGLISH_NAME);
 
         softly.assertThat(document.getElementById(HEADER_ELEMENT))
             .as(HEADER_MESSAGE)
             .extracting(Element::text)
-            .isEqualTo("Care Standards Tribunal Weekly Hearing List");
+            .isEqualTo(LIST_ENGLISH_NAME);
 
         softly.assertThat(document.getElementById(LIST_DATE_ELEMENT))
             .as(LIST_DATE_MESSAGE)
@@ -117,8 +109,13 @@ class CstWeeklyHearingListFileConverterTest {
         softly.assertThat(document.getElementById(CONTACT_MESSAGE_ELEMENT))
             .as(BODY_MESSAGE)
             .extracting(Element::text)
-            .isEqualTo("Please contact the Care Standards Office at cst@justice.gov.uk for details of how to "
-                           + "access video hearings.");
+            .isEqualTo("Members of the public wishing to observe a hearing "
+                           + "or representatives of the media may, on their request, join any "
+                           + "telephone or video hearing remotely while they are taking place by sending an "
+                           + "email in advance to the tribunal at [insert office email] with the following details "
+                           + "in the subject line “[OBSERVER/MEDIA] REQUEST – [case reference] – [hearing date] "
+                           + "(need to include any other infromation required by the tribunal)” and appropriate "
+                           + "arrangements will be made to allow access where reasonably practicable");
 
         softly.assertThat(document.getElementById(OBSERVE_HEARING_ELEMENT))
             .as(BODY_MESSAGE)
@@ -130,23 +127,23 @@ class CstWeeklyHearingListFileConverterTest {
             .hasSize(6)
             .extracting(Element::text)
             .containsExactly(
-                DATE,
-                CASE_NAME,
-                "Hearing length",
-                HEARING_TYPE,
-                VENUE,
-                ADDITIONAL_INFORMATION
+                "Date",
+                "Hearing Time",
+                "Case name",
+                "Case reference number",
+                "Judge",
+                "Venue/Platform"
             );
 
         softly.assertAll();
     }
 
     @Test
-    void testCstWeeklyHearingListFileConversionInWelsh() throws IOException {
+    void testLandRegistryWeeklyHearingListFileConversionInWelsh() throws IOException {
         Map<String, Object> languageResource;
         try (InputStream languageFile = Thread.currentThread()
             .getContextClassLoader()
-            .getResourceAsStream("templates/languages/cy/non-strategic/cstWeeklyHearingList.json")) {
+            .getResourceAsStream("templates/languages/cy/non-strategic/fftLrWeeklyHearingList.json")) {
             languageResource = new ObjectMapper().readValue(
                 Objects.requireNonNull(languageFile).readAllBytes(), new TypeReference<>() {
                 });
@@ -155,22 +152,22 @@ class CstWeeklyHearingListFileConverterTest {
         Map<String, String> metadata = Map.of(CONTENT_DATE_METADATA, CONTENT_DATE,
                                               PROVENANCE_METADATA, PROVENANCE,
                                               LANGUAGE_METADATA, WELSH,
-                                              LIST_TYPE_METADATA, CST_WEEKLY_HEARING_LIST.name()
+                                              LIST_TYPE_METADATA, LIST_NAME
         );
 
-        String result = converter.convert(cstInputJson, metadata, languageResource);
+        String result = converter.convert(listInputJson, metadata, languageResource);
         Document document = Jsoup.parse(result);
 
         SoftAssertions softly = new SoftAssertions();
 
         softly.assertThat(document.title())
             .as(TITLE_MESSAGE)
-            .isEqualTo(CST_LIST_WELSH_NAME);
+            .isEqualTo(LIST_WELSH_NAME);
 
         softly.assertThat(document.getElementById(HEADER_ELEMENT))
             .as(HEADER_MESSAGE)
             .extracting(Element::text)
-            .isEqualTo(CST_LIST_WELSH_NAME);
+            .isEqualTo(LIST_WELSH_NAME);
 
         softly.assertThat(document.getElementById(LIST_DATE_ELEMENT))
             .as(LIST_DATE_MESSAGE)
@@ -180,8 +177,14 @@ class CstWeeklyHearingListFileConverterTest {
         softly.assertThat(document.getElementById(CONTACT_MESSAGE_ELEMENT))
             .as(BODY_MESSAGE)
             .extracting(Element::text)
-            .isEqualTo("Cysylltwch â'r Swyddfa Safonau Gofal yn cst@justice.gov.uk i gael manylion am sut i gael "
-                           + "mynediad at wrandawiadau fideo.");
+            .isEqualTo("Gall aelodau o’r cyhoedd sy’n dymuno arsylwi gwrandawiad neu "
+                           + "gynrychiolwyr y cyfryngau ymuno ag unrhyw wrandawiad dros y ffôn neu "
+                           + "drwy fideo o bell ar gais tra’u bod yn cael eu cynnal drwy anfon "
+                           + "e-bost ymlaen llaw at y tribiwnlys yn [insert office email] gyda’r manylion "
+                           + "canlynol yn y llinell bwnc “CAIS [ARSYLLWR/CYFRYNGAU] – [cyfeirnod yr achos] – "
+                           + "[dyddiad y gwrandawiad] (angen cynnwys unrhyw wybodaeth arall sy’n ofynnol "
+                           + "gan y tribiwnlys)” a gwneir trefniadau priodol i ganiatáu mynediad "
+                           + "lle bo hynny’n rhesymol ymarferol.");
 
         softly.assertThat(document.getElementById(OBSERVE_HEARING_ELEMENT))
             .as(BODY_MESSAGE)
@@ -193,12 +196,12 @@ class CstWeeklyHearingListFileConverterTest {
             .hasSize(6)
             .extracting(Element::text)
             .containsExactly(
-                DATE_WELSH,
-                CASE_NAME_WELSH,
-                "Hyd y gwrandawiad",
-                HEARING_TYPE_WELSH,
-                VENUE_WELSH,
-                ADDITIONAL_INFORMATION_WELSH
+                "Dyddiad",
+                "Amser y gwrandawiad",
+                "Enw’r achos",
+                "Cyfeirnod yr achos",
+                "Judge",
+                "Lleoliad/Platfform"
             );
 
         softly.assertAll();

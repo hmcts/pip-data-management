@@ -45,7 +45,8 @@ class SiacWeeklyHearingListFileConverterTest {
         + "researcher or member of the public";
     private static final String OBSERVE_HEARING_WELSH = "Arsylwi gwrandawiad llys neu dribiwnlys fel newyddiadurwr, "
         + "ymchwilydd neu aelod o'r cyhoedd";
-    private static final String SIAC_LIST_WELSH_NAME = "Rhestr Gwrandawiadau Wythnosol y Tribiwnlys Safonau Gofal";
+    private static final String SIAC_LIST_WELSH_NAME = "Rhestr o Wrandawiadau Wythnosol"
+        + " y Comisiwn Apeliadau Mewnfudo Arbennig";
 
     private static final String HEADER_ELEMENT = "page-heading";
     private static final String LIST_DATE_ELEMENT = "list-date";

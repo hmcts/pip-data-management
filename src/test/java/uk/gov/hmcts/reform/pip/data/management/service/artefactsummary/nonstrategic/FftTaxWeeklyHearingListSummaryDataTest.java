@@ -20,7 +20,7 @@ import java.util.Map;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.FFT_TAX_WEEKLY_HEARING_LIST;
 
 @ActiveProfiles("test")
-class FftChamberTaxWeeklyHearingListSummaryDataTest {
+class FftTaxWeeklyHearingListSummaryDataTest {
 
     private static final String NON_STRATEGIC_RESOURCE_FOLDER = "src/test/resources/mocks/non-strategic/";
     private static final String SUMMARY_SECTIONS_MESSAGE = "Summary sections count does not match";
@@ -30,12 +30,12 @@ class FftChamberTaxWeeklyHearingListSummaryDataTest {
     private static final String SUMMARY_FIELD_VALUE_MESSAGE = "Summary field value does not match";
 
     @Test
-    void testFftChamberTaxWeeklyHearingListSummaryData() throws IOException {
+    void testFftTaxWeeklyHearingListSummaryData() throws IOException {
         StringWriter writer = new StringWriter();
         IOUtils.copy(
             Files.newInputStream(Paths.get(
                 NON_STRATEGIC_RESOURCE_FOLDER,
-                "fftTaxChamberWeeklyHearingList.json"
+                "fftTaxWeeklyHearingList.json"
             )), writer,
             Charset.defaultCharset()
         );

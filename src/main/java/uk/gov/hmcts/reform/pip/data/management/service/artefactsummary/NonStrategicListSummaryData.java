@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
-import uk.gov.hmcts.reform.pip.data.management.service.helpers.NonStrategicFieldFormattingHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.NonStrategicListFormatter;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
@@ -15,7 +14,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.CST_WEEKLY_HEARING_LIST;

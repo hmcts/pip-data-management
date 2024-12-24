@@ -34,8 +34,8 @@ class FftLandRegistryWeeklyHearingListTest extends IntegrationBasicTestBase {
     @Autowired
     ValidationService validationService;
 
-    private static final String VALID_JSON =
-        "data/non-strategic/fft-land-registry-tribunal-weekly-hearing-list/fftLandRegistryTribunalWeeklyHearingList.json";
+    private static final String VALID_JSON = "data/non-strategic/fft-land-registry-tribunal-weekly-hearing-list/"
+        + "fftLandRegistryTribunalWeeklyHearingList.json";
     private static final String INVALID_MESSAGE = "Invalid JSON list marked as valid";
 
     private static final String SOURCE_ARTEFACT_ID = "sourceArtefactId";

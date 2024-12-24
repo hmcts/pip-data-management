@@ -59,6 +59,9 @@ class ValidationServiceTest extends IntegrationBasicTestBase {
     private static final String NOT_NULL_MESSAGE = "The returned value is null, but was not expected to be.";
     private static final String UNKNOWN_EXCEPTION = "Unknown exception when opening the paylaod file";
     private static final String CONTAINS_FORBIDDEN_VALUES_EXCEPTION = "Input contains a html tag";
+    private static final String RPT_LIST_JSON = "data/non-strategic/"
+        + "fft-residential-property-tribunal-weekly-hearing-list/"
+        + "fftResidentialPropertyTribunalWeeklyHearingList.json";
     private HeaderGroup headerGroup;
 
     @BeforeEach
@@ -356,26 +359,21 @@ class ValidationServiceTest extends IntegrationBasicTestBase {
                          "data/non-strategic/siac-weekly-hearing-list/"
                              + "siacWeeklyHearingList.json"),
             Arguments.of(ListType.FFT_TAX_WEEKLY_HEARING_LIST,
-                         "data/non-strategic/fft-tax-chamber-tribunal-weekly-hearing-list/"
-                             + "fftTaxChamberWeeklyHearingList.json"),
+                         "data/non-strategic/fft-tax-tribunal-weekly-hearing-list/"
+                             + "fftTaxWeeklyHearingList.json"),
             Arguments.of(ListType.FFT_LR_WEEKLY_HEARING_LIST,
                          "data/non-strategic/fft-land-registry-tribunal-weekly-hearing-list/"
                              + "fftLandRegistryTribunalWeeklyHearingList.json"),
             Arguments.of(ListType.RPT_EASTERN_WEEKLY_HEARING_LIST,
-                         "data/non-strategic/fft-residential-property-tribunal-weekly-hearing-list/"
-                             + "fftResidentialPropertyTribunalWeeklyHearingList.json"),
+                         RPT_LIST_JSON),
             Arguments.of(ListType.RPT_LONDON_WEEKLY_HEARING_LIST,
-                         "data/non-strategic/fft-residential-property-tribunal-weekly-hearing-list/"
-                             + "fftResidentialPropertyTribunalWeeklyHearingList.json"),
+                         RPT_LIST_JSON),
             Arguments.of(ListType.RPT_MIDLANDS_WEEKLY_HEARING_LIST,
-                         "data/non-strategic/fft-residential-property-tribunal-weekly-hearing-list/"
-                             + "fftResidentialPropertyTribunalWeeklyHearingList.json"),
+                         RPT_LIST_JSON),
             Arguments.of(ListType.RPT_SOUTHERN_WEEKLY_HEARING_LIST,
-                         "data/non-strategic/fft-residential-property-tribunal-weekly-hearing-list/"
-                             + "fftResidentialPropertyTribunalWeeklyHearingList.json"),
+                         RPT_LIST_JSON),
             Arguments.of(ListType.RPT_NORTHERN_WEEKLY_HEARING_LIST,
-                         "data/non-strategic/fft-residential-property-tribunal-weekly-hearing-list/"
-                             + "fftResidentialPropertyTribunalWeeklyHearingList.json")
+                         RPT_LIST_JSON)
         );
     }
 

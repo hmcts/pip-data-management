@@ -29,13 +29,13 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 @ActiveProfiles("integration-basic")
 @SpringBootTest
-class FftChamberTaxWeeklyHearingListTest extends IntegrationBasicTestBase {
+class FftTaxWeeklyHearingListTest extends IntegrationBasicTestBase {
 
     @Autowired
     ValidationService validationService;
 
     private static final String VALID_JSON =
-        "data/non-strategic/fft-tax-chamber-tribunal-weekly-hearing-list/fftTaxChamberWeeklyHearingList.json";
+        "data/non-strategic/fft-tax-tribunal-weekly-hearing-list/fftTaxWeeklyHearingList.json";
     private static final String INVALID_MESSAGE = "Invalid JSON list marked as valid";
 
     private static final String SOURCE_ARTEFACT_ID = "sourceArtefactId";

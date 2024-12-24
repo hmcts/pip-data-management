@@ -76,6 +76,16 @@ class PublicationManagementTest extends IntegrationTestBase {
     private static final String CASE_REFERENCE_FIELD = "Case reference - 12341234";
     private static final String CASE_NAME_FIELD = "Case name - This is a case name";
     private static final String HEARING_TYPE_FIELD = "Hearing type - Directions";
+    private static final String DATE_FIELD = "Date - 16 December 2024";
+    private static final String HEARING_TIME_FIELD = "Hearing time - 10am";
+    private static final String CASE_REFERENCE_NUMBER_FIELD = "Case reference number - 1234";
+    private static final String TIME_FIELD = "Time - 10am";
+    private static final String RPT_LISTS_EXCEL_FILE = "data/non-strategic/"
+        + "fft-residential-property-tribunal-weekly-hearing-list/"
+        + "fftResidentialPropertyTribunalWeeklyHearingList.xlsx";
+    private static final String RPT_LISTS_JSON_FILE = "data/non-strategic/"
+        + "fft-residential-property-tribunal-weekly-hearing-list/"
+        + "fftResidentialPropertyTribunalWeeklyHearingList.json";
 
     private static final LocalDateTime DISPLAY_TO = LocalDateTime.now()
         .truncatedTo(ChronoUnit.SECONDS);
@@ -593,9 +603,9 @@ class PublicationManagementTest extends IntegrationTestBase {
             .andExpect(status().isOk()).andReturn();
 
         String responseContent = response.getResponse().getContentAsString();
-        assertTrue(responseContent.contains("Date - 16 December 2024"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Hearing time - 10am"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Case reference number - 1234"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(DATE_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(HEARING_TIME_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(CASE_REFERENCE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
     }
 
     @Test
@@ -614,9 +624,9 @@ class PublicationManagementTest extends IntegrationTestBase {
             .andExpect(status().isOk()).andReturn();
 
         String responseContent = response.getResponse().getContentAsString();
-        assertTrue(responseContent.contains("Date - 16 December 2024"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Hearing time - 10am"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Case reference number - 1234"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(DATE_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(HEARING_TIME_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(CASE_REFERENCE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
     }
 
     @Test
@@ -636,7 +646,7 @@ class PublicationManagementTest extends IntegrationTestBase {
 
         String responseContent = response.getResponse().getContentAsString();
         assertTrue(responseContent.contains("Hearing time - 10:30am"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Case reference number - 1234"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(CASE_REFERENCE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
     }
 
     @Test
@@ -673,148 +683,135 @@ class PublicationManagementTest extends IntegrationTestBase {
 
         String responseContent = response.getResponse().getContentAsString();
         assertTrue(responseContent.contains("Date - 11 December 2024"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Time - 10am"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(TIME_FIELD), CONTENT_MISMATCH_ERROR);
         assertTrue(responseContent.contains("Case reference number - 123451"), CONTENT_MISMATCH_ERROR);
     }
 
     @Test
-    void testGenerateArtefactFftTaxChamberSummaryWeeklyHearingList() throws Exception {
+    void testGenerateArtefactFftTaxSummaryWeeklyHearingList() throws Exception {
         Artefact artefact = createNonStrategicPublication(
             ListType.FFT_TAX_WEEKLY_HEARING_LIST,
-            "data/non-strategic/fft-tax-chamber-tribunal-weekly-hearing-list/fftTaxChamberWeeklyHearingList.xlsx"
+            "data/non-strategic/fft-tax-tribunal-weekly-hearing-list/fftTaxWeeklyHearingList.xlsx"
         );
 
         byte[] jsonData = getTestData(
-            "data/non-strategic/fft-tax-chamber-tribunal-weekly-hearing-list/fftTaxChamberWeeklyHearingList.json");
+            "data/non-strategic/fft-tax-tribunal-weekly-hearing-list/fftTaxWeeklyHearingList.json");
         when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(jsonData));
 
         MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, artefact.getArtefactId())))
             .andExpect(status().isOk()).andReturn();
 
         String responseContent = response.getResponse().getContentAsString();
-        assertTrue(responseContent.contains("Date - 16 December 2024"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Hearing time - 10am"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Case reference number - 1234"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(DATE_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(HEARING_TIME_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(CASE_REFERENCE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
     }
 
     @Test
-    void testGenerateArtefactFftLandRegistryChamberSummaryWeeklyHearingList() throws Exception {
+    void testGenerateArtefactFftLandRegistrySummaryWeeklyHearingList() throws Exception {
         Artefact artefact = createNonStrategicPublication(
             ListType.FFT_LR_WEEKLY_HEARING_LIST,
-            "data/non-strategic/fft-land-registry-tribunal-weekly-hearing-list/fftLandRegistryTribunalWeeklyHearingList.xlsx"
+            "data/non-strategic/fft-land-registry-tribunal-weekly-hearing-list/"
+                 + "fftLandRegistryTribunalWeeklyHearingList.xlsx"
         );
 
         byte[] jsonData = getTestData(
-            "data/non-strategic/fft-land-registry-tribunal-weekly-hearing-list/fftLandRegistryTribunalWeeklyHearingList.json");
+            "data/non-strategic/fft-land-registry-tribunal-weekly-hearing-list/"
+                 + "fftLandRegistryTribunalWeeklyHearingList.json");
         when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(jsonData));
 
         MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, artefact.getArtefactId())))
             .andExpect(status().isOk()).andReturn();
 
         String responseContent = response.getResponse().getContentAsString();
-        assertTrue(responseContent.contains("Date - 16 December 2024"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Hearing time - 10am"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Case reference number - 1234"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(DATE_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(HEARING_TIME_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(CASE_REFERENCE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
     }
 
     @Test
-    void testGenerateArtefactRptEasternLandRegistryChamberSummaryWeeklyHearingList() throws Exception {
+    void testGenerateArtefactRptEasternLandRegistrySummaryWeeklyHearingList() throws Exception {
         Artefact artefact = createNonStrategicPublication(
-            ListType.RPT_EASTERN_WEEKLY_HEARING_LIST,
-            "data/non-strategic/fft-residential-property-tribunal-weekly-hearing-list/fftResidentialPropertyTribunalWeeklyHearingList.xlsx"
-        );
+            ListType.RPT_EASTERN_WEEKLY_HEARING_LIST, RPT_LISTS_EXCEL_FILE);
 
-        byte[] jsonData = getTestData(
-            "data/non-strategic/fft-residential-property-tribunal-weekly-hearing-list/fftResidentialPropertyTribunalWeeklyHearingList.json");
+        byte[] jsonData = getTestData(RPT_LISTS_JSON_FILE);
         when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(jsonData));
 
         MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, artefact.getArtefactId())))
             .andExpect(status().isOk()).andReturn();
 
         String responseContent = response.getResponse().getContentAsString();
-        assertTrue(responseContent.contains("Date - 16 December 2024"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Time - 10am"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Case reference number - 1234"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(DATE_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(TIME_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(CASE_REFERENCE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
     }
 
     @Test
-    void testGenerateArtefactRptLondonLandRegistryChamberSummaryWeeklyHearingList() throws Exception {
+    void testGenerateArtefactRptLondonLandRegistrySummaryWeeklyHearingList() throws Exception {
         Artefact artefact = createNonStrategicPublication(
-            ListType.RPT_LONDON_WEEKLY_HEARING_LIST,
-            "data/non-strategic/fft-residential-property-tribunal-weekly-hearing-list/fftResidentialPropertyTribunalWeeklyHearingList.xlsx"
-        );
+            ListType.RPT_LONDON_WEEKLY_HEARING_LIST, RPT_LISTS_EXCEL_FILE);
 
-        byte[] jsonData = getTestData(
-            "data/non-strategic/fft-residential-property-tribunal-weekly-hearing-list/fftResidentialPropertyTribunalWeeklyHearingList.json");
+        byte[] jsonData = getTestData(RPT_LISTS_JSON_FILE);
         when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(jsonData));
 
         MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, artefact.getArtefactId())))
             .andExpect(status().isOk()).andReturn();
 
         String responseContent = response.getResponse().getContentAsString();
-        assertTrue(responseContent.contains("Date - 16 December 2024"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Time - 10am"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Case reference number - 1234"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(DATE_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(TIME_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(CASE_REFERENCE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
     }
 
     @Test
-    void testGenerateArtefactRptMidlandsLandRegistryChamberSummaryWeeklyHearingList() throws Exception {
+    void testGenerateArtefactRptMidlandsLandRegistrySummaryWeeklyHearingList() throws Exception {
         Artefact artefact = createNonStrategicPublication(
-            ListType.RPT_MIDLANDS_WEEKLY_HEARING_LIST,
-            "data/non-strategic/fft-residential-property-tribunal-weekly-hearing-list/fftResidentialPropertyTribunalWeeklyHearingList.xlsx"
-        );
+            ListType.RPT_MIDLANDS_WEEKLY_HEARING_LIST, RPT_LISTS_EXCEL_FILE);
 
-        byte[] jsonData = getTestData(
-            "data/non-strategic/fft-residential-property-tribunal-weekly-hearing-list/fftResidentialPropertyTribunalWeeklyHearingList.json");
+        byte[] jsonData = getTestData(RPT_LISTS_JSON_FILE);
         when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(jsonData));
 
         MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, artefact.getArtefactId())))
             .andExpect(status().isOk()).andReturn();
 
         String responseContent = response.getResponse().getContentAsString();
-        assertTrue(responseContent.contains("Date - 16 December 2024"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Time - 10am"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Case reference number - 1234"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(DATE_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(TIME_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(CASE_REFERENCE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
     }
 
     @Test
-    void testGenerateArtefactRptNorthernLandRegistryChamberSummaryWeeklyHearingList() throws Exception {
+    void testGenerateArtefactRptNorthernLandRegistrySummaryWeeklyHearingList() throws Exception {
         Artefact artefact = createNonStrategicPublication(
-            ListType.RPT_NORTHERN_WEEKLY_HEARING_LIST,
-            "data/non-strategic/fft-residential-property-tribunal-weekly-hearing-list/fftResidentialPropertyTribunalWeeklyHearingList.xlsx"
-        );
+            ListType.RPT_NORTHERN_WEEKLY_HEARING_LIST, RPT_LISTS_EXCEL_FILE);
 
-        byte[] jsonData = getTestData(
-            "data/non-strategic/fft-residential-property-tribunal-weekly-hearing-list/fftResidentialPropertyTribunalWeeklyHearingList.json");
+        byte[] jsonData = getTestData(RPT_LISTS_JSON_FILE);
         when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(jsonData));
 
         MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, artefact.getArtefactId())))
             .andExpect(status().isOk()).andReturn();
 
         String responseContent = response.getResponse().getContentAsString();
-        assertTrue(responseContent.contains("Date - 16 December 2024"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Time - 10am"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Case reference number - 1234"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(DATE_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(TIME_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(CASE_REFERENCE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
     }
 
     @Test
-    void testGenerateArtefactRptSouthernLandRegistryChamberSummaryWeeklyHearingList() throws Exception {
+    void testGenerateArtefactRptSouthernLandRegistrySummaryWeeklyHearingList() throws Exception {
         Artefact artefact = createNonStrategicPublication(
-            ListType.RPT_SOUTHERN_WEEKLY_HEARING_LIST,
-            "data/non-strategic/fft-residential-property-tribunal-weekly-hearing-list/fftResidentialPropertyTribunalWeeklyHearingList.xlsx"
-        );
+            ListType.RPT_SOUTHERN_WEEKLY_HEARING_LIST, RPT_LISTS_EXCEL_FILE);
 
-        byte[] jsonData = getTestData(
-            "data/non-strategic/fft-residential-property-tribunal-weekly-hearing-list/fftResidentialPropertyTribunalWeeklyHearingList.json");
+        byte[] jsonData = getTestData(RPT_LISTS_JSON_FILE);
         when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(jsonData));
 
         MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, artefact.getArtefactId())))
             .andExpect(status().isOk()).andReturn();
 
         String responseContent = response.getResponse().getContentAsString();
-        assertTrue(responseContent.contains("Date - 16 December 2024"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Time - 10am"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Case reference number - 1234"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(DATE_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(TIME_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(CASE_REFERENCE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
     }
 
     @Test

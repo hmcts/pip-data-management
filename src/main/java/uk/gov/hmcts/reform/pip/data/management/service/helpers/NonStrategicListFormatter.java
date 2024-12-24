@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.pip.data.management.service.helpers;
 
-import uk.gov.hmcts.reform.pip.data.management.service.ListConversionFactory;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
 import java.util.ArrayList;
@@ -58,7 +57,8 @@ public final class NonStrategicListFormatter {
         Map.entry(RPT_SOUTHERN_WEEKLY_HEARING_LIST,
                   Map.of(DATE, NonStrategicFieldFormattingHelper::formatDateField)));
 
-    private NonStrategicListFormatter() { }
+    private NonStrategicListFormatter() {
+    }
 
     public static Optional<Map<String, Function<String, String>>> getListTypeFormatter(ListType listType) {
         if (LIST_TYPE_MAP.containsKey(listType)) {
