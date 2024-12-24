@@ -1,15 +1,3 @@
 {
-  "listName": "Tribiwnlys Eiddo Preswyl: Rhestr o Wrandawiadau Wythnosol rhanbarth Gogledd Lloegr",
-  "contactMessage": "Gall aelodau o’r cyhoedd sy’n dymuno arsylwi gwrandawiad neu gynrychiolwyr y cyfryngau ymuno ag unrhyw wrandawiad dros y ffôn neu drwy fideo o bell ar gais tra’u bod yn cael eu cynnal drwy anfon e-bost ymlaen llaw at y tribiwnlys yn [insert office email] gyda’r manylion canlynol yn y llinell bwnc “CAIS [ARSYLLWR/CYFRYNGAU] – [cyfeirnod yr achos] – [dyddiad y gwrandawiad] (angen cynnwys unrhyw wybodaeth arall sy’n ofynnol gan y tribiwnlys)” a gwneir trefniadau priodol i ganiatáu mynediad lle bo hynny’n rhesymol ymarferol.",
-  "tableHeaders": [
-    "Dyddiad",
-    "Amser",
-    "Lleoliad",
-    "Case Type",
-    "Cyfeirnod yr achos",
-    "Barnwr/Barnwyr",
-    "Aelod(au)",
-    "Math o wrandawiad",
-    "Gwybodaeth ychwanegol"
-  ]
+  "listName": "Tribiwnlys Eiddo Preswyl: Rhestr o Wrandawiadau Wythnosol rhanbarth Gogledd Lloegr"
 }
