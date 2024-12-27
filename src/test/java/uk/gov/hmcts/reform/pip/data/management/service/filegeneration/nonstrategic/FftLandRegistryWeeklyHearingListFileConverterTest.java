@@ -24,7 +24,7 @@ import static uk.gov.hmcts.reform.pip.model.publication.ListType.FFT_LR_WEEKLY_H
 
 @ActiveProfiles("test")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class FftLrWeeklyHearingListFileConverterTest {
+class FftLandRegistryWeeklyHearingListFileConverterTest {
 
     private static final String CONTENT_DATE = "12 December 2024";
     private static final String PROVENANCE = "provenance";
@@ -202,7 +202,7 @@ class FftLrWeeklyHearingListFileConverterTest {
                 "Amser y gwrandawiad",
                 "Enw’r achos",
                 "Cyfeirnod yr achos",
-                "Judge",
+                "Barnwr",
                 "Lleoliad/Platfform"
             );
 
