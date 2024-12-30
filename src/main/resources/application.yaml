@@ -151,6 +151,9 @@ validations:
     RPT_MIDLANDS_WEEKLY_HEARING_LIST: "schemas/non-strategic/fft-residential-property-tribunal-weekly-hearing-list.json"
     RPT_NORTHERN_WEEKLY_HEARING_LIST: "schemas/non-strategic/fft-residential-property-tribunal-weekly-hearing-list.json"
     RPT_SOUTHERN_WEEKLY_HEARING_LIST: "schemas/non-strategic/fft-residential-property-tribunal-weekly-hearing-list.json"
+    UT_T_AND_CC_WEEKLY_HEARING_LIST: "schemas/non-strategic/ut_tax_and_chancery_chamber_weekly_hearing_list.json"
+    UT_LC_WEEKLY_HEARING_LIST: "schemas/non-strategic/ut_lands_chamber_weekly_hearing_list.json"
+    UT_AAC_WEEKLY_HEARING_LIST: "schemas/non-strategic/ut_administrative_appeals_chamber_weekly_hearing_list.json"
 springdoc:
   swagger-ui:
     path: /swagger-ui/
