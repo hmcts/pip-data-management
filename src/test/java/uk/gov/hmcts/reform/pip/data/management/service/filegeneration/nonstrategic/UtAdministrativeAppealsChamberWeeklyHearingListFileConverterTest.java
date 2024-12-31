@@ -38,7 +38,7 @@ class UtAdministrativeAppealsChamberWeeklyHearingListFileConverterTest {
 
     private static final String LIST_NAME = UT_AAC_WEEKLY_HEARING_LIST.name();
     private static final String LIST_ENGLISH_NAME = "Upper Tribunal (Administrative Appeals Chamber) "
-        + "Daily Hearing list";
+        + "Daily Hearing List";
     private static final String LIST_DATE_ENGLISH = "List for 12 December 2024";
     private static final String LIST_DATE_WELSH = "Rhestr ar gyfer 12 December 2024";
     private static final String LIST_WELSH_NAME = "Rhestr o Wrandawiadau Dyddiol "

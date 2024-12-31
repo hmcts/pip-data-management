@@ -37,7 +37,7 @@ class UtLandsChamberWeeklyHearingListFileConverterTest {
     private static final String WELSH = "WELSH";
 
     private static final String LIST_NAME = UT_LC_WEEKLY_HEARING_LIST.name();
-    private static final String LIST_ENGLISH_NAME = "Upper Tribunal (Lands Chamber) Daily Hearing list";
+    private static final String LIST_ENGLISH_NAME = "Upper Tribunal (Lands Chamber) Daily Hearing List";
     private static final String LIST_DATE_ENGLISH = "List for 12 December 2024";
     private static final String LIST_DATE_WELSH = "Rhestr ar gyfer 12 December 2024";
     private static final String OBSERVE_HEARING_ENGLISH = "Observe a court or tribunal hearing as a journalist, "
