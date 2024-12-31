@@ -1,0 +1,14 @@
+{
+  "listName": "Rhestr o Wrandawiadau Wythnosol y Comisiwn Apeliadau Mewnfudo Arbennig",
+  "contactMessage1": "Weithiau bydd y tribiwnlys yn defnyddio cyfeirnodau neu flaenlythrennau i sicrhau bod y rhai sy’n ymwneud â’r apêl yn aros yn ddienw.",
+  "contactMessage2": "Cynhelir pob gwrandawiad yn Field House, 15-25 Bream’s Buildings, Llundain EC4A 1DZ.",
+  "tableHeaders": [
+    "Dyddiad",
+    "Amser",
+    "Apelydd",
+    "Cyfeirnod yr achos",
+    "Math o wrandawiad",
+    "Ystafell llys",
+    "Gwybodaeth ychwanegol"
+  ]
+}

@@ -29,7 +29,13 @@ public class NonStrategicListFileConverter implements FileConverter {
 
         Language language = Language.valueOf(metadata.get("language"));
         String listType = metadata.get("listType");
-        String resourceName = "non-strategic/" + UPPER_UNDERSCORE.to(LOWER_CAMEL, listType);
+        String resourceName;
+        if (ListType.valueOf(listType).getParentListType() != null) {
+            resourceName = "non-strategic/" + UPPER_UNDERSCORE.to(LOWER_CAMEL,
+                ListType.valueOf(listType).getParentListType().name());
+            languageResources.putAll(LanguageResourceHelper.readResourcesFromPath(resourceName, language));
+        }
+        resourceName = "non-strategic/" + UPPER_UNDERSCORE.to(LOWER_CAMEL, listType);
         languageResources.putAll(LanguageResourceHelper.readResourcesFromPath(resourceName, language));
         languageResources.putAll(LanguageResourceHelper.readResourcesFromPath("common/nonStrategicCommon",
                                                                               language));
