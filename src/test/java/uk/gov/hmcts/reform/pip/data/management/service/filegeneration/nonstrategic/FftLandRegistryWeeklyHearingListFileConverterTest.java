@@ -38,7 +38,7 @@ class FftLandRegistryWeeklyHearingListFileConverterTest {
 
     private static final String LIST_NAME = FFT_LR_WEEKLY_HEARING_LIST.name();
     private static final String LIST_ENGLISH_NAME = "First-tier Tribunal "
-        + "(Lands Registration Tribunal) Weekly Hearing list";
+        + "(Lands Registration Tribunal) Weekly Hearing List";
     private static final String LIST_DATE_ENGLISH = "List for 12 December 2024";
     private static final String LIST_DATE_WELSH = "Rhestr ar gyfer 12 December 2024";
     private static final String OBSERVE_HEARING_ENGLISH = "Observe a court or tribunal hearing as a journalist, "
