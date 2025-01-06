@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -251,11 +252,12 @@ class ValidationServiceTest extends IntegrationBasicTestBase {
 
     }
 
-    @Test
-    void testValidateMasterSchemaWithoutErrors() throws IOException {
+    @ParameterizedTest
+    @EnumSource(value = ListType.class, names = {"SJP_PRESS_REGISTER", "CIC_DAILY_HEARING_LIST"})
+    void testValidateMasterSchemaWithoutErrors(ListType listType) throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream("data/jsonPayload.json")) {
-            headerGroup.setListType(ListType.SJP_PRESS_REGISTER);
+            headerGroup.setListType(listType);
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
             assertDoesNotThrow(() -> validationService.validateBody(text, headerGroup, true),
                                "Valid master schema marked as invalid");
