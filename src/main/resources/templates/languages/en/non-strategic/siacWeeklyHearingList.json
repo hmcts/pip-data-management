@@ -2,6 +2,8 @@
   "listName": "Special Immigration Appeals Commission Weekly Hearing List",
   "contactMessage1": "The tribunal sometimes uses reference numbers or initials to protect the anonymity of those involved in the appeal.",
   "contactMessage2": "All hearings take place at Field House, 15-25 Bream’s Buildings, London EC4A 1DZ.",
+  "comingCourtOrTribunalText": "Find out what to expect coming to a court or tribunal",
+  "comingCourtOrTribunalLink": "https://www.gov.uk/guidance/what-to-expect-coming-to-a-court-or-tribunal",
   "tableHeaders": [
     "Date",
     "Time",

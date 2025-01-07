@@ -45,16 +45,16 @@ class SiacWeeklyHearingListFileConverterTest {
 
     private static final String LIST_DATE_ENGLISH = "List for 12 December 2024";
     private static final String LIST_DATE_WELSH = "Rhestr ar gyfer 12 December 2024";
-    private static final String OBSERVE_HEARING_ENGLISH = "Observe a court or tribunal hearing as a journalist, "
-        + "researcher or member of the public";
-    private static final String OBSERVE_HEARING_WELSH = "Arsylwi gwrandawiad llys neu dribiwnlys fel newyddiadurwr, "
-        + "ymchwilydd neu aelod o'r cyhoedd";
+    private static final String COMING_COURT_OR_TRIBUNAL_ENGLISH =
+        "Find out what to expect coming to a court or tribunal";
+    private static final String COMING_COURT_OR_TRIBUNAL_WELSH = "Gwybodaeth am beth i’w ddisgwyl"
+        + " wrth ddod i lys neu dribiwnlys";
 
     private static final String HEADER_ELEMENT = "page-heading";
     private static final String LIST_DATE_ELEMENT = "list-date";
     private static final String CONTACT_MESSAGE_ELEMENT_1 = "contact-message-1";
     private static final String CONTACT_MESSAGE_ELEMENT_2 = "contact-message-2";
-    private static final String OBSERVE_HEARING_ELEMENT =  "observe-hearing";
+    private static final String COMING_COURT_OR_TRIBUNAL =  "coming-court-or-tribunal";
 
     private static final String TITLE_MESSAGE = "Title does not match";
     private static final String HEADER_MESSAGE = "Header does not match";
@@ -145,10 +145,10 @@ class SiacWeeklyHearingListFileConverterTest {
             .extracting(Element::text)
             .isEqualTo("All hearings take place at Field House, 15-25 Bream’s Buildings, London EC4A 1DZ.");
 
-        softly.assertThat(document.getElementById(OBSERVE_HEARING_ELEMENT))
+        softly.assertThat(document.getElementById(COMING_COURT_OR_TRIBUNAL))
             .as(BODY_MESSAGE)
             .extracting(Element::text)
-            .isEqualTo(OBSERVE_HEARING_ENGLISH);
+            .isEqualTo(COMING_COURT_OR_TRIBUNAL_ENGLISH);
 
         softly.assertThat(document.getElementsByTag("th"))
             .as(TABLE_HEADERS_MESSAGE)
@@ -217,10 +217,10 @@ class SiacWeeklyHearingListFileConverterTest {
             .isEqualTo("Cynhelir pob gwrandawiad "
                            + "yn Field House, 15-25 Bream’s Buildings, Llundain EC4A 1DZ.");
 
-        softly.assertThat(document.getElementById(OBSERVE_HEARING_ELEMENT))
+        softly.assertThat(document.getElementById(COMING_COURT_OR_TRIBUNAL))
             .as(BODY_MESSAGE)
             .extracting(Element::text)
-            .isEqualTo(OBSERVE_HEARING_WELSH);
+            .isEqualTo(COMING_COURT_OR_TRIBUNAL_WELSH);
 
         softly.assertThat(document.getElementsByTag("th"))
             .as(TABLE_HEADERS_MESSAGE)
