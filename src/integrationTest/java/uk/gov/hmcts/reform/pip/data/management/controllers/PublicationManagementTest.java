@@ -82,11 +82,19 @@ class PublicationManagementTest extends IntegrationTestBase {
     private static final String TIME_FIELD = "Time - 10am";
     private static final String APPELLANT_NUMBER_FIELD = "Appellant - Appellant 1";
     private static final String RPT_LISTS_EXCEL_FILE = "data/non-strategic/"
+    private static final String NON_STRATEGIC_FILES_LOCATION = "data/non-strategic/";
+    private static final String RPT_LISTS_EXCEL_FILE = NON_STRATEGIC_FILES_LOCATION
         + "fft-residential-property-tribunal-weekly-hearing-list/"
         + "fftResidentialPropertyTribunalWeeklyHearingList.xlsx";
-    private static final String RPT_LISTS_JSON_FILE = "data/non-strategic/"
+    private static final String RPT_LISTS_JSON_FILE = NON_STRATEGIC_FILES_LOCATION
         + "fft-residential-property-tribunal-weekly-hearing-list/"
         + "fftResidentialPropertyTribunalWeeklyHearingList.json";
+    private static final String SIAC_LISTS_EXCEL_FILE = NON_STRATEGIC_FILES_LOCATION
+        + "siac-weekly-hearing-list/"
+        + "siacWeeklyHearingList.xlsx";
+    private static final String SIAC_LISTS_JSON_FILE = NON_STRATEGIC_FILES_LOCATION
+        + "siac-weekly-hearing-list/"
+        + "siacWeeklyHearingList.json";
 
     private static final LocalDateTime DISPLAY_TO = LocalDateTime.now()
         .truncatedTo(ChronoUnit.SECONDS);
@@ -560,10 +568,12 @@ class PublicationManagementTest extends IntegrationTestBase {
     @Test
     void testGenerateArtefactSummaryCstWeeklyHearingList() throws Exception {
         Artefact artefact = createNonStrategicPublication(
-            ListType.CST_WEEKLY_HEARING_LIST, "data/non-strategic/cst-weekly-hearing-list/cstWeeklyHearingList.xlsx"
+            ListType.CST_WEEKLY_HEARING_LIST, NON_STRATEGIC_FILES_LOCATION
+                + "cst-weekly-hearing-list/cstWeeklyHearingList.xlsx"
         );
 
-        byte[] jsonData = getTestData("data/non-strategic/cst-weekly-hearing-list/cstWeeklyHearingList.json");
+        byte[] jsonData = getTestData(NON_STRATEGIC_FILES_LOCATION
+                                          + "cst-weekly-hearing-list/cstWeeklyHearingList.json");
         when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(jsonData));
 
         MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, artefact.getArtefactId())))
@@ -577,10 +587,12 @@ class PublicationManagementTest extends IntegrationTestBase {
     @Test
     void testGenerateArtefactSummaryPhtWeeklyHearingList() throws Exception {
         Artefact artefact = createNonStrategicPublication(
-            ListType.PHT_WEEKLY_HEARING_LIST, "data/non-strategic/pht-weekly-hearing-list/phtWeeklyHearingList.xlsx"
+            ListType.PHT_WEEKLY_HEARING_LIST, NON_STRATEGIC_FILES_LOCATION
+                + "pht-weekly-hearing-list/phtWeeklyHearingList.xlsx"
         );
 
-        byte[] jsonData = getTestData("data/non-strategic/pht-weekly-hearing-list/phtWeeklyHearingList.json");
+        byte[] jsonData = getTestData(NON_STRATEGIC_FILES_LOCATION
+                                          + "pht-weekly-hearing-list/phtWeeklyHearingList.json");
         when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(jsonData));
 
         MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, artefact.getArtefactId())))
@@ -594,10 +606,12 @@ class PublicationManagementTest extends IntegrationTestBase {
     @Test
     void testGenerateArtefactSummaryGrcWeeklyHearingList() throws Exception {
         Artefact artefact = createNonStrategicPublication(
-            ListType.GRC_WEEKLY_HEARING_LIST, "data/non-strategic/grc-weekly-hearing-list/grcWeeklyHearingList.xlsx"
+            ListType.GRC_WEEKLY_HEARING_LIST, NON_STRATEGIC_FILES_LOCATION
+                + "grc-weekly-hearing-list/grcWeeklyHearingList.xlsx"
         );
 
-        byte[] jsonData = getTestData("data/non-strategic/grc-weekly-hearing-list/grcWeeklyHearingList.json");
+        byte[] jsonData = getTestData(NON_STRATEGIC_FILES_LOCATION
+                                          + "grc-weekly-hearing-list/grcWeeklyHearingList.json");
         when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(jsonData));
 
         MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, artefact.getArtefactId())))
@@ -613,11 +627,11 @@ class PublicationManagementTest extends IntegrationTestBase {
     void testGenerateArtefactSummaryWpafccWeeklyHearingList() throws Exception {
         Artefact artefact = createNonStrategicPublication(
             ListType.WPAFCC_WEEKLY_HEARING_LIST,
-            "data/non-strategic/wpafcc-weekly-hearing-list/wpafccWeeklyHearingList.xlsx"
+            NON_STRATEGIC_FILES_LOCATION + "wpafcc-weekly-hearing-list/wpafccWeeklyHearingList.xlsx"
         );
 
         byte[] jsonData = getTestData(
-            "data/non-strategic/wpafcc-weekly-hearing-list/wpafccWeeklyHearingList.json"
+            NON_STRATEGIC_FILES_LOCATION + "wpafcc-weekly-hearing-list/wpafccWeeklyHearingList.json"
         );
         when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(jsonData));
 
@@ -634,11 +648,13 @@ class PublicationManagementTest extends IntegrationTestBase {
     void testGenerateArtefactSummaryUtIacJudicialReviewDailyHearingList() throws Exception {
         Artefact artefact = createNonStrategicPublication(
             ListType.UT_IAC_JUDICIAL_REVIEW_DAILY_HEARING_LIST,
-            "data/non-strategic/ut-iac-judicial-review-daily-hearing-list/utIacJudicialReviewDailyHearingList.xlsx"
+            NON_STRATEGIC_FILES_LOCATION
+                + "ut-iac-judicial-review-daily-hearing-list/utIacJudicialReviewDailyHearingList.xlsx"
         );
 
         byte[] jsonData = getTestData(
-            "data/non-strategic/ut-iac-judicial-review-daily-hearing-list/utIacJudicialReviewDailyHearingList.json"
+            NON_STRATEGIC_FILES_LOCATION
+                 + "ut-iac-judicial-review-daily-hearing-list/utIacJudicialReviewDailyHearingList.json"
         );
         when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(jsonData));
 
@@ -654,11 +670,13 @@ class PublicationManagementTest extends IntegrationTestBase {
     void testGenerateArtefactSummaryUtIacStatutoryAppealsDailyHearingList() throws Exception {
         Artefact artefact = createNonStrategicPublication(
             ListType.UT_IAC_STATUTORY_APPEALS_DAILY_HEARING_LIST,
-            "data/non-strategic/ut-iac-statutory-appeals-daily-hearing-list/utIacStatutoryAppealsDailyHearingList.xlsx"
+            NON_STRATEGIC_FILES_LOCATION
+                + "ut-iac-statutory-appeals-daily-hearing-list/utIacStatutoryAppealsDailyHearingList.xlsx"
         );
 
         byte[] jsonData = getTestData(
-            "data/non-strategic/ut-iac-statutory-appeals-daily-hearing-list/utIacStatutoryAppealsDailyHearingList.json"
+            NON_STRATEGIC_FILES_LOCATION
+                + "ut-iac-statutory-appeals-daily-hearing-list/utIacStatutoryAppealsDailyHearingList.json"
         );
         when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(jsonData));
 
@@ -670,13 +688,20 @@ class PublicationManagementTest extends IntegrationTestBase {
         assertTrue(responseContent.contains("Appeal reference number - 1234"), CONTENT_MISMATCH_ERROR);
     }
 
-    @Test
-    void testGenerateArtefactSummarySiacWeeklyHearingList() throws Exception {
+    @ParameterizedTest
+    @EnumSource(
+        value = ListType.class,
+        names = {
+            "SIAC_WEEKLY_HEARING_LIST",
+            "POAC_WEEKLY_HEARING_LIST",
+            "PAAC_WEEKLY_HEARING_LIST"
+        })
+    void testGenerateArtefactSummarySiacWeeklyHearingList(ListType listType) throws Exception {
         Artefact artefact = createNonStrategicPublication(
-            ListType.SIAC_WEEKLY_HEARING_LIST, "data/non-strategic/siac-weekly-hearing-list/siacWeeklyHearingList.xlsx"
+            listType, SIAC_LISTS_EXCEL_FILE
         );
 
-        byte[] jsonData = getTestData("data/non-strategic/siac-weekly-hearing-list/siacWeeklyHearingList.json");
+        byte[] jsonData = getTestData(SIAC_LISTS_JSON_FILE);
         when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(jsonData));
 
         MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, artefact.getArtefactId())))
@@ -692,11 +717,13 @@ class PublicationManagementTest extends IntegrationTestBase {
     void testGenerateArtefactFftTaxSummaryWeeklyHearingList() throws Exception {
         Artefact artefact = createNonStrategicPublication(
             ListType.FFT_TAX_WEEKLY_HEARING_LIST,
-            "data/non-strategic/fft-tax-tribunal-weekly-hearing-list/fftTaxWeeklyHearingList.xlsx"
+            NON_STRATEGIC_FILES_LOCATION
+                + "fft-tax-tribunal-weekly-hearing-list/fftTaxWeeklyHearingList.xlsx"
         );
 
         byte[] jsonData = getTestData(
-            "data/non-strategic/fft-tax-tribunal-weekly-hearing-list/fftTaxWeeklyHearingList.json");
+            NON_STRATEGIC_FILES_LOCATION
+                + "fft-tax-tribunal-weekly-hearing-list/fftTaxWeeklyHearingList.json");
         when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(jsonData));
 
         MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, artefact.getArtefactId())))
@@ -712,12 +739,12 @@ class PublicationManagementTest extends IntegrationTestBase {
     void testGenerateArtefactFftLandRegistrySummaryWeeklyHearingList() throws Exception {
         Artefact artefact = createNonStrategicPublication(
             ListType.FFT_LR_WEEKLY_HEARING_LIST,
-            "data/non-strategic/fft-land-registry-tribunal-weekly-hearing-list/"
+            NON_STRATEGIC_FILES_LOCATION + "fft-land-registry-tribunal-weekly-hearing-list/"
                  + "fftLandRegistryTribunalWeeklyHearingList.xlsx"
         );
 
         byte[] jsonData = getTestData(
-            "data/non-strategic/fft-land-registry-tribunal-weekly-hearing-list/"
+            NON_STRATEGIC_FILES_LOCATION + "fft-land-registry-tribunal-weekly-hearing-list/"
                  + "fftLandRegistryTribunalWeeklyHearingList.json");
         when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(jsonData));
 

@@ -9,8 +9,10 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.NonStrategicListFileConverter;
 
@@ -19,8 +21,8 @@ import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Stream;
 
-import static uk.gov.hmcts.reform.pip.model.publication.ListType.SIAC_WEEKLY_HEARING_LIST;
 
 @ActiveProfiles("test")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -47,8 +49,6 @@ class SiacWeeklyHearingListFileConverterTest {
         + "researcher or member of the public";
     private static final String OBSERVE_HEARING_WELSH = "Arsylwi gwrandawiad llys neu dribiwnlys fel newyddiadurwr, "
         + "ymchwilydd neu aelod o'r cyhoedd";
-    private static final String SIAC_LIST_WELSH_NAME = "Rhestr o Wrandawiadau Wythnosol"
-        + " y Comisiwn Apeliadau Mewnfudo Arbennig";
 
     private static final String HEADER_ELEMENT = "page-heading";
     private static final String LIST_DATE_ELEMENT = "list-date";
@@ -66,6 +66,28 @@ class SiacWeeklyHearingListFileConverterTest {
 
     private JsonNode siacInputJson;
 
+    private static Stream<Arguments> parametersEnglish() {
+        return Stream.of(
+            Arguments.of("SIAC_WEEKLY_HEARING_LIST", "siacWeeklyHearingList.json",
+                         "Special Immigration Appeals Commission Weekly Hearing List"),
+            Arguments.of("POAC_WEEKLY_HEARING_LIST", "poacWeeklyHearingList.json",
+                         "Proscribed Organisations Appeal Commission Weekly Hearing List"),
+            Arguments.of("PAAC_WEEKLY_HEARING_LIST", "paacWeeklyHearingList.json",
+                         "Pathogens Access Appeal Commission Weekly Hearing List")
+        );
+    }
+
+    private static Stream<Arguments> parametersWelsh() {
+        return Stream.of(
+            Arguments.of("SIAC_WEEKLY_HEARING_LIST", "siacWeeklyHearingList.json",
+                         "Rhestr o Wrandawiadau Wythnosol y Comisiwn Apeliadau Mewnfudo Arbennig"),
+            Arguments.of("POAC_WEEKLY_HEARING_LIST", "poacWeeklyHearingList.json",
+                         "Rhestr o Wrandawiadau Wythnosol y Comisiwn Apeliadau Sefydliadau Gwaharddedig"),
+            Arguments.of("PAAC_WEEKLY_HEARING_LIST", "paacWeeklyHearingList.json",
+                         "Rhestr o Wrandawiadau Wythnosol y Comisiwn Apeliadau Mynediad Pathogenau")
+        );
+    }
+
     @BeforeAll
     void setup() throws IOException {
         try (InputStream inputStream = getClass()
@@ -75,12 +97,14 @@ class SiacWeeklyHearingListFileConverterTest {
         }
     }
 
-    @Test
-    void testSiacWeeklyHearingListFileConversionInEnglish() throws IOException {
+    @ParameterizedTest
+    @MethodSource("parametersEnglish")
+    void testSiacWeeklyHearingListFileConversionInEnglish(String listName,
+            String languageFilename, String listDisplayName) throws IOException {
         Map<String, Object> languageResource;
         try (InputStream languageFile = Thread.currentThread()
             .getContextClassLoader()
-            .getResourceAsStream("templates/languages/en/non-strategic/siacWeeklyHearingList.json")) {
+            .getResourceAsStream("templates/languages/en/non-strategic/" + languageFilename)) {
             languageResource = new ObjectMapper().readValue(
                 Objects.requireNonNull(languageFile).readAllBytes(), new TypeReference<>() {
                 });
@@ -89,7 +113,7 @@ class SiacWeeklyHearingListFileConverterTest {
         Map<String, String> metadata = Map.of(CONTENT_DATE_METADATA, CONTENT_DATE,
                                               PROVENANCE_METADATA, PROVENANCE,
                                               LANGUAGE_METADATA, ENGLISH,
-                                              LIST_TYPE_METADATA, SIAC_WEEKLY_HEARING_LIST.name()
+                                              LIST_TYPE_METADATA, listName
         );
 
         String result = converter.convert(siacInputJson, metadata, languageResource);
@@ -99,12 +123,12 @@ class SiacWeeklyHearingListFileConverterTest {
 
         softly.assertThat(document.title())
             .as(TITLE_MESSAGE)
-            .isEqualTo("Special Immigration Appeals Commission Weekly Hearing List");
+            .isEqualTo(listDisplayName);
 
         softly.assertThat(document.getElementById(HEADER_ELEMENT))
             .as(HEADER_MESSAGE)
             .extracting(Element::text)
-            .isEqualTo("Special Immigration Appeals Commission Weekly Hearing List");
+            .isEqualTo(listDisplayName);
 
         softly.assertThat(document.getElementById(LIST_DATE_ELEMENT))
             .as(LIST_DATE_MESSAGE)
@@ -143,12 +167,14 @@ class SiacWeeklyHearingListFileConverterTest {
         softly.assertAll();
     }
 
-    @Test
-    void testSiacWeeklyHearingListFileConversionInWelsh() throws IOException {
+    @ParameterizedTest
+    @MethodSource("parametersWelsh")
+    void testSiacWeeklyHearingListFileConversionInWelsh(String listName,
+            String languageFilename, String listDisplayName) throws IOException {
         Map<String, Object> languageResource;
         try (InputStream languageFile = Thread.currentThread()
             .getContextClassLoader()
-            .getResourceAsStream("templates/languages/cy/non-strategic/siacWeeklyHearingList.json")) {
+            .getResourceAsStream("templates/languages/cy/non-strategic/" + languageFilename)) {
             languageResource = new ObjectMapper().readValue(
                 Objects.requireNonNull(languageFile).readAllBytes(), new TypeReference<>() {
                 });
@@ -157,7 +183,7 @@ class SiacWeeklyHearingListFileConverterTest {
         Map<String, String> metadata = Map.of(CONTENT_DATE_METADATA, CONTENT_DATE,
                                               PROVENANCE_METADATA, PROVENANCE,
                                               LANGUAGE_METADATA, WELSH,
-                                              LIST_TYPE_METADATA, SIAC_WEEKLY_HEARING_LIST.name()
+                                              LIST_TYPE_METADATA, listName
         );
 
         String result = converter.convert(siacInputJson, metadata, languageResource);
@@ -167,12 +193,12 @@ class SiacWeeklyHearingListFileConverterTest {
 
         softly.assertThat(document.title())
             .as(TITLE_MESSAGE)
-            .isEqualTo(SIAC_LIST_WELSH_NAME);
+            .isEqualTo(listDisplayName);
 
         softly.assertThat(document.getElementById(HEADER_ELEMENT))
             .as(HEADER_MESSAGE)
             .extracting(Element::text)
-            .isEqualTo(SIAC_LIST_WELSH_NAME);
+            .isEqualTo(listDisplayName);
 
         softly.assertThat(document.getElementById(LIST_DATE_ELEMENT))
             .as(LIST_DATE_MESSAGE)

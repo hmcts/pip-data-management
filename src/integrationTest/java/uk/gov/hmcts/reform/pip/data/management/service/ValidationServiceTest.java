@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -62,6 +63,8 @@ class ValidationServiceTest extends IntegrationBasicTestBase {
     private static final String RPT_LIST_JSON = "data/non-strategic/"
         + "fft-residential-property-tribunal-weekly-hearing-list/"
         + "fftResidentialPropertyTribunalWeeklyHearingList.json";
+    private static final String SIAC_LIST_JSON = "data/non-strategic/siac-weekly-hearing-list/"
+        + "siacWeeklyHearingList.json";
     private HeaderGroup headerGroup;
 
     @BeforeEach
@@ -251,11 +254,12 @@ class ValidationServiceTest extends IntegrationBasicTestBase {
 
     }
 
-    @Test
-    void testValidateMasterSchemaWithoutErrors() throws IOException {
+    @ParameterizedTest
+    @EnumSource(value = ListType.class, names = {"SJP_PRESS_REGISTER", "CIC_DAILY_HEARING_LIST"})
+    void testValidateMasterSchemaWithoutErrors(ListType listType) throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream("data/jsonPayload.json")) {
-            headerGroup.setListType(ListType.SJP_PRESS_REGISTER);
+            headerGroup.setListType(listType);
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
             assertDoesNotThrow(() -> validationService.validateBody(text, headerGroup, true),
                                "Valid master schema marked as invalid");
@@ -356,8 +360,11 @@ class ValidationServiceTest extends IntegrationBasicTestBase {
                          "data/non-strategic/ut-iac-statutory-appeals-daily-hearing-list/"
                              + "utIacStatutoryAppealsDailyHearingList.json"),
             Arguments.of(ListType.SIAC_WEEKLY_HEARING_LIST,
-                         "data/non-strategic/siac-weekly-hearing-list/"
-                             + "siacWeeklyHearingList.json"),
+                         SIAC_LIST_JSON),
+            Arguments.of(ListType.POAC_WEEKLY_HEARING_LIST,
+                         SIAC_LIST_JSON),
+            Arguments.of(ListType.PAAC_WEEKLY_HEARING_LIST,
+                         SIAC_LIST_JSON),
             Arguments.of(ListType.FFT_TAX_WEEKLY_HEARING_LIST,
                          "data/non-strategic/fft-tax-tribunal-weekly-hearing-list/"
                              + "fftTaxWeeklyHearingList.json"),

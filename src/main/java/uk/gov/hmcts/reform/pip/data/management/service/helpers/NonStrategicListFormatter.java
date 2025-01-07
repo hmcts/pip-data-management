@@ -13,7 +13,9 @@ import static uk.gov.hmcts.reform.pip.model.publication.ListType.CST_WEEKLY_HEAR
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.FFT_LR_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.FFT_TAX_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.GRC_WEEKLY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.PAAC_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.PHT_WEEKLY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.POAC_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.RPT_EASTERN_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.RPT_LONDON_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.RPT_MIDLANDS_WEEKLY_HEARING_LIST;
@@ -44,6 +46,10 @@ public final class NonStrategicListFormatter {
         Map.entry(UT_IAC_STATUTORY_APPEALS_DAILY_HEARING_LIST,
                   Map.of(DATE, NonStrategicFieldFormattingHelper::formatDateField)),
         Map.entry(SIAC_WEEKLY_HEARING_LIST,
+                  Map.of(DATE, NonStrategicFieldFormattingHelper::formatDateField)),
+        Map.entry(POAC_WEEKLY_HEARING_LIST,
+                  Map.of(DATE, NonStrategicFieldFormattingHelper::formatDateField)),
+        Map.entry(PAAC_WEEKLY_HEARING_LIST,
                   Map.of(DATE, NonStrategicFieldFormattingHelper::formatDateField)),
         Map.entry(FFT_TAX_WEEKLY_HEARING_LIST,
                   Map.of(DATE, NonStrategicFieldFormattingHelper::formatDateField)),
