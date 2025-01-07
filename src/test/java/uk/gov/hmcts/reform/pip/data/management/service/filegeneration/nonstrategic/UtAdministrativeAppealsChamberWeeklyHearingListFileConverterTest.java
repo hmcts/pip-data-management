@@ -237,14 +237,14 @@ class UtAdministrativeAppealsChamberWeeklyHearingListFileConverterTest {
         softly.assertThat(document.getElementById(MESSAGE_ELEMENT_1))
             .as(BODY_MESSAGE)
             .extracting(Element::text)
-            .isEqualTo("Details");
+            .isEqualTo("Manylion");
 
         softly.assertThat(document.getElementById(MESSAGE_ELEMENT_2))
             .as(BODY_MESSAGE)
             .extracting(Element::text)
-            .isEqualTo("Lists are subject to change until 4:30pm. Any alterations after "
-                           + "this time will be telephoned or emailed direct to the parties "
-                           + "or their legal representatives.");
+            .isEqualTo("Mae rhestrau yn destun newid hyd at 4:30pm. Bydd unrhyw newidiadau "
+                           + "a wneir ar ôl yr amser hwn yn cael eu rhannu’n uniongyrchol drwy alwad ffôn "
+                           + "neu e-bost at y partïon neu eu cynrychiolwyr cyfreithiol.");
 
         softly.assertThat(document.getElementById(MESSAGE_ELEMENT_3))
             .as(BODY_MESSAGE)
@@ -279,7 +279,7 @@ class UtAdministrativeAppealsChamberWeeklyHearingListFileConverterTest {
         softly.assertThat(document.getElementById(MESSAGE_ELEMENT_8))
             .as(BODY_MESSAGE)
             .extracting(Element::text)
-            .isEqualTo("Scotland");
+            .isEqualTo("Yr Alban");
 
         softly.assertThat(document.getElementById(MESSAGE_ELEMENT_9))
             .as(BODY_MESSAGE)

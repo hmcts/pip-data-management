@@ -81,7 +81,6 @@ class PublicationManagementTest extends IntegrationTestBase {
     private static final String CASE_REFERENCE_NUMBER_FIELD = "Case reference number - 1234";
     private static final String TIME_FIELD = "Time - 10am";
     private static final String APPELLANT_NUMBER_FIELD = "Appellant - Appellant 1";
-    private static final String RPT_LISTS_EXCEL_FILE = "data/non-strategic/"
     private static final String NON_STRATEGIC_FILES_LOCATION = "data/non-strategic/";
     private static final String RPT_LISTS_EXCEL_FILE = NON_STRATEGIC_FILES_LOCATION
         + "fft-residential-property-tribunal-weekly-hearing-list/"
