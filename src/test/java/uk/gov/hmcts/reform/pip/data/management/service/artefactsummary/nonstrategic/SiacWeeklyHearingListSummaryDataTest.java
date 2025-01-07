@@ -4,10 +4,12 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.IOUtils;
 import org.assertj.core.api.SoftAssertions;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pip.data.management.service.ListConversionFactory;
 import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.ArtefactSummaryData;
+import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -16,8 +18,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
-
-import static uk.gov.hmcts.reform.pip.model.publication.ListType.SIAC_WEEKLY_HEARING_LIST;
 
 @ActiveProfiles("test")
 class SiacWeeklyHearingListSummaryDataTest {
@@ -29,8 +29,15 @@ class SiacWeeklyHearingListSummaryDataTest {
     private static final String SUMMARY_FIELD_KEY_MESSAGE = "Summary field key does not match";
     private static final String SUMMARY_FIELD_VALUE_MESSAGE = "Summary field value does not match";
 
-    @Test
-    void testSiacWeeklyHearingListSummaryData() throws IOException {
+    @ParameterizedTest
+    @EnumSource(
+        value = ListType.class,
+        names = {
+            "SIAC_WEEKLY_HEARING_LIST",
+            "POAC_WEEKLY_HEARING_LIST",
+            "PAAC_WEEKLY_HEARING_LIST"
+        })
+    void testSiacWeeklyHearingListSummaryData(ListType listType) throws IOException {
         StringWriter writer = new StringWriter();
         IOUtils.copy(
             Files.newInputStream(Paths.get(
@@ -42,7 +49,7 @@ class SiacWeeklyHearingListSummaryDataTest {
 
         JsonNode payload = new ObjectMapper().readTree(writer.toString());
         ArtefactSummaryData cstSummaryData = new ListConversionFactory()
-            .getArtefactSummaryData(SIAC_WEEKLY_HEARING_LIST)
+            .getArtefactSummaryData(listType)
             .get();
         Map<String, List<Map<String, String>>> output = cstSummaryData.get(payload);
 

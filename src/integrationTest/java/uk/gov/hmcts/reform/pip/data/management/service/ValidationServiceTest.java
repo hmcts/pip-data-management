@@ -62,6 +62,8 @@ class ValidationServiceTest extends IntegrationBasicTestBase {
     private static final String RPT_LIST_JSON = "data/non-strategic/"
         + "fft-residential-property-tribunal-weekly-hearing-list/"
         + "fftResidentialPropertyTribunalWeeklyHearingList.json";
+    private static final String SIAC_LIST_JSON = "data/non-strategic/siac-weekly-hearing-list/"
+        + "siacWeeklyHearingList.json";
     private HeaderGroup headerGroup;
 
     @BeforeEach
@@ -356,8 +358,11 @@ class ValidationServiceTest extends IntegrationBasicTestBase {
                          "data/non-strategic/ut-iac-statutory-appeals-daily-hearing-list/"
                              + "utIacStatutoryAppealsDailyHearingList.json"),
             Arguments.of(ListType.SIAC_WEEKLY_HEARING_LIST,
-                         "data/non-strategic/siac-weekly-hearing-list/"
-                             + "siacWeeklyHearingList.json"),
+                         SIAC_LIST_JSON),
+            Arguments.of(ListType.POAC_WEEKLY_HEARING_LIST,
+                         SIAC_LIST_JSON),
+            Arguments.of(ListType.PAAC_WEEKLY_HEARING_LIST,
+                         SIAC_LIST_JSON),
             Arguments.of(ListType.FFT_TAX_WEEKLY_HEARING_LIST,
                          "data/non-strategic/fft-tax-tribunal-weekly-hearing-list/"
                              + "fftTaxWeeklyHearingList.json"),

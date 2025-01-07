@@ -68,7 +68,9 @@ import static uk.gov.hmcts.reform.pip.model.publication.ListType.MAGISTRATES_STA
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.OPA_PRESS_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.OPA_PUBLIC_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.OPA_RESULTS;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.PAAC_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.PHT_WEEKLY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.POAC_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.PRIMARY_HEALTH_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.RPT_EASTERN_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.RPT_LONDON_WEEKLY_HEARING_LIST;
@@ -156,6 +158,14 @@ public class ListConversionFactory {
         Map.entry(SIAC_WEEKLY_HEARING_LIST, new ConversionPair(
             new NonStrategicListFileConverter(),
             new NonStrategicListSummaryData(SIAC_WEEKLY_HEARING_LIST)
+        )),
+        Map.entry(POAC_WEEKLY_HEARING_LIST, new ConversionPair(
+            new NonStrategicListFileConverter(),
+            new NonStrategicListSummaryData(POAC_WEEKLY_HEARING_LIST)
+        )),
+        Map.entry(PAAC_WEEKLY_HEARING_LIST, new ConversionPair(
+            new NonStrategicListFileConverter(),
+            new NonStrategicListSummaryData(PAAC_WEEKLY_HEARING_LIST)
         )),
         Map.entry(FFT_TAX_WEEKLY_HEARING_LIST, new ConversionPair(
             new NonStrategicListFileConverter(),
