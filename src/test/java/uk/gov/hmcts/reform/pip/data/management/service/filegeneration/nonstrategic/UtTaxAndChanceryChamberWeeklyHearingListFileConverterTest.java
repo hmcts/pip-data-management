@@ -110,9 +110,9 @@ class UtTaxAndChanceryChamberWeeklyHearingListFileConverterTest {
         softly.assertThat(document.getElementById(CONTACT_MESSAGE_ELEMENT))
             .as(BODY_MESSAGE)
             .extracting(Element::text)
-            .isEqualTo("If a representative of the media or a member of the public wishes to "
-                           + "attend a Cloud Video Platform (CVP) hearing they should contact the Lands "
-                           + "Chamber listing section Lands@justice.gov.uk who will provide further information.");
+            .isEqualTo("A representative of the media, or any other person, wishing to attend a "
+                           + "remote hearing should contact uttc@justice.gov.uk and we will "
+                           + "arrange for your attendance.");
 
         softly.assertThat(document.getElementById(OBSERVE_HEARING_ELEMENT))
             .as(BODY_MESSAGE)
@@ -176,10 +176,9 @@ class UtTaxAndChanceryChamberWeeklyHearingListFileConverterTest {
         softly.assertThat(document.getElementById(CONTACT_MESSAGE_ELEMENT))
             .as(BODY_MESSAGE)
             .extracting(Element::text)
-            .isEqualTo("Os bydd cynrychiolydd o’r cyfryngau neu aelod o’r cyhoedd yn "
-                           + "dymuno mynychu gwrandawiad Platfform Fideo’r Cwmwl (CVP) "
-                           + "dylent gysylltu ag adran restru’r Siambr Tiroedd Lands@justice.gov.uk "
-                           + "a fydd yn darparu rhagor o wybodaeth.");
+            .isEqualTo("Dylai cynrychiolydd o’r cyfryngau, neu unrhyw berson arall, sy’n "
+                           + "dymuno mynychu gwrandawiad o bell gysylltu â uttc@justice.gov.uk a byddwn yn "
+                           + "trefnu eich bod yn mynychu.");
 
         softly.assertThat(document.getElementById(OBSERVE_HEARING_ELEMENT))
             .as(BODY_MESSAGE)
