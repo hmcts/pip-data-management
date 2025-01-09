@@ -130,7 +130,7 @@ class UtLandsChamberWeeklyHearingListFileConverterTest {
                 "Member(s)",
                 "Hearing type",
                 "Venue",
-                "Mode of Hearing",
+                "Mode of hearing",
                 "Additional information"
             );
 
