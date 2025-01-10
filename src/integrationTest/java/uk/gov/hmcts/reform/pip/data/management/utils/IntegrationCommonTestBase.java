@@ -5,7 +5,7 @@ import com.azure.storage.blob.BlobContainerClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -14,13 +14,13 @@ import static org.mockito.Mockito.when;
 public class IntegrationCommonTestBase {
     protected static final String BLOB_PAYLOAD_URL = "https://localhost";
 
-    @MockBean(name = "artefact")
+    @MockitoBean(name = "artefact")
     protected BlobContainerClient artefactBlobContainerClient;
 
-    @MockBean(name = "publications")
+    @MockitoBean(name = "publications")
     protected BlobContainerClient publicationBlobContainerClient;
 
-    @MockBean
+    @MockitoBean
     protected BlobClient blobClient;
 
     @BeforeEach
