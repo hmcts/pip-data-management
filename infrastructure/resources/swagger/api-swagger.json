@@ -141,7 +141,8 @@
                 "PRIMARY_HEALTH_LIST",
                 "OPA_PRESS_LIST",
                 "OPA_PUBLIC_LIST",
-                "OPA_RESULTS"
+                "OPA_RESULTS",
+                "CIC_DAILY_HEARING_LIST"
               ]
             }
           },
