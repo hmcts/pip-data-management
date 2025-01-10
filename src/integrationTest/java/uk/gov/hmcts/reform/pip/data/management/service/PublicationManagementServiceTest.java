@@ -8,8 +8,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import uk.gov.hmcts.reform.pip.data.management.database.AzurePublicationBlobService;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
@@ -38,13 +38,13 @@ import static uk.gov.hmcts.reform.pip.model.publication.FileType.PDF;
 @SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class PublicationManagementServiceTest extends IntegrationBasicTestBase {
-    @MockBean
+    @MockitoBean
     private ArtefactService artefactService;
 
-    @MockBean
+    @MockitoBean
     private LocationService locationService;
 
-    @MockBean
+    @MockitoBean
     private AzurePublicationBlobService azureBlobService;
 
     @Autowired
