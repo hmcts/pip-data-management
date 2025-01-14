@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Root",
+  "type": "array",
+  "items": {
+    "title": "Hearing list",
+    "type": "object",
+    "required": [
+      "date",
+      "caseName",
+      "hearingLength",
+      "hearingType",
+      "venue",
+      "additionalInformation"
+    ],
+    "properties": {
+      "date": {
+        "title": "Date",
+        "type": "string",
+        "default": "",
+        "examples": [
+          "02/01/2025"
+        ],
+        "pattern": "^\\d{2}/\\d{2}/\\d{4}$"
+      },
+      "caseName": {
+        "title": "Case name",
+        "type": "string",
+        "default": "",
+        "examples": [
+          "A Vs B"
+        ],
+        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+      },
+      "hearingLength": {
+        "title": "Length of hearing",
+        "type": "string",
+        "default": "",
+        "examples": [
+          "1 hour"
+        ],
+        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+      },
+      "hearingType": {
+        "title": "Type of hearing being presented",
+        "type": "string",
+        "default": "",
+        "examples": [
+          "mda"
+        ],
+        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+      },
+      "venue": {
+        "title": "Venue name of the hearing",
+        "type": "string",
+        "default": "",
+        "examples": [
+          "This is the venue of the hearing"
+        ],
+        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+      },
+      "additionalInformation": {
+        "title": "Additional information",
+        "type": "string",
+        "default": "",
+        "examples": [
+          "This is additional information"
+        ],
+        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+      }
+    }
+  }
+}

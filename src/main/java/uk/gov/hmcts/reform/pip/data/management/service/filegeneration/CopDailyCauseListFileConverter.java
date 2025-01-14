@@ -1,7 +1,6 @@
 package uk.gov.hmcts.reform.pip.data.management.service.filegeneration;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.DateHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.LanguageResourceHelper;
@@ -11,7 +10,6 @@ import uk.gov.hmcts.reform.pip.model.publication.Language;
 import java.io.IOException;
 import java.util.Map;
 
-@Service
 public class CopDailyCauseListFileConverter implements FileConverter {
 
     @Override
@@ -19,7 +17,7 @@ public class CopDailyCauseListFileConverter implements FileConverter {
         throws IOException {
         Context context = new Context();
         Language language = Language.valueOf(metadata.get("language"));
-        languageResources.putAll(LanguageResourceHelper.readResourcesFromPath("openJusticeStatement", language));
+        languageResources.putAll(LanguageResourceHelper.readResourcesFromPath("common/openJusticeStatement", language));
 
         String publicationDate = artefact.get("document").get("publicationDate").asText();
         context.setVariable("publicationDate", DateHelper.formatTimeStampToBst(publicationDate, language,

@@ -100,6 +100,18 @@ public class FunctionalTestBase {
         }
     }
 
+    protected Response doPostRequestMultiPartWithMimeType(final String path, final Map<String,
+        String> additionalHeaders, String multiPartKey, final File multipartFile, String mimeType) {
+        return given()
+            .relaxedHTTPSValidation()
+            .headers(additionalHeaders)
+            .accept("*/*")
+            .multiPart(multiPartKey, multipartFile, mimeType)
+            .when()
+            .post(path)
+            .thenReturn();
+    }
+
     protected Response doDeleteRequest(final String path, final Map<String, String> additionalHeaders) {
         return given()
             .relaxedHTTPSValidation()

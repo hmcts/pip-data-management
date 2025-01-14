@@ -80,7 +80,7 @@ class SjpPublicListTest extends IntegrationBasicTestBase {
             .getResourceAsStream(SJP_PUBLIC_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
-            assertDoesNotThrow(() -> validationService.validateBody(text, headerGroup),
+            assertDoesNotThrow(() -> validationService.validateBody(text, headerGroup, true),
                                SJP_PUBLIC_VALID_MESSAGE);
         }
     }
@@ -96,7 +96,7 @@ class SjpPublicListTest extends IntegrationBasicTestBase {
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup),
+                             validationService.validateBody(listJson, headerGroup, true),
                          SJP_PUBLIC_INVALID_MESSAGE);
         }
     }
@@ -112,7 +112,7 @@ class SjpPublicListTest extends IntegrationBasicTestBase {
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup),
+                             validationService.validateBody(listJson, headerGroup, true),
                          SJP_PUBLIC_INVALID_MESSAGE);
         }
     }
@@ -128,7 +128,7 @@ class SjpPublicListTest extends IntegrationBasicTestBase {
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup),
+                             validationService.validateBody(listJson, headerGroup, true),
                          SJP_PUBLIC_INVALID_MESSAGE);
         }
     }
@@ -144,7 +144,7 @@ class SjpPublicListTest extends IntegrationBasicTestBase {
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup),
+                             validationService.validateBody(listJson, headerGroup, true),
                          SJP_PUBLIC_INVALID_MESSAGE);
         }
     }
@@ -161,7 +161,7 @@ class SjpPublicListTest extends IntegrationBasicTestBase {
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup),
+                             validationService.validateBody(listJson, headerGroup, true),
                          SJP_PUBLIC_INVALID_MESSAGE);
         }
     }
@@ -178,7 +178,7 @@ class SjpPublicListTest extends IntegrationBasicTestBase {
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup),
+                             validationService.validateBody(listJson, headerGroup, true),
                          SJP_PUBLIC_INVALID_MESSAGE);
         }
     }
@@ -195,7 +195,7 @@ class SjpPublicListTest extends IntegrationBasicTestBase {
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup),
+                             validationService.validateBody(listJson, headerGroup, true),
                          SJP_PUBLIC_INVALID_MESSAGE);
         }
     }
@@ -213,7 +213,7 @@ class SjpPublicListTest extends IntegrationBasicTestBase {
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup),
+                             validationService.validateBody(listJson, headerGroup, true),
                          SJP_PUBLIC_INVALID_MESSAGE);
         }
     }
@@ -231,7 +231,7 @@ class SjpPublicListTest extends IntegrationBasicTestBase {
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup),
+                             validationService.validateBody(listJson, headerGroup, true),
                          SJP_PUBLIC_INVALID_MESSAGE);
         }
     }
@@ -250,7 +250,7 @@ class SjpPublicListTest extends IntegrationBasicTestBase {
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup),
+                             validationService.validateBody(listJson, headerGroup, true),
                          SJP_PUBLIC_INVALID_MESSAGE);
         }
     }
@@ -270,7 +270,7 @@ class SjpPublicListTest extends IntegrationBasicTestBase {
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup),
+                             validationService.validateBody(listJson, headerGroup, true),
                          SJP_PUBLIC_INVALID_MESSAGE);
         }
     }
@@ -290,7 +290,7 @@ class SjpPublicListTest extends IntegrationBasicTestBase {
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup),
+                             validationService.validateBody(listJson, headerGroup, true),
                          SJP_PUBLIC_INVALID_MESSAGE);
         }
     }
@@ -309,7 +309,7 @@ class SjpPublicListTest extends IntegrationBasicTestBase {
                 .remove("individualForenames");
 
             String listJson = node.toString();
-            assertDoesNotThrow(() -> validationService.validateBody(listJson, headerGroup),
+            assertDoesNotThrow(() -> validationService.validateBody(listJson, headerGroup, true),
                                SJP_PUBLIC_VALID_MESSAGE);
         }
     }
@@ -328,7 +328,7 @@ class SjpPublicListTest extends IntegrationBasicTestBase {
                 .remove("individualSurname");
 
             String listJson = node.toString();
-            assertDoesNotThrow(() -> validationService.validateBody(listJson, headerGroup),
+            assertDoesNotThrow(() -> validationService.validateBody(listJson, headerGroup, true),
                                SJP_PUBLIC_VALID_MESSAGE);
         }
     }
@@ -347,7 +347,7 @@ class SjpPublicListTest extends IntegrationBasicTestBase {
                 .remove(ADDRESS_SCHEMA);
 
             String listJson = node.toString();
-            assertDoesNotThrow(() -> validationService.validateBody(listJson, headerGroup),
+            assertDoesNotThrow(() -> validationService.validateBody(listJson, headerGroup, true),
                                SJP_PUBLIC_VALID_MESSAGE);
         }
     }
@@ -366,7 +366,7 @@ class SjpPublicListTest extends IntegrationBasicTestBase {
                 .get(ADDRESS_SCHEMA)).remove("postCode");
 
             String listJson = node.toString();
-            assertDoesNotThrow(() -> validationService.validateBody(listJson, headerGroup),
+            assertDoesNotThrow(() -> validationService.validateBody(listJson, headerGroup, true),
                                SJP_PUBLIC_VALID_MESSAGE);
         }
     }
@@ -386,7 +386,7 @@ class SjpPublicListTest extends IntegrationBasicTestBase {
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup),
+                             validationService.validateBody(listJson, headerGroup, true),
                          SJP_PUBLIC_INVALID_MESSAGE);
         }
     }
@@ -406,7 +406,7 @@ class SjpPublicListTest extends IntegrationBasicTestBase {
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup),
+                             validationService.validateBody(listJson, headerGroup, true),
                          SJP_PUBLIC_INVALID_MESSAGE);
         }
     }
@@ -425,7 +425,7 @@ class SjpPublicListTest extends IntegrationBasicTestBase {
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup),
+                             validationService.validateBody(listJson, headerGroup, true),
                          SJP_PUBLIC_INVALID_MESSAGE);
         }
     }
@@ -441,7 +441,7 @@ class SjpPublicListTest extends IntegrationBasicTestBase {
 
             String listJson = node.toString().replace("\"postCode\":\"AA\"", "\"postCode\":" + postcode);
             assertThrows(PayloadValidationException.class,
-                         () -> validationService.validateBody(listJson, headerGroup),
+                         () -> validationService.validateBody(listJson, headerGroup, true),
                          SJP_PUBLIC_INVALID_MESSAGE
             );
         }
@@ -460,7 +460,7 @@ class SjpPublicListTest extends IntegrationBasicTestBase {
                 "\"individualForenames\":\"AB\""
             );
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup),
+                             validationService.validateBody(listJson, headerGroup, true),
                          SJP_PUBLIC_INVALID_MESSAGE
             );
         }
@@ -479,7 +479,7 @@ class SjpPublicListTest extends IntegrationBasicTestBase {
                 "\"individualForenames\":\"A\"",
                 "\"individualForenames\":\"" + forename + "\""
             );
-            assertDoesNotThrow(() -> validationService.validateBody(listJson, headerGroup),
+            assertDoesNotThrow(() -> validationService.validateBody(listJson, headerGroup, true),
                                SJP_PUBLIC_VALID_MESSAGE);
         }
     }
@@ -491,7 +491,7 @@ class SjpPublicListTest extends IntegrationBasicTestBase {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             String listJson = OBJECT_MAPPER.readValue(text, JsonNode.class).toString();
-            assertDoesNotThrow(() -> validationService.validateBody(listJson, headerGroup),
+            assertDoesNotThrow(() -> validationService.validateBody(listJson, headerGroup, true),
                                SJP_PUBLIC_VALID_MESSAGE);
         }
     }
@@ -512,7 +512,7 @@ class SjpPublicListTest extends IntegrationBasicTestBase {
 
             String listJson = node.toString()
                 .replaceAll(PUBLICATION_DATE_REGEX, String.format("\"publicationDate\":\"%s\"", publicationDate));
-            assertDoesNotThrow(() -> validationService.validateBody(listJson, headerGroup),
+            assertDoesNotThrow(() -> validationService.validateBody(listJson, headerGroup, true),
                                SJP_PUBLIC_VALID_MESSAGE);
         }
     }
@@ -534,7 +534,8 @@ class SjpPublicListTest extends IntegrationBasicTestBase {
 
             String listJson = node.toString()
                 .replaceAll(PUBLICATION_DATE_REGEX, String.format("\"publicationDate\":\"%s\"", publicationDate));
-            assertThrows(PayloadValidationException.class, () -> validationService.validateBody(listJson, headerGroup),
+            assertThrows(PayloadValidationException.class,
+                         () -> validationService.validateBody(listJson, headerGroup, true),
                          SJP_PUBLIC_INVALID_MESSAGE);
         }
     }

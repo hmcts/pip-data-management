@@ -14,6 +14,7 @@ import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.FamilyMix
 import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.IacDailyListSummaryData;
 import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.MagistratesPublicListSummaryData;
 import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.MagistratesStandardListSummaryData;
+import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.NonStrategicListSummaryData;
 import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.OpaPressListSummaryData;
 import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.OpaPublicListSummaryData;
 import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.OpaResultsSummaryData;
@@ -33,6 +34,7 @@ import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.FileConver
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.IacDailyListFileConverter;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.MagistratesPublicListFileConverter;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.MagistratesStandardListFileConverter;
+import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.NonStrategicListFileConverter;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.OpaPressListFileConverter;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.OpaPublicListFileConverter;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.OpaResultsFileConverter;
@@ -52,9 +54,13 @@ import static uk.gov.hmcts.reform.pip.model.publication.ListType.COP_DAILY_CAUSE
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.CROWN_DAILY_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.CROWN_FIRM_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.CROWN_WARNED_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.CST_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.ET_DAILY_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.ET_FORTNIGHTLY_PRESS_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.FAMILY_DAILY_CAUSE_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.FFT_LR_WEEKLY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.FFT_TAX_WEEKLY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.GRC_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.IAC_DAILY_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.IAC_DAILY_LIST_ADDITIONAL_CASES;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.MAGISTRATES_PUBLIC_LIST;
@@ -62,13 +68,28 @@ import static uk.gov.hmcts.reform.pip.model.publication.ListType.MAGISTRATES_STA
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.OPA_PRESS_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.OPA_PUBLIC_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.OPA_RESULTS;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.PAAC_WEEKLY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.PHT_WEEKLY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.POAC_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.PRIMARY_HEALTH_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.RPT_EASTERN_WEEKLY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.RPT_LONDON_WEEKLY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.RPT_MIDLANDS_WEEKLY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.RPT_NORTHERN_WEEKLY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.RPT_SOUTHERN_WEEKLY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.SIAC_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.SJP_DELTA_PRESS_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.SJP_DELTA_PUBLIC_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.SJP_PRESS_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.SJP_PUBLIC_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.SSCS_DAILY_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.SSCS_DAILY_LIST_ADDITIONAL_HEARINGS;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_AAC_WEEKLY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_IAC_JUDICIAL_REVIEW_DAILY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_IAC_STATUTORY_APPEALS_DAILY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_LC_WEEKLY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_T_AND_CC_WEEKLY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.WPAFCC_WEEKLY_HEARING_LIST;
 
 @Component
 @SuppressWarnings({"PMD.ExcessiveImports", "PMD.UseConcurrentHashMap"})
@@ -116,7 +137,79 @@ public class ListConversionFactory {
         Map.entry(OPA_PUBLIC_LIST, new ConversionPair(new OpaPublicListFileConverter(),
                                                       new OpaPublicListSummaryData())),
         Map.entry(OPA_PRESS_LIST, new ConversionPair(new OpaPressListFileConverter(), new OpaPressListSummaryData())),
-        Map.entry(OPA_RESULTS, new ConversionPair(new OpaResultsFileConverter(), new OpaResultsSummaryData()))
+        Map.entry(OPA_RESULTS, new ConversionPair(new OpaResultsFileConverter(), new OpaResultsSummaryData())),
+        Map.entry(CST_WEEKLY_HEARING_LIST, new ConversionPair(
+            new NonStrategicListFileConverter(), new NonStrategicListSummaryData(CST_WEEKLY_HEARING_LIST)
+        )),
+        Map.entry(PHT_WEEKLY_HEARING_LIST, new ConversionPair(
+            new NonStrategicListFileConverter(), new NonStrategicListSummaryData(PHT_WEEKLY_HEARING_LIST)
+        )),
+        Map.entry(GRC_WEEKLY_HEARING_LIST, new ConversionPair(
+            new NonStrategicListFileConverter(), new NonStrategicListSummaryData(GRC_WEEKLY_HEARING_LIST)
+        )),
+        Map.entry(WPAFCC_WEEKLY_HEARING_LIST, new ConversionPair(
+            new NonStrategicListFileConverter(), new NonStrategicListSummaryData(WPAFCC_WEEKLY_HEARING_LIST)
+        )),
+        Map.entry(UT_IAC_JUDICIAL_REVIEW_DAILY_HEARING_LIST, new ConversionPair(
+            new NonStrategicListFileConverter(),
+            new NonStrategicListSummaryData(UT_IAC_JUDICIAL_REVIEW_DAILY_HEARING_LIST)
+        )),
+        Map.entry(UT_IAC_STATUTORY_APPEALS_DAILY_HEARING_LIST, new ConversionPair(
+            new NonStrategicListFileConverter(),
+            new NonStrategicListSummaryData(UT_IAC_STATUTORY_APPEALS_DAILY_HEARING_LIST)
+        )),
+        Map.entry(SIAC_WEEKLY_HEARING_LIST, new ConversionPair(
+            new NonStrategicListFileConverter(),
+            new NonStrategicListSummaryData(SIAC_WEEKLY_HEARING_LIST)
+        )),
+        Map.entry(POAC_WEEKLY_HEARING_LIST, new ConversionPair(
+            new NonStrategicListFileConverter(),
+            new NonStrategicListSummaryData(POAC_WEEKLY_HEARING_LIST)
+        )),
+        Map.entry(PAAC_WEEKLY_HEARING_LIST, new ConversionPair(
+            new NonStrategicListFileConverter(),
+            new NonStrategicListSummaryData(PAAC_WEEKLY_HEARING_LIST)
+        )),
+        Map.entry(FFT_TAX_WEEKLY_HEARING_LIST, new ConversionPair(
+            new NonStrategicListFileConverter(),
+            new NonStrategicListSummaryData(FFT_TAX_WEEKLY_HEARING_LIST)
+        )),
+        Map.entry(FFT_LR_WEEKLY_HEARING_LIST, new ConversionPair(
+            new NonStrategicListFileConverter(),
+            new NonStrategicListSummaryData(FFT_LR_WEEKLY_HEARING_LIST)
+        )),
+        Map.entry(RPT_EASTERN_WEEKLY_HEARING_LIST, new ConversionPair(
+            new NonStrategicListFileConverter(),
+            new NonStrategicListSummaryData(RPT_EASTERN_WEEKLY_HEARING_LIST)
+        )),
+        Map.entry(RPT_LONDON_WEEKLY_HEARING_LIST, new ConversionPair(
+            new NonStrategicListFileConverter(),
+            new NonStrategicListSummaryData(RPT_LONDON_WEEKLY_HEARING_LIST)
+        )),
+        Map.entry(RPT_MIDLANDS_WEEKLY_HEARING_LIST, new ConversionPair(
+            new NonStrategicListFileConverter(),
+            new NonStrategicListSummaryData(RPT_MIDLANDS_WEEKLY_HEARING_LIST)
+        )),
+        Map.entry(RPT_NORTHERN_WEEKLY_HEARING_LIST, new ConversionPair(
+            new NonStrategicListFileConverter(),
+            new NonStrategicListSummaryData(RPT_NORTHERN_WEEKLY_HEARING_LIST)
+        )),
+        Map.entry(RPT_SOUTHERN_WEEKLY_HEARING_LIST, new ConversionPair(
+            new NonStrategicListFileConverter(),
+            new NonStrategicListSummaryData(RPT_SOUTHERN_WEEKLY_HEARING_LIST)
+        )),
+        Map.entry(UT_T_AND_CC_WEEKLY_HEARING_LIST, new ConversionPair(
+            new NonStrategicListFileConverter(),
+            new NonStrategicListSummaryData(UT_T_AND_CC_WEEKLY_HEARING_LIST)
+        )),
+        Map.entry(UT_LC_WEEKLY_HEARING_LIST, new ConversionPair(
+            new NonStrategicListFileConverter(),
+            new NonStrategicListSummaryData(UT_LC_WEEKLY_HEARING_LIST)
+        )),
+        Map.entry(UT_AAC_WEEKLY_HEARING_LIST, new ConversionPair(
+            new NonStrategicListFileConverter(),
+            new NonStrategicListSummaryData(UT_AAC_WEEKLY_HEARING_LIST)
+        ))
     );
 
     /**

@@ -60,6 +60,11 @@ class ValidationServiceTest extends IntegrationBasicTestBase {
     private static final String NOT_NULL_MESSAGE = "The returned value is null, but was not expected to be.";
     private static final String UNKNOWN_EXCEPTION = "Unknown exception when opening the paylaod file";
     private static final String CONTAINS_FORBIDDEN_VALUES_EXCEPTION = "Input contains a html tag";
+    private static final String RPT_LIST_JSON = "data/non-strategic/"
+        + "fft-residential-property-tribunal-weekly-hearing-list/"
+        + "fftResidentialPropertyTribunalWeeklyHearingList.json";
+    private static final String SIAC_LIST_JSON = "data/non-strategic/siac-weekly-hearing-list/"
+        + "siacWeeklyHearingList.json";
     private HeaderGroup headerGroup;
 
     @BeforeEach
@@ -231,7 +236,7 @@ class ValidationServiceTest extends IntegrationBasicTestBase {
             .getResourceAsStream("data/badJsonPayload.json")) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
             assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(text, headerGroup),
+                             validationService.validateBody(text, headerGroup, true),
                                "Valid JSON string marked as not valid");
         } catch (IOException exception) {
             fail(UNKNOWN_EXCEPTION);
@@ -241,7 +246,7 @@ class ValidationServiceTest extends IntegrationBasicTestBase {
     @Test
     void testExceptionWhenValidatingPayload() {
         PayloadValidationException payloadValidationException = assertThrows(PayloadValidationException.class, () ->
-            validationService.validateBody("abcd", headerGroup), "Validation exception not thrown "
+            validationService.validateBody("abcd", headerGroup, true), "Validation exception not thrown "
                                                                                  + "when value not JSON");
 
         assertEquals("Error while parsing JSON Payload", payloadValidationException.getMessage(),
@@ -256,7 +261,7 @@ class ValidationServiceTest extends IntegrationBasicTestBase {
             .getResourceAsStream("data/jsonPayload.json")) {
             headerGroup.setListType(listType);
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
-            assertDoesNotThrow(() -> validationService.validateBody(text, headerGroup),
+            assertDoesNotThrow(() -> validationService.validateBody(text, headerGroup, true),
                                "Valid master schema marked as invalid");
         }
     }
@@ -268,7 +273,19 @@ class ValidationServiceTest extends IntegrationBasicTestBase {
             headerGroup.setListType(listType);
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
-            assertDoesNotThrow(() -> validationService.validateBody(text, headerGroup),
+            assertDoesNotThrow(() -> validationService.validateBody(text, headerGroup, true),
+                               String.format("Valid %s marked as invalid", listType));
+        }
+    }
+
+    @ParameterizedTest
+    @MethodSource("nonStrategicParameters")
+    void testNonStrategicValidateWithoutErrorsForValidArtefact(ListType listType, String resource) throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader().getResourceAsStream(resource)) {
+            headerGroup.setListType(listType);
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            assertDoesNotThrow(() -> validationService.validateBody(text, headerGroup, false),
                                String.format("Valid %s marked as invalid", listType));
         }
     }
@@ -323,6 +340,56 @@ class ValidationServiceTest extends IntegrationBasicTestBase {
                          "data/opa-public-list/opaPublicList.json"),
             Arguments.of(ListType.OPA_RESULTS,
                          "data/opa-results/opaResults.json")
+        );
+    }
+
+    private static Stream<Arguments> nonStrategicParameters() {
+        return Stream.of(
+            Arguments.of(ListType.CST_WEEKLY_HEARING_LIST,
+                         "data/non-strategic/cst-weekly-hearing-list/cstWeeklyHearingList.json"),
+            Arguments.of(ListType.PHT_WEEKLY_HEARING_LIST,
+                         "data/non-strategic/pht-weekly-hearing-list/phtWeeklyHearingList.json"),
+            Arguments.of(ListType.GRC_WEEKLY_HEARING_LIST,
+                         "data/non-strategic/grc-weekly-hearing-list/grcWeeklyHearingList.json"),
+            Arguments.of(ListType.WPAFCC_WEEKLY_HEARING_LIST,
+                         "data/non-strategic/wpafcc-weekly-hearing-list/wpafccWeeklyHearingList.json"),
+            Arguments.of(ListType.UT_IAC_JUDICIAL_REVIEW_DAILY_HEARING_LIST,
+                         "data/non-strategic/ut-iac-judicial-review-daily-hearing-list/"
+                             + "utIacJudicialReviewDailyHearingList.json"),
+            Arguments.of(ListType.UT_IAC_STATUTORY_APPEALS_DAILY_HEARING_LIST,
+                         "data/non-strategic/ut-iac-statutory-appeals-daily-hearing-list/"
+                             + "utIacStatutoryAppealsDailyHearingList.json"),
+            Arguments.of(ListType.SIAC_WEEKLY_HEARING_LIST,
+                         SIAC_LIST_JSON),
+            Arguments.of(ListType.POAC_WEEKLY_HEARING_LIST,
+                         SIAC_LIST_JSON),
+            Arguments.of(ListType.PAAC_WEEKLY_HEARING_LIST,
+                         SIAC_LIST_JSON),
+            Arguments.of(ListType.FFT_TAX_WEEKLY_HEARING_LIST,
+                         "data/non-strategic/fft-tax-tribunal-weekly-hearing-list/"
+                             + "fftTaxWeeklyHearingList.json"),
+            Arguments.of(ListType.FFT_LR_WEEKLY_HEARING_LIST,
+                         "data/non-strategic/fft-land-registry-tribunal-weekly-hearing-list/"
+                             + "fftLandRegistryTribunalWeeklyHearingList.json"),
+            Arguments.of(ListType.RPT_EASTERN_WEEKLY_HEARING_LIST,
+                         RPT_LIST_JSON),
+            Arguments.of(ListType.RPT_LONDON_WEEKLY_HEARING_LIST,
+                         RPT_LIST_JSON),
+            Arguments.of(ListType.RPT_MIDLANDS_WEEKLY_HEARING_LIST,
+                         RPT_LIST_JSON),
+            Arguments.of(ListType.RPT_SOUTHERN_WEEKLY_HEARING_LIST,
+                         RPT_LIST_JSON),
+            Arguments.of(ListType.RPT_NORTHERN_WEEKLY_HEARING_LIST,
+                         RPT_LIST_JSON),
+            Arguments.of(ListType.UT_T_AND_CC_WEEKLY_HEARING_LIST,
+                         "data/non-strategic/ut-tax-and-chancery-chamber-weekly-hearing-list/"
+                             + "utTaxAndChanceryChamberWeeklyHearingList.json"),
+            Arguments.of(ListType.UT_LC_WEEKLY_HEARING_LIST,
+                         "data/non-strategic/ut-lands-chamber-weekly-hearing-list/"
+                             + "utLandsChamberWeeklyHearingList.json"),
+            Arguments.of(ListType.UT_AAC_WEEKLY_HEARING_LIST,
+                         "data/non-strategic/ut-administrative-appeals-chamber-weekly-hearing-list/"
+                             + "utAdministrativeAppealsChamberWeeklyHearingList.json")
         );
     }
 

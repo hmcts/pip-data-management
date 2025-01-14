@@ -90,7 +90,7 @@ class CrownWarnedListTest extends IntegrationBasicTestBase {
             String output = MAPPER.writeValueAsString(topLevelNode);
             assertThatExceptionOfType(PayloadValidationException.class)
                 .as(CROWN_WARNED_LIST_INVALID_MESSAGE)
-                .isThrownBy(() -> validationService.validateBody(output, headerGroup));
+                .isThrownBy(() -> validationService.validateBody(output, headerGroup, true));
         }
     }
 
@@ -102,7 +102,7 @@ class CrownWarnedListTest extends IntegrationBasicTestBase {
 
             ObjectMapper mapper = new ObjectMapper();
             String listJson = mapper.readValue(text, JsonNode.class).toString();
-            assertDoesNotThrow(() -> validationService.validateBody(listJson, headerGroup),
+            assertDoesNotThrow(() -> validationService.validateBody(listJson, headerGroup, true),
                                CROWN_WARNED_LIST_INVALID_MESSAGE);
         }
     }
@@ -123,7 +123,7 @@ class CrownWarnedListTest extends IntegrationBasicTestBase {
 
             String listJson = node.toString()
                 .replaceAll(PUBLICATION_DATE_REGEX, String.format("\"publicationDate\":\"%s\"", publicationDate));
-            assertDoesNotThrow(() -> validationService.validateBody(listJson, headerGroup),
+            assertDoesNotThrow(() -> validationService.validateBody(listJson, headerGroup, true),
                                CROWN_WARNED_LIST_INVALID_MESSAGE);
         }
     }
@@ -145,7 +145,8 @@ class CrownWarnedListTest extends IntegrationBasicTestBase {
 
             String listJson = node.toString()
                 .replaceAll(PUBLICATION_DATE_REGEX, String.format("\"publicationDate\":\"%s\"", publicationDate));
-            assertThrows(PayloadValidationException.class, () -> validationService.validateBody(listJson, headerGroup),
+            assertThrows(PayloadValidationException.class,
+                         () -> validationService.validateBody(listJson, headerGroup, true),
                          CROWN_WARNED_LIST_INVALID_MESSAGE);
         }
     }

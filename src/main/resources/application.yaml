@@ -136,7 +136,25 @@ validations:
     OPA_PRESS_LIST: "schemas/opa_press_list.json"
     OPA_PUBLIC_LIST: "schemas/opa_public_list.json"
     OPA_RESULTS: "schemas/opa_results.json"
-
+    CST_WEEKLY_HEARING_LIST: "schemas/non-strategic/cst_weekly_hearing_list.json"
+    PHT_WEEKLY_HEARING_LIST: "schemas/non-strategic/pht_weekly_hearing_list.json"
+    GRC_WEEKLY_HEARING_LIST: "schemas/non-strategic/grc_weekly_hearing_list.json"
+    WPAFCC_WEEKLY_HEARING_LIST: "schemas/non-strategic/wpafcc_weekly_hearing_list.json"
+    UT_IAC_STATUTORY_APPEALS_DAILY_HEARING_LIST: "schemas/non-strategic/ut_iac_statutory_appeals_daily_hearing_list.json"
+    UT_IAC_JUDICIAL_REVIEW_DAILY_HEARING_LIST: "schemas/non-strategic/ut_iac_judicial_reviews_daily_hearing_list.json"
+    SIAC_WEEKLY_HEARING_LIST: "schemas/non-strategic/siac_weekly_hearing_list.json"
+    POAC_WEEKLY_HEARING_LIST: "schemas/non-strategic/siac_weekly_hearing_list.json"
+    PAAC_WEEKLY_HEARING_LIST: "schemas/non-strategic/siac_weekly_hearing_list.json"
+    FFT_TAX_WEEKLY_HEARING_LIST: "schemas/non-strategic/fft-tax-chamber-tribunal-weekly-hearing-list.json"
+    FFT_LR_WEEKLY_HEARING_LIST: "schemas/non-strategic/fft-land-registry-tribunal-weekly-hearing-list.json"
+    RPT_EASTERN_WEEKLY_HEARING_LIST: "schemas/non-strategic/fft-residential-property-tribunal-weekly-hearing-list.json"
+    RPT_LONDON_WEEKLY_HEARING_LIST: "schemas/non-strategic/fft-residential-property-tribunal-weekly-hearing-list.json"
+    RPT_MIDLANDS_WEEKLY_HEARING_LIST: "schemas/non-strategic/fft-residential-property-tribunal-weekly-hearing-list.json"
+    RPT_NORTHERN_WEEKLY_HEARING_LIST: "schemas/non-strategic/fft-residential-property-tribunal-weekly-hearing-list.json"
+    RPT_SOUTHERN_WEEKLY_HEARING_LIST: "schemas/non-strategic/fft-residential-property-tribunal-weekly-hearing-list.json"
+    UT_T_AND_CC_WEEKLY_HEARING_LIST: "schemas/non-strategic/ut_tax_and_chancery_chamber_weekly_hearing_list.json"
+    UT_LC_WEEKLY_HEARING_LIST: "schemas/non-strategic/ut_lands_chamber_weekly_hearing_list.json"
+    UT_AAC_WEEKLY_HEARING_LIST: "schemas/non-strategic/ut_administrative_appeals_chamber_weekly_hearing_list.json"
 springdoc:
   swagger-ui:
     path: /swagger-ui/

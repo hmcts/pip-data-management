@@ -44,8 +44,6 @@ public class PublicationService {
 
     private final ArtefactTriggerService artefactTriggerService;
 
-    private final ArtefactService artefactService;
-
     private static final String MANUAL_UPLOAD_VALUE = "MANUAL_UPLOAD";
 
     @Autowired
@@ -53,14 +51,12 @@ public class PublicationService {
                               AzureArtefactBlobService azureArtefactBlobService,
                               LocationRepository locationRepository,
                               PublicationManagementService publicationManagementService,
-                              ArtefactTriggerService artefactTriggerService,
-                              ArtefactService artefactService) {
+                              ArtefactTriggerService artefactTriggerService) {
         this.artefactRepository = artefactRepository;
         this.azureArtefactBlobService = azureArtefactBlobService;
         this.locationRepository = locationRepository;
         this.publicationManagementService = publicationManagementService;
         this.artefactTriggerService = artefactTriggerService;
-        this.artefactService = artefactService;
     }
 
     /**
