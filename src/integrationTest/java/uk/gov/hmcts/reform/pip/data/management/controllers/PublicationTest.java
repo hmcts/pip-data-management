@@ -87,8 +87,6 @@ class PublicationTest extends IntegrationTestBase {
     private static final Sensitivity SENSITIVITY = Sensitivity.PUBLIC;
     private static final String USER_ID = UUID.randomUUID().toString();
     private static final String PROVENANCE = "MANUAL_UPLOAD";
-    private static String payload = "payload";
-    private static MockMultipartFile file;
     private static final String PAYLOAD_UNKNOWN = "Unknown-Payload";
     private static final String SOURCE_ARTEFACT_ID = "sourceArtefactId";
     private static final LocalDateTime DISPLAY_TO = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
@@ -120,6 +118,9 @@ class PublicationTest extends IntegrationTestBase {
         + "superseded_count,type,content_date,court_id,court_name,list_type";
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+
+    private static String payload = "payload";
+    private static MockMultipartFile file;
 
     @Autowired
     private MockMvc mockMvc;
