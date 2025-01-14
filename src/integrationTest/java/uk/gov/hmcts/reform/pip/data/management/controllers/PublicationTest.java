@@ -103,6 +103,7 @@ class PublicationTest extends IntegrationTestBase {
     private static final Language LANGUAGE = Language.ENGLISH;
     private static final ListType LIST_TYPE = ListType.CIVIL_DAILY_CAUSE_LIST;
     private static final String COURT_ID = "123";
+    private static final String NON_STRATEGIC_COURT_ID = "1234";
     private static final LocalDateTime CONTENT_DATE = LocalDateTime.now().toLocalDate().atStartOfDay()
         .truncatedTo(ChronoUnit.SECONDS);
     private static final String PROVENANCE_USER_ID_HEADER = "x-provenance-user-id";
@@ -504,7 +505,7 @@ class PublicationTest extends IntegrationTestBase {
             .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO)
             .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
             .header(PublicationConfiguration.LIST_TYPE, ListType.CST_WEEKLY_HEARING_LIST)
-            .header(PublicationConfiguration.COURT_ID, COURT_ID)
+            .header(PublicationConfiguration.COURT_ID, NON_STRATEGIC_COURT_ID)
             .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
             .contentType(MediaType.MULTIPART_FORM_DATA);
@@ -543,7 +544,7 @@ class PublicationTest extends IntegrationTestBase {
         mockHttpServletRequestBuilder.header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO);
         mockHttpServletRequestBuilder.header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM);
         mockHttpServletRequestBuilder.header(PublicationConfiguration.LIST_TYPE, ListType.CST_WEEKLY_HEARING_LIST);
-        mockHttpServletRequestBuilder.header(PublicationConfiguration.COURT_ID, COURT_ID);
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.COURT_ID, NON_STRATEGIC_COURT_ID);
         mockHttpServletRequestBuilder.header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE);
         mockHttpServletRequestBuilder.header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE);
         mockHttpServletRequestBuilder.contentType(MediaType.MULTIPART_FORM_DATA);
@@ -564,7 +565,7 @@ class PublicationTest extends IntegrationTestBase {
         mockHttpServletRequestBuilder.header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO.plusMonths(1));
         mockHttpServletRequestBuilder.header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM);
         mockHttpServletRequestBuilder.header(PublicationConfiguration.LIST_TYPE, ListType.CST_WEEKLY_HEARING_LIST);
-        mockHttpServletRequestBuilder.header(PublicationConfiguration.COURT_ID, COURT_ID);
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.COURT_ID, NON_STRATEGIC_COURT_ID);
         mockHttpServletRequestBuilder.header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE);
         mockHttpServletRequestBuilder.header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE);
         mockHttpServletRequestBuilder.contentType(MediaType.MULTIPART_FORM_DATA);
@@ -600,7 +601,7 @@ class PublicationTest extends IntegrationTestBase {
             .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO)
             .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
             .header(PublicationConfiguration.LIST_TYPE, LIST_TYPE)
-            .header(PublicationConfiguration.COURT_ID, COURT_ID)
+            .header(PublicationConfiguration.COURT_ID, NON_STRATEGIC_COURT_ID)
             .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
             .contentType(MediaType.MULTIPART_FORM_DATA);
