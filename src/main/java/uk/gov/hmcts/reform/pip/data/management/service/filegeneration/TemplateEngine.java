@@ -15,12 +15,21 @@ public final class TemplateEngine {
     }
 
     static String processTemplate(String listTypeName, IContext context) {
+        String template = UPPER_UNDERSCORE.to(LOWER_CAMEL, getTemplateFileName(listTypeName)) + ".html";
+        return TEMPLATE_ENGINE.process(template, context);
+    }
+
+    static String processNonStrategicTemplate(String listTypeName, IContext context) {
+        String template = "non-strategic/"
+            + UPPER_UNDERSCORE.to(LOWER_CAMEL, getTemplateFileName(listTypeName))
+            + ".html";
+        return TEMPLATE_ENGINE.process(template, context);
+    }
+
+    private static String getTemplateFileName(String listTypeName) {
         ListType listType = ListType.valueOf(listTypeName);
-        String templateFileName = listType.getParentListType() == null
+        return listType.getParentListType() == null
             ? listTypeName
             : listType.getParentListType().name();
-
-        String template = UPPER_UNDERSCORE.to(LOWER_CAMEL, templateFileName) + ".html";
-        return TEMPLATE_ENGINE.process(template, context);
     }
 }

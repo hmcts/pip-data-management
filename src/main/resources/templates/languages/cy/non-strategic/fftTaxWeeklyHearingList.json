@@ -1,0 +1,16 @@
+{
+  "listName": "Rhestr o Wrandawiadau Wythnosol Tribiwnlys Haen Gyntaf (Siambr Treth)",
+  "contactMessage1": "Mae cyfiawnder agored yn egwyddor sylfaenol yn ein system gyfiawnder. Gallwch fynychu gwrandawiad cyhoeddus wyneb yn wyneb, neu gallwch wneud cais am ganiatâd i arsylwi o bell.",
+  "contactMessage2": "Gall aelodau’r cyhoedd a’r cyfryngau ofyn am gael ymuno ag unrhyw wrandawiad dros y ffôn neu drwy fideo o bell. Cysylltwch â’r Tribiwnlys cyn y gwrandawiad i ofyn am ganiatâd i fod yn bresennol drwy anfon e-bost at taxappeals@justice.gov.uk",
+  "contactMessage3": "Dylai llinell bwnc yr e-bost gynnwys y geiriad canlynol: “CAIS MYNEDIAD I WRANDAWIAD – [Enw’r apelydd] v [Enw’r atebydd, er enghraifft CThEF] – [cyfeirnod yr achos] – [dyddiad y gwrandawiad]”. Anfonir cyfarwyddiadau atoch ar sut i ymuno â’r gwrandawiad.",
+  "contactMessage4": "Gall y barnwr wrthod cais a gall hefyd benderfynu bod yn rhaid cynnal gwrandawiad yn breifat, ac mewn achosion o'r fath ni fyddwch yn gallu bod yn bresennol.",
+  "tableHeaders": [
+    "Dyddiad",
+    "Amser y gwrandawiad",
+    "Enw’r achos",
+    "Cyfeirnod yr achos",
+    "Barnwr/Barnwyr",
+    "Aelod(au)",
+    "Lleoliad/Platfform"
+  ]
+}

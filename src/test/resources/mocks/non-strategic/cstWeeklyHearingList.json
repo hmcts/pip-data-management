@@ -1,0 +1,18 @@
+[
+  {
+    "date": "10/12/2024",
+    "caseName": "This is a case name",
+    "hearingLength": "1 hour",
+    "hearingType": "mda",
+    "venue": "This is a venue name",
+    "additionalInformation": "This is additional information"
+  },
+  {
+    "date": "11/12/2024",
+    "caseName": "This is another case name",
+    "hearingLength": "1 hour",
+    "hearingType": "mda",
+    "venue": "This is a venue name",
+    "additionalInformation": "This is another additional information"
+  }
+]
