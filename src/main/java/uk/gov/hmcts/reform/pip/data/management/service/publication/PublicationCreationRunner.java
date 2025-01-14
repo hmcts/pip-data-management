@@ -39,10 +39,11 @@ public class PublicationCreationRunner {
      *
      * @param artefact The artefact that needs to be created.
      * @param payload  The payload for the artefact that needs to be created.
+     * @param extractSearchTerms  TRUE if extracting the search terms for subscription search.
      * @return Returns the artefact that was created.
      */
-    public Artefact run(Artefact artefact, String payload) {
-        preprocessJsonPublicationForCreation(artefact, payload);
+    public Artefact run(Artefact artefact, String payload, boolean extractSearchTerms) {
+        preprocessJsonPublicationForCreation(artefact, payload, extractSearchTerms);
         Artefact createdArtefact;
 
         try {
@@ -82,9 +83,11 @@ public class PublicationCreationRunner {
         return createdArtefact;
     }
 
-    private void preprocessJsonPublicationForCreation(Artefact artefact, String payload) {
+    private void preprocessJsonPublicationForCreation(Artefact artefact, String payload, boolean extractSearchTerms) {
         preprocessPublicationForCreation(artefact);
-        if (payload != null && artefactService.payloadWithinJsonSearchLimit(artefact.getPayloadSize())) {
+        if (extractSearchTerms
+            && payload != null
+            && artefactService.payloadWithinJsonSearchLimit(artefact.getPayloadSize())) {
             artefact.setSearch(jsonExtractor.extractSearchTerms(payload));
         } else {
             artefact.setSearch(Collections.emptyMap());

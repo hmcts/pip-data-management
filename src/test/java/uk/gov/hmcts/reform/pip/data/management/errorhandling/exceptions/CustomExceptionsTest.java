@@ -87,4 +87,10 @@ class CustomExceptionsTest {
         ProcessingException processingException = new ProcessingException(TEST_MESSAGE);
         assertEquals(TEST_MESSAGE, processingException.getMessage(), ASSERTION_MESSAGE);
     }
+
+    @Test
+    void testExcelConversionException() {
+        ExcelConversionException excelConversionException = new ExcelConversionException(TEST_MESSAGE);
+        assertEquals(TEST_MESSAGE, excelConversionException.getMessage(), ASSERTION_MESSAGE);
+    }
 }

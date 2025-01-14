@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Root",
+  "type": "array",
+  "items": {
+    "title": "Hearing list",
+    "type": "object",
+    "required": [
+      "hearingTime",
+      "applicant",
+      "representative",
+      "caseReferenceNumber",
+      "judges",
+      "hearingType",
+      "location",
+      "additionalInformation"
+    ],
+    "properties": {
+      "hearingTime": {
+        "title": "Time of hearing",
+        "type": "string",
+        "default": "",
+        "examples": [
+          "10:30am"
+        ],
+        "pattern": "^\\d{1,2}(:\\d{2})?[ap]m$"
+      },
+      "applicant": {
+        "title": "Name of applicant",
+        "type": "string",
+        "default": "",
+        "examples": [
+          "Forename Surname"
+        ],
+        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+      },
+      "representative": {
+        "title": "Name of representative",
+        "type": "string",
+        "default": "",
+        "examples": [
+          "Forename Surname"
+        ],
+        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+      },
+      "caseReferenceNumber": {
+        "title": "Case reference number",
+        "type": "string",
+        "default": "",
+        "examples": [
+          "12345"
+        ],
+        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+      },
+      "judges": {
+        "title": "Judges",
+        "type": "string",
+        "default": "",
+        "examples": [
+          "Judge A"
+        ],
+        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+      },
+      "hearingType": {
+        "title": "Type of hearing being presented",
+        "type": "string",
+        "default": "",
+        "examples": [
+          "Substantive"
+        ],
+        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+      },
+      "location": {
+        "title": "location name of the hearing",
+        "type": "string",
+        "default": "",
+        "examples": [
+          "This is the location of the hearing"
+        ],
+        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+      },
+      "additionalInformation": {
+        "title": "Additional information",
+        "type": "string",
+        "default": "",
+        "examples": [
+          "This is additional information"
+        ],
+        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+      }
+    }
+  }
+}

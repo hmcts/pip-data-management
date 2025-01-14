@@ -73,9 +73,6 @@ class PublicationServiceTest {
     @Mock
     PublicationManagementService publicationManagementService;
 
-    @Mock
-    ArtefactService artefactService;
-
     @InjectMocks
     PublicationService publicationService;
 
@@ -137,8 +134,6 @@ class PublicationServiceTest {
                                                                     artefact.getProvenance()))
             .thenReturn(Optional.empty());
         lenient().when(artefactRepository.save(artefactWithPayloadUrl)).thenReturn(artefactWithIdAndPayloadUrl);
-        lenient().when(artefactService.payloadWithinJsonSearchLimit(PAYLOAD_SIZE_WITHIN_LIMIT)).thenReturn(true);
-        lenient().when(artefactService.payloadWithinJsonSearchLimit(PAYLOAD_SIZE_OVER_LIMIT)).thenReturn(false);
     }
 
     private void createPayloads() {

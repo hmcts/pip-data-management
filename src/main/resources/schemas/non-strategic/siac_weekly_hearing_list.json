@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Root",
+  "type": "array",
+  "items": {
+    "title": "Hearing list",
+    "type": "object",
+    "required": [
+      "date",
+      "time",
+      "appellant",
+      "caseReferenceNumber",
+      "hearingType",
+      "courtroom",
+      "additionalInformation"
+    ],
+    "properties": {
+      "date": {
+        "title": "Date",
+        "type": "string",
+        "default": "",
+        "examples": [
+          "02/01/2025"
+        ],
+        "pattern": "^\\d{2}/\\d{2}/\\d{4}$"
+      },
+      "time": {
+        "title": "Time",
+        "type": "string",
+        "default": "",
+        "examples": [
+          "10:30am"
+        ],
+        "pattern": "^\\d{1,2}(:\\d{2})?[ap]m$"
+      },
+      "appellant": {
+        "title": "Name of appellant",
+        "type": "string",
+        "default": "",
+        "examples": [
+          "Forename Surname"
+        ],
+        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+      },
+      "caseReferenceNumber": {
+        "title": "Case Reference Number",
+        "type": "string",
+        "default": "",
+        "examples": [
+          "45684548"
+        ],
+        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+      },
+      "hearingType": {
+        "title": "Type of hearing being presented",
+        "type": "string",
+        "default": "",
+        "examples": [
+          "Substantive"
+        ],
+        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+      },
+      "courtroom": {
+        "title": "Court room",
+        "type": "string",
+        "default": "",
+        "examples": [
+          "Court Room no 1"
+        ],
+        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+      },
+      "additionalInformation": {
+        "title": "Additional information",
+        "type": "string",
+        "default": "",
+        "examples": [
+          "This is additional information"
+        ],
+        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+      }
+    }
+  }
+}

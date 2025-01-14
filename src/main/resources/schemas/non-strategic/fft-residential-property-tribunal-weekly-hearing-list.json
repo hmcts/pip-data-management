@@ -1,0 +1,103 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Root",
+  "type": "array",
+  "items": {
+    "title": "Hearing list",
+    "type": "object",
+    "required": [
+      "date",
+      "time",
+      "venue",
+      "caseType",
+      "caseReferenceNumber",
+      "judges",
+      "members",
+      "hearingMethod",
+      "additionalInformation"
+    ],
+    "properties": {
+      "date": {
+        "title": "Date",
+        "type": "string",
+        "default": "",
+        "examples": [
+          "02/01/2025"
+        ],
+        "pattern": "^\\d{2}/\\d{2}/\\d{4}$"
+      },
+      "time": {
+        "title": "Time",
+        "type": "string",
+        "default": "",
+        "examples": [
+          "10:30am"
+        ],
+        "pattern": "^\\d{1,2}(:\\d{2})?[ap]m$"
+      },
+      "venue": {
+        "title": "Venue",
+        "type": "string",
+        "default": "",
+        "examples": [
+          "Venue 1"
+        ],
+        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+      },
+      "caseType": {
+        "title": "Case Type",
+        "type": "string",
+        "default": "",
+        "examples": [
+          "Case Type 1"
+        ],
+        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+      },
+      "caseReferenceNumber": {
+        "title": "Case Reference Number",
+        "type": "string",
+        "default": "",
+        "examples": [
+          "1234"
+        ],
+        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+      },
+      "judges": {
+        "title": "Judges",
+        "type": "string",
+        "default": "",
+        "examples": [
+          "Judge name 1"
+        ],
+        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+      },
+      "members": {
+        "title": "Members",
+        "type": "string",
+        "default": "",
+        "examples": [
+          "Member 1"
+        ],
+        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+      },
+      "hearingMethod": {
+        "title": "Hearing Method",
+        "type": "string",
+        "default": "Video Call",
+        "examples": [
+          "Video Call"
+        ],
+        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+      },
+      "additionalInformation": {
+        "title": "Additional information",
+        "type": "string",
+        "default": "",
+        "examples": [
+          "This is additional information"
+        ],
+        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+      }
+    }
+  }
+}
