@@ -73,12 +73,7 @@ import static uk.gov.hmcts.reform.pip.model.account.Roles.SYSTEM_ADMIN;
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
 @WithMockUser(username = "admin", authorities = {"APPROLE_api.request.admin"})
 class PublicationTest extends IntegrationTestBase {
-
-    @Autowired
-    private MockMvc mockMvc;
-
     private static final String PUBLICATION_URL = "/publication";
-    private static final String NON_STRATEGIC_PUBLICATION_URL = PUBLICATION_URL + "/non-strategic";
     private static final String SEARCH_COURT_URL = "/publication/locationId";
     private static final String FILE_URL = "/file";
     private static final String PAYLOAD_URL = "/payload";
@@ -91,11 +86,7 @@ class PublicationTest extends IntegrationTestBase {
     private static final ArtefactType ARTEFACT_TYPE = ArtefactType.LIST;
     private static final Sensitivity SENSITIVITY = Sensitivity.PUBLIC;
     private static final String USER_ID = UUID.randomUUID().toString();
-    private static final String PROVENANCE_USER_ID = UUID.randomUUID().toString();
     private static final String PROVENANCE = "MANUAL_UPLOAD";
-    private static String payload = "payload";
-    private static MockMultipartFile file;
-    private static MockMultipartFile excelFile;
     private static final String PAYLOAD_UNKNOWN = "Unknown-Payload";
     private static final String SOURCE_ARTEFACT_ID = "sourceArtefactId";
     private static final LocalDateTime DISPLAY_TO = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
@@ -103,10 +94,8 @@ class PublicationTest extends IntegrationTestBase {
     private static final Language LANGUAGE = Language.ENGLISH;
     private static final ListType LIST_TYPE = ListType.CIVIL_DAILY_CAUSE_LIST;
     private static final String COURT_ID = "123";
-    private static final String NON_STRATEGIC_COURT_ID = "1234";
     private static final LocalDateTime CONTENT_DATE = LocalDateTime.now().toLocalDate().atStartOfDay()
         .truncatedTo(ChronoUnit.SECONDS);
-    private static final String PROVENANCE_USER_ID_HEADER = "x-provenance-user-id";
     private static final String SEARCH_KEY_FOUND = "array-value";
     private static final String SEARCH_KEY_NOT_FOUND = "case-urn";
     private static final String SEARCH_VALUE_1 = "array-value-1";
@@ -119,8 +108,6 @@ class PublicationTest extends IntegrationTestBase {
     private static final String ADMIN_HEADER = "x-admin";
     private static final String ISSUER_HEADER = "x-issuer-id";
     private static final String EMAIL = "test@email.com";
-    private static final String DISPLAY_NAME = "Test name";
-    private static final String EXCEL_FILE_TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 
     private static final String VALIDATION_EMPTY_RESPONSE = "Response should contain a Artefact";
     private static final String VALIDATION_DISPLAY_FROM = "The expected Display From has not been returned";
@@ -130,7 +117,13 @@ class PublicationTest extends IntegrationTestBase {
         + "sensitivity,source_artefact_id,"
         + "superseded_count,type,content_date,court_id,court_name,list_type";
 
-    private static ObjectMapper objectMapper;
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+
+    private static String payload = "payload";
+    private static MockMultipartFile file;
+
+    @Autowired
+    private MockMvc mockMvc;
 
     @BeforeAll
     public static void setup() throws IOException {
@@ -145,20 +138,7 @@ class PublicationTest extends IntegrationTestBase {
                 Objects.requireNonNull(is)));
         }
 
-        excelFile = createExcelMultipartFile();
-
-        objectMapper = new ObjectMapper();
-        objectMapper.findAndRegisterModules();
-    }
-
-    private static MockMultipartFile createExcelMultipartFile() throws IOException {
-        try (InputStream inputStream = PublicationTest.class.getClassLoader()
-            .getResourceAsStream("data/non-strategic/cst-weekly-hearing-list/cstWeeklyHearingList.xlsx")) {
-            return new MockMultipartFile(
-                "file", "TestFileName.xlsx", EXCEL_FILE_TYPE,
-                org.testcontainers.shaded.org.apache.commons.io.IOUtils.toByteArray(inputStream)
-            );
-        }
+        OBJECT_MAPPER.findAndRegisterModules();
     }
 
     Artefact createDailyList(Sensitivity sensitivity) throws Exception {
@@ -195,7 +175,7 @@ class PublicationTest extends IntegrationTestBase {
             MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
                 .andExpect(status().isCreated()).andReturn();
 
-            return objectMapper.readValue(
+            return OBJECT_MAPPER.readValue(
                 response.getResponse().getContentAsString(), Artefact.class);
         }
     }
@@ -223,7 +203,7 @@ class PublicationTest extends IntegrationTestBase {
             MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
                 .andExpect(status().isCreated()).andReturn();
 
-            return objectMapper.readValue(
+            return OBJECT_MAPPER.readValue(
                 response.getResponse().getContentAsString(), Artefact.class);
         }
     }
@@ -255,7 +235,7 @@ class PublicationTest extends IntegrationTestBase {
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
 
-        Artefact artefact = objectMapper.readValue(
+        Artefact artefact = OBJECT_MAPPER.readValue(
             response.getResponse().getContentAsString(), Artefact.class);
 
         assertNotNull(artefact.getArtefactId(), ARTEFACT_ID_POPULATED_MESSAGE);
@@ -327,7 +307,7 @@ class PublicationTest extends IntegrationTestBase {
         MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
             .andExpect(status().isCreated()).andReturn();
 
-        Artefact artefact = objectMapper.readValue(
+        Artefact artefact = OBJECT_MAPPER.readValue(
             response.getResponse().getContentAsString(), Artefact.class);
 
         assertNotNull(artefact.getArtefactId(), ARTEFACT_ID_POPULATED_MESSAGE);
@@ -363,7 +343,7 @@ class PublicationTest extends IntegrationTestBase {
         mockHttpServletRequestBuilder.contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
         MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
             .andExpect(status().isCreated()).andReturn();
-        Artefact createdArtefact = objectMapper.readValue(
+        Artefact createdArtefact = OBJECT_MAPPER.readValue(
             response.getResponse().getContentAsString(),
             Artefact.class
         );
@@ -395,7 +375,7 @@ class PublicationTest extends IntegrationTestBase {
         mockHttpServletRequestBuilder.contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
         MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
             .andExpect(status().isCreated()).andReturn();
-        Artefact createdArtefact = objectMapper.readValue(
+        Artefact createdArtefact = OBJECT_MAPPER.readValue(
             response.getResponse().getContentAsString(),
             Artefact.class
         );
@@ -452,12 +432,12 @@ class PublicationTest extends IntegrationTestBase {
         final MvcResult updatedResponse = mockMvc.perform(mockHttpServletRequestBuilder).andExpect(
             status().isCreated()).andReturn();
 
-        Artefact createdArtefact = objectMapper.readValue(
+        Artefact createdArtefact = OBJECT_MAPPER.readValue(
             createResponse.getResponse().getContentAsString(),
             Artefact.class
         );
 
-        Artefact updatedArtefact = objectMapper.readValue(
+        Artefact updatedArtefact = OBJECT_MAPPER.readValue(
             updatedResponse.getResponse().getContentAsString(),
             Artefact.class
         );
@@ -489,129 +469,6 @@ class PublicationTest extends IntegrationTestBase {
 
 
         mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isBadRequest()).andReturn();
-    }
-
-    @Test
-    void testNonStrategicPublicationUpload() throws Exception {
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .multipart(NON_STRATEGIC_PUBLICATION_URL)
-            .file(excelFile);
-
-        mockHttpServletRequestBuilder.header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
-            .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
-            .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
-            .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
-            .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
-            .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO)
-            .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
-            .header(PublicationConfiguration.LIST_TYPE, ListType.CST_WEEKLY_HEARING_LIST)
-            .header(PublicationConfiguration.COURT_ID, NON_STRATEGIC_COURT_ID)
-            .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
-            .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
-            .contentType(MediaType.MULTIPART_FORM_DATA);
-
-        MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
-            .andExpect(status().isCreated())
-            .andReturn();
-
-        assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
-
-        Artefact artefact = objectMapper.readValue(
-            response.getResponse().getContentAsString(), Artefact.class);
-
-        assertNotNull(artefact.getArtefactId(), ARTEFACT_ID_POPULATED_MESSAGE);
-        assertEquals(artefact.getSourceArtefactId(), SOURCE_ARTEFACT_ID, "Source artefact ID "
-            + "does not match input source artefact id");
-        assertEquals(artefact.getType(), ARTEFACT_TYPE, "Artefact type does not match input artefact type");
-        assertEquals(artefact.getDisplayFrom(), DISPLAY_FROM, "Display from does not match input display from");
-        assertEquals(artefact.getDisplayTo(), DISPLAY_TO, "Display to does not match input display to");
-        assertEquals(artefact.getProvenance(), PROVENANCE, "Provenance does not match input provenance");
-        assertEquals(artefact.getLanguage(), LANGUAGE, "Language does not match input language");
-        assertEquals(artefact.getSensitivity(), SENSITIVITY, "Sensitivity does not match input sensitivity");
-        assertTrue(artefact.getSearch().isEmpty(), "Search value does not match");
-    }
-
-    @Test
-    void testNonStrategicUploadOfExistingPublication() throws Exception {
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .multipart(NON_STRATEGIC_PUBLICATION_URL)
-            .file(excelFile);
-
-        mockHttpServletRequestBuilder.header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE);
-        mockHttpServletRequestBuilder.header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY);
-        mockHttpServletRequestBuilder.header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE);
-        mockHttpServletRequestBuilder.header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID);
-        mockHttpServletRequestBuilder.header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO);
-        mockHttpServletRequestBuilder.header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM);
-        mockHttpServletRequestBuilder.header(PublicationConfiguration.LIST_TYPE, ListType.CST_WEEKLY_HEARING_LIST);
-        mockHttpServletRequestBuilder.header(PublicationConfiguration.COURT_ID, NON_STRATEGIC_COURT_ID);
-        mockHttpServletRequestBuilder.header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE);
-        mockHttpServletRequestBuilder.header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE);
-        mockHttpServletRequestBuilder.contentType(MediaType.MULTIPART_FORM_DATA);
-
-        final MvcResult createResponse = mockMvc.perform(mockHttpServletRequestBuilder)
-            .andExpect(status().isCreated())
-            .andReturn();
-
-        mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .multipart(NON_STRATEGIC_PUBLICATION_URL)
-            .file(excelFile);
-
-        // Update the Display To header and resend publication
-        mockHttpServletRequestBuilder.header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE);
-        mockHttpServletRequestBuilder.header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY);
-        mockHttpServletRequestBuilder.header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE);
-        mockHttpServletRequestBuilder.header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID);
-        mockHttpServletRequestBuilder.header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO.plusMonths(1));
-        mockHttpServletRequestBuilder.header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM);
-        mockHttpServletRequestBuilder.header(PublicationConfiguration.LIST_TYPE, ListType.CST_WEEKLY_HEARING_LIST);
-        mockHttpServletRequestBuilder.header(PublicationConfiguration.COURT_ID, NON_STRATEGIC_COURT_ID);
-        mockHttpServletRequestBuilder.header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE);
-        mockHttpServletRequestBuilder.header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE);
-        mockHttpServletRequestBuilder.contentType(MediaType.MULTIPART_FORM_DATA);
-
-        final MvcResult updatedResponse = mockMvc.perform(mockHttpServletRequestBuilder)
-            .andExpect(status().isCreated())
-            .andReturn();
-
-        Artefact createdArtefact = objectMapper.readValue(createResponse.getResponse().getContentAsString(),
-                                                          Artefact.class);
-
-        Artefact updatedArtefact = objectMapper.readValue(updatedResponse.getResponse().getContentAsString(),
-                                                          Artefact.class);
-
-        assertEquals(createdArtefact.getArtefactId(), updatedArtefact.getArtefactId(), "A new artefact has "
-            + "been created rather than it being updated");
-
-        assertEquals(DISPLAY_TO.plusMonths(1), updatedArtefact.getDisplayTo(), "The updated artefact does "
-            + "not contain the new Display To value");
-    }
-
-    @Test
-    void testNonStrategicPublicationUploadWithIncorrectFileType() throws Exception {
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .multipart(NON_STRATEGIC_PUBLICATION_URL)
-            .file(file);
-
-        mockHttpServletRequestBuilder.header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
-            .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
-            .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
-            .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
-            .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
-            .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO)
-            .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
-            .header(PublicationConfiguration.LIST_TYPE, LIST_TYPE)
-            .header(PublicationConfiguration.COURT_ID, NON_STRATEGIC_COURT_ID)
-            .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
-            .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
-            .contentType(MediaType.MULTIPART_FORM_DATA);
-
-        MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
-            .andExpect(status().isBadRequest())
-            .andReturn();
-
-        assertTrue(response.getResponse().getContentAsString().contains("Invalid Excel file type"),
-                   "Returned message does not match");
     }
 
     @DisplayName("Check that null date for general_publication still allows us to return the relevant artefact")
@@ -648,7 +505,7 @@ class PublicationTest extends IntegrationTestBase {
 
         String jsonOutput = getResponse.getResponse().getContentAsString();
         JSONArray jsonArray = new JSONArray(jsonOutput);
-        Artefact retrievedArtefact = objectMapper.readValue(
+        Artefact retrievedArtefact = OBJECT_MAPPER.readValue(
             jsonArray.get(0).toString(), Artefact.class
         );
 
@@ -681,7 +538,7 @@ class PublicationTest extends IntegrationTestBase {
 
             assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
 
-            Artefact artefact = objectMapper.readValue(response.getResponse().getContentAsString(), Artefact.class);
+            Artefact artefact = OBJECT_MAPPER.readValue(response.getResponse().getContentAsString(), Artefact.class);
             assertNotNull(artefact.getArtefactId(), ARTEFACT_ID_POPULATED_MESSAGE);
         }
     }
@@ -710,7 +567,7 @@ class PublicationTest extends IntegrationTestBase {
 
             assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
 
-            ExceptionResponse exceptionResponse = objectMapper.readValue(
+            ExceptionResponse exceptionResponse = OBJECT_MAPPER.readValue(
                 response.getResponse().getContentAsString(),
                 ExceptionResponse.class
             );
@@ -748,7 +605,7 @@ class PublicationTest extends IntegrationTestBase {
             .contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
         MvcResult createResponse =
             mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
-        Artefact createdArtefact = objectMapper.readValue(
+        Artefact createdArtefact = OBJECT_MAPPER.readValue(
             createResponse.getResponse().getContentAsString(),
             Artefact.class
         );
@@ -765,7 +622,7 @@ class PublicationTest extends IntegrationTestBase {
 
         String jsonOutput = getResponse.getResponse().getContentAsString();
         JSONArray jsonArray = new JSONArray(jsonOutput);
-        Artefact retrievedArtefact = objectMapper.readValue(
+        Artefact retrievedArtefact = OBJECT_MAPPER.readValue(
             jsonArray.get(0).toString(), Artefact.class
         );
         assertEquals(COURT_ID, retrievedArtefact.getLocationId(),
@@ -800,7 +657,7 @@ class PublicationTest extends IntegrationTestBase {
 
         MvcResult createResponse =
             mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
-        Artefact createdArtefact = objectMapper.readValue(
+        Artefact createdArtefact = OBJECT_MAPPER.readValue(
             createResponse.getResponse().getContentAsString(),
             Artefact.class
         );
@@ -817,7 +674,7 @@ class PublicationTest extends IntegrationTestBase {
 
         String jsonOutput = getResponse.getResponse().getContentAsString();
         JSONArray jsonArray = new JSONArray(jsonOutput);
-        Artefact retrievedArtefact = objectMapper.readValue(
+        Artefact retrievedArtefact = OBJECT_MAPPER.readValue(
             jsonArray.get(0).toString(), Artefact.class
         );
         assertEquals(COURT_ID, retrievedArtefact.getLocationId(),
@@ -853,7 +710,7 @@ class PublicationTest extends IntegrationTestBase {
 
         MvcResult createResponse =
             mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
-        Artefact createdArtefact = objectMapper.readValue(
+        Artefact createdArtefact = OBJECT_MAPPER.readValue(
             createResponse.getResponse().getContentAsString(),
             Artefact.class
         );
@@ -903,7 +760,7 @@ class PublicationTest extends IntegrationTestBase {
 
         MvcResult createResponse =
             mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
-        Artefact createdArtefact = objectMapper.readValue(
+        Artefact createdArtefact = OBJECT_MAPPER.readValue(
             createResponse.getResponse().getContentAsString(),
             Artefact.class
         );
@@ -949,7 +806,7 @@ class PublicationTest extends IntegrationTestBase {
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
 
-        Artefact artefact = objectMapper.readValue(response.getResponse().getContentAsString(), Artefact.class);
+        Artefact artefact = OBJECT_MAPPER.readValue(response.getResponse().getContentAsString(), Artefact.class);
 
         when(blobClient.downloadContent()).thenReturn(BinaryData.fromString(new String(file.getBytes())));
 
@@ -988,7 +845,7 @@ class PublicationTest extends IntegrationTestBase {
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
 
-        Artefact artefact = objectMapper.readValue(response.getResponse().getContentAsString(), Artefact.class);
+        Artefact artefact = OBJECT_MAPPER.readValue(response.getResponse().getContentAsString(), Artefact.class);
 
         when(blobClient.downloadContent()).thenReturn(BinaryData.fromString(new String(file.getBytes())));
 
@@ -1028,7 +885,7 @@ class PublicationTest extends IntegrationTestBase {
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
 
-        Artefact artefact = objectMapper.readValue(response.getResponse().getContentAsString(), Artefact.class);
+        Artefact artefact = OBJECT_MAPPER.readValue(response.getResponse().getContentAsString(), Artefact.class);
 
         mockMvc.perform(MockMvcRequestBuilders
                             .get(PUBLICATION_URL + "/" + artefact.getArtefactId() + FILE_URL))
@@ -1064,7 +921,7 @@ class PublicationTest extends IntegrationTestBase {
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
 
-        Artefact artefact = objectMapper.readValue(response.getResponse().getContentAsString(), Artefact.class);
+        Artefact artefact = OBJECT_MAPPER.readValue(response.getResponse().getContentAsString(), Artefact.class);
 
         response = mockMvc.perform(MockMvcRequestBuilders
                                        .get(PUBLICATION_URL + "/" + artefact.getArtefactId() + FILE_URL)
@@ -1102,7 +959,7 @@ class PublicationTest extends IntegrationTestBase {
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
 
-        Artefact artefact = objectMapper.readValue(
+        Artefact artefact = OBJECT_MAPPER.readValue(
             response.getResponse().getContentAsString(), Artefact.class);
 
         mockMvc.perform(MockMvcRequestBuilders
@@ -1145,7 +1002,7 @@ class PublicationTest extends IntegrationTestBase {
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
 
-        Artefact artefact = objectMapper.readValue(response.getResponse().getContentAsString(), Artefact.class);
+        Artefact artefact = OBJECT_MAPPER.readValue(response.getResponse().getContentAsString(), Artefact.class);
 
         when(blobClient.downloadContent()).thenReturn(BinaryData.fromString(payload));
 
@@ -1185,7 +1042,7 @@ class PublicationTest extends IntegrationTestBase {
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
 
-        Artefact artefact = objectMapper.readValue(response.getResponse().getContentAsString(), Artefact.class);
+        Artefact artefact = OBJECT_MAPPER.readValue(response.getResponse().getContentAsString(), Artefact.class);
 
         when(blobClient.downloadContent()).thenReturn(BinaryData.fromString(payload));
 
@@ -1220,7 +1077,7 @@ class PublicationTest extends IntegrationTestBase {
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
 
-        Artefact artefact = objectMapper.readValue(response.getResponse().getContentAsString(), Artefact.class);
+        Artefact artefact = OBJECT_MAPPER.readValue(response.getResponse().getContentAsString(), Artefact.class);
 
         mockMvc.perform(MockMvcRequestBuilders
                             .get(PUBLICATION_URL + "/" + artefact.getArtefactId() + PAYLOAD_URL))
@@ -1256,7 +1113,7 @@ class PublicationTest extends IntegrationTestBase {
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
 
-        Artefact artefact = objectMapper.readValue(response.getResponse().getContentAsString(), Artefact.class);
+        Artefact artefact = OBJECT_MAPPER.readValue(response.getResponse().getContentAsString(), Artefact.class);
 
         mockMvc.perform(MockMvcRequestBuilders
                             .get(PUBLICATION_URL + "/" + artefact.getArtefactId() + PAYLOAD_URL)
@@ -1294,7 +1151,7 @@ class PublicationTest extends IntegrationTestBase {
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
 
-        Artefact artefact = objectMapper.readValue(response.getResponse().getContentAsString(), Artefact.class);
+        Artefact artefact = OBJECT_MAPPER.readValue(response.getResponse().getContentAsString(), Artefact.class);
 
         mockMvc.perform(MockMvcRequestBuilders
                             .get(PUBLICATION_URL + "/" + artefact.getArtefactId() + PAYLOAD_URL)
@@ -1327,7 +1184,7 @@ class PublicationTest extends IntegrationTestBase {
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
 
-        Artefact artefact = objectMapper.readValue(
+        Artefact artefact = OBJECT_MAPPER.readValue(
             response.getResponse().getContentAsString(), Artefact.class);
 
         when(blobClient.downloadContent()).thenReturn(BinaryData.fromString(payload));
@@ -1367,7 +1224,7 @@ class PublicationTest extends IntegrationTestBase {
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
 
-        Artefact artefact = objectMapper.readValue(
+        Artefact artefact = OBJECT_MAPPER.readValue(
             response.getResponse().getContentAsString(), Artefact.class);
 
         when(blobClient.downloadContent()).thenReturn(BinaryData.fromString(payload));
@@ -1408,7 +1265,7 @@ class PublicationTest extends IntegrationTestBase {
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
 
-        Artefact artefact = objectMapper.readValue(
+        Artefact artefact = OBJECT_MAPPER.readValue(
             response.getResponse().getContentAsString(), Artefact.class);
 
         when(blobClient.downloadContent()).thenReturn(BinaryData.fromString(payload));
@@ -1455,7 +1312,7 @@ class PublicationTest extends IntegrationTestBase {
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
 
-        Artefact artefact = objectMapper.readValue(
+        Artefact artefact = OBJECT_MAPPER.readValue(
             response.getResponse().getContentAsString(), Artefact.class);
 
         when(blobClient.downloadContent()).thenReturn(
@@ -1471,7 +1328,7 @@ class PublicationTest extends IntegrationTestBase {
         assertTrue(
             compareArtefacts(
                 artefact,
-                objectMapper.readValue(response.getResponse().getContentAsString(), Artefact.class)
+                OBJECT_MAPPER.readValue(response.getResponse().getContentAsString(), Artefact.class)
             ),
             "Metadata does not match expected artefact"
         );
@@ -1505,7 +1362,7 @@ class PublicationTest extends IntegrationTestBase {
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
 
-        Artefact artefact = objectMapper.readValue(
+        Artefact artefact = OBJECT_MAPPER.readValue(
             response.getResponse().getContentAsString(), Artefact.class);
 
         when(blobClient.downloadContent()).thenReturn(
@@ -1520,7 +1377,7 @@ class PublicationTest extends IntegrationTestBase {
         assertTrue(
             compareArtefacts(
                 artefact,
-                objectMapper.readValue(response.getResponse().getContentAsString(), Artefact.class)
+                OBJECT_MAPPER.readValue(response.getResponse().getContentAsString(), Artefact.class)
             ),
             "Metadata does not match expected artefact"
         );
@@ -1554,7 +1411,7 @@ class PublicationTest extends IntegrationTestBase {
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
 
-        Artefact artefact = objectMapper.readValue(
+        Artefact artefact = OBJECT_MAPPER.readValue(
             response.getResponse().getContentAsString(), Artefact.class);
 
         when(blobClient.downloadContent()).thenReturn(
@@ -1594,7 +1451,7 @@ class PublicationTest extends IntegrationTestBase {
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
 
-        Artefact artefact = objectMapper.readValue(
+        Artefact artefact = OBJECT_MAPPER.readValue(
             response.getResponse().getContentAsString(), Artefact.class);
 
         when(blobClient.downloadContent()).thenReturn(
@@ -1633,7 +1490,7 @@ class PublicationTest extends IntegrationTestBase {
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
 
-        Artefact artefact = objectMapper.readValue(
+        Artefact artefact = OBJECT_MAPPER.readValue(
             response.getResponse().getContentAsString(), Artefact.class);
 
         mockMvc.perform(MockMvcRequestBuilders
@@ -1674,7 +1531,7 @@ class PublicationTest extends IntegrationTestBase {
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
 
-        Artefact artefact = objectMapper.readValue(
+        Artefact artefact = OBJECT_MAPPER.readValue(
             response.getResponse().getContentAsString(), Artefact.class);
 
         mockMvc.perform(MockMvcRequestBuilders
@@ -1716,7 +1573,7 @@ class PublicationTest extends IntegrationTestBase {
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
 
-        Artefact artefact = objectMapper.readValue(
+        Artefact artefact = OBJECT_MAPPER.readValue(
             response.getResponse().getContentAsString(), Artefact.class);
 
         mockMvc.perform(MockMvcRequestBuilders
@@ -1825,11 +1682,11 @@ class PublicationTest extends IntegrationTestBase {
         MvcResult response = mockMvc.perform(adminRequest).andExpect(status().isOk()).andReturn();
 
         String responseAsString = response.getResponse().getContentAsString();
-        Artefact artefact = objectMapper.readValue(responseAsString, Artefact.class);
+        Artefact artefact = OBJECT_MAPPER.readValue(responseAsString, Artefact.class);
 
         assertTrue(compareArtefacts(artefactToFind, artefact), SHOULD_RETURN_EXPECTED_ARTEFACT);
 
-        JsonNode responseAsJson = objectMapper.readTree(responseAsString);
+        JsonNode responseAsJson = OBJECT_MAPPER.readTree(responseAsString);
         List.of("contentDate", "displayFrom", "displayTo")
             .forEach(field -> assertDateTimeFormat(responseAsJson.get(field).asText(), field));
     }
@@ -1915,7 +1772,7 @@ class PublicationTest extends IntegrationTestBase {
             .header(ADMIN_HEADER, true);
         MvcResult response = mockMvc.perform(adminGetRequest).andExpect(status().isOk()).andReturn();
 
-        Artefact artefactNotExpired = objectMapper.readValue(
+        Artefact artefactNotExpired = OBJECT_MAPPER.readValue(
             response.getResponse().getContentAsString(),
             Artefact.class
         );
@@ -1932,7 +1789,7 @@ class PublicationTest extends IntegrationTestBase {
 
         MvcResult archiveResponse = mockMvc.perform(adminGetRequestAfterDelete).andExpect(status().isOk()).andReturn();
 
-        Artefact artefactExired = objectMapper.readValue(
+        Artefact artefactExired = OBJECT_MAPPER.readValue(
             archiveResponse.getResponse().getContentAsString(),
             Artefact.class
         );
@@ -2015,7 +1872,7 @@ class PublicationTest extends IntegrationTestBase {
 
         String jsonOutput = response.getResponse().getContentAsString();
         JSONArray jsonArray = new JSONArray(jsonOutput);
-        Artefact returnedArtefact = objectMapper.readValue(
+        Artefact returnedArtefact = OBJECT_MAPPER.readValue(
             jsonArray.get(0).toString(), Artefact.class
         );
 
@@ -2128,7 +1985,7 @@ class PublicationTest extends IntegrationTestBase {
             MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
                 .andExpect(status().isCreated()).andReturn();
 
-            Artefact artefact = objectMapper.readValue(
+            Artefact artefact = OBJECT_MAPPER.readValue(
                 response.getResponse().getContentAsString(), Artefact.class);
 
             assertTrue(artefact.getSearch().isEmpty(), "Search has been generated when file size is too big");
