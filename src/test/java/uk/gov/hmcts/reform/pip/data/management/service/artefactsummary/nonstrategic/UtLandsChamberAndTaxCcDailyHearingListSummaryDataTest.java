@@ -40,7 +40,7 @@ class UtLandsChamberAndTaxCcDailyHearingListSummaryDataTest {
 
     @ParameterizedTest
     @MethodSource("parameters")
-    void testUtLandsChamberAndTaxCcWeeklyHearingListSummaryData(String listName,
+    void testUtLandsChamberAndTaxCcDailyHearingListSummaryData(String listName,
         String listSampleJsonFile) throws IOException {
         StringWriter writer = new StringWriter();
         IOUtils.copy(

@@ -71,7 +71,7 @@ class UtLandsChamberDailyHearingListFileConverterTest {
     }
 
     @Test
-    void testLandsChamberWeeklyHearingListFileConversionInEnglish() throws IOException {
+    void testLandsChamberDailyHearingListFileConversionInEnglish() throws IOException {
         Map<String, Object> languageResource;
         try (InputStream languageFile = Thread.currentThread()
             .getContextClassLoader()
@@ -138,7 +138,7 @@ class UtLandsChamberDailyHearingListFileConverterTest {
     }
 
     @Test
-    void testLandsChamberWeeklyHearingListFileConversionInWelsh() throws IOException {
+    void testLandsChamberDailyHearingListFileConversionInWelsh() throws IOException {
         Map<String, Object> languageResource;
         try (InputStream languageFile = Thread.currentThread()
             .getContextClassLoader()

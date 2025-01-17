@@ -30,7 +30,7 @@ class UtAdministrativeAppealsChamberDailyHearingListSummaryDataTest {
     private static final String SUMMARY_FIELD_VALUE_MESSAGE = "Summary field value does not match";
 
     @Test
-    void testUtAdministrativeAppealsChamberWeeklyHearingListSummaryData() throws IOException {
+    void testUtAdministrativeAppealsChamberDailyHearingListSummaryData() throws IOException {
         StringWriter writer = new StringWriter();
         IOUtils.copy(
             Files.newInputStream(Paths.get(

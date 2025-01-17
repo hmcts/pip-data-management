@@ -365,12 +365,12 @@ class ValidationServiceTest extends IntegrationBasicTestBase {
                          SIAC_LIST_JSON),
             Arguments.of(ListType.PAAC_WEEKLY_HEARING_LIST,
                          SIAC_LIST_JSON),
-            Arguments.of(ListType.FFT_TAX_WEEKLY_HEARING_LIST,
-                         "data/non-strategic/fft-tax-tribunal-weekly-hearing-list/"
-                             + "fftTaxWeeklyHearingList.json"),
-            Arguments.of(ListType.FFT_LR_WEEKLY_HEARING_LIST,
-                         "data/non-strategic/fft-land-registry-tribunal-weekly-hearing-list/"
-                             + "fftLandRegistryTribunalWeeklyHearingList.json"),
+            Arguments.of(ListType.FTT_TAX_WEEKLY_HEARING_LIST,
+                         "data/non-strategic/ftt-tax-tribunal-weekly-hearing-list/"
+                             + "fttTaxWeeklyHearingList.json"),
+            Arguments.of(ListType.FTT_LR_WEEKLY_HEARING_LIST,
+                         "data/non-strategic/ftt-land-registry-tribunal-weekly-hearing-list/"
+                             + "fttLandRegistryTribunalWeeklyHearingList.json"),
             Arguments.of(ListType.RPT_EASTERN_WEEKLY_HEARING_LIST,
                          RPT_LIST_JSON),
             Arguments.of(ListType.RPT_LONDON_WEEKLY_HEARING_LIST,

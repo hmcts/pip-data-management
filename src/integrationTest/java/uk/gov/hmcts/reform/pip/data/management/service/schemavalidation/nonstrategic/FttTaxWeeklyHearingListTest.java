@@ -29,13 +29,13 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 @ActiveProfiles("integration-basic")
 @SpringBootTest
-class FftTaxWeeklyHearingListTest extends IntegrationBasicTestBase {
+class FttTaxWeeklyHearingListTest extends IntegrationBasicTestBase {
 
     @Autowired
     ValidationService validationService;
 
     private static final String VALID_JSON =
-        "data/non-strategic/fft-tax-tribunal-weekly-hearing-list/fftTaxWeeklyHearingList.json";
+        "data/non-strategic/ftt-tax-tribunal-weekly-hearing-list/fttTaxWeeklyHearingList.json";
     private static final String INVALID_MESSAGE = "Invalid JSON list marked as valid";
 
     private static final String SOURCE_ARTEFACT_ID = "sourceArtefactId";
@@ -58,7 +58,7 @@ class FftTaxWeeklyHearingListTest extends IntegrationBasicTestBase {
     @BeforeEach
     void setup() {
         headerGroup = new HeaderGroup(PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE, SENSITIVITY, LANGUAGE,
-                                      DISPLAY_FROM, DISPLAY_TO, ListType.FFT_TAX_WEEKLY_HEARING_LIST, COURT_ID,
+                                      DISPLAY_FROM, DISPLAY_TO, ListType.FTT_TAX_WEEKLY_HEARING_LIST, COURT_ID,
                                       CONTENT_DATE);
     }
 

@@ -17,10 +17,10 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 
-import static uk.gov.hmcts.reform.pip.model.publication.ListType.FFT_TAX_WEEKLY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.FTT_TAX_WEEKLY_HEARING_LIST;
 
 @ActiveProfiles("test")
-class FftTaxWeeklyHearingListSummaryDataTest {
+class FttTaxWeeklyHearingListSummaryDataTest {
 
     private static final String NON_STRATEGIC_RESOURCE_FOLDER = "src/test/resources/mocks/non-strategic/";
     private static final String SUMMARY_SECTIONS_MESSAGE = "Summary sections count does not match";
@@ -30,19 +30,19 @@ class FftTaxWeeklyHearingListSummaryDataTest {
     private static final String SUMMARY_FIELD_VALUE_MESSAGE = "Summary field value does not match";
 
     @Test
-    void testFftTaxWeeklyHearingListSummaryData() throws IOException {
+    void testFttTaxWeeklyHearingListSummaryData() throws IOException {
         StringWriter writer = new StringWriter();
         IOUtils.copy(
             Files.newInputStream(Paths.get(
                 NON_STRATEGIC_RESOURCE_FOLDER,
-                "fftTaxWeeklyHearingList.json"
+                "fttTaxWeeklyHearingList.json"
             )), writer,
             Charset.defaultCharset()
         );
 
         JsonNode payload = new ObjectMapper().readTree(writer.toString());
         ArtefactSummaryData cstSummaryData = new ListConversionFactory()
-            .getArtefactSummaryData(FFT_TAX_WEEKLY_HEARING_LIST)
+            .getArtefactSummaryData(FTT_TAX_WEEKLY_HEARING_LIST)
             .get();
         Map<String, List<Map<String, String>>> output = cstSummaryData.get(payload);
 

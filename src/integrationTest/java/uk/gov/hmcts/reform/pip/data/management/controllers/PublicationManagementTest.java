@@ -713,16 +713,16 @@ class PublicationManagementTest extends IntegrationTestBase {
     }
 
     @Test
-    void testGenerateArtefactFftTaxSummaryWeeklyHearingList() throws Exception {
+    void testGenerateArtefactFttTaxSummaryWeeklyHearingList() throws Exception {
         Artefact artefact = createNonStrategicPublication(
-            ListType.FFT_TAX_WEEKLY_HEARING_LIST,
+            ListType.FTT_TAX_WEEKLY_HEARING_LIST,
             NON_STRATEGIC_FILES_LOCATION
-                + "fft-tax-tribunal-weekly-hearing-list/fftTaxWeeklyHearingList.xlsx"
+                + "ftt-tax-tribunal-weekly-hearing-list/fttTaxWeeklyHearingList.xlsx"
         );
 
         byte[] jsonData = getTestData(
             NON_STRATEGIC_FILES_LOCATION
-                + "fft-tax-tribunal-weekly-hearing-list/fftTaxWeeklyHearingList.json");
+                + "ftt-tax-tribunal-weekly-hearing-list/fttTaxWeeklyHearingList.json");
         when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(jsonData));
 
         MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, artefact.getArtefactId())))
@@ -735,16 +735,16 @@ class PublicationManagementTest extends IntegrationTestBase {
     }
 
     @Test
-    void testGenerateArtefactFftLandRegistrySummaryWeeklyHearingList() throws Exception {
+    void testGenerateArtefactFttLandRegistrySummaryWeeklyHearingList() throws Exception {
         Artefact artefact = createNonStrategicPublication(
-            ListType.FFT_LR_WEEKLY_HEARING_LIST,
-            NON_STRATEGIC_FILES_LOCATION + "fft-land-registry-tribunal-weekly-hearing-list/"
-                 + "fftLandRegistryTribunalWeeklyHearingList.xlsx"
+            ListType.FTT_LR_WEEKLY_HEARING_LIST,
+            NON_STRATEGIC_FILES_LOCATION + "ftt-land-registry-tribunal-weekly-hearing-list/"
+                 + "fttLandRegistryTribunalWeeklyHearingList.xlsx"
         );
 
         byte[] jsonData = getTestData(
-            NON_STRATEGIC_FILES_LOCATION + "fft-land-registry-tribunal-weekly-hearing-list/"
-                 + "fftLandRegistryTribunalWeeklyHearingList.json");
+            NON_STRATEGIC_FILES_LOCATION + "ftt-land-registry-tribunal-weekly-hearing-list/"
+                 + "fttLandRegistryTribunalWeeklyHearingList.json");
         when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(jsonData));
 
         MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, artefact.getArtefactId())))
