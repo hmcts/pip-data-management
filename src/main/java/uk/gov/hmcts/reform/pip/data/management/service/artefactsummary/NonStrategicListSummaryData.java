@@ -29,11 +29,11 @@ import static uk.gov.hmcts.reform.pip.model.publication.ListType.RPT_MIDLANDS_WE
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.RPT_NORTHERN_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.RPT_SOUTHERN_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.SIAC_WEEKLY_HEARING_LIST;
-import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_AAC_WEEKLY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_AAC_DAILY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_IAC_JUDICIAL_REVIEW_DAILY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_IAC_STATUTORY_APPEALS_DAILY_HEARING_LIST;
-import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_LC_WEEKLY_HEARING_LIST;
-import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_T_AND_CC_WEEKLY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_LC_DAILY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_T_AND_CC_DAILY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.WPAFCC_WEEKLY_HEARING_LIST;
 
 @SuppressWarnings("PMD.UseConcurrentHashMap")
@@ -66,9 +66,9 @@ public class NonStrategicListSummaryData implements ArtefactSummaryData {
         Map.entry(RPT_MIDLANDS_WEEKLY_HEARING_LIST, List.of(DATE, TIME, CASE_REFERENCE_NUMBER)),
         Map.entry(RPT_NORTHERN_WEEKLY_HEARING_LIST, List.of(DATE, TIME, CASE_REFERENCE_NUMBER)),
         Map.entry(RPT_SOUTHERN_WEEKLY_HEARING_LIST, List.of(DATE, TIME, CASE_REFERENCE_NUMBER)),
-        Map.entry(UT_T_AND_CC_WEEKLY_HEARING_LIST, List.of(TIME, CASE_REFERENCE_NUMBER, CASE_NAME)),
-        Map.entry(UT_LC_WEEKLY_HEARING_LIST, List.of(TIME, CASE_REFERENCE_NUMBER, CASE_NAME)),
-        Map.entry(UT_AAC_WEEKLY_HEARING_LIST, List.of(TIME, CASE_REFERENCE_NUMBER, APPELLANT))
+        Map.entry(UT_T_AND_CC_DAILY_HEARING_LIST, List.of(TIME, CASE_REFERENCE_NUMBER, CASE_NAME)),
+        Map.entry(UT_LC_DAILY_HEARING_LIST, List.of(TIME, CASE_REFERENCE_NUMBER, CASE_NAME)),
+        Map.entry(UT_AAC_DAILY_HEARING_LIST, List.of(TIME, CASE_REFERENCE_NUMBER, APPELLANT))
     );
 
     private final ListType listType;

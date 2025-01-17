@@ -4,10 +4,13 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.IOUtils;
 import org.assertj.core.api.SoftAssertions;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pip.data.management.service.ListConversionFactory;
 import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.ArtefactSummaryData;
+import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -16,11 +19,10 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
-
-import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_AAC_WEEKLY_HEARING_LIST;
+import java.util.stream.Stream;
 
 @ActiveProfiles("test")
-class UtAdministrativeAppealsChamberWeeklyHearingListSummaryDataTest {
+class UtLandsChamberAndTaxCcDailyHearingListSummaryDataTest {
 
     private static final String NON_STRATEGIC_RESOURCE_FOLDER = "src/test/resources/mocks/non-strategic/";
     private static final String SUMMARY_SECTIONS_MESSAGE = "Summary sections count does not match";
@@ -29,20 +31,29 @@ class UtAdministrativeAppealsChamberWeeklyHearingListSummaryDataTest {
     private static final String SUMMARY_FIELD_KEY_MESSAGE = "Summary field key does not match";
     private static final String SUMMARY_FIELD_VALUE_MESSAGE = "Summary field value does not match";
 
-    @Test
-    void testUtAdministrativeAppealsChamberWeeklyHearingListSummaryData() throws IOException {
+    private static Stream<Arguments> parameters() {
+        return Stream.of(
+            Arguments.of("UT_LC_DAILY_HEARING_LIST", "utLandsChamberDailyHearingList.json"),
+            Arguments.of("UT_T_AND_CC_DAILY_HEARING_LIST", "utTaxAndChanceryChamberDailyHearingList.json")
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("parameters")
+    void testUtLandsChamberAndTaxCcWeeklyHearingListSummaryData(String listName,
+        String listSampleJsonFile) throws IOException {
         StringWriter writer = new StringWriter();
         IOUtils.copy(
             Files.newInputStream(Paths.get(
                 NON_STRATEGIC_RESOURCE_FOLDER,
-                "utAdministrativeAppealsChamberWeeklyHearingList.json"
+                listSampleJsonFile
             )), writer,
             Charset.defaultCharset()
         );
 
         JsonNode payload = new ObjectMapper().readTree(writer.toString());
         ArtefactSummaryData cstSummaryData = new ListConversionFactory()
-            .getArtefactSummaryData(UT_AAC_WEEKLY_HEARING_LIST)
+            .getArtefactSummaryData(ListType.valueOf(listName))
             .get();
         Map<String, List<Map<String, String>>> output = cstSummaryData.get(payload);
 
@@ -76,7 +87,7 @@ class UtAdministrativeAppealsChamberWeeklyHearingListSummaryDataTest {
 
         softly.assertThat(keys.get(2))
             .as(SUMMARY_FIELD_KEY_MESSAGE)
-            .isEqualTo("Appellant");
+            .isEqualTo("Case name");
 
         List<String> values = summaryFields.values()
             .stream()
@@ -92,7 +103,7 @@ class UtAdministrativeAppealsChamberWeeklyHearingListSummaryDataTest {
 
         softly.assertThat(values.get(2))
             .as(SUMMARY_FIELD_VALUE_MESSAGE)
-            .isEqualTo("Appellant 1");
+            .isEqualTo("This is a case name");
 
         softly.assertAll();
     }

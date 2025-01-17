@@ -381,15 +381,15 @@ class ValidationServiceTest extends IntegrationBasicTestBase {
                          RPT_LIST_JSON),
             Arguments.of(ListType.RPT_NORTHERN_WEEKLY_HEARING_LIST,
                          RPT_LIST_JSON),
-            Arguments.of(ListType.UT_T_AND_CC_WEEKLY_HEARING_LIST,
-                         "data/non-strategic/ut-tax-and-chancery-chamber-weekly-hearing-list/"
-                             + "utTaxAndChanceryChamberWeeklyHearingList.json"),
-            Arguments.of(ListType.UT_LC_WEEKLY_HEARING_LIST,
-                         "data/non-strategic/ut-lands-chamber-weekly-hearing-list/"
-                             + "utLandsChamberWeeklyHearingList.json"),
-            Arguments.of(ListType.UT_AAC_WEEKLY_HEARING_LIST,
-                         "data/non-strategic/ut-administrative-appeals-chamber-weekly-hearing-list/"
-                             + "utAdministrativeAppealsChamberWeeklyHearingList.json")
+            Arguments.of(ListType.UT_T_AND_CC_DAILY_HEARING_LIST,
+                         "data/non-strategic/ut-tax-and-chancery-chamber-daily-hearing-list/"
+                             + "utTaxAndChanceryChamberDailyHearingList.json"),
+            Arguments.of(ListType.UT_LC_DAILY_HEARING_LIST,
+                         "data/non-strategic/ut-lands-chamber-daily-hearing-list/"
+                             + "utLandsChamberDailyHearingList.json"),
+            Arguments.of(ListType.UT_AAC_DAILY_HEARING_LIST,
+                         "data/non-strategic/ut-administrative-appeals-chamber-daily-hearing-list/"
+                             + "utAdministrativeAppealsChamberDailyHearingList.json")
         );
     }
 

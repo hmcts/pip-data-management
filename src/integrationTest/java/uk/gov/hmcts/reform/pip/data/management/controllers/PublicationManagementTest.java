@@ -842,16 +842,16 @@ class PublicationManagementTest extends IntegrationTestBase {
     }
 
     @Test
-    void testGenerateArtefactUtAdministrativeAppealsSummaryWeeklyHearingList() throws Exception {
+    void testGenerateArtefactUtAdministrativeAppealsSummaryDailyHearingList() throws Exception {
         Artefact artefact = createNonStrategicPublication(
-            ListType.UT_AAC_WEEKLY_HEARING_LIST,
-            "data/non-strategic/ut-administrative-appeals-chamber-weekly-hearing-list/"
-                + "utAdministrativeAppealsChamberWeeklyHearingList.xlsx"
+            ListType.UT_AAC_DAILY_HEARING_LIST,
+            "data/non-strategic/ut-administrative-appeals-chamber-daily-hearing-list/"
+                + "utAdministrativeAppealsChamberDailyHearingList.xlsx"
         );
 
         byte[] jsonData = getTestData(
-            "data/non-strategic/ut-administrative-appeals-chamber-weekly-hearing-list/"
-                + "utAdministrativeAppealsChamberWeeklyHearingList.json");
+            "data/non-strategic/ut-administrative-appeals-chamber-daily-hearing-list/"
+                + "utAdministrativeAppealsChamberDailyHearingList.json");
         when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(jsonData));
 
         MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, artefact.getArtefactId())))
@@ -864,16 +864,16 @@ class PublicationManagementTest extends IntegrationTestBase {
     }
 
     @Test
-    void testGenerateArtefactUtLandsChamberSummaryWeeklyHearingList() throws Exception {
+    void testGenerateArtefactUtLandsChamberSummaryDailyHearingList() throws Exception {
         Artefact artefact = createNonStrategicPublication(
-            ListType.UT_LC_WEEKLY_HEARING_LIST,
-            "data/non-strategic/ut-lands-chamber-weekly-hearing-list/"
-                + "utLandsChamberWeeklyHearingList.xlsx"
+            ListType.UT_LC_DAILY_HEARING_LIST,
+            "data/non-strategic/ut-lands-chamber-daily-hearing-list/"
+                + "utLandsChamberDailyHearingList.xlsx"
         );
 
         byte[] jsonData = getTestData(
-            "data/non-strategic/ut-lands-chamber-weekly-hearing-list/"
-                + "utLandsChamberWeeklyHearingList.json");
+            "data/non-strategic/ut-lands-chamber-daily-hearing-list/"
+                + "utLandsChamberDailyHearingList.json");
         when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(jsonData));
 
         MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, artefact.getArtefactId())))
@@ -886,16 +886,16 @@ class PublicationManagementTest extends IntegrationTestBase {
     }
 
     @Test
-    void testGenerateArtefactUtTaxAndChanceryChamberSummaryWeeklyHearingList() throws Exception {
+    void testGenerateArtefactUtTaxAndChanceryChamberSummaryDailyHearingList() throws Exception {
         Artefact artefact = createNonStrategicPublication(
-            ListType.UT_T_AND_CC_WEEKLY_HEARING_LIST,
-            "data/non-strategic/ut-tax-and-chancery-chamber-weekly-hearing-list/"
-                + "utTaxAndChanceryChamberWeeklyHearingList.xlsx"
+            ListType.UT_T_AND_CC_DAILY_HEARING_LIST,
+            "data/non-strategic/ut-tax-and-chancery-chamber-daily-hearing-list/"
+                + "utTaxAndChanceryChamberDailyHearingList.xlsx"
         );
 
         byte[] jsonData = getTestData(
-            "data/non-strategic/ut-tax-and-chancery-chamber-weekly-hearing-list/"
-                + "utTaxAndChanceryChamberWeeklyHearingList.json");
+            "data/non-strategic/ut-tax-and-chancery-chamber-daily-hearing-list/"
+                + "utTaxAndChanceryChamberDailyHearingList.json");
         when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(jsonData));
 
         MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, artefact.getArtefactId())))

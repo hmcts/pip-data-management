@@ -20,11 +20,11 @@ import java.nio.charset.Charset;
 import java.util.Map;
 import java.util.Objects;
 
-import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_AAC_WEEKLY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_AAC_DAILY_HEARING_LIST;
 
 @ActiveProfiles("test")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class UtAdministrativeAppealsChamberWeeklyHearingListFileConverterTest {
+class UtAdministrativeAppealsChamberDailyHearingListFileConverterTest {
 
     private static final String CONTENT_DATE = "12 December 2024";
     private static final String PROVENANCE = "provenance";
@@ -36,7 +36,7 @@ class UtAdministrativeAppealsChamberWeeklyHearingListFileConverterTest {
     private static final String ENGLISH = "ENGLISH";
     private static final String WELSH = "WELSH";
 
-    private static final String LIST_NAME = UT_AAC_WEEKLY_HEARING_LIST.name();
+    private static final String LIST_NAME = UT_AAC_DAILY_HEARING_LIST.name();
     private static final String LIST_ENGLISH_NAME = "Upper Tribunal (Administrative Appeals Chamber) "
         + "Daily Hearing List";
     private static final String LIST_DATE_ENGLISH = "List for 12 December 2024";
@@ -71,7 +71,7 @@ class UtAdministrativeAppealsChamberWeeklyHearingListFileConverterTest {
     @BeforeAll
     void setup() throws IOException {
         try (InputStream inputStream = getClass()
-            .getResourceAsStream("/mocks/non-strategic/utAdministrativeAppealsChamberWeeklyHearingList.json")) {
+            .getResourceAsStream("/mocks/non-strategic/utAdministrativeAppealsChamberDailyHearingList.json")) {
             String inputRaw = IOUtils.toString(inputStream, Charset.defaultCharset());
             listInputJson = new ObjectMapper().readTree(inputRaw);
         }
@@ -83,7 +83,7 @@ class UtAdministrativeAppealsChamberWeeklyHearingListFileConverterTest {
         try (InputStream languageFile = Thread.currentThread()
             .getContextClassLoader()
             .getResourceAsStream("templates/languages/en/non-strategic/"
-                                     + "utAacWeeklyHearingList.json")) {
+                                     + "utAacDailyHearingList.json")) {
             languageResource = new ObjectMapper().readValue(
                 Objects.requireNonNull(languageFile).readAllBytes(), new TypeReference<>() {
                 });
@@ -203,7 +203,7 @@ class UtAdministrativeAppealsChamberWeeklyHearingListFileConverterTest {
         Map<String, Object> languageResource;
         try (InputStream languageFile = Thread.currentThread()
             .getContextClassLoader()
-            .getResourceAsStream("templates/languages/cy/non-strategic/utAacWeeklyHearingList.json")) {
+            .getResourceAsStream("templates/languages/cy/non-strategic/utAacDailyHearingList.json")) {
             languageResource = new ObjectMapper().readValue(
                 Objects.requireNonNull(languageFile).readAllBytes(), new TypeReference<>() {
                 });
