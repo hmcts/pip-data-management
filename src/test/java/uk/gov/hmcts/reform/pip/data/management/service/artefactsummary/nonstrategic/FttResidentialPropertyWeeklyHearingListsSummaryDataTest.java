@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 @ActiveProfiles("test")
-class FftResidentialPropertyWeeklyHearingListsSummaryDataTest {
+class FttResidentialPropertyWeeklyHearingListsSummaryDataTest {
 
     private static final String NON_STRATEGIC_RESOURCE_FOLDER = "src/test/resources/mocks/non-strategic/";
     private static final String SUMMARY_SECTIONS_MESSAGE = "Summary sections count does not match";
@@ -39,12 +39,12 @@ class FftResidentialPropertyWeeklyHearingListsSummaryDataTest {
             "RPT_NORTHERN_WEEKLY_HEARING_LIST",
             "RPT_SOUTHERN_WEEKLY_HEARING_LIST"
         })
-    void testFftResidentialPropertyWeeklyHearingListSummaryData(ListType listType) throws IOException {
+    void testFttResidentialPropertyWeeklyHearingListSummaryData(ListType listType) throws IOException {
         StringWriter writer = new StringWriter();
         IOUtils.copy(
             Files.newInputStream(Paths.get(
                 NON_STRATEGIC_RESOURCE_FOLDER,
-                "fftResidentialPropertyTribunalWeeklyHearingList.json"
+                "fttResidentialPropertyTribunalWeeklyHearingList.json"
             )), writer,
             Charset.defaultCharset()
         );

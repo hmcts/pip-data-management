@@ -25,7 +25,7 @@ import java.util.stream.Stream;
 
 @ActiveProfiles("test")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class FftResidentialPropertyWeeklyHearingListFileConverterTest {
+class FttResidentialPropertyWeeklyHearingListFileConverterTest {
 
     private static final String CONTENT_DATE = "12 December 2024";
     private static final String PROVENANCE = "provenance";
@@ -92,7 +92,7 @@ class FftResidentialPropertyWeeklyHearingListFileConverterTest {
     @BeforeAll
     void setup() throws IOException {
         try (InputStream inputStream = getClass()
-            .getResourceAsStream("/mocks/non-strategic/fftResidentialPropertyTribunalWeeklyHearingList.json")) {
+            .getResourceAsStream("/mocks/non-strategic/fttResidentialPropertyTribunalWeeklyHearingList.json")) {
             String inputRaw = IOUtils.toString(inputStream, Charset.defaultCharset());
             listInputJson = new ObjectMapper().readTree(inputRaw);
         }
@@ -100,7 +100,7 @@ class FftResidentialPropertyWeeklyHearingListFileConverterTest {
 
     @ParameterizedTest
     @MethodSource("parametersEnglish")
-    void testFftResidentialPropertyWeeklyHearingListFileConversionInEnglish(String listName,
+    void testFttResidentialPropertyWeeklyHearingListFileConversionInEnglish(String listName,
         String languageFilename, String listDisplayName) throws IOException {
         Map<String, Object> languageResource;
         try (InputStream languageFile = Thread.currentThread()
@@ -172,7 +172,7 @@ class FftResidentialPropertyWeeklyHearingListFileConverterTest {
 
     @ParameterizedTest
     @MethodSource("parametersWelsh")
-    void testFftResidentialPropertyWeeklyHearingListFileConversionInWelsh(String listName,
+    void testFttResidentialPropertyWeeklyHearingListFileConversionInWelsh(String listName,
         String languageFilename, String listDisplayName) throws IOException {
         Map<String, Object> languageResource;
         try (InputStream languageFile = Thread.currentThread()

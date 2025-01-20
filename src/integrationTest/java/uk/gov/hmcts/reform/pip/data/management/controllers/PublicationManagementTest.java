@@ -83,11 +83,11 @@ class PublicationManagementTest extends IntegrationTestBase {
     private static final String APPELLANT_NUMBER_FIELD = "Appellant - Appellant 1";
     private static final String NON_STRATEGIC_FILES_LOCATION = "data/non-strategic/";
     private static final String RPT_LISTS_EXCEL_FILE = NON_STRATEGIC_FILES_LOCATION
-        + "fft-residential-property-tribunal-weekly-hearing-list/"
-        + "fftResidentialPropertyTribunalWeeklyHearingList.xlsx";
+        + "ftt-residential-property-tribunal-weekly-hearing-list/"
+        + "fttResidentialPropertyTribunalWeeklyHearingList.xlsx";
     private static final String RPT_LISTS_JSON_FILE = NON_STRATEGIC_FILES_LOCATION
-        + "fft-residential-property-tribunal-weekly-hearing-list/"
-        + "fftResidentialPropertyTribunalWeeklyHearingList.json";
+        + "ftt-residential-property-tribunal-weekly-hearing-list/"
+        + "fttResidentialPropertyTribunalWeeklyHearingList.json";
     private static final String SIAC_LISTS_EXCEL_FILE = NON_STRATEGIC_FILES_LOCATION
         + "siac-weekly-hearing-list/"
         + "siacWeeklyHearingList.xlsx";

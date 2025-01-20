@@ -61,8 +61,8 @@ class ValidationServiceTest extends IntegrationBasicTestBase {
     private static final String UNKNOWN_EXCEPTION = "Unknown exception when opening the paylaod file";
     private static final String CONTAINS_FORBIDDEN_VALUES_EXCEPTION = "Input contains a html tag";
     private static final String RPT_LIST_JSON = "data/non-strategic/"
-        + "fft-residential-property-tribunal-weekly-hearing-list/"
-        + "fftResidentialPropertyTribunalWeeklyHearingList.json";
+        + "ftt-residential-property-tribunal-weekly-hearing-list/"
+        + "fttResidentialPropertyTribunalWeeklyHearingList.json";
     private static final String SIAC_LIST_JSON = "data/non-strategic/siac-weekly-hearing-list/"
         + "siacWeeklyHearingList.json";
     private HeaderGroup headerGroup;
