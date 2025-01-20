@@ -643,10 +643,18 @@ class PublicationManagementTest extends IntegrationTestBase {
         assertTrue(responseContent.contains(CASE_REFERENCE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
     }
 
-    @Test
-    void testGenerateArtefactSummaryUtIacJudicialReviewDailyHearingList() throws Exception {
+    @ParameterizedTest
+    @EnumSource(
+        value = ListType.class,
+        names = {
+            "UT_IAC_JR_LONDON_DAILY_HEARING_LIST",
+            "UT_IAC_JR_MANCHESTER_DAILY_HEARING_LIST",
+            "UT_IAC_JR_BIRMINGHAM_DAILY_HEARING_LIST",
+            "UT_IAC_JR_CARDIFF_DAILY_HEARING_LIST"
+        })
+    void testGenerateArtefactSummaryUtIacJudicialReviewLondonDailyHearingList(ListType listType) throws Exception {
         Artefact artefact = createNonStrategicPublication(
-            ListType.UT_IAC_JUDICIAL_REVIEW_DAILY_HEARING_LIST,
+            listType,
             NON_STRATEGIC_FILES_LOCATION
                 + "ut-iac-judicial-review-daily-hearing-list/utIacJudicialReviewDailyHearingList.xlsx"
         );
