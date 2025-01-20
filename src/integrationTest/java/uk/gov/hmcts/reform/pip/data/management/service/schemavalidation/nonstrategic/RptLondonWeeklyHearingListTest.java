@@ -35,8 +35,8 @@ class RptLondonWeeklyHearingListTest extends IntegrationBasicTestBase {
     ValidationService validationService;
 
     private static final String VALID_JSON = "data/non-strategic/"
-        + "fft-residential-property-tribunal-weekly-hearing-list/"
-        + "fftResidentialPropertyTribunalWeeklyHearingList.json";
+        + "ftt-residential-property-tribunal-weekly-hearing-list/"
+        + "fttResidentialPropertyTribunalWeeklyHearingList.json";
     private static final String INVALID_MESSAGE = "Invalid JSON list marked as valid";
 
     private static final String SOURCE_ARTEFACT_ID = "sourceArtefactId";

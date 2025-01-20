@@ -6,8 +6,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
@@ -29,13 +27,14 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 @ActiveProfiles("integration-basic")
 @SpringBootTest
-class FftLandRegistryWeeklyHearingListTest extends IntegrationBasicTestBase {
+class UtTaxAndChanceryChamberDailyHearingListTest extends IntegrationBasicTestBase {
 
     @Autowired
     ValidationService validationService;
 
-    private static final String VALID_JSON = "data/non-strategic/fft-land-registry-tribunal-weekly-hearing-list/"
-        + "fftLandRegistryTribunalWeeklyHearingList.json";
+    private static final String VALID_JSON =
+        "data/non-strategic/ut-tax-and-chancery-chamber-daily-hearing-list/"
+            + "utTaxAndChanceryChamberDailyHearingList.json";
     private static final String INVALID_MESSAGE = "Invalid JSON list marked as valid";
 
     private static final String SOURCE_ARTEFACT_ID = "sourceArtefactId";
@@ -58,48 +57,18 @@ class FftLandRegistryWeeklyHearingListTest extends IntegrationBasicTestBase {
     @BeforeEach
     void setup() {
         headerGroup = new HeaderGroup(PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE, SENSITIVITY, LANGUAGE,
-                                      DISPLAY_FROM, DISPLAY_TO, ListType.FFT_LR_WEEKLY_HEARING_LIST, COURT_ID,
+                                      DISPLAY_FROM, DISPLAY_TO, ListType.UT_T_AND_CC_DAILY_HEARING_LIST, COURT_ID,
                                       CONTENT_DATE);
     }
 
     @Test
-    void testValidateWithErrorsWhenDateMissingInList() throws IOException {
+    void testValidateWithErrorsWhenTimeMissingInList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(0)).remove("date");
-
-            assertThatExceptionOfType(PayloadValidationException.class)
-                .as(INVALID_MESSAGE)
-                .isThrownBy(() -> validationService.validateBody(node.toString(), headerGroup, false));
-        }
-    }
-
-    @Test
-    void testValidateWithErrorsWhenHearingTimeMissingInList() throws IOException {
-        try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(VALID_JSON)) {
-            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
-
-            JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(0)).remove("hearingTime");
-
-            assertThatExceptionOfType(PayloadValidationException.class)
-                .as(INVALID_MESSAGE)
-                .isThrownBy(() -> validationService.validateBody(node.toString(), headerGroup, false));
-        }
-    }
-
-    @Test
-    void testValidateWithErrorsWhenCaseNameMissingInList() throws IOException {
-        try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(VALID_JSON)) {
-            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
-
-            JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(0)).remove("caseName");
+            ((ObjectNode) node.get(0)).remove("time");
 
             assertThatExceptionOfType(PayloadValidationException.class)
                 .as(INVALID_MESSAGE)
@@ -123,13 +92,13 @@ class FftLandRegistryWeeklyHearingListTest extends IntegrationBasicTestBase {
     }
 
     @Test
-    void testValidateWithErrorsWhenJudgeMissingInList() throws IOException {
+    void testValidateWithErrorsWhenCaseNameMissingInList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(0)).remove("judge");
+            ((ObjectNode) node.get(0)).remove("caseName");
 
             assertThatExceptionOfType(PayloadValidationException.class)
                 .as(INVALID_MESSAGE)
@@ -138,13 +107,13 @@ class FftLandRegistryWeeklyHearingListTest extends IntegrationBasicTestBase {
     }
 
     @Test
-    void testValidateWithErrorsWhenVenuePlatformMissingInList() throws IOException {
+    void testValidateWithErrorsWhenJudgesMissingInList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(0)).remove("venue/platform");
+            ((ObjectNode) node.get(0)).remove("judges");
 
             assertThatExceptionOfType(PayloadValidationException.class)
                 .as(INVALID_MESSAGE)
@@ -152,26 +121,63 @@ class FftLandRegistryWeeklyHearingListTest extends IntegrationBasicTestBase {
         }
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {
-        "2024-12-10",
-        "1/2/2024",
-        "10/12/24",
-        "10-12-2024"
-    })
-    void testValidateWithErrorWhenInvalidDateFormat(String date) throws IOException {
+    @Test
+    void testValidateWithErrorsWhenMembersMissingInList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode node = mapper.readValue(text, JsonNode.class);
+            JsonNode node = getJsonNode(text);
+            ((ObjectNode) node.get(0)).remove("members");
 
-            String formattedJson = node.toString()
-                .replaceAll("\"date\":\"[^\"]+\"", String.format("\"date\":\"%s\"", date));
             assertThatExceptionOfType(PayloadValidationException.class)
                 .as(INVALID_MESSAGE)
-                .isThrownBy(() -> validationService.validateBody(formattedJson, headerGroup, false));
+                .isThrownBy(() -> validationService.validateBody(node.toString(), headerGroup, false));
+        }
+    }
+
+    @Test
+    void testValidateWithErrorsWhenHearingTypeMissingInList() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream(VALID_JSON)) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            JsonNode node = getJsonNode(text);
+            ((ObjectNode) node.get(0)).remove("hearingType");
+
+            assertThatExceptionOfType(PayloadValidationException.class)
+                .as(INVALID_MESSAGE)
+                .isThrownBy(() -> validationService.validateBody(node.toString(), headerGroup, false));
+        }
+    }
+
+    @Test
+    void testValidateWithErrorsWhenVenueMissingInList() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream(VALID_JSON)) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            JsonNode node = getJsonNode(text);
+            ((ObjectNode) node.get(0)).remove("venue");
+
+            assertThatExceptionOfType(PayloadValidationException.class)
+                .as(INVALID_MESSAGE)
+                .isThrownBy(() -> validationService.validateBody(node.toString(), headerGroup, false));
+        }
+    }
+
+    @Test
+    void testValidateWithErrorsWhenAdditionalInformationMissingInList() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream(VALID_JSON)) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            JsonNode node = getJsonNode(text);
+            ((ObjectNode) node.get(0)).remove("additionalInformation");
+
+            assertThatExceptionOfType(PayloadValidationException.class)
+                .as(INVALID_MESSAGE)
+                .isThrownBy(() -> validationService.validateBody(node.toString(), headerGroup, false));
         }
     }
 }

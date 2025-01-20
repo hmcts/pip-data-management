@@ -27,14 +27,14 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 @ActiveProfiles("integration-basic")
 @SpringBootTest
-class UtTaxAndChanceryChamberWeeklyHearingListTest extends IntegrationBasicTestBase {
+class UtLandsChamberDailyHearingListTest extends IntegrationBasicTestBase {
 
     @Autowired
     ValidationService validationService;
 
     private static final String VALID_JSON =
-        "data/non-strategic/ut-tax-and-chancery-chamber-weekly-hearing-list/"
-            + "utTaxAndChanceryChamberWeeklyHearingList.json";
+        "data/non-strategic/ut-lands-chamber-daily-hearing-list/"
+            + "utLandsChamberDailyHearingList.json";
     private static final String INVALID_MESSAGE = "Invalid JSON list marked as valid";
 
     private static final String SOURCE_ARTEFACT_ID = "sourceArtefactId";
@@ -57,7 +57,7 @@ class UtTaxAndChanceryChamberWeeklyHearingListTest extends IntegrationBasicTestB
     @BeforeEach
     void setup() {
         headerGroup = new HeaderGroup(PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE, SENSITIVITY, LANGUAGE,
-                                      DISPLAY_FROM, DISPLAY_TO, ListType.UT_T_AND_CC_WEEKLY_HEARING_LIST, COURT_ID,
+                                      DISPLAY_FROM, DISPLAY_TO, ListType.UT_LC_DAILY_HEARING_LIST, COURT_ID,
                                       CONTENT_DATE);
     }
 
@@ -159,6 +159,21 @@ class UtTaxAndChanceryChamberWeeklyHearingListTest extends IntegrationBasicTestB
 
             JsonNode node = getJsonNode(text);
             ((ObjectNode) node.get(0)).remove("venue");
+
+            assertThatExceptionOfType(PayloadValidationException.class)
+                .as(INVALID_MESSAGE)
+                .isThrownBy(() -> validationService.validateBody(node.toString(), headerGroup, false));
+        }
+    }
+
+    @Test
+    void testValidateWithErrorsWhenModeOfHearingMissingInList() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream(VALID_JSON)) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            JsonNode node = getJsonNode(text);
+            ((ObjectNode) node.get(0)).remove("modeOfHearing");
 
             assertThatExceptionOfType(PayloadValidationException.class)
                 .as(INVALID_MESSAGE)
