@@ -37,8 +37,8 @@ class FttResidentialPropertyWeeklyHearingListFileConverterTest {
     private static final String ENGLISH = "ENGLISH";
     private static final String WELSH = "WELSH";
 
-    private static final String LIST_DATE_ENGLISH = "List for 12 December 2024";
-    private static final String LIST_DATE_WELSH = "Rhestr ar gyfer 12 December 2024";
+    private static final String LIST_DATE_ENGLISH = "List for week commencing 12 December 2024";
+    private static final String LIST_DATE_WELSH = "Rhestr ar gyfer yr wythnos yn dechrau ar 12 December 2024";
     private static final String OBSERVE_HEARING_ENGLISH = "Observe a court or tribunal hearing as a journalist, "
         + "researcher or member of the public";
     private static final String OBSERVE_HEARING_WELSH = "Arsylwi gwrandawiad llys neu dribiwnlys fel newyddiadurwr, "
