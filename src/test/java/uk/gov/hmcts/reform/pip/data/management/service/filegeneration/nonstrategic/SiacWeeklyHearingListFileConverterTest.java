@@ -43,8 +43,8 @@ class SiacWeeklyHearingListFileConverterTest {
     private static final String HEARING_TYPE = "Hearing type";
     private static final String ADDITIONAL_INFORMATION = "Additional information";
 
-    private static final String LIST_DATE_ENGLISH = "List for 12 December 2024";
-    private static final String LIST_DATE_WELSH = "Rhestr ar gyfer 12 December 2024";
+    private static final String LIST_DATE_ENGLISH = "List for week commencing 12 December 2024";
+    private static final String LIST_DATE_WELSH = "Rhestr ar gyfer yr wythnos yn dechrau ar 12 December 2024";
     private static final String COMING_COURT_OR_TRIBUNAL_ENGLISH =
         "Find out what to expect coming to a court or tribunal";
     private static final String COMING_COURT_OR_TRIBUNAL_WELSH = "Gwybodaeth am beth i’w ddisgwyl"
