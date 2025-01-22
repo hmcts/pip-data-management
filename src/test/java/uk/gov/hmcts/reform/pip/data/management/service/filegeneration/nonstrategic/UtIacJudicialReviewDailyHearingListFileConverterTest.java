@@ -74,13 +74,13 @@ class UtIacJudicialReviewDailyHearingListFileConverterTest {
     private static Stream<Arguments> parametersEnglish() {
         return Stream.of(
             Arguments.of("UT_IAC_JR_LONDON_DAILY_HEARING_LIST", "utIacJrLondonDailyHearingList.json",
-                "Upper Tribunal (Immigration and Asylum) Chamber - Judicial Review: London Daily hearing List"),
+                "Upper Tribunal (Immigration and Asylum) Chamber - Judicial Review: London Daily Hearing List"),
             Arguments.of("UT_IAC_JR_MANCHESTER_DAILY_HEARING_LIST", "utIacJrManchesterDailyHearingList.json",
-                "Upper Tribunal (Immigration and Asylum) Chamber - Judicial Review: Manchester Daily hearing List"),
+                "Upper Tribunal (Immigration and Asylum) Chamber - Judicial Review: Manchester Daily Hearing List"),
             Arguments.of("UT_IAC_JR_BIRMINGHAM_DAILY_HEARING_LIST", "utIacJrBirminghamDailyHearingList.json",
-                "Upper Tribunal (Immigration and Asylum) Chamber - Judicial Review: Birmingham Daily hearing List"),
+                "Upper Tribunal (Immigration and Asylum) Chamber - Judicial Review: Birmingham Daily Hearing List"),
             Arguments.of("UT_IAC_JR_CARDIFF_DAILY_HEARING_LIST", "utIacJrCardiffDailyHearingList.json",
-                "Upper Tribunal (Immigration and Asylum) Chamber - Judicial Review: Cardiff Daily hearing List")
+                "Upper Tribunal (Immigration and Asylum) Chamber - Judicial Review: Cardiff Daily Hearing List")
         );
     }
 

@@ -652,7 +652,7 @@ class PublicationManagementTest extends IntegrationTestBase {
             "UT_IAC_JR_BIRMINGHAM_DAILY_HEARING_LIST",
             "UT_IAC_JR_CARDIFF_DAILY_HEARING_LIST"
         })
-    void testGenerateArtefactSummaryUtIacJudicialReviewLondonDailyHearingList(ListType listType) throws Exception {
+    void testGenerateArtefactSummaryUtIacJudicialReviewDailyHearingList(ListType listType) throws Exception {
         Artefact artefact = createNonStrategicPublication(
             listType,
             NON_STRATEGIC_FILES_LOCATION
