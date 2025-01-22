@@ -86,6 +86,31 @@
     .govuk-table__header {
       font-weight: 700;
     }
+
+    .govuk-details {
+      font-family: "openSans";
+      font-weight: 400;
+      font-size: 16px;
+      line-height: 1.25;
+      color: #0b0c0c;
+      margin-bottom: 20px;
+      display: block;
+    }
+
+    .govuk-details__summary {
+      display: inline-block;
+      position: relative;
+      margin-bottom: 5px;
+      padding-left: 25px;
+      color: #0b0c0c;
+      cursor: pointer;
+    }
+
+    .govuk-details__text {
+      padding-top: 15px;
+      padding-bottom: 15px;
+      padding-left: 20px;
+      border-left: 5px solid #b1b4b6;
   </style>
   <meta charset="UTF-8"/>
   <meta name="subject" content="Accessible PDF template"/>
@@ -97,8 +122,17 @@
 <div>
   <h2 id="page-heading" class="govuk-heading-l" th:text="${i18n.listName}"/>
   <p id="list-date" class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-1" th:text="${i18n.listDate + contentDate}"/>
-  <p id="list-update-message" class="govuk-body" th:text="${i18n.listUpdateMessage}"/>
-  <a id="observe-hearing" th:href="${i18n.observeHearingLink}" class="govuk-link" th:title="${i18n.observeHearingLinkText}" th:text="${i18n.observeHearingLinkText}" />
+  <p id="last-updated-date" class="govuk-body" th:text="${i18n.lastUpdated + lastUpdatedDate + i18n.at + lastUpdatedTime}"/>
+
+  <details class="govuk-details" data-module="govuk-details" open="">
+    <summary class="govuk-details__summary">
+      <p th:text="${i18n.importantInformationHeading}" class="govuk-details__summary-text"/>
+    </summary>
+    <div class="govuk-details__text">
+      <p id="list-update-message" class="govuk-body" th:text="${i18n.listUpdateMessage}"/>
+      <a id="observe-hearing" th:href="${i18n.observeHearingLink}" class="govuk-link" th:title="${i18n.observeHearingLinkText}" th:text="${i18n.observeHearingLinkText}" />
+    </div>
+  </details>
 
   <div aria-label="Hearing list" class="landscape">
     <table class="govuk-table">
