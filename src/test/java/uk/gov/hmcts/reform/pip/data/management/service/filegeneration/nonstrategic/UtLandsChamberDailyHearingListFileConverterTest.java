@@ -53,11 +53,13 @@ class UtLandsChamberDailyHearingListFileConverterTest {
     private static final String LAST_UPDATED_DATE_ELEMENT = "last-updated-date";
     private static final String CONTACT_MESSAGE_ELEMENT = "contact-message";
     private static final String OBSERVE_HEARING_ELEMENT =  "observe-hearing";
+    private static final String SUMMARY_TEXT_CLASS = "govuk-details__summary-text";
 
     private static final String TITLE_MESSAGE = "Title does not match";
     private static final String HEADER_MESSAGE = "Header does not match";
     private static final String LIST_DATE_MESSAGE = "List date does not match";
     private static final String LAST_UPDATED_DATE_MESSAGE = "Last updated date does not match";
+    private static final String IMPORTANT_INFORMATION_MESSAGE = "Important information heading does not match";
     private static final String BODY_MESSAGE = "Body does not match";
     private static final String TABLE_HEADERS_MESSAGE = "Table headers does not match";
 
@@ -115,6 +117,11 @@ class UtLandsChamberDailyHearingListFileConverterTest {
             .as(LAST_UPDATED_DATE_MESSAGE)
             .extracting(Element::text)
             .isEqualTo("Last updated 20 January 2025 at 9:30am");
+
+        softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).get(0))
+            .as(IMPORTANT_INFORMATION_MESSAGE)
+            .extracting(Element::text)
+            .isEqualTo("Important information");
 
         softly.assertThat(document.getElementById(CONTACT_MESSAGE_ELEMENT))
             .as(BODY_MESSAGE)
@@ -188,6 +195,11 @@ class UtLandsChamberDailyHearingListFileConverterTest {
             .as(LAST_UPDATED_DATE_MESSAGE)
             .extracting(Element::text)
             .isEqualTo("Diweddarwyd ddiwethaf 20 January 2025 am 9:30am");
+
+        softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).get(0))
+            .as(IMPORTANT_INFORMATION_MESSAGE)
+            .extracting(Element::text)
+            .isEqualTo("Gwybodaeth bwysig");
 
         softly.assertThat(document.getElementById(CONTACT_MESSAGE_ELEMENT))
             .as(BODY_MESSAGE)
