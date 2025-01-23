@@ -27,14 +27,14 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 @ActiveProfiles("integration-basic")
 @SpringBootTest
-class UtAdministrativeAppealsChamberWeeklyHearingListTest extends IntegrationBasicTestBase {
+class UtAdministrativeAppealsChamberDailyHearingListTest extends IntegrationBasicTestBase {
 
     @Autowired
     ValidationService validationService;
 
     private static final String VALID_JSON =
-        "data/non-strategic/ut-administrative-appeals-chamber-weekly-hearing-list/"
-            + "utAdministrativeAppealsChamberWeeklyHearingList.json";
+        "data/non-strategic/ut-administrative-appeals-chamber-daily-hearing-list/"
+            + "utAdministrativeAppealsChamberDailyHearingList.json";
     private static final String INVALID_MESSAGE = "Invalid JSON list marked as valid";
 
     private static final String SOURCE_ARTEFACT_ID = "sourceArtefactId";
@@ -57,7 +57,7 @@ class UtAdministrativeAppealsChamberWeeklyHearingListTest extends IntegrationBas
     @BeforeEach
     void setup() {
         headerGroup = new HeaderGroup(PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE, SENSITIVITY, LANGUAGE,
-                                      DISPLAY_FROM, DISPLAY_TO, ListType.UT_AAC_WEEKLY_HEARING_LIST, COURT_ID,
+                                      DISPLAY_FROM, DISPLAY_TO, ListType.UT_AAC_DAILY_HEARING_LIST, COURT_ID,
                                       CONTENT_DATE);
     }
 
