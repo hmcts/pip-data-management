@@ -9,8 +9,10 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.NonStrategicListFileConverter;
 
@@ -19,8 +21,8 @@ import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Stream;
 
-import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_IAC_JUDICIAL_REVIEW_DAILY_HEARING_LIST;
 
 @ActiveProfiles("test")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -75,6 +77,32 @@ class UtIacJudicialReviewDailyHearingListFileConverterTest {
 
     private JsonNode utIacJudicialReviewInputJson;
 
+    private static Stream<Arguments> parametersEnglish() {
+        return Stream.of(
+            Arguments.of("UT_IAC_JR_LONDON_DAILY_HEARING_LIST", "utIacJrLondonDailyHearingList.json",
+                "Upper Tribunal (Immigration and Asylum) Chamber - Judicial Review: London Daily Hearing List"),
+            Arguments.of("UT_IAC_JR_MANCHESTER_DAILY_HEARING_LIST", "utIacJrManchesterDailyHearingList.json",
+                "Upper Tribunal (Immigration and Asylum) Chamber - Judicial Review: Manchester Daily Hearing List"),
+            Arguments.of("UT_IAC_JR_BIRMINGHAM_DAILY_HEARING_LIST", "utIacJrBirminghamDailyHearingList.json",
+                "Upper Tribunal (Immigration and Asylum) Chamber - Judicial Review: Birmingham Daily Hearing List"),
+            Arguments.of("UT_IAC_JR_CARDIFF_DAILY_HEARING_LIST", "utIacJrCardiffDailyHearingList.json",
+                "Upper Tribunal (Immigration and Asylum) Chamber - Judicial Review: Cardiff Daily Hearing List")
+        );
+    }
+
+    private static Stream<Arguments> parametersWelsh() {
+        return Stream.of(
+            Arguments.of("UT_IAC_JR_LONDON_DAILY_HEARING_LIST", "utIacJrLondonDailyHearingList.json",
+        "Uwch Dribiwnlys (Mewnfudo a Lloches) - Rhestr o Wrandawiadau Dyddiol Siambr Adolygiadau Barnwrol Llundain"),
+            Arguments.of("UT_IAC_JR_MANCHESTER_DAILY_HEARING_LIST", "utIacJrManchesterDailyHearingList.json",
+        "Uwch Dribiwnlys (Mewnfudo a Lloches) - Rhestr o Wrandawiadau Dyddiol Siambr Adolygiadau Barnwrol Manceinion"),
+            Arguments.of("UT_IAC_JR_BIRMINGHAM_DAILY_HEARING_LIST", "utIacJrBirminghamDailyHearingList.json",
+        "Uwch Dribiwnlys (Mewnfudo a Lloches) - Rhestr o Wrandawiadau Dyddiol Siambr Adolygiadau Barnwrol Birmingham"),
+            Arguments.of("UT_IAC_JR_CARDIFF_DAILY_HEARING_LIST", "utIacJrCardiffDailyHearingList.json",
+        "Uwch Dribiwnlys (Mewnfudo a Lloches) - Rhestr o Wrandawiadau Dyddiol Siambr Adolygiadau Barnwrol Caerdydd")
+        );
+    }
+
     @BeforeAll
     void setup() throws IOException {
         try (InputStream inputStream = getClass()
@@ -84,12 +112,14 @@ class UtIacJudicialReviewDailyHearingListFileConverterTest {
         }
     }
 
-    @Test
-    void testUtIacJudicialReviewDailyHearingListFileConversionInEnglish() throws IOException {
+    @ParameterizedTest
+    @MethodSource("parametersEnglish")
+    void testUtIacJudicialReviewDailyHearingListFileConversionInEnglish(String listName,
+        String languageFilename, String listDisplayName) throws IOException {
         Map<String, Object> languageResource;
         try (InputStream languageFile = Thread.currentThread()
             .getContextClassLoader()
-            .getResourceAsStream("templates/languages/en/non-strategic/utIacJudicialReviewDailyHearingList.json")) {
+            .getResourceAsStream("templates/languages/en/non-strategic/" + languageFilename)) {
             languageResource = new ObjectMapper().readValue(
                 Objects.requireNonNull(languageFile).readAllBytes(), new TypeReference<>() {
                 });
@@ -98,7 +128,7 @@ class UtIacJudicialReviewDailyHearingListFileConverterTest {
         Map<String, String> metadata = Map.of(CONTENT_DATE_METADATA, CONTENT_DATE,
                                               PROVENANCE_METADATA, PROVENANCE,
                                               LANGUAGE_METADATA, ENGLISH,
-                                              LIST_TYPE_METADATA, UT_IAC_JUDICIAL_REVIEW_DAILY_HEARING_LIST.name(),
+                                              LIST_TYPE_METADATA, listName,
                                               LAST_RECEIVED_DATE_METADATA, LAST_RECEIVED_DATE
         );
 
@@ -109,14 +139,12 @@ class UtIacJudicialReviewDailyHearingListFileConverterTest {
 
         softly.assertThat(document.title())
             .as(TITLE_MESSAGE)
-            .isEqualTo("Upper Tribunal (Immigration and Asylum) Chamber Field House - Judicial Review Daily "
-                           + "Hearing List");
+            .isEqualTo(listDisplayName);
 
         softly.assertThat(document.getElementById(HEADER_ELEMENT))
             .as(HEADER_MESSAGE)
             .extracting(Element::text)
-            .isEqualTo("Upper Tribunal (Immigration and Asylum) Chamber Field House - Judicial Review Daily "
-                           + "Hearing List");
+            .isEqualTo(listDisplayName);
 
         softly.assertThat(document.getElementById(LIST_DATE_ELEMENT))
             .as(LIST_DATE_MESSAGE)
@@ -162,12 +190,14 @@ class UtIacJudicialReviewDailyHearingListFileConverterTest {
         softly.assertAll();
     }
 
-    @Test
-    void testUtIacJudicialReviewDailyHearingListFileConversionInWelsh() throws IOException {
+    @ParameterizedTest
+    @MethodSource("parametersWelsh")
+    void testUtIacJudicialReviewDailyHearingListFileConversionInWelsh(String listName,
+        String languageFilename, String listDisplayName) throws IOException {
         Map<String, Object> languageResource;
         try (InputStream languageFile = Thread.currentThread()
             .getContextClassLoader()
-            .getResourceAsStream("templates/languages/cy/non-strategic/utIacJudicialReviewDailyHearingList.json")) {
+            .getResourceAsStream("templates/languages/cy/non-strategic/" + languageFilename)) {
             languageResource = new ObjectMapper().readValue(
                 Objects.requireNonNull(languageFile).readAllBytes(), new TypeReference<>() {
                 });
@@ -176,7 +206,7 @@ class UtIacJudicialReviewDailyHearingListFileConverterTest {
         Map<String, String> metadata = Map.of(CONTENT_DATE_METADATA, CONTENT_DATE,
                                               PROVENANCE_METADATA, PROVENANCE,
                                               LANGUAGE_METADATA, WELSH,
-                                              LIST_TYPE_METADATA, UT_IAC_JUDICIAL_REVIEW_DAILY_HEARING_LIST.name(),
+                                              LIST_TYPE_METADATA, listName,
                                               LAST_RECEIVED_DATE_METADATA, LAST_RECEIVED_DATE
         );
 
@@ -187,14 +217,12 @@ class UtIacJudicialReviewDailyHearingListFileConverterTest {
 
         softly.assertThat(document.title())
             .as(TITLE_MESSAGE)
-            .isEqualTo("Uwch Dribiwnlys (Mewnfudo a Lloches) - Rhestr o Wrandawiadau Dyddiol Siambr Adolygiadau "
-                           + "Barnwrol - Field House");
+            .isEqualTo(listDisplayName);
 
         softly.assertThat(document.getElementById(HEADER_ELEMENT))
             .as(HEADER_MESSAGE)
             .extracting(Element::text)
-            .isEqualTo("Uwch Dribiwnlys (Mewnfudo a Lloches) - Rhestr o Wrandawiadau Dyddiol Siambr Adolygiadau "
-                           + "Barnwrol - Field House");
+            .isEqualTo(listDisplayName);
 
         softly.assertThat(document.getElementById(LIST_DATE_ELEMENT))
             .as(LIST_DATE_MESSAGE)
@@ -206,16 +234,16 @@ class UtIacJudicialReviewDailyHearingListFileConverterTest {
             .extracting(Element::text)
             .isEqualTo("Diweddarwyd ddiwethaf 20 January 2025 am 9:30am");
 
+        softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).get(0))
+            .as(IMPORTANT_INFORMATION_MESSAGE)
+            .extracting(Element::text)
+            .isEqualTo("Gwybodaeth bwysig");
+
         softly.assertThat(document.getElementById(LIST_UPDATE_MESSAGE_ELEMENT))
             .as(BODY_MESSAGE)
             .extracting(Element::text)
             .asString()
             .contains("Gall y rhestr ganlynol newid tan 4:30pm.");
-
-        softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).get(0))
-            .as(IMPORTANT_INFORMATION_MESSAGE)
-            .extracting(Element::text)
-            .isEqualTo("Gwybodaeth bwysig");
 
         softly.assertThat(document.getElementById(OBSERVE_HEARING_ELEMENT))
             .as(BODY_MESSAGE)
