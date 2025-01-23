@@ -85,7 +85,11 @@ import static uk.gov.hmcts.reform.pip.model.publication.ListType.SJP_PUBLIC_LIST
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.SSCS_DAILY_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.SSCS_DAILY_LIST_ADDITIONAL_HEARINGS;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_AAC_DAILY_HEARING_LIST;
-import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_IAC_JUDICIAL_REVIEW_DAILY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_AAC_DAILY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_IAC_JR_BIRMINGHAM_DAILY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_IAC_JR_CARDIFF_DAILY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_IAC_JR_LONDON_DAILY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_IAC_JR_MANCHESTER_DAILY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_IAC_STATUTORY_APPEALS_DAILY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_LC_DAILY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_T_AND_CC_DAILY_HEARING_LIST;
@@ -150,9 +154,21 @@ public class ListConversionFactory {
         Map.entry(WPAFCC_WEEKLY_HEARING_LIST, new ConversionPair(
             new NonStrategicListFileConverter(), new NonStrategicListSummaryData(WPAFCC_WEEKLY_HEARING_LIST)
         )),
-        Map.entry(UT_IAC_JUDICIAL_REVIEW_DAILY_HEARING_LIST, new ConversionPair(
+        Map.entry(UT_IAC_JR_LONDON_DAILY_HEARING_LIST, new ConversionPair(
             new NonStrategicListFileConverter(),
-            new NonStrategicListSummaryData(UT_IAC_JUDICIAL_REVIEW_DAILY_HEARING_LIST)
+            new NonStrategicListSummaryData(UT_IAC_JR_LONDON_DAILY_HEARING_LIST)
+        )),
+        Map.entry(UT_IAC_JR_MANCHESTER_DAILY_HEARING_LIST, new ConversionPair(
+            new NonStrategicListFileConverter(),
+            new NonStrategicListSummaryData(UT_IAC_JR_LONDON_DAILY_HEARING_LIST)
+        )),
+        Map.entry(UT_IAC_JR_BIRMINGHAM_DAILY_HEARING_LIST, new ConversionPair(
+            new NonStrategicListFileConverter(),
+            new NonStrategicListSummaryData(UT_IAC_JR_LONDON_DAILY_HEARING_LIST)
+        )),
+        Map.entry(UT_IAC_JR_CARDIFF_DAILY_HEARING_LIST, new ConversionPair(
+            new NonStrategicListFileConverter(),
+            new NonStrategicListSummaryData(UT_IAC_JR_LONDON_DAILY_HEARING_LIST)
         )),
         Map.entry(UT_IAC_STATUTORY_APPEALS_DAILY_HEARING_LIST, new ConversionPair(
             new NonStrategicListFileConverter(),
