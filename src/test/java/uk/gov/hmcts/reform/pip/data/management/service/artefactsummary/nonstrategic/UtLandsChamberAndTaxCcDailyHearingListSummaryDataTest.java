@@ -4,10 +4,13 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.IOUtils;
 import org.assertj.core.api.SoftAssertions;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pip.data.management.service.ListConversionFactory;
 import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.ArtefactSummaryData;
+import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -16,11 +19,10 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
-
-import static uk.gov.hmcts.reform.pip.model.publication.ListType.FFT_TAX_WEEKLY_HEARING_LIST;
+import java.util.stream.Stream;
 
 @ActiveProfiles("test")
-class FftTaxWeeklyHearingListSummaryDataTest {
+class UtLandsChamberAndTaxCcDailyHearingListSummaryDataTest {
 
     private static final String NON_STRATEGIC_RESOURCE_FOLDER = "src/test/resources/mocks/non-strategic/";
     private static final String SUMMARY_SECTIONS_MESSAGE = "Summary sections count does not match";
@@ -29,20 +31,29 @@ class FftTaxWeeklyHearingListSummaryDataTest {
     private static final String SUMMARY_FIELD_KEY_MESSAGE = "Summary field key does not match";
     private static final String SUMMARY_FIELD_VALUE_MESSAGE = "Summary field value does not match";
 
-    @Test
-    void testFftTaxWeeklyHearingListSummaryData() throws IOException {
+    private static Stream<Arguments> parameters() {
+        return Stream.of(
+            Arguments.of("UT_LC_DAILY_HEARING_LIST", "utLandsChamberDailyHearingList.json"),
+            Arguments.of("UT_T_AND_CC_DAILY_HEARING_LIST", "utTaxAndChanceryChamberDailyHearingList.json")
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("parameters")
+    void testUtLandsChamberAndTaxCcDailyHearingListSummaryData(String listName,
+        String listSampleJsonFile) throws IOException {
         StringWriter writer = new StringWriter();
         IOUtils.copy(
             Files.newInputStream(Paths.get(
                 NON_STRATEGIC_RESOURCE_FOLDER,
-                "fftTaxWeeklyHearingList.json"
+                listSampleJsonFile
             )), writer,
             Charset.defaultCharset()
         );
 
         JsonNode payload = new ObjectMapper().readTree(writer.toString());
         ArtefactSummaryData cstSummaryData = new ListConversionFactory()
-            .getArtefactSummaryData(FFT_TAX_WEEKLY_HEARING_LIST)
+            .getArtefactSummaryData(ListType.valueOf(listName))
             .get();
         Map<String, List<Map<String, String>>> output = cstSummaryData.get(payload);
 
@@ -55,7 +66,7 @@ class FftTaxWeeklyHearingListSummaryDataTest {
         List<Map<String, String>> summaryCases = output.get(null);
         softly.assertThat(summaryCases)
             .as(SUMMARY_CASES_MESSAGE)
-            .hasSize(2);
+            .hasSize(1);
 
         Map<String, String> summaryFields = summaryCases.get(0);
         softly.assertThat(summaryFields)
@@ -68,15 +79,15 @@ class FftTaxWeeklyHearingListSummaryDataTest {
 
         softly.assertThat(keys.get(0))
             .as(SUMMARY_FIELD_KEY_MESSAGE)
-            .isEqualTo("Date");
+            .isEqualTo("Time");
 
         softly.assertThat(keys.get(1))
             .as(SUMMARY_FIELD_KEY_MESSAGE)
-            .isEqualTo("Hearing time");
+            .isEqualTo("Case reference number");
 
         softly.assertThat(keys.get(2))
             .as(SUMMARY_FIELD_KEY_MESSAGE)
-            .isEqualTo("Case reference number");
+            .isEqualTo("Case name");
 
         List<String> values = summaryFields.values()
             .stream()
@@ -84,15 +95,15 @@ class FftTaxWeeklyHearingListSummaryDataTest {
 
         softly.assertThat(values.get(0))
             .as(SUMMARY_FIELD_VALUE_MESSAGE)
-            .isEqualTo("16 December 2024");
+            .isEqualTo("10am");
 
         softly.assertThat(values.get(1))
             .as(SUMMARY_FIELD_VALUE_MESSAGE)
-            .isEqualTo("10am");
+            .isEqualTo("12345");
 
         softly.assertThat(values.get(2))
             .as(SUMMARY_FIELD_VALUE_MESSAGE)
-            .isEqualTo("1234");
+            .isEqualTo("This is a case name");
 
         softly.assertAll();
     }

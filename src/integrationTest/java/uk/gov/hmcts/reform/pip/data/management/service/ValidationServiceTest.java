@@ -61,8 +61,8 @@ class ValidationServiceTest extends IntegrationBasicTestBase {
     private static final String UNKNOWN_EXCEPTION = "Unknown exception when opening the paylaod file";
     private static final String CONTAINS_FORBIDDEN_VALUES_EXCEPTION = "Input contains a html tag";
     private static final String RPT_LIST_JSON = "data/non-strategic/"
-        + "fft-residential-property-tribunal-weekly-hearing-list/"
-        + "fftResidentialPropertyTribunalWeeklyHearingList.json";
+        + "ftt-residential-property-tribunal-weekly-hearing-list/"
+        + "fttResidentialPropertyTribunalWeeklyHearingList.json";
     private static final String SIAC_LIST_JSON = "data/non-strategic/siac-weekly-hearing-list/"
         + "siacWeeklyHearingList.json";
     private static final String UT_IAC_LIST_JSON = "data/non-strategic/"
@@ -374,12 +374,12 @@ class ValidationServiceTest extends IntegrationBasicTestBase {
                          SIAC_LIST_JSON),
             Arguments.of(ListType.PAAC_WEEKLY_HEARING_LIST,
                          SIAC_LIST_JSON),
-            Arguments.of(ListType.FFT_TAX_WEEKLY_HEARING_LIST,
-                         "data/non-strategic/fft-tax-tribunal-weekly-hearing-list/"
-                             + "fftTaxWeeklyHearingList.json"),
-            Arguments.of(ListType.FFT_LR_WEEKLY_HEARING_LIST,
-                         "data/non-strategic/fft-land-registry-tribunal-weekly-hearing-list/"
-                             + "fftLandRegistryTribunalWeeklyHearingList.json"),
+            Arguments.of(ListType.FTT_TAX_WEEKLY_HEARING_LIST,
+                         "data/non-strategic/ftt-tax-tribunal-weekly-hearing-list/"
+                             + "fttTaxWeeklyHearingList.json"),
+            Arguments.of(ListType.FTT_LR_WEEKLY_HEARING_LIST,
+                         "data/non-strategic/ftt-land-registry-tribunal-weekly-hearing-list/"
+                             + "fttLandRegistryTribunalWeeklyHearingList.json"),
             Arguments.of(ListType.RPT_EASTERN_WEEKLY_HEARING_LIST,
                          RPT_LIST_JSON),
             Arguments.of(ListType.RPT_LONDON_WEEKLY_HEARING_LIST,
@@ -390,15 +390,15 @@ class ValidationServiceTest extends IntegrationBasicTestBase {
                          RPT_LIST_JSON),
             Arguments.of(ListType.RPT_NORTHERN_WEEKLY_HEARING_LIST,
                          RPT_LIST_JSON),
-            Arguments.of(ListType.UT_T_AND_CC_WEEKLY_HEARING_LIST,
-                         "data/non-strategic/ut-tax-and-chancery-chamber-weekly-hearing-list/"
-                             + "utTaxAndChanceryChamberWeeklyHearingList.json"),
-            Arguments.of(ListType.UT_LC_WEEKLY_HEARING_LIST,
-                         "data/non-strategic/ut-lands-chamber-weekly-hearing-list/"
-                             + "utLandsChamberWeeklyHearingList.json"),
-            Arguments.of(ListType.UT_AAC_WEEKLY_HEARING_LIST,
-                         "data/non-strategic/ut-administrative-appeals-chamber-weekly-hearing-list/"
-                             + "utAdministrativeAppealsChamberWeeklyHearingList.json")
+            Arguments.of(ListType.UT_T_AND_CC_DAILY_HEARING_LIST,
+                         "data/non-strategic/ut-tax-and-chancery-chamber-daily-hearing-list/"
+                             + "utTaxAndChanceryChamberDailyHearingList.json"),
+            Arguments.of(ListType.UT_LC_DAILY_HEARING_LIST,
+                         "data/non-strategic/ut-lands-chamber-daily-hearing-list/"
+                             + "utLandsChamberDailyHearingList.json"),
+            Arguments.of(ListType.UT_AAC_DAILY_HEARING_LIST,
+                         "data/non-strategic/ut-administrative-appeals-chamber-daily-hearing-list/"
+                             + "utAdministrativeAppealsChamberDailyHearingList.json")
         );
     }
 
