@@ -20,11 +20,11 @@ import java.nio.charset.Charset;
 import java.util.Map;
 import java.util.Objects;
 
-import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_LC_WEEKLY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.FTT_LR_WEEKLY_HEARING_LIST;
 
 @ActiveProfiles("test")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class UtLandsChamberWeeklyHearingListFileConverterTest {
+class FttLandRegistryWeeklyHearingListFileConverterTest {
 
     private static final String CONTENT_DATE = "12 December 2024";
     private static final String PROVENANCE = "provenance";
@@ -36,15 +36,17 @@ class UtLandsChamberWeeklyHearingListFileConverterTest {
     private static final String ENGLISH = "ENGLISH";
     private static final String WELSH = "WELSH";
 
-    private static final String LIST_NAME = UT_LC_WEEKLY_HEARING_LIST.name();
-    private static final String LIST_ENGLISH_NAME = "Upper Tribunal (Lands Chamber) Daily Hearing List";
+    private static final String LIST_NAME = FTT_LR_WEEKLY_HEARING_LIST.name();
+    private static final String LIST_ENGLISH_NAME = "First-tier Tribunal "
+        + "(Lands Registration Tribunal) Weekly Hearing List";
     private static final String LIST_DATE_ENGLISH = "List for 12 December 2024";
     private static final String LIST_DATE_WELSH = "Rhestr ar gyfer 12 December 2024";
     private static final String OBSERVE_HEARING_ENGLISH = "Observe a court or tribunal hearing as a journalist, "
         + "researcher or member of the public";
     private static final String OBSERVE_HEARING_WELSH = "Arsylwi gwrandawiad llys neu dribiwnlys fel newyddiadurwr, "
         + "ymchwilydd neu aelod o'r cyhoedd";
-    private static final String LIST_WELSH_NAME = "Rhestr o Wrandawiadau Dyddiol Uwch Dribiwnlys (Siambr Tiroedd)";
+    private static final String LIST_WELSH_NAME = "Rhestr o Wrandawiadau "
+        + "Wythnosol Tribiwnlys Haen Gyntaf (Tribiwnlys Cofrestru Tir)";
 
     private static final String HEADER_ELEMENT = "page-heading";
     private static final String LIST_DATE_ELEMENT = "list-date";
@@ -64,18 +66,18 @@ class UtLandsChamberWeeklyHearingListFileConverterTest {
     @BeforeAll
     void setup() throws IOException {
         try (InputStream inputStream = getClass()
-            .getResourceAsStream("/mocks/non-strategic/utLandsChamberWeeklyHearingList.json")) {
+            .getResourceAsStream("/mocks/non-strategic/fttLandRegistryTribunalWeeklyHearingList.json")) {
             String inputRaw = IOUtils.toString(inputStream, Charset.defaultCharset());
             listInputJson = new ObjectMapper().readTree(inputRaw);
         }
     }
 
     @Test
-    void testLandsChamberWeeklyHearingListFileConversionInEnglish() throws IOException {
+    void testLandRegistryWeeklyHearingListFileConversionInEnglish() throws IOException {
         Map<String, Object> languageResource;
         try (InputStream languageFile = Thread.currentThread()
             .getContextClassLoader()
-            .getResourceAsStream("templates/languages/en/non-strategic/utLcWeeklyHearingList.json")) {
+            .getResourceAsStream("templates/languages/en/non-strategic/fttLrWeeklyHearingList.json")) {
             languageResource = new ObjectMapper().readValue(
                 Objects.requireNonNull(languageFile).readAllBytes(), new TypeReference<>() {
                 });
@@ -109,9 +111,13 @@ class UtLandsChamberWeeklyHearingListFileConverterTest {
         softly.assertThat(document.getElementById(CONTACT_MESSAGE_ELEMENT))
             .as(BODY_MESSAGE)
             .extracting(Element::text)
-            .isEqualTo("If a representative of the media or a member of the public wishes to "
-                           + "attend a Cloud Video Platform (CVP) hearing they should contact the Lands "
-                           + "Chamber listing section Lands@justice.gov.uk who will provide further information.");
+            .isEqualTo("Members of the public wishing to observe a hearing "
+                           + "or representatives of the media may, on their request, join any "
+                           + "telephone or video hearing remotely while they are taking place by sending an "
+                           + "email in advance to the tribunal at [insert office email] with the following details "
+                           + "in the subject line “[OBSERVER/MEDIA] REQUEST – [case reference] – [hearing date] "
+                           + "(need to include any other infromation required by the tribunal)” and appropriate "
+                           + "arrangements will be made to allow access where reasonably practicable");
 
         softly.assertThat(document.getElementById(OBSERVE_HEARING_ELEMENT))
             .as(BODY_MESSAGE)
@@ -120,29 +126,26 @@ class UtLandsChamberWeeklyHearingListFileConverterTest {
 
         softly.assertThat(document.getElementsByTag("th"))
             .as(TABLE_HEADERS_MESSAGE)
-            .hasSize(9)
+            .hasSize(6)
             .extracting(Element::text)
             .containsExactly(
-                "Time",
-                "Case reference number",
+                "Date",
+                "Hearing time",
                 "Case name",
-                "Judge(s)",
-                "Member(s)",
-                "Hearing type",
-                "Venue",
-                "Mode of hearing",
-                "Additional information"
+                "Case reference number",
+                "Judge",
+                "Venue/Platform"
             );
 
         softly.assertAll();
     }
 
     @Test
-    void testLandsChamberWeeklyHearingListFileConversionInWelsh() throws IOException {
+    void testLandRegistryWeeklyHearingListFileConversionInWelsh() throws IOException {
         Map<String, Object> languageResource;
         try (InputStream languageFile = Thread.currentThread()
             .getContextClassLoader()
-            .getResourceAsStream("templates/languages/cy/non-strategic/utLcWeeklyHearingList.json")) {
+            .getResourceAsStream("templates/languages/cy/non-strategic/fttLrWeeklyHearingList.json")) {
             languageResource = new ObjectMapper().readValue(
                 Objects.requireNonNull(languageFile).readAllBytes(), new TypeReference<>() {
                 });
@@ -176,10 +179,14 @@ class UtLandsChamberWeeklyHearingListFileConverterTest {
         softly.assertThat(document.getElementById(CONTACT_MESSAGE_ELEMENT))
             .as(BODY_MESSAGE)
             .extracting(Element::text)
-            .isEqualTo("Os bydd cynrychiolydd o’r cyfryngau neu aelod o’r cyhoedd yn "
-                           + "dymuno mynychu gwrandawiad Platfform Fideo’r Cwmwl (CVP) "
-                           + "dylent gysylltu ag adran restru’r Siambr Tiroedd Lands@justice.gov.uk "
-                           + "a fydd yn darparu rhagor o wybodaeth.");
+            .isEqualTo("Gall aelodau o’r cyhoedd sy’n dymuno arsylwi gwrandawiad neu "
+                           + "gynrychiolwyr y cyfryngau ymuno ag unrhyw wrandawiad dros y ffôn neu "
+                           + "drwy fideo o bell ar gais tra’u bod yn cael eu cynnal drwy anfon "
+                           + "e-bost ymlaen llaw at y tribiwnlys yn [insert office email] gyda’r manylion "
+                           + "canlynol yn y llinell bwnc “CAIS [ARSYLLWR/CYFRYNGAU] – [cyfeirnod yr achos] – "
+                           + "[dyddiad y gwrandawiad] (angen cynnwys unrhyw wybodaeth arall sy’n ofynnol "
+                           + "gan y tribiwnlys)” a gwneir trefniadau priodol i ganiatáu mynediad "
+                           + "lle bo hynny’n rhesymol ymarferol.");
 
         softly.assertThat(document.getElementById(OBSERVE_HEARING_ELEMENT))
             .as(BODY_MESSAGE)
@@ -188,18 +195,15 @@ class UtLandsChamberWeeklyHearingListFileConverterTest {
 
         softly.assertThat(document.getElementsByTag("th"))
             .as(TABLE_HEADERS_MESSAGE)
-            .hasSize(9)
+            .hasSize(6)
             .extracting(Element::text)
             .containsExactly(
-                "Amser",
+                "Dyddiad",
                 "Amser y gwrandawiad",
                 "Enw’r achos",
-                "Barnwr/Barnwyr",
-                "Aelod(au)",
-                "Math o wrandawiad",
-                "Lleoliad",
-                "Math o Wrandawiad",
-                "Gwybodaeth ychwanegol"
+                "Cyfeirnod yr achos",
+                "Barnwr",
+                "Lleoliad/Platfform"
             );
 
         softly.assertAll();
