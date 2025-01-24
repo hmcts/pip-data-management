@@ -126,7 +126,8 @@ class NonStrategicPublicationTest extends IntegrationTestBase {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"cstWeeklyHearingListWithBlankRows.xlsx", "cstWeeklyHearingListEndingInBlankRows.xlsx"})
+    @ValueSource(strings = {"cstWeeklyHearingListWithBlankRows.xlsx", "cstWeeklyHearingListEndingInBlankRows.xlsx",
+        "cstWeeklyHearingListWithOnlyBlankRows.xlsx"})
     void testNonStrategicPublicationUploadWhenFileContainsEmptyRows(String fileName) throws Exception {
         MockMultipartFile fileWithBlankRows = createExcelMultipartFile(
             "data/non-strategic/other-test-files/" + fileName);
