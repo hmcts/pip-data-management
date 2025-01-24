@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -302,8 +301,8 @@ class ArtefactRepositoryTest {
     void shouldRetrieveArtefactsForMiData() {
         List<PublicationMiData> miDataList = artefactRepository.getMiDataV2();
 
-        assertThat(miDataList).hasSize(3).extracting(PublicationMiData::getArtefactId)
-            .containsExactlyInAnyOrder(artefactId1, artefactId2, artefactId3);
+        assertThat(miDataList).hasSize(5).extracting(PublicationMiData::getArtefactId)
+            .containsExactlyInAnyOrder(artefactId1, artefactId2, artefactId3, artefactId4, artefactId5);
 
         PublicationMiData miData = miDataList.get(0);
         assertThat(miData.getSourceArtefactId()).isEqualTo(SOURCE_ARTEFACT_ID);

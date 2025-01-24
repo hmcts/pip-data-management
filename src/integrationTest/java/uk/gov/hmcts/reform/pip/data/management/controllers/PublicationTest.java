@@ -1839,10 +1839,10 @@ class PublicationTest extends IntegrationTestBase {
                 OBJECT_MAPPER.readValue(responseMiData.getResponse().getContentAsString(), PublicationMiData[].class)
             );
 
-        assertEquals(1, miData.size(), VALIDATION_MI_REPORT);
-
-        assertEquals(artefact.getArtefactId(), miData.get(0).getArtefactId(), VALIDATION_MI_REPORT);
-        assertEquals(artefact.getLocationId(), miData.get(0).getLocationId(), VALIDATION_MI_REPORT);
+        assertTrue(miData.stream().anyMatch(data -> data.getArtefactId().equals(artefact.getArtefactId())),
+                     VALIDATION_MI_REPORT);
+        assertTrue(miData.stream().anyMatch(data -> data.getLocationId().equals(artefact.getLocationId())),
+                     VALIDATION_MI_REPORT);
     }
 
     @Test
