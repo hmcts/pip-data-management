@@ -20,9 +20,13 @@ import uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelpe
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.service.PublicationManagementService;
+import uk.gov.hmcts.reform.pip.model.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
+import uk.gov.hmcts.reform.pip.model.publication.Sensitivity;
+import uk.gov.hmcts.reform.pip.model.report.PublicationMiData;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -441,5 +445,24 @@ class PublicationServiceTest {
         publicationService.createPublication(artefact, PAYLOAD);
 
         assertEquals(0, captor.getValue().getSupersededCount(), "Superseded count has been incremented");
+    }
+
+    @Test
+    void testGetMiDataV2() {
+        PublicationMiData publicationMiData = new PublicationMiData(
+            UUID.randomUUID(), LocalDateTime.now(), LocalDateTime.now(), Language.ENGLISH, "MANUAL_UPLOAD",
+            Sensitivity.PUBLIC, UUID.randomUUID().toString(), 0, ArtefactType.GENERAL_PUBLICATION,
+            LocalDateTime.now(),"1", ListType.CIVIL_DAILY_CAUSE_LIST);
+
+        PublicationMiData publicationMiData2 = new PublicationMiData(
+            UUID.randomUUID(), LocalDateTime.now(), LocalDateTime.now(), Language.ENGLISH, "MANUAL_UPLOAD",
+            Sensitivity.PUBLIC, UUID.randomUUID().toString(), 1, ArtefactType.GENERAL_PUBLICATION,
+            LocalDateTime.now(), "NoMatch2", ListType.CIVIL_DAILY_CAUSE_LIST);
+
+        when(artefactRepository.getMiDataV2()).thenReturn(List.of(publicationMiData, publicationMiData2));
+
+        List<PublicationMiData> publicationMiDataList = publicationService.getMiDataV2();
+
+        assertThat(publicationMiDataList).containsExactlyInAnyOrder(publicationMiData, publicationMiData2);
     }
 }

@@ -54,6 +54,7 @@ import uk.gov.hmcts.reform.pip.model.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 import uk.gov.hmcts.reform.pip.model.publication.Sensitivity;
+import uk.gov.hmcts.reform.pip.model.report.PublicationMiData;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -492,8 +493,20 @@ public class PublicationController {
     @GetMapping("/mi-data")
     @IsAdmin
     @SecurityRequirement(name = BEARER_AUTHENTICATION)
+    @Deprecated
     public ResponseEntity<String> getMiData() {
         return ResponseEntity.ok().body(publicationService.getMiData());
+    }
+
+    @ApiResponse(responseCode = OK_CODE, description = "A JSON model which contains a list of artefacts")
+    @ApiResponse(responseCode = UNAUTHORISED_CODE, description = UNAUTHORISED_MESSAGE)
+    @ApiResponse(responseCode = FORBIDDEN_CODE, description = FORBIDDEN_MESSAGE)
+    @Operation(summary = "Returns MI data for artefacts")
+    @GetMapping("/v2/mi-data")
+    @IsAdmin
+    @SecurityRequirement(name = BEARER_AUTHENTICATION)
+    public ResponseEntity<List<PublicationMiData>> getMiDataV2() {
+        return ResponseEntity.ok().body(publicationService.getMiDataV2());
     }
 
     @ApiResponse(responseCode = NO_CONTENT_CODE, description = NO_CONTENT_DESCRIPTION)

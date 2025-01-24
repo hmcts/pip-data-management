@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
+import uk.gov.hmcts.reform.pip.model.report.PublicationMiData;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -102,11 +103,18 @@ public interface ArtefactRepository extends JpaRepository<Artefact, Long> {
         + "true", nativeQuery = true)
     Integer countNoMatchArtefacts();
 
+    @Deprecated
     @Query(value = "SELECT cast(artefact_id as text), display_from, display_to, language, "
         + "provenance, sensitivity, source_artefact_id, superseded_count, type, content_date, location_id, list_type "
         + "FROM artefact",
         nativeQuery = true)
     List<String> getMiData();
+
+    @Query("SELECT new uk.gov.hmcts.reform.pip.model.report.PublicationMiData("
+        + "artefactId, displayFrom, displayTo, language, provenance, sensitivity, sourceArtefactId, "
+        + "supersededCount, type, contentDate, locationId, listType) "
+        + "FROM Artefact")
+    List<PublicationMiData> getMiDataV2();
 
     @Query(value = "SELECT * FROM Artefact "
         + "WHERE display_to >= :curr_date "

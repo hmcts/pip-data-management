@@ -19,7 +19,9 @@ import uk.gov.hmcts.reform.pip.data.management.helpers.NoMatchArtefactHelper;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.service.PublicationManagementService;
+import uk.gov.hmcts.reform.pip.model.report.PublicationMiData;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -176,6 +178,7 @@ public class PublicationService {
      * Retrieve artefact data for MI reporting. Insert court name before returning the data.
      * @return MI artefact data as comma delimited string
      */
+    @Deprecated
     public String getMiData() {
         StringBuilder builder = new StringBuilder(200);
         builder
@@ -192,6 +195,14 @@ public class PublicationService {
             .forEach(line -> builder.append(line)
                 .append(System.lineSeparator()));
         return builder.toString();
+    }
+
+    /**
+     * Retrieve artefact data for MI reporting.
+     * @return MI artefact data as a list of PublicationMiData objects
+     */
+    public List<PublicationMiData> getMiDataV2() {
+        return artefactRepository.getMiDataV2();
     }
 
     private String getLocationNameFromMiData(String line) {

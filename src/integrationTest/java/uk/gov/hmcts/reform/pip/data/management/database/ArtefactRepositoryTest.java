@@ -11,12 +11,15 @@ import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
+import uk.gov.hmcts.reform.pip.model.publication.Sensitivity;
+import uk.gov.hmcts.reform.pip.model.report.PublicationMiData;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -28,6 +31,7 @@ class ArtefactRepositoryTest {
     private static final LocalDateTime TODAY = LocalDateTime.now();
     private static final LocalDateTime TOMORROW = TODAY.plusDays(1);
     private static final LocalDateTime YESTERDAY = TODAY.minusDays(1);
+    private static final String SOURCE_ARTEFACT_ID = "1234";
     private static final String LOCATION_ID = "1";
     private static final String NO_MATCH_LOCATION_ID = "NoMatch99";
     private static final String INVALID_LOCATION_ID = "9";
@@ -100,11 +104,14 @@ class ArtefactRepositoryTest {
     }
 
     private void setCommonArtefactProperties(Artefact artefact) {
+        artefact.setSourceArtefactId(SOURCE_ARTEFACT_ID);
         artefact.setContentDate(TODAY);
         artefact.setLanguage(Language.ENGLISH);
         artefact.setProvenance(PROVENANCE);
         artefact.setDisplayFrom(YESTERDAY);
         artefact.setDisplayTo(TOMORROW);
+        artefact.setSensitivity(Sensitivity.PUBLIC);
+        artefact.setSupersededCount(1);
     }
 
     @Test
@@ -289,5 +296,25 @@ class ArtefactRepositoryTest {
             .hasValueSatisfying(a -> a.getSourceArtefactId().isEmpty())
             .hasValueSatisfying(a -> a.getSearch().isEmpty())
             .hasValueSatisfying(Artefact::getIsArchived);
+    }
+
+    @Test
+    void shouldRetrieveArtefactsForMiData() {
+        List<PublicationMiData> miDataList = artefactRepository.getMiDataV2();
+
+        assertThat(miDataList).hasSize(3).extracting(PublicationMiData::getArtefactId)
+            .containsExactlyInAnyOrder(artefactId1, artefactId2, artefactId3);
+
+        PublicationMiData miData = miDataList.get(0);
+        assertThat(miData.getSourceArtefactId()).isEqualTo(SOURCE_ARTEFACT_ID);
+        assertThat(miData.getLocationId()).isEqualTo(LOCATION_ID);
+        assertThat(miData.getListType()).isEqualTo(ListType.CIVIL_DAILY_CAUSE_LIST);
+        assertThat(miData.getLanguage()).isEqualTo(Language.ENGLISH);
+        assertThat(miData.getProvenance()).isEqualTo(PROVENANCE);
+        assertThat(miData.getDisplayFrom()).isEqualTo(YESTERDAY);
+        assertThat(miData.getDisplayTo()).isEqualTo(TOMORROW);
+        assertThat(miData.getContentDate()).isEqualTo(TODAY);
+        assertThat(miData.getSensitivity()).isEqualTo(Sensitivity.PUBLIC);
+        assertThat(miData.getSupersededCount()).isEqualTo(1);
     }
 }
