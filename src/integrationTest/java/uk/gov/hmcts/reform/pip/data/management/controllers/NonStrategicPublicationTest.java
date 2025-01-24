@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -69,13 +71,14 @@ class NonStrategicPublicationTest extends IntegrationTestBase {
                                      MediaType.APPLICATION_PDF_VALUE, "test content".getBytes(
             StandardCharsets.UTF_8)
         );
-        excelFile = createExcelMultipartFile();
+        excelFile = createExcelMultipartFile(
+            "data/non-strategic/cst-weekly-hearing-list/cstWeeklyHearingList.xlsx");
         OBJECT_MAPPER.findAndRegisterModules();
     }
 
-    private static MockMultipartFile createExcelMultipartFile() throws IOException {
+    private static MockMultipartFile createExcelMultipartFile(String fileName) throws IOException {
         try (InputStream inputStream = PublicationTest.class.getClassLoader()
-            .getResourceAsStream("data/non-strategic/cst-weekly-hearing-list/cstWeeklyHearingList.xlsx")) {
+            .getResourceAsStream(fileName)) {
             return new MockMultipartFile(
                 "file", "TestFileName.xlsx", EXCEL_FILE_TYPE,
                 org.testcontainers.shaded.org.apache.commons.io.IOUtils.toByteArray(inputStream)
@@ -120,6 +123,36 @@ class NonStrategicPublicationTest extends IntegrationTestBase {
         assertEquals(artefact.getLanguage(), Language.ENGLISH, "Language does not match input language");
         assertEquals(artefact.getSensitivity(), Sensitivity.PUBLIC, "Sensitivity does not match input sensitivity");
         assertTrue(artefact.getSearch().isEmpty(), "Search value does not match");
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"cstWeeklyHearingListWithEmptyRows.xlsx", "cstWeeklyHearingListEndingInBlankRows.xlsx"}) // six numbers
+    void testNonStrategicPublicationUploadWhenFileContainsEmptyRows(String fileName) throws Exception {
+        MockMultipartFile fileWithBlankRows = createExcelMultipartFile(
+            "data/non-strategic/other-test-files/" + fileName);
+
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+            .multipart(NON_STRATEGIC_PUBLICATION_URL)
+            .file(fileWithBlankRows);
+
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.TYPE_HEADER, ArtefactType.LIST)
+            .header(PublicationConfiguration.SENSITIVITY_HEADER, Sensitivity.PUBLIC)
+            .header(PublicationConfiguration.LANGUAGE_HEADER, Language.ENGLISH)
+            .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
+            .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
+            .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO)
+            .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
+            .header(PublicationConfiguration.LIST_TYPE, ListType.CST_WEEKLY_HEARING_LIST)
+            .header(PublicationConfiguration.COURT_ID, COURT_ID)
+            .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
+            .header(PublicationConfiguration.LANGUAGE_HEADER, Language.ENGLISH)
+            .contentType(MediaType.MULTIPART_FORM_DATA);
+
+        MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
+            .andExpect(status().isCreated())
+            .andReturn();
+
+        assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
     }
 
     @Test
