@@ -37,6 +37,7 @@ public class PublicationFileGenerationService {
     private static final int MAX_FILE_SIZE = 2_000_000;
     private static final ObjectMapper MAPPER = new ObjectMapper();
     private static final String SNL = "SNL";
+    private static final String MANUAL_UPLOAD = "MANUAL_UPLOAD";
 
     private final ArtefactService artefactService;
     private final LocationService locationService;
@@ -55,11 +56,13 @@ public class PublicationFileGenerationService {
         XRLog.setLoggerImpl(new Slf4jLogger());
     }
 
-    public static String convertDataSourceName(String provenance) {
+    public static String convertDataSourceName(String provenance, Language language) {
         if (SNL.equals(provenance)) {
             return "ListAssist";
+        } else if (MANUAL_UPLOAD.equals(provenance) && language == Language.WELSH) {
+            return "Lanlwytho â Llaw";
         }
-        return WordUtils.capitalizeFully(provenance.replaceAll("_", " "));
+        return  WordUtils.capitalizeFully(provenance.replaceAll("_", " "));
     }
 
     /**
@@ -182,7 +185,7 @@ public class PublicationFileGenerationService {
         String locationName = (language == Language.ENGLISH) ? location.getName() : location.getWelshName();
         String region = (language == Language.ENGLISH) ? String.join(", ", location.getRegion())
             : String.join(", ", location.getWelshRegion());
-        String provenance = convertDataSourceName(artefact.getProvenance());
+        String provenance = convertDataSourceName(artefact.getProvenance(), language);
         ZonedDateTime zonedLastReceivedDate = artefact.getLastReceivedDate().atZone(ZoneOffset.UTC);
 
         return Map.of(
