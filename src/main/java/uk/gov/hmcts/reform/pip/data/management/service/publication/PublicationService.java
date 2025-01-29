@@ -201,8 +201,22 @@ public class PublicationService {
      * Retrieve artefact data for MI reporting.
      * @return MI artefact data as a list of PublicationMiData objects
      */
+    @SuppressWarnings("PMD.EmptyCatchBlock")
     public List<PublicationMiData> getMiDataV2() {
-        return artefactRepository.getMiDataV2();
+        List<PublicationMiData> publicationMiData =  artefactRepository.getMiDataV2();
+
+        for (PublicationMiData miData : publicationMiData) {
+            if (NumberUtils.isParsable(miData.getLocationId())) {
+                try {
+                    miData.setLocationName(locationRepository.getLocationByLocationId(
+                        Integer.valueOf(miData.getLocationId())).map(Location::getName).orElse(null));
+                } catch (Exception e) {
+                    // To catch where location ID is a number, but not a valid integer
+                }
+            }
+        }
+
+        return publicationMiData;
     }
 
     private String getLocationNameFromMiData(String line) {

@@ -34,6 +34,7 @@ import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -448,21 +449,67 @@ class PublicationServiceTest {
     }
 
     @Test
-    void testGetMiDataV2() {
+    void testGetMiDataV2()  {
+        LocalDateTime localDateTime = LocalDateTime.now();
+        UUID randomId = UUID.randomUUID();
+
         PublicationMiData publicationMiData = new PublicationMiData(
-            UUID.randomUUID(), LocalDateTime.now(), LocalDateTime.now(), Language.ENGLISH, "MANUAL_UPLOAD",
-            Sensitivity.PUBLIC, UUID.randomUUID().toString(), 0, ArtefactType.GENERAL_PUBLICATION,
-            LocalDateTime.now(),"1", ListType.CIVIL_DAILY_CAUSE_LIST);
+            randomId, localDateTime, localDateTime, Language.ENGLISH, MANUAL_UPLOAD_PROVENANCE,
+            Sensitivity.PUBLIC, randomId.toString(), 0, ArtefactType.GENERAL_PUBLICATION,
+            localDateTime,"1", ListType.CIVIL_DAILY_CAUSE_LIST);
 
         PublicationMiData publicationMiData2 = new PublicationMiData(
-            UUID.randomUUID(), LocalDateTime.now(), LocalDateTime.now(), Language.ENGLISH, "MANUAL_UPLOAD",
+            UUID.randomUUID(), localDateTime, localDateTime, Language.ENGLISH, MANUAL_UPLOAD_PROVENANCE,
             Sensitivity.PUBLIC, UUID.randomUUID().toString(), 1, ArtefactType.GENERAL_PUBLICATION,
-            LocalDateTime.now(), "NoMatch2", ListType.CIVIL_DAILY_CAUSE_LIST);
+            localDateTime, "NoMatch2", ListType.CIVIL_DAILY_CAUSE_LIST);
 
+        Location location = new Location();
+        location.setName("Test Location");
+
+        when(locationRepository.getLocationByLocationId(1)).thenReturn(Optional.of(location));
         when(artefactRepository.getMiDataV2()).thenReturn(List.of(publicationMiData, publicationMiData2));
 
         List<PublicationMiData> publicationMiDataList = publicationService.getMiDataV2();
 
-        assertThat(publicationMiDataList).containsExactlyInAnyOrder(publicationMiData, publicationMiData2);
+        PublicationMiData publicationMiDataWithLocationName = new PublicationMiData(
+            randomId, localDateTime, localDateTime, Language.ENGLISH, MANUAL_UPLOAD_PROVENANCE,
+            Sensitivity.PUBLIC, randomId.toString(), 0, ArtefactType.GENERAL_PUBLICATION,
+            localDateTime,"1", ListType.CIVIL_DAILY_CAUSE_LIST);
+        publicationMiDataWithLocationName.setLocationName("Test Location");
+
+        assertIterableEquals(List.of(publicationMiDataWithLocationName, publicationMiData2), publicationMiDataList,
+                             "Publications MI do not match");
+    }
+
+    @Test
+    void testGetMiDataV2WhenArtefactRepositoryReturnsEmpty()  {
+        when(locationRepository.getLocationByLocationId(100)).thenReturn(Optional.empty());
+
+        PublicationMiData publicationMiData = new PublicationMiData(
+            UUID.randomUUID(), LocalDateTime.now(), LocalDateTime.now(), Language.ENGLISH, MANUAL_UPLOAD_PROVENANCE,
+            Sensitivity.PUBLIC, UUID.randomUUID().toString(), 0, ArtefactType.GENERAL_PUBLICATION,
+            LocalDateTime.now(),"100", ListType.CIVIL_DAILY_CAUSE_LIST);
+
+        when(artefactRepository.getMiDataV2()).thenReturn(List.of(publicationMiData));
+
+        List<PublicationMiData> publicationMiDataList = publicationService.getMiDataV2();
+
+        assertThat(publicationMiDataList.get(0).getLocationName())
+            .as("Location name is not null").isNull();
+    }
+
+    @Test
+    void testGetMiDataV2WhenCourtIdIsADouble()  {
+        PublicationMiData publicationMiData = new PublicationMiData(
+            UUID.randomUUID(), LocalDateTime.now(), LocalDateTime.now(), Language.ENGLISH, MANUAL_UPLOAD_PROVENANCE,
+            Sensitivity.PUBLIC, UUID.randomUUID().toString(), 0, ArtefactType.GENERAL_PUBLICATION,
+            LocalDateTime.now(),"100.12", ListType.CIVIL_DAILY_CAUSE_LIST);
+
+        when(artefactRepository.getMiDataV2()).thenReturn(List.of(publicationMiData));
+
+        List<PublicationMiData> publicationMiDataList = publicationService.getMiDataV2();
+
+        assertThat(publicationMiDataList.get(0).getLocationName())
+            .as("Location name is not blank").isNull();
     }
 }
