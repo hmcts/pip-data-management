@@ -44,7 +44,13 @@ public class ExcelConversionService {
 
             for (int rowNumber = headerRowNumber + 1; rowNumber <= sheet.getLastRowNum(); rowNumber++) {
                 List<String> row = getExcelRow(sheet, rowNumber, firstColumnNumber);
-                data.add(buildRowMap(headers, row));
+
+                Map<String, String> rowMappings = buildRowMap(headers, row);
+                if (rowMappings.values().stream().allMatch(String::isBlank)) {
+                    break;
+                }
+
+                data.add(rowMappings);
             }
             return OBJECT_MAPPER.writeValueAsString(data);
         } catch (IOException e) {
