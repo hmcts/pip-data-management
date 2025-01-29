@@ -22,8 +22,10 @@ import uk.gov.hmcts.reform.pip.data.management.service.PublicationManagementServ
 import uk.gov.hmcts.reform.pip.model.report.PublicationMiData;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * This class contains the business logic for handling of Publications.
@@ -205,11 +207,14 @@ public class PublicationService {
     public List<PublicationMiData> getMiDataV2() {
         List<PublicationMiData> publicationMiData =  artefactRepository.getMiDataV2();
 
+        Map<Integer, String> location = locationRepository.findAll()
+            .stream().collect(Collectors.toMap(Location::getLocationId, Location::getName));
+
         for (PublicationMiData miData : publicationMiData) {
             if (NumberUtils.isParsable(miData.getLocationId())) {
                 try {
-                    miData.setLocationName(locationRepository.getLocationByLocationId(
-                        Integer.valueOf(miData.getLocationId())).map(Location::getName).orElse(null));
+                    miData.setLocationName(
+                        location.getOrDefault(Integer.parseInt(miData.getLocationId()), null));
                 } catch (NumberFormatException e) {
                     // To catch where location ID is a number, but not a valid integer
                 }

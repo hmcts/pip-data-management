@@ -453,6 +453,10 @@ class PublicationServiceTest {
         LocalDateTime localDateTime = LocalDateTime.now();
         UUID randomId = UUID.randomUUID();
 
+        Location location = new Location();
+        location.setLocationId(1);
+        location.setName("Test Location");
+
         PublicationMiData publicationMiData = new PublicationMiData(
             randomId, localDateTime, localDateTime, Language.ENGLISH, MANUAL_UPLOAD_PROVENANCE,
             Sensitivity.PUBLIC, randomId.toString(), 0, ArtefactType.GENERAL_PUBLICATION,
@@ -463,10 +467,7 @@ class PublicationServiceTest {
             Sensitivity.PUBLIC, UUID.randomUUID().toString(), 1, ArtefactType.GENERAL_PUBLICATION,
             localDateTime, "NoMatch2", ListType.CIVIL_DAILY_CAUSE_LIST);
 
-        Location location = new Location();
-        location.setName("Test Location");
-
-        when(locationRepository.getLocationByLocationId(1)).thenReturn(Optional.of(location));
+        when(locationRepository.findAll()).thenReturn(List.of(location));
         when(artefactRepository.getMiDataV2()).thenReturn(List.of(publicationMiData, publicationMiData2));
 
         List<PublicationMiData> publicationMiDataList = publicationService.getMiDataV2();
@@ -483,7 +484,7 @@ class PublicationServiceTest {
 
     @Test
     void testGetMiDataV2WhenArtefactRepositoryReturnsEmpty()  {
-        when(locationRepository.getLocationByLocationId(100)).thenReturn(Optional.empty());
+        when(locationRepository.findAll()).thenReturn(List.of());
 
         PublicationMiData publicationMiData = new PublicationMiData(
             UUID.randomUUID(), LocalDateTime.now(), LocalDateTime.now(), Language.ENGLISH, MANUAL_UPLOAD_PROVENANCE,
