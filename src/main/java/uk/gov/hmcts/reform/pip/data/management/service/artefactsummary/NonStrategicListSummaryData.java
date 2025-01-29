@@ -30,7 +30,10 @@ import static uk.gov.hmcts.reform.pip.model.publication.ListType.RPT_NORTHERN_WE
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.RPT_SOUTHERN_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.SIAC_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_AAC_DAILY_HEARING_LIST;
-import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_IAC_JUDICIAL_REVIEW_DAILY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_IAC_JR_BIRMINGHAM_DAILY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_IAC_JR_CARDIFF_DAILY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_IAC_JR_LONDON_DAILY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_IAC_JR_MANCHESTER_DAILY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_IAC_STATUTORY_APPEALS_DAILY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_LC_DAILY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_T_AND_CC_DAILY_HEARING_LIST;
@@ -52,8 +55,14 @@ public class NonStrategicListSummaryData implements ArtefactSummaryData {
         Map.entry(PHT_WEEKLY_HEARING_LIST, List.of(DATE, CASE_NAME)),
         Map.entry(GRC_WEEKLY_HEARING_LIST, List.of(DATE, HEARING_TIME, CASE_REFERENCE_NUMBER)),
         Map.entry(WPAFCC_WEEKLY_HEARING_LIST, List.of(DATE, HEARING_TIME, CASE_REFERENCE_NUMBER)),
-        Map.entry(UT_IAC_JUDICIAL_REVIEW_DAILY_HEARING_LIST, List.of(HEARING_TIME,
-                                                                     CASE_REFERENCE_NUMBER)),
+        Map.entry(UT_IAC_JR_LONDON_DAILY_HEARING_LIST, List.of(HEARING_TIME,
+                                                               CASE_REFERENCE_NUMBER)),
+        Map.entry(UT_IAC_JR_MANCHESTER_DAILY_HEARING_LIST, List.of(HEARING_TIME,
+                                                                   CASE_REFERENCE_NUMBER)),
+        Map.entry(UT_IAC_JR_BIRMINGHAM_DAILY_HEARING_LIST, List.of(HEARING_TIME,
+                                                                   CASE_REFERENCE_NUMBER)),
+        Map.entry(UT_IAC_JR_CARDIFF_DAILY_HEARING_LIST, List.of(HEARING_TIME,
+                                                                CASE_REFERENCE_NUMBER)),
         Map.entry(UT_IAC_STATUTORY_APPEALS_DAILY_HEARING_LIST, List.of(HEARING_TIME,
                                                                        APPEAL_REFERENCE_NUMBER)),
         Map.entry(SIAC_WEEKLY_HEARING_LIST, List.of(DATE, TIME, CASE_REFERENCE_NUMBER)),
