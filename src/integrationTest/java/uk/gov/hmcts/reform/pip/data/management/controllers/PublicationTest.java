@@ -1846,6 +1846,27 @@ class PublicationTest extends IntegrationTestBase {
     }
 
     @Test
+    void testGetMiDataV2SuccessWithNoMatch() throws Exception {
+        Artefact artefactNoMatch = createSscsDailyList(Sensitivity.PUBLIC, "TestProvenance");
+
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+            .get(MI_REPORTING_DATA_URL_V2);
+
+        MvcResult responseMiData = mockMvc.perform(request).andExpect(status().isOk()).andReturn();
+        assertNotNull(responseMiData.getResponse(), VALIDATION_MI_REPORT);
+
+        List<PublicationMiData> miData  =
+            Arrays.asList(
+                OBJECT_MAPPER.readValue(responseMiData.getResponse().getContentAsString(), PublicationMiData[].class)
+            );
+
+        assertTrue(miData.stream().anyMatch(data -> data.getArtefactId().equals(artefactNoMatch.getArtefactId())),
+                   VALIDATION_MI_REPORT);
+        assertTrue(miData.stream().anyMatch(data -> data.getLocationId().equals(artefactNoMatch.getLocationId())),
+                   VALIDATION_MI_REPORT);
+    }
+
+    @Test
     void testArchiveArtefactSuccess() throws Exception {
         Artefact artefactToArchive = createDailyList(Sensitivity.PUBLIC);
 
