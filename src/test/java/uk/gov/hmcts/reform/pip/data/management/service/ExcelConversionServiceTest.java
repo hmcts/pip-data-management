@@ -22,6 +22,7 @@ class ExcelConversionServiceTest {
     private static final String FILE_TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
     private static final String CELL_MATCH_MESSAGE = "Cell value does not match";
     private static final String CELL_EMPTY_MESSAGE = "Cell value is not empty";
+    private static final String ROW_SIZE_MESSAGE = "Row size does not match";
 
     private static final String HEADER1 = "header1";
     private static final String HEADER2 = "header2";
@@ -215,6 +216,47 @@ class ExcelConversionServiceTest {
             softly.assertThat(secondRow.get("time"))
                 .as(CELL_MATCH_MESSAGE)
                 .isEqualTo("3:30pm");
+
+            softly.assertAll();
+        }
+    }
+
+    @Test
+    void shouldStopProcessingExcelFileWhenItReachesABlankRow() throws IOException {
+        try (InputStream inputStream = this.getClass()
+            .getClassLoader()
+            .getResourceAsStream("excel/tableWithBlankRow.xlsx")) {
+            MultipartFile file = new MockMultipartFile(FILE, FILE_NAME, FILE_TYPE, IOUtils.toByteArray(inputStream));
+
+            String json = excelConversionService.convert(file);
+            List<Map<String, String>> results = OBJECT_MAPPER.readValue(json, new TypeReference<>() {
+            });
+
+            SoftAssertions softly = new SoftAssertions();
+
+            Map<String, String> firstRow = results.get(0);
+
+            softly.assertThat(firstRow.get(HEADER1))
+                .as(CELL_EMPTY_MESSAGE)
+                .isEmpty();
+
+            softly.assertThat(firstRow.get(HEADER2))
+                .as(CELL_MATCH_MESSAGE)
+                .isEqualTo(ROW1B);
+
+            Map<String, String> secondRow = results.get(1);
+
+            softly.assertThat(secondRow.get(HEADER1))
+                .as(CELL_MATCH_MESSAGE)
+                .isEqualTo(ROW2A);
+
+            softly.assertThat(secondRow.get(HEADER2))
+                .as(CELL_EMPTY_MESSAGE)
+                .isEmpty();
+
+            softly.assertThat(results.size())
+                .as(ROW_SIZE_MESSAGE)
+                .isEqualTo(2);
 
             softly.assertAll();
         }
