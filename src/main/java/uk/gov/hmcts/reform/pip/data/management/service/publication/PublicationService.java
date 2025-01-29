@@ -210,7 +210,7 @@ public class PublicationService {
                 try {
                     miData.setLocationName(locationRepository.getLocationByLocationId(
                         Integer.valueOf(miData.getLocationId())).map(Location::getName).orElse(null));
-                } catch (Exception e) {
+                } catch (NumberFormatException e) {
                     // To catch where location ID is a number, but not a valid integer
                 }
             }
