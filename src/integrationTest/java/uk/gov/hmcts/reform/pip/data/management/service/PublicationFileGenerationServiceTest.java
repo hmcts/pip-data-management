@@ -85,6 +85,7 @@ class PublicationFileGenerationServiceTest extends IntegrationBasicTestBase {
         ARTEFACT.setProvenance("france");
         ARTEFACT.setLanguage(Language.ENGLISH);
         ARTEFACT.setListType(ListType.SJP_PUBLIC_LIST);
+        ARTEFACT.setLastReceivedDate(LocalDateTime.now());
         ARTEFACT.setPayloadSize(100F);
 
         WELSH_ARTEFACT.setArtefactId(ARTEFACT_ID);
@@ -93,6 +94,7 @@ class PublicationFileGenerationServiceTest extends IntegrationBasicTestBase {
         WELSH_ARTEFACT.setProvenance("france");
         WELSH_ARTEFACT.setLanguage(Language.WELSH);
         WELSH_ARTEFACT.setListType(ListType.SJP_PUBLIC_LIST);
+        WELSH_ARTEFACT.setLastReceivedDate(LocalDateTime.now());
         WELSH_ARTEFACT.setPayloadSize(100F);
 
         LOCATION.setLocationId(LOCATION_ID);

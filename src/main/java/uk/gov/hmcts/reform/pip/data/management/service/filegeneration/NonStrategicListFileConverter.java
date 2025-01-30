@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.thymeleaf.context.Context;
+import uk.gov.hmcts.reform.pip.data.management.service.helpers.DateHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.LanguageResourceHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.NonStrategicListFormatter;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
@@ -25,9 +26,16 @@ public class NonStrategicListFileConverter implements FileConverter {
         Context context = new Context();
         context.setVariable("contentDate", metadata.get("contentDate"));
         context.setVariable("provenance", metadata.get("provenance"));
-        context.setVariable("i18n", languageResources);
 
         Language language = Language.valueOf(metadata.get("language"));
+        context.setVariable("lastUpdatedDate", DateHelper.formatTimeStampToBst(
+            metadata.get("lastReceivedDate"), language, false, false
+        ));
+        context.setVariable("lastUpdatedTime", DateHelper.formatTimeStampToBst(
+            metadata.get("lastReceivedDate"), language, true, false
+        ));
+        context.setVariable("i18n", languageResources);
+
         String listType = metadata.get("listType");
         String resourceName;
         if (ListType.valueOf(listType).getParentListType() != null) {

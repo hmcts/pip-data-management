@@ -7,6 +7,7 @@ import com.openhtmltopdf.slf4j.Slf4jLogger;
 import com.openhtmltopdf.util.XRLog;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.text.WordUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,8 @@ import uk.gov.hmcts.reform.pip.model.publication.Language;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -33,6 +36,8 @@ import java.util.UUID;
 public class PublicationFileGenerationService {
     private static final int MAX_FILE_SIZE = 2_000_000;
     private static final ObjectMapper MAPPER = new ObjectMapper();
+    private static final String SNL = "SNL";
+    private static final String MANUAL_UPLOAD = "MANUAL_UPLOAD";
 
     private final ArtefactService artefactService;
     private final LocationService locationService;
@@ -51,8 +56,13 @@ public class PublicationFileGenerationService {
         XRLog.setLoggerImpl(new Slf4jLogger());
     }
 
-    public static String maskDataSourceName(String provenance) {
-        return "SNL".equals(provenance) ? "ListAssist" : provenance;
+    public static String convertDataSourceName(String provenance, Language language) {
+        if (SNL.equals(provenance)) {
+            return "ListAssist";
+        } else if (MANUAL_UPLOAD.equals(provenance) && language == Language.WELSH) {
+            return "Lanlwytho â Llaw";
+        }
+        return  WordUtils.capitalizeFully(provenance.replaceAll("_", " "));
     }
 
     /**
@@ -175,14 +185,17 @@ public class PublicationFileGenerationService {
         String locationName = (language == Language.ENGLISH) ? location.getName() : location.getWelshName();
         String region = (language == Language.ENGLISH) ? String.join(", ", location.getRegion())
             : String.join(", ", location.getWelshRegion());
-        String provenance = maskDataSourceName(artefact.getProvenance());
+        String provenance = convertDataSourceName(artefact.getProvenance(), language);
+        ZonedDateTime zonedLastReceivedDate = artefact.getLastReceivedDate().atZone(ZoneOffset.UTC);
+
         return Map.of(
             "contentDate", DateHelper.formatLocalDateTimeToBst(artefact.getContentDate()),
             "provenance", provenance,
             "locationName", locationName,
             "region", region,
             "language", language.toString(),
-            "listType", artefact.getListType().name()
+            "listType", artefact.getListType().name(),
+            "lastReceivedDate", zonedLastReceivedDate.toString()
         );
     }
 
