@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.pip.data.management.service;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.ActiveProfiles;
+import uk.gov.hmcts.reform.pip.model.publication.Language;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -10,16 +11,23 @@ class PublicationFileGenerationServiceTest {
     private PublicationFileGenerationService publicationFileGenerationService;
 
     @Test
-    void testMaskDataSourceName() {
-        assertThat(publicationFileGenerationService.maskDataSourceName("SNL"))
+    void testConvertSnlDataSourceName() {
+        assertThat(publicationFileGenerationService.convertDataSourceName("SNL", Language.ENGLISH))
             .as("Provenance should be changed to ListAssist")
             .isEqualTo("ListAssist");
     }
 
     @Test
-    void testDoNotMaskDataSourceName() {
-        assertThat(publicationFileGenerationService.maskDataSourceName("MANUAL_UPLOAD"))
-            .as("Provenance should not be changed")
-            .isEqualTo("MANUAL_UPLOAD");
+    void testConvertManualUploadDataSourceNameInEnglish() {
+        assertThat(publicationFileGenerationService.convertDataSourceName("MANUAL_UPLOAD", Language.ENGLISH))
+            .as("Provenance does not match")
+            .isEqualTo("Manual Upload");
+    }
+
+    @Test
+    void testConvertManualUploadDataSourceNameInWelsh() {
+        assertThat(publicationFileGenerationService.convertDataSourceName("MANUAL_UPLOAD", Language.WELSH))
+            .as("Provenance in Welsh does not match")
+            .isEqualTo("Lanlwytho â Llaw");
     }
 }
