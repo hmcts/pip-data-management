@@ -112,7 +112,7 @@ public class PublicationService {
     @Async
     public void processCreatedPublication(Artefact artefact, String payload) {
         publicationManagementService.generateFiles(artefact.getArtefactId(), payload);
-        artefactTriggerService.checkAndTriggerSubscriptionManagement(artefact);
+        artefactTriggerService.checkAndTriggerPublicationSubscription(artefact);
     }
 
     /**

@@ -265,7 +265,7 @@ public class PublicationController {
         logManualUpload(publicationService.maskEmail(issuerEmail), createdItem.getArtefactId().toString());
 
         if (!NoMatchArtefactHelper.isNoMatchLocationId(createdItem.getLocationId())) {
-            artefactTriggerService.checkAndTriggerSubscriptionManagement(artefact);
+            artefactTriggerService.checkAndTriggerPublicationSubscription(artefact);
         }
 
         return ResponseEntity.status(HttpStatus.CREATED).body(createdItem);

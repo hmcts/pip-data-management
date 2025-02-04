@@ -387,7 +387,7 @@ class PublicationControllerTest {
             SENSITIVITY, LANGUAGE, DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, LOCATION_ID, CONTENT_DATE, TEST_STRING, FILE
         );
 
-        verify(artefactTriggerService).checkAndTriggerSubscriptionManagement(any(Artefact.class));
+        verify(artefactTriggerService).checkAndTriggerPublicationSubscription(any(Artefact.class));
 
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode(), STATUS_CODE_MATCH);
         assertEquals(artefactWithId, responseEntity.getBody(), ARTEFACT_MATCH_MESSAGE);
@@ -412,7 +412,7 @@ class PublicationControllerTest {
             SENSITIVITY, LANGUAGE, DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, LOCATION_ID, CONTENT_DATE, TEST_STRING, FILE
         );
 
-        verify(artefactTriggerService, never()).checkAndTriggerSubscriptionManagement(any(Artefact.class));
+        verify(artefactTriggerService, never()).checkAndTriggerPublicationSubscription(any(Artefact.class));
 
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode(), STATUS_CODE_MATCH);
         assertEquals(artefactWithNoMatchLocationId, responseEntity.getBody(), ARTEFACT_MATCH_MESSAGE);
