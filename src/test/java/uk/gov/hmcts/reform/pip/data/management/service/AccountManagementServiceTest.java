@@ -36,10 +36,10 @@ class AccountManagementServiceTest {
     private static final String PI_USER_EMAIL = "test_user@justice.gov.uk";
     private static final String PI_USER_RESPONSE = "{\"email\":\"test_user@justice.gov.uk\"}";
 
+    private final LogCaptor logCaptor = LogCaptor.forClass(AccountManagementService.class);
+
     private final MockWebServer mockAccountManagementEndpoint = new MockWebServer();
     private AccountManagementService accountManagementService;
-
-    private LogCaptor logCaptor = LogCaptor.forClass(AccountManagementService.class);
 
     @BeforeEach
     void setup() {
