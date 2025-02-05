@@ -477,6 +477,10 @@ public class PublicationController {
         }
     }
 
+    /**
+     * Previous version of the MI Reporting endpoint. No longer used and soon to be removed.
+     * @return This method will be removed in the future in favour of the V2 equivalent.
+     */
     @ApiResponse(responseCode = OK_CODE, description = "A CSV like structure which contains the data. "
         + "See example for headers", content = {
             @Content(examples = {@ExampleObject("artefact_id,display_from,display_to,language,provenance,"
@@ -493,7 +497,7 @@ public class PublicationController {
     @GetMapping("/mi-data")
     @IsAdmin
     @SecurityRequirement(name = BEARER_AUTHENTICATION)
-    @Deprecated
+    @Deprecated(since = "2")
     public ResponseEntity<String> getMiData() {
         return ResponseEntity.ok().body(publicationService.getMiData());
     }

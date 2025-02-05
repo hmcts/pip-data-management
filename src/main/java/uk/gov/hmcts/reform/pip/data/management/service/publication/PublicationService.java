@@ -179,8 +179,9 @@ public class PublicationService {
     /**
      * Retrieve artefact data for MI reporting. Insert court name before returning the data.
      * @return MI artefact data as comma delimited string
+     * @deprecated This method will be removed in the future in favour of the V2 equivalent.
      */
-    @Deprecated
+    @Deprecated(since = "2")
     public String getMiData() {
         StringBuilder builder = new StringBuilder(200);
         builder

@@ -103,7 +103,11 @@ public interface ArtefactRepository extends JpaRepository<Artefact, Long> {
         + "true", nativeQuery = true)
     Integer countNoMatchArtefacts();
 
-    @Deprecated
+    /**
+     * Previous version of the MI Reporting repository method. No longer used and soon to be removed.
+     * @return This method will be removed in the future in favour of the V2 equivalent.
+     */
+    @Deprecated(since = "2")
     @Query(value = "SELECT cast(artefact_id as text), display_from, display_to, language, "
         + "provenance, sensitivity, source_artefact_id, superseded_count, type, content_date, location_id, list_type "
         + "FROM artefact",
