@@ -95,7 +95,7 @@ Any endpoint that should require authentication, needs to be annotated either at
 
 ## Architecture Diagram
 
-![Architecture Diagram for pip-data-management](./data-man-arch.png)
+![Architecture Diagram for pip-data-management](service-diagram.png)
 
 The above diagram is somewhat simplified for readability (e.g. it does not include secure/insecure communications, but those are covered elsewhere).
 
