@@ -27,9 +27,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ArtefactRepositoryTest {
-    private static final LocalDateTime TODAY = LocalDateTime.now();
-    private static final LocalDateTime TOMORROW = TODAY.plusDays(1);
-    private static final LocalDateTime YESTERDAY = TODAY.minusDays(1);
+    private static final LocalDateTime TODAY = LocalDateTime.of(2025, 2, 5, 1, 1, 2);
+    private static final LocalDateTime TOMORROW = LocalDateTime.of(2025, 2, 6, 1, 1, 2);
+    private static final LocalDateTime YESTERDAY = LocalDateTime.of(2025, 2, 4, 1, 1, 2);
     private static final String SOURCE_ARTEFACT_ID = "1234";
     private static final String LOCATION_ID = "1";
     private static final String NO_MATCH_LOCATION_ID = "NoMatch99";
