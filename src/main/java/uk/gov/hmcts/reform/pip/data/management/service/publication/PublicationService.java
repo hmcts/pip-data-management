@@ -19,9 +19,13 @@ import uk.gov.hmcts.reform.pip.data.management.helpers.NoMatchArtefactHelper;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.service.PublicationManagementService;
+import uk.gov.hmcts.reform.pip.model.report.PublicationMiData;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * This class contains the business logic for handling of Publications.
@@ -175,7 +179,9 @@ public class PublicationService {
     /**
      * Retrieve artefact data for MI reporting. Insert court name before returning the data.
      * @return MI artefact data as comma delimited string
+     * @deprecated This method will be removed in the future in favour of the V2 equivalent.
      */
+    @Deprecated(since = "2")
     public String getMiData() {
         StringBuilder builder = new StringBuilder(200);
         builder
@@ -192,6 +198,31 @@ public class PublicationService {
             .forEach(line -> builder.append(line)
                 .append(System.lineSeparator()));
         return builder.toString();
+    }
+
+    /**
+     * Retrieve artefact data for MI reporting.
+     * @return MI artefact data as a list of PublicationMiData objects
+     */
+    @SuppressWarnings("PMD.EmptyCatchBlock")
+    public List<PublicationMiData> getMiDataV2() {
+        List<PublicationMiData> publicationMiData =  artefactRepository.getMiDataV2();
+
+        Map<Integer, String> location = locationRepository.findAll()
+            .stream().collect(Collectors.toMap(Location::getLocationId, Location::getName));
+
+        for (PublicationMiData miData : publicationMiData) {
+            if (NumberUtils.isParsable(miData.getLocationId())) {
+                try {
+                    miData.setLocationName(
+                        location.getOrDefault(Integer.parseInt(miData.getLocationId()), null));
+                } catch (NumberFormatException e) {
+                    // To catch where location ID is a number, but not a valid integer
+                }
+            }
+        }
+
+        return publicationMiData;
     }
 
     private String getLocationNameFromMiData(String line) {
