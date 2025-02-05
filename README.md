@@ -95,7 +95,7 @@ Any endpoint that should require authentication, needs to be annotated either at
 
 ## Architecture Diagram
 
-![Architecture Diagram for pip-data-management](./data-man-arch.png)
+![Architecture Diagram for pip-data-management](service-diagram.png)
 
 The above diagram is somewhat simplified for readability (e.g. it does not include secure/insecure communications, but those are covered elsewhere).
 
@@ -161,8 +161,6 @@ Below is a table of currently used environment variables for starting the servic
 | DB_PASS                        | Postgres Password                                                                                                                                                                                                                                                      | Yes       |
 | ACCOUNT_MANAGEMENT_URL         | URL used for connecting to the pip-account-management service. Defaults to staging if not provided.                                                                                                                                                                    | No        |
 | PUBLICATION_SERVICES_URL       | URL used for connecting to the pip-publication-services service. Defaults to staging if not provided.                                                                                                                                                                  | No        |
-| SUBSCRIPTION_MANAGEMENT_URL    | URL used for connecting to the pip-subscription-management service. Defaults to staging if not provided.                                                                                                                                                               | No        |
-| SUBSCRIPTION_MANAGEMENT_AZ_API | Used as part of the `scope` parameter when requesting a token from Azure. Used for service-to-service communication with the pip-subscription-management service                                                                                                       | No        |
 | PUBLICATION_SERVICES_AZ_API    | Used as part of the `scope` parameter when requesting a token from Azure. Used for service-to-service communication with the pip-publication-services service                                                                                                          | No        |
 | ACCOUNT_MANAGEMENT_AZ_API      | Used as part of the `scope` parameter when requesting a token from Azure. Used for service-to-service communication with the account management service                                                                                                                | No        |
 | ENABLE_TESTING_SUPPORT_API     | Used to conditionally enable testing support API. Default to `false` for the production environment only.                                                                                                                                                              | No        |
@@ -179,7 +177,6 @@ Secrets required for getting tests to run correctly can be found in the below ta
 | CLIENT_ID                      | As above                                                                                                                               |
 | CLIENT_SECRET                  | As above                                                                                                                               |
 | APP_URI                        | As above                                                                                                                               |
-| SUBSCRIPTION_MANAGEMENT_AZ_API | As above                                                                                                                               |
 | TENANT_ID                      | As above                                                                                                                               |
 | ACCOUNT_MANAGEMENT_AZ_API      | As above                                                                                                                               |
 | PUBLICATION_SERVICES_AZ_API    | As above                                                                                                                               |
@@ -272,7 +269,7 @@ curl --request POST \
 ```
 You can copy the above curl command into either Postman or Insomnia and they will automatically be converted to the relevant formats for those programs.
 
-*Note - the `_FOR_ANOTHER_SERVICE` variables need to be extracted from another registered microservice within the broader CaTH umbrella (e.g. [pip-subscription-management](https://github.com/hmcts/pip-subscription-management))*
+*Note - the `_FOR_ANOTHER_SERVICE` variables need to be extracted from another registered microservice within the broader CaTH umbrella (e.g. [pip-account-management](https://github.com/hmcts/pip-account-management))*
 
 ### Uploading a new publication
 
