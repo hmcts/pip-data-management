@@ -196,7 +196,7 @@ public class PublicationController {
         Artefact createdItem = publicationCreationRunner.run(artefact, payload, true);
         logManualUpload(publicationService.maskEmail(issuerEmail), createdItem.getArtefactId().toString());
 
-        // Process the created artefact to generate PDF/Excel files and check/trigger subscription management
+        // Process the created artefact to generate PDF/Excel files and check/trigger the subscription process
         if (!NoMatchArtefactHelper.isNoMatchLocationId(createdItem.getLocationId())) {
             publicationService.processCreatedPublication(createdItem, payload);
         }
@@ -328,7 +328,7 @@ public class PublicationController {
         Artefact createdItem = publicationCreationRunner.run(artefact, payload, false);
         logManualUpload(publicationService.maskEmail(issuerEmail), createdItem.getArtefactId().toString());
 
-        // Process the created artefact to generate PDF and check/trigger subscription management
+        // Process the created artefact to generate PDF and check/trigger the subscription process
         if (!NoMatchArtefactHelper.isNoMatchLocationId(createdItem.getLocationId())) {
             publicationService.processCreatedPublication(createdItem, payload);
         }

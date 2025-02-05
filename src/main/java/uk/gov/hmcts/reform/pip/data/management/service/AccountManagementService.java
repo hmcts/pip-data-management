@@ -106,7 +106,7 @@ public class AccountManagementService {
                 .retrieve().bodyToMono(String.class).block();
         } catch (WebClientException ex) {
             log.error(writeLog(
-                String.format("Request to send artefact to Subscription Management failed with error: %s",
+                String.format("Request to send artefact to Account Management failed with error: %s",
                               ex.getMessage())
             ));
             return "Artefact failed to send: " + artefact.getArtefactId();
@@ -120,7 +120,7 @@ public class AccountManagementService {
                 .retrieve().bodyToMono(String.class).block();
         } catch (WebClientException ex) {
             log.error(writeLog(
-                String.format("Request to Subscription Management to send deleted artefact to third party failed "
+                String.format("Request to Account Management to send deleted artefact to third party failed "
                                   + "with error: %s", ex.getMessage())
             ));
             return "Artefact failed to send: " + artefact.getArtefactId();
@@ -133,7 +133,7 @@ public class AccountManagementService {
                 .retrieve().bodyToMono(String.class).block();
         } catch (WebClientException ex) {
             log.error(writeLog(
-                String.format("Request to Subscription Management to find subscriptions for location %s failed "
+                String.format("Request to Account Management to find subscriptions for location %s failed "
                                   + "with error: %s", locationId, ex.getMessage())
             ));
             return "Failed to find subscription for Location: " + locationId + " with status: " + ex.getMessage();
