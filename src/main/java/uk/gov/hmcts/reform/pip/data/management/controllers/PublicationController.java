@@ -479,7 +479,7 @@ public class PublicationController {
 
     /**
      * Previous version of the MI Reporting endpoint. No longer used and soon to be removed.
-     * @return This method will be removed in the future in favour of the V2 equivalent.
+     * @deprecated This method will be removed in the future in favour of the V2 equivalent.
      */
     @ApiResponse(responseCode = OK_CODE, description = "A CSV like structure which contains the data. "
         + "See example for headers", content = {
