@@ -5,6 +5,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pip.data.management.utils.SmokeTestBase;
 import uk.gov.hmcts.reform.pip.model.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
@@ -34,6 +35,7 @@ import static uk.gov.hmcts.reform.pip.data.management.config.PublicationConfigur
 import static uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration.TYPE_HEADER;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@ActiveProfiles("smoke")
 class SmokeTest extends SmokeTestBase {
     private static final String PUBLICATION_URL = "/publication";
     private static final String TESTING_SUPPORT_BASE_URL = "/testing-support";

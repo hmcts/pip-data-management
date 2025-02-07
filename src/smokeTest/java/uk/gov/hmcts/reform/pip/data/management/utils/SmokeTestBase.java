@@ -20,7 +20,7 @@ import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 public class SmokeTestBase {
     private String accessToken;
 
-    @Value("${TEST_URL:http://localhost:8090}")
+    @Value("${test-url}")
     private String testUrl;
 
     @Value("${CLIENT_ID_FT}")
