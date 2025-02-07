@@ -8,16 +8,12 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.testcontainers.shaded.org.bouncycastle.util.encoders.Base64;
 import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.models.PublicationFileSizes;
 import uk.gov.hmcts.reform.pip.data.management.utils.FunctionalTestBase;
-import uk.gov.hmcts.reform.pip.data.management.utils.OAuthClient;
 import uk.gov.hmcts.reform.pip.model.publication.Artefact;
 import uk.gov.hmcts.reform.pip.model.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.model.publication.FileType;
@@ -47,9 +43,7 @@ import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 import static uk.gov.hmcts.reform.pip.data.management.utils.TestUtil.BEARER;
 import static uk.gov.hmcts.reform.pip.data.management.utils.TestUtil.randomLocationId;
 
-@ExtendWith(SpringExtension.class)
 @ActiveProfiles(profiles = "functional")
-@SpringBootTest(classes = {OAuthClient.class})
 @SuppressWarnings("PMD.ExcessiveImports")
 class FileGenerationTest extends FunctionalTestBase {
 
