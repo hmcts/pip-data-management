@@ -35,7 +35,6 @@ import static uk.gov.hmcts.reform.pip.data.management.config.PublicationConfigur
 import static uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration.TYPE_HEADER;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@ActiveProfiles("functional")
 class SmokeTest extends SmokeTestBase {
     private static final String PUBLICATION_URL = "/publication";
     private static final String TESTING_SUPPORT_BASE_URL = "/testing-support";
