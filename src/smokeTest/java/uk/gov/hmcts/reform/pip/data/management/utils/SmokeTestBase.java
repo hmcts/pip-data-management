@@ -21,20 +21,8 @@ import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 public class SmokeTestBase {
     private String accessToken;
 
-    @Value("${test-url}")
+    @Value("${TEST_URL:http://localhost:8090}")
     private String testUrl;
-
-    @Value("${CLIENT_ID_FT}")
-    private String clientId;
-
-    @Value("${CLIENT_SECRET_FT}")
-    private String clientSecret;
-
-    @Value("${TENANT_ID}")
-    private String tenantId;
-
-    @Value("${APP_URI}")
-    private String scope;
 
     @Autowired
     private OAuthClient authClient;
