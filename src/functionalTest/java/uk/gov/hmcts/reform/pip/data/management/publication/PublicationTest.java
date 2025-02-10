@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.pip.data.management.publication;
 
 import com.jayway.jsonpath.JsonPath;
 import io.restassured.response.Response;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,6 +18,7 @@ import uk.gov.hmcts.reform.pip.model.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 import uk.gov.hmcts.reform.pip.model.publication.Sensitivity;
+import uk.gov.hmcts.reform.pip.model.report.PublicationMiData;
 import uk.gov.hmcts.reform.pip.model.subscription.SearchType;
 
 import java.io.File;
@@ -25,6 +27,8 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
@@ -39,6 +43,7 @@ import static uk.gov.hmcts.reform.pip.data.management.utils.TestUtil.randomLocat
 
 @ActiveProfiles(profiles = "functional")
 @SpringBootTest(classes = {OAuthClient.class})
+@SuppressWarnings({"PMD.ExcessiveImports"})
 class PublicationTest extends FunctionalTestBase {
 
     @Value("${test-user-id}")
@@ -49,9 +54,12 @@ class PublicationTest extends FunctionalTestBase {
     private static final String ARTEFACT_BY_LOCATION_ID_URL = PUBLICATION_URL + "/locationId/";
     private static final String ARTEFACT_BY_SEARCH_VALUE_URL = PUBLICATION_URL + "/search/";
     private static final String DELETE_ARTEFACTS_BY_LOCATION_ID = PUBLICATION_URL + "/%s/deleteArtefacts";
+    private static final String MI_DATA_URL = PUBLICATION_URL + "/v2/mi-data";
+
 
     private static final String TESTING_SUPPORT_LOCATION_URL = "/testing-support/location/";
     private static final String TESTING_SUPPORT_PUBLICATION_URL = "/testing-support/publication/";
+
     private static final ArtefactType ARTEFACT_TYPE = ArtefactType.LIST;
     private static final String PROVENANCE = "MANUAL_UPLOAD";
     private static final String SOURCE_ARTEFACT_ID = "sourceArtefactId";
@@ -60,7 +68,7 @@ class PublicationTest extends FunctionalTestBase {
     private static final ListType LIST_TYPE = ListType.CIVIL_DAILY_CAUSE_LIST;
     private static final String USER_ID_HEADER = "x-user-id";
     private static final String ISSUER_HEADER = "x-issuer-id";
-    private static final String BASE_COURT_NAME = "TestLocation-" + randomLocationId();
+    private static final String BASE_COURT_NAME = "TestLocation-PublicationTest";
     private static final String CASE_NUMBER = "4568454842";
     private static final String EMAIL = "test@hmcts.net";
 
@@ -68,6 +76,7 @@ class PublicationTest extends FunctionalTestBase {
         .truncatedTo(ChronoUnit.SECONDS);
 
     private String courtId;
+    private String noMatchArtefactId = "";
 
     @BeforeEach
     public void setupLocation() {
@@ -83,6 +92,15 @@ class PublicationTest extends FunctionalTestBase {
     public void teardown() {
         doDeleteRequest(TESTING_SUPPORT_PUBLICATION_URL + BASE_COURT_NAME, getBaseHeaderMap());
         doDeleteRequest(TESTING_SUPPORT_LOCATION_URL + BASE_COURT_NAME, getBaseHeaderMap());
+
+        Map<String, String> deleteArtefactHeaderMap = getBaseHeaderMap();
+        deleteArtefactHeaderMap.put(ISSUER_HEADER, EMAIL);
+
+        if (!noMatchArtefactId.isBlank()) {
+            doDeleteRequest(
+                PUBLICATION_URL + '/' + noMatchArtefactId, deleteArtefactHeaderMap
+            );
+        }
     }
 
     private String getJsonString() throws IOException {
@@ -103,10 +121,11 @@ class PublicationTest extends FunctionalTestBase {
         }
     }
 
-    private Artefact uploadArtefact(String jsonString, String courtId, Sensitivity sensitivity) throws IOException {
+    private Artefact uploadArtefact(String jsonString, String courtId, Sensitivity sensitivity,
+                                    String provenance) throws IOException {
         Map<String, String> headerMapUploadJsonFile = getBaseHeaderMap();
         headerMapUploadJsonFile.put(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE.toString());
-        headerMapUploadJsonFile.put(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE);
+        headerMapUploadJsonFile.put(PublicationConfiguration.PROVENANCE_HEADER, provenance);
         headerMapUploadJsonFile.put(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID);
         headerMapUploadJsonFile.put(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM.toString());
         headerMapUploadJsonFile.put(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_FROM.plusDays(1).toString());
@@ -188,7 +207,7 @@ class PublicationTest extends FunctionalTestBase {
     void testPublicationEndpointsWithJsonFileUpload() throws Exception {
         String randomCaseNumber = Integer.toString(ThreadLocalRandom.current().nextInt(100_000, 200_000));
         String jsonString = getJsonString(randomCaseNumber);
-        Artefact returnedArtefact = uploadArtefact(jsonString, courtId, Sensitivity.PUBLIC);
+        Artefact returnedArtefact = uploadArtefact(jsonString, courtId, Sensitivity.PUBLIC, PROVENANCE);
 
         assertThat(returnedArtefact.getContentDate()).isEqualTo(CONTENT_DATE);
         assertThat(returnedArtefact.getListType()).isEqualTo(LIST_TYPE);
@@ -297,7 +316,7 @@ class PublicationTest extends FunctionalTestBase {
 
     @Test
     void testDeleteArtefactByLocationId() throws Exception {
-        Artefact returnedArtefact = uploadArtefact(getJsonString(), courtId, Sensitivity.PUBLIC);
+        Artefact returnedArtefact = uploadArtefact(getJsonString(), courtId, Sensitivity.PUBLIC, PROVENANCE);
         String artefactId = returnedArtefact.getArtefactId().toString();
 
         Response responseGetArtefactMetadata = doGetRequest(
@@ -328,7 +347,7 @@ class PublicationTest extends FunctionalTestBase {
 
     @Test
     void testGetMetadataWhenUserIsUnauthorised() throws Exception {
-        Artefact returnedArtefact = uploadArtefact(getJsonString(), courtId, Sensitivity.CLASSIFIED);
+        Artefact returnedArtefact = uploadArtefact(getJsonString(), courtId, Sensitivity.CLASSIFIED, PROVENANCE);
 
         Map<String, String> headerMap = getBaseHeaderMap();
         headerMap.put(USER_ID_HEADER, userId);
@@ -342,7 +361,7 @@ class PublicationTest extends FunctionalTestBase {
 
     @Test
     void testGetMetadataWhenUserDoesNotExist() throws Exception {
-        Artefact returnedArtefact = uploadArtefact(getJsonString(), courtId, Sensitivity.CLASSIFIED);
+        Artefact returnedArtefact = uploadArtefact(getJsonString(), courtId, Sensitivity.CLASSIFIED, PROVENANCE);
 
         Map<String, String> headerMap = getBaseHeaderMap();
         headerMap.put(USER_ID_HEADER, UUID.randomUUID().toString());
@@ -356,7 +375,7 @@ class PublicationTest extends FunctionalTestBase {
 
     @Test
     void testGetPayloadWhenUserIsUnauthorised() throws Exception {
-        Artefact returnedArtefact = uploadArtefact(getJsonString(), courtId, Sensitivity.CLASSIFIED);
+        Artefact returnedArtefact = uploadArtefact(getJsonString(), courtId, Sensitivity.CLASSIFIED, PROVENANCE);
 
         Map<String, String> headerMap = getBaseHeaderMap();
         headerMap.put(USER_ID_HEADER, userId);
@@ -370,7 +389,7 @@ class PublicationTest extends FunctionalTestBase {
 
     @Test
     void testGetPayloadWhenUserDoesNotExist() throws Exception {
-        Artefact returnedArtefact = uploadArtefact(getJsonString(), courtId, Sensitivity.CLASSIFIED);
+        Artefact returnedArtefact = uploadArtefact(getJsonString(), courtId, Sensitivity.CLASSIFIED, PROVENANCE);
 
         Map<String, String> headerMap = getBaseHeaderMap();
         headerMap.put(USER_ID_HEADER, UUID.randomUUID().toString());
@@ -413,7 +432,7 @@ class PublicationTest extends FunctionalTestBase {
     @Test
     void testGetArtefactsBySearchValueWhenUserIsUnauthorised() throws IOException {
         String randomCaseNumber = Integer.toString(ThreadLocalRandom.current().nextInt(100_000, 200_000));
-        uploadArtefact(getJsonString(randomCaseNumber), courtId, Sensitivity.CLASSIFIED);
+        uploadArtefact(getJsonString(randomCaseNumber), courtId, Sensitivity.CLASSIFIED, PROVENANCE);
 
         Map<String, String> headerMap = getBaseHeaderMap();
         headerMap.put(USER_ID_HEADER, userId);
@@ -428,7 +447,7 @@ class PublicationTest extends FunctionalTestBase {
     @Test
     void testGetArtefactsBySearchValueWhenUserDoesNotExist() throws IOException {
         String randomCaseNumber = Integer.toString(ThreadLocalRandom.current().nextInt(100_000, 200_000));
-        uploadArtefact(getJsonString(randomCaseNumber), courtId, Sensitivity.CLASSIFIED);
+        uploadArtefact(getJsonString(randomCaseNumber), courtId, Sensitivity.CLASSIFIED, PROVENANCE);
 
         Map<String, String> headerMap = getBaseHeaderMap();
         headerMap.put(USER_ID_HEADER, UUID.randomUUID().toString());
@@ -489,5 +508,37 @@ class PublicationTest extends FunctionalTestBase {
             PUBLICATION_URL + '/' + artefact.getArtefactId().toString(), getBaseHeaderMap()
         );
         assertThat(responseGetArtefactMetadata.getStatusCode()).isEqualTo(NOT_FOUND.value());
+    }
+
+    @Test
+    void testGetMiDataV2() throws IOException {
+        Artefact returnedArtefact = uploadArtefact(getJsonString(), courtId, Sensitivity.CLASSIFIED, PROVENANCE);
+        Artefact returnedNomatchArtefact = uploadArtefact(
+            getJsonString(),
+            courtId,
+            Sensitivity.CLASSIFIED,
+            "RandomProvenance"
+        );
+        UUID artefactId = returnedArtefact.getArtefactId();
+        UUID artefactIdNoMatch = returnedNomatchArtefact.getArtefactId();
+        noMatchArtefactId = artefactIdNoMatch.toString();
+
+        Map<String, String> headerMap = getBaseHeaderMap();
+
+        final Response responseGetArtefactMetadata = doGetRequest(
+            MI_DATA_URL, headerMap
+        );
+
+        assertThat(responseGetArtefactMetadata.getStatusCode()).isEqualTo(OK.value());
+        List<PublicationMiData> returnedArtefacts = Arrays.asList(responseGetArtefactMetadata.getBody()
+                                                                      .as(PublicationMiData[].class));
+
+        Assertions.assertThat(returnedArtefacts).anyMatch(
+            artefact -> artefactId.equals(artefact.getArtefactId())
+        );
+
+        Assertions.assertThat(returnedArtefacts).anyMatch(
+            noMatchArtefact -> artefactIdNoMatch.equals(noMatchArtefact.getArtefactId())
+        );
     }
 }
