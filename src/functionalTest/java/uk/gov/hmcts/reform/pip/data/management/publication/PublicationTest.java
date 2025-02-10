@@ -6,11 +6,13 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.utils.FunctionalTestBase;
+import uk.gov.hmcts.reform.pip.data.management.utils.OAuthClient;
 import uk.gov.hmcts.reform.pip.model.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
@@ -36,6 +38,7 @@ import static uk.gov.hmcts.reform.pip.data.management.utils.TestUtil.BEARER;
 import static uk.gov.hmcts.reform.pip.data.management.utils.TestUtil.randomLocationId;
 
 @ActiveProfiles(profiles = "functional")
+@SpringBootTest(classes = {OAuthClient.class})
 class PublicationTest extends FunctionalTestBase {
 
     @Value("${test-user-id}")
