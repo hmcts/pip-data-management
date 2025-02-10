@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import uk.gov.hmcts.reform.pip.data.management.utils.OAuthClient;
 import uk.gov.hmcts.reform.pip.data.management.utils.SmokeTestBase;
 import uk.gov.hmcts.reform.pip.model.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
@@ -35,7 +36,7 @@ import static uk.gov.hmcts.reform.pip.data.management.config.PublicationConfigur
 import static uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration.SENSITIVITY_HEADER;
 import static uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration.TYPE_HEADER;
 
-@SpringBootTest(classes = {})
+@SpringBootTest(classes = {OAuthClient.class})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @ActiveProfiles("smoke")
 class SmokeTest extends SmokeTestBase {

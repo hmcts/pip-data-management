@@ -4,6 +4,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.TestInstance;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.util.CollectionUtils;
@@ -15,7 +16,7 @@ import static io.restassured.RestAssured.given;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 
-@SpringBootTest(classes = {}, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(classes = {OAuthClient.class}, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class SmokeTestBase {
     private String accessToken;
@@ -35,10 +36,13 @@ public class SmokeTestBase {
     @Value("${APP_URI}")
     private String scope;
 
+    @Autowired
+    private OAuthClient authClient;
+
     @BeforeAll
     void startup() {
         RestAssured.baseURI = testUrl;
-        accessToken = generateAccessToken();
+        accessToken = authClient.generateAccessToken();
     }
 
     protected Response doGetRequest(final String path) {
@@ -77,20 +81,5 @@ public class SmokeTestBase {
             headers.putAll(additionalHeaders);
         }
         return headers;
-    }
-
-    private String generateAccessToken() {
-        return given()
-            .relaxedHTTPSValidation()
-            .header("content-type", "application/x-www-form-urlencoded")
-            .formParam("client_id", clientId)
-            .formParam("scope", scope + "/.default")
-            .formParam("client_secret", clientSecret)
-            .formParam("grant_type", "client_credentials")
-            .baseUri("https://login.microsoftonline.com/" + tenantId + "/oauth2/v2.0/token")
-            .post()
-            .body()
-            .jsonPath()
-            .get("access_token");
     }
 }
