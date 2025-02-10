@@ -45,6 +45,8 @@ class FttResidentialPropertyWeeklyHearingListFileConverterTest {
         + "researcher or member of the public";
     private static final String OBSERVE_HEARING_WELSH = "Arsylwi gwrandawiad llys neu dribiwnlys fel newyddiadurwr, "
         + "ymchwilydd neu aelod o'r cyhoedd";
+    private static final String COMMON_WELSH_HEADER_TEXT = "Tribiwnlys Haen Gyntaf (Tribiwnlys Eiddo Preswyl): "
+        + "Rhestr o Wrandawiadau Wythnosol rhanbarth ";
 
     private static final String HEADER_ELEMENT = "page-heading";
     private static final String LIST_DATE_ELEMENT = "list-date";
@@ -83,15 +85,15 @@ class FttResidentialPropertyWeeklyHearingListFileConverterTest {
     private static Stream<Arguments> parametersWelsh() {
         return Stream.of(
             Arguments.of("RPT_EASTERN_WEEKLY_HEARING_LIST", "rptEasternWeeklyHearingList.json",
-                         "Tribiwnlys Haen Gyntaf (Tribiwnlys Eiddo Preswyl): Rhestr o Wrandawiadau Wythnosol rhanbarth Dwyrain Lloegr"),
+                         COMMON_WELSH_HEADER_TEXT + "Dwyrain Lloegr"),
             Arguments.of("RPT_LONDON_WEEKLY_HEARING_LIST", "rptLondonWeeklyHearingList.json",
-                         "Tribiwnlys Haen Gyntaf (Tribiwnlys Eiddo Preswyl): Rhestr o Wrandawiadau Wythnosol rhanbarth Llundain"),
+                         COMMON_WELSH_HEADER_TEXT + "Llundain"),
             Arguments.of("RPT_MIDLANDS_WEEKLY_HEARING_LIST", "rptMidlandsWeeklyHearingList.json",
-                         "Tribiwnlys Haen Gyntaf (Tribiwnlys Eiddo Preswyl): Rhestr o Wrandawiadau Wythnosol rhanbarth Canolbarth Lloegr"),
+                         COMMON_WELSH_HEADER_TEXT + "Canolbarth Lloegr"),
             Arguments.of("RPT_NORTHERN_WEEKLY_HEARING_LIST", "rptNorthernWeeklyHearingList.json",
-                         "Tribiwnlys Haen Gyntaf (Tribiwnlys Eiddo Preswyl): Rhestr o Wrandawiadau Wythnosol rhanbarth Gogledd Lloegr"),
+                         COMMON_WELSH_HEADER_TEXT + "Gogledd Lloegr"),
             Arguments.of("RPT_SOUTHERN_WEEKLY_HEARING_LIST", "rptSouthernWeeklyHearingList.json",
-                         "Tribiwnlys Haen Gyntaf (Tribiwnlys Eiddo Preswyl): Rhestr o Wrandawiadau Wythnosol rhanbarth De Lloegr")
+                         COMMON_WELSH_HEADER_TEXT + "De Lloegr")
         );
     }
 
