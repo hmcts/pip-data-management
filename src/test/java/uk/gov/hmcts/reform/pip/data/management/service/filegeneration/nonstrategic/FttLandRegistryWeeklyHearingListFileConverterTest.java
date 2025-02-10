@@ -40,15 +40,14 @@ class FttLandRegistryWeeklyHearingListFileConverterTest {
 
     private static final String LIST_NAME = FTT_LR_WEEKLY_HEARING_LIST.name();
     private static final String LIST_ENGLISH_NAME = "First-tier Tribunal "
-        + "(Lands Registration Tribunal) Weekly Hearing List";
+        + "(Land Registration Tribunal) Weekly Hearing List";
     private static final String LIST_DATE_ENGLISH = "List for week commencing 12 December 2024";
     private static final String LIST_DATE_WELSH = "Rhestr ar gyfer yr wythnos yn dechrau ar 12 December 2024";
     private static final String OBSERVE_HEARING_ENGLISH = "Observe a court or tribunal hearing as a journalist, "
         + "researcher or member of the public";
     private static final String OBSERVE_HEARING_WELSH = "Arsylwi gwrandawiad llys neu dribiwnlys fel newyddiadurwr, "
         + "ymchwilydd neu aelod o'r cyhoedd";
-    private static final String LIST_WELSH_NAME = "Rhestr o Wrandawiadau "
-        + "Wythnosol Tribiwnlys Haen Gyntaf (Tribiwnlys Cofrestru Tir)";
+    private static final String LIST_WELSH_NAME = "Tribiwnlys Haen Gyntaf (Tribiwnlys Cofrestru Tir)";
 
     private static final String HEADER_ELEMENT = "page-heading";
     private static final String LIST_DATE_ELEMENT = "list-date";
