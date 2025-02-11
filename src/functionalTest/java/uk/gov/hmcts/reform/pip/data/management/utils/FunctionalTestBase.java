@@ -121,7 +121,7 @@ public class FunctionalTestBase {
             .thenReturn();
     }
 
-    protected static Map<String, String> getRequestHeaders(final Map<String, String> additionalHeaders) {
+    private static Map<String, String> getRequestHeaders(final Map<String, String> additionalHeaders) {
         final Map<String, String> headers = new ConcurrentHashMap<>(Map.of(CONTENT_TYPE, CONTENT_TYPE_VALUE));
         if (!CollectionUtils.isEmpty(additionalHeaders)) {
             headers.putAll(additionalHeaders);
