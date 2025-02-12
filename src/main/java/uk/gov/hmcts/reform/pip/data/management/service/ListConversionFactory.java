@@ -84,6 +84,13 @@ import static uk.gov.hmcts.reform.pip.model.publication.ListType.SJP_PRESS_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.SJP_PUBLIC_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.SSCS_DAILY_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.SSCS_DAILY_LIST_ADDITIONAL_HEARINGS;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.SSCS_LONDON_DAILY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.SSCS_MIDLANDS_DAILY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.SSCS_NORTHEAST_DAILY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.SSCS_NORTHWEST_DAILY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.SSCS_SCOTLAND_DAILY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.SSCS_SOUTHEAST_DAILY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.SSCS_WALES_AND_SOUTHEAST_DAILY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_AAC_DAILY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_IAC_JR_BIRMINGHAM_DAILY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_IAC_JR_CARDIFF_DAILY_HEARING_LIST;
@@ -224,6 +231,34 @@ public class ListConversionFactory {
         Map.entry(UT_AAC_DAILY_HEARING_LIST, new ConversionPair(
             new NonStrategicListFileConverter(),
             new NonStrategicListSummaryData(UT_AAC_DAILY_HEARING_LIST)
+        )),
+        Map.entry(SSCS_MIDLANDS_DAILY_HEARING_LIST, new ConversionPair(
+            new NonStrategicListFileConverter(),
+            new NonStrategicListSummaryData(SSCS_MIDLANDS_DAILY_HEARING_LIST)
+        )),
+        Map.entry(SSCS_SOUTHEAST_DAILY_HEARING_LIST, new ConversionPair(
+            new NonStrategicListFileConverter(),
+            new NonStrategicListSummaryData(SSCS_SOUTHEAST_DAILY_HEARING_LIST)
+        )),
+        Map.entry(SSCS_WALES_AND_SOUTHEAST_DAILY_HEARING_LIST, new ConversionPair(
+            new NonStrategicListFileConverter(),
+            new NonStrategicListSummaryData(SSCS_WALES_AND_SOUTHEAST_DAILY_HEARING_LIST)
+        )),
+        Map.entry(SSCS_SCOTLAND_DAILY_HEARING_LIST, new ConversionPair(
+            new NonStrategicListFileConverter(),
+            new NonStrategicListSummaryData(SSCS_SCOTLAND_DAILY_HEARING_LIST)
+        )),
+        Map.entry(SSCS_NORTHEAST_DAILY_HEARING_LIST, new ConversionPair(
+            new NonStrategicListFileConverter(),
+            new NonStrategicListSummaryData(SSCS_NORTHEAST_DAILY_HEARING_LIST)
+        )),
+        Map.entry(SSCS_NORTHWEST_DAILY_HEARING_LIST, new ConversionPair(
+            new NonStrategicListFileConverter(),
+            new NonStrategicListSummaryData(SSCS_NORTHWEST_DAILY_HEARING_LIST)
+        )),
+        Map.entry(SSCS_LONDON_DAILY_HEARING_LIST, new ConversionPair(
+            new NonStrategicListFileConverter(),
+            new NonStrategicListSummaryData(SSCS_LONDON_DAILY_HEARING_LIST)
         ))
     );
 

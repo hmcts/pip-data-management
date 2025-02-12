@@ -68,6 +68,9 @@ class ValidationServiceTest extends IntegrationBasicTestBase {
     private static final String UT_IAC_LIST_JSON = "data/non-strategic/"
         + "ut-iac-judicial-review-daily-hearing-list/"
         + "utIacJudicialReviewDailyHearingList.json";
+    private static final String SSCS_LISTS_JSON_FILE = "data/non-strategic/"
+        + "sscs-daily-hearing-list/"
+        + "sscsDailyHearingList.json";
 
     private HeaderGroup headerGroup;
 
@@ -398,7 +401,21 @@ class ValidationServiceTest extends IntegrationBasicTestBase {
                              + "utLandsChamberDailyHearingList.json"),
             Arguments.of(ListType.UT_AAC_DAILY_HEARING_LIST,
                          "data/non-strategic/ut-administrative-appeals-chamber-daily-hearing-list/"
-                             + "utAdministrativeAppealsChamberDailyHearingList.json")
+                             + "utAdministrativeAppealsChamberDailyHearingList.json"),
+            Arguments.of(ListType.SSCS_MIDLANDS_DAILY_HEARING_LIST,
+                         SSCS_LISTS_JSON_FILE),
+            Arguments.of(ListType.SSCS_SOUTHEAST_DAILY_HEARING_LIST,
+                         SSCS_LISTS_JSON_FILE),
+            Arguments.of(ListType.SSCS_WALES_AND_SOUTHEAST_DAILY_HEARING_LIST,
+                         SSCS_LISTS_JSON_FILE),
+            Arguments.of(ListType.SSCS_SCOTLAND_DAILY_HEARING_LIST,
+                         SSCS_LISTS_JSON_FILE),
+            Arguments.of(ListType.SSCS_NORTHEAST_DAILY_HEARING_LIST,
+                         SSCS_LISTS_JSON_FILE),
+            Arguments.of(ListType.SSCS_NORTHWEST_DAILY_HEARING_LIST,
+                         SSCS_LISTS_JSON_FILE),
+            Arguments.of(ListType.SSCS_LONDON_DAILY_HEARING_LIST,
+                         SSCS_LISTS_JSON_FILE)
         );
     }
 

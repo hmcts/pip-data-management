@@ -94,6 +94,12 @@ class PublicationManagementTest extends IntegrationTestBase {
     private static final String SIAC_LISTS_JSON_FILE = NON_STRATEGIC_FILES_LOCATION
         + "siac-weekly-hearing-list/"
         + "siacWeeklyHearingList.json";
+    private static final String SSCS_LISTS_EXCEL_FILE = NON_STRATEGIC_FILES_LOCATION
+        + "sscs-daily-hearing-list/"
+        + "sscsDailyHearingList.xlsx";
+    private static final String SSCS_LISTS_JSON_FILE = NON_STRATEGIC_FILES_LOCATION
+        + "sscs-daily-hearing-list/"
+        + "sscsDailyHearingList.json";
 
     private static final LocalDateTime DISPLAY_TO = LocalDateTime.now()
         .truncatedTo(ChronoUnit.SECONDS);
@@ -718,6 +724,35 @@ class PublicationManagementTest extends IntegrationTestBase {
         assertTrue(responseContent.contains("Date - 11 December 2024"), CONTENT_MISMATCH_ERROR);
         assertTrue(responseContent.contains(TIME_FIELD), CONTENT_MISMATCH_ERROR);
         assertTrue(responseContent.contains("Case reference number - 123451"), CONTENT_MISMATCH_ERROR);
+    }
+
+    @ParameterizedTest
+    @EnumSource(
+        value = ListType.class,
+        names = {
+            "SSCS_MIDLANDS_DAILY_HEARING_LIST",
+            "SSCS_SOUTHEAST_DAILY_HEARING_LIST",
+            "SSCS_WALES_AND_SOUTHEAST_DAILY_HEARING_LIST",
+            "SSCS_SCOTLAND_DAILY_HEARING_LIST",
+            "SSCS_NORTHEAST_DAILY_HEARING_LIST",
+            "SSCS_NORTHWEST_DAILY_HEARING_LIST",
+            "SSCS_LONDON_DAILY_HEARING_LIST"
+        })
+    void testGenerateArtefactSummarySscsDailyHearingList(ListType listType) throws Exception {
+        Artefact artefact = createNonStrategicPublication(
+            listType, SSCS_LISTS_EXCEL_FILE
+        );
+
+        byte[] jsonData = getTestData(SSCS_LISTS_JSON_FILE);
+        when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(jsonData));
+
+        MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, artefact.getArtefactId())))
+            .andExpect(status().isOk()).andReturn();
+
+        String responseContent = response.getResponse().getContentAsString();
+        assertTrue(responseContent.contains(HEARING_TIME_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(HEARING_TYPE_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains("Appeal reference number - 1234567"), CONTENT_MISMATCH_ERROR);
     }
 
     @Test
