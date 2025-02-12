@@ -127,7 +127,7 @@ configurations {
   integrationTestImplementation.extendsFrom testImplementation
   integrationTestRuntimeOnly.extendsFrom runtimeOnly
 
-  smokeTestImplementation.extendsFrom testImplementation
+  smokeTestImplementation.extendsFrom functionalTestImplementation
   smokeTestRuntimeOnly.extendsFrom runtimeOnly
 
   all {
