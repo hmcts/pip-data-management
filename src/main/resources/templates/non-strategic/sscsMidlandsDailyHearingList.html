@@ -131,7 +131,7 @@
     </summary>
     <div class="govuk-details__text">
       <p id="open-justice-message" class="govuk-body" th:text="${i18n.openJusticeStatement}"/>
-      <p id="contact-message" class="govuk-body" th:text="${i18n.contactMessage}"/>
+      <p id="contact-message" class="govuk-body" th:text="${#strings.replace(i18n.contactMessage, 'EMAIL', i18n.emailAddress)}"/>
       <a id="observe-hearing" th:href="${i18n.observeHearingLink}" class="govuk-link" th:title="${i18n.observeHearingLinkText}" th:text="${i18n.observeHearingLinkText}" />
     </div>
   </details>
