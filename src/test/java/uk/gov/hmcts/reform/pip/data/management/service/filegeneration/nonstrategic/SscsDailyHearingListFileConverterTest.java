@@ -100,7 +100,8 @@ class SscsDailyHearingListFileConverterTest {
                              + "Canolbarth Lloegr (Nawdd Cymdeithasol a Chynnal Plant)",
                          "ascbirmingham@justice.gov.uk"),
             Arguments.of("SSCS_SOUTHEAST_DAILY_HEARING_LIST", "sscsSoutheastDailyHearingList.json",
-                         "South East First-tier Tribunal (Social Security and Child Support) Daily Hearing List",
+                         "Rhestr o Wrandawiadau Dyddiol Tribiwnlys Haen Gyntaf "
+                             + "De Ddwyrain Lloegr (Nawdd Cymdeithasol a Chynnal Plant)",
                          "sscs_bradford@justice.gov.uk"),
             Arguments.of("SSCS_WALES_AND_SOUTHEAST_DAILY_HEARING_LIST", "sscsWalesAndSoutheastDailyHearingList.json",
                          "Rhestr o Wrandawiadau Dyddiol Tribiwnlys Haen Gyntaf Cymru a De "
