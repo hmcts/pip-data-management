@@ -47,7 +47,8 @@ class FttLandRegistryWeeklyHearingListFileConverterTest {
         + "researcher or member of the public";
     private static final String OBSERVE_HEARING_WELSH = "Arsylwi gwrandawiad llys neu dribiwnlys fel newyddiadurwr, "
         + "ymchwilydd neu aelod o'r cyhoedd";
-    private static final String LIST_WELSH_NAME = "Tribiwnlys Haen Gyntaf (Tribiwnlys Cofrestru Tir)";
+    private static final String LIST_WELSH_NAME = "Rhestr o Wrandawiadau Wythnosol Tribiwnlys Haen "
+        + "Gyntaf (Tribiwnlys Cofrestru Tir)";
 
     private static final String HEADER_ELEMENT = "page-heading";
     private static final String LIST_DATE_ELEMENT = "list-date";
