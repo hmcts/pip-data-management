@@ -731,11 +731,11 @@ class PublicationManagementTest extends IntegrationTestBase {
         value = ListType.class,
         names = {
             "SSCS_MIDLANDS_DAILY_HEARING_LIST",
-            "SSCS_SOUTHEAST_DAILY_HEARING_LIST",
-            "SSCS_WALES_AND_SOUTHEAST_DAILY_HEARING_LIST",
+            "SSCS_SOUTH_EAST_DAILY_HEARING_LIST",
+            "SSCS_WALES_AND_SOUTH_EAST_DAILY_HEARING_LIST",
             "SSCS_SCOTLAND_DAILY_HEARING_LIST",
-            "SSCS_NORTHEAST_DAILY_HEARING_LIST",
-            "SSCS_NORTHWEST_DAILY_HEARING_LIST",
+            "SSCS_NORTH_EAST_DAILY_HEARING_LIST",
+            "SSCS_NORTH_WEST_DAILY_HEARING_LIST",
             "SSCS_LONDON_DAILY_HEARING_LIST"
         })
     void testGenerateArtefactSummarySscsDailyHearingList(ListType listType) throws Exception {

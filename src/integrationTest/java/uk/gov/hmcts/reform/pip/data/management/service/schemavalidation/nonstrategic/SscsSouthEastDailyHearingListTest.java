@@ -58,7 +58,7 @@ class SscsSouthEastDailyHearingListTest extends IntegrationBasicTestBase {
     @BeforeEach
     void setup() {
         headerGroup = new HeaderGroup(PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE, SENSITIVITY, LANGUAGE,
-            DISPLAY_FROM, DISPLAY_TO, ListType.SSCS_SOUTHEAST_DAILY_HEARING_LIST, COURT_ID,
+            DISPLAY_FROM, DISPLAY_TO, ListType.SSCS_SOUTH_EAST_DAILY_HEARING_LIST, COURT_ID,
             CONTENT_DATE);
     }
 
