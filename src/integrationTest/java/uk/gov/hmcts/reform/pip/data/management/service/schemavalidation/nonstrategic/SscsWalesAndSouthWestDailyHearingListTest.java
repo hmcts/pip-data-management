@@ -28,7 +28,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 @ActiveProfiles("integration-basic")
 @SpringBootTest
-class SscsWalesAndSouthEastDailyHearingListTest extends IntegrationBasicTestBase {
+class SscsWalesAndSouthWestDailyHearingListTest extends IntegrationBasicTestBase {
 
     @Autowired
     ValidationService validationService;
