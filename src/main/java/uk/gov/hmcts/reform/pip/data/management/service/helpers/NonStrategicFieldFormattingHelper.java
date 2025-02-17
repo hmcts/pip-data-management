@@ -25,6 +25,6 @@ public final class NonStrategicFieldFormattingHelper {
     }
 
     public static String formatTimeField(String time) {
-        return time.replace('.', ':');
+        return time == null ? time : time.replace('.', ':');
     }
 }
