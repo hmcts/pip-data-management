@@ -732,7 +732,7 @@ class PublicationManagementTest extends IntegrationTestBase {
         names = {
             "SSCS_MIDLANDS_DAILY_HEARING_LIST",
             "SSCS_SOUTH_EAST_DAILY_HEARING_LIST",
-            "SSCS_WALES_AND_SOUTH_EAST_DAILY_HEARING_LIST",
+            "SSCS_WALES_AND_SOUTH_WEST_DAILY_HEARING_LIST",
             "SSCS_SCOTLAND_DAILY_HEARING_LIST",
             "SSCS_NORTH_EAST_DAILY_HEARING_LIST",
             "SSCS_NORTH_WEST_DAILY_HEARING_LIST",

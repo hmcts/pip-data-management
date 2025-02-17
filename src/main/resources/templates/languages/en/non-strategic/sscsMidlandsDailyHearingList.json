@@ -5,11 +5,11 @@
   "emailAddress": "ascbirmingham@justice.gov.uk",
   "tableHeaders": [
     "Venue",
-    "Appeal Reference Number",
-    "Hearing Type",
+    "Appeal reference number",
+    "Hearing type",
     "Appellant",
     "Courtroom",
-    "Hearing Time",
+    "Hearing time",
     "Panel",
     "FTA/Respondent",
     "Additional information"

@@ -74,7 +74,7 @@ class SscsDailyHearingListFileConverterTest {
             Arguments.of("SSCS_SOUTH_EAST_DAILY_HEARING_LIST", "sscsSoutheastDailyHearingList.json",
                          "South East First-tier Tribunal (Social Security and Child Support) Daily Hearing List",
                          "sscs_bradford@justice.gov.uk"),
-            Arguments.of("SSCS_WALES_AND_SOUTH_EAST_DAILY_HEARING_LIST", "sscsWalesAndSoutheastDailyHearingList.json",
+            Arguments.of("SSCS_WALES_AND_SOUTH_WEST_DAILY_HEARING_LIST", "sscsWalesAndSouthwestDailyHearingList.json",
                          "Wales and South West First-tier Tribunal (Social Security and Child Support)"
                              + " Daily Hearing List",
                          "sscsa-cardiff@justice.gov.uk"),
@@ -103,7 +103,7 @@ class SscsDailyHearingListFileConverterTest {
                          "Rhestr o Wrandawiadau Dyddiol Tribiwnlys Haen Gyntaf "
                              + "De Ddwyrain Lloegr (Nawdd Cymdeithasol a Chynnal Plant)",
                          "sscs_bradford@justice.gov.uk"),
-            Arguments.of("SSCS_WALES_AND_SOUTH_EAST_DAILY_HEARING_LIST", "sscsWalesAndSoutheastDailyHearingList.json",
+            Arguments.of("SSCS_WALES_AND_SOUTH_WEST_DAILY_HEARING_LIST", "sscsWalesAndSouthwestDailyHearingList.json",
                          "Rhestr o Wrandawiadau Dyddiol Tribiwnlys Haen Gyntaf Cymru a De "
                              + "Orllewin Lloegr (Nawdd Cymdeithasol a Chynnal Plant)",
                          "sscsa-cardiff@justice.gov.uk"),
@@ -218,11 +218,11 @@ class SscsDailyHearingListFileConverterTest {
             .extracting(Element::text)
             .containsExactly(
                 "Venue",
-                "Appeal Reference Number",
-                "Hearing Type",
+                "Appeal reference number",
+                "Hearing type",
                 "Appellant",
                 "Courtroom",
-                "Hearing Time",
+                "Hearing time",
                 "Panel",
                 "FTA/Respondent",
                 "Additional information"
@@ -313,11 +313,11 @@ class SscsDailyHearingListFileConverterTest {
             .extracting(Element::text)
             .containsExactly(
                 "Lleoliad",
-                "Cyfeirnod Apêl",
-                "Math o Wrandawiad",
+                "Cyfeirnod apêl",
+                "Math o wrandawiad",
                 "Apelydd",
                 "Ystafell llys",
-                "Amser y Gwrandawiad",
+                "Amser y gwrandawiad",
                 "Panel",
                 "FTA/Atebydd",
                 "Gwybodaeth ychwanegol"

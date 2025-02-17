@@ -406,7 +406,7 @@ class ValidationServiceTest extends IntegrationBasicTestBase {
                          SSCS_LISTS_JSON_FILE),
             Arguments.of(ListType.SSCS_SOUTH_EAST_DAILY_HEARING_LIST,
                          SSCS_LISTS_JSON_FILE),
-            Arguments.of(ListType.SSCS_WALES_AND_SOUTH_EAST_DAILY_HEARING_LIST,
+            Arguments.of(ListType.SSCS_WALES_AND_SOUTH_WEST_DAILY_HEARING_LIST,
                          SSCS_LISTS_JSON_FILE),
             Arguments.of(ListType.SSCS_SCOTLAND_DAILY_HEARING_LIST,
                          SSCS_LISTS_JSON_FILE),
