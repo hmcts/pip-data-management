@@ -502,15 +502,6 @@ class PublicationControllerTest {
     }
 
     @Test
-    void testMiDataReturnsOk() {
-        assertEquals(
-            HttpStatus.OK,
-            publicationController.getMiData().getStatusCode(),
-            STATUS_CODE_MATCH
-        );
-    }
-
-    @Test
     void testSendNewArtefactsForSubscriptionSuccess() {
         doNothing().when(artefactTriggerService).checkNewlyActiveArtefacts();
         assertThat(publicationController.sendNewArtefactsForSubscription().getStatusCode())
