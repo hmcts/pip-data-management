@@ -20,11 +20,11 @@ import java.nio.charset.Charset;
 import java.util.Map;
 import java.util.Objects;
 
-import static uk.gov.hmcts.reform.pip.model.publication.ListType.AST_DAILY_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.AST_DAILY_HEARING_LIST;
 
 @ActiveProfiles("test")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class AstDailyListFileConverterTest {
+class AstDailyHearingListFileConverterTest {
     private static final String CONTENT_DATE = "20 February 2025";
     private static final String LAST_RECEIVED_DATE = "2025-02-19T09:30:00Z";
     private static final String PROVENANCE = "provenance";
@@ -62,7 +62,7 @@ class AstDailyListFileConverterTest {
     @BeforeAll
     void setup() throws IOException {
         try (InputStream inputStream = getClass()
-            .getResourceAsStream("/mocks/non-strategic/astDailyList.json")) {
+            .getResourceAsStream("/mocks/non-strategic/astDailyHearingList.json")) {
             String inputRaw = IOUtils.toString(inputStream, Charset.defaultCharset());
             cstInputJson = new ObjectMapper().readTree(inputRaw);
         }
@@ -74,7 +74,7 @@ class AstDailyListFileConverterTest {
         Map<String, Object> languageResource;
         try (InputStream languageFile = Thread.currentThread()
             .getContextClassLoader()
-            .getResourceAsStream("templates/languages/en/non-strategic/astDailyList.json")) {
+            .getResourceAsStream("templates/languages/en/non-strategic/astDailyHearingList.json")) {
             languageResource = new ObjectMapper().readValue(
                 Objects.requireNonNull(languageFile).readAllBytes(), new TypeReference<>() {
                 });
@@ -83,7 +83,7 @@ class AstDailyListFileConverterTest {
         Map<String, String> metadata = Map.of(CONTENT_DATE_METADATA, CONTENT_DATE,
                                               PROVENANCE_METADATA, PROVENANCE,
                                               LANGUAGE_METADATA, ENGLISH,
-                                              LIST_TYPE_METADATA, AST_DAILY_LIST.name(),
+                                              LIST_TYPE_METADATA, AST_DAILY_HEARING_LIST.name(),
                                               LAST_RECEIVED_DATE_METADATA, LAST_RECEIVED_DATE
         );
 
@@ -156,7 +156,7 @@ class AstDailyListFileConverterTest {
         Map<String, Object> languageResource;
         try (InputStream languageFile = Thread.currentThread()
             .getContextClassLoader()
-            .getResourceAsStream("templates/languages/cy/non-strategic/astDailyList.json")) {
+            .getResourceAsStream("templates/languages/cy/non-strategic/astDailyHearingList.json")) {
             languageResource = new ObjectMapper().readValue(
                 Objects.requireNonNull(languageFile).readAllBytes(), new TypeReference<>() {
                 });
@@ -165,7 +165,7 @@ class AstDailyListFileConverterTest {
         Map<String, String> metadata = Map.of(CONTENT_DATE_METADATA, CONTENT_DATE,
                                               PROVENANCE_METADATA, PROVENANCE,
                                               LANGUAGE_METADATA, WELSH,
-                                              LIST_TYPE_METADATA, AST_DAILY_LIST.name(),
+                                              LIST_TYPE_METADATA, AST_DAILY_HEARING_LIST.name(),
                                               LAST_RECEIVED_DATE_METADATA, LAST_RECEIVED_DATE
         );
 

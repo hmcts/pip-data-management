@@ -17,10 +17,10 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 
-import static uk.gov.hmcts.reform.pip.model.publication.ListType.AST_DAILY_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.AST_DAILY_HEARING_LIST;
 
 @ActiveProfiles("test")
-class AstDailyListSummaryDataTest {
+class AstDailyHearingListSummaryDataTest {
 
     private static final String NON_STRATEGIC_RESOURCE_FOLDER = "src/test/resources/mocks/non-strategic/";
     private static final String SUMMARY_SECTIONS_MESSAGE = "Summary sections count does not match";
@@ -35,14 +35,14 @@ class AstDailyListSummaryDataTest {
         IOUtils.copy(
             Files.newInputStream(Paths.get(
                 NON_STRATEGIC_RESOURCE_FOLDER,
-                "astDailyList.json"
+                "astDailyHearingList.json"
             )), writer,
             Charset.defaultCharset()
         );
 
         JsonNode payload = new ObjectMapper().readTree(writer.toString());
         ArtefactSummaryData cstSummaryData = new ListConversionFactory()
-            .getArtefactSummaryData(AST_DAILY_LIST)
+            .getArtefactSummaryData(AST_DAILY_HEARING_LIST)
             .get();
         Map<String, List<Map<String, String>>> output = cstSummaryData.get(payload);
 

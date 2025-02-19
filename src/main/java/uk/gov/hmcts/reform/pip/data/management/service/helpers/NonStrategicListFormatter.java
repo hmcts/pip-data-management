@@ -9,7 +9,7 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
-import static uk.gov.hmcts.reform.pip.model.publication.ListType.AST_DAILY_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.AST_DAILY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.CST_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.FTT_LR_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.FTT_TAX_WEEKLY_HEARING_LIST;
@@ -96,7 +96,7 @@ public final class NonStrategicListFormatter {
                   Map.of(TIME, NonStrategicFieldFormattingHelper::formatTimeField)),
         Map.entry(UT_AAC_DAILY_HEARING_LIST,
                   Map.of(TIME, NonStrategicFieldFormattingHelper::formatTimeField)),
-        Map.entry(AST_DAILY_LIST,
+        Map.entry(AST_DAILY_HEARING_LIST,
                   Map.of(HEARING_TIME, NonStrategicFieldFormattingHelper::formatTimeField))
     );
 
