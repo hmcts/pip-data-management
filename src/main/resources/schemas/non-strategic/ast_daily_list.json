@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Root",
+  "type": "array",
+  "items": {
+    "title": "Hearing list",
+    "type": "object",
+    "required": [
+      "appellant",
+      "appealReferenceNumber",
+      "caseType",
+      "hearingType",
+      "hearingTime",
+      "additionalInformation"
+    ],
+    "properties": {
+      "appellant": {
+        "title": "Appellant name",
+        "type": "string",
+        "default": "",
+        "examples": [
+          "Appellant 1"
+        ],
+        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+      },
+      "appealReferenceNumber": {
+        "title": "Appeal reference number",
+        "type": "string",
+        "default": "",
+        "examples": [
+          "A Vs B"
+        ],
+        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+      },
+      "caseType": {
+        "title": "Type of case",
+        "type": "string",
+        "default": "",
+        "examples": [
+          "Case type 1"
+        ],
+        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+      },
+      "hearingType": {
+        "title": "Type of hearing being presented",
+        "type": "string",
+        "default": "",
+        "examples": [
+          "mda"
+        ],
+        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+      },
+      "hearingTime": {
+        "title": "Tme of hearing",
+        "type": "string",
+        "default": "",
+        "examples": [
+          "10:30am"
+        ],
+        "pattern": "^\\d{1,2}([:.]\\d{2})?[ap]m$"
+      },
+      "additionalInformation": {
+        "title": "Additional information",
+        "type": "string",
+        "default": "",
+        "examples": [
+          "This is additional information"
+        ],
+        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+      }
+    }
+  }
+}
