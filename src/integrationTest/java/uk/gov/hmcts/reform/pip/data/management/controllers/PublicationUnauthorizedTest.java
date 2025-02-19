@@ -37,7 +37,6 @@ class PublicationUnauthorizedTest extends IntegrationBasicTestBase {
     private static final String PUBLICATION_BY_LOCATION_URL = PUBLICATION_URL + "/locationId/";
     private static final String PUBLICATION_SEARCH_URL = PUBLICATION_URL + "/search/";
     private static final String ARCHIVE_EXPIRED_ARTEFACTS_URL = PUBLICATION_URL + "/expired";
-    private static final String MI_REPORTING_DATA_URL = PUBLICATION_URL + "/mi-data";
     private static final String MI_REPORTING_DATA_URL_V2 = PUBLICATION_URL + "/v2/mi-data";
     private static final String COUNT_BY_LOCATION_URL = PUBLICATION_URL + "/count-by-location";
     private static final String SEND_NEW_ARTEFACTS_FOR_SUBSCRIPTION_URL = PUBLICATION_URL + "/latest/subscription";
@@ -230,16 +229,6 @@ class PublicationUnauthorizedTest extends IntegrationBasicTestBase {
             MockMvcRequestBuilders.get("/publication/no-match");
 
         mockMvc.perform(mockHttpServletRequestBuilder)
-            .andExpect(status().isForbidden())
-            .andReturn();
-    }
-
-    @Test
-    void testUnauthorizedGetMiData() throws Exception {
-        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-            .get(MI_REPORTING_DATA_URL);
-
-        mockMvc.perform(request)
             .andExpect(status().isForbidden())
             .andReturn();
     }

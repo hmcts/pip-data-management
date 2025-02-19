@@ -86,7 +86,6 @@ class PublicationTest extends IntegrationTestBase {
     private static final String SEND_NEW_ARTEFACTS_FOR_SUBSCRIPTION_URL = PUBLICATION_URL + "/latest/subscription";
     private static final String COUNT_ENDPOINT = PUBLICATION_URL + "/count-by-location";
     private static final String REPORT_NO_MATCH_ARTEFACTS_URL = PUBLICATION_URL + "/no-match/reporting";
-    private static final String MI_REPORTING_DATA_URL = PUBLICATION_URL + "/mi-data";
     private static final String MI_REPORTING_DATA_URL_V2 = PUBLICATION_URL + "/v2/mi-data";
     private static final String ARCHIVE_EXPIRED_ARTEFACTS_URL = PUBLICATION_URL + "/expired";
     private static final ArtefactType ARTEFACT_TYPE = ArtefactType.LIST;
@@ -120,9 +119,6 @@ class PublicationTest extends IntegrationTestBase {
     private static final String VALIDATION_MI_REPORT = "Should successfully retrieve MI data";
     private static final String SHOULD_RETURN_EXPECTED_ARTEFACT = "Should return expected artefact";
     private static final String ARTEFACT_ID_POPULATED_MESSAGE = "Artefact ID should be populated";
-    private static final String EXPECTED_MI_DATA_HEADERS = "artefact_id,display_from,display_to,language,provenance,"
-        + "sensitivity,source_artefact_id,"
-        + "superseded_count,type,content_date,court_id,court_name,list_type";
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
@@ -1813,29 +1809,6 @@ class PublicationTest extends IntegrationTestBase {
         );
         assertTrue(artefactExired.getIsArchived(), SHOULD_RETURN_EXPECTED_ARTEFACT);
 
-    }
-
-    @Test
-    void testGetMiDataRequestSuccess() throws Exception {
-        Artefact artefact = createDailyList(Sensitivity.PUBLIC);
-
-        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-            .get(MI_REPORTING_DATA_URL);
-
-        String responseMiData = mockMvc.perform(request).andExpect(status().isOk()).andReturn()
-            .getResponse().getContentAsString();
-
-        assertEquals(EXPECTED_MI_DATA_HEADERS, responseMiData.split("\n")[0],
-                     "Should successfully retrieve MI data headers"
-        );
-        assertTrue(
-            responseMiData.contains(artefact.getArtefactId().toString()),
-            "Should successfully retrieve MI data"
-        );
-        assertTrue(
-            responseMiData.contains(artefact.getLocationId()),
-            "Should successfully retrieve MI data"
-        );
     }
 
     @Test

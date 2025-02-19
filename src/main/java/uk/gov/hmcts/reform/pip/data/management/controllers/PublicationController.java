@@ -3,9 +3,6 @@ package uk.gov.hmcts.reform.pip.data.management.controllers;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.ExampleObject;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -475,31 +472,6 @@ public class PublicationController {
         if (issuerId != null) {
             log.info(writeLog(issuerId, UserActions.UPLOAD, artefactId));
         }
-    }
-
-    /**
-     * Previous version of the MI Reporting endpoint. No longer used and soon to be removed.
-     * @deprecated This method will be removed in the future in favour of the V2 equivalent.
-     */
-    @ApiResponse(responseCode = OK_CODE, description = "A CSV like structure which contains the data. "
-        + "See example for headers", content = {
-            @Content(examples = {@ExampleObject("artefact_id,display_from,display_to,language,provenance,"
-                    + "sensitivity,source_artefact_id,"
-                    + "superseded_count,type,content_date,court_id,court_name,list_type")},
-                    mediaType = MediaType.TEXT_PLAIN_VALUE,
-                    schema = @Schema(implementation = String.class))
-        }
-    )
-    @ApiResponse(responseCode = UNAUTHORISED_CODE, description = UNAUTHORISED_MESSAGE)
-    @ApiResponse(responseCode = FORBIDDEN_CODE, description = FORBIDDEN_MESSAGE)
-    @Operation(summary = "Return the MI data for artefacts. This endpoint will be "
-        + "deprecated in the future, in favour of returning a JSON model")
-    @GetMapping("/mi-data")
-    @IsAdmin
-    @SecurityRequirement(name = BEARER_AUTHENTICATION)
-    @Deprecated(since = "2")
-    public ResponseEntity<String> getMiData() {
-        return ResponseEntity.ok().body(publicationService.getMiData());
     }
 
     @ApiResponse(responseCode = OK_CODE, description = "A JSON model which contains a list of artefacts")
