@@ -45,8 +45,7 @@ class WpafccWeeklyHearingListFileConverterTest {
     private static final String CASE_NAME = "Case name";
     private static final String CASE_NAME_WELSH = "Enw’r achos";
     private static final String CASE_REFERENCE_NUMBER = "Case reference number";
-    private static final String JUDGES = "Judge(s)";
-    private static final String JUDGES_WELSH = "Barnwr/Barnwyr";
+    private static final String PANEL = "Panel";
     private static final String HEARING_TYPE_WELSH = "Math o wrandawiad";
     private static final String VENUE = "Venue";
     private static final String VENUE_WELSH = "Lleoliad";
@@ -149,15 +148,14 @@ class WpafccWeeklyHearingListFileConverterTest {
 
         softly.assertThat(document.getElementsByTag("th"))
             .as(TABLE_HEADERS_MESSAGE)
-            .hasSize(9)
+            .hasSize(8)
             .extracting(Element::text)
             .containsExactly(
                 DATE,
                 HEARING_TIME,
                 CASE_REFERENCE_NUMBER,
                 CASE_NAME,
-                JUDGES,
-                "Member(s)",
+                PANEL,
                 "Mode of hearing",
                 VENUE,
                 ADDITIONAL_INFORMATION
@@ -229,15 +227,14 @@ class WpafccWeeklyHearingListFileConverterTest {
 
         softly.assertThat(document.getElementsByTag("th"))
             .as(TABLE_HEADERS_MESSAGE)
-            .hasSize(9)
+            .hasSize(8)
             .extracting(Element::text)
             .containsExactly(
                 DATE_WELSH,
                 HEARING_TIME_WELSH,
                 "Cyfeirnod yr achos",
                 CASE_NAME_WELSH,
-                JUDGES_WELSH,
-                "Aelod(au)",
+                PANEL,
                 HEARING_TYPE_WELSH,
                 VENUE_WELSH,
                 ADDITIONAL_INFORMATION_WELSH
