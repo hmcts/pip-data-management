@@ -50,20 +50,21 @@ class SmokeTest extends SmokeTestBase {
     private static final String RESPONSE_BODY_MATCH = "Response body does not match";
 
     private String locationId;
+    private String locationName;
 
     @BeforeAll
     void startup() {
         Integer randomNumber = 10_000 + new Random().nextInt();
         locationId = randomNumber.toString();
+        locationName = BASE_LOCATION_NAME + locationId;
 
-        doPostRequest(TESTING_SUPPORT_LOCATION_URL + locationId, Collections.emptyMap(),
-                      BASE_LOCATION_NAME + locationId);
+        doPostRequest(TESTING_SUPPORT_LOCATION_URL + locationId, Collections.emptyMap(), locationName);
     }
 
     @AfterAll
     void teardown() {
-        doDeleteRequest(TESTING_SUPPORT_PUBLICATION_URL + BASE_LOCATION_NAME);
-        doDeleteRequest(TESTING_SUPPORT_LOCATION_URL + BASE_LOCATION_NAME);
+        doDeleteRequest(TESTING_SUPPORT_PUBLICATION_URL + locationName);
+        doDeleteRequest(TESTING_SUPPORT_LOCATION_URL + locationName);
     }
 
     @Test
