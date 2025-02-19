@@ -41,10 +41,10 @@ class SscsDailyHearingListFileConverterTest {
 
     private static final String LIST_DATE_ENGLISH = "List for week commencing 12 December 2024";
     private static final String LIST_DATE_WELSH = "Rhestr ar gyfer yr wythnos yn dechrau ar 12 December 2024";
-    private static final String OBSERVE_HEARING_ENGLISH = "Observe a court or tribunal hearing as a journalist, "
-        + "researcher or member of the public";
-    private static final String OBSERVE_HEARING_WELSH = "Arsylwi gwrandawiad llys neu dribiwnlys fel newyddiadurwr, "
-        + "ymchwilydd neu aelod o'r cyhoedd";
+    private static final String OBSERVE_HEARING_ENGLISH = "For more information, please visit "
+        + "https://www.gov.uk/guidance/observe-a-court-or-tribunal-hearing";
+    private static final String OBSERVE_HEARING_WELSH = "Am fwy o wybodaeth, ewch i "
+        + "https://www.gov.uk/guidance/observe-a-court-or-tribunal-hearing";
 
     private static final String HEADER_ELEMENT = "page-heading";
     private static final String LIST_DATE_ELEMENT = "list-date";
