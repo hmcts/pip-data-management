@@ -55,6 +55,7 @@ public class SmokeTestBase {
     protected Response doDeleteRequest(final String path) {
         return given()
             .relaxedHTTPSValidation()
+            .headers(Map.of(AUTHORIZATION, "bearer " + accessToken))
             .when()
             .delete(path)
             .thenReturn();
