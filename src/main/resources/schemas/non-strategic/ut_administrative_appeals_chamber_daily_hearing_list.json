@@ -23,7 +23,7 @@
         "examples": [
           "10am"
         ],
-        "pattern": "^\\d{1,2}(:\\d{2})?[ap]m$"
+        "pattern": "^\\d{1,2}([:.]\\d{2})?[ap]m$"
       },
       "appellant": {
         "title": "Appellant",

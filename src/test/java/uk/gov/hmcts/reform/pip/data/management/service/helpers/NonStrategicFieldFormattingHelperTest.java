@@ -24,4 +24,18 @@ class NonStrategicFieldFormattingHelperTest {
             .isInstanceOf(ProcessingException.class)
             .hasMessage("Failed to convert date format");
     }
+
+    @Test
+    void shouldConvertTimeFormat() {
+        assertThat(NonStrategicFieldFormattingHelper.formatTimeField("8.55am"))
+            .as(RESULT_MATCHED_MESSAGE)
+            .isEqualTo("8:55am");
+    }
+
+    @Test
+    void shouldKeepExistingTimeFormat() {
+        assertThat(NonStrategicFieldFormattingHelper.formatTimeField("9:30am"))
+            .as(RESULT_MATCHED_MESSAGE)
+            .isEqualTo("9:30am");
+    }
 }

@@ -15,11 +15,13 @@ import static uk.gov.hmcts.reform.pip.model.publication.ListType.CST_WEEKLY_HEAR
 @ActiveProfiles("test")
 class NonStrategicListFormatterTest {
     private static final String DATE_FIELD = "date";
+    private static final String HEARING_TIME_FIELD = "hearingTime";
     private static final String OTHER_FIELD = "other";
     private static final String FIELD_NAME = "field";
     private static final String TEST_VALUE = "test";
     private static final String DATE_VALUE1 = "01/01/2025";
     private static final String DATE_VALUE2 = "10/02/2025";
+
     private static final String RESULT_MATCHED_MESSAGE = "Result does not match";
     private static final String RESULT_EMPTY_MESSAGE = "Result is not empty";
     private static final Map<String, Function<String, String>> FORMATTER = Map.of(FIELD_NAME,
@@ -56,6 +58,25 @@ class NonStrategicListFormatterTest {
         assertThat(result.get(1).get(DATE_FIELD))
             .as(RESULT_MATCHED_MESSAGE)
             .isEqualTo("10 February 2025");
+    }
+
+    @Test
+    void shouldFormatTImeFieldIfListTypeExists() {
+        List<Map<String, String>> data = List.of(
+            Map.of(HEARING_TIME_FIELD, "10.30am"),
+            Map.of(HEARING_TIME_FIELD, "8:30pm")
+        );
+        List<Map<String, String>> result = NonStrategicListFormatter.formatAllFields(
+            data, CST_WEEKLY_HEARING_LIST
+        );
+
+        assertThat(result.get(0).get(HEARING_TIME_FIELD))
+            .as(RESULT_MATCHED_MESSAGE)
+            .isEqualTo("10:30am");
+
+        assertThat(result.get(1).get(HEARING_TIME_FIELD))
+            .as(RESULT_MATCHED_MESSAGE)
+            .isEqualTo("8:30pm");
     }
 
     @Test
