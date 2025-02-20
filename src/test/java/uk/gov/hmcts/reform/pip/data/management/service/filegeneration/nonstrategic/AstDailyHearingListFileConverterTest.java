@@ -202,16 +202,16 @@ class AstDailyHearingListFileConverterTest {
 
         softly.assertThat(document.getElementById(OPEN_JUSTICE_MESSAGE_ELEMENT).text())
             .as(BODY_MESSAGE)
-            .contains("Open justice is a fundamental principle of our justice system.");
+            .contains("Mae cyfiawnder agored yn egwyddor sylfaenol yn ein system gyfiawnder.");
 
         softly.assertThat(document.getElementById(JOIN_HEARING_MESSAGE_ELEMENT).text())
             .as(BODY_MESSAGE)
-            .contains("Asylum Support Tribunal parties and representatives will be informed directly as to the "
-                          + "arrangements for hearing cases remotely.");
+            .contains("Bydd partïon a chynrychiolwyr y Tribiwnlys Cymorth i Geiswyr Lloches yn cael gwybod yn "
+                          + "uniongyrchol am y trefniadau ar gyfer gwrando achosion o bell.");
 
         softly.assertThat(document.getElementById(OBSERVE_HEARING_ELEMENT).text())
             .as(BODY_MESSAGE)
-            .isEqualTo("For more information, please visit https://www.gov.uk/guidance/observe-a-court-or-tribunal-hearing");
+            .isEqualTo("Am ragor o wybodaeth ewch i: https://www.gov.uk/guidance/observe-a-court-or-tribunal-hearing");
 
         softly.assertThat(document.getElementsByTag("th"))
             .as(TABLE_HEADERS_MESSAGE)
