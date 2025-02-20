@@ -39,8 +39,7 @@ public final class NonStrategicListFormatter {
 
     private static final Map<ListType, Map<String, Function<String, String>>> LIST_TYPE_MAP = Map.ofEntries(
         Map.entry(CST_WEEKLY_HEARING_LIST,
-                  Map.of(DATE, NonStrategicFieldFormattingHelper::formatDateField,
-                         HEARING_TIME, NonStrategicFieldFormattingHelper::formatTimeField)),
+                  Map.of(DATE, NonStrategicFieldFormattingHelper::formatDateField)),
         Map.entry(PHT_WEEKLY_HEARING_LIST,
                   Map.of(DATE, NonStrategicFieldFormattingHelper::formatDateField)),
         Map.entry(GRC_WEEKLY_HEARING_LIST,
