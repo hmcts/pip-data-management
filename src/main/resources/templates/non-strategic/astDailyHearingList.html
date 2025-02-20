@@ -54,6 +54,14 @@
       margin-bottom: 15px;
     }
 
+    .govuk-\!-margin-bottom-1 {
+      margin-bottom: 5px;
+    }
+
+    .no-margin-bottom {
+      margin-bottom: 0 !important;
+    }
+
     .govuk-\!-font-weight-bold {
       font-weight: 700 !important;
     }
@@ -122,7 +130,11 @@
 <body>
 <div>
   <h2 id="page-heading" class="govuk-heading-l" th:text="${i18n.listName}"/>
-  <p id="venue" class="govuk-body" th:text="${i18n.venue}"/>
+  <div>
+    <p id="venue-line-1" class="govuk-body no-margin-bottom" th:text="${i18n.venueLine1}"/>
+    <p id="venue-line-2" class="govuk-body no-margin-bottom" th:text="${i18n.venueLine2}"/>
+    <p id="venue-line-3" class="govuk-body" th:text="${i18n.venueLine3}"/>
+  </div>
   <p id="list-date" class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-1" th:text="${i18n.listDate + contentDate}"/>
   <p id="last-updated-date" class="govuk-body" th:text="${i18n.lastUpdated + lastUpdatedDate + i18n.at + lastUpdatedTime}"/>
 

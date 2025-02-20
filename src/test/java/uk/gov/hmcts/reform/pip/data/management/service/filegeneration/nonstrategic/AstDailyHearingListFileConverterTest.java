@@ -38,7 +38,9 @@ class AstDailyHearingListFileConverterTest {
     private static final String WELSH = "WELSH";
 
     private static final String HEADER_ELEMENT = "page-heading";
-    private static final String VENUE_ELEMENT = "venue";
+    private static final String VENUE_LINE1_ELEMENT = "venue-line-1";
+    private static final String VENUE_LINE2_ELEMENT = "venue-line-2";
+    private static final String VENUE_LINE3_ELEMENT = "venue-line-3";
     private static final String LIST_DATE_ELEMENT = "list-date";
     private static final String LAST_UPDATED_DATE_ELEMENT = "last-updated-date";
     private static final String OPEN_JUSTICE_MESSAGE_ELEMENT = "open-justice-message";
@@ -96,24 +98,28 @@ class AstDailyHearingListFileConverterTest {
             .as(TITLE_MESSAGE)
             .isEqualTo("Asylum Support Tribunal Daily Hearing List");
 
-        softly.assertThat(document.getElementById(HEADER_ELEMENT))
+        softly.assertThat(document.getElementById(HEADER_ELEMENT).text())
             .as(HEADER_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo("Asylum Support Tribunal Daily Hearing List");
 
-        softly.assertThat(document.getElementById(VENUE_ELEMENT))
+        softly.assertThat(document.getElementById(VENUE_LINE1_ELEMENT).text())
             .as(VENUE_MESSAGE)
-            .extracting(Element::text)
-            .isEqualTo("2nd Floor, Import Building, 2 Clove Crescent London E14 2BE");
+            .isEqualTo("2nd Floor, Import Building");
 
-        softly.assertThat(document.getElementById(LIST_DATE_ELEMENT))
+        softly.assertThat(document.getElementById(VENUE_LINE2_ELEMENT).text())
+            .as(VENUE_MESSAGE)
+            .isEqualTo("2 Clove Crescent");
+
+        softly.assertThat(document.getElementById(VENUE_LINE3_ELEMENT).text())
+            .as(VENUE_MESSAGE)
+            .isEqualTo("London E14 2BE");
+
+        softly.assertThat(document.getElementById(LIST_DATE_ELEMENT).text())
             .as(LIST_DATE_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo("List for 20 February 2025");
 
-        softly.assertThat(document.getElementById(LAST_UPDATED_DATE_ELEMENT))
+        softly.assertThat(document.getElementById(LAST_UPDATED_DATE_ELEMENT).text())
             .as(LAST_UPDATED_DATE_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo("Last updated 19 February 2025 at 9:30am");
 
         softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).get(0))
@@ -130,9 +136,8 @@ class AstDailyHearingListFileConverterTest {
             .contains("Asylum Support Tribunal parties and representatives will be informed directly as to the "
                            + "arrangements for hearing cases remotely.");
 
-        softly.assertThat(document.getElementById(OBSERVE_HEARING_ELEMENT))
+        softly.assertThat(document.getElementById(OBSERVE_HEARING_ELEMENT).text())
             .as(BODY_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo("For more information, please visit https://www.gov.uk/guidance/observe-a-court-or-tribunal-hearing");
 
         softly.assertThat(document.getElementsByTag("th"))
@@ -178,19 +183,16 @@ class AstDailyHearingListFileConverterTest {
             .as(TITLE_MESSAGE)
             .isEqualTo("Rhestr ddyddiol y Tribiwnlys Cefnogi Ceiswyr Lloches");
 
-        softly.assertThat(document.getElementById(HEADER_ELEMENT))
+        softly.assertThat(document.getElementById(HEADER_ELEMENT).text())
             .as(HEADER_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo("Rhestr ddyddiol y Tribiwnlys Cefnogi Ceiswyr Lloches");
 
-        softly.assertThat(document.getElementById(LIST_DATE_ELEMENT))
+        softly.assertThat(document.getElementById(LIST_DATE_ELEMENT).text())
             .as(LIST_DATE_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo("Rhestr ar gyfer 20 February 2025");
 
-        softly.assertThat(document.getElementById(LAST_UPDATED_DATE_ELEMENT))
+        softly.assertThat(document.getElementById(LAST_UPDATED_DATE_ELEMENT).text())
             .as(LAST_UPDATED_DATE_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo("Diweddarwyd ddiwethaf 19 February 2025 am 9:30am");
 
         softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).get(0))
@@ -207,9 +209,8 @@ class AstDailyHearingListFileConverterTest {
             .contains("Asylum Support Tribunal parties and representatives will be informed directly as to the "
                           + "arrangements for hearing cases remotely.");
 
-        softly.assertThat(document.getElementById(OBSERVE_HEARING_ELEMENT))
+        softly.assertThat(document.getElementById(OBSERVE_HEARING_ELEMENT).text())
             .as(BODY_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo("For more information, please visit https://www.gov.uk/guidance/observe-a-court-or-tribunal-hearing");
 
         softly.assertThat(document.getElementsByTag("th"))
