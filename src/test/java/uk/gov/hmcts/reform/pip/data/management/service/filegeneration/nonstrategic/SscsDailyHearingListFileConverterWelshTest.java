@@ -71,6 +71,8 @@ class SscsDailyHearingListFileConverterWelshTest {
         + "cynnwys yn llinell pwnc yr e-bost [OBSERVER/MEDIA] REQUEST";
     private static final String LAST_UPDATED_DATE_TEXT = "Diweddarwyd ddiwethaf 20 January 2025 am 9:30am";
     private static final String IMPORTANT_INFORMATION_TEXT = "Gwybodaeth bwysig";
+    private static final String LANGUAGE_FILE_PATH = "templates/languages/cy/non-strategic/";
+    private static final String EMAIL = "EMAIL";
 
 
     private final NonStrategicListFileConverter converter = new NonStrategicListFileConverter();
@@ -91,7 +93,7 @@ class SscsDailyHearingListFileConverterWelshTest {
         Map<String, Object> languageResource;
         try (InputStream languageFile = Thread.currentThread()
             .getContextClassLoader()
-            .getResourceAsStream("templates/languages/cy/non-strategic/"
+            .getResourceAsStream(LANGUAGE_FILE_PATH
                                      + "sscsMidlandsDailyHearingList.json")) {
             languageResource = new ObjectMapper().readValue(
                 Objects.requireNonNull(languageFile).readAllBytes(), new TypeReference<>() {
@@ -112,14 +114,14 @@ class SscsDailyHearingListFileConverterWelshTest {
 
         softly.assertThat(document.title())
             .as(TITLE_MESSAGE)
-            .isEqualTo("Rhestr o Wrandawiadau Dyddiol Tribiwnlys Haen Gyntaf "
-                           + "Canolbarth Lloegr (Nawdd Cymdeithasol a Chynnal Plant)");
+            .isEqualTo("Rhestr o Wrandawiadau Dyddiol Tribiwnlys Haen Gyntaf Canolbarth"
+                           + " Lloegr (Nawdd Cymdeithasol a Chynnal Plant)");
 
         softly.assertThat(document.getElementById(HEADER_ELEMENT))
             .as(HEADER_MESSAGE)
             .extracting(Element::text)
-            .isEqualTo("Rhestr o Wrandawiadau Dyddiol Tribiwnlys Haen Gyntaf "
-                           + "Canolbarth Lloegr (Nawdd Cymdeithasol a Chynnal Plant)");
+            .isEqualTo("Rhestr o Wrandawiadau Dyddiol Tribiwnlys Haen Gyntaf Canolbarth"
+                           + " Lloegr (Nawdd Cymdeithasol a Chynnal Plant)");
 
         softly.assertThat(document.getElementById(LIST_DATE_ELEMENT))
             .as(LIST_DATE_MESSAGE)
@@ -144,7 +146,7 @@ class SscsDailyHearingListFileConverterWelshTest {
         softly.assertThat(document.getElementById(CONTACT_MESSAGE_ELEMENT))
             .as(BODY_MESSAGE)
             .extracting(Element::text)
-            .isEqualTo(CONTACT_MESSAGE_TEXT.replace("EMAIL", "ascbirmingham@justice.gov.uk"));
+            .isEqualTo(CONTACT_MESSAGE_TEXT.replace(EMAIL, "ascbirmingham@justice.gov.uk"));
 
 
         softly.assertThat(document.getElementById(OBSERVE_HEARING_ELEMENT))
@@ -176,7 +178,7 @@ class SscsDailyHearingListFileConverterWelshTest {
         Map<String, Object> languageResource;
         try (InputStream languageFile = Thread.currentThread()
             .getContextClassLoader()
-            .getResourceAsStream("templates/languages/cy/non-strategic/"
+            .getResourceAsStream(LANGUAGE_FILE_PATH
                                      + "sscsSoutheastDailyHearingList.json")) {
             languageResource = new ObjectMapper().readValue(
                 Objects.requireNonNull(languageFile).readAllBytes(), new TypeReference<>() {
@@ -197,14 +199,14 @@ class SscsDailyHearingListFileConverterWelshTest {
 
         softly.assertThat(document.title())
             .as(TITLE_MESSAGE)
-            .isEqualTo("Rhestr o Wrandawiadau Dyddiol Tribiwnlys Haen Gyntaf "
-                           + "De Ddwyrain Lloegr (Nawdd Cymdeithasol a Chynnal Plant)");
+            .isEqualTo("Rhestr o Wrandawiadau Dyddiol Tribiwnlys Haen Gyntaf De "
+                           + "Ddwyrain Lloegr (Nawdd Cymdeithasol a Chynnal Plant)");
 
         softly.assertThat(document.getElementById(HEADER_ELEMENT))
             .as(HEADER_MESSAGE)
             .extracting(Element::text)
-            .isEqualTo("Rhestr o Wrandawiadau Dyddiol Tribiwnlys Haen Gyntaf "
-                           + "De Ddwyrain Lloegr (Nawdd Cymdeithasol a Chynnal Plant)");
+            .isEqualTo("Rhestr o Wrandawiadau Dyddiol Tribiwnlys Haen Gyntaf De "
+                           + "Ddwyrain Lloegr (Nawdd Cymdeithasol a Chynnal Plant)");
 
         softly.assertThat(document.getElementById(LIST_DATE_ELEMENT))
             .as(LIST_DATE_MESSAGE)
@@ -229,7 +231,7 @@ class SscsDailyHearingListFileConverterWelshTest {
         softly.assertThat(document.getElementById(CONTACT_MESSAGE_ELEMENT))
             .as(BODY_MESSAGE)
             .extracting(Element::text)
-            .isEqualTo(CONTACT_MESSAGE_TEXT.replace("EMAIL", "sscs_bradford@justice.gov.uk"));
+            .isEqualTo(CONTACT_MESSAGE_TEXT.replace(EMAIL, "sscs_bradford@justice.gov.uk"));
 
 
         softly.assertThat(document.getElementById(OBSERVE_HEARING_ELEMENT))
@@ -245,7 +247,7 @@ class SscsDailyHearingListFileConverterWelshTest {
         Map<String, Object> languageResource;
         try (InputStream languageFile = Thread.currentThread()
             .getContextClassLoader()
-            .getResourceAsStream("templates/languages/cy/non-strategic/"
+            .getResourceAsStream(LANGUAGE_FILE_PATH
                                      + "sscsWalesAndSouthwestDailyHearingList.json")) {
             languageResource = new ObjectMapper().readValue(
                 Objects.requireNonNull(languageFile).readAllBytes(), new TypeReference<>() {
@@ -298,7 +300,7 @@ class SscsDailyHearingListFileConverterWelshTest {
         softly.assertThat(document.getElementById(CONTACT_MESSAGE_ELEMENT))
             .as(BODY_MESSAGE)
             .extracting(Element::text)
-            .isEqualTo(CONTACT_MESSAGE_TEXT.replace("EMAIL", "sscsa-cardiff@justice.gov.uk"));
+            .isEqualTo(CONTACT_MESSAGE_TEXT.replace(EMAIL, "sscsa-cardiff@justice.gov.uk"));
 
 
         softly.assertThat(document.getElementById(OBSERVE_HEARING_ELEMENT))
@@ -314,7 +316,7 @@ class SscsDailyHearingListFileConverterWelshTest {
         Map<String, Object> languageResource;
         try (InputStream languageFile = Thread.currentThread()
             .getContextClassLoader()
-            .getResourceAsStream("templates/languages/cy/non-strategic/"
+            .getResourceAsStream(LANGUAGE_FILE_PATH
                                      + "sscsScotlandDailyHearingList.json")) {
             languageResource = new ObjectMapper().readValue(
                 Objects.requireNonNull(languageFile).readAllBytes(), new TypeReference<>() {
@@ -367,7 +369,7 @@ class SscsDailyHearingListFileConverterWelshTest {
         softly.assertThat(document.getElementById(CONTACT_MESSAGE_ELEMENT))
             .as(BODY_MESSAGE)
             .extracting(Element::text)
-            .isEqualTo(CONTACT_MESSAGE_TEXT.replace("EMAIL", "sscsa-glasgow@justice.gov.uk"));
+            .isEqualTo(CONTACT_MESSAGE_TEXT.replace(EMAIL, "sscsa-glasgow@justice.gov.uk"));
 
 
         softly.assertThat(document.getElementById(OBSERVE_HEARING_ELEMENT))
@@ -383,7 +385,7 @@ class SscsDailyHearingListFileConverterWelshTest {
         Map<String, Object> languageResource;
         try (InputStream languageFile = Thread.currentThread()
             .getContextClassLoader()
-            .getResourceAsStream("templates/languages/cy/non-strategic/"
+            .getResourceAsStream(LANGUAGE_FILE_PATH
                                      + "sscsNortheastDailyHearingList.json")) {
             languageResource = new ObjectMapper().readValue(
                 Objects.requireNonNull(languageFile).readAllBytes(), new TypeReference<>() {
@@ -436,7 +438,7 @@ class SscsDailyHearingListFileConverterWelshTest {
         softly.assertThat(document.getElementById(CONTACT_MESSAGE_ELEMENT))
             .as(BODY_MESSAGE)
             .extracting(Element::text)
-            .isEqualTo(CONTACT_MESSAGE_TEXT.replace("EMAIL", "sscsa-leeds@justice.gov.uk"));
+            .isEqualTo(CONTACT_MESSAGE_TEXT.replace(EMAIL, "sscsa-leeds@justice.gov.uk"));
 
 
         softly.assertThat(document.getElementById(OBSERVE_HEARING_ELEMENT))
