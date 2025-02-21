@@ -179,7 +179,7 @@ class SscsDailyHearingListFileConverterWelshTest {
         try (InputStream languageFile = Thread.currentThread()
             .getContextClassLoader()
             .getResourceAsStream(LANGUAGE_FILE_PATH
-                                     + "sscsSoutheastDailyHearingList.json")) {
+                                     + "sscsSouthEastDailyHearingList.json")) {
             languageResource = new ObjectMapper().readValue(
                 Objects.requireNonNull(languageFile).readAllBytes(), new TypeReference<>() {
                 });
@@ -248,7 +248,7 @@ class SscsDailyHearingListFileConverterWelshTest {
         try (InputStream languageFile = Thread.currentThread()
             .getContextClassLoader()
             .getResourceAsStream(LANGUAGE_FILE_PATH
-                                     + "sscsWalesAndSouthwestDailyHearingList.json")) {
+                                     + "sscsWalesAndSouthWestDailyHearingList.json")) {
             languageResource = new ObjectMapper().readValue(
                 Objects.requireNonNull(languageFile).readAllBytes(), new TypeReference<>() {
                 });
@@ -386,7 +386,7 @@ class SscsDailyHearingListFileConverterWelshTest {
         try (InputStream languageFile = Thread.currentThread()
             .getContextClassLoader()
             .getResourceAsStream(LANGUAGE_FILE_PATH
-                                     + "sscsNortheastDailyHearingList.json")) {
+                                     + "sscsNorthEastDailyHearingList.json")) {
             languageResource = new ObjectMapper().readValue(
                 Objects.requireNonNull(languageFile).readAllBytes(), new TypeReference<>() {
                 });
