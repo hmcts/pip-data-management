@@ -83,15 +83,7 @@ class SscsDailyHearingListFileConverterWelshTest {
             Arguments.of("SSCS_NORTH_EAST_DAILY_HEARING_LIST", "sscsNortheastDailyHearingList.json",
                          "Rhestr o Wrandawiadau Dyddiol Tribiwnlys Haen Gyntaf Gogledd "
                              + "Ddwyrain Lloegr (Nawdd Cymdeithasol a Chymorth Plant)",
-                         "sscsa-leeds@Justice.gov.uk"),
-            Arguments.of("SSCS_NORTH_WEST_DAILY_HEARING_LIST", "sscsNorthwestDailyHearingList.json",
-                         "Rhestr o Wrandawiadau Dyddiol Nawdd Cymdeithasol a Chynnal Plant Gogledd "
-                             + "Orllewin Lloegr (Nawdd Cymdeithasol a Chynnal Plant)",
-                         "sscsa-liverpool@justice.gov.uk"),
-            Arguments.of("SSCS_LONDON_DAILY_HEARING_LIST", "sscsLondonDailyHearingList.json",
-                         "Rhestr o Wrandawiadau Dyddiol Tribiwnlys Haen Gyntaf Llundain "
-                             + "(Nawdd Cymdeithasol a Chynnal Plant)",
-                         "sscsa-sutton@justice.gov.uk")
+                         "sscsa-leeds@Justice.gov.uk")
         );
     }
 

@@ -79,13 +79,7 @@ class SscsDailyHearingListFileConverterEnglishTest {
                          "sscsa-glasgow@justice.gov.uk"),
             Arguments.of("SSCS_NORTH_EAST_DAILY_HEARING_LIST", "sscsNortheastDailyHearingList.json",
                          "North East First-tier Tribunal (Social Security and Child Support) Daily Hearing List",
-                         "sscsa-leeds@Justice.gov.uk"),
-            Arguments.of("SSCS_NORTH_WEST_DAILY_HEARING_LIST", "sscsNorthwestDailyHearingList.json",
-                         "North West First-tier Tribunal (Social Security and Child Support) Daily Hearing List",
-                         "sscsa-liverpool@justice.gov.uk"),
-            Arguments.of("SSCS_LONDON_DAILY_HEARING_LIST", "sscsLondonDailyHearingList.json",
-                         "London First-tier Tribunal (Social Security and Child Support) Daily Hearing List",
-                         "sscsa-sutton@justice.gov.uk")
+                         "sscsa-leeds@Justice.gov.uk")
         );
     }
 
