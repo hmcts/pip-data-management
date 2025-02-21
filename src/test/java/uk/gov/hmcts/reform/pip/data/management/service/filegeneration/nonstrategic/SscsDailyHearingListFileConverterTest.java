@@ -138,7 +138,7 @@ class SscsDailyHearingListFileConverterTest {
     @ParameterizedTest
     @MethodSource("parametersEnglish")
     void testSscsDailyHearingListFileConversionInEnglish(String listName,
-                                                         String languageFilename, String listDisplayName, String contactEmail) throws IOException {
+        String languageFilename, String listDisplayName, String contactEmail) throws IOException {
         Map<String, Object> languageResource;
         try (InputStream languageFile = Thread.currentThread()
             .getContextClassLoader()
@@ -234,7 +234,7 @@ class SscsDailyHearingListFileConverterTest {
     @ParameterizedTest
     @MethodSource("parametersWelsh")
     void testSscsDailyHearingListFileConversionInWelsh(String listName,
-                                                       String languageFilename, String listDisplayName, String emailContact) throws IOException {
+        String languageFilename, String listDisplayName, String emailContact) throws IOException {
         Map<String, Object> languageResource;
         try (InputStream languageFile = Thread.currentThread()
             .getContextClassLoader()
