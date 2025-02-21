@@ -9,6 +9,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -87,7 +88,7 @@ class SscsDailyHearingListFileConverterWelshTest {
         );
     }
 
-    @BeforeAll
+    @BeforeEach
     void setup() throws IOException {
         try (InputStream inputStream = getClass()
             .getResourceAsStream("/mocks/non-strategic/sscsDailyHearingList.json")) {
