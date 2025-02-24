@@ -150,7 +150,7 @@ class UtAdministrativeAppealsChamberDailyHearingListFileConverterTest {
         softly.assertThat(document.getElementById(MESSAGE_ELEMENT_4))
             .as(BODY_MESSAGE)
             .extracting(Element::text)
-            .isEqualTo("Remote hearings via CVP and BT Meet Me");
+            .isEqualTo("Remote hearings via CVP");
 
         softly.assertThat(document.getElementById(MESSAGE_ELEMENT_5))
             .as(BODY_MESSAGE)
@@ -281,7 +281,7 @@ class UtAdministrativeAppealsChamberDailyHearingListFileConverterTest {
         softly.assertThat(document.getElementById(MESSAGE_ELEMENT_4))
             .as(BODY_MESSAGE)
             .extracting(Element::text)
-            .isEqualTo("Gwrandawiadau o bell trwy CVP a BT Meet Me");
+            .isEqualTo("Gwrandawiadau o bell trwy CVP");
 
         softly.assertThat(document.getElementById(MESSAGE_ELEMENT_5))
             .as(BODY_MESSAGE)
