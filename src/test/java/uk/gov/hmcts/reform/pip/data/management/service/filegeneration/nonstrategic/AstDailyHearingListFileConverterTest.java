@@ -181,11 +181,11 @@ class AstDailyHearingListFileConverterTest {
 
         softly.assertThat(document.title())
             .as(TITLE_MESSAGE)
-            .isEqualTo("Rhestr ddyddiol y Tribiwnlys Cefnogi Ceiswyr Lloches");
+            .isEqualTo("Rhestr o Wrandawiadau Dyddiol Tribiwnlys Cefnogi Ceiswyr Lloches");
 
         softly.assertThat(document.getElementById(HEADER_ELEMENT).text())
             .as(HEADER_MESSAGE)
-            .isEqualTo("Rhestr ddyddiol y Tribiwnlys Cefnogi Ceiswyr Lloches");
+            .isEqualTo("Rhestr o Wrandawiadau Dyddiol Tribiwnlys Cefnogi Ceiswyr Lloches");
 
         softly.assertThat(document.getElementById(LIST_DATE_ELEMENT).text())
             .as(LIST_DATE_MESSAGE)

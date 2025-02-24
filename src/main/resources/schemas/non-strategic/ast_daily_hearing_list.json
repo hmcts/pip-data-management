@@ -51,7 +51,7 @@
         "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
       },
       "hearingTime": {
-        "title": "Tme of hearing",
+        "title": "Time of hearing",
         "type": "string",
         "default": "",
         "examples": [
