@@ -30,6 +30,13 @@ import static uk.gov.hmcts.reform.pip.model.publication.ListType.RPT_MIDLANDS_WE
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.RPT_NORTHERN_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.RPT_SOUTHERN_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.SIAC_WEEKLY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.SSCS_LONDON_DAILY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.SSCS_MIDLANDS_DAILY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.SSCS_NORTH_EAST_DAILY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.SSCS_NORTH_WEST_DAILY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.SSCS_SCOTLAND_DAILY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.SSCS_SOUTH_EAST_DAILY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.SSCS_WALES_AND_SOUTH_WEST_DAILY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_AAC_DAILY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_IAC_JR_BIRMINGHAM_DAILY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_IAC_JR_CARDIFF_DAILY_HEARING_LIST;
@@ -40,7 +47,7 @@ import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_LC_DAILY_HEA
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_T_AND_CC_DAILY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.WPAFCC_WEEKLY_HEARING_LIST;
 
-@SuppressWarnings("PMD.UseConcurrentHashMap")
+@SuppressWarnings({"PMD.UseConcurrentHashMap", "PMD.ExcessiveImports"})
 public class NonStrategicListSummaryData implements ArtefactSummaryData {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private static final String DATE = "date";
@@ -50,6 +57,7 @@ public class NonStrategicListSummaryData implements ArtefactSummaryData {
     private static final String CASE_REFERENCE_NUMBER = "caseReferenceNumber";
     private static final String APPEAL_REFERENCE_NUMBER = "appealReferenceNumber";
     private static final String APPELLANT = "appellant";
+    private static final String HEARING_TYPE = "hearingType";
 
     private static final Map<ListType, List<String>> LIST_TYPE_SUMMARY_FIELDS = Map.ofEntries(
         Map.entry(CST_WEEKLY_HEARING_LIST, List.of(DATE, CASE_NAME)),
@@ -79,7 +87,15 @@ public class NonStrategicListSummaryData implements ArtefactSummaryData {
         Map.entry(UT_T_AND_CC_DAILY_HEARING_LIST, List.of(TIME, CASE_REFERENCE_NUMBER, CASE_NAME)),
         Map.entry(UT_LC_DAILY_HEARING_LIST, List.of(TIME, CASE_REFERENCE_NUMBER, CASE_NAME)),
         Map.entry(UT_AAC_DAILY_HEARING_LIST, List.of(TIME, CASE_REFERENCE_NUMBER, APPELLANT)),
-        Map.entry(AST_DAILY_HEARING_LIST, List.of(APPELLANT, APPEAL_REFERENCE_NUMBER, HEARING_TIME))
+        Map.entry(AST_DAILY_HEARING_LIST, List.of(APPELLANT, APPEAL_REFERENCE_NUMBER, HEARING_TIME)),
+        Map.entry(SSCS_MIDLANDS_DAILY_HEARING_LIST, List.of(HEARING_TIME, HEARING_TYPE, APPEAL_REFERENCE_NUMBER)),
+        Map.entry(SSCS_SOUTH_EAST_DAILY_HEARING_LIST, List.of(HEARING_TIME, HEARING_TYPE, APPEAL_REFERENCE_NUMBER)),
+        Map.entry(SSCS_WALES_AND_SOUTH_WEST_DAILY_HEARING_LIST,
+                  List.of(HEARING_TIME, HEARING_TYPE, APPEAL_REFERENCE_NUMBER)),
+        Map.entry(SSCS_SCOTLAND_DAILY_HEARING_LIST, List.of(HEARING_TIME, HEARING_TYPE, APPEAL_REFERENCE_NUMBER)),
+        Map.entry(SSCS_NORTH_EAST_DAILY_HEARING_LIST, List.of(HEARING_TIME, HEARING_TYPE, APPEAL_REFERENCE_NUMBER)),
+        Map.entry(SSCS_NORTH_WEST_DAILY_HEARING_LIST, List.of(HEARING_TIME, HEARING_TYPE, APPEAL_REFERENCE_NUMBER)),
+        Map.entry(SSCS_LONDON_DAILY_HEARING_LIST, List.of(HEARING_TIME, HEARING_TYPE, APPEAL_REFERENCE_NUMBER))
     );
 
     private final ListType listType;

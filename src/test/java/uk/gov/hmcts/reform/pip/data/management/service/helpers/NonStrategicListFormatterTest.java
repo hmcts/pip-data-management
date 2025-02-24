@@ -11,6 +11,7 @@ import java.util.function.Function;
 import static org.assertj.core.api.Assertions.assertThat;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.CARE_STANDARDS_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.CST_WEEKLY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.SSCS_LONDON_DAILY_HEARING_LIST;
 
 @ActiveProfiles("test")
 class NonStrategicListFormatterTest {
@@ -67,7 +68,7 @@ class NonStrategicListFormatterTest {
             Map.of(HEARING_TIME_FIELD, "8:30pm")
         );
         List<Map<String, String>> result = NonStrategicListFormatter.formatAllFields(
-            data, CST_WEEKLY_HEARING_LIST
+            data, SSCS_LONDON_DAILY_HEARING_LIST
         );
 
         assertThat(result.get(0).get(HEARING_TIME_FIELD))
