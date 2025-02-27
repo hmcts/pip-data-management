@@ -61,6 +61,9 @@ public class ArtefactSearchService {
      * @param userId      represents the user ID of the user who is making the request
      * @return list of Artefacts
      */
+    // New version of PMD check that the default case should not be supplied for enum switch if all enum cases are
+    // supplied. However this will fail checkstyle if the default case is removed
+    @SuppressWarnings("PMD.ExhaustiveSwitchHasDefault")
     public List<Artefact> findAllBySearch(CaseSearchTerm searchTerm, String searchValue, UUID userId) {
         LocalDateTime currDate = LocalDateTime.now();
         List<Artefact> artefacts;

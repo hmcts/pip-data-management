@@ -1,19 +1,18 @@
 package uk.gov.hmcts.reform.pip.data.management.service.publication;
 
-import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.ArgumentCaptor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.ActiveProfiles;
-import uk.gov.hmcts.reform.pip.data.management.Application;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.AzureArtefactBlobService;
 import uk.gov.hmcts.reform.pip.data.management.database.LocationRepository;
@@ -21,10 +20,13 @@ import uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelpe
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.service.PublicationManagementService;
-import uk.gov.hmcts.reform.pip.data.management.utils.JsonExtractor;
+import uk.gov.hmcts.reform.pip.model.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
+import uk.gov.hmcts.reform.pip.model.publication.Sensitivity;
+import uk.gov.hmcts.reform.pip.model.report.PublicationMiData;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -32,6 +34,7 @@ import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -59,39 +62,29 @@ import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTe
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.VALIDATION_ARTEFACT_NOT_MATCH;
 
 @ActiveProfiles("test")
-@SpringBootTest(classes = {Application.class})
-@AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
+@ExtendWith(MockitoExtension.class)
 @SuppressWarnings({"PMD.ExcessiveImports"})
 class PublicationServiceTest {
 
-    @MockBean
+    @Mock
     ArtefactRepository artefactRepository;
 
-    @MockBean
+    @Mock
     LocationRepository locationRepository;
 
-    @MockBean
+    @Mock
     AzureArtefactBlobService azureArtefactBlobService;
 
-    @MockBean
-    JsonExtractor jsonExtractor;
-
-    @MockBean
+    @Mock
     PublicationManagementService publicationManagementService;
 
-    @MockBean
-    ArtefactTriggerService artefactTriggerService;
-
-    @MockBean
-    ArtefactService artefactService;
-
-    @Autowired
+    @InjectMocks
     PublicationService publicationService;
+
 
     private Artefact artefact;
     private Artefact artefactWithPayloadUrl;
     private Artefact artefactWithIdAndPayloadUrl;
-    private Artefact sjpPressArtefact;
 
     private static final char DELIMITER = ',';
     private static final String LOCATION_NAME_WITH_ID_3 = "Oxford Combined Court Centre";
@@ -146,15 +139,12 @@ class PublicationServiceTest {
                                                                     artefact.getProvenance()))
             .thenReturn(Optional.empty());
         lenient().when(artefactRepository.save(artefactWithPayloadUrl)).thenReturn(artefactWithIdAndPayloadUrl);
-        lenient().when(artefactService.payloadWithinJsonSearchLimit(PAYLOAD_SIZE_WITHIN_LIMIT)).thenReturn(true);
-        lenient().when(artefactService.payloadWithinJsonSearchLimit(PAYLOAD_SIZE_OVER_LIMIT)).thenReturn(false);
     }
 
     private void createPayloads() {
         artefact = ArtefactConstantTestHelper.buildArtefact();
         artefactWithPayloadUrl = ArtefactConstantTestHelper.buildArtefactWithPayloadUrl();
         artefactWithIdAndPayloadUrl = ArtefactConstantTestHelper.buildArtefactWithIdAndPayloadUrl();
-        sjpPressArtefact = ArtefactConstantTestHelper.buildSjpPressArtefact();
     }
 
     @Test
@@ -314,9 +304,6 @@ class PublicationServiceTest {
 
     @Test
     void testCreationOfNewArtefactWhenListTypeSjpPress() {
-        when(azureArtefactBlobService.createPayload(any(), eq(PAYLOAD))).thenReturn(PAYLOAD_URL);
-        when(artefactRepository.save(sjpPressArtefact)).thenReturn(sjpPressArtefact);
-
         publicationService.applyInternalLocationId(artefact);
         assertThat(artefact.getLocationId()).isEqualTo(NO_COURT_EXISTS_IN_REFERENCE_DATA);
     }
@@ -459,5 +446,71 @@ class PublicationServiceTest {
         publicationService.createPublication(artefact, PAYLOAD);
 
         assertEquals(0, captor.getValue().getSupersededCount(), "Superseded count has been incremented");
+    }
+
+    @Test
+    void testGetMiDataV2()  {
+        LocalDateTime localDateTime = LocalDateTime.now();
+        UUID randomId = UUID.randomUUID();
+
+        Location location = new Location();
+        location.setLocationId(1);
+        location.setName("Test Location");
+
+        PublicationMiData publicationMiData = new PublicationMiData(
+            randomId, localDateTime, localDateTime, Language.ENGLISH, MANUAL_UPLOAD_PROVENANCE,
+            Sensitivity.PUBLIC, randomId.toString(), 0, ArtefactType.GENERAL_PUBLICATION,
+            localDateTime,"1", ListType.CIVIL_DAILY_CAUSE_LIST);
+
+        PublicationMiData publicationMiData2 = new PublicationMiData(
+            UUID.randomUUID(), localDateTime, localDateTime, Language.ENGLISH, MANUAL_UPLOAD_PROVENANCE,
+            Sensitivity.PUBLIC, UUID.randomUUID().toString(), 1, ArtefactType.GENERAL_PUBLICATION,
+            localDateTime, "NoMatch2", ListType.CIVIL_DAILY_CAUSE_LIST);
+
+        when(locationRepository.findAll()).thenReturn(List.of(location));
+        when(artefactRepository.getMiDataV2()).thenReturn(List.of(publicationMiData, publicationMiData2));
+
+        List<PublicationMiData> publicationMiDataList = publicationService.getMiDataV2();
+
+        PublicationMiData publicationMiDataWithLocationName = new PublicationMiData(
+            randomId, localDateTime, localDateTime, Language.ENGLISH, MANUAL_UPLOAD_PROVENANCE,
+            Sensitivity.PUBLIC, randomId.toString(), 0, ArtefactType.GENERAL_PUBLICATION,
+            localDateTime,"1", ListType.CIVIL_DAILY_CAUSE_LIST);
+        publicationMiDataWithLocationName.setLocationName("Test Location");
+
+        assertIterableEquals(List.of(publicationMiDataWithLocationName, publicationMiData2), publicationMiDataList,
+                             "Publications MI do not match");
+    }
+
+    @Test
+    void testGetMiDataV2WhenArtefactRepositoryReturnsEmpty()  {
+        when(locationRepository.findAll()).thenReturn(List.of());
+
+        PublicationMiData publicationMiData = new PublicationMiData(
+            UUID.randomUUID(), LocalDateTime.now(), LocalDateTime.now(), Language.ENGLISH, MANUAL_UPLOAD_PROVENANCE,
+            Sensitivity.PUBLIC, UUID.randomUUID().toString(), 0, ArtefactType.GENERAL_PUBLICATION,
+            LocalDateTime.now(),"100", ListType.CIVIL_DAILY_CAUSE_LIST);
+
+        when(artefactRepository.getMiDataV2()).thenReturn(List.of(publicationMiData));
+
+        List<PublicationMiData> publicationMiDataList = publicationService.getMiDataV2();
+
+        assertThat(publicationMiDataList.get(0).getLocationName())
+            .as("Location name is not null").isNull();
+    }
+
+    @Test
+    void testGetMiDataV2WhenCourtIdIsADouble()  {
+        PublicationMiData publicationMiData = new PublicationMiData(
+            UUID.randomUUID(), LocalDateTime.now(), LocalDateTime.now(), Language.ENGLISH, MANUAL_UPLOAD_PROVENANCE,
+            Sensitivity.PUBLIC, UUID.randomUUID().toString(), 0, ArtefactType.GENERAL_PUBLICATION,
+            LocalDateTime.now(),"100.12", ListType.CIVIL_DAILY_CAUSE_LIST);
+
+        when(artefactRepository.getMiDataV2()).thenReturn(List.of(publicationMiData));
+
+        List<PublicationMiData> publicationMiDataList = publicationService.getMiDataV2();
+
+        assertThat(publicationMiDataList.get(0).getLocationName())
+            .as("Location name is not blank").isNull();
     }
 }

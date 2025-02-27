@@ -1,0 +1,24 @@
+[
+  {
+    "date":"16/12/2024",
+    "time":"10am",
+    "venue":"This is a venue name",
+    "caseType":"1234",
+    "caseReferenceNumber":"1234",
+    "judges":"Judge A",
+    "members":"Member A",
+    "hearingMethod":"Hearing Method A",
+    "additionalInformation":"This is additional information"
+  },
+  {
+    "date":"16/12/2024",
+    "time":"10:30am",
+    "venue":"This is a venue name",
+    "caseType":"1235",
+    "caseReferenceNumber":"1235",
+    "judges":"Judge B",
+    "members":"Member B",
+    "hearingMethod":"Hearing Method B",
+    "additionalInformation":"This is another additional information"
+  }
+]

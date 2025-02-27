@@ -1,0 +1,12 @@
+[
+  {
+    "time":"10.15am",
+    "appellant":"Appellant 1",
+    "caseReferenceNumber":"12345",
+    "judges":"Judge A",
+    "members":"Member A",
+    "modeOfHearing":"Mode of hearing 1",
+    "venue":"Venue 1",
+    "additionalInformation":"Additional information 1"
+  }
+]

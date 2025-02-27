@@ -5,7 +5,6 @@ import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
@@ -20,37 +19,43 @@ import uk.gov.hmcts.reform.pip.data.management.Application;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.ExceptionResponse;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationReference;
+import uk.gov.hmcts.reform.pip.data.management.utils.IntegrationTestBase;
+import uk.gov.hmcts.reform.pip.model.account.PiUser;
 import uk.gov.hmcts.reform.pip.model.location.LocationType;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.function.BiPredicate;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.annotation.DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static uk.gov.hmcts.reform.pip.model.account.Roles.SYSTEM_ADMIN;
 
 @SpringBootTest(classes = {Application.class},
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
-@ActiveProfiles(profiles = "integration")
+@ActiveProfiles("integration")
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
 @DirtiesContext(classMode = AFTER_EACH_TEST_METHOD)
-@SuppressWarnings({"PMD.TooManyMethods"})
-class LocationApiTest {
+@SuppressWarnings({"PMD.TooManyMethods", "PMD.ExcessiveImports"})
+class LocationApiTest extends IntegrationTestBase {
 
     @Autowired
     private MockMvc mockMvc;
-
-    @Value("${system-admin-provenance-id}")
-    private String systemAdminProvenanceId;
 
     private static ObjectMapper objectMapper;
     private static final String ROOT_URL = "/locations";
@@ -65,6 +70,8 @@ class LocationApiTest {
     private static final String DELETE_LOCATIONS_CSV = "location/ValidCsvForDeleteCourt.csv";
     private static final String UPDATED_CSV = "location/UpdatedCsv.csv";
 
+    private static final String PROVENANCE_USER_ID = UUID.randomUUID().toString();
+    private static final String USER_ID = UUID.randomUUID().toString();
     private static final String REGIONS_PARAM = "regions";
     private static final String JURISDICTIONS_PARAM = "jurisdictions";
     private static final String LANGUAGE_PARAM = "language";
@@ -81,7 +88,10 @@ class LocationApiTest {
     private static final String USERNAME = "admin";
     private static final String VALID_ROLE = "APPROLE_api.request.admin";
     private static final String LOCATION_LIST = "locationList";
-    private static final String PROVENANCE_USER_ID = "x-provenance-user-id";
+    private static final String USER_ID_HEADER = "x-user-id";
+    private static final String PROVENANCE_USER_ID_HEADER = "x-provenance-user-id";
+    private static final String DISPLAY_NAME = "Test name";
+    private static final String EMAIL = "test@justice.gov.uk";
 
     private final BiPredicate<Location, Location> compareLocationWithoutReference = (location, otherLocation) ->
         location.getLocationId().equals(otherLocation.getLocationId())
@@ -804,11 +814,21 @@ class LocationApiTest {
     @Test
     @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})
     void testDeleteLocation() throws Exception {
+        PiUser piUser = new PiUser();
+        piUser.setUserId(USER_ID);
+        piUser.setEmail(EMAIL);
+
+        when(accountManagementService.getUserById(USER_ID)).thenReturn(piUser);
+        when(accountManagementService.getAllAccounts(anyString(), eq(SYSTEM_ADMIN.toString())))
+            .thenReturn(List.of(EMAIL));
+        when(subscriptionManagementService.findSubscriptionsByLocationId(any()))
+            .thenReturn(Collections.emptyList().toString());
+
         List<Location> createdLocations = createLocations(DELETE_LOCATIONS_CSV);
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
             .delete(GET_LOCATION_BY_ID_ENDPOINT + createdLocations.get(0).getLocationId())
-            .header(PROVENANCE_USER_ID, systemAdminProvenanceId);
+            .header(USER_ID_HEADER, USER_ID);
 
         mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isOk()).andReturn();
 
@@ -825,7 +845,7 @@ class LocationApiTest {
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
             .delete(GET_LOCATION_BY_ID_ENDPOINT + "1234")
-            .header(PROVENANCE_USER_ID, systemAdminProvenanceId);
+            .header(USER_ID_HEADER, USER_ID);
 
         mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isNotFound()).andReturn();
     }
@@ -835,7 +855,7 @@ class LocationApiTest {
     void testDeleteLocationNotAuthorised() throws Exception {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
             .delete(GET_LOCATION_BY_ID_ENDPOINT + "1234")
-            .header(PROVENANCE_USER_ID, systemAdminProvenanceId);
+            .header(USER_ID_HEADER, USER_ID);
 
         mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isForbidden()).andReturn();
     }

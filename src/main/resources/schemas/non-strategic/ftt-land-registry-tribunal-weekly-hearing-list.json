@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Root",
+  "type": "array",
+  "items": {
+    "title": "Hearing list",
+    "type": "object",
+    "required": [
+      "date",
+      "hearingTime",
+      "caseName",
+      "caseReferenceNumber",
+      "judge",
+      "venue/platform"
+    ],
+    "properties": {
+      "date": {
+        "title": "Date",
+        "type": "string",
+        "default": "",
+        "examples": [
+          "02/01/2025"
+        ],
+        "pattern": "^\\d{2}/\\d{2}/\\d{4}$"
+      },
+      "hearingTime": {
+        "title": "Hearing Time",
+        "type": "string",
+        "default": "",
+        "examples": [
+          "10:30am"
+        ],
+        "pattern": "^\\d{1,2}([:.]\\d{2})?[ap]m$"
+      },
+      "caseName": {
+        "title": "Case Name",
+        "type": "string",
+        "default": "",
+        "examples": [
+          "Case Name 1"
+        ],
+        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+      },
+      "caseReferenceNumber": {
+        "title": "Case Reference Number",
+        "type": "string",
+        "default": "",
+        "examples": [
+          "1234"
+        ],
+        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+      },
+      "judge": {
+        "title": "Judges",
+        "type": "string",
+        "default": "",
+        "examples": [
+          "Judge name 1"
+        ],
+        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+      },
+      "venue/platform": {
+        "title": "Venue Platform",
+        "type": "string",
+        "default": "",
+        "examples": [
+          "Venue no 1"
+        ],
+        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+      }
+    }
+  }
+}

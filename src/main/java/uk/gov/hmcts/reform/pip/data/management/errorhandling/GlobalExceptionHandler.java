@@ -13,6 +13,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CreateArtefactConflictException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CreateLocationConflictException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CsvParseException;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ExcelConversionException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.FileSizeLimitException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.FlatFileException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.HeaderValidationException;
@@ -133,6 +134,13 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ExceptionResponse> handle(ProcessingException ex) {
         log.error(writeLog("500, error processing publication files/summary"));
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+            .body(generateExceptionResponse(ex.getMessage()));
+    }
+
+    @ExceptionHandler(ExcelConversionException.class)
+    public ResponseEntity<ExceptionResponse> handle(ExcelConversionException ex) {
+        log.error(writeLog("400, " + ex.getMessage()));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
             .body(generateExceptionResponse(ex.getMessage()));
     }
 

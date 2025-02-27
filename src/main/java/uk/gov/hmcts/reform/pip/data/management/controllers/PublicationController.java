@@ -37,6 +37,7 @@ import uk.gov.hmcts.reform.pip.data.management.models.location.LocationArtefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.HeaderGroup;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.views.ArtefactView;
+import uk.gov.hmcts.reform.pip.data.management.service.ExcelConversionService;
 import uk.gov.hmcts.reform.pip.data.management.service.ValidationService;
 import uk.gov.hmcts.reform.pip.data.management.service.publication.ArtefactDeleteService;
 import uk.gov.hmcts.reform.pip.data.management.service.publication.ArtefactSearchService;
@@ -53,6 +54,7 @@ import uk.gov.hmcts.reform.pip.model.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 import uk.gov.hmcts.reform.pip.model.publication.Sensitivity;
+import uk.gov.hmcts.reform.pip.model.report.PublicationMiData;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -107,6 +109,8 @@ public class PublicationController {
 
     private final ValidationService validationService;
 
+    private final ExcelConversionService excelConversionService;
+
     private static final String DEFAULT_ADMIN_VALUE = "false";
 
     /**
@@ -125,7 +129,8 @@ public class PublicationController {
                                  ArtefactSearchService artefactSearchService,
                                  ArtefactService artefactService,
                                  ArtefactDeleteService artefactDeleteService,
-                                 ArtefactTriggerService artefactTriggerService) {
+                                 ArtefactTriggerService artefactTriggerService,
+                                 ExcelConversionService excelConversionService) {
         this.publicationService = publicationService;
         this.publicationCreationRunner = publicationCreationRunner;
         this.validationService = validationService;
@@ -133,6 +138,7 @@ public class PublicationController {
         this.artefactService = artefactService;
         this.artefactDeleteService = artefactDeleteService;
         this.artefactTriggerService = artefactTriggerService;
+        this.excelConversionService = excelConversionService;
     }
 
     /**
@@ -185,23 +191,10 @@ public class PublicationController {
         );
 
         HeaderGroup headers = validationService.validateHeaders(initialHeaders);
-        validationService.validateBody(payload, initialHeaders);
+        validationService.validateBody(payload, initialHeaders, true);
+        Artefact artefact = createPublicationMetadataFromHeaders(headers, payload.length());
 
-        Artefact artefact = Artefact.builder()
-            .provenance(headers.getProvenance())
-            .sourceArtefactId(headers.getSourceArtefactId())
-            .type(headers.getType())
-            .sensitivity(headers.getSensitivity())
-            .language(headers.getLanguage())
-            .displayFrom(headers.getDisplayFrom())
-            .displayTo(headers.getDisplayTo())
-            .listType(headers.getListType())
-            .locationId(headers.getCourtId())
-            .contentDate(headers.getContentDate())
-            .payloadSize((float) payload.length() / 1024)
-            .build();
-
-        Artefact createdItem = publicationCreationRunner.run(artefact, payload);
+        Artefact createdItem = publicationCreationRunner.run(artefact, payload, true);
         logManualUpload(publicationService.maskEmail(issuerEmail), createdItem.getArtefactId().toString());
 
         // Process the created artefact to generate PDF/Excel files and check/trigger subscription management
@@ -262,31 +255,83 @@ public class PublicationController {
         validationService.validateBody(file);
 
         HeaderGroup headers = validationService.validateHeaders(initialHeaders);
+        Artefact artefact = createPublicationMetadataFromHeaders(headers, file.getSize());
 
         Map<String, List<Object>> search = new ConcurrentHashMap<>();
         search.put("location-id", List.of(headers.getCourtId()));
-
-        Artefact artefact = Artefact.builder()
-            .provenance(headers.getProvenance())
-            .sourceArtefactId(headers.getSourceArtefactId())
-            .type(headers.getType())
-            .sensitivity(headers.getSensitivity())
-            .language(headers.getLanguage())
-            .displayFrom(headers.getDisplayFrom())
-            .displayTo(headers.getDisplayTo())
-            .listType(headers.getListType())
-            .locationId(headers.getCourtId())
-            .contentDate(headers.getContentDate())
-            .isFlatFile(true)
-            .payloadSize((float) file.getSize() / 1024)
-            .search(search)
-            .build();
+        artefact.setSearch(search);
+        artefact.setIsFlatFile(true);
 
         Artefact createdItem =  publicationCreationRunner.run(artefact, file);
         logManualUpload(publicationService.maskEmail(issuerEmail), createdItem.getArtefactId().toString());
 
         if (!NoMatchArtefactHelper.isNoMatchLocationId(createdItem.getLocationId())) {
             artefactTriggerService.checkAndTriggerSubscriptionManagement(artefact);
+        }
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdItem);
+    }
+
+    /**
+     * Non-strategic create publication from Excel input file.
+     *
+     * @param provenance       Name of the source system.
+     * @param sourceArtefactId Unique ID of what publication is called by source system.
+     * @param type             List / Outcome / Judgement / Status Updates.
+     * @param sensitivity      Level of sensitivity.
+     * @param language         Language of publication.
+     * @param displayFrom      Date / Time from which the publication will be displayed.
+     * @param displayTo        Date / Time until which the publication will be displayed.
+     * @param listType         Publication list type.
+     * @param courtId          Source systems court id.
+     * @param contentDate      Local date time for when the publication is referring to start.
+     * @param file             The Excel file to be uploaded.
+     * @return The created artefact.
+     */
+    @ApiResponse(responseCode = "201", description = "Artefact.class instance for the artefact that has been "
+        + "created")
+    @ApiResponse(responseCode = "400", description = "Error converting Excel file into JSON format")
+    @ApiResponse(responseCode = UNAUTHORISED_CODE, description = UNAUTHORISED_MESSAGE)
+    @ApiResponse(responseCode = FORBIDDEN_CODE, description = FORBIDDEN_MESSAGE)
+    @ApiResponse(responseCode = CONFLICT_CODE, description = CONFLICT_MESSAGE)
+    @Operation(summary = "Non-strategic - upload a new publication")
+    @PostMapping(value = "/non-strategic", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @JsonView(ArtefactView.External.class)
+    @IsPublisher
+    @SecurityRequirement(name = BEARER_AUTHENTICATION)
+    public ResponseEntity<Artefact> nonStrategicUploadPublication(
+        @RequestHeader(PublicationConfiguration.PROVENANCE_HEADER) String provenance,
+        @RequestHeader(value = PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, required = false)
+        String sourceArtefactId,
+        @RequestHeader(PublicationConfiguration.TYPE_HEADER) ArtefactType type,
+        @RequestHeader(value = PublicationConfiguration.SENSITIVITY_HEADER, required = false) Sensitivity sensitivity,
+        @RequestHeader(PublicationConfiguration.LANGUAGE_HEADER) Language language,
+        @RequestHeader(value = PublicationConfiguration.DISPLAY_FROM_HEADER, required = false)
+        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime displayFrom,
+        @RequestHeader(value = PublicationConfiguration.DISPLAY_TO_HEADER, required = false)
+        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime displayTo,
+        @RequestHeader(PublicationConfiguration.LIST_TYPE) ListType listType,
+        @RequestHeader(PublicationConfiguration.COURT_ID) String courtId,
+        @RequestHeader(PublicationConfiguration.CONTENT_DATE)
+        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime contentDate,
+        @RequestHeader(value = "x-issuer-email", required = false) String issuerEmail,
+        @RequestPart MultipartFile file) {
+        HeaderGroup initialHeaders = new HeaderGroup(provenance, sourceArtefactId, type, sensitivity, language,
+                                                     displayFrom, displayTo, listType, courtId, contentDate);
+
+        HeaderGroup headers = validationService.validateHeaders(initialHeaders);
+
+        String payload = excelConversionService.convert(file);
+        validationService.validateBody(payload, initialHeaders, false);
+
+        Artefact artefact = createPublicationMetadataFromHeaders(headers, payload.length());
+
+        Artefact createdItem = publicationCreationRunner.run(artefact, payload, false);
+        logManualUpload(publicationService.maskEmail(issuerEmail), createdItem.getArtefactId().toString());
+
+        // Process the created artefact to generate PDF and check/trigger subscription management
+        if (!NoMatchArtefactHelper.isNoMatchLocationId(createdItem.getLocationId())) {
+            publicationService.processCreatedPublication(createdItem, payload);
         }
 
         return ResponseEntity.status(HttpStatus.CREATED).body(createdItem);
@@ -432,6 +477,10 @@ public class PublicationController {
         }
     }
 
+    /**
+     * Previous version of the MI Reporting endpoint. No longer used and soon to be removed.
+     * @deprecated This method will be removed in the future in favour of the V2 equivalent.
+     */
     @ApiResponse(responseCode = OK_CODE, description = "A CSV like structure which contains the data. "
         + "See example for headers", content = {
             @Content(examples = {@ExampleObject("artefact_id,display_from,display_to,language,provenance,"
@@ -448,8 +497,20 @@ public class PublicationController {
     @GetMapping("/mi-data")
     @IsAdmin
     @SecurityRequirement(name = BEARER_AUTHENTICATION)
+    @Deprecated(since = "2")
     public ResponseEntity<String> getMiData() {
         return ResponseEntity.ok().body(publicationService.getMiData());
+    }
+
+    @ApiResponse(responseCode = OK_CODE, description = "A JSON model which contains a list of artefacts")
+    @ApiResponse(responseCode = UNAUTHORISED_CODE, description = UNAUTHORISED_MESSAGE)
+    @ApiResponse(responseCode = FORBIDDEN_CODE, description = FORBIDDEN_MESSAGE)
+    @Operation(summary = "Returns MI data for artefacts")
+    @GetMapping("/v2/mi-data")
+    @IsAdmin
+    @SecurityRequirement(name = BEARER_AUTHENTICATION)
+    public ResponseEntity<List<PublicationMiData>> getMiDataV2() {
+        return ResponseEntity.ok().body(publicationService.getMiDataV2());
     }
 
     @ApiResponse(responseCode = NO_CONTENT_CODE, description = NO_CONTENT_DESCRIPTION)
@@ -515,9 +576,9 @@ public class PublicationController {
     @IsAdmin
     @SecurityRequirement(name = BEARER_AUTHENTICATION)
     public ResponseEntity<String> deleteArtefactsByLocation(
-        @RequestHeader("x-provenance-user-id") String provenanceUserId,
+        @RequestHeader("x-user-id") String userId,
         @PathVariable Integer locationId) throws JsonProcessingException {
-        return ResponseEntity.ok(artefactDeleteService.deleteArtefactByLocation(locationId, provenanceUserId));
+        return ResponseEntity.ok(artefactDeleteService.deleteArtefactByLocation(locationId, userId));
     }
 
     @ApiResponse(responseCode = OK_CODE, description = "List of all artefacts that are noMatch in their id")
@@ -530,5 +591,21 @@ public class PublicationController {
     @SecurityRequirement(name = BEARER_AUTHENTICATION)
     public ResponseEntity<List<Artefact>> getAllNoMatchArtefacts() {
         return ResponseEntity.ok(artefactService.findAllNoMatchArtefacts());
+    }
+
+    private Artefact createPublicationMetadataFromHeaders(HeaderGroup headers, long fileSizeInBytes) {
+        return Artefact.builder()
+            .provenance(headers.getProvenance())
+            .sourceArtefactId(headers.getSourceArtefactId())
+            .type(headers.getType())
+            .sensitivity(headers.getSensitivity())
+            .language(headers.getLanguage())
+            .displayFrom(headers.getDisplayFrom())
+            .displayTo(headers.getDisplayTo())
+            .listType(headers.getListType())
+            .locationId(headers.getCourtId())
+            .contentDate(headers.getContentDate())
+            .payloadSize((float) fileSizeInBytes / 1024)
+            .build();
     }
 }

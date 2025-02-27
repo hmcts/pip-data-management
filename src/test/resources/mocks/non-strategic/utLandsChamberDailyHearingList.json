@@ -1,0 +1,13 @@
+[
+  {
+    "time":"10.15am",
+    "caseReferenceNumber":"12345",
+    "caseName":"This is a case name",
+    "judges":"Judge A",
+    "members":"Member A",
+    "hearingType":"Hearing type 1",
+    "venue":"Venue 1",
+    "modeOfHearing":"Mode of hearing 1",
+    "additionalInformation":"Additional information 1"
+  }
+]

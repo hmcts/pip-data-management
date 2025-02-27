@@ -2,38 +2,34 @@ package uk.gov.hmcts.reform.pip.data.management.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.ActiveProfiles;
-import uk.gov.hmcts.reform.pip.data.management.Application;
-import uk.gov.hmcts.reform.pip.data.management.config.AzureBlobConfigurationTestConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.database.AzurePublicationBlobService;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.FileSizeLimitException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.NotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.UnauthorisedRequestException;
 import uk.gov.hmcts.reform.pip.data.management.models.PublicationFileSizes;
-import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
+import uk.gov.hmcts.reform.pip.data.management.models.PublicationFiles;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
+import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.CivilDailyCauseListSummaryData;
+import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.NonStrategicListSummaryData;
 import uk.gov.hmcts.reform.pip.data.management.service.publication.ArtefactService;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 import uk.gov.hmcts.reform.pip.model.publication.Sensitivity;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.Charset;
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Base64;
-import java.util.Collections;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Stream;
 
@@ -46,35 +42,43 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.pip.model.publication.FileType.EXCEL;
 import static uk.gov.hmcts.reform.pip.model.publication.FileType.PDF;
 
-@SpringBootTest(classes = {Application.class, AzureBlobConfigurationTestConfiguration.class})
 @ActiveProfiles(profiles = "test")
+@ExtendWith(MockitoExtension.class)
 @SuppressWarnings({"PMD.TooManyMethods", "PMD.ExcessiveImports"})
 class PublicationManagementServiceTest {
-    @MockBean
+    @Mock
     private ArtefactService artefactService;
 
-    @MockBean
-    private LocationService locationService;
-
-    @MockBean
+    @Mock
     private AccountManagementService accountManagementService;
 
-    @MockBean
+    @Mock
     private AzurePublicationBlobService azureBlobService;
 
-    @Autowired
+    @Mock
+    private PublicationFileGenerationService publicationFileGenerationService;
+
+    @Mock
+    private PublicationSummaryGenerationService publicationSummaryGenerationService;
+
+    @Mock
+    private ListConversionFactory listConversionFactory;
+
+    @Mock
+    private CivilDailyCauseListSummaryData civilDailyCauseListSummaryData;
+
+    @InjectMocks
     private PublicationManagementService publicationManagementService;
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private static final Artefact ARTEFACT = new Artefact();
-    private static final Artefact WELSH_ARTEFACT = new Artefact();
-    private static final Location LOCATION = new Location();
 
     private static final String RESPONSE_MESSAGE = "Response didn't contain expected text";
     private static final String NOT_FOUND_MESSAGE = "File not found";
@@ -88,89 +92,33 @@ class PublicationManagementServiceTest {
     private static final UUID TEST_ARTEFACT_ID = UUID.randomUUID();
     private static final String TEST_USER_ID = UUID.randomUUID().toString();
 
-    private static final String UPLOADED = "uploaded";
     private static final String WELSH_PDF_SUFFIX = "_cy";
 
-    private static String sjpPublicListInput;
-    private static String civilDailyListInput;
-
-    private static String getInput(String resourcePath) throws IOException {
-        try (InputStream inputStream = PublicationManagementServiceTest.class.getResourceAsStream(resourcePath)) {
-            return IOUtils.toString(inputStream, Charset.defaultCharset());
-        }
-    }
+    private static final String PAYLOAD = "Test payload";
+    private static final byte[] EMPTY_BYTES = new byte[0];
+    private static final byte[] BYTE_DATA = { 1 };
 
     @BeforeAll
-    static void startup() throws IOException {
+    static void startup() {
         OBJECT_MAPPER.findAndRegisterModules();
-        sjpPublicListInput = getInput("/mocks/sjpPublicList.json");
-        civilDailyListInput = getInput("/mocks/civilDailyCauseList.json");
     }
 
     @BeforeEach
     void setup() {
         ARTEFACT.setArtefactId(TEST_ARTEFACT_ID);
-        ARTEFACT.setContentDate(LocalDateTime.now());
-        ARTEFACT.setLocationId("1");
-        ARTEFACT.setProvenance("france");
-        ARTEFACT.setLanguage(Language.ENGLISH);
         ARTEFACT.setListType(ListType.SJP_PUBLIC_LIST);
         ARTEFACT.setPayloadSize(100F);
 
-        WELSH_ARTEFACT.setArtefactId(TEST_ARTEFACT_ID);
-        WELSH_ARTEFACT.setContentDate(LocalDateTime.now());
-        WELSH_ARTEFACT.setLocationId("1");
-        WELSH_ARTEFACT.setProvenance("france");
-        WELSH_ARTEFACT.setLanguage(Language.WELSH);
-        WELSH_ARTEFACT.setListType(ListType.SJP_PUBLIC_LIST);
-        WELSH_ARTEFACT.setPayloadSize(100F);
-
-        LOCATION.setLocationId(1);
-        LOCATION.setName("Test");
-        LOCATION.setWelshName("Test");
-        LOCATION.setRegion(Collections.singletonList("Region"));
-        LOCATION.setWelshRegion(Collections.singletonList("Welsh region"));
-
-        when(artefactService.payloadWithinExcelLimit(argThat(arg -> arg <= 2048))).thenReturn(true);
-        when(artefactService.payloadWithinPdfLimit(argThat(arg -> arg <= 256))).thenReturn(true);
+        lenient().when(artefactService.payloadWithinExcelLimit(argThat(arg -> arg <= 2048))).thenReturn(true);
+        lenient().when(artefactService.payloadWithinPdfLimit(argThat(arg -> arg <= 256))).thenReturn(true);
     }
 
     @Test
-    void testGenerateFilesSjpEnglish() {
-        when(artefactService.getMetadataByArtefactId(any())).thenReturn(ARTEFACT);
-        when(locationService.getLocationById(any())).thenReturn(LOCATION);
-        when(azureBlobService.uploadFile(any(), any())).thenReturn(UPLOADED);
+    void testGenerateFilesWithPrimaryPdfOnly() {
+        when(publicationFileGenerationService.generate(TEST_ARTEFACT_ID, PAYLOAD))
+            .thenReturn(Optional.of(new PublicationFiles(BYTE_DATA, EMPTY_BYTES, EMPTY_BYTES)));
 
-        publicationManagementService.generateFiles(TEST_ARTEFACT_ID, sjpPublicListInput);
-
-        verify(azureBlobService).uploadFile(eq(TEST_ARTEFACT_ID + PDF.getExtension()), any());
-        verify(azureBlobService).uploadFile(eq(TEST_ARTEFACT_ID + EXCEL.getExtension()), any());
-        verify(azureBlobService, never())
-            .uploadFile(eq(TEST_ARTEFACT_ID + WELSH_PDF_SUFFIX + PDF.getExtension()), any());
-    }
-
-    @Test
-    void testGenerateFilesSjpWelsh() {
-        when(artefactService.getMetadataByArtefactId(any())).thenReturn(WELSH_ARTEFACT);
-        when(locationService.getLocationById(any())).thenReturn(LOCATION);
-        when(azureBlobService.uploadFile(any(), any())).thenReturn(UPLOADED);
-
-        publicationManagementService.generateFiles(TEST_ARTEFACT_ID, sjpPublicListInput);
-
-        verify(azureBlobService).uploadFile(eq(TEST_ARTEFACT_ID + PDF.getExtension()), any());
-        verify(azureBlobService).uploadFile(eq(TEST_ARTEFACT_ID + EXCEL.getExtension()), any());
-        verify(azureBlobService, never())
-            .uploadFile(eq(TEST_ARTEFACT_ID + WELSH_PDF_SUFFIX + PDF.getExtension()), any());
-    }
-
-    @Test
-    void testGenerateFilesNonSjpEnglish() {
-        ARTEFACT.setListType(ListType.CIVIL_DAILY_CAUSE_LIST);
-        when(artefactService.getMetadataByArtefactId(any())).thenReturn(ARTEFACT);
-        when(locationService.getLocationById(any())).thenReturn(LOCATION);
-        when(azureBlobService.uploadFile(any(), any())).thenReturn(UPLOADED);
-
-        publicationManagementService.generateFiles(TEST_ARTEFACT_ID, civilDailyListInput);
+        publicationManagementService.generateFiles(TEST_ARTEFACT_ID, PAYLOAD);
 
         verify(azureBlobService).uploadFile(eq(TEST_ARTEFACT_ID + PDF.getExtension()), any());
         verify(azureBlobService, never())
@@ -179,13 +127,11 @@ class PublicationManagementServiceTest {
     }
 
     @Test
-    void testGenerateFilesNonSjpWelsh() {
-        WELSH_ARTEFACT.setListType(ListType.CIVIL_DAILY_CAUSE_LIST);
-        when(artefactService.getMetadataByArtefactId(any())).thenReturn(WELSH_ARTEFACT);
-        when(locationService.getLocationById(any())).thenReturn(LOCATION);
-        when(azureBlobService.uploadFile(any(), any())).thenReturn(UPLOADED);
+    void testGenerateFilesWithPrimaryAndAdditionalPdfs() {
+        when(publicationFileGenerationService.generate(TEST_ARTEFACT_ID, PAYLOAD))
+            .thenReturn(Optional.of(new PublicationFiles(BYTE_DATA, BYTE_DATA, EMPTY_BYTES)));
 
-        publicationManagementService.generateFiles(TEST_ARTEFACT_ID, civilDailyListInput);
+        publicationManagementService.generateFiles(TEST_ARTEFACT_ID, PAYLOAD);
 
         verify(azureBlobService).uploadFile(eq(TEST_ARTEFACT_ID + PDF.getExtension()), any());
         verify(azureBlobService).uploadFile(eq(TEST_ARTEFACT_ID + WELSH_PDF_SUFFIX + PDF.getExtension()), any());
@@ -193,63 +139,82 @@ class PublicationManagementServiceTest {
     }
 
     @Test
-    void testGenerateFilesWhenWithinExcelOutsidePdf() {
-        ARTEFACT.setPayloadSize(1000F);
-        when(artefactService.getMetadataByArtefactId(any())).thenReturn(ARTEFACT);
-        when(locationService.getLocationById(any())).thenReturn(LOCATION);
-        when(azureBlobService.uploadFile(any(), any())).thenReturn(UPLOADED);
+    void testGenerateFilesWithPdfAndExcel() {
+        when(publicationFileGenerationService.generate(TEST_ARTEFACT_ID, PAYLOAD))
+            .thenReturn(Optional.of(new PublicationFiles(BYTE_DATA, EMPTY_BYTES, BYTE_DATA)));
 
-        publicationManagementService.generateFiles(TEST_ARTEFACT_ID, sjpPublicListInput);
+        publicationManagementService.generateFiles(TEST_ARTEFACT_ID, PAYLOAD);
 
-        verify(azureBlobService, never()).uploadFile(eq(TEST_ARTEFACT_ID + PDF.getExtension()), any());
-        verify(azureBlobService, never()).uploadFile(
-            eq(TEST_ARTEFACT_ID + WELSH_PDF_SUFFIX + PDF.getExtension()), any());
+        verify(azureBlobService).uploadFile(eq(TEST_ARTEFACT_ID + PDF.getExtension()), any());
+        verify(azureBlobService, never())
+            .uploadFile(eq(TEST_ARTEFACT_ID + WELSH_PDF_SUFFIX + PDF.getExtension()), any());
         verify(azureBlobService).uploadFile(eq(TEST_ARTEFACT_ID + EXCEL.getExtension()), any());
     }
 
     @Test
-    void testGenerateFilesWhenOutsideExcelAndPdf() {
-        ARTEFACT.setPayloadSize(4000F);
-        when(artefactService.getMetadataByArtefactId(any())).thenReturn(ARTEFACT);
-        when(locationService.getLocationById(any())).thenReturn(LOCATION);
-        when(azureBlobService.uploadFile(any(), any())).thenReturn(UPLOADED);
+    void testGenerateFilesWithExcelOnly() {
+        when(publicationFileGenerationService.generate(TEST_ARTEFACT_ID, PAYLOAD))
+            .thenReturn(Optional.of(new PublicationFiles(EMPTY_BYTES, EMPTY_BYTES, BYTE_DATA)));
 
-        publicationManagementService.generateFiles(TEST_ARTEFACT_ID, sjpPublicListInput);
+        publicationManagementService.generateFiles(TEST_ARTEFACT_ID, PAYLOAD);
 
         verify(azureBlobService, never()).uploadFile(eq(TEST_ARTEFACT_ID + PDF.getExtension()), any());
-        verify(azureBlobService, never()).uploadFile(
-            eq(TEST_ARTEFACT_ID + WELSH_PDF_SUFFIX + PDF.getExtension()), any());
+        verify(azureBlobService, never())
+            .uploadFile(eq(TEST_ARTEFACT_ID + WELSH_PDF_SUFFIX + PDF.getExtension()), any());
+        verify(azureBlobService).uploadFile(eq(TEST_ARTEFACT_ID + EXCEL.getExtension()), any());
+    }
+
+    @Test
+    void testGenerateFilesWhenFailed() {
+        when(publicationFileGenerationService.generate(TEST_ARTEFACT_ID, PAYLOAD))
+            .thenReturn(Optional.empty());
+
+        publicationManagementService.generateFiles(TEST_ARTEFACT_ID, PAYLOAD);
+
+        verify(azureBlobService, never()).uploadFile(eq(TEST_ARTEFACT_ID + PDF.getExtension()), any());
+        verify(azureBlobService, never())
+            .uploadFile(eq(TEST_ARTEFACT_ID + WELSH_PDF_SUFFIX + PDF.getExtension()), any());
         verify(azureBlobService, never()).uploadFile(eq(TEST_ARTEFACT_ID + EXCEL.getExtension()), any());
     }
 
     @Test
-    void testGenerateArtefactSummary() {
-        ARTEFACT.setListType(ListType.CIVIL_DAILY_CAUSE_LIST);
-        when(artefactService.getPayloadByArtefactId(any())).thenReturn(civilDailyListInput);
+    void testGenerateArtefactSummarySuccess() {
         when(artefactService.getMetadataByArtefactId(any())).thenReturn(ARTEFACT);
+        when(listConversionFactory.getArtefactSummaryData(any(ListType.class)))
+            .thenReturn(Optional.of(civilDailyCauseListSummaryData));
+        when(artefactService.getPayloadByArtefactId(any())).thenReturn("{}");
+        when(publicationSummaryGenerationService.generate(any())).thenReturn(TEST);
 
         String response = publicationManagementService.generateArtefactSummary(TEST_ARTEFACT_ID);
+        assertFalse(response.isEmpty(), RESPONSE_MESSAGE);
 
-        assertTrue(response.contains("Case reference - This is case number"), RESPONSE_MESSAGE);
-        assertTrue(response.contains("Case name - This is case name"), RESPONSE_MESSAGE);
-        assertTrue(response.contains("Case type - This is a case type"), RESPONSE_MESSAGE);
-        assertTrue(response.contains("Hearing type - This is hearing type"), RESPONSE_MESSAGE);
+        verify(civilDailyCauseListSummaryData).get(any());
     }
 
     @Test
-    void testGenerateArtefactSummaryWhenSummaryNotPresent() {
-        when(artefactService.getPayloadByArtefactId(any())).thenReturn(sjpPublicListInput);
-        when(artefactService.getMetadataByArtefactId(any())).thenReturn(ARTEFACT);
+    void testGenerateArtefactSummaryNonStrategicPublishing() {
+        Artefact artefact = new Artefact();
+        artefact.setArtefactId(TEST_ARTEFACT_ID);
+        artefact.setListType(ListType.CST_WEEKLY_HEARING_LIST);
+
+        NonStrategicListSummaryData nonStrategicListSummaryData = new NonStrategicListSummaryData(
+            ListType.CST_WEEKLY_HEARING_LIST
+        );
+
+        when(artefactService.getMetadataByArtefactId(any())).thenReturn(artefact);
+        when(listConversionFactory.getArtefactSummaryData(any(ListType.class)))
+            .thenReturn(Optional.of(nonStrategicListSummaryData));
+        when(artefactService.getPayloadByArtefactId(any())).thenReturn("[{\"date\":\"01/01/2025\"}]");
+        when(publicationSummaryGenerationService.generate(any())).thenReturn(TEST);
 
         String response = publicationManagementService.generateArtefactSummary(TEST_ARTEFACT_ID);
-
-        assertTrue(response.isEmpty(), "Response message should be empty when no summary generator available");
+        assertFalse(response.isEmpty(), RESPONSE_MESSAGE);
     }
 
     @Test
-    void testGenerateArtefactSummaryWithoutConverter() {
-        ARTEFACT.setListType(ListType.SJP_PRESS_REGISTER);
-        when(artefactService.getMetadataByArtefactId(any())).thenReturn(ARTEFACT);
+    void testGenerateArtefactSummaryWhenSummaryIsEmpty() {
+        when(artefactService.getMetadataByArtefactId(TEST_ARTEFACT_ID)).thenReturn(ARTEFACT);
+        when(listConversionFactory.getArtefactSummaryData(any(ListType.class))).thenReturn(Optional.empty());
 
         assertEquals("", publicationManagementService.generateArtefactSummary(TEST_ARTEFACT_ID),
                      RESPONSE_MESSAGE);
@@ -388,7 +353,6 @@ class PublicationManagementServiceTest {
         ARTEFACT.setListType(ListType.CIVIL_DAILY_CAUSE_LIST);
         ARTEFACT.setSensitivity(Sensitivity.CLASSIFIED);
         when(artefactService.getMetadataByArtefactId(any())).thenReturn(ARTEFACT);
-        when(azureBlobService.getBlobFile(any())).thenReturn(TEST_BYTE);
 
         UnauthorisedRequestException ex = assertThrows(UnauthorisedRequestException.class, () ->
             publicationManagementService.getStoredPublication(
@@ -404,7 +368,6 @@ class PublicationManagementServiceTest {
         ARTEFACT.setListType(ListType.CIVIL_DAILY_CAUSE_LIST);
         ARTEFACT.setSensitivity(Sensitivity.CLASSIFIED);
         when(artefactService.getMetadataByArtefactId(any())).thenReturn(ARTEFACT);
-        when(azureBlobService.getBlobFile(any())).thenReturn(TEST_BYTE);
         when(accountManagementService.getIsAuthorised(any(), any(), any())).thenReturn(false);
 
         UnauthorisedRequestException ex = assertThrows(UnauthorisedRequestException.class, () ->
@@ -455,10 +418,6 @@ class PublicationManagementServiceTest {
     @Test
     void testFileExistsReturnTrueIfAllFilesExist() {
         when(azureBlobService.blobFileExists(TEST_ARTEFACT_ID + PDF.getExtension()))
-            .thenReturn(true);
-        when(azureBlobService.blobFileExists(TEST_ARTEFACT_ID  + WELSH_PDF_SUFFIX + PDF.getExtension()))
-            .thenReturn(true);
-        when(azureBlobService.blobFileExists(TEST_ARTEFACT_ID + EXCEL.getExtension()))
             .thenReturn(true);
 
         assertTrue(publicationManagementService.fileExists(TEST_ARTEFACT_ID), FILE_EXISTS_FLAG_MESSAGE);

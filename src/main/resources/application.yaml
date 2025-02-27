@@ -1,6 +1,5 @@
 server:
   port: 8090
-  shutdown: graceful
   tomcat:
     keep-alive-timeout: 300000 # 5 minutes to ensure keep alive is set to > the load balancer
 
@@ -134,7 +133,38 @@ validations:
     IAC_DAILY_LIST_ADDITIONAL_CASES: "schemas/iac_daily_list.json"
     CARE_STANDARDS_LIST: "schemas/care_standards_list.json"
     PRIMARY_HEALTH_LIST: "schemas/primary_health_list.json"
-
+    OPA_PRESS_LIST: "schemas/opa_press_list.json"
+    OPA_PUBLIC_LIST: "schemas/opa_public_list.json"
+    OPA_RESULTS: "schemas/opa_results.json"
+    CST_WEEKLY_HEARING_LIST: "schemas/non-strategic/cst_weekly_hearing_list.json"
+    PHT_WEEKLY_HEARING_LIST: "schemas/non-strategic/pht_weekly_hearing_list.json"
+    GRC_WEEKLY_HEARING_LIST: "schemas/non-strategic/grc_weekly_hearing_list.json"
+    WPAFCC_WEEKLY_HEARING_LIST: "schemas/non-strategic/wpafcc_weekly_hearing_list.json"
+    UT_IAC_STATUTORY_APPEALS_DAILY_HEARING_LIST: "schemas/non-strategic/ut_iac_statutory_appeals_daily_hearing_list.json"
+    UT_IAC_JR_LONDON_DAILY_HEARING_LIST: "schemas/non-strategic/ut_iac_judicial_reviews_daily_hearing_list.json"
+    UT_IAC_JR_MANCHESTER_DAILY_HEARING_LIST: "schemas/non-strategic/ut_iac_judicial_reviews_daily_hearing_list.json"
+    UT_IAC_JR_BIRMINGHAM_DAILY_HEARING_LIST: "schemas/non-strategic/ut_iac_judicial_reviews_daily_hearing_list.json"
+    UT_IAC_JR_CARDIFF_DAILY_HEARING_LIST: "schemas/non-strategic/ut_iac_judicial_reviews_daily_hearing_list.json"
+    SIAC_WEEKLY_HEARING_LIST: "schemas/non-strategic/siac_weekly_hearing_list.json"
+    POAC_WEEKLY_HEARING_LIST: "schemas/non-strategic/siac_weekly_hearing_list.json"
+    PAAC_WEEKLY_HEARING_LIST: "schemas/non-strategic/siac_weekly_hearing_list.json"
+    FTT_TAX_WEEKLY_HEARING_LIST: "schemas/non-strategic/ftt-tax-chamber-tribunal-weekly-hearing-list.json"
+    FTT_LR_WEEKLY_HEARING_LIST: "schemas/non-strategic/ftt-land-registry-tribunal-weekly-hearing-list.json"
+    RPT_EASTERN_WEEKLY_HEARING_LIST: "schemas/non-strategic/ftt-residential-property-tribunal-weekly-hearing-list.json"
+    RPT_LONDON_WEEKLY_HEARING_LIST: "schemas/non-strategic/ftt-residential-property-tribunal-weekly-hearing-list.json"
+    RPT_MIDLANDS_WEEKLY_HEARING_LIST: "schemas/non-strategic/ftt-residential-property-tribunal-weekly-hearing-list.json"
+    RPT_NORTHERN_WEEKLY_HEARING_LIST: "schemas/non-strategic/ftt-residential-property-tribunal-weekly-hearing-list.json"
+    RPT_SOUTHERN_WEEKLY_HEARING_LIST: "schemas/non-strategic/ftt-residential-property-tribunal-weekly-hearing-list.json"
+    UT_T_AND_CC_DAILY_HEARING_LIST: "schemas/non-strategic/ut_tax_and_chancery_chamber_daily_hearing_list.json"
+    UT_LC_DAILY_HEARING_LIST: "schemas/non-strategic/ut_lands_chamber_daily_hearing_list.json"
+    UT_AAC_DAILY_HEARING_LIST: "schemas/non-strategic/ut_administrative_appeals_chamber_daily_hearing_list.json"
+    SSCS_MIDLANDS_DAILY_HEARING_LIST: "schemas/non-strategic/sscs_daily_hearing_list.json"
+    SSCS_SOUTH_EAST_DAILY_HEARING_LIST: "schemas/non-strategic/sscs_daily_hearing_list.json"
+    SSCS_WALES_AND_SOUTH_WEST_DAILY_HEARING_LIST: "schemas/non-strategic/sscs_daily_hearing_list.json"
+    SSCS_SCOTLAND_DAILY_HEARING_LIST: "schemas/non-strategic/sscs_daily_hearing_list.json"
+    SSCS_NORTH_EAST_DAILY_HEARING_LIST: "schemas/non-strategic/sscs_daily_hearing_list.json"
+    SSCS_NORTH_WEST_DAILY_HEARING_LIST: "schemas/non-strategic/sscs_daily_hearing_list.json"
+    SSCS_LONDON_DAILY_HEARING_LIST: "schemas/non-strategic/sscs_daily_hearing_list.json"
 springdoc:
   swagger-ui:
     path: /swagger-ui/

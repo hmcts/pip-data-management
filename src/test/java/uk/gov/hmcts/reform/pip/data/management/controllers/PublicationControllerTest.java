@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationArtefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.HeaderGroup;
+import uk.gov.hmcts.reform.pip.data.management.service.ExcelConversionService;
 import uk.gov.hmcts.reform.pip.data.management.service.ValidationService;
 import uk.gov.hmcts.reform.pip.data.management.service.publication.ArtefactDeleteService;
 import uk.gov.hmcts.reform.pip.data.management.service.publication.ArtefactSearchService;
@@ -30,8 +31,10 @@ import uk.gov.hmcts.reform.pip.model.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 import uk.gov.hmcts.reform.pip.model.publication.Sensitivity;
+import uk.gov.hmcts.reform.pip.model.report.PublicationMiData;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -78,6 +81,9 @@ class PublicationControllerTest {
     @Mock
     private ValidationService validationService;
 
+    @Mock
+    private ExcelConversionService excelConversionService;
+
     @InjectMocks
     private PublicationController publicationController;
 
@@ -102,9 +108,12 @@ class PublicationControllerTest {
     private static final String TEST_STRING = "test";
     private static final String VALIDATION_EXPECTED_MESSAGE =
         "The expected exception does not contain the correct message";
+    private static final String ARTEFACT_MATCH_MESSAGE = "Artefact does not match";
     private static final String NOT_EQUAL_MESSAGE = "The expected strings are not the same";
     private static final String DELETED_MESSAGE = "Successfully deleted artefact: ";
     private static final String NO_MATCH = "NoMatch";
+    private static final String FILE_NAME = "TestFileName";
+    private static final String EXCEL_FILE_TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 
     private static final List<LocationArtefact> COURT_PER_LOCATION = new ArrayList<>();
     private Artefact artefact;
@@ -171,7 +180,7 @@ class PublicationControllerTest {
     @Test
     void testCreationOfPublication() {
         when(validationService.validateHeaders(any())).thenReturn(headers);
-        when(publicationCreationRunner.run(artefact, PAYLOAD)).thenReturn(artefactWithId);
+        when(publicationCreationRunner.run(artefact, PAYLOAD, true)).thenReturn(artefactWithId);
 
         ResponseEntity<Artefact> responseEntity = publicationController.uploadPublication(
             PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE, SENSITIVITY, LANGUAGE,
@@ -181,13 +190,13 @@ class PublicationControllerTest {
         verify(publicationService).processCreatedPublication(any(Artefact.class), eq(PAYLOAD));
 
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode(), STATUS_CODE_MATCH);
-        assertEquals(artefactWithId, responseEntity.getBody(), "The expected return ID is returned");
+        assertEquals(artefactWithId, responseEntity.getBody(), ARTEFACT_MATCH_MESSAGE);
     }
 
     @Test
     void testCreationOfPublicationWithNonExistentLocationId() {
         when(validationService.validateHeaders(any())).thenReturn(headers);
-        when(publicationCreationRunner.run(artefact, PAYLOAD)).thenReturn(artefactWithNoMatchLocationId);
+        when(publicationCreationRunner.run(artefact, PAYLOAD, true)).thenReturn(artefactWithNoMatchLocationId);
 
         ResponseEntity<Artefact> responseEntity = publicationController.uploadPublication(
             PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE, SENSITIVITY, LANGUAGE,
@@ -197,7 +206,7 @@ class PublicationControllerTest {
         verify(publicationService, never()).processCreatedPublication(any(Artefact.class), eq(PAYLOAD));
 
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode(), STATUS_CODE_MATCH);
-        assertEquals(artefactWithNoMatchLocationId, responseEntity.getBody(), "The expected return ID is returned");
+        assertEquals(artefactWithNoMatchLocationId, responseEntity.getBody(), ARTEFACT_MATCH_MESSAGE);
     }
 
     @Test
@@ -382,7 +391,7 @@ class PublicationControllerTest {
         verify(artefactTriggerService).checkAndTriggerSubscriptionManagement(any(Artefact.class));
 
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode(), STATUS_CODE_MATCH);
-        assertEquals(artefactWithId, responseEntity.getBody(), "Artefacts should match");
+        assertEquals(artefactWithId, responseEntity.getBody(), ARTEFACT_MATCH_MESSAGE);
     }
 
     @Test
@@ -407,7 +416,48 @@ class PublicationControllerTest {
         verify(artefactTriggerService, never()).checkAndTriggerSubscriptionManagement(any(Artefact.class));
 
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode(), STATUS_CODE_MATCH);
-        assertEquals(artefactWithNoMatchLocationId, responseEntity.getBody(), "Artefacts should match");
+        assertEquals(artefactWithNoMatchLocationId, responseEntity.getBody(), ARTEFACT_MATCH_MESSAGE);
+    }
+
+    @Test
+    void testNonStrategicCreatePublication() {
+        MultipartFile file = new MockMultipartFile(FILE_NAME, FILE_NAME, EXCEL_FILE_TYPE,
+                                                   TEST_STRING.getBytes(StandardCharsets.UTF_8));
+
+        when(validationService.validateHeaders(any())).thenReturn(headers);
+        when(excelConversionService.convert(file)).thenReturn(PAYLOAD);
+        when(publicationCreationRunner.run(artefact, PAYLOAD, false)).thenReturn(artefactWithId);
+
+        ResponseEntity<Artefact> responseEntity = publicationController.nonStrategicUploadPublication(
+            PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE, SENSITIVITY, LANGUAGE, DISPLAY_FROM, DISPLAY_TO,
+            LIST_TYPE, LOCATION_ID, CONTENT_DATE, TEST_STRING, file
+        );
+
+        verify(publicationService).processCreatedPublication(artefactWithId, PAYLOAD);
+
+        assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode(), STATUS_CODE_MATCH);
+        assertEquals(artefactWithId, responseEntity.getBody(), ARTEFACT_MATCH_MESSAGE);
+    }
+
+    @Test
+    void testNonStrategicCreatePublicationWithNonExistentLocationId() {
+        MultipartFile file = new MockMultipartFile(FILE_NAME, FILE_NAME, EXCEL_FILE_TYPE,
+                                                   TEST_STRING.getBytes(StandardCharsets.UTF_8));
+
+        when(validationService.validateHeaders(any())).thenReturn(headers);
+        when(excelConversionService.convert(file)).thenReturn(PAYLOAD);
+        when(publicationCreationRunner.run(artefact, PAYLOAD, false))
+            .thenReturn(artefactWithNoMatchLocationId);
+
+        ResponseEntity<Artefact> responseEntity = publicationController.nonStrategicUploadPublication(
+            PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE, SENSITIVITY, LANGUAGE, DISPLAY_FROM, DISPLAY_TO,
+            LIST_TYPE, LOCATION_ID, CONTENT_DATE, TEST_STRING, file
+        );
+
+        verify(publicationService, never()).processCreatedPublication(artefactWithId, PAYLOAD);
+
+        assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode(), STATUS_CODE_MATCH);
+        assertEquals(artefactWithNoMatchLocationId, responseEntity.getBody(), ARTEFACT_MATCH_MESSAGE);
     }
 
     @Test
@@ -436,7 +486,7 @@ class PublicationControllerTest {
     @Test
     void testCreatePublicationLogsWhenHeaderIsPresent() throws IOException {
         when(validationService.validateHeaders(any())).thenReturn(headers);
-        when(publicationCreationRunner.run(artefact, PAYLOAD)).thenReturn(artefactWithId);
+        when(publicationCreationRunner.run(artefact, PAYLOAD, true)).thenReturn(artefactWithId);
         when(publicationService.maskEmail(TEST_STRING)).thenReturn(TEST_STRING);
 
         try (LogCaptor logCaptor = LogCaptor.forClass(PublicationController.class)) {
@@ -502,11 +552,11 @@ class PublicationControllerTest {
     @Test
     void testDeleteArtefactsByLocationReturnsOk() throws JsonProcessingException {
         int locationId = 1;
-        String requesterName = "ReqName";
-        when(artefactDeleteService.deleteArtefactByLocation(locationId, requesterName)).thenReturn("Success");
+        String requesterId = UUID.randomUUID().toString();
+        when(artefactDeleteService.deleteArtefactByLocation(locationId, requesterId)).thenReturn("Success");
 
         assertEquals(HttpStatus.OK,
-                     publicationController.deleteArtefactsByLocation(requesterName, locationId).getStatusCode(),
+                     publicationController.deleteArtefactsByLocation(requesterId, locationId).getStatusCode(),
                      "Delete artefacts for location endpoint has not returned OK");
     }
 
@@ -521,4 +571,25 @@ class PublicationControllerTest {
         assertEquals(HttpStatus.OK, response.getStatusCode(), STATUS_CODE_MATCH);
         assertEquals(artefactList, response.getBody(), "Body should match");
     }
+
+    @Test
+    void testMiV2ReturnsSuccessfully() {
+        PublicationMiData publicationMiData = new PublicationMiData(
+            UUID.randomUUID(), LocalDateTime.now(), LocalDateTime.now(), Language.ENGLISH, "MANUAL_UPLOAD",
+            Sensitivity.PUBLIC, UUID.randomUUID().toString(), 0, ArtefactType.GENERAL_PUBLICATION,
+            LocalDateTime.now(),"1", ListType.CIVIL_DAILY_CAUSE_LIST);
+
+        PublicationMiData publicationMiData2 = new PublicationMiData(
+            UUID.randomUUID(), LocalDateTime.now(), LocalDateTime.now(), Language.ENGLISH, "MANUAL_UPLOAD",
+            Sensitivity.PUBLIC, UUID.randomUUID().toString(), 1, ArtefactType.GENERAL_PUBLICATION,
+            LocalDateTime.now(), "NoMatch2", ListType.CIVIL_DAILY_CAUSE_LIST);
+
+        when(publicationService.getMiDataV2()).thenReturn(List.of(publicationMiData, publicationMiData2));
+
+        ResponseEntity<List<PublicationMiData>> response = publicationController.getMiDataV2();
+
+        assertEquals(HttpStatus.OK, response.getStatusCode(), STATUS_CODE_MATCH);
+        assertThat(response.getBody()).containsExactlyInAnyOrder(publicationMiData, publicationMiData2);
+    }
+
 }

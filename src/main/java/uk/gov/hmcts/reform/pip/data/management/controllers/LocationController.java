@@ -36,7 +36,6 @@ import java.util.List;
 @Tag(name = "Data Management location list API")
 @RequestMapping("/locations")
 public class LocationController {
-
     private static final String OK_CODE = "200";
     private static final String BAD_REQUEST_CODE = "400";
     private static final String UNAUTHORISED_CODE = "401";
@@ -113,10 +112,10 @@ public class LocationController {
     @IsAdmin
     @SecurityRequirement(name = BEARER_AUTHENTICATION)
     public ResponseEntity<LocationDeletion> deleteLocation(
-        @RequestHeader("x-provenance-user-id") String provenanceUserId,
+        @RequestHeader("x-user-id") String userId,
         @PathVariable Integer locationId)
         throws JsonProcessingException {
-        return ResponseEntity.ok(locationService.deleteLocation(locationId, provenanceUserId));
+        return ResponseEntity.ok(locationService.deleteLocation(locationId, userId));
     }
 
     @ApiResponse(responseCode = OK_CODE, description = "CSV of the reference data")
