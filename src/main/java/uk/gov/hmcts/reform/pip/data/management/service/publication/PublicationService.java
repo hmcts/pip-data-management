@@ -177,30 +177,6 @@ public class PublicationService {
     }
 
     /**
-     * Retrieve artefact data for MI reporting. Insert court name before returning the data.
-     * @return MI artefact data as comma delimited string
-     * @deprecated This method will be removed in the future in favour of the V2 equivalent.
-     */
-    @Deprecated(since = "2")
-    public String getMiData() {
-        StringBuilder builder = new StringBuilder(200);
-        builder
-            .append("artefact_id,display_from,display_to,language,provenance,sensitivity,source_artefact_id,"
-                        + "superseded_count,type,content_date,court_id,court_name,list_type")
-            .append(System.lineSeparator());
-
-        artefactRepository.getMiData()
-            .stream()
-            // Insert an extra field for court name before the list type
-            .map(line -> new StringBuilder(line)
-                .insert(line.lastIndexOf(DELIMITER), DELIMITER + getLocationNameFromMiData(line))
-                .toString())
-            .forEach(line -> builder.append(line)
-                .append(System.lineSeparator()));
-        return builder.toString();
-    }
-
-    /**
      * Retrieve artefact data for MI reporting.
      * @return MI artefact data as a list of PublicationMiData objects
      */
@@ -223,18 +199,5 @@ public class PublicationService {
         }
 
         return publicationMiData;
-    }
-
-    private String getLocationNameFromMiData(String line) {
-        // Find the second to last index of the delimiter then advance a place for the location ID index
-        int locationIdIndex = line.lastIndexOf(DELIMITER, line.lastIndexOf(DELIMITER) - 1) + 1;
-        String locationId = line.substring(locationIdIndex, line.lastIndexOf(DELIMITER));
-
-        if (NumberUtils.isCreatable(locationId)) {
-            return locationRepository.getLocationByLocationId(Integer.valueOf(locationId))
-                .map(Location::getName)
-                .orElse("");
-        }
-        return "";
     }
 }
