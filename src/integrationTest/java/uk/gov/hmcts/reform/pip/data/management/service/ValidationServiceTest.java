@@ -340,13 +340,7 @@ class ValidationServiceTest extends IntegrationBasicTestBase {
             Arguments.of(ListType.CARE_STANDARDS_LIST,
                          "data/care-standards-list/careStandardsList.json"),
             Arguments.of(ListType.PRIMARY_HEALTH_LIST,
-                         "data/primary-health-list/primaryHealthList.json"),
-            Arguments.of(ListType.OPA_PRESS_LIST,
-                         "data/opa-press-list/opaPressList.json"),
-            Arguments.of(ListType.OPA_PUBLIC_LIST,
-                         "data/opa-public-list/opaPublicList.json"),
-            Arguments.of(ListType.OPA_RESULTS,
-                         "data/opa-results/opaResults.json")
+                         "data/primary-health-list/primaryHealthList.json")
         );
     }
 

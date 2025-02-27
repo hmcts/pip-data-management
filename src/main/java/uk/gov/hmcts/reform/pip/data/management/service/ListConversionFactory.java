@@ -15,9 +15,6 @@ import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.IacDailyL
 import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.MagistratesPublicListSummaryData;
 import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.MagistratesStandardListSummaryData;
 import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.NonStrategicListSummaryData;
-import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.OpaPressListSummaryData;
-import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.OpaPublicListSummaryData;
-import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.OpaResultsSummaryData;
 import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.SscsDailyListSummaryData;
 import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.TribunalNationalListsSummaryData;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.CareStandardsListFileConverter;
@@ -35,9 +32,6 @@ import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.IacDailyLi
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.MagistratesPublicListFileConverter;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.MagistratesStandardListFileConverter;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.NonStrategicListFileConverter;
-import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.OpaPressListFileConverter;
-import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.OpaPublicListFileConverter;
-import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.OpaResultsFileConverter;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.PrimaryHealthListFileConverter;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.SjpPressListFileConverter;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.SjpPublicListFileConverter;
@@ -65,9 +59,6 @@ import static uk.gov.hmcts.reform.pip.model.publication.ListType.IAC_DAILY_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.IAC_DAILY_LIST_ADDITIONAL_CASES;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.MAGISTRATES_PUBLIC_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.MAGISTRATES_STANDARD_LIST;
-import static uk.gov.hmcts.reform.pip.model.publication.ListType.OPA_PRESS_LIST;
-import static uk.gov.hmcts.reform.pip.model.publication.ListType.OPA_PUBLIC_LIST;
-import static uk.gov.hmcts.reform.pip.model.publication.ListType.OPA_RESULTS;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.PAAC_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.PHT_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.POAC_WEEKLY_HEARING_LIST;
@@ -144,10 +135,6 @@ public class ListConversionFactory {
                                                     new EtDailyListSummaryData())),
         Map.entry(ET_FORTNIGHTLY_PRESS_LIST, new ConversionPair(new EtFortnightlyPressListFileConverter(),
                                                                 new EtFortnightlyPressListSummaryData())),
-        Map.entry(OPA_PUBLIC_LIST, new ConversionPair(new OpaPublicListFileConverter(),
-                                                      new OpaPublicListSummaryData())),
-        Map.entry(OPA_PRESS_LIST, new ConversionPair(new OpaPressListFileConverter(), new OpaPressListSummaryData())),
-        Map.entry(OPA_RESULTS, new ConversionPair(new OpaResultsFileConverter(), new OpaResultsSummaryData())),
         Map.entry(CST_WEEKLY_HEARING_LIST, new ConversionPair(
             new NonStrategicListFileConverter(), new NonStrategicListSummaryData(CST_WEEKLY_HEARING_LIST)
         )),
