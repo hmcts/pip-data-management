@@ -23,4 +23,8 @@ public final class NonStrategicFieldFormattingHelper {
             throw new ProcessingException("Failed to convert date format");
         }
     }
+
+    public static String formatTimeField(String time) {
+        return time == null ? time : time.replace('.', ':');
+    }
 }

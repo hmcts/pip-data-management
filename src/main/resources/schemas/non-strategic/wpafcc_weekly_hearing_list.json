@@ -10,8 +10,7 @@
       "hearingTime",
       "caseReferenceNumber",
       "caseName",
-      "judges",
-      "members",
+      "panel",
       "modeOfHearing",
       "venue",
       "additionalInformation"
@@ -33,7 +32,7 @@
         "examples": [
           "10:30am"
         ],
-        "pattern": "^\\d{1,2}(:\\d{2})?[ap]m$"
+        "pattern": "^\\d{1,2}([:.]\\d{2})?[ap]m$"
       },
       "caseReferenceNumber": {
         "title": "Case reference number",
@@ -53,21 +52,12 @@
         ],
         "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
       },
-      "judges": {
-        "title": "Judges",
+      "panel": {
+        "title": "Panel",
         "type": "string",
         "default": "",
         "examples": [
-          "Judge A"
-        ],
-        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
-      },
-      "members": {
-        "title": "Members of the panel",
-        "type": "string",
-        "default": "",
-        "examples": [
-          "Forename Surname"
+          "Firstname Surname"
         ],
         "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
       },
