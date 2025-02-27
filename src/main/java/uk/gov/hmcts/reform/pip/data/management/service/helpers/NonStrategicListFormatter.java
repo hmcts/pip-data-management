@@ -22,6 +22,13 @@ import static uk.gov.hmcts.reform.pip.model.publication.ListType.RPT_MIDLANDS_WE
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.RPT_NORTHERN_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.RPT_SOUTHERN_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.SIAC_WEEKLY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.SSCS_LONDON_DAILY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.SSCS_MIDLANDS_DAILY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.SSCS_NORTH_EAST_DAILY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.SSCS_NORTH_WEST_DAILY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.SSCS_SCOTLAND_DAILY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.SSCS_SOUTH_EAST_DAILY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.SSCS_WALES_AND_SOUTH_WEST_DAILY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_AAC_DAILY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_IAC_JR_BIRMINGHAM_DAILY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_IAC_JR_CARDIFF_DAILY_HEARING_LIST;
@@ -34,52 +41,81 @@ import static uk.gov.hmcts.reform.pip.model.publication.ListType.WPAFCC_WEEKLY_H
 
 public final class NonStrategicListFormatter {
     private static final String DATE = "date";
+    private static final String TIME = "time";
+    private static final String HEARING_TIME = "hearingTime";
 
     private static final Map<ListType, Map<String, Function<String, String>>> LIST_TYPE_MAP = Map.ofEntries(
         Map.entry(CST_WEEKLY_HEARING_LIST,
-            Map.of(DATE, NonStrategicFieldFormattingHelper::formatDateField)),
+                  Map.of(DATE, NonStrategicFieldFormattingHelper::formatDateField)),
         Map.entry(PHT_WEEKLY_HEARING_LIST,
                   Map.of(DATE, NonStrategicFieldFormattingHelper::formatDateField)),
         Map.entry(GRC_WEEKLY_HEARING_LIST,
-                  Map.of(DATE, NonStrategicFieldFormattingHelper::formatDateField)),
+                  Map.of(DATE, NonStrategicFieldFormattingHelper::formatDateField,
+                         HEARING_TIME, NonStrategicFieldFormattingHelper::formatTimeField)),
         Map.entry(WPAFCC_WEEKLY_HEARING_LIST,
-                  Map.of(DATE, NonStrategicFieldFormattingHelper::formatDateField)),
+                  Map.of(DATE, NonStrategicFieldFormattingHelper::formatDateField,
+                         HEARING_TIME, NonStrategicFieldFormattingHelper::formatTimeField)),
         Map.entry(UT_IAC_JR_LONDON_DAILY_HEARING_LIST,
-                  Map.of(DATE, NonStrategicFieldFormattingHelper::formatDateField)),
+                  Map.of(HEARING_TIME, NonStrategicFieldFormattingHelper::formatTimeField)),
         Map.entry(UT_IAC_JR_MANCHESTER_DAILY_HEARING_LIST,
-                  Map.of(DATE, NonStrategicFieldFormattingHelper::formatDateField)),
+                  Map.of(HEARING_TIME, NonStrategicFieldFormattingHelper::formatTimeField)),
         Map.entry(UT_IAC_JR_BIRMINGHAM_DAILY_HEARING_LIST,
-                  Map.of(DATE, NonStrategicFieldFormattingHelper::formatDateField)),
+                  Map.of(HEARING_TIME, NonStrategicFieldFormattingHelper::formatTimeField)),
         Map.entry(UT_IAC_JR_CARDIFF_DAILY_HEARING_LIST,
-                  Map.of(DATE, NonStrategicFieldFormattingHelper::formatDateField)),
+                  Map.of(HEARING_TIME, NonStrategicFieldFormattingHelper::formatTimeField)),
         Map.entry(UT_IAC_STATUTORY_APPEALS_DAILY_HEARING_LIST,
-                  Map.of(DATE, NonStrategicFieldFormattingHelper::formatDateField)),
+                  Map.of(HEARING_TIME, NonStrategicFieldFormattingHelper::formatTimeField)),
         Map.entry(SIAC_WEEKLY_HEARING_LIST,
-                  Map.of(DATE, NonStrategicFieldFormattingHelper::formatDateField)),
+                  Map.of(DATE, NonStrategicFieldFormattingHelper::formatDateField,
+                         TIME, NonStrategicFieldFormattingHelper::formatTimeField)),
         Map.entry(POAC_WEEKLY_HEARING_LIST,
-                  Map.of(DATE, NonStrategicFieldFormattingHelper::formatDateField)),
+                  Map.of(DATE, NonStrategicFieldFormattingHelper::formatDateField,
+                         TIME, NonStrategicFieldFormattingHelper::formatTimeField)),
         Map.entry(PAAC_WEEKLY_HEARING_LIST,
-                  Map.of(DATE, NonStrategicFieldFormattingHelper::formatDateField)),
+                  Map.of(DATE, NonStrategicFieldFormattingHelper::formatDateField,
+                         TIME, NonStrategicFieldFormattingHelper::formatTimeField)),
         Map.entry(FTT_TAX_WEEKLY_HEARING_LIST,
-                  Map.of(DATE, NonStrategicFieldFormattingHelper::formatDateField)),
+                  Map.of(DATE, NonStrategicFieldFormattingHelper::formatDateField,
+                         HEARING_TIME, NonStrategicFieldFormattingHelper::formatTimeField)),
         Map.entry(FTT_LR_WEEKLY_HEARING_LIST,
-                  Map.of(DATE, NonStrategicFieldFormattingHelper::formatDateField)),
+                  Map.of(DATE, NonStrategicFieldFormattingHelper::formatDateField,
+                         HEARING_TIME, NonStrategicFieldFormattingHelper::formatTimeField)),
         Map.entry(RPT_EASTERN_WEEKLY_HEARING_LIST,
-                  Map.of(DATE, NonStrategicFieldFormattingHelper::formatDateField)),
+                  Map.of(DATE, NonStrategicFieldFormattingHelper::formatDateField,
+                         TIME, NonStrategicFieldFormattingHelper::formatTimeField)),
         Map.entry(RPT_LONDON_WEEKLY_HEARING_LIST,
-                  Map.of(DATE, NonStrategicFieldFormattingHelper::formatDateField)),
+                  Map.of(DATE, NonStrategicFieldFormattingHelper::formatDateField,
+                         TIME, NonStrategicFieldFormattingHelper::formatTimeField)),
         Map.entry(RPT_MIDLANDS_WEEKLY_HEARING_LIST,
-                  Map.of(DATE, NonStrategicFieldFormattingHelper::formatDateField)),
+                  Map.of(DATE, NonStrategicFieldFormattingHelper::formatDateField,
+                         TIME, NonStrategicFieldFormattingHelper::formatTimeField)),
         Map.entry(RPT_NORTHERN_WEEKLY_HEARING_LIST,
-                  Map.of(DATE, NonStrategicFieldFormattingHelper::formatDateField)),
+                  Map.of(DATE, NonStrategicFieldFormattingHelper::formatDateField,
+                         TIME, NonStrategicFieldFormattingHelper::formatTimeField)),
         Map.entry(RPT_SOUTHERN_WEEKLY_HEARING_LIST,
-                  Map.of(DATE, NonStrategicFieldFormattingHelper::formatDateField)),
+                  Map.of(DATE, NonStrategicFieldFormattingHelper::formatDateField,
+                         TIME, NonStrategicFieldFormattingHelper::formatTimeField)),
         Map.entry(UT_T_AND_CC_DAILY_HEARING_LIST,
-                  Map.of(DATE, NonStrategicFieldFormattingHelper::formatDateField)),
+                  Map.of(TIME, NonStrategicFieldFormattingHelper::formatTimeField)),
         Map.entry(UT_LC_DAILY_HEARING_LIST,
-                  Map.of(DATE, NonStrategicFieldFormattingHelper::formatDateField)),
+                  Map.of(TIME, NonStrategicFieldFormattingHelper::formatTimeField)),
         Map.entry(UT_AAC_DAILY_HEARING_LIST,
-                  Map.of(DATE, NonStrategicFieldFormattingHelper::formatDateField)));
+                  Map.of(TIME, NonStrategicFieldFormattingHelper::formatTimeField)),
+        Map.entry(SSCS_MIDLANDS_DAILY_HEARING_LIST,
+                  Map.of(HEARING_TIME, NonStrategicFieldFormattingHelper::formatTimeField)),
+        Map.entry(SSCS_SOUTH_EAST_DAILY_HEARING_LIST,
+                  Map.of(HEARING_TIME, NonStrategicFieldFormattingHelper::formatTimeField)),
+        Map.entry(SSCS_WALES_AND_SOUTH_WEST_DAILY_HEARING_LIST,
+                  Map.of(HEARING_TIME, NonStrategicFieldFormattingHelper::formatTimeField)),
+        Map.entry(SSCS_SCOTLAND_DAILY_HEARING_LIST,
+                  Map.of(HEARING_TIME, NonStrategicFieldFormattingHelper::formatTimeField)),
+        Map.entry(SSCS_NORTH_EAST_DAILY_HEARING_LIST,
+                  Map.of(HEARING_TIME, NonStrategicFieldFormattingHelper::formatTimeField)),
+        Map.entry(SSCS_NORTH_WEST_DAILY_HEARING_LIST,
+                  Map.of(HEARING_TIME, NonStrategicFieldFormattingHelper::formatTimeField)),
+        Map.entry(SSCS_LONDON_DAILY_HEARING_LIST,
+                  Map.of(HEARING_TIME, NonStrategicFieldFormattingHelper::formatTimeField))
+    );
 
     private NonStrategicListFormatter() {
     }

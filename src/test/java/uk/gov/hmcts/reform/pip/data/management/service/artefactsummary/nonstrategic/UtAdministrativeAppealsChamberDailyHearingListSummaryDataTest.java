@@ -84,7 +84,7 @@ class UtAdministrativeAppealsChamberDailyHearingListSummaryDataTest {
 
         softly.assertThat(values.get(0))
             .as(SUMMARY_FIELD_VALUE_MESSAGE)
-            .isEqualTo("10am");
+            .isEqualTo("10:15am");
 
         softly.assertThat(values.get(1))
             .as(SUMMARY_FIELD_VALUE_MESSAGE)
