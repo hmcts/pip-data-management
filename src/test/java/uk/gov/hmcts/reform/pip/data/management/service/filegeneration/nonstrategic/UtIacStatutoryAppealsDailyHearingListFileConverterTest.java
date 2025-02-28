@@ -109,12 +109,12 @@ class UtIacStatutoryAppealsDailyHearingListFileConverterTest {
 
         softly.assertThat(document.title())
             .as(TITLE_MESSAGE)
-            .isEqualTo("Upper Tribunal (Immigration and Asylum) Chamber Statutory Daily Hearing List");
+            .isEqualTo("Upper Tribunal (Immigration and Asylum) Chamber Statutory Appeal Daily Hearing List");
 
         softly.assertThat(document.getElementById(HEADER_ELEMENT))
             .as(HEADER_MESSAGE)
             .extracting(Element::text)
-            .isEqualTo("Upper Tribunal (Immigration and Asylum) Chamber Statutory Daily Hearing List");
+            .isEqualTo("Upper Tribunal (Immigration and Asylum) Chamber Statutory Appeal Daily Hearing List");
 
         softly.assertThat(document.getElementById(LIST_DATE_ELEMENT))
             .as(LIST_DATE_MESSAGE)
@@ -191,12 +191,14 @@ class UtIacStatutoryAppealsDailyHearingListFileConverterTest {
 
         softly.assertThat(document.title())
             .as(TITLE_MESSAGE)
-            .isEqualTo("Uwch Dribiwnlys (Mewnfudo a Lloches) - Rhestr o Wrandawiadau Dyddiol Statudol Siambr");
+            .isEqualTo("Uwch Dribiwnlys (Siambr Mewnfudo a Lloches) - Rhestr o Wrandawiadau "
+                           + "Dyddiol - Apeliadau Statudol");
 
         softly.assertThat(document.getElementById(HEADER_ELEMENT))
             .as(HEADER_MESSAGE)
             .extracting(Element::text)
-            .isEqualTo("Uwch Dribiwnlys (Mewnfudo a Lloches) - Rhestr o Wrandawiadau Dyddiol Statudol Siambr");
+            .isEqualTo("Uwch Dribiwnlys (Siambr Mewnfudo a Lloches) - Rhestr o Wrandawiadau "
+                           + "Dyddiol - Apeliadau Statudol");
 
         softly.assertThat(document.getElementById(LIST_DATE_ELEMENT))
             .as(LIST_DATE_MESSAGE)

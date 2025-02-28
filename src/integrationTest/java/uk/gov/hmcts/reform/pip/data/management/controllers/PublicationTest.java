@@ -12,6 +12,7 @@ import org.json.JSONArray;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
@@ -39,8 +41,8 @@ import uk.gov.hmcts.reform.pip.model.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 import uk.gov.hmcts.reform.pip.model.publication.Sensitivity;
+import uk.gov.hmcts.reform.pip.model.report.PublicationMiData;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
@@ -48,6 +50,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -61,6 +64,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static uk.gov.hmcts.reform.pip.model.account.Roles.SYSTEM_ADMIN;
 
@@ -72,6 +76,7 @@ import static uk.gov.hmcts.reform.pip.model.account.Roles.SYSTEM_ADMIN;
     "PMD.CouplingBetweenObjects"})
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
 @WithMockUser(username = "admin", authorities = {"APPROLE_api.request.admin"})
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class PublicationTest extends IntegrationTestBase {
     private static final String PUBLICATION_URL = "/publication";
     private static final String SEARCH_COURT_URL = "/publication/locationId";
@@ -81,7 +86,7 @@ class PublicationTest extends IntegrationTestBase {
     private static final String SEND_NEW_ARTEFACTS_FOR_SUBSCRIPTION_URL = PUBLICATION_URL + "/latest/subscription";
     private static final String COUNT_ENDPOINT = PUBLICATION_URL + "/count-by-location";
     private static final String REPORT_NO_MATCH_ARTEFACTS_URL = PUBLICATION_URL + "/no-match/reporting";
-    private static final String MI_REPORTING_DATA_URL = PUBLICATION_URL + "/mi-data";
+    private static final String MI_REPORTING_DATA_URL_V2 = PUBLICATION_URL + "/v2/mi-data";
     private static final String ARCHIVE_EXPIRED_ARTEFACTS_URL = PUBLICATION_URL + "/expired";
     private static final ArtefactType ARTEFACT_TYPE = ArtefactType.LIST;
     private static final Sensitivity SENSITIVITY = Sensitivity.PUBLIC;
@@ -93,7 +98,7 @@ class PublicationTest extends IntegrationTestBase {
     private static final LocalDateTime DISPLAY_FROM = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
     private static final Language LANGUAGE = Language.ENGLISH;
     private static final ListType LIST_TYPE = ListType.CIVIL_DAILY_CAUSE_LIST;
-    private static final String COURT_ID = "123";
+    private static final String COURT_ID = "1";
     private static final LocalDateTime CONTENT_DATE = LocalDateTime.now().toLocalDate().atStartOfDay()
         .truncatedTo(ChronoUnit.SECONDS);
     private static final String SEARCH_KEY_FOUND = "array-value";
@@ -111,11 +116,9 @@ class PublicationTest extends IntegrationTestBase {
 
     private static final String VALIDATION_EMPTY_RESPONSE = "Response should contain a Artefact";
     private static final String VALIDATION_DISPLAY_FROM = "The expected Display From has not been returned";
+    private static final String VALIDATION_MI_REPORT = "Should successfully retrieve MI data";
     private static final String SHOULD_RETURN_EXPECTED_ARTEFACT = "Should return expected artefact";
     private static final String ARTEFACT_ID_POPULATED_MESSAGE = "Artefact ID should be populated";
-    private static final String EXPECTED_MI_DATA_HEADERS = "artefact_id,display_from,display_to,language,provenance,"
-        + "sensitivity,source_artefact_id,"
-        + "superseded_count,type,content_date,court_id,court_name,list_type";
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
@@ -126,7 +129,7 @@ class PublicationTest extends IntegrationTestBase {
     private MockMvc mockMvc;
 
     @BeforeAll
-    public static void setup() throws IOException {
+    public void setup() throws Exception {
         file = new MockMultipartFile("file", "test.pdf",
                                      MediaType.APPLICATION_PDF_VALUE, "test content".getBytes(
             StandardCharsets.UTF_8)
@@ -139,6 +142,17 @@ class PublicationTest extends IntegrationTestBase {
         }
 
         OBJECT_MAPPER.findAndRegisterModules();
+
+        try (InputStream csvInputStream = PublicationTest.class.getClassLoader()
+            .getResourceAsStream("location/UpdatedCsv.csv")) {
+            MockMultipartFile csvFile
+                = new MockMultipartFile("locationList", csvInputStream);
+
+            mockMvc.perform(MockMvcRequestBuilders.multipart("/locations/upload").file(csvFile)
+                                .with(user("admin")
+                                          .authorities(new SimpleGrantedAuthority("APPROLE_api.request.admin"))))
+                .andExpect(status().isOk()).andReturn();
+        }
     }
 
     Artefact createDailyList(Sensitivity sensitivity) throws Exception {
@@ -147,12 +161,12 @@ class PublicationTest extends IntegrationTestBase {
 
     Artefact createDailyList(Sensitivity sensitivity, LocalDateTime displayFrom, LocalDateTime contentDate)
         throws Exception {
-        return this.createDailyList(sensitivity, displayFrom, DISPLAY_TO, contentDate, PROVENANCE);
+        return this.createDailyList(sensitivity, displayFrom, DISPLAY_TO, contentDate, PROVENANCE, COURT_ID);
     }
 
     Artefact createDailyList(Sensitivity sensitivity, LocalDateTime displayFrom, LocalDateTime displayTo,
                              LocalDateTime contentDate,
-                             String provenance)
+                             String provenance, String courtId)
         throws Exception {
         try (InputStream mockFile = this.getClass().getClassLoader()
             .getResourceAsStream("data/civil-daily-cause-list/civilDailyCauseList.json")) {
@@ -164,7 +178,7 @@ class PublicationTest extends IntegrationTestBase {
                 .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
                 .header(PublicationConfiguration.DISPLAY_FROM_HEADER, displayFrom)
                 .header(PublicationConfiguration.DISPLAY_TO_HEADER, displayTo.plusMonths(1))
-                .header(PublicationConfiguration.COURT_ID, COURT_ID)
+                .header(PublicationConfiguration.COURT_ID, courtId)
                 .header(PublicationConfiguration.LIST_TYPE, ListType.CIVIL_DAILY_CAUSE_LIST)
                 .header(PublicationConfiguration.CONTENT_DATE, contentDate)
                 .header(PublicationConfiguration.SENSITIVITY_HEADER, sensitivity)
@@ -272,11 +286,11 @@ class PublicationTest extends IntegrationTestBase {
     @DisplayName("Should create a valid artefact with provenance different from manual_upload")
     @Test
     void testUploadPublicationWithDifferentProvenance() throws Exception {
-        Artefact artefact = createSscsDailyList(Sensitivity.PUBLIC, "TestProvenance");
+        Artefact artefact = createSscsDailyList(Sensitivity.PUBLIC, "UnknownProvenance");
 
         assertNotNull(artefact.getArtefactId(), "Artefact IDs do not match");
         assertEquals(artefact.getType(), ARTEFACT_TYPE, "Artefact types do not match");
-        assertEquals(artefact.getProvenance(), "TestProvenance", "Provenances do not match");
+        assertEquals(artefact.getProvenance(), "UnknownProvenance", "Provenances do not match");
         assertEquals(artefact.getLocationId(), "NoMatch" + COURT_ID, "Court ids do not match");
         assertEquals(artefact.getListType(), ListType.SSCS_DAILY_LIST, "List types do not match");
         assertEquals(artefact.getContentDate(), CONTENT_DATE, "Content dates do not match");
@@ -1763,7 +1777,7 @@ class PublicationTest extends IntegrationTestBase {
     void testArchiveExpiredArtefactsSuccess() throws Exception {
         Artefact artefactToExpire = createDailyList(Sensitivity.PUBLIC, DISPLAY_FROM.minusMonths(9),
                                                     DISPLAY_FROM.minusMonths(6),
-                                                    DISPLAY_FROM.minusMonths(10), PROVENANCE
+                                                    DISPLAY_FROM.minusMonths(10), PROVENANCE, COURT_ID
         );
 
         MockHttpServletRequestBuilder adminGetRequest = MockMvcRequestBuilders
@@ -1798,26 +1812,72 @@ class PublicationTest extends IntegrationTestBase {
     }
 
     @Test
-    void testGetMiDataRequestSuccess() throws Exception {
+    void testGetMiDataV2Success() throws Exception {
         Artefact artefact = createDailyList(Sensitivity.PUBLIC);
 
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-            .get(MI_REPORTING_DATA_URL);
+            .get(MI_REPORTING_DATA_URL_V2);
 
-        String responseMiData = mockMvc.perform(request).andExpect(status().isOk()).andReturn()
-            .getResponse().getContentAsString();
+        MvcResult responseMiData = mockMvc.perform(request).andExpect(status().isOk()).andReturn();
+        assertNotNull(responseMiData.getResponse(), VALIDATION_MI_REPORT);
 
-        assertEquals(EXPECTED_MI_DATA_HEADERS, responseMiData.split("\n")[0],
-                     "Should successfully retrieve MI data headers"
-        );
-        assertTrue(
-            responseMiData.contains(artefact.getArtefactId().toString()),
-            "Should successfully retrieve MI data"
-        );
-        assertTrue(
-            responseMiData.contains(artefact.getLocationId()),
-            "Should successfully retrieve MI data"
-        );
+        List<PublicationMiData> miData  =
+            Arrays.asList(
+                OBJECT_MAPPER.readValue(responseMiData.getResponse().getContentAsString(), PublicationMiData[].class)
+            );
+
+        assertTrue(miData.stream().anyMatch(data ->
+                                                data.getArtefactId().equals(artefact.getArtefactId())
+                                                    && data.getLocationId().equals(artefact.getLocationId())
+                                                    && "Updated Location".equals(data.getLocationName())),
+                   VALIDATION_MI_REPORT);
+    }
+
+    @Test
+    void testGetMiDataV2SuccessWithNoMatch() throws Exception {
+        Artefact artefact = createSscsDailyList(Sensitivity.PUBLIC, "UnknownProvenance");
+
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+            .get(MI_REPORTING_DATA_URL_V2);
+
+        MvcResult responseMiData = mockMvc.perform(request).andExpect(status().isOk()).andReturn();
+        assertNotNull(responseMiData.getResponse(), VALIDATION_MI_REPORT);
+
+        List<PublicationMiData> miData  =
+            Arrays.asList(
+                OBJECT_MAPPER.readValue(responseMiData.getResponse().getContentAsString(), PublicationMiData[].class)
+            );
+
+        assertTrue(miData.stream().anyMatch(data ->
+                                                data.getArtefactId().equals(artefact.getArtefactId())
+                                                    && data.getLocationId().equals(artefact.getLocationId())
+                                                    && data.getLocationName() == null),
+                   VALIDATION_MI_REPORT);
+
+    }
+
+    @Test
+    void testGetMiDataV2SuccessWithCourtIdThatDoesNotExist() throws Exception {
+        Artefact artefact = createDailyList(Sensitivity.PUBLIC, LocalDateTime.now(),
+                                                   LocalDateTime.now(), LocalDateTime.now(),
+                                                   PROVENANCE, "12345");
+
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+            .get(MI_REPORTING_DATA_URL_V2);
+
+        MvcResult responseMiData = mockMvc.perform(request).andExpect(status().isOk()).andReturn();
+        assertNotNull(responseMiData.getResponse(), VALIDATION_MI_REPORT);
+
+        List<PublicationMiData> miData  =
+            Arrays.asList(
+                OBJECT_MAPPER.readValue(responseMiData.getResponse().getContentAsString(), PublicationMiData[].class)
+            );
+
+        assertTrue(miData.stream().anyMatch(data ->
+                                                data.getArtefactId().equals(artefact.getArtefactId())
+                                                    && data.getLocationId().equals(artefact.getLocationId())
+                                                    && data.getLocationName() == null),
+                   VALIDATION_MI_REPORT);
     }
 
     @Test
@@ -1862,7 +1922,7 @@ class PublicationTest extends IntegrationTestBase {
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     void testGetAllNoMatchArtefacts() throws Exception {
         Artefact expectedArtefact = createDailyList(Sensitivity.PRIVATE, DISPLAY_FROM.minusMonths(2), DISPLAY_TO,
-                                                    CONTENT_DATE, "NoMatch"
+                                                    CONTENT_DATE, "NoMatch", COURT_ID
         );
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
