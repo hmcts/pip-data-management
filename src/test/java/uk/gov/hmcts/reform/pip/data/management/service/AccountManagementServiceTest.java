@@ -128,7 +128,7 @@ class AccountManagementServiceTest {
         assertEquals(accountManagementService.sendArtefactForSubscription(ARTEFACT),
                      "Artefact failed to send: " + ARTEFACT.getArtefactId(), "Error message failed to send.");
         assertTrue(logCaptor.getErrorLogs().get(0)
-                       .contains("Request to send artefact to Subscription Management failed with error:"),
+                       .contains("Request to send artefact to Account Management failed with error:"),
                    "Exception was not logged.");
     }
 
@@ -148,7 +148,7 @@ class AccountManagementServiceTest {
         assertEquals(accountManagementService.sendDeletedArtefactForThirdParties(ARTEFACT),
                      "Artefact failed to send: " + ARTEFACT.getArtefactId(), "Error message failed to send.");
         assertTrue(logCaptor.getErrorLogs().get(0)
-                       .contains("Request to Subscription Management to send deleted artefact to third party "
+                       .contains("Request to Account Management to send deleted artefact to third party "
                                      + "failed with error:"),
                    "Exception was not logged.");
     }
@@ -170,7 +170,7 @@ class AccountManagementServiceTest {
                        .contains("Failed to find subscription for Location: " + LOCATION_ID),
                    "Error message failed to send.");
         assertTrue(logCaptor.getErrorLogs().get(0)
-                       .contains("Request to Subscription Management to find subscriptions for location "
+                       .contains("Request to Account Management to find subscriptions for location "
                                      + LOCATION_ID + " failed with error:"),
                    "Exception was not logged.");
     }

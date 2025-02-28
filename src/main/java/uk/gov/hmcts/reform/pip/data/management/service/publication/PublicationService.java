@@ -181,8 +181,8 @@ public class PublicationService {
      * @return MI artefact data as a list of PublicationMiData objects
      */
     @SuppressWarnings("PMD.EmptyCatchBlock")
-    public List<PublicationMiData> getMiDataV2() {
-        List<PublicationMiData> publicationMiData =  artefactRepository.getMiDataV2();
+    public List<PublicationMiData> getMiData() {
+        List<PublicationMiData> publicationMiData =  artefactRepository.getMiData();
 
         Map<Integer, String> location = locationRepository.findAll()
             .stream().collect(Collectors.toMap(Location::getLocationId, Location::getName));

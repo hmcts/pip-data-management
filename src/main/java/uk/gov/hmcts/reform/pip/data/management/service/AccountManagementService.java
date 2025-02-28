@@ -44,9 +44,11 @@ public class AccountManagementService {
      */
     public Boolean getIsAuthorised(UUID userId, ListType listType, Sensitivity sensitivity) {
         try {
-            return webClient.get().uri(String.format(
-                "%s/account/isAuthorised/%s/%s/%s", url, userId, listType, sensitivity))
-                .retrieve().bodyToMono(Boolean.class).block();
+            return webClient.get()
+                .uri(String.format("%s/account/isAuthorised/%s/%s/%s", url, userId, listType, sensitivity))
+                .retrieve()
+                .bodyToMono(Boolean.class)
+                .block();
         } catch (WebClientException ex) {
             log.error(writeLog(
                 String.format("Request to Account Management to check user authorisation failed with error: %s",
@@ -59,9 +61,11 @@ public class AccountManagementService {
     public List<String> getAllAccounts(String provenances, String role)
         throws JsonProcessingException  {
         try {
-            String result = webClient.get().uri(String.format(
-                    "%s/account/all?provenances=%s&roles=%s", url, provenances, role))
-                .retrieve().bodyToMono(String.class).block();
+            String result = webClient.get()
+                .uri(String.format("%s/account/all?provenances=%s&roles=%s", url, provenances, role))
+                .retrieve()
+                .bodyToMono(String.class)
+                .block();
             return findAllSystemAdmins(result);
         } catch (WebClientException ex) {
             log.error(writeLog(
@@ -74,8 +78,11 @@ public class AccountManagementService {
 
     public PiUser getUserById(String userId) {
         try {
-            return webClient.get().uri(url + "/account/" + userId)
-                .retrieve().bodyToMono(PiUser.class).block();
+            return webClient.get()
+                .uri(url + "/account/" + userId)
+                .retrieve()
+                .bodyToMono(PiUser.class)
+                .block();
         } catch (WebClientException ex) {
             log.error(writeLog(
                 String.format("Request to Account Management to get PI User account failed with error: %s",
@@ -101,9 +108,12 @@ public class AccountManagementService {
 
     public String sendArtefactForSubscription(Artefact artefact) {
         try {
-            return webClient.post().uri(url + "/subscription/artefact-recipients")
+            return webClient.post()
+                .uri(url + "/subscription/artefact-recipients")
                 .body(BodyInserters.fromValue(artefact))
-                .retrieve().bodyToMono(String.class).block();
+                .retrieve()
+                .bodyToMono(String.class)
+                .block();
         } catch (WebClientException ex) {
             log.error(writeLog(
                 String.format("Request to send artefact to Account Management failed with error: %s",
@@ -117,7 +127,9 @@ public class AccountManagementService {
         try {
             return webClient.post().uri(url + "/subscription/deleted-artefact")
                 .body(BodyInserters.fromValue(artefact))
-                .retrieve().bodyToMono(String.class).block();
+                .retrieve()
+                .bodyToMono(String.class)
+                .block();
         } catch (WebClientException ex) {
             log.error(writeLog(
                 String.format("Request to Account Management to send deleted artefact to third party failed "
@@ -130,7 +142,9 @@ public class AccountManagementService {
     public String findSubscriptionsByLocationId(String locationId) {
         try {
             return webClient.get().uri(url + "/subscription/location/" + locationId)
-                .retrieve().bodyToMono(String.class).block();
+                .retrieve()
+                .bodyToMono(String.class)
+                .block();
         } catch (WebClientException ex) {
             log.error(writeLog(
                 String.format("Request to Account Management to find subscriptions for location %s failed "
