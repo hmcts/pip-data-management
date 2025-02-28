@@ -299,7 +299,7 @@ class ArtefactRepositoryTest {
 
     @Test
     void shouldRetrieveArtefactsForMiData() {
-        List<PublicationMiData> miDataList = artefactRepository.getMiDataV2();
+        List<PublicationMiData> miDataList = artefactRepository.getMiData();
 
         assertThat(miDataList).hasSize(5).extracting(PublicationMiData::getArtefactId)
             .containsExactlyInAnyOrder(artefactId1, artefactId2, artefactId3, artefactId4, artefactId5);
