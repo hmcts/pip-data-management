@@ -47,6 +47,7 @@ import uk.gov.hmcts.reform.pip.model.publication.ListType;
 import java.util.Map;
 import java.util.Optional;
 
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.AST_DAILY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.CARE_STANDARDS_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.CIVIL_AND_FAMILY_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.CIVIL_DAILY_CAUSE_LIST;
@@ -231,6 +232,9 @@ public class ListConversionFactory {
         Map.entry(UT_AAC_DAILY_HEARING_LIST, new ConversionPair(
             new NonStrategicListFileConverter(),
             new NonStrategicListSummaryData(UT_AAC_DAILY_HEARING_LIST)
+        )),
+        Map.entry(AST_DAILY_HEARING_LIST, new ConversionPair(
+            new NonStrategicListFileConverter(), new NonStrategicListSummaryData(AST_DAILY_HEARING_LIST)
         )),
         Map.entry(SSCS_MIDLANDS_DAILY_HEARING_LIST, new ConversionPair(
             new NonStrategicListFileConverter(),
