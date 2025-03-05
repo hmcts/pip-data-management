@@ -269,7 +269,7 @@ class MagistratesStandardListFileConverterTest {
 
         softly.assertThat(body.get(11).text())
             .as(CASE_INFO_MESSAGE)
-            .contains("Address Line 1, Address Line 2, Month A, County A, AA1 AA1");
+            .contains("Address Line 1, Address Line 2, Town A, County A, AA1 AA1");
 
         softly.assertThat(body.get(12).text())
             .as(CASE_INFO_MESSAGE)

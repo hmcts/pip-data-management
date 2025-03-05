@@ -65,7 +65,7 @@
                                   "age": 39,
                                   "address": {
                                     "county": "County A",
-                                    "town": "Month A",
+                                    "town": "Town A",
                                     "postCode": "AA1 AA1",
                                     "line": [
                                       "Address Line 1",
@@ -104,8 +104,8 @@
                                   "age": 39,
                                   "address": {
                                     "county": "County A",
-                                    "town": "Month A",
-                                    "postCode": "AA1 AA1",
+                                    "town": "Town A",
+                                    "postCode": "",
                                     "line": [
                                       "Address Line 1",
                                       "Address Line 2"
@@ -143,9 +143,8 @@
                                   "dateOfBirth": "01/01/1983",
                                   "age": 39,
                                   "address": {
-                                    "county": "",
-                                    "town": "Month A",
-                                    "postCode": "AA1 AA1",
+                                    "county": "County A",
+                                    "town": "Town A",
                                     "line": [
                                       "Address Line 1",
                                       "Address Line 2"

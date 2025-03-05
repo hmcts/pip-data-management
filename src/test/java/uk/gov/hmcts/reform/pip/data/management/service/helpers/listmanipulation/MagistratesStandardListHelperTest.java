@@ -132,7 +132,7 @@ class MagistratesStandardListHelperTest {
                         DefendantInfo::getPleaDate)
             .containsExactly("01/01/1983",
                              "39",
-                             "Address Line 1, Address Line 2, Month A, County A, AA1 AA1",
+                             "Address Line 1, Address Line 2, Town A, County A, AA1 AA1",
                              "NOT_GUILTY",
                              "Need to confirm");
     }

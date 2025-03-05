@@ -139,9 +139,6 @@
                 "IAC_DAILY_LIST_ADDITIONAL_CASES",
                 "CARE_STANDARDS_LIST",
                 "PRIMARY_HEALTH_LIST",
-                "OPA_PRESS_LIST",
-                "OPA_PUBLIC_LIST",
-                "OPA_RESULTS",
                 "CIC_DAILY_HEARING_LIST"
               ]
             }
@@ -336,10 +333,7 @@
               "ET_DAILY_LIST",
               "IAC_DAILY_LIST",
               "CARE_STANDARDS_LIST",
-              "PRIMARY_HEALTH_LIST",
-              "OPA_PRESS_LIST",
-              "OPA_PUBLIC_LIST",
-              "OPA_RESULTS"
+              "PRIMARY_HEALTH_LIST"
             ]
           },
           "payload": {
