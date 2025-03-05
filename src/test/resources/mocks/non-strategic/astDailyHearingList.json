@@ -1,0 +1,18 @@
+[
+  {
+    "appellant": "Appellant A",
+    "appealReferenceNumber": "12345",
+    "caseType": "Case type A",
+    "hearingType": "Hearing type A",
+    "hearingTime": "10.30am",
+    "additionalInformation": "This is additional information"
+  },
+  {
+    "appellant": "Appellant B",
+    "appealReferenceNumber": "12346",
+    "caseType": "Case type B",
+    "hearingType": "Hearing type B",
+    "hearingTime": "11am",
+    "additionalInformation": "This is another additional information"
+  }
+]
