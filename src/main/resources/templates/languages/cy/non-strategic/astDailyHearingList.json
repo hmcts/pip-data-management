@@ -1,0 +1,17 @@
+{
+  "listName": "Rhestr o Wrandawiadau Dyddiol Tribiwnlys Cefnogi Ceiswyr Lloches",
+  "venueLine1": "2nd Floor, Import Building",
+  "venueLine2": "2 Clove Crescent",
+  "venueLine3": "London E14 2BE",
+  "openJusticeMessage": "Mae cyfiawnder agored yn egwyddor sylfaenol yn ein system gyfiawnder. Wrth ystyried a ddylid defnyddio technoleg ffôn a fideo, bydd y farnwriaeth yn ystyried egwyddorion cyfiawnder agored. Efallai y bydd barnwyr yn penderfynu y dylid cynnal gwrandawiad yn breifat os yw hyn yn angenrheidiol i sicrhau y gweinyddir cyfiawnder yn briodol.",
+  "joinHearingMessage": "Bydd partïon a chynrychiolwyr y Tribiwnlys Cymorth i Geiswyr Lloches yn cael gwybod yn uniongyrchol am y trefniadau ar gyfer gwrando achosion o bell. Dylai unrhyw un arall sydd â diddordeb mewn ymuno â’r gwrandawiad o bell gysylltu â’r Swyddfa Tribiwnlys Cymorth i Geiswyr Lloches yn uniongyrchol, cyn dyddiad y gwrandawiad, trwy anfon e-bost at asylumsupporttribunals@justice.gov.uk fel y gellir gwneud trefniadau. Dylai'r manylion canlynol gael eu cynnwys yn llinell pwnc yr e-bost [OBSERVER/MEDIA] REQUEST – [case reference] – [hearing date]. Os yw’r achos yn cael ei wrando’n breifat neu os yw’n destun cyfyngiad adrodd, bydd pawb yn cael ei hysbysu am hyn.",
+  "astObserveHearingLinkText": "Am ragor o wybodaeth ewch i: https://www.gov.uk/guidance/observe-a-court-or-tribunal-hearing",
+  "tableHeaders": [
+    "Apelydd",
+    "Cyfeirnod apêl",
+    "Math o achos",
+    "Math o wrandawiad",
+    "Amser y gwrandawiad",
+    "Gwybodaeth ychwanegol"
+  ]
+}
