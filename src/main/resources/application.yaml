@@ -153,6 +153,7 @@ validations:
     UT_T_AND_CC_DAILY_HEARING_LIST: "schemas/non-strategic/ut_tax_and_chancery_chamber_daily_hearing_list.json"
     UT_LC_DAILY_HEARING_LIST: "schemas/non-strategic/ut_lands_chamber_daily_hearing_list.json"
     UT_AAC_DAILY_HEARING_LIST: "schemas/non-strategic/ut_administrative_appeals_chamber_daily_hearing_list.json"
+    AST_DAILY_HEARING_LIST: "schemas/non-strategic/ast_daily_hearing_list.json"
     SSCS_MIDLANDS_DAILY_HEARING_LIST: "schemas/non-strategic/sscs_daily_hearing_list.json"
     SSCS_SOUTH_EAST_DAILY_HEARING_LIST: "schemas/non-strategic/sscs_daily_hearing_list.json"
     SSCS_WALES_AND_SOUTH_WEST_DAILY_HEARING_LIST: "schemas/non-strategic/sscs_daily_hearing_list.json"
