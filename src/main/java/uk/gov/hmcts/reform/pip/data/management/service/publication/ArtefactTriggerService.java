@@ -6,8 +6,8 @@ import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.helpers.NoMatchArtefactHelper;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.NoMatchArtefact;
+import uk.gov.hmcts.reform.pip.data.management.service.AccountManagementService;
 import uk.gov.hmcts.reform.pip.data.management.service.PublicationServicesService;
-import uk.gov.hmcts.reform.pip.data.management.service.SubscriptionManagementService;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -18,27 +18,27 @@ import java.util.List;
 public class ArtefactTriggerService {
 
     private final ArtefactRepository artefactRepository;
-    private final SubscriptionManagementService subscriptionManagementService;
+    private final AccountManagementService accountManagementService;
     private final PublicationServicesService publicationServicesService;
 
     public ArtefactTriggerService(ArtefactRepository artefactRepository,
-                                  SubscriptionManagementService subscriptionManagementService,
+                                  AccountManagementService accountManagementService,
                                   PublicationServicesService publicationServicesService) {
         this.artefactRepository = artefactRepository;
-        this.subscriptionManagementService = subscriptionManagementService;
+        this.accountManagementService = accountManagementService;
         this.publicationServicesService = publicationServicesService;
     }
 
     /**
      * Checks if the artefact has a display from date of today or previous then triggers the sub fulfilment
-     * process on subscription-management if appropriate.
+     * process on account-management if appropriate.
      */
-    public void checkAndTriggerSubscriptionManagement(Artefact artefact) {
+    public void checkAndTriggerPublicationSubscription(Artefact artefact) {
         //TODO: fully switch this logic to localdates once artefact model changes //NOSONAR
         if (artefact.getDisplayFrom().toLocalDate().isBefore(LocalDate.now().plusDays(1))
             && (artefact.getDisplayTo() == null
             || artefact.getDisplayTo().toLocalDate().isAfter(LocalDate.now().minusDays(1)))) {
-            subscriptionManagementService.sendArtefactForSubscription(artefact);
+            accountManagementService.sendArtefactForSubscription(artefact);
         }
     }
 
@@ -47,7 +47,7 @@ public class ArtefactTriggerService {
      */
     public void checkNewlyActiveArtefacts() {
         artefactRepository.findArtefactsByDisplayFrom(LocalDate.now())
-            .forEach(subscriptionManagementService::sendArtefactForSubscription);
+            .forEach(accountManagementService::sendArtefactForSubscription);
     }
 
     /**

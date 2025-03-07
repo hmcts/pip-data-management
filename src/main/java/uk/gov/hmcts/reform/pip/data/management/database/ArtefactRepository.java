@@ -107,7 +107,7 @@ public interface ArtefactRepository extends JpaRepository<Artefact, Long> {
         + "artefactId, displayFrom, displayTo, language, provenance, sensitivity, sourceArtefactId, "
         + "supersededCount, type, contentDate, locationId, listType) "
         + "FROM Artefact")
-    List<PublicationMiData> getMiDataV2();
+    List<PublicationMiData> getMiData();
 
     @Query(value = "SELECT * FROM Artefact "
         + "WHERE display_to >= :curr_date "

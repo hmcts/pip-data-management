@@ -46,7 +46,7 @@ public class WebClientConfiguration {
     WebClient webClient(OAuth2AuthorizedClientManager authorizedClientManager) {
         ServletOAuth2AuthorizedClientExchangeFilterFunction oauth2Client =
             new ServletOAuth2AuthorizedClientExchangeFilterFunction(authorizedClientManager);
-        oauth2Client.setDefaultClientRegistrationId("subscriptionManagementApi");
+        oauth2Client.setDefaultClientRegistrationId("accountManagementApi");
         return WebClient.builder()
             .exchangeStrategies(STRATEGIES)
             .apply(oauth2Client.oauth2Configuration())
