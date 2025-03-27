@@ -32,11 +32,8 @@ class PrimaryHealthListFileConverterTest {
         Document doc = Jsoup.parse(result);
         SoftAssertions softly = new SoftAssertions();
 
-        softly.assertThat(doc.getElementsByTag("h2"))
+        softly.assertThat(doc.getElementsByTag("h2").text())
             .as("Incorrect h2 element")
-            .hasSize(1)
-            .first()
-            .extracting(Element::text)
             .isEqualTo("Tribunal Hearing List for Primary Health");
 
         softly.assertThat(doc.getElementsByClass("header").get(0).getElementsByTag("p"))
