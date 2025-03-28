@@ -122,9 +122,8 @@ class AstDailyHearingListFileConverterTest {
             .as(LAST_UPDATED_DATE_MESSAGE)
             .isEqualTo("Last updated 19 February 2025 at 9:30am");
 
-        softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).get(0))
+        softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).get(0).text())
             .as(IMPORTANT_INFORMATION_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo("Important information");
 
         softly.assertThat(document.getElementById(OPEN_JUSTICE_MESSAGE_ELEMENT).text())
@@ -195,9 +194,8 @@ class AstDailyHearingListFileConverterTest {
             .as(LAST_UPDATED_DATE_MESSAGE)
             .isEqualTo("Diweddarwyd ddiwethaf 19 February 2025 am 9:30am");
 
-        softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).get(0))
+        softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).get(0).text())
             .as(IMPORTANT_INFORMATION_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo("Gwybodaeth bwysig");
 
         softly.assertThat(document.getElementById(OPEN_JUSTICE_MESSAGE_ELEMENT).text())

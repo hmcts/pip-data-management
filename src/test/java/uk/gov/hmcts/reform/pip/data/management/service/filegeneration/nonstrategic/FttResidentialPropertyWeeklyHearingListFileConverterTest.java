@@ -135,29 +135,24 @@ class FttResidentialPropertyWeeklyHearingListFileConverterTest {
             .as(TITLE_MESSAGE)
             .isEqualTo(listDisplayName);
 
-        softly.assertThat(document.getElementById(HEADER_ELEMENT))
+        softly.assertThat(document.getElementById(HEADER_ELEMENT).text())
             .as(HEADER_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo(listDisplayName);
 
-        softly.assertThat(document.getElementById(LIST_DATE_ELEMENT))
+        softly.assertThat(document.getElementById(LIST_DATE_ELEMENT).text())
             .as(LIST_DATE_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo(LIST_DATE_ENGLISH);
 
-        softly.assertThat(document.getElementById(LAST_UPDATED_DATE_ELEMENT))
+        softly.assertThat(document.getElementById(LAST_UPDATED_DATE_ELEMENT).text())
             .as(LAST_UPDATED_DATE_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo("Last updated 20 January 2025 at 9:30am");
 
-        softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).get(0))
+        softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).get(0).text())
             .as(IMPORTANT_INFORMATION_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo("Important information");
 
-        softly.assertThat(document.getElementById(CONTACT_MESSAGE_ELEMENT))
+        softly.assertThat(document.getElementById(CONTACT_MESSAGE_ELEMENT).text())
             .as(BODY_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo("Members of the public wishing to observe a hearing or representatives "
                            + "of the media may, on their request, join any telephone or video hearing "
                            + "remotely while they are taking place by sending an email in advance to "
@@ -165,9 +160,8 @@ class FttResidentialPropertyWeeklyHearingListFileConverterTest {
                            + "subject line “[OBSERVER/MEDIA] REQUEST – [case reference] – [hearing date]” "
                            + "and appropriate arrangements will be made to allow access where reasonably practicable.");
 
-        softly.assertThat(document.getElementById(OBSERVE_HEARING_ELEMENT))
+        softly.assertThat(document.getElementById(OBSERVE_HEARING_ELEMENT).text())
             .as(BODY_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo(OBSERVE_HEARING_ENGLISH);
 
         softly.assertThat(document.getElementsByTag("th"))
@@ -218,29 +212,24 @@ class FttResidentialPropertyWeeklyHearingListFileConverterTest {
             .as(TITLE_MESSAGE)
             .isEqualTo(listDisplayName);
 
-        softly.assertThat(document.getElementById(HEADER_ELEMENT))
+        softly.assertThat(document.getElementById(HEADER_ELEMENT).text())
             .as(HEADER_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo(listDisplayName);
 
-        softly.assertThat(document.getElementById(LIST_DATE_ELEMENT))
+        softly.assertThat(document.getElementById(LIST_DATE_ELEMENT).text())
             .as(LIST_DATE_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo(LIST_DATE_WELSH);
 
-        softly.assertThat(document.getElementById(LAST_UPDATED_DATE_ELEMENT))
+        softly.assertThat(document.getElementById(LAST_UPDATED_DATE_ELEMENT).text())
             .as(LAST_UPDATED_DATE_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo("Diweddarwyd ddiwethaf 20 January 2025 am 9:30am");
 
-        softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).get(0))
+        softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).get(0).text())
             .as(IMPORTANT_INFORMATION_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo("Gwybodaeth bwysig");
 
-        softly.assertThat(document.getElementById(CONTACT_MESSAGE_ELEMENT))
+        softly.assertThat(document.getElementById(CONTACT_MESSAGE_ELEMENT).text())
             .as(BODY_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo("Gall aelodau o’r cyhoedd sy’n dymuno arsylwi gwrandawiad neu "
                            + "gynrychiolwyr y cyfryngau ymuno ag unrhyw wrandawiad dros y ffôn "
                            + "neu drwy fideo o bell ar gais tra’u bod yn cael eu cynnal drwy anfon "
@@ -251,9 +240,8 @@ class FttResidentialPropertyWeeklyHearingListFileConverterTest {
                            + "ganiatáu mynediad lle bo hynny’n rhesymol ymarferol.");
 
 
-        softly.assertThat(document.getElementById(OBSERVE_HEARING_ELEMENT))
+        softly.assertThat(document.getElementById(OBSERVE_HEARING_ELEMENT).text())
             .as(BODY_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo(OBSERVE_HEARING_WELSH);
 
         softly.assertThat(document.getElementsByTag("th"))

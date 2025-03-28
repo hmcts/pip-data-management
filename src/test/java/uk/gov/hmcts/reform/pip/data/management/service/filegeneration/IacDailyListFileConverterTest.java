@@ -68,9 +68,10 @@ class IacDailyListFileConverterTest {
                 "Last updated 20 October 2022 at 9pm"
             );
 
-        softly.assertThat(doc.getElementsByTag("section").get(0).getElementsByTag("p").get(0))
+        softly.assertThat(doc.getElementsByTag("section").get(0)
+                              .getElementsByTag("p").get(0)
+                              .text())
             .as("Incorrect data source")
-            .extracting(Element::text)
             .isEqualTo("Data Source: MANUAL_UPLOAD");
 
         softly.assertAll();
@@ -82,14 +83,14 @@ class IacDailyListFileConverterTest {
         Document doc = setupTest(listType);
         SoftAssertions softly = new SoftAssertions();
 
-        softly.assertThat(doc.getElementsByTag("h1").get(0))
+        softly.assertThat(doc.getElementsByTag("h1").get(0).text())
             .as("Incorrect h1 element")
-            .extracting(Element::text)
             .isEqualTo("Bail List");
 
-        softly.assertThat(doc.getElementsByClass("govuk-accordion").get(0).getElementsByTag("h3").get(0))
+        softly.assertThat(doc.getElementsByClass("govuk-accordion").get(0)
+                              .getElementsByTag("h3").get(0)
+                              .text())
             .as("Incorrect room name element")
-            .extracting(Element::text)
             .isEqualTo("Court Room A, Before Judge Test Name, Magistrate Test Name");
 
         softly.assertThat(doc.getElementsByClass("govuk-table__head").get(0).getElementsByTag("th"))
@@ -143,14 +144,14 @@ class IacDailyListFileConverterTest {
         Document doc = setupTest(listType);
         SoftAssertions softly = new SoftAssertions();
 
-        softly.assertThat(doc.getElementsByTag("h1").get(1))
+        softly.assertThat(doc.getElementsByTag("h1").get(1).text())
             .as("Incorrect h1 element")
-            .extracting(Element::text)
             .isEqualTo("Non Bail List");
 
-        softly.assertThat(doc.getElementsByClass("govuk-accordion").get(1).getElementsByTag("h3").get(0))
+        softly.assertThat(doc.getElementsByClass("govuk-accordion").get(1)
+                              .getElementsByTag("h3").get(0)
+                              .text())
             .as("Incorrect room name element")
-            .extracting(Element::text)
             .isEqualTo("Hearing Room: Court Room B");
 
         softly.assertThat(doc.getElementsByClass("govuk-table__head").get(2).getElementsByTag("th"))

@@ -103,36 +103,30 @@ class UtLandsChamberDailyHearingListFileConverterTest {
             .as(TITLE_MESSAGE)
             .isEqualTo(LIST_ENGLISH_NAME);
 
-        softly.assertThat(document.getElementById(HEADER_ELEMENT))
+        softly.assertThat(document.getElementById(HEADER_ELEMENT).text())
             .as(HEADER_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo(LIST_ENGLISH_NAME);
 
-        softly.assertThat(document.getElementById(LIST_DATE_ELEMENT))
+        softly.assertThat(document.getElementById(LIST_DATE_ELEMENT).text())
             .as(LIST_DATE_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo(LIST_DATE_ENGLISH);
 
-        softly.assertThat(document.getElementById(LAST_UPDATED_DATE_ELEMENT))
+        softly.assertThat(document.getElementById(LAST_UPDATED_DATE_ELEMENT).text())
             .as(LAST_UPDATED_DATE_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo("Last updated 20 January 2025 at 9:30am");
 
-        softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).get(0))
+        softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).get(0).text())
             .as(IMPORTANT_INFORMATION_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo("Important information");
 
-        softly.assertThat(document.getElementById(CONTACT_MESSAGE_ELEMENT))
+        softly.assertThat(document.getElementById(CONTACT_MESSAGE_ELEMENT).text())
             .as(BODY_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo("If a representative of the media or a member of the public wishes to "
                            + "attend a Cloud Video Platform (CVP) hearing they should contact the Lands "
                            + "Chamber listing section Lands@justice.gov.uk who will provide further information.");
 
-        softly.assertThat(document.getElementById(OBSERVE_HEARING_ELEMENT))
+        softly.assertThat(document.getElementById(OBSERVE_HEARING_ELEMENT).text())
             .as(BODY_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo(OBSERVE_HEARING_ENGLISH);
 
         softly.assertThat(document.getElementsByTag("th"))
@@ -181,37 +175,31 @@ class UtLandsChamberDailyHearingListFileConverterTest {
             .as(TITLE_MESSAGE)
             .isEqualTo(LIST_WELSH_NAME);
 
-        softly.assertThat(document.getElementById(HEADER_ELEMENT))
+        softly.assertThat(document.getElementById(HEADER_ELEMENT).text())
             .as(HEADER_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo(LIST_WELSH_NAME);
 
-        softly.assertThat(document.getElementById(LIST_DATE_ELEMENT))
+        softly.assertThat(document.getElementById(LIST_DATE_ELEMENT).text())
             .as(LIST_DATE_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo(LIST_DATE_WELSH);
 
-        softly.assertThat(document.getElementById(LAST_UPDATED_DATE_ELEMENT))
+        softly.assertThat(document.getElementById(LAST_UPDATED_DATE_ELEMENT).text())
             .as(LAST_UPDATED_DATE_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo("Diweddarwyd ddiwethaf 20 January 2025 am 9:30am");
 
-        softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).get(0))
+        softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).get(0).text())
             .as(IMPORTANT_INFORMATION_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo("Gwybodaeth bwysig");
 
-        softly.assertThat(document.getElementById(CONTACT_MESSAGE_ELEMENT))
+        softly.assertThat(document.getElementById(CONTACT_MESSAGE_ELEMENT).text())
             .as(BODY_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo("Os bydd cynrychiolydd o’r cyfryngau neu aelod o’r cyhoedd yn "
                            + "dymuno mynychu gwrandawiad Platfform Fideo’r Cwmwl (CVP) "
                            + "dylent gysylltu ag adran restru’r Siambr Tiroedd Lands@justice.gov.uk "
                            + "a fydd yn darparu rhagor o wybodaeth.");
 
-        softly.assertThat(document.getElementById(OBSERVE_HEARING_ELEMENT))
+        softly.assertThat(document.getElementById(OBSERVE_HEARING_ELEMENT).text())
             .as(BODY_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo(OBSERVE_HEARING_WELSH);
 
         softly.assertThat(document.getElementsByTag("th"))

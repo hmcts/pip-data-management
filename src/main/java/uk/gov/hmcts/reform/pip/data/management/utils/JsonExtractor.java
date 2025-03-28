@@ -59,9 +59,10 @@ public class JsonExtractor {
                 .parse(payload);
 
             List<Object> searchValues = jsonPayload.read(value);
-            List<Object> objects = searchValues.stream().filter(Objects::nonNull).toList();
-            if (!objects.isEmpty()) {
-                searchTermsMap.put(key, objects);
+            List<Object> cases = new ArrayList<>();
+            cases.addAll(searchValues.stream().filter(Objects::nonNull).toList());
+            if (!cases.isEmpty()) {
+                searchTermsMap.put(key, cases);
             }
         });
     }
