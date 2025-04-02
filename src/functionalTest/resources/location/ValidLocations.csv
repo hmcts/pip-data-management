@@ -1,4 +1,4 @@
-P&I ID,Court Desc,Region,Jurisdiction,Provenance,Provenance Location ID,Provenance Location Type,Welsh Court Desc,Welsh Region,Welsh Jurisdiction
-2001,LocationTestLocationOne,North West,Magistrates;Family,TestProvenance,1,venue,Welsh Test Location,Welsh north west,welsh magistrates
-2002,LocationTestLocationTwo,South West,Family,TestProvenance,1,venue,Welsh Test Location other,Welsh south west,welsh family
-2003,LocationTestLocationThree,North East,Test Jurisdiction;L,OtherProvenance,4,venue,Welsh unknown,Welsh north,welsh test location
+P&I ID,Court Desc,Region,Jurisdiction,Tribunal Type,Crime Type,Provenance,Provenance Location ID,Provenance Location Type,Welsh Court Desc,Welsh Region,Welsh Jurisdiction,Welsh Tribunal Type,Welsh Crime Type
+2001,LocationTestLocationOne,North West,Crime;Family,,Magistrates,TestProvenance,1,venue,Welsh Test Location,Welsh north west,welsh magistrates,,
+2002,LocationTestLocationTwo,South West,Family,,,TestProvenance,1,venue,Welsh Test Location other,Welsh south west,welsh family,,
+2003,LocationTestLocationThree,North East,Test Jurisdiction;L,,,OtherProvenance,4,venue,Welsh unknown,Welsh north,welsh test location,,
