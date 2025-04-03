@@ -1,4 +1,4 @@
-P&I ID,Court Desc,Region,Jurisdiction,Provenance,Provenance Location ID, Provenance Location Type, Welsh Court Desc, Welsh Region, Welsh Jurisdiction
-11,Test Location,North West,Magistrates Location;Family Location,TestProvenanceNew,2,venue,Welsh Test Location New,Welsh north west,welsh magistrates
-12,Test Location New,South West,Family Location,TestProvenanceNew2,1,venue,Welsh Test Location,Welsh south west,welsh family
-13,Unique Test Location,South West,Family Location,TestProvenanceNew3,1,venue,Welsh Unique Test Location,Welsh south west,welsh family
+P&I ID,Court Desc,Region,Jurisdiction,Tribunal Type,Crime Type,Provenance,Provenance Location ID, Provenance Location Type, Welsh Court Desc, Welsh Region, Welsh Jurisdiction,Welsh Tribunal Type,Welsh Crime Type
+11,Test Location,North West,Crime;Family Location,,Magistrates Location,TestProvenanceNew,2,venue,Welsh Test Location New,Welsh north west,welsh crime;welsh family,,welsh magistrates
+12,Test Location New,South West,Family Location,,,TestProvenanceNew2,1,venue,Welsh Test Location,Welsh south west,welsh family,,
+13,Unique Test Location,South West,Family Location,,,TestProvenanceNew3,1,venue,Welsh Unique Test Location,Welsh south west,welsh family,,

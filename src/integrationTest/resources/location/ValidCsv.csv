@@ -1,5 +1,6 @@
-P&I ID,Court Desc,Region,Jurisdiction,Provenance,Provenance Location ID,Provenance Location Type,Welsh Court Desc,Welsh Region,Welsh Jurisdiction
-1,Test Location,North West,Magistrates Location;Family Location,TestProvenance,1,venue,Welsh Test Location,Welsh north west,welsh magistrates
-1,Test Location,North West,Magistrates Location;Family Location,TestProvenanceOther,2,venue,Welsh Test Location,Welsh north west,welsh magistrates
-2,Test Location Other,South West,Family Location,TestProvenance,1,venue,Welsh Test Location other,Welsh south west,welsh family
-3,Unknown Location,North East,Test Location,OtherProvenance,4,venue,Welsh unknown,Welsh north,welsh test location
+P&I ID,Court Desc,Region,Jurisdiction,Tribunal Type,Crime Type,Provenance,Provenance Location ID,Provenance Location Type,Welsh Court Desc,Welsh Region,Welsh Jurisdiction,Welsh Tribunal Type,Welsh Crime Type
+1,Test Location,North West,Crime;Family Location,,Magistrates Location,TestProvenance,1,venue,Welsh Test Location,Welsh north west,welsh crime;welsh family,,welsh magistrates
+1,Test Location,North West,Crime;Family Location,,Magistrates Location,TestProvenanceOther,2,venue,Welsh Test Location,Welsh north west,welsh crime;welsh family,,welsh magistrates
+2,Test Location Other,South West,Family Location,,,TestProvenance,1,venue,Welsh Test Location other,Welsh south west,welsh family,,
+3,Test Location Other 2,South West,Tribunal,SSCS,,TestProvenance,1,venue,Welsh Test Location other 2,Welsh south west,welsh tribunal,welsh SSCS,
+4,Unknown Location,North East,Test Location,,,OtherProvenance,4,venue,Welsh unknown,Welsh north,welsh test location,,

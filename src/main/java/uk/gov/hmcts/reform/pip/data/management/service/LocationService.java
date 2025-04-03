@@ -128,7 +128,7 @@ public class LocationService {
      * Handles filtering the locations based on region and jurisdiction.
      *
      * @param regions The list of regions to filter against.
-     * @param jurisdictions The list of jurisdictions to filter against.
+     * @param jurisdictions The list of jurisdictions to filter against (this includes tribunal type and crime type).
      * @return List of Location objects, can return empty List
      */
     public List<Location> searchByRegionAndJurisdiction(List<String> regions, List<String> jurisdictions,
@@ -225,12 +225,16 @@ public class LocationService {
                         location.getName(),
                         location.getRegion(),
                         location.getJurisdiction(),
+                        location.getTribunalType(),
+                        location.getCrimeType(),
                         locationReference.getProvenance(),
                         locationReference.getProvenanceLocationId(),
                         locationReference.getProvenanceLocationType().csvInput,
                         location.getWelshName(),
                         location.getWelshRegion(),
                         location.getWelshJurisdiction(),
+                        location.getWelshTribunalType(),
+                        location.getWelshCrimeType(),
                         location.getEmail(),
                         location.getContactNo()
                     ));

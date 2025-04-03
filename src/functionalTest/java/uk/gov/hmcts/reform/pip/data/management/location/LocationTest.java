@@ -64,7 +64,7 @@ class LocationTest extends FunctionalTestBase {
     }
 
     @Test
-    void locationControllerHappyPathTests() throws Exception {
+    void locationControllerHappyPathTests() {
         Map<String, String> headerMapUploadLocations = Map.of(AUTHORIZATION, BEARER + accessToken,
                                                               "Content-Type", MediaType.MULTIPART_FORM_DATA_VALUE
         );
