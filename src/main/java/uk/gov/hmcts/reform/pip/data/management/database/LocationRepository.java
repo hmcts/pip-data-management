@@ -27,8 +27,7 @@ public interface LocationRepository extends JpaRepository<Location, Integer> {
     @Query(value = "select * from location "
         + "WHERE (:regions = '' OR location.region && string_to_array(:regions, ',')) "
         + "AND (:jurisdictions = '' OR location.jurisdiction && string_to_array(:jurisdictions, ',') "
-        + "OR location.tribunal_type && string_to_array(:jurisdictions, ',') "
-        + "OR location.crime_type && string_to_array(:jurisdictions, ',')) "
+        + "OR location.jurisdiction_type && string_to_array(:jurisdictions, ',')) "
         + "ORDER BY location.name",
         nativeQuery = true)
     List<Location> findByRegionAndJurisdictionOrderByName(@Param("regions") String regions,
@@ -37,8 +36,7 @@ public interface LocationRepository extends JpaRepository<Location, Integer> {
     @Query(value = "select * from location "
         + "WHERE (:regions = '' OR location.welsh_region && string_to_array(:regions, ',')) "
         + "AND (:jurisdictions = '' OR location.welsh_jurisdiction && string_to_array(:jurisdictions, ',') "
-        + "OR location.welsh_tribunal_type && string_to_array(:jurisdictions, ',') "
-        + "OR location.welsh_crime_type && string_to_array(:jurisdictions, ',')) "
+        + "OR location.welsh_jurisdiction_type && string_to_array(:jurisdictions, ',')) "
         + "ORDER BY location.name",
         nativeQuery = true)
     List<Location> findByWelshRegionAndJurisdictionOrderByName(@Param("regions") String regions,

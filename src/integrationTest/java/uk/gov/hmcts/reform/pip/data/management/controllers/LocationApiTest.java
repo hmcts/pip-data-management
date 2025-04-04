@@ -723,7 +723,7 @@ class LocationApiTest extends IntegrationTestBase {
         assertTrue(jurisdictions.contains("Family Location"), "Family Location not within jurisdiction field");
         assertTrue(jurisdictions.contains("Crime"), "Crime not within jurisdiction field");
 
-        List<String> crimeTypes = locationA.getCrimeType();
+        List<String> crimeTypes = locationA.getJurisdictionType();
         assertTrue(
             crimeTypes.contains("Magistrates Location"),
             "Magistrates Location not within crime type field"

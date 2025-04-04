@@ -77,8 +77,8 @@ class LocationRepositoryTest {
         location2.setWelshRegion(List.of(YORKSHIRE_REGION_WELSH));
         location2.setJurisdiction(List.of(TRIBUNAL_JURISDICTION));
         location2.setWelshJurisdiction(List.of(TRIBUNAL_JURISDICTION_WELSH));
-        location2.setTribunalType(List.of(SSCS_TRIBUNAL_TYPE));
-        location2.setWelshTribunalType(List.of(SSCS_TRIBUNAL_TYPE_WELSH));
+        location2.setJurisdictionType(List.of(SSCS_TRIBUNAL_TYPE));
+        location2.setWelshJurisdictionType(List.of(SSCS_TRIBUNAL_TYPE_WELSH));
         location2.setLocationReferenceList(List.of(
             new LocationReference(PROVENANCE, "2", LocationType.OWNING_HEARING_LOCATION)
         ));
@@ -101,8 +101,8 @@ class LocationRepositoryTest {
         location4.setWelshRegion(List.of(WALES_REGION_WELSH));
         location4.setJurisdiction(List.of(TRIBUNAL_JURISDICTION));
         location4.setWelshJurisdiction(List.of(TRIBUNAL_JURISDICTION_WELSH));
-        location4.setTribunalType(List.of(IAC_TRIBUNAL_TYPE));
-        location4.setWelshTribunalType(List.of(IAC_TRIBUNAL_TYPE_WELSH));
+        location4.setJurisdictionType(List.of(IAC_TRIBUNAL_TYPE));
+        location4.setWelshJurisdictionType(List.of(IAC_TRIBUNAL_TYPE_WELSH));
         location4.setLocationReferenceList(List.of(
             new LocationReference(PROVENANCE, "4", LocationType.OWNING_HEARING_LOCATION)
         ));
@@ -125,8 +125,8 @@ class LocationRepositoryTest {
         location6.setWelshRegion(List.of(SOUTH_EAST_REGION_WELSH));
         location6.setJurisdiction(List.of(TRIBUNAL_JURISDICTION));
         location6.setWelshJurisdiction(List.of(TRIBUNAL_JURISDICTION_WELSH));
-        location6.setTribunalType(List.of(SSCS_TRIBUNAL_TYPE));
-        location6.setWelshTribunalType(List.of(SSCS_TRIBUNAL_TYPE_WELSH));
+        location6.setJurisdictionType(List.of(SSCS_TRIBUNAL_TYPE));
+        location6.setWelshJurisdictionType(List.of(SSCS_TRIBUNAL_TYPE_WELSH));
         location6.setLocationReferenceList(List.of(
             new LocationReference(PROVENANCE, "6", LocationType.OWNING_HEARING_LOCATION)
         ));
@@ -139,8 +139,8 @@ class LocationRepositoryTest {
         location7.setWelshRegion(List.of(SOUTH_EAST_REGION_WELSH));
         location7.setJurisdiction(List.of(CRIME_JURISDICTION));
         location7.setWelshJurisdiction(List.of(CRIME_JURISDICTION_WELSH));
-        location7.setTribunalType(List.of(MAGISTRATES_CRIME_TYPE));
-        location7.setWelshTribunalType(List.of(MAGISTRATES_CRIME_TYPE_WELSH));
+        location7.setJurisdictionType(List.of(MAGISTRATES_CRIME_TYPE));
+        location7.setWelshJurisdictionType(List.of(MAGISTRATES_CRIME_TYPE_WELSH));
         location7.setLocationReferenceList(List.of(
             new LocationReference(PROVENANCE, "7", LocationType.OWNING_HEARING_LOCATION)
         ));
@@ -155,7 +155,7 @@ class LocationRepositoryTest {
     }
 
     @Test
-    void shouldFindLocationByRegionJurisdictionTribunalTypeCrimeTypeOrderByName() {
+    void shouldFindLocationByRegionJurisdictionAndJurisdictionTypeOrderByName() {
         List<String> jurisdictions = List.of(FAMILY_JURISDICTION, SSCS_TRIBUNAL_TYPE, MAGISTRATES_CRIME_TYPE);
         assertThat(locationRepository.findByRegionAndJurisdictionOrderByName(SOUTH_EAST_REGION,
                                                                              StringUtils.join(jurisdictions, ',')))
@@ -175,21 +175,13 @@ class LocationRepositoryTest {
     }
 
     @Test
-    void shouldFindLocationByRegionAndTribunalTypeOrderByName() {
-        assertThat(locationRepository.findByRegionAndJurisdictionOrderByName(YORKSHIRE_REGION, SSCS_TRIBUNAL_TYPE))
+    void shouldFindLocationByRegionAndJurisdictionTypeOrderByName() {
+        assertThat(locationRepository.findByRegionAndJurisdictionOrderByName(YORKSHIRE_REGION, SSCS_TRIBUNAL_TYPE + ','
+            + MAGISTRATES_CRIME_TYPE))
             .as(LOCATION_MATCHED_MESSAGE)
             .hasSize(1)
             .extracting(Location::getName)
             .containsExactly(COURT_NAME2);
-    }
-
-    @Test
-    void shouldFindLocationByRegionAndCrimeTypeOrderByName() {
-        assertThat(locationRepository.findByRegionAndJurisdictionOrderByName(SOUTH_EAST_REGION, MAGISTRATES_CRIME_TYPE))
-            .as(LOCATION_MATCHED_MESSAGE)
-            .hasSize(1)
-            .extracting(Location::getName)
-            .containsExactly(COURT_NAME7);
     }
 
     @Test
@@ -211,21 +203,13 @@ class LocationRepositoryTest {
     }
 
     @Test
-    void shouldFindLocationByTribunalTypeOnlyOrderByName() {
-        assertThat(locationRepository.findByRegionAndJurisdictionOrderByName("", SSCS_TRIBUNAL_TYPE))
+    void shouldFindLocationByJurisdictionTypeOnlyOrderByName() {
+        assertThat(locationRepository.findByRegionAndJurisdictionOrderByName("", SSCS_TRIBUNAL_TYPE + ','
+            + MAGISTRATES_CRIME_TYPE))
             .as(LOCATION_MATCHED_MESSAGE)
-            .hasSize(2)
+            .hasSize(3)
             .extracting(Location::getName)
-            .containsExactly(COURT_NAME2, COURT_NAME6);
-    }
-
-    @Test
-    void shouldFindLocationByCrimeTypeOnlyOrderByName() {
-        assertThat(locationRepository.findByRegionAndJurisdictionOrderByName("", MAGISTRATES_CRIME_TYPE))
-            .as(LOCATION_MATCHED_MESSAGE)
-            .hasSize(1)
-            .extracting(Location::getName)
-            .containsExactly(COURT_NAME7);
+            .containsExactly(COURT_NAME2, COURT_NAME7, COURT_NAME6);
     }
 
     @Test
@@ -236,14 +220,14 @@ class LocationRepositoryTest {
     }
 
     @Test
-    void shouldNotFindLocationIfEitherRegionOrTribunalTypeUnmatched() {
+    void shouldNotFindLocationIfEitherRegionOrJurisdictionTypeUnmatched() {
         assertThat(locationRepository.findByRegionAndJurisdictionOrderByName(WALES_REGION, SSCS_TRIBUNAL_TYPE))
             .as(LOCATION_EMPTY_MESSAGE)
             .isEmpty();
     }
 
     @Test
-    void shouldFindLocationByWelshRegionWelshJurisdictionWelshTribunalTypeWelshCrimeTypeOrderByName() {
+    void shouldFindLocationByWelshRegionWelshJurisdictionAndWelshJurisdictionTypeOrderByName() {
         List<String> jurisdictions = List.of(FAMILY_JURISDICTION_WELSH, SSCS_TRIBUNAL_TYPE_WELSH,
                                              MAGISTRATES_CRIME_TYPE_WELSH);
         assertThat(locationRepository.findByWelshRegionAndJurisdictionOrderByName(SOUTH_EAST_REGION_WELSH,
@@ -266,23 +250,13 @@ class LocationRepositoryTest {
     }
 
     @Test
-    void shouldFindLocationByWelshRegionAndWelshTribunalTypeOrderByName() {
+    void shouldFindLocationByWelshRegionAndWelshJurisdictionTypeOrderByName() {
         assertThat(locationRepository.findByWelshRegionAndJurisdictionOrderByName(SOUTH_EAST_REGION_WELSH,
                                                                                   SSCS_TRIBUNAL_TYPE_WELSH))
             .as(LOCATION_MATCHED_MESSAGE)
             .hasSize(1)
             .extracting(Location::getName)
             .containsExactly(COURT_NAME6);
-    }
-
-    @Test
-    void shouldFindLocationByWelshRegionAndWelshCrimeTypeOrderByName() {
-        assertThat(locationRepository.findByWelshRegionAndJurisdictionOrderByName(SOUTH_EAST_REGION_WELSH,
-                                                                                  MAGISTRATES_CRIME_TYPE_WELSH))
-            .as(LOCATION_MATCHED_MESSAGE)
-            .hasSize(1)
-            .extracting(Location::getName)
-            .containsExactly(COURT_NAME7);
     }
 
     @Test
@@ -304,21 +278,13 @@ class LocationRepositoryTest {
     }
 
     @Test
-    void shouldFindLocationByWelshTribunalTypeOnlyOrderByName() {
-        assertThat(locationRepository.findByWelshRegionAndJurisdictionOrderByName("", SSCS_TRIBUNAL_TYPE_WELSH))
+    void shouldFindLocationByWelshJurisdictionTypeOnlyOrderByName() {
+        assertThat(locationRepository.findByWelshRegionAndJurisdictionOrderByName("", SSCS_TRIBUNAL_TYPE_WELSH + ','
+            + MAGISTRATES_CRIME_TYPE_WELSH))
             .as(LOCATION_MATCHED_MESSAGE)
-            .hasSize(2)
+            .hasSize(3)
             .extracting(Location::getName)
-            .containsExactly(COURT_NAME2, COURT_NAME6);
-    }
-
-    @Test
-    void shouldFindLocationByWelshCrimeTypeOnlyOrderByName() {
-        assertThat(locationRepository.findByWelshRegionAndJurisdictionOrderByName("", MAGISTRATES_CRIME_TYPE_WELSH))
-            .as(LOCATION_MATCHED_MESSAGE)
-            .hasSize(1)
-            .extracting(Location::getName)
-            .containsExactly(COURT_NAME7);
+            .containsExactly(COURT_NAME2, COURT_NAME7, COURT_NAME6);
     }
 
     @Test

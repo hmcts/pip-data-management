@@ -57,14 +57,9 @@ public class Location {
     private List<String> jurisdiction;
 
     @Type(ListArrayType.class)
-    @Column(name = "tribunal_type", columnDefinition = DEFINITION)
+    @Column(name = "jurisdiction_type", columnDefinition = DEFINITION)
     @JsonView(LocationViews.BaseView.class)
-    private List<String> tribunalType;
-
-    @Type(ListArrayType.class)
-    @Column(name = "crime_type", columnDefinition = DEFINITION)
-    @JsonView(LocationViews.BaseView.class)
-    private List<String> crimeType;
+    private List<String> jurisdictionType;
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "location_id")
@@ -80,14 +75,9 @@ public class Location {
     private List<String> welshJurisdiction;
 
     @Type(ListArrayType.class)
-    @Column(name = "welsh_tribunal_type", columnDefinition = DEFINITION)
+    @Column(name = "welsh_jurisdiction_type", columnDefinition = DEFINITION)
     @JsonView(LocationViews.BaseView.class)
-    private List<String> welshTribunalType;
-
-    @Type(ListArrayType.class)
-    @Column(name = "welsh_crime_type", columnDefinition = DEFINITION)
-    @JsonView(LocationViews.BaseView.class)
-    private List<String> welshCrimeType;
+    private List<String> welshJurisdictionType;
 
     @Type(ListArrayType.class)
     @Column(name = "welsh_region", columnDefinition = DEFINITION)
@@ -105,8 +95,7 @@ public class Location {
         this.name = locationCsv.getLocationName();
         this.region = new ArrayList<>(locationCsv.getRegion());
         this.jurisdiction = new ArrayList<>(locationCsv.getJurisdiction());
-        this.tribunalType = new ArrayList<>(locationCsv.getTribunalType());
-        this.crimeType = new ArrayList<>(locationCsv.getCrimeType());
+        this.jurisdictionType = new ArrayList<>(locationCsv.getJurisdictionType());
         this.locationType = LocationType.valueOfCsv(locationCsv.getProvenanceLocationType());
         LocationReference locationReference = new LocationReference(
             locationCsv.getProvenance(),
@@ -116,8 +105,7 @@ public class Location {
         this.welshName = locationCsv.getWelshLocationName();
         this.welshRegion = new ArrayList<>(locationCsv.getWelshRegion());
         this.welshJurisdiction = new ArrayList<>(locationCsv.getWelshJurisdiction());
-        this.welshTribunalType = new ArrayList<>(locationCsv.getWelshTribunalType());
-        this.welshCrimeType = new ArrayList<>(locationCsv.getWelshCrimeType());
+        this.welshJurisdictionType = new ArrayList<>(locationCsv.getWelshJurisdictionType());
         this.email = locationCsv.getEmail();
         this.contactNo = locationCsv.getContactNo();
     }
