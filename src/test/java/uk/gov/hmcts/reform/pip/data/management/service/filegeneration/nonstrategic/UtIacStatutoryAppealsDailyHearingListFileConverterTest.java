@@ -111,41 +111,33 @@ class UtIacStatutoryAppealsDailyHearingListFileConverterTest {
             .as(TITLE_MESSAGE)
             .isEqualTo("Upper Tribunal (Immigration and Asylum) Chamber Statutory Appeal Daily Hearing List");
 
-        softly.assertThat(document.getElementById(HEADER_ELEMENT))
+        softly.assertThat(document.getElementById(HEADER_ELEMENT).text())
             .as(HEADER_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo("Upper Tribunal (Immigration and Asylum) Chamber Statutory Appeal Daily Hearing List");
 
-        softly.assertThat(document.getElementById(LIST_DATE_ELEMENT))
+        softly.assertThat(document.getElementById(LIST_DATE_ELEMENT).text())
             .as(LIST_DATE_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo(LIST_DATE_ENGLISH);
 
-        softly.assertThat(document.getElementById(LAST_UPDATED_DATE_ELEMENT))
+        softly.assertThat(document.getElementById(LAST_UPDATED_DATE_ELEMENT).text())
             .as(LAST_UPDATED_DATE_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo("Last updated 20 January 2025 at 9:30am");
 
-        softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).get(0))
+        softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).get(0).text())
             .as(IMPORTANT_INFORMATION_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo("Important information");
 
-        softly.assertThat(document.getElementById(LIST_UPDATE_MESSAGE_ELEMENT))
+        softly.assertThat(document.getElementById(LIST_UPDATE_MESSAGE_ELEMENT).text())
             .as(BODY_MESSAGE)
-            .extracting(Element::text)
-            .asString()
             .contains("We update this list by 5pm for the following day.");
 
-        softly.assertThat(document.getElementById(ATTEND_HEARING_MESSAGE_ELEMENT))
+        softly.assertThat(document.getElementById(ATTEND_HEARING_MESSAGE_ELEMENT).text())
             .as(BODY_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo("For details on attending a UTIAC remote hearing, please email "
                            + "uppertribunallistingteam@justice.gov.uk.");
 
-        softly.assertThat(document.getElementById(OBSERVE_HEARING_ELEMENT))
+        softly.assertThat(document.getElementById(OBSERVE_HEARING_ELEMENT).text())
             .as(BODY_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo(OBSERVE_HEARING_ENGLISH);
 
         softly.assertThat(document.getElementsByTag("th"))
@@ -194,42 +186,34 @@ class UtIacStatutoryAppealsDailyHearingListFileConverterTest {
             .isEqualTo("Uwch Dribiwnlys (Siambr Mewnfudo a Lloches) - Rhestr o Wrandawiadau "
                            + "Dyddiol - Apeliadau Statudol");
 
-        softly.assertThat(document.getElementById(HEADER_ELEMENT))
+        softly.assertThat(document.getElementById(HEADER_ELEMENT).text())
             .as(HEADER_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo("Uwch Dribiwnlys (Siambr Mewnfudo a Lloches) - Rhestr o Wrandawiadau "
                            + "Dyddiol - Apeliadau Statudol");
 
-        softly.assertThat(document.getElementById(LIST_DATE_ELEMENT))
+        softly.assertThat(document.getElementById(LIST_DATE_ELEMENT).text())
             .as(LIST_DATE_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo(LIST_DATE_WELSH);
 
-        softly.assertThat(document.getElementById(LAST_UPDATED_DATE_ELEMENT))
+        softly.assertThat(document.getElementById(LAST_UPDATED_DATE_ELEMENT).text())
             .as(LAST_UPDATED_DATE_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo("Diweddarwyd ddiwethaf 20 January 2025 am 9:30am");
 
-        softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).get(0))
+        softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).get(0).text())
             .as(IMPORTANT_INFORMATION_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo("Gwybodaeth bwysig");
 
-        softly.assertThat(document.getElementById(LIST_UPDATE_MESSAGE_ELEMENT))
+        softly.assertThat(document.getElementById(LIST_UPDATE_MESSAGE_ELEMENT).text())
             .as(BODY_MESSAGE)
-            .extracting(Element::text)
-            .asString()
             .contains("Rydym yn diweddaru’r rhestr hon erbyn 5pm ar gyfer y diwrnod canlynol.");
 
-        softly.assertThat(document.getElementById(ATTEND_HEARING_MESSAGE_ELEMENT))
+        softly.assertThat(document.getElementById(ATTEND_HEARING_MESSAGE_ELEMENT).text())
             .as(BODY_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo("I gael manylion am fynychu gwrandawiad UTIAC o bell, anfonwch e-bost at "
                            + "uppertribunallistingteam@justice.gov.uk.");
 
-        softly.assertThat(document.getElementById(OBSERVE_HEARING_ELEMENT))
+        softly.assertThat(document.getElementById(OBSERVE_HEARING_ELEMENT).text())
             .as(BODY_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo(OBSERVE_HEARING_WELSH);
 
         softly.assertThat(document.getElementsByTag("th"))
