@@ -81,13 +81,25 @@ class LocationTest extends FunctionalTestBase {
         assertThat(responseUploadLocations.as(Location[].class)).hasSize(3);
 
         List<Location> createdLocations = Arrays.asList(responseUploadLocations.getBody().as(Location[].class));
+        assertThat(createdLocations).hasSize(3);
 
-        assertThat(createdLocations.get(0).getLocationId()).isEqualTo(TEST_LOCATION_ID_ONE);
-        assertThat(createdLocations.get(0).getName()).isEqualTo(TEST_LOCATION_NAME_ONE);
-        assertThat(createdLocations.get(1).getLocationId()).isEqualTo(TEST_LOCATION_ID_TWO);
-        assertThat(createdLocations.get(1).getName()).isEqualTo(TEST_LOCATION_NAME_TWO);
-        assertThat(createdLocations.get(2).getLocationId()).isEqualTo(TEST_LOCATION_ID_THREE);
-        assertThat(createdLocations.get(2).getName()).isEqualTo(TEST_LOCATION_NAME_THREE);
+        Location firstLocation = createdLocations.get(0);
+        assertThat(firstLocation.getLocationId()).isEqualTo(TEST_LOCATION_ID_ONE);
+        assertThat(firstLocation.getName()).isEqualTo(TEST_LOCATION_NAME_ONE);
+        assertThat(firstLocation.getJurisdiction()).containsExactly("Crime", "Family");
+        assertThat(firstLocation.getJurisdictionType()).containsExactly("Magistrates");
+
+        Location secondLocation = createdLocations.get(1);
+        assertThat(secondLocation.getLocationId()).isEqualTo(TEST_LOCATION_ID_TWO);
+        assertThat(secondLocation.getName()).isEqualTo(TEST_LOCATION_NAME_TWO);
+        assertThat(secondLocation.getJurisdiction()).containsExactly("Family");
+        assertThat(secondLocation.getJurisdictionType()).isEmpty();
+
+        Location thirdLocation = createdLocations.get(2);
+        assertThat(thirdLocation.getLocationId()).isEqualTo(TEST_LOCATION_ID_THREE);
+        assertThat(thirdLocation.getName()).isEqualTo(TEST_LOCATION_NAME_THREE);
+        assertThat(thirdLocation.getJurisdiction()).containsExactly("Test Jurisdiction");
+        assertThat(thirdLocation.getJurisdictionType()).isEmpty();
 
         final Response responseGetLocationById = doGetRequest(
             GET_LOCATION_BY_ID_URL,
