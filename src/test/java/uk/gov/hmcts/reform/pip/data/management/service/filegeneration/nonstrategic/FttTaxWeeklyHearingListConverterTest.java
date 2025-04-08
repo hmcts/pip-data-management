@@ -108,55 +108,46 @@ class FttTaxWeeklyHearingListConverterTest {
             .as(TITLE_MESSAGE)
             .isEqualTo(LIST_ENGLISH_NAME);
 
-        softly.assertThat(document.getElementById(HEADER_ELEMENT))
+        softly.assertThat(document.getElementById(HEADER_ELEMENT).text())
             .as(HEADER_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo(LIST_ENGLISH_NAME);
 
-        softly.assertThat(document.getElementById(LIST_DATE_ELEMENT))
+        softly.assertThat(document.getElementById(LIST_DATE_ELEMENT).text())
             .as(LIST_DATE_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo(LIST_DATE_ENGLISH);
 
-        softly.assertThat(document.getElementById(LAST_UPDATED_DATE_ELEMENT))
+        softly.assertThat(document.getElementById(LAST_UPDATED_DATE_ELEMENT).text())
             .as(LAST_UPDATED_DATE_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo("Last updated 20 January 2025 at 9:30am");
 
-        softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).get(0))
+        softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).get(0).text())
             .as(IMPORTANT_INFORMATION_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo("Important information");
 
-        softly.assertThat(document.getElementById(CONTACT_MESSAGE_ELEMENT_1))
+        softly.assertThat(document.getElementById(CONTACT_MESSAGE_ELEMENT_1).text())
             .as(BODY_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo("Open justice is a fundamental principle of our justice system. You can attend a "
                            + "public hearing in person, or you can apply for permission to observe remotely.");
-        softly.assertThat(document.getElementById(CONTACT_MESSAGE_ELEMENT_2))
+        softly.assertThat(document.getElementById(CONTACT_MESSAGE_ELEMENT_2).text())
             .as(BODY_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo("Members of the public and the media can ask to join any telephone or "
                            + "video hearing remotely. Contact the Tribunal before the hearing to ask for "
                            + "permission to attend by emailing taxappeals@justice.gov.uk.");
 
-        softly.assertThat(document.getElementById(CONTACT_MESSAGE_ELEMENT_3))
+        softly.assertThat(document.getElementById(CONTACT_MESSAGE_ELEMENT_3).text())
             .as(BODY_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo("The subject line for the email should contain the following wording: "
                            + "“HEARING ACCESS REQUEST – [Appellant’s name] v [Respondent’s name, for example HMRC] – "
                            + "[case reference] – [hearing date]”. You will be sent instructions on "
                            + "how to join the hearing.");
 
-        softly.assertThat(document.getElementById(CONTACT_MESSAGE_ELEMENT_4))
+        softly.assertThat(document.getElementById(CONTACT_MESSAGE_ELEMENT_4).text())
             .as(BODY_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo("The judge may refuse a request and can also decide a "
                            + "hearing must be held in private, in such cases you will not be able to attend.");
 
-        softly.assertThat(document.getElementById(OBSERVE_HEARING_ELEMENT))
+        softly.assertThat(document.getElementById(OBSERVE_HEARING_ELEMENT).text())
             .as(BODY_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo(OBSERVE_HEARING_ENGLISH);
 
         softly.assertThat(document.getElementsByTag("th"))
@@ -203,57 +194,48 @@ class FttTaxWeeklyHearingListConverterTest {
             .as(TITLE_MESSAGE)
             .isEqualTo(LIST_WELSH_NAME);
 
-        softly.assertThat(document.getElementById(HEADER_ELEMENT))
+        softly.assertThat(document.getElementById(HEADER_ELEMENT).text())
             .as(HEADER_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo(LIST_WELSH_NAME);
 
-        softly.assertThat(document.getElementById(LIST_DATE_ELEMENT))
+        softly.assertThat(document.getElementById(LIST_DATE_ELEMENT).text())
             .as(LIST_DATE_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo(LIST_DATE_WELSH);
 
-        softly.assertThat(document.getElementById(LAST_UPDATED_DATE_ELEMENT))
+        softly.assertThat(document.getElementById(LAST_UPDATED_DATE_ELEMENT).text())
             .as(LAST_UPDATED_DATE_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo("Diweddarwyd ddiwethaf 20 January 2025 am 9:30am");
 
-        softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).get(0))
+        softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).get(0).text())
             .as(IMPORTANT_INFORMATION_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo("Gwybodaeth bwysig");
 
-        softly.assertThat(document.getElementById(CONTACT_MESSAGE_ELEMENT_1))
+        softly.assertThat(document.getElementById(CONTACT_MESSAGE_ELEMENT_1).text())
             .as(BODY_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo("Mae cyfiawnder agored yn egwyddor sylfaenol yn ein system gyfiawnder. "
                            + "Gallwch fynychu gwrandawiad cyhoeddus wyneb yn wyneb, neu gallwch "
                            + "wneud cais am ganiatâd i arsylwi o bell.");
-        softly.assertThat(document.getElementById(CONTACT_MESSAGE_ELEMENT_2))
+        softly.assertThat(document.getElementById(CONTACT_MESSAGE_ELEMENT_2).text())
             .as(BODY_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo("Gall aelodau’r cyhoedd a’r cyfryngau ofyn am gael ymuno ag "
                            + "unrhyw wrandawiad dros y ffôn neu drwy fideo o bell. Cysylltwch â’r "
                            + "Tribiwnlys cyn y gwrandawiad i ofyn am ganiatâd i fod yn bresennol "
                            + "drwy anfon e-bost at taxappeals@justice.gov.uk");
 
-        softly.assertThat(document.getElementById(CONTACT_MESSAGE_ELEMENT_3))
+        softly.assertThat(document.getElementById(CONTACT_MESSAGE_ELEMENT_3).text())
             .as(BODY_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo("Dylai llinell bwnc yr e-bost gynnwys y geiriad canlynol: "
                            + "“CAIS MYNEDIAD I WRANDAWIAD – [Enw’r apelydd] v [Enw’r atebydd, er enghraifft CThEF] – "
                            + "[cyfeirnod yr achos] – [dyddiad y gwrandawiad]”. Anfonir cyfarwyddiadau atoch ar "
                            + "sut i ymuno â’r gwrandawiad.");
 
-        softly.assertThat(document.getElementById(CONTACT_MESSAGE_ELEMENT_4))
+        softly.assertThat(document.getElementById(CONTACT_MESSAGE_ELEMENT_4).text())
             .as(BODY_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo("Gall y barnwr wrthod cais a gall hefyd benderfynu bod yn rhaid cynnal "
                            + "gwrandawiad yn breifat, ac mewn achosion o'r fath ni fyddwch yn gallu bod yn bresennol.");
 
-        softly.assertThat(document.getElementById(OBSERVE_HEARING_ELEMENT))
+        softly.assertThat(document.getElementById(OBSERVE_HEARING_ELEMENT).text())
             .as(BODY_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo(OBSERVE_HEARING_WELSH);
 
         softly.assertThat(document.getElementsByTag("th"))

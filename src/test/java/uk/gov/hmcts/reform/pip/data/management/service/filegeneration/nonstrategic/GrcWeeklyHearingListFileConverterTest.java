@@ -116,24 +116,20 @@ class GrcWeeklyHearingListFileConverterTest {
             .as(TITLE_MESSAGE)
             .isEqualTo("General Regulatory Chamber Weekly Hearing List");
 
-        softly.assertThat(document.getElementById(HEADER_ELEMENT))
+        softly.assertThat(document.getElementById(HEADER_ELEMENT).text())
             .as(HEADER_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo("General Regulatory Chamber Weekly Hearing List");
 
-        softly.assertThat(document.getElementById(LIST_DATE_ELEMENT))
+        softly.assertThat(document.getElementById(LIST_DATE_ELEMENT).text())
             .as(LIST_DATE_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo(LIST_DATE_ENGLISH);
 
-        softly.assertThat(document.getElementById(LAST_UPDATED_DATE_ELEMENT))
+        softly.assertThat(document.getElementById(LAST_UPDATED_DATE_ELEMENT).text())
             .as(LAST_UPDATED_DATE_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo("Last updated 20 January 2025 at 9:30am");
 
-        softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).get(0))
+        softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).get(0).text())
             .as(IMPORTANT_INFORMATION_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo("Important information");
 
         softly.assertThat(document.getElementById(MESSAGE_LINE1_ELEMENT))
@@ -142,14 +138,12 @@ class GrcWeeklyHearingListFileConverterTest {
             .asString()
             .contains("Parties and representatives will be informed about arrangements for hearing cases remotely");
 
-        softly.assertThat(document.getElementById(OBSERVE_HEARING_ELEMENT))
+        softly.assertThat(document.getElementById(OBSERVE_HEARING_ELEMENT).text())
             .as(BODY_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo(OBSERVE_HEARING_ENGLISH);
 
-        softly.assertThat(document.getElementById(JOIN_HEARING_ELEMENT))
+        softly.assertThat(document.getElementById(JOIN_HEARING_ELEMENT).text())
             .as(BODY_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo("What to expect when joining a telephone or video hearing");
 
         softly.assertThat(document.getElementsByTag("th"))
@@ -198,24 +192,20 @@ class GrcWeeklyHearingListFileConverterTest {
             .as(TITLE_MESSAGE)
             .isEqualTo("Rhestr o Wrandawiadau Wythnosol y Siambr Rheoleiddio Cyffredinol");
 
-        softly.assertThat(document.getElementById(HEADER_ELEMENT))
+        softly.assertThat(document.getElementById(HEADER_ELEMENT).text())
             .as(HEADER_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo("Rhestr o Wrandawiadau Wythnosol y Siambr Rheoleiddio Cyffredinol");
 
-        softly.assertThat(document.getElementById(LIST_DATE_ELEMENT))
+        softly.assertThat(document.getElementById(LIST_DATE_ELEMENT).text())
             .as(LIST_DATE_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo(LIST_DATE_WELSH);
 
-        softly.assertThat(document.getElementById(LAST_UPDATED_DATE_ELEMENT))
+        softly.assertThat(document.getElementById(LAST_UPDATED_DATE_ELEMENT).text())
             .as(LAST_UPDATED_DATE_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo("Diweddarwyd ddiwethaf 20 January 2025 am 9:30am");
 
-        softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).get(0))
+        softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).get(0).text())
             .as(IMPORTANT_INFORMATION_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo("Gwybodaeth bwysig");
 
         softly.assertThat(document.getElementById(MESSAGE_LINE1_ELEMENT))
@@ -225,14 +215,12 @@ class GrcWeeklyHearingListFileConverterTest {
             .contains("Bydd partïon a chynrychiolwyr yn cael gwybod ynghylch y trefniadau ar gyfer gwrando achosion "
                           + "o bell.");
 
-        softly.assertThat(document.getElementById(OBSERVE_HEARING_ELEMENT))
+        softly.assertThat(document.getElementById(OBSERVE_HEARING_ELEMENT).text())
             .as(BODY_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo(OBSERVE_HEARING_WELSH);
 
-        softly.assertThat(document.getElementById(JOIN_HEARING_ELEMENT))
+        softly.assertThat(document.getElementById(JOIN_HEARING_ELEMENT).text())
             .as(BODY_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo("Beth i’w ddisgwyl pan fyddwch yn ymuno â gwrandawiad dros y ffôn neu drwy fideo");
 
         softly.assertThat(document.getElementsByTag("th"))
