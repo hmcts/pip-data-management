@@ -36,12 +36,17 @@ class TestingSupportLocationHelperTest {
 
         softly.assertThat(result.getJurisdiction())
             .as("Jurisdiction does not match")
-            .hasSize(6)
-            .containsExactly("Family",
-                             "Civil",
-                             "Tribunal",
+            .hasSize(4)
+            .containsExactly("Civil",
+                             "Family",
+                             "Crime",
+                             "Tribunal");
+
+        softly.assertThat(result.getJurisdictionType())
+            .as("Jurisdiction type does not match")
+            .hasSize(3)
+            .containsExactly("Crown",
                              "Magistrates",
-                             "Crown",
                              "Social Security and Child Support");
 
         softly.assertThat(result.getLocationType())
