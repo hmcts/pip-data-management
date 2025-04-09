@@ -93,13 +93,13 @@ class LocationTest extends FunctionalTestBase {
         assertThat(secondLocation.getLocationId()).isEqualTo(TEST_LOCATION_ID_TWO);
         assertThat(secondLocation.getName()).isEqualTo(TEST_LOCATION_NAME_TWO);
         assertThat(secondLocation.getJurisdiction()).containsExactly("Family");
-        assertThat(secondLocation.getJurisdictionType()).isEmpty();
+        assertThat(secondLocation.getJurisdictionType()).containsExactly("");
 
         Location thirdLocation = createdLocations.get(2);
         assertThat(thirdLocation.getLocationId()).isEqualTo(TEST_LOCATION_ID_THREE);
         assertThat(thirdLocation.getName()).isEqualTo(TEST_LOCATION_NAME_THREE);
         assertThat(thirdLocation.getJurisdiction()).containsExactly("Test Jurisdiction");
-        assertThat(thirdLocation.getJurisdictionType()).isEmpty();
+        assertThat(thirdLocation.getJurisdictionType()).containsExactly("");
 
         final Response responseGetLocationById = doGetRequest(
             GET_LOCATION_BY_ID_URL,
