@@ -161,38 +161,32 @@ class SscsDailyHearingListFileConverterTest {
             .as(TITLE_MESSAGE)
             .isEqualTo(listDisplayName);
 
-        softly.assertThat(document.getElementById(HEADER_ELEMENT))
+        softly.assertThat(document.getElementById(HEADER_ELEMENT).text())
             .as(HEADER_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo(listDisplayName);
 
-        softly.assertThat(document.getElementById(LIST_DATE_ELEMENT))
+        softly.assertThat(document.getElementById(LIST_DATE_ELEMENT).text())
             .as(LIST_DATE_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo(LIST_DATE_ENGLISH);
 
-        softly.assertThat(document.getElementById(LAST_UPDATED_DATE_ELEMENT))
+        softly.assertThat(document.getElementById(LAST_UPDATED_DATE_ELEMENT).text())
             .as(LAST_UPDATED_DATE_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo("Last updated 20 January 2025 at 9:30am");
 
-        softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).get(0))
+        softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).get(0).text())
             .as(IMPORTANT_INFORMATION_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo("Important information");
 
-        softly.assertThat(document.getElementById(OPEN_JUSTICE_ELEMENT))
+        softly.assertThat(document.getElementById(OPEN_JUSTICE_ELEMENT).text())
             .as(BODY_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo("Open justice is a fundamental principle of our justice system. "
                            + "When considering the use of telephone and video technology, the judiciary "
                            + "will have regard to the principles of open justice. Judges may determine "
                            + "that a hearing should be held in private if this is necessary to secure the "
                            + "proper administration of justice.");
 
-        softly.assertThat(document.getElementById(CONTACT_MESSAGE_ELEMENT))
+        softly.assertThat(document.getElementById(CONTACT_MESSAGE_ELEMENT).text())
             .as(BODY_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo("Social Security and Child Support Tribunal parties and "
                            + "representatives will be informed directly as to the arrangements "
                            + "for hearing cases remotely. Any other person interested in joining "
@@ -204,9 +198,8 @@ class SscsDailyHearingListFileConverterTest {
                            + "– [case reference] – [hearing date]. If the case is to be heard in "
                            + "private or is subject to a reporting restriction, this will be notified.");
 
-        softly.assertThat(document.getElementById(OBSERVE_HEARING_ELEMENT))
+        softly.assertThat(document.getElementById(OBSERVE_HEARING_ELEMENT).text())
             .as(BODY_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo(OBSERVE_HEARING_ENGLISH);
 
         softly.assertThat(document.getElementsByTag("th"))
@@ -257,38 +250,32 @@ class SscsDailyHearingListFileConverterTest {
             .as(TITLE_MESSAGE)
             .isEqualTo(listDisplayName);
 
-        softly.assertThat(document.getElementById(HEADER_ELEMENT))
+        softly.assertThat(document.getElementById(HEADER_ELEMENT).text())
             .as(HEADER_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo(listDisplayName);
 
-        softly.assertThat(document.getElementById(LIST_DATE_ELEMENT))
+        softly.assertThat(document.getElementById(LIST_DATE_ELEMENT).text())
             .as(LIST_DATE_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo(LIST_DATE_WELSH);
 
-        softly.assertThat(document.getElementById(LAST_UPDATED_DATE_ELEMENT))
+        softly.assertThat(document.getElementById(LAST_UPDATED_DATE_ELEMENT).text())
             .as(LAST_UPDATED_DATE_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo("Diweddarwyd ddiwethaf 20 January 2025 am 9:30am");
 
-        softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).get(0))
+        softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).get(0).text())
             .as(IMPORTANT_INFORMATION_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo("Gwybodaeth bwysig");
 
-        softly.assertThat(document.getElementById(OPEN_JUSTICE_ELEMENT))
+        softly.assertThat(document.getElementById(OPEN_JUSTICE_ELEMENT).text())
             .as(BODY_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo("Mae cyfiawnder agored yn egwyddor hanfodol yn system y "
                            + "llysoedd a’r tribiwnlysoedd. Wrth ystyried defnyddio technoleg "
                            + "ffôn a fideo, bydd y farnwriaeth yn rhoi sylw i egwyddorion cyfiawnder "
                            + "agored. Gall barnwyr benderfynu cynnal gwrandawiad yn breifat os oes "
                            + "angen hynny er mwyn sicrhau'r broses o weinyddu cyfiawnder yn briodol.");
 
-        softly.assertThat(document.getElementById(CONTACT_MESSAGE_ELEMENT))
+        softly.assertThat(document.getElementById(CONTACT_MESSAGE_ELEMENT).text())
             .as(BODY_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo("Bydd partïon a chynrychiolwyr y Tribiwnlys Nawdd Cymdeithasol a "
                            + "Chynnal Plant yn cael gwybod yn uniongyrchol am y trefniadau ar "
                            + "gyfer gwrando achosion o bell. Dylai unrhyw un arall sydd â "
@@ -299,9 +286,8 @@ class SscsDailyHearingListFileConverterTest {
                            + "cynnwys yn llinell pwnc yr e-bost [OBSERVER/MEDIA] REQUEST");
 
 
-        softly.assertThat(document.getElementById(OBSERVE_HEARING_ELEMENT))
+        softly.assertThat(document.getElementById(OBSERVE_HEARING_ELEMENT).text())
             .as(BODY_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo(OBSERVE_HEARING_WELSH);
 
         softly.assertThat(document.getElementsByTag("th"))

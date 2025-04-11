@@ -132,39 +132,32 @@ class SiacWeeklyHearingListFileConverterTest {
             .as(TITLE_MESSAGE)
             .isEqualTo(listDisplayName);
 
-        softly.assertThat(document.getElementById(HEADER_ELEMENT))
+        softly.assertThat(document.getElementById(HEADER_ELEMENT).text())
             .as(HEADER_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo(listDisplayName);
 
-        softly.assertThat(document.getElementById(LIST_DATE_ELEMENT))
+        softly.assertThat(document.getElementById(LIST_DATE_ELEMENT).text())
             .as(LIST_DATE_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo(LIST_DATE_ENGLISH);
 
-        softly.assertThat(document.getElementById(LAST_UPDATED_DATE_ELEMENT))
+        softly.assertThat(document.getElementById(LAST_UPDATED_DATE_ELEMENT).text())
             .as(LAST_UPDATED_DATE_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo("Last updated 20 January 2025 at 9:30am");
 
-        softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).get(0))
+        softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).get(0).text())
             .as(IMPORTANT_INFORMATION_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo("Important information");
 
-        softly.assertThat(document.getElementById(CONTACT_MESSAGE_ELEMENT_1))
+        softly.assertThat(document.getElementById(CONTACT_MESSAGE_ELEMENT_1).text())
             .as(BODY_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo("The tribunal sometimes uses reference numbers or initials to protect the anonymity "
                            + "of those involved in the appeal.");
-        softly.assertThat(document.getElementById(CONTACT_MESSAGE_ELEMENT_2))
+        softly.assertThat(document.getElementById(CONTACT_MESSAGE_ELEMENT_2).text())
             .as(BODY_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo("All hearings take place at Field House, 15-25 Bream’s Buildings, London EC4A 1DZ.");
 
-        softly.assertThat(document.getElementById(COMING_COURT_OR_TRIBUNAL))
+        softly.assertThat(document.getElementById(COMING_COURT_OR_TRIBUNAL).text())
             .as(BODY_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo(COMING_COURT_OR_TRIBUNAL_ENGLISH);
 
         softly.assertThat(document.getElementsByTag("th"))
@@ -213,41 +206,34 @@ class SiacWeeklyHearingListFileConverterTest {
             .as(TITLE_MESSAGE)
             .isEqualTo(listDisplayName);
 
-        softly.assertThat(document.getElementById(HEADER_ELEMENT))
+        softly.assertThat(document.getElementById(HEADER_ELEMENT).text())
             .as(HEADER_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo(listDisplayName);
 
-        softly.assertThat(document.getElementById(LIST_DATE_ELEMENT))
+        softly.assertThat(document.getElementById(LIST_DATE_ELEMENT).text())
             .as(LIST_DATE_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo(LIST_DATE_WELSH);
 
-        softly.assertThat(document.getElementById(LAST_UPDATED_DATE_ELEMENT))
+        softly.assertThat(document.getElementById(LAST_UPDATED_DATE_ELEMENT).text())
             .as(LAST_UPDATED_DATE_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo("Diweddarwyd ddiwethaf 20 January 2025 am 9:30am");
 
-        softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).get(0))
+        softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).get(0).text())
             .as(IMPORTANT_INFORMATION_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo("Gwybodaeth bwysig");
 
-        softly.assertThat(document.getElementById(CONTACT_MESSAGE_ELEMENT_1))
+        softly.assertThat(document.getElementById(CONTACT_MESSAGE_ELEMENT_1).text())
             .as(BODY_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo("Weithiau bydd y tribiwnlys yn defnyddio cyfeirnodau neu flaenlythrennau "
                            + "i sicrhau bod y rhai sy’n ymwneud â’r apêl yn aros yn ddienw.");
 
-        softly.assertThat(document.getElementById(CONTACT_MESSAGE_ELEMENT_2))
+        softly.assertThat(document.getElementById(CONTACT_MESSAGE_ELEMENT_2).text())
             .as(BODY_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo("Cynhelir pob gwrandawiad "
                            + "yn Field House, 15-25 Bream’s Buildings, Llundain EC4A 1DZ.");
 
-        softly.assertThat(document.getElementById(COMING_COURT_OR_TRIBUNAL))
+        softly.assertThat(document.getElementById(COMING_COURT_OR_TRIBUNAL).text())
             .as(BODY_MESSAGE)
-            .extracting(Element::text)
             .isEqualTo(COMING_COURT_OR_TRIBUNAL_WELSH);
 
         softly.assertThat(document.getElementsByTag("th"))
