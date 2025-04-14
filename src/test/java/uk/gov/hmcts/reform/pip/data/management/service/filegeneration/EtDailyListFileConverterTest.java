@@ -58,14 +58,12 @@ class EtDailyListFileConverterTest {
                 "Room 3"
             );
 
-        softly.assertThat(doc.getElementById("content-date"))
+        softly.assertThat(doc.getElementById("content-date").text())
             .as("Incorrect content date")
-            .extracting(Element::text)
             .isEqualTo("List for " + CONTENT_DATE);
 
-        softly.assertThat(doc.getElementById("publication-date"))
+        softly.assertThat(doc.getElementById("publication-date").text())
             .as("Incorrect publication date")
-            .extracting(Element::text)
             .isEqualTo("Last updated 13 February 2022 at 9:30am");
 
         softly.assertThat(doc.getElementsByTag("th"))

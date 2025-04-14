@@ -175,9 +175,8 @@ class CivilDailyCauseListFileConverterTest {
 
     private void assertDataSource(Document document) {
         Elements elements = document.getElementsByTag("p");
-        assertThat(elements.get(10))
+        assertThat(elements.get(10).text())
             .as("Incorrect data source")
-            .extracting(Element::text)
             .isEqualTo("Data Source: " + MANUAL_UPLOAD);
     }
 
