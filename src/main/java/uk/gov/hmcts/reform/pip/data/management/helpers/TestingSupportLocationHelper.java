@@ -34,20 +34,22 @@ public final class TestingSupportLocationHelper {
             "Tribunal"
         ));
         location.setWelshJurisdiction(List.of(
-            "Llys Sifil",
-            "Llys Teulu",
-            "Llys Troseddau",
+            "Sifil",
+            "Teulu",
+            "Troseddau",
             "Tribiwnlys"
         ));
         location.setJurisdictionType(List.of(
-            "Crown",
-            "Magistrates",
-            "Social Security and Child Support"
+            "Civil Court",
+            "Family Court",
+            "Magistrates Court",
+            "Employment Tribunal"
         ));
         location.setWelshJurisdictionType(List.of(
-            "Llys y Goron",
+            "Llys Sifil",
+            "Llys Teulu",
             "Llys Ynado",
-            "Tribiwnlys Nawdd Cymdeithasol a Chynnal Plant"
+            "Tribiwnlys Cyflogaeth"
         ));
         location.setLocationType(LocationType.VENUE);
         LocationReference locationReference = new LocationReference("ListAssist", "3482", LocationType.VENUE);
