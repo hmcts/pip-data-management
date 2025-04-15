@@ -216,7 +216,7 @@ class LocationControllerTest {
 
     @Test
     void testUploadLocationsReturnsNewLocations() throws IOException {
-
+        String requesterId = UUID.randomUUID().toString();
         try (InputStream inputStream = this.getClass().getClassLoader()
             .getResourceAsStream("csv/ValidCsv.csv")) {
 
@@ -226,8 +226,8 @@ class LocationControllerTest {
 
             when(locationService.uploadLocations(multipartFile)).thenReturn(List.of(firstLocation, secondLocation));
 
-            List<Location> returnedLocations = new ArrayList<>(locationController.uploadLocations(multipartFile)
-                                                                   .getBody());
+            List<Location> returnedLocations = new ArrayList<>(
+                locationController.uploadLocations(multipartFile, requesterId).getBody());
 
             assertEquals(2, returnedLocations.size(), "Unexpected number of location have been returned");
             assertTrue(returnedLocations.contains(firstLocation), FIRST_LOCATION_NOT_FOUND);
@@ -238,6 +238,7 @@ class LocationControllerTest {
 
     @Test
     void testUploadLocationsReturnsOk() throws IOException {
+        String requesterId = UUID.randomUUID().toString();
 
         try (InputStream inputStream = this.getClass().getClassLoader()
             .getResourceAsStream("csv/ValidCsv.csv")) {
@@ -248,7 +249,7 @@ class LocationControllerTest {
 
             when(locationService.uploadLocations(multipartFile)).thenReturn(List.of(firstLocation, secondLocation));
 
-            assertEquals(HttpStatus.OK, locationController.uploadLocations(multipartFile).getStatusCode(),
+            assertEquals(HttpStatus.OK, locationController.uploadLocations(multipartFile, requesterId).getStatusCode(),
                          "Upload locations endpoint has not returned OK");
         }
 
@@ -270,7 +271,7 @@ class LocationControllerTest {
         byte[] testByte = new byte[10];
         when(locationService.downloadLocations()).thenReturn(testByte);
 
-        ResponseEntity<byte[]> controllerResponse = locationController.downloadLocations();
+        ResponseEntity<byte[]> controllerResponse = locationController.downloadLocations("123-456");
         assertEquals(HttpStatus.OK, controllerResponse.getStatusCode(), "Status did not match expected");
         assertEquals(testByte, controllerResponse.getBody(), "Body did not match expected");
     }

@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ArtefactNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
+import uk.gov.hmcts.reform.pip.data.management.service.AuthorisationService;
 import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
 
 import java.time.LocalDateTime;
@@ -17,12 +18,15 @@ import java.util.UUID;
 public class ArtefactSearchService {
     private final ArtefactRepository artefactRepository;
     private final ArtefactService artefactService;
+    private final AuthorisationService authorisationService;
 
     @Autowired
     public ArtefactSearchService(ArtefactRepository artefactRepository,
-                                 ArtefactService artefactService) {
+                                 ArtefactService artefactService,
+                                 AuthorisationService authorisationService) {
         this.artefactRepository = artefactRepository;
         this.artefactService = artefactService;
+        this.authorisationService = authorisationService;
     }
 
     /**
@@ -37,7 +41,8 @@ public class ArtefactSearchService {
         LocalDateTime currDate = LocalDateTime.now();
         List<Artefact> artefacts = artefactRepository.findArtefactsByLocationId(searchValue, currDate);
 
-        return artefacts.stream().filter(artefact -> artefactService.isAuthorised(artefact, userId)).toList();
+        return artefacts.stream().filter(artefact ->
+            authorisationService.isAuthorisedWithoutAdmin(artefact, userId)).toList();
     }
 
     /**
@@ -75,7 +80,8 @@ public class ArtefactSearchService {
             default -> throw new IllegalArgumentException(String.format("Invalid search term: %s", searchTerm));
         }
 
-        artefacts = artefacts.stream().filter(artefact -> artefactService.isAuthorised(artefact, userId)).toList();
+        artefacts = artefacts.stream().filter(artefact ->
+            authorisationService.isAuthorisedWithoutAdmin(artefact, userId)).toList();
 
         if (artefacts.isEmpty()) {
             throw new ArtefactNotFoundException(String.format("No Artefacts found with for %s with the value: %s",

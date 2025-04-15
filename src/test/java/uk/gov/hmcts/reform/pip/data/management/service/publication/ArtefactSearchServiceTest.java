@@ -14,6 +14,7 @@ import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.Artefact
 import uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
+import uk.gov.hmcts.reform.pip.data.management.service.AuthorisationService;
 import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
@@ -61,6 +62,9 @@ class ArtefactSearchServiceTest {
 
     @Mock
     ArtefactService artefactService;
+
+    @Mock
+    AuthorisationService authorisationService;
 
     @InjectMocks
     ArtefactSearchService artefactSearchService;
@@ -162,10 +166,10 @@ class ArtefactSearchServiceTest {
         when(artefactRepository.findArtefactsByLocationId(any(), any()))
             .thenReturn(artefactList);
 
-        when(artefactService.isAuthorised(artefactPublic, USER_ID))
+        when(authorisationService.isAuthorisedWithoutAdmin(artefactPublic, USER_ID))
             .thenReturn(true);
 
-        when(artefactService.isAuthorised(artefactClassified, USER_ID))
+        when(authorisationService.isAuthorisedWithoutAdmin(artefactClassified, USER_ID))
             .thenReturn(true);
 
         assertEquals(artefactList, artefactSearchService.findAllByLocationId(ABC, USER_ID),
@@ -198,10 +202,10 @@ class ArtefactSearchServiceTest {
         when(artefactRepository.findArtefactsByLocationId(any(), any()))
             .thenReturn(artefactList);
 
-        when(artefactService.isAuthorised(artefactPublic, USER_ID))
+        when(authorisationService.isAuthorisedWithoutAdmin(artefactPublic, USER_ID))
             .thenReturn(true);
 
-        when(artefactService.isAuthorised(artefactClassified, USER_ID))
+        when(authorisationService.isAuthorisedWithoutAdmin(artefactClassified, USER_ID))
             .thenReturn(false);
 
         List<Artefact> artefacts = artefactSearchService.findAllByLocationId(ABC, USER_ID);
@@ -233,10 +237,10 @@ class ArtefactSearchServiceTest {
         when(artefactRepository.findArtefactsByLocationId(any(), any()))
             .thenReturn(artefactList);
 
-        when(artefactService.isAuthorised(artefactClassified, USER_ID))
+        when(authorisationService.isAuthorisedWithoutAdmin(artefactClassified, USER_ID))
             .thenReturn(false);
 
-        when(artefactService.isAuthorised(artefactPublic, USER_ID))
+        when(authorisationService.isAuthorisedWithoutAdmin(artefactPublic, USER_ID))
             .thenReturn(true);
 
         List<Artefact> artefacts = artefactSearchService.findAllByLocationId(ABC, USER_ID);
@@ -251,10 +255,10 @@ class ArtefactSearchServiceTest {
         when(artefactRepository.findArtefactBySearch(eq(SEARCH_TERM_CASE_ID.dbValue), eq(TEST_VALUE), any()))
             .thenReturn(list);
 
-        when(artefactService.isAuthorised(artefactWithIdAndPayloadUrl, USER_ID))
+        when(authorisationService.isAuthorisedWithoutAdmin(artefactWithIdAndPayloadUrl, USER_ID))
             .thenReturn(true);
 
-        when(artefactService.isAuthorised(artefactWithIdAndPayloadUrlClassified, USER_ID))
+        when(authorisationService.isAuthorisedWithoutAdmin(artefactWithIdAndPayloadUrlClassified, USER_ID))
             .thenReturn(true);
 
         assertEquals(
@@ -270,10 +274,10 @@ class ArtefactSearchServiceTest {
         when(artefactRepository.findArtefactBySearch(eq(SEARCH_TERM_CASE_ID.dbValue), eq(TEST_VALUE), any()))
             .thenReturn(list);
 
-        when(artefactService.isAuthorised(artefactWithIdAndPayloadUrl, USER_ID))
+        when(authorisationService.isAuthorisedWithoutAdmin(artefactWithIdAndPayloadUrl, USER_ID))
             .thenReturn(true);
 
-        when(artefactService.isAuthorised(artefactWithIdAndPayloadUrlClassified, USER_ID))
+        when(authorisationService.isAuthorisedWithoutAdmin(artefactWithIdAndPayloadUrlClassified, USER_ID))
             .thenReturn(false);
 
         List<Artefact> artefacts = artefactSearchService.findAllBySearch(SEARCH_TERM_CASE_ID, TEST_VALUE, USER_ID);
@@ -288,7 +292,7 @@ class ArtefactSearchServiceTest {
         when(artefactRepository.findArtefactBySearch(eq(SEARCH_TERM_CASE_ID.dbValue), eq(TEST_VALUE), any()))
             .thenReturn(list);
 
-        when(artefactService.isAuthorised(artefactWithIdAndPayloadUrl, USER_ID))
+        when(authorisationService.isAuthorisedWithoutAdmin(artefactWithIdAndPayloadUrl, USER_ID))
             .thenReturn(true);
 
         List<Artefact> artefacts = artefactSearchService.findAllBySearch(SEARCH_TERM_CASE_ID, TEST_VALUE, USER_ID);
@@ -313,10 +317,10 @@ class ArtefactSearchServiceTest {
         when(artefactRepository.findArtefactByCaseName(eq(TEST_VALUE), any()))
             .thenReturn(list);
 
-        when(artefactService.isAuthorised(artefactWithIdAndPayloadUrl, USER_ID))
+        when(authorisationService.isAuthorisedWithoutAdmin(artefactWithIdAndPayloadUrl, USER_ID))
             .thenReturn(true);
 
-        when(artefactService.isAuthorised(artefactWithIdAndPayloadUrlClassified, USER_ID))
+        when(authorisationService.isAuthorisedWithoutAdmin(artefactWithIdAndPayloadUrlClassified, USER_ID))
             .thenReturn(true);
 
         assertEquals(
@@ -332,10 +336,10 @@ class ArtefactSearchServiceTest {
         when(artefactRepository.findArtefactByCaseName(eq(TEST_VALUE), any()))
             .thenReturn(list);
 
-        when(artefactService.isAuthorised(artefactWithIdAndPayloadUrl, USER_ID))
+        when(authorisationService.isAuthorisedWithoutAdmin(artefactWithIdAndPayloadUrl, USER_ID))
             .thenReturn(true);
 
-        when(artefactService.isAuthorised(artefactWithIdAndPayloadUrlClassified, USER_ID))
+        when(authorisationService.isAuthorisedWithoutAdmin(artefactWithIdAndPayloadUrlClassified, USER_ID))
             .thenReturn(false);
 
         List<Artefact> artefacts = artefactSearchService.findAllBySearch(SEARCH_TERM_CASE_NAME, TEST_VALUE, USER_ID);
@@ -350,7 +354,7 @@ class ArtefactSearchServiceTest {
         when(artefactRepository.findArtefactByCaseName(eq(TEST_VALUE), any()))
             .thenReturn(list);
 
-        when(artefactService.isAuthorised(artefactWithIdAndPayloadUrl, null))
+        when(authorisationService.isAuthorisedWithoutAdmin(artefactWithIdAndPayloadUrl, null))
             .thenReturn(true);
 
         List<Artefact> artefacts = artefactSearchService.findAllBySearch(SEARCH_TERM_CASE_NAME, TEST_VALUE, null);
@@ -365,10 +369,10 @@ class ArtefactSearchServiceTest {
         when(artefactRepository.findArtefactBySearch(eq(SEARCH_TERM_CASE_URN.dbValue), eq(TEST_VALUE), any()))
             .thenReturn(list);
 
-        when(artefactService.isAuthorised(artefactWithIdAndPayloadUrl, USER_ID))
+        when(authorisationService.isAuthorisedWithoutAdmin(artefactWithIdAndPayloadUrl, USER_ID))
             .thenReturn(true);
 
-        when(artefactService.isAuthorised(artefactWithIdAndPayloadUrlClassified, USER_ID))
+        when(authorisationService.isAuthorisedWithoutAdmin(artefactWithIdAndPayloadUrlClassified, USER_ID))
             .thenReturn(true);
 
         assertEquals(
@@ -384,10 +388,10 @@ class ArtefactSearchServiceTest {
         when(artefactRepository.findArtefactBySearch(eq(SEARCH_TERM_CASE_URN.dbValue), eq(TEST_VALUE), any()))
             .thenReturn(list);
 
-        when(artefactService.isAuthorised(artefactWithIdAndPayloadUrl, USER_ID))
+        when(authorisationService.isAuthorisedWithoutAdmin(artefactWithIdAndPayloadUrl, USER_ID))
             .thenReturn(true);
 
-        when(artefactService.isAuthorised(artefactWithIdAndPayloadUrlClassified, USER_ID))
+        when(authorisationService.isAuthorisedWithoutAdmin(artefactWithIdAndPayloadUrlClassified, USER_ID))
             .thenReturn(false);
 
         List<Artefact> artefacts = artefactSearchService.findAllBySearch(SEARCH_TERM_CASE_URN, TEST_VALUE, USER_ID);
@@ -402,7 +406,7 @@ class ArtefactSearchServiceTest {
         when(artefactRepository.findArtefactBySearch(eq(SEARCH_TERM_CASE_URN.dbValue), eq(TEST_VALUE), any()))
             .thenReturn(list);
 
-        when(artefactService.isAuthorised(artefactWithIdAndPayloadUrl, null))
+        when(authorisationService.isAuthorisedWithoutAdmin(artefactWithIdAndPayloadUrl, null))
             .thenReturn(true);
 
         List<Artefact> artefacts = artefactSearchService.findAllBySearch(SEARCH_TERM_CASE_URN, TEST_VALUE, null);
@@ -424,7 +428,7 @@ class ArtefactSearchServiceTest {
     @Test
     void testFindAllByCourtIdAdminNotAdmin() {
         when(artefactRepository.findArtefactsByLocationId(any(), any())).thenReturn(List.of(artefact));
-        when(artefactService.isAuthorised(artefact, USER_ID))
+        when(authorisationService.isAuthorisedWithoutAdmin(artefact, USER_ID))
             .thenReturn(true);
         assertEquals(List.of(artefact), artefactSearchService.findAllByLocationIdAdmin(TEST_VALUE, USER_ID, false),
                      VALIDATION_ARTEFACT_NOT_MATCH
