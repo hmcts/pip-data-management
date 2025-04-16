@@ -19,6 +19,7 @@ import uk.gov.hmcts.reform.pip.data.management.Application;
 import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.utils.IntegrationTestBase;
+import uk.gov.hmcts.reform.pip.model.account.PiUser;
 import uk.gov.hmcts.reform.pip.model.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
@@ -28,13 +29,17 @@ import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpStatus.CONFLICT;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static uk.gov.hmcts.reform.pip.model.account.Roles.SYSTEM_ADMIN;
 
 @SpringBootTest(classes = {Application.class}, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
@@ -75,12 +80,20 @@ class TestingSupportApiTest extends IntegrationTestBase {
 
     private static final String CREATE_LOCATION_MESSAGE = "Create location response does not match";
     private static final String STATUS_CODE_MESSAGE = "Status code does not match";
+    private static final String SYSTEM_ADMIN_ID = UUID.randomUUID().toString();
+
+    private static PiUser piUser;
 
     @Autowired
     private MockMvc mockMvc;
 
     @BeforeAll
     static void setup() {
+        piUser = new PiUser();
+        piUser.setUserId(SYSTEM_ADMIN_ID);
+        piUser.setEmail("test@justice.gov.uk");
+        piUser.setRoles(SYSTEM_ADMIN);
+
         OBJECT_MAPPER.findAndRegisterModules();
     }
 
@@ -219,6 +232,7 @@ class TestingSupportApiTest extends IntegrationTestBase {
 
     private MvcResult uploadPublication() throws Exception {
         try (InputStream is = PublicationTest.class.getClassLoader().getResourceAsStream("data/artefact.json")) {
+            when(accountManagementService.getUserById(any())).thenReturn(piUser);
             String payload = new String(IOUtils.toByteArray(Objects.requireNonNull(is)));
 
             MockHttpServletRequestBuilder postRequest = MockMvcRequestBuilders.post(PUBLICATION_URL)
@@ -234,6 +248,7 @@ class TestingSupportApiTest extends IntegrationTestBase {
                 .header(PublicationConfiguration.COURT_ID, LOCATION_ID)
                 .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
                 .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
+                .header(PublicationConfiguration.REQUESTER_ID, SYSTEM_ADMIN_ID)
                 .contentType(MediaType.APPLICATION_JSON);
 
             return mockMvc.perform(postRequest)

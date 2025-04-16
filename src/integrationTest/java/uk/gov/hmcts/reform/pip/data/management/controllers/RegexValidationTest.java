@@ -20,6 +20,7 @@ import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.ExceptionResponse;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.utils.IntegrationTestBase;
+import uk.gov.hmcts.reform.pip.model.account.PiUser;
 import uk.gov.hmcts.reform.pip.model.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
@@ -27,10 +28,14 @@ import uk.gov.hmcts.reform.pip.model.publication.ListType;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static uk.gov.hmcts.reform.pip.model.account.Roles.SYSTEM_ADMIN;
 
 @SpringBootTest(classes = {Application.class},
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -46,7 +51,10 @@ class RegexValidationTest extends IntegrationTestBase {
     private static final String TEST_CONTENT_MESSAGE = "Response is not populated";
     private static final String TEST_ARTEFACT_ID_MESSAGE = "Artefact ID is not populated";
 
+    private static final String SYSTEM_ADMIN_ID = UUID.randomUUID().toString();
+
     private static ObjectMapper objectMapper;
+    private static PiUser piUser;
 
     private MockHttpServletRequestBuilder createMockServletRequestBuilder(InputStream mockFile) throws IOException {
         return MockMvcRequestBuilders
@@ -59,6 +67,7 @@ class RegexValidationTest extends IntegrationTestBase {
             .header(PublicationConfiguration.COURT_ID, 1)
             .header(PublicationConfiguration.LIST_TYPE, ListType.SJP_PUBLIC_LIST)
             .header(PublicationConfiguration.LANGUAGE_HEADER, Language.ENGLISH)
+            .header(PublicationConfiguration.REQUESTER_ID, SYSTEM_ADMIN_ID)
             .header(PublicationConfiguration.CONTENT_DATE, LocalDateTime.now())
             .content(mockFile.readAllBytes())
             .contentType(MediaType.APPLICATION_JSON);
@@ -66,6 +75,10 @@ class RegexValidationTest extends IntegrationTestBase {
 
     @BeforeAll
     public static void setup() {
+        piUser = new PiUser();
+        piUser.setUserId(SYSTEM_ADMIN_ID);
+        piUser.setEmail("test@justice.gov.uk");
+        piUser.setRoles(SYSTEM_ADMIN);
         objectMapper = new ObjectMapper();
         objectMapper.findAndRegisterModules();
     }
@@ -76,6 +89,7 @@ class RegexValidationTest extends IntegrationTestBase {
         try (InputStream mockFile = this.getClass().getClassLoader()
             .getResourceAsStream("data/regex-testing/html-tag-populated.json")) {
 
+            when(accountManagementService.getUserById(any())).thenReturn(piUser);
             MockHttpServletRequestBuilder mockHttpServletRequestBuilder = createMockServletRequestBuilder(mockFile);
             MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
                 .andExpect(status().isBadRequest()).andReturn();
@@ -101,6 +115,7 @@ class RegexValidationTest extends IntegrationTestBase {
         try (InputStream mockFile = this.getClass().getClassLoader()
             .getResourceAsStream("data/regex-testing/html-tag-only-start.json")) {
 
+            when(accountManagementService.getUserById(any())).thenReturn(piUser);
             MockHttpServletRequestBuilder mockHttpServletRequestBuilder = createMockServletRequestBuilder(mockFile);
             MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
                 .andExpect(status().isCreated()).andReturn();
@@ -120,6 +135,7 @@ class RegexValidationTest extends IntegrationTestBase {
         try (InputStream mockFile = this.getClass().getClassLoader()
             .getResourceAsStream("data/regex-testing/html-tag-only-end.json")) {
 
+            when(accountManagementService.getUserById(any())).thenReturn(piUser);
             MockHttpServletRequestBuilder mockHttpServletRequestBuilder = createMockServletRequestBuilder(mockFile);
             MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
                 .andExpect(status().isCreated()).andReturn();
