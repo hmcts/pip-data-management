@@ -128,10 +128,18 @@ class FileGenerationTest extends FunctionalTestBase {
             artefact = response.getBody().as(Artefact.class);
         }
 
+        Map<String, String> getHeaderMap = getBaseHeaderMap();
+        if (sensitivity.equals(Sensitivity.CLASSIFIED)) {
+            getHeaderMap.put(PublicationConfiguration.REQUESTER_ID, testUserId);
+        } else {
+            getHeaderMap = headerMap;
+        }
+
+        Map<String, String> finalGetHeaderMap = getHeaderMap;
         assertDoesNotThrow(() ->
             Awaitility.with().pollInterval(1, TimeUnit.SECONDS).await().until(() -> {
                 Response existsResponse =
-                    doGetRequest(String.format(FILE_EXISTS_URL, artefact.getArtefactId()), headerMap);
+                    doGetRequest(String.format(FILE_EXISTS_URL, artefact.getArtefactId()), finalGetHeaderMap);
                 return existsResponse.getStatusCode() == OK.value() && existsResponse.getBody().as(Boolean.class);
             })
         );
@@ -146,6 +154,7 @@ class FileGenerationTest extends FunctionalTestBase {
                                               Language.ENGLISH, Sensitivity.PUBLIC
         );
 
+        headerMap.put("x-request-id", testUserId);
         Response sizesResponse = doGetRequest(String.format(FILE_SIZES_URL, artefact.getArtefactId()), headerMap);
         assertThat(sizesResponse.getStatusCode()).isEqualTo(OK.value());
 
@@ -182,7 +191,7 @@ class FileGenerationTest extends FunctionalTestBase {
         assertNotNull(publicationFileSizes.getExcel(), "Excel has not been generated");
 
         headerMap.put(X_SYSTEM_FILE_HEADER, Boolean.TRUE.toString());
-
+        headerMap.put("x-requester-id", testUserId);
         Response additionalPdfResponse = doGetRequest(
             String.format(GET_FILE_URL, artefact.getArtefactId(), "EXCEL"), headerMap);
         assertThat(additionalPdfResponse.getStatusCode()).isEqualTo(OK.value());
@@ -210,6 +219,7 @@ class FileGenerationTest extends FunctionalTestBase {
 
         headerMap.put(X_SYSTEM_FILE_HEADER, Boolean.TRUE.toString());
         headerMap.put("x-additional-pdf", Boolean.TRUE.toString());
+        headerMap.put("x-requester-id", testUserId);
 
         Response additionalPdfResponse = doGetRequest(
             String.format(GET_FILE_URL, artefact.getArtefactId(), FileType.PDF.name()), headerMap);
@@ -246,6 +256,8 @@ class FileGenerationTest extends FunctionalTestBase {
         );
 
         headerMap.put(X_SYSTEM_FILE_HEADER, Boolean.TRUE.toString());
+        headerMap.put("x-requester-id", testUserId);
+
         Response additionalPdfResponse = doGetRequest(
             String.format(GET_FILE_URL + "?maxFileSize=%s", artefact.getArtefactId(),
                           FileType.PDF.name(), 100 * 1024), headerMap);
@@ -274,7 +286,7 @@ class FileGenerationTest extends FunctionalTestBase {
                                               Sensitivity.CLASSIFIED
         );
 
-        headerMap.put("x-requester-id", testUserId);
+        headerMap.put("x-requester-id", UUID.randomUUID().toString());
         Response additionalPdfResponse = doGetRequest(
             String.format(GET_FILE_URL, artefact.getArtefactId(), FileType.PDF.name()), headerMap);
         assertThat(additionalPdfResponse.getStatusCode()).isEqualTo(UNAUTHORIZED.value());
