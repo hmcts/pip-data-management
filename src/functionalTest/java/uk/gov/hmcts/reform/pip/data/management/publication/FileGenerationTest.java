@@ -68,6 +68,9 @@ class FileGenerationTest extends FunctionalTestBase {
     private static final String SJP_PUBLIC_LIST_FILE = "data/sjpPublicList.json";
     private static final String X_SYSTEM_FILE_HEADER = "x-system";
 
+    @Value("${test-system-admin-id}")
+    private String systemAdminUserId;
+
     private static LocalDateTime contentDate = LocalDateTime.now().toLocalDate().atStartOfDay()
         .truncatedTo(ChronoUnit.SECONDS);
 
@@ -108,6 +111,7 @@ class FileGenerationTest extends FunctionalTestBase {
         headerMap.put(PublicationConfiguration.CONTENT_DATE, contentDate.toString());
         headerMap.put(PublicationConfiguration.SENSITIVITY_HEADER, sensitivity.toString());
         headerMap.put(PublicationConfiguration.LANGUAGE_HEADER, language.toString());
+        headerMap.put(PublicationConfiguration.REQUESTER_ID, systemAdminUserId);
         headerMap.put("Content-Type", "application/json");
 
         Artefact artefact;
@@ -256,7 +260,7 @@ class FileGenerationTest extends FunctionalTestBase {
                                               Sensitivity.CLASSIFIED
         );
 
-        headerMap.put("x-user-id", testUserId);
+        headerMap.put("x-requester-id", testUserId);
         Response additionalPdfResponse = doGetRequest(
             String.format(GET_FILE_URL, artefact.getArtefactId(), FileType.PDF.name()), headerMap);
         assertThat(additionalPdfResponse.getStatusCode()).isEqualTo(OK.value());
@@ -270,7 +274,7 @@ class FileGenerationTest extends FunctionalTestBase {
                                               Sensitivity.CLASSIFIED
         );
 
-        headerMap.put("x-user-id", testUserId);
+        headerMap.put("x-requester-id", testUserId);
         Response additionalPdfResponse = doGetRequest(
             String.format(GET_FILE_URL, artefact.getArtefactId(), FileType.PDF.name()), headerMap);
         assertThat(additionalPdfResponse.getStatusCode()).isEqualTo(UNAUTHORIZED.value());
@@ -284,7 +288,7 @@ class FileGenerationTest extends FunctionalTestBase {
                                               Sensitivity.CLASSIFIED
         );
 
-        headerMap.put("x-user-id", UUID.randomUUID().toString());
+        headerMap.put("x-requester-id", UUID.randomUUID().toString());
         Response additionalPdfResponse = doGetRequest(
             String.format(GET_FILE_URL, artefact.getArtefactId(), FileType.PDF.name()), headerMap);
         assertThat(additionalPdfResponse.getStatusCode()).isEqualTo(UNAUTHORIZED.value());
