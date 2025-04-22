@@ -40,8 +40,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.OK;
-import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 import static uk.gov.hmcts.reform.pip.data.management.utils.TestUtil.BEARER;
 import static uk.gov.hmcts.reform.pip.data.management.utils.TestUtil.randomLocationId;
 
@@ -67,6 +67,7 @@ class FileGenerationTest extends FunctionalTestBase {
     private static final String CIVIL_CAUSE_LIST_FILE = "data/civilDailyCauseList.json";
     private static final String SJP_PUBLIC_LIST_FILE = "data/sjpPublicList.json";
     private static final String X_SYSTEM_FILE_HEADER = "x-system";
+    private static final String REQUESTER_ID = "x-requester-id";
 
     @Value("${test-system-admin-id}")
     private String systemAdminUserId;
@@ -191,7 +192,7 @@ class FileGenerationTest extends FunctionalTestBase {
         assertNotNull(publicationFileSizes.getExcel(), "Excel has not been generated");
 
         headerMap.put(X_SYSTEM_FILE_HEADER, Boolean.TRUE.toString());
-        headerMap.put("x-requester-id", testUserId);
+        headerMap.put(REQUESTER_ID, testUserId);
         Response additionalPdfResponse = doGetRequest(
             String.format(GET_FILE_URL, artefact.getArtefactId(), "EXCEL"), headerMap);
         assertThat(additionalPdfResponse.getStatusCode()).isEqualTo(OK.value());
@@ -219,7 +220,7 @@ class FileGenerationTest extends FunctionalTestBase {
 
         headerMap.put(X_SYSTEM_FILE_HEADER, Boolean.TRUE.toString());
         headerMap.put("x-additional-pdf", Boolean.TRUE.toString());
-        headerMap.put("x-requester-id", testUserId);
+        headerMap.put(REQUESTER_ID, testUserId);
 
         Response additionalPdfResponse = doGetRequest(
             String.format(GET_FILE_URL, artefact.getArtefactId(), FileType.PDF.name()), headerMap);
@@ -256,7 +257,7 @@ class FileGenerationTest extends FunctionalTestBase {
         );
 
         headerMap.put(X_SYSTEM_FILE_HEADER, Boolean.TRUE.toString());
-        headerMap.put("x-requester-id", testUserId);
+        headerMap.put(REQUESTER_ID, testUserId);
 
         Response additionalPdfResponse = doGetRequest(
             String.format(GET_FILE_URL + "?maxFileSize=%s", artefact.getArtefactId(),
@@ -272,7 +273,7 @@ class FileGenerationTest extends FunctionalTestBase {
                                               Sensitivity.CLASSIFIED
         );
 
-        headerMap.put("x-requester-id", testUserId);
+        headerMap.put(REQUESTER_ID, testUserId);
         Response additionalPdfResponse = doGetRequest(
             String.format(GET_FILE_URL, artefact.getArtefactId(), FileType.PDF.name()), headerMap);
         assertThat(additionalPdfResponse.getStatusCode()).isEqualTo(OK.value());
@@ -280,29 +281,29 @@ class FileGenerationTest extends FunctionalTestBase {
 
     @Test
     void shouldReturnUnauthorisedIfUserDoesNotHavePermission() throws Exception {
-        Artefact artefact = uploadPublication(ListType.CIVIL_DAILY_CAUSE_LIST,
-                                              CIVIL_CAUSE_LIST_FILE,
+        Artefact artefact = uploadPublication(ListType.SJP_PUBLIC_LIST,
+                                              SJP_PUBLIC_LIST_FILE,
                                               Language.ENGLISH,
                                               Sensitivity.CLASSIFIED
         );
 
-        headerMap.put("x-requester-id", UUID.randomUUID().toString());
+        headerMap.put(REQUESTER_ID, systemAdminUserId);
         Response additionalPdfResponse = doGetRequest(
             String.format(GET_FILE_URL, artefact.getArtefactId(), FileType.PDF.name()), headerMap);
-        assertThat(additionalPdfResponse.getStatusCode()).isEqualTo(UNAUTHORIZED.value());
+        assertThat(additionalPdfResponse.getStatusCode()).isEqualTo(FORBIDDEN.value());
     }
 
     @Test
     void shouldReturnUnauthorisedIfUserDoesNotExist() throws Exception {
-        Artefact artefact = uploadPublication(ListType.CIVIL_DAILY_CAUSE_LIST,
-                                              CIVIL_CAUSE_LIST_FILE,
+        Artefact artefact = uploadPublication(ListType.SJP_PUBLIC_LIST,
+                                              SJP_PUBLIC_LIST_FILE,
                                               Language.ENGLISH,
                                               Sensitivity.CLASSIFIED
         );
 
-        headerMap.put("x-requester-id", UUID.randomUUID().toString());
+        headerMap.put(REQUESTER_ID, UUID.randomUUID().toString());
         Response additionalPdfResponse = doGetRequest(
             String.format(GET_FILE_URL, artefact.getArtefactId(), FileType.PDF.name()), headerMap);
-        assertThat(additionalPdfResponse.getStatusCode()).isEqualTo(UNAUTHORIZED.value());
+        assertThat(additionalPdfResponse.getStatusCode()).isEqualTo(FORBIDDEN.value());
     }
 }
