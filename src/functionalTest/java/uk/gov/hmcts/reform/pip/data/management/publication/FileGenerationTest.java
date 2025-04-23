@@ -129,18 +129,14 @@ class FileGenerationTest extends FunctionalTestBase {
             artefact = response.getBody().as(Artefact.class);
         }
 
-        Map<String, String> getHeaderMap = getBaseHeaderMap();
         if (sensitivity.equals(Sensitivity.CLASSIFIED)) {
-            getHeaderMap.put(PublicationConfiguration.REQUESTER_ID, testUserId);
-        } else {
-            getHeaderMap = headerMap;
+            headerMap.put(PublicationConfiguration.REQUESTER_ID, testUserId);
         }
 
-        Map<String, String> finalGetHeaderMap = getHeaderMap;
         assertDoesNotThrow(() ->
             Awaitility.with().pollInterval(1, TimeUnit.SECONDS).await().until(() -> {
                 Response existsResponse =
-                    doGetRequest(String.format(FILE_EXISTS_URL, artefact.getArtefactId()), finalGetHeaderMap);
+                    doGetRequest(String.format(FILE_EXISTS_URL, artefact.getArtefactId()), headerMap);
                 return existsResponse.getStatusCode() == OK.value() && existsResponse.getBody().as(Boolean.class);
             })
         );
@@ -155,7 +151,7 @@ class FileGenerationTest extends FunctionalTestBase {
                                               Language.ENGLISH, Sensitivity.PUBLIC
         );
 
-        headerMap.put("x-request-id", testUserId);
+        headerMap.put(REQUESTER_ID, testUserId);
         Response sizesResponse = doGetRequest(String.format(FILE_SIZES_URL, artefact.getArtefactId()), headerMap);
         assertThat(sizesResponse.getStatusCode()).isEqualTo(OK.value());
 
