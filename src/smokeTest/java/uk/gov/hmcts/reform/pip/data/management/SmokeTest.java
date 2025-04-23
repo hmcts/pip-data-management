@@ -34,7 +34,7 @@ import static uk.gov.hmcts.reform.pip.data.management.config.PublicationConfigur
 import static uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration.LANGUAGE_HEADER;
 import static uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration.LIST_TYPE;
 import static uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration.PROVENANCE_HEADER;
-import static uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration.REQUESTER_ID;
+import static uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration.REQUESTER_ID_HEADER;
 import static uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration.SENSITIVITY_HEADER;
 import static uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration.TYPE_HEADER;
 
@@ -103,7 +103,7 @@ class SmokeTest extends SmokeTestBase {
         headerMapUploadJsonFile.put(CONTENT_DATE, LocalDateTime.now().toString());
         headerMapUploadJsonFile.put(SENSITIVITY_HEADER, Sensitivity.PUBLIC.toString());
         headerMapUploadJsonFile.put(LANGUAGE_HEADER, Language.ENGLISH.toString());
-        headerMapUploadJsonFile.put(REQUESTER_ID, systemAdminUserId);
+        headerMapUploadJsonFile.put(REQUESTER_ID_HEADER, systemAdminUserId);
 
         Response response = doPostRequest(PUBLICATION_URL, headerMapUploadJsonFile, jsonData);
 

@@ -158,7 +158,7 @@ class PublicationInternalCourtIdTest extends IntegrationTestBase {
         mockHttpServletRequestBuilder.header(PublicationConfiguration.LIST_TYPE, LIST_TYPE);
         mockHttpServletRequestBuilder.header(PublicationConfiguration.COURT_ID, PROVENANCE_COURT_ID_MATCH);
         mockHttpServletRequestBuilder.header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE);
-        mockHttpServletRequestBuilder.header(PublicationConfiguration.REQUESTER_ID, SYSTEM_ADMIN_ID);
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID);
         mockHttpServletRequestBuilder.contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
 
         MvcResult response =
@@ -226,7 +226,7 @@ class PublicationInternalCourtIdTest extends IntegrationTestBase {
         mockHttpServletRequestBuilder.header(PublicationConfiguration.LIST_TYPE, LIST_TYPE);
         mockHttpServletRequestBuilder.header(PublicationConfiguration.COURT_ID, PROVENANCE_COURT_ID_DOESNOT_MATCH);
         mockHttpServletRequestBuilder.header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE);
-        mockHttpServletRequestBuilder.header(PublicationConfiguration.REQUESTER_ID, SYSTEM_ADMIN_ID);
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID);
         mockHttpServletRequestBuilder.contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
 
         MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();

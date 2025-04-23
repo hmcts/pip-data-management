@@ -67,7 +67,7 @@ class RegexValidationTest extends IntegrationTestBase {
             .header(PublicationConfiguration.COURT_ID, 1)
             .header(PublicationConfiguration.LIST_TYPE, ListType.SJP_PUBLIC_LIST)
             .header(PublicationConfiguration.LANGUAGE_HEADER, Language.ENGLISH)
-            .header(PublicationConfiguration.REQUESTER_ID, SYSTEM_ADMIN_ID)
+            .header(PublicationConfiguration.REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID)
             .header(PublicationConfiguration.CONTENT_DATE, LocalDateTime.now())
             .content(mockFile.readAllBytes())
             .contentType(MediaType.APPLICATION_JSON);

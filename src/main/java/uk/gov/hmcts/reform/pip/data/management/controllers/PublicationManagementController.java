@@ -40,7 +40,7 @@ public class PublicationManagementController {
     private static final String PAYLOAD_TOO_LARGE_CODE = "413";
     private static final String INTERNAL_ERROR_CODE = "500";
 
-    private static final String REQUESTER_ID = "x-requester-id";
+    private static final String REQUESTER_ID_HEADER = "x-requester-id";
 
     @Autowired
     public PublicationManagementController(PublicationManagementService publicationManagementService) {
@@ -65,7 +65,7 @@ public class PublicationManagementController {
     public ResponseEntity<String> getFile(
         @PathVariable UUID artefactId,
         @PathVariable  FileType fileType,
-        @RequestHeader(value = REQUESTER_ID, required = false) UUID requesterId,
+        @RequestHeader(value = REQUESTER_ID_HEADER, required = false) UUID requesterId,
         @RequestHeader(value = "x-system", required = false) boolean system,
         @RequestHeader(name = "x-additional-pdf", defaultValue = "false") boolean additionalPdf,
         @RequestParam(name = "maxFileSize", required = false) Integer maxFileSize) {
@@ -82,7 +82,7 @@ public class PublicationManagementController {
     @PreAuthorize("@authorisationService.userCanAccessPublication(#requesterId, #artefactId, false)")
     public ResponseEntity<Boolean> fileExists(
         @PathVariable UUID artefactId,
-        @RequestHeader(value = REQUESTER_ID, required = false) UUID requesterId) {
+        @RequestHeader(value = REQUESTER_ID_HEADER, required = false) UUID requesterId) {
         return ResponseEntity.ok(publicationManagementService.fileExists(artefactId));
     }
 
@@ -92,7 +92,7 @@ public class PublicationManagementController {
     @PreAuthorize("@authorisationService.userCanAccessPublication(#requesterId, #artefactId, false)")
     public ResponseEntity<PublicationFileSizes> getFileSizes(
         @PathVariable UUID artefactId,
-        @RequestHeader(value = REQUESTER_ID, required = false) UUID requesterId) {
+        @RequestHeader(value = REQUESTER_ID_HEADER, required = false) UUID requesterId) {
         return ResponseEntity.ok(publicationManagementService.getFileSizes(artefactId));
     }
 }

@@ -15,7 +15,7 @@ public final class PublicationConfiguration {
     public static final String LIST_TYPE = "x-list-type";
     public static final String COURT_ID = "x-court-id";
     public static final String CONTENT_DATE = "x-content-date";
-    public static final String REQUESTER_ID = "x-requester-id";
+    public static final String REQUESTER_ID_HEADER = "x-requester-id";
 
     private PublicationConfiguration() {
         //Private constructor

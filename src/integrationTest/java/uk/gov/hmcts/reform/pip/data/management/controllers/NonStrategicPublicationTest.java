@@ -116,7 +116,7 @@ class NonStrategicPublicationTest extends IntegrationTestBase {
             .header(PublicationConfiguration.COURT_ID, COURT_ID)
             .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
             .header(PublicationConfiguration.LANGUAGE_HEADER, Language.ENGLISH)
-            .header(PublicationConfiguration.REQUESTER_ID, SYSTEM_ADMIN_ID)
+            .header(PublicationConfiguration.REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID)
             .contentType(MediaType.MULTIPART_FORM_DATA);
 
         MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
@@ -162,7 +162,7 @@ class NonStrategicPublicationTest extends IntegrationTestBase {
             .header(PublicationConfiguration.COURT_ID, COURT_ID)
             .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
             .header(PublicationConfiguration.LANGUAGE_HEADER, Language.ENGLISH)
-            .header(PublicationConfiguration.REQUESTER_ID, SYSTEM_ADMIN_ID)
+            .header(PublicationConfiguration.REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID)
             .contentType(MediaType.MULTIPART_FORM_DATA);
 
         MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
@@ -190,7 +190,7 @@ class NonStrategicPublicationTest extends IntegrationTestBase {
         mockHttpServletRequestBuilder.header(PublicationConfiguration.COURT_ID, COURT_ID);
         mockHttpServletRequestBuilder.header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE);
         mockHttpServletRequestBuilder.header(PublicationConfiguration.LANGUAGE_HEADER, Language.ENGLISH);
-        mockHttpServletRequestBuilder.header(PublicationConfiguration.REQUESTER_ID, SYSTEM_ADMIN_ID);
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID);
         mockHttpServletRequestBuilder.contentType(MediaType.MULTIPART_FORM_DATA);
 
         final MvcResult createResponse = mockMvc.perform(mockHttpServletRequestBuilder)
@@ -212,7 +212,7 @@ class NonStrategicPublicationTest extends IntegrationTestBase {
         mockHttpServletRequestBuilder.header(PublicationConfiguration.COURT_ID, COURT_ID);
         mockHttpServletRequestBuilder.header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE);
         mockHttpServletRequestBuilder.header(PublicationConfiguration.LANGUAGE_HEADER, Language.ENGLISH);
-        mockHttpServletRequestBuilder.header(PublicationConfiguration.REQUESTER_ID, SYSTEM_ADMIN_ID);
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID);
         mockHttpServletRequestBuilder.contentType(MediaType.MULTIPART_FORM_DATA);
 
         final MvcResult updatedResponse = mockMvc.perform(mockHttpServletRequestBuilder)
@@ -250,7 +250,7 @@ class NonStrategicPublicationTest extends IntegrationTestBase {
             .header(PublicationConfiguration.COURT_ID, COURT_ID)
             .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
             .header(PublicationConfiguration.LANGUAGE_HEADER, Language.ENGLISH)
-            .header(PublicationConfiguration.REQUESTER_ID, SYSTEM_ADMIN_ID)
+            .header(PublicationConfiguration.REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID)
             .contentType(MediaType.MULTIPART_FORM_DATA);
 
         MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)

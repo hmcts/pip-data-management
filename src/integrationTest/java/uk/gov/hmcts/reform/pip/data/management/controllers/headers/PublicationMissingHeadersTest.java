@@ -114,7 +114,7 @@ class PublicationMissingHeadersTest extends IntegrationBasicTestBase {
         httpHeaders.add(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE.toString());
         httpHeaders.add(PublicationConfiguration.COURT_ID, COURT_ID);
         httpHeaders.add(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE.toString());
-        httpHeaders.add(PublicationConfiguration.REQUESTER_ID, SYSTEM_ADMIN_ID);
+        httpHeaders.add(PublicationConfiguration.REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID);
     }
 
     private static MockMultipartFile createExcelMultipartFile() throws IOException {

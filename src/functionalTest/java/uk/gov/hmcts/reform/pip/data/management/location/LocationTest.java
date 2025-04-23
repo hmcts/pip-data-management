@@ -44,7 +44,7 @@ class LocationTest extends FunctionalTestBase {
     private static final Integer TEST_LOCATION_ID_THREE = 2003;
     private static final String TEST_JURISDICTION = "Test Jurisdiction";
     private static final String TEST_REGION = "North East";
-    private static final String REQUESTER_ID = "x-requester-id";
+    private static final String REQUESTER_ID_HEADER = "x-requester-id";
 
     private static final String BASE_LOCATIONS_URL = "/locations";
     private static final String UPLOAD_LOCATIONS_URL = BASE_LOCATIONS_URL + "/upload";
@@ -67,7 +67,7 @@ class LocationTest extends FunctionalTestBase {
     void locationControllerHappyPathTests() throws Exception {
         Map<String, String> headerMapUploadLocations = Map.of(AUTHORIZATION, BEARER + accessToken,
                                                               "Content-Type", MediaType.MULTIPART_FORM_DATA_VALUE,
-                                                              REQUESTER_ID, systemAdminUserId
+                                                              REQUESTER_ID_HEADER, systemAdminUserId
         );
 
         String filePath = this.getClass().getClassLoader().getResource("location/ValidLocations.csv").getPath();
@@ -150,7 +150,7 @@ class LocationTest extends FunctionalTestBase {
         assertThat(returnedLocationByRegionAndJurisdiction[0].getName()).isEqualTo(TEST_LOCATION_NAME_THREE);
 
         Map<String, String> headerMapDownloadCsv = getBaseHeaderMap();
-        headerMapDownloadCsv.put(REQUESTER_ID, systemAdminUserId);
+        headerMapDownloadCsv.put(REQUESTER_ID_HEADER, systemAdminUserId);
 
         final Response responseDownloadCsv = doGetRequest(
             DOWNLOAD_CSV_LOCATIONS_URL,
@@ -162,7 +162,7 @@ class LocationTest extends FunctionalTestBase {
         assertThat(responseDownloadCsv.asString()).contains(TEST_LOCATION_NAME_THREE);
 
         Map<String, String> deleteHeaderMap = Map.of(AUTHORIZATION, BEARER + accessToken,
-                                                     REQUESTER_ID, systemAdminUserId
+                                                     REQUESTER_ID_HEADER, systemAdminUserId
         );
 
         final Response responseDeleteLocationById = doDeleteRequest(
@@ -185,7 +185,7 @@ class LocationTest extends FunctionalTestBase {
         );
 
         Map<String, String> deleteHeaderMap = Map.of(AUTHORIZATION, BEARER + accessToken,
-                                                     REQUESTER_ID, systemAdminUserId
+                                                     REQUESTER_ID_HEADER, systemAdminUserId
         );
         final Response responseDeleteLocationById = doDeleteRequest(
             "/locations/" + courtId,

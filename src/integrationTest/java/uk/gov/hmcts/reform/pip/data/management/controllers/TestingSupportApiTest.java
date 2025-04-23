@@ -248,7 +248,7 @@ class TestingSupportApiTest extends IntegrationTestBase {
                 .header(PublicationConfiguration.COURT_ID, LOCATION_ID)
                 .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
                 .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
-                .header(PublicationConfiguration.REQUESTER_ID, SYSTEM_ADMIN_ID)
+                .header(PublicationConfiguration.REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID)
                 .contentType(MediaType.APPLICATION_JSON);
 
             return mockMvc.perform(postRequest)

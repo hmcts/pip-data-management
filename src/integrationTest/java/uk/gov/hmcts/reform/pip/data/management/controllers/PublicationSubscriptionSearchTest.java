@@ -114,7 +114,7 @@ class PublicationSubscriptionSearchTest extends IntegrationTestBase {
                 .header(PublicationConfiguration.CONTENT_DATE, contentDate)
                 .header(PublicationConfiguration.SENSITIVITY_HEADER, sensitivity)
                 .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
-                .header(PublicationConfiguration.REQUESTER_ID, SYSTEM_ADMIN_ID)
+                .header(PublicationConfiguration.REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID)
                 .content(mockFile.readAllBytes())
                 .contentType(MediaType.APPLICATION_JSON);
 

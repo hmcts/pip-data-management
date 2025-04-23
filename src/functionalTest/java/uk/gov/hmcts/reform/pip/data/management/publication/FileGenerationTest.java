@@ -67,7 +67,7 @@ class FileGenerationTest extends FunctionalTestBase {
     private static final String CIVIL_CAUSE_LIST_FILE = "data/civilDailyCauseList.json";
     private static final String SJP_PUBLIC_LIST_FILE = "data/sjpPublicList.json";
     private static final String X_SYSTEM_FILE_HEADER = "x-system";
-    private static final String REQUESTER_ID = "x-requester-id";
+    private static final String REQUESTER_ID_HEADER = "x-requester-id";
 
     @Value("${test-system-admin-id}")
     private String systemAdminUserId;
@@ -112,7 +112,7 @@ class FileGenerationTest extends FunctionalTestBase {
         headerMap.put(PublicationConfiguration.CONTENT_DATE, contentDate.toString());
         headerMap.put(PublicationConfiguration.SENSITIVITY_HEADER, sensitivity.toString());
         headerMap.put(PublicationConfiguration.LANGUAGE_HEADER, language.toString());
-        headerMap.put(PublicationConfiguration.REQUESTER_ID, systemAdminUserId);
+        headerMap.put(PublicationConfiguration.REQUESTER_ID_HEADER, systemAdminUserId);
         headerMap.put("Content-Type", "application/json");
 
         Artefact artefact;
@@ -130,7 +130,7 @@ class FileGenerationTest extends FunctionalTestBase {
         }
 
         if (sensitivity.equals(Sensitivity.CLASSIFIED)) {
-            headerMap.put(PublicationConfiguration.REQUESTER_ID, testUserId);
+            headerMap.put(PublicationConfiguration.REQUESTER_ID_HEADER, testUserId);
         }
 
         assertDoesNotThrow(() ->
@@ -151,7 +151,7 @@ class FileGenerationTest extends FunctionalTestBase {
                                               Language.ENGLISH, Sensitivity.PUBLIC
         );
 
-        headerMap.put(REQUESTER_ID, testUserId);
+        headerMap.put(REQUESTER_ID_HEADER, testUserId);
         Response sizesResponse = doGetRequest(String.format(FILE_SIZES_URL, artefact.getArtefactId()), headerMap);
         assertThat(sizesResponse.getStatusCode()).isEqualTo(OK.value());
 
@@ -188,7 +188,7 @@ class FileGenerationTest extends FunctionalTestBase {
         assertNotNull(publicationFileSizes.getExcel(), "Excel has not been generated");
 
         headerMap.put(X_SYSTEM_FILE_HEADER, Boolean.TRUE.toString());
-        headerMap.put(REQUESTER_ID, testUserId);
+        headerMap.put(REQUESTER_ID_HEADER, testUserId);
         Response additionalPdfResponse = doGetRequest(
             String.format(GET_FILE_URL, artefact.getArtefactId(), "EXCEL"), headerMap);
         assertThat(additionalPdfResponse.getStatusCode()).isEqualTo(OK.value());
@@ -216,7 +216,7 @@ class FileGenerationTest extends FunctionalTestBase {
 
         headerMap.put(X_SYSTEM_FILE_HEADER, Boolean.TRUE.toString());
         headerMap.put("x-additional-pdf", Boolean.TRUE.toString());
-        headerMap.put(REQUESTER_ID, testUserId);
+        headerMap.put(REQUESTER_ID_HEADER, testUserId);
 
         Response additionalPdfResponse = doGetRequest(
             String.format(GET_FILE_URL, artefact.getArtefactId(), FileType.PDF.name()), headerMap);
@@ -253,7 +253,7 @@ class FileGenerationTest extends FunctionalTestBase {
         );
 
         headerMap.put(X_SYSTEM_FILE_HEADER, Boolean.TRUE.toString());
-        headerMap.put(REQUESTER_ID, testUserId);
+        headerMap.put(REQUESTER_ID_HEADER, testUserId);
 
         Response additionalPdfResponse = doGetRequest(
             String.format(GET_FILE_URL + "?maxFileSize=%s", artefact.getArtefactId(),
@@ -269,7 +269,7 @@ class FileGenerationTest extends FunctionalTestBase {
                                               Sensitivity.CLASSIFIED
         );
 
-        headerMap.put(REQUESTER_ID, testUserId);
+        headerMap.put(REQUESTER_ID_HEADER, testUserId);
         Response additionalPdfResponse = doGetRequest(
             String.format(GET_FILE_URL, artefact.getArtefactId(), FileType.PDF.name()), headerMap);
         assertThat(additionalPdfResponse.getStatusCode()).isEqualTo(OK.value());
@@ -283,7 +283,7 @@ class FileGenerationTest extends FunctionalTestBase {
                                               Sensitivity.CLASSIFIED
         );
 
-        headerMap.put(REQUESTER_ID, systemAdminUserId);
+        headerMap.put(REQUESTER_ID_HEADER, systemAdminUserId);
         Response additionalPdfResponse = doGetRequest(
             String.format(GET_FILE_URL, artefact.getArtefactId(), FileType.PDF.name()), headerMap);
         assertThat(additionalPdfResponse.getStatusCode()).isEqualTo(FORBIDDEN.value());
@@ -297,7 +297,7 @@ class FileGenerationTest extends FunctionalTestBase {
                                               Sensitivity.CLASSIFIED
         );
 
-        headerMap.put(REQUESTER_ID, UUID.randomUUID().toString());
+        headerMap.put(REQUESTER_ID_HEADER, UUID.randomUUID().toString());
         Response additionalPdfResponse = doGetRequest(
             String.format(GET_FILE_URL, artefact.getArtefactId(), FileType.PDF.name()), headerMap);
         assertThat(additionalPdfResponse.getStatusCode()).isEqualTo(FORBIDDEN.value());

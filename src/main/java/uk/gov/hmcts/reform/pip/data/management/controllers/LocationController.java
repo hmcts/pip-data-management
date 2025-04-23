@@ -46,7 +46,7 @@ public class LocationController {
     private static final String FORBIDDEN_MESSAGE = "User has not been authorized";
     private static final String BEARER_AUTHENTICATION = "bearerAuth";
 
-    private static final String REQUESTER_ID = "x-requester-id";
+    private static final String REQUESTER_ID_HEADER = "x-requester-id";
 
     private final LocationService locationService;
 
@@ -104,7 +104,7 @@ public class LocationController {
     @PreAuthorize("@authorisationService.userCanUploadLocation(#requesterId)")
     public ResponseEntity<Collection<Location>> uploadLocations(
         @RequestPart MultipartFile locationList,
-        @RequestHeader(REQUESTER_ID) String requesterId) {
+        @RequestHeader(REQUESTER_ID_HEADER) String requesterId) {
         return ResponseEntity.ok(locationService.uploadLocations(locationList));
     }
 
@@ -116,7 +116,7 @@ public class LocationController {
     @SecurityRequirement(name = BEARER_AUTHENTICATION)
     @PreAuthorize("@authorisationService.userCanDeleteLocation(#requesterId)")
     public ResponseEntity<LocationDeletion> deleteLocation(
-        @RequestHeader(REQUESTER_ID) String requesterId,
+        @RequestHeader(REQUESTER_ID_HEADER) String requesterId,
         @PathVariable Integer locationId)
         throws JsonProcessingException {
         return ResponseEntity.ok(locationService.deleteLocation(locationId, requesterId));
@@ -129,7 +129,7 @@ public class LocationController {
     @SecurityRequirement(name = BEARER_AUTHENTICATION)
     @PreAuthorize("@authorisationService.userCanGetLocationCsv(#requesterId)")
     public ResponseEntity<byte[]> downloadLocations(
-        @RequestHeader(REQUESTER_ID) String requesterId) throws IOException {
+        @RequestHeader(REQUESTER_ID_HEADER) String requesterId) throws IOException {
         return ResponseEntity.ok()
             .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_VALUE)
             .body(locationService.downloadLocations());

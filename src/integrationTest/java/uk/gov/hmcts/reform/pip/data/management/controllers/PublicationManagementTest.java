@@ -169,7 +169,7 @@ class PublicationManagementTest extends IntegrationTestBase {
                     CONTENT_DATE.plusDays(new RandomDataGenerator().nextLong(1, 100_000)))
             .header(PublicationConfiguration.SENSITIVITY_HEADER, sensitivity)
             .header(PublicationConfiguration.LANGUAGE_HEADER, Language.ENGLISH)
-            .header(PublicationConfiguration.REQUESTER_ID, SYSTEM_ADMIN_ID)
+            .header(PublicationConfiguration.REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID)
             .content(data)
             .contentType(MediaType.APPLICATION_JSON);
 
@@ -194,7 +194,7 @@ class PublicationManagementTest extends IntegrationTestBase {
                     CONTENT_DATE.plusDays(new RandomDataGenerator().nextLong(1, 100_000)))
             .header(PublicationConfiguration.SENSITIVITY_HEADER, Sensitivity.PUBLIC)
             .header(PublicationConfiguration.LANGUAGE_HEADER, Language.ENGLISH)
-            .header(PublicationConfiguration.REQUESTER_ID, SYSTEM_ADMIN_ID)
+            .header(PublicationConfiguration.REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID)
             .contentType(MediaType.MULTIPART_FORM_DATA);
 
         MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)

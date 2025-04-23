@@ -139,7 +139,7 @@ class PublicationTest extends FunctionalTestBase {
         headerMapUploadJsonFile.put(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE.toString());
         headerMapUploadJsonFile.put(PublicationConfiguration.SENSITIVITY_HEADER, sensitivity.toString());
         headerMapUploadJsonFile.put(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE.toString());
-        headerMapUploadJsonFile.put(PublicationConfiguration.REQUESTER_ID, systemAdminUserId);
+        headerMapUploadJsonFile.put(PublicationConfiguration.REQUESTER_ID_HEADER, systemAdminUserId);
         headerMapUploadJsonFile.put("Content-Type", "application/json");
 
         final Response responseUploadJson = doPostRequest(
@@ -165,7 +165,7 @@ class PublicationTest extends FunctionalTestBase {
         headerMapUploadFlatFile.put(PublicationConfiguration.SENSITIVITY_HEADER, sensitivity.toString());
         headerMapUploadFlatFile.put(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE.toString());
         headerMapUploadFlatFile.put("Content-Type", MediaType.MULTIPART_FORM_DATA_VALUE);
-        headerMapUploadFlatFile.put(PublicationConfiguration.REQUESTER_ID, systemAdminUserId);
+        headerMapUploadFlatFile.put(PublicationConfiguration.REQUESTER_ID_HEADER, systemAdminUserId);
 
         String filePath = this.getClass().getClassLoader().getResource("data/testFlatFile.pdf").getPath();
         File pdfFile = new File(filePath);
@@ -194,7 +194,7 @@ class PublicationTest extends FunctionalTestBase {
         headerMapUploadNonStrategicFile.put(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE.toString());
         headerMapUploadNonStrategicFile.put(PublicationConfiguration.SENSITIVITY_HEADER, sensitivity.toString());
         headerMapUploadNonStrategicFile.put(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE.toString());
-        headerMapUploadNonStrategicFile.put(PublicationConfiguration.REQUESTER_ID, systemAdminUserId);
+        headerMapUploadNonStrategicFile.put(PublicationConfiguration.REQUESTER_ID_HEADER, systemAdminUserId);
 
         String filePath = this.getClass().getClassLoader().getResource("data/testExcelFile.xlsx").getPath();
         File excelFile = new File(filePath);
