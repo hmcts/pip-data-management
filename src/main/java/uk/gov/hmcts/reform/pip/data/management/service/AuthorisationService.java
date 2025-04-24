@@ -28,9 +28,16 @@ public class AuthorisationService {
         this.artefactService = artefactService;
     }
 
-    public boolean userCanUploadPublication(String requesterId) {
-        if (!isUserAdmin(requesterId)
-                || !isPublisher()) {
+    public boolean userCanUploadPublication(String requesterId, String provenance) {
+        if ("MANUAL_UPLOAD".equals(provenance)
+            && !isUserAdmin(requesterId)) {
+            log.error(writeLog(
+                String.format("User with ID %s is forbidden to upload publication", requesterId
+                )));
+            return false;
+        }
+
+        if (!isPublisher()) {
             log.error(writeLog(
                 String.format("User with ID %s is forbidden to upload publication", requesterId
                 )));
@@ -174,18 +181,22 @@ public class AuthorisationService {
     }
 
     private boolean isUserAdmin(String requesterId) {
-        PiUser user = accountManagementService.getUserById(requesterId);
-        if (user != null && user.getRoles() != null) {
-            return Roles.ALL_ADMINS.contains(user.getRoles());
+        if (requesterId != null && !requesterId.isEmpty()) {
+            PiUser user = accountManagementService.getUserById(requesterId);
+            if (user != null && user.getRoles() != null) {
+                return Roles.ALL_ADMINS.contains(user.getRoles());
+            }
         }
 
         return false;
     }
 
     private boolean isUserSystemAdmin(String requesterId) {
-        PiUser user = accountManagementService.getUserById(requesterId);
-        if (user != null && user.getRoles() != null) {
-            return Roles.SYSTEM_ADMIN.equals(user.getRoles());
+        if (requesterId != null && !requesterId.isEmpty()) {
+            PiUser user = accountManagementService.getUserById(requesterId);
+            if (user != null && user.getRoles() != null) {
+                return Roles.SYSTEM_ADMIN.equals(user.getRoles());
+            }
         }
 
         return false;

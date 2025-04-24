@@ -165,7 +165,7 @@ public class PublicationController {
     @Valid
     @JsonView(ArtefactView.External.class)
     @SecurityRequirement(name = BEARER_AUTHENTICATION)
-    @PreAuthorize("@authorisationService.userCanUploadPublication(#requesterId)")
+    @PreAuthorize("@authorisationService.userCanUploadPublication(#requesterId, #provenance)")
     public ResponseEntity<Artefact> uploadPublication(
         @RequestHeader(PublicationConfiguration.PROVENANCE_HEADER) String provenance,
         @RequestHeader(value = PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, required = false)
@@ -228,7 +228,7 @@ public class PublicationController {
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @JsonView(ArtefactView.External.class)
     @SecurityRequirement(name = BEARER_AUTHENTICATION)
-    @PreAuthorize("@authorisationService.userCanUploadPublication(#requesterId)")
+    @PreAuthorize("@authorisationService.userCanUploadPublication(#requesterId, #provenance)")
     public ResponseEntity<Artefact> uploadPublication(
         @RequestHeader(PublicationConfiguration.PROVENANCE_HEADER) String provenance,
         @RequestHeader(value = PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, required = false)
@@ -296,7 +296,7 @@ public class PublicationController {
     @PostMapping(value = "/non-strategic", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @JsonView(ArtefactView.External.class)
     @SecurityRequirement(name = BEARER_AUTHENTICATION)
-    @PreAuthorize("@authorisationService.userCanUploadPublication(#requesterId)")
+    @PreAuthorize("@authorisationService.userCanUploadPublication(#requesterId, #provenance)")
     public ResponseEntity<Artefact> nonStrategicUploadPublication(
         @RequestHeader(PublicationConfiguration.PROVENANCE_HEADER) String provenance,
         @RequestHeader(value = PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, required = false)

@@ -35,6 +35,7 @@ class AuthorisationServiceTest {
     private static final String PUBLISHER_ROLE = "APPROLE_api.publisher.admin";
     private static final String ADMIN_ROLE = "APPROLE_api.request.admin";
     private static final ListType LIST_TYPE = ListType.CIVIL_DAILY_CAUSE_LIST;
+    private static final String PROVENANCE = "MANUAL_UPLOAD";
 
     @Mock
     private AccountManagementService accountManagementService;
@@ -75,7 +76,28 @@ class AuthorisationServiceTest {
             .thenReturn(createUser(Roles.SYSTEM_ADMIN));
         when(securityContext.getAuthentication()).thenReturn(auth);
 
-        assertTrue(authorisationService.userCanUploadPublication(TEST_USER_ID),
+        assertTrue(authorisationService.userCanUploadPublication(TEST_USER_ID, PROVENANCE),
+                   "API Token with Admin and Publisher permission cannot upload publication");
+    }
+
+    @Test
+    void testUserCannotUploadPublicationWhenProvenanceIsManualAndRequesterIdNotPresent() {
+        assertFalse(authorisationService.userCanUploadPublication(null, PROVENANCE),
+                   "Requester with no value can upload publication");
+    }
+
+    @Test
+    void testUserCanUploadPublicationWhenProvenanceIsNotManualAndRequesterIdNotPresent() {
+        List<GrantedAuthority> authorities = List.of(
+            new SimpleGrantedAuthority(PUBLISHER_ROLE),
+            new SimpleGrantedAuthority(ADMIN_ROLE)
+        );
+        Authentication auth = new TestingAuthenticationToken(null, null, authorities);
+        SecurityContextHolder.getContext().setAuthentication(auth);
+
+        when(securityContext.getAuthentication()).thenReturn(auth);
+
+        assertTrue(authorisationService.userCanUploadPublication(null, "TEST_PROVENANCE"),
                    "API Token with Admin and Publisher permission cannot upload publication");
     }
 
@@ -84,7 +106,7 @@ class AuthorisationServiceTest {
         when(accountManagementService.getUserById(TEST_USER_ID))
             .thenReturn(createUser(Roles.VERIFIED));
 
-        assertFalse(authorisationService.userCanUploadPublication(TEST_USER_ID),
+        assertFalse(authorisationService.userCanUploadPublication(TEST_USER_ID, PROVENANCE),
                     "API Token with no admin permission can upload publication");
     }
 
@@ -95,7 +117,7 @@ class AuthorisationServiceTest {
         when(securityContext.getAuthentication()).thenReturn(authentication);
         when(authentication.getAuthorities()).thenReturn(Collections.emptyList());
 
-        assertFalse(authorisationService.userCanUploadPublication(TEST_USER_ID),
+        assertFalse(authorisationService.userCanUploadPublication(TEST_USER_ID, PROVENANCE),
                     "API Token with no publisher permission can upload publication");
     }
 
