@@ -264,8 +264,7 @@ public class ListConversionFactory {
         Map.entry(LONDON_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST, new ConversionPair(
             new NonStrategicListFileConverter(),
             new NonStrategicListSummaryData(LONDON_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST)
-                  )
-        ),
+        )),
         Map.entry(PLANNING_COURT_DAILY_CAUSE_LIST, new ConversionPair(
             new NonStrategicListFileConverter(),
             new NonStrategicListSummaryData(PLANNING_COURT_DAILY_CAUSE_LIST)
