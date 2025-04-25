@@ -9,6 +9,7 @@ import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -21,6 +22,7 @@ import static uk.gov.hmcts.reform.pip.model.publication.ListType.CST_WEEKLY_HEAR
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.FTT_LR_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.FTT_TAX_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.GRC_WEEKLY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.INTERIM_APPLICATIONS_CHD_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.PAAC_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.PHT_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.POAC_WEEKLY_HEARING_LIST;
@@ -95,7 +97,8 @@ public class NonStrategicListSummaryData implements ArtefactSummaryData {
         Map.entry(SSCS_SCOTLAND_DAILY_HEARING_LIST, List.of(HEARING_TIME, HEARING_TYPE, APPEAL_REFERENCE_NUMBER)),
         Map.entry(SSCS_NORTH_EAST_DAILY_HEARING_LIST, List.of(HEARING_TIME, HEARING_TYPE, APPEAL_REFERENCE_NUMBER)),
         Map.entry(SSCS_NORTH_WEST_DAILY_HEARING_LIST, List.of(HEARING_TIME, HEARING_TYPE, APPEAL_REFERENCE_NUMBER)),
-        Map.entry(SSCS_LONDON_DAILY_HEARING_LIST, List.of(HEARING_TIME, HEARING_TYPE, APPEAL_REFERENCE_NUMBER))
+        Map.entry(SSCS_LONDON_DAILY_HEARING_LIST, List.of(HEARING_TIME, HEARING_TYPE, APPEAL_REFERENCE_NUMBER)),
+        Map.entry(INTERIM_APPLICATIONS_CHD_DAILY_CAUSE_LIST, List.of(TIME, CASE_NAME))
     );
 
     private final ListType listType;
@@ -104,9 +107,23 @@ public class NonStrategicListSummaryData implements ArtefactSummaryData {
         this.listType = listType;
     }
 
-    @Override
     public Map<String, List<Map<String, String>>> get(JsonNode payload) {
-        List<Map<String, String>> data = OBJECT_MAPPER.convertValue(payload, new TypeReference<>(){});
+        List<Map<String, String>> data = new ArrayList<>();
+
+        if (payload.isObject()) {
+            Iterator<String> fieldNames = payload.fieldNames();
+            while (fieldNames.hasNext()) {
+                String fieldName = fieldNames.next();
+                JsonNode fieldNode = payload.get(fieldName);
+                if (fieldNode.isArray()) {
+                    data = OBJECT_MAPPER.convertValue(fieldNode, new TypeReference<List<Map<String, String>>>(){});
+                    break;
+                }
+            }
+        } else if (payload.isArray()) {
+            data = OBJECT_MAPPER.convertValue(payload, new TypeReference<List<Map<String, String>>>(){});
+        }
+
         Optional<Map<String, Function<String, String>>> listTypeFormatter = NonStrategicListFormatter
             .getListTypeFormatter(listType);
 
@@ -132,4 +149,5 @@ public class NonStrategicListSummaryData implements ArtefactSummaryData {
 
         return Collections.singletonMap(null, summaryCases);
     }
+
 }
