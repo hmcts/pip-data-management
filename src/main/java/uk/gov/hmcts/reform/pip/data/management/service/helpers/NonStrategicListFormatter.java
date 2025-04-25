@@ -14,6 +14,7 @@ import static uk.gov.hmcts.reform.pip.model.publication.ListType.CST_WEEKLY_HEAR
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.FTT_LR_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.FTT_TAX_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.GRC_WEEKLY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.INTERIM_APPLICATIONS_CHD_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.PAAC_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.PHT_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.POAC_WEEKLY_HEARING_LIST;
@@ -117,7 +118,9 @@ public final class NonStrategicListFormatter {
         Map.entry(SSCS_NORTH_WEST_DAILY_HEARING_LIST,
                   Map.of(HEARING_TIME, NonStrategicFieldFormattingHelper::formatTimeField)),
         Map.entry(SSCS_LONDON_DAILY_HEARING_LIST,
-                  Map.of(HEARING_TIME, NonStrategicFieldFormattingHelper::formatTimeField))
+                  Map.of(HEARING_TIME, NonStrategicFieldFormattingHelper::formatTimeField)),
+        Map.entry(INTERIM_APPLICATIONS_CHD_DAILY_CAUSE_LIST,
+                  Map.of(TIME, NonStrategicFieldFormattingHelper::formatTimeField))
     );
 
     private NonStrategicListFormatter() {
