@@ -1,0 +1,29 @@
+{
+  "listName": "Rhestr Achosion Dyddiol Meistri Mainc y Brenin",
+  "venueName": "Royal Courts of Justice",
+  "addressLine1": "Strand, London",
+  "addressLine2": "WC2A 2LL",
+  "importantInformationLine1": "Dylai unrhyw gynrychiolydd y cyfryngau (neu unrhyw aelod arall o'r cyhoedd) sy'n dymuno mynychu gwrandawiad o bell ddarparu cyfeiriad e-bost a rhif cyswllt i gael dolen briodol ar gyfer cael mynediad. Cysylltwch â Chlerc Meistri penodedig gan roi dyddiad ac amser y gwrandawiad yn y blwch pwnc. Gellir dod o hyd i fanylion y clerc yn Atodiad 2 Canllaw Adran Mainc y Brenin.",
+  "importantInformationLine2": "Mae gwrandawiadau wyneb yn wyneb gerbron y Meistri ar agor i'r wasg a'r cyhoedd, ond mae'r ystafelloedd wedi'u lleoli mewn ardaloedd diogel o'r adeilad. Os hoffech fynychu gwrandawiad wyneb yn wyneb, cyrhaeddwch y Bear Garden mewn pryd cyn y gwrandawiad a rhowch wybod i'r tywysydd.",
+  "importantInformationLine3": "Bydd dyfarniadau a gyflwynir gan y Meistri o bell yn cael eu rhyddhau trwy gylchrediad i gynrychiolwyr y partïon trwy e-bost a'u rhyddhau i'r Archifau Cenedlaethol. Ystyrir na fydd y dyddiad a'r amser ar gyfer traddodi yn digwydd cyn yr amser a restrwyd. Gellir darparu copi o'r dyfarniad ar ffurf derfynol fel y'i traddodwyd ar ôl yr amser hwnnw, ar gais drwy e-bost.",
+  "importantInformationLine4": "Gwrandawiadau wyneb yn wyneb – Rhaid darparu unrhyw fwndeli i'w ffeilio ar ffurf copi caled o leiaf 3 diwrnod cyn y gwrandawiad. Gellir dod â'r rhain i y Bear Garden i'w dosbarthu.",
+  "importantInformationLine5": "Gwrandawiadau o bell – dylid darparu'r rhain yn electronig i'r Meistri a/neu eu clerc o leiaf 3 diwrnod cyn y gwrandawiad. Cyfeiriwch at gyfarwyddiadau o bell y meistri yn yr hysbysiad o wrandawiad am gyfarwyddiadau penodol.",
+  "importantInformationLine6": "Ni fydd gan bob gwrandawiad a nodir fel bod mewn ystafell neu ystafell lys unrhyw gyswllt fideo oni nodir fel arall. Mae siambrau'r meistri yn gyfyngedig o ran lle i fynychwyr. Os disgwylir mwy na 6 mynychwr, cysylltwch â chlerc y meistri cyn gynted â phosibl i roi gwybod a ellir dod o hyd i ddewis arall addas.",
+  "accessHeading": "Mynediad i'r wasg a'r cyhoedd",
+  "judgementsHeading": "Dyfarniadau",
+  "bundlesHeading": "Bwnde",
+  "inPersonHearingsHeading": "Gwrandawiadau wyneb yn wyneb",
+  "kingsBenchGuideLink": "https://www.judiciary.uk/guidance-and-resources/kings-bench-guide-2024/",
+  "kingsBenchGuideLinkText": "King's Bench Guide",
+  "trialWindowsLink": "https://www.gov.uk/guidance/queens-bench-hearing-and-trial-dates",
+  "trialWindowsLinkText": "Current trial windows",
+  "tableHeaders": [
+    "Lleoliad",
+    "Barnwr",
+    "Amser",
+    "Rhif yr achos",
+    "Manylion yr achos",
+    "Math o Wrandawiad",
+    "Gwybodaeth ychwanegol"
+  ]
+}

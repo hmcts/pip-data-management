@@ -1,0 +1,18 @@
+{
+  "listName": "Rhestr Achosion Dyddiol Llys Sifil yn y Llysoedd Barn Brenhinol",
+  "venueName": "Royal Courts of Justice",
+  "addressLine1": "Strand, London",
+  "addressLine2": "WC2A 2LL",
+  "importantInformationLine1": "Dylid gwneud ceisiadau gan y cyfryngau ac eraill, gan gynnwys blogwyr cyfreithiol, i'r Llys Sifil yn y Llysoedd Barn Brenhinol yn mediaenquiries.civilcourtsatthercj@justice.gov.uk. Yna gwneir trefniadau i chi fynychu.",
+  "importantInformationLine2": "Wrth ystyried y defnydd o dechnoleg ffôn a fideo, bydd y farnwriaeth yn ystyried egwyddorion cyfiawnder agored.",
+  "importantInformationLine3": "Gall y llys eithrio arsylwyr lle bo angen i sicrhau gweinyddiaeth briodol cyfiawnder.",
+  "tableHeaders": [
+    "Lleoliad",
+    "Barnwr",
+    "Amser",
+    "Rhif yr achos",
+    "Manylion yr achos",
+    "Math o Wrandawiad",
+    "Gwybodaeth ychwanegol"
+  ]
+}
