@@ -34,7 +34,7 @@ class CivilCourtsRcjDailyCauseListSummaryDataTest {
         IOUtils.copy(
             Files.newInputStream(Paths.get(
                 NON_STRATEGIC_RESOURCE_FOLDER,
-                "CivilCourtsRcjDailyCauseList.json"
+                "civilCourtsRcjDailyCauseList.json"
             )), writer,
             Charset.defaultCharset()
         );

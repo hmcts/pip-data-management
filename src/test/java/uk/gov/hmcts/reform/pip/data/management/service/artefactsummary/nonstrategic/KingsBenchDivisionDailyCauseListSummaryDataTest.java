@@ -34,7 +34,7 @@ class KingsBenchDivisionDailyCauseListSummaryDataTest {
         IOUtils.copy(
             Files.newInputStream(Paths.get(
                 NON_STRATEGIC_RESOURCE_FOLDER,
-                "KingsBenchDivisionDailyCauseList.json"
+                "kingsBenchDivisionDailyCauseList.json"
             )), writer,
             Charset.defaultCharset()
         );

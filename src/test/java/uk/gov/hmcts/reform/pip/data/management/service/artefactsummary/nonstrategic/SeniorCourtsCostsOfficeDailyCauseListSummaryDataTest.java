@@ -34,7 +34,7 @@ class SeniorCourtsCostsOfficeDailyCauseListSummaryDataTest {
         IOUtils.copy(
             Files.newInputStream(Paths.get(
                 NON_STRATEGIC_RESOURCE_FOLDER,
-                "SeniorCourtsCostsOfficeDailyCauseList.json"
+                "seniorCourtsCostsOfficeDailyCauseList.json"
             )), writer,
             Charset.defaultCharset()
         );

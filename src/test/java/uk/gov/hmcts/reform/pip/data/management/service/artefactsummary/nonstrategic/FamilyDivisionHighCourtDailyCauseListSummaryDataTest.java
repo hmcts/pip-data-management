@@ -34,7 +34,7 @@ class FamilyDivisionHighCourtDailyCauseListSummaryDataTest {
         IOUtils.copy(
             Files.newInputStream(Paths.get(
                 NON_STRATEGIC_RESOURCE_FOLDER,
-                "FamilyDivisionHighCourtDailyCauseList.json"
+                "familyDivisionHighCourtDailyCauseList.json"
             )), writer,
             Charset.defaultCharset()
         );
