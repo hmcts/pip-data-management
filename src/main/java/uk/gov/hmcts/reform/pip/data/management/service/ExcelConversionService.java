@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.pip.data.management.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.CaseFormat;
+import org.apache.commons.text.CaseUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.DateUtil;
@@ -34,28 +35,52 @@ public class ExcelConversionService {
         }
 
         try (Workbook workbook = new XSSFWorkbook(file.getInputStream())) {
-            Sheet sheet = workbook.getSheetAt(0);
-            int headerRowNumber = sheet.getFirstRowNum();
-            int firstColumnNumber = sheet.getRow(headerRowNumber)
-                .getFirstCellNum();
-
-            List<String> headers = getExcelRow(sheet, headerRowNumber, firstColumnNumber);
-            List<Map<String, String>> data = new ArrayList<>();
-
-            for (int rowNumber = headerRowNumber + 1; rowNumber <= sheet.getLastRowNum(); rowNumber++) {
-                List<String> row = getExcelRow(sheet, rowNumber, firstColumnNumber);
-
-                Map<String, String> rowMappings = buildRowMap(headers, row);
-                if (rowMappings.values().stream().allMatch(String::isBlank)) {
-                    break;
-                }
-
-                data.add(rowMappings);
+            if (workbook.getNumberOfSheets() == 1) {
+                return OBJECT_MAPPER.writeValueAsString(getSingleSheetData(workbook));
+            } else {
+                return OBJECT_MAPPER.writeValueAsString(getMultiSheetData(workbook));
             }
-            return OBJECT_MAPPER.writeValueAsString(data);
         } catch (IOException e) {
             throw new ExcelConversionException("Error converting Excel file into JSON format");
         }
+    }
+
+    private List<Map<String, String>> getSingleSheetData(Workbook workbook) {
+        Sheet sheet = workbook.getSheetAt(0);
+        return getSheetData(sheet);
+    }
+
+    private Map<String, List<Map<String, String>>> getMultiSheetData(Workbook workbook) {
+        Map<String, List<Map<String, String>>> data = new LinkedHashMap<>();
+
+        for (int i = 0; i < workbook.getNumberOfSheets(); i++) {
+            Sheet sheet = workbook.getSheetAt(i);
+            String sheetName = CaseUtils.toCamelCase(sheet.getSheetName(), false, ' ');
+            data.put(sheetName, getSheetData(sheet));
+        }
+
+        return data;
+    }
+
+    private List<Map<String, String>> getSheetData(Sheet sheet) {
+        int headerRowNumber = sheet.getFirstRowNum();
+        int firstColumnNumber = sheet.getRow(headerRowNumber).getFirstCellNum();
+
+        List<String> headers = getExcelRow(sheet, headerRowNumber, firstColumnNumber);
+        List<Map<String, String>> data = new ArrayList<>();
+
+        for (int rowNumber = headerRowNumber + 1; rowNumber <= sheet.getLastRowNum(); rowNumber++) {
+            List<String> row = getExcelRow(sheet, rowNumber, firstColumnNumber);
+            Map<String, String> rowMappings = buildRowMap(headers, row);
+
+            if (rowMappings.values().stream().allMatch(String::isBlank)) {
+                break;
+            }
+
+            data.add(rowMappings);
+        }
+
+        return data;
     }
 
     @SuppressWarnings("PMD.UseConcurrentHashMap")
