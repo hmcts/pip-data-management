@@ -11,6 +11,7 @@ import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -48,11 +49,17 @@ public class NonStrategicListFileConverter implements FileConverter {
         languageResources.putAll(LanguageResourceHelper.readResourcesFromPath("common/nonStrategicCommon",
                                                                               language));
 
-        List<Map<String, String>> data = OBJECT_MAPPER.convertValue(payload, new TypeReference<>(){});
-        List<Map<String, String>> formattedData = NonStrategicListFormatter.formatAllFields(
-            data, ListType.valueOf(listType)
-        );
-        context.setVariable("data", formattedData);
+        Iterator<Map.Entry<String, JsonNode>> fields = payload.fields();
+        while (fields.hasNext()) {
+            Map.Entry<String, JsonNode> entry = fields.next();
+            String sheetName = entry.getKey();
+            JsonNode sheetData = entry.getValue();
+            List<Map<String, String>> sheetList = OBJECT_MAPPER.convertValue(sheetData, new TypeReference<>(){});
+            List<Map<String, String>> formattedSheetData = NonStrategicListFormatter.formatAllFields(
+                sheetList, ListType.valueOf(listType)
+            );
+            context.setVariable(sheetName, formattedSheetData);
+        }
 
         return TemplateEngine.processNonStrategicTemplate(listType, context);
     }
