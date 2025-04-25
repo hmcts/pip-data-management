@@ -81,6 +81,9 @@ class PublicationManagementTest extends IntegrationTestBase {
     private static final String CASE_REFERENCE_NUMBER_FIELD = "Case reference number - 1234";
     private static final String TIME_FIELD = "Time - 10am";
     private static final String APPELLANT_NUMBER_FIELD = "Appellant - Appellant 1";
+    private static final String RCJ_TIME_FIELD = "Time - 9am";
+    private static final String RCJ_CASE_NUMBER_FIELD = "Case number - 12345";
+
     private static final String NON_STRATEGIC_FILES_LOCATION = "data/non-strategic/";
     private static final String RPT_LISTS_EXCEL_FILE = NON_STRATEGIC_FILES_LOCATION
         + "ftt-residential-property-tribunal-weekly-hearing-list/"
@@ -930,8 +933,8 @@ class PublicationManagementTest extends IntegrationTestBase {
             .andExpect(status().isOk()).andReturn();
 
         String responseContent = response.getResponse().getContentAsString();
-        assertTrue(responseContent.contains("Time - 9am"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Case number - 12345"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(RCJ_TIME_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(RCJ_CASE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
     }
 
     @Test
@@ -949,8 +952,8 @@ class PublicationManagementTest extends IntegrationTestBase {
             .andExpect(status().isOk()).andReturn();
 
         String responseContent = response.getResponse().getContentAsString();
-        assertTrue(responseContent.contains("Time - 9am"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Case number - 12345"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(RCJ_TIME_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(RCJ_CASE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
     }
 
     @Test
@@ -969,8 +972,8 @@ class PublicationManagementTest extends IntegrationTestBase {
             .andExpect(status().isOk()).andReturn();
 
         String responseContent = response.getResponse().getContentAsString();
-        assertTrue(responseContent.contains("Time - 9am"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Case number - 12345"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(RCJ_TIME_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(RCJ_CASE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
     }
 
     @Test
@@ -988,8 +991,8 @@ class PublicationManagementTest extends IntegrationTestBase {
             .andExpect(status().isOk()).andReturn();
 
         String responseContent = response.getResponse().getContentAsString();
-        assertTrue(responseContent.contains("Time - 9am"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Case number - 12345"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(RCJ_TIME_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(RCJ_CASE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
     }
 
     @Test
@@ -1008,8 +1011,8 @@ class PublicationManagementTest extends IntegrationTestBase {
             .andExpect(status().isOk()).andReturn();
 
         String responseContent = response.getResponse().getContentAsString();
-        assertTrue(responseContent.contains("Time - 9am"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Case number - 12345"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(RCJ_TIME_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(RCJ_CASE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
     }
 
     @Test
@@ -1028,8 +1031,8 @@ class PublicationManagementTest extends IntegrationTestBase {
             .andExpect(status().isOk()).andReturn();
 
         String responseContent = response.getResponse().getContentAsString();
-        assertTrue(responseContent.contains("Time - 9am"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Case number - 12345"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(RCJ_TIME_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(RCJ_CASE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
     }
 
     @Test
@@ -1048,8 +1051,8 @@ class PublicationManagementTest extends IntegrationTestBase {
             .andExpect(status().isOk()).andReturn();
 
         String responseContent = response.getResponse().getContentAsString();
-        assertTrue(responseContent.contains("Time - 9am"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Case number - 12345"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(RCJ_TIME_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(RCJ_CASE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
     }
 
     @Test
@@ -1068,8 +1071,8 @@ class PublicationManagementTest extends IntegrationTestBase {
             .andExpect(status().isOk()).andReturn();
 
         String responseContent = response.getResponse().getContentAsString();
-        assertTrue(responseContent.contains("Time - 9am"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Case number - 12345"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(RCJ_TIME_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(RCJ_CASE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
     }
 
     @Test
@@ -1088,8 +1091,8 @@ class PublicationManagementTest extends IntegrationTestBase {
             .andExpect(status().isOk()).andReturn();
 
         String responseContent = response.getResponse().getContentAsString();
-        assertTrue(responseContent.contains("Time - 9am"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Case number - 12345"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(RCJ_TIME_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(RCJ_CASE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
     }
 
     @Test
@@ -1108,8 +1111,8 @@ class PublicationManagementTest extends IntegrationTestBase {
             .andExpect(status().isOk()).andReturn();
 
         String responseContent = response.getResponse().getContentAsString();
-        assertTrue(responseContent.contains("Time - 9am"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Case number - 12345"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(RCJ_TIME_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(RCJ_CASE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
     }
 
     @Test
