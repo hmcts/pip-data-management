@@ -412,7 +412,10 @@ class ValidationServiceTest extends IntegrationBasicTestBase {
             Arguments.of(ListType.SSCS_NORTH_WEST_DAILY_HEARING_LIST,
                          SSCS_LISTS_JSON_FILE),
             Arguments.of(ListType.SSCS_LONDON_DAILY_HEARING_LIST,
-                         SSCS_LISTS_JSON_FILE)
+                         SSCS_LISTS_JSON_FILE),
+            Arguments.of(ListType.INTERIM_APPLICATIONS_CHD_DAILY_CAUSE_LIST,
+                         "data/non-strategic/interim-applications-chd-daily-cause-list/"
+                             + "interimApplicationsChanceryDivisionDailyCauseList.json")
         );
     }
 

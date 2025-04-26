@@ -1,0 +1,37 @@
+{
+  "hearingList": [
+    {
+      "judge": "Judge A",
+      "time": "10.30am",
+      "venue": "This is a venue name",
+      "hearingType": "Case type A",
+      "caseNumber": "1234",
+      "caseName": "This is a case name",
+      "additionalInformation": "This is additional information"
+    },
+    {
+      "judge": "Judge B",
+      "time": "10.30am",
+      "venue": "This is a venue name",
+      "hearingType": "Case type B",
+      "caseNumber": "3456",
+      "caseName": "This is a case name",
+      "additionalInformation": "This is additional information"
+    },
+    {
+      "judge": "Judge C",
+      "time": "10.30am",
+      "venue": "This is a venue name",
+      "hearingType": "Case type C",
+      "caseNumber": "5678",
+      "caseName": "This is a case name",
+      "additionalInformation": "This is additional information"
+    }
+  ],
+  "openJusticeStatementDetails": [
+    {
+      "nameToBeDisplayed": "Judge OpenJusticeTest",
+      "email": "Judge.OpenJusticeTest@justice.gov.uk"
+    }
+  ]
+}
