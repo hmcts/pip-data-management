@@ -107,6 +107,7 @@ public class NonStrategicListSummaryData implements ArtefactSummaryData {
         this.listType = listType;
     }
 
+    @Override
     public Map<String, List<Map<String, String>>> get(JsonNode payload) {
         List<Map<String, String>> data = new ArrayList<>();
 
@@ -116,12 +117,12 @@ public class NonStrategicListSummaryData implements ArtefactSummaryData {
                 String fieldName = fieldNames.next();
                 JsonNode fieldNode = payload.get(fieldName);
                 if (fieldNode.isArray()) {
-                    data = OBJECT_MAPPER.convertValue(fieldNode, new TypeReference<List<Map<String, String>>>(){});
+                    data = OBJECT_MAPPER.convertValue(fieldNode, new TypeReference<>(){});
                     break;
                 }
             }
         } else if (payload.isArray()) {
-            data = OBJECT_MAPPER.convertValue(payload, new TypeReference<List<Map<String, String>>>(){});
+            data = OBJECT_MAPPER.convertValue(payload, new TypeReference<>(){});
         }
 
         Optional<Map<String, Function<String, String>>> listTypeFormatter = NonStrategicListFormatter

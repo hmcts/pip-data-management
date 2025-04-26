@@ -35,14 +35,18 @@ public class ExcelConversionService {
         }
 
         try (Workbook workbook = new XSSFWorkbook(file.getInputStream())) {
-            if (workbook.getNumberOfSheets() == 1) {
-                return OBJECT_MAPPER.writeValueAsString(getSingleSheetData(workbook));
-            } else {
+            if (hasMultipleSheets(workbook)) {
                 return OBJECT_MAPPER.writeValueAsString(getMultiSheetData(workbook));
+            } else {
+                return OBJECT_MAPPER.writeValueAsString(getSingleSheetData(workbook));
             }
         } catch (IOException e) {
             throw new ExcelConversionException("Error converting Excel file into JSON format");
         }
+    }
+
+    private boolean hasMultipleSheets(Workbook workbook) {
+        return workbook.getNumberOfSheets() > 1;
     }
 
     private List<Map<String, String>> getSingleSheetData(Workbook workbook) {
@@ -50,6 +54,7 @@ public class ExcelConversionService {
         return getSheetData(sheet);
     }
 
+    @SuppressWarnings("PMD.UseConcurrentHashMap")
     private Map<String, List<Map<String, String>>> getMultiSheetData(Workbook workbook) {
         Map<String, List<Map<String, String>>> data = new LinkedHashMap<>();
 
