@@ -39,8 +39,8 @@ class SscsDailyHearingListFileConverterTest {
     private static final String ENGLISH = "ENGLISH";
     private static final String WELSH = "WELSH";
 
-    private static final String LIST_DATE_ENGLISH = "List for week commencing 12 December 2024";
-    private static final String LIST_DATE_WELSH = "Rhestr ar gyfer yr wythnos yn dechrau ar 12 December 2024";
+    private static final String LIST_DATE_ENGLISH = "List for 12 December 2024";
+    private static final String LIST_DATE_WELSH = "Rhestr ar gyfer 12 December 2024";
     private static final String OBSERVE_HEARING_ENGLISH = "For more information, please visit "
         + "https://www.gov.uk/guidance/observe-a-court-or-tribunal-hearing";
     private static final String OBSERVE_HEARING_WELSH = "Am fwy o wybodaeth, ewch i "
@@ -69,26 +69,25 @@ class SscsDailyHearingListFileConverterTest {
     private static Stream<Arguments> parametersEnglish() {
         return Stream.of(
             Arguments.of("SSCS_MIDLANDS_DAILY_HEARING_LIST", "sscsMidlandsDailyHearingList.json",
-                         "Midlands First-tier Tribunal (Social Security and Child Support) Daily Hearing List",
+                         "Midlands Social Security and Child Support Tribunal Daily Hearing List",
                          "ascbirmingham@justice.gov.uk"),
             Arguments.of("SSCS_SOUTH_EAST_DAILY_HEARING_LIST", "sscsSouthEastDailyHearingList.json",
-                         "South East First-tier Tribunal (Social Security and Child Support) Daily Hearing List",
+                         "South East Social Security and Child Support Tribunal Daily Hearing List",
                          "sscs_bradford@justice.gov.uk"),
             Arguments.of("SSCS_WALES_AND_SOUTH_WEST_DAILY_HEARING_LIST", "sscsWalesAndSouthWestDailyHearingList.json",
-                         "Wales and South West First-tier Tribunal (Social Security and Child Support)"
-                             + " Daily Hearing List",
+                         "Wales and South West Social Security and Child Support Tribunal Daily Hearing List",
                          "sscsa-cardiff@justice.gov.uk"),
             Arguments.of("SSCS_SCOTLAND_DAILY_HEARING_LIST", "sscsScotlandDailyHearingList.json",
-                         "Scotland First-tier Tribunal (Social Security and Child Support) Daily Hearing List",
+                         "Scotland Social Security and Child Support Tribunal Daily Hearing List",
                          "sscsa-glasgow@justice.gov.uk"),
             Arguments.of("SSCS_NORTH_EAST_DAILY_HEARING_LIST", "sscsNorthEastDailyHearingList.json",
-                         "North East First-tier Tribunal (Social Security and Child Support) Daily Hearing List",
+                         "North East Social Security and Child Support Tribunal Daily Hearing List",
                          "sscsa-leeds@justice.gov.uk"),
             Arguments.of("SSCS_NORTH_WEST_DAILY_HEARING_LIST", "sscsNorthWestDailyHearingList.json",
-                         "North West First-tier Tribunal (Social Security and Child Support) Daily Hearing List",
+                         "North West Social Security and Child Support Tribunal Daily Hearing List",
                          "sscsa-liverpool@justice.gov.uk"),
             Arguments.of("SSCS_LONDON_DAILY_HEARING_LIST", "sscsLondonDailyHearingList.json",
-                         "London First-tier Tribunal (Social Security and Child Support) Daily Hearing List",
+                         "London Social Security and Child Support Tribunal Daily Hearing List",
                          "sscsa-sutton@justice.gov.uk")
         );
     }
@@ -96,32 +95,30 @@ class SscsDailyHearingListFileConverterTest {
     private static Stream<Arguments> parametersWelsh() {
         return Stream.of(
             Arguments.of("SSCS_MIDLANDS_DAILY_HEARING_LIST", "sscsMidlandsDailyHearingList.json",
-                         "Rhestr o Wrandawiadau Dyddiol Tribiwnlys Haen Gyntaf "
-                             + "Canolbarth Lloegr (Nawdd Cymdeithasol a Chynnal Plant)",
+                         "Rhestr o Wrandawiadau Dyddiol y Tribiwnlys Nawdd Cymdeithasol a Chynnal Plant "
+                             + "Canolbarth Lloegr",
                          "ascbirmingham@justice.gov.uk"),
             Arguments.of("SSCS_SOUTH_EAST_DAILY_HEARING_LIST", "sscsSouthEastDailyHearingList.json",
-                         "Rhestr o Wrandawiadau Dyddiol Tribiwnlys Haen Gyntaf "
-                             + "De Ddwyrain Lloegr (Nawdd Cymdeithasol a Chynnal Plant)",
+                         "Rhestr o Wrandawiadau Dyddiol y Tribiwnlys Nawdd Cymdeithasol a Chynnal Plant De "
+                             + "Ddwyrain Lloegr",
                          "sscs_bradford@justice.gov.uk"),
             Arguments.of("SSCS_WALES_AND_SOUTH_WEST_DAILY_HEARING_LIST", "sscsWalesAndSouthWestDailyHearingList.json",
-                         "Rhestr o Wrandawiadau Dyddiol Tribiwnlys Haen Gyntaf Cymru a De "
-                             + "Orllewin Lloegr (Nawdd Cymdeithasol a Chynnal Plant)",
+                         "Rhestr o Wrandawiadau Dyddiol y Tribiwnlys Nawdd Cymdeithasol a Chynnal Plant Cymru a De "
+                             + "Orllewin Lloegr",
                          "sscsa-cardiff@justice.gov.uk"),
             Arguments.of("SSCS_SCOTLAND_DAILY_HEARING_LIST", "sscsScotlandDailyHearingList.json",
-                         "Rhestr o Wrandawiadau Dyddiol Tribiwnlys Haen Gyntaf Yr Alban "
-                             + "(Nawdd Cymdeithasol a Chynnal Plant)",
+                         "Rhestr o Wrandawiadau Dyddiol y Tribiwnlys Nawdd Cymdeithasol a Chynnal Plant Yr Alban",
                          "sscsa-glasgow@justice.gov.uk"),
             Arguments.of("SSCS_NORTH_EAST_DAILY_HEARING_LIST", "sscsNorthEastDailyHearingList.json",
-                         "Rhestr o Wrandawiadau Dyddiol Tribiwnlys Haen Gyntaf Gogledd "
-                             + "Ddwyrain Lloegr (Nawdd Cymdeithasol a Chymorth Plant)",
+                         "Rhestr o Wrandawiadau Dyddiol y Tribiwnlys Nawdd Cymdeithasol a Chynnal Plant Gogledd "
+                             + "Ddwyrain Lloegr",
                          "sscsa-leeds@justice.gov.uk"),
             Arguments.of("SSCS_NORTH_WEST_DAILY_HEARING_LIST", "sscsNorthWestDailyHearingList.json",
-                         "Rhestr o Wrandawiadau Dyddiol Nawdd Cymdeithasol a Chynnal Plant Gogledd "
-                             + "Orllewin Lloegr (Nawdd Cymdeithasol a Chynnal Plant)",
+                         "Rhestr o Wrandawiadau Dyddiol y Tribiwnlys Nawdd Cymdeithasol a Chynnal Plant Gogledd "
+                             + "Orllewin Lloegr",
                          "sscsa-liverpool@justice.gov.uk"),
             Arguments.of("SSCS_LONDON_DAILY_HEARING_LIST", "sscsLondonDailyHearingList.json",
-                         "Rhestr o Wrandawiadau Dyddiol Tribiwnlys Haen Gyntaf Llundain "
-                             + "(Nawdd Cymdeithasol a Chynnal Plant)",
+                         "Rhestr o Wrandawiadau Dyddiol y Tribiwnlys Nawdd Cymdeithasol a Chynnal Plant Llundain",
                          "sscsa-sutton@justice.gov.uk")
         );
     }
