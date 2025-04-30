@@ -20,7 +20,6 @@ import java.nio.charset.Charset;
 import java.util.Map;
 import java.util.Objects;
 
-import static uk.gov.hmcts.reform.pip.model.publication.ListType.INTELLECTUAL_PROPERTY_LIST_CHD_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.LONDON_CIRCUIT_COMMERCIAL_COURT_KB_DAILY_CAUSE_LIST;
 
 @ActiveProfiles("test")
@@ -150,7 +149,7 @@ class LondonCircuitCommercialCourtKbDailyCauseListFileConverterTest {
     }
 
     @Test
-    void LondonCircuitCommercialCourtKbDailyCauseListFileConversionInWelsh() throws IOException {
+    void testLondonCircuitCommercialCourtKbDailyCauseListFileConversionInWelsh() throws IOException {
         Map<String, Object> languageResource;
         try (InputStream languageFile = Thread.currentThread()
             .getContextClassLoader()
