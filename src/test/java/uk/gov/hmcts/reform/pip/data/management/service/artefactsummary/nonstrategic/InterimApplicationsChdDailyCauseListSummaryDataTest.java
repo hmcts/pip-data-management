@@ -60,7 +60,7 @@ class InterimApplicationsChdDailyCauseListSummaryDataTest {
         Map<String, String> summaryFields = summaryCases.getFirst();
         softly.assertThat(summaryFields)
             .as(SUMMARY_FIELDS_MESSAGE)
-            .hasSize(2);
+            .hasSize(3);
 
         List<String> keys = summaryFields.keySet()
             .stream()
@@ -71,6 +71,10 @@ class InterimApplicationsChdDailyCauseListSummaryDataTest {
             .isEqualTo("Time");
 
         softly.assertThat(keys.get(1))
+            .as(SUMMARY_FIELD_KEY_MESSAGE)
+            .isEqualTo("Case number");
+
+        softly.assertThat(keys.get(2))
             .as(SUMMARY_FIELD_KEY_MESSAGE)
             .isEqualTo("Case name");
 
@@ -83,6 +87,10 @@ class InterimApplicationsChdDailyCauseListSummaryDataTest {
             .isEqualTo("10:30am");
 
         softly.assertThat(values.get(1))
+            .as(SUMMARY_FIELD_VALUE_MESSAGE)
+            .isEqualTo("1234");
+
+        softly.assertThat(values.get(2))
             .as(SUMMARY_FIELD_VALUE_MESSAGE)
             .isEqualTo("This is a case name");
 
