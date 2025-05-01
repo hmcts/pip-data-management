@@ -14,8 +14,8 @@ import uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelpe
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.NoMatchArtefact;
+import uk.gov.hmcts.reform.pip.data.management.service.AccountManagementService;
 import uk.gov.hmcts.reform.pip.data.management.service.PublicationServicesService;
-import uk.gov.hmcts.reform.pip.data.management.service.SubscriptionManagementService;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -50,7 +50,7 @@ class ArtefactTriggerServiceTest {
     LocationRepository locationRepository;
 
     @Mock
-    SubscriptionManagementService subscriptionManagementService;
+    AccountManagementService accountManagementService;
 
     @Mock
     PublicationServicesService publicationServicesService;
@@ -124,7 +124,7 @@ class ArtefactTriggerServiceTest {
     @Test
     void testTriggerIfDateIsFuture() throws IOException {
         try (LogCaptor logCaptor = LogCaptor.forClass(ArtefactTriggerService.class)) {
-            artefactTriggerService.checkAndTriggerSubscriptionManagement(artefactInTheFuture);
+            artefactTriggerService.checkAndTriggerPublicationSubscription(artefactInTheFuture);
             assertEquals(
                 0,
                 logCaptor.getInfoLogs().size(),
@@ -137,39 +137,38 @@ class ArtefactTriggerServiceTest {
 
     @Test
     void testTriggerIfDateIsNow() {
-        when(subscriptionManagementService.sendArtefactForSubscription(artefactFromNow)).thenReturn(SUCCESSFUL_TRIGGER);
+        when(accountManagementService.sendArtefactForSubscription(artefactFromNow)).thenReturn(SUCCESSFUL_TRIGGER);
         try (LogCaptor logCaptor = LogCaptor.forClass(ArtefactTriggerService.class)) {
-            artefactTriggerService.checkAndTriggerSubscriptionManagement(artefactFromNow);
+            artefactTriggerService.checkAndTriggerPublicationSubscription(artefactFromNow);
             assertTrue(ERROR_LOG_EMPTY, logCaptor.getErrorLogs().isEmpty());
         }
     }
 
     @Test
     void testTriggerIfDateIsPast() {
-        when(subscriptionManagementService.sendArtefactForSubscription(artefactFromThePast)).thenReturn(
-            SUCCESSFUL_TRIGGER);
+        when(accountManagementService.sendArtefactForSubscription(artefactFromThePast)).thenReturn(SUCCESSFUL_TRIGGER);
         try (LogCaptor logCaptor = LogCaptor.forClass(ArtefactTriggerService.class)) {
-            artefactTriggerService.checkAndTriggerSubscriptionManagement(artefactFromThePast);
+            artefactTriggerService.checkAndTriggerPublicationSubscription(artefactFromThePast);
             assertTrue(ERROR_LOG_EMPTY, logCaptor.getErrorLogs().isEmpty());
         }
     }
 
     @Test
     void testTriggerIfDateToNull() {
-        when(subscriptionManagementService.sendArtefactForSubscription(artefactWithNullDateTo)).thenReturn(
-            SUCCESSFUL_TRIGGER);
+        when(accountManagementService.sendArtefactForSubscription(artefactWithNullDateTo))
+            .thenReturn(SUCCESSFUL_TRIGGER);
         try (LogCaptor logCaptor = LogCaptor.forClass(ArtefactTriggerService.class)) {
-            artefactTriggerService.checkAndTriggerSubscriptionManagement(artefactWithNullDateTo);
+            artefactTriggerService.checkAndTriggerPublicationSubscription(artefactWithNullDateTo);
             assertTrue(ERROR_LOG_EMPTY, logCaptor.getErrorLogs().isEmpty());
         }
     }
 
     @Test
     void testTriggerIfSameDateFromTo() {
-        when(subscriptionManagementService.sendArtefactForSubscription(artefactWithSameDateFromAndTo)).thenReturn(
-            SUCCESSFUL_TRIGGER);
+        when(accountManagementService.sendArtefactForSubscription(artefactWithSameDateFromAndTo))
+            .thenReturn(SUCCESSFUL_TRIGGER);
         try (LogCaptor logCaptor = LogCaptor.forClass(ArtefactTriggerService.class)) {
-            artefactTriggerService.checkAndTriggerSubscriptionManagement(artefactWithSameDateFromAndTo);
+            artefactTriggerService.checkAndTriggerPublicationSubscription(artefactWithSameDateFromAndTo);
             assertTrue(ERROR_LOG_EMPTY, logCaptor.getErrorLogs().isEmpty());
         }
     }
@@ -178,7 +177,7 @@ class ArtefactTriggerServiceTest {
     void testCheckNewlyActiveArtefactsLogs() throws IOException {
         try (LogCaptor logCaptor = LogCaptor.forClass(ArtefactTriggerService.class)) {
             when(artefactRepository.findArtefactsByDisplayFrom(any())).thenReturn(List.of(new Artefact()));
-            when(subscriptionManagementService.sendArtefactForSubscription(any())).thenReturn(SUCCESS);
+            when(accountManagementService.sendArtefactForSubscription(any())).thenReturn(SUCCESS);
             artefactTriggerService.checkNewlyActiveArtefacts();
             assertTrue(ERROR_LOG_EMPTY, logCaptor.getErrorLogs().isEmpty());
         } catch (Exception ex) {
