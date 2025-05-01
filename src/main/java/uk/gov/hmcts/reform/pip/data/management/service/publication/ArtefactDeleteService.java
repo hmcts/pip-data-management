@@ -16,7 +16,6 @@ import uk.gov.hmcts.reform.pip.data.management.service.AccountManagementService;
 import uk.gov.hmcts.reform.pip.data.management.service.LocationService;
 import uk.gov.hmcts.reform.pip.data.management.service.PublicationManagementService;
 import uk.gov.hmcts.reform.pip.data.management.service.PublicationServicesService;
-import uk.gov.hmcts.reform.pip.data.management.service.SubscriptionManagementService;
 import uk.gov.hmcts.reform.pip.model.account.PiUser;
 import uk.gov.hmcts.reform.pip.model.enums.UserActions;
 import uk.gov.hmcts.reform.pip.model.system.admin.ActionResult;
@@ -39,7 +38,6 @@ public class ArtefactDeleteService {
     private final LocationService locationService;
     private final PublicationManagementService publicationManagementService;
     private final AzureArtefactBlobService azureArtefactBlobService;
-    private final SubscriptionManagementService subscriptionManagementService;
     private final AccountManagementService accountManagementService;
     private final PublicationServicesService publicationServicesService;
 
@@ -47,7 +45,6 @@ public class ArtefactDeleteService {
                                  LocationService locationService,
                                  PublicationManagementService publicationManagementService,
                                  AzureArtefactBlobService azureArtefactBlobService,
-                                 SubscriptionManagementService subscriptionManagementService,
                                  AccountManagementService accountManagementService,
                                  PublicationServicesService publicationServicesService) {
         this.artefactRepository = artefactRepository;
@@ -55,7 +52,6 @@ public class ArtefactDeleteService {
         this.locationService = locationService;
         this.publicationManagementService = publicationManagementService;
         this.azureArtefactBlobService = azureArtefactBlobService;
-        this.subscriptionManagementService = subscriptionManagementService;
         this.accountManagementService = accountManagementService;
         this.publicationServicesService = publicationServicesService;
     }
@@ -73,7 +69,7 @@ public class ArtefactDeleteService {
 
         handleArtefactArchiving(artefactToArchive);
         if (!NoMatchArtefactHelper.isNoMatchLocationId(artefactToArchive.getLocationId())) {
-            subscriptionManagementService.sendDeletedArtefactForThirdParties(artefactToArchive);
+            accountManagementService.sendDeletedArtefactForThirdParties(artefactToArchive);
         }
         log.info(writeLog(String.format("Artefact archived by %s, with artefact id: %s", issuerId, artefactId)));
     }
@@ -173,7 +169,7 @@ public class ArtefactDeleteService {
         deleteDataFromBlobStore(artefact);
         artefactRepository.delete(artefact);
         if (!NoMatchArtefactHelper.isNoMatchLocationId(artefact.getLocationId())) {
-            subscriptionManagementService.sendDeletedArtefactForThirdParties(artefact);
+            accountManagementService.sendDeletedArtefactForThirdParties(artefact);
         }
     }
 
