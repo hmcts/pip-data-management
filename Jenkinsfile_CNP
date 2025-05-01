@@ -20,8 +20,8 @@ def setupTestSecrets() {
       secret('app-tenant', 'TENANT_ID'),
       secret('test-user-id', 'TEST_USER_ID'),
       secret('test-system-admin-id', 'SYSTEM_ADMIN_ID'),
-      secret('app-pip-subscription-management-id', 'CLIENT_ID_FT'),
-      secret('app-pip-subscription-management-pwd', 'CLIENT_SECRET_FT')
+      secret('app-pip-account-management-id', 'CLIENT_ID_FT'),
+      secret('app-pip-account-management-pwd', 'CLIENT_SECRET_FT')
     ]) {
     env.APP_URI = "${APP_URI}"
     env.SYSTEM_ADMIN_ID = "${SYSTEM_ADMIN_ID}"
