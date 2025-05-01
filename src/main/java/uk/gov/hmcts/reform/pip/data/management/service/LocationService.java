@@ -61,8 +61,6 @@ public class LocationService {
 
     private final ArtefactRepository artefactRepository;
 
-    private final SubscriptionManagementService subscriptionManagementService;
-
     private final AccountManagementService accountManagementService;
 
     private final PublicationServicesService publicationService;
@@ -71,13 +69,11 @@ public class LocationService {
 
     public LocationService(LocationRepository locationRepository,
                            ArtefactRepository artefactRepository,
-                           SubscriptionManagementService subscriptionManagementService,
                            AccountManagementService accountManagementService,
                            PublicationServicesService publicationService,
                            ValidationService validationService) {
         this.locationRepository = locationRepository;
         this.artefactRepository = artefactRepository;
-        this.subscriptionManagementService = subscriptionManagementService;
         this.accountManagementService = accountManagementService;
         this.publicationService = publicationService;
         this.validationService = validationService;
@@ -319,7 +315,7 @@ public class LocationService {
         throws JsonProcessingException {
         LocationDeletion locationDeletion = new LocationDeletion();
         String result =
-            subscriptionManagementService.findSubscriptionsByLocationId(location.getLocationId().toString());
+            accountManagementService.findSubscriptionsByLocationId(location.getLocationId().toString());
         if (!result.isEmpty()
             && !result.contains("404")) {
             JsonNode node = new ObjectMapper().readTree(result);

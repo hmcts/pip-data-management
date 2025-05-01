@@ -63,9 +63,6 @@ class LocationServiceTest {
     private ArtefactRepository artefactRepository;
 
     @Mock
-    private SubscriptionManagementService subscriptionManagementService;
-
-    @Mock
     private AccountManagementService accountManagementService;
 
     @Mock
@@ -636,7 +633,7 @@ class LocationServiceTest {
             .thenReturn(piUser);
         when(artefactRepository.findActiveArtefactsForLocation(any(), eq(locationId.toString())))
             .thenReturn(List.of());
-        when(subscriptionManagementService.findSubscriptionsByLocationId(locationId.toString()))
+        when(accountManagementService.findSubscriptionsByLocationId(locationId.toString()))
             .thenReturn("[]");
         when(accountManagementService.getAllAccounts(PI_AAD_PROVENANCE, SYSTEM_ADMIN))
             .thenReturn(List.of(EMAIL));
@@ -691,7 +688,7 @@ class LocationServiceTest {
             .thenReturn(piUser);
         when(artefactRepository.findActiveArtefactsForLocation(any(), eq(locationId.toString())))
             .thenReturn(List.of());
-        when(subscriptionManagementService.findSubscriptionsByLocationId(locationId.toString()))
+        when(accountManagementService.findSubscriptionsByLocationId(locationId.toString()))
             .thenReturn("[{},{}]");
         when(accountManagementService.getAllAccounts(PI_AAD_PROVENANCE, SYSTEM_ADMIN))
             .thenReturn(List.of(EMAIL));
