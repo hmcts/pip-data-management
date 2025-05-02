@@ -388,7 +388,7 @@ class PublicationControllerTest {
             SENSITIVITY, LANGUAGE, DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, LOCATION_ID, CONTENT_DATE, TEST_STRING, FILE
         );
 
-        verify(artefactTriggerService).checkAndTriggerSubscriptionManagement(any(Artefact.class));
+        verify(artefactTriggerService).checkAndTriggerPublicationSubscription(any(Artefact.class));
 
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode(), STATUS_CODE_MATCH);
         assertEquals(artefactWithId, responseEntity.getBody(), ARTEFACT_MATCH_MESSAGE);
@@ -413,7 +413,7 @@ class PublicationControllerTest {
             SENSITIVITY, LANGUAGE, DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, LOCATION_ID, CONTENT_DATE, TEST_STRING, FILE
         );
 
-        verify(artefactTriggerService, never()).checkAndTriggerSubscriptionManagement(any(Artefact.class));
+        verify(artefactTriggerService, never()).checkAndTriggerPublicationSubscription(any(Artefact.class));
 
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode(), STATUS_CODE_MATCH);
         assertEquals(artefactWithNoMatchLocationId, responseEntity.getBody(), ARTEFACT_MATCH_MESSAGE);
@@ -564,7 +564,7 @@ class PublicationControllerTest {
     }
 
     @Test
-    void testMiV2ReturnsSuccessfully() {
+    void testMiDataReturnsSuccessfully() {
         PublicationMiData publicationMiData = new PublicationMiData(
             UUID.randomUUID(), LocalDateTime.now(), LocalDateTime.now(), Language.ENGLISH, "MANUAL_UPLOAD",
             Sensitivity.PUBLIC, UUID.randomUUID().toString(), 0, ArtefactType.GENERAL_PUBLICATION,
@@ -575,9 +575,9 @@ class PublicationControllerTest {
             Sensitivity.PUBLIC, UUID.randomUUID().toString(), 1, ArtefactType.GENERAL_PUBLICATION,
             LocalDateTime.now(), "NoMatch2", ListType.CIVIL_DAILY_CAUSE_LIST);
 
-        when(publicationService.getMiDataV2()).thenReturn(List.of(publicationMiData, publicationMiData2));
+        when(publicationService.getMiData()).thenReturn(List.of(publicationMiData, publicationMiData2));
 
-        ResponseEntity<List<PublicationMiData>> response = publicationController.getMiDataV2();
+        ResponseEntity<List<PublicationMiData>> response = publicationController.getMiData();
 
         assertEquals(HttpStatus.OK, response.getStatusCode(), STATUS_CODE_MATCH);
         assertThat(response.getBody()).containsExactlyInAnyOrder(publicationMiData, publicationMiData2);
