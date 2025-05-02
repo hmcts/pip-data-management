@@ -821,7 +821,7 @@ class LocationApiTest extends IntegrationTestBase {
         when(accountManagementService.getUserById(USER_ID)).thenReturn(piUser);
         when(accountManagementService.getAllAccounts(anyString(), eq(SYSTEM_ADMIN.toString())))
             .thenReturn(List.of(EMAIL));
-        when(subscriptionManagementService.findSubscriptionsByLocationId(any()))
+        when(accountManagementService.findSubscriptionsByLocationId(any()))
             .thenReturn(Collections.emptyList().toString());
 
         List<Location> createdLocations = createLocations(DELETE_LOCATIONS_CSV);
