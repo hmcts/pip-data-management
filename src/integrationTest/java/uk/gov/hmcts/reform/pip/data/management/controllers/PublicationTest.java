@@ -87,7 +87,7 @@ class PublicationTest extends IntegrationTestBase {
     private static final String SEND_NEW_ARTEFACTS_FOR_SUBSCRIPTION_URL = PUBLICATION_URL + "/latest/subscription";
     private static final String COUNT_ENDPOINT = PUBLICATION_URL + "/count-by-location";
     private static final String REPORT_NO_MATCH_ARTEFACTS_URL = PUBLICATION_URL + "/no-match/reporting";
-    private static final String MI_REPORTING_DATA_URL_V2 = PUBLICATION_URL + "/v2/mi-data";
+    private static final String MI_REPORTING_DATA_URL = PUBLICATION_URL + "/mi-data";
     private static final String ARCHIVE_EXPIRED_ARTEFACTS_URL = PUBLICATION_URL + "/expired";
     private static final ArtefactType ARTEFACT_TYPE = ArtefactType.LIST;
     private static final Sensitivity SENSITIVITY = Sensitivity.PUBLIC;
@@ -1913,11 +1913,11 @@ class PublicationTest extends IntegrationTestBase {
     }
 
     @Test
-    void testGetMiDataV2Success() throws Exception {
+    void testGetMiDataSuccess() throws Exception {
         Artefact artefact = createDailyList(Sensitivity.PUBLIC);
 
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-            .get(MI_REPORTING_DATA_URL_V2)
+            .get(MI_REPORTING_DATA_URL)
             .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID);
 
         MvcResult responseMiData = mockMvc.perform(request).andExpect(status().isOk()).andReturn();
@@ -1936,11 +1936,11 @@ class PublicationTest extends IntegrationTestBase {
     }
 
     @Test
-    void testGetMiDataV2SuccessWithNoMatch() throws Exception {
+    void testGetMiDataSuccessWithNoMatch() throws Exception {
         Artefact artefact = createSscsDailyList(Sensitivity.PUBLIC, "UnknownProvenance");
 
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-            .get(MI_REPORTING_DATA_URL_V2)
+            .get(MI_REPORTING_DATA_URL)
             .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID);
 
         MvcResult responseMiData = mockMvc.perform(request).andExpect(status().isOk()).andReturn();
@@ -1960,13 +1960,13 @@ class PublicationTest extends IntegrationTestBase {
     }
 
     @Test
-    void testGetMiDataV2SuccessWithCourtIdThatDoesNotExist() throws Exception {
+    void testGetMiDataSuccessWithCourtIdThatDoesNotExist() throws Exception {
         Artefact artefact = createDailyList(Sensitivity.PUBLIC, LocalDateTime.now(),
                                                    LocalDateTime.now(), LocalDateTime.now(),
                                                    PROVENANCE, "12345");
 
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-            .get(MI_REPORTING_DATA_URL_V2);
+            .get(MI_REPORTING_DATA_URL);
 
         MvcResult responseMiData = mockMvc.perform(request).andExpect(status().isOk()).andReturn();
         assertNotNull(responseMiData.getResponse(), VALIDATION_MI_REPORT);

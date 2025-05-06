@@ -58,7 +58,7 @@ class PublicationTest extends FunctionalTestBase {
     private static final String ARTEFACT_BY_LOCATION_ID_URL = PUBLICATION_URL + "/locationId/";
     private static final String ARTEFACT_BY_SEARCH_VALUE_URL = PUBLICATION_URL + "/search/";
     private static final String DELETE_ARTEFACTS_BY_LOCATION_ID = PUBLICATION_URL + "/%s/deleteArtefacts";
-    private static final String MI_DATA_URL = PUBLICATION_URL + "/v2/mi-data";
+    private static final String MI_DATA_URL = PUBLICATION_URL + "/mi-data";
 
 
     private static final String TESTING_SUPPORT_LOCATION_URL = "/testing-support/location/";
@@ -531,7 +531,7 @@ class PublicationTest extends FunctionalTestBase {
     }
 
     @Test
-    void testGetMiDataV2() throws IOException {
+    void testGetMiData() throws IOException {
         Artefact returnedArtefact = uploadArtefact(getJsonString(), courtId, Sensitivity.CLASSIFIED, PROVENANCE);
         Artefact returnedNomatchArtefact = uploadArtefact(
             getJsonString(),
