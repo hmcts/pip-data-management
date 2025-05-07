@@ -38,10 +38,10 @@ class PropertyTrustsProbateListChdDailyCauseListSummaryDataTest {
         );
 
         JsonNode payload = new ObjectMapper().readTree(writer.toString());
-        ArtefactSummaryData cstSummaryData = new ListConversionFactory()
+        ArtefactSummaryData summaryData = new ListConversionFactory()
             .getArtefactSummaryData(PROPERTY_TRUSTS_PROBATE_LIST_CHD_DAILY_CAUSE_LIST)
             .get();
-        Map<String, List<Map<String, String>>> output = cstSummaryData.get(payload);
+        Map<String, List<Map<String, String>>> output = summaryData.get(payload);
 
         SoftAssertions softly = new SoftAssertions();
 
