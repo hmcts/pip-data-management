@@ -194,7 +194,7 @@ public class PublicationController {
         Artefact createdItem = publicationCreationRunner.run(artefact, payload, true);
         logManualUpload(publicationService.maskEmail(issuerEmail), createdItem.getArtefactId().toString());
 
-        // Process the created artefact to generate PDF/Excel files and check/trigger subscription management
+        // Process the created artefact to generate PDF/Excel files and check/trigger the subscription process
         if (!NoMatchArtefactHelper.isNoMatchLocationId(createdItem.getLocationId())) {
             publicationService.processCreatedPublication(createdItem, payload);
         }
@@ -263,7 +263,7 @@ public class PublicationController {
         logManualUpload(publicationService.maskEmail(issuerEmail), createdItem.getArtefactId().toString());
 
         if (!NoMatchArtefactHelper.isNoMatchLocationId(createdItem.getLocationId())) {
-            artefactTriggerService.checkAndTriggerSubscriptionManagement(artefact);
+            artefactTriggerService.checkAndTriggerPublicationSubscription(artefact);
         }
 
         return ResponseEntity.status(HttpStatus.CREATED).body(createdItem);
@@ -326,7 +326,7 @@ public class PublicationController {
         Artefact createdItem = publicationCreationRunner.run(artefact, payload, false);
         logManualUpload(publicationService.maskEmail(issuerEmail), createdItem.getArtefactId().toString());
 
-        // Process the created artefact to generate PDF and check/trigger subscription management
+        // Process the created artefact to generate PDF and check/trigger the subscription process
         if (!NoMatchArtefactHelper.isNoMatchLocationId(createdItem.getLocationId())) {
             publicationService.processCreatedPublication(createdItem, payload);
         }
@@ -478,11 +478,11 @@ public class PublicationController {
     @ApiResponse(responseCode = UNAUTHORISED_CODE, description = UNAUTHORISED_MESSAGE)
     @ApiResponse(responseCode = FORBIDDEN_CODE, description = FORBIDDEN_MESSAGE)
     @Operation(summary = "Returns MI data for artefacts")
-    @GetMapping("/v2/mi-data")
+    @GetMapping("/mi-data")
     @IsAdmin
     @SecurityRequirement(name = BEARER_AUTHENTICATION)
-    public ResponseEntity<List<PublicationMiData>> getMiDataV2() {
-        return ResponseEntity.ok().body(publicationService.getMiDataV2());
+    public ResponseEntity<List<PublicationMiData>> getMiData() {
+        return ResponseEntity.ok().body(publicationService.getMiData());
     }
 
     @ApiResponse(responseCode = NO_CONTENT_CODE, description = NO_CONTENT_DESCRIPTION)
