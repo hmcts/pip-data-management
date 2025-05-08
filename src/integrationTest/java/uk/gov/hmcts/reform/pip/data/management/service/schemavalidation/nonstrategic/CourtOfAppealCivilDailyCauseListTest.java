@@ -14,6 +14,7 @@ import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.PayloadValidationException;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.HeaderGroup;
 import uk.gov.hmcts.reform.pip.data.management.service.ValidationService;
+import uk.gov.hmcts.reform.pip.data.management.utils.IntegrationBasicTestBase;
 import uk.gov.hmcts.reform.pip.model.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
@@ -28,7 +29,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 @ActiveProfiles("integration-basic")
 @SpringBootTest
-class CourtOfAppealCivilDailyCauseListTest {
+class CourtOfAppealCivilDailyCauseListTest extends IntegrationBasicTestBase {
 
     @Autowired
     ValidationService validationService;
@@ -46,6 +47,8 @@ class CourtOfAppealCivilDailyCauseListTest {
     private static final ArtefactType ARTEFACT_TYPE = ArtefactType.LIST;
     private static final String COURT_ID = "123";
     private static final LocalDateTime CONTENT_DATE = LocalDateTime.now();
+    private static final String HEARING_LIST_FIELD = "hearingList";
+    private static final String FUTURE_JUDGMENTS_FIELD = "futureJudgments";
 
     private HeaderGroup headerGroup;
 
@@ -68,7 +71,7 @@ class CourtOfAppealCivilDailyCauseListTest {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(0)).remove("venue");
+            ((ObjectNode) node.get(HEARING_LIST_FIELD).get(0)).remove("venue");
 
             assertThatExceptionOfType(PayloadValidationException.class)
                 .as(INVALID_MESSAGE)
@@ -83,7 +86,7 @@ class CourtOfAppealCivilDailyCauseListTest {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(0)).remove("judge");
+            ((ObjectNode) node.get(HEARING_LIST_FIELD).get(0)).remove("judge");
 
             assertThatExceptionOfType(PayloadValidationException.class)
                 .as(INVALID_MESSAGE)
@@ -98,7 +101,7 @@ class CourtOfAppealCivilDailyCauseListTest {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(0)).remove("time");
+            ((ObjectNode) node.get(HEARING_LIST_FIELD).get(0)).remove("time");
 
             assertThatExceptionOfType(PayloadValidationException.class)
                 .as(INVALID_MESSAGE)
@@ -113,7 +116,7 @@ class CourtOfAppealCivilDailyCauseListTest {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(0)).remove("caseNumber");
+            ((ObjectNode) node.get(HEARING_LIST_FIELD).get(0)).remove("caseNumber");
 
             assertThatExceptionOfType(PayloadValidationException.class)
                 .as(INVALID_MESSAGE)
@@ -128,7 +131,7 @@ class CourtOfAppealCivilDailyCauseListTest {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(0)).remove("caseDetails");
+            ((ObjectNode) node.get(HEARING_LIST_FIELD).get(0)).remove("caseDetails");
 
             assertThatExceptionOfType(PayloadValidationException.class)
                 .as(INVALID_MESSAGE)
@@ -143,7 +146,7 @@ class CourtOfAppealCivilDailyCauseListTest {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(0)).remove("hearingType");
+            ((ObjectNode) node.get(HEARING_LIST_FIELD).get(0)).remove("hearingType");
 
             assertThatExceptionOfType(PayloadValidationException.class)
                 .as(INVALID_MESSAGE)
@@ -158,7 +161,112 @@ class CourtOfAppealCivilDailyCauseListTest {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(0)).remove("additionalInformation");
+            ((ObjectNode) node.get(HEARING_LIST_FIELD).get(0)).remove("additionalInformation");
+
+            assertThatExceptionOfType(PayloadValidationException.class)
+                .as(INVALID_MESSAGE)
+                .isThrownBy(() -> validationService.validateBody(node.toString(), headerGroup, false));
+        }
+    }
+
+    @Test
+    void testValidateWithErrorsWhenFutureJudgmentsVenueMissingInList() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream(VALID_JSON)) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            JsonNode node = getJsonNode(text);
+            ((ObjectNode) node.get(FUTURE_JUDGMENTS_FIELD).get(0)).remove("venue");
+
+            assertThatExceptionOfType(PayloadValidationException.class)
+                .as(INVALID_MESSAGE)
+                .isThrownBy(() -> validationService.validateBody(node.toString(), headerGroup, false));
+        }
+    }
+
+    @Test
+    void testValidateWithErrorsWhenFutureJudgmentsJudgeMissingInList() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream(VALID_JSON)) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            JsonNode node = getJsonNode(text);
+            ((ObjectNode) node.get(FUTURE_JUDGMENTS_FIELD).get(0)).remove("judge");
+
+            assertThatExceptionOfType(PayloadValidationException.class)
+                .as(INVALID_MESSAGE)
+                .isThrownBy(() -> validationService.validateBody(node.toString(), headerGroup, false));
+        }
+    }
+
+    @Test
+    void testValidateWithErrorsWhenFutureJudgmentsTimeMissingInList() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream(VALID_JSON)) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            JsonNode node = getJsonNode(text);
+            ((ObjectNode) node.get(FUTURE_JUDGMENTS_FIELD).get(0)).remove("time");
+
+            assertThatExceptionOfType(PayloadValidationException.class)
+                .as(INVALID_MESSAGE)
+                .isThrownBy(() -> validationService.validateBody(node.toString(), headerGroup, false));
+        }
+    }
+
+    @Test
+    void testValidateWithErrorsWhenFutureJudgmentsCaseNumberMissingInList() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream(VALID_JSON)) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            JsonNode node = getJsonNode(text);
+            ((ObjectNode) node.get(FUTURE_JUDGMENTS_FIELD).get(0)).remove("caseNumber");
+
+            assertThatExceptionOfType(PayloadValidationException.class)
+                .as(INVALID_MESSAGE)
+                .isThrownBy(() -> validationService.validateBody(node.toString(), headerGroup, false));
+        }
+    }
+
+    @Test
+    void testValidateWithErrorsWhenFutureJudgmentsCaseDetailsMissingInList() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream(VALID_JSON)) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            JsonNode node = getJsonNode(text);
+            ((ObjectNode) node.get(FUTURE_JUDGMENTS_FIELD).get(0)).remove("caseDetails");
+
+            assertThatExceptionOfType(PayloadValidationException.class)
+                .as(INVALID_MESSAGE)
+                .isThrownBy(() -> validationService.validateBody(node.toString(), headerGroup, false));
+        }
+    }
+
+    @Test
+    void testValidateWithErrorsWhenFutureJudgmentsHearingTypeMissingInList() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream(VALID_JSON)) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            JsonNode node = getJsonNode(text);
+            ((ObjectNode) node.get(FUTURE_JUDGMENTS_FIELD).get(0)).remove("hearingType");
+
+            assertThatExceptionOfType(PayloadValidationException.class)
+                .as(INVALID_MESSAGE)
+                .isThrownBy(() -> validationService.validateBody(node.toString(), headerGroup, false));
+        }
+    }
+
+    @Test
+    void testValidateWithErrorsWhenFutureJudgmentsAdditionalInformationMissingInList() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream(VALID_JSON)) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            JsonNode node = getJsonNode(text);
+            ((ObjectNode) node.get(FUTURE_JUDGMENTS_FIELD).get(0)).remove("additionalInformation");
 
             assertThatExceptionOfType(PayloadValidationException.class)
                 .as(INVALID_MESSAGE)
