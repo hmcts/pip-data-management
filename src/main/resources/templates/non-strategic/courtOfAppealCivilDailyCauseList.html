@@ -58,8 +58,8 @@
             margin-bottom: 15px;
         }
 
-        .govuk-\!-padding-top-5 {
-            padding-top: 25px !important;
+        .govuk-\!-padding-top-6 {
+            padding-top: 30px !important;
         }
 
         .govuk-\!-padding-bottom-3 {
@@ -156,8 +156,11 @@
         </summary>
         <div class="govuk-details__text">
             <p class="govuk-body govuk-!-font-weight-bold" th:text="${i18n.liveStreamingHeading}"/>
-            <span class="govuk-body" th:text="${i18n.importantInformationLine1}" /> <a th:href="${i18n.liveStreamLink}" class="govuk-link" th:title="${i18n.liveStreamLinkText}" th:text="${i18n.liveStreamLinkText}" />
-            <span class="govuk-body" th:text="${i18n.importantInformationLine2}" /> <a th:href="${i18n.liveStreamLink}" class="govuk-link" th:title="${i18n.liveStreamLinkText}" th:text="${i18n.liveStreamLinkText}" /> <p class="govuk-body govuk-!-padding-bottom-3" th:text="${i18n.importantInformationLine3}"/>
+
+            <p class="govuk-body"><span th:text="${i18n.importantInformationLine1}" /> <a th:href="${i18n.liveStreamLink}" class="govuk-link" th:title="${i18n.liveStreamLinkText}" th:text="${i18n.liveStreamLinkText}" /></p>
+
+            <p class="govuk-body govuk-!-padding-bottom-3"><span th:text="${i18n.importantInformationLine2}" /> <a th:href="${i18n.liveStreamLink}" class="govuk-link" th:title="${i18n.liveStreamLinkText}" th:text="${i18n.liveStreamLinkText}" /> <span th:text="${i18n.importantInformationLine3}"/></p>
+
             <p class="govuk-body govuk-!-font-weight-bold" th:text="${i18n.handlingDownJudgementHeading}"/>
             <p class="govuk-body" th:text="${i18n.importantInformationLine4}"/>
         </div>
@@ -185,7 +188,7 @@
             </tbody>
         </table>
 
-        <h2 id="future-judgements-heading" class="govuk-heading-m govuk-!-padding-top-5" th:text="${i18n.futureJudgementsNotice}"/>
+        <h2 id="future-judgements-heading" class="govuk-heading-m govuk-!-padding-top-6" th:text="${i18n.futureJudgementsNotice}"/>
         <table class="govuk-table">
             <thead class="govuk-table__header">
             <tr>
