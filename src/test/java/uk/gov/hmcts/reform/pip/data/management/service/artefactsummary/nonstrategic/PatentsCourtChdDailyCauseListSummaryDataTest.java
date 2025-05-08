@@ -38,10 +38,10 @@ class PatentsCourtChdDailyCauseListSummaryDataTest {
         );
 
         JsonNode payload = new ObjectMapper().readTree(writer.toString());
-        ArtefactSummaryData cstSummaryData = new ListConversionFactory()
+        ArtefactSummaryData summaryData = new ListConversionFactory()
             .getArtefactSummaryData(PATENTS_COURT_CHD_DAILY_CAUSE_LIST)
             .get();
-        Map<String, List<Map<String, String>>> output = cstSummaryData.get(payload);
+        Map<String, List<Map<String, String>>> output = summaryData.get(payload);
 
         SoftAssertions softly = new SoftAssertions();
 
