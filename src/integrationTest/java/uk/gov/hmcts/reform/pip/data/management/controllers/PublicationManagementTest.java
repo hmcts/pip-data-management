@@ -915,6 +915,26 @@ class PublicationManagementTest extends IntegrationTestBase {
     }
 
     @Test
+    void testGenerateArtefactSummaryCourtOfAppealCivilDailyCauseList() throws Exception {
+        Artefact artefact = createNonStrategicPublication(
+            ListType.COURT_OF_APPEAL_CIVIL_DAILY_CAUSE_LIST, NON_STRATEGIC_FILES_LOCATION
+                + "court-of-appeal-civil-daily-cause-list/courtOfAppealCivilDailyCauseList.xlsx"
+        );
+
+        byte[] jsonData = getTestData(NON_STRATEGIC_FILES_LOCATION
+                                          + "court-of-appeal-civil-daily-cause-list/"
+                                          + "courtOfAppealCivilDailyCauseList.json");
+        when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(jsonData));
+
+        MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, artefact.getArtefactId())))
+            .andExpect(status().isOk()).andReturn();
+
+        String responseContent = response.getResponse().getContentAsString();
+        assertTrue(responseContent.contains("Time - 9am"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains("Case number - 12345"), CONTENT_MISMATCH_ERROR);
+    }
+
+    @Test
     void testGenerateArtefactSummaryNotFound() throws Exception {
         MvcResult mvcResult = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, ARTEFACT_ID_NOT_FOUND)))
             .andExpect(status().isNotFound()).andReturn();

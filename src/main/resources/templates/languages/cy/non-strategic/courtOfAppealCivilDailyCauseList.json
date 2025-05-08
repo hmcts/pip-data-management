@@ -1,0 +1,34 @@
+{
+  "listName": "Rhestr Achosion Dyddiol y Llys Apêl (Adran Sifil)",
+  "venueName": "Royal Courts of Justice",
+  "addressLine1": "Strand, London",
+  "addressLine2": "WC2A 2LL",
+  "importantInformationLine1": "Mae'r rhan fwyaf o achosion yn y Llys Apêl (Adran Sifil) bellach yn cael eu ffrydio'n fyw. Mae rhagor o wybodaeth am wrandawiadau i'w ffrydio'n fyw ar gael yn ",
+  "importantInformationLine2": "I weld ffrwd byw cliciwch ar deitl yr achos yn ",
+  "importantInformationLine3": " Nid oes angen gofyn am ganiatâd gan y Llys.",
+  "importantInformationLine4": "Mae'r rhan fwyaf o ddyfarniadau a gedwir yn ôl yn cael eu cyflwyno o bell, trwy gylchrediad i'r partïon neu eu cynrychiolwyr trwy e-bost a'u cyhoeddi ar Wefan yr Archifau Cenedlaethol ond weithiau byddant yn cael eu traddodi yn y Llys. Yn y naill achos neu'r llall, bydd hysbysiad ymlaen llaw yn cael ei gyhoeddi yn y rhestr achosion.",
+  "liveStreamingHeading": "Ffrydio gwrandawiadau yn y Llysoedd Barn Brenhinol",
+  "handlingDownJudgementHeading": "Traddodi dyfarniadau",
+  "liveStreamLink": "https://www.judiciary.uk/the-court-of-appeal-civil-division-live-streaming-of-court-hearings/",
+  "liveStreamLinkText": "Llys Apêl (Adran Sifil) Ffrwd byw.",
+  "futureJudgementsNotice": "Notice for future judgments",
+  "tableHeaders": [
+    "Lleoliad",
+    "Barnwr",
+    "Amser",
+    "Rhif yr achos",
+    "Manylion yr achos",
+    "Math o wrandawiad",
+    "Gwybodaeth ychwanegol"
+  ],
+  "futureJudgementTableHeaders": [
+    "Dyddiad",
+    "Lleoliad",
+    "Barnwr",
+    "Amser",
+    "Rhif yr achos",
+    "Manylion yr achos",
+    "Math o wrandawiad",
+    "Gwybodaeth ychwanegol"
+  ]
+}

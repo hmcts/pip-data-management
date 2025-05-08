@@ -10,6 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.AST_DAILY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.COURT_OF_APPEAL_CIVIL_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.CST_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.FTT_LR_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.FTT_TAX_WEEKLY_HEARING_LIST;
@@ -120,7 +121,10 @@ public final class NonStrategicListFormatter {
         Map.entry(SSCS_LONDON_DAILY_HEARING_LIST,
                   Map.of(HEARING_TIME, NonStrategicFieldFormattingHelper::formatTimeField)),
         Map.entry(INTERIM_APPLICATIONS_CHD_DAILY_CAUSE_LIST,
-                  Map.of(TIME, NonStrategicFieldFormattingHelper::formatTimeField))
+                  Map.of(TIME, NonStrategicFieldFormattingHelper::formatTimeField)),
+        Map.entry(COURT_OF_APPEAL_CIVIL_DAILY_CAUSE_LIST,
+                  Map.of(TIME, NonStrategicFieldFormattingHelper::formatTimeField,
+                         DATE, NonStrategicFieldFormattingHelper::formatDateField))
     );
 
     private NonStrategicListFormatter() {
