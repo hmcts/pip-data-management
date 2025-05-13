@@ -46,19 +46,26 @@ public class NonStrategicListFileConverter implements FileConverter {
         }
         resourceName = "non-strategic/" + UPPER_UNDERSCORE.to(LOWER_CAMEL, listType);
         languageResources.putAll(LanguageResourceHelper.readResourcesFromPath(resourceName, language));
-        languageResources.putAll(LanguageResourceHelper.readResourcesFromPath("common/nonStrategicCommon",
-                                                                              language));
+        languageResources.putAll(LanguageResourceHelper.readResourcesFromPath("common/nonStrategicCommon", language));
 
-        Iterator<Map.Entry<String, JsonNode>> fields = payload.fields();
-        while (fields.hasNext()) {
-            Map.Entry<String, JsonNode> entry = fields.next();
-            String sheetName = entry.getKey();
-            JsonNode sheetData = entry.getValue();
-            List<Map<String, String>> sheetList = OBJECT_MAPPER.convertValue(sheetData, new TypeReference<>(){});
-            List<Map<String, String>> formattedSheetData = NonStrategicListFormatter.formatAllFields(
-                sheetList, ListType.valueOf(listType)
+        try {
+            List<Map<String, String>> data = OBJECT_MAPPER.convertValue(payload, new TypeReference<>(){});
+            List<Map<String, String>> formattedData = NonStrategicListFormatter.formatAllFields(
+                data, ListType.valueOf(listType)
             );
-            context.setVariable(sheetName, formattedSheetData);
+            context.setVariable("data", formattedData);
+        } catch (IllegalArgumentException e) {
+            Iterator<Map.Entry<String, JsonNode>> fields = payload.fields();
+            while (fields.hasNext()) {
+                Map.Entry<String, JsonNode> entry = fields.next();
+                String sheetName = entry.getKey();
+                JsonNode sheetData = entry.getValue();
+                List<Map<String, String>> sheetList = OBJECT_MAPPER.convertValue(sheetData, new TypeReference<>(){});
+                List<Map<String, String>> formattedSheetData = NonStrategicListFormatter.formatAllFields(
+                    sheetList, ListType.valueOf(listType)
+                );
+                context.setVariable(sheetName, formattedSheetData);
+            }
         }
 
         return TemplateEngine.processNonStrategicTemplate(listType, context);
