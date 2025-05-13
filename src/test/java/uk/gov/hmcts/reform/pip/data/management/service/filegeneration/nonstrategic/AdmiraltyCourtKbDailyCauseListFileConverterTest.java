@@ -261,7 +261,7 @@ class AdmiraltyCourtKbDailyCauseListFileConverterTest {
 
         softly.assertThat(document.getElementById(IMPORTANT_INFORMATION_HEADING_2).text())
             .as(BODY_MESSAGE)
-            .isEqualTo("Remote hearings before the Admiralty Registrar");
+            .isEqualTo("Gwrandawiadau o bell gerbron Cofrestrydd y Morlys");
 
         softly.assertThat(document.getElementById(IMPORTANT_INFORMATION_ELEMENT_2).text())
             .as(IMPORTANT_INFORMATION_MESSAGE)
