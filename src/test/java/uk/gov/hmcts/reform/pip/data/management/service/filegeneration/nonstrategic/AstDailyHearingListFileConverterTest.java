@@ -56,6 +56,7 @@ class AstDailyHearingListFileConverterTest {
     private static final String IMPORTANT_INFORMATION_MESSAGE = "Important information heading does not match";
     private static final String BODY_MESSAGE = "Body does not match";
     private static final String TABLE_HEADERS_MESSAGE = "Table headers does not match";
+    private static final String TABLE_CONTENT_MESSAGE = "Table content does not match";
 
     private final NonStrategicListFileConverter converter = new NonStrategicListFileConverter();
 
@@ -122,7 +123,7 @@ class AstDailyHearingListFileConverterTest {
             .as(LAST_UPDATED_DATE_MESSAGE)
             .isEqualTo("Last updated 19 February 2025 at 9:30am");
 
-        softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).get(0).text())
+        softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).getFirst().text())
             .as(IMPORTANT_INFORMATION_MESSAGE)
             .isEqualTo("Important information");
 
@@ -150,6 +151,25 @@ class AstDailyHearingListFileConverterTest {
                 "Hearing type",
                 "Hearing time",
                 "Additional information"
+            );
+
+        softly.assertThat(document.getElementsByTag("td"))
+            .as(TABLE_CONTENT_MESSAGE)
+            .hasSize(12)
+            .extracting(Element::text)
+            .containsExactly(
+                "Appellant A",
+                "12345",
+                "Case type A",
+                "Hearing type A",
+                "10:30am",
+                "This is additional information",
+                "Appellant B",
+                "12346",
+                "Case type B",
+                "Hearing type B",
+                "11am",
+                "This is another additional information"
             );
 
         softly.assertAll();
@@ -194,7 +214,7 @@ class AstDailyHearingListFileConverterTest {
             .as(LAST_UPDATED_DATE_MESSAGE)
             .isEqualTo("Diweddarwyd ddiwethaf 19 February 2025 am 9:30am");
 
-        softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).get(0).text())
+        softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).getFirst().text())
             .as(IMPORTANT_INFORMATION_MESSAGE)
             .isEqualTo("Gwybodaeth bwysig");
 
@@ -222,6 +242,25 @@ class AstDailyHearingListFileConverterTest {
                 "Math o wrandawiad",
                 "Amser y gwrandawiad",
                 "Gwybodaeth ychwanegol"
+            );
+
+        softly.assertThat(document.getElementsByTag("td"))
+            .as(TABLE_CONTENT_MESSAGE)
+            .hasSize(12)
+            .extracting(Element::text)
+            .containsExactly(
+                "Appellant A",
+                "12345",
+                "Case type A",
+                "Hearing type A",
+                "10:30am",
+                "This is additional information",
+                "Appellant B",
+                "12346",
+                "Case type B",
+                "Hearing type B",
+                "11am",
+                "This is another additional information"
             );
 
         softly.assertAll();
