@@ -1,8 +1,8 @@
 {
   "listName": "Interim Applications List (Chancery Division) Daily Cause List",
-  "venueLine1": "Business and Property Courts Rolls Building",
-  "venueLine2": "7 Rolls Buildings, Fetter Ln, City of London",
-  "venueLine3": "London EC4A 1NL",
+  "venueLine1": "Rolls Building",
+  "venueLine2": "Fetter Lane, London",
+  "venueLine3": "EC4A 1NL",
   "openJusticeMessage1": "Parties should contact the clerk to the Interim Judge, ",
   "openJusticeSeparator": ", ",
   "openJusticeMessage2": " as early as possible.",
@@ -12,8 +12,8 @@
     "Time",
     "Venue",
     "Type",
-    "Case Number",
-    "Case Name",
+    "Case number",
+    "Case name",
     "Additional information"
   ]
 }
