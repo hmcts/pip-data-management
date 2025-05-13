@@ -49,6 +49,7 @@ class NonStrategicPublicationTest extends IntegrationTestBase {
     private static final String PROVENANCE = "MANUAL_UPLOAD";
     private static MockMultipartFile file;
     private static MockMultipartFile excelFile;
+    private static MockMultipartFile excelFileMultiSheet;
     private static final String SOURCE_ARTEFACT_ID = "sourceArtefactId";
     private static final LocalDateTime DISPLAY_TO = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
     private static final LocalDateTime DISPLAY_FROM = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
@@ -73,6 +74,9 @@ class NonStrategicPublicationTest extends IntegrationTestBase {
         );
         excelFile = createExcelMultipartFile(
             "data/non-strategic/cst-weekly-hearing-list/cstWeeklyHearingList.xlsx");
+        excelFileMultiSheet = createExcelMultipartFile(
+            "data/non-strategic/interim-applications-chd-daily-cause-list/"
+                + "interimApplicationsChanceryDivisionDailyCauseList.xlsx");
         OBJECT_MAPPER.findAndRegisterModules();
     }
 
@@ -236,6 +240,45 @@ class NonStrategicPublicationTest extends IntegrationTestBase {
 
         assertTrue(response.getResponse().getContentAsString().contains("Invalid Excel file type"),
                    "Returned message does not match");
+    }
+
+    @Test
+    void testNonStrategicPublicationUploadWhenFileContainsMultipleSheets() throws Exception {
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+            .multipart(NON_STRATEGIC_PUBLICATION_URL)
+            .file(excelFileMultiSheet);
+
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.TYPE_HEADER, ArtefactType.LIST)
+            .header(PublicationConfiguration.SENSITIVITY_HEADER, Sensitivity.PUBLIC)
+            .header(PublicationConfiguration.LANGUAGE_HEADER, Language.ENGLISH)
+            .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
+            .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
+            .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO)
+            .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
+            .header(PublicationConfiguration.LIST_TYPE, ListType.CST_WEEKLY_HEARING_LIST)
+            .header(PublicationConfiguration.COURT_ID, COURT_ID)
+            .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
+            .header(PublicationConfiguration.LANGUAGE_HEADER, Language.ENGLISH)
+            .contentType(MediaType.MULTIPART_FORM_DATA);
+
+        MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
+            .andExpect(status().isCreated())
+            .andReturn();
+
+        assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
+
+        Artefact artefact = OBJECT_MAPPER.readValue(response.getResponse().getContentAsString(), Artefact.class);
+
+        assertNotNull(artefact.getArtefactId(), ARTEFACT_ID_POPULATED_MESSAGE);
+        assertEquals(artefact.getSourceArtefactId(), SOURCE_ARTEFACT_ID, "Source artefact ID "
+            + "does not match input source artefact id");
+        assertEquals(artefact.getType(), ArtefactType.LIST, "Artefact type does not match input artefact type");
+        assertEquals(artefact.getDisplayFrom(), DISPLAY_FROM, "Display from does not match input display from");
+        assertEquals(artefact.getDisplayTo(), DISPLAY_TO, "Display to does not match input display to");
+        assertEquals(artefact.getProvenance(), PROVENANCE, "Provenance does not match input provenance");
+        assertEquals(artefact.getLanguage(), Language.ENGLISH, "Language does not match input language");
+        assertEquals(artefact.getSensitivity(), Sensitivity.PUBLIC, "Sensitivity does not match input sensitivity");
+        assertTrue(artefact.getSearch().isEmpty(), "Search value does not match");
     }
 
 }
