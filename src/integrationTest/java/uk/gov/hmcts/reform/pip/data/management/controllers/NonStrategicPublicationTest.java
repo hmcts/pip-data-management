@@ -255,7 +255,7 @@ class NonStrategicPublicationTest extends IntegrationTestBase {
             .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
             .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO)
             .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
-            .header(PublicationConfiguration.LIST_TYPE, ListType.CST_WEEKLY_HEARING_LIST)
+            .header(PublicationConfiguration.LIST_TYPE, ListType.INTERIM_APPLICATIONS_CHD_DAILY_CAUSE_LIST)
             .header(PublicationConfiguration.COURT_ID, COURT_ID)
             .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
             .header(PublicationConfiguration.LANGUAGE_HEADER, Language.ENGLISH)
