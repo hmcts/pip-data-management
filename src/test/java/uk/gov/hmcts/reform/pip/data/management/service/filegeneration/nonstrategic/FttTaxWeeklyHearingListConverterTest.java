@@ -24,6 +24,7 @@ import static uk.gov.hmcts.reform.pip.model.publication.ListType.FTT_TAX_WEEKLY_
 
 @ActiveProfiles("test")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@SuppressWarnings("java:S5961")
 class FttTaxWeeklyHearingListConverterTest {
 
     private static final String CONTENT_DATE = "12 December 2024";
