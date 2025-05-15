@@ -140,7 +140,7 @@ class BirminghamAdministrativeCourtDailyCauseListFileConverterTest {
             .extracting(Element::text)
             .containsExactly(
                 "Venue",
-                "judge",
+                "Judge",
                 "Time",
                 "Case number",
                 "Case details",
