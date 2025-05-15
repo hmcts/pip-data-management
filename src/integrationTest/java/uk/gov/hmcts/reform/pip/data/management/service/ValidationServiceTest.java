@@ -412,7 +412,19 @@ class ValidationServiceTest extends IntegrationBasicTestBase {
             Arguments.of(ListType.SSCS_NORTH_WEST_DAILY_HEARING_LIST,
                          SSCS_LISTS_JSON_FILE),
             Arguments.of(ListType.SSCS_LONDON_DAILY_HEARING_LIST,
-                         SSCS_LISTS_JSON_FILE)
+                         SSCS_LISTS_JSON_FILE),
+            Arguments.of(ListType.BIRMINGHAM_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
+                         "data/non-strategic/birmingham-administrative-court-daily-cause-list/"
+                             + "birminghamAdministrativeCourtDailyCauseList.json"),
+            Arguments.of(ListType.BRISTOL_AND_CARDIFF_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
+                         "data/non-strategic/bristol-and-cardiff-administrative-court-daily-cause-list/"
+                             + "bristolAndCardiffAdministrativeCourtDailyCauseList.json"),
+            Arguments.of(ListType.MANCHESTER_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
+                         "data/non-strategic/manchester-administrative-court-daily-cause-list/"
+                             + "manchesterAdministrativeCourtDailyCauseList.json"),
+            Arguments.of(ListType.LEEDS_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
+                         "data/non-strategic/leeds-administrative-court-daily-cause-list/"
+                             + "leedsAdministrativeCourtDailyCauseList.json")
         );
     }
 

@@ -81,6 +81,7 @@ class PublicationManagementTest extends IntegrationTestBase {
     private static final String CASE_REFERENCE_NUMBER_FIELD = "Case reference number - 1234";
     private static final String TIME_FIELD = "Time - 10am";
     private static final String APPELLANT_NUMBER_FIELD = "Appellant - Appellant 1";
+    private static final String CASE_NUMBER_FIELD = "Case number - 1234";
     private static final String NON_STRATEGIC_FILES_LOCATION = "data/non-strategic/";
     private static final String RPT_LISTS_EXCEL_FILE = NON_STRATEGIC_FILES_LOCATION
         + "ftt-residential-property-tribunal-weekly-hearing-list/"
@@ -912,6 +913,100 @@ class PublicationManagementTest extends IntegrationTestBase {
         assertTrue(responseContent.contains("Appellant - Appellant A"), CONTENT_MISMATCH_ERROR);
         assertTrue(responseContent.contains("Appeal reference number - 12345"), CONTENT_MISMATCH_ERROR);
         assertTrue(responseContent.contains("Hearing time - 10:30am"), CONTENT_MISMATCH_ERROR);
+    }
+
+    @Test
+    void testGenerateArtefactBirminghamAdministrativeCourtDailyCauseList() throws Exception {
+        Artefact artefact = createNonStrategicPublication(
+            ListType.BIRMINGHAM_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
+            NON_STRATEGIC_FILES_LOCATION
+                + "birmingham-administrative-court-daily-cause-list/birminghamAdministrativeCourtDailyCauseList.xlsx"
+        );
+
+        byte[] jsonData = getTestData(
+            NON_STRATEGIC_FILES_LOCATION
+                + "birmingham-administrative-court-daily-cause-list/birminghamAdministrativeCourtDailyCauseList.json");
+        when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(jsonData));
+
+        MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, artefact.getArtefactId())))
+            .andExpect(status().isOk()).andReturn();
+
+        String responseContent = response.getResponse().getContentAsString();
+        assertTrue(responseContent.contains(TIME_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(CASE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(HEARING_TYPE_FIELD), CONTENT_MISMATCH_ERROR);
+    }
+
+    @Test
+    void testGenerateArtefactBristolAndCardiffAdministrativeCourtDailyCauseList() throws Exception {
+        Artefact artefact = createNonStrategicPublication(
+            ListType.BRISTOL_AND_CARDIFF_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
+            NON_STRATEGIC_FILES_LOCATION
+                + "bristol-and-cardiff-administrative-court-daily-cause-list/"
+                + "bristolAndCardiffAdministrativeCourtDailyCauseList.xlsx"
+        );
+
+        byte[] jsonData = getTestData(
+            NON_STRATEGIC_FILES_LOCATION
+                + "bristol-and-cardiff-administrative-court-daily-cause-list/"
+                + "bristolAndCardiffAdministrativeCourtDailyCauseList.json");
+        when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(jsonData));
+
+        MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, artefact.getArtefactId())))
+            .andExpect(status().isOk()).andReturn();
+
+        String responseContent = response.getResponse().getContentAsString();
+        assertTrue(responseContent.contains(TIME_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(CASE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(HEARING_TYPE_FIELD), CONTENT_MISMATCH_ERROR);
+    }
+
+    @Test
+    void testGenerateArtefactLeedsAdministrativeCourtDailyCauseList() throws Exception {
+        Artefact artefact = createNonStrategicPublication(
+            ListType.LEEDS_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
+            NON_STRATEGIC_FILES_LOCATION
+                + "leeds-administrative-court-daily-cause-list/"
+                + "leedsAdministrativeCourtDailyCauseList.xlsx"
+        );
+
+        byte[] jsonData = getTestData(
+            NON_STRATEGIC_FILES_LOCATION
+                + "leeds-administrative-court-daily-cause-list/"
+                + "leedsAdministrativeCourtDailyCauseList.json");
+        when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(jsonData));
+
+        MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, artefact.getArtefactId())))
+            .andExpect(status().isOk()).andReturn();
+
+        String responseContent = response.getResponse().getContentAsString();
+        assertTrue(responseContent.contains(TIME_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(CASE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(HEARING_TYPE_FIELD), CONTENT_MISMATCH_ERROR);
+    }
+
+    @Test
+    void testGenerateArtefactManchesterAdministrativeCourtDailyCauseList() throws Exception {
+        Artefact artefact = createNonStrategicPublication(
+            ListType.MANCHESTER_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
+            NON_STRATEGIC_FILES_LOCATION
+                + "manchester-administrative-court-daily-cause-list/"
+                + "manchesterAdministrativeCourtDailyCauseList.xlsx"
+        );
+
+        byte[] jsonData = getTestData(
+            NON_STRATEGIC_FILES_LOCATION
+                + "manchester-administrative-court-daily-cause-list/"
+                + "manchesterAdministrativeCourtDailyCauseList.json");
+        when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(jsonData));
+
+        MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, artefact.getArtefactId())))
+            .andExpect(status().isOk()).andReturn();
+
+        String responseContent = response.getResponse().getContentAsString();
+        assertTrue(responseContent.contains(TIME_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(CASE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(HEARING_TYPE_FIELD), CONTENT_MISMATCH_ERROR);
     }
 
     @Test

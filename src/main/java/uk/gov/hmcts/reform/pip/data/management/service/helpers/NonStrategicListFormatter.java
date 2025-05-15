@@ -10,10 +10,14 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.AST_DAILY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.BIRMINGHAM_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.BRISTOL_AND_CARDIFF_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.CST_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.FTT_LR_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.FTT_TAX_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.GRC_WEEKLY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.LEEDS_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.MANCHESTER_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.PAAC_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.PHT_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.POAC_WEEKLY_HEARING_LIST;
@@ -40,6 +44,7 @@ import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_LC_DAILY_HEA
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_T_AND_CC_DAILY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.WPAFCC_WEEKLY_HEARING_LIST;
 
+@SuppressWarnings("PMD.ExcessiveImports")
 public final class NonStrategicListFormatter {
     private static final String DATE = "date";
     private static final String TIME = "time";
@@ -117,6 +122,14 @@ public final class NonStrategicListFormatter {
         Map.entry(SSCS_NORTH_WEST_DAILY_HEARING_LIST,
                   Map.of(HEARING_TIME, NonStrategicFieldFormattingHelper::formatTimeField)),
         Map.entry(SSCS_LONDON_DAILY_HEARING_LIST,
+                  Map.of(HEARING_TIME, NonStrategicFieldFormattingHelper::formatTimeField)),
+        Map.entry(BIRMINGHAM_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
+                  Map.of(HEARING_TIME, NonStrategicFieldFormattingHelper::formatTimeField)),
+        Map.entry(BRISTOL_AND_CARDIFF_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
+                  Map.of(HEARING_TIME, NonStrategicFieldFormattingHelper::formatTimeField)),
+        Map.entry(MANCHESTER_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
+                  Map.of(HEARING_TIME, NonStrategicFieldFormattingHelper::formatTimeField)),
+        Map.entry(LEEDS_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
                   Map.of(HEARING_TIME, NonStrategicFieldFormattingHelper::formatTimeField))
     );
 

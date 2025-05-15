@@ -42,6 +42,8 @@ import java.util.Map;
 import java.util.Optional;
 
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.AST_DAILY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.BIRMINGHAM_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.BRISTOL_AND_CARDIFF_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.CARE_STANDARDS_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.CIVIL_AND_FAMILY_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.CIVIL_DAILY_CAUSE_LIST;
@@ -58,8 +60,10 @@ import static uk.gov.hmcts.reform.pip.model.publication.ListType.FTT_TAX_WEEKLY_
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.GRC_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.IAC_DAILY_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.IAC_DAILY_LIST_ADDITIONAL_CASES;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.LEEDS_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.MAGISTRATES_PUBLIC_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.MAGISTRATES_STANDARD_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.MANCHESTER_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.PAAC_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.PHT_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.POAC_WEEKLY_HEARING_LIST;
@@ -250,6 +254,22 @@ public class ListConversionFactory {
         Map.entry(SSCS_LONDON_DAILY_HEARING_LIST, new ConversionPair(
             new NonStrategicListFileConverter(),
             new NonStrategicListSummaryData(SSCS_LONDON_DAILY_HEARING_LIST)
+        )),
+        Map.entry(BIRMINGHAM_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST, new ConversionPair(
+            new NonStrategicListFileConverter(),
+            new NonStrategicListSummaryData(BIRMINGHAM_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST)
+        )),
+        Map.entry(BRISTOL_AND_CARDIFF_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST, new ConversionPair(
+            new NonStrategicListFileConverter(),
+            new NonStrategicListSummaryData(BRISTOL_AND_CARDIFF_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST)
+        )),
+        Map.entry(MANCHESTER_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST, new ConversionPair(
+            new NonStrategicListFileConverter(),
+            new NonStrategicListSummaryData(MANCHESTER_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST)
+        )),
+        Map.entry(LEEDS_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST, new ConversionPair(
+            new NonStrategicListFileConverter(),
+            new NonStrategicListSummaryData(LEEDS_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST)
         ))
     );
 

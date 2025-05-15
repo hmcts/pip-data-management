@@ -1,0 +1,15 @@
+{
+  "listName": "Rhestr Achosion Dyddiol Llys Gweinyddol Manceinion",
+  "importantInformationText1": "Mae gwrandawiad gerbron y Llys Gweinyddol ym Manceinion yn wrandawiad cyhoeddus oni nodir fel arall. Os yw unrhyw unigolyn neu gynrychiolydd o'r cyfryngau yn dymuno mynychu gwrandawiad o bell, dylent gysylltu â'r swyddfa restru mewn da bryd cyn y gwrandawiad, naill ai drwy anfon e-bost at manchester@administrativecourtoffice.justice.gov.uk neu drwy ffonio 0161 240 5313.",
+  "importantInformationHeading2": "Dyfarniadau",
+  "importantInformationText2": "Bydd dyfarniadau a draddodir gan y barnwr o bell yn cael eu rhyddhau trwy gylchrediad i gynrychiolwyr y partïon trwy e-bost a'u rhyddhau i'r Archifau Cenedlaethol. Ystyrir na fydd y dyddiad a'r amser ar gyfer traddodi yn digwydd cyn yr amser a restrwyd. Gellir darparu copi o'r dyfarniad ar ffurf derfynol fel y'i traddodwyd ar ôl yr amser hwnnw, ar gais drwy e-bost.",
+  "tableHeaders": [
+    "Lleoliad",
+    "Barnwyr",
+    "Amser",
+    "Rhif yr Achos",
+    "Manylion yr achos",
+    "Math o wrandawiad",
+    "Gwybodaeth ychwanegol"
+  ]
+}

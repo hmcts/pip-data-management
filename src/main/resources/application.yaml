@@ -158,6 +158,10 @@ validations:
     SSCS_NORTH_EAST_DAILY_HEARING_LIST: "schemas/non-strategic/sscs_daily_hearing_list.json"
     SSCS_NORTH_WEST_DAILY_HEARING_LIST: "schemas/non-strategic/sscs_daily_hearing_list.json"
     SSCS_LONDON_DAILY_HEARING_LIST: "schemas/non-strategic/sscs_daily_hearing_list.json"
+    BIRMINGHAM_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST: "schemas/non-strategic/birmingham_administrative_court_daily_cause_list.json"
+    BRISTOL_AND_CARDIFF_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST: "schemas/non-strategic/bristol_and_cardiff_administrative_court_daily_cause_list.json"
+    MANCHESTER_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST: "schemas/non-strategic/manchester_administrative_court_daily_cause_list.json"
+    LEEDS_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST: "schemas/non-strategic/leeds_administrative_court_daily_cause_list.json"
 springdoc:
   swagger-ui:
     path: /swagger-ui/
