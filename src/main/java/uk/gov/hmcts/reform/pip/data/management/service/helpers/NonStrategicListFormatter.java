@@ -33,6 +33,7 @@ import static uk.gov.hmcts.reform.pip.model.publication.ListType.SSCS_WALES_AND_
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_AAC_DAILY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_IAC_JR_BIRMINGHAM_DAILY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_IAC_JR_CARDIFF_DAILY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_IAC_JR_LEEDS_DAILY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_IAC_JR_LONDON_DAILY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_IAC_JR_MANCHESTER_DAILY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_IAC_STATUTORY_APPEALS_DAILY_HEARING_LIST;
@@ -63,6 +64,8 @@ public final class NonStrategicListFormatter {
         Map.entry(UT_IAC_JR_BIRMINGHAM_DAILY_HEARING_LIST,
                   Map.of(HEARING_TIME, NonStrategicFieldFormattingHelper::formatTimeField)),
         Map.entry(UT_IAC_JR_CARDIFF_DAILY_HEARING_LIST,
+                  Map.of(HEARING_TIME, NonStrategicFieldFormattingHelper::formatTimeField)),
+        Map.entry(UT_IAC_JR_LEEDS_DAILY_HEARING_LIST,
                   Map.of(HEARING_TIME, NonStrategicFieldFormattingHelper::formatTimeField)),
         Map.entry(UT_IAC_STATUTORY_APPEALS_DAILY_HEARING_LIST,
                   Map.of(HEARING_TIME, NonStrategicFieldFormattingHelper::formatTimeField)),

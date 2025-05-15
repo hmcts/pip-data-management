@@ -40,6 +40,7 @@ import static uk.gov.hmcts.reform.pip.model.publication.ListType.SSCS_WALES_AND_
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_AAC_DAILY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_IAC_JR_BIRMINGHAM_DAILY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_IAC_JR_CARDIFF_DAILY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_IAC_JR_LEEDS_DAILY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_IAC_JR_LONDON_DAILY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_IAC_JR_MANCHESTER_DAILY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_IAC_STATUTORY_APPEALS_DAILY_HEARING_LIST;
@@ -72,6 +73,8 @@ public class NonStrategicListSummaryData implements ArtefactSummaryData {
                                                                    CASE_REFERENCE_NUMBER)),
         Map.entry(UT_IAC_JR_CARDIFF_DAILY_HEARING_LIST, List.of(HEARING_TIME,
                                                                 CASE_REFERENCE_NUMBER)),
+        Map.entry(UT_IAC_JR_LEEDS_DAILY_HEARING_LIST, List.of(HEARING_TIME,
+                                                                   CASE_REFERENCE_NUMBER)),
         Map.entry(UT_IAC_STATUTORY_APPEALS_DAILY_HEARING_LIST, List.of(HEARING_TIME,
                                                                        APPEAL_REFERENCE_NUMBER)),
         Map.entry(SIAC_WEEKLY_HEARING_LIST, List.of(DATE, TIME, CASE_REFERENCE_NUMBER)),
