@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationDeletion;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationViews;
@@ -46,7 +47,7 @@ public class LocationController {
     private static final String FORBIDDEN_MESSAGE = "User has not been authorized";
     private static final String BEARER_AUTHENTICATION = "bearerAuth";
 
-    private static final String REQUESTER_ID_HEADER = "x-requester-id";
+    private static final String REQUESTER_ID_HEADER = PublicationConfiguration.REQUESTER_ID_HEADER;
 
     private final LocationService locationService;
 

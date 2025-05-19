@@ -48,7 +48,8 @@ public class AuthorisationService {
     }
 
     public boolean userCanUploadLocation(String requesterId) {
-        if (!isUserSystemAdmin(requesterId)) {
+        if (!isUserSystemAdmin(requesterId)
+                || !isAdmin()) {
             log.error(writeLog(
                 String.format("User with ID %s is forbidden to upload location", requesterId
                 )));

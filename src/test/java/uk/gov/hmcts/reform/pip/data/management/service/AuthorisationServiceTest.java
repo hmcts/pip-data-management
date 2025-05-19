@@ -123,8 +123,15 @@ class AuthorisationServiceTest {
 
     @Test
     void testUserCanUploadLocationWhenSystemAdmin() {
+        List<GrantedAuthority> authorities = List.of(
+            new SimpleGrantedAuthority(ADMIN_ROLE)
+        );
+        Authentication auth = new TestingAuthenticationToken(TEST_USER_ID, null, authorities);
+        SecurityContextHolder.getContext().setAuthentication(auth);
+
         when(accountManagementService.getUserById(TEST_USER_ID))
             .thenReturn(createUser(Roles.SYSTEM_ADMIN));
+        when(securityContext.getAuthentication()).thenReturn(auth);
 
         assertTrue(authorisationService.userCanUploadLocation(TEST_USER_ID),
                    "System Admin User cannot upload location");
