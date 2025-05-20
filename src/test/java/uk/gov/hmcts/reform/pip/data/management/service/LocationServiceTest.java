@@ -30,6 +30,7 @@ import uk.gov.hmcts.reform.pip.model.system.admin.ChangeType;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -115,6 +116,10 @@ class LocationServiceTest {
         locationCsvFirstExample.setLocationName(LOCATION_NAME2);
         locationCsvFirstExample.setProvenanceLocationType("venue");
         locationCsvFirstExample.setWelshLocationName(WELSH_LOCATION_NAME2);
+        locationCsvFirstExample.setJurisdiction(List.of("Tribunal"));
+        locationCsvFirstExample.setWelshJurisdiction(List.of("Tribiwnlys"));
+        locationCsvFirstExample.setJurisdictionType(List.of("Social Security and Child Support"));
+        locationCsvFirstExample.setWelshJurisdictionType(List.of("Tribiwnlys Nawdd Cymdeithasol a Chynnal Plant"));
         locationFirstExample = new Location(locationCsvFirstExample);
         locationFirstExample.setLocationId(1);
 
@@ -726,6 +731,12 @@ class LocationServiceTest {
 
         assertNotNull(response, "byte array response was null");
         assertTrue(response.length > 1, "byte array size less than 1");
+
+        String result = new String(response, StandardCharsets.UTF_8);
+        assertThat(result).contains("Tribunal");
+        assertThat(result).contains("Tribiwnlys");
+        assertThat(result).contains("Social Security and Child Support");
+        assertThat(result).contains("Tribiwnlys Nawdd Cymdeithasol a Chynnal Plant");
     }
 }
 
