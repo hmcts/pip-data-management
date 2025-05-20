@@ -56,6 +56,11 @@ public class Location {
     @JsonView(LocationViews.BaseView.class)
     private List<String> jurisdiction;
 
+    @Type(ListArrayType.class)
+    @Column(name = "jurisdiction_type", columnDefinition = DEFINITION)
+    @JsonView(LocationViews.BaseView.class)
+    private List<String> jurisdictionType;
+
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "location_id")
     @JsonView(LocationViews.ReferenceView.class)
@@ -68,6 +73,11 @@ public class Location {
     @Column(name = "welsh_jurisdiction", columnDefinition = DEFINITION)
     @JsonView(LocationViews.BaseView.class)
     private List<String> welshJurisdiction;
+
+    @Type(ListArrayType.class)
+    @Column(name = "welsh_jurisdiction_type", columnDefinition = DEFINITION)
+    @JsonView(LocationViews.BaseView.class)
+    private List<String> welshJurisdictionType;
 
     @Type(ListArrayType.class)
     @Column(name = "welsh_region", columnDefinition = DEFINITION)
@@ -85,6 +95,7 @@ public class Location {
         this.name = locationCsv.getLocationName();
         this.region = new ArrayList<>(locationCsv.getRegion());
         this.jurisdiction = new ArrayList<>(locationCsv.getJurisdiction());
+        this.jurisdictionType = new ArrayList<>(locationCsv.getJurisdictionType());
         this.locationType = LocationType.valueOfCsv(locationCsv.getProvenanceLocationType());
         LocationReference locationReference = new LocationReference(
             locationCsv.getProvenance(),
@@ -94,6 +105,7 @@ public class Location {
         this.welshName = locationCsv.getWelshLocationName();
         this.welshRegion = new ArrayList<>(locationCsv.getWelshRegion());
         this.welshJurisdiction = new ArrayList<>(locationCsv.getWelshJurisdiction());
+        this.welshJurisdictionType = new ArrayList<>(locationCsv.getWelshJurisdictionType());
         this.email = locationCsv.getEmail();
         this.contactNo = locationCsv.getContactNo();
     }
