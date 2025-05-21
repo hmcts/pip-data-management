@@ -46,8 +46,11 @@ import static uk.gov.hmcts.reform.pip.model.publication.ListType.BIRMINGHAM_ADMI
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.BRISTOL_AND_CARDIFF_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.CARE_STANDARDS_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.CIVIL_AND_FAMILY_DAILY_CAUSE_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.CIVIL_COURTS_RCJ_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.CIVIL_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.COP_DAILY_CAUSE_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.COUNTY_COURT_LONDON_CIVIL_DAILY_CAUSE_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.COURT_OF_APPEAL_CRIMINAL_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.CROWN_DAILY_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.CROWN_FIRM_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.CROWN_WARNED_LIST;
@@ -55,6 +58,7 @@ import static uk.gov.hmcts.reform.pip.model.publication.ListType.CST_WEEKLY_HEAR
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.ET_DAILY_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.ET_FORTNIGHTLY_PRESS_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.FAMILY_DAILY_CAUSE_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.FAMILY_DIVISION_HIGH_COURT_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.FTT_LR_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.FTT_TAX_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.GRC_WEEKLY_HEARING_LIST;
@@ -66,6 +70,7 @@ import static uk.gov.hmcts.reform.pip.model.publication.ListType.MAGISTRATES_STA
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.MANCHESTER_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.PAAC_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.PHT_WEEKLY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.PLANNING_COURT_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.POAC_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.PRIMARY_HEALTH_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.RPT_EASTERN_WEEKLY_HEARING_LIST;
@@ -73,6 +78,7 @@ import static uk.gov.hmcts.reform.pip.model.publication.ListType.RPT_LONDON_WEEK
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.RPT_MIDLANDS_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.RPT_NORTHERN_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.RPT_SOUTHERN_WEEKLY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.SENIOR_COURTS_COSTS_OFFICE_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.SIAC_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.SJP_DELTA_PRESS_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.SJP_DELTA_PUBLIC_LIST;
@@ -254,6 +260,46 @@ public class ListConversionFactory {
         Map.entry(SSCS_LONDON_DAILY_HEARING_LIST, new ConversionPair(
             new NonStrategicListFileConverter(),
             new NonStrategicListSummaryData(SSCS_LONDON_DAILY_HEARING_LIST)
+        )),
+        Map.entry(LONDON_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST, new ConversionPair(
+            new NonStrategicListFileConverter(),
+            new NonStrategicListSummaryData(LONDON_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST)
+        )),
+        Map.entry(PLANNING_COURT_DAILY_CAUSE_LIST, new ConversionPair(
+            new NonStrategicListFileConverter(),
+            new NonStrategicListSummaryData(PLANNING_COURT_DAILY_CAUSE_LIST)
+        )),
+        Map.entry(COUNTY_COURT_LONDON_CIVIL_DAILY_CAUSE_LIST, new ConversionPair(
+            new NonStrategicListFileConverter(),
+            new NonStrategicListSummaryData(COUNTY_COURT_LONDON_CIVIL_DAILY_CAUSE_LIST)
+        )),
+        Map.entry(CIVIL_COURTS_RCJ_DAILY_CAUSE_LIST, new ConversionPair(
+            new NonStrategicListFileConverter(),
+            new NonStrategicListSummaryData(CIVIL_COURTS_RCJ_DAILY_CAUSE_LIST)
+        )),
+        Map.entry(COURT_OF_APPEAL_CRIMINAL_DAILY_CAUSE_LIST, new ConversionPair(
+            new NonStrategicListFileConverter(),
+            new NonStrategicListSummaryData(COURT_OF_APPEAL_CRIMINAL_DAILY_CAUSE_LIST)
+        )),
+        Map.entry(FAMILY_DIVISION_HIGH_COURT_DAILY_CAUSE_LIST, new ConversionPair(
+            new NonStrategicListFileConverter(),
+            new NonStrategicListSummaryData(FAMILY_DIVISION_HIGH_COURT_DAILY_CAUSE_LIST)
+        )),
+        Map.entry(KINGS_BENCH_DIVISION_DAILY_CAUSE_LIST, new ConversionPair(
+            new NonStrategicListFileConverter(),
+            new NonStrategicListSummaryData(KINGS_BENCH_DIVISION_DAILY_CAUSE_LIST)
+        )),
+        Map.entry(KINGS_BENCH_MASTERS_DAILY_CAUSE_LIST, new ConversionPair(
+            new NonStrategicListFileConverter(),
+            new NonStrategicListSummaryData(KINGS_BENCH_MASTERS_DAILY_CAUSE_LIST)
+        )),
+        Map.entry(SENIOR_COURTS_COSTS_OFFICE_DAILY_CAUSE_LIST, new ConversionPair(
+            new NonStrategicListFileConverter(),
+            new NonStrategicListSummaryData(SENIOR_COURTS_COSTS_OFFICE_DAILY_CAUSE_LIST)
+        )),
+        Map.entry(MAYOR_AND_CITY_CIVIL_DAILY_CAUSE_LIST, new ConversionPair(
+            new NonStrategicListFileConverter(),
+            new NonStrategicListSummaryData(MAYOR_AND_CITY_CIVIL_DAILY_CAUSE_LIST)
         )),
         Map.entry(BIRMINGHAM_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST, new ConversionPair(
             new NonStrategicListFileConverter(),
