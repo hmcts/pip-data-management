@@ -1,0 +1,120 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Root",
+  "type": "object",
+  "required": [
+    "hearingList",
+    "openJusticeStatementDetails"
+  ],
+  "properties": {
+    "hearingList": {
+      "title": "Hearing list",
+      "type": "array",
+      "items": {
+        "title": "Hearing",
+        "type": "object",
+        "required": [
+          "judge",
+          "time",
+          "venue",
+          "type",
+          "caseNumber",
+          "caseName",
+          "additionalInformation"
+        ],
+        "properties": {
+          "judge": {
+            "title": "Judge",
+            "type": "string",
+            "default": "",
+            "examples": [
+              "Judge name 1"
+            ],
+            "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+          },
+          "time": {
+            "title": "Time of hearing",
+            "type": "string",
+            "default": "",
+            "examples": [
+              "10:30am"
+            ],
+            "pattern": "^\\d{1,2}([:.]\\d{2})?[ap]m$"
+          },
+          "venue": {
+            "title": "Venue name of the hearing",
+            "type": "string",
+            "default": "",
+            "examples": [
+              "This is the venue of the hearing"
+            ],
+            "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+          },
+          "type": {
+            "title": "Type of hearing being presented",
+            "type": "string",
+            "default": "",
+            "examples": [
+              "mda"
+            ],
+            "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+          },
+          "caseNumber": {
+            "title": "Case number",
+            "type": "string",
+            "default": "",
+            "examples": [
+              "12345"
+            ],
+            "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+          },
+          "caseName": {
+            "title": "Case name",
+            "type": "string",
+            "default": "",
+            "examples": [
+              "A Vs B"
+            ],
+            "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+          },
+          "additionalInformation": {
+            "title": "Additional information",
+            "type": "string",
+            "default": "",
+            "examples": [
+              "This is additional information"
+            ],
+            "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+          }
+        }
+      }
+    },
+    "openJusticeStatementDetails": {
+      "title": "Open Justice Statement Details",
+      "type": "array",
+        "items": {
+          "type": "object",
+          "required": [
+            "nameToBeDisplayed",
+            "email"
+          ],
+          "properties": {
+            "nameToBeDisplayed": {
+              "title": "Judge Name",
+              "type": "string",
+              "default": "",
+              "examples": [
+                "Judge name 1"
+              ],
+              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+            },
+            "email": {
+              "title": "Judge Email",
+              "type": "string",
+              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+            }
+          }
+        }
+    }
+  }
+}

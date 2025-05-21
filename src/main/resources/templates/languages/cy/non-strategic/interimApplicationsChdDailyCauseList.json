@@ -1,0 +1,19 @@
+{
+  "listName": "Rhestr Achosion Dyddiol Ceisiadau Interim (Adran Siawnsri)",
+  "venueLine1": "Adeilad Rolls",
+  "venueLine2": "Fetter Lane, London",
+  "venueLine3": "EC4A 1NL",
+  "openJusticeMessage1": "Dylai partïon gysylltu â chlerc y Barnwr Interim, ",
+  "openJusticeSeparator": ", ",
+  "openJusticeMessage2": " cyn gynted â phosibl.",
+  "openJusticeMessage3": "Ni ddylid rhestru cais gerbron y Barnwr Ceisiadau Interim oni bai bod yr amser cyffredinol sydd ei angen i ddelio â'r cais yn 2 awr neu lai. Mae'r uchafswm o 2 awr yn cynnwys amser darllen ymlaen llaw y barnwr, gwrando’r cais, cyflwyno'r dyfarniad ac amser ar gyfer delio â chostau. Os yw'r barnwr o'r farn y bydd yr amcangyfrif yn fwy na'r terfyn 2 awr, gellir ei dynnu o'r rhestr ceisiadau interim.",
+  "tableHeaders": [
+    "Barnwr",
+    "Amser",
+    "Lleoliad",
+    "Math",
+    "Rhif yr achos",
+    "Enw’r achos",
+    "Gwybodaeth ychwanegol"
+  ]
+}

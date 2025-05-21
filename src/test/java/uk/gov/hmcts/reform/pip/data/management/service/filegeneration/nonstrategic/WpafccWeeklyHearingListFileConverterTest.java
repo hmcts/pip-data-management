@@ -59,6 +59,9 @@ class WpafccWeeklyHearingListFileConverterTest {
     private static final String OBSERVE_HEARING_WELSH = "Arsylwi gwrandawiad llys neu dribiwnlys fel newyddiadurwr, "
         + "ymchwilydd neu aelod o'r cyhoedd";
 
+    private static final String HEARING_DATE = "16 December 2024";
+    private static final String HEARING_VENUE = "This is a venue name";
+
     private static final String HEADER_ELEMENT = "page-heading";
     private static final String LIST_DATE_ELEMENT = "list-date";
     private static final String LAST_UPDATED_DATE_ELEMENT = "last-updated-date";
@@ -73,6 +76,7 @@ class WpafccWeeklyHearingListFileConverterTest {
     private static final String IMPORTANT_INFORMATION_MESSAGE = "Important information heading does not match";
     private static final String BODY_MESSAGE = "Body does not match";
     private static final String TABLE_HEADERS_MESSAGE = "Table headers does not match";
+    private static final String TABLE_CONTENT_MESSAGE = "Table content does not match";
 
     private final NonStrategicListFileConverter converter = new NonStrategicListFileConverter();
 
@@ -126,7 +130,7 @@ class WpafccWeeklyHearingListFileConverterTest {
             .as(LAST_UPDATED_DATE_MESSAGE)
             .isEqualTo("Last updated 20 January 2025 at 9:30am");
 
-        softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).get(0).text())
+        softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).getFirst().text())
             .as(IMPORTANT_INFORMATION_MESSAGE)
             .isEqualTo("Important information");
 
@@ -154,6 +158,29 @@ class WpafccWeeklyHearingListFileConverterTest {
                 "Mode of hearing",
                 VENUE,
                 ADDITIONAL_INFORMATION
+            );
+
+        softly.assertThat(document.getElementsByTag("td"))
+            .as(TABLE_CONTENT_MESSAGE)
+            .hasSize(16)
+            .extracting(Element::text)
+            .containsExactly(
+                HEARING_DATE,
+                "10:15am",
+                "1234",
+                "This is a case name",
+                "Judge A, Member A",
+                "Case Management Hearing",
+                HEARING_VENUE,
+                "This is additional information",
+                HEARING_DATE,
+                "10:30am",
+                "1235",
+                "This is another case name",
+                "Judge B, Member B",
+                "Oral Hearing",
+                HEARING_VENUE,
+                "This is another additional information"
             );
 
         softly.assertAll();
@@ -200,7 +227,7 @@ class WpafccWeeklyHearingListFileConverterTest {
             .as(LAST_UPDATED_DATE_MESSAGE)
             .isEqualTo("Diweddarwyd ddiwethaf 20 January 2025 am 9:30am");
 
-        softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).get(0).text())
+        softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).getFirst().text())
             .as(IMPORTANT_INFORMATION_MESSAGE)
             .isEqualTo("Gwybodaeth bwysig");
 
@@ -226,6 +253,29 @@ class WpafccWeeklyHearingListFileConverterTest {
                 HEARING_TYPE_WELSH,
                 VENUE_WELSH,
                 ADDITIONAL_INFORMATION_WELSH
+            );
+
+        softly.assertThat(document.getElementsByTag("td"))
+            .as(TABLE_CONTENT_MESSAGE)
+            .hasSize(16)
+            .extracting(Element::text)
+            .containsExactly(
+                HEARING_DATE,
+                "10:15am",
+                "1234",
+                "This is a case name",
+                "Judge A, Member A",
+                "Case Management Hearing",
+                HEARING_VENUE,
+                "This is additional information",
+                HEARING_DATE,
+                "10:30am",
+                "1235",
+                "This is another case name",
+                "Judge B, Member B",
+                "Oral Hearing",
+                HEARING_VENUE,
+                "This is another additional information"
             );
 
         softly.assertAll();
