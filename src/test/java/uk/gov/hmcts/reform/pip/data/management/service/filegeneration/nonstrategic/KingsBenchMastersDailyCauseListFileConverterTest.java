@@ -196,7 +196,7 @@ class KingsBenchMastersDailyCauseListFileConverterTest {
 
         softly.assertThat(document.getElementById(VENUE_NAME_ELEMENT).text())
             .as(VENUE_MESSAGE)
-            .isEqualTo("Royal Courts of Justice");
+            .isEqualTo("Llysoedd Barn Brenhinol");
 
         softly.assertThat(document.getElementById(ADDRESS_LINE1_ELEMENT).text())
             .as(VENUE_MESSAGE)

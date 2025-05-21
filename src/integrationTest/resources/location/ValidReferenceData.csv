@@ -1,2 +1,2 @@
-P&I ID,Court Desc,Region,Jurisdiction,Provenance,Provenance Location ID, Provenance Location Type, Welsh Court Desc, Welsh Region, Welsh Jurisdiction
-1,Test Court,North West,Magistrates Court;Family Court,provenance,123, venue, Welsh Test court, Welsh North west, Welsh Magistrates Court; Welsh Family Court
+P&I ID,Court Desc,Region,Jurisdiction,Jurisdiction Type,Provenance,Provenance Location ID,Provenance Location Type,Welsh Court Desc,Welsh Region,Welsh Jurisdiction,Welsh Jurisdiction Type
+1,Test Court,North West,Crime Court;Family Court,Magistrates Court,provenance,123, venue, Welsh Test court, Welsh North west, Welsh Crime Court; Welsh Family Court,Welsh Magistrates Court

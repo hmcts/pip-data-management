@@ -26,7 +26,8 @@ public interface LocationRepository extends JpaRepository<Location, Integer> {
 
     @Query(value = "select * from location "
         + "WHERE (:regions = '' OR location.region && string_to_array(:regions, ',')) "
-        + "AND (:jurisdictions = '' OR location.jurisdiction && string_to_array(:jurisdictions, ',')) "
+        + "AND (:jurisdictions = '' OR location.jurisdiction && string_to_array(:jurisdictions, ',') "
+        + "OR location.jurisdiction_type && string_to_array(:jurisdictions, ',')) "
         + "ORDER BY location.name",
         nativeQuery = true)
     List<Location> findByRegionAndJurisdictionOrderByName(@Param("regions") String regions,
@@ -34,11 +35,12 @@ public interface LocationRepository extends JpaRepository<Location, Integer> {
 
     @Query(value = "select * from location "
         + "WHERE (:regions = '' OR location.welsh_region && string_to_array(:regions, ',')) "
-        + "AND (:jurisdictions = '' OR location.welsh_jurisdiction && string_to_array(:jurisdictions, ',')) "
+        + "AND (:jurisdictions = '' OR location.welsh_jurisdiction && string_to_array(:jurisdictions, ',') "
+        + "OR location.welsh_jurisdiction_type && string_to_array(:jurisdictions, ',')) "
         + "ORDER BY location.name",
         nativeQuery = true)
     List<Location> findByWelshRegionAndJurisdictionOrderByName(@Param("regions") String regions,
-                                                          @Param("jurisdictions") String jurisdictions);
+                                                               @Param("jurisdictions") String jurisdictions);
 
     @Query(value = "select location.* from location_reference "
         + "inner join location on location_reference.location_id = location.location_id "
@@ -54,5 +56,4 @@ public interface LocationRepository extends JpaRepository<Location, Integer> {
     @Transactional
     @Query(value = "REFRESH MATERIALIZED VIEW sdp_mat_view_location", nativeQuery = true)
     void refreshLocationView();
-
 }
