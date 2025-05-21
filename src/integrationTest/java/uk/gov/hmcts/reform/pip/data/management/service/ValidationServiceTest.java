@@ -413,6 +413,34 @@ class ValidationServiceTest extends IntegrationBasicTestBase {
                          SSCS_LISTS_JSON_FILE),
             Arguments.of(ListType.SSCS_LONDON_DAILY_HEARING_LIST,
                          SSCS_LISTS_JSON_FILE),
+            Arguments.of(ListType.LONDON_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
+                         "data/non-strategic/london-administrative-court-daily-cause-list/"
+                             + "londonAdministrativeCourtDailyCauseList.json"),
+            Arguments.of(ListType.PLANNING_COURT_DAILY_CAUSE_LIST,
+                         "data/non-strategic/planning-court-daily-cause-list/planningCourtDailyCauseList.json"),
+            Arguments.of(ListType.COUNTY_COURT_LONDON_CIVIL_DAILY_CAUSE_LIST,
+                         "data/non-strategic/county-court-london-civil-daily-cause-list/"
+                             + "countyCourtLondonCivilDailyCauseList.json"),
+            Arguments.of(ListType.CIVIL_COURTS_RCJ_DAILY_CAUSE_LIST,
+                         "data/non-strategic/civil-courts-rcj-daily-cause-list/civilCourtsRcjDailyCauseList.json"),
+            Arguments.of(ListType.COURT_OF_APPEAL_CRIMINAL_DAILY_CAUSE_LIST,
+                         "data/non-strategic/court-of-appeal-criminal-daily-cause-list/"
+                             + "courtOfAppealCriminalDailyCauseList.json"),
+            Arguments.of(ListType.FAMILY_DIVISION_HIGH_COURT_DAILY_CAUSE_LIST,
+                         "data/non-strategic/family-division-high-court-daily-cause-list/"
+                             + "familyDivisionHighCourtDailyCauseList.json"),
+            Arguments.of(ListType.KINGS_BENCH_DIVISION_DAILY_CAUSE_LIST,
+                         "data/non-strategic/kings-bench-division-daily-cause-list/"
+                             + "kingsBenchDivisionDailyCauseList.json"),
+            Arguments.of(ListType.KINGS_BENCH_MASTERS_DAILY_CAUSE_LIST,
+                         "data/non-strategic/kings-bench-masters-daily-cause-list/"
+                             + "kingsBenchMastersDailyCauseList.json"),
+            Arguments.of(ListType.SENIOR_COURTS_COSTS_OFFICE_DAILY_CAUSE_LIST,
+                         "data/non-strategic/senior-courts-costs-office-daily-cause-list/"
+                             + "seniorCourtsCostsOfficeDailyCauseList.json"),
+            Arguments.of(ListType.MAYOR_AND_CITY_CIVIL_DAILY_CAUSE_LIST,
+                         "data/non-strategic/mayor-and-city-civil-daily-cause-list/"
+                             + "mayorAndCityCivilDailyCauseList.json"),
             Arguments.of(ListType.INTERIM_APPLICATIONS_CHD_DAILY_CAUSE_LIST,
                          "data/non-strategic/interim-applications-chd-daily-cause-list/"
                              + "interimApplicationsChanceryDivisionDailyCauseList.json")
