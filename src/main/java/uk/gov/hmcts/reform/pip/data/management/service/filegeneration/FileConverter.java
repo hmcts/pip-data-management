@@ -6,6 +6,7 @@ import uk.gov.hmcts.reform.pip.model.publication.ListType;
 import java.io.IOException;
 import java.util.Map;
 
+@FunctionalInterface
 public interface FileConverter {
 
     /**
