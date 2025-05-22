@@ -1,0 +1,20 @@
+{
+  "listName": "Civil Daily Cause List",
+  "venueName": "Mayor & City",
+  "addressLine1": "Guildhall Buildings",
+  "addressLine2": "Basinghall Street",
+  "addressLine3": "London EC2V 5AR",
+  "importantInformationLine1": "Due to judicial availability cases may be moved between County Court at Central London and Mayors & City of London Court.",
+  "importantInformationLine2": "Requests from the media and others, including legal bloggers, should be made to Civil Court at the Royal Courts of Justice at mediaenquiries.civilcourtsatthercj@justice.gov.uk. Arrangements will then be made for you to attend.",
+  "importantInformationLine3": "When considering the use of telephone and video technology the judiciary will have regard to the principles of open justice.",
+  "importantInformationLine4": "The court may exclude observers where necessary to secure the proper administration of justice.",
+  "tableHeaders": [
+    "Venue",
+    "Judge",
+    "Time",
+    "Case number",
+    "Case details",
+    "Hearing type",
+    "Additional information"
+  ]
+}

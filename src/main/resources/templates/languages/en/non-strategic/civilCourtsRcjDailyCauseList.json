@@ -1,0 +1,18 @@
+{
+  "listName": "Civil Courts at the Royal Courts of Justice Daily Cause List",
+  "venueName": "Royal Courts of Justice",
+  "addressLine1": "Strand, London",
+  "addressLine2": "WC2A 2LL",
+  "importantInformationLine1": "Requests from the media and others, including legal bloggers, should be made to Civil Court at the Royal Courts of Justice at mediaenquiries.civilcourtsatthercj@justice.gov.uk. Arrangements will then be made for you to attend.",
+  "importantInformationLine2": "When considering the use of telephone and video technology the judiciary will have regard to the principles of open justice.",
+  "importantInformationLine3": "The court may exclude observers where necessary to secure the proper administration of justice.",
+  "tableHeaders": [
+    "Venue",
+    "Judge",
+    "Time",
+    "Case number",
+    "Case details",
+    "Hearing type",
+    "Additional information"
+  ]
+}
