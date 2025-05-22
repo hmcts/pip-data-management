@@ -58,7 +58,7 @@ class UtIacJudicialReviewsLeedsDailyHearingListTest extends IntegrationBasicTest
     void setup() {
         headerGroup = new HeaderGroup(PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE, SENSITIVITY, LANGUAGE,
                                       DISPLAY_FROM, DISPLAY_TO,
-                                      ListType.UT_IAC_JR_LONDON_DAILY_HEARING_LIST, COURT_ID,
+                                      ListType.UT_IAC_JR_LEEDS_DAILY_HEARING_LIST, COURT_ID,
                                       CONTENT_DATE);
     }
 
