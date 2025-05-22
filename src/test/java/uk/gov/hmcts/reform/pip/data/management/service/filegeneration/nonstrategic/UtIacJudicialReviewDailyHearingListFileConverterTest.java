@@ -159,7 +159,8 @@ class UtIacJudicialReviewDailyHearingListFileConverterTest {
 
         softly.assertThat(document.getElementById(LIST_UPDATE_MESSAGE_ELEMENT).text())
             .as(BODY_MESSAGE)
-            .contains("The following list is subject to change until 4:30pm");
+            .contains("The following list is subject to change until 4:30pm. Any alterations after this time "
+                          + "will be telephoned or emailed direct to the parties or their legal representatives.");
 
         softly.assertThat(document.getElementById(OBSERVE_HEARING_ELEMENT).text())
             .as(BODY_MESSAGE)
@@ -230,7 +231,9 @@ class UtIacJudicialReviewDailyHearingListFileConverterTest {
 
         softly.assertThat(document.getElementById(LIST_UPDATE_MESSAGE_ELEMENT).text())
             .as(BODY_MESSAGE)
-            .contains("Gall y rhestr ganlynol newid tan 4:30pm.");
+            .contains("Gall y rhestr ganlynol newid tan 4:30pm. Bydd unrhyw newidiadau ar ôl yr amser hwn yn cael "
+                          + "eu cyfathrebu dros y ffôn neu drwy e-bost yn uniongyrchol at y partïon neu eu "
+                          +  "cynrychiolwyr cyfreithiol.");
 
         softly.assertThat(document.getElementById(OBSERVE_HEARING_ELEMENT).text())
             .as(BODY_MESSAGE)
