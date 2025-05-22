@@ -37,7 +37,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 @ActiveProfiles("integration-basic")
 @SpringBootTest
-@SuppressWarnings("PMD.TooManyMethods")
+@SuppressWarnings({"PMD.TooManyMethods", "PMD.AvoidDuplicateLiterals"})
 class ValidationServiceTest extends IntegrationBasicTestBase {
 
     @Autowired
@@ -68,6 +68,9 @@ class ValidationServiceTest extends IntegrationBasicTestBase {
     private static final String UT_IAC_LIST_JSON = "data/non-strategic/"
         + "ut-iac-judicial-review-daily-hearing-list/"
         + "utIacJudicialReviewDailyHearingList.json";
+    private static final String UT_IAC_JR_LEEDS_LIST_JSON = "data/non-strategic/"
+        + "ut-iac-jr-leeds-daily-hearing-list/"
+        + "utIacJudicialReviewLeedsDailyHearingList.json";
     private static final String SSCS_LISTS_JSON_FILE = "data/non-strategic/"
         + "sscs-daily-hearing-list/"
         + "sscsDailyHearingList.json";
@@ -362,6 +365,8 @@ class ValidationServiceTest extends IntegrationBasicTestBase {
                          UT_IAC_LIST_JSON),
             Arguments.of(ListType.UT_IAC_JR_CARDIFF_DAILY_HEARING_LIST,
                          UT_IAC_LIST_JSON),
+            Arguments.of(ListType.UT_IAC_JR_LEEDS_DAILY_HEARING_LIST,
+                         UT_IAC_JR_LEEDS_LIST_JSON),
             Arguments.of(ListType.UT_IAC_STATUTORY_APPEALS_DAILY_HEARING_LIST,
                          "data/non-strategic/ut-iac-statutory-appeals-daily-hearing-list/"
                              + "utIacStatutoryAppealsDailyHearingList.json"),
