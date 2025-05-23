@@ -1,0 +1,21 @@
+{
+  "listName": "Intellectual Property (Chancery Division) Daily Cause List",
+  "venueName": "Rolls Building",
+  "addressLine1": "Fetter Lane, London",
+  "addressLine2": "EC4A 1NL",
+  "importantInformationLine1": "If a representative of the media or member of the public wishes to attend the hearing they should contact the listing office chanceryjudgeslisting@justice.gov.uk who will put them in touch with the relevant person.",
+  "importantInformationLine2": "If a representative of the media or member of the public wishes to attend the remote hearing they should contact chancery.mastersappointments@justice.gov.uk who will put them in touch with the relevant person.",
+  "importantInformationLine3": "Remote hand-down: This judgment will be handed down remotely by circulation to the parties or their representatives by email and release to The National Archives. A copy of the judgment in final form as handed down should be available on The National Archives website shortly thereafter. Members of the media can obtain a copy on request by email to the Judicial Office press.enquiries@judiciary.uk.",
+  "remoteHearingsHighCourtJudgeHeading": "Remote hearings before a High Court Judge",
+  "remoteHearingsChanceryMasterHeading": "Remote hearings before a Chancery Master",
+  "remoteJudgementsHeading": "Remote judgments",
+  "tableHeaders": [
+    "Judge",
+    "Time",
+    "Venue",
+    "Type",
+    "Case number",
+    "Case name",
+    "Additional information"
+  ]
+}

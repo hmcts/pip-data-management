@@ -1,0 +1,20 @@
+[
+  {
+    "judge": "Judge A",
+    "time": "9am",
+    "venue": "Venue A",
+    "type": "Type A",
+    "caseNumber": "12345",
+    "caseName": "Case name A",
+    "additionalInformation": "This is additional information"
+  },
+  {
+    "judge": "Judge B",
+    "time": "10:30am",
+    "venue": "Venue B",
+    "type": "Type B",
+    "caseNumber": "12346",
+    "caseName": "Case name B",
+    "additionalInformation": "This is another additional information"
+  }
+]
