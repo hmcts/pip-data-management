@@ -442,17 +442,17 @@ class ValidationServiceTest extends IntegrationBasicTestBase {
                          "data/non-strategic/mayor-and-city-civil-daily-cause-list/"
                              + "mayorAndCityCivilDailyCauseList.json"),
             Arguments.of(ListType.BIRMINGHAM_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
-                         "data/non-strategic/birmingham-administrative-court-daily-cause-list/"
-                             + "birminghamAdministrativeCourtDailyCauseList.json"),
+                         "data/non-strategic/administrative-court-daily-cause-list/"
+                             + "administrativeCourtDailyCauseList.json"),
             Arguments.of(ListType.BRISTOL_AND_CARDIFF_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
-                         "data/non-strategic/bristol-and-cardiff-administrative-court-daily-cause-list/"
-                             + "bristolAndCardiffAdministrativeCourtDailyCauseList.json"),
+                         "data/non-strategic/administrative-court-daily-cause-list/"
+                             + "administrativeCourtDailyCauseList.json"),
             Arguments.of(ListType.MANCHESTER_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
-                         "data/non-strategic/manchester-administrative-court-daily-cause-list/"
-                             + "manchesterAdministrativeCourtDailyCauseList.json"),
+                         "data/non-strategic/administrative-court-daily-cause-list/"
+                             + "administrativeCourtDailyCauseList.json"),
             Arguments.of(ListType.LEEDS_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
-                         "data/non-strategic/leeds-administrative-court-daily-cause-list/"
-                             + "leedsAdministrativeCourtDailyCauseList.json")
+                         "data/non-strategic/administrative-court-daily-cause-list/"
+                             + "administrativeCourtDailyCauseList.json")
 
         );
     }

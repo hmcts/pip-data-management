@@ -34,8 +34,8 @@ class LeedsAdministrativeCourtDailyCauseListTest extends IntegrationBasicTestBas
     ValidationService validationService;
 
     private static final String VALID_JSON =
-        "data/non-strategic/leeds-administrative-court-daily-cause-list/"
-            + "leedsAdministrativeCourtDailyCauseList.json";
+        "data/non-strategic/dministrative-court-daily-cause-list/"
+            + "administrativeCourtDailyCauseList.json";
     private static final String INVALID_MESSAGE = "Invalid JSON list marked as valid";
 
     private static final String SOURCE_ARTEFACT_ID = "sourceArtefactId";

@@ -1121,12 +1121,12 @@ class PublicationManagementTest extends IntegrationTestBase {
         Artefact artefact = createNonStrategicPublication(
             ListType.BIRMINGHAM_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
             NON_STRATEGIC_FILES_LOCATION
-                + "birmingham-administrative-court-daily-cause-list/birminghamAdministrativeCourtDailyCauseList.xlsx"
+                + "administrative-court-daily-cause-list/administrativeCourtDailyCauseList.xlsx"
         );
 
         byte[] jsonData = getTestData(
             NON_STRATEGIC_FILES_LOCATION
-                + "birmingham-administrative-court-daily-cause-list/birminghamAdministrativeCourtDailyCauseList.json");
+                + "administrative-court-daily-cause-list/administrativeCourtDailyCauseList.json");
         when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(jsonData));
 
         MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, artefact.getArtefactId())))
@@ -1143,14 +1143,14 @@ class PublicationManagementTest extends IntegrationTestBase {
         Artefact artefact = createNonStrategicPublication(
             ListType.BRISTOL_AND_CARDIFF_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
             NON_STRATEGIC_FILES_LOCATION
-                + "bristol-and-cardiff-administrative-court-daily-cause-list/"
-                + "bristolAndCardiffAdministrativeCourtDailyCauseList.xlsx"
+                + "administrative-court-daily-cause-list/"
+                + "administrativeCourtDailyCauseList.xlsx"
         );
 
         byte[] jsonData = getTestData(
             NON_STRATEGIC_FILES_LOCATION
-                + "bristol-and-cardiff-administrative-court-daily-cause-list/"
-                + "bristolAndCardiffAdministrativeCourtDailyCauseList.json");
+                + "administrative-court-daily-cause-list/"
+                + "administrativeCourtDailyCauseList.json");
         when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(jsonData));
 
         MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, artefact.getArtefactId())))
@@ -1167,14 +1167,14 @@ class PublicationManagementTest extends IntegrationTestBase {
         Artefact artefact = createNonStrategicPublication(
             ListType.LEEDS_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
             NON_STRATEGIC_FILES_LOCATION
-                + "leeds-administrative-court-daily-cause-list/"
-                + "leedsAdministrativeCourtDailyCauseList.xlsx"
+                + "administrative-court-daily-cause-list/"
+                + "administrativeCourtDailyCauseList.xlsx"
         );
 
         byte[] jsonData = getTestData(
             NON_STRATEGIC_FILES_LOCATION
-                + "leeds-administrative-court-daily-cause-list/"
-                + "leedsAdministrativeCourtDailyCauseList.json");
+                + "administrative-court-daily-cause-list/"
+                + "administrativeCourtDailyCauseList.json");
         when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(jsonData));
 
         MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, artefact.getArtefactId())))
@@ -1191,14 +1191,14 @@ class PublicationManagementTest extends IntegrationTestBase {
         Artefact artefact = createNonStrategicPublication(
             ListType.MANCHESTER_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
             NON_STRATEGIC_FILES_LOCATION
-                + "manchester-administrative-court-daily-cause-list/"
-                + "manchesterAdministrativeCourtDailyCauseList.xlsx"
+                + "administrative-court-daily-cause-list/"
+                + "administrativeCourtDailyCauseList.xlsx"
         );
 
         byte[] jsonData = getTestData(
             NON_STRATEGIC_FILES_LOCATION
-                + "manchester-administrative-court-daily-cause-list/"
-                + "manchesterAdministrativeCourtDailyCauseList.json");
+                + "administrative-court-daily-cause-list/"
+                + "administrativeCourtDailyCauseList.json");
         when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(jsonData));
 
         MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, artefact.getArtefactId())))

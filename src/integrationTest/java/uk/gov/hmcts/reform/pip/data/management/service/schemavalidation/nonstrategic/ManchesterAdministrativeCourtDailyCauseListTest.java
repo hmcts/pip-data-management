@@ -34,8 +34,8 @@ class ManchesterAdministrativeCourtDailyCauseListTest extends IntegrationBasicTe
     ValidationService validationService;
 
     private static final String VALID_JSON =
-        "data/non-strategic/manchester-administrative-court-daily-cause-list/"
-            + "manchesterAdministrativeCourtDailyCauseList.json";
+        "data/non-strategic/administrative-court-daily-cause-list/"
+            + "administrativeCourtDailyCauseList.json";
     private static final String INVALID_MESSAGE = "Invalid JSON list marked as valid";
 
     private static final String SOURCE_ARTEFACT_ID = "sourceArtefactId";
