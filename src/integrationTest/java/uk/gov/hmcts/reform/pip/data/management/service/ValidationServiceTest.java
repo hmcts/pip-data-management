@@ -443,7 +443,10 @@ class ValidationServiceTest extends IntegrationBasicTestBase {
                              + "mayorAndCityCivilDailyCauseList.json"),
             Arguments.of(ListType.INTERIM_APPLICATIONS_CHD_DAILY_CAUSE_LIST,
                          "data/non-strategic/interim-applications-chd-daily-cause-list/"
-                             + "interimApplicationsChanceryDivisionDailyCauseList.json")
+                             + "interimApplicationsChanceryDivisionDailyCauseList.json"),
+            Arguments.of(ListType.COURT_OF_APPEAL_CIVIL_DAILY_CAUSE_LIST,
+                         "data/non-strategic/court-of-appeal-civil-daily-cause-list/"
+                             + "courtOfAppealCivilDailyCauseList.json")
         );
     }
 

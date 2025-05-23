@@ -169,6 +169,8 @@ validations:
     SENIOR_COURTS_COSTS_OFFICE_DAILY_CAUSE_LIST: "schemas/non-strategic/senior_courts_costs_office_daily_cause_list.json"
     MAYOR_AND_CITY_CIVIL_DAILY_CAUSE_LIST: "schemas/non-strategic/mayor_and_city_civil_daily_cause_list.json"
     INTERIM_APPLICATIONS_CHD_DAILY_CAUSE_LIST: "schemas/non-strategic/interim_applications_chancery_division_daily_cause_list.json"
+    COURT_OF_APPEAL_CIVIL_DAILY_CAUSE_LIST: "schemas/non-strategic/court_of_appeal_civil_daily_cause_list.json"
+
 springdoc:
   swagger-ui:
     path: /swagger-ui/

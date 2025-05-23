@@ -1,0 +1,184 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Root",
+  "type": "object",
+  "required": [
+    "hearingList",
+    "futureJudgments"
+  ],
+  "properties": {
+    "hearingList": {
+      "title": "Hearing list",
+      "type": "array",
+      "items": {
+        "title": "Hearing",
+        "type": "object",
+        "required": [
+          "venue",
+          "judge",
+          "time",
+          "caseNumber",
+          "caseDetails",
+          "hearingType",
+          "additionalInformation"
+        ],
+        "properties": {
+          "venue": {
+            "title": "Venue name of the hearing",
+            "type": "string",
+            "default": "",
+            "examples": [
+              "This is the venue of the hearing"
+            ],
+            "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+          },
+          "judge": {
+            "title": "Judge name",
+            "type": "string",
+            "default": "",
+            "examples": [
+              "Judge name 1"
+            ],
+            "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+          },
+          "time": {
+            "title": "Time of hearing",
+            "type": "string",
+            "default": "",
+            "examples": [
+              "10:30am"
+            ],
+            "pattern": "^\\d{1,2}([:.]\\d{2})?[ap]m$"
+          },
+          "caseNumber": {
+            "title": "Case number",
+            "type": "string",
+            "default": "",
+            "examples": [
+              "12345"
+            ],
+            "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+          },
+          "caseDetails": {
+            "title": "Case details",
+            "type": "string",
+            "default": "",
+            "examples": [
+              "Case details"
+            ],
+            "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+          },
+          "hearingType": {
+            "title": "Type of hearing being presented",
+            "type": "string",
+            "default": "",
+            "examples": [
+              "mda"
+            ],
+            "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+          },
+          "additionalInformation": {
+            "title": "Additional information",
+            "type": "string",
+            "default": "",
+            "examples": [
+              "This is additional information"
+            ],
+            "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+          }
+        }
+      }
+    },
+    "futureJudgments": {
+      "title": "Future judgments list",
+      "type": "array",
+        "items": {
+          "type": "object",
+          "required": [
+            "date",
+            "venue",
+            "judge",
+            "time",
+            "caseNumber",
+            "caseDetails",
+            "hearingType",
+            "additionalInformation"
+          ],
+          "properties": {
+            "date": {
+              "title": "Date of hearing",
+              "type": "string",
+              "default": "",
+              "examples": [
+                "06/05/2025"
+              ],
+              "pattern": "^\\d{2}/\\d{2}/\\d{4}$"
+            },
+            "venue": {
+              "title": "Venue name of the hearing",
+              "type": "string",
+              "default": "",
+              "examples": [
+                "This is the venue of the hearing"
+              ],
+              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+            },
+            "judge": {
+              "title": "Judge name",
+              "type": "string",
+              "default": "",
+              "examples": [
+                "Judge name 1"
+              ],
+              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+            },
+            "time": {
+              "title": "Time of hearing",
+              "type": "string",
+              "default": "",
+              "examples": [
+                "10:30am"
+              ],
+              "pattern": "^\\d{1,2}([:.]\\d{2})?[ap]m$"
+            },
+            "caseNumber": {
+              "title": "Case number",
+              "type": "string",
+              "default": "",
+              "examples": [
+                "12345"
+              ],
+              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+            },
+            "caseDetails": {
+              "title": "Case details",
+              "type": "string",
+              "default": "",
+              "examples": [
+                "Case details"
+              ],
+              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+            },
+            "hearingType": {
+              "title": "Type of hearing being presented",
+              "type": "string",
+              "default": "",
+              "examples": [
+                "mda"
+              ],
+              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+            },
+            "additionalInformation": {
+              "title": "Additional information",
+              "type": "string",
+              "default": "",
+              "examples": [
+                "This is additional information"
+              ],
+              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+            }
+          }
+        }
+    }
+  }
+}
