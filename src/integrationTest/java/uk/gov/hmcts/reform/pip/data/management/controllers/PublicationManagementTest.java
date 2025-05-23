@@ -104,6 +104,10 @@ class PublicationManagementTest extends IntegrationTestBase {
     private static final String SSCS_LISTS_JSON_FILE = NON_STRATEGIC_FILES_LOCATION
         + "sscs-daily-hearing-list/"
         + "sscsDailyHearingList.json";
+    private static final String ADMINISTRATIVE_COURT_DAILY_CAUSE_LISTS_JSON_FILE =
+        "administrative-court-daily-cause-list/administrativeCourtDailyCauseList.json";
+    private static final String ADMINISTRATIVE_COURT_DAILY_CAUSE_LISTS_EXCEL_FILE =
+        "administrative-court-daily-cause-list/administrativeCourtDailyCauseList.xlsx";
 
     private static final LocalDateTime DISPLAY_TO = LocalDateTime.now()
         .truncatedTo(ChronoUnit.SECONDS);
@@ -1121,12 +1125,12 @@ class PublicationManagementTest extends IntegrationTestBase {
         Artefact artefact = createNonStrategicPublication(
             ListType.BIRMINGHAM_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
             NON_STRATEGIC_FILES_LOCATION
-                + "administrative-court-daily-cause-list/administrativeCourtDailyCauseList.xlsx"
+                + ADMINISTRATIVE_COURT_DAILY_CAUSE_LISTS_EXCEL_FILE
         );
 
         byte[] jsonData = getTestData(
             NON_STRATEGIC_FILES_LOCATION
-                + "administrative-court-daily-cause-list/administrativeCourtDailyCauseList.json");
+                + ADMINISTRATIVE_COURT_DAILY_CAUSE_LISTS_JSON_FILE);
         when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(jsonData));
 
         MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, artefact.getArtefactId())))
@@ -1143,14 +1147,12 @@ class PublicationManagementTest extends IntegrationTestBase {
         Artefact artefact = createNonStrategicPublication(
             ListType.BRISTOL_AND_CARDIFF_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
             NON_STRATEGIC_FILES_LOCATION
-                + "administrative-court-daily-cause-list/"
-                + "administrativeCourtDailyCauseList.xlsx"
+                + ADMINISTRATIVE_COURT_DAILY_CAUSE_LISTS_EXCEL_FILE
         );
 
         byte[] jsonData = getTestData(
             NON_STRATEGIC_FILES_LOCATION
-                + "administrative-court-daily-cause-list/"
-                + "administrativeCourtDailyCauseList.json");
+                + ADMINISTRATIVE_COURT_DAILY_CAUSE_LISTS_JSON_FILE);
         when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(jsonData));
 
         MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, artefact.getArtefactId())))
@@ -1167,14 +1169,12 @@ class PublicationManagementTest extends IntegrationTestBase {
         Artefact artefact = createNonStrategicPublication(
             ListType.LEEDS_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
             NON_STRATEGIC_FILES_LOCATION
-                + "administrative-court-daily-cause-list/"
-                + "administrativeCourtDailyCauseList.xlsx"
+                + ADMINISTRATIVE_COURT_DAILY_CAUSE_LISTS_EXCEL_FILE
         );
 
         byte[] jsonData = getTestData(
             NON_STRATEGIC_FILES_LOCATION
-                + "administrative-court-daily-cause-list/"
-                + "administrativeCourtDailyCauseList.json");
+                + ADMINISTRATIVE_COURT_DAILY_CAUSE_LISTS_JSON_FILE);
         when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(jsonData));
 
         MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, artefact.getArtefactId())))
@@ -1191,14 +1191,12 @@ class PublicationManagementTest extends IntegrationTestBase {
         Artefact artefact = createNonStrategicPublication(
             ListType.MANCHESTER_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
             NON_STRATEGIC_FILES_LOCATION
-                + "administrative-court-daily-cause-list/"
-                + "administrativeCourtDailyCauseList.xlsx"
+                + ADMINISTRATIVE_COURT_DAILY_CAUSE_LISTS_EXCEL_FILE
         );
 
         byte[] jsonData = getTestData(
             NON_STRATEGIC_FILES_LOCATION
-                + "administrative-court-daily-cause-list/"
-                + "administrativeCourtDailyCauseList.json");
+                + ADMINISTRATIVE_COURT_DAILY_CAUSE_LISTS_JSON_FILE);
         when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(jsonData));
 
         MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, artefact.getArtefactId())))

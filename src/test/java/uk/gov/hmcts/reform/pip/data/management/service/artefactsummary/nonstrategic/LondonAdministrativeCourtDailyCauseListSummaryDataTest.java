@@ -34,7 +34,7 @@ class LondonAdministrativeCourtDailyCauseListSummaryDataTest {
         IOUtils.copy(
             Files.newInputStream(Paths.get(
                 NON_STRATEGIC_RESOURCE_FOLDER,
-                "administrativeCourtDailyCauseList.json"
+                "londonAdministrativeCourtDailyCauseList.json"
             )), writer,
             Charset.defaultCharset()
         );
@@ -79,7 +79,7 @@ class LondonAdministrativeCourtDailyCauseListSummaryDataTest {
 
         softly.assertThat(values.get(0))
             .as(SUMMARY_FIELD_VALUE_MESSAGE)
-            .isEqualTo("10am");
+            .isEqualTo("9am");
 
         softly.assertThat(values.get(1))
             .as(SUMMARY_FIELD_VALUE_MESSAGE)
