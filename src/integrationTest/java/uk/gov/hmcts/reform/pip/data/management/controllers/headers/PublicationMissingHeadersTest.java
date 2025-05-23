@@ -15,13 +15,16 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.ExceptionResponse;
+import uk.gov.hmcts.reform.pip.data.management.service.AccountManagementService;
 import uk.gov.hmcts.reform.pip.data.management.utils.IntegrationBasicTestBase;
+import uk.gov.hmcts.reform.pip.model.account.PiUser;
 import uk.gov.hmcts.reform.pip.model.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
@@ -31,17 +34,21 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
+import java.util.UUID;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static uk.gov.hmcts.reform.pip.model.account.Roles.SYSTEM_ADMIN;
 
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("integration-basic")
 @WithMockUser(username = "admin", authorities = { "APPROLE_api.request.admin" })
-@SuppressWarnings("PMD.AvoidFieldNameMatchingMethodName")
+@SuppressWarnings({"PMD.AvoidFieldNameMatchingMethodName", "PMD.ExcessiveImports"})
 class PublicationMissingHeadersTest extends IntegrationBasicTestBase {
 
     @Autowired
@@ -69,13 +76,24 @@ class PublicationMissingHeadersTest extends IntegrationBasicTestBase {
     private static final String VALIDATION_EMPTY_RESPONSE = "Response should contain a Artefact";
     private static final String VALIDATION_EXCEPTION_RESPONSE = "Exception response does not contain correct message";
 
+    private static final String SYSTEM_ADMIN_ID = UUID.randomUUID().toString();
+
     private static ObjectMapper objectMapper;
+    private static PiUser piUser;
+
+    @MockitoBean
+    protected AccountManagementService accountManagementService;
 
     @SuppressWarnings("PMD.LooseCoupling")
     HttpHeaders httpHeaders;
 
     @BeforeAll
     public static void setup() throws IOException {
+        piUser = new PiUser();
+        piUser.setUserId(SYSTEM_ADMIN_ID);
+        piUser.setEmail("test@justice.gov.uk");
+        piUser.setRoles(SYSTEM_ADMIN);
+
         file = new MockMultipartFile("file", "test.pdf", MediaType.APPLICATION_PDF_VALUE, "test content".getBytes(
             StandardCharsets.UTF_8));
         excelFile = createExcelMultipartFile();
@@ -96,6 +114,7 @@ class PublicationMissingHeadersTest extends IntegrationBasicTestBase {
         httpHeaders.add(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE.toString());
         httpHeaders.add(PublicationConfiguration.COURT_ID, COURT_ID);
         httpHeaders.add(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE.toString());
+        httpHeaders.add(PublicationConfiguration.REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID);
     }
 
     private static MockMultipartFile createExcelMultipartFile() throws IOException {
@@ -112,6 +131,7 @@ class PublicationMissingHeadersTest extends IntegrationBasicTestBase {
     @ParameterizedTest
     @MethodSource(PARAMETERS)
     void testEmptyProvenance(String path, Object content, MediaType mediaType, ListType listType) throws Exception {
+        when(accountManagementService.getUserById(any())).thenReturn(piUser);
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MediaType.APPLICATION_JSON.equals(mediaType)
             ? MockMvcRequestBuilders.post(path).content((String) content)
             : MockMvcRequestBuilders.multipart(path).file((MockMultipartFile) content);
@@ -359,6 +379,7 @@ class PublicationMissingHeadersTest extends IntegrationBasicTestBase {
     @ParameterizedTest
     @MethodSource(PARAMETERS)
     void testEmptyCourtId(String path, Object content, MediaType mediaType, ListType listType) throws Exception {
+        when(accountManagementService.getUserById(any())).thenReturn(piUser);
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MediaType.APPLICATION_JSON.equals(mediaType)
             ? MockMvcRequestBuilders.post(path).content((String) content)
             : MockMvcRequestBuilders.multipart(path).file((MockMultipartFile) content);
@@ -409,6 +430,7 @@ class PublicationMissingHeadersTest extends IntegrationBasicTestBase {
     @ParameterizedTest
     @MethodSource(PARAMETERS)
     void testDateToAbsenceList(String path, Object content, MediaType mediaType, ListType listType) throws Exception {
+        when(accountManagementService.getUserById(any())).thenReturn(piUser);
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MediaType.APPLICATION_JSON.equals(mediaType)
             ? MockMvcRequestBuilders.post(path).content((String) content)
             : MockMvcRequestBuilders.multipart(path).file((MockMultipartFile) content);
@@ -433,6 +455,7 @@ class PublicationMissingHeadersTest extends IntegrationBasicTestBase {
     @ParameterizedTest
     @MethodSource(PARAMETERS)
     void testDateFromAbsenceList(String path, Object content, MediaType mediaType, ListType listType) throws Exception {
+        when(accountManagementService.getUserById(any())).thenReturn(piUser);
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MediaType.APPLICATION_JSON.equals(mediaType)
             ? MockMvcRequestBuilders.post(path).content((String) content)
             : MockMvcRequestBuilders.multipart(path).file((MockMultipartFile) content);

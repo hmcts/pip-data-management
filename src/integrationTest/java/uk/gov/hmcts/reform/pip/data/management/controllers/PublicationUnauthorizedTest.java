@@ -1,5 +1,8 @@
 package uk.gov.hmcts.reform.pip.data.management.controllers;
 
+import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -7,30 +10,47 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import uk.gov.hmcts.reform.pip.data.management.Application;
 import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
-import uk.gov.hmcts.reform.pip.data.management.utils.IntegrationBasicTestBase;
+import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
+import uk.gov.hmcts.reform.pip.data.management.service.publication.ArtefactService;
+import uk.gov.hmcts.reform.pip.data.management.utils.IntegrationTestBase;
+import uk.gov.hmcts.reform.pip.model.account.PiUser;
 import uk.gov.hmcts.reform.pip.model.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
+import uk.gov.hmcts.reform.pip.model.publication.Sensitivity;
 
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static uk.gov.hmcts.reform.pip.model.account.Roles.SYSTEM_ADMIN;
 
-@SpringBootTest
+@SpringBootTest(classes = {Application.class},
+    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
-@ActiveProfiles("integration-basic")
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
+@ActiveProfiles("integration")
+@AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
 @WithMockUser(username = "admin", authorities = { "APPROLE_api.request.unknown" })
-class PublicationUnauthorizedTest extends IntegrationBasicTestBase {
+class PublicationUnauthorizedTest extends IntegrationTestBase {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @MockitoBean
+    private ArtefactService artefactService;
 
     private static final String PUBLICATION_URL = "/publication";
     private static final String NON_STRATEGIC_PUBLICATION_URL = PUBLICATION_URL + "/non-strategic";
@@ -41,13 +61,42 @@ class PublicationUnauthorizedTest extends IntegrationBasicTestBase {
     private static final String COUNT_BY_LOCATION_URL = PUBLICATION_URL + "/count-by-location";
     private static final String SEND_NEW_ARTEFACTS_FOR_SUBSCRIPTION_URL = PUBLICATION_URL + "/latest/subscription";
     private static final String REPORT_NO_MATCH_ARTEFACTS_URL = PUBLICATION_URL + "/no-match/reporting";
-    private static final String ISSUER_HEADER = "x-issuer-id";
-    private static final String USER_ID_HEADER = "x-user-id";
+    private static final String REQUESTER_ID_HEADER = "x-requester-id";
     private static final String VERIFICATION_HEADER = "verification";
     private static final String VERIFICATION_TRUE = "true";
+    private static final UUID TEST_ARTEFACT_ID = UUID.randomUUID();
+    private static final String USER_ID = "123";
+
+    private static final Artefact ARTEFACT = new Artefact();
+    private static final String SYSTEM_ADMIN_ID = UUID.randomUUID().toString();
+
+    private static PiUser piUser;
+
+    @BeforeAll
+    public static void setupBeforeAll() {
+        piUser = new PiUser();
+        piUser.setUserId(SYSTEM_ADMIN_ID);
+        piUser.setEmail("test@justice.gov.uk");
+        piUser.setRoles(SYSTEM_ADMIN);
+    }
+
+
+    @BeforeEach
+    void setup() {
+        ARTEFACT.setArtefactId(TEST_ARTEFACT_ID);
+        ARTEFACT.setContentDate(LocalDateTime.now());
+        ARTEFACT.setLocationId("1");
+        ARTEFACT.setProvenance("france");
+        ARTEFACT.setLanguage(Language.ENGLISH);
+        ARTEFACT.setListType(ListType.SJP_PUBLIC_LIST);
+        ARTEFACT.setLastReceivedDate(LocalDateTime.now());
+        ARTEFACT.setPayloadSize(100F);
+        ARTEFACT.setSensitivity(Sensitivity.PUBLIC);
+    }
 
     @Test
     void testUnathorizedJsonUpload() throws Exception {
+        when(accountManagementService.getUserById(any())).thenReturn(piUser);
         try (InputStream mockFile = this.getClass().getClassLoader()
             .getResourceAsStream("data/family-daily-cause-list/familyDailyCauseList.json")) {
 
@@ -63,6 +112,7 @@ class PublicationUnauthorizedTest extends IntegrationBasicTestBase {
                 .header(PublicationConfiguration.LANGUAGE_HEADER, Language.ENGLISH)
                 .header(PublicationConfiguration.CONTENT_DATE, LocalDateTime.now())
                 .content(mockFile.readAllBytes())
+                .header(REQUESTER_ID_HEADER, USER_ID)
                 .contentType(MediaType.APPLICATION_JSON);
 
             mockMvc.perform(mockHttpServletRequestBuilder)
@@ -73,6 +123,7 @@ class PublicationUnauthorizedTest extends IntegrationBasicTestBase {
 
     @Test
     void testUnauthorizedFileUpload() throws Exception {
+        when(accountManagementService.getUserById(any())).thenReturn(piUser);
         MockMultipartFile file = new MockMultipartFile("file",
                                                        "test.pdf",
                                                        MediaType.APPLICATION_PDF_VALUE,
@@ -90,6 +141,7 @@ class PublicationUnauthorizedTest extends IntegrationBasicTestBase {
             .header(PublicationConfiguration.LIST_TYPE, ListType.FAMILY_DAILY_CAUSE_LIST)
             .header(PublicationConfiguration.LANGUAGE_HEADER, Language.ENGLISH)
             .header(PublicationConfiguration.CONTENT_DATE, LocalDateTime.now())
+            .header(REQUESTER_ID_HEADER, UUID.randomUUID())
             .contentType(MediaType.MULTIPART_FORM_DATA);
 
         mockMvc.perform(mockHttpServletRequestBuilder)
@@ -100,6 +152,7 @@ class PublicationUnauthorizedTest extends IntegrationBasicTestBase {
 
     @Test
     void testUnauthorizedNonStrategicPublicationUpload() throws Exception {
+        when(accountManagementService.getUserById(any())).thenReturn(piUser);
         MockMultipartFile file = new MockMultipartFile(
             "file", "file.xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
             "test content".getBytes(StandardCharsets.UTF_8)
@@ -117,6 +170,7 @@ class PublicationUnauthorizedTest extends IntegrationBasicTestBase {
             .header(PublicationConfiguration.LIST_TYPE, ListType.FAMILY_DAILY_CAUSE_LIST)
             .header(PublicationConfiguration.LANGUAGE_HEADER, Language.ENGLISH)
             .header(PublicationConfiguration.CONTENT_DATE, LocalDateTime.now())
+            .header(REQUESTER_ID_HEADER, USER_ID)
             .contentType(MediaType.MULTIPART_FORM_DATA);
 
         mockMvc.perform(mockHttpServletRequestBuilder)
@@ -149,9 +203,11 @@ class PublicationUnauthorizedTest extends IntegrationBasicTestBase {
 
     @Test
     void testUnauthorizedGetArtefactMetadata() throws Exception {
+        when(artefactService.getMetadataByArtefactId(any())).thenReturn(ARTEFACT);
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
             .get("/publication/2dde8f1e-bfb6-11ec-9d64-0242ac120002")
-            .header(VERIFICATION_HEADER, VERIFICATION_TRUE);
+            .header(VERIFICATION_HEADER, VERIFICATION_TRUE)
+            .header(REQUESTER_ID_HEADER, UUID.randomUUID());
 
         mockMvc.perform(mockHttpServletRequestBuilder)
             .andExpect(status().isForbidden())
@@ -160,9 +216,11 @@ class PublicationUnauthorizedTest extends IntegrationBasicTestBase {
 
     @Test
     void testUnauthorizedGetArtefactPayload() throws Exception {
+        when(artefactService.getMetadataByArtefactId(any())).thenReturn(ARTEFACT);
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
             .get("/publication/2dde8f1e-bfb6-11ec-9d64-0242ac120002/payload")
-            .header(VERIFICATION_HEADER, VERIFICATION_TRUE);
+            .header(VERIFICATION_HEADER, VERIFICATION_TRUE)
+            .header(REQUESTER_ID_HEADER, UUID.randomUUID());
 
         mockMvc.perform(mockHttpServletRequestBuilder)
             .andExpect(status().isForbidden())
@@ -171,9 +229,11 @@ class PublicationUnauthorizedTest extends IntegrationBasicTestBase {
 
     @Test
     void testUnauthorizedGetArtefactFile() throws Exception {
+        when(artefactService.getMetadataByArtefactId(any())).thenReturn(ARTEFACT);
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
             .get("/publication/2dde8f1e-bfb6-11ec-9d64-0242ac120002/file")
-            .header(VERIFICATION_HEADER, VERIFICATION_TRUE);
+            .header(VERIFICATION_HEADER, VERIFICATION_TRUE)
+            .header(REQUESTER_ID_HEADER, UUID.randomUUID());
 
         mockMvc.perform(mockHttpServletRequestBuilder)
             .andExpect(status().isForbidden())
@@ -193,9 +253,10 @@ class PublicationUnauthorizedTest extends IntegrationBasicTestBase {
 
     @Test
     void testUnauthorizedArchiveArtefact() throws Exception {
+        when(accountManagementService.getUserById(any())).thenReturn(piUser);
         MockHttpServletRequestBuilder archiveRequest = MockMvcRequestBuilders
             .put("/publication/2dde8f1e-bfb6-11ec-9d64-0242ac120002/archive")
-            .header(ISSUER_HEADER, "123");
+            .header(REQUESTER_ID_HEADER, USER_ID);
 
         mockMvc.perform(archiveRequest)
             .andExpect(status().isForbidden())
@@ -214,9 +275,10 @@ class PublicationUnauthorizedTest extends IntegrationBasicTestBase {
 
     @Test
     void testDeleteArtefactsByLocationUnauthorized() throws Exception {
+        when(accountManagementService.getUserById(any())).thenReturn(piUser);
         MockHttpServletRequestBuilder deleteRequest = MockMvcRequestBuilders
             .delete("/publication/1/deleteArtefacts")
-            .header(USER_ID_HEADER, "123");
+            .header(REQUESTER_ID_HEADER, USER_ID);
 
         mockMvc.perform(deleteRequest)
             .andExpect(status().isForbidden())
@@ -225,8 +287,10 @@ class PublicationUnauthorizedTest extends IntegrationBasicTestBase {
 
     @Test
     void testUnauthorizedGetAllNoMatchArtefacts() throws Exception {
+        when(accountManagementService.getUserById(any())).thenReturn(piUser);
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
-            MockMvcRequestBuilders.get("/publication/no-match");
+            MockMvcRequestBuilders.get("/publication/no-match")
+                .header(REQUESTER_ID_HEADER, USER_ID);
 
         mockMvc.perform(mockHttpServletRequestBuilder)
             .andExpect(status().isForbidden())
@@ -245,7 +309,10 @@ class PublicationUnauthorizedTest extends IntegrationBasicTestBase {
 
     @Test
     void testUnauthorizedCountByLocation() throws Exception {
-        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.get(COUNT_BY_LOCATION_URL);
+        when(accountManagementService.getUserById(any())).thenReturn(piUser);
+        MockHttpServletRequestBuilder request =
+            MockMvcRequestBuilders.get(COUNT_BY_LOCATION_URL)
+                .header(REQUESTER_ID_HEADER, USER_ID);
 
         mockMvc.perform(request)
             .andExpect(status().isForbidden())

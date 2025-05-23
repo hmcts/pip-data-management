@@ -293,7 +293,7 @@ class PublicationControllerTest {
     void checkCountArtefactByLocationReturnsData() {
         COURT_PER_LOCATION.add(new LocationArtefact("1", 2));
         when(artefactService.countArtefactsByLocation()).thenReturn(COURT_PER_LOCATION);
-        ResponseEntity<List<LocationArtefact>> result = publicationController.countByLocation();
+        ResponseEntity<List<LocationArtefact>> result = publicationController.countByLocation("123-456");
         assertEquals(HttpStatus.OK, result.getStatusCode(), STATUS_CODE_MATCH);
         assertEquals(COURT_PER_LOCATION, result.getBody(), NOT_EQUAL_MESSAGE);
     }
@@ -487,7 +487,6 @@ class PublicationControllerTest {
     void testCreatePublicationLogsWhenHeaderIsPresent() throws IOException {
         when(validationService.validateHeaders(any())).thenReturn(headers);
         when(publicationCreationRunner.run(artefact, PAYLOAD, true)).thenReturn(artefactWithId);
-        when(publicationService.maskEmail(TEST_STRING)).thenReturn(TEST_STRING);
 
         try (LogCaptor logCaptor = LogCaptor.forClass(PublicationController.class)) {
             publicationController.uploadPublication(
@@ -557,7 +556,7 @@ class PublicationControllerTest {
 
         when(artefactService.findAllNoMatchArtefacts()).thenReturn(artefactList);
 
-        ResponseEntity<List<Artefact>> response = publicationController.getAllNoMatchArtefacts();
+        ResponseEntity<List<Artefact>> response = publicationController.getAllNoMatchArtefacts(USER_ID.toString());
 
         assertEquals(HttpStatus.OK, response.getStatusCode(), STATUS_CODE_MATCH);
         assertEquals(artefactList, response.getBody(), "Body should match");
