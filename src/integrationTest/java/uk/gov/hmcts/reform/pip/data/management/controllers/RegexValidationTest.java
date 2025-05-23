@@ -28,8 +28,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(classes = {Application.class},
@@ -87,9 +87,9 @@ class RegexValidationTest extends IntegrationTestBase {
                 ExceptionResponse.class
             );
 
-            assertTrue(
-                exceptionResponse.getMessage().equals("$.document.documentName: does not match the regex"
-                                                            + " pattern ^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"),
+            assertEquals(
+                exceptionResponse.getMessage(), "$.document.documentName: does not match the regex"
+                                                            + " pattern ^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$",
                 "Publication date is not displayed in the exception response"
             );
         }

@@ -131,7 +131,7 @@
 <div>
   <h2 id="page-heading" class="govuk-heading-l" th:text="${i18n.listName}"/>
   <div>
-    <p id="venue-line-1" class="govuk-body no-margin-bottom" th:text="${i18n.venueLine1}"/>
+    <p id="venue-line-1" class="govuk-body no-margin-bottom govuk-!-font-weight-bold" th:text="${i18n.venueLine1}"/>
     <p id="venue-line-2" class="govuk-body no-margin-bottom" th:text="${i18n.venueLine2}"/>
     <p id="venue-line-3" class="govuk-body" th:text="${i18n.venueLine3}"/>
   </div>
@@ -166,7 +166,7 @@
         <td class="govuk-table__cell" th:text="${hearing.get('judge')}"/>
         <td class="govuk-table__cell" th:text="${hearing.get('time')}"/>
         <td class="govuk-table__cell" th:text="${hearing.get('venue')}"/>
-        <td class="govuk-table__cell" th:text="${hearing.get('hearingType')}"/>
+        <td class="govuk-table__cell" th:text="${hearing.get('type')}"/>
         <td class="govuk-table__cell" th:text="${hearing.get('caseNumber')}" />
         <td class="govuk-table__cell" th:text="${hearing.get('caseName')}" />
         <td class="govuk-table__cell" th:text="${hearing.get('additionalInformation')}" />

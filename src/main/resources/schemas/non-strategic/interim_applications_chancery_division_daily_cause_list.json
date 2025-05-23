@@ -17,7 +17,7 @@
           "judge",
           "time",
           "venue",
-          "hearingType",
+          "type",
           "caseNumber",
           "caseName",
           "additionalInformation"
@@ -50,7 +50,7 @@
             ],
             "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
           },
-          "hearingType": {
+          "type": {
             "title": "Type of hearing being presented",
             "type": "string",
             "default": "",

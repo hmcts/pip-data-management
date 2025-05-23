@@ -4,7 +4,7 @@
       "judge": "Judge A",
       "time": "10.30am",
       "venue": "This is a venue name",
-      "hearingType": "Case type A",
+      "type": "Case type A",
       "caseNumber": "1234",
       "caseName": "This is a case name",
       "additionalInformation": "This is additional information"
@@ -13,7 +13,7 @@
       "judge": "Judge B",
       "time": "10.30am",
       "venue": "This is a venue name",
-      "hearingType": "Case type B",
+      "type": "Case type B",
       "caseNumber": "3456",
       "caseName": "This is a case name",
       "additionalInformation": "This is additional information"
@@ -22,7 +22,7 @@
       "judge": "Judge C",
       "time": "10.30am",
       "venue": "This is a venue name",
-      "hearingType": "Case type C",
+      "type": "Case type C",
       "caseNumber": "5678",
       "caseName": "This is a case name",
       "additionalInformation": "This is additional information"

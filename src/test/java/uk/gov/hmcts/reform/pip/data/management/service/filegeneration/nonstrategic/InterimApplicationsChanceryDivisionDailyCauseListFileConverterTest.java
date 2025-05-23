@@ -45,6 +45,11 @@ class InterimApplicationsChanceryDivisionDailyCauseListFileConverterTest {
     private static final String LAST_UPDATED_DATE_ELEMENT = "last-updated-date";
     private static final String SUMMARY_TEXT_CLASS = "govuk-details__summary-text";
 
+    private static final String HEARING_TIME = "10:30am";
+    private static final String HEARING_VENUE = "This is a venue name";
+    private static final String CASE_NAME = "This is a case name";
+    private static final String ADDITIONAL_INFORMATION = "This is additional information";
+
     private static final String TITLE_MESSAGE = "Title does not match";
     private static final String HEADER_MESSAGE = "Header does not match";
     private static final String VENUE_MESSAGE = "Venue does not match";
@@ -52,6 +57,7 @@ class InterimApplicationsChanceryDivisionDailyCauseListFileConverterTest {
     private static final String LAST_UPDATED_DATE_MESSAGE = "Last updated date does not match";
     private static final String IMPORTANT_INFORMATION_MESSAGE = "Important information heading does not match";
     private static final String TABLE_HEADERS_MESSAGE = "Table headers does not match";
+    private static final String TABLE_CONTENT_MESSAGE = "Table content does not match";
 
     private final NonStrategicListFileConverter converter = new NonStrategicListFileConverter();
 
@@ -100,15 +106,15 @@ class InterimApplicationsChanceryDivisionDailyCauseListFileConverterTest {
 
         softly.assertThat(document.getElementById(VENUE_LINE1_ELEMENT).text())
             .as(VENUE_MESSAGE)
-            .isEqualTo("Business and Property Courts Rolls Building");
+            .isEqualTo("Rolls Building");
 
         softly.assertThat(document.getElementById(VENUE_LINE2_ELEMENT).text())
             .as(VENUE_MESSAGE)
-            .isEqualTo("7 Rolls Buildings, Fetter Ln, City of London");
+            .isEqualTo("Fetter Lane, London");
 
         softly.assertThat(document.getElementById(VENUE_LINE3_ELEMENT).text())
             .as(VENUE_MESSAGE)
-            .isEqualTo("London EC4A 1NL");
+            .isEqualTo("EC4A 1NL");
 
         softly.assertThat(document.getElementById(LIST_DATE_ELEMENT).text())
             .as(LIST_DATE_MESSAGE)
@@ -131,9 +137,37 @@ class InterimApplicationsChanceryDivisionDailyCauseListFileConverterTest {
                 "Time",
                 "Venue",
                 "Type",
-                "Case Number",
-                "Case Name",
+                "Case number",
+                "Case name",
                 "Additional information"
+            );
+
+        softly.assertThat(document.getElementsByTag("td"))
+            .as(TABLE_CONTENT_MESSAGE)
+            .hasSize(21)
+            .extracting(Element::text)
+            .containsExactly(
+                "Judge A",
+                HEARING_TIME,
+                HEARING_VENUE,
+                "Case type A",
+                "1234",
+                CASE_NAME,
+                ADDITIONAL_INFORMATION,
+                "Judge B",
+                HEARING_TIME,
+                HEARING_VENUE,
+                "Case type B",
+                "3456",
+                CASE_NAME,
+                ADDITIONAL_INFORMATION,
+                "Judge C",
+                HEARING_TIME,
+                HEARING_VENUE,
+                "Case type C",
+                "5678",
+                CASE_NAME,
+                ADDITIONAL_INFORMATION
             );
 
         softly.assertAll();
@@ -172,15 +206,15 @@ class InterimApplicationsChanceryDivisionDailyCauseListFileConverterTest {
 
         softly.assertThat(document.getElementById(VENUE_LINE1_ELEMENT).text())
             .as(VENUE_MESSAGE)
-            .isEqualTo("Llysoedd Busnes ac Eiddo – Adeilad Rolls");
+            .isEqualTo("Adeilad Rolls");
 
         softly.assertThat(document.getElementById(VENUE_LINE2_ELEMENT).text())
             .as(VENUE_MESSAGE)
-            .isEqualTo("7 Rolls Buildings, Fetter Ln, City of London");
+            .isEqualTo("Fetter Lane, London");
 
         softly.assertThat(document.getElementById(VENUE_LINE3_ELEMENT).text())
             .as(VENUE_MESSAGE)
-            .isEqualTo("London EC4A 1NL");
+            .isEqualTo("EC4A 1NL");
 
         softly.assertThat(document.getElementById(LIST_DATE_ELEMENT).text())
             .as(LIST_DATE_MESSAGE)
@@ -203,9 +237,37 @@ class InterimApplicationsChanceryDivisionDailyCauseListFileConverterTest {
                 "Amser",
                 "Lleoliad",
                 "Math",
-                "Rhif yr Achos",
-                "Enw’r Achos",
+                "Rhif yr achos",
+                "Enw’r achos",
                 "Gwybodaeth ychwanegol"
+            );
+
+        softly.assertThat(document.getElementsByTag("td"))
+            .as(TABLE_CONTENT_MESSAGE)
+            .hasSize(21)
+            .extracting(Element::text)
+            .containsExactly(
+                "Judge A",
+                HEARING_TIME,
+                HEARING_VENUE,
+                "Case type A",
+                "1234",
+                CASE_NAME,
+                ADDITIONAL_INFORMATION,
+                "Judge B",
+                HEARING_TIME,
+                HEARING_VENUE,
+                "Case type B",
+                "3456",
+                CASE_NAME,
+                ADDITIONAL_INFORMATION,
+                "Judge C",
+                HEARING_TIME,
+                HEARING_VENUE,
+                "Case type C",
+                "5678",
+                CASE_NAME,
+                ADDITIONAL_INFORMATION
             );
 
         softly.assertAll();

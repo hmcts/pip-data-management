@@ -1,8 +1,8 @@
 {
   "listName": "Rhestr Achosion Dyddiol Ceisiadau Interim (Adran Siawnsri)",
-  "venueLine1": "Llysoedd Busnes ac Eiddo – Adeilad Rolls",
-  "venueLine2": "7 Rolls Buildings, Fetter Ln, City of London",
-  "venueLine3": "London EC4A 1NL",
+  "venueLine1": "Adeilad Rolls",
+  "venueLine2": "Fetter Lane, London",
+  "venueLine3": "EC4A 1NL",
   "openJusticeMessage1": "Dylai partïon gysylltu â chlerc y Barnwr Interim, ",
   "openJusticeSeparator": ", ",
   "openJusticeMessage2": " cyn gynted â phosibl.",
@@ -12,8 +12,8 @@
     "Amser",
     "Lleoliad",
     "Math",
-    "Rhif yr Achos",
-    "Enw’r Achos",
+    "Rhif yr achos",
+    "Enw’r achos",
     "Gwybodaeth ychwanegol"
   ]
 }

@@ -63,6 +63,7 @@ class UtTaxAndChanceryChamberDailyHearingListFileConverterTest {
     private static final String IMPORTANT_INFORMATION_MESSAGE = "Important information heading does not match";
     private static final String BODY_MESSAGE = "Body does not match";
     private static final String TABLE_HEADERS_MESSAGE = "Table headers does not match";
+    private static final String TABLE_CONTENT_MESSAGE = "Table content does not match";
 
     private final NonStrategicListFileConverter converter = new NonStrategicListFileConverter();
 
@@ -116,7 +117,7 @@ class UtTaxAndChanceryChamberDailyHearingListFileConverterTest {
             .as(LAST_UPDATED_DATE_MESSAGE)
             .isEqualTo("Last updated 20 January 2025 at 9:30am");
 
-        softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).get(0).text())
+        softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).getFirst().text())
             .as(IMPORTANT_INFORMATION_MESSAGE)
             .isEqualTo("Important information");
 
@@ -143,6 +144,21 @@ class UtTaxAndChanceryChamberDailyHearingListFileConverterTest {
                 "Hearing type",
                 "Venue",
                 "Additional information"
+            );
+
+        softly.assertThat(document.getElementsByTag("td"))
+            .as(TABLE_CONTENT_MESSAGE)
+            .hasSize(8)
+            .extracting(Element::text)
+            .containsExactly(
+                "10:15am",
+                "12345",
+                "This is a case name",
+                "Judge A",
+                "Member A",
+                "Hearing type 1",
+                "Venue 1",
+                "Additional information 1"
             );
 
         softly.assertAll();
@@ -187,7 +203,7 @@ class UtTaxAndChanceryChamberDailyHearingListFileConverterTest {
             .as(LAST_UPDATED_DATE_MESSAGE)
             .isEqualTo("Diweddarwyd ddiwethaf 20 January 2025 am 9:30am");
 
-        softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).get(0).text())
+        softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).getFirst().text())
             .as(IMPORTANT_INFORMATION_MESSAGE)
             .isEqualTo("Gwybodaeth bwysig");
 
@@ -214,6 +230,21 @@ class UtTaxAndChanceryChamberDailyHearingListFileConverterTest {
                 "Math o wrandawiad",
                 "Lleoliad",
                 "Gwybodaeth ychwanegol"
+            );
+
+        softly.assertThat(document.getElementsByTag("td"))
+            .as(TABLE_CONTENT_MESSAGE)
+            .hasSize(8)
+            .extracting(Element::text)
+            .containsExactly(
+                "10:15am",
+                "12345",
+                "This is a case name",
+                "Judge A",
+                "Member A",
+                "Hearing type 1",
+                "Venue 1",
+                "Additional information 1"
             );
 
         softly.assertAll();
