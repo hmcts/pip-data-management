@@ -1,0 +1,29 @@
+{
+  "listName": "King’s Bench Masters Daily Cause List",
+  "venueName": "Royal Courts of Justice",
+  "addressLine1": "Strand, London",
+  "addressLine2": "WC2A 2LL",
+  "importantInformationLine1": "Any media representative (or any other member of the public) wishing to attend a remote hearing should provide an email address and contact number to be sent an appropriate link for access. Please contact the assigned Masters’ clerk putting the hearing date and time in the subject box. The clerk’s details can be found in Annex 2 of the King’s Bench Division Guide.",
+  "importantInformationLine2": "In person hearings before the Masters are open to the press and public, but the rooms are located in secure areas of the building. If you wish to attend an in person hearing, please arrive in the Bear Garden in good time before a hearing and make yourself know to the usher.",
+  "importantInformationLine3": "Judgments handed down by the Master remotely will be released by circulation to the parties’ representatives by email and released to The National Archives. The date and time for hand-down will be deemed to be not before time listed. A copy of the judgment in final form as handed down can be made available after that time, on request by email.",
+  "importantInformationLine4": "In-person hearings – bundles must be provided in hard-copy at least 3 days before the hearing. These may be brought to the Bear Garden for delivery.",
+  "importantInformationLine5": "Remote hearings – these should be provided electronically to the Master and/or their clerk at least 3 days before the hearing. Please refer to the masters’ remote directions within the hearing notice for specific instructions.",
+  "importantInformationLine6": "All hearings stated as being in a room or court room will have no video link unless otherwise stated. The masters’ chambers are limited in space for attendees. If there are more than 6 attendees expected, please contact the masters’ clerk as soon as possible to advise if a suitable alternative can be found.",
+  "accessHeading": "Press and Public Access",
+  "judgementsHeading": "Judgments",
+  "bundlesHeading": "Bundles",
+  "inPersonHearingsHeading": "In-Person Hearings",
+  "kingsBenchGuideLink": "https://www.judiciary.uk/guidance-and-resources/kings-bench-guide-2024/",
+  "kingsBenchGuideLinkText": "King's Bench Guide",
+  "trialWindowsLink": "https://www.gov.uk/guidance/queens-bench-hearing-and-trial-dates",
+  "trialWindowsLinkText": "Current trial windows",
+  "tableHeaders": [
+    "Venue",
+    "Judge",
+    "Time",
+    "Case number",
+    "Case details",
+    "Hearing type",
+    "Additional information"
+  ]
+}

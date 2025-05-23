@@ -80,7 +80,6 @@ class LocationApiTest extends IntegrationTestBase {
     private static final String VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS =
         "Unexpected number of locations has been returned";
     private static final String VALIDATION_LOCATION_NAME_NOT_AS_EXPECTED = "Location name is not as expected";
-    private static final int ALL_LOCATIONS = 3;
     private static final String LOCATION_RESULT = "Location has been returned when not expected";
 
     private static final String USERNAME = "admin";
@@ -141,7 +140,7 @@ class LocationApiTest extends IntegrationTestBase {
 
         List<Location> returnedLocations = Arrays.asList(arrayLocations);
 
-        assertEquals(ALL_LOCATIONS, returnedLocations.size(), VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
+        assertEquals(4, returnedLocations.size(), VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
 
         for (Location location : locations) {
             assertTrue(
@@ -399,10 +398,14 @@ class LocationApiTest extends IntegrationTestBase {
         List<Location> returnedLocations =
             Arrays.asList(objectMapper.readValue(mvcResult.getResponse().getContentAsString(), Location[].class));
 
-        assertEquals(1, returnedLocations.size(), VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
+        assertEquals(2, returnedLocations.size(), VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
 
         assertTrue(
             compareLocationWithoutReference.test(locations.get(1), returnedLocations.get(0)),
+            VALIDATION_UNKNOWN_LOCATION
+        );
+        assertTrue(
+            compareLocationWithoutReference.test(locations.get(2), returnedLocations.get(1)),
             VALIDATION_UNKNOWN_LOCATION
         );
     }
@@ -440,7 +443,7 @@ class LocationApiTest extends IntegrationTestBase {
         List<Location> returnedLocations =
             Arrays.asList(objectMapper.readValue(mvcResult.getResponse().getContentAsString(), Location[].class));
 
-        assertEquals(2, returnedLocations.size(), VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
+        assertEquals(3, returnedLocations.size(), VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
 
         assertTrue(
             compareLocationWithoutReference.test(locations.get(0), returnedLocations.get(0)),
@@ -448,6 +451,10 @@ class LocationApiTest extends IntegrationTestBase {
         );
         assertTrue(
             compareLocationWithoutReference.test(locations.get(1), returnedLocations.get(1)),
+            VALIDATION_UNKNOWN_LOCATION
+        );
+        assertTrue(
+            compareLocationWithoutReference.test(locations.get(2), returnedLocations.get(2)),
             VALIDATION_UNKNOWN_LOCATION
         );
     }
@@ -467,7 +474,7 @@ class LocationApiTest extends IntegrationTestBase {
         List<Location> returnedLocations =
             Arrays.asList(objectMapper.readValue(mvcResult.getResponse().getContentAsString(), Location[].class));
 
-        assertEquals(2, returnedLocations.size(), VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
+        assertEquals(3, returnedLocations.size(), VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
 
         assertTrue(
             compareLocationWithoutReference.test(locations.get(0), returnedLocations.get(0)),
@@ -475,6 +482,10 @@ class LocationApiTest extends IntegrationTestBase {
         );
         assertTrue(
             compareLocationWithoutReference.test(locations.get(1), returnedLocations.get(1)),
+            VALIDATION_UNKNOWN_LOCATION
+        );
+        assertTrue(
+            compareLocationWithoutReference.test(locations.get(2), returnedLocations.get(2)),
             VALIDATION_UNKNOWN_LOCATION
         );
     }
@@ -486,7 +497,7 @@ class LocationApiTest extends IntegrationTestBase {
 
         MvcResult mvcResult = mockMvc.perform(get(GET_LOCATION_BY_FILTER_ENDPOINT)
                                                   .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID)
-                                                  .param(JURISDICTIONS_PARAM, "Magistrates Location")
+                                                  .param(JURISDICTIONS_PARAM, "Family Location")
                                                   .param(LANGUAGE_PARAM, ENGLISH_LANGUAGE_PARAM_VALUE))
             .andExpect(status().isOk())
             .andReturn();
@@ -494,10 +505,15 @@ class LocationApiTest extends IntegrationTestBase {
         List<Location> returnedLocations =
             Arrays.asList(objectMapper.readValue(mvcResult.getResponse().getContentAsString(), Location[].class));
 
-        assertEquals(1, returnedLocations.size(), VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
+        assertEquals(2, returnedLocations.size(), VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
 
         assertTrue(
             compareLocationWithoutReference.test(locations.get(0), returnedLocations.get(0)),
+            VALIDATION_UNKNOWN_LOCATION
+        );
+
+        assertTrue(
+            compareLocationWithoutReference.test(locations.get(1), returnedLocations.get(1)),
             VALIDATION_UNKNOWN_LOCATION
         );
     }
@@ -509,7 +525,7 @@ class LocationApiTest extends IntegrationTestBase {
 
         MvcResult mvcResult = mockMvc.perform(get(GET_LOCATION_BY_FILTER_ENDPOINT)
                                                   .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID)
-                                                  .param(JURISDICTIONS_PARAM, "welsh magistrates")
+                                                  .param(JURISDICTIONS_PARAM, "welsh family")
                                                   .param(LANGUAGE_PARAM, WELSH_LANGUAGE_PARAM_VALUE))
             .andExpect(status().isOk())
             .andReturn();
@@ -517,10 +533,15 @@ class LocationApiTest extends IntegrationTestBase {
         List<Location> returnedLocations =
             Arrays.asList(objectMapper.readValue(mvcResult.getResponse().getContentAsString(), Location[].class));
 
-        assertEquals(1, returnedLocations.size(), VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
+        assertEquals(2, returnedLocations.size(), VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
 
         assertTrue(
             compareLocationWithoutReference.test(locations.get(0), returnedLocations.get(0)),
+            VALIDATION_UNKNOWN_LOCATION
+        );
+
+        assertTrue(
+            compareLocationWithoutReference.test(locations.get(1), returnedLocations.get(1)),
             VALIDATION_UNKNOWN_LOCATION
         );
     }
@@ -534,7 +555,7 @@ class LocationApiTest extends IntegrationTestBase {
                                                   .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID)
                                                   .param(
                                                       JURISDICTIONS_PARAM,
-                                                      "Magistrates Location,Family Location"
+                                                      "Tribunal,Family Location"
                                                   )
                                                   .param(LANGUAGE_PARAM, ENGLISH_LANGUAGE_PARAM_VALUE))
             .andExpect(status().isOk())
@@ -543,7 +564,7 @@ class LocationApiTest extends IntegrationTestBase {
         List<Location> returnedLocations =
             Arrays.asList(objectMapper.readValue(mvcResult.getResponse().getContentAsString(), Location[].class));
 
-        assertEquals(2, returnedLocations.size(), VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
+        assertEquals(3, returnedLocations.size(), VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
 
         assertTrue(
             compareLocationWithoutReference.test(locations.get(0), returnedLocations.get(0)),
@@ -551,6 +572,10 @@ class LocationApiTest extends IntegrationTestBase {
         );
         assertTrue(
             compareLocationWithoutReference.test(locations.get(1), returnedLocations.get(1)),
+            VALIDATION_UNKNOWN_LOCATION
+        );
+        assertTrue(
+            compareLocationWithoutReference.test(locations.get(2), returnedLocations.get(2)),
             VALIDATION_UNKNOWN_LOCATION
         );
     }
@@ -562,7 +587,7 @@ class LocationApiTest extends IntegrationTestBase {
 
         MvcResult mvcResult = mockMvc.perform(get(GET_LOCATION_BY_FILTER_ENDPOINT)
                                                   .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID)
-                                                  .param(JURISDICTIONS_PARAM, "welsh magistrates,welsh family")
+                                                  .param(JURISDICTIONS_PARAM, "welsh tribunal,welsh family")
                                                   .param(LANGUAGE_PARAM, WELSH_LANGUAGE_PARAM_VALUE))
             .andExpect(status().isOk())
             .andReturn();
@@ -570,7 +595,7 @@ class LocationApiTest extends IntegrationTestBase {
         List<Location> returnedLocations =
             Arrays.asList(objectMapper.readValue(mvcResult.getResponse().getContentAsString(), Location[].class));
 
-        assertEquals(2, returnedLocations.size(), VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
+        assertEquals(3, returnedLocations.size(), VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
 
         assertTrue(
             compareLocationWithoutReference.test(locations.get(0), returnedLocations.get(0)),
@@ -578,6 +603,74 @@ class LocationApiTest extends IntegrationTestBase {
         );
         assertTrue(
             compareLocationWithoutReference.test(locations.get(1), returnedLocations.get(1)),
+            VALIDATION_UNKNOWN_LOCATION
+        );
+        assertTrue(
+            compareLocationWithoutReference.test(locations.get(2), returnedLocations.get(2)),
+            VALIDATION_UNKNOWN_LOCATION
+        );
+    }
+
+    @Test
+    @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})
+    void testFilterByJurisdictionTribunalTypeAndCourtType() throws Exception {
+        List<Location> locations = createLocations(LOCATIONS_CSV);
+
+        MvcResult mvcResult = mockMvc.perform(get(GET_LOCATION_BY_FILTER_ENDPOINT)
+                                                  .param(
+                                                      JURISDICTIONS_PARAM,
+                                                      "Family Location,SSCS,Magistrates Location"
+                                                  )
+                                                  .param(LANGUAGE_PARAM, ENGLISH_LANGUAGE_PARAM_VALUE))
+            .andExpect(status().isOk())
+            .andReturn();
+
+        List<Location> returnedLocations =
+            Arrays.asList(objectMapper.readValue(mvcResult.getResponse().getContentAsString(), Location[].class));
+
+        assertEquals(3, returnedLocations.size(), VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
+
+        assertTrue(
+            compareLocationWithoutReference.test(locations.get(0), returnedLocations.get(0)),
+            VALIDATION_UNKNOWN_LOCATION
+        );
+        assertTrue(
+            compareLocationWithoutReference.test(locations.get(1), returnedLocations.get(1)),
+            VALIDATION_UNKNOWN_LOCATION
+        );
+        assertTrue(
+            compareLocationWithoutReference.test(locations.get(2), returnedLocations.get(2)),
+            VALIDATION_UNKNOWN_LOCATION
+        );
+    }
+
+    @Test
+    @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})
+    void testWelshFilterByJurisdictionTribunalTypeAndCrimeType() throws Exception {
+        List<Location> locations = createLocations(LOCATIONS_CSV);
+
+        MvcResult mvcResult = mockMvc.perform(get(GET_LOCATION_BY_FILTER_ENDPOINT)
+                                                  .param(JURISDICTIONS_PARAM,
+                                                         "welsh family,welsh SSCS,welsh magistrates")
+                                                  .param(LANGUAGE_PARAM, WELSH_LANGUAGE_PARAM_VALUE))
+            .andExpect(status().isOk())
+            .andReturn();
+
+        List<Location> returnedLocations =
+            Arrays.asList(objectMapper.readValue(mvcResult.getResponse().getContentAsString(), Location[].class));
+
+        assertEquals(3, returnedLocations.size(), VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
+
+        assertTrue(
+            compareLocationWithoutReference.test(locations.get(0), returnedLocations.get(0)),
+            VALIDATION_UNKNOWN_LOCATION
+        );
+        assertTrue(
+            compareLocationWithoutReference.test(locations.get(1), returnedLocations.get(1)),
+            VALIDATION_UNKNOWN_LOCATION
+        );
+        assertTrue(
+            compareLocationWithoutReference.test(locations.get(2), returnedLocations.get(2)),
             VALIDATION_UNKNOWN_LOCATION
         );
     }
@@ -595,7 +688,7 @@ class LocationApiTest extends IntegrationTestBase {
         List<Location> returnedLocations =
             Arrays.asList(objectMapper.readValue(mvcResult.getResponse().getContentAsString(), Location[].class));
 
-        assertEquals(ALL_LOCATIONS, returnedLocations.size(), VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
+        assertEquals(4, returnedLocations.size(), VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
 
         assertTrue(
             compareLocationWithoutReference.test(locations.get(0), returnedLocations.get(0)),
@@ -625,7 +718,7 @@ class LocationApiTest extends IntegrationTestBase {
         List<Location> returnedLocations =
             Arrays.asList(objectMapper.readValue(mvcResult.getResponse().getContentAsString(), Location[].class));
 
-        assertEquals(ALL_LOCATIONS, returnedLocations.size(), VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
+        assertEquals(4, returnedLocations.size(), VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
 
         assertTrue(
             compareLocationWithoutReference.test(locations.get(0), returnedLocations.get(0)),
@@ -646,7 +739,7 @@ class LocationApiTest extends IntegrationTestBase {
     void testCreateLocationsCoreData() throws Exception {
         List<Location> createdLocations = createLocations(LOCATIONS_CSV);
 
-        assertEquals(3, createdLocations.size(), VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
+        assertEquals(4, createdLocations.size(), VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
 
         Location locationA = createdLocations.get(0);
         assertEquals("Test Location", locationA.getName(), VALIDATION_LOCATION_NAME_NOT_AS_EXPECTED);
@@ -655,11 +748,14 @@ class LocationApiTest extends IntegrationTestBase {
 
         List<String> jurisdictions = locationA.getJurisdiction();
         assertEquals(2, jurisdictions.size(), "Unexpected number of jurisdictions returned");
-        assertTrue(
-            jurisdictions.contains("Magistrates Location"),
-            "Magistrates Location not within jurisdiction field"
-        );
         assertTrue(jurisdictions.contains("Family Location"), "Family Location not within jurisdiction field");
+        assertTrue(jurisdictions.contains("Crime"), "Crime not within jurisdiction field");
+
+        List<String> jurisdictionTypes = locationA.getJurisdictionType();
+        assertTrue(
+            jurisdictionTypes.contains("Magistrates Location"),
+            "Magistrates Location not within jurisdiction type field"
+        );
     }
 
     @Test
@@ -667,7 +763,7 @@ class LocationApiTest extends IntegrationTestBase {
     void testCreateLocationsReferenceData() throws Exception {
         List<Location> createdLocations = createLocations(LOCATIONS_CSV);
 
-        assertEquals(3, createdLocations.size(), VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
+        assertEquals(4, createdLocations.size(), VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
 
         Location locationA = createdLocations.get(0);
         List<LocationReference> locationReferenceList = locationA.getLocationReferenceList();
@@ -710,7 +806,7 @@ class LocationApiTest extends IntegrationTestBase {
         Location[] arrayLocations =
             objectMapper.readValue(mvcResult.getResponse().getContentAsString(), Location[].class);
 
-        assertEquals(3, arrayLocations.length, VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
+        assertEquals(4, arrayLocations.length, VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
 
         mvcResult = mockMvc.perform(get(GET_LOCATION_BY_ID_ENDPOINT + "1"))
             .andExpect(status().isOk())
@@ -737,18 +833,21 @@ class LocationApiTest extends IntegrationTestBase {
                      "Unexpected provenance location type returned"
         );
 
-        Location locationB = arrayLocations[0];
-        assertEquals("Test Location Other", locationB.getName(), VALIDATION_LOCATION_NAME_NOT_AS_EXPECTED);
+        Location location1 = arrayLocations[0];
+        assertEquals("Test Location Other", location1.getName(), VALIDATION_LOCATION_NAME_NOT_AS_EXPECTED);
 
-        Location locationC = arrayLocations[1];
-        assertEquals("Unknown Location", locationC.getName(), VALIDATION_LOCATION_NAME_NOT_AS_EXPECTED);
+        Location location2 = arrayLocations[1];
+        assertEquals("Test Location Other 2", location2.getName(), VALIDATION_LOCATION_NAME_NOT_AS_EXPECTED);
+
+        Location location3 = arrayLocations[2];
+        assertEquals("Unknown Location", location3.getName(), VALIDATION_LOCATION_NAME_NOT_AS_EXPECTED);
     }
 
     @Test
     @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})
     void testCreateLocationsWithCsvContainingExistingLocationName() throws Exception {
         List<Location> createdLocations = createLocations(LOCATIONS_CSV);
-        assertEquals(3, createdLocations.size(), VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
+        assertEquals(4, createdLocations.size(), VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
 
         createdLocations = createLocations(CSV_WITH_EXISTING_LOCATION_NAME);
         assertEquals(1, createdLocations.size(), VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
@@ -760,11 +859,11 @@ class LocationApiTest extends IntegrationTestBase {
         Location[] returnedLocations = objectMapper.readValue(mvcResult.getResponse().getContentAsString(),
                                                               Location[].class);
 
-        assertEquals(4, returnedLocations.length, VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
+        assertEquals(5, returnedLocations.length, VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
         assertEquals(1, returnedLocations[0].getLocationId(), VALIDATION_UNKNOWN_LOCATION);
         assertEquals(2, returnedLocations[1].getLocationId(), VALIDATION_UNKNOWN_LOCATION);
         assertEquals(3, returnedLocations[2].getLocationId(), VALIDATION_UNKNOWN_LOCATION);
-        assertEquals(13, returnedLocations[3].getLocationId(), VALIDATION_UNKNOWN_LOCATION);
+        assertEquals(4, returnedLocations[3].getLocationId(), VALIDATION_UNKNOWN_LOCATION);
     }
 
     @Test
