@@ -24,7 +24,6 @@ import static uk.gov.hmcts.reform.pip.model.publication.ListType.LEEDS_ADMINISTR
 
 @ActiveProfiles("test")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-
 class LeedsAdministrativeCourtDailyCauseListFileConverterTest {
 
     private static final String CONTENT_DATE = "23 April 2025";
@@ -241,7 +240,7 @@ class LeedsAdministrativeCourtDailyCauseListFileConverterTest {
                 "Lleoliad",
                 "Barnwyr",
                 "Amser",
-                "Rhif yr Achos",
+                "Rhif yr achos",
                 "Manylion yr achos",
                 "Math o wrandawiad",
                 "Gwybodaeth ychwanegol"

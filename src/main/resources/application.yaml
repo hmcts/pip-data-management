@@ -168,10 +168,10 @@ validations:
     KINGS_BENCH_MASTERS_DAILY_CAUSE_LIST: "schemas/non-strategic/kings_bench_masters_daily_cause_list.json"
     SENIOR_COURTS_COSTS_OFFICE_DAILY_CAUSE_LIST: "schemas/non-strategic/senior_courts_costs_office_daily_cause_list.json"
     MAYOR_AND_CITY_CIVIL_DAILY_CAUSE_LIST: "schemas/non-strategic/mayor_and_city_civil_daily_cause_list.json"
-    BIRMINGHAM_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST: "schemas/non-strategic/birmingham_administrative_court_daily_cause_list.json"
-    BRISTOL_AND_CARDIFF_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST: "schemas/non-strategic/bristol_and_cardiff_administrative_court_daily_cause_list.json"
-    MANCHESTER_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST: "schemas/non-strategic/manchester_administrative_court_daily_cause_list.json"
-    LEEDS_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST: "schemas/non-strategic/leeds_administrative_court_daily_cause_list.json"
+    BIRMINGHAM_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST: "schemas/non-strategic/administrative_court_daily_cause_list.json"
+    BRISTOL_AND_CARDIFF_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST: "schemas/non-strategic/administrative_court_daily_cause_list.json"
+    MANCHESTER_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST: "schemas/non-strategic/administrative_court_daily_cause_list.json"
+    LEEDS_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST: "schemas/non-strategic/administrative_court_daily_cause_list.json"
 springdoc:
   swagger-ui:
     path: /swagger-ui/

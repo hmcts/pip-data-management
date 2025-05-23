@@ -154,13 +154,13 @@ public final class NonStrategicListFormatter {
         Map.entry(MAYOR_AND_CITY_CIVIL_DAILY_CAUSE_LIST,
                   Map.of(TIME, NonStrategicFieldFormattingHelper::formatTimeField)),
         Map.entry(BIRMINGHAM_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
-                  Map.of(HEARING_TIME, NonStrategicFieldFormattingHelper::formatTimeField)),
+                  Map.of(TIME, NonStrategicFieldFormattingHelper::formatTimeField)),
         Map.entry(BRISTOL_AND_CARDIFF_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
-                  Map.of(HEARING_TIME, NonStrategicFieldFormattingHelper::formatTimeField)),
+                  Map.of(TIME, NonStrategicFieldFormattingHelper::formatTimeField)),
         Map.entry(MANCHESTER_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
-                  Map.of(HEARING_TIME, NonStrategicFieldFormattingHelper::formatTimeField)),
+                  Map.of(TIME, NonStrategicFieldFormattingHelper::formatTimeField)),
         Map.entry(LEEDS_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
-                  Map.of(HEARING_TIME, NonStrategicFieldFormattingHelper::formatTimeField))
+                  Map.of(TIME, NonStrategicFieldFormattingHelper::formatTimeField))
     );
 
     private NonStrategicListFormatter() {

@@ -24,7 +24,6 @@ import static uk.gov.hmcts.reform.pip.model.publication.ListType.BIRMINGHAM_ADMI
 
 @ActiveProfiles("test")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-
 class BirminghamAdministrativeCourtDailyCauseListFileConverterTest {
 
     private static final String CONTENT_DATE = "23 April 2025";
@@ -64,7 +63,7 @@ class BirminghamAdministrativeCourtDailyCauseListFileConverterTest {
     @BeforeAll
     void setup() throws IOException {
         try (InputStream inputStream = getClass()
-            .getResourceAsStream("/mocks/non-strategic/birminghamAdministrativeCourtDailyCauseList.json")) {
+            .getResourceAsStream("/mocks/non-strategic/administrativeCourtDailyCauseList.json")) {
             String inputRaw = IOUtils.toString(inputStream, Charset.defaultCharset());
             inputJson = new ObjectMapper().readTree(inputRaw);
         }
@@ -224,7 +223,7 @@ class BirminghamAdministrativeCourtDailyCauseListFileConverterTest {
                 "Lleoliad",
                 "Barnwyr",
                 "Amser",
-                "Rhif yr Achos",
+                "Rhif yr achos",
                 "Manylion yr achos",
                 "Math o wrandawiad",
                 "Gwybodaeth ychwanegol"

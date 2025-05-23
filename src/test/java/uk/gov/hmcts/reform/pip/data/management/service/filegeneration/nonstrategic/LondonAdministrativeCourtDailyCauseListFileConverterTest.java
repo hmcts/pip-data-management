@@ -61,7 +61,7 @@ class LondonAdministrativeCourtDailyCauseListFileConverterTest {
     @BeforeAll
     void setup() throws IOException {
         try (InputStream inputStream = getClass()
-            .getResourceAsStream("/mocks/non-strategic/londonAdministrativeCourtDailyCauseList.json")) {
+            .getResourceAsStream("/mocks/non-strategic/administrativeCourtDailyCauseList.json")) {
             String inputRaw = IOUtils.toString(inputStream, Charset.defaultCharset());
             cstInputJson = new ObjectMapper().readTree(inputRaw);
         }
