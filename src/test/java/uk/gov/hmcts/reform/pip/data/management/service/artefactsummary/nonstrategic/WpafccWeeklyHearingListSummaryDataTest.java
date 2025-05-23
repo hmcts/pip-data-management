@@ -41,10 +41,10 @@ class WpafccWeeklyHearingListSummaryDataTest {
         );
 
         JsonNode payload = new ObjectMapper().readTree(writer.toString());
-        ArtefactSummaryData cstSummaryData = new ListConversionFactory()
+        ArtefactSummaryData summaryData = new ListConversionFactory()
             .getArtefactSummaryData(WPAFCC_WEEKLY_HEARING_LIST)
             .get();
-        Map<String, List<Map<String, String>>> output = cstSummaryData.get(payload);
+        Map<String, List<Map<String, String>>> output = summaryData.get(payload);
 
         SoftAssertions softly = new SoftAssertions();
 
