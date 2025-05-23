@@ -386,7 +386,7 @@ public class ListConversionFactory {
             new NonStrategicListFileConverter(),
             new NonStrategicListSummaryData(INSOLVENCY_AND_COMPANIES_COURT_CHD_DAILY_CAUSE_LIST)
         )),
-                Map.entry(BIRMINGHAM_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST, new ConversionPair(
+        Map.entry(BIRMINGHAM_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST, new ConversionPair(
             new NonStrategicListFileConverter(),
             new NonStrategicListSummaryData(BIRMINGHAM_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST)
         )),
