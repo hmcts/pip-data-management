@@ -1,0 +1,15 @@
+{
+  "listName": "Rhestr Achosion Dyddiol Llys Gweinyddol Bryste a Chaerdydd",
+  "importantInformationText1": "Mae gwrandawiadau'n cael eu cynnal yn gyhoeddus oni nodir yn wahanol. Wrth ystyried y defnydd o dechnoleg ffôn a fideo, bydd y farnwriaeth yn ystyried egwyddorion cyfiawnder agored. Gall y llys eithrio arsylwyr lle bo angen sicrhau gweinyddiaeth briodol cyfiawnder.",
+  "importantInformationHeading2": "Dyfarniadau",
+  "importantInformationText2": "Bydd dyfarniadau a draddodir gan y barnwr o bell yn cael eu rhyddhau trwy gylchrediad i gynrychiolwyr y partïon trwy e-bost a'u rhyddhau i'r Archifau Cenedlaethol. Ystyrir na fydd y dyddiad a'r amser ar gyfer traddodi yn digwydd cyn yr amser a restrwyd. Gellir darparu copi o'r dyfarniad ar ffurf derfynol fel y'i traddodwyd ar ôl yr amser hwnnw, ar gais drwy e-bost.",
+  "tableHeaders": [
+    "Lleoliad",
+    "Barnwyr",
+    "Amser",
+    "Rhif yr achos",
+    "Manylion yr achos",
+    "Math o wrandawiad",
+    "Gwybodaeth ychwanegol"
+  ]
+}
