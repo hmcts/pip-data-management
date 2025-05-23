@@ -171,7 +171,7 @@ class UtIacJudicialReviewDailyHearingListFileConverterTest {
             .extracting(Element::text)
             .containsExactly(
                 HEARING_TIME,
-                "Applicant",
+                "Case title",
                 "Representative",
                 CASE_REFERENCE_NUMBER,
                 JUDGES,
@@ -242,7 +242,7 @@ class UtIacJudicialReviewDailyHearingListFileConverterTest {
             .extracting(Element::text)
             .containsExactly(
                 HEARING_TIME_WELSH,
-                "Ymgeisydd",
+                "Deitl yr achos",
                 "Cynrychiolir gan",
                 "Cyfeirnod yr achos",
                 JUDGES_WELSH,
