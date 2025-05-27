@@ -67,6 +67,7 @@ class SiacWeeklyHearingListFileConverterTest {
     private static final String IMPORTANT_INFORMATION_MESSAGE = "Important information heading does not match";
     private static final String BODY_MESSAGE = "Body does not match";
     private static final String TABLE_HEADERS_MESSAGE = "Table headers does not match";
+    private static final String TABLE_CONTENT_MESSAGE = "Table content does not match";
 
     private final NonStrategicListFileConverter converter = new NonStrategicListFileConverter();
 
@@ -144,7 +145,7 @@ class SiacWeeklyHearingListFileConverterTest {
             .as(LAST_UPDATED_DATE_MESSAGE)
             .isEqualTo("Last updated 20 January 2025 at 9:30am");
 
-        softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).get(0).text())
+        softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).getFirst().text())
             .as(IMPORTANT_INFORMATION_MESSAGE)
             .isEqualTo("Important information");
 
@@ -172,6 +173,20 @@ class SiacWeeklyHearingListFileConverterTest {
                 HEARING_TYPE,
                 "Courtroom",
                 ADDITIONAL_INFORMATION
+            );
+
+        softly.assertThat(document.getElementsByTag("td"))
+            .as(TABLE_CONTENT_MESSAGE)
+            .hasSize(7)
+            .extracting(Element::text)
+            .containsExactly(
+                "11 December 2024",
+                "10:15am",
+                "Appellant 1",
+                "1234",
+                "Type of Hearing 1",
+                "Courtroom 1",
+                "Additional Information 1"
             );
 
         softly.assertAll();
@@ -218,7 +233,7 @@ class SiacWeeklyHearingListFileConverterTest {
             .as(LAST_UPDATED_DATE_MESSAGE)
             .isEqualTo("Diweddarwyd ddiwethaf 20 January 2025 am 9:30am");
 
-        softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).get(0).text())
+        softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).getFirst().text())
             .as(IMPORTANT_INFORMATION_MESSAGE)
             .isEqualTo("Gwybodaeth bwysig");
 
@@ -248,6 +263,20 @@ class SiacWeeklyHearingListFileConverterTest {
                 "Math o wrandawiad",
                 "Ystafell llys",
                 "Gwybodaeth ychwanegol"
+            );
+
+        softly.assertThat(document.getElementsByTag("td"))
+            .as(TABLE_CONTENT_MESSAGE)
+            .hasSize(7)
+            .extracting(Element::text)
+            .containsExactly(
+                "11 December 2024",
+                "10:15am",
+                "Appellant 1",
+                "1234",
+                "Type of Hearing 1",
+                "Courtroom 1",
+                "Additional Information 1"
             );
 
         softly.assertAll();

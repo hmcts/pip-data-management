@@ -50,6 +50,9 @@ class FttLandRegistryWeeklyHearingListFileConverterTest {
     private static final String LIST_WELSH_NAME = "Rhestr o Wrandawiadau Wythnosol Tribiwnlys Haen "
         + "Gyntaf (Tribiwnlys Cofrestru Tir)";
 
+    private static final String HEARING_DATE = "16 December 2024";
+    private static final String HEARING_VENUE = "This is a venue name";
+
     private static final String HEADER_ELEMENT = "page-heading";
     private static final String LIST_DATE_ELEMENT = "list-date";
     private static final String LAST_UPDATED_DATE_ELEMENT = "last-updated-date";
@@ -64,6 +67,7 @@ class FttLandRegistryWeeklyHearingListFileConverterTest {
     private static final String IMPORTANT_INFORMATION_MESSAGE = "Important information heading does not match";
     private static final String BODY_MESSAGE = "Body does not match";
     private static final String TABLE_HEADERS_MESSAGE = "Table headers does not match";
+    private static final String TABLE_CONTENT_MESSAGE = "Table content does not match";
 
     private final NonStrategicListFileConverter converter = new NonStrategicListFileConverter();
 
@@ -117,7 +121,7 @@ class FttLandRegistryWeeklyHearingListFileConverterTest {
             .as(LAST_UPDATED_DATE_MESSAGE)
             .isEqualTo("Last updated 20 January 2025 at 9:30am");
 
-        softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).get(0).text())
+        softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).getFirst().text())
             .as(IMPORTANT_INFORMATION_MESSAGE)
             .isEqualTo("Important information");
 
@@ -146,6 +150,25 @@ class FttLandRegistryWeeklyHearingListFileConverterTest {
                 "Case reference number",
                 "Judge",
                 "Venue/Platform"
+            );
+
+        softly.assertThat(document.getElementsByTag("td"))
+            .as(TABLE_CONTENT_MESSAGE)
+            .hasSize(12)
+            .extracting(Element::text)
+            .containsExactly(
+                HEARING_DATE,
+                "10:15am",
+                "This is a case name",
+                "1234",
+                "Judge A",
+                HEARING_VENUE,
+                HEARING_DATE,
+                "10:30am",
+                "This is another case name",
+                "1235",
+                "Judge B",
+                HEARING_VENUE
             );
 
         softly.assertAll();
@@ -190,7 +213,7 @@ class FttLandRegistryWeeklyHearingListFileConverterTest {
             .as(LAST_UPDATED_DATE_MESSAGE)
             .isEqualTo("Diweddarwyd ddiwethaf 20 January 2025 am 9:30am");
 
-        softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).get(0).text())
+        softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).getFirst().text())
             .as(IMPORTANT_INFORMATION_MESSAGE)
             .isEqualTo("Gwybodaeth bwysig");
 
@@ -220,6 +243,25 @@ class FttLandRegistryWeeklyHearingListFileConverterTest {
                 "Cyfeirnod yr achos",
                 "Barnwr",
                 "Lleoliad/Platfform"
+            );
+
+        softly.assertThat(document.getElementsByTag("td"))
+            .as(TABLE_CONTENT_MESSAGE)
+            .hasSize(12)
+            .extracting(Element::text)
+            .containsExactly(
+                HEARING_DATE,
+                "10:15am",
+                "This is a case name",
+                "1234",
+                "Judge A",
+                HEARING_VENUE,
+                HEARING_DATE,
+                "10:30am",
+                "This is another case name",
+                "1235",
+                "Judge B",
+                HEARING_VENUE
             );
 
         softly.assertAll();

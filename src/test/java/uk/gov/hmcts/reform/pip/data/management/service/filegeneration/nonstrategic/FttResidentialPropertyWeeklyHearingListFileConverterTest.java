@@ -48,6 +48,11 @@ class FttResidentialPropertyWeeklyHearingListFileConverterTest {
     private static final String COMMON_WELSH_HEADER_TEXT = "Tribiwnlys Haen Gyntaf (Tribiwnlys Eiddo Preswyl): "
         + "Rhestr o Wrandawiadau Wythnosol rhanbarth ";
 
+    private static final String HEARING_DATE = "16 December 2024";
+    private static final String HEARING_VENUE = "This is a venue name";
+    private static final String HEARING_CASE_1234 = "1234";
+    private static final String HEARING_CASE_1235 = "1235";
+
     private static final String HEADER_ELEMENT = "page-heading";
     private static final String LIST_DATE_ELEMENT = "list-date";
     private static final String LAST_UPDATED_DATE_ELEMENT = "last-updated-date";
@@ -62,6 +67,7 @@ class FttResidentialPropertyWeeklyHearingListFileConverterTest {
     private static final String IMPORTANT_INFORMATION_MESSAGE = "Important information heading does not match";
     private static final String BODY_MESSAGE = "Body does not match";
     private static final String TABLE_HEADERS_MESSAGE = "Table headers does not match";
+    private static final String TABLE_CONTENT_MESSAGE = "Table content does not match";
 
     private final NonStrategicListFileConverter converter = new NonStrategicListFileConverter();
 
@@ -147,7 +153,7 @@ class FttResidentialPropertyWeeklyHearingListFileConverterTest {
             .as(LAST_UPDATED_DATE_MESSAGE)
             .isEqualTo("Last updated 20 January 2025 at 9:30am");
 
-        softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).get(0).text())
+        softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).getFirst().text())
             .as(IMPORTANT_INFORMATION_MESSAGE)
             .isEqualTo("Important information");
 
@@ -178,6 +184,31 @@ class FttResidentialPropertyWeeklyHearingListFileConverterTest {
                 "Member(s)",
                 "Hearing method",
                 "Additional information"
+            );
+
+        softly.assertThat(document.getElementsByTag("td"))
+            .as(TABLE_CONTENT_MESSAGE)
+            .hasSize(18)
+            .extracting(Element::text)
+            .containsExactly(
+                HEARING_DATE,
+                "10:15am",
+                HEARING_VENUE,
+                HEARING_CASE_1234,
+                HEARING_CASE_1234,
+                "Judge A",
+                "Member A",
+                "Hearing Method A",
+                "This is additional information",
+                HEARING_DATE,
+                "10:30am",
+                HEARING_VENUE,
+                HEARING_CASE_1235,
+                HEARING_CASE_1235,
+                "Judge B",
+                "Member B",
+                "Hearing Method B",
+                "This is another additional information"
             );
 
         softly.assertAll();
@@ -224,7 +255,7 @@ class FttResidentialPropertyWeeklyHearingListFileConverterTest {
             .as(LAST_UPDATED_DATE_MESSAGE)
             .isEqualTo("Diweddarwyd ddiwethaf 20 January 2025 am 9:30am");
 
-        softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).get(0).text())
+        softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).getFirst().text())
             .as(IMPORTANT_INFORMATION_MESSAGE)
             .isEqualTo("Gwybodaeth bwysig");
 
@@ -258,6 +289,31 @@ class FttResidentialPropertyWeeklyHearingListFileConverterTest {
                 "Aelod(au)",
                 "Math o wrandawiad",
                 "Gwybodaeth ychwanegol"
+            );
+
+        softly.assertThat(document.getElementsByTag("td"))
+            .as(TABLE_CONTENT_MESSAGE)
+            .hasSize(18)
+            .extracting(Element::text)
+            .containsExactly(
+                HEARING_DATE,
+                "10:15am",
+                HEARING_VENUE,
+                HEARING_CASE_1234,
+                HEARING_CASE_1234,
+                "Judge A",
+                "Member A",
+                "Hearing Method A",
+                "This is additional information",
+                HEARING_DATE,
+                "10:30am",
+                HEARING_VENUE,
+                HEARING_CASE_1235,
+                HEARING_CASE_1235,
+                "Judge B",
+                "Member B",
+                "Hearing Method B",
+                "This is another additional information"
             );
 
         softly.assertAll();

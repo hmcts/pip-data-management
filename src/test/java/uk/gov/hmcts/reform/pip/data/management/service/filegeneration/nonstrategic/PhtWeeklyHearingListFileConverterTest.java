@@ -48,6 +48,10 @@ class PhtWeeklyHearingListFileConverterTest {
     private static final String ADDITIONAL_INFORMATION = "Additional information";
     private static final String ADDITIONAL_INFORMATION_WELSH = "Gwybodaeth ychwanegol";
 
+    private static final String TYPE = "mda";
+    private static final String HEARING_LENGTH = "1 hour";
+    private static final String HEARING_VENUE = "This is a venue name";
+
     private static final String LIST_DATE_ENGLISH = "List for week commencing 12 December 2024";
     private static final String LIST_DATE_WELSH = "Rhestr ar gyfer yr wythnos yn dechrau ar 12 December 2024";
     private static final String OBSERVE_HEARING_ENGLISH = "Observe a court or tribunal hearing as a journalist, "
@@ -69,6 +73,7 @@ class PhtWeeklyHearingListFileConverterTest {
     private static final String IMPORTANT_INFORMATION_MESSAGE = "Important information heading does not match";
     private static final String BODY_MESSAGE = "Body does not match";
     private static final String TABLE_HEADERS_MESSAGE = "Table headers does not match";
+    private static final String TABLE_CONTENT_MESSAGE = "Table content does not match";
 
     private final NonStrategicListFileConverter converter = new NonStrategicListFileConverter();
 
@@ -123,7 +128,7 @@ class PhtWeeklyHearingListFileConverterTest {
             .as(LAST_UPDATED_DATE_MESSAGE)
             .isEqualTo("Last updated 20 January 2025 at 9:30am");
 
-        softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).get(0).text())
+        softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).getFirst().text())
             .as(IMPORTANT_INFORMATION_MESSAGE)
             .isEqualTo("Important information");
 
@@ -147,6 +152,25 @@ class PhtWeeklyHearingListFileConverterTest {
                 HEARING_TYPE,
                 VENUE,
                 ADDITIONAL_INFORMATION
+            );
+
+        softly.assertThat(document.getElementsByTag("td"))
+            .as(TABLE_CONTENT_MESSAGE)
+            .hasSize(12)
+            .extracting(Element::text)
+            .containsExactly(
+                "10 December 2024",
+                "This is a case name",
+                HEARING_LENGTH,
+                TYPE,
+                HEARING_VENUE,
+                "This is additional information",
+                "11 December 2024",
+                "This is another case name",
+                HEARING_LENGTH,
+                TYPE,
+                HEARING_VENUE,
+                "This is another additional information"
             );
 
         softly.assertAll();
@@ -191,7 +215,7 @@ class PhtWeeklyHearingListFileConverterTest {
             .as(LAST_UPDATED_DATE_MESSAGE)
             .isEqualTo("Diweddarwyd ddiwethaf 20 January 2025 am 9:30am");
 
-        softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).get(0).text())
+        softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).getFirst().text())
             .as(IMPORTANT_INFORMATION_MESSAGE)
             .isEqualTo("Gwybodaeth bwysig");
 
@@ -215,6 +239,25 @@ class PhtWeeklyHearingListFileConverterTest {
                 HEARING_TYPE_WELSH,
                 VENUE_WELSH,
                 ADDITIONAL_INFORMATION_WELSH
+            );
+
+        softly.assertThat(document.getElementsByTag("td"))
+            .as(TABLE_CONTENT_MESSAGE)
+            .hasSize(12)
+            .extracting(Element::text)
+            .containsExactly(
+                "10 December 2024",
+                "This is a case name",
+                HEARING_LENGTH,
+                TYPE,
+                HEARING_VENUE,
+                "This is additional information",
+                "11 December 2024",
+                "This is another case name",
+                HEARING_LENGTH,
+                TYPE,
+                HEARING_VENUE,
+                "This is another additional information"
             );
 
         softly.assertAll();
