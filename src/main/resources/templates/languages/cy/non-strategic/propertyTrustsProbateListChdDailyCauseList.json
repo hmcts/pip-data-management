@@ -1,0 +1,21 @@
+{
+  "listName": "Rhestr Achosion Dyddiol Eiddo, Ymddiriedolaethau a Phrofiant (Adran Siawnsri)",
+  "venueName": "Rolls Building",
+  "addressLine1": "Fetter Lane, London",
+  "addressLine2": "EC4A 1NL",
+  "importantInformationLine1": "Os yw cynrychiolydd o'r cyfryngau neu aelod o'r cyhoedd yn dymuno mynychu'r gwrandawiad, dylent gysylltu â'r swyddfa restru yn chanceryjudgeslisting@justice.gov.uk a fydd yn eu rhoi mewn cysylltiad â'r unigolyn perthnasol.",
+  "importantInformationLine2": "Os yw cynrychiolydd o'r cyfryngau neu aelod o'r cyhoedd yn dymuno mynychu'r gwrandawiad o bell, dylent gysylltu â chancery.mastersappointments@justice.gov.uk a fydd yn eu rhoi mewn cysylltiad â'r unigolyn perthnasol.",
+  "importantInformationLine3": "Traddodi o Bell: Bydd y dyfarniad hwn yn cael ei draddodi o bell trwy gylchrediad i'r partïon neu eu cynrychiolwyr trwy e-bost a'i ryddhau i'r Archifau Cenedlaethol. Dylai copi o'r dyfarniad ar ffurf derfynol fel y'i rhoddwyd fod ar gael ar wefan yr Archifau Cenedlaethol yn fuan wedyn. Gall aelodau'r cyfryngau gael copi ar gais trwy e-bost i'r Swyddfa Farnwrol press.enquiries@judiciary.uk.",
+  "remoteHearingsHighCourtJudgeHeading": "Gwrandawiadau o bell gerbron Barnwr yr Uchel Lys",
+  "remoteHearingsChanceryMasterHeading": "Gwrandawiadau o bell gerbron Meistr y Siawnsri",
+  "remoteJudgementsHeading": "Dyfarniadau o bell",
+  "tableHeaders": [
+    "Barnwr",
+    "Amser",
+    "Leoliad",
+    "Math",
+    "Rhif yr achos",
+    "Enw’r achos",
+    "Gwybodaeth ychwanegol"
+  ]
+}
