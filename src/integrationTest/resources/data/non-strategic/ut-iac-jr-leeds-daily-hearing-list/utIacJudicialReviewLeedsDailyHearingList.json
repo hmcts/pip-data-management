@@ -1,0 +1,20 @@
+[
+    {
+        "venue": "This is a venue name",
+        "judges": "Judge A",
+        "hearingTime": "10:30am",
+        "caseReferenceNumber": "1234",
+        "caseTitle": "Case A",
+        "hearingType": "Hearing type A",
+        "additionalInformation": "This is additional information"
+    },
+    {
+        "venue": "This is a venue name",
+        "judges": "Judge B",
+        "hearingTime": "11am",
+        "caseReferenceNumber": "5678",
+        "caseTitle": "Case B",
+        "hearingType": "Hearing type B",
+        "additionalInformation": "This is additional information"
+    }
+]
