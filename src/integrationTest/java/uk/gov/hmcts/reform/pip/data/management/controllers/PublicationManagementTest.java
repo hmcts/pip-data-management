@@ -606,8 +606,7 @@ class PublicationManagementTest extends IntegrationTestBase {
             "UT_IAC_JR_LONDON_DAILY_HEARING_LIST",
             "UT_IAC_JR_MANCHESTER_DAILY_HEARING_LIST",
             "UT_IAC_JR_BIRMINGHAM_DAILY_HEARING_LIST",
-            "UT_IAC_JR_CARDIFF_DAILY_HEARING_LIST",
-            "UT_IAC_JR_LEEDS_DAILY_HEARING_LIST"
+            "UT_IAC_JR_CARDIFF_DAILY_HEARING_LIST"
         })
     void testGenerateArtefactSummaryUtIacJudicialReviewDailyHearingList(ListType listType) throws Exception {
         Artefact artefact = createNonStrategicPublication(
@@ -619,6 +618,28 @@ class PublicationManagementTest extends IntegrationTestBase {
         byte[] jsonData = getTestData(
             NON_STRATEGIC_FILES_LOCATION
                  + "ut-iac-judicial-review-daily-hearing-list/utIacJudicialReviewDailyHearingList.json"
+        );
+        when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(jsonData));
+
+        MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, artefact.getArtefactId())))
+            .andExpect(status().isOk()).andReturn();
+
+        String responseContent = response.getResponse().getContentAsString();
+        assertTrue(responseContent.contains("Hearing time - 10:30am"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(CASE_REFERENCE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
+    }
+
+    @Test
+    void testGenerateArtefactSummaryUtIacStatutoryAppealsDailyHearingList() throws Exception {
+        Artefact artefact = createNonStrategicPublication(
+            ListType.UT_IAC_JR_LEEDS_DAILY_HEARING_LIST,
+            NON_STRATEGIC_FILES_LOCATION
+                + "ut-iac-jr-leeds-daily-hearing-list/utIacJudicialReviewLeedsDailyHearingList.xlsx"
+        );
+
+        byte[] jsonData = getTestData(
+            NON_STRATEGIC_FILES_LOCATION
+                + "ut-iac-jr-leeds-daily-hearing-list/utIacJudicialReviewLeedsDailyHearingList.json"
         );
         when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(jsonData));
 
