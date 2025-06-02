@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.pip.data.management.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.pip.data.management.database.LocationMetadataRepository;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.LocationMetadataNotFoundException;
@@ -14,10 +15,11 @@ import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
 @Service
 @Slf4j
 public class LocationMetadataService {
-    private final LocationMetadataRepository locationMetaDataRepository;
+    private final LocationMetadataRepository locationMetadataRepository;
 
-    public LocationMetadataService(LocationMetadataRepository locationMetaDataRepository) {
-        this.locationMetaDataRepository = locationMetaDataRepository;
+    @Autowired
+    public LocationMetadataService(LocationMetadataRepository locationMetadataRepository) {
+        this.locationMetadataRepository = locationMetadataRepository;
     }
 
     /**
@@ -30,7 +32,7 @@ public class LocationMetadataService {
                                                    String actioningUserId) {
         log.info(writeLog(actioningUserId, UserActions.ADD_LOCATION_METADATA,
                           locationMetadata.getLocationId().toString()));
-        locationMetaDataRepository.save(locationMetadata);
+        locationMetadataRepository.save(locationMetadata);
     }
 
     /**
@@ -41,12 +43,12 @@ public class LocationMetadataService {
      */
     public void deleteById(String id, String actioningUserId) {
         UUID locationMetadataId = UUID.fromString(id);
-        locationMetaDataRepository.findById(locationMetadataId)
+        locationMetadataRepository.findById(locationMetadataId)
             .orElseThrow(() -> new LocationMetadataNotFoundException(
                 String.format("No location metadata found with the id: %s", id)
             ));
 
-        locationMetaDataRepository.deleteById(locationMetadataId);
+        locationMetadataRepository.deleteById(locationMetadataId);
 
         log.info(writeLog(actioningUserId, UserActions.DELETE_LOCATION_METADATA,
                           locationMetadataId.toString()));
@@ -62,7 +64,7 @@ public class LocationMetadataService {
                                        String actioningUserId) {
         log.info(writeLog(actioningUserId, UserActions.UPDATE_LOCATION_METADATA,
                           locationMetadata.getLocationId().toString()));
-        locationMetaDataRepository.save(locationMetadata);
+        locationMetadataRepository.save(locationMetadata);
     }
 
     /**
@@ -73,7 +75,7 @@ public class LocationMetadataService {
      * @throws LocationMetadataNotFoundException when no locations were found with the given location ID.
      */
     public LocationMetadata getLocationById(String locationId) {
-        return locationMetaDataRepository.findByLocationId(Integer.parseInt(locationId))
+        return locationMetadataRepository.findByLocationId(Integer.parseInt(locationId))
             .orElseThrow(() -> new LocationMetadataNotFoundException(
                 String.format("No location metadata found for location id: %s", locationId)
             ));
@@ -87,7 +89,7 @@ public class LocationMetadataService {
      * @throws LocationMetadataNotFoundException when no locations were found with the given ID.
      */
     public LocationMetadata getById(String id) {
-        return locationMetaDataRepository.findById(UUID.fromString(id))
+        return locationMetadataRepository.findById(UUID.fromString(id))
             .orElseThrow(() -> new LocationMetadataNotFoundException(
                 String.format("No location metadata found with the id: %s", id)
             ));

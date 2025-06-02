@@ -2,29 +2,34 @@ package uk.gov.hmcts.reform.pip.data.management.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.LocationMetadataNotFoundException;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationMetadata;
 import uk.gov.hmcts.reform.pip.data.management.utils.IntegrationTestBase;
 
+import java.io.InputStream;
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
+import static org.hibernate.validator.internal.util.Contracts.assertNotEmpty;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -33,39 +38,80 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
-@ActiveProfiles({"integration", "disable-async"})
+@ActiveProfiles({"integration"})
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @WithMockUser(username = "admin", authorities = {"APPROLE_api.request.admin"})
+@AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
 class LocationMetadataTest extends IntegrationTestBase {
+
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     private static final String BASE_URL = "/location-metadata";
     private static final String USER_ID = "user-123";
-    private static final String LOCATION_ID = "123";
     private static final String REQUESTER_ID_HEADER = "x-requester-id";
     private static final UUID TEST_UUID = UUID.randomUUID();
     private static final String UUID_STRING = TEST_UUID.toString();
 
+    private static final String VALIDATION_EMPTY_RESPONSE = "Returned response is empty";
+    private static final String LOCATION_LIST = "locationList";
+    private static final String LOCATION_ROOT_URL = "/locations";
+    public static final String UPLOAD_API = LOCATION_ROOT_URL + "/upload";
+    private static final String LOCATIONS_CSV = "location/ValidCsv.csv";
+    private static final String CAUTION_MESSAGE = "Cause message";
+    private static final String WELSH_CAUTION_MESSAGE = "Welsh Cause message";
+    private static final String NO_LIST = "No list message";
+    private static final String WELSH_NO_LIST = "Welsh no list message";
+    private static final String UNAUTHORIZED_ROLE = "APPROLE_unknown.authorized";
+    private static final String UNAUTHORIZED_USERNAME = "unauthorized_isAuthorized";
+
     @Autowired
     private MockMvc mockMvc;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+    @BeforeAll
+    static void setup() {
+        OBJECT_MAPPER.findAndRegisterModules();
+    }
 
-    private LocationMetadata createTestLocationMetadata() {
+    private LocationMetadata createTestLocationMetadata(String locationId) {
         LocationMetadata locationMetadata = new LocationMetadata();
-        locationMetadata.setLocationId(Integer.parseInt(LOCATION_ID));
+        locationMetadata.setLocationId(Integer.parseInt(locationId));
+        locationMetadata.setCautionMessage(CAUTION_MESSAGE);
+        locationMetadata.setWelshCautionMessage(WELSH_CAUTION_MESSAGE);
+        locationMetadata.setNoListMessage(NO_LIST);
+        locationMetadata.setWelshNoListMessage(WELSH_NO_LIST);
         return locationMetadata;
+    }
+
+    private String getLocationId() throws Exception {
+
+        try (InputStream csvInputStream = this.getClass().getClassLoader()
+            .getResourceAsStream(LOCATIONS_CSV)) {
+            MockMultipartFile csvFile
+                = new MockMultipartFile(LOCATION_LIST, csvInputStream);
+
+            MvcResult mvcResult = mockMvc.perform(multipart(UPLOAD_API).file(csvFile))
+                .andExpect(status().isOk()).andReturn();
+
+            List<Location> locations = Arrays.asList(
+                OBJECT_MAPPER.readValue(mvcResult.getResponse().getContentAsString(), Location[].class));
+            return String.valueOf(locations.getFirst().getLocationId());
+        }
+    }
+
+    protected MockHttpServletRequestBuilder setupMockLocationMetadata(String locationId) throws Exception {
+        return post(BASE_URL)
+            .content(OBJECT_MAPPER.writeValueAsString(createTestLocationMetadata(locationId)))
+            .header(REQUESTER_ID_HEADER, USER_ID)
+            .contentType(MediaType.APPLICATION_JSON);
     }
 
     @Test
     void testAddLocationMetadataSuccess() throws Exception {
-        LocationMetadata locationMetadata = createTestLocationMetadata();
-        doNothing().when(locationMetaDataService).createLocationMetadata(any(), anyString());
-
+        LocationMetadata locationMetadata = createTestLocationMetadata(getLocationId());
         mockMvc.perform(post(BASE_URL)
                             .header(REQUESTER_ID_HEADER, USER_ID)
                             .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(locationMetadata)))
+                            .content(OBJECT_MAPPER.writeValueAsString(locationMetadata)))
             .andExpect(status().isCreated())
             .andExpect(content().string(
                 String.format("Location metadata successfully added by user %s", USER_ID)
@@ -74,13 +120,11 @@ class LocationMetadataTest extends IntegrationTestBase {
 
     @Test
     void testUpdateLocationMetadataSuccess() throws Exception {
-        LocationMetadata locationMetadata = createTestLocationMetadata();
-        doNothing().when(locationMetaDataService).updateLocationMetadata(any(), anyString());
-
+        LocationMetadata locationMetadata = createTestLocationMetadata(getLocationId());
         mockMvc.perform(put(BASE_URL)
                             .header(REQUESTER_ID_HEADER, USER_ID)
                             .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(locationMetadata)))
+                            .content(OBJECT_MAPPER.writeValueAsString(locationMetadata)))
             .andExpect(status().isOk())
             .andExpect(content().string(
                 String.format("Location metadata successfully updated by user %s", USER_ID)
@@ -89,9 +133,25 @@ class LocationMetadataTest extends IntegrationTestBase {
 
     @Test
     void testDeleteLocationMetadataSuccess() throws Exception {
-        doNothing().when(locationMetaDataService).deleteById(anyString(), anyString());
+        String locationId = getLocationId();
+        MockHttpServletRequestBuilder mappedLocationMetadata = setupMockLocationMetadata(locationId);
+        MvcResult response = mockMvc.perform(mappedLocationMetadata)
+            .andExpect(status().isCreated())
+            .andReturn();
+        assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
 
-        mockMvc.perform(delete(BASE_URL + "/" + UUID_STRING)
+        MvcResult getResponse = mockMvc.perform(get(BASE_URL + "/search-by-location-id/" + locationId)
+                                                    .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andReturn();
+
+        String responseBody = getResponse.getResponse().getContentAsString();
+        assertNotEmpty(responseBody, "Response body should not be empty");
+
+        LocationMetadata returnLocationMetadata =
+            OBJECT_MAPPER.readValue(getResponse.getResponse().getContentAsString(), LocationMetadata.class);
+
+        mockMvc.perform(delete(BASE_URL + "/" + returnLocationMetadata.getLocationMetadataId())
                             .header(REQUESTER_ID_HEADER, USER_ID))
             .andExpect(status().isOk())
             .andExpect(content().string(
@@ -101,67 +161,83 @@ class LocationMetadataTest extends IntegrationTestBase {
 
     @Test
     void testDeleteLocationMetadataNotFound() throws Exception {
-        doThrow(new LocationMetadataNotFoundException("Not found"))
-            .when(locationMetaDataService).deleteById(anyString(), anyString());
-
         mockMvc.perform(delete(BASE_URL + "/" + UUID_STRING)
+                            .contentType(MediaType.APPLICATION_JSON)
                             .header(REQUESTER_ID_HEADER, USER_ID))
             .andExpect(status().isNotFound());
     }
 
     @Test
     void testGetLocationMetadataSuccess() throws Exception {
-        LocationMetadata expectedMetadata = createTestLocationMetadata();
-        when(locationMetaDataService.getById(UUID_STRING)).thenReturn(expectedMetadata);
+        String locationId = getLocationId();
+        MockHttpServletRequestBuilder mappedLocationMetadata = setupMockLocationMetadata(locationId);
+        MvcResult response = mockMvc.perform(mappedLocationMetadata)
+            .andExpect(status().isCreated())
+            .andReturn();
+        assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
 
-        MvcResult mvcResult = mockMvc.perform(get(BASE_URL + "/" + UUID_STRING))
+        MvcResult getResponse = mockMvc.perform(get(BASE_URL + "/search-by-location-id/" + locationId)
+                                                  .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andReturn();
 
-        LocationMetadata returnLocationMetadata =
-            objectMapper.readValue(mvcResult.getResponse().getContentAsString(), LocationMetadata.class);
+        String responseBody = getResponse.getResponse().getContentAsString();
+        assertNotEmpty(responseBody, "Response body should not be empty");
 
-        assertEquals(createTestLocationMetadata(), returnLocationMetadata,
-                     "Returned location metadata matches expected location metadata");
+        LocationMetadata returnLocationMetadata =
+            OBJECT_MAPPER.readValue(getResponse.getResponse().getContentAsString(), LocationMetadata.class);
+
+        assertEquals(locationId, returnLocationMetadata.getLocationId().toString(),
+                     "Returned location metadata id matches");
+        assertEquals(CAUTION_MESSAGE, returnLocationMetadata.getCautionMessage(),
+                     "Returned caution message matches");
+        assertEquals(WELSH_CAUTION_MESSAGE, returnLocationMetadata.getWelshCautionMessage(),
+                     "Returned welsh caution message matches");
+        assertEquals(NO_LIST, returnLocationMetadata.getNoListMessage(),
+                     "Returned no list message matches");
+        assertEquals(WELSH_NO_LIST, returnLocationMetadata.getWelshNoListMessage(),
+                     "Returned welsh no list message matches");
     }
 
     @Test
     void testGetLocationMetadataNotFound() throws Exception {
-        when(locationMetaDataService.getById(UUID_STRING))
-            .thenThrow(new LocationMetadataNotFoundException("Not found"));
-
-        mockMvc.perform(get(BASE_URL + "/" + UUID_STRING))
+        mockMvc.perform(get(BASE_URL + "/" + UUID_STRING)
+                            .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isNotFound());
     }
 
     @Test
     void testGetLocationMetadataByLocationIdSuccess() throws Exception {
-        LocationMetadata expectedMetadata = createTestLocationMetadata();
-        when(locationMetaDataService.getLocationById(LOCATION_ID)).thenReturn(expectedMetadata);
+        String locationId = getLocationId();
+        MockHttpServletRequestBuilder mappedLocationMetadata = setupMockLocationMetadata(locationId);
+        MvcResult response = mockMvc.perform(mappedLocationMetadata)
+            .andExpect(status().isCreated())
+            .andReturn();
+        assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
 
-        mockMvc.perform(get(BASE_URL + "/search-by-location-id/" + LOCATION_ID))
+        mockMvc.perform(get(BASE_URL + "/search-by-location-id/" + locationId))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.locationId").value(LOCATION_ID));
+            .andExpect(jsonPath("$.locationId").value(locationId));
     }
 
     @Test
     void testGetLocationMetadataByLocationIdNotFound() throws Exception {
-        when(locationMetaDataService.getLocationById(LOCATION_ID))
-            .thenThrow(new LocationMetadataNotFoundException("Not found"));
-
-        mockMvc.perform(get(BASE_URL + "/search-by-location-id/" + LOCATION_ID))
+        mockMvc.perform(get(BASE_URL + "/search-by-location-id/987"))
             .andExpect(status().isNotFound());
     }
 
     @Test
-    @WithMockUser(roles = {"TEST_ROLE"}) // Non-admin user
+    @WithMockUser(username = UNAUTHORIZED_USERNAME, authorities = {UNAUTHORIZED_ROLE})
     void testAddLocationMetadataForbiddenForNonAdmin() throws Exception {
-        LocationMetadata locationMetadata = createTestLocationMetadata();
+        LocationMetadata locationMetadata = new LocationMetadata();
+        locationMetadata.setLocationId(123);
 
-        mockMvc.perform(post(BASE_URL)
-                            .header(REQUESTER_ID_HEADER, USER_ID)
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(locationMetadata)))
-            .andExpect(status().isForbidden());
+        MockHttpServletRequestBuilder mappedLocationMetadata = post(BASE_URL)
+            .content(OBJECT_MAPPER.writeValueAsString(locationMetadata))
+            .header(REQUESTER_ID_HEADER, USER_ID)
+            .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(mappedLocationMetadata)
+            .andExpect(status().isForbidden()).andReturn();
     }
 }
