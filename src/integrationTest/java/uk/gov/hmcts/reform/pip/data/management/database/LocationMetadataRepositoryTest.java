@@ -31,7 +31,7 @@ class LocationMetadataRepositoryTest {
     private static final Integer LOCATION_ID = 1;
 
     @Autowired
-    private LocationMetadataRepository locationMetadataRepository;
+    LocationMetadataRepository locationMetadataRepository;
 
     private UUID savedLocationMetadataId;
 
