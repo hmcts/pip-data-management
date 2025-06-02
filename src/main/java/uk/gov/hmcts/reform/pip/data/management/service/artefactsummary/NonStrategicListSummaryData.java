@@ -9,6 +9,7 @@ import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -37,6 +38,7 @@ import static uk.gov.hmcts.reform.pip.model.publication.ListType.GRC_WEEKLY_HEAR
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.INSOLVENCY_AND_COMPANIES_COURT_CHD_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.INTELLECTUAL_PROPERTY_AND_ENTERPRISE_COURT_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.INTELLECTUAL_PROPERTY_LIST_CHD_DAILY_CAUSE_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.INTERIM_APPLICATIONS_CHD_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.KINGS_BENCH_DIVISION_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.KINGS_BENCH_MASTERS_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.LEEDS_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST;
@@ -137,6 +139,7 @@ public class NonStrategicListSummaryData implements ArtefactSummaryData {
         Map.entry(KINGS_BENCH_MASTERS_DAILY_CAUSE_LIST, List.of(TIME, CASE_NUMBER)),
         Map.entry(SENIOR_COURTS_COSTS_OFFICE_DAILY_CAUSE_LIST, List.of(TIME, CASE_NUMBER)),
         Map.entry(MAYOR_AND_CITY_CIVIL_DAILY_CAUSE_LIST, List.of(TIME, CASE_NUMBER)),
+        Map.entry(INTERIM_APPLICATIONS_CHD_DAILY_CAUSE_LIST, List.of(TIME, CASE_NUMBER, CASE_NAME)),
         Map.entry(INTELLECTUAL_PROPERTY_AND_ENTERPRISE_COURT_DAILY_CAUSE_LIST, List.of(TIME, CASE_NUMBER, CASE_NAME)),
         Map.entry(INTELLECTUAL_PROPERTY_LIST_CHD_DAILY_CAUSE_LIST, List.of(TIME, CASE_NUMBER, CASE_NAME)),
         Map.entry(LONDON_CIRCUIT_COMMERCIAL_COURT_KB_DAILY_CAUSE_LIST, List.of(TIME, CASE_NUMBER, CASE_NAME)),
@@ -167,7 +170,24 @@ public class NonStrategicListSummaryData implements ArtefactSummaryData {
 
     @Override
     public Map<String, List<Map<String, String>>> get(JsonNode payload) {
-        List<Map<String, String>> data = OBJECT_MAPPER.convertValue(payload, new TypeReference<>(){});
+        List<Map<String, String>> data = new ArrayList<>();
+
+        if (payload.isObject()) {
+            Iterator<String> fieldNames = payload.fieldNames();
+            while (fieldNames.hasNext()) {
+                String fieldName = fieldNames.next();
+                JsonNode fieldNode = payload.get(fieldName);
+                if (fieldNode.isArray()) {
+                    data = OBJECT_MAPPER.convertValue(fieldNode, new TypeReference<>(){});
+                    break;
+                }
+            }
+        } else if (payload.isArray()) {
+            data = OBJECT_MAPPER.convertValue(payload, new TypeReference<>(){});
+        }
+
+
+
         Optional<Map<String, Function<String, String>>> listTypeFormatter = NonStrategicListFormatter
             .getListTypeFormatter(listType);
 

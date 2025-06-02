@@ -30,6 +30,7 @@ import static uk.gov.hmcts.reform.pip.model.publication.ListType.GRC_WEEKLY_HEAR
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.INSOLVENCY_AND_COMPANIES_COURT_CHD_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.INTELLECTUAL_PROPERTY_AND_ENTERPRISE_COURT_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.INTELLECTUAL_PROPERTY_LIST_CHD_DAILY_CAUSE_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.INTERIM_APPLICATIONS_CHD_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.KINGS_BENCH_DIVISION_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.KINGS_BENCH_MASTERS_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.LEEDS_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST;
@@ -201,13 +202,7 @@ public final class NonStrategicListFormatter {
                   Map.of(TIME, NonStrategicFieldFormattingHelper::formatTimeField)),
         Map.entry(INSOLVENCY_AND_COMPANIES_COURT_CHD_DAILY_CAUSE_LIST,
                   Map.of(TIME, NonStrategicFieldFormattingHelper::formatTimeField)),
-        Map.entry(BIRMINGHAM_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
-                  Map.of(TIME, NonStrategicFieldFormattingHelper::formatTimeField)),
-        Map.entry(BRISTOL_AND_CARDIFF_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
-                  Map.of(TIME, NonStrategicFieldFormattingHelper::formatTimeField)),
-        Map.entry(MANCHESTER_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
-                  Map.of(TIME, NonStrategicFieldFormattingHelper::formatTimeField)),
-        Map.entry(LEEDS_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
+        Map.entry(INTERIM_APPLICATIONS_CHD_DAILY_CAUSE_LIST,
                   Map.of(TIME, NonStrategicFieldFormattingHelper::formatTimeField))
     );
 
