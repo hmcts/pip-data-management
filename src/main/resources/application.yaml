@@ -169,6 +169,7 @@ validations:
     KINGS_BENCH_MASTERS_DAILY_CAUSE_LIST: "schemas/non-strategic/kings_bench_masters_daily_cause_list.json"
     SENIOR_COURTS_COSTS_OFFICE_DAILY_CAUSE_LIST: "schemas/non-strategic/senior_courts_costs_office_daily_cause_list.json"
     MAYOR_AND_CITY_CIVIL_DAILY_CAUSE_LIST: "schemas/non-strategic/mayor_and_city_civil_daily_cause_list.json"
+    INTERIM_APPLICATIONS_CHD_DAILY_CAUSE_LIST: "schemas/non-strategic/interim_applications_chancery_division_daily_cause_list.json"
     INTELLECTUAL_PROPERTY_AND_ENTERPRISE_COURT_DAILY_CAUSE_LIST: "schemas/non-strategic/intellectual_property_and_enterprise_court_daily_cause_list.json"
     INTELLECTUAL_PROPERTY_LIST_CHD_DAILY_CAUSE_LIST: "schemas/non-strategic/intellectual_property_list_chd_daily_cause_list.json"
     LONDON_CIRCUIT_COMMERCIAL_COURT_KB_DAILY_CAUSE_LIST: "schemas/non-strategic/london_circuit_commercial_court_kb_daily_cause_list.json"
