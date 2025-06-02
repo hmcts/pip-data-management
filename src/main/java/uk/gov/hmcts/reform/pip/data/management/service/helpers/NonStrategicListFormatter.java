@@ -203,6 +203,14 @@ public final class NonStrategicListFormatter {
         Map.entry(INSOLVENCY_AND_COMPANIES_COURT_CHD_DAILY_CAUSE_LIST,
                   Map.of(TIME, NonStrategicFieldFormattingHelper::formatTimeField)),
         Map.entry(INTERIM_APPLICATIONS_CHD_DAILY_CAUSE_LIST,
+                  Map.of(TIME, NonStrategicFieldFormattingHelper::formatTimeField)),
+        Map.entry(BIRMINGHAM_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
+                  Map.of(TIME, NonStrategicFieldFormattingHelper::formatTimeField)),
+        Map.entry(BRISTOL_AND_CARDIFF_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
+                  Map.of(TIME, NonStrategicFieldFormattingHelper::formatTimeField)),
+        Map.entry(MANCHESTER_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
+                  Map.of(TIME, NonStrategicFieldFormattingHelper::formatTimeField)),
+        Map.entry(LEEDS_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
                   Map.of(TIME, NonStrategicFieldFormattingHelper::formatTimeField))
     );
 
