@@ -43,6 +43,8 @@ import java.util.Optional;
 
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.ADMIRALTY_COURT_KB_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.AST_DAILY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.BIRMINGHAM_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.BRISTOL_AND_CARDIFF_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.BUSINESS_LIST_CHD_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.CARE_STANDARDS_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.CHANCERY_APPEALS_CHD_DAILY_CAUSE_LIST;
@@ -75,10 +77,12 @@ import static uk.gov.hmcts.reform.pip.model.publication.ListType.INTELLECTUAL_PR
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.INTERIM_APPLICATIONS_CHD_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.KINGS_BENCH_DIVISION_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.KINGS_BENCH_MASTERS_DAILY_CAUSE_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.LEEDS_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.LONDON_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.LONDON_CIRCUIT_COMMERCIAL_COURT_KB_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.MAGISTRATES_PUBLIC_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.MAGISTRATES_STANDARD_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.MANCHESTER_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.MAYOR_AND_CITY_CIVIL_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.PAAC_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.PATENTS_COURT_CHD_DAILY_CAUSE_LIST;
@@ -386,6 +390,22 @@ public class ListConversionFactory {
         Map.entry(INSOLVENCY_AND_COMPANIES_COURT_CHD_DAILY_CAUSE_LIST, new ConversionPair(
             new NonStrategicListFileConverter(),
             new NonStrategicListSummaryData(INSOLVENCY_AND_COMPANIES_COURT_CHD_DAILY_CAUSE_LIST)
+        )),
+        Map.entry(BIRMINGHAM_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST, new ConversionPair(
+            new NonStrategicListFileConverter(),
+            new NonStrategicListSummaryData(BIRMINGHAM_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST)
+        )),
+        Map.entry(BRISTOL_AND_CARDIFF_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST, new ConversionPair(
+            new NonStrategicListFileConverter(),
+            new NonStrategicListSummaryData(BRISTOL_AND_CARDIFF_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST)
+        )),
+        Map.entry(MANCHESTER_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST, new ConversionPair(
+            new NonStrategicListFileConverter(),
+            new NonStrategicListSummaryData(MANCHESTER_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST)
+        )),
+        Map.entry(LEEDS_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST, new ConversionPair(
+            new NonStrategicListFileConverter(),
+            new NonStrategicListSummaryData(LEEDS_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST)
         ))
     );
 
