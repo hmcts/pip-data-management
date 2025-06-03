@@ -20,7 +20,7 @@ import uk.gov.hmcts.reform.pip.data.management.service.LocationMetadataService;
 import uk.gov.hmcts.reform.pip.model.authentication.roles.IsAdmin;
 
 @RestController
-@Tag(name = "Data Management location list API")
+@Tag(name = "Data Management location metadata list API")
 @RequestMapping("/location-metadata")
 public class LocationMetadataController {
     private static final String OK_CODE = "200";
@@ -101,7 +101,7 @@ public class LocationMetadataController {
         return ResponseEntity.ok(locationMetadataService.getById(id));
     }
 
-    @GetMapping("search-by-location-id/{locationId}")
+    @GetMapping("/search-by-location-id/{locationId}")
     @ApiResponse(responseCode = OK_CODE, description = "Get Locations metadata")
     @ApiResponse(responseCode = NOT_FOUND_CODE, description = "No Location metadata found "
         + "with the location id {locationId}")
