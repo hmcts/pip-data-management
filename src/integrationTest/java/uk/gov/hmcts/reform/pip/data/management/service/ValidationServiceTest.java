@@ -60,17 +60,20 @@ class ValidationServiceTest extends IntegrationBasicTestBase {
     private static final String NOT_NULL_MESSAGE = "The returned value is null, but was not expected to be.";
     private static final String UNKNOWN_EXCEPTION = "Unknown exception when opening the paylaod file";
     private static final String CONTAINS_FORBIDDEN_VALUES_EXCEPTION = "Input contains a html tag";
-    private static final String RPT_LIST_JSON = "data/non-strategic/"
+    private static final String NON_STRATEGIC_FOLDER = "data/non-strategic/";
+    private static final String RPT_LIST_JSON = NON_STRATEGIC_FOLDER
         + "ftt-residential-property-tribunal-weekly-hearing-list/"
         + "fttResidentialPropertyTribunalWeeklyHearingList.json";
     private static final String SIAC_LIST_JSON = "data/non-strategic/siac-weekly-hearing-list/"
         + "siacWeeklyHearingList.json";
-    private static final String UT_IAC_LIST_JSON = "data/non-strategic/"
+    private static final String UT_IAC_LIST_JSON = NON_STRATEGIC_FOLDER
         + "ut-iac-judicial-review-daily-hearing-list/"
         + "utIacJudicialReviewDailyHearingList.json";
-    private static final String SSCS_LISTS_JSON_FILE = "data/non-strategic/"
+    private static final String SSCS_LISTS_JSON_FILE = NON_STRATEGIC_FOLDER
         + "sscs-daily-hearing-list/"
         + "sscsDailyHearingList.json";
+    private static final String ADMINISTRATIVE_COURT_DAILY_CAUSE_LISTS_JSON_FILE = NON_STRATEGIC_FOLDER
+        + "administrative-court-daily-cause-list/administrativeCourtDailyCauseList.json";
 
     private HeaderGroup headerGroup;
 
@@ -488,7 +491,15 @@ class ValidationServiceTest extends IntegrationBasicTestBase {
                              + "financialListChdKbDailyCauseList.json"),
             Arguments.of(ListType.INSOLVENCY_AND_COMPANIES_COURT_CHD_DAILY_CAUSE_LIST,
                          "data/non-strategic/insolvency_and_companies_court_chd_daily_cause_list/"
-                             + "insolvencyAndCompaniesCourtChdDailyCauseList.json")
+                             + "insolvencyAndCompaniesCourtChdDailyCauseList.json"),
+            Arguments.of(ListType.BIRMINGHAM_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
+                         ADMINISTRATIVE_COURT_DAILY_CAUSE_LISTS_JSON_FILE),
+            Arguments.of(ListType.BRISTOL_AND_CARDIFF_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
+                         ADMINISTRATIVE_COURT_DAILY_CAUSE_LISTS_JSON_FILE),
+            Arguments.of(ListType.MANCHESTER_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
+                         ADMINISTRATIVE_COURT_DAILY_CAUSE_LISTS_JSON_FILE),
+            Arguments.of(ListType.LEEDS_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
+                         ADMINISTRATIVE_COURT_DAILY_CAUSE_LISTS_JSON_FILE)
         );
     }
 
