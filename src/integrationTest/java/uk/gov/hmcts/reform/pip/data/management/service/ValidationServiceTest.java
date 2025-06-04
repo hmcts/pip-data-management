@@ -447,6 +447,9 @@ class ValidationServiceTest extends IntegrationBasicTestBase {
             Arguments.of(ListType.INTERIM_APPLICATIONS_CHD_DAILY_CAUSE_LIST,
                          "data/non-strategic/interim-applications-chd-daily-cause-list/"
                              + "interimApplicationsChanceryDivisionDailyCauseList.json"),
+            Arguments.of(ListType.COURT_OF_APPEAL_CIVIL_DAILY_CAUSE_LIST,
+                         "data/non-strategic/court-of-appeal-civil-daily-cause-list/"
+                             + "courtOfAppealCivilDailyCauseList.json"),
             Arguments.of(ListType.INTELLECTUAL_PROPERTY_AND_ENTERPRISE_COURT_DAILY_CAUSE_LIST,
                          "data/non-strategic/intellectual-property-and-enterprise-court-daily-cause-list/"
                              + "intellectualPropertyAndEnterpriseCourtDailyCauseList.json"),
