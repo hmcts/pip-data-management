@@ -186,6 +186,10 @@ validations:
     COMPETITION_LIST_CHD_DAILY_CAUSE_LIST: "schemas/non-strategic/competition_list_chd_daily_cause_list.json"
     FINANCIAL_LIST_CHD_KB_DAILY_CAUSE_LIST: "schemas/non-strategic/financial_list_chd_kb_daily_cause_list.json"
     INSOLVENCY_AND_COMPANIES_COURT_CHD_DAILY_CAUSE_LIST: "schemas/non-strategic/insolvency_and_companies_court_chd_daily_cause_list.json"
+    BIRMINGHAM_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST: "schemas/non-strategic/administrative_court_daily_cause_list.json"
+    BRISTOL_AND_CARDIFF_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST: "schemas/non-strategic/administrative_court_daily_cause_list.json"
+    MANCHESTER_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST: "schemas/non-strategic/administrative_court_daily_cause_list.json"
+    LEEDS_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST: "schemas/non-strategic/administrative_court_daily_cause_list.json"
 springdoc:
   swagger-ui:
     path: /swagger-ui/
