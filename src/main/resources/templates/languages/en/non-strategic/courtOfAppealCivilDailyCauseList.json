@@ -1,0 +1,34 @@
+{
+  "listName": "Court of Appeal (Civil Division) Daily Cause List",
+  "venueName": "Royal Courts of Justice",
+  "addressLine1": "Strand, London",
+  "addressLine2": "WC2A 2LL",
+  "importantInformationLine1": "Most cases in the Court of Appeal (Civil Division) are now live streamed. More information about hearings to be live streamed can be found at the ",
+  "importantInformationLine2": "To view a live stream click on the case title in ",
+  "importantInformationLine3": " There is no requirement to ask for permission from the Court.",
+  "importantInformationLine4": "Most reserved judgments are handed down remotely, by circulation to the parties or their representatives by email and publication on the National Archives Site but sometimes they will be handed down in Court. In either case, advance notice will be published in the cause list.",
+  "liveStreamingHeading": "Live Streaming of hearings at the Royal Courts of Justice",
+  "handlingDownJudgementHeading": "Handing down of judgments",
+  "liveStreamLink": "https://www.judiciary.uk/the-court-of-appeal-civil-division-live-streaming-of-court-hearings/",
+  "liveStreamLinkText": "Court of Appeal (Civil Division) Live Stream site.",
+  "futureJudgementsNotice": "Notice for future judgments",
+  "tableHeaders": [
+    "Venue",
+    "Judge",
+    "Time",
+    "Case number",
+    "Case details",
+    "Hearing type",
+    "Additional information"
+  ],
+  "futureJudgementTableHeaders": [
+    "Date",
+    "Venue",
+    "Judge",
+    "Time",
+    "Case number",
+    "Case details",
+    "Hearing type",
+    "Additional information"
+  ]
+}

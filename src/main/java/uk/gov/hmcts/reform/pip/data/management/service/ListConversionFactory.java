@@ -56,6 +56,7 @@ import static uk.gov.hmcts.reform.pip.model.publication.ListType.COMPANIES_WINDI
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.COMPETITION_LIST_CHD_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.COP_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.COUNTY_COURT_LONDON_CIVIL_DAILY_CAUSE_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.COURT_OF_APPEAL_CIVIL_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.COURT_OF_APPEAL_CRIMINAL_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.CROWN_DAILY_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.CROWN_FIRM_LIST;
@@ -326,6 +327,10 @@ public class ListConversionFactory {
         Map.entry(INTERIM_APPLICATIONS_CHD_DAILY_CAUSE_LIST, new ConversionPair(
             new NonStrategicListFileConverter(),
             new NonStrategicListSummaryData(INTERIM_APPLICATIONS_CHD_DAILY_CAUSE_LIST)
+        )),
+        Map.entry(COURT_OF_APPEAL_CIVIL_DAILY_CAUSE_LIST, new ConversionPair(
+            new NonStrategicListFileConverter(),
+            new NonStrategicListSummaryData(COURT_OF_APPEAL_CIVIL_DAILY_CAUSE_LIST)
         )),
         Map.entry(INTELLECTUAL_PROPERTY_AND_ENTERPRISE_COURT_DAILY_CAUSE_LIST, new ConversionPair(
             new NonStrategicListFileConverter(),

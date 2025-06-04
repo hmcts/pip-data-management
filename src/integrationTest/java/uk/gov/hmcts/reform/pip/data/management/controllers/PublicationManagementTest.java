@@ -1134,15 +1134,39 @@ class PublicationManagementTest extends IntegrationTestBase {
         byte[] jsonData = getTestData(NON_STRATEGIC_FILES_LOCATION
                                           + "intellectual-property-and-enterprise-court-daily-cause-list/"
                                           + "intellectualPropertyAndEnterpriseCourtDailyCauseList.json");
+
         when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(jsonData));
 
         MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, artefact.getArtefactId())))
             .andExpect(status().isOk()).andReturn();
 
         String responseContent = response.getResponse().getContentAsString();
+
         assertTrue(responseContent.contains(RB_TIME_FIELD), CONTENT_MISMATCH_ERROR);
         assertTrue(responseContent.contains(RB_CASE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
         assertTrue(responseContent.contains(RB_CASE_NAME_FIELD), CONTENT_MISMATCH_ERROR);
+    }
+
+    @Test
+    void testGenerateArtefactSummaryCourtOfAppealCivilDailyCauseList() throws Exception {
+        Artefact artefact = createNonStrategicPublication(
+            ListType.COURT_OF_APPEAL_CIVIL_DAILY_CAUSE_LIST, NON_STRATEGIC_FILES_LOCATION
+                + "court-of-appeal-civil-daily-cause-list/courtOfAppealCivilDailyCauseList.xlsx"
+        );
+
+        byte[] jsonData = getTestData(NON_STRATEGIC_FILES_LOCATION
+                                          + "court-of-appeal-civil-daily-cause-list/"
+                                          + "courtOfAppealCivilDailyCauseList.json");
+
+        when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(jsonData));
+
+        MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, artefact.getArtefactId())))
+            .andExpect(status().isOk()).andReturn();
+
+        String responseContent = response.getResponse().getContentAsString();
+
+        assertTrue(responseContent.contains(RB_TIME_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(RB_CASE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
     }
 
     @Test
