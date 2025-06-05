@@ -72,10 +72,10 @@ class LocationMetadataTest extends FunctionalTestBase {
     private LocationMetadata createLocationMetadata(String locationId) {
         LocationMetadata locationMetadata = new LocationMetadata();
         locationMetadata.setLocationId(Integer.parseInt(locationId));
-        locationMetadata.setCautionMessage(LocationMetadataTest.ENGLISH_CAUTION_MESSAGE);
-        locationMetadata.setWelshCautionMessage(LocationMetadataTest.WELSH_CAUTION_MESSAGE);
-        locationMetadata.setNoListMessage(LocationMetadataTest.ENGLISH_NO_LIST_MESSAGE);
-        locationMetadata.setWelshNoListMessage(LocationMetadataTest.WELSH_NO_LIST_MESSAGE);
+        locationMetadata.setCautionMessage(ENGLISH_CAUTION_MESSAGE);
+        locationMetadata.setWelshCautionMessage(WELSH_CAUTION_MESSAGE);
+        locationMetadata.setNoListMessage(ENGLISH_NO_LIST_MESSAGE);
+        locationMetadata.setWelshNoListMessage(WELSH_NO_LIST_MESSAGE);
         return locationMetadata;
     }
 
