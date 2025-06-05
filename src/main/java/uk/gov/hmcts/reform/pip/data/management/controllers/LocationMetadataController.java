@@ -109,7 +109,7 @@ public class LocationMetadataController {
     }
 
     @GetMapping("/location/{locationId}")
-    @ApiResponse(responseCode = OK_CODE, description = "Get Locations metadata")
+    @ApiResponse(responseCode = OK_CODE, description = "Get Locations metadata By Location Id")
     @ApiResponse(responseCode = NOT_FOUND_CODE, description = "No Location metadata found "
         + "with the location id {locationId}")
     @ApiResponse(responseCode = UNAUTHORISED_CODE, description = UNAUTHORISED_MESSAGE)
