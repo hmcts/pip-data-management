@@ -40,7 +40,7 @@ class LocationMetadataTest extends FunctionalTestBase {
 
     private static final String BASE_LOCATION_METADATA_URL = "/location-metadata";
     private static final String LOCATION_METADATA_GET_LOCATION_ID_URL =
-        BASE_LOCATION_METADATA_URL + "/search-by-location-id";
+        BASE_LOCATION_METADATA_URL + "/location";
 
     private static final String BASE_COURT_NAME = "TestLocation-PublicationTest";
     private static final String ENGLISH_CAUTION_MESSAGE = "English Caution Message";

@@ -18,6 +18,7 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationMetadata;
 import uk.gov.hmcts.reform.pip.data.management.utils.IntegrationTestBase;
+import uk.gov.hmcts.reform.pip.model.account.PiUser;
 
 import java.io.InputStream;
 import java.util.Arrays;
@@ -27,6 +28,8 @@ import java.util.UUID;
 import static org.hibernate.validator.internal.util.Contracts.assertNotEmpty;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
@@ -35,6 +38,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static uk.gov.hmcts.reform.pip.model.account.Roles.SYSTEM_ADMIN;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -47,7 +51,6 @@ class LocationMetadataTest extends IntegrationTestBase {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     private static final String BASE_URL = "/location-metadata";
-    private static final String USER_ID = "user-123";
     private static final String REQUESTER_ID_HEADER = "x-requester-id";
     private static final UUID TEST_UUID = UUID.randomUUID();
     private static final String UUID_STRING = TEST_UUID.toString();
@@ -64,12 +67,21 @@ class LocationMetadataTest extends IntegrationTestBase {
     private static final String UNAUTHORIZED_ROLE = "APPROLE_unknown.authorized";
     private static final String UNAUTHORIZED_USERNAME = "unauthorized_isAuthorized";
 
+    private static final String SYSTEM_ADMIN_ID = UUID.randomUUID().toString();
+
+    private static PiUser piUser;
+
     @Autowired
     private MockMvc mockMvc;
 
     @BeforeAll
     static void setup() {
         OBJECT_MAPPER.findAndRegisterModules();
+
+        piUser = new PiUser();
+        piUser.setUserId(SYSTEM_ADMIN_ID);
+        piUser.setEmail("test@justice.gov.uk");
+        piUser.setRoles(SYSTEM_ADMIN);
     }
 
     private LocationMetadata createTestLocationMetadata(String locationId) {
@@ -101,38 +113,41 @@ class LocationMetadataTest extends IntegrationTestBase {
     protected MockHttpServletRequestBuilder setupMockLocationMetadata(String locationId) throws Exception {
         return post(BASE_URL)
             .content(OBJECT_MAPPER.writeValueAsString(createTestLocationMetadata(locationId)))
-            .header(REQUESTER_ID_HEADER, USER_ID)
+            .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID)
             .contentType(MediaType.APPLICATION_JSON);
     }
 
     @Test
     void testAddLocationMetadataSuccess() throws Exception {
+        when(accountManagementService.getUserById(any())).thenReturn(piUser);
         LocationMetadata locationMetadata = createTestLocationMetadata(getLocationId());
         mockMvc.perform(post(BASE_URL)
-                            .header(REQUESTER_ID_HEADER, USER_ID)
+                            .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(OBJECT_MAPPER.writeValueAsString(locationMetadata)))
             .andExpect(status().isCreated())
             .andExpect(content().string(
-                String.format("Location metadata successfully added by user %s", USER_ID)
+                String.format("Location metadata successfully added by user %s", SYSTEM_ADMIN_ID)
             ));
     }
 
     @Test
     void testUpdateLocationMetadataSuccess() throws Exception {
+        when(accountManagementService.getUserById(any())).thenReturn(piUser);
         LocationMetadata locationMetadata = createTestLocationMetadata(getLocationId());
         mockMvc.perform(put(BASE_URL)
-                            .header(REQUESTER_ID_HEADER, USER_ID)
+                            .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(OBJECT_MAPPER.writeValueAsString(locationMetadata)))
             .andExpect(status().isOk())
             .andExpect(content().string(
-                String.format("Location metadata successfully updated by user %s", USER_ID)
+                String.format("Location metadata successfully updated by user %s", SYSTEM_ADMIN_ID)
             ));
     }
 
     @Test
     void testDeleteLocationMetadataSuccess() throws Exception {
+        when(accountManagementService.getUserById(any())).thenReturn(piUser);
         String locationId = getLocationId();
         MockHttpServletRequestBuilder mappedLocationMetadata = setupMockLocationMetadata(locationId);
         MvcResult response = mockMvc.perform(mappedLocationMetadata)
@@ -140,7 +155,8 @@ class LocationMetadataTest extends IntegrationTestBase {
             .andReturn();
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
 
-        MvcResult getResponse = mockMvc.perform(get(BASE_URL + "/search-by-location-id/" + locationId)
+        MvcResult getResponse = mockMvc.perform(get(BASE_URL + "/location/" + locationId)
+                                                    .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID)
                                                     .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andReturn();
@@ -152,23 +168,26 @@ class LocationMetadataTest extends IntegrationTestBase {
             OBJECT_MAPPER.readValue(getResponse.getResponse().getContentAsString(), LocationMetadata.class);
 
         mockMvc.perform(delete(BASE_URL + "/" + returnLocationMetadata.getLocationMetadataId())
-                            .header(REQUESTER_ID_HEADER, USER_ID))
+                            .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID))
             .andExpect(status().isOk())
             .andExpect(content().string(
-                String.format("Location metadata successfully deleted by user %s", USER_ID)
+                String.format("Location metadata successfully deleted by user %s", SYSTEM_ADMIN_ID)
             ));
     }
 
     @Test
     void testDeleteLocationMetadataNotFound() throws Exception {
+        when(accountManagementService.getUserById(any())).thenReturn(piUser);
         mockMvc.perform(delete(BASE_URL + "/" + UUID_STRING)
                             .contentType(MediaType.APPLICATION_JSON)
-                            .header(REQUESTER_ID_HEADER, USER_ID))
+                            .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID))
             .andExpect(status().isNotFound());
     }
 
     @Test
     void testGetLocationMetadataSuccess() throws Exception {
+        when(accountManagementService.getUserById(any())).thenReturn(piUser);
+
         String locationId = getLocationId();
         MockHttpServletRequestBuilder mappedLocationMetadata = setupMockLocationMetadata(locationId);
         MvcResult response = mockMvc.perform(mappedLocationMetadata)
@@ -176,7 +195,8 @@ class LocationMetadataTest extends IntegrationTestBase {
             .andReturn();
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
 
-        MvcResult getResponse = mockMvc.perform(get(BASE_URL + "/search-by-location-id/" + locationId)
+        MvcResult getResponse = mockMvc.perform(get(BASE_URL + "/location/" + locationId)
+                                                  .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID)
                                                   .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andReturn();
@@ -201,13 +221,16 @@ class LocationMetadataTest extends IntegrationTestBase {
 
     @Test
     void testGetLocationMetadataNotFound() throws Exception {
+        when(accountManagementService.getUserById(any())).thenReturn(piUser);
         mockMvc.perform(get(BASE_URL + "/" + UUID_STRING)
+                            .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID)
                             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isNotFound());
     }
 
     @Test
     void testGetLocationMetadataByLocationIdSuccess() throws Exception {
+        when(accountManagementService.getUserById(any())).thenReturn(piUser);
         String locationId = getLocationId();
         MockHttpServletRequestBuilder mappedLocationMetadata = setupMockLocationMetadata(locationId);
         MvcResult response = mockMvc.perform(mappedLocationMetadata)
@@ -215,14 +238,17 @@ class LocationMetadataTest extends IntegrationTestBase {
             .andReturn();
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
 
-        mockMvc.perform(get(BASE_URL + "/search-by-location-id/" + locationId))
+        mockMvc.perform(get(BASE_URL + "/location/" + locationId)
+                            .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.locationId").value(locationId));
     }
 
     @Test
     void testGetLocationMetadataByLocationIdNotFound() throws Exception {
-        mockMvc.perform(get(BASE_URL + "/search-by-location-id/987"))
+        when(accountManagementService.getUserById(any())).thenReturn(piUser);
+        mockMvc.perform(get(BASE_URL + "/location/987")
+                            .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID))
             .andExpect(status().isNotFound());
     }
 
@@ -234,10 +260,93 @@ class LocationMetadataTest extends IntegrationTestBase {
 
         MockHttpServletRequestBuilder mappedLocationMetadata = post(BASE_URL)
             .content(OBJECT_MAPPER.writeValueAsString(locationMetadata))
-            .header(REQUESTER_ID_HEADER, USER_ID)
+            .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID)
             .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(mappedLocationMetadata)
             .andExpect(status().isForbidden()).andReturn();
+    }
+
+    @Test
+    @WithMockUser(username = UNAUTHORIZED_USERNAME, authorities = {UNAUTHORIZED_ROLE})
+    void testUpdateLocationMetadataForbiddenForNonAdmin() throws Exception {
+        when(accountManagementService.getUserById(any())).thenReturn(piUser);
+        LocationMetadata locationMetadata = new LocationMetadata();
+        locationMetadata.setLocationId(123);
+        mockMvc.perform(put(BASE_URL)
+                            .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(OBJECT_MAPPER.writeValueAsString(locationMetadata)))
+            .andExpect(status().isForbidden()).andReturn();
+    }
+
+    @Test
+    @WithMockUser(username = UNAUTHORIZED_USERNAME, authorities = {UNAUTHORIZED_ROLE})
+    void testDeleteLocationMetadataForbiddenForNonAdmin() throws Exception {
+        when(accountManagementService.getUserById(any())).thenReturn(piUser);
+        mockMvc.perform(delete(BASE_URL + "/123-456")
+                            .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID))
+            .andExpect(status().isForbidden()).andReturn();
+    }
+
+    @Test
+    @WithMockUser(username = UNAUTHORIZED_USERNAME, authorities = {UNAUTHORIZED_ROLE})
+    void testGetLocationMetadataByIdForbiddenForNonAdmin() throws Exception {
+        when(accountManagementService.getUserById(any())).thenReturn(piUser);
+        mockMvc.perform(get(BASE_URL + "/123-456")
+                            .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID))
+            .andExpect(status().isForbidden()).andReturn();
+    }
+
+    @Test
+    @WithMockUser(username = UNAUTHORIZED_USERNAME, authorities = {UNAUTHORIZED_ROLE})
+    void testGetLocationMetadataByLocationIdForbiddenForNonAdmin() throws Exception {
+        when(accountManagementService.getUserById(any())).thenReturn(piUser);
+        mockMvc.perform(get(BASE_URL + "/location/987")
+                            .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID))
+            .andExpect(status().isForbidden()).andReturn();
+    }
+
+    @Test
+    void testAddLocationMetadataBadRequestWhenSystemAdminIdNotProvided() throws Exception {
+        LocationMetadata locationMetadata = new LocationMetadata();
+        locationMetadata.setLocationId(123);
+
+        MockHttpServletRequestBuilder mappedLocationMetadata = post(BASE_URL)
+            .content(OBJECT_MAPPER.writeValueAsString(locationMetadata))
+            .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(mappedLocationMetadata)
+            .andExpect(status().isBadRequest()).andReturn();
+    }
+
+    @Test
+    void testUpdateLocationMetadataBadRequestWhenSystemAdminIdNotProvided() throws Exception {
+        when(accountManagementService.getUserById(any())).thenReturn(piUser);
+        LocationMetadata locationMetadata = new LocationMetadata();
+        locationMetadata.setLocationId(123);
+        mockMvc.perform(put(BASE_URL)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(OBJECT_MAPPER.writeValueAsString(locationMetadata)))
+            .andExpect(status().isBadRequest()).andReturn();
+    }
+
+    @Test
+    void testDeleteLocationMetadataBadRequestWhenSystemAdminIdNotProvided() throws Exception {
+        when(accountManagementService.getUserById(any())).thenReturn(piUser);
+        mockMvc.perform(delete(BASE_URL + "/123-456"))
+            .andExpect(status().isBadRequest()).andReturn();
+    }
+
+    @Test
+    void testGetLocationMetadataBadRequestWhenSystemAdminIdNotProvided() throws Exception {
+        mockMvc.perform(get(BASE_URL + "/987-455"))
+            .andExpect(status().isBadRequest()).andReturn();
+    }
+
+    @Test
+    void testGetLocationMetadataByLocationIdBadRequestWhenSystemAdminIdNotProvided() throws Exception {
+        mockMvc.perform(get(BASE_URL + "/location/987"))
+            .andExpect(status().isBadRequest()).andReturn();
     }
 }
