@@ -24,7 +24,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class LocationMetadataControllerTest {
 
-    private static final String USER_ID = "user-123";
+    private static final String REQUESTER_ID = "user-123";
     private static final String LOCATION_ID = "123";
     private static final String UUID_STRING = UUID.randomUUID().toString();
     private static final String NOT_FOUND = "Not found";
@@ -47,7 +47,7 @@ class LocationMetadataControllerTest {
         doNothing().when(locationMetadataService).createLocationMetadata(any(), anyString());
 
         ResponseEntity<String> response =
-            locationMetaDataController.addLocationMetaData(USER_ID, locationMetadata);
+            locationMetaDataController.addLocationMetaData(REQUESTER_ID, locationMetadata);
 
         assertEquals(HttpStatus.CREATED, response.getStatusCode(),
                      "Response status should be CREATED (201) for successful addition");
@@ -61,7 +61,7 @@ class LocationMetadataControllerTest {
         doNothing().when(locationMetadataService).updateLocationMetadata(any(), anyString());
 
         ResponseEntity<String> response =
-            locationMetaDataController.updateLocationMetaData(USER_ID, locationMetadata);
+            locationMetaDataController.updateLocationMetaData(REQUESTER_ID, locationMetadata);
 
         assertEquals(HttpStatus.OK, response.getStatusCode(),
                      "Response status should be OK (200) for successful update");
@@ -74,7 +74,7 @@ class LocationMetadataControllerTest {
         doNothing().when(locationMetadataService).deleteById(anyString(), anyString());
 
         ResponseEntity<String> response =
-            locationMetaDataController.deleteLocationMetaData(USER_ID, UUID_STRING);
+            locationMetaDataController.deleteLocationMetaData(REQUESTER_ID, UUID_STRING);
 
         assertEquals(HttpStatus.OK, response.getStatusCode(),
                      "Response status should be OK (200) for successful deletion");
@@ -89,7 +89,7 @@ class LocationMetadataControllerTest {
 
         LocationMetadataNotFoundException exception = assertThrows(
             LocationMetadataNotFoundException.class,
-            () -> locationMetaDataController.deleteLocationMetaData(USER_ID, UUID_STRING),
+            () -> locationMetaDataController.deleteLocationMetaData(REQUESTER_ID, UUID_STRING),
             "Should throw LocationMetaDataNotFoundException when metadata not found"
         );
 
@@ -103,7 +103,7 @@ class LocationMetadataControllerTest {
         when(locationMetadataService.getById(UUID_STRING)).thenReturn(expectedMetadata);
 
         ResponseEntity<LocationMetadata> response =
-            locationMetaDataController.getLocationMetaData(UUID_STRING);
+            locationMetaDataController.getLocationMetaData(REQUESTER_ID, UUID_STRING);
 
         assertEquals(HttpStatus.OK, response.getStatusCode(),
                      "Response status should be OK (200) for successful retrieval");
@@ -118,7 +118,7 @@ class LocationMetadataControllerTest {
 
         LocationMetadataNotFoundException exception = assertThrows(
             LocationMetadataNotFoundException.class,
-            () -> locationMetaDataController.getLocationMetaData(UUID_STRING),
+            () -> locationMetaDataController.getLocationMetaData(REQUESTER_ID, UUID_STRING),
             "Should throw LocationMetaDataNotFoundException when metadata not found"
         );
 
@@ -132,7 +132,7 @@ class LocationMetadataControllerTest {
         when(locationMetadataService.getLocationById(LOCATION_ID)).thenReturn(expectedMetadata);
 
         ResponseEntity<LocationMetadata> response =
-            locationMetaDataController.getLocationMetaDataByLocationId(LOCATION_ID);
+            locationMetaDataController.getLocationMetaDataByLocationId(REQUESTER_ID, LOCATION_ID);
 
         assertEquals(HttpStatus.OK, response.getStatusCode(),
                      "Response status should be OK (200) for successful retrieval by location ID");
@@ -147,7 +147,7 @@ class LocationMetadataControllerTest {
 
         LocationMetadataNotFoundException exception = assertThrows(
             LocationMetadataNotFoundException.class,
-            () -> locationMetaDataController.getLocationMetaDataByLocationId(LOCATION_ID),
+            () -> locationMetaDataController.getLocationMetaDataByLocationId(REQUESTER_ID, LOCATION_ID),
             "Should throw LocationMetaDataNotFoundException when metadata not found by location ID"
         );
 
@@ -162,7 +162,7 @@ class LocationMetadataControllerTest {
 
         NumberFormatException exception = assertThrows(
             NumberFormatException.class,
-            () -> locationMetaDataController.getLocationMetaDataByLocationId("invalid"),
+            () -> locationMetaDataController.getLocationMetaDataByLocationId(REQUESTER_ID, "invalid"),
             "Should throw NumberFormatException when location ID is invalid"
         );
 

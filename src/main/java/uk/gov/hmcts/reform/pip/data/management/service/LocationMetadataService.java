@@ -1,7 +1,6 @@
 package uk.gov.hmcts.reform.pip.data.management.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.pip.data.management.database.LocationMetadataRepository;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.LocationMetadataNotFoundException;
@@ -17,7 +16,6 @@ import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
 public class LocationMetadataService {
     private final LocationMetadataRepository locationMetadataRepository;
 
-    @Autowired
     public LocationMetadataService(LocationMetadataRepository locationMetadataRepository) {
         this.locationMetadataRepository = locationMetadataRepository;
     }

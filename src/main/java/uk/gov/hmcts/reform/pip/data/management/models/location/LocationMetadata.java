@@ -12,6 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import uk.gov.hmcts.reform.pip.data.management.validation.annotations.LocationMetadataRequired;
 
 import java.util.UUID;
 
@@ -21,6 +22,7 @@ import java.util.UUID;
 @Builder
 @Entity
 @Table
+@LocationMetadataRequired
 public class LocationMetadata {
 
     @Id

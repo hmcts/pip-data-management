@@ -3,9 +3,9 @@ package uk.gov.hmcts.reform.pip.data.management.controllers;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationMetadata;
 import uk.gov.hmcts.reform.pip.data.management.service.LocationMetadataService;
-import uk.gov.hmcts.reform.pip.model.authentication.roles.IsAdmin;
 
 @RestController
 @Tag(name = "Data Management location metadata list API")
@@ -34,9 +33,10 @@ public class LocationMetadataController {
     private static final String FORBIDDEN_MESSAGE = "User has not been authorized";
     private static final String BEARER_AUTHENTICATION = "bearerAuth";
 
+    private static final String REQUESTER_ID_HEADER = "x-requester-id";
+
     private final LocationMetadataService locationMetadataService;
 
-    @Autowired
     public LocationMetadataController(LocationMetadataService locationMetadataService) {
         this.locationMetadataService = locationMetadataService;
     }
@@ -46,15 +46,16 @@ public class LocationMetadataController {
     @ApiResponse(responseCode = BAD_REQUEST_CODE, description = "Unable to add the location metadata")
     @ApiResponse(responseCode = UNAUTHORISED_CODE, description = UNAUTHORISED_MESSAGE)
     @ApiResponse(responseCode = FORBIDDEN_CODE, description = FORBIDDEN_MESSAGE)
-    @IsAdmin
     @SecurityRequirement(name = BEARER_AUTHENTICATION)
-    public ResponseEntity<String> addLocationMetaData(@RequestHeader("x-requester-id") String userId,
-                                                      @RequestBody LocationMetadata locationMetadata) {
-        locationMetadataService.createLocationMetadata(locationMetadata, userId);
+    @PreAuthorize("@authorisationService.userCanAddLocationMetadata(#requesterId)")
+    public ResponseEntity<String> addLocationMetaData(
+        @RequestHeader(REQUESTER_ID_HEADER) String requesterId,
+        @RequestBody LocationMetadata locationMetadata) {
+        locationMetadataService.createLocationMetadata(locationMetadata, requesterId);
         return ResponseEntity.status(HttpStatus.CREATED)
             .body(String.format(
                 "Location metadata successfully added by user %s",
-                userId
+                requesterId
             ));
     }
 
@@ -63,15 +64,16 @@ public class LocationMetadataController {
     @ApiResponse(responseCode = BAD_REQUEST_CODE, description = "Unable to update the location metadata")
     @ApiResponse(responseCode = UNAUTHORISED_CODE, description = UNAUTHORISED_MESSAGE)
     @ApiResponse(responseCode = FORBIDDEN_CODE, description = FORBIDDEN_MESSAGE)
-    @IsAdmin
     @SecurityRequirement(name = BEARER_AUTHENTICATION)
-    public ResponseEntity<String> updateLocationMetaData(@RequestHeader("x-requester-id") String userId,
-                                                      @RequestBody LocationMetadata locationMetadata) {
-        locationMetadataService.updateLocationMetadata(locationMetadata, userId);
+    @PreAuthorize("@authorisationService.userCanUpdateLocationMetadata(#requesterId)")
+    public ResponseEntity<String> updateLocationMetaData(
+        @RequestHeader(REQUESTER_ID_HEADER) String requesterId,
+        @RequestBody LocationMetadata locationMetadata) {
+        locationMetadataService.updateLocationMetadata(locationMetadata, requesterId);
         return ResponseEntity.status(HttpStatus.OK)
             .body(String.format(
                 "Location metadata successfully updated by user %s",
-                userId
+                requesterId
             ));
     }
 
@@ -80,34 +82,41 @@ public class LocationMetadataController {
     @ApiResponse(responseCode = BAD_REQUEST_CODE, description = "Unable to delete the location metadata")
     @ApiResponse(responseCode = UNAUTHORISED_CODE, description = UNAUTHORISED_MESSAGE)
     @ApiResponse(responseCode = FORBIDDEN_CODE, description = FORBIDDEN_MESSAGE)
-    @IsAdmin
     @SecurityRequirement(name = BEARER_AUTHENTICATION)
-    public ResponseEntity<String> deleteLocationMetaData(@RequestHeader("x-requester-id") String userId,
-                                                         @PathVariable String id) {
-        locationMetadataService.deleteById(id, userId);
+    @PreAuthorize("@authorisationService.userCanDeleteLocationMetadata(#requesterId)")
+    public ResponseEntity<String> deleteLocationMetaData(
+        @RequestHeader(REQUESTER_ID_HEADER) String requesterId,
+        @PathVariable String id) {
+        locationMetadataService.deleteById(id, requesterId);
         return ResponseEntity.status(HttpStatus.OK)
             .body(String.format(
                 "Location metadata successfully deleted by user %s",
-                userId
+                requesterId
             ));
     }
 
     @GetMapping("/{id}")
-    @ApiResponse(responseCode = OK_CODE, description = "Get Locations metadata")
+    @ApiResponse(responseCode = OK_CODE, description = "Get Locations metadata By Id")
     @ApiResponse(responseCode = NOT_FOUND_CODE, description = "No Location metadata found with the id {id}")
     @ApiResponse(responseCode = UNAUTHORISED_CODE, description = UNAUTHORISED_MESSAGE)
     @SecurityRequirement(name = BEARER_AUTHENTICATION)
-    public ResponseEntity<LocationMetadata> getLocationMetaData(@PathVariable String id) {
+    @PreAuthorize("@authorisationService.userCanGetLocationMetadata(#requesterId)")
+    public ResponseEntity<LocationMetadata> getLocationMetaData(
+        @RequestHeader(REQUESTER_ID_HEADER) String requesterId,
+        @PathVariable String id) {
         return ResponseEntity.ok(locationMetadataService.getById(id));
     }
 
-    @GetMapping("/search-by-location-id/{locationId}")
+    @GetMapping("/location/{locationId}")
     @ApiResponse(responseCode = OK_CODE, description = "Get Locations metadata")
     @ApiResponse(responseCode = NOT_FOUND_CODE, description = "No Location metadata found "
         + "with the location id {locationId}")
     @ApiResponse(responseCode = UNAUTHORISED_CODE, description = UNAUTHORISED_MESSAGE)
     @SecurityRequirement(name = BEARER_AUTHENTICATION)
-    public ResponseEntity<LocationMetadata> getLocationMetaDataByLocationId(@PathVariable String locationId) {
+    @PreAuthorize("@authorisationService.userCanGetLocationMetadata(#requesterId)")
+    public ResponseEntity<LocationMetadata> getLocationMetaDataByLocationId(
+        @RequestHeader(REQUESTER_ID_HEADER) String requesterId,
+        @PathVariable String locationId) {
         return ResponseEntity.ok(locationMetadataService.getLocationById(locationId));
     }
 }
