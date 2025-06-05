@@ -132,7 +132,7 @@ class LocationMetadataControllerTest {
         when(locationMetadataService.getLocationById(LOCATION_ID)).thenReturn(expectedMetadata);
 
         ResponseEntity<LocationMetadata> response =
-            locationMetaDataController.getLocationMetaDataByLocationId(REQUESTER_ID, LOCATION_ID);
+            locationMetaDataController.getLocationMetaDataByLocationId(LOCATION_ID);
 
         assertEquals(HttpStatus.OK, response.getStatusCode(),
                      "Response status should be OK (200) for successful retrieval by location ID");
@@ -147,7 +147,7 @@ class LocationMetadataControllerTest {
 
         LocationMetadataNotFoundException exception = assertThrows(
             LocationMetadataNotFoundException.class,
-            () -> locationMetaDataController.getLocationMetaDataByLocationId(REQUESTER_ID, LOCATION_ID),
+            () -> locationMetaDataController.getLocationMetaDataByLocationId(LOCATION_ID),
             "Should throw LocationMetaDataNotFoundException when metadata not found by location ID"
         );
 
@@ -162,7 +162,7 @@ class LocationMetadataControllerTest {
 
         NumberFormatException exception = assertThrows(
             NumberFormatException.class,
-            () -> locationMetaDataController.getLocationMetaDataByLocationId(REQUESTER_ID, "invalid"),
+            () -> locationMetaDataController.getLocationMetaDataByLocationId("invalid"),
             "Should throw NumberFormatException when location ID is invalid"
         );
 

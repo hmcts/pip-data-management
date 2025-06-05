@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationMetadata;
 import uk.gov.hmcts.reform.pip.data.management.service.LocationMetadataService;
+import uk.gov.hmcts.reform.pip.model.authentication.roles.IsAdmin;
 
 @RestController
 @Tag(name = "Data Management location metadata list API")
@@ -113,9 +114,8 @@ public class LocationMetadataController {
         + "with the location id {locationId}")
     @ApiResponse(responseCode = UNAUTHORISED_CODE, description = UNAUTHORISED_MESSAGE)
     @SecurityRequirement(name = BEARER_AUTHENTICATION)
-    @PreAuthorize("@authorisationService.userCanGetLocationMetadata(#requesterId)")
+    @IsAdmin
     public ResponseEntity<LocationMetadata> getLocationMetaDataByLocationId(
-        @RequestHeader(REQUESTER_ID_HEADER) String requesterId,
         @PathVariable String locationId) {
         return ResponseEntity.ok(locationMetadataService.getLocationById(locationId));
     }

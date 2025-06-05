@@ -104,8 +104,7 @@ class LocationMetadataTest extends FunctionalTestBase {
     @Order(2)
     void testGetLocationMetadataByLocationIdControllerHappyPath() {
         Map<String, String> headerMap = Map.of(AUTHORIZATION, BEARER + accessToken,
-                                               CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE,
-                                               REQUESTER_ID_HEADER, systemAdminUserId
+                                               CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE
         );
 
         Response responseGetLocationMetadataByLocationId = doGetRequest(
