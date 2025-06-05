@@ -70,10 +70,8 @@ class LocationMetadataRepositoryTest {
     @Test
     void shouldSaveNewLocationMetadata() {
         Integer locationId = 2;
-        LocationMetadata newLocation = new LocationMetadata();
-        newLocation.setLocationId(locationId);
-
-        LocationMetadata locationMetadata = locationMetadataRepository.save(newLocation);
+        LocationMetadata newLocationMetadata = createTestLocationMetadata(locationId);
+        LocationMetadata locationMetadata = locationMetadataRepository.save(newLocationMetadata);
 
         assertAll(
             () -> assertNotNull(locationMetadata.getLocationMetadataId().toString(),
