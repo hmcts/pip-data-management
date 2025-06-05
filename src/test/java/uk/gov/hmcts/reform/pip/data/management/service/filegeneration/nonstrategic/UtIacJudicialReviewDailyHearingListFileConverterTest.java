@@ -190,7 +190,7 @@ class UtIacJudicialReviewDailyHearingListFileConverterTest {
             .extracting(Element::text)
             .containsExactly(
                 "10:30am",
-                "Applicant A",
+                "Case A",
                 "Rep A",
                 "1234",
                 "Judge A",
@@ -198,7 +198,7 @@ class UtIacJudicialReviewDailyHearingListFileConverterTest {
                 HEARING_VENUE,
                 "This is additional information",
                 "11am",
-                "Applicant B",
+                "Case B",
                 "Rep B",
                 "1235",
                 "Judge B",
@@ -284,7 +284,7 @@ class UtIacJudicialReviewDailyHearingListFileConverterTest {
             .extracting(Element::text)
             .containsExactly(
                 "10:30am",
-                "Applicant A",
+                "Case A",
                 "Rep A",
                 "1234",
                 "Judge A",
@@ -292,7 +292,7 @@ class UtIacJudicialReviewDailyHearingListFileConverterTest {
                 HEARING_VENUE,
                 "This is additional information",
                 "11am",
-                "Applicant B",
+                "Case B",
                 "Rep B",
                 "1235",
                 "Judge B",
