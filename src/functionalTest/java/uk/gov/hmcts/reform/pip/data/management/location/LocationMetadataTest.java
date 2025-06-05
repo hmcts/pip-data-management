@@ -49,6 +49,7 @@ class LocationMetadataTest extends FunctionalTestBase {
     private static final String WELSH_NO_LIST_MESSAGE = "Welsh No List Message";
     private static final String UPDATED_TEXT = "Updated Text";
     private static final String CONTENT_TYPE = "Content-Type";
+    private static final String REQUESTER_ID_HEADER = "x-requester-id";
 
     private String locationId;
     private UUID locationMetadataId;
@@ -85,7 +86,7 @@ class LocationMetadataTest extends FunctionalTestBase {
     void testAddLocationMetadataControllerHappyPath() {
         Map<String, String> headerMap = Map.of(AUTHORIZATION, BEARER + accessToken,
                 CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE,
-                "x-requester-id", systemAdminUserId
+                REQUESTER_ID_HEADER, systemAdminUserId
         );
 
         Response responseCreateLocationMetadata = doPostRequest(
@@ -103,7 +104,8 @@ class LocationMetadataTest extends FunctionalTestBase {
     @Order(2)
     void testGetLocationMetadataByLocationIdControllerHappyPath() {
         Map<String, String> headerMap = Map.of(AUTHORIZATION, BEARER + accessToken,
-                                               CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE
+                                               CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE,
+                                               REQUESTER_ID_HEADER, systemAdminUserId
         );
 
         Response responseGetLocationMetadataByLocationId = doGetRequest(
@@ -126,7 +128,8 @@ class LocationMetadataTest extends FunctionalTestBase {
     @Order(3)
     void testLocationMetadataByIdControllerHappyPath() {
         Map<String, String> headerMap = Map.of(AUTHORIZATION, BEARER + accessToken,
-                                               CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE
+                                               CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE,
+                                               REQUESTER_ID_HEADER, systemAdminUserId
         );
 
         Response responseGetLocationMetadataByLocationId = doGetRequest(
@@ -150,7 +153,7 @@ class LocationMetadataTest extends FunctionalTestBase {
     void testUpdateLocationMetadataControllerHappyPath() {
         Map<String, String> headerMap = Map.of(AUTHORIZATION, BEARER + accessToken,
                                                CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE,
-                                               "x-requester-id", systemAdminUserId
+                                               REQUESTER_ID_HEADER, systemAdminUserId
         );
 
         Response responseGetLocationMetadata = doGetRequest(
@@ -195,7 +198,7 @@ class LocationMetadataTest extends FunctionalTestBase {
     void testDeleteLocationMetadataByIdControllerHappyPath() {
         Map<String, String> headerMap = Map.of(AUTHORIZATION, BEARER + accessToken,
                                                CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE,
-                                               "x-requester-id", systemAdminUserId
+                                               REQUESTER_ID_HEADER, systemAdminUserId
         );
 
         Response responseGetLocationMetadataByLocationId = doDeleteRequest(
