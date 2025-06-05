@@ -76,6 +76,17 @@ public class FunctionalTestBase {
             .thenReturn();
     }
 
+    protected Response doPostRequest(final String path, final Map<String, String> additionalHeaders,
+                                     final Object body) {
+        return given()
+            .relaxedHTTPSValidation()
+            .headers(getRequestHeaders(additionalHeaders))
+            .body(body)
+            .when()
+            .post(path)
+            .thenReturn();
+    }
+
     protected Response doPostRequestMultiPart(final String path, final Map<String, String> additionalHeaders,
                                               String multiPartKey, final File multipartFile) {
 
@@ -118,6 +129,17 @@ public class FunctionalTestBase {
             .headers(getRequestHeaders(additionalHeaders))
             .when()
             .delete(path)
+            .thenReturn();
+    }
+
+    protected Response doPutRequest(final String path, final Map<String, String> additionalHeaders,
+                                    final Object body) {
+        return given()
+            .relaxedHTTPSValidation()
+            .headers(getRequestHeaders(additionalHeaders))
+            .body(body)
+            .when()
+            .put(path)
             .thenReturn();
     }
 
