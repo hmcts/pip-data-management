@@ -58,10 +58,16 @@ public class LocationMetadataService {
      *  @param locationMetadata The location Metadata object
      * @param actioningUserId The userId who is performing this action
      */
-    public void updateLocationMetadata(LocationMetadata locationMetadata,
+    public void updateLocationMetadata(LocationMetadata locationMetadata, String id,
                                        String actioningUserId) {
         log.info(writeLog(actioningUserId, UserActions.UPDATE_LOCATION_METADATA,
                           locationMetadata.getLocationId().toString()));
+        UUID locationMetadataId = UUID.fromString(id);
+        locationMetadataRepository.findById(locationMetadataId)
+            .orElseThrow(() -> new LocationMetadataNotFoundException(
+                String.format("No location metadata found with the id: %s", id)
+            ));
+
         locationMetadataRepository.save(locationMetadata);
     }
 

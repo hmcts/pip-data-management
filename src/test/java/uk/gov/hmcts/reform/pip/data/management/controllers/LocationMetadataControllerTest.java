@@ -58,15 +58,31 @@ class LocationMetadataControllerTest {
     @Test
     void testUpdateLocationMetaDataSuccess() {
         LocationMetadata locationMetadata = createTestLocationMetadata();
-        doNothing().when(locationMetadataService).updateLocationMetadata(any(), anyString());
+        doNothing().when(locationMetadataService).updateLocationMetadata(any(), any(), anyString());
 
         ResponseEntity<String> response =
-            locationMetaDataController.updateLocationMetaData(REQUESTER_ID, locationMetadata);
+            locationMetaDataController.updateLocationMetaData(REQUESTER_ID, "user-123", locationMetadata);
 
         assertEquals(HttpStatus.OK, response.getStatusCode(),
                      "Response status should be OK (200) for successful update");
         assertEquals("Location metadata successfully updated by user user-123", response.getBody(),
                      "Response message should confirm successful update with correct user ID");
+    }
+
+    @Test
+    void testUpdateLocationMetaDataNotFound() {
+        LocationMetadata locationMetadata = createTestLocationMetadata();
+        doThrow(new LocationMetadataNotFoundException(NOT_FOUND))
+            .when(locationMetadataService).updateLocationMetadata(any(), any(), anyString());
+
+        LocationMetadataNotFoundException exception = assertThrows(
+            LocationMetadataNotFoundException.class,
+            () -> locationMetaDataController.updateLocationMetaData(REQUESTER_ID, UUID_STRING, locationMetadata),
+            "Should throw LocationMetaDataNotFoundException when metadata not found"
+        );
+
+        assertEquals(NOT_FOUND, exception.getMessage(),
+                     "Exception message should match the expected message");
     }
 
     @Test
@@ -90,35 +106,6 @@ class LocationMetadataControllerTest {
         LocationMetadataNotFoundException exception = assertThrows(
             LocationMetadataNotFoundException.class,
             () -> locationMetaDataController.deleteLocationMetaData(REQUESTER_ID, UUID_STRING),
-            "Should throw LocationMetaDataNotFoundException when metadata not found"
-        );
-
-        assertEquals(NOT_FOUND, exception.getMessage(),
-                     "Exception message should match the expected message");
-    }
-
-    @Test
-    void testGetLocationMetaDataSuccess() {
-        LocationMetadata expectedMetadata = createTestLocationMetadata();
-        when(locationMetadataService.getById(UUID_STRING)).thenReturn(expectedMetadata);
-
-        ResponseEntity<LocationMetadata> response =
-            locationMetaDataController.getLocationMetaData(REQUESTER_ID, UUID_STRING);
-
-        assertEquals(HttpStatus.OK, response.getStatusCode(),
-                     "Response status should be OK (200) for successful retrieval");
-        assertEquals(expectedMetadata, response.getBody(),
-                     "Returned metadata should match the expected metadata");
-    }
-
-    @Test
-    void testGetLocationMetaDataNotFound() {
-        when(locationMetadataService.getById(UUID_STRING))
-            .thenThrow(new LocationMetadataNotFoundException(NOT_FOUND));
-
-        LocationMetadataNotFoundException exception = assertThrows(
-            LocationMetadataNotFoundException.class,
-            () -> locationMetaDataController.getLocationMetaData(REQUESTER_ID, UUID_STRING),
             "Should throw LocationMetaDataNotFoundException when metadata not found"
         );
 

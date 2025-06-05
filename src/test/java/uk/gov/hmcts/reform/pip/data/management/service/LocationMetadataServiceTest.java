@@ -79,11 +79,33 @@ class LocationMetadataServiceTest {
         locationMetadata.setLocationId(123);
         locationMetadata.setLocationMetadataId(TEST_UUID);
 
+        when(locationMetadataRepository.findById(UUID.fromString(UUID_STRING)))
+            .thenReturn(Optional.of(locationMetadata));
         when(locationMetadataRepository.save(locationMetadata)).thenReturn(locationMetadata);
 
-        locationMetaDataService.updateLocationMetadata(locationMetadata, ACTIONING_USER_ID);
+        locationMetaDataService.updateLocationMetadata(locationMetadata, UUID_STRING, ACTIONING_USER_ID);
 
         verify(locationMetadataRepository).save(locationMetadata);
+    }
+
+    @Test
+    void testUpdateByIdNotFound() {
+        when(locationMetadataRepository.findById(TEST_UUID)).thenReturn(Optional.empty());
+
+        LocationMetadata locationMetadata = new LocationMetadata();
+        locationMetadata.setLocationId(123);
+        locationMetadata.setLocationMetadataId(TEST_UUID);
+
+        LocationMetadataNotFoundException exception = assertThrows(
+            LocationMetadataNotFoundException.class,
+            () -> locationMetaDataService.updateLocationMetadata(locationMetadata, UUID_STRING, ACTIONING_USER_ID)
+        );
+
+        assertEquals(
+            String.format("No location metadata found with the id: %s", UUID_STRING),
+            exception.getMessage(),
+            LOCATION_METADATA_NOT_FOUND_MESSAGE
+        );
     }
 
     @Test

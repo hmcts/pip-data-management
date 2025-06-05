@@ -69,14 +69,13 @@ class LocationMetadataTest extends FunctionalTestBase {
         doDeleteRequest(TESTING_SUPPORT_LOCATION_URL + BASE_COURT_NAME, getBaseHeaderMap());
     }
 
-    private LocationMetadata createLocationMetadata(String locationId, String englishCautionMessage,
-            String welshCautionMessage, String englishNoListMessage, String welshNoListMessage) {
+    private LocationMetadata createLocationMetadata(String locationId) {
         LocationMetadata locationMetadata = new LocationMetadata();
         locationMetadata.setLocationId(Integer.parseInt(locationId));
-        locationMetadata.setCautionMessage(englishCautionMessage);
-        locationMetadata.setWelshCautionMessage(welshCautionMessage);
-        locationMetadata.setNoListMessage(englishNoListMessage);
-        locationMetadata.setWelshNoListMessage(welshNoListMessage);
+        locationMetadata.setCautionMessage(LocationMetadataTest.ENGLISH_CAUTION_MESSAGE);
+        locationMetadata.setWelshCautionMessage(LocationMetadataTest.WELSH_CAUTION_MESSAGE);
+        locationMetadata.setNoListMessage(LocationMetadataTest.ENGLISH_NO_LIST_MESSAGE);
+        locationMetadata.setWelshNoListMessage(LocationMetadataTest.WELSH_NO_LIST_MESSAGE);
         return locationMetadata;
     }
 
@@ -92,9 +91,7 @@ class LocationMetadataTest extends FunctionalTestBase {
         Response responseCreateLocationMetadata = doPostRequest(
             BASE_LOCATION_METADATA_URL,
             headerMap,
-            createLocationMetadata(locationId, ENGLISH_CAUTION_MESSAGE,
-                                   WELSH_CAUTION_MESSAGE, ENGLISH_NO_LIST_MESSAGE,
-                                   WELSH_NO_LIST_MESSAGE)
+            createLocationMetadata(locationId)
         );
 
         assertThat(responseCreateLocationMetadata.getStatusCode()).isEqualTo(CREATED.value());
@@ -125,30 +122,6 @@ class LocationMetadataTest extends FunctionalTestBase {
 
     @Test
     @Order(3)
-    void testLocationMetadataByIdControllerHappyPath() {
-        Map<String, String> headerMap = Map.of(AUTHORIZATION, BEARER + accessToken,
-                                               CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE,
-                                               REQUESTER_ID_HEADER, systemAdminUserId
-        );
-
-        Response responseGetLocationMetadataByLocationId = doGetRequest(
-            BASE_LOCATION_METADATA_URL + "/" + locationMetadataId,
-            headerMap
-        );
-
-        assertThat(responseGetLocationMetadataByLocationId.getStatusCode()).isEqualTo(OK.value());
-        LocationMetadata returnedLocationMetadata = responseGetLocationMetadataByLocationId
-            .as(LocationMetadata.class);
-        assertThat(returnedLocationMetadata.getLocationMetadataId()).isEqualTo(locationMetadataId);
-        assertThat(returnedLocationMetadata.getLocationId().toString()).isEqualTo(locationId);
-        assertThat(returnedLocationMetadata.getCautionMessage()).isEqualTo(ENGLISH_CAUTION_MESSAGE);
-        assertThat(returnedLocationMetadata.getWelshCautionMessage()).isEqualTo(WELSH_CAUTION_MESSAGE);
-        assertThat(returnedLocationMetadata.getNoListMessage()).isEqualTo(ENGLISH_NO_LIST_MESSAGE);
-        assertThat(returnedLocationMetadata.getWelshNoListMessage()).isEqualTo(WELSH_NO_LIST_MESSAGE);
-    }
-
-    @Test
-    @Order(4)
     void testUpdateLocationMetadataControllerHappyPath() {
         Map<String, String> headerMap = Map.of(AUTHORIZATION, BEARER + accessToken,
                                                CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE,
@@ -169,7 +142,7 @@ class LocationMetadataTest extends FunctionalTestBase {
         returnedLocationMetadata.setWelshNoListMessage(WELSH_NO_LIST_MESSAGE + UPDATED_TEXT);
 
         Response responseUpdateLocationMetadata = doPutRequest(
-            BASE_LOCATION_METADATA_URL,
+            BASE_LOCATION_METADATA_URL + "/" + locationMetadataId,
             headerMap,
             returnedLocationMetadata
         );
@@ -193,7 +166,7 @@ class LocationMetadataTest extends FunctionalTestBase {
     }
 
     @Test
-    @Order(5)
+    @Order(4)
     void testDeleteLocationMetadataByIdControllerHappyPath() {
         Map<String, String> headerMap = Map.of(AUTHORIZATION, BEARER + accessToken,
                                                CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE,

@@ -60,7 +60,7 @@ public class LocationMetadataController {
             ));
     }
 
-    @PutMapping
+    @PutMapping("/{id}")
     @ApiResponse(responseCode = OK_CODE, description = "Update Location metadata")
     @ApiResponse(responseCode = BAD_REQUEST_CODE, description = "Unable to update the location metadata")
     @ApiResponse(responseCode = UNAUTHORISED_CODE, description = UNAUTHORISED_MESSAGE)
@@ -68,9 +68,10 @@ public class LocationMetadataController {
     @SecurityRequirement(name = BEARER_AUTHENTICATION)
     @PreAuthorize("@authorisationService.userCanUpdateLocationMetadata(#requesterId)")
     public ResponseEntity<String> updateLocationMetaData(
+        @PathVariable String id,
         @RequestHeader(REQUESTER_ID_HEADER) String requesterId,
         @RequestBody LocationMetadata locationMetadata) {
-        locationMetadataService.updateLocationMetadata(locationMetadata, requesterId);
+        locationMetadataService.updateLocationMetadata(locationMetadata, id, requesterId);
         return ResponseEntity.status(HttpStatus.OK)
             .body(String.format(
                 "Location metadata successfully updated by user %s",
@@ -94,18 +95,6 @@ public class LocationMetadataController {
                 "Location metadata successfully deleted by user %s",
                 requesterId
             ));
-    }
-
-    @GetMapping("/{id}")
-    @ApiResponse(responseCode = OK_CODE, description = "Get Locations metadata By Id")
-    @ApiResponse(responseCode = NOT_FOUND_CODE, description = "No Location metadata found with the id {id}")
-    @ApiResponse(responseCode = UNAUTHORISED_CODE, description = UNAUTHORISED_MESSAGE)
-    @SecurityRequirement(name = BEARER_AUTHENTICATION)
-    @PreAuthorize("@authorisationService.userCanGetLocationMetadata(#requesterId)")
-    public ResponseEntity<LocationMetadata> getLocationMetaData(
-        @RequestHeader(REQUESTER_ID_HEADER) String requesterId,
-        @PathVariable String id) {
-        return ResponseEntity.ok(locationMetadataService.getById(id));
     }
 
     @GetMapping("/location/{locationId}")
