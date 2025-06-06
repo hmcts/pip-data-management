@@ -616,7 +616,7 @@ class PublicationManagementTest extends IntegrationTestBase {
     @EnumSource(
         value = ListType.class,
         names = {
-            "UT_IAC_JR_LONDON_DAILY_HEARING_LIST",
+            "UT_IAC_JR_LEEDS_DAILY_HEARING_LIST",
             "UT_IAC_JR_MANCHESTER_DAILY_HEARING_LIST",
             "UT_IAC_JR_BIRMINGHAM_DAILY_HEARING_LIST",
             "UT_IAC_JR_CARDIFF_DAILY_HEARING_LIST"
@@ -643,16 +643,16 @@ class PublicationManagementTest extends IntegrationTestBase {
     }
 
     @Test
-    void testGenerateArtefactSummaryUtIacJudicialReviewLeedsDailyHearingList() throws Exception {
+    void testGenerateArtefactSummaryUtIacJudicialReviewLondonDailyHearingList() throws Exception {
         Artefact artefact = createNonStrategicPublication(
-            ListType.UT_IAC_JR_LEEDS_DAILY_HEARING_LIST,
+            ListType.UT_IAC_JR_LONDON_DAILY_HEARING_LIST,
             NON_STRATEGIC_FILES_LOCATION
-                + "ut-iac-jr-leeds-daily-hearing-list/utIacJudicialReviewLeedsDailyHearingList.xlsx"
+                + "ut-iac-judicial-review-london-daily-hearing-list/utIacJudicialReviewLondonDailyHearingList.xlsx"
         );
 
         byte[] jsonData = getTestData(
             NON_STRATEGIC_FILES_LOCATION
-                + "ut-iac-jr-leeds-daily-hearing-list/utIacJudicialReviewLeedsDailyHearingList.json"
+                + "ut-iac-judicial-review-london-daily-hearing-list/utIacJudicialReviewLondonDailyHearingList.json"
         );
         when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(jsonData));
 
