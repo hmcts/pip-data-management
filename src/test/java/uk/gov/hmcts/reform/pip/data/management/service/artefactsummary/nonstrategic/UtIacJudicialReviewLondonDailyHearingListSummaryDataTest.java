@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 @ActiveProfiles("test")
-class UtIacJudicialReviewLeedsDailyHearingListSummaryDataTest {
+class UtIacJudicialReviewLondonDailyHearingListSummaryDataTest {
 
     private static final String NON_STRATEGIC_RESOURCE_FOLDER = "src/test/resources/mocks/non-strategic/";
     private static final String SUMMARY_SECTIONS_MESSAGE = "Summary sections count does not match";
@@ -29,19 +29,19 @@ class UtIacJudicialReviewLeedsDailyHearingListSummaryDataTest {
     private static final String SUMMARY_FIELD_VALUE_MESSAGE = "Summary field value does not match";
 
     @Test
-    void testUtIacJudicialReviewLeedsDailyHearingListSummaryData() throws IOException {
+    void testUtIacJudicialReviewLondonDailyHearingListSummaryData() throws IOException {
         StringWriter writer = new StringWriter();
         IOUtils.copy(
             Files.newInputStream(Paths.get(
                 NON_STRATEGIC_RESOURCE_FOLDER,
-                "utIacJudicialReviewLeedsDailyHearingList.json"
+                "utIacJudicialReviewLondonDailyHearingList.json"
             )), writer,
             Charset.defaultCharset()
         );
 
         JsonNode payload = new ObjectMapper().readTree(writer.toString());
         ArtefactSummaryData cstSummaryData = new ListConversionFactory()
-            .getArtefactSummaryData(ListType.UT_IAC_JR_LEEDS_DAILY_HEARING_LIST)
+            .getArtefactSummaryData(ListType.UT_IAC_JR_LONDON_DAILY_HEARING_LIST)
             .get();
         Map<String, List<Map<String, String>>> output = cstSummaryData.get(payload);
 
@@ -56,7 +56,7 @@ class UtIacJudicialReviewLeedsDailyHearingListSummaryDataTest {
             .as(SUMMARY_CASES_MESSAGE)
             .hasSize(2);
 
-        Map<String, String> summaryFields = summaryCases.get(0);
+        Map<String, String> summaryFields = summaryCases.getFirst();
         softly.assertThat(summaryFields)
             .as(SUMMARY_FIELDS_MESSAGE)
             .hasSize(2);

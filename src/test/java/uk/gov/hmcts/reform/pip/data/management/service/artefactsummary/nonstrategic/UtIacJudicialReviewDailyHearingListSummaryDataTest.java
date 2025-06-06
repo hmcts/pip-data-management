@@ -33,7 +33,7 @@ class UtIacJudicialReviewDailyHearingListSummaryDataTest {
     @EnumSource(
         value = ListType.class,
         names = {
-            "UT_IAC_JR_LONDON_DAILY_HEARING_LIST",
+            "UT_IAC_JR_LEEDS_DAILY_HEARING_LIST",
             "UT_IAC_JR_MANCHESTER_DAILY_HEARING_LIST",
             "UT_IAC_JR_BIRMINGHAM_DAILY_HEARING_LIST",
             "UT_IAC_JR_CARDIFF_DAILY_HEARING_LIST"
@@ -65,7 +65,7 @@ class UtIacJudicialReviewDailyHearingListSummaryDataTest {
             .as(SUMMARY_CASES_MESSAGE)
             .hasSize(2);
 
-        Map<String, String> summaryFields = summaryCases.get(0);
+        Map<String, String> summaryFields = summaryCases.getFirst();
         softly.assertThat(summaryFields)
             .as(SUMMARY_FIELDS_MESSAGE)
             .hasSize(2);
