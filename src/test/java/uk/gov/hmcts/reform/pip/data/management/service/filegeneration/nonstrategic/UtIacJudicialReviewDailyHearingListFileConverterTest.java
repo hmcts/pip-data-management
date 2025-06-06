@@ -108,7 +108,8 @@ class UtIacJudicialReviewDailyHearingListFileConverterTest {
             Arguments.of("UT_IAC_JR_BIRMINGHAM_DAILY_HEARING_LIST", "utIacJrBirminghamDailyHearingList.json",
         "Uwch Dribiwnlys (Mewnfudo a Lloches) - Rhestr o Wrandawiadau Dyddiol Siambr Adolygiadau Barnwrol Birmingham"),
             Arguments.of("UT_IAC_JR_CARDIFF_DAILY_HEARING_LIST", "utIacJrCardiffDailyHearingList.json",
-        "Uwch Dribiwnlys (Mewnfudo a Lloches) - Rhestr o Wrandawiadau Dyddiol Siambr Adolygiadau Barnwrol Caerdydd")
+        "Uwch Dribiwnlys (Mewnfudo a Lloches) – Rhestr o Wrandawiadau Dyddiol Siambr Adolygiadau Barnwrol "
+            + "Bryste a Chaerdydd")
         );
     }
 
