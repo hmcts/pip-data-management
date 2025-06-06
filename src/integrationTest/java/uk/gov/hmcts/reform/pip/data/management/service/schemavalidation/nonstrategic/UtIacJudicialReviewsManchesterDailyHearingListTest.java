@@ -69,7 +69,7 @@ class UtIacJudicialReviewsManchesterDailyHearingListTest extends IntegrationBasi
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(0)).remove("hearingTime");
+            ((ObjectNode) node.get(0)).remove("venue");
 
             assertThatExceptionOfType(PayloadValidationException.class)
                 .as(INVALID_MESSAGE)
@@ -84,7 +84,7 @@ class UtIacJudicialReviewsManchesterDailyHearingListTest extends IntegrationBasi
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(0)).remove("applicant");
+            ((ObjectNode) node.get(0)).remove("judges");
 
             assertThatExceptionOfType(PayloadValidationException.class)
                 .as(INVALID_MESSAGE)
@@ -99,7 +99,7 @@ class UtIacJudicialReviewsManchesterDailyHearingListTest extends IntegrationBasi
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(0)).remove("representative");
+            ((ObjectNode) node.get(0)).remove("hearingTime");
 
             assertThatExceptionOfType(PayloadValidationException.class)
                 .as(INVALID_MESSAGE)
@@ -129,7 +129,7 @@ class UtIacJudicialReviewsManchesterDailyHearingListTest extends IntegrationBasi
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(0)).remove("judges");
+            ((ObjectNode) node.get(0)).remove("caseTitle");
 
             assertThatExceptionOfType(PayloadValidationException.class)
                 .as(INVALID_MESSAGE)
@@ -145,21 +145,6 @@ class UtIacJudicialReviewsManchesterDailyHearingListTest extends IntegrationBasi
 
             JsonNode node = getJsonNode(text);
             ((ObjectNode) node.get(0)).remove("hearingType");
-
-            assertThatExceptionOfType(PayloadValidationException.class)
-                .as(INVALID_MESSAGE)
-                .isThrownBy(() -> validationService.validateBody(node.toString(), headerGroup, false));
-        }
-    }
-
-    @Test
-    void testValidateWithErrorsWhenLocationMissingInList() throws IOException {
-        try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(VALID_JSON)) {
-            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
-
-            JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(0)).remove("location");
 
             assertThatExceptionOfType(PayloadValidationException.class)
                 .as(INVALID_MESSAGE)

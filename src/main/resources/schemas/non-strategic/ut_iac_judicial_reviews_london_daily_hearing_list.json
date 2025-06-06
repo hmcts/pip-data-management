@@ -6,21 +6,49 @@
     "title": "Hearing list",
     "type": "object",
     "required": [
-      "venue",
-      "judges",
       "hearingTime",
+      "applicant",
+      "representative",
       "caseReferenceNumber",
-      "caseTitle",
+      "judges",
       "hearingType",
+      "location",
       "additionalInformation"
     ],
     "properties": {
-      "venue": {
-        "title": "Venue",
+      "hearingTime": {
+        "title": "Time of hearing",
         "type": "string",
         "default": "",
         "examples": [
-          "Venue 1"
+          "10:30am"
+        ],
+        "pattern": "^\\d{1,2}([:.]\\d{2})?[ap]m$"
+      },
+      "applicant": {
+        "title": "Name of applicant",
+        "type": "string",
+        "default": "",
+        "examples": [
+          "Forename Surname"
+        ],
+        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+      },
+      "representative": {
+        "title": "Name of representative",
+        "type": "string",
+        "default": "",
+        "examples": [
+          "Forename Surname"
+        ],
+        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+      },
+      "caseReferenceNumber": {
+        "title": "Case reference number",
+        "type": "string",
+        "default": "",
+        "examples": [
+          "12345"
         ],
         "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
       },
@@ -33,39 +61,21 @@
         ],
         "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
       },
-      "hearingTime": {
-        "title": "Time of hearing",
-        "type": "string",
-        "default": "",
-        "examples": [
-          "10:30am"
-        ],
-        "pattern": "^\\d{1,2}([:.]\\d{2})?[ap]m$"
-      },
-      "caseReferenceNumber": {
-        "title": "Case reference number",
-        "type": "string",
-        "default": "",
-        "examples": [
-          "12345"
-        ],
-        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
-      },
-      "caseTitle": {
-        "title": "Case title",
-        "type": "string",
-        "default": "",
-        "examples": [
-          "Case ABC"
-        ],
-        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
-      },
       "hearingType": {
         "title": "Type of hearing being presented",
         "type": "string",
         "default": "",
         "examples": [
           "Substantive"
+        ],
+        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+      },
+      "location": {
+        "title": "location name of the hearing",
+        "type": "string",
+        "default": "",
+        "examples": [
+          "This is the location of the hearing"
         ],
         "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
       },
