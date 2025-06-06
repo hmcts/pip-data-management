@@ -187,15 +187,15 @@ public class ListConversionFactory {
         )),
         Map.entry(UT_IAC_JR_MANCHESTER_DAILY_HEARING_LIST, new ConversionPair(
             new NonStrategicListFileConverter(),
-            new NonStrategicListSummaryData(UT_IAC_JR_LONDON_DAILY_HEARING_LIST)
+            new NonStrategicListSummaryData(UT_IAC_JR_MANCHESTER_DAILY_HEARING_LIST)
         )),
         Map.entry(UT_IAC_JR_BIRMINGHAM_DAILY_HEARING_LIST, new ConversionPair(
             new NonStrategicListFileConverter(),
-            new NonStrategicListSummaryData(UT_IAC_JR_LONDON_DAILY_HEARING_LIST)
+            new NonStrategicListSummaryData(UT_IAC_JR_BIRMINGHAM_DAILY_HEARING_LIST)
         )),
         Map.entry(UT_IAC_JR_CARDIFF_DAILY_HEARING_LIST, new ConversionPair(
             new NonStrategicListFileConverter(),
-            new NonStrategicListSummaryData(UT_IAC_JR_LONDON_DAILY_HEARING_LIST)
+            new NonStrategicListSummaryData(UT_IAC_JR_CARDIFF_DAILY_HEARING_LIST)
         )),
         Map.entry(UT_IAC_JR_LEEDS_DAILY_HEARING_LIST, new ConversionPair(
             new NonStrategicListFileConverter(),
