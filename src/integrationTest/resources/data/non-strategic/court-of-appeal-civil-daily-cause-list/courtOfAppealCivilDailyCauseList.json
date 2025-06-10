@@ -1,0 +1,44 @@
+{
+  "hearingList": [
+    {
+      "venue": "Venue A",
+      "judge": "Judge A",
+      "time": "9am",
+      "caseNumber": "12345",
+      "caseDetails": "Case details A",
+      "hearingType": "Hearing type A",
+      "additionalInformation": "Additional information A"
+    },
+    {
+      "venue": "Venue B",
+      "judge": "Judge B",
+      "time": "11:30am",
+      "caseNumber": "12356",
+      "caseDetails": "Case details B",
+      "hearingType": "Hearing type B",
+      "additionalInformation": "Additional information B"
+    }
+  ],
+  "futureJudgments": [
+    {
+      "date": "01/06/2025",
+      "venue": "Venue C",
+      "judge": "Judge C",
+      "time": "10.30am",
+      "caseNumber": "12347",
+      "caseDetails": "Case details C",
+      "hearingType": "Hearing type C",
+      "additionalInformation": "Additional information C"
+    },
+    {
+      "date": "10/06/2025",
+      "venue": "Venue D",
+      "judge": "Judge D",
+      "time": "1pm",
+      "caseNumber": "12348",
+      "caseDetails": "Case details D",
+      "hearingType": "Hearing type D",
+      "additionalInformation": "Additional information D"
+    }
+  ]
+}
