@@ -147,11 +147,9 @@
       <p th:text="${i18n.importantInformationHeading}" class="govuk-details__summary-text"/>
     </summary>
     <div class="govuk-details__text">
-      <p class="govuk-body govuk-!-padding-bottom-3" th:text="${i18n.importantInformationLine1}"/>
-      <p class="govuk-body govuk-!-font-weight-bold" th:text="${i18n.adminCourtsHeading}"/>
-      <p class="govuk-body govuk-!-padding-bottom-3" th:text="${i18n.importantInformationLine2}"/>
-      <p class="govuk-body govuk-!-font-weight-bold" th:text="${i18n.judgementsHeading}"/>
-      <p class="govuk-body" th:text="${i18n.importantInformationLine3}"/>
+      <p class="govuk-body govuk-!-padding-bottom-3" id="important-information-1" th:text="${i18n.importantInformationLine1}"/>
+      <p class="govuk-body govuk-!-font-weight-bold" id="judgement-heading" th:text="${i18n.judgementsHeading}"/>
+      <p class="govuk-body" id="important-information-2" th:text="${i18n.importantInformationLine2}"/>
     </div>
   </details>
 
@@ -165,13 +163,36 @@
       </tr>
       </thead>
       <tbody class="govuk-table__body">
-      <tr th:each="hearing : ${data}">
+      <tr th:each="hearing : ${hearingList}">
         <td class="govuk-table__cell" th:text="${hearing.get('venue')}"/>
         <td class="govuk-table__cell" th:text="${hearing.get('judge')}"/>
         <td class="govuk-table__cell" th:text="${hearing.get('time')}"/>
         <td class="govuk-table__cell" th:text="${hearing.get('caseNumber')}"/>
         <td class="govuk-table__cell" th:text="${hearing.get('caseDetails')}"/>
         <td class="govuk-table__cell" th:text="${hearing.get('hearingType')}" />
+        <td class="govuk-table__cell" th:text="${hearing.get('additionalInformation')}" />
+      </tr>
+      </tbody>
+    </table>
+
+    <h2 id="planning-court-heading" class="govuk-heading-m govuk-!-padding-top-6" th:text="${i18n.planningCourtHeading}"/>
+    <table class="govuk-table">
+      <thead class="govuk-table__header">
+      <tr>
+        <th:block th:each="header: ${i18n.tableHeaders}">
+          <th th:text="${header}" scope="col" class="govuk-table__header"/>
+        </th:block>
+      </tr>
+      </thead>
+      <tbody class="govuk-table__body">
+      <tr th:each="hearing : ${planningCourt}">
+        <td class="govuk-table__cell" th:text="${hearing.get('date')}"/>
+        <td class="govuk-table__cell" th:text="${hearing.get('venue')}"/>
+        <td class="govuk-table__cell" th:text="${hearing.get('judge')}"/>
+        <td class="govuk-table__cell" th:text="${hearing.get('time')}"/>
+        <td class="govuk-table__cell" th:text="${hearing.get('caseNumber')}"/>
+        <td class="govuk-table__cell" th:text="${hearing.get('caseDetails')}"/>
+        <td class="govuk-table__cell" th:text="${hearing.get('hearingType')}"/>
         <td class="govuk-table__cell" th:text="${hearing.get('additionalInformation')}" />
       </tr>
       </tbody>
