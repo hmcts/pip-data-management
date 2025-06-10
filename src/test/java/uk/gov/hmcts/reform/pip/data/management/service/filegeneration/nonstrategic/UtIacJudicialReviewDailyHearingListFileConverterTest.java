@@ -175,7 +175,7 @@ class UtIacJudicialReviewDailyHearingListFileConverterTest {
             .extracting(Element::text)
             .containsExactly(
                 HEARING_TIME,
-                "Applicant",
+                "Case title",
                 "Representative",
                 CASE_REFERENCE_NUMBER,
                 JUDGES,
@@ -190,7 +190,7 @@ class UtIacJudicialReviewDailyHearingListFileConverterTest {
             .extracting(Element::text)
             .containsExactly(
                 "10:30am",
-                "Applicant A",
+                "Case A",
                 "Rep A",
                 "1234",
                 "Judge A",
@@ -198,7 +198,7 @@ class UtIacJudicialReviewDailyHearingListFileConverterTest {
                 HEARING_VENUE,
                 "This is additional information",
                 "11am",
-                "Applicant B",
+                "Case B",
                 "Rep B",
                 "1235",
                 "Judge B",
@@ -269,7 +269,7 @@ class UtIacJudicialReviewDailyHearingListFileConverterTest {
             .extracting(Element::text)
             .containsExactly(
                 HEARING_TIME_WELSH,
-                "Ymgeisydd",
+                "Deitl yr achos",
                 "Cynrychiolir gan",
                 "Cyfeirnod yr achos",
                 JUDGES_WELSH,
@@ -284,7 +284,7 @@ class UtIacJudicialReviewDailyHearingListFileConverterTest {
             .extracting(Element::text)
             .containsExactly(
                 "10:30am",
-                "Applicant A",
+                "Case A",
                 "Rep A",
                 "1234",
                 "Judge A",
@@ -292,7 +292,7 @@ class UtIacJudicialReviewDailyHearingListFileConverterTest {
                 HEARING_VENUE,
                 "This is additional information",
                 "11am",
-                "Applicant B",
+                "Case B",
                 "Rep B",
                 "1235",
                 "Judge B",
