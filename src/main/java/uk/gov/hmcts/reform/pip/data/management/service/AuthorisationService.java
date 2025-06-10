@@ -56,18 +56,6 @@ public class AuthorisationService {
         return true;
     }
 
-    public boolean userCanGetLocationMetadata(String requesterId) {
-        if (!isUserSystemAdmin(requesterId)
-            || !isAdmin()) {
-            log.error(writeLog(
-                String.format("User with ID %s is forbidden to get location metadata", requesterId
-                )));
-            return false;
-        }
-
-        return true;
-    }
-
     private boolean isUserSystemAdmin(String requesterId) {
         if (requesterId != null && !requesterId.isEmpty()) {
             PiUser user = accountManagementService.getUserById(requesterId);

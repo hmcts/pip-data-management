@@ -154,40 +154,4 @@ class AuthorisationServiceTest {
         assertFalse(authorisationService.userCanDeleteLocationMetadata(TEST_USER_ID),
                     "API Token with no admin permission can delete location metadata");
     }
-
-    @Test
-    void testUserCanGetLocationMetadataWhenAdmin() {
-        List<GrantedAuthority> authorities = List.of(
-            new SimpleGrantedAuthority(ADMIN_ROLE)
-        );
-        Authentication auth = new TestingAuthenticationToken(TEST_USER_ID, null, authorities);
-        SecurityContextHolder.getContext().setAuthentication(auth);
-
-        when(accountManagementService.getUserById(TEST_USER_ID))
-            .thenReturn(createUser(Roles.SYSTEM_ADMIN));
-        when(securityContext.getAuthentication()).thenReturn(auth);
-
-        assertTrue(authorisationService.userCanGetLocationMetadata(TEST_USER_ID),
-                   "API Token with Admin permission get delete location metadata");
-    }
-
-    @Test
-    void testUserCannotGetLocationMetadataWhenRequesterIdNotPresent() {
-        assertFalse(authorisationService.userCanGetLocationMetadata(null),
-                    "Requester with no value can get location metadata");
-    }
-
-    @Test
-    void testUserCannotGetLocationMetadataWhenRequesterIdNotAdmin() {
-        when(accountManagementService.getUserById(TEST_USER_ID))
-            .thenReturn(createUser(Roles.VERIFIED));
-        assertFalse(authorisationService.userCanGetLocationMetadata(TEST_USER_ID),
-                    "API Token with Admin permission cannot get location metadata");
-    }
-
-    @Test
-    void testUserCannotGetLocationMetadataWhenRequesterDoesNotExists() {
-        assertFalse(authorisationService.userCanGetLocationMetadata(TEST_USER_ID),
-                    "API Token with no admin permission can get location metadata");
-    }
 }
