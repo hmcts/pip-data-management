@@ -34,7 +34,9 @@ java {
 repositories {
   mavenLocal()
   mavenCentral()
-  maven { url = 'https://jitpack.io' }
+  maven {
+    url 'https://pkgs.dev.azure.com/hmcts/Artifacts/_packaging/hmcts-lib/maven/v1'
+  }
 }
 
 sourceSets {
@@ -260,7 +262,7 @@ dependencies {
   testImplementation group: 'org.springframework.security', name: 'spring-security-test'
   testImplementation group: 'io.github.hakky54', name: 'logcaptor', version: '2.11.0'
   testImplementation group: 'org.apiguardian', name: 'apiguardian-api', version: '1.1.2'
-  testImplementation group: 'com.github.hmcts', name: 'fortify-client', version: '1.4.8', classifier: 'all'
+  testImplementation group: 'com.github.hmcts', name: 'fortify-client', version: '1.4.9', classifier: 'all'
   testImplementation group: 'org.jsoup', name: 'jsoup', version: '1.20.1'
   testImplementation group: 'com.google.code.gson', name: 'gson', version: '2.13.1'
 
