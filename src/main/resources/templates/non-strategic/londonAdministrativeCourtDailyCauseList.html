@@ -186,13 +186,12 @@
       </thead>
       <tbody class="govuk-table__body">
       <tr th:each="hearing : ${planningCourt}">
-        <td class="govuk-table__cell" th:text="${hearing.get('date')}"/>
         <td class="govuk-table__cell" th:text="${hearing.get('venue')}"/>
         <td class="govuk-table__cell" th:text="${hearing.get('judge')}"/>
         <td class="govuk-table__cell" th:text="${hearing.get('time')}"/>
         <td class="govuk-table__cell" th:text="${hearing.get('caseNumber')}"/>
         <td class="govuk-table__cell" th:text="${hearing.get('caseDetails')}"/>
-        <td class="govuk-table__cell" th:text="${hearing.get('hearingType')}"/>
+        <td class="govuk-table__cell" th:text="${hearing.get('hearingType')}" />
         <td class="govuk-table__cell" th:text="${hearing.get('additionalInformation')}" />
       </tr>
       </tbody>
