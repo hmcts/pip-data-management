@@ -22,4 +22,8 @@
     <notes>This exists in Apache Tomcat which is included from springboot dependency. Should be removed once we updated springboot to 3.4.5</notes>
     <cve>CVE-2025-31651</cve>
   </suppress>
+  <suppress>
+    <notes>Temporarily suppressed, to be fixed as part of monthly dependencies</notes>
+    <cve>CVE-2025-48734</cve>
+  </suppress>
 </suppressions>
