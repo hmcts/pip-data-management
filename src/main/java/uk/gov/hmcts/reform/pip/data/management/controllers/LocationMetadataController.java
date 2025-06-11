@@ -29,6 +29,7 @@ public class LocationMetadataController {
     private static final String UNAUTHORISED_CODE = "401";
     private static final String FORBIDDEN_CODE = "403";
     private static final String NOT_FOUND_CODE = "404";
+    private static final String CONFLICT_CODE = "409";
 
     private static final String UNAUTHORISED_MESSAGE = "Invalid access credential";
     private static final String FORBIDDEN_MESSAGE = "User has not been authorized";
@@ -47,6 +48,7 @@ public class LocationMetadataController {
     @ApiResponse(responseCode = BAD_REQUEST_CODE, description = "Unable to add the location metadata")
     @ApiResponse(responseCode = UNAUTHORISED_CODE, description = UNAUTHORISED_MESSAGE)
     @ApiResponse(responseCode = FORBIDDEN_CODE, description = FORBIDDEN_MESSAGE)
+    @ApiResponse(responseCode = CONFLICT_CODE, description = "Location metadata already exists")
     @SecurityRequirement(name = BEARER_AUTHENTICATION)
     @PreAuthorize("@authorisationService.userCanAddLocationMetadata(#requesterId)")
     public ResponseEntity<String> addLocationMetaData(

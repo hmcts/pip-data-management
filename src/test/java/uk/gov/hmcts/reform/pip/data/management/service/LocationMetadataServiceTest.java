@@ -5,7 +5,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.DataIntegrityViolationException;
 import uk.gov.hmcts.reform.pip.data.management.database.LocationMetadataRepository;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CreateLocationMetadataConflictException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.LocationMetadataNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationMetadata;
 
@@ -15,6 +17,7 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -162,5 +165,30 @@ class LocationMetadataServiceTest {
             exception.getMessage(),
             LOCATION_METADATA_NOT_FOUND_MESSAGE
         );
+    }
+
+
+    @Test
+    void testCreateLocationMetadataWithConflictException() {
+        LocationMetadata locationMetadata = new LocationMetadata();
+        locationMetadata.setLocationId(Integer.parseInt(LOCATION_ID));
+        locationMetadata.setCautionMessage("Caution message");
+
+        when(locationMetadataRepository.save(locationMetadata))
+            .thenThrow(new DataIntegrityViolationException("Duplicate entry"));
+
+        CreateLocationMetadataConflictException exception = assertThrows(
+            CreateLocationMetadataConflictException.class,
+            () -> locationMetaDataService.createLocationMetadata(locationMetadata, ACTIONING_USER_ID),
+            "Expected Create Location Metadata method to throw CreateLocationMetadataConflictException"
+        );
+
+        assertEquals(
+            "Location Metadata with location Id 123 cannot be saved because it is exists already",
+            exception.getMessage(),
+            "Exception message should clearly indicate the duplicate location ID conflict"
+        );
+
+        verify(locationMetadataRepository, times(1)).save(locationMetadata);
     }
 }

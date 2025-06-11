@@ -331,4 +331,26 @@ class LocationMetadataTest extends IntegrationTestBase {
         mockMvc.perform(delete(BASE_URL + "/123-456"))
             .andExpect(status().isBadRequest()).andReturn();
     }
+
+    @Test
+    void testAddLocationMetaDataReturn409WhenMetadataForLocationAlreadyExists() throws Exception {
+        when(accountManagementService.getUserById(any())).thenReturn(piUser);
+        LocationMetadata locationMetadata = createTestLocationMetadata(getLocationId());
+
+        mockMvc.perform(post(BASE_URL)
+                        .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(OBJECT_MAPPER.writeValueAsString(locationMetadata)))
+                .andExpect(status().isCreated())
+                .andExpect(content().string(
+                        String.format("Location metadata successfully added by user %s", SYSTEM_ADMIN_ID)
+                ));
+
+        mockMvc.perform(post(BASE_URL)
+                        .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(OBJECT_MAPPER.writeValueAsString(locationMetadata)))
+                .andExpect(status().isConflict());
+    }
+
 }

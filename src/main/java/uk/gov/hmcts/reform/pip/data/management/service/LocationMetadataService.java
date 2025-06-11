@@ -1,8 +1,10 @@
 package uk.gov.hmcts.reform.pip.data.management.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.pip.data.management.database.LocationMetadataRepository;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CreateLocationMetadataConflictException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.LocationMetadataNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationMetadata;
 import uk.gov.hmcts.reform.pip.model.enums.UserActions;
@@ -28,9 +30,17 @@ public class LocationMetadataService {
      */
     public void createLocationMetadata(LocationMetadata locationMetadata,
                                                    String actioningUserId) {
-        log.info(writeLog(actioningUserId, UserActions.ADD_LOCATION_METADATA,
-                          locationMetadata.getLocationId().toString()));
-        locationMetadataRepository.save(locationMetadata);
+        try {
+            log.info(writeLog(actioningUserId, UserActions.ADD_LOCATION_METADATA,
+                    locationMetadata.getLocationId().toString()));
+            locationMetadataRepository.save(locationMetadata);
+        } catch (DataIntegrityViolationException e) {
+            String errorMessage = String.format(
+                    "Location Metadata with location Id %d cannot be saved because it is exists already",
+                    locationMetadata.getLocationId());
+            log.error(writeLog(errorMessage));
+            throw new CreateLocationMetadataConflictException(errorMessage);
+        }
     }
 
     /**

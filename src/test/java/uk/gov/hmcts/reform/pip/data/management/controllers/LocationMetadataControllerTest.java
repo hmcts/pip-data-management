@@ -7,6 +7,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CreateLocationMetadataConflictException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.LocationMetadataNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationMetadata;
 import uk.gov.hmcts.reform.pip.data.management.service.LocationMetadataService;
@@ -19,6 +20,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -155,5 +158,31 @@ class LocationMetadataControllerTest {
 
         assertEquals("Invalid number", exception.getMessage(),
                      "Exception message should indicate invalid number format");
+    }
+
+    @Test
+    void testAddLocationMetaDataWithConflictException() {
+        LocationMetadata locationMetadata = new LocationMetadata();
+        locationMetadata.setLocationId(Integer.parseInt(LOCATION_ID));
+        locationMetadata.setCautionMessage("Caution message");
+
+        String expectedErrorMessage = "Location Metadata with location Id 123 "
+            + "cannot be saved because it exists already";
+
+        doThrow(new CreateLocationMetadataConflictException(expectedErrorMessage))
+            .when(locationMetadataService)
+            .createLocationMetadata(locationMetadata, REQUESTER_ID);
+
+        CreateLocationMetadataConflictException exception = assertThrows(
+            CreateLocationMetadataConflictException.class,
+            () -> locationMetaDataController.addLocationMetaData(REQUESTER_ID, locationMetadata),
+            "Expected Add Location Metadata method to throw CreateLocationMetadataConflictException"
+        );
+
+        assertEquals(expectedErrorMessage, exception.getMessage(),
+                     "The exception message should match the expected error message");
+
+        verify(locationMetadataService, times(1))
+            .createLocationMetadata(locationMetadata, REQUESTER_ID);
     }
 }
