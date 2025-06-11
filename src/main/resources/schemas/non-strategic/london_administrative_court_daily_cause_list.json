@@ -3,11 +3,11 @@
   "title": "Root",
   "type": "object",
   "required": [
-    "hearingList",
+    "londonAdministrativeCourt",
     "planningCourt"
   ],
   "properties": {
-    "hearingList": {
+    "londonAdministrativeCourt": {
       "title": "Hearing list",
       "type": "array",
       "items": {
