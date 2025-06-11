@@ -44,7 +44,7 @@ class LondonAdministrativeCourtDailyCauseListFileConverterTest {
     private static final String LIST_DATE_ELEMENT = "list-date";
     private static final String LAST_UPDATED_DATE_ELEMENT = "last-updated-date";
     private static final String SUMMARY_TITLE_CLASS = "govuk-details__summary-text";
-    private static final String SUMMARY_TEXT_CLASS = "govuk-details__text";
+    private static final String PLANNING_COURT_HEADING_ELEMENT = "planning-court-heading";
 
     private static final String TITLE_MESSAGE = "Title does not match";
     private static final String HEADER_MESSAGE = "Header does not match";
@@ -52,6 +52,7 @@ class LondonAdministrativeCourtDailyCauseListFileConverterTest {
     private static final String LIST_DATE_MESSAGE = "List date does not match";
     private static final String LAST_UPDATED_DATE_MESSAGE = "Last updated date does not match";
     private static final String IMPORTANT_INFORMATION_MESSAGE = "Important information heading does not match";
+    private static final String PLANNING_COURT_HEADING_MESSAGE = "Planning court heading does not match";
     private static final String TABLE_HEADERS_MESSAGE = "Table headers does not match";
 
     private final NonStrategicListFileConverter converter = new NonStrategicListFileConverter();
@@ -122,16 +123,41 @@ class LondonAdministrativeCourtDailyCauseListFileConverterTest {
             .as(IMPORTANT_INFORMATION_MESSAGE)
             .isEqualTo("Important information");
 
-        softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).get(0).text())
+        softly.assertThat(document.getElementById("important-information-1").text())
             .as(IMPORTANT_INFORMATION_MESSAGE)
-            .contains("Daily hearings in the Administrative Court sitting at London, Birmingham, Bristol, Cardiff, "
-                          + "Manchester and Leeds.");
+            .contains("Hearings take place in public unless otherwise indicated. When considering "
+                          + "the use of telephone and video technology the judiciary will have "
+                          + "regard to the principles of open justice. The court may exclude "
+                          + "observers where necessary to secure the proper administration of justice.");
+
+        softly.assertThat(document.getElementById("judgement-heading").text())
+            .as(IMPORTANT_INFORMATION_MESSAGE)
+            .contains("Judgments");
+
+        softly.assertThat(document.getElementById("important-information-2").text())
+            .as(IMPORTANT_INFORMATION_MESSAGE)
+            .contains("Judgments handed down by the judge remotely will be released by circulation "
+                          + "to the parties’ representatives by email and release to the National Archives. "
+                          + "The date and time for hand-down will be deemed to be not before time listed. "
+                          + "A copy of the judgment in final form as handed down can be made available "
+                          + "after that time, on request by email.");
+
+        softly.assertThat(document.getElementById(PLANNING_COURT_HEADING_ELEMENT).text())
+            .as(PLANNING_COURT_HEADING_MESSAGE)
+            .contains("Planning Court");
 
         softly.assertThat(document.getElementsByTag("th"))
             .as(TABLE_HEADERS_MESSAGE)
-            .hasSize(7)
+            .hasSize(14)
             .extracting(Element::text)
             .containsExactly(
+                "Venue",
+                "Judge",
+                "Time",
+                "Case number",
+                "Case details",
+                "Hearing type",
+                "Additional information",
                 "Venue",
                 "Judge",
                 "Time",
@@ -199,16 +225,42 @@ class LondonAdministrativeCourtDailyCauseListFileConverterTest {
             .as(IMPORTANT_INFORMATION_MESSAGE)
             .isEqualTo("Gwybodaeth bwysig");
 
-        softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).get(0).text())
+        softly.assertThat(document.getElementById("important-information-1").text())
             .as(IMPORTANT_INFORMATION_MESSAGE)
-            .contains("Gwrandawiadau dyddiol yn y Llys Gweinyddol yn eistedd yn Llundain, Birmingham, Bryste, "
-                          + "Caerdydd, Manceinion a Leeds.");
+            .contains("Mae gwrandawiadau'n cael eu cynnal yn gyhoeddus oni nodir yn wahanol. "
+                          + "Wrth ystyried y defnydd o dechnoleg ffôn a fideo, bydd y farnwriaeth "
+                          + "yn ystyried egwyddorion cyfiawnder agored. Gall y llys eithrio arsylwyr "
+                          + "lle bo angen sicrhau gweinyddiaeth briodol cyfiawnder.");
+
+        softly.assertThat(document.getElementById("judgement-heading").text())
+            .as(IMPORTANT_INFORMATION_MESSAGE)
+            .contains("Dyfarniadau");
+
+        softly.assertThat(document.getElementById("important-information-2").text())
+            .as(IMPORTANT_INFORMATION_MESSAGE)
+            .contains("Bydd dyfarniadau a gyflwynir gan y Meistri o bell yn cael eu "
+                          + "rhyddhau trwy gylchrediad i gynrychiolwyr y partïon trwy e-bost "
+                          + "a'u rhyddhau i'r Archifau Cenedlaethol. Ystyrir na fydd y dyddiad "
+                          + "a'r amser ar gyfer traddodi yn digwydd cyn yr amser a restrwyd. "
+                          + "Gellir darparu copi o'r dyfarniad ar ffurf derfynol fel y'i "
+                          + "traddodwyd ar ôl yr amser hwnnw, ar gais drwy e-bost.");
+
+        softly.assertThat(document.getElementById(PLANNING_COURT_HEADING_ELEMENT).text())
+            .as(PLANNING_COURT_HEADING_MESSAGE)
+            .contains("Llys Cynllunio");
 
         softly.assertThat(document.getElementsByTag("th"))
             .as(TABLE_HEADERS_MESSAGE)
-            .hasSize(7)
+            .hasSize(14)
             .extracting(Element::text)
             .containsExactly(
+                "Lleoliad",
+                "Barnwr",
+                "Amser",
+                "Rhif yr achos",
+                "Manylion yr achos",
+                "Math o Wrandawiad",
+                "Gwybodaeth ychwanegol",
                 "Lleoliad",
                 "Barnwr",
                 "Amser",
