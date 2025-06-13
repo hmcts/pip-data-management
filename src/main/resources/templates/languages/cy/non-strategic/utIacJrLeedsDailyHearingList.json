@@ -1,14 +1,13 @@
 {
-  "listName": "Uwch Dribiwnlys (Mewnfudo a Lloches) - Rhestr o Wrandawiadau Dyddiol Siambr Adolygiadau Barnwrol Llundain",
+  "listName": "Uwch Dribiwnlys (Mewnfudo a Lloches) - Rhestr o Wrandawiadau Dyddiol Siambr Adolygiadau Barnwrol Leeds",
   "listUpdateMessage": "Gall y rhestr ganlynol newid tan 4:30pm. Bydd unrhyw newidiadau ar ôl yr amser hwn yn cael eu cyfathrebu dros y ffôn neu drwy e-bost yn uniongyrchol at y partïon neu eu cynrychiolwyr cyfreithiol.",
   "tableHeaders": [
-    "Amser y gwrandawiad",
-    "Deitl yr achos",
-    "Cynrychiolir gan",
-    "Cyfeirnod yr achos",
-    "Barnwr/Barnwyr",
-    "Math o wrandawiad",
     "Lleoliad",
+    "Barnwr/Barnwyr",
+    "Amser y gwrandawiad",
+    "Cyfeirnod yr achos",
+    "Deitl yr achos",
+    "Math o wrandawiad",
     "Gwybodaeth ychwanegol"
   ]
 }

@@ -9,10 +9,8 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.NonStrategicListFileConverter;
 
@@ -21,12 +19,13 @@ import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Stream;
+
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_IAC_JR_LONDON_DAILY_HEARING_LIST;
 
 
 @ActiveProfiles("test")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class UtIacJudicialReviewDailyHearingListFileConverterTest {
+class UtIacJudicialReviewLondonDailyHearingListFileConverterTest {
 
     private static final String CONTENT_DATE = "12 December 2024";
     private static final String LAST_RECEIVED_DATE = "2025-01-20T09:30:00Z";
@@ -40,20 +39,17 @@ class UtIacJudicialReviewDailyHearingListFileConverterTest {
     private static final String ENGLISH = "ENGLISH";
     private static final String WELSH = "WELSH";
 
+    private static final String SUBSTANTIVE = "Substantive";
+    private static final String VENUE_WELSH = "Lleoliad";
+    private static final String JUDGES = "Judge(s)";
+    private static final String JUDGES_WELSH = "Barnwr/Barnwyr";
     private static final String HEARING_TIME = "Hearing time";
     private static final String HEARING_TIME_WELSH = "Amser y gwrandawiad";
     private static final String CASE_REFERENCE_NUMBER = "Case reference number";
-    private static final String CASE_REFERENCE_NUMBER_WELSH = "Cyfeirnod yr achos";
-    private static final String JUDGES = "Judge(s)";
-    private static final String JUDGES_WELSH = "Barnwr/Barnwyr";
     private static final String HEARING_TYPE = "Hearing type";
     private static final String HEARING_TYPE_WELSH = "Math o wrandawiad";
-    private static final String VENUE = "Venue";
-    private static final String VENUE_WELSH = "Lleoliad";
     private static final String ADDITIONAL_INFORMATION = "Additional information";
     private static final String ADDITIONAL_INFORMATION_WELSH = "Gwybodaeth ychwanegol";
-    private static final String CASE_TITLE = "Case title";
-    private static final String CASE_TITLE_WELSH = "Deitl yr achos";
 
     private static final String LIST_DATE_ENGLISH = "List for 12 December 2024";
     private static final String LIST_DATE_WELSH = "Rhestr ar gyfer 12 December 2024";
@@ -61,9 +57,7 @@ class UtIacJudicialReviewDailyHearingListFileConverterTest {
         + "researcher or member of the public";
     private static final String OBSERVE_HEARING_WELSH = "Arsylwi gwrandawiad llys neu dribiwnlys fel newyddiadurwr, "
         + "ymchwilydd neu aelod o'r cyhoedd";
-
     private static final String HEARING_VENUE = "This is a venue name";
-    private static final String HEARING_ADDITIONAL_INFORMATION = "This is additional information";
 
     private static final String HEADER_ELEMENT = "page-heading";
     private static final String LIST_DATE_ELEMENT = "list-date";
@@ -85,51 +79,21 @@ class UtIacJudicialReviewDailyHearingListFileConverterTest {
 
     private JsonNode utIacJudicialReviewInputJson;
 
-    private static Stream<Arguments> parametersEnglish() {
-        return Stream.of(
-            Arguments.of("UT_IAC_JR_LEEDS_DAILY_HEARING_LIST", "utIacJrLeedsDailyHearingList.json",
-                "Upper Tribunal (Immigration and Asylum) Chamber - Judicial Review: Leeds Daily Hearing List"),
-            Arguments.of("UT_IAC_JR_MANCHESTER_DAILY_HEARING_LIST", "utIacJrManchesterDailyHearingList.json",
-                "Upper Tribunal (Immigration and Asylum) Chamber - Judicial Review: Manchester Daily Hearing List"),
-            Arguments.of("UT_IAC_JR_BIRMINGHAM_DAILY_HEARING_LIST", "utIacJrBirminghamDailyHearingList.json",
-                "Upper Tribunal (Immigration and Asylum) Chamber - Judicial Review: Birmingham Daily Hearing List"),
-            Arguments.of("UT_IAC_JR_CARDIFF_DAILY_HEARING_LIST", "utIacJrCardiffDailyHearingList.json",
-                "Upper Tribunal (Immigration and Asylum) Chamber - Judicial Review: Bristol and Cardiff Daily "
-                    + "Hearing List")
-        );
-    }
-
-    private static Stream<Arguments> parametersWelsh() {
-        return Stream.of(
-            Arguments.of("UT_IAC_JR_LEEDS_DAILY_HEARING_LIST", "utIacJrLeedsDailyHearingList.json",
-        "Uwch Dribiwnlys (Mewnfudo a Lloches) - Rhestr o Wrandawiadau Dyddiol Siambr Adolygiadau Barnwrol Leeds"),
-            Arguments.of("UT_IAC_JR_MANCHESTER_DAILY_HEARING_LIST", "utIacJrManchesterDailyHearingList.json",
-        "Uwch Dribiwnlys (Mewnfudo a Lloches) - Rhestr o Wrandawiadau Dyddiol Siambr Adolygiadau Barnwrol Manceinion"),
-            Arguments.of("UT_IAC_JR_BIRMINGHAM_DAILY_HEARING_LIST", "utIacJrBirminghamDailyHearingList.json",
-        "Uwch Dribiwnlys (Mewnfudo a Lloches) - Rhestr o Wrandawiadau Dyddiol Siambr Adolygiadau Barnwrol Birmingham"),
-            Arguments.of("UT_IAC_JR_CARDIFF_DAILY_HEARING_LIST", "utIacJrCardiffDailyHearingList.json",
-        "Uwch Dribiwnlys (Mewnfudo a Lloches) – Rhestr o Wrandawiadau Dyddiol Siambr Adolygiadau Barnwrol "
-            + "Bryste a Chaerdydd")
-        );
-    }
-
     @BeforeAll
     void setup() throws IOException {
         try (InputStream inputStream = getClass()
-            .getResourceAsStream("/mocks/non-strategic/utIacJudicialReviewDailyHearingList.json")) {
+            .getResourceAsStream("/mocks/non-strategic/utIacJudicialReviewLondonDailyHearingList.json")) {
             String inputRaw = IOUtils.toString(inputStream, Charset.defaultCharset());
             utIacJudicialReviewInputJson = new ObjectMapper().readTree(inputRaw);
         }
     }
 
-    @ParameterizedTest
-    @MethodSource("parametersEnglish")
-    void testUtIacJudicialReviewDailyHearingListFileConversionInEnglish(String listName,
-        String languageFilename, String listDisplayName) throws IOException {
+    @Test
+    void testUtIacJudicialReviewDailyHearingListFileConversionInEnglish() throws IOException {
         Map<String, Object> languageResource;
         try (InputStream languageFile = Thread.currentThread()
             .getContextClassLoader()
-            .getResourceAsStream("templates/languages/en/non-strategic/" + languageFilename)) {
+            .getResourceAsStream("templates/languages/en/non-strategic/utIacJrLondonDailyHearingList.json")) {
             languageResource = new ObjectMapper().readValue(
                 Objects.requireNonNull(languageFile).readAllBytes(), new TypeReference<>() {
                 });
@@ -138,7 +102,7 @@ class UtIacJudicialReviewDailyHearingListFileConverterTest {
         Map<String, String> metadata = Map.of(CONTENT_DATE_METADATA, CONTENT_DATE,
                                               PROVENANCE_METADATA, PROVENANCE,
                                               LANGUAGE_METADATA, ENGLISH,
-                                              LIST_TYPE_METADATA, listName,
+                                              LIST_TYPE_METADATA, UT_IAC_JR_LONDON_DAILY_HEARING_LIST.name(),
                                               LAST_RECEIVED_DATE_METADATA, LAST_RECEIVED_DATE
         );
 
@@ -149,11 +113,11 @@ class UtIacJudicialReviewDailyHearingListFileConverterTest {
 
         softly.assertThat(document.title())
             .as(TITLE_MESSAGE)
-            .isEqualTo(listDisplayName);
+            .isEqualTo("Upper Tribunal (Immigration and Asylum) Chamber - Judicial Review: London Daily Hearing List");
 
         softly.assertThat(document.getElementById(HEADER_ELEMENT).text())
             .as(HEADER_MESSAGE)
-            .isEqualTo(listDisplayName);
+            .isEqualTo("Upper Tribunal (Immigration and Asylum) Chamber - Judicial Review: London Daily Hearing List");
 
         softly.assertThat(document.getElementById(LIST_DATE_ELEMENT).text())
             .as(LIST_DATE_MESSAGE)
@@ -170,7 +134,7 @@ class UtIacJudicialReviewDailyHearingListFileConverterTest {
         softly.assertThat(document.getElementById(LIST_UPDATE_MESSAGE_ELEMENT).text())
             .as(BODY_MESSAGE)
             .contains("The following list is subject to change until 4:30pm. Any alterations after this time "
-                          + "will be telephoned or emailed direct to the parties or their legal representatives.");
+                         + "will be telephoned or emailed direct to the parties or their legal representatives.");
 
         softly.assertThat(document.getElementById(OBSERVE_HEARING_ELEMENT).text())
             .as(BODY_MESSAGE)
@@ -178,50 +142,51 @@ class UtIacJudicialReviewDailyHearingListFileConverterTest {
 
         softly.assertThat(document.getElementsByTag("th"))
             .as(TABLE_HEADERS_MESSAGE)
-            .hasSize(7)
+            .hasSize(8)
             .extracting(Element::text)
             .containsExactly(
-                VENUE,
-                JUDGES,
                 HEARING_TIME,
+                "Case title",
+                "Representative",
                 CASE_REFERENCE_NUMBER,
-                CASE_TITLE,
+                JUDGES,
                 HEARING_TYPE,
+                "Location",
                 ADDITIONAL_INFORMATION
             );
 
         softly.assertThat(document.getElementsByTag("td"))
             .as(TABLE_CONTENT_MESSAGE)
-            .hasSize(14)
+            .hasSize(16)
             .extracting(Element::text)
             .containsExactly(
-                HEARING_VENUE,
-                "Judge A",
                 "10:30am",
-                "1234",
                 "Case A",
-                "Hearing type A",
-                HEARING_ADDITIONAL_INFORMATION,
+                "Rep A",
+                "1234",
+                "Judge A",
+                SUBSTANTIVE,
                 HEARING_VENUE,
-                "Judge B",
+                "This is additional information",
                 "11am",
-                "5678",
                 "Case B",
-                "Hearing type B",
-                HEARING_ADDITIONAL_INFORMATION
+                "Rep B",
+                "1235",
+                "Judge B",
+                SUBSTANTIVE,
+                HEARING_VENUE,
+                "This is another additional information"
             );
 
         softly.assertAll();
     }
 
-    @ParameterizedTest
-    @MethodSource("parametersWelsh")
-    void testUtIacJudicialReviewDailyHearingListFileConversionInWelsh(String listName,
-        String languageFilename, String listDisplayName) throws IOException {
+    @Test
+    void testUtIacJudicialReviewDailyHearingListFileConversionInWelsh() throws IOException {
         Map<String, Object> languageResource;
         try (InputStream languageFile = Thread.currentThread()
             .getContextClassLoader()
-            .getResourceAsStream("templates/languages/cy/non-strategic/" + languageFilename)) {
+            .getResourceAsStream("templates/languages/cy/non-strategic/utIacJrLondonDailyHearingList.json")) {
             languageResource = new ObjectMapper().readValue(
                 Objects.requireNonNull(languageFile).readAllBytes(), new TypeReference<>() {
                 });
@@ -230,7 +195,7 @@ class UtIacJudicialReviewDailyHearingListFileConverterTest {
         Map<String, String> metadata = Map.of(CONTENT_DATE_METADATA, CONTENT_DATE,
                                               PROVENANCE_METADATA, PROVENANCE,
                                               LANGUAGE_METADATA, WELSH,
-                                              LIST_TYPE_METADATA, listName,
+                                              LIST_TYPE_METADATA, UT_IAC_JR_LONDON_DAILY_HEARING_LIST.name(),
                                               LAST_RECEIVED_DATE_METADATA, LAST_RECEIVED_DATE
         );
 
@@ -241,11 +206,13 @@ class UtIacJudicialReviewDailyHearingListFileConverterTest {
 
         softly.assertThat(document.title())
             .as(TITLE_MESSAGE)
-            .isEqualTo(listDisplayName);
+            .isEqualTo("Uwch Dribiwnlys (Mewnfudo a Lloches) - "
+                   + "Rhestr o Wrandawiadau Dyddiol Siambr Adolygiadau Barnwrol Llundain");
 
         softly.assertThat(document.getElementById(HEADER_ELEMENT).text())
             .as(HEADER_MESSAGE)
-            .isEqualTo(listDisplayName);
+            .isEqualTo("Uwch Dribiwnlys (Mewnfudo a Lloches) - "
+                   + "Rhestr o Wrandawiadau Dyddiol Siambr Adolygiadau Barnwrol Llundain");
 
         softly.assertThat(document.getElementById(LIST_DATE_ELEMENT).text())
             .as(LIST_DATE_MESSAGE)
@@ -262,8 +229,8 @@ class UtIacJudicialReviewDailyHearingListFileConverterTest {
         softly.assertThat(document.getElementById(LIST_UPDATE_MESSAGE_ELEMENT).text())
             .as(BODY_MESSAGE)
             .contains("Gall y rhestr ganlynol newid tan 4:30pm. Bydd unrhyw newidiadau ar ôl yr amser hwn yn cael "
-                          + "eu cyfathrebu dros y ffôn neu drwy e-bost yn uniongyrchol at y partïon neu eu "
-                          +  "cynrychiolwyr cyfreithiol.");
+                        + "eu cyfathrebu dros y ffôn neu drwy e-bost yn uniongyrchol at y partïon neu eu "
+                        +  "cynrychiolwyr cyfreithiol.");
 
         softly.assertThat(document.getElementById(OBSERVE_HEARING_ELEMENT).text())
             .as(BODY_MESSAGE)
@@ -271,37 +238,41 @@ class UtIacJudicialReviewDailyHearingListFileConverterTest {
 
         softly.assertThat(document.getElementsByTag("th"))
             .as(TABLE_HEADERS_MESSAGE)
-            .hasSize(7)
+            .hasSize(8)
             .extracting(Element::text)
             .containsExactly(
-                VENUE_WELSH,
-                JUDGES_WELSH,
                 HEARING_TIME_WELSH,
-                CASE_REFERENCE_NUMBER_WELSH,
-                CASE_TITLE_WELSH,
+                "Deitl yr achos",
+                "Cynrychiolir gan",
+                "Cyfeirnod yr achos",
+                JUDGES_WELSH,
                 HEARING_TYPE_WELSH,
+                VENUE_WELSH,
                 ADDITIONAL_INFORMATION_WELSH
             );
 
         softly.assertThat(document.getElementsByTag("td"))
             .as(TABLE_CONTENT_MESSAGE)
-            .hasSize(14)
+            .hasSize(16)
             .extracting(Element::text)
             .containsExactly(
-                HEARING_VENUE,
-                "Judge A",
                 "10:30am",
-                "1234",
                 "Case A",
-                "Hearing type A",
-                HEARING_ADDITIONAL_INFORMATION,
+                "Rep A",
+                "1234",
+                "Judge A",
+                SUBSTANTIVE,
                 HEARING_VENUE,
-                "Judge B",
+                "This is additional information",
                 "11am",
-                "5678",
                 "Case B",
-                "Hearing type B",
-                HEARING_ADDITIONAL_INFORMATION
+                "Rep B",
+                "1235",
+                "Judge B",
+                SUBSTANTIVE,
+                HEARING_VENUE,
+                "This is another additional information"
+
             );
 
         softly.assertAll();

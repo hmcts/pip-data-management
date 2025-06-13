@@ -30,8 +30,8 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 @ActiveProfiles("integration-basic")
 @SpringBootTest
 class UtIacJudicialReviewsLondonDailyHearingListTest extends IntegrationBasicTestBase {
-    private static final String VALID_JSON =
-        "data/non-strategic/ut-iac-judicial-review-daily-hearing-list/utIacJudicialReviewDailyHearingList.json";
+    private static final String VALID_JSON = "data/non-strategic/ut-iac-judicial-review-london-daily-hearing-list/"
+        + "utIacJudicialReviewLondonDailyHearingList.json";
     private static final String INVALID_MESSAGE = "Invalid JSON list marked as valid";
 
     private static final String SOURCE_ARTEFACT_ID = "sourceArtefactId";
@@ -78,13 +78,13 @@ class UtIacJudicialReviewsLondonDailyHearingListTest extends IntegrationBasicTes
     }
 
     @Test
-    void testValidateWithErrorsWhenApplicantMissingInList() throws IOException {
+    void testValidateWithErrorsWhenCaseTitleMissingInList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(0)).remove("applicant");
+            ((ObjectNode) node.get(0)).remove("caseTitle");
 
             assertThatExceptionOfType(PayloadValidationException.class)
                 .as(INVALID_MESSAGE)
