@@ -7,7 +7,7 @@
     "type": "object",
     "required": [
       "hearingTime",
-      "applicant",
+      "caseTitle",
       "representative",
       "caseReferenceNumber",
       "judges",
@@ -25,12 +25,12 @@
         ],
         "pattern": "^\\d{1,2}([:.]\\d{2})?[ap]m$"
       },
-      "applicant": {
-        "title": "Name of applicant",
+      "caseTitle": {
+        "title": "Case Title",
         "type": "string",
         "default": "",
         "examples": [
-          "Forename Surname"
+          "Case A"
         ],
         "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
       },
