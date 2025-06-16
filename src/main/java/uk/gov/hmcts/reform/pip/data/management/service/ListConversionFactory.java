@@ -127,7 +127,7 @@ import static uk.gov.hmcts.reform.pip.model.publication.ListType.WPAFCC_WEEKLY_H
 
 
 @Component
-@SuppressWarnings({"PMD.ExcessiveImports", "PMD.UseConcurrentHashMap"})
+@SuppressWarnings({"PMD.ExcessiveImports"})
 public class ListConversionFactory {
 
     private static final Map<ListType, ConversionPair> LIST_MAP = Map.ofEntries(
