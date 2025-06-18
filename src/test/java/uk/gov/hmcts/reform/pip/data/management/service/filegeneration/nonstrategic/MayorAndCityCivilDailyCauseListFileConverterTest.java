@@ -129,8 +129,27 @@ class MayorAndCityCivilDailyCauseListFileConverterTest {
 
         softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).get(0).text())
             .as(IMPORTANT_INFORMATION_MESSAGE)
-            .contains("Due to judicial availability cases may be moved between County Court at Central London and "
-                          + "Mayors & City of London Court.");
+            .contains("Central London County Court and Mayors & City of London Court – Hearings for the "
+                          + "County Court at Central London will be heard at the Thomas More Building, "
+                          + "located in the Royal Courts of Justice. Cases are also listed at Mayors &"
+                          + " City of London Court, Guildhall Buildings, Basinghall Street, London, "
+                          + "EC2V 5AR. Due to judicial availability, cases may be moved between the "
+                          + "County Court at Central London and Mayors & City of London Court. "
+                          + "Please ensure you check the cause lists for Central London County "
+                          + "Court and Mayors and City of London Court the day prior to your hearing. "
+                          + "Lists aim to be published by 1700.");
+
+        softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).get(0).text())
+            .as(IMPORTANT_INFORMATION_MESSAGE)
+            .contains("Requests for the media and others, including legal bloggers, should be made to "
+                          + "County Court at Central London via "
+                          + "enquiries.centrallondon.countycourt@justice.gov.uk "
+                          + "or Mayors and City of London Court via "
+                          + "enquiries.centrallondon.countycourt@justice.gov.uk. "
+                          + "Arrangements will then be made for you to attend. When considering the use of "
+                          + "telephone and video technology the judiciary will have regard to the "
+                          + "principles of open justice. The Court may exclude observers where "
+                          + "necessary to secure the proper administration of Justice.");
 
         softly.assertThat(document.getElementsByTag("th"))
             .as(TABLE_HEADERS_MESSAGE)
@@ -210,8 +229,24 @@ class MayorAndCityCivilDailyCauseListFileConverterTest {
 
         softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).get(0).text())
             .as(IMPORTANT_INFORMATION_MESSAGE)
-            .contains("Oherwydd argaeledd barnwrol gellir symud achosion rhwng y Llys Sirol yng Nghanol Llundain "
-                          + "a Llys Maer a Dinas Llundain.");
+            .contains("Llys Sirol Canol Llundain a Llys Maer a Dinas Llundain – Bydd gwrandawiadau ar "
+                          + "gyfer Llys Sirol Canol Llundain yn cael eu gwrando yn Adeilad Thomas More, "
+                          + "sydd wedi’i leoli yn y Llysoedd Barn Brenhinol. Rhestrir achosion hefyd yn "
+                          + "Llys Maer a Dinas Llundain, Adeiladau’r Guildhall, "
+                          + "Stryd Basinghall, Llundain, EC2V 5AR. Oherwydd argaeledd barnwrol, gellir symud "
+                          + "achosion rhwng y Llys Sirol yng Nghanol Llundain a Llys Maer a Dinas Llundain. "
+                          + "Gwnewch yn siŵr eich bod yn gwirio rhestrau achosion Llys Sirol Canol Llundain a "
+                          + "Llys Maer a Dinas Llundain y diwrnod cyn eich gwrandawiad. "
+                          + "Anelir at gyhoeddi rhestrau erbyn 5pm.");
+
+        softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).get(0).text())
+            .as(IMPORTANT_INFORMATION_MESSAGE)
+            .contains("Dylid gwneud ceisiadau ar gyfer y cyfryngau ac eraill, gan gynnwys blogwyr cyfreithiol, "
+                          + "i Lys Sirol Canol Llundain drwy enquiries.centrallondon.countycourt@justice.gov.uk "
+                          + "neu Lys Maer a Dinas Llundain drwy enquiries.centrallondon.countycourt@justice.gov.uk. "
+                          + "Yna gwneir trefniadau i chi fynychu. Wrth ystyried y defnydd o dechnoleg ffôn a fideo, "
+                          + "bydd y farnwriaeth yn ystyried egwyddorion cyfiawnder agored. "
+                          + "Gall y llys eithrio arsylwyr lle bo angen i sicrhau gweinyddiaeth briodol cyfiawnder.");
 
         softly.assertThat(document.getElementsByTag("th"))
             .as(TABLE_HEADERS_MESSAGE)
