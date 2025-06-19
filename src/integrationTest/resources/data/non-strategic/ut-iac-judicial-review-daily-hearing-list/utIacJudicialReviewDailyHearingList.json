@@ -1,22 +1,20 @@
 [
-  {
-    "hearingTime": "10:30am",
-    "applicant": "Applicant A",
-    "representative": "Rep A",
-    "caseReferenceNumber": "1234",
-    "judges": "Judge A",
-    "hearingType": "Substantive",
-    "location": "This is a venue name",
-    "additionalInformation": "This is additional information"
-  },
-  {
-    "hearingTime": "11am",
-    "applicant": "Applicant B",
-    "representative": "Rep B",
-    "caseReferenceNumber": "1235",
-    "judges": "Judge B",
-    "hearingType": "Substantive",
-    "location": "This is a venue name",
-    "additionalInformation": "This is another additional information"
-  }
+    {
+        "venue": "This is a venue name",
+        "judges": "Judge A",
+        "hearingTime": "10:30am",
+        "caseReferenceNumber": "1234",
+        "caseTitle": "Case A",
+        "hearingType": "Hearing type A",
+        "additionalInformation": "This is additional information"
+    },
+    {
+        "venue": "This is a venue name",
+        "judges": "Judge B",
+        "hearingTime": "11am",
+        "caseReferenceNumber": "5678",
+        "caseTitle": "Case B",
+        "hearingType": "Hearing type B",
+        "additionalInformation": "This is additional information"
+    }
 ]
