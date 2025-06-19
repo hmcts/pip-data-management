@@ -16,7 +16,6 @@ import java.nio.file.Paths;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ActiveProfiles("test")
-@SuppressWarnings("PMD.TooManyMethods")
 class PartyRoleHelperTest {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private static final String PARTY = "party";

@@ -14,7 +14,6 @@ import java.nio.file.Paths;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SuppressWarnings("PMD.TooManyMethods")
 class JudiciaryHelperTest {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private static final String JUDICIARY_MESSAGE = "Judiciary does not match";

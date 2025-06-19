@@ -24,7 +24,6 @@ class EtDailyListFileConverterTest {
     private final EtDailyListFileConverter converter = new EtDailyListFileConverter();
 
     @Test
-    @SuppressWarnings("PMD.JUnitAssertionsShouldIncludeMessage")
     void testSuccessfulConversion() throws IOException {
         Map<String, String> metaData = Map.of("contentDate", CONTENT_DATE,
                                               "language", ENGLISH,

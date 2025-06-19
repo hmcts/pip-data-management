@@ -18,7 +18,6 @@ import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
  */
 @Component
 @Slf4j
-@SuppressWarnings({"PMD.PreserveStackTrace"})
 public class AzurePublicationBlobService {
     private final BlobContainerClient blobContainerClient;
 

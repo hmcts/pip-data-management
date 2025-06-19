@@ -20,7 +20,6 @@ class CareStandardsListFileConverterTest {
     private final CareStandardsListFileConverter converter = new CareStandardsListFileConverter();
 
     @Test
-    @SuppressWarnings("PMD.JUnitAssertionsShouldIncludeMessage")
     void testSuccessfulConversion() throws IOException {
         Map<String, String> metaData = Map.of("contentDate", "02 October 2022",
                                               "language", "ENGLISH",

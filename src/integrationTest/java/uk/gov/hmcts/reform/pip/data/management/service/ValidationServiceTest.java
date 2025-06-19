@@ -37,7 +37,6 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 @ActiveProfiles("integration-basic")
 @SpringBootTest
-@SuppressWarnings("PMD.TooManyMethods")
 class ValidationServiceTest extends IntegrationBasicTestBase {
 
     @Autowired

@@ -19,7 +19,6 @@ import static java.util.Map.Entry.comparingByKey;
  * Class for static utility methods assisting with json->html->pdf issues.
  */
 @Slf4j
-@SuppressWarnings("PMD.TooManyMethods")
 public final class GeneralHelper {
     private GeneralHelper() {
         throw new UnsupportedOperationException();

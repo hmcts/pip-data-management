@@ -25,7 +25,6 @@ import java.util.Set;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ActiveProfiles("test")
-@SuppressWarnings("PMD.JUnitAssertionsShouldIncludeMessage")
 class MagistratesStandardListHelperTest {
     private static final String COURT_ROOM1 = "Courtroom 1: Judge Test Name, Magistrate Test Name";
     private static final String COURT_ROOM2 = "Courtroom 2: Judge Test Name 2, Magistrate Test Name 2";

@@ -12,7 +12,6 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
-@SuppressWarnings("PMD.TooManyMethods")
 public final class DateHelper {
 
     private static final int ONE = 1;
