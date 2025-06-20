@@ -34,6 +34,7 @@ import uk.gov.hmcts.reform.pip.data.management.models.location.LocationArtefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.HeaderGroup;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.views.ArtefactView;
+import uk.gov.hmcts.reform.pip.data.management.service.AwsS3Service;
 import uk.gov.hmcts.reform.pip.data.management.service.ExcelConversionService;
 import uk.gov.hmcts.reform.pip.data.management.service.ValidationService;
 import uk.gov.hmcts.reform.pip.data.management.service.publication.ArtefactDeleteService;
@@ -53,6 +54,7 @@ import uk.gov.hmcts.reform.pip.model.publication.ListType;
 import uk.gov.hmcts.reform.pip.model.publication.Sensitivity;
 import uk.gov.hmcts.reform.pip.model.report.PublicationMiData;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -108,6 +110,8 @@ public class PublicationController {
 
     private final ExcelConversionService excelConversionService;
 
+    private final AwsS3Service awsS3Service;
+
     private static final String DEFAULT_ADMIN_VALUE = "false";
 
     /**
@@ -127,7 +131,8 @@ public class PublicationController {
                                  ArtefactService artefactService,
                                  ArtefactDeleteService artefactDeleteService,
                                  ArtefactTriggerService artefactTriggerService,
-                                 ExcelConversionService excelConversionService) {
+                                 ExcelConversionService excelConversionService,
+                                 AwsS3Service awsS3Service) {
         this.publicationService = publicationService;
         this.publicationCreationRunner = publicationCreationRunner;
         this.validationService = validationService;
@@ -136,6 +141,7 @@ public class PublicationController {
         this.artefactDeleteService = artefactDeleteService;
         this.artefactTriggerService = artefactTriggerService;
         this.excelConversionService = excelConversionService;
+        this.awsS3Service = awsS3Service;
     }
 
     /**
@@ -264,6 +270,15 @@ public class PublicationController {
 
         if (!NoMatchArtefactHelper.isNoMatchLocationId(createdItem.getLocationId())) {
             artefactTriggerService.checkAndTriggerPublicationSubscription(artefact);
+        }
+
+        int lastIndex = file.getOriginalFilename().lastIndexOf(".");
+        if (lastIndex != -1 && file.getOriginalFilename().substring(lastIndex + 1).startsWith("htm")) {
+            try {
+                awsS3Service.uploadFile(file.getOriginalFilename(), file.getInputStream());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
         return ResponseEntity.status(HttpStatus.CREATED).body(createdItem);

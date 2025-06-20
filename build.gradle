@@ -244,6 +244,7 @@ dependencies {
   implementation 'com.opencsv:opencsv:5.11'
   implementation 'org.springframework.boot:spring-boot-starter-webflux'
   implementation 'org.springframework.retry:spring-retry:2.0.11'
+  implementation group: 'software.amazon.awssdk', name: 's3', version: '2.31.65'
 
   // Include Flyway for database migrations
   implementation group: 'org.flywaydb', name: 'flyway-core', version: '11.8.1'
