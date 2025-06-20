@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.core.sync.RequestBody;
-import software.amazon.awssdk.services.s3.S3AsyncClient;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
@@ -18,12 +17,10 @@ public class AwsS3Service {
     private String bucketName;
 
     private final S3Client s3Client;
-    private final S3AsyncClient s3AsyncClient;
 
     @Autowired
-    public AwsS3Service(S3Client s3Client, S3AsyncClient s3AsyncClient) {
+    public AwsS3Service(S3Client s3Client) {
         this.s3Client = s3Client;
-        this.s3AsyncClient = s3AsyncClient;
     }
 
     public void uploadFile(String key, InputStream fileStream) throws IOException {

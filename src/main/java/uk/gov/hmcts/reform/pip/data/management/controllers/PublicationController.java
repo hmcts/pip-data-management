@@ -72,7 +72,7 @@ import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
 @RestController
 @Tag(name = "Data Management Publications API")
 @RequestMapping("/publication")
-@SuppressWarnings({"PMD.ExcessiveImports", "PMD.CouplingBetweenObjects"})
+@SuppressWarnings({"PMD.ExcessiveImports", "PMD.CouplingBetweenObjects", "PMD.AvoidPrintStackTrace"})
 public class PublicationController {
 
     private static final String USER_ID_HEADER = "x-user-id";
@@ -272,7 +272,7 @@ public class PublicationController {
             artefactTriggerService.checkAndTriggerPublicationSubscription(artefact);
         }
 
-        int lastIndex = file.getOriginalFilename().lastIndexOf(".");
+        int lastIndex = file.getOriginalFilename().lastIndexOf('.');
         if (lastIndex != -1 && file.getOriginalFilename().substring(lastIndex + 1).startsWith("htm")) {
             try {
                 awsS3Service.uploadFile(file.getOriginalFilename(), file.getInputStream());
