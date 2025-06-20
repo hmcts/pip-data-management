@@ -22,6 +22,8 @@ def setupTestSecrets() {
       secret('test-system-admin-id', 'SYSTEM_ADMIN_ID'),
       secret('app-pip-account-management-id', 'CLIENT_ID_FT'),
       secret('app-pip-account-management-pwd', 'CLIENT_SECRET_FT')
+      secret('xhibit-s3-access-key', 'XHIBIT_S3_ACCESS_KEY'),
+      secret('xhibit-s3-access-key-secret', 'XHIBIT_S3_SECRET_KEY')
     ]) {
     env.APP_URI = "${APP_URI}"
     env.SYSTEM_ADMIN_ID = "${SYSTEM_ADMIN_ID}"

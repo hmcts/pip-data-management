@@ -34,9 +34,9 @@ java:
         - name: app-insights-java-connection-string
           alias: APP_INSIGHTS_CONNECTION_STRING
         - name: xhibit-s3-access-key
-          alias: EXHIBIT_S3_ACCESS_KEY
+          alias: XHIBIT_S3_ACCESS_KEY
         - name: xhibit-s3-access-key-secret
-          alias: EXHIBIT_S3_SECRET_KEY
+          alias: XHIBIT_S3_SECRET_KEY
   environment:
     ENABLE_FLYWAY: true
     RUN_DB_MIGRATION_ON_STARTUP: false
