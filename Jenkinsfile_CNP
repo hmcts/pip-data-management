@@ -21,7 +21,7 @@ def setupTestSecrets() {
       secret('test-user-id', 'TEST_USER_ID'),
       secret('test-system-admin-id', 'SYSTEM_ADMIN_ID'),
       secret('app-pip-account-management-id', 'CLIENT_ID_FT'),
-      secret('app-pip-account-management-pwd', 'CLIENT_SECRET_FT')
+      secret('app-pip-account-management-pwd', 'CLIENT_SECRET_FT'),
       secret('xhibit-s3-access-key', 'XHIBIT_S3_ACCESS_KEY'),
       secret('xhibit-s3-access-key-secret', 'XHIBIT_S3_SECRET_KEY')
     ]) {
