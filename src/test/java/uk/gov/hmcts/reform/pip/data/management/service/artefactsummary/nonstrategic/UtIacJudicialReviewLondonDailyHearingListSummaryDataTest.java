@@ -4,8 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.IOUtils;
 import org.assertj.core.api.SoftAssertions;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.api.Test;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pip.data.management.service.ListConversionFactory;
 import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.ArtefactSummaryData;
@@ -20,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 @ActiveProfiles("test")
-class UtIacJudicialReviewDailyHearingListSummaryDataTest {
+class UtIacJudicialReviewLondonDailyHearingListSummaryDataTest {
 
     private static final String NON_STRATEGIC_RESOURCE_FOLDER = "src/test/resources/mocks/non-strategic/";
     private static final String SUMMARY_SECTIONS_MESSAGE = "Summary sections count does not match";
@@ -29,30 +28,22 @@ class UtIacJudicialReviewDailyHearingListSummaryDataTest {
     private static final String SUMMARY_FIELD_KEY_MESSAGE = "Summary field key does not match";
     private static final String SUMMARY_FIELD_VALUE_MESSAGE = "Summary field value does not match";
 
-    @ParameterizedTest
-    @EnumSource(
-        value = ListType.class,
-        names = {
-            "UT_IAC_JR_LEEDS_DAILY_HEARING_LIST",
-            "UT_IAC_JR_MANCHESTER_DAILY_HEARING_LIST",
-            "UT_IAC_JR_BIRMINGHAM_DAILY_HEARING_LIST",
-            "UT_IAC_JR_CARDIFF_DAILY_HEARING_LIST"
-        })
-    void testUtIacJudicialReviewDailyHearingListSummaryData(ListType listType) throws IOException {
+    @Test
+    void testUtIacJudicialReviewLondonDailyHearingListSummaryData() throws IOException {
         StringWriter writer = new StringWriter();
         IOUtils.copy(
             Files.newInputStream(Paths.get(
                 NON_STRATEGIC_RESOURCE_FOLDER,
-                "utIacJudicialReviewDailyHearingList.json"
+                "utIacJudicialReviewLondonDailyHearingList.json"
             )), writer,
             Charset.defaultCharset()
         );
 
         JsonNode payload = new ObjectMapper().readTree(writer.toString());
-        ArtefactSummaryData summaryData = new ListConversionFactory()
-            .getArtefactSummaryData(listType)
+        ArtefactSummaryData cstSummaryData = new ListConversionFactory()
+            .getArtefactSummaryData(ListType.UT_IAC_JR_LONDON_DAILY_HEARING_LIST)
             .get();
-        Map<String, List<Map<String, String>>> output = summaryData.get(payload);
+        Map<String, List<Map<String, String>>> output = cstSummaryData.get(payload);
 
         SoftAssertions softly = new SoftAssertions();
 

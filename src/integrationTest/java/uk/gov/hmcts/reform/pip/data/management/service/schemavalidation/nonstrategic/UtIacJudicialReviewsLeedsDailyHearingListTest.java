@@ -29,7 +29,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 @ActiveProfiles("integration-basic")
 @SpringBootTest
-class UtIacJudicialReviewsBirminghamDailyHearingListTest extends IntegrationBasicTestBase {
+class UtIacJudicialReviewsLeedsDailyHearingListTest extends IntegrationBasicTestBase {
     private static final String VALID_JSON =
         "data/non-strategic/ut-iac-judicial-review-daily-hearing-list/utIacJudicialReviewDailyHearingList.json";
     private static final String INVALID_MESSAGE = "Invalid JSON list marked as valid";
@@ -58,12 +58,12 @@ class UtIacJudicialReviewsBirminghamDailyHearingListTest extends IntegrationBasi
     void setup() {
         headerGroup = new HeaderGroup(PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE, SENSITIVITY, LANGUAGE,
                                       DISPLAY_FROM, DISPLAY_TO,
-                                      ListType.UT_IAC_JR_BIRMINGHAM_DAILY_HEARING_LIST, COURT_ID,
+                                      ListType.UT_IAC_JR_LEEDS_DAILY_HEARING_LIST, COURT_ID,
                                       CONTENT_DATE);
     }
 
     @Test
-    void testValidateWithErrorsWhenHearingTimeMissingInList() throws IOException {
+    void testValidateWithErrorsWhenVenueMissingInList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
@@ -78,7 +78,7 @@ class UtIacJudicialReviewsBirminghamDailyHearingListTest extends IntegrationBasi
     }
 
     @Test
-    void testValidateWithErrorsWhenApplicantMissingInList() throws IOException {
+    void testValidateWithErrorsWhenJudgesMissingInList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
@@ -93,7 +93,7 @@ class UtIacJudicialReviewsBirminghamDailyHearingListTest extends IntegrationBasi
     }
 
     @Test
-    void testValidateWithErrorsWhenRepresentativeMissingInList() throws IOException {
+    void testValidateWithErrorsWhenHearingTimeMissingInList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
@@ -123,7 +123,7 @@ class UtIacJudicialReviewsBirminghamDailyHearingListTest extends IntegrationBasi
     }
 
     @Test
-    void testValidateWithErrorsWhenJudgesMissingInList() throws IOException {
+    void testValidateWithErrorsWhenCaseTitleMissingInList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
@@ -136,6 +136,8 @@ class UtIacJudicialReviewsBirminghamDailyHearingListTest extends IntegrationBasi
                 .isThrownBy(() -> validationService.validateBody(node.toString(), headerGroup, false));
         }
     }
+
+
 
     @Test
     void testValidateWithErrorsWhenHearingTypeMissingInList() throws IOException {
@@ -151,6 +153,7 @@ class UtIacJudicialReviewsBirminghamDailyHearingListTest extends IntegrationBasi
                 .isThrownBy(() -> validationService.validateBody(node.toString(), headerGroup, false));
         }
     }
+
 
     @Test
     void testValidateWithErrorsWhenAdditionalInformationMissingInList() throws IOException {
