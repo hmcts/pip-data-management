@@ -265,7 +265,7 @@ class ValidationServiceTest extends IntegrationBasicTestBase {
     }
 
     @ParameterizedTest
-    @EnumSource(value = ListType.class, names = {"SJP_PRESS_REGISTER", "CIC_DAILY_HEARING_LIST"})
+    @EnumSource(value = ListType.class, names = {"SJP_PRESS_REGISTER", "CIC_DAILY_HEARING_LIST", "PCOL_DAILY_CAUSE_LIST"})
     void testValidateMasterSchemaWithoutErrors(ListType listType) throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream("data/jsonPayload.json")) {
