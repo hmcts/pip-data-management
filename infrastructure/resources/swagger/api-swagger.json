@@ -137,8 +137,6 @@
                 "SSCS_DAILY_LIST_ADDITIONAL_HEARINGS",
                 "IAC_DAILY_LIST",
                 "IAC_DAILY_LIST_ADDITIONAL_CASES",
-                "CARE_STANDARDS_LIST",
-                "PRIMARY_HEALTH_LIST",
                 "CIC_DAILY_HEARING_LIST"
               ]
             }
@@ -331,9 +329,7 @@
               "SSCS_DAILY_LIST",
               "ET_FORTNIGHTLY_PRESS_LIST",
               "ET_DAILY_LIST",
-              "IAC_DAILY_LIST",
-              "CARE_STANDARDS_LIST",
-              "PRIMARY_HEALTH_LIST"
+              "IAC_DAILY_LIST"
             ]
           },
           "payload": {

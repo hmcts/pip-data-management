@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static uk.gov.hmcts.reform.pip.model.publication.ListType.CARE_STANDARDS_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.CIVIL_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.CST_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.SSCS_LONDON_DAILY_HEARING_LIST;
 
@@ -37,7 +37,7 @@ class NonStrategicListFormatterTest {
 
     @Test
     void shouldNotGetListTypeFormatterIfIfListTypeDoesNotExist() {
-        assertThat(NonStrategicListFormatter.getListTypeFormatter(CARE_STANDARDS_LIST))
+        assertThat(NonStrategicListFormatter.getListTypeFormatter(CIVIL_DAILY_CAUSE_LIST))
             .as(RESULT_EMPTY_MESSAGE)
             .isEmpty();
     }
@@ -87,7 +87,7 @@ class NonStrategicListFormatterTest {
             Map.of(DATE_FIELD, DATE_VALUE2)
         );
         List<Map<String, String>> result = NonStrategicListFormatter.formatAllFields(
-            data, CARE_STANDARDS_LIST
+            data, CIVIL_DAILY_CAUSE_LIST
         );
 
         assertThat(result.get(0).get(DATE_FIELD))
@@ -105,7 +105,7 @@ class NonStrategicListFormatterTest {
             Map.of(OTHER_FIELD, DATE_VALUE1),
             Map.of(OTHER_FIELD, DATE_VALUE2)
         );
-        List<Map<String, String>> result = NonStrategicListFormatter.formatAllFields(data, CARE_STANDARDS_LIST);
+        List<Map<String, String>> result = NonStrategicListFormatter.formatAllFields(data, CST_WEEKLY_HEARING_LIST);
 
         assertThat(result.get(0).get(OTHER_FIELD))
             .as(RESULT_MATCHED_MESSAGE)
