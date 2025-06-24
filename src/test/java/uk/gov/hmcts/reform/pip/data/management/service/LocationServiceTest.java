@@ -13,6 +13,7 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 import org.testcontainers.shaded.org.apache.commons.io.IOUtils;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
+import uk.gov.hmcts.reform.pip.data.management.database.LocationMetadataRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.LocationRepository;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ContainsForbiddenValuesException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CreateLocationConflictException;
@@ -58,6 +59,9 @@ class LocationServiceTest {
 
     @Mock
     private LocationRepository locationRepository;
+
+    @Mock
+    private LocationMetadataRepository locationMetadataRepository;
 
     @Mock
     private ArtefactRepository artefactRepository;
@@ -608,6 +612,7 @@ class LocationServiceTest {
             .isEqualTo("2 location(s) deleted with name starting with " + LOCATION_NAME_PREFIX);
 
         verify(locationRepository).deleteByLocationIdIn(List.of(id1, id2));
+        verify(locationMetadataRepository).deleteByLocationIdIn(List.of(id1, id2));
     }
 
     @Test

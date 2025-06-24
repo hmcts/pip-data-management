@@ -15,6 +15,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
+import uk.gov.hmcts.reform.pip.data.management.database.LocationMetadataRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.LocationRepository;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ContainsForbiddenValuesException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CreateLocationConflictException;
@@ -67,16 +68,20 @@ public class LocationService {
 
     private final ValidationService validationService;
 
+    private final LocationMetadataRepository locationMetadataRepository;
+
     public LocationService(LocationRepository locationRepository,
                            ArtefactRepository artefactRepository,
                            AccountManagementService accountManagementService,
                            PublicationServicesService publicationService,
-                           ValidationService validationService) {
+                           ValidationService validationService,
+                           LocationMetadataRepository locationMetadataRepository) {
         this.locationRepository = locationRepository;
         this.artefactRepository = artefactRepository;
         this.accountManagementService = accountManagementService;
         this.publicationService = publicationService;
         this.validationService = validationService;
+        this.locationMetadataRepository = locationMetadataRepository;
     }
 
     /**
@@ -275,6 +280,7 @@ public class LocationService {
         List<Integer> locationIds = getAllLocationsWithNamePrefix(prefix);
 
         if (!locationIds.isEmpty()) {
+            locationMetadataRepository.deleteByLocationIdIn(locationIds);
             locationRepository.deleteByLocationIdIn(locationIds);
         }
         return String.format("%s location(s) deleted with name starting with %s",

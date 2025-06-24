@@ -356,7 +356,7 @@ class ValidationServiceTest extends IntegrationBasicTestBase {
                          "data/non-strategic/grc-weekly-hearing-list/grcWeeklyHearingList.json"),
             Arguments.of(ListType.WPAFCC_WEEKLY_HEARING_LIST,
                          "data/non-strategic/wpafcc-weekly-hearing-list/wpafccWeeklyHearingList.json"),
-            Arguments.of(ListType.UT_IAC_JR_LONDON_DAILY_HEARING_LIST,
+            Arguments.of(ListType.UT_IAC_JR_LEEDS_DAILY_HEARING_LIST,
                          UT_IAC_LIST_JSON),
             Arguments.of(ListType.UT_IAC_JR_MANCHESTER_DAILY_HEARING_LIST,
                          UT_IAC_LIST_JSON),
@@ -364,6 +364,9 @@ class ValidationServiceTest extends IntegrationBasicTestBase {
                          UT_IAC_LIST_JSON),
             Arguments.of(ListType.UT_IAC_JR_CARDIFF_DAILY_HEARING_LIST,
                          UT_IAC_LIST_JSON),
+            Arguments.of(ListType.UT_IAC_JR_LONDON_DAILY_HEARING_LIST,
+                          "data/non-strategic/ut-iac-judicial-review-london-daily-hearing-list/"
+                              + "utIacJudicialReviewLondonDailyHearingList.json"),
             Arguments.of(ListType.UT_IAC_STATUTORY_APPEALS_DAILY_HEARING_LIST,
                          "data/non-strategic/ut-iac-statutory-appeals-daily-hearing-list/"
                              + "utIacStatutoryAppealsDailyHearingList.json"),
