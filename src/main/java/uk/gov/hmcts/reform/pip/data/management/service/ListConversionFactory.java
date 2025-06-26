@@ -89,7 +89,6 @@ import static uk.gov.hmcts.reform.pip.model.publication.ListType.PAAC_WEEKLY_HEA
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.PATENTS_COURT_CHD_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.PENSIONS_LIST_CHD_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.PHT_WEEKLY_HEARING_LIST;
-import static uk.gov.hmcts.reform.pip.model.publication.ListType.PLANNING_COURT_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.POAC_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.PRIMARY_HEALTH_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.PROPERTY_TRUSTS_PROBATE_LIST_CHD_DAILY_CAUSE_LIST;
@@ -292,10 +291,6 @@ public class ListConversionFactory {
         Map.entry(LONDON_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST, new ConversionPair(
             new NonStrategicListFileConverter(),
             new NonStrategicListSummaryData(LONDON_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST)
-        )),
-        Map.entry(PLANNING_COURT_DAILY_CAUSE_LIST, new ConversionPair(
-            new NonStrategicListFileConverter(),
-            new NonStrategicListSummaryData(PLANNING_COURT_DAILY_CAUSE_LIST)
         )),
         Map.entry(COUNTY_COURT_LONDON_CIVIL_DAILY_CAUSE_LIST, new ConversionPair(
             new NonStrategicListFileConverter(),
