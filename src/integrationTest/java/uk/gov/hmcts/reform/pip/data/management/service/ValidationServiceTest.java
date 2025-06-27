@@ -505,7 +505,9 @@ class ValidationServiceTest extends IntegrationBasicTestBase {
             Arguments.of(ListType.MANCHESTER_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
                          ADMINISTRATIVE_COURT_DAILY_CAUSE_LISTS_JSON_FILE),
             Arguments.of(ListType.LEEDS_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
-                         ADMINISTRATIVE_COURT_DAILY_CAUSE_LISTS_JSON_FILE)
+                         ADMINISTRATIVE_COURT_DAILY_CAUSE_LISTS_JSON_FILE),
+            Arguments.of(ListType.CIC_WEEKLY_HEARING_LIST,
+                         "data/non-strategic/cic-weekly-hearing-list/cicWeeklyHearingList.json")
         );
     }
 
