@@ -51,7 +51,7 @@ import static uk.gov.hmcts.reform.pip.model.publication.FileType.PDF;
 
 @ActiveProfiles(profiles = "test")
 @ExtendWith(MockitoExtension.class)
-@SuppressWarnings({"PMD.TooManyMethods", "PMD.ExcessiveImports"})
+@SuppressWarnings({"PMD.ExcessiveImports"})
 class PublicationManagementServiceTest {
     @Mock
     private ArtefactService artefactService;
