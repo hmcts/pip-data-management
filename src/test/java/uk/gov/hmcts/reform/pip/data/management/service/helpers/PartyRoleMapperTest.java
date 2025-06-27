@@ -6,7 +6,6 @@ import org.springframework.test.context.ActiveProfiles;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ActiveProfiles("test")
-@SuppressWarnings("PMD.TooManyMethods")
 class PartyRoleMapperTest {
 
     private static final String ERR_MSG = "PartyRole Mapper method doesn't seem to be working correctly";
