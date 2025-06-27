@@ -57,7 +57,7 @@ class GrcWeeklyHearingListTest extends IntegrationBasicTestBase {
     @BeforeEach
     void setup() {
         headerGroup = new HeaderGroup(PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE, SENSITIVITY, LANGUAGE,
-                                      DISPLAY_FROM, DISPLAY_TO, ListType.CST_WEEKLY_HEARING_LIST, COURT_ID,
+                                      DISPLAY_FROM, DISPLAY_TO, ListType.GRC_WEEKLY_HEARING_LIST, COURT_ID,
                                       CONTENT_DATE);
     }
 

@@ -57,8 +57,8 @@ class UtIacStatutoryAppealsDailyHearingListTest extends IntegrationBasicTestBase
     @BeforeEach
     void setup() {
         headerGroup = new HeaderGroup(PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE, SENSITIVITY, LANGUAGE,
-                                      DISPLAY_FROM, DISPLAY_TO, ListType.CST_WEEKLY_HEARING_LIST, COURT_ID,
-                                      CONTENT_DATE);
+                                      DISPLAY_FROM, DISPLAY_TO, ListType.UT_IAC_STATUTORY_APPEALS_DAILY_HEARING_LIST,
+                                      COURT_ID, CONTENT_DATE);
     }
 
     @Test
