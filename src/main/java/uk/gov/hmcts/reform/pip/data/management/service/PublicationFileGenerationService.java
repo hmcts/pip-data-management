@@ -32,7 +32,6 @@ import java.util.UUID;
 
 @Slf4j
 @Service
-@SuppressWarnings("PMD.PreserveStackTrace")
 public class PublicationFileGenerationService {
     private static final int MAX_FILE_SIZE = 2_000_000;
     private static final ObjectMapper MAPPER = new ObjectMapper();

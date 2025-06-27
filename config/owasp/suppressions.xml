@@ -15,15 +15,7 @@
     <cve>CVE-2024-35255</cve>
   </suppress>
   <suppress>
-    <notes>This exists in Apache Tomcat which is included from springboot dependency. Should be removed once we updated springboot to 3.4.5</notes>
-    <cve>CVE-2025-31650</cve>
-  </suppress>
-  <suppress>
-    <notes>This exists in Apache Tomcat which is included from springboot dependency. Should be removed once we updated springboot to 3.4.5</notes>
-    <cve>CVE-2025-31651</cve>
-  </suppress>
-  <suppress>
-    <notes>Temporarily suppressed, to be fixed as part of monthly dependencies</notes>
-    <cve>CVE-2025-48734</cve>
+    <notes>Brought in by Spring. To be fixed on upgrade to springboot 3.4.7</notes>
+    <cve>CVE-2025-48988</cve>
   </suppress>
 </suppressions>

@@ -23,7 +23,6 @@ import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ActiveProfiles("test")
-@SuppressWarnings("PMD.TooManyMethods")
 class LocationHelperTest {
     private static final String COURT_LISTS = "courtLists";
     private static final String COURT_HOUSE = "courtHouse";
@@ -47,7 +46,6 @@ class LocationHelperTest {
     }
 
     @Test
-    @SuppressWarnings("PMD.JUnitAssertionsShouldIncludeMessage")
     void testFormatVenueAddress() {
         List<String> venueAddress = LocationHelper.formatVenueAddress(inputJson);
 
