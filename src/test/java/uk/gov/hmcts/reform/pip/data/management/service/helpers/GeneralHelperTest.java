@@ -18,7 +18,6 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ActiveProfiles("test")
-@SuppressWarnings("PMD.TooManyMethods")
 class GeneralHelperTest {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private static final String ERR_MSG = "Helper method doesn't seem to be working correctly";
