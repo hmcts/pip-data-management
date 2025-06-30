@@ -18,7 +18,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-@SuppressWarnings("PMD.TooManyMethods")
 public final class CrownFirmListHelper {
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
