@@ -85,7 +85,6 @@ class SjpPublicListFileConverterTest {
         }
     }
 
-    @SuppressWarnings("PMD.JUnitAssertionsShouldIncludeMessage")
     private void assertTitleAndDescription(Document doc, ListType listType) {
         String expectedTitle = listType.equals(ListType.SJP_PUBLIC_LIST)
             ? "Single Justice Procedure Public List (Full list)"
