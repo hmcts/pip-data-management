@@ -139,7 +139,8 @@
                 "IAC_DAILY_LIST_ADDITIONAL_CASES",
                 "CARE_STANDARDS_LIST",
                 "PRIMARY_HEALTH_LIST",
-                "CIC_DAILY_HEARING_LIST"
+                "CIC_DAILY_HEARING_LIST",
+                "PCOL_DAILY_CAUSE_LIST"
               ]
             }
           },
