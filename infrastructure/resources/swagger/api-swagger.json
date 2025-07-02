@@ -137,7 +137,8 @@
                 "SSCS_DAILY_LIST_ADDITIONAL_HEARINGS",
                 "IAC_DAILY_LIST",
                 "IAC_DAILY_LIST_ADDITIONAL_CASES",
-                "CIC_DAILY_HEARING_LIST"
+                "CIC_DAILY_HEARING_LIST",
+                "PCOL_DAILY_CAUSE_LIST"
               ]
             }
           },
