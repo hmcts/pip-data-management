@@ -134,9 +134,9 @@ class SendDailyHearingListTest {
                 "Time",
                 "Case reference number",
                 "Respondent",
-                "Hearing Type",
+                "Hearing type",
                 "Venue",
-                "Time Estimate"
+                "Time estimate"
 
             );
 
