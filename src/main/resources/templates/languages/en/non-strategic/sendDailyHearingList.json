@@ -1,0 +1,16 @@
+{
+  "listName": "First-tier Tribunal (Special Educational Needs and Disability) Daily Hearing List",
+  "importantInformationLine1": "Special Educational Needs and Disability (SEND) Tribunal hearings are held in private and unless a request from the parties for the hearing to be heard in public has been approved, you will not be able to observe.",
+  "importantInformationLine2": "Private hearings do not allow anyone to observe remotely or in person. This includes members of the press.",
+  "importantInformationLine3": "Open justice is a fundamental principle of our justice system. To attend a public hearing using a remote link you must apply for permission to observe.",
+  "importantInformationLine4": "Requests to observe a public hearing that is taking place should be made in good time direct to: send@justice.gov.uk. You may be asked to provide further details.",
+  "importantInformationLine5": "The judge hearing the case will decide if it is appropriate for you to observe remotely. They will have regard to the interests of justice, the technical capacity for remote observation and what is necessary to secure the proper administration of justice.",
+  "tableHeaders": [
+    "Time",
+    "Case reference number",
+    "Respondent",
+    "Hearing Type",
+    "Venue",
+    "Time Estimate"
+  ]
+}

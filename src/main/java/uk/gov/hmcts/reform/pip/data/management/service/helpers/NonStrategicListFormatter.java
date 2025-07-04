@@ -52,6 +52,7 @@ import static uk.gov.hmcts.reform.pip.model.publication.ListType.RPT_LONDON_WEEK
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.RPT_MIDLANDS_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.RPT_NORTHERN_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.RPT_SOUTHERN_WEEKLY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.SEND_DAILY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.SENIOR_COURTS_COSTS_OFFICE_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.SIAC_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.SSCS_LONDON_DAILY_HEARING_LIST;
@@ -218,6 +219,8 @@ public final class NonStrategicListFormatter {
         Map.entry(MANCHESTER_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
                   Map.of(TIME, NonStrategicFieldFormattingHelper::formatTimeField)),
         Map.entry(LEEDS_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
+                  Map.of(TIME, NonStrategicFieldFormattingHelper::formatTimeField)),
+        Map.entry(SEND_DAILY_HEARING_LIST,
                   Map.of(TIME, NonStrategicFieldFormattingHelper::formatTimeField))
     );
 
