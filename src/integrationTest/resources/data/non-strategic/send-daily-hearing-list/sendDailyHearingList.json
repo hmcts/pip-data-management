@@ -1,0 +1,18 @@
+[
+    {
+      "time": "10am",
+      "caseReferenceNumber": "1234",
+      "respondent": "Respondent A",
+      "hearingType": "Hearing Type A",
+      "venue": "Venue A",
+      "timeEstimate": "2hrs"
+    },
+    {
+      "time": "2pm",
+      "caseReferenceNumber": "12345",
+      "respondent": "Respondent B",
+      "hearingType": "Hearing Type B",
+      "venue": "Venue B",
+      "timeEstimate": "4hrs"
+    }
+  ]
