@@ -126,7 +126,7 @@ class SeniorCourtsCostsOfficeDailyCauseListFileConverterTest {
 
         softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).get(0).text())
             .as(IMPORTANT_INFORMATION_MESSAGE)
-            .contains("Hearings in the Senior Court Costs Office will be held in person unless the notice of hearing "
+            .contains("Hearings in the Senior Courts Costs Office will be held in person unless the notice of hearing "
                           + "has directed otherwise.");
 
         softly.assertThat(document.getElementsByClass(LINK_CLASS).get(0)
