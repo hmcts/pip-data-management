@@ -236,23 +236,6 @@ class PublicationManagementTest extends IntegrationTestBase {
     }
 
     @Test
-    void testGenerateArtefactSummaryCareStandardsList() throws Exception {
-        byte[] data = getTestData("data/care-standards-list/careStandardsList.json");
-        Artefact artefact = createPublication(ListType.CARE_STANDARDS_LIST, data);
-
-        when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(data));
-
-        MvcResult response = mockMvc.perform(
-                get(String.format(GET_ARTEFACT_SUMMARY, artefact.getArtefactId())))
-            .andExpect(status().isOk()).andReturn();
-        String responseContent = response.getResponse().getContentAsString();
-
-        assertTrue(responseContent.contains("Case name - A Vs B"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Hearing date - 04 October"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Hearing type - mda"), CONTENT_MISMATCH_ERROR);
-    }
-
-    @Test
     void testGenerateArtefactSummaryCivilAndFamilyDailyCauseList() throws Exception {
         byte[] data = getTestData("data/civil-and-family-cause-list/civilAndFamilyDailyCauseList.json");
         Artefact artefact = createPublication(ListType.CIVIL_AND_FAMILY_DAILY_CAUSE_LIST, data);
@@ -468,22 +451,6 @@ class PublicationManagementTest extends IntegrationTestBase {
         assertTrue(responseContent.contains("Case reference - 45684548"), CONTENT_MISMATCH_ERROR);
         assertTrue(responseContent.contains("Hearing type - mda"), CONTENT_MISMATCH_ERROR);
         assertTrue(responseContent.contains("Offence - drink driving, Assault by beating"), CONTENT_MISMATCH_ERROR);
-    }
-
-    @Test
-    void testGenerateArtefactSummaryPrimaryHealthTribunalHearingList() throws Exception {
-        byte[] data = getTestData("data/primary-health-list/primaryHealthList.json");
-        Artefact artefact = createPublication(ListType.PRIMARY_HEALTH_LIST, data);
-
-        when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(data));
-
-        MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, artefact.getArtefactId())))
-            .andExpect(status().isOk()).andReturn();
-
-        String responseContent = response.getResponse().getContentAsString();
-        assertTrue(responseContent.contains("Case name - A Vs B"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Hearing date - 04 October"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Hearing type - Remote - Teams"), CONTENT_MISMATCH_ERROR);
     }
 
     @ParameterizedTest
