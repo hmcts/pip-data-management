@@ -557,10 +557,8 @@ class ValidationServiceTest extends IntegrationBasicTestBase {
             assertThrows(PayloadValidationException.class, () ->
                 validationService.validateBody(text, headerGroup, true));
 
-            verify(telemetryClient, times(1)).trackTrace(eq(
-                "Payload validation failed, 5 errors present"),
-                                                         eq(SeverityLevel.Error), argThat((argument) ->
-                                                             argument.get("ERROR")
+            verify(telemetryClient, times(1)).trackTrace(eq("Payload validation failed, 5 errors present"),
+                       eq(SeverityLevel.Error), argThat((argument) -> argument.get("ERROR")
                                                                  .contains("sittingStart: "
                                                                                + "does not match the regex pattern")));
         }
