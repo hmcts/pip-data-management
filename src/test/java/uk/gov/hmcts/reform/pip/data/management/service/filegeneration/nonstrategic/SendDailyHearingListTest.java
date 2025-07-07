@@ -235,7 +235,7 @@ class SendDailyHearingListTest {
             .extracting(Element::text)
             .containsExactly(
                 "Amser",
-                "Cyfeirnod yr Achos",
+                "Cyfeirnod yr achos",
                 "Atebydd",
                 "Math o wrandawiad",
                 "Lleoliad",
