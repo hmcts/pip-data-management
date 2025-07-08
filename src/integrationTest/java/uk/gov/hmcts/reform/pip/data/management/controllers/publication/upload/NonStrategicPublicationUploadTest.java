@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.pip.data.management.controllers.publication;
+package uk.gov.hmcts.reform.pip.data.management.controllers.publication.upload;
 
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.junit.jupiter.api.BeforeAll;
@@ -43,7 +43,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
 @WithMockUser(username = "admin", authorities = {"APPROLE_api.request.admin"})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class NonStrategicPublicationTest extends PublicationIntegrationTestBase {
+class NonStrategicPublicationUploadTest extends PublicationIntegrationTestBase {
     private static final String NON_STRATEGIC_PUBLICATION_URL = "/publication/non-strategic";
     private static final String PROVENANCE = "MANUAL_UPLOAD";
     private static MockMultipartFile file;
@@ -74,8 +74,8 @@ class NonStrategicPublicationTest extends PublicationIntegrationTestBase {
         OBJECT_MAPPER.findAndRegisterModules();
     }
 
-    private static MockMultipartFile createExcelMultipartFile(String fileName) throws IOException {
-        try (InputStream inputStream = PublicationTest.class.getClassLoader()
+    private MockMultipartFile createExcelMultipartFile(String fileName) throws IOException {
+        try (InputStream inputStream = this.getClass().getClassLoader()
             .getResourceAsStream(fileName)) {
             return new MockMultipartFile(
                 "file", "TestFileName.xlsx", EXCEL_FILE_TYPE,
