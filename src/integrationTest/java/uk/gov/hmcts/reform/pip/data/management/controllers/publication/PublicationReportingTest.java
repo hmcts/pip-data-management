@@ -44,6 +44,7 @@ class PublicationReportingTest extends PublicationIntegrationTestBase {
     private static final String REPORT_NO_MATCH_ARTEFACTS_URL = PUBLICATION_URL + "/no-match/reporting";
     private static final String MI_REPORTING_DATA_URL = PUBLICATION_URL + "/mi-data";
     private static final String PROVENANCE = "MANUAL_UPLOAD";
+    private static final String ADMIN = "admin";
     private static final String VALIDATION_MI_REPORT = "Should successfully retrieve MI data";
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
@@ -58,7 +59,7 @@ class PublicationReportingTest extends PublicationIntegrationTestBase {
                 = new MockMultipartFile("locationList", csvInputStream);
 
             mockMvc.perform(MockMvcRequestBuilders.multipart("/locations/upload").file(csvFile)
-                                .with(user("admin")
+                                .with(user(ADMIN)
                                           .authorities(new SimpleGrantedAuthority("APPROLE_api.request.admin"))))
                 .andExpect(status().isOk()).andReturn();
         }
@@ -106,7 +107,6 @@ class PublicationReportingTest extends PublicationIntegrationTestBase {
                                                     && data.getLocationId().equals(artefact.getLocationId())
                                                     && data.getLocationName() == null),
                    VALIDATION_MI_REPORT);
-
     }
 
     @Test
@@ -142,7 +142,7 @@ class PublicationReportingTest extends PublicationIntegrationTestBase {
     }
 
     @Test
-    @WithMockUser(username = "admin", authorities = { "APPROLE_api.request.unknown" })
+    @WithMockUser(username = ADMIN, authorities = { "APPROLE_api.request.unknown" })
     void testUnauthorizedGetMiData() throws Exception {
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
             .get(MI_REPORTING_DATA_URL);
@@ -153,7 +153,7 @@ class PublicationReportingTest extends PublicationIntegrationTestBase {
     }
 
     @Test
-    @WithMockUser(username = "admin", authorities = { "APPROLE_api.request.unknown" })
+    @WithMockUser(username = ADMIN, authorities = { "APPROLE_api.request.unknown" })
     void testUnauthorizedReportNoMatchArtefacts() throws Exception {
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders.post(REPORT_NO_MATCH_ARTEFACTS_URL);
 

@@ -1588,15 +1588,13 @@ class PublicationTest extends PublicationIntegrationTestBase {
             .header(USER_ID_HEADER, USER_ID)
             .header(ADMIN_HEADER, true);
         mockMvc.perform(adminRequest).andExpect(status().isNotFound());
-
     }
 
     @Test
     void testArchiveExpiredArtefactsSuccess() throws Exception {
         Artefact artefactToExpire = createDailyList(Sensitivity.PUBLIC, DISPLAY_FROM.minusMonths(9),
                                                     DISPLAY_FROM.minusMonths(6),
-                                                    DISPLAY_FROM.minusMonths(10), PROVENANCE, COURT_ID
-        );
+                                                    DISPLAY_FROM.minusMonths(10), PROVENANCE, COURT_ID);
 
         MockHttpServletRequestBuilder adminGetRequest = MockMvcRequestBuilders
             .get(PUBLICATION_URL + "/" + artefactToExpire.getArtefactId())

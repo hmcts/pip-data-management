@@ -44,7 +44,6 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
     private static final String SEARCH_COURT_URL = PUBLICATION_URL + "/locationId";
     private static final String SEARCH_URL = PUBLICATION_URL + "/search";
     private static final String USER_ID = UUID.randomUUID().toString();
-    private static final LocalDateTime DISPLAY_TO = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
     private static final LocalDateTime DISPLAY_FROM = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
     private static final String COURT_ID = "123";
     private static final LocalDateTime CONTENT_DATE = LocalDateTime.now().toLocalDate().atStartOfDay()
@@ -55,6 +54,7 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
     private static final String FALSE = "false";
     private static final String ADMIN_HEADER = "x-admin";
     private static final String VERIFICATION_HEADER = "verification";
+    private static final String ADMIN = "admin";
 
     private static final String VALIDATION_DISPLAY_FROM = "The expected Display From has not been returned";
     private static final String SHOULD_RETURN_EXPECTED_ARTEFACT = "Should return expected artefact";
@@ -142,7 +142,6 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
             MockMvcRequestBuilders.get(SEARCH_URL + VALID_CASE_ID_SEARCH);
 
         mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isNotFound()).andReturn();
-
     }
 
     @Test
@@ -268,7 +267,7 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
     }
 
     @Test
-    @WithMockUser(username = "admin", authorities = { "APPROLE_api.request.unknown" })
+    @WithMockUser(username = ADMIN, authorities = { "APPROLE_api.request.unknown" })
     void testUnauthorizedGetBySearchValue() throws Exception {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
             .get(SEARCH_URL + "/CASE_URN/1234")
@@ -280,7 +279,7 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
     }
 
     @Test
-    @WithMockUser(username = "admin", authorities = { "APPROLE_api.request.unknown" })
+    @WithMockUser(username = ADMIN, authorities = { "APPROLE_api.request.unknown" })
     void testUnauthorizedGetByCourtId() throws Exception {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
             .get(SEARCH_COURT_URL + "1")

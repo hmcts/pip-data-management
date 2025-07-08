@@ -28,16 +28,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("integration-basic")
 @WithMockUser(username = "admin", authorities = { "APPROLE_api.request.unknown" })
 class PublicationUnauthorizedTest extends IntegrationBasicTestBase {
-
-    @Autowired
-    private MockMvc mockMvc;
-
     private static final String PUBLICATION_URL = "/publication";
     private static final String NON_STRATEGIC_PUBLICATION_URL = PUBLICATION_URL + "/non-strategic";
     private static final String ARCHIVE_EXPIRED_ARTEFACTS_URL = PUBLICATION_URL + "/expired";
     private static final String ISSUER_HEADER = "x-issuer-id";
     private static final String VERIFICATION_HEADER = "verification";
     private static final String VERIFICATION_TRUE = "true";
+
+    @Autowired
+    private MockMvc mockMvc;
 
     @Test
     void testUnathorizedJsonUpload() throws Exception {

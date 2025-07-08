@@ -59,6 +59,7 @@ class PublicationLocationTest extends PublicationIntegrationTestBase {
     private static final LocalDateTime DISPLAY_TO = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
     private static final LocalDateTime DISPLAY_FROM = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
     private static final LocalDateTime CONTENT_DATE = LocalDateTime.now().toLocalDate().atStartOfDay();
+    private static final String ADMIN = "admin";
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
@@ -72,7 +73,7 @@ class PublicationLocationTest extends PublicationIntegrationTestBase {
                 = new MockMultipartFile("locationList", csvInputStream);
 
             mockMvc.perform(MockMvcRequestBuilders.multipart("/locations/upload").file(csvFile)
-                                .with(user("admin")
+                                .with(user(ADMIN)
                                           .authorities(new SimpleGrantedAuthority("APPROLE_api.request.admin"))))
                 .andExpect(status().isOk()).andReturn();
         }
@@ -200,7 +201,7 @@ class PublicationLocationTest extends PublicationIntegrationTestBase {
     }
 
     @Test
-    @WithMockUser(username = "admin", authorities = { "APPROLE_api.request.unknown" })
+    @WithMockUser(username = ADMIN, authorities = { "APPROLE_api.request.unknown" })
     void testUnauthorizedGetAllNoMatchArtefacts() throws Exception {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
             MockMvcRequestBuilders.get("/publication/no-match");
@@ -211,7 +212,7 @@ class PublicationLocationTest extends PublicationIntegrationTestBase {
     }
 
     @Test
-    @WithMockUser(username = "admin", authorities = { "APPROLE_api.request.unknown" })
+    @WithMockUser(username = ADMIN, authorities = { "APPROLE_api.request.unknown" })
     void testDeleteArtefactsByLocationUnauthorized() throws Exception {
         MockHttpServletRequestBuilder deleteRequest = MockMvcRequestBuilders
             .delete("/publication/1/deleteArtefacts")
