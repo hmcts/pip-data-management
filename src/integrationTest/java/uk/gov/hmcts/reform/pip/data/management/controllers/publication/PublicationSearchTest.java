@@ -1,9 +1,7 @@
 package uk.gov.hmcts.reform.pip.data.management.controllers.publication;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.json.JSONArray;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,7 +18,6 @@ import uk.gov.hmcts.reform.pip.data.management.utils.PublicationIntegrationTestB
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 import uk.gov.hmcts.reform.pip.model.publication.Sensitivity;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.UUID;
@@ -38,8 +35,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
 @WithMockUser(username = "admin", authorities = {"APPROLE_api.request.admin"})
 class PublicationSearchTest extends PublicationIntegrationTestBase {
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
-
     private static final String PUBLICATION_URL = "/publication";
     private static final String SEARCH_COURT_URL = PUBLICATION_URL + "/locationId";
     private static final String SEARCH_URL = PUBLICATION_URL + "/search";
@@ -64,11 +59,6 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
     private static final String UNAUTHORIZED_USERNAME = "unauthorized_username";
     private static final String UNAUTHORIZED_ROLE = "APPROLE_unknown.role";
     private static final String FORBIDDEN_STATUS_CODE = "Status code does not match forbidden";
-
-    @BeforeAll
-    public static void setup() throws IOException {
-        OBJECT_MAPPER.findAndRegisterModules();
-    }
 
     @Test
     void testAuthorisedGetArtefactByCaseIdSearchVerified() throws Exception {

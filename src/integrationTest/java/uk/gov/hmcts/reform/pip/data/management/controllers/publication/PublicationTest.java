@@ -2,7 +2,6 @@ package uk.gov.hmcts.reform.pip.data.management.controllers.publication;
 
 import com.azure.core.util.BinaryData;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
@@ -100,13 +99,11 @@ class PublicationTest extends PublicationIntegrationTestBase {
     private static final String SHOULD_RETURN_EXPECTED_ARTEFACT = "Should return expected artefact";
     private static final String ARTEFACT_ID_POPULATED_MESSAGE = "Artefact ID should be populated";
 
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
-
     private static String payload = "payload";
     private static MockMultipartFile file;
 
     @BeforeAll
-    public void setup() throws Exception {
+    void setup() throws Exception {
         file = new MockMultipartFile("file", "test.pdf",
                                      MediaType.APPLICATION_PDF_VALUE, "test content".getBytes(
             StandardCharsets.UTF_8)
@@ -117,8 +114,6 @@ class PublicationTest extends PublicationIntegrationTestBase {
             payload = new String(IOUtils.toByteArray(
                 Objects.requireNonNull(is)));
         }
-
-        OBJECT_MAPPER.findAndRegisterModules();
 
         try (InputStream csvInputStream = PublicationTest.class.getClassLoader()
             .getResourceAsStream("location/UpdatedCsv.csv")) {

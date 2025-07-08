@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.pip.data.management.controllers.publication;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -47,12 +46,8 @@ class PublicationReportingTest extends PublicationIntegrationTestBase {
     private static final String ADMIN = "admin";
     private static final String VALIDATION_MI_REPORT = "Should successfully retrieve MI data";
 
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
-
     @BeforeAll
     void setup() throws Exception {
-        OBJECT_MAPPER.findAndRegisterModules();
-
         try (InputStream csvInputStream = PublicationTest.class.getClassLoader()
             .getResourceAsStream("location/UpdatedCsv.csv")) {
             MockMultipartFile csvFile

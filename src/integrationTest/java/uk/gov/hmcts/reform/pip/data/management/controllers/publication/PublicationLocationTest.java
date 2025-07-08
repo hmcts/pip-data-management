@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.pip.data.management.controllers.publication;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.json.JSONArray;
 import org.junit.jupiter.api.BeforeAll;
@@ -61,12 +60,8 @@ class PublicationLocationTest extends PublicationIntegrationTestBase {
     private static final LocalDateTime CONTENT_DATE = LocalDateTime.now().toLocalDate().atStartOfDay();
     private static final String ADMIN = "admin";
 
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
-
     @BeforeAll
-    public void setup() throws Exception {
-        OBJECT_MAPPER.findAndRegisterModules();
-
+    void setup() throws Exception {
         try (InputStream csvInputStream = PublicationTest.class.getClassLoader()
             .getResourceAsStream("location/UpdatedCsv.csv")) {
             MockMultipartFile csvFile

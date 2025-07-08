@@ -1,6 +1,8 @@
 package uk.gov.hmcts.reform.pip.data.management.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -20,8 +22,9 @@ import java.time.temporal.ChronoUnit;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class PublicationIntegrationTestBase extends IntegrationTestBase {
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+    protected static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private static final String PUBLICATION_URL = "/publication";
 
     private static final ArtefactType ARTEFACT_TYPE = ArtefactType.LIST;
@@ -36,6 +39,11 @@ public class PublicationIntegrationTestBase extends IntegrationTestBase {
 
     @Autowired
     protected MockMvc mockMvc;
+
+    @BeforeAll
+    public void startup() {
+        OBJECT_MAPPER.findAndRegisterModules();
+    }
 
     protected Artefact createDailyList(Sensitivity sensitivity) throws Exception {
         return createDailyList(sensitivity, DISPLAY_FROM.minusMonths(2), CONTENT_DATE);
