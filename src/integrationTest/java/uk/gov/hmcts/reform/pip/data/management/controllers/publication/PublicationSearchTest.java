@@ -95,6 +95,7 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
     }
 
     @Test
+    @WithMockUser(username = UNAUTHORIZED_USERNAME, authorities = {UNAUTHORIZED_ROLE})
     void testUnauthorisedGetArtefactByCaseIdSearchVerified() throws Exception {
         when(accountManagementService.getIsAuthorised(
             UUID.fromString(USER_ID), ListType.CIVIL_DAILY_CAUSE_LIST, Sensitivity.PRIVATE
@@ -145,6 +146,7 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
     }
 
     @Test
+    @WithMockUser(username = UNAUTHORIZED_USERNAME, authorities = {UNAUTHORIZED_ROLE})
     void testAuthorisedGetArtefactByCaseNameSearchVerified() throws Exception {
         when(accountManagementService.getIsAuthorised(
             UUID.fromString(USER_ID), ListType.CIVIL_DAILY_CAUSE_LIST, Sensitivity.PRIVATE
@@ -169,6 +171,7 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
     }
 
     @Test
+    @WithMockUser(username = UNAUTHORIZED_USERNAME, authorities = {UNAUTHORIZED_ROLE})
     void testUnauthorisedGetArtefactByCaseNameSearchVerified() throws Exception {
         when(accountManagementService.getIsAuthorised(
             UUID.fromString(USER_ID), ListType.CIVIL_DAILY_CAUSE_LIST, Sensitivity.PRIVATE

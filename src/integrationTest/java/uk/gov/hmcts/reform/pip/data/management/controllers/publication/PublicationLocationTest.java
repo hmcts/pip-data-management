@@ -192,6 +192,7 @@ class PublicationLocationTest extends PublicationIntegrationTestBase {
     }
 
     @Test
+    @WithMockUser(username = ADMIN, authorities = { "APPROLE_api.request.unknown" })
     void testUnauthorizedCountByLocation() throws Exception {
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders.get(COUNT_ENDPOINT);
 
