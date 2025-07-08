@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.pip.data.management.controllers;
+package uk.gov.hmcts.reform.pip.data.management.controllers.location;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.BeforeEach;

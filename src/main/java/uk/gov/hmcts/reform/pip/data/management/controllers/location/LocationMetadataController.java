@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.pip.data.management.controllers;
+package uk.gov.hmcts.reform.pip.data.management.controllers.location;
 
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;

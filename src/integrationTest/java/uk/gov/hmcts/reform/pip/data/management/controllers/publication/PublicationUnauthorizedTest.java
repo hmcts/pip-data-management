@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.pip.data.management.controllers;
+package uk.gov.hmcts.reform.pip.data.management.controllers.publication;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,15 +34,8 @@ class PublicationUnauthorizedTest extends IntegrationBasicTestBase {
 
     private static final String PUBLICATION_URL = "/publication";
     private static final String NON_STRATEGIC_PUBLICATION_URL = PUBLICATION_URL + "/non-strategic";
-    private static final String PUBLICATION_BY_LOCATION_URL = PUBLICATION_URL + "/locationId/";
-    private static final String PUBLICATION_SEARCH_URL = PUBLICATION_URL + "/search/";
     private static final String ARCHIVE_EXPIRED_ARTEFACTS_URL = PUBLICATION_URL + "/expired";
-    private static final String MI_REPORTING_DATA_URL = PUBLICATION_URL + "/mi-data";
-    private static final String COUNT_BY_LOCATION_URL = PUBLICATION_URL + "/count-by-location";
-    private static final String SEND_NEW_ARTEFACTS_FOR_SUBSCRIPTION_URL = PUBLICATION_URL + "/latest/subscription";
-    private static final String REPORT_NO_MATCH_ARTEFACTS_URL = PUBLICATION_URL + "/no-match/reporting";
     private static final String ISSUER_HEADER = "x-issuer-id";
-    private static final String USER_ID_HEADER = "x-user-id";
     private static final String VERIFICATION_HEADER = "verification";
     private static final String VERIFICATION_TRUE = "true";
 
@@ -95,7 +88,6 @@ class PublicationUnauthorizedTest extends IntegrationBasicTestBase {
         mockMvc.perform(mockHttpServletRequestBuilder)
             .andExpect(status().isForbidden())
             .andReturn();
-
     }
 
     @Test
@@ -118,29 +110,6 @@ class PublicationUnauthorizedTest extends IntegrationBasicTestBase {
             .header(PublicationConfiguration.LANGUAGE_HEADER, Language.ENGLISH)
             .header(PublicationConfiguration.CONTENT_DATE, LocalDateTime.now())
             .contentType(MediaType.MULTIPART_FORM_DATA);
-
-        mockMvc.perform(mockHttpServletRequestBuilder)
-            .andExpect(status().isForbidden())
-            .andReturn();
-
-    }
-
-    @Test
-    void testUnauthorizedGetByCourtId() throws Exception {
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .get(PUBLICATION_BY_LOCATION_URL + "1")
-            .header(VERIFICATION_HEADER, VERIFICATION_TRUE);
-
-        mockMvc.perform(mockHttpServletRequestBuilder)
-            .andExpect(status().isForbidden())
-            .andReturn();
-    }
-
-    @Test
-    void testUnauthorizedGetBySearchValue() throws Exception {
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .get(PUBLICATION_SEARCH_URL + "CASE_URN/1234")
-            .header(VERIFICATION_HEADER, VERIFICATION_TRUE);
 
         mockMvc.perform(mockHttpServletRequestBuilder)
             .andExpect(status().isForbidden())
@@ -206,64 +175,6 @@ class PublicationUnauthorizedTest extends IntegrationBasicTestBase {
     void testUnauthorizedArchiveExpiredArtefacts() throws Exception {
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
             .delete(ARCHIVE_EXPIRED_ARTEFACTS_URL);
-
-        mockMvc.perform(request)
-            .andExpect(status().isForbidden())
-            .andReturn();
-    }
-
-    @Test
-    void testDeleteArtefactsByLocationUnauthorized() throws Exception {
-        MockHttpServletRequestBuilder deleteRequest = MockMvcRequestBuilders
-            .delete("/publication/1/deleteArtefacts")
-            .header(USER_ID_HEADER, "123");
-
-        mockMvc.perform(deleteRequest)
-            .andExpect(status().isForbidden())
-            .andReturn();
-    }
-
-    @Test
-    void testUnauthorizedGetAllNoMatchArtefacts() throws Exception {
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
-            MockMvcRequestBuilders.get("/publication/no-match");
-
-        mockMvc.perform(mockHttpServletRequestBuilder)
-            .andExpect(status().isForbidden())
-            .andReturn();
-    }
-
-    @Test
-    void testUnauthorizedGetMiData() throws Exception {
-        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-            .get(MI_REPORTING_DATA_URL);
-
-        mockMvc.perform(request)
-            .andExpect(status().isForbidden())
-            .andReturn();
-    }
-
-    @Test
-    void testUnauthorizedCountByLocation() throws Exception {
-        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.get(COUNT_BY_LOCATION_URL);
-
-        mockMvc.perform(request)
-            .andExpect(status().isForbidden())
-            .andReturn();
-    }
-
-    @Test
-    void testUnauthorizedSendNewArtefactsForSubscription() throws Exception {
-        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.post(SEND_NEW_ARTEFACTS_FOR_SUBSCRIPTION_URL);
-
-        mockMvc.perform(request)
-            .andExpect(status().isForbidden())
-            .andReturn();
-    }
-
-    @Test
-    void testUnauthorizedReportNoMatchArtefacts() throws Exception {
-        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.post(REPORT_NO_MATCH_ARTEFACTS_URL);
 
         mockMvc.perform(request)
             .andExpect(status().isForbidden())

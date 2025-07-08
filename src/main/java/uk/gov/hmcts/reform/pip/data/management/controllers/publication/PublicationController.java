@@ -1,7 +1,6 @@
-package uk.gov.hmcts.reform.pip.data.management.controllers;
+package uk.gov.hmcts.reform.pip.data.management.controllers.publication;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -30,28 +29,23 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.helpers.NoMatchArtefactHelper;
-import uk.gov.hmcts.reform.pip.data.management.models.location.LocationArtefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.HeaderGroup;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.views.ArtefactView;
 import uk.gov.hmcts.reform.pip.data.management.service.ExcelConversionService;
 import uk.gov.hmcts.reform.pip.data.management.service.ValidationService;
 import uk.gov.hmcts.reform.pip.data.management.service.publication.ArtefactDeleteService;
-import uk.gov.hmcts.reform.pip.data.management.service.publication.ArtefactSearchService;
 import uk.gov.hmcts.reform.pip.data.management.service.publication.ArtefactService;
 import uk.gov.hmcts.reform.pip.data.management.service.publication.ArtefactTriggerService;
 import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationCreationRunner;
 import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationService;
-import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
 import uk.gov.hmcts.reform.pip.model.authentication.roles.IsAdmin;
 import uk.gov.hmcts.reform.pip.model.authentication.roles.IsPublisher;
 import uk.gov.hmcts.reform.pip.model.enums.UserActions;
-import uk.gov.hmcts.reform.pip.model.location.LocationType;
 import uk.gov.hmcts.reform.pip.model.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 import uk.gov.hmcts.reform.pip.model.publication.Sensitivity;
-import uk.gov.hmcts.reform.pip.model.report.PublicationMiData;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -72,7 +66,6 @@ import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
 @RequestMapping("/publication")
 @SuppressWarnings({"PMD.ExcessiveImports", "PMD.CouplingBetweenObjects"})
 public class PublicationController {
-
     private static final String USER_ID_HEADER = "x-user-id";
     private static final String ADMIN_HEADER = "x-admin";
 
@@ -91,24 +84,15 @@ public class PublicationController {
     private static final String CONFLICT_CODE = "409";
 
     private static final String BEARER_AUTHENTICATION = "bearerAuth";
+    private static final String DEFAULT_ADMIN_VALUE = "false";
 
     private final PublicationService publicationService;
-
     private final PublicationCreationRunner publicationCreationRunner;
-
-    private final ArtefactSearchService artefactSearchService;
-
     private final ArtefactService artefactService;
-
     private final ArtefactDeleteService artefactDeleteService;
-
     private final ArtefactTriggerService artefactTriggerService;
-
     private final ValidationService validationService;
-
     private final ExcelConversionService excelConversionService;
-
-    private static final String DEFAULT_ADMIN_VALUE = "false";
 
     /**
      * Constructor for Publication controller.
@@ -123,7 +107,6 @@ public class PublicationController {
     public PublicationController(PublicationService publicationService,
                                  PublicationCreationRunner publicationCreationRunner,
                                  ValidationService validationService,
-                                 ArtefactSearchService artefactSearchService,
                                  ArtefactService artefactService,
                                  ArtefactDeleteService artefactDeleteService,
                                  ArtefactTriggerService artefactTriggerService,
@@ -131,7 +114,6 @@ public class PublicationController {
         this.publicationService = publicationService;
         this.publicationCreationRunner = publicationCreationRunner;
         this.validationService = validationService;
-        this.artefactSearchService = artefactSearchService;
         this.artefactService = artefactService;
         this.artefactDeleteService = artefactDeleteService;
         this.artefactTriggerService = artefactTriggerService;
@@ -334,40 +316,6 @@ public class PublicationController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdItem);
     }
 
-    @ApiResponse(responseCode = OK_CODE, description = "List of Artefacts matching the given locationId and "
-        + "verification parameters and date requirements")
-    @ApiResponse(responseCode = UNAUTHORISED_CODE, description = UNAUTHORISED_MESSAGE)
-    @ApiResponse(responseCode = FORBIDDEN_CODE, description = FORBIDDEN_MESSAGE)
-    @ApiResponse(responseCode = NOT_FOUND_CODE, description = NOT_FOUND_DESCRIPTION)
-    @Operation(summary = "Get a series of publications matching a given locationId (e.g. locationId)")
-    @GetMapping("/locationId/{locationId}")
-    @JsonView(ArtefactView.Internal.class)
-    @IsAdmin
-    @SecurityRequirement(name = BEARER_AUTHENTICATION)
-    public ResponseEntity<List<Artefact>> getAllRelevantArtefactsByLocationId(
-        @PathVariable String locationId,
-        @RequestHeader(value = USER_ID_HEADER, required = false) UUID userId,
-        @RequestHeader(value = ADMIN_HEADER, defaultValue = DEFAULT_ADMIN_VALUE, required = false) Boolean isAdmin) {
-        return ResponseEntity.ok(artefactSearchService.findAllByLocationIdAdmin(locationId, userId, isAdmin));
-    }
-
-    @ApiResponse(responseCode = OK_CODE, description = "List of Artefacts matching"
-            + " a given case value, verification parameters and date requirements")
-    @ApiResponse(responseCode = UNAUTHORISED_CODE, description = UNAUTHORISED_MESSAGE)
-    @ApiResponse(responseCode = FORBIDDEN_CODE, description = FORBIDDEN_MESSAGE)
-    @ApiResponse(responseCode = NOT_FOUND_CODE, description = NOT_FOUND_DESCRIPTION)
-    @Operation(summary = "Get a series of publications matching a given case search value (e.g. "
-        + "CASE_URN/CASE_ID/CASE_NAME)")
-    @GetMapping("/search/{searchTerm}/{searchValue}")
-    @JsonView(ArtefactView.Internal.class)
-    @IsAdmin
-    @SecurityRequirement(name = BEARER_AUTHENTICATION)
-    public ResponseEntity<List<Artefact>> getAllRelevantArtefactsBySearchValue(
-        @PathVariable CaseSearchTerm searchTerm, @PathVariable String searchValue,
-        @RequestHeader(value = USER_ID_HEADER,  required = false) UUID userId) {
-        return ResponseEntity.ok(artefactSearchService.findAllBySearch(searchTerm, searchValue, userId));
-    }
-
     @ApiResponse(responseCode = OK_CODE, description = "Gets the artefact metadata")
     @ApiResponse(responseCode = UNAUTHORISED_CODE, description = UNAUTHORISED_MESSAGE)
     @ApiResponse(responseCode = FORBIDDEN_CODE, description = FORBIDDEN_MESSAGE)
@@ -448,69 +396,6 @@ public class PublicationController {
         return ResponseEntity.ok("Successfully deleted artefact: " + artefactId);
     }
 
-    @ApiResponse(responseCode = OK_CODE, description = "Data Management - Artefact count per location - request "
-            + "accepted.")
-    @ApiResponse(responseCode = UNAUTHORISED_CODE, description = UNAUTHORISED_MESSAGE)
-    @ApiResponse(responseCode = FORBIDDEN_CODE, description = FORBIDDEN_MESSAGE)
-    @Operation(summary = "Return a count of artefacts per location")
-    @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/count-by-location")
-    @IsAdmin
-    @SecurityRequirement(name = BEARER_AUTHENTICATION)
-    public ResponseEntity<List<LocationArtefact>> countByLocation() {
-        return ResponseEntity.ok(artefactService.countArtefactsByLocation());
-    }
-
-    @ApiResponse(responseCode = OK_CODE, description = "{Location type associated with given list type}")
-    @Operation(summary = "Return the Location type associated with a given list type")
-    @GetMapping("/location-type/{listType}")
-    public ResponseEntity<LocationType> getLocationType(@PathVariable ListType listType) {
-        return ResponseEntity.ok(artefactService.getLocationType(listType));
-    }
-
-    private void logManualUpload(String issuerId, String artefactId) {
-        if (issuerId != null) {
-            log.info(writeLog(issuerId, UserActions.UPLOAD, artefactId));
-        }
-    }
-
-    @ApiResponse(responseCode = OK_CODE, description = "A JSON model which contains a list of artefacts")
-    @ApiResponse(responseCode = UNAUTHORISED_CODE, description = UNAUTHORISED_MESSAGE)
-    @ApiResponse(responseCode = FORBIDDEN_CODE, description = FORBIDDEN_MESSAGE)
-    @Operation(summary = "Returns MI data for artefacts")
-    @GetMapping("/mi-data")
-    @IsAdmin
-    @SecurityRequirement(name = BEARER_AUTHENTICATION)
-    public ResponseEntity<List<PublicationMiData>> getMiData() {
-        return ResponseEntity.ok().body(publicationService.getMiData());
-    }
-
-    @ApiResponse(responseCode = NO_CONTENT_CODE, description = NO_CONTENT_DESCRIPTION)
-    @ApiResponse(responseCode = UNAUTHORISED_CODE, description = UNAUTHORISED_MESSAGE)
-    @ApiResponse(responseCode = FORBIDDEN_CODE, description = FORBIDDEN_MESSAGE)
-    @Operation(summary = "Find latest artefacts from today and send them to subscribers")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PostMapping("/latest/subscription")
-    @IsAdmin
-    @SecurityRequirement(name = BEARER_AUTHENTICATION)
-    public ResponseEntity<Void> sendNewArtefactsForSubscription() {
-        artefactTriggerService.checkNewlyActiveArtefacts();
-        return ResponseEntity.noContent().build();
-    }
-
-    @ApiResponse(responseCode = NO_CONTENT_CODE, description = NO_CONTENT_DESCRIPTION)
-    @ApiResponse(responseCode = UNAUTHORISED_CODE, description = UNAUTHORISED_MESSAGE)
-    @ApiResponse(responseCode = FORBIDDEN_CODE, description = FORBIDDEN_MESSAGE)
-    @Operation(summary = "Report artefacts which do not match any location")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PostMapping("/no-match/reporting")
-    @IsAdmin
-    @SecurityRequirement(name = BEARER_AUTHENTICATION)
-    public ResponseEntity<Void> reportNoMatchArtefacts() {
-        artefactTriggerService.reportNoMatchArtefacts();
-        return ResponseEntity.noContent().build();
-    }
-
     @ApiResponse(responseCode = NO_CONTENT_CODE, description = NO_CONTENT_DESCRIPTION)
     @ApiResponse(responseCode = UNAUTHORISED_CODE, description = UNAUTHORISED_MESSAGE)
     @ApiResponse(responseCode = FORBIDDEN_CODE, description = FORBIDDEN_MESSAGE)
@@ -539,30 +424,10 @@ public class PublicationController {
         return ResponseEntity.ok(String.format("Artefact of ID %s has been archived", id));
     }
 
-    @ApiResponse(responseCode = OK_CODE, description = "Successfully deleted artefact for location: {locationId}")
-    @ApiResponse(responseCode = UNAUTHORISED_CODE, description = UNAUTHORISED_MESSAGE)
-    @ApiResponse(responseCode = FORBIDDEN_CODE, description = FORBIDDEN_MESSAGE)
-    @ApiResponse(responseCode = NOT_FOUND_CODE, description = "No artefact found with the location ID: {locationId}")
-    @Operation(summary = "Delete all artefacts for given location from P&I")
-    @DeleteMapping("/{locationId}/deleteArtefacts")
-    @IsAdmin
-    @SecurityRequirement(name = BEARER_AUTHENTICATION)
-    public ResponseEntity<String> deleteArtefactsByLocation(
-        @RequestHeader("x-user-id") String userId,
-        @PathVariable Integer locationId) throws JsonProcessingException {
-        return ResponseEntity.ok(artefactDeleteService.deleteArtefactByLocation(locationId, userId));
-    }
-
-    @ApiResponse(responseCode = OK_CODE, description = "List of all artefacts that are noMatch in their id")
-    @ApiResponse(responseCode = UNAUTHORISED_CODE, description = UNAUTHORISED_MESSAGE)
-    @ApiResponse(responseCode = FORBIDDEN_CODE, description = FORBIDDEN_MESSAGE)
-    @Operation(summary = "Get all no match publications")
-    @GetMapping("/no-match")
-    @JsonView(ArtefactView.Internal.class)
-    @IsAdmin
-    @SecurityRequirement(name = BEARER_AUTHENTICATION)
-    public ResponseEntity<List<Artefact>> getAllNoMatchArtefacts() {
-        return ResponseEntity.ok(artefactService.findAllNoMatchArtefacts());
+    private void logManualUpload(String issuerId, String artefactId) {
+        if (issuerId != null) {
+            log.info(writeLog(issuerId, UserActions.UPLOAD, artefactId));
+        }
     }
 
     private Artefact createPublicationMetadataFromHeaders(HeaderGroup headers, long fileSizeInBytes) {

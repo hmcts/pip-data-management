@@ -1,6 +1,5 @@
-package uk.gov.hmcts.reform.pip.data.management.controllers;
+package uk.gov.hmcts.reform.pip.data.management.controllers.publication;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import nl.altindag.log.LogCaptor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,13 +24,10 @@ import uk.gov.hmcts.reform.pip.data.management.service.publication.ArtefactServi
 import uk.gov.hmcts.reform.pip.data.management.service.publication.ArtefactTriggerService;
 import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationCreationRunner;
 import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationService;
-import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
-import uk.gov.hmcts.reform.pip.model.location.LocationType;
 import uk.gov.hmcts.reform.pip.model.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 import uk.gov.hmcts.reform.pip.model.publication.Sensitivity;
-import uk.gov.hmcts.reform.pip.model.report.PublicationMiData;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -55,8 +51,7 @@ import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ConstantsTestHelper.MESSAGES_MATCH;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ConstantsTestHelper.STATUS_CODE_MATCH;
 
-@SuppressWarnings({"PMD.UseConcurrentHashMap", "PMD.ExcessiveImports",
-    "PMD.TooManyMethods", "PMD.CouplingBetweenObjects"})
+@SuppressWarnings({"PMD.UseConcurrentHashMap", "PMD.ExcessiveImports", "PMD.CouplingBetweenObjects"})
 @ExtendWith(MockitoExtension.class)
 class PublicationControllerTest {
 
@@ -103,8 +98,6 @@ class PublicationControllerTest {
     private static final Float PAYLOAD_SIZE = (float) PAYLOAD.getBytes().length / 1024;
     private static final MultipartFile FILE = new MockMultipartFile("test", (byte[]) null);
     private static final String PAYLOAD_URL = "This is a test payload";
-    private static final CaseSearchTerm SEARCH_TERM = CaseSearchTerm.CASE_ID;
-    private static final String EMPTY_FIELD = "";
     private static final String TEST_STRING = "test";
     private static final String VALIDATION_EXPECTED_MESSAGE =
         "The expected exception does not contain the correct message";
@@ -173,8 +166,6 @@ class PublicationControllerTest {
             .search(new ConcurrentHashMap<>())
             .payloadSize(PAYLOAD_SIZE)
             .build();
-
-
     }
 
     @Test
@@ -228,42 +219,6 @@ class PublicationControllerTest {
     }
 
     @Test
-    void testSearchEndpointReturnsOkWithTrue() {
-        assertEquals(HttpStatus.OK, publicationController.getAllRelevantArtefactsByLocationId(
-                EMPTY_FIELD, USER_ID, true)
-            .getStatusCode(), STATUS_CODE_MATCH);
-    }
-
-    @Test
-    void testSearchEndpointReturnsOkWithFalse() {
-        assertEquals(HttpStatus.OK, publicationController.getAllRelevantArtefactsByLocationId(
-                EMPTY_FIELD, USER_ID, false)
-            .getStatusCode(), STATUS_CODE_MATCH);
-    }
-
-    @Test
-    void testGetArtefactsBySearchReturnsWhenTrue() {
-        when(artefactSearchService.findAllBySearch(SEARCH_TERM, TEST_STRING, USER_ID))
-            .thenReturn(List.of(artefactWithId));
-        assertEquals(HttpStatus.OK, publicationController.getAllRelevantArtefactsBySearchValue(SEARCH_TERM, TEST_STRING,
-                                                                                               USER_ID
-                     ).getStatusCode(),
-                     STATUS_CODE_MATCH
-        );
-    }
-
-    @Test
-    void testGetArtefactsBySearchReturnsWhenFalse() {
-        when(artefactSearchService.findAllBySearch(SEARCH_TERM, TEST_STRING, USER_ID))
-            .thenReturn(List.of(artefactWithId));
-        assertEquals(HttpStatus.OK, publicationController
-                         .getAllRelevantArtefactsBySearchValue(SEARCH_TERM, TEST_STRING, USER_ID)
-                         .getStatusCode(),
-                     STATUS_CODE_MATCH
-        );
-    }
-
-    @Test
     void checkGetMetadataContentReturns() {
         when(artefactService.getMetadataByArtefactId(any(), any()))
             .thenReturn(artefactWithId);
@@ -287,15 +242,6 @@ class PublicationControllerTest {
                      STATUS_CODE_MATCH
         );
         assertEquals(artefactWithId, unmappedBlob.getBody(), VALIDATION_EXPECTED_MESSAGE);
-    }
-
-    @Test
-    void checkCountArtefactByLocationReturnsData() {
-        COURT_PER_LOCATION.add(new LocationArtefact("1", 2));
-        when(artefactService.countArtefactsByLocation()).thenReturn(COURT_PER_LOCATION);
-        ResponseEntity<List<LocationArtefact>> result = publicationController.countByLocation();
-        assertEquals(HttpStatus.OK, result.getStatusCode(), STATUS_CODE_MATCH);
-        assertEquals(COURT_PER_LOCATION, result.getBody(), NOT_EQUAL_MESSAGE);
     }
 
 
@@ -343,30 +289,6 @@ class PublicationControllerTest {
         assertEquals(new ByteArrayResource(testData), flatFileBlob.getBody(), NOT_EQUAL_MESSAGE);
         String filename = flatFileBlob.getHeaders().get("Content-Disposition").toString();
         assertTrue(filename.contains(artefactWithId.getSourceArtefactId()), NOT_EQUAL_MESSAGE);
-    }
-
-    @Test
-    void checkGetArtefactsByCourtIdReturnsWhenTrue() {
-        List<Artefact> artefactList = List.of(artefactWithId);
-
-        when(artefactSearchService.findAllByLocationIdAdmin(EMPTY_FIELD, USER_ID, true)).thenReturn(artefactList);
-        ResponseEntity<List<Artefact>> unmappedArtefact = publicationController
-            .getAllRelevantArtefactsByLocationId(EMPTY_FIELD, USER_ID, true);
-
-        assertEquals(artefactList, unmappedArtefact.getBody(), VALIDATION_EXPECTED_MESSAGE);
-        assertEquals(HttpStatus.OK, unmappedArtefact.getStatusCode(), STATUS_CODE_MATCH);
-    }
-
-    @Test
-    void checkGetArtefactsByCourtIdReturnsOkWhenFalse() {
-        List<Artefact> artefactList = List.of(artefactWithId);
-
-        when(artefactSearchService.findAllByLocationIdAdmin(EMPTY_FIELD, USER_ID, false)).thenReturn(artefactList);
-        ResponseEntity<List<Artefact>> unmappedArtefact = publicationController
-            .getAllRelevantArtefactsByLocationId(EMPTY_FIELD, USER_ID, false);
-
-        assertEquals(artefactList, unmappedArtefact.getBody(), VALIDATION_EXPECTED_MESSAGE);
-        assertEquals(HttpStatus.OK, unmappedArtefact.getStatusCode(), STATUS_CODE_MATCH);
     }
 
     @Test
@@ -474,16 +396,6 @@ class PublicationControllerTest {
     }
 
     @Test
-    void testGetLocationTypeReturnsOk() {
-        when(artefactService.getLocationType(ListType.CIVIL_DAILY_CAUSE_LIST)).thenReturn(LocationType.VENUE);
-        assertEquals(
-            HttpStatus.OK,
-            publicationController.getLocationType(ListType.CIVIL_DAILY_CAUSE_LIST).getStatusCode(),
-            STATUS_CODE_MATCH
-        );
-    }
-
-    @Test
     void testCreatePublicationLogsWhenHeaderIsPresent() throws IOException {
         when(validationService.validateHeaders(any())).thenReturn(headers);
         when(publicationCreationRunner.run(artefact, PAYLOAD, true)).thenReturn(artefactWithId);
@@ -499,22 +411,6 @@ class PublicationControllerTest {
         } catch (Exception ex) {
             throw new IOException(ex.getMessage());
         }
-    }
-
-    @Test
-    void testSendNewArtefactsForSubscriptionSuccess() {
-        doNothing().when(artefactTriggerService).checkNewlyActiveArtefacts();
-        assertThat(publicationController.sendNewArtefactsForSubscription().getStatusCode())
-            .as(STATUS_CODE_MATCH)
-            .isEqualTo(HttpStatus.NO_CONTENT);
-    }
-
-    @Test
-    void testReportNoMatchArtefactsSuccess() {
-        doNothing().when(artefactTriggerService).reportNoMatchArtefacts();
-        assertThat(publicationController.reportNoMatchArtefacts().getStatusCode())
-            .as(STATUS_CODE_MATCH)
-            .isEqualTo(HttpStatus.NO_CONTENT);
     }
 
     @Test
@@ -539,48 +435,4 @@ class PublicationControllerTest {
                      response.getBody(), "Response from archiving does not match expected message"
         );
     }
-
-    @Test
-    void testDeleteArtefactsByLocationReturnsOk() throws JsonProcessingException {
-        int locationId = 1;
-        String requesterId = UUID.randomUUID().toString();
-        when(artefactDeleteService.deleteArtefactByLocation(locationId, requesterId)).thenReturn("Success");
-
-        assertEquals(HttpStatus.OK,
-                     publicationController.deleteArtefactsByLocation(requesterId, locationId).getStatusCode(),
-                     "Delete artefacts for location endpoint has not returned OK");
-    }
-
-    @Test
-    void testGetAllNoMatchArtefacts() {
-        List<Artefact> artefactList = List.of(artefactWithId);
-
-        when(artefactService.findAllNoMatchArtefacts()).thenReturn(artefactList);
-
-        ResponseEntity<List<Artefact>> response = publicationController.getAllNoMatchArtefacts();
-
-        assertEquals(HttpStatus.OK, response.getStatusCode(), STATUS_CODE_MATCH);
-        assertEquals(artefactList, response.getBody(), "Body should match");
-    }
-
-    @Test
-    void testMiDataReturnsSuccessfully() {
-        PublicationMiData publicationMiData = new PublicationMiData(
-            UUID.randomUUID(), LocalDateTime.now(), LocalDateTime.now(), Language.ENGLISH, "MANUAL_UPLOAD",
-            Sensitivity.PUBLIC, UUID.randomUUID().toString(), 0, ArtefactType.GENERAL_PUBLICATION,
-            LocalDateTime.now(),"1", ListType.CIVIL_DAILY_CAUSE_LIST);
-
-        PublicationMiData publicationMiData2 = new PublicationMiData(
-            UUID.randomUUID(), LocalDateTime.now(), LocalDateTime.now(), Language.ENGLISH, "MANUAL_UPLOAD",
-            Sensitivity.PUBLIC, UUID.randomUUID().toString(), 1, ArtefactType.GENERAL_PUBLICATION,
-            LocalDateTime.now(), "NoMatch2", ListType.CIVIL_DAILY_CAUSE_LIST);
-
-        when(publicationService.getMiData()).thenReturn(List.of(publicationMiData, publicationMiData2));
-
-        ResponseEntity<List<PublicationMiData>> response = publicationController.getMiData();
-
-        assertEquals(HttpStatus.OK, response.getStatusCode(), STATUS_CODE_MATCH);
-        assertThat(response.getBody()).containsExactlyInAnyOrder(publicationMiData, publicationMiData2);
-    }
-
 }

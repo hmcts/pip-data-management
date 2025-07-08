@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.pip.data.management.controllers;
+package uk.gov.hmcts.reform.pip.data.management.controllers.publication;
 
 import com.azure.core.util.BinaryData;
 import com.fasterxml.jackson.databind.ObjectMapper;

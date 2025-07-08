@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.pip.data.management.controllers;
+package uk.gov.hmcts.reform.pip.data.management.controllers.publication;
 
 import com.azure.core.util.BinaryData;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -15,17 +15,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -34,14 +30,11 @@ import uk.gov.hmcts.reform.pip.data.management.config.AzureBlobConfigurationTest
 import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.ExceptionResponse;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
-import uk.gov.hmcts.reform.pip.data.management.utils.IntegrationTestBase;
-import uk.gov.hmcts.reform.pip.model.account.PiUser;
-import uk.gov.hmcts.reform.pip.model.location.LocationType;
+import uk.gov.hmcts.reform.pip.data.management.utils.PublicationIntegrationTestBase;
 import uk.gov.hmcts.reform.pip.model.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 import uk.gov.hmcts.reform.pip.model.publication.Sensitivity;
-import uk.gov.hmcts.reform.pip.model.report.PublicationMiData;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -50,7 +43,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -61,32 +53,23 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static uk.gov.hmcts.reform.pip.model.account.Roles.SYSTEM_ADMIN;
 
 @SpringBootTest(classes = {Application.class, AzureBlobConfigurationTestConfiguration.class},
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 @ActiveProfiles("integration")
-@SuppressWarnings({"PMD.ExcessiveImports", "PMD.CyclomaticComplexity", "PMD.TooManyMethods",
-    "PMD.CouplingBetweenObjects"})
+@SuppressWarnings({"PMD.ExcessiveImports", "PMD.CyclomaticComplexity", "PMD.TooManyMethods"})
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
 @WithMockUser(username = "admin", authorities = {"APPROLE_api.request.admin"})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class PublicationTest extends IntegrationTestBase {
+class PublicationTest extends PublicationIntegrationTestBase {
     private static final String PUBLICATION_URL = "/publication";
     private static final String SEARCH_COURT_URL = "/publication/locationId";
     private static final String FILE_URL = "/file";
     private static final String PAYLOAD_URL = "/payload";
-    private static final String LOCATION_TYPE_URL = PUBLICATION_URL + "/location-type/";
-    private static final String SEND_NEW_ARTEFACTS_FOR_SUBSCRIPTION_URL = PUBLICATION_URL + "/latest/subscription";
-    private static final String COUNT_ENDPOINT = PUBLICATION_URL + "/count-by-location";
-    private static final String REPORT_NO_MATCH_ARTEFACTS_URL = PUBLICATION_URL + "/no-match/reporting";
-    private static final String MI_REPORTING_DATA_URL = PUBLICATION_URL + "/mi-data";
     private static final String ARCHIVE_EXPIRED_ARTEFACTS_URL = PUBLICATION_URL + "/expired";
     private static final ArtefactType ARTEFACT_TYPE = ArtefactType.LIST;
     private static final Sensitivity SENSITIVITY = Sensitivity.PUBLIC;
@@ -108,15 +91,12 @@ class PublicationTest extends IntegrationTestBase {
     private static final String USER_ID_HEADER = "x-user-id";
 
     private static final String LOCATION_ID_SEARCH_KEY = "location-id";
-    private static final String TRUE = "true";
-    private static final String FALSE = "false";
     private static final String ADMIN_HEADER = "x-admin";
     private static final String ISSUER_HEADER = "x-issuer-id";
     private static final String EMAIL = "test@email.com";
 
     private static final String VALIDATION_EMPTY_RESPONSE = "Response should contain a Artefact";
     private static final String VALIDATION_DISPLAY_FROM = "The expected Display From has not been returned";
-    private static final String VALIDATION_MI_REPORT = "Should successfully retrieve MI data";
     private static final String SHOULD_RETURN_EXPECTED_ARTEFACT = "Should return expected artefact";
     private static final String ARTEFACT_ID_POPULATED_MESSAGE = "Artefact ID should be populated";
 
@@ -124,9 +104,6 @@ class PublicationTest extends IntegrationTestBase {
 
     private static String payload = "payload";
     private static MockMultipartFile file;
-
-    @Autowired
-    private MockMvc mockMvc;
 
     @BeforeAll
     public void setup() throws Exception {
@@ -152,73 +129,6 @@ class PublicationTest extends IntegrationTestBase {
                                 .with(user("admin")
                                           .authorities(new SimpleGrantedAuthority("APPROLE_api.request.admin"))))
                 .andExpect(status().isOk()).andReturn();
-        }
-    }
-
-    Artefact createDailyList(Sensitivity sensitivity) throws Exception {
-        return this.createDailyList(sensitivity, DISPLAY_FROM.minusMonths(2), CONTENT_DATE);
-    }
-
-    Artefact createDailyList(Sensitivity sensitivity, LocalDateTime displayFrom, LocalDateTime contentDate)
-        throws Exception {
-        return this.createDailyList(sensitivity, displayFrom, DISPLAY_TO, contentDate, PROVENANCE, COURT_ID);
-    }
-
-    Artefact createDailyList(Sensitivity sensitivity, LocalDateTime displayFrom, LocalDateTime displayTo,
-                             LocalDateTime contentDate,
-                             String provenance, String courtId)
-        throws Exception {
-        try (InputStream mockFile = this.getClass().getClassLoader()
-            .getResourceAsStream("data/civil-daily-cause-list/civilDailyCauseList.json")) {
-
-            MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-                .post(PUBLICATION_URL)
-                .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
-                .header(PublicationConfiguration.PROVENANCE_HEADER, provenance)
-                .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
-                .header(PublicationConfiguration.DISPLAY_FROM_HEADER, displayFrom)
-                .header(PublicationConfiguration.DISPLAY_TO_HEADER, displayTo.plusMonths(1))
-                .header(PublicationConfiguration.COURT_ID, courtId)
-                .header(PublicationConfiguration.LIST_TYPE, ListType.CIVIL_DAILY_CAUSE_LIST)
-                .header(PublicationConfiguration.CONTENT_DATE, contentDate)
-                .header(PublicationConfiguration.SENSITIVITY_HEADER, sensitivity)
-                .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
-                .content(mockFile.readAllBytes())
-                .contentType(MediaType.APPLICATION_JSON);
-
-            MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
-                .andExpect(status().isCreated()).andReturn();
-
-            return OBJECT_MAPPER.readValue(
-                response.getResponse().getContentAsString(), Artefact.class);
-        }
-    }
-
-    Artefact createSscsDailyList(Sensitivity sensitivity, String provenance)
-        throws Exception {
-        try (InputStream mockFile = this.getClass().getClassLoader()
-            .getResourceAsStream("data/sscs-daily-list/sscsDailyList.json")) {
-
-            MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-                .post(PUBLICATION_URL)
-                .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
-                .header(PublicationConfiguration.PROVENANCE_HEADER, provenance)
-                .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
-                .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM.minusMonths(2))
-                .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO.plusMonths(1))
-                .header(PublicationConfiguration.COURT_ID, COURT_ID)
-                .header(PublicationConfiguration.LIST_TYPE, ListType.SSCS_DAILY_LIST)
-                .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
-                .header(PublicationConfiguration.SENSITIVITY_HEADER, sensitivity)
-                .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
-                .content(mockFile.readAllBytes())
-                .contentType(MediaType.APPLICATION_JSON);
-
-            MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
-                .andExpect(status().isCreated()).andReturn();
-
-            return OBJECT_MAPPER.readValue(
-                response.getResponse().getContentAsString(), Artefact.class);
         }
     }
 
@@ -514,8 +424,9 @@ class PublicationTest extends IntegrationTestBase {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 = MockMvcRequestBuilders
             .get(SEARCH_COURT_URL + "/" + COURT_ID)
             .header(USER_ID_HEADER, USER_ID);
-        MvcResult getResponse =
-            mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isOk()).andReturn();
+        MvcResult getResponse = mockMvc.perform(mockHttpServletRequestBuilder1)
+            .andExpect(status().isOk())
+            .andReturn();
 
         String jsonOutput = getResponse.getResponse().getContentAsString();
         JSONArray jsonArray = new JSONArray(jsonOutput);
@@ -1606,41 +1517,6 @@ class PublicationTest extends IntegrationTestBase {
     }
 
     @Test
-    void testGetCourtByIdShowsAllCourtsForAdmin() throws Exception {
-        Artefact inDateArtefact = createDailyList(Sensitivity.PUBLIC);
-        Artefact futureArtefact = createDailyList(Sensitivity.PUBLIC, DISPLAY_FROM.plusMonths(1),
-                                                  CONTENT_DATE.plusDays(1)
-        );
-
-        assertEquals(inDateArtefact.getDisplayFrom(), DISPLAY_FROM.minusMonths(2),
-                     VALIDATION_DISPLAY_FROM
-        );
-        assertEquals(futureArtefact.getDisplayFrom(), DISPLAY_FROM.plusMonths(1),
-                     VALIDATION_DISPLAY_FROM
-        );
-
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .get(SEARCH_COURT_URL + "/" + COURT_ID)
-            .header(ADMIN_HEADER, FALSE);
-
-        MvcResult nonAdminResponse =
-            mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isOk()).andReturn();
-
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 = MockMvcRequestBuilders
-            .get(SEARCH_COURT_URL + "/" + COURT_ID)
-            .header(ADMIN_HEADER, TRUE);
-
-        MvcResult adminResponse =
-            mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isOk()).andReturn();
-
-        JSONArray nonAdminResults = new JSONArray(nonAdminResponse.getResponse().getContentAsString());
-        JSONArray adminResults = new JSONArray(adminResponse.getResponse().getContentAsString());
-        assertEquals(1, nonAdminResults.length(), "Should return 1 artefact for non admin");
-        assertEquals(2, adminResults.length(), "Should return 2 artefacts for admins");
-
-    }
-
-    @Test
     void testDeleteArtefactByIdSuccess() throws Exception {
         Artefact artefactToDelete = createDailyList(Sensitivity.PUBLIC);
 
@@ -1716,64 +1592,6 @@ class PublicationTest extends IntegrationTestBase {
     }
 
     @Test
-    void testGetLocationTypeReturns() throws Exception {
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .get(LOCATION_TYPE_URL + ListType.CIVIL_DAILY_CAUSE_LIST);
-
-        MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isOk()).andReturn();
-
-        assertTrue(
-            response.getResponse().getContentAsString().contains(LocationType.VENUE.name()),
-            "Location types should match"
-        );
-    }
-
-    @Test
-    void testGetLocationTypeReturnsBadRequest() throws Exception {
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
-            MockMvcRequestBuilders.get(LOCATION_TYPE_URL + "invalid");
-
-        mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isBadRequest());
-    }
-
-    @Test
-    void testCountByLocationManualUpload() throws Exception {
-        createDailyList(Sensitivity.PRIVATE);
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders.get(COUNT_ENDPOINT);
-        MvcResult result = mockMvc.perform(mockHttpServletRequestBuilder)
-            .andExpect(status().isOk())
-            .andReturn();
-        assertTrue(result.getResponse().getContentAsString().contains(COURT_ID), "headers not found");
-    }
-
-    @Test
-    void testCountByLocationListAssist() throws Exception {
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders.get(COUNT_ENDPOINT);
-        MvcResult result = mockMvc.perform(mockHttpServletRequestBuilder)
-            .andExpect(status().isOk())
-            .andReturn();
-        assertEquals(HttpStatus.OK.value(), result.getResponse().getStatus(),
-                     "CountByLocation endpoint for ListAssist is not successful"
-        );
-    }
-
-    @Test
-    void testSendNewArtefactsForSubscriptionSuccess() throws Exception {
-        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-            .post(SEND_NEW_ARTEFACTS_FOR_SUBSCRIPTION_URL);
-
-        mockMvc.perform(request).andExpect(status().isNoContent());
-    }
-
-    @Test
-    void testReportNoMatchArtefactsSuccess() throws Exception {
-        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-            .post(REPORT_NO_MATCH_ARTEFACTS_URL);
-
-        mockMvc.perform(request).andExpect(status().isNoContent());
-    }
-
-    @Test
     void testArchiveExpiredArtefactsSuccess() throws Exception {
         Artefact artefactToExpire = createDailyList(Sensitivity.PUBLIC, DISPLAY_FROM.minusMonths(9),
                                                     DISPLAY_FROM.minusMonths(6),
@@ -1809,75 +1627,6 @@ class PublicationTest extends IntegrationTestBase {
         );
         assertTrue(artefactExired.getIsArchived(), SHOULD_RETURN_EXPECTED_ARTEFACT);
 
-    }
-
-    @Test
-    void testGetMiDataSuccess() throws Exception {
-        Artefact artefact = createDailyList(Sensitivity.PUBLIC);
-
-        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-            .get(MI_REPORTING_DATA_URL);
-
-        MvcResult responseMiData = mockMvc.perform(request).andExpect(status().isOk()).andReturn();
-        assertNotNull(responseMiData.getResponse(), VALIDATION_MI_REPORT);
-
-        List<PublicationMiData> miData  =
-            Arrays.asList(
-                OBJECT_MAPPER.readValue(responseMiData.getResponse().getContentAsString(), PublicationMiData[].class)
-            );
-
-        assertTrue(miData.stream().anyMatch(data ->
-                                                data.getArtefactId().equals(artefact.getArtefactId())
-                                                    && data.getLocationId().equals(artefact.getLocationId())
-                                                    && "Updated Location".equals(data.getLocationName())),
-                   VALIDATION_MI_REPORT);
-    }
-
-    @Test
-    void testGetMiDataSuccessWithNoMatch() throws Exception {
-        Artefact artefact = createSscsDailyList(Sensitivity.PUBLIC, "UnknownProvenance");
-
-        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-            .get(MI_REPORTING_DATA_URL);
-
-        MvcResult responseMiData = mockMvc.perform(request).andExpect(status().isOk()).andReturn();
-        assertNotNull(responseMiData.getResponse(), VALIDATION_MI_REPORT);
-
-        List<PublicationMiData> miData  =
-            Arrays.asList(
-                OBJECT_MAPPER.readValue(responseMiData.getResponse().getContentAsString(), PublicationMiData[].class)
-            );
-
-        assertTrue(miData.stream().anyMatch(data ->
-                                                data.getArtefactId().equals(artefact.getArtefactId())
-                                                    && data.getLocationId().equals(artefact.getLocationId())
-                                                    && data.getLocationName() == null),
-                   VALIDATION_MI_REPORT);
-
-    }
-
-    @Test
-    void testGetMiDataSuccessWithCourtIdThatDoesNotExist() throws Exception {
-        Artefact artefact = createDailyList(Sensitivity.PUBLIC, LocalDateTime.now(),
-                                                   LocalDateTime.now(), LocalDateTime.now(),
-                                                   PROVENANCE, "12345");
-
-        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-            .get(MI_REPORTING_DATA_URL);
-
-        MvcResult responseMiData = mockMvc.perform(request).andExpect(status().isOk()).andReturn();
-        assertNotNull(responseMiData.getResponse(), VALIDATION_MI_REPORT);
-
-        List<PublicationMiData> miData  =
-            Arrays.asList(
-                OBJECT_MAPPER.readValue(responseMiData.getResponse().getContentAsString(), PublicationMiData[].class)
-            );
-
-        assertTrue(miData.stream().anyMatch(data ->
-                                                data.getArtefactId().equals(artefact.getArtefactId())
-                                                    && data.getLocationId().equals(artefact.getLocationId())
-                                                    && data.getLocationName() == null),
-                   VALIDATION_MI_REPORT);
     }
 
     @Test
@@ -1918,47 +1667,6 @@ class PublicationTest extends IntegrationTestBase {
         );
     }
 
-    @Test
-    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
-    void testGetAllNoMatchArtefacts() throws Exception {
-        Artefact expectedArtefact = createDailyList(Sensitivity.PRIVATE, DISPLAY_FROM.minusMonths(2), DISPLAY_TO,
-                                                    CONTENT_DATE, "NoMatch", COURT_ID
-        );
-
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
-            MockMvcRequestBuilders.get("/publication/no-match");
-
-        MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isOk()).andReturn();
-
-        String jsonOutput = response.getResponse().getContentAsString();
-        JSONArray jsonArray = new JSONArray(jsonOutput);
-        Artefact returnedArtefact = OBJECT_MAPPER.readValue(
-            jsonArray.get(0).toString(), Artefact.class
-        );
-
-        assertTrue(
-            compareArtefacts(expectedArtefact, returnedArtefact),
-            "Expected and returned artefacts do not match"
-        );
-    }
-
-    private boolean compareArtefacts(Artefact expectedArtefact, Artefact returnedArtefact) {
-        return expectedArtefact.getArtefactId().equals(returnedArtefact.getArtefactId())
-            && expectedArtefact.getProvenance().equals(returnedArtefact.getProvenance())
-            && expectedArtefact.getSensitivity().equals(returnedArtefact.getSensitivity())
-            && expectedArtefact.getPayload().equals(returnedArtefact.getPayload())
-            && expectedArtefact.getType().equals(returnedArtefact.getType())
-            && expectedArtefact.getSearch().equals(returnedArtefact.getSearch())
-            && expectedArtefact.getLocationId().equals(returnedArtefact.getLocationId())
-            && expectedArtefact.getLanguage().equals(returnedArtefact.getLanguage())
-            && expectedArtefact.getListType().equals(returnedArtefact.getListType())
-            && expectedArtefact.getDisplayTo().equals(returnedArtefact.getDisplayTo())
-            && expectedArtefact.getDisplayFrom().equals(returnedArtefact.getDisplayFrom())
-            && expectedArtefact.getContentDate().equals(returnedArtefact.getContentDate())
-            && expectedArtefact.getIsFlatFile().equals(returnedArtefact.getIsFlatFile())
-            && expectedArtefact.getSourceArtefactId().equals(returnedArtefact.getSourceArtefactId());
-    }
-
     private void assertDateTimeFormat(String value, String field) {
         try {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
@@ -1968,51 +1676,6 @@ class PublicationTest extends IntegrationTestBase {
         } catch (DateTimeParseException e) {
             fail(String.format("%s with value '%s' could not be parsed", field, value));
         }
-    }
-
-    @Test
-    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
-    void testDeleteArtefactsByLocation() throws Exception {
-        PiUser piUser = new PiUser();
-        piUser.setUserId(USER_ID);
-        piUser.setEmail(EMAIL);
-
-        when(accountManagementService.getUserById(USER_ID)).thenReturn(piUser);
-        when(accountManagementService.getAllAccounts(anyString(), eq(SYSTEM_ADMIN.toString())))
-            .thenReturn(List.of(EMAIL));
-
-        Artefact artefactToDelete = createDailyList(Sensitivity.PUBLIC);
-
-        MockHttpServletRequestBuilder preDeleteRequest = MockMvcRequestBuilders
-            .get(PUBLICATION_URL + "/" + artefactToDelete.getArtefactId())
-            .header(USER_ID_HEADER, USER_ID);
-
-        mockMvc.perform(preDeleteRequest).andExpect(status().isOk());
-
-        MockHttpServletRequestBuilder deleteRequest = MockMvcRequestBuilders
-            .delete(PUBLICATION_URL + "/" + COURT_ID + "/deleteArtefacts")
-            .header(USER_ID_HEADER, USER_ID);
-
-        MvcResult deleteResponse = mockMvc.perform(deleteRequest).andExpect(status().isOk()).andReturn();
-
-        assertEquals("Total 1 artefact deleted for location id " + COURT_ID,
-                     deleteResponse.getResponse().getContentAsString(), "Should successfully delete artefact"
-        );
-    }
-
-    @Test
-    void testDeleteArtefactsByLocationNotFound() throws Exception {
-        MockHttpServletRequestBuilder deleteRequest = MockMvcRequestBuilders
-            .delete(PUBLICATION_URL + "/" + 11 + "/deleteArtefacts")
-            .header(USER_ID_HEADER, USER_ID);
-
-        MvcResult deleteResponse = mockMvc.perform(deleteRequest).andExpect(status().isNotFound()).andReturn();
-
-        assertTrue(
-            deleteResponse.getResponse().getContentAsString()
-                .contains("No artefacts found with the location ID " + 11),
-            "Artefact not found error message"
-        );
     }
 
     @Test

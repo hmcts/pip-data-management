@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.pip.data.management.controllers;
+package uk.gov.hmcts.reform.pip.data.management.controllers.publication;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -22,8 +22,8 @@ import java.util.UUID;
 
 @Slf4j
 @RestController
-@Tag(name = "API to handle the retrieval of generated publication files in alternative file formats (PDF/Excel), "
-    + "and generation of publication summaries")
+@Tag(name = "Data Management  - API to handle the retrieval of generated publication files in alternative file "
+    + "formats (PDF/Excel), and generation of publication summaries")
 @RequestMapping("/publication")
 @ApiResponse(responseCode = "401", description = "Invalid access credential")
 @ApiResponse(responseCode = "403", description = "User has not been authorized")

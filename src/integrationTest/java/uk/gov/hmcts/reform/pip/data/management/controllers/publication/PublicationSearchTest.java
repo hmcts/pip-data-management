@@ -1,32 +1,26 @@
-package uk.gov.hmcts.reform.pip.data.management.controllers;
+package uk.gov.hmcts.reform.pip.data.management.controllers.publication;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
+import org.json.JSONArray;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import uk.gov.hmcts.reform.pip.data.management.Application;
-import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
-import uk.gov.hmcts.reform.pip.data.management.utils.IntegrationTestBase;
-import uk.gov.hmcts.reform.pip.model.publication.ArtefactType;
-import uk.gov.hmcts.reform.pip.model.publication.Language;
+import uk.gov.hmcts.reform.pip.data.management.utils.PublicationIntegrationTestBase;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 import uk.gov.hmcts.reform.pip.model.publication.Sensitivity;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.UUID;
@@ -43,75 +37,37 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("integration")
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
 @WithMockUser(username = "admin", authorities = {"APPROLE_api.request.admin"})
-class PublicationSubscriptionSearchTest extends IntegrationTestBase {
+class PublicationSearchTest extends PublicationIntegrationTestBase {
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
-    @Autowired
-    private MockMvc mockMvc;
-
-    private static final String VALID_CASE_ID_SEARCH = "/CASE_ID/45684548";
-    private static final String USER_ID = UUID.randomUUID().toString();
-    private static final String PROVENANCE = "MANUAL_UPLOAD";
-    private static final String SHOULD_RETURN_EXPECTED_ARTEFACT = "Should return expected artefact";
-    private static final LocalDateTime CONTENT_DATE = LocalDateTime.now().toLocalDate().atStartOfDay()
-        .truncatedTo(ChronoUnit.SECONDS);
-    private static final String SEARCH_URL = "/publication/search";
-    private static final String USER_ID_HEADER = "x-user-id";
-    private static final String VALID_CASE_NAME_SEARCH = "/CASE_NAME/Smith";
     private static final String PUBLICATION_URL = "/publication";
-    private static final String SOURCE_ARTEFACT_ID = "sourceArtefactId";
-    private static final String COURT_ID = "123";
-    private static final Language LANGUAGE = Language.ENGLISH;
-    private static final ArtefactType ARTEFACT_TYPE = ArtefactType.LIST;
+    private static final String SEARCH_COURT_URL = PUBLICATION_URL + "/locationId";
+    private static final String SEARCH_URL = PUBLICATION_URL + "/search";
+    private static final String USER_ID = UUID.randomUUID().toString();
     private static final LocalDateTime DISPLAY_TO = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
     private static final LocalDateTime DISPLAY_FROM = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+    private static final String COURT_ID = "123";
+    private static final LocalDateTime CONTENT_DATE = LocalDateTime.now().toLocalDate().atStartOfDay()
+        .truncatedTo(ChronoUnit.SECONDS);
+    private static final String USER_ID_HEADER = "x-user-id";
+
+    private static final String TRUE = "true";
+    private static final String FALSE = "false";
+    private static final String ADMIN_HEADER = "x-admin";
+    private static final String VERIFICATION_HEADER = "verification";
+
+    private static final String VALIDATION_DISPLAY_FROM = "The expected Display From has not been returned";
+    private static final String SHOULD_RETURN_EXPECTED_ARTEFACT = "Should return expected artefact";
+
+    private static final String VALID_CASE_ID_SEARCH = "/CASE_ID/45684548";
+    private static final String VALID_CASE_NAME_SEARCH = "/CASE_NAME/Smith";
     private static final String UNAUTHORIZED_USERNAME = "unauthorized_username";
     private static final String UNAUTHORIZED_ROLE = "APPROLE_unknown.role";
     private static final String FORBIDDEN_STATUS_CODE = "Status code does not match forbidden";
-    private static ObjectMapper objectMapper;
 
     @BeforeAll
     public static void setup() throws IOException {
-        objectMapper = new ObjectMapper();
-        objectMapper.findAndRegisterModules();
-    }
-
-    Artefact createDailyList(Sensitivity sensitivity) throws Exception {
-        return this.createDailyList(sensitivity, DISPLAY_FROM.minusMonths(2), CONTENT_DATE);
-    }
-
-    Artefact createDailyList(Sensitivity sensitivity, LocalDateTime displayFrom, LocalDateTime contentDate)
-        throws Exception {
-        return this.createDailyList(sensitivity, displayFrom, DISPLAY_TO, contentDate, PROVENANCE);
-    }
-
-    public Artefact createDailyList(Sensitivity sensitivity, LocalDateTime displayFrom, LocalDateTime displayTo,
-                                    LocalDateTime contentDate,
-                                    String provenance)
-        throws Exception {
-        try (InputStream mockFile = this.getClass().getClassLoader()
-            .getResourceAsStream("data/civil-daily-cause-list/civilDailyCauseList.json")) {
-
-            MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-                .post(PUBLICATION_URL)
-                .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
-                .header(PublicationConfiguration.PROVENANCE_HEADER, provenance)
-                .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
-                .header(PublicationConfiguration.DISPLAY_FROM_HEADER, displayFrom)
-                .header(PublicationConfiguration.DISPLAY_TO_HEADER, displayTo.plusMonths(1))
-                .header(PublicationConfiguration.COURT_ID, COURT_ID)
-                .header(PublicationConfiguration.LIST_TYPE, ListType.CIVIL_DAILY_CAUSE_LIST)
-                .header(PublicationConfiguration.CONTENT_DATE, contentDate)
-                .header(PublicationConfiguration.SENSITIVITY_HEADER, sensitivity)
-                .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
-                .content(mockFile.readAllBytes())
-                .contentType(MediaType.APPLICATION_JSON);
-
-            MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
-                .andExpect(status().isCreated()).andReturn();
-
-            return objectMapper.readValue(
-                response.getResponse().getContentAsString(), Artefact.class);
-        }
+        OBJECT_MAPPER.findAndRegisterModules();
     }
 
     @Test
@@ -277,4 +233,59 @@ class PublicationSubscriptionSearchTest extends IntegrationTestBase {
         );
     }
 
+    @Test
+    void testGetCourtByIdShowsAllCourtsForAdmin() throws Exception {
+        Artefact inDateArtefact = createDailyList(Sensitivity.PUBLIC);
+        Artefact futureArtefact = createDailyList(Sensitivity.PUBLIC, DISPLAY_FROM.plusMonths(1),
+                                                  CONTENT_DATE.plusDays(1)
+        );
+
+        assertEquals(inDateArtefact.getDisplayFrom(), DISPLAY_FROM.minusMonths(2),
+                     VALIDATION_DISPLAY_FROM
+        );
+        assertEquals(futureArtefact.getDisplayFrom(), DISPLAY_FROM.plusMonths(1),
+                     VALIDATION_DISPLAY_FROM
+        );
+
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+            .get(SEARCH_COURT_URL + "/" + COURT_ID)
+            .header(ADMIN_HEADER, FALSE);
+
+        MvcResult nonAdminResponse =
+            mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isOk()).andReturn();
+
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 = MockMvcRequestBuilders
+            .get(SEARCH_COURT_URL + "/" + COURT_ID)
+            .header(ADMIN_HEADER, TRUE);
+
+        MvcResult adminResponse =
+            mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isOk()).andReturn();
+
+        JSONArray nonAdminResults = new JSONArray(nonAdminResponse.getResponse().getContentAsString());
+        JSONArray adminResults = new JSONArray(adminResponse.getResponse().getContentAsString());
+        assertEquals(1, nonAdminResults.length(), "Should return 1 artefact for non admin");
+        assertEquals(2, adminResults.length(), "Should return 2 artefacts for admins");
+    }
+
+    @Test
+    void testUnauthorizedGetBySearchValue() throws Exception {
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+            .get(SEARCH_URL + "/CASE_URN/1234")
+            .header(VERIFICATION_HEADER, TRUE);
+
+        mockMvc.perform(mockHttpServletRequestBuilder)
+            .andExpect(status().isForbidden())
+            .andReturn();
+    }
+
+    @Test
+    void testUnauthorizedGetByCourtId() throws Exception {
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+            .get(SEARCH_COURT_URL + "1")
+            .header(VERIFICATION_HEADER, TRUE);
+
+        mockMvc.perform(mockHttpServletRequestBuilder)
+            .andExpect(status().isForbidden())
+            .andReturn();
+    }
 }
