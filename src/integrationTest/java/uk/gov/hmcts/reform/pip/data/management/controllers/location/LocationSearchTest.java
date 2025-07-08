@@ -14,7 +14,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import uk.gov.hmcts.reform.pip.data.management.Application;
-import uk.gov.hmcts.reform.pip.data.management.errorhandling.ExceptionResponse;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.utils.IntegrationTestBase;
 
@@ -43,7 +42,6 @@ class LocationSearchTest extends IntegrationTestBase {
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private static final String ROOT_URL = "/locations";
-    private static final String GET_LOCATION_BY_NAME_ENDPOINT = ROOT_URL + "/name/%s/language/%s";
     private static final String GET_LOCATION_BY_FILTER_ENDPOINT = ROOT_URL + "/filter";
     public static final String UPLOAD_API = ROOT_URL + "/upload";
     private static final String LOCATIONS_CSV = "location/ValidCsv.csv";
@@ -87,45 +85,6 @@ class LocationSearchTest extends IntegrationTestBase {
             return Arrays.asList(
                 OBJECT_MAPPER.readValue(mvcResult.getResponse().getContentAsString(), Location[].class));
         }
-    }
-
-    @Test
-    @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})
-    void testGetWelshLocationByNameReturnsSuccess() throws Exception {
-        List<Location> locations = createLocations(LOCATIONS_CSV);
-
-        Location location = locations.get(0);
-
-        MvcResult mvcResult = mockMvc.perform(get(String.format(GET_LOCATION_BY_NAME_ENDPOINT,
-                                                                location.getWelshName(), WELSH_LANGUAGE_PARAM_VALUE
-            )))
-            .andExpect(status().isOk())
-            .andReturn();
-
-        Location returnedLocation = OBJECT_MAPPER.readValue(
-            mvcResult.getResponse().getContentAsString(),
-            Location.class
-        );
-
-        assertEquals(location, returnedLocation, VALIDATION_UNKNOWN_LOCATION);
-    }
-
-    @Test
-    void testGetWelshLocationByNameReturnsNotFound() throws Exception {
-        String invalidName = "invalid";
-
-        MvcResult mvcResult = mockMvc.perform(get(String.format(GET_LOCATION_BY_NAME_ENDPOINT,
-                                                                invalidName, WELSH_LANGUAGE_PARAM_VALUE
-            )))
-            .andExpect(status().isNotFound())
-            .andReturn();
-
-        ExceptionResponse exceptionResponse =
-            OBJECT_MAPPER.readValue(mvcResult.getResponse().getContentAsString(), ExceptionResponse.class);
-
-        assertEquals("No location found with the name: " + invalidName, exceptionResponse.getMessage(),
-                     "Unexpected error message returned when location by name not found"
-        );
     }
 
     @Test
