@@ -1,32 +1,22 @@
 package uk.gov.hmcts.reform.pip.data.management.controllers.location;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import uk.gov.hmcts.reform.pip.data.management.Application;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
-import uk.gov.hmcts.reform.pip.data.management.utils.IntegrationTestBase;
+import uk.gov.hmcts.reform.pip.data.management.utils.LocationIntegrationTestBase;
 
-import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.BiPredicate;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.springframework.test.annotation.DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(classes = {Application.class},
@@ -34,12 +24,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @ActiveProfiles("integration")
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
-@DirtiesContext(classMode = AFTER_EACH_TEST_METHOD)
-class LocationSearchTest extends IntegrationTestBase {
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
-    private static final String ROOT_URL = "/locations";
-    private static final String GET_LOCATION_BY_FILTER_ENDPOINT = ROOT_URL + "/filter";
-    public static final String UPLOAD_API = ROOT_URL + "/upload";
+class LocationSearchTest extends LocationIntegrationTestBase {
+    private static final String GET_LOCATION_BY_FILTER_ENDPOINT = "/locations/filter";
     private static final String LOCATIONS_CSV = "location/ValidCsv.csv";
 
     private static final String REGIONS_PARAM = "regions";
@@ -55,36 +41,6 @@ class LocationSearchTest extends IntegrationTestBase {
 
     private static final String USERNAME = "admin";
     private static final String VALID_ROLE = "APPROLE_api.request.admin";
-    private static final String LOCATION_LIST = "locationList";
-
-    @Autowired
-    private MockMvc mockMvc;
-
-    private final BiPredicate<Location, Location> compareLocationWithoutReference = (location, otherLocation) ->
-        location.getLocationId().equals(otherLocation.getLocationId())
-            && location.getName().equals(otherLocation.getName())
-            && location.getRegion().equals(otherLocation.getRegion())
-            && location.getJurisdiction().equals(otherLocation.getJurisdiction());
-
-    @BeforeAll
-    public static void setup() {
-        OBJECT_MAPPER.findAndRegisterModules();
-    }
-
-    private List<Location> createLocations(String locationsFile) throws Exception {
-
-        try (InputStream csvInputStream = this.getClass().getClassLoader()
-            .getResourceAsStream(locationsFile)) {
-            MockMultipartFile csvFile
-                = new MockMultipartFile(LOCATION_LIST, csvInputStream);
-
-            MvcResult mvcResult = mockMvc.perform(multipart(UPLOAD_API).file(csvFile))
-                .andExpect(status().isOk()).andReturn();
-
-            return Arrays.asList(
-                OBJECT_MAPPER.readValue(mvcResult.getResponse().getContentAsString(), Location[].class));
-        }
-    }
 
     @Test
     @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})

@@ -1,17 +1,13 @@
 package uk.gov.hmcts.reform.pip.data.management.controllers.location;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -19,7 +15,7 @@ import uk.gov.hmcts.reform.pip.data.management.Application;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.ExceptionResponse;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationReference;
-import uk.gov.hmcts.reform.pip.data.management.utils.IntegrationTestBase;
+import uk.gov.hmcts.reform.pip.data.management.utils.LocationIntegrationTestBase;
 import uk.gov.hmcts.reform.pip.model.account.PiUser;
 import uk.gov.hmcts.reform.pip.model.location.LocationType;
 
@@ -31,7 +27,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
-import java.util.function.BiPredicate;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -51,15 +46,12 @@ import static uk.gov.hmcts.reform.pip.model.account.Roles.SYSTEM_ADMIN;
 @ActiveProfiles("integration")
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
 @DirtiesContext(classMode = AFTER_EACH_TEST_METHOD)
-@SuppressWarnings({"PMD.ExcessiveImports"})
-class LocationApiTest extends IntegrationTestBase {
-
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+class LocationApiTest extends LocationIntegrationTestBase {
     private static final String ROOT_URL = "/locations";
     private static final String GET_LOCATION_BY_ID_ENDPOINT = ROOT_URL + "/";
     private static final String GET_LOCATION_BY_NAME_ENDPOINT = ROOT_URL + "/name/%s/language/%s";
     private static final String DOWNLOAD_LOCATIONS_ENDPOINT = ROOT_URL + "/download/csv";
-    public static final String UPLOAD_API = ROOT_URL + "/upload";
+    private static final String UPLOAD_API = ROOT_URL + "/upload";
     private static final String LOCATIONS_CSV = "location/ValidCsv.csv";
     private static final String CSV_WITH_EXISTING_LOCATION_NAME = "location/ValidCsvWithExistingLocationName.csv";
     private static final String CSV_WITHOUT_LOCATION_TYPE = "location/InvalidCsvWithoutLocationType.csv";
@@ -80,35 +72,6 @@ class LocationApiTest extends IntegrationTestBase {
     private static final String LOCATION_LIST = "locationList";
     private static final String USER_ID_HEADER = "x-user-id";
     private static final String EMAIL = "test@justice.gov.uk";
-
-    @Autowired
-    private MockMvc mockMvc;
-
-    private final BiPredicate<Location, Location> compareLocationWithoutReference = (location, otherLocation) ->
-        location.getLocationId().equals(otherLocation.getLocationId())
-            && location.getName().equals(otherLocation.getName())
-            && location.getRegion().equals(otherLocation.getRegion())
-            && location.getJurisdiction().equals(otherLocation.getJurisdiction());
-
-    @BeforeAll
-    public static void setup() {
-        OBJECT_MAPPER.findAndRegisterModules();
-    }
-
-    private List<Location> createLocations(String locationsFile) throws Exception {
-
-        try (InputStream csvInputStream = this.getClass().getClassLoader()
-            .getResourceAsStream(locationsFile)) {
-            MockMultipartFile csvFile
-                = new MockMultipartFile(LOCATION_LIST, csvInputStream);
-
-            MvcResult mvcResult = mockMvc.perform(multipart(UPLOAD_API).file(csvFile))
-                .andExpect(status().isOk()).andReturn();
-
-            return Arrays.asList(
-                OBJECT_MAPPER.readValue(mvcResult.getResponse().getContentAsString(), Location[].class));
-        }
-    }
 
     @Test
     @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})
@@ -472,7 +435,6 @@ class LocationApiTest extends IntegrationTestBase {
             .andExpect(status().isNotFound())
             .andReturn();
     }
-
 
     @Test
     @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})
