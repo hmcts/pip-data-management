@@ -33,6 +33,7 @@ class PublicationSubscriptionTest extends PublicationIntegrationTestBase {
     }
 
     @Test
+    @WithMockUser(username = "admin", authorities = { "APPROLE_api.request.unknown" })
     void testUnauthorizedSendNewArtefactsForSubscription() throws Exception {
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders.post(SEND_NEW_ARTEFACTS_FOR_SUBSCRIPTION_URL);
 

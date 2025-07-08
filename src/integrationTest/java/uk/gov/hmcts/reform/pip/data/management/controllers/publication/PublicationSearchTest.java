@@ -268,6 +268,7 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
     }
 
     @Test
+    @WithMockUser(username = "admin", authorities = { "APPROLE_api.request.unknown" })
     void testUnauthorizedGetBySearchValue() throws Exception {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
             .get(SEARCH_URL + "/CASE_URN/1234")
@@ -279,6 +280,7 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
     }
 
     @Test
+    @WithMockUser(username = "admin", authorities = { "APPROLE_api.request.unknown" })
     void testUnauthorizedGetByCourtId() throws Exception {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
             .get(SEARCH_COURT_URL + "1")

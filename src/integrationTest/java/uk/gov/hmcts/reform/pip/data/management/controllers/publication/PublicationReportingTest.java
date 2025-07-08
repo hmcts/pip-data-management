@@ -142,6 +142,7 @@ class PublicationReportingTest extends PublicationIntegrationTestBase {
     }
 
     @Test
+    @WithMockUser(username = "admin", authorities = { "APPROLE_api.request.unknown" })
     void testUnauthorizedGetMiData() throws Exception {
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
             .get(MI_REPORTING_DATA_URL);
@@ -152,6 +153,7 @@ class PublicationReportingTest extends PublicationIntegrationTestBase {
     }
 
     @Test
+    @WithMockUser(username = "admin", authorities = { "APPROLE_api.request.unknown" })
     void testUnauthorizedReportNoMatchArtefacts() throws Exception {
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders.post(REPORT_NO_MATCH_ARTEFACTS_URL);
 

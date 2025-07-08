@@ -200,6 +200,7 @@ class PublicationLocationTest extends PublicationIntegrationTestBase {
     }
 
     @Test
+    @WithMockUser(username = "admin", authorities = { "APPROLE_api.request.unknown" })
     void testUnauthorizedGetAllNoMatchArtefacts() throws Exception {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
             MockMvcRequestBuilders.get("/publication/no-match");
@@ -210,6 +211,7 @@ class PublicationLocationTest extends PublicationIntegrationTestBase {
     }
 
     @Test
+    @WithMockUser(username = "admin", authorities = { "APPROLE_api.request.unknown" })
     void testDeleteArtefactsByLocationUnauthorized() throws Exception {
         MockHttpServletRequestBuilder deleteRequest = MockMvcRequestBuilders
             .delete("/publication/1/deleteArtefacts")
