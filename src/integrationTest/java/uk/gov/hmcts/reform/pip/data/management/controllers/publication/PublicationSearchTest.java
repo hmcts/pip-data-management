@@ -272,7 +272,7 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
     @WithMockUser(username = ADMIN, authorities = { "APPROLE_api.request.unknown" })
     void testUnauthorizedGetByCourtId() throws Exception {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .get(SEARCH_COURT_URL + "1")
+            .get(SEARCH_COURT_URL + "/" + COURT_ID)
             .header(VERIFICATION_HEADER, TRUE);
 
         mockMvc.perform(mockHttpServletRequestBuilder)

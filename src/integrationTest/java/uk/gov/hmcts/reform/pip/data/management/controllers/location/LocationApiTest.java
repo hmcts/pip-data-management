@@ -54,9 +54,6 @@ import static uk.gov.hmcts.reform.pip.model.account.Roles.SYSTEM_ADMIN;
 @SuppressWarnings({"PMD.ExcessiveImports"})
 class LocationApiTest extends IntegrationTestBase {
 
-    @Autowired
-    private MockMvc mockMvc;
-
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private static final String ROOT_URL = "/locations";
     private static final String GET_LOCATION_BY_ID_ENDPOINT = ROOT_URL + "/";
@@ -83,6 +80,9 @@ class LocationApiTest extends IntegrationTestBase {
     private static final String LOCATION_LIST = "locationList";
     private static final String USER_ID_HEADER = "x-user-id";
     private static final String EMAIL = "test@justice.gov.uk";
+
+    @Autowired
+    private MockMvc mockMvc;
 
     private final BiPredicate<Location, Location> compareLocationWithoutReference = (location, otherLocation) ->
         location.getLocationId().equals(otherLocation.getLocationId())

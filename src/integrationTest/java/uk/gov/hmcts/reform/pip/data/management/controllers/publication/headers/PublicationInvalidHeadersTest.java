@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.pip.data.management.controllers.headers;
+package uk.gov.hmcts.reform.pip.data.management.controllers.publication.headers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeAll;

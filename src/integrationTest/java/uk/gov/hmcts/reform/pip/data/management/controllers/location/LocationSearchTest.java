@@ -36,10 +36,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
 @DirtiesContext(classMode = AFTER_EACH_TEST_METHOD)
 class LocationSearchTest extends IntegrationTestBase {
-
-    @Autowired
-    private MockMvc mockMvc;
-
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private static final String ROOT_URL = "/locations";
     private static final String GET_LOCATION_BY_FILTER_ENDPOINT = ROOT_URL + "/filter";
@@ -60,6 +56,9 @@ class LocationSearchTest extends IntegrationTestBase {
     private static final String USERNAME = "admin";
     private static final String VALID_ROLE = "APPROLE_api.request.admin";
     private static final String LOCATION_LIST = "locationList";
+
+    @Autowired
+    private MockMvc mockMvc;
 
     private final BiPredicate<Location, Location> compareLocationWithoutReference = (location, otherLocation) ->
         location.getLocationId().equals(otherLocation.getLocationId())
