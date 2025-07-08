@@ -224,10 +224,9 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
 
     @Test
     void testGetCourtByIdShowsAllCourtsForAdmin() throws Exception {
-        Artefact inDateArtefact = createDailyList(Sensitivity.PUBLIC);
+        Artefact inDateArtefact = createDailyList(Sensitivity.PUBLIC, DISPLAY_FROM.minusMonths(2), CONTENT_DATE);
         Artefact futureArtefact = createDailyList(Sensitivity.PUBLIC, DISPLAY_FROM.plusMonths(1),
-                                                  CONTENT_DATE.plusDays(1)
-        );
+                                                  CONTENT_DATE.plusDays(1));
 
         assertEquals(inDateArtefact.getDisplayFrom(), DISPLAY_FROM.minusMonths(2),
                      VALIDATION_DISPLAY_FROM
