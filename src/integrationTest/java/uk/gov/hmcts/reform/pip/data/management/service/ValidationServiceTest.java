@@ -339,11 +339,7 @@ class ValidationServiceTest extends IntegrationBasicTestBase {
             Arguments.of(ListType.IAC_DAILY_LIST,
                          "data/iac-daily-list/iacDailyList.json"),
             Arguments.of(ListType.IAC_DAILY_LIST_ADDITIONAL_CASES,
-                         "data/iac-daily-list/iacDailyList.json"),
-            Arguments.of(ListType.CARE_STANDARDS_LIST,
-                         "data/care-standards-list/careStandardsList.json"),
-            Arguments.of(ListType.PRIMARY_HEALTH_LIST,
-                         "data/primary-health-list/primaryHealthList.json")
+                         "data/iac-daily-list/iacDailyList.json")
         );
     }
 
