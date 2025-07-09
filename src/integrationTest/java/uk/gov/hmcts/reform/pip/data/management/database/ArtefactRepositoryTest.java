@@ -16,6 +16,8 @@ import uk.gov.hmcts.reform.pip.model.report.PublicationMiData;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -52,10 +54,13 @@ class ArtefactRepositoryTest {
 
     @BeforeAll
     void setup() {
+        LocalDateTime publicationReceivedDateTime = LocalDateTime.now();
+
         Artefact artefact1 = new Artefact();
         artefact1.setLocationId(LOCATION_ID);
         artefact1.setListType(ListType.CIVIL_DAILY_CAUSE_LIST);
         artefact1.setIsArchived(false);
+        artefact1.setLastReceivedDate(publicationReceivedDateTime);
         setCommonArtefactProperties(artefact1);
 
         Artefact savedArtefact = artefactRepository.save(artefact1);
@@ -65,6 +70,7 @@ class ArtefactRepositoryTest {
         artefact2.setLocationId(LOCATION_ID);
         artefact2.setListType(ListType.FAMILY_DAILY_CAUSE_LIST);
         artefact2.setIsArchived(false);
+        artefact2.setLastReceivedDate(publicationReceivedDateTime);
         setCommonArtefactProperties(artefact2);
 
         savedArtefact = artefactRepository.save(artefact2);
@@ -74,6 +80,7 @@ class ArtefactRepositoryTest {
         artefact3.setLocationId(LOCATION_ID);
         artefact3.setListType(ListType.SJP_PUBLIC_LIST);
         artefact3.setIsArchived(false);
+        artefact3.setLastReceivedDate(publicationReceivedDateTime);
         setCommonArtefactProperties(artefact3);
 
         savedArtefact = artefactRepository.save(artefact3);
@@ -83,6 +90,7 @@ class ArtefactRepositoryTest {
         artefact4.setLocationId(LOCATION_ID);
         artefact4.setListType(ListType.CIVIL_DAILY_CAUSE_LIST);
         artefact4.setIsArchived(true);
+        artefact4.setLastReceivedDate(publicationReceivedDateTime);
         setCommonArtefactProperties(artefact4);
 
         savedArtefact = artefactRepository.save(artefact4);
@@ -92,6 +100,7 @@ class ArtefactRepositoryTest {
         artefact5.setLocationId(NO_MATCH_LOCATION_ID);
         artefact5.setListType(ListType.SJP_PUBLIC_LIST);
         artefact5.setIsArchived(false);
+        artefact5.setLastReceivedDate(publicationReceivedDateTime);
         setCommonArtefactProperties(artefact5);
 
         savedArtefact = artefactRepository.save(artefact5);
