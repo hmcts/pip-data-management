@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.pip.data.management.service;
+package uk.gov.hmcts.reform.pip.data.management.service.publication;
 
 import org.springframework.stereotype.Service;
 

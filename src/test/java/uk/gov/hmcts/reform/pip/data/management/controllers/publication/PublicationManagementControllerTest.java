@@ -8,7 +8,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.gov.hmcts.reform.pip.data.management.models.PublicationFileSizes;
-import uk.gov.hmcts.reform.pip.data.management.service.PublicationManagementService;
+import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationManagementService;
 import uk.gov.hmcts.reform.pip.model.publication.FileType;
 
 import java.util.UUID;

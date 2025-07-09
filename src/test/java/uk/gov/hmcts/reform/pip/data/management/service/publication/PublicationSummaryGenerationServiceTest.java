@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.pip.data.management.service;
+package uk.gov.hmcts.reform.pip.data.management.service.publication;
 
 import com.google.common.collect.ImmutableMap;
 import org.junit.jupiter.api.Test;
