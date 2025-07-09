@@ -189,6 +189,7 @@ validations:
     BRISTOL_AND_CARDIFF_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST: "schemas/non-strategic/administrative_court_daily_cause_list.json"
     MANCHESTER_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST: "schemas/non-strategic/administrative_court_daily_cause_list.json"
     LEEDS_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST: "schemas/non-strategic/administrative_court_daily_cause_list.json"
+    CIC_WEEKLY_HEARING_LIST: "schemas/non-strategic/cic_weekly_hearing_list.json"
 springdoc:
   swagger-ui:
     path: /swagger-ui/
