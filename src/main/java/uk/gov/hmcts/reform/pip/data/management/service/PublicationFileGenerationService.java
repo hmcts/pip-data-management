@@ -18,7 +18,8 @@ import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.FileConverter;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.DateHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.LanguageResourceHelper;
-import uk.gov.hmcts.reform.pip.data.management.service.publication.ArtefactService;
+import uk.gov.hmcts.reform.pip.data.management.service.location.LocationService;
+import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationRetrievalService;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 
 import java.io.ByteArrayOutputStream;
@@ -38,7 +39,7 @@ public class PublicationFileGenerationService {
     private static final String SNL = "SNL";
     private static final String MANUAL_UPLOAD = "MANUAL_UPLOAD";
 
-    private final ArtefactService artefactService;
+    private final PublicationRetrievalService artefactService;
     private final LocationService locationService;
     private final ListConversionFactory listConversionFactory;
 
@@ -46,7 +47,7 @@ public class PublicationFileGenerationService {
     private String pdfFont;
 
     @Autowired
-    public PublicationFileGenerationService(ArtefactService artefactService,
+    public PublicationFileGenerationService(PublicationRetrievalService artefactService,
                                             LocationService locationService,
                                             ListConversionFactory listConversionFactory) {
         this.artefactService = artefactService;

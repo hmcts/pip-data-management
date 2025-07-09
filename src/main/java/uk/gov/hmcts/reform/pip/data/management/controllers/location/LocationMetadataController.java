@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationMetadata;
-import uk.gov.hmcts.reform.pip.data.management.service.LocationMetadataService;
+import uk.gov.hmcts.reform.pip.data.management.service.location.LocationMetadataService;
 import uk.gov.hmcts.reform.pip.model.authentication.roles.IsAdmin;
 
 @RestController

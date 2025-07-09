@@ -18,12 +18,11 @@ import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.HeaderGroup;
 import uk.gov.hmcts.reform.pip.data.management.service.ExcelConversionService;
 import uk.gov.hmcts.reform.pip.data.management.service.ValidationService;
-import uk.gov.hmcts.reform.pip.data.management.service.publication.ArtefactDeleteService;
-import uk.gov.hmcts.reform.pip.data.management.service.publication.ArtefactSearchService;
-import uk.gov.hmcts.reform.pip.data.management.service.publication.ArtefactService;
-import uk.gov.hmcts.reform.pip.data.management.service.publication.ArtefactTriggerService;
+import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationDeleteService;
+import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationRetrievalService;
 import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationCreationRunner;
-import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationService;
+import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationCreationService;
+import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationSubscriptionService;
 import uk.gov.hmcts.reform.pip.model.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
@@ -56,22 +55,19 @@ import static uk.gov.hmcts.reform.pip.data.management.helpers.ConstantsTestHelpe
 class PublicationControllerTest {
 
     @Mock
-    private PublicationService publicationService;
+    private PublicationCreationService publicationCreationService;
 
     @Mock
     private PublicationCreationRunner publicationCreationRunner;
 
     @Mock
-    private ArtefactSearchService artefactSearchService;
+    PublicationSubscriptionService publicationSubscriptionService;
 
     @Mock
-    private ArtefactService artefactService;
+    private PublicationRetrievalService artefactService;
 
     @Mock
-    private ArtefactDeleteService artefactDeleteService;
-
-    @Mock
-    private ArtefactTriggerService artefactTriggerService;
+    private PublicationDeleteService publicationDeleteService;
 
     @Mock
     private ValidationService validationService;
@@ -178,7 +174,7 @@ class PublicationControllerTest {
             DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, LOCATION_ID, CONTENT_DATE, TEST_STRING, PAYLOAD
         );
 
-        verify(publicationService).processCreatedPublication(any(Artefact.class), eq(PAYLOAD));
+        verify(publicationCreationService).processCreatedPublication(any(Artefact.class), eq(PAYLOAD));
 
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode(), STATUS_CODE_MATCH);
         assertEquals(artefactWithId, responseEntity.getBody(), ARTEFACT_MATCH_MESSAGE);
@@ -194,7 +190,7 @@ class PublicationControllerTest {
             DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, LOCATION_ID, CONTENT_DATE, TEST_STRING, PAYLOAD
         );
 
-        verify(publicationService, never()).processCreatedPublication(any(Artefact.class), eq(PAYLOAD));
+        verify(publicationCreationService, never()).processCreatedPublication(any(Artefact.class), eq(PAYLOAD));
 
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode(), STATUS_CODE_MATCH);
         assertEquals(artefactWithNoMatchLocationId, responseEntity.getBody(), ARTEFACT_MATCH_MESSAGE);
@@ -310,7 +306,7 @@ class PublicationControllerTest {
             SENSITIVITY, LANGUAGE, DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, LOCATION_ID, CONTENT_DATE, TEST_STRING, FILE
         );
 
-        verify(artefactTriggerService).checkAndTriggerPublicationSubscription(any(Artefact.class));
+        verify(publicationSubscriptionService).checkAndTriggerPublicationSubscription(any(Artefact.class));
 
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode(), STATUS_CODE_MATCH);
         assertEquals(artefactWithId, responseEntity.getBody(), ARTEFACT_MATCH_MESSAGE);
@@ -335,7 +331,7 @@ class PublicationControllerTest {
             SENSITIVITY, LANGUAGE, DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, LOCATION_ID, CONTENT_DATE, TEST_STRING, FILE
         );
 
-        verify(artefactTriggerService, never()).checkAndTriggerPublicationSubscription(any(Artefact.class));
+        verify(publicationSubscriptionService, never()).checkAndTriggerPublicationSubscription(any(Artefact.class));
 
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode(), STATUS_CODE_MATCH);
         assertEquals(artefactWithNoMatchLocationId, responseEntity.getBody(), ARTEFACT_MATCH_MESSAGE);
@@ -355,7 +351,7 @@ class PublicationControllerTest {
             LIST_TYPE, LOCATION_ID, CONTENT_DATE, TEST_STRING, file
         );
 
-        verify(publicationService).processCreatedPublication(artefactWithId, PAYLOAD);
+        verify(publicationCreationService).processCreatedPublication(artefactWithId, PAYLOAD);
 
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode(), STATUS_CODE_MATCH);
         assertEquals(artefactWithId, responseEntity.getBody(), ARTEFACT_MATCH_MESSAGE);
@@ -376,7 +372,7 @@ class PublicationControllerTest {
             LIST_TYPE, LOCATION_ID, CONTENT_DATE, TEST_STRING, file
         );
 
-        verify(publicationService, never()).processCreatedPublication(artefactWithId, PAYLOAD);
+        verify(publicationCreationService, never()).processCreatedPublication(artefactWithId, PAYLOAD);
 
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode(), STATUS_CODE_MATCH);
         assertEquals(artefactWithNoMatchLocationId, responseEntity.getBody(), ARTEFACT_MATCH_MESSAGE);
@@ -384,7 +380,7 @@ class PublicationControllerTest {
 
     @Test
     void testDeleteArtefactReturnsOk() {
-        doNothing().when(artefactDeleteService).deleteArtefactById(any(), any());
+        doNothing().when(publicationDeleteService).deleteArtefactById(any(), any());
         assertEquals(HttpStatus.OK, publicationController.deleteArtefact(TEST_STRING, TEST_STRING).getStatusCode(),
                      STATUS_CODE_MATCH
         );
@@ -399,7 +395,7 @@ class PublicationControllerTest {
     void testCreatePublicationLogsWhenHeaderIsPresent() throws IOException {
         when(validationService.validateHeaders(any())).thenReturn(headers);
         when(publicationCreationRunner.run(artefact, PAYLOAD, true)).thenReturn(artefactWithId);
-        when(publicationService.maskEmail(TEST_STRING)).thenReturn(TEST_STRING);
+        when(publicationCreationService.maskEmail(TEST_STRING)).thenReturn(TEST_STRING);
 
         try (LogCaptor logCaptor = LogCaptor.forClass(PublicationController.class)) {
             publicationController.uploadPublication(
@@ -415,7 +411,7 @@ class PublicationControllerTest {
 
     @Test
     void testDeleteExpiredArtefactsSuccess() {
-        doNothing().when(artefactDeleteService).archiveExpiredArtefacts();
+        doNothing().when(publicationDeleteService).archiveExpiredArtefacts();
         assertThat(publicationController.archiveExpiredArtefacts().getStatusCode())
             .as(STATUS_CODE_MATCH)
             .isEqualTo(HttpStatus.NO_CONTENT);
@@ -426,7 +422,7 @@ class PublicationControllerTest {
         String issuerId = UUID.randomUUID().toString();
         String artefactId = UUID.randomUUID().toString();
 
-        doNothing().when(artefactDeleteService).archiveArtefactById(artefactId, issuerId);
+        doNothing().when(publicationDeleteService).archiveArtefactById(artefactId, issuerId);
 
         ResponseEntity<String> response = publicationController.archiveArtefact(issuerId, artefactId);
 

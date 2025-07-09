@@ -7,8 +7,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import uk.gov.hmcts.reform.pip.data.management.service.publication.ArtefactTriggerService;
-import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationService;
+import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationReportingService;
 import uk.gov.hmcts.reform.pip.model.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
@@ -28,10 +27,7 @@ import static uk.gov.hmcts.reform.pip.data.management.helpers.ConstantsTestHelpe
 @ExtendWith(MockitoExtension.class)
 class PublicationReportingControllerTest {
     @Mock
-    private PublicationService publicationService;
-
-    @Mock
-    private ArtefactTriggerService artefactTriggerService;
+    private PublicationReportingService publicationReportingService;
 
     @InjectMocks
     private PublicationReportingController publicationReportingController;
@@ -48,7 +44,7 @@ class PublicationReportingControllerTest {
             Sensitivity.PUBLIC, UUID.randomUUID().toString(), 1, ArtefactType.GENERAL_PUBLICATION,
             LocalDateTime.now(), "NoMatch2", ListType.CIVIL_DAILY_CAUSE_LIST);
 
-        when(publicationService.getMiData()).thenReturn(List.of(publicationMiData, publicationMiData2));
+        when(publicationReportingService.getMiData()).thenReturn(List.of(publicationMiData, publicationMiData2));
 
         ResponseEntity<List<PublicationMiData>> response = publicationReportingController.getMiData();
 
@@ -58,7 +54,7 @@ class PublicationReportingControllerTest {
 
     @Test
     void testReportNoMatchArtefactsSuccess() {
-        doNothing().when(artefactTriggerService).reportNoMatchArtefacts();
+        doNothing().when(publicationReportingService).reportNoMatchArtefacts();
         assertThat(publicationReportingController.reportNoMatchArtefacts().getStatusCode())
             .as(STATUS_CODE_MATCH)
             .isEqualTo(HttpStatus.NO_CONTENT);

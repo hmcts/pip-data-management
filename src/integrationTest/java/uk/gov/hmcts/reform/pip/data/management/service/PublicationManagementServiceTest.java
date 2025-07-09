@@ -13,7 +13,8 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import uk.gov.hmcts.reform.pip.data.management.database.AzurePublicationBlobService;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
-import uk.gov.hmcts.reform.pip.data.management.service.publication.ArtefactService;
+import uk.gov.hmcts.reform.pip.data.management.service.location.LocationService;
+import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationRetrievalService;
 import uk.gov.hmcts.reform.pip.data.management.utils.IntegrationBasicTestBase;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
@@ -39,7 +40,7 @@ import static uk.gov.hmcts.reform.pip.model.publication.FileType.PDF;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class PublicationManagementServiceTest extends IntegrationBasicTestBase {
     @MockitoBean
-    private ArtefactService artefactService;
+    private PublicationRetrievalService artefactService;
 
     @MockitoBean
     private LocationService locationService;

@@ -12,7 +12,7 @@ import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.Unauthor
 import uk.gov.hmcts.reform.pip.data.management.models.PublicationFileSizes;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.ArtefactSummaryData;
-import uk.gov.hmcts.reform.pip.data.management.service.publication.ArtefactService;
+import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationRetrievalService;
 import uk.gov.hmcts.reform.pip.model.publication.FileType;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
@@ -34,7 +34,7 @@ public class PublicationManagementService {
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
     private final AzurePublicationBlobService azureBlobService;
-    private final ArtefactService artefactService;
+    private final PublicationRetrievalService artefactService;
     private final AccountManagementService accountManagementService;
     private final ListConversionFactory listConversionFactory;
     private final PublicationFileGenerationService publicationFileGenerationService;
@@ -42,7 +42,7 @@ public class PublicationManagementService {
 
     @Autowired
     public PublicationManagementService(AzurePublicationBlobService azureBlobService,
-                                        ArtefactService artefactService,
+                                        PublicationRetrievalService artefactService,
                                         AccountManagementService accountManagementService,
                                         ListConversionFactory listConversionFactory,
                                         PublicationFileGenerationService publicationFileGenerationService,

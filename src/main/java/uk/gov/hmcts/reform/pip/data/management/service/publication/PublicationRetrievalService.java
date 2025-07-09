@@ -9,22 +9,17 @@ import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.AzureArtefactBlobService;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ArtefactNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactHelper;
-import uk.gov.hmcts.reform.pip.data.management.models.location.LocationArtefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.service.AccountManagementService;
-import uk.gov.hmcts.reform.pip.model.location.LocationType;
-import uk.gov.hmcts.reform.pip.model.publication.ListType;
 import uk.gov.hmcts.reform.pip.model.publication.Sensitivity;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
 @Service
-public class ArtefactService {
+public class PublicationRetrievalService {
 
     private final ArtefactRepository artefactRepository;
     private final AccountManagementService accountManagementService;
@@ -40,9 +35,9 @@ public class ArtefactService {
     private int maxPayloadSizeForPdf;
 
     @Autowired
-    public ArtefactService(ArtefactRepository artefactRepository,
-                           AccountManagementService accountManagementService,
-                           AzureArtefactBlobService azureArtefactBlobService) {
+    public PublicationRetrievalService(ArtefactRepository artefactRepository,
+                                       AccountManagementService accountManagementService,
+                                       AzureArtefactBlobService azureArtefactBlobService) {
         this.artefactRepository = artefactRepository;
         this.accountManagementService = accountManagementService;
         this.azureArtefactBlobService = azureArtefactBlobService;
@@ -144,30 +139,6 @@ public class ArtefactService {
         }
     }
 
-    /**
-     * Returns what is essentially a CSV file with the count of artefacts in a given location.
-     *
-     * @return string representing the csv file.
-     */
-    public List<LocationArtefact> countArtefactsByLocation() {
-        List<LocationArtefact> artefactsPerLocations = new ArrayList<>();
-        List<Object[]> returnedData = artefactRepository.countArtefactsByLocation();
-        for (Object[] result : returnedData) {
-            artefactsPerLocations.add(
-                new LocationArtefact(result[0].toString(), Integer.parseInt(result[1].toString())));
-        }
-        artefactsPerLocations.add(new LocationArtefact("noMatch", artefactRepository.countNoMatchArtefacts()));
-        return artefactsPerLocations;
-    }
-
-    public List<Artefact> findAllNoMatchArtefacts() {
-        return artefactRepository.findAllNoMatchArtefacts();
-    }
-
-    public LocationType getLocationType(ListType listType) {
-        return listType.getListLocationLevel();
-    }
-
     public boolean payloadWithinJsonSearchLimit(Float artefactPayloadSize) {
         return artefactPayloadSize == null || artefactPayloadSize < maxPayloadSizeForJsonSearch;
     }
@@ -179,5 +150,4 @@ public class ArtefactService {
     public boolean payloadWithinPdfLimit(Float artefactPayloadSize) {
         return artefactPayloadSize == null || artefactPayloadSize < maxPayloadSizeForPdf;
     }
-
 }

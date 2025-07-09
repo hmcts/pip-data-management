@@ -8,17 +8,16 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.LocationRepository;
 import uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
-import uk.gov.hmcts.reform.pip.data.management.models.publication.NoMatchArtefact;
 import uk.gov.hmcts.reform.pip.data.management.service.AccountManagementService;
 import uk.gov.hmcts.reform.pip.data.management.service.PublicationServicesService;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,10 +25,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.lenient;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
-import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.ARTEFACT_ID;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.LOCATION_VENUE;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.PROVENANCE;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.PROVENANCE_ID;
@@ -39,8 +35,9 @@ import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTe
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.TEST_KEY;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.TEST_VALUE;
 
+@ActiveProfiles("test")
 @ExtendWith(MockitoExtension.class)
-class ArtefactTriggerServiceTest {
+public class PublicationSubscriptionServiceTest {
     private static final String ERROR_LOG_EMPTY = "Error log not empty";
 
     @Mock
@@ -52,11 +49,8 @@ class ArtefactTriggerServiceTest {
     @Mock
     AccountManagementService accountManagementService;
 
-    @Mock
-    PublicationServicesService publicationServicesService;
-
     @InjectMocks
-    ArtefactTriggerService artefactTriggerService;
+    PublicationSubscriptionService publicationSubscriptionService;
 
     private Artefact artefact;
     private Artefact artefactWithPayloadUrl;
@@ -66,7 +60,6 @@ class ArtefactTriggerServiceTest {
     private Artefact artefactFromNow;
     private Artefact artefactWithNullDateTo;
     private Artefact artefactWithSameDateFromAndTo;
-    private Artefact noMatchArtefact;
 
     @BeforeAll
     public static void setupSearchValues() {
@@ -102,7 +95,6 @@ class ArtefactTriggerServiceTest {
         artefactWithNullDateTo = ArtefactConstantTestHelper.buildArtefactWithNullDateTo();
         artefactWithSameDateFromAndTo = ArtefactConstantTestHelper.buildArtefactWithSameDateFromAndTo();
         artefactInTheFuture = ArtefactConstantTestHelper.buildArtefactInTheFuture();
-        noMatchArtefact = ArtefactConstantTestHelper.buildNoMatchArtefact();
     }
 
     private void createClassifiedPayloads() {
@@ -123,8 +115,8 @@ class ArtefactTriggerServiceTest {
 
     @Test
     void testTriggerIfDateIsFuture() throws IOException {
-        try (LogCaptor logCaptor = LogCaptor.forClass(ArtefactTriggerService.class)) {
-            artefactTriggerService.checkAndTriggerPublicationSubscription(artefactInTheFuture);
+        try (LogCaptor logCaptor = LogCaptor.forClass(PublicationSubscriptionService.class)) {
+            publicationSubscriptionService.checkAndTriggerPublicationSubscription(artefactInTheFuture);
             assertEquals(
                 0,
                 logCaptor.getInfoLogs().size(),
@@ -138,8 +130,8 @@ class ArtefactTriggerServiceTest {
     @Test
     void testTriggerIfDateIsNow() {
         when(accountManagementService.sendArtefactForSubscription(artefactFromNow)).thenReturn(SUCCESSFUL_TRIGGER);
-        try (LogCaptor logCaptor = LogCaptor.forClass(ArtefactTriggerService.class)) {
-            artefactTriggerService.checkAndTriggerPublicationSubscription(artefactFromNow);
+        try (LogCaptor logCaptor = LogCaptor.forClass(PublicationSubscriptionService.class)) {
+            publicationSubscriptionService.checkAndTriggerPublicationSubscription(artefactFromNow);
             assertTrue(ERROR_LOG_EMPTY, logCaptor.getErrorLogs().isEmpty());
         }
     }
@@ -147,8 +139,8 @@ class ArtefactTriggerServiceTest {
     @Test
     void testTriggerIfDateIsPast() {
         when(accountManagementService.sendArtefactForSubscription(artefactFromThePast)).thenReturn(SUCCESSFUL_TRIGGER);
-        try (LogCaptor logCaptor = LogCaptor.forClass(ArtefactTriggerService.class)) {
-            artefactTriggerService.checkAndTriggerPublicationSubscription(artefactFromThePast);
+        try (LogCaptor logCaptor = LogCaptor.forClass(PublicationSubscriptionService.class)) {
+            publicationSubscriptionService.checkAndTriggerPublicationSubscription(artefactFromThePast);
             assertTrue(ERROR_LOG_EMPTY, logCaptor.getErrorLogs().isEmpty());
         }
     }
@@ -157,8 +149,8 @@ class ArtefactTriggerServiceTest {
     void testTriggerIfDateToNull() {
         when(accountManagementService.sendArtefactForSubscription(artefactWithNullDateTo))
             .thenReturn(SUCCESSFUL_TRIGGER);
-        try (LogCaptor logCaptor = LogCaptor.forClass(ArtefactTriggerService.class)) {
-            artefactTriggerService.checkAndTriggerPublicationSubscription(artefactWithNullDateTo);
+        try (LogCaptor logCaptor = LogCaptor.forClass(PublicationSubscriptionService.class)) {
+            publicationSubscriptionService.checkAndTriggerPublicationSubscription(artefactWithNullDateTo);
             assertTrue(ERROR_LOG_EMPTY, logCaptor.getErrorLogs().isEmpty());
         }
     }
@@ -167,39 +159,21 @@ class ArtefactTriggerServiceTest {
     void testTriggerIfSameDateFromTo() {
         when(accountManagementService.sendArtefactForSubscription(artefactWithSameDateFromAndTo))
             .thenReturn(SUCCESSFUL_TRIGGER);
-        try (LogCaptor logCaptor = LogCaptor.forClass(ArtefactTriggerService.class)) {
-            artefactTriggerService.checkAndTriggerPublicationSubscription(artefactWithSameDateFromAndTo);
+        try (LogCaptor logCaptor = LogCaptor.forClass(PublicationSubscriptionService.class)) {
+            publicationSubscriptionService.checkAndTriggerPublicationSubscription(artefactWithSameDateFromAndTo);
             assertTrue(ERROR_LOG_EMPTY, logCaptor.getErrorLogs().isEmpty());
         }
     }
 
     @Test
     void testCheckNewlyActiveArtefactsLogs() throws IOException {
-        try (LogCaptor logCaptor = LogCaptor.forClass(ArtefactTriggerService.class)) {
+        try (LogCaptor logCaptor = LogCaptor.forClass(PublicationSubscriptionService.class)) {
             when(artefactRepository.findArtefactsByDisplayFrom(any())).thenReturn(List.of(new Artefact()));
             when(accountManagementService.sendArtefactForSubscription(any())).thenReturn(SUCCESS);
-            artefactTriggerService.checkNewlyActiveArtefacts();
+            publicationSubscriptionService.checkNewlyActiveArtefacts();
             assertTrue(ERROR_LOG_EMPTY, logCaptor.getErrorLogs().isEmpty());
         } catch (Exception ex) {
             throw new IOException(ex.getMessage());
         }
-    }
-
-    @Test
-    void testReportNoMatchArtefacts() {
-        when(artefactRepository.findAllNoMatchArtefacts()).thenReturn(List.of(noMatchArtefact));
-        artefactTriggerService.reportNoMatchArtefacts();
-        verify(publicationServicesService).sendNoMatchArtefactsForReporting(List.of(new NoMatchArtefact(
-            ARTEFACT_ID,
-            PROVENANCE,
-            PROVENANCE_ID
-        )));
-    }
-
-    @Test
-    void testReportMatchArtefactsWhenArtefactsNotFound() {
-        when(artefactRepository.findAllNoMatchArtefacts()).thenReturn(Collections.emptyList());
-        artefactTriggerService.reportNoMatchArtefacts();
-        verifyNoInteractions(publicationServicesService);
     }
 }

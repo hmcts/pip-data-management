@@ -57,7 +57,7 @@ class CreatePublicationRetryTest extends IntegrationCommonTestBase {
     ArtefactRepository artefactRepository;
 
     @Autowired
-    private PublicationService publicationService;
+    private PublicationCreationService publicationCreationService;
 
     @Test
     void testCreateJsonPublicationMaxAttemptsWithCannotAcquireLockException() {
@@ -68,7 +68,7 @@ class CreatePublicationRetryTest extends IntegrationCommonTestBase {
         when(azureArtefactBlobService.createPayload(any(), eq(PAYLOAD))).thenReturn(PAYLOAD_URL);
         when(artefactRepository.save(artefact)).thenThrow(CannotAcquireLockException.class);
 
-        assertThatThrownBy(() -> publicationService.createPublication(artefact, PAYLOAD))
+        assertThatThrownBy(() -> publicationCreationService.createPublication(artefact, PAYLOAD))
             .isInstanceOf(CannotAcquireLockException.class);
         verify(artefactRepository, times(RETRY_MAX_ATTEMPTS)).save(any());
     }
@@ -82,7 +82,7 @@ class CreatePublicationRetryTest extends IntegrationCommonTestBase {
         when(azureArtefactBlobService.createPayload(any(), eq(PAYLOAD))).thenReturn(PAYLOAD_URL);
         when(artefactRepository.save(artefact)).thenThrow(DataIntegrityViolationException.class);
 
-        assertThatThrownBy(() -> publicationService.createPublication(artefact, PAYLOAD))
+        assertThatThrownBy(() -> publicationCreationService.createPublication(artefact, PAYLOAD))
             .isInstanceOf(DataIntegrityViolationException.class);
         verify(artefactRepository, times(RETRY_MAX_ATTEMPTS)).save(any());
     }
@@ -99,7 +99,7 @@ class CreatePublicationRetryTest extends IntegrationCommonTestBase {
             .thenThrow(CannotAcquireLockException.class)
             .thenReturn(artefact);
 
-        assertThatCode(() -> publicationService.createPublication(artefact, PAYLOAD)).doesNotThrowAnyException();
+        assertThatCode(() -> publicationCreationService.createPublication(artefact, PAYLOAD)).doesNotThrowAnyException();
         verify(artefactRepository, times(3)).save(any());
     }
 
@@ -108,7 +108,7 @@ class CreatePublicationRetryTest extends IntegrationCommonTestBase {
         when(azureArtefactBlobService.createPayload(any(), eq(PAYLOAD))).thenReturn(PAYLOAD_URL);
         when(artefactRepository.save(artefact)).thenThrow(new JpaSystemException(new RuntimeException()));
 
-        assertThatThrownBy(() -> publicationService.createPublication(artefact, PAYLOAD))
+        assertThatThrownBy(() -> publicationCreationService.createPublication(artefact, PAYLOAD))
             .isInstanceOf(JpaSystemException.class);
 
         verify(azureArtefactBlobService).deleteBlob(PAYLOAD_STRIPPED);
@@ -119,7 +119,7 @@ class CreatePublicationRetryTest extends IntegrationCommonTestBase {
     void testCreateJsonPublicationDoesNotDeleteBlobOnErrorIfNoPayloadUrl() {
         when(azureArtefactBlobService.createPayload(any(), eq(PAYLOAD))).thenThrow(new RuntimeException());
 
-        assertThatThrownBy(() -> publicationService.createPublication(artefact, PAYLOAD))
+        assertThatThrownBy(() -> publicationCreationService.createPublication(artefact, PAYLOAD))
             .isInstanceOf(RuntimeException.class);
 
         verify(azureArtefactBlobService, never()).deleteBlob(anyString());
@@ -135,7 +135,7 @@ class CreatePublicationRetryTest extends IntegrationCommonTestBase {
         when(azureArtefactBlobService.uploadFlatFile(any(), eq(FILE))).thenReturn(PAYLOAD_URL);
         when(artefactRepository.save(artefact)).thenThrow(CannotAcquireLockException.class);
 
-        assertThatThrownBy(() -> publicationService.createPublication(artefact, FILE))
+        assertThatThrownBy(() -> publicationCreationService.createPublication(artefact, FILE))
             .isInstanceOf(CannotAcquireLockException.class);
         verify(artefactRepository, times(RETRY_MAX_ATTEMPTS)).save(any());
     }
@@ -149,7 +149,7 @@ class CreatePublicationRetryTest extends IntegrationCommonTestBase {
         when(azureArtefactBlobService.uploadFlatFile(any(), eq(FILE))).thenReturn(PAYLOAD_URL);
         when(artefactRepository.save(artefact)).thenThrow(DataIntegrityViolationException.class);
 
-        assertThatThrownBy(() -> publicationService.createPublication(artefact, FILE))
+        assertThatThrownBy(() -> publicationCreationService.createPublication(artefact, FILE))
             .isInstanceOf(DataIntegrityViolationException.class);
         verify(artefactRepository, times(RETRY_MAX_ATTEMPTS)).save(any());
     }
@@ -166,7 +166,7 @@ class CreatePublicationRetryTest extends IntegrationCommonTestBase {
             .thenThrow(DataIntegrityViolationException.class)
             .thenReturn(artefact);
 
-        assertThatCode(() -> publicationService.createPublication(artefact, PAYLOAD)).doesNotThrowAnyException();
+        assertThatCode(() -> publicationCreationService.createPublication(artefact, PAYLOAD)).doesNotThrowAnyException();
         verify(artefactRepository, times(3)).save(any());
     }
 
@@ -175,7 +175,7 @@ class CreatePublicationRetryTest extends IntegrationCommonTestBase {
         when(azureArtefactBlobService.uploadFlatFile(any(), eq(FILE))).thenReturn(PAYLOAD_URL);
         when(artefactRepository.save(artefact)).thenThrow(new JpaSystemException(new RuntimeException()));
 
-        assertThatThrownBy(() -> publicationService.createPublication(artefact, FILE))
+        assertThatThrownBy(() -> publicationCreationService.createPublication(artefact, FILE))
             .isInstanceOf(JpaSystemException.class);
 
         verify(azureArtefactBlobService).deleteBlob(PAYLOAD_STRIPPED);
@@ -186,7 +186,7 @@ class CreatePublicationRetryTest extends IntegrationCommonTestBase {
     void testCreateFlatFilePublicationDoesNotDeleteBlobOnErrorIfNoPayloadUrl() {
         when(azureArtefactBlobService.uploadFlatFile(any(), eq(FILE))).thenThrow(new RuntimeException());
 
-        assertThatThrownBy(() -> publicationService.createPublication(artefact, FILE))
+        assertThatThrownBy(() -> publicationCreationService.createPublication(artefact, FILE))
             .isInstanceOf(RuntimeException.class);
 
         verify(azureArtefactBlobService, never()).deleteBlob(anyString());

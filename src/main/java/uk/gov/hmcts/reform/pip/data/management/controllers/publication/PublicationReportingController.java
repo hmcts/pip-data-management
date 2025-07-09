@@ -14,8 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import uk.gov.hmcts.reform.pip.data.management.service.publication.ArtefactTriggerService;
-import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationService;
+import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationReportingService;
 import uk.gov.hmcts.reform.pip.model.authentication.roles.IsAdmin;
 import uk.gov.hmcts.reform.pip.model.report.PublicationMiData;
 
@@ -38,14 +37,11 @@ public class PublicationReportingController {
 
     private static final String BEARER_AUTHENTICATION = "bearerAuth";
 
-    private final PublicationService publicationService;
-    private final ArtefactTriggerService artefactTriggerService;
+    private final PublicationReportingService publicationReportingService;
 
     @Autowired
-    public PublicationReportingController(PublicationService publicationService,
-                                          ArtefactTriggerService artefactTriggerService) {
-        this.publicationService = publicationService;
-        this.artefactTriggerService = artefactTriggerService;
+    public PublicationReportingController(PublicationReportingService publicationReportingService) {
+        this.publicationReportingService = publicationReportingService;
     }
 
     @ApiResponse(responseCode = OK_CODE, description = "A JSON model which contains a list of artefacts")
@@ -56,7 +52,7 @@ public class PublicationReportingController {
     @IsAdmin
     @SecurityRequirement(name = BEARER_AUTHENTICATION)
     public ResponseEntity<List<PublicationMiData>> getMiData() {
-        return ResponseEntity.ok().body(publicationService.getMiData());
+        return ResponseEntity.ok().body(publicationReportingService.getMiData());
     }
 
     @ApiResponse(responseCode = NO_CONTENT_CODE, description = NO_CONTENT_DESCRIPTION)
@@ -68,7 +64,7 @@ public class PublicationReportingController {
     @IsAdmin
     @SecurityRequirement(name = BEARER_AUTHENTICATION)
     public ResponseEntity<Void> reportNoMatchArtefacts() {
-        artefactTriggerService.reportNoMatchArtefacts();
+        publicationReportingService.reportNoMatchArtefacts();
         return ResponseEntity.noContent().build();
     }
 }

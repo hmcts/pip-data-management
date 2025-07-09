@@ -11,11 +11,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ActiveProfiles("integration-basic")
 @SpringBootTest
-class ArtefactServiceTest extends IntegrationBasicTestBase {
+class PublicationRetrievalServiceTest extends IntegrationBasicTestBase {
     private static final String PAYLOAD_LIMIT_MESSAGE = "Payload limit result does not match";
 
     @Autowired
-    ArtefactService artefactService;
+    PublicationRetrievalService artefactService;
 
     @Test
     void shouldGenerateJsonSearchIfPayloadSizeWithinLimit() {

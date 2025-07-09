@@ -16,13 +16,9 @@ import uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelpe
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.service.PublicationManagementService;
-import uk.gov.hmcts.reform.pip.model.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
-import uk.gov.hmcts.reform.pip.model.publication.Sensitivity;
-import uk.gov.hmcts.reform.pip.model.report.PublicationMiData;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -74,7 +70,7 @@ class PublicationServiceTest {
     PublicationManagementService publicationManagementService;
 
     @InjectMocks
-    PublicationService publicationService;
+    PublicationCreationService publicationCreationService;
 
     private Artefact artefact;
     private Artefact artefactWithPayloadUrl;
@@ -113,7 +109,7 @@ class PublicationServiceTest {
         when(azureArtefactBlobService.createPayload(any(), eq(PAYLOAD))).thenReturn(PAYLOAD_URL);
         when(artefactRepository.save(any())).thenReturn(artefactWithIdAndPayloadUrl);
 
-        Artefact returnedArtefact = publicationService.createPublication(artefact, PAYLOAD);
+        Artefact returnedArtefact = publicationCreationService.createPublication(artefact, PAYLOAD);
 
         verify(azureArtefactBlobService, never()).deleteBlob(anyString());
         assertEquals(artefactWithIdAndPayloadUrl, returnedArtefact, ROWID_RETURNS_UUID);
@@ -127,7 +123,7 @@ class PublicationServiceTest {
         when(azureArtefactBlobService.createPayload(any(), eq(PAYLOAD))).thenReturn(PAYLOAD_URL);
         when(artefactRepository.save(any())).thenReturn(artefactWithIdAndPayloadUrl);
 
-        Artefact returnedArtefact = publicationService.createPublication(artefact, PAYLOAD);
+        Artefact returnedArtefact = publicationCreationService.createPublication(artefact, PAYLOAD);
 
         verify(azureArtefactBlobService, never()).deleteBlob(anyString());
         assertEquals(artefactWithIdAndPayloadUrl, returnedArtefact, ROWID_RETURNS_UUID);
@@ -167,7 +163,7 @@ class PublicationServiceTest {
         when(azureArtefactBlobService.createPayload(any(), eq(PAYLOAD))).thenReturn(PAYLOAD_URL);
         when(artefactRepository.save(any())).thenReturn(artefactToBeCreated);
 
-        Artefact returnedArtefact = publicationService.createPublication(artefact, PAYLOAD);
+        Artefact returnedArtefact = publicationCreationService.createPublication(artefact, PAYLOAD);
 
         verify(azureArtefactBlobService).deleteBlob(anyString());
         assertEquals(artefactToBeCreated, returnedArtefact, ROWID_RETURNS_UUID);
@@ -206,7 +202,7 @@ class PublicationServiceTest {
         when(azureArtefactBlobService.createPayload(any(), eq(PAYLOAD))).thenReturn(PAYLOAD_URL);
         when(artefactRepository.save(any())).thenReturn(artefactToBeCreated);
 
-        Artefact returnedArtefact = publicationService.createPublication(artefactToBeCreated, PAYLOAD);
+        Artefact returnedArtefact = publicationCreationService.createPublication(artefactToBeCreated, PAYLOAD);
 
         verify(azureArtefactBlobService).deleteBlob(anyString());
         verify(publicationManagementService).deleteFiles(artefactToBeCreated.getArtefactId(),
@@ -223,7 +219,7 @@ class PublicationServiceTest {
         when(azureArtefactBlobService.uploadFlatFile(any(), eq(FILE))).thenReturn(PAYLOAD_URL);
         when(artefactRepository.save(artefact)).thenReturn(artefactWithIdAndPayloadUrl);
 
-        Artefact returnedArtefact = publicationService.createPublication(artefact, FILE);
+        Artefact returnedArtefact = publicationCreationService.createPublication(artefact, FILE);
 
         verify(azureArtefactBlobService, never()).deleteBlob(anyString());
         assertEquals(artefactWithIdAndPayloadUrl, returnedArtefact, VALIDATION_ARTEFACT_NOT_MATCH);
@@ -235,7 +231,7 @@ class PublicationServiceTest {
         artefact.setLocationId(PROVENANCE_ID);
         artefact.setProvenance(MANUAL_UPLOAD_PROVENANCE);
 
-        publicationService.applyInternalLocationId(artefact);
+        publicationCreationService.applyInternalLocationId(artefact);
 
         verifyNoInteractions(locationRepository);
         assertThat(artefact.getLocationId()).isEqualTo(PROVENANCE_ID);
@@ -249,7 +245,7 @@ class PublicationServiceTest {
         when(locationRepository.findByLocationIdByProvenance(PROVENANCE, PROVENANCE_ID, LOCATION_VENUE))
             .thenReturn(Optional.of(location));
 
-        publicationService.applyInternalLocationId(artefact);
+        publicationCreationService.applyInternalLocationId(artefact);
         assertThat(artefact.getLocationId()).isEqualTo(LOCATION_ID);
     }
 
@@ -258,34 +254,34 @@ class PublicationServiceTest {
         when(locationRepository.findByLocationIdByProvenance(PROVENANCE, PROVENANCE_ID, LOCATION_VENUE))
             .thenReturn(Optional.empty());
 
-        publicationService.applyInternalLocationId(artefact);
+        publicationCreationService.applyInternalLocationId(artefact);
         assertThat(artefact.getLocationId()).isEqualTo("NoMatch" + PROVENANCE_ID);
     }
 
     @Test
     void testCreationOfNewArtefactWhenListTypeSjpPress() {
-        publicationService.applyInternalLocationId(artefact);
+        publicationCreationService.applyInternalLocationId(artefact);
         assertThat(artefact.getLocationId()).isEqualTo(NO_COURT_EXISTS_IN_REFERENCE_DATA);
     }
 
     @Test
     void testMaskEmail() {
         assertEquals("t*******@email.com",
-                     publicationService.maskEmail("testUser@email.com"),
+                     publicationCreationService.maskEmail("testUser@email.com"),
                      "Email was not masked correctly");
     }
 
     @Test
     void testMaskEmailNotValidEmail() {
         assertEquals("a****",
-                     publicationService.maskEmail("abcde"),
+                     publicationCreationService.maskEmail("abcde"),
                      "Email was not masked correctly");
     }
 
     @Test
     void testMaskEmailEmptyString() {
         assertEquals("",
-                     publicationService.maskEmail(""),
+                     publicationCreationService.maskEmail(""),
                      "Email was not masked correctly");
     }
 
@@ -305,7 +301,7 @@ class PublicationServiceTest {
         ArgumentCaptor<Artefact> captor = ArgumentCaptor.forClass(Artefact.class);
         when(artefactRepository.save(captor.capture())).thenReturn(artefactWithIdAndPayloadUrl);
 
-        publicationService.createPublication(artefact, PAYLOAD);
+        publicationCreationService.createPublication(artefact, PAYLOAD);
 
         assertEquals(1, captor.getValue().getSupersededCount(), "Superseded count has not been incremented");
     }
@@ -325,74 +321,8 @@ class PublicationServiceTest {
         ArgumentCaptor<Artefact> captor = ArgumentCaptor.forClass(Artefact.class);
         when(artefactRepository.save(captor.capture())).thenReturn(artefactWithIdAndPayloadUrl);
 
-        publicationService.createPublication(artefact, PAYLOAD);
+        publicationCreationService.createPublication(artefact, PAYLOAD);
 
         assertEquals(0, captor.getValue().getSupersededCount(), "Superseded count has been incremented");
-    }
-
-    @Test
-    void testGetMiData()  {
-        LocalDateTime localDateTime = LocalDateTime.now();
-        UUID randomId = UUID.randomUUID();
-
-        Location location = new Location();
-        location.setLocationId(1);
-        location.setName("Test Location");
-
-        PublicationMiData publicationMiData = new PublicationMiData(
-            randomId, localDateTime, localDateTime, Language.ENGLISH, MANUAL_UPLOAD_PROVENANCE,
-            Sensitivity.PUBLIC, randomId.toString(), 0, ArtefactType.GENERAL_PUBLICATION,
-            localDateTime,"1", ListType.CIVIL_DAILY_CAUSE_LIST);
-
-        PublicationMiData publicationMiData2 = new PublicationMiData(
-            UUID.randomUUID(), localDateTime, localDateTime, Language.ENGLISH, MANUAL_UPLOAD_PROVENANCE,
-            Sensitivity.PUBLIC, UUID.randomUUID().toString(), 1, ArtefactType.GENERAL_PUBLICATION,
-            localDateTime, "NoMatch2", ListType.CIVIL_DAILY_CAUSE_LIST);
-
-        when(locationRepository.findAll()).thenReturn(List.of(location));
-        when(artefactRepository.getMiData()).thenReturn(List.of(publicationMiData, publicationMiData2));
-
-        List<PublicationMiData> publicationMiDataList = publicationService.getMiData();
-
-        PublicationMiData publicationMiDataWithLocationName = new PublicationMiData(
-            randomId, localDateTime, localDateTime, Language.ENGLISH, MANUAL_UPLOAD_PROVENANCE,
-            Sensitivity.PUBLIC, randomId.toString(), 0, ArtefactType.GENERAL_PUBLICATION,
-            localDateTime,"1", ListType.CIVIL_DAILY_CAUSE_LIST);
-        publicationMiDataWithLocationName.setLocationName("Test Location");
-
-        assertIterableEquals(List.of(publicationMiDataWithLocationName, publicationMiData2), publicationMiDataList,
-                             "Publications MI do not match");
-    }
-
-    @Test
-    void testGetMiDataWhenArtefactRepositoryReturnsEmpty()  {
-        when(locationRepository.findAll()).thenReturn(List.of());
-
-        PublicationMiData publicationMiData = new PublicationMiData(
-            UUID.randomUUID(), LocalDateTime.now(), LocalDateTime.now(), Language.ENGLISH, MANUAL_UPLOAD_PROVENANCE,
-            Sensitivity.PUBLIC, UUID.randomUUID().toString(), 0, ArtefactType.GENERAL_PUBLICATION,
-            LocalDateTime.now(),"100", ListType.CIVIL_DAILY_CAUSE_LIST);
-
-        when(artefactRepository.getMiData()).thenReturn(List.of(publicationMiData));
-
-        List<PublicationMiData> publicationMiDataList = publicationService.getMiData();
-
-        assertThat(publicationMiDataList.get(0).getLocationName())
-            .as("Location name is not null").isNull();
-    }
-
-    @Test
-    void testGetMiDataWhenCourtIdIsADouble()  {
-        PublicationMiData publicationMiData = new PublicationMiData(
-            UUID.randomUUID(), LocalDateTime.now(), LocalDateTime.now(), Language.ENGLISH, MANUAL_UPLOAD_PROVENANCE,
-            Sensitivity.PUBLIC, UUID.randomUUID().toString(), 0, ArtefactType.GENERAL_PUBLICATION,
-            LocalDateTime.now(),"100.12", ListType.CIVIL_DAILY_CAUSE_LIST);
-
-        when(artefactRepository.getMiData()).thenReturn(List.of(publicationMiData));
-
-        List<PublicationMiData> publicationMiDataList = publicationService.getMiData();
-
-        assertThat(publicationMiDataList.get(0).getLocationName())
-            .as("Location name is not blank").isNull();
     }
 }

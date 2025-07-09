@@ -1,7 +1,6 @@
 package uk.gov.hmcts.reform.pip.data.management.service.publication;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.CannotAcquireLockException;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -19,23 +18,18 @@ import uk.gov.hmcts.reform.pip.data.management.helpers.NoMatchArtefactHelper;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.service.PublicationManagementService;
-import uk.gov.hmcts.reform.pip.model.report.PublicationMiData;
 
-import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 /**
- * This class contains the business logic for handling of Publications.
+ * This class contains the business logic for handling creation of publications.
  */
 
 @Slf4j
 @Service
-public class PublicationService {
+public class PublicationCreationService {
 
-    private static final char DELIMITER = ',';
     private static final int RETRY_MAX_ATTEMPTS = 5;
 
     private final ArtefactRepository artefactRepository;
@@ -46,21 +40,21 @@ public class PublicationService {
 
     private final PublicationManagementService publicationManagementService;
 
-    private final ArtefactTriggerService artefactTriggerService;
+    private final PublicationSubscriptionService publicationSubscriptionService;
 
     private static final String MANUAL_UPLOAD_VALUE = "MANUAL_UPLOAD";
 
     @Autowired
-    public PublicationService(ArtefactRepository artefactRepository,
-                              AzureArtefactBlobService azureArtefactBlobService,
-                              LocationRepository locationRepository,
-                              PublicationManagementService publicationManagementService,
-                              ArtefactTriggerService artefactTriggerService) {
+    public PublicationCreationService(ArtefactRepository artefactRepository,
+                                      AzureArtefactBlobService azureArtefactBlobService,
+                                      LocationRepository locationRepository,
+                                      PublicationManagementService publicationManagementService,
+                                      PublicationSubscriptionService publicationSubscriptionService) {
         this.artefactRepository = artefactRepository;
         this.azureArtefactBlobService = azureArtefactBlobService;
         this.locationRepository = locationRepository;
         this.publicationManagementService = publicationManagementService;
-        this.artefactTriggerService = artefactTriggerService;
+        this.publicationSubscriptionService = publicationSubscriptionService;
     }
 
     /**
@@ -116,7 +110,7 @@ public class PublicationService {
     @Async
     public void processCreatedPublication(Artefact artefact, String payload) {
         publicationManagementService.generateFiles(artefact.getArtefactId(), payload);
-        artefactTriggerService.checkAndTriggerPublicationSubscription(artefact);
+        publicationSubscriptionService.checkAndTriggerPublicationSubscription(artefact);
     }
 
     /**
@@ -174,30 +168,5 @@ public class PublicationService {
             return emailToMask.replaceAll("(^([^@])|(?!^)\\G)[^@]", "$1*"); //NOSONAR
         }
         return emailToMask;
-    }
-
-    /**
-     * Retrieve artefact data for MI reporting.
-     * @return MI artefact data as a list of PublicationMiData objects
-     */
-    @SuppressWarnings("PMD.EmptyCatchBlock")
-    public List<PublicationMiData> getMiData() {
-        List<PublicationMiData> publicationMiData =  artefactRepository.getMiData();
-
-        Map<Integer, String> location = locationRepository.findAll()
-            .stream().collect(Collectors.toMap(Location::getLocationId, Location::getName));
-
-        for (PublicationMiData miData : publicationMiData) {
-            if (NumberUtils.isParsable(miData.getLocationId())) {
-                try {
-                    miData.setLocationName(
-                        location.getOrDefault(Integer.parseInt(miData.getLocationId()), null));
-                } catch (NumberFormatException e) {
-                    // To catch where location ID is a number, but not a valid integer
-                }
-            }
-        }
-
-        return publicationMiData;
     }
 }

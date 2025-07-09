@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import uk.gov.hmcts.reform.pip.data.management.service.publication.ArtefactTriggerService;
+import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationSubscriptionService;
 import uk.gov.hmcts.reform.pip.model.authentication.roles.IsAdmin;
 
 @Slf4j
@@ -32,11 +32,11 @@ public class PublicationSubscriptionController {
 
     private static final String BEARER_AUTHENTICATION = "bearerAuth";
 
-    private final ArtefactTriggerService artefactTriggerService;
+    private final PublicationSubscriptionService publicationSubscriptionService;
 
     @Autowired
-    public PublicationSubscriptionController(ArtefactTriggerService artefactTriggerService) {
-        this.artefactTriggerService = artefactTriggerService;
+    public PublicationSubscriptionController(PublicationSubscriptionService publicationSubscriptionService) {
+        this.publicationSubscriptionService = publicationSubscriptionService;
     }
 
     @ApiResponse(responseCode = NO_CONTENT_CODE, description = NO_CONTENT_DESCRIPTION)
@@ -48,7 +48,7 @@ public class PublicationSubscriptionController {
     @IsAdmin
     @SecurityRequirement(name = BEARER_AUTHENTICATION)
     public ResponseEntity<Void> sendNewArtefactsForSubscription() {
-        artefactTriggerService.checkNewlyActiveArtefacts();
+        publicationSubscriptionService.checkNewlyActiveArtefacts();
         return ResponseEntity.noContent().build();
     }
 

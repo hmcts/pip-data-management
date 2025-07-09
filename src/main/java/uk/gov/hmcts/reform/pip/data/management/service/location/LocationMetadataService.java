@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.pip.data.management.service;
+package uk.gov.hmcts.reform.pip.data.management.service.location;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;

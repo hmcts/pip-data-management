@@ -8,6 +8,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.LocationRepository;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ArtefactNotFoundException;
@@ -51,8 +52,9 @@ import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTe
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ConstantsTestHelper.MESSAGES_MATCH;
 
 @SuppressWarnings({"PMD.ExcessiveImports"})
+@ActiveProfiles("test")
 @ExtendWith(MockitoExtension.class)
-class ArtefactSearchServiceTest {
+class PublicationSearchServiceTest {
     @Mock
     ArtefactRepository artefactRepository;
 
@@ -60,10 +62,10 @@ class ArtefactSearchServiceTest {
     LocationRepository locationRepository;
 
     @Mock
-    ArtefactService artefactService;
+    PublicationRetrievalService artefactService;
 
     @InjectMocks
-    ArtefactSearchService artefactSearchService;
+    PublicationSearchService publicationSearchService;
 
     private Artefact artefact;
     private Artefact artefactWithPayloadUrl;
@@ -168,7 +170,7 @@ class ArtefactSearchServiceTest {
         when(artefactService.isAuthorised(artefactClassified, USER_ID))
             .thenReturn(true);
 
-        assertEquals(artefactList, artefactSearchService.findAllByLocationId(ABC, USER_ID),
+        assertEquals(artefactList, publicationSearchService.findAllByLocationId(ABC, USER_ID),
                      VALIDATION_ARTEFACT_NOT_MATCH
         );
     }
@@ -204,7 +206,7 @@ class ArtefactSearchServiceTest {
         when(artefactService.isAuthorised(artefactClassified, USER_ID))
             .thenReturn(false);
 
-        List<Artefact> artefacts = artefactSearchService.findAllByLocationId(ABC, USER_ID);
+        List<Artefact> artefacts = publicationSearchService.findAllByLocationId(ABC, USER_ID);
 
         assertEquals(1, artefacts.size(), VALIDATION_MORE_THAN_PUBLIC);
         assertEquals(artefactPublic, artefacts.get(0), VALIDATION_ARTEFACT_NOT_MATCH);
@@ -239,7 +241,7 @@ class ArtefactSearchServiceTest {
         when(artefactService.isAuthorised(artefactPublic, USER_ID))
             .thenReturn(true);
 
-        List<Artefact> artefacts = artefactSearchService.findAllByLocationId(ABC, USER_ID);
+        List<Artefact> artefacts = publicationSearchService.findAllByLocationId(ABC, USER_ID);
 
         assertEquals(1, artefacts.size(), VALIDATION_MORE_THAN_PUBLIC);
         assertEquals(artefactPublic, artefacts.get(0), VALIDATION_ARTEFACT_NOT_MATCH);
@@ -259,7 +261,7 @@ class ArtefactSearchServiceTest {
 
         assertEquals(
             list,
-            artefactSearchService.findAllBySearch(SEARCH_TERM_CASE_ID, TEST_VALUE, USER_ID),
+            publicationSearchService.findAllBySearch(SEARCH_TERM_CASE_ID, TEST_VALUE, USER_ID),
             VALIDATION_ARTEFACT_NOT_MATCH
         );
     }
@@ -276,7 +278,7 @@ class ArtefactSearchServiceTest {
         when(artefactService.isAuthorised(artefactWithIdAndPayloadUrlClassified, USER_ID))
             .thenReturn(false);
 
-        List<Artefact> artefacts = artefactSearchService.findAllBySearch(SEARCH_TERM_CASE_ID, TEST_VALUE, USER_ID);
+        List<Artefact> artefacts = publicationSearchService.findAllBySearch(SEARCH_TERM_CASE_ID, TEST_VALUE, USER_ID);
 
         assertEquals(1, artefacts.size(), VALIDATION_MORE_THAN_PUBLIC);
         assertEquals(artefactWithIdAndPayloadUrl, artefacts.get(0), VALIDATION_ARTEFACT_NOT_MATCH);
@@ -291,7 +293,7 @@ class ArtefactSearchServiceTest {
         when(artefactService.isAuthorised(artefactWithIdAndPayloadUrl, USER_ID))
             .thenReturn(true);
 
-        List<Artefact> artefacts = artefactSearchService.findAllBySearch(SEARCH_TERM_CASE_ID, TEST_VALUE, USER_ID);
+        List<Artefact> artefacts = publicationSearchService.findAllBySearch(SEARCH_TERM_CASE_ID, TEST_VALUE, USER_ID);
 
         assertEquals(1, artefacts.size(), VALIDATION_MORE_THAN_PUBLIC);
         assertEquals(artefactWithIdAndPayloadUrl, artefacts.get(0), VALIDATION_ARTEFACT_NOT_MATCH);
@@ -300,7 +302,7 @@ class ArtefactSearchServiceTest {
     @Test
     void testFindAllNoArtefactsThrowsNotFound() {
         ArtefactNotFoundException ex = assertThrows(ArtefactNotFoundException.class, () ->
-            artefactSearchService.findAllBySearch(SEARCH_TERM_CASE_ID, "not found", USER_ID)
+            publicationSearchService.findAllBySearch(SEARCH_TERM_CASE_ID, "not found", USER_ID)
         );
         assertEquals("No Artefacts found with for CASE_ID with the value: not found",
                      ex.getMessage(), MESSAGES_MATCH
@@ -321,7 +323,7 @@ class ArtefactSearchServiceTest {
 
         assertEquals(
             list,
-            artefactSearchService.findAllBySearch(SEARCH_TERM_CASE_NAME, TEST_VALUE, USER_ID),
+            publicationSearchService.findAllBySearch(SEARCH_TERM_CASE_NAME, TEST_VALUE, USER_ID),
             VALIDATION_ARTEFACT_NOT_MATCH
         );
     }
@@ -338,7 +340,7 @@ class ArtefactSearchServiceTest {
         when(artefactService.isAuthorised(artefactWithIdAndPayloadUrlClassified, USER_ID))
             .thenReturn(false);
 
-        List<Artefact> artefacts = artefactSearchService.findAllBySearch(SEARCH_TERM_CASE_NAME, TEST_VALUE, USER_ID);
+        List<Artefact> artefacts = publicationSearchService.findAllBySearch(SEARCH_TERM_CASE_NAME, TEST_VALUE, USER_ID);
 
         assertEquals(1, artefacts.size(), VALIDATION_MORE_THAN_PUBLIC);
         assertEquals(artefactWithIdAndPayloadUrl, artefacts.get(0), VALIDATION_ARTEFACT_NOT_MATCH);
@@ -353,7 +355,7 @@ class ArtefactSearchServiceTest {
         when(artefactService.isAuthorised(artefactWithIdAndPayloadUrl, null))
             .thenReturn(true);
 
-        List<Artefact> artefacts = artefactSearchService.findAllBySearch(SEARCH_TERM_CASE_NAME, TEST_VALUE, null);
+        List<Artefact> artefacts = publicationSearchService.findAllBySearch(SEARCH_TERM_CASE_NAME, TEST_VALUE, null);
 
         assertEquals(1, artefacts.size(), VALIDATION_MORE_THAN_PUBLIC);
         assertEquals(artefactWithIdAndPayloadUrl, artefacts.get(0), VALIDATION_ARTEFACT_NOT_MATCH);
@@ -373,7 +375,7 @@ class ArtefactSearchServiceTest {
 
         assertEquals(
             list,
-            artefactSearchService.findAllBySearch(SEARCH_TERM_CASE_URN, TEST_VALUE, USER_ID),
+            publicationSearchService.findAllBySearch(SEARCH_TERM_CASE_URN, TEST_VALUE, USER_ID),
             VALIDATION_ARTEFACT_NOT_MATCH
         );
     }
@@ -390,7 +392,7 @@ class ArtefactSearchServiceTest {
         when(artefactService.isAuthorised(artefactWithIdAndPayloadUrlClassified, USER_ID))
             .thenReturn(false);
 
-        List<Artefact> artefacts = artefactSearchService.findAllBySearch(SEARCH_TERM_CASE_URN, TEST_VALUE, USER_ID);
+        List<Artefact> artefacts = publicationSearchService.findAllBySearch(SEARCH_TERM_CASE_URN, TEST_VALUE, USER_ID);
 
         assertEquals(1, artefacts.size(), VALIDATION_MORE_THAN_PUBLIC);
         assertEquals(artefactWithIdAndPayloadUrl, artefacts.get(0), VALIDATION_ARTEFACT_NOT_MATCH);
@@ -405,7 +407,7 @@ class ArtefactSearchServiceTest {
         when(artefactService.isAuthorised(artefactWithIdAndPayloadUrl, null))
             .thenReturn(true);
 
-        List<Artefact> artefacts = artefactSearchService.findAllBySearch(SEARCH_TERM_CASE_URN, TEST_VALUE, null);
+        List<Artefact> artefacts = publicationSearchService.findAllBySearch(SEARCH_TERM_CASE_URN, TEST_VALUE, null);
 
         assertEquals(1, artefacts.size(), VALIDATION_MORE_THAN_PUBLIC);
         assertEquals(artefactWithIdAndPayloadUrl, artefacts.get(0), VALIDATION_ARTEFACT_NOT_MATCH);
@@ -426,7 +428,7 @@ class ArtefactSearchServiceTest {
         when(artefactRepository.findArtefactsByLocationId(any(), any())).thenReturn(List.of(artefact));
         when(artefactService.isAuthorised(artefact, USER_ID))
             .thenReturn(true);
-        assertEquals(List.of(artefact), artefactSearchService.findAllByLocationIdAdmin(TEST_VALUE, USER_ID, false),
+        assertEquals(List.of(artefact), publicationSearchService.findAllByLocationIdAdmin(TEST_VALUE, USER_ID, false),
                      VALIDATION_ARTEFACT_NOT_MATCH
         );
     }
@@ -434,7 +436,7 @@ class ArtefactSearchServiceTest {
     @Test
     void testFindAllByCourtIdAdmin() {
         when(artefactRepository.findArtefactsByLocationIdAdmin(TEST_VALUE)).thenReturn(List.of(artefact));
-        assertEquals(List.of(artefact), artefactSearchService.findAllByLocationIdAdmin(TEST_VALUE, USER_ID, true),
+        assertEquals(List.of(artefact), publicationSearchService.findAllByLocationIdAdmin(TEST_VALUE, USER_ID, true),
                      VALIDATION_ARTEFACT_NOT_MATCH
         );
     }

@@ -21,8 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationArtefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.views.ArtefactView;
-import uk.gov.hmcts.reform.pip.data.management.service.publication.ArtefactDeleteService;
-import uk.gov.hmcts.reform.pip.data.management.service.publication.ArtefactService;
+import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationLocationService;
 import uk.gov.hmcts.reform.pip.model.authentication.roles.IsAdmin;
 import uk.gov.hmcts.reform.pip.model.location.LocationType;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
@@ -45,14 +44,11 @@ public class PublicationLocationController {
 
     private static final String BEARER_AUTHENTICATION = "bearerAuth";
 
-    private final ArtefactService artefactService;
-    private final ArtefactDeleteService artefactDeleteService;
+    private final PublicationLocationService publicationLocationService;
 
     @Autowired
-    public PublicationLocationController(ArtefactService artefactService,
-                                         ArtefactDeleteService artefactDeleteService) {
-        this.artefactService = artefactService;
-        this.artefactDeleteService = artefactDeleteService;
+    public PublicationLocationController(PublicationLocationService publicationLocationService) {
+        this.publicationLocationService = publicationLocationService;
     }
 
     @ApiResponse(responseCode = OK_CODE, description = "Data Management - Artefact count per location - request "
@@ -65,14 +61,14 @@ public class PublicationLocationController {
     @IsAdmin
     @SecurityRequirement(name = BEARER_AUTHENTICATION)
     public ResponseEntity<List<LocationArtefact>> countByLocation() {
-        return ResponseEntity.ok(artefactService.countArtefactsByLocation());
+        return ResponseEntity.ok(publicationLocationService.countArtefactsByLocation());
     }
 
     @ApiResponse(responseCode = OK_CODE, description = "{Location type associated with given list type}")
     @Operation(summary = "Return the Location type associated with a given list type")
     @GetMapping("/location-type/{listType}")
     public ResponseEntity<LocationType> getLocationType(@PathVariable ListType listType) {
-        return ResponseEntity.ok(artefactService.getLocationType(listType));
+        return ResponseEntity.ok(publicationLocationService.getLocationType(listType));
     }
 
     @ApiResponse(responseCode = OK_CODE, description = "List of all artefacts that are noMatch in their id")
@@ -84,7 +80,7 @@ public class PublicationLocationController {
     @IsAdmin
     @SecurityRequirement(name = BEARER_AUTHENTICATION)
     public ResponseEntity<List<Artefact>> getAllNoMatchArtefacts() {
-        return ResponseEntity.ok(artefactService.findAllNoMatchArtefacts());
+        return ResponseEntity.ok(publicationLocationService.findAllNoMatchArtefacts());
     }
 
     @ApiResponse(responseCode = OK_CODE, description = "Successfully deleted artefact for location: {locationId}")
@@ -98,6 +94,6 @@ public class PublicationLocationController {
     public ResponseEntity<String> deleteArtefactsByLocation(
         @RequestHeader("x-user-id") String userId,
         @PathVariable Integer locationId) throws JsonProcessingException {
-        return ResponseEntity.ok(artefactDeleteService.deleteArtefactByLocation(locationId, userId));
+        return ResponseEntity.ok(publicationLocationService.deleteArtefactByLocation(locationId, userId));
     }
 }

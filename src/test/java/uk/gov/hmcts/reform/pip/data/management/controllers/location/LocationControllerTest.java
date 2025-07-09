@@ -14,7 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.testcontainers.shaded.org.apache.commons.io.IOUtils;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationDeletion;
-import uk.gov.hmcts.reform.pip.data.management.service.LocationService;
+import uk.gov.hmcts.reform.pip.data.management.service.location.LocationService;
 import uk.gov.hmcts.reform.pip.model.location.LocationCsv;
 
 import java.io.IOException;

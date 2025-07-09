@@ -25,7 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationDeletion;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationViews;
-import uk.gov.hmcts.reform.pip.data.management.service.LocationService;
+import uk.gov.hmcts.reform.pip.data.management.service.location.LocationService;
 import uk.gov.hmcts.reform.pip.model.authentication.roles.IsAdmin;
 
 import java.io.IOException;

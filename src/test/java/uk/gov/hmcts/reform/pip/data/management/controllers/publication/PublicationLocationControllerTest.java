@@ -10,8 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationArtefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
-import uk.gov.hmcts.reform.pip.data.management.service.publication.ArtefactDeleteService;
-import uk.gov.hmcts.reform.pip.data.management.service.publication.ArtefactService;
+import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationLocationService;
 import uk.gov.hmcts.reform.pip.model.location.LocationType;
 import uk.gov.hmcts.reform.pip.model.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
@@ -61,10 +60,7 @@ class PublicationLocationControllerTest {
         .build();
 
     @Mock
-    private ArtefactService artefactService;
-
-    @Mock
-    private ArtefactDeleteService artefactDeleteService;
+    private PublicationLocationService publicationLocationService;
 
     @InjectMocks
     private PublicationLocationController publicationLocationController;
@@ -72,7 +68,7 @@ class PublicationLocationControllerTest {
     @Test
     void checkCountArtefactByLocationReturnsData() {
         COURT_PER_LOCATION.add(new LocationArtefact("1", 2));
-        when(artefactService.countArtefactsByLocation()).thenReturn(COURT_PER_LOCATION);
+        when(publicationLocationService.countArtefactsByLocation()).thenReturn(COURT_PER_LOCATION);
         ResponseEntity<List<LocationArtefact>> result = publicationLocationController.countByLocation();
         assertEquals(HttpStatus.OK, result.getStatusCode(), STATUS_CODE_MATCH);
         assertEquals(COURT_PER_LOCATION, result.getBody(), NOT_EQUAL_MESSAGE);
@@ -80,7 +76,7 @@ class PublicationLocationControllerTest {
 
     @Test
     void testGetLocationTypeReturnsOk() {
-        when(artefactService.getLocationType(ListType.CIVIL_DAILY_CAUSE_LIST)).thenReturn(LocationType.VENUE);
+        when(publicationLocationService.getLocationType(ListType.CIVIL_DAILY_CAUSE_LIST)).thenReturn(LocationType.VENUE);
         assertEquals(
             HttpStatus.OK,
             publicationLocationController.getLocationType(ListType.CIVIL_DAILY_CAUSE_LIST).getStatusCode(),
@@ -92,7 +88,7 @@ class PublicationLocationControllerTest {
     void testGetAllNoMatchArtefacts() {
         List<Artefact> artefactList = List.of(ARTEFACT_WITH_ID);
 
-        when(artefactService.findAllNoMatchArtefacts()).thenReturn(artefactList);
+        when(publicationLocationService.findAllNoMatchArtefacts()).thenReturn(artefactList);
 
         ResponseEntity<List<Artefact>> response = publicationLocationController.getAllNoMatchArtefacts();
 
@@ -104,7 +100,7 @@ class PublicationLocationControllerTest {
     void testDeleteArtefactsByLocationReturnsOk() throws JsonProcessingException {
         int locationId = 1;
         String requesterId = UUID.randomUUID().toString();
-        when(artefactDeleteService.deleteArtefactByLocation(locationId, requesterId)).thenReturn("Success");
+        when(publicationLocationService.deleteArtefactByLocation(locationId, requesterId)).thenReturn("Success");
 
         assertEquals(HttpStatus.OK,
                      publicationLocationController.deleteArtefactsByLocation(requesterId, locationId).getStatusCode(),

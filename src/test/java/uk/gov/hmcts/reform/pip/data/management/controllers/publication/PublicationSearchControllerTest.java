@@ -8,7 +8,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
-import uk.gov.hmcts.reform.pip.data.management.service.publication.ArtefactSearchService;
+import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationSearchService;
 import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
 import uk.gov.hmcts.reform.pip.model.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
@@ -59,14 +59,14 @@ class PublicationSearchControllerTest {
         .build();
 
     @Mock
-    private ArtefactSearchService artefactSearchService;
+    private PublicationSearchService publicationSearchService;
 
     @InjectMocks
     private PublicationSearchController publicationSearchController;
 
     @Test
     void testGetArtefactsBySearchReturnsWhenTrue() {
-        when(artefactSearchService.findAllBySearch(SEARCH_TERM, TEST_STRING, USER_ID))
+        when(publicationSearchService.findAllBySearch(SEARCH_TERM, TEST_STRING, USER_ID))
             .thenReturn(List.of(ARTEFACT_WITH_ID));
         assertEquals(HttpStatus.OK, publicationSearchController
                          .getAllRelevantArtefactsBySearchValue(SEARCH_TERM, TEST_STRING, USER_ID).getStatusCode(),
@@ -76,7 +76,7 @@ class PublicationSearchControllerTest {
 
     @Test
     void testGetArtefactsBySearchReturnsWhenFalse() {
-        when(artefactSearchService.findAllBySearch(SEARCH_TERM, TEST_STRING, USER_ID))
+        when(publicationSearchService.findAllBySearch(SEARCH_TERM, TEST_STRING, USER_ID))
             .thenReturn(List.of(ARTEFACT_WITH_ID));
         assertEquals(HttpStatus.OK, publicationSearchController
                          .getAllRelevantArtefactsBySearchValue(SEARCH_TERM, TEST_STRING, USER_ID)
@@ -89,7 +89,7 @@ class PublicationSearchControllerTest {
     void checkGetArtefactsByCourtIdReturnsOkWhenFalse() {
         List<Artefact> artefactList = List.of(ARTEFACT_WITH_ID);
 
-        when(artefactSearchService.findAllByLocationIdAdmin(EMPTY_FIELD, USER_ID, false)).thenReturn(artefactList);
+        when(publicationSearchService.findAllByLocationIdAdmin(EMPTY_FIELD, USER_ID, false)).thenReturn(artefactList);
         ResponseEntity<List<Artefact>> unmappedArtefact = publicationSearchController
             .getAllRelevantArtefactsByLocationId(EMPTY_FIELD, USER_ID, false);
 

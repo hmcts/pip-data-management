@@ -14,13 +14,13 @@ import java.util.UUID;
 
 @Slf4j
 @Service
-public class ArtefactSearchService {
+public class PublicationSearchService {
     private final ArtefactRepository artefactRepository;
-    private final ArtefactService artefactService;
+    private final PublicationRetrievalService artefactService;
 
     @Autowired
-    public ArtefactSearchService(ArtefactRepository artefactRepository,
-                                 ArtefactService artefactService) {
+    public PublicationSearchService(ArtefactRepository artefactRepository,
+                                    PublicationRetrievalService artefactService) {
         this.artefactRepository = artefactRepository;
         this.artefactService = artefactService;
     }

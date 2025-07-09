@@ -22,7 +22,7 @@ import uk.gov.hmcts.reform.pip.data.management.models.PublicationFiles;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.CivilDailyCauseListSummaryData;
 import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.NonStrategicListSummaryData;
-import uk.gov.hmcts.reform.pip.data.management.service.publication.ArtefactService;
+import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationRetrievalService;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 import uk.gov.hmcts.reform.pip.model.publication.Sensitivity;
@@ -54,7 +54,7 @@ import static uk.gov.hmcts.reform.pip.model.publication.FileType.PDF;
 @SuppressWarnings({"PMD.ExcessiveImports"})
 class PublicationManagementServiceTest {
     @Mock
-    private ArtefactService artefactService;
+    private PublicationRetrievalService artefactService;
 
     @Mock
     private AccountManagementService accountManagementService;

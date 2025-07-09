@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.pip.data.management.service;
+package uk.gov.hmcts.reform.pip.data.management.service.location;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CreateLocationMetadataConflictException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.LocationMetadataNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationMetadata;
-import uk.gov.hmcts.reform.pip.data.management.service.LocationMetadataService;
+import uk.gov.hmcts.reform.pip.data.management.service.location.LocationMetadataService;
 
 import java.util.UUID;
 

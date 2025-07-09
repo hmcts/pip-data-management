@@ -16,8 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.views.ArtefactView;
-import uk.gov.hmcts.reform.pip.data.management.service.publication.ArtefactSearchService;
-import uk.gov.hmcts.reform.pip.data.management.service.publication.ArtefactService;
+import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationSearchService;
 import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
 import uk.gov.hmcts.reform.pip.model.authentication.roles.IsAdmin;
 
@@ -46,13 +45,11 @@ public class PublicationSearchController {
     private static final String BEARER_AUTHENTICATION = "bearerAuth";
     private static final String DEFAULT_ADMIN_VALUE = "false";
 
-    private final ArtefactSearchService artefactSearchService;
-    private final ArtefactService artefactService;
+    private final PublicationSearchService publicationSearchService;
 
     @Autowired
-    public PublicationSearchController(ArtefactSearchService artefactSearchService, ArtefactService artefactService) {
-        this.artefactSearchService = artefactSearchService;
-        this.artefactService = artefactService;
+    public PublicationSearchController(PublicationSearchService publicationSearchService) {
+        this.publicationSearchService = publicationSearchService;
     }
 
     @ApiResponse(responseCode = OK_CODE, description = "List of Artefacts matching"
@@ -69,7 +66,7 @@ public class PublicationSearchController {
     public ResponseEntity<List<Artefact>> getAllRelevantArtefactsBySearchValue(
         @PathVariable CaseSearchTerm searchTerm, @PathVariable String searchValue,
         @RequestHeader(value = USER_ID_HEADER,  required = false) UUID userId) {
-        return ResponseEntity.ok(artefactSearchService.findAllBySearch(searchTerm, searchValue, userId));
+        return ResponseEntity.ok(publicationSearchService.findAllBySearch(searchTerm, searchValue, userId));
     }
 
     @ApiResponse(responseCode = OK_CODE, description = "List of Artefacts matching the given locationId and "
@@ -86,6 +83,6 @@ public class PublicationSearchController {
         @PathVariable String locationId,
         @RequestHeader(value = USER_ID_HEADER, required = false) UUID userId,
         @RequestHeader(value = ADMIN_HEADER, defaultValue = DEFAULT_ADMIN_VALUE, required = false) Boolean isAdmin) {
-        return ResponseEntity.ok(artefactSearchService.findAllByLocationIdAdmin(locationId, userId, isAdmin));
+        return ResponseEntity.ok(publicationSearchService.findAllByLocationIdAdmin(locationId, userId, isAdmin));
     }
 }
