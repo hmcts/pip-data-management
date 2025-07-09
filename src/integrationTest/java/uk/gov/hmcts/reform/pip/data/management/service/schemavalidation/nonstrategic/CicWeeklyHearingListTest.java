@@ -29,9 +29,9 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 @ActiveProfiles("integration-basic")
 @SpringBootTest
-class WpafccWeeklyHearingListTest extends IntegrationBasicTestBase {
+class CicWeeklyHearingListTest extends IntegrationBasicTestBase {
     private static final String VALID_JSON =
-        "data/non-strategic/wpafcc-weekly-hearing-list/wpafccWeeklyHearingList.json";
+        "data/non-strategic/cic-weekly-hearing-list/cicWeeklyHearingList.json";
     private static final String INVALID_MESSAGE = "Invalid JSON list marked as valid";
 
     private static final String SOURCE_ARTEFACT_ID = "sourceArtefactId";
@@ -57,7 +57,7 @@ class WpafccWeeklyHearingListTest extends IntegrationBasicTestBase {
     @BeforeEach
     void setup() {
         headerGroup = new HeaderGroup(PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE, SENSITIVITY, LANGUAGE,
-                                      DISPLAY_FROM, DISPLAY_TO, ListType.WPAFCC_WEEKLY_HEARING_LIST, COURT_ID,
+                                      DISPLAY_FROM, DISPLAY_TO, ListType.CIC_WEEKLY_HEARING_LIST, COURT_ID,
                                       CONTENT_DATE);
     }
 
@@ -122,43 +122,43 @@ class WpafccWeeklyHearingListTest extends IntegrationBasicTestBase {
     }
 
     @Test
-    void testValidateWithErrorsWhenPanelMissingInList() throws IOException {
-        try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(VALID_JSON)) {
-            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
-
-            JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(0)).remove("panel");
-
-            assertThatExceptionOfType(PayloadValidationException.class)
-                .as(INVALID_MESSAGE)
-                .isThrownBy(() -> validationService.validateBody(node.toString(), headerGroup, false));
-        }
-    }
-
-    @Test
-    void testValidateWithErrorsWhenModeOfHearingMissingInList() throws IOException {
-        try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(VALID_JSON)) {
-            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
-
-            JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(0)).remove("modeOfHearing");
-
-            assertThatExceptionOfType(PayloadValidationException.class)
-                .as(INVALID_MESSAGE)
-                .isThrownBy(() -> validationService.validateBody(node.toString(), headerGroup, false));
-        }
-    }
-
-    @Test
     void testValidateWithErrorsWhenVenueMissingInList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(0)).remove("venue");
+            ((ObjectNode) node.get(0)).remove("venue/platform");
+
+            assertThatExceptionOfType(PayloadValidationException.class)
+                .as(INVALID_MESSAGE)
+                .isThrownBy(() -> validationService.validateBody(node.toString(), headerGroup, false));
+        }
+    }
+
+    @Test
+    void testValidateWithErrorsWhenJudgesMissingInList() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream(VALID_JSON)) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            JsonNode node = getJsonNode(text);
+            ((ObjectNode) node.get(0)).remove("judges");
+
+            assertThatExceptionOfType(PayloadValidationException.class)
+                .as(INVALID_MESSAGE)
+                .isThrownBy(() -> validationService.validateBody(node.toString(), headerGroup, false));
+        }
+    }
+
+    @Test
+    void testValidateWithErrorsWhenMembersMissingInList() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream(VALID_JSON)) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            JsonNode node = getJsonNode(text);
+            ((ObjectNode) node.get(0)).remove("members");
 
             assertThatExceptionOfType(PayloadValidationException.class)
                 .as(INVALID_MESSAGE)

@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Root",
+  "type": "array",
+  "items": {
+    "title": "Hearing list",
+    "type": "object",
+    "required": [
+      "date",
+      "hearingTime",
+      "caseReferenceNumber",
+      "caseName",
+      "venue/platform",
+      "judges",
+      "members",
+      "additionalInformation"
+    ],
+    "properties": {
+      "date": {
+        "title": "Date of hearing",
+        "type": "string",
+        "default": "",
+        "examples": [
+          "02/01/2025"
+        ],
+        "pattern": "^\\d{2}/\\d{2}/\\d{4}$"
+      },
+      "hearingTime": {
+        "title": "Time of hearing",
+        "type": "string",
+        "default": "",
+        "examples": [
+          "10:30am"
+        ],
+        "pattern": "^\\d{1,2}([:.]\\d{2})?[ap]m$"
+      },
+      "caseReferenceNumber": {
+        "title": "Case reference number",
+        "type": "string",
+        "default": "",
+        "examples": [
+          "1234"
+        ],
+        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+      },
+      "caseName": {
+        "title": "Case name",
+        "type": "string",
+        "default": "",
+        "examples": [
+          "Case Name 1"
+        ],
+        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+      },
+      "venue/platform": {
+        "title": "Venue or platform of the hearing",
+        "type": "string",
+        "default": "",
+        "examples": [
+          "Venue no 1"
+        ],
+        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+      },
+      "judges": {
+        "title": "Judges",
+        "type": "string",
+        "default": "",
+        "examples": [
+          "Judge name 1"
+        ],
+        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+      },
+      "members": {
+        "title": "Members",
+        "type": "string",
+        "default": "",
+        "examples": [
+          "Member 1"
+        ],
+        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+      },
+      "additionalInformation": {
+        "title": "Additional information",
+        "type": "string",
+        "default": "",
+        "examples": [
+          "This is additional information"
+        ],
+        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+      }
+    }
+  }
+}
