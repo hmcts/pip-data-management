@@ -144,9 +144,10 @@ public class PublicationRemovalService {
             ));
         });
         Optional<Location> location = locationRepository.getLocationByLocationId(locationId);
-        notifySystemAdminAboutSubscriptionDeletion(userId,
-                                                   String.format("Total %s artefact(s) for location %s", activeArtefacts.size(),
-                                                                 location.isPresent() ? location.get().getName() : ""));
+        notifySystemAdminAboutSubscriptionDeletion(
+            userId, String.format("Total %s artefact(s) for location %s", activeArtefacts.size(),
+                                  location.isPresent() ? location.get().getName() : "")
+        );
         return String.format("Total %s artefact deleted for location id %s", activeArtefacts.size(), locationId);
     }
 
@@ -185,6 +186,7 @@ public class PublicationRemovalService {
         List<String> systemAdminsSso = accountManagementService.getAllAccounts("SSO", "SYSTEM_ADMIN");
         List<String> systemAdmins = Stream.concat(systemAdminsAad.stream(), systemAdminsSso.stream()).toList();
         publicationServicesService.sendSystemAdminEmail(systemAdmins, userInfo.getEmail(),
-                                                        ActionResult.SUCCEEDED, additionalDetails, ChangeType.DELETE_LOCATION_ARTEFACT);
+                                                        ActionResult.SUCCEEDED, additionalDetails,
+                                                        ChangeType.DELETE_LOCATION_ARTEFACT);
     }
 }

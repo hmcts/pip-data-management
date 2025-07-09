@@ -2,7 +2,6 @@ package uk.gov.hmcts.reform.pip.data.management.service.publication;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import nl.altindag.log.LogCaptor;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,7 +9,6 @@ import org.mockito.InOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.AzureArtefactBlobService;
@@ -40,9 +38,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.inOrder;
-import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -50,12 +46,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.ARTEFACT_ID;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.DELETION_TRACK_LOG_MESSAGE;
-import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.LOCATION_VENUE;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.PAYLOAD_STRIPPED;
-import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.PROVENANCE;
-import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.PROVENANCE_ID;
-import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.SEARCH_VALUES;
-import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.TEST_KEY;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.TEST_VALUE;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ConstantsTestHelper.MESSAGES_MATCH;
 
@@ -63,6 +54,21 @@ import static uk.gov.hmcts.reform.pip.data.management.helpers.ConstantsTestHelpe
 @ExtendWith(MockitoExtension.class)
 @SuppressWarnings({"PMD.ExcessiveImports"})
 class PublicationRemovalServiceTest {
+    private static final String USER_ID = UUID.randomUUID().toString();
+    private static final String EMAIL_ADDRESS = "test@test.com";
+    private static final String SSO_EMAIL = "sso@test.com";
+
+    private static final Integer LOCATION_ID = 1;
+    private static final String LOCATION_NAME_PREFIX = "TEST_PIP_1234_";
+
+    private final Artefact artefactWithPayloadUrl = ArtefactConstantTestHelper.buildArtefactWithPayloadUrl();
+    private final Artefact artefactWithIdAndPayloadUrl = ArtefactConstantTestHelper.buildArtefactWithIdAndPayloadUrl();
+    private final Artefact artefactWithNoMatchLocationId = ArtefactConstantTestHelper
+        .buildNoMatchArtefactWithIdAndPayloadUrl();
+
+    private final Location location = ArtefactConstantTestHelper.initialiseCourts();
+    private PiUser piUser;
+
     @Mock
     private ArtefactRepository artefactRepository;
 
@@ -87,69 +93,11 @@ class PublicationRemovalServiceTest {
     @InjectMocks
     private PublicationRemovalService publicationRemovalService;
 
-    private Artefact artefact;
-    private Artefact artefactWithPayloadUrl;
-    private Artefact artefactWithIdAndPayloadUrl;
-    private Artefact artefactWithNoMatchLocationId;
-
-    private Location location;
-    private PiUser piUser;
-
-    private static final String USER_ID = UUID.randomUUID().toString();;
-    private static final String EMAIL_ADDRESS = "test@test.com";
-    private static final String SSO_EMAIL = "sso@test.com";
-
-    private static final Integer LOCATION_ID = 1;
-    private static final String LOCATION_NAME_PREFIX = "TEST_PIP_1234_";
-
-    @BeforeAll
-    public static void setupSearchValues() {
-        SEARCH_VALUES.put(TEST_KEY, List.of(TEST_VALUE));
-    }
-
     @BeforeEach
     void setup() {
-        createPayloads();
-        createClassifiedPayloads();
-
-        location = ArtefactConstantTestHelper.initialiseCourts();
-
-        lenient().when(artefactRepository.findArtefactByUpdateLogic(artefact.getLocationId(),
-                                                                    artefact.getContentDate(),
-                                                                    artefact.getLanguage(),
-                                                                    artefact.getListType(),
-                                                                    artefact.getProvenance()))
-            .thenReturn(Optional.empty());
-        lenient().when(artefactRepository.save(artefactWithPayloadUrl)).thenReturn(artefactWithIdAndPayloadUrl);
-        lenient().when(locationRepository.findByLocationIdByProvenance(PROVENANCE, PROVENANCE_ID,
-                                                                       LOCATION_VENUE))
-            .thenReturn(Optional.of(location));
-
         piUser = new PiUser();
         piUser.setEmail(EMAIL_ADDRESS);
         piUser.setUserId(USER_ID);
-    }
-
-    private void createPayloads() {
-        artefact = ArtefactConstantTestHelper.buildArtefact();
-        artefactWithPayloadUrl = ArtefactConstantTestHelper.buildArtefactWithPayloadUrl();
-        artefactWithIdAndPayloadUrl = ArtefactConstantTestHelper.buildArtefactWithIdAndPayloadUrl();
-        artefactWithNoMatchLocationId = ArtefactConstantTestHelper.buildNoMatchArtefactWithIdAndPayloadUrl();
-    }
-
-    private void createClassifiedPayloads() {
-        location = ArtefactConstantTestHelper.initialiseCourts();
-
-        lenient().when(artefactRepository.findArtefactByUpdateLogic(artefact.getLocationId(),
-                                                                    artefact.getContentDate(),
-                                                                    artefact.getLanguage(),
-                                                                    artefact.getListType(),
-                                                                    artefact.getProvenance()))
-            .thenReturn(Optional.empty());
-        lenient().when(artefactRepository.save(artefactWithPayloadUrl)).thenReturn(artefactWithIdAndPayloadUrl);
-        lenient().when(locationRepository.findByLocationIdByProvenance(PROVENANCE, PROVENANCE_ID,
-                                                                       LOCATION_VENUE))
-            .thenReturn(Optional.of(location));
     }
 
     @Test
@@ -370,7 +318,7 @@ class PublicationRemovalServiceTest {
 
         try (LogCaptor logCaptor = LogCaptor.forClass(PublicationRemovalService.class)) {
             when(artefactRepository.findActiveArtefactsForLocation(any(), eq(LOCATION_ID.toString())))
-                .thenReturn(List.of(artefact));
+                .thenReturn(List.of(artefactWithIdAndPayloadUrl));
             when(locationRepository.getLocationByLocationId(LOCATION_ID))
                 .thenReturn(Optional.of(location));
             when(accountManagementService.getUserById(any()))
@@ -431,7 +379,7 @@ class PublicationRemovalServiceTest {
     void testDeleteArtefactByLocationJsonProcessingException() throws JsonProcessingException {
 
         when(artefactRepository.findActiveArtefactsForLocation(any(), eq(LOCATION_ID.toString())))
-            .thenReturn(List.of(artefact));
+            .thenReturn(List.of(artefactWithIdAndPayloadUrl));
         when(locationRepository.getLocationByLocationId(LOCATION_ID))
             .thenReturn(Optional.of(location));
         when(accountManagementService.getUserById(USER_ID))

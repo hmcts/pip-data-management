@@ -49,7 +49,8 @@ public class PublicationLocationController {
     private final PublicationRemovalService publicationRemovalService;
 
     @Autowired
-    public PublicationLocationController(PublicationLocationService publicationLocationService, PublicationRemovalService publicationRemovalService) {
+    public PublicationLocationController(PublicationLocationService publicationLocationService,
+                                         PublicationRemovalService publicationRemovalService) {
         this.publicationLocationService = publicationLocationService;
         this.publicationRemovalService = publicationRemovalService;
     }
