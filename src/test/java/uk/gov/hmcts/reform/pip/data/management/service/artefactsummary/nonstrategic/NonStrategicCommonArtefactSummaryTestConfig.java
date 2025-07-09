@@ -37,10 +37,10 @@ public class NonStrategicCommonArtefactSummaryTestConfig {
         );
 
         JsonNode payload = new ObjectMapper().readTree(writer.toString());
-        ArtefactSummaryData cstSummaryData = new ListConversionFactory()
+        ArtefactSummaryData summaryData = new ListConversionFactory()
             .getArtefactSummaryData(listType)
             .get();
-        return cstSummaryData.get(payload);
+        return summaryData.get(payload);
     }
 
 }
