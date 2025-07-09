@@ -15,7 +15,6 @@ import uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelpe
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.service.AccountManagementService;
-import uk.gov.hmcts.reform.pip.data.management.service.PublicationServicesService;
 
 import java.io.IOException;
 import java.util.List;
@@ -37,7 +36,7 @@ import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTe
 
 @ActiveProfiles("test")
 @ExtendWith(MockitoExtension.class)
-public class PublicationSubscriptionServiceTest {
+class PublicationSubscriptionServiceTest {
     private static final String ERROR_LOG_EMPTY = "Error log not empty";
 
     @Mock

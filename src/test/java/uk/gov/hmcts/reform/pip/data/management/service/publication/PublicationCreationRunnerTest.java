@@ -55,7 +55,7 @@ class PublicationCreationRunnerTest {
     private PublicationCreationService publicationCreationService;
 
     @Mock
-    private PublicationRetrievalService artefactService;
+    private PublicationRetrievalService publicationRetrievalService;
 
     @Mock
     JsonExtractor jsonExtractor;
@@ -67,8 +67,10 @@ class PublicationCreationRunnerTest {
 
     @BeforeEach
     void setup() {
-        lenient().when(artefactService.payloadWithinJsonSearchLimit(PAYLOAD_SIZE_WITHIN_LIMIT)).thenReturn(true);
-        lenient().when(artefactService.payloadWithinJsonSearchLimit(PAYLOAD_SIZE_OVER_LIMIT)).thenReturn(false);
+        lenient().when(publicationRetrievalService.payloadWithinJsonSearchLimit(PAYLOAD_SIZE_WITHIN_LIMIT))
+            .thenReturn(true);
+        lenient().when(publicationRetrievalService.payloadWithinJsonSearchLimit(PAYLOAD_SIZE_OVER_LIMIT))
+            .thenReturn(false);
     }
 
     @Test
@@ -125,7 +127,8 @@ class PublicationCreationRunnerTest {
     void testRunMethodForJsonPublicationWithCannotAcquireLockException() {
         Artefact artefact = ArtefactConstantTestHelper.buildArtefact();
         artefact.setPayloadSize(PAYLOAD_SIZE_WITHIN_LIMIT);
-        doThrow(CannotAcquireLockException.class).when(publicationCreationService).createPublication(artefact, PAYLOAD);
+        doThrow(CannotAcquireLockException.class).when(publicationCreationService)
+            .createPublication(artefact, PAYLOAD);
         when(jsonExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
 
         assertThatThrownBy(() -> publicationCreationRunner.run(artefact, PAYLOAD, true))
@@ -142,7 +145,8 @@ class PublicationCreationRunnerTest {
     void testRunMethodForJsonPublicationWithDataIntegrityViolationException() {
         Artefact artefact = ArtefactConstantTestHelper.buildArtefact();
         artefact.setPayloadSize(PAYLOAD_SIZE_WITHIN_LIMIT);
-        doThrow(DataIntegrityViolationException.class).when(publicationCreationService).createPublication(artefact, PAYLOAD);
+        doThrow(DataIntegrityViolationException.class).when(publicationCreationService)
+            .createPublication(artefact, PAYLOAD);
         when(jsonExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
 
         assertThatThrownBy(() -> publicationCreationRunner.run(artefact, PAYLOAD, true))
@@ -216,7 +220,8 @@ class PublicationCreationRunnerTest {
     @Test
     void testRuMethodForFlatFilePublicationWithDataIntegrityViolationException() {
         Artefact artefact = ArtefactConstantTestHelper.buildArtefact();
-        doThrow(DataIntegrityViolationException.class).when(publicationCreationService).createPublication(artefact, FILE);
+        doThrow(DataIntegrityViolationException.class).when(publicationCreationService)
+            .createPublication(artefact, FILE);
 
         assertThatThrownBy(() -> publicationCreationRunner.run(artefact, FILE))
             .as(EXCEPTION_MESSAGE)

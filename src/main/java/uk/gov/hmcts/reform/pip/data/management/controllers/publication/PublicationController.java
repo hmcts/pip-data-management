@@ -34,10 +34,10 @@ import uk.gov.hmcts.reform.pip.data.management.models.publication.HeaderGroup;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.views.ArtefactView;
 import uk.gov.hmcts.reform.pip.data.management.service.ExcelConversionService;
 import uk.gov.hmcts.reform.pip.data.management.service.ValidationService;
-import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationDeleteService;
-import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationRetrievalService;
 import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationCreationRunner;
 import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationCreationService;
+import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationDeleteService;
+import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationRetrievalService;
 import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationSubscriptionService;
 import uk.gov.hmcts.reform.pip.model.authentication.roles.IsAdmin;
 import uk.gov.hmcts.reform.pip.model.authentication.roles.IsPublisher;
@@ -88,7 +88,7 @@ public class PublicationController {
 
     private final PublicationCreationService publicationCreationService;
     private final PublicationCreationRunner publicationCreationRunner;
-    private final PublicationRetrievalService artefactService;
+    private final PublicationRetrievalService publicationRetrievalService;
     private final PublicationDeleteService publicationDeleteService;
     private final PublicationSubscriptionService publicationSubscriptionService;
     private final ValidationService validationService;
@@ -97,24 +97,27 @@ public class PublicationController {
     /**
      * Constructor for Publication controller.
      *
-     * @param publicationCreationService     The PublicationService that contains the business logic to handle publications.
-     * @param publicationCreationRunner The service class that handles publication creation.
-     * @param artefactService   The ArtefactService that con be used to get artefact property
-     * @param publicationDeleteService The ArtefactDeleteService that can be used to Delete or Archive artefacts
-     * @param publicationSubscriptionService The publicationSubscriptionService that can be used to send artefact data to account-management
+     * @param publicationCreationService    The service that contains the business logic to handle
+     *                                      creation of publications.
+     * @param publicationCreationRunner The service class that runs the publication creation process
+     * @param publicationRetrievalService   The service used to retrieval publication and publication property
+     * @param publicationDeleteService The service used to Delete or Archive artefacts
+     * @param publicationSubscriptionService The service used to send artefact data to account-management
+     * @param validationService The service that handle input validation of publications
+     * @param excelConversionService The service handles conversion of Excel data to JSON format
      */
     @Autowired
     public PublicationController(PublicationCreationService publicationCreationService,
                                  PublicationCreationRunner publicationCreationRunner,
                                  ValidationService validationService,
-                                 PublicationRetrievalService artefactService,
+                                 PublicationRetrievalService publicationRetrievalService,
                                  PublicationDeleteService publicationDeleteService,
                                  PublicationSubscriptionService publicationSubscriptionService,
                                  ExcelConversionService excelConversionService) {
         this.publicationCreationService = publicationCreationService;
         this.publicationCreationRunner = publicationCreationRunner;
         this.validationService = validationService;
-        this.artefactService = artefactService;
+        this.publicationRetrievalService = publicationRetrievalService;
         this.publicationDeleteService = publicationDeleteService;
         this.publicationSubscriptionService = publicationSubscriptionService;
         this.excelConversionService = excelConversionService;
@@ -330,8 +333,8 @@ public class PublicationController {
                                        @RequestHeader(value = ADMIN_HEADER, defaultValue = DEFAULT_ADMIN_VALUE,
                                            required = false) Boolean isAdmin) {
         return ResponseEntity.ok(isAdmin.equals(Boolean.TRUE)
-                                    ? artefactService.getMetadataByArtefactId(artefactId) :
-                                     artefactService.getMetadataByArtefactId(artefactId, userId));
+                                    ? publicationRetrievalService.getMetadataByArtefactId(artefactId) :
+                                     publicationRetrievalService.getMetadataByArtefactId(artefactId, userId));
     }
 
     @ApiResponse(responseCode = OK_CODE, description = "Blob data from the given request in text format.")
@@ -347,8 +350,8 @@ public class PublicationController {
         @RequestHeader(value = USER_ID_HEADER, required = false) UUID userId,
         @RequestHeader(value = ADMIN_HEADER, defaultValue = DEFAULT_ADMIN_VALUE, required = false) Boolean isAdmin) {
         return ResponseEntity.ok(isAdmin.equals(Boolean.TRUE)
-                                    ? artefactService.getPayloadByArtefactId(artefactId) :
-                                     artefactService.getPayloadByArtefactId(artefactId, userId));
+                                    ? publicationRetrievalService.getPayloadByArtefactId(artefactId) :
+                                     publicationRetrievalService.getPayloadByArtefactId(artefactId, userId));
     }
 
     @ApiResponse(responseCode = OK_CODE, description = "Blob data from the given request as a file.")
@@ -367,11 +370,11 @@ public class PublicationController {
         Resource file;
         Artefact metadata;
         if (isAdmin.equals(Boolean.TRUE)) {
-            file = artefactService.getFlatFileByArtefactID(artefactId);
-            metadata = artefactService.getMetadataByArtefactId(artefactId);
+            file = publicationRetrievalService.getFlatFileByArtefactID(artefactId);
+            metadata = publicationRetrievalService.getMetadataByArtefactId(artefactId);
         } else {
-            file = artefactService.getFlatFileByArtefactID(artefactId, userId);
-            metadata = artefactService.getMetadataByArtefactId(artefactId, userId);
+            file = publicationRetrievalService.getFlatFileByArtefactID(artefactId, userId);
+            metadata = publicationRetrievalService.getMetadataByArtefactId(artefactId, userId);
         }
 
         String fileType = metadata.getSourceArtefactId();

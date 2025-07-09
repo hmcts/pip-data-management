@@ -76,7 +76,8 @@ class PublicationLocationControllerTest {
 
     @Test
     void testGetLocationTypeReturnsOk() {
-        when(publicationLocationService.getLocationType(ListType.CIVIL_DAILY_CAUSE_LIST)).thenReturn(LocationType.VENUE);
+        when(publicationLocationService.getLocationType(ListType.CIVIL_DAILY_CAUSE_LIST))
+            .thenReturn(LocationType.VENUE);
         assertEquals(
             HttpStatus.OK,
             publicationLocationController.getLocationType(ListType.CIVIL_DAILY_CAUSE_LIST).getStatusCode(),

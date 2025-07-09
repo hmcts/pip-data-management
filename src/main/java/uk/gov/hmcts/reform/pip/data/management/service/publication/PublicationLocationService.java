@@ -11,8 +11,8 @@ import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationArtefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.service.AccountManagementService;
-import uk.gov.hmcts.reform.pip.data.management.service.location.LocationService;
 import uk.gov.hmcts.reform.pip.data.management.service.PublicationServicesService;
+import uk.gov.hmcts.reform.pip.data.management.service.location.LocationService;
 import uk.gov.hmcts.reform.pip.model.account.PiUser;
 import uk.gov.hmcts.reform.pip.model.location.LocationType;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
@@ -96,9 +96,10 @@ public class PublicationLocationService {
             ));
         });
         Optional<Location> location = locationRepository.getLocationByLocationId(locationId);
-        notifySystemAdminAboutLocationPublicationDeletion(userId,
-                                                   String.format("Total %s artefact(s) for location %s", activeArtefacts.size(),
-                                                                 location.isPresent() ? location.get().getName() : ""));
+        notifySystemAdminAboutLocationPublicationDeletion(
+            userId, String.format("Total %s artefact(s) for location %s", activeArtefacts.size(),
+                                  location.isPresent() ? location.get().getName() : "")
+        );
         return String.format("Total %s artefact deleted for location id %s", activeArtefacts.size(), locationId);
     }
 
@@ -122,8 +123,8 @@ public class PublicationLocationService {
         List<String> systemAdminsAad = accountManagementService.getAllAccounts("PI_AAD", "SYSTEM_ADMIN");
         List<String> systemAdminsSso = accountManagementService.getAllAccounts("SSO", "SYSTEM_ADMIN");
         List<String> systemAdmins = Stream.concat(systemAdminsAad.stream(), systemAdminsSso.stream()).toList();
-        publicationServicesService.sendSystemAdminEmail(systemAdmins, userInfo.getEmail(),
-                                                        ActionResult.SUCCEEDED, additionalDetails, ChangeType.DELETE_LOCATION_ARTEFACT);
+        publicationServicesService.sendSystemAdminEmail(systemAdmins, userInfo.getEmail(), ActionResult.SUCCEEDED,
+                                                        additionalDetails, ChangeType.DELETE_LOCATION_ARTEFACT);
     }
 
 

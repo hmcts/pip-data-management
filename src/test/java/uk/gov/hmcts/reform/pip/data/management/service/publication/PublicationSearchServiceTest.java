@@ -62,7 +62,7 @@ class PublicationSearchServiceTest {
     LocationRepository locationRepository;
 
     @Mock
-    PublicationRetrievalService artefactService;
+    PublicationRetrievalService publicationRetrievalService;
 
     @InjectMocks
     PublicationSearchService publicationSearchService;
@@ -164,10 +164,10 @@ class PublicationSearchServiceTest {
         when(artefactRepository.findArtefactsByLocationId(any(), any()))
             .thenReturn(artefactList);
 
-        when(artefactService.isAuthorised(artefactPublic, USER_ID))
+        when(publicationRetrievalService.isAuthorised(artefactPublic, USER_ID))
             .thenReturn(true);
 
-        when(artefactService.isAuthorised(artefactClassified, USER_ID))
+        when(publicationRetrievalService.isAuthorised(artefactClassified, USER_ID))
             .thenReturn(true);
 
         assertEquals(artefactList, publicationSearchService.findAllByLocationId(ABC, USER_ID),
@@ -200,10 +200,10 @@ class PublicationSearchServiceTest {
         when(artefactRepository.findArtefactsByLocationId(any(), any()))
             .thenReturn(artefactList);
 
-        when(artefactService.isAuthorised(artefactPublic, USER_ID))
+        when(publicationRetrievalService.isAuthorised(artefactPublic, USER_ID))
             .thenReturn(true);
 
-        when(artefactService.isAuthorised(artefactClassified, USER_ID))
+        when(publicationRetrievalService.isAuthorised(artefactClassified, USER_ID))
             .thenReturn(false);
 
         List<Artefact> artefacts = publicationSearchService.findAllByLocationId(ABC, USER_ID);
@@ -235,10 +235,10 @@ class PublicationSearchServiceTest {
         when(artefactRepository.findArtefactsByLocationId(any(), any()))
             .thenReturn(artefactList);
 
-        when(artefactService.isAuthorised(artefactClassified, USER_ID))
+        when(publicationRetrievalService.isAuthorised(artefactClassified, USER_ID))
             .thenReturn(false);
 
-        when(artefactService.isAuthorised(artefactPublic, USER_ID))
+        when(publicationRetrievalService.isAuthorised(artefactPublic, USER_ID))
             .thenReturn(true);
 
         List<Artefact> artefacts = publicationSearchService.findAllByLocationId(ABC, USER_ID);
@@ -253,10 +253,10 @@ class PublicationSearchServiceTest {
         when(artefactRepository.findArtefactBySearch(eq(SEARCH_TERM_CASE_ID.dbValue), eq(TEST_VALUE), any()))
             .thenReturn(list);
 
-        when(artefactService.isAuthorised(artefactWithIdAndPayloadUrl, USER_ID))
+        when(publicationRetrievalService.isAuthorised(artefactWithIdAndPayloadUrl, USER_ID))
             .thenReturn(true);
 
-        when(artefactService.isAuthorised(artefactWithIdAndPayloadUrlClassified, USER_ID))
+        when(publicationRetrievalService.isAuthorised(artefactWithIdAndPayloadUrlClassified, USER_ID))
             .thenReturn(true);
 
         assertEquals(
@@ -272,10 +272,10 @@ class PublicationSearchServiceTest {
         when(artefactRepository.findArtefactBySearch(eq(SEARCH_TERM_CASE_ID.dbValue), eq(TEST_VALUE), any()))
             .thenReturn(list);
 
-        when(artefactService.isAuthorised(artefactWithIdAndPayloadUrl, USER_ID))
+        when(publicationRetrievalService.isAuthorised(artefactWithIdAndPayloadUrl, USER_ID))
             .thenReturn(true);
 
-        when(artefactService.isAuthorised(artefactWithIdAndPayloadUrlClassified, USER_ID))
+        when(publicationRetrievalService.isAuthorised(artefactWithIdAndPayloadUrlClassified, USER_ID))
             .thenReturn(false);
 
         List<Artefact> artefacts = publicationSearchService.findAllBySearch(SEARCH_TERM_CASE_ID, TEST_VALUE, USER_ID);
@@ -290,7 +290,7 @@ class PublicationSearchServiceTest {
         when(artefactRepository.findArtefactBySearch(eq(SEARCH_TERM_CASE_ID.dbValue), eq(TEST_VALUE), any()))
             .thenReturn(list);
 
-        when(artefactService.isAuthorised(artefactWithIdAndPayloadUrl, USER_ID))
+        when(publicationRetrievalService.isAuthorised(artefactWithIdAndPayloadUrl, USER_ID))
             .thenReturn(true);
 
         List<Artefact> artefacts = publicationSearchService.findAllBySearch(SEARCH_TERM_CASE_ID, TEST_VALUE, USER_ID);
@@ -315,10 +315,10 @@ class PublicationSearchServiceTest {
         when(artefactRepository.findArtefactByCaseName(eq(TEST_VALUE), any()))
             .thenReturn(list);
 
-        when(artefactService.isAuthorised(artefactWithIdAndPayloadUrl, USER_ID))
+        when(publicationRetrievalService.isAuthorised(artefactWithIdAndPayloadUrl, USER_ID))
             .thenReturn(true);
 
-        when(artefactService.isAuthorised(artefactWithIdAndPayloadUrlClassified, USER_ID))
+        when(publicationRetrievalService.isAuthorised(artefactWithIdAndPayloadUrlClassified, USER_ID))
             .thenReturn(true);
 
         assertEquals(
@@ -334,10 +334,10 @@ class PublicationSearchServiceTest {
         when(artefactRepository.findArtefactByCaseName(eq(TEST_VALUE), any()))
             .thenReturn(list);
 
-        when(artefactService.isAuthorised(artefactWithIdAndPayloadUrl, USER_ID))
+        when(publicationRetrievalService.isAuthorised(artefactWithIdAndPayloadUrl, USER_ID))
             .thenReturn(true);
 
-        when(artefactService.isAuthorised(artefactWithIdAndPayloadUrlClassified, USER_ID))
+        when(publicationRetrievalService.isAuthorised(artefactWithIdAndPayloadUrlClassified, USER_ID))
             .thenReturn(false);
 
         List<Artefact> artefacts = publicationSearchService.findAllBySearch(SEARCH_TERM_CASE_NAME, TEST_VALUE, USER_ID);
@@ -352,7 +352,7 @@ class PublicationSearchServiceTest {
         when(artefactRepository.findArtefactByCaseName(eq(TEST_VALUE), any()))
             .thenReturn(list);
 
-        when(artefactService.isAuthorised(artefactWithIdAndPayloadUrl, null))
+        when(publicationRetrievalService.isAuthorised(artefactWithIdAndPayloadUrl, null))
             .thenReturn(true);
 
         List<Artefact> artefacts = publicationSearchService.findAllBySearch(SEARCH_TERM_CASE_NAME, TEST_VALUE, null);
@@ -367,10 +367,10 @@ class PublicationSearchServiceTest {
         when(artefactRepository.findArtefactBySearch(eq(SEARCH_TERM_CASE_URN.dbValue), eq(TEST_VALUE), any()))
             .thenReturn(list);
 
-        when(artefactService.isAuthorised(artefactWithIdAndPayloadUrl, USER_ID))
+        when(publicationRetrievalService.isAuthorised(artefactWithIdAndPayloadUrl, USER_ID))
             .thenReturn(true);
 
-        when(artefactService.isAuthorised(artefactWithIdAndPayloadUrlClassified, USER_ID))
+        when(publicationRetrievalService.isAuthorised(artefactWithIdAndPayloadUrlClassified, USER_ID))
             .thenReturn(true);
 
         assertEquals(
@@ -386,10 +386,10 @@ class PublicationSearchServiceTest {
         when(artefactRepository.findArtefactBySearch(eq(SEARCH_TERM_CASE_URN.dbValue), eq(TEST_VALUE), any()))
             .thenReturn(list);
 
-        when(artefactService.isAuthorised(artefactWithIdAndPayloadUrl, USER_ID))
+        when(publicationRetrievalService.isAuthorised(artefactWithIdAndPayloadUrl, USER_ID))
             .thenReturn(true);
 
-        when(artefactService.isAuthorised(artefactWithIdAndPayloadUrlClassified, USER_ID))
+        when(publicationRetrievalService.isAuthorised(artefactWithIdAndPayloadUrlClassified, USER_ID))
             .thenReturn(false);
 
         List<Artefact> artefacts = publicationSearchService.findAllBySearch(SEARCH_TERM_CASE_URN, TEST_VALUE, USER_ID);
@@ -404,7 +404,7 @@ class PublicationSearchServiceTest {
         when(artefactRepository.findArtefactBySearch(eq(SEARCH_TERM_CASE_URN.dbValue), eq(TEST_VALUE), any()))
             .thenReturn(list);
 
-        when(artefactService.isAuthorised(artefactWithIdAndPayloadUrl, null))
+        when(publicationRetrievalService.isAuthorised(artefactWithIdAndPayloadUrl, null))
             .thenReturn(true);
 
         List<Artefact> artefacts = publicationSearchService.findAllBySearch(SEARCH_TERM_CASE_URN, TEST_VALUE, null);
@@ -426,7 +426,7 @@ class PublicationSearchServiceTest {
     @Test
     void testFindAllByCourtIdAdminNotAdmin() {
         when(artefactRepository.findArtefactsByLocationId(any(), any())).thenReturn(List.of(artefact));
-        when(artefactService.isAuthorised(artefact, USER_ID))
+        when(publicationRetrievalService.isAuthorised(artefact, USER_ID))
             .thenReturn(true);
         assertEquals(List.of(artefact), publicationSearchService.findAllByLocationIdAdmin(TEST_VALUE, USER_ID, false),
                      VALIDATION_ARTEFACT_NOT_MATCH

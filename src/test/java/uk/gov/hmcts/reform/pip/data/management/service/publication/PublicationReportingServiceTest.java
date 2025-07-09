@@ -44,7 +44,7 @@ import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTe
 
 @ActiveProfiles("test")
 @ExtendWith(MockitoExtension.class)
-public class PublicationReportingServiceTest {
+class PublicationReportingServiceTest {
     @Mock
     ArtefactRepository artefactRepository;
 

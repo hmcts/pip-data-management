@@ -20,7 +20,6 @@ import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.service.AccountManagementService;
 import uk.gov.hmcts.reform.pip.data.management.service.PublicationManagementService;
-import uk.gov.hmcts.reform.pip.model.account.PiUser;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
@@ -29,12 +28,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.verify;
@@ -53,7 +50,7 @@ import static uk.gov.hmcts.reform.pip.data.management.helpers.ConstantsTestHelpe
 
 @ActiveProfiles("test")
 @ExtendWith(MockitoExtension.class)
-@SuppressWarnings({"PMD.ExcessiveImports", "PMD.TooManyFields"})
+@SuppressWarnings({"PMD.ExcessiveImports"})
 class PublicationDeleteServiceTest {
 
     @Mock
@@ -72,7 +69,7 @@ class PublicationDeleteServiceTest {
     PublicationManagementService publicationManagementService;
 
     @Mock
-    PublicationRetrievalService artefactService;
+    PublicationRetrievalService publicationRetrievalService;
 
     @InjectMocks
     PublicationDeleteService publicationDeleteService;
@@ -82,15 +79,9 @@ class PublicationDeleteServiceTest {
     private Artefact artefactWithIdAndPayloadUrl;
     private Artefact artefactWithNoMatchLocationId;
 
-    private Location location;
-    private PiUser piUser;
-    private String userId;
+    private final Location location = ArtefactConstantTestHelper.initialiseCourts();
 
     private static final String EMAIL_ADDRESS = "test@test.com";
-    private static final String SSO_EMAIL = "sso@test.com";
-
-    private static final Integer LOCATION_ID = 1;
-    private static final String LOCATION_NAME_PREFIX = "TEST_PIP_1234_";
 
     @BeforeAll
     public static void setupSearchValues() {
@@ -102,8 +93,6 @@ class PublicationDeleteServiceTest {
         createPayloads();
         createClassifiedPayloads();
 
-        location = ArtefactConstantTestHelper.initialiseCourts();
-
         lenient().when(artefactRepository.findArtefactByUpdateLogic(artefact.getLocationId(),
                                                                     artefact.getContentDate(),
                                                                     artefact.getLanguage(),
@@ -114,13 +103,7 @@ class PublicationDeleteServiceTest {
         lenient().when(locationRepository.findByLocationIdByProvenance(PROVENANCE, PROVENANCE_ID,
                                                                        LOCATION_VENUE))
             .thenReturn(Optional.of(location));
-        lenient().when(artefactService.payloadWithinJsonSearchLimit(any())).thenReturn(true);
-
-        userId = UUID.randomUUID().toString();
-        piUser = new PiUser();
-        piUser.setEmail(EMAIL_ADDRESS);
-        piUser.setUserId(userId);
-
+        lenient().when(publicationRetrievalService.payloadWithinJsonSearchLimit(any())).thenReturn(true);
     }
 
     private void createPayloads() {
@@ -131,9 +114,6 @@ class PublicationDeleteServiceTest {
     }
 
     private void createClassifiedPayloads() {
-
-        location = ArtefactConstantTestHelper.initialiseCourts();
-
         lenient().when(artefactRepository.findArtefactByUpdateLogic(artefact.getLocationId(),
                                                                     artefact.getContentDate(),
                                                                     artefact.getLanguage(),

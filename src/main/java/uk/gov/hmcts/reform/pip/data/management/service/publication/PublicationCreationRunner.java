@@ -27,7 +27,8 @@ public class PublicationCreationRunner {
     private final JsonExtractor jsonExtractor;
 
     @Autowired
-    public PublicationCreationRunner(PublicationCreationService publicationCreationService, PublicationRetrievalService artefactService,
+    public PublicationCreationRunner(PublicationCreationService publicationCreationService,
+                                     PublicationRetrievalService artefactService,
                                      JsonExtractor jsonExtractor) {
         this.publicationCreationService = publicationCreationService;
         this.artefactService = artefactService;

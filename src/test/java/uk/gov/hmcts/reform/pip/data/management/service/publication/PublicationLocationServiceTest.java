@@ -18,8 +18,8 @@ import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationArtefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.service.AccountManagementService;
-import uk.gov.hmcts.reform.pip.data.management.service.location.LocationService;
 import uk.gov.hmcts.reform.pip.data.management.service.PublicationServicesService;
+import uk.gov.hmcts.reform.pip.data.management.service.location.LocationService;
 import uk.gov.hmcts.reform.pip.model.account.PiUser;
 import uk.gov.hmcts.reform.pip.model.location.LocationType;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
@@ -51,7 +51,8 @@ import static uk.gov.hmcts.reform.pip.data.management.helpers.ConstantsTestHelpe
 
 @ActiveProfiles("test")
 @ExtendWith(MockitoExtension.class)
-public class PublicationLocationServiceTest {
+@SuppressWarnings("PMD.ExcessiveImports")
+class PublicationLocationServiceTest {
     private static final String EMAIL_ADDRESS = "test@test.com";
     private static final String SSO_EMAIL = "sso@test.com";
 
@@ -218,9 +219,10 @@ public class PublicationLocationServiceTest {
 
             List<String> systemAdminEmails = List.of(EMAIL_ADDRESS, SSO_EMAIL);
 
-            when(publicationServicesService.sendSystemAdminEmail(systemAdminEmails, EMAIL_ADDRESS, ActionResult.SUCCEEDED,
-                                                         "Total 1 artefact(s) for location NAME",
-                                                         ChangeType.DELETE_LOCATION_ARTEFACT))
+            when(publicationServicesService.sendSystemAdminEmail(systemAdminEmails, EMAIL_ADDRESS,
+                                                                 ActionResult.SUCCEEDED,
+                                                                 "Total 1 artefact(s) for location NAME",
+                                                                 ChangeType.DELETE_LOCATION_ARTEFACT))
                 .thenReturn("System admin message");
 
             assertEquals("Total 1 artefact deleted for location id 1",

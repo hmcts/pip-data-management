@@ -99,7 +99,8 @@ class CreatePublicationRetryTest extends IntegrationCommonTestBase {
             .thenThrow(CannotAcquireLockException.class)
             .thenReturn(artefact);
 
-        assertThatCode(() -> publicationCreationService.createPublication(artefact, PAYLOAD)).doesNotThrowAnyException();
+        assertThatCode(() -> publicationCreationService.createPublication(artefact, PAYLOAD))
+            .doesNotThrowAnyException();
         verify(artefactRepository, times(3)).save(any());
     }
 
@@ -166,7 +167,8 @@ class CreatePublicationRetryTest extends IntegrationCommonTestBase {
             .thenThrow(DataIntegrityViolationException.class)
             .thenReturn(artefact);
 
-        assertThatCode(() -> publicationCreationService.createPublication(artefact, PAYLOAD)).doesNotThrowAnyException();
+        assertThatCode(() -> publicationCreationService.createPublication(artefact, PAYLOAD))
+            .doesNotThrowAnyException();
         verify(artefactRepository, times(3)).save(any());
     }
 
