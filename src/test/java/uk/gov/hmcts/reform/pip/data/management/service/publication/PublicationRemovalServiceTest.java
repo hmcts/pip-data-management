@@ -43,6 +43,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -367,7 +368,7 @@ class PublicationRemovalServiceTest {
     void testDeleteArtefactByLocation() throws JsonProcessingException {
         location.setName("NAME");
 
-        try (LogCaptor logCaptor = LogCaptor.forClass(PublicationLocationService.class)) {
+        try (LogCaptor logCaptor = LogCaptor.forClass(PublicationRemovalService.class)) {
             when(artefactRepository.findActiveArtefactsForLocation(any(), eq(LOCATION_ID.toString())))
                 .thenReturn(List.of(artefact));
             when(locationRepository.getLocationByLocationId(LOCATION_ID))
@@ -391,6 +392,14 @@ class PublicationRemovalServiceTest {
                          publicationRemovalService.deleteArtefactByLocation(LOCATION_ID, USER_ID),
                          "The artefacts for given location is not deleted");
 
+            InOrder orderVerifier = inOrder(azureArtefactBlobService, publicationManagementService,
+                                            artefactRepository, accountManagementService);
+            orderVerifier.verify(azureArtefactBlobService).deleteBlob(any());
+            orderVerifier.verify(publicationManagementService).deleteFiles(ARTEFACT_ID, ListType.CIVIL_DAILY_CAUSE_LIST,
+                                                                           Language.ENGLISH);
+            orderVerifier.verify(artefactRepository).delete(artefactWithIdAndPayloadUrl);
+            orderVerifier.verify(accountManagementService).sendDeletedArtefactForThirdParties(any());
+
             assertTrue(logCaptor.getInfoLogs().get(0).contains("User " + USER_ID
                                                                    + " attempting to delete all artefacts for location "
                                                                    + LOCATION_ID + ". 1 artefact(s) found"),
@@ -401,7 +410,7 @@ class PublicationRemovalServiceTest {
     @Test
     void testDeleteArtefactByLocationWhenNoArtefactFound() {
 
-        try (LogCaptor logCaptor = LogCaptor.forClass(PublicationLocationService.class)) {
+        try (LogCaptor logCaptor = LogCaptor.forClass(PublicationRemovalService.class)) {
             when(artefactRepository.findActiveArtefactsForLocation(any(), eq(LOCATION_ID.toString())))
                 .thenReturn(List.of());
             assertThrows(
@@ -467,10 +476,14 @@ class PublicationRemovalServiceTest {
         when(artefactRepository.findAllByLocationIdIn(List.of(locationId1.toString(), locationId2.toString())))
             .thenReturn(List.of(artefact1, artefact2, artefact3));
 
-        doNothing().when(publicationRemovalService).handleArtefactDeletion(any());
-
         assertThat(publicationRemovalService.deleteAllArtefactsWithLocationNamePrefix(LOCATION_NAME_PREFIX))
             .isEqualTo("3 artefacts(s) deleted for location name starting with " + LOCATION_NAME_PREFIX);
+
+        verify(azureArtefactBlobService).deleteBlob("url1");
+        verify(azureArtefactBlobService).deleteBlob("url2");
+        verify(azureArtefactBlobService).deleteBlob("url3");
+        verify(artefactRepository, times(3)).delete(any());
+        verify(accountManagementService, times(3)).sendDeletedArtefactForThirdParties(any());
     }
 
     @Test
@@ -486,6 +499,7 @@ class PublicationRemovalServiceTest {
         assertThat(publicationRemovalService.deleteAllArtefactsWithLocationNamePrefix(LOCATION_NAME_PREFIX))
             .isEqualTo("0 artefacts(s) deleted for location name starting with " + LOCATION_NAME_PREFIX);
 
+        verifyNoInteractions(azureArtefactBlobService);
         verifyNoMoreInteractions(artefactRepository);
         verifyNoInteractions(accountManagementService);
     }
@@ -498,6 +512,7 @@ class PublicationRemovalServiceTest {
         assertThat(publicationRemovalService.deleteAllArtefactsWithLocationNamePrefix(LOCATION_NAME_PREFIX))
             .isEqualTo("0 artefacts(s) deleted for location name starting with " + LOCATION_NAME_PREFIX);
 
+        verifyNoInteractions(azureArtefactBlobService);
         verifyNoInteractions(artefactRepository);
         verifyNoInteractions(accountManagementService);
     }
