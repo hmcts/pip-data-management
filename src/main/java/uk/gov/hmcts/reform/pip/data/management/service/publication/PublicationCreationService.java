@@ -112,6 +112,11 @@ public class PublicationCreationService {
         publicationSubscriptionService.checkAndTriggerPublicationSubscription(artefact);
     }
 
+    @Async
+    public void processCreatedPublication(Artefact artefact) {
+        publicationSubscriptionService.checkAndTriggerPublicationSubscription(artefact);
+    }
+
     /**
      * Checks if the artefact already exists based on payloadId, if so it applies the
      * existing artefact ID to update.

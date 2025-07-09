@@ -22,7 +22,6 @@ import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationCr
 import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationCreationService;
 import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationDeleteService;
 import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationRetrievalService;
-import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationSubscriptionService;
 import uk.gov.hmcts.reform.pip.model.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
@@ -59,9 +58,6 @@ class PublicationControllerTest {
 
     @Mock
     private PublicationCreationRunner publicationCreationRunner;
-
-    @Mock
-    PublicationSubscriptionService publicationSubscriptionService;
 
     @Mock
     private PublicationRetrievalService publicationRetrievalService;
@@ -308,7 +304,7 @@ class PublicationControllerTest {
             SENSITIVITY, LANGUAGE, DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, LOCATION_ID, CONTENT_DATE, TEST_STRING, FILE
         );
 
-        verify(publicationSubscriptionService).checkAndTriggerPublicationSubscription(any(Artefact.class));
+        verify(publicationCreationService).processCreatedPublication(any(Artefact.class));
 
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode(), STATUS_CODE_MATCH);
         assertEquals(artefactWithId, responseEntity.getBody(), ARTEFACT_MATCH_MESSAGE);
@@ -333,7 +329,7 @@ class PublicationControllerTest {
             SENSITIVITY, LANGUAGE, DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, LOCATION_ID, CONTENT_DATE, TEST_STRING, FILE
         );
 
-        verify(publicationSubscriptionService, never()).checkAndTriggerPublicationSubscription(any(Artefact.class));
+        verify(publicationCreationService, never()).processCreatedPublication(any(Artefact.class));
 
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode(), STATUS_CODE_MATCH);
         assertEquals(artefactWithNoMatchLocationId, responseEntity.getBody(), ARTEFACT_MATCH_MESSAGE);

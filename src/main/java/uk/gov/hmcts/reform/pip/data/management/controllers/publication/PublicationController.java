@@ -38,7 +38,6 @@ import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationCr
 import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationCreationService;
 import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationDeleteService;
 import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationRetrievalService;
-import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationSubscriptionService;
 import uk.gov.hmcts.reform.pip.model.authentication.roles.IsAdmin;
 import uk.gov.hmcts.reform.pip.model.authentication.roles.IsPublisher;
 import uk.gov.hmcts.reform.pip.model.enums.UserActions;
@@ -90,7 +89,6 @@ public class PublicationController {
     private final PublicationCreationRunner publicationCreationRunner;
     private final PublicationRetrievalService publicationRetrievalService;
     private final PublicationDeleteService publicationDeleteService;
-    private final PublicationSubscriptionService publicationSubscriptionService;
     private final ValidationService validationService;
     private final ExcelConversionService excelConversionService;
 
@@ -102,7 +100,6 @@ public class PublicationController {
      * @param publicationCreationRunner The service class that runs the publication creation process
      * @param publicationRetrievalService   The service used to retrieval publication and publication property
      * @param publicationDeleteService The service used to Delete or Archive artefacts
-     * @param publicationSubscriptionService The service used to send artefact data to account-management
      * @param validationService The service that handle input validation of publications
      * @param excelConversionService The service handles conversion of Excel data to JSON format
      */
@@ -112,14 +109,12 @@ public class PublicationController {
                                  ValidationService validationService,
                                  PublicationRetrievalService publicationRetrievalService,
                                  PublicationDeleteService publicationDeleteService,
-                                 PublicationSubscriptionService publicationSubscriptionService,
                                  ExcelConversionService excelConversionService) {
         this.publicationCreationService = publicationCreationService;
         this.publicationCreationRunner = publicationCreationRunner;
         this.validationService = validationService;
         this.publicationRetrievalService = publicationRetrievalService;
         this.publicationDeleteService = publicationDeleteService;
-        this.publicationSubscriptionService = publicationSubscriptionService;
         this.excelConversionService = excelConversionService;
     }
 
@@ -248,7 +243,7 @@ public class PublicationController {
         logManualUpload(publicationCreationService.maskEmail(issuerEmail), createdItem.getArtefactId().toString());
 
         if (!NoMatchArtefactHelper.isNoMatchLocationId(createdItem.getLocationId())) {
-            publicationSubscriptionService.checkAndTriggerPublicationSubscription(artefact);
+            publicationCreationService.processCreatedPublication(createdItem);
         }
 
         return ResponseEntity.status(HttpStatus.CREATED).body(createdItem);
