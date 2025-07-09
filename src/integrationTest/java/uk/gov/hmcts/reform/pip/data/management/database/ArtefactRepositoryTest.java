@@ -14,6 +14,7 @@ import uk.gov.hmcts.reform.pip.model.publication.ListType;
 import uk.gov.hmcts.reform.pip.model.publication.Sensitivity;
 import uk.gov.hmcts.reform.pip.model.report.PublicationMiData;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -299,7 +300,10 @@ class ArtefactRepositoryTest {
 
     @Test
     void shouldRetrieveArtefactsForMiData() {
-        List<PublicationMiData> miDataList = artefactRepository.getMiData();
+        LocalDateTime publicationReceivedDate = LocalDate.now()
+            .minusDays(31)
+            .atStartOfDay();
+        List<PublicationMiData> miDataList = artefactRepository.getMiData(publicationReceivedDate);
 
         assertThat(miDataList).hasSize(5).extracting(PublicationMiData::getArtefactId)
             .containsExactlyInAnyOrder(artefactId1, artefactId2, artefactId3, artefactId4, artefactId5);
