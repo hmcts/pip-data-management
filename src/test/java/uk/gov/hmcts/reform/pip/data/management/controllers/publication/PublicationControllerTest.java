@@ -12,15 +12,15 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.multipart.MultipartFile;
-import uk.gov.hmcts.reform.pip.data.management.models.location.LocationArtefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.HeaderGroup;
 import uk.gov.hmcts.reform.pip.data.management.service.ExcelConversionService;
 import uk.gov.hmcts.reform.pip.data.management.service.ValidationService;
 import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationCreationRunner;
 import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationCreationService;
-import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationDeleteService;
+import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationRemovalService;
 import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationRetrievalService;
 import uk.gov.hmcts.reform.pip.model.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
@@ -30,7 +30,6 @@ import uk.gov.hmcts.reform.pip.model.publication.Sensitivity;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,30 +49,9 @@ import static uk.gov.hmcts.reform.pip.data.management.helpers.ConstantsTestHelpe
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ConstantsTestHelper.STATUS_CODE_MATCH;
 
 @SuppressWarnings({"PMD.UseConcurrentHashMap", "PMD.ExcessiveImports", "PMD.CouplingBetweenObjects"})
+@ActiveProfiles("test")
 @ExtendWith(MockitoExtension.class)
 class PublicationControllerTest {
-
-    @Mock
-    private PublicationCreationService publicationCreationService;
-
-    @Mock
-    private PublicationCreationRunner publicationCreationRunner;
-
-    @Mock
-    private PublicationRetrievalService publicationRetrievalService;
-
-    @Mock
-    private PublicationDeleteService publicationDeleteService;
-
-    @Mock
-    private ValidationService validationService;
-
-    @Mock
-    private ExcelConversionService excelConversionService;
-
-    @InjectMocks
-    private PublicationController publicationController;
-
     private static final UUID ARTEFACT_ID = UUID.randomUUID();
     private static final UUID USER_ID = UUID.randomUUID();
     private static final String SOURCE_ARTEFACT_ID = "sourceArtefactId";
@@ -100,11 +78,31 @@ class PublicationControllerTest {
     private static final String FILE_NAME = "TestFileName";
     private static final String EXCEL_FILE_TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 
-    private static final List<LocationArtefact> COURT_PER_LOCATION = new ArrayList<>();
     private Artefact artefact;
     private Artefact artefactWithId;
     private Artefact artefactWithNoMatchLocationId;
     private HeaderGroup headers;
+
+    @Mock
+    private PublicationCreationService publicationCreationService;
+
+    @Mock
+    private PublicationCreationRunner publicationCreationRunner;
+
+    @Mock
+    private PublicationRetrievalService publicationRetrievalService;
+
+    @Mock
+    private PublicationRemovalService publicationRemovalService;
+
+    @Mock
+    private ValidationService validationService;
+
+    @Mock
+    private ExcelConversionService excelConversionService;
+
+    @InjectMocks
+    private PublicationController publicationController;
 
     @BeforeEach
     void setup() {
@@ -378,7 +376,7 @@ class PublicationControllerTest {
 
     @Test
     void testDeleteArtefactReturnsOk() {
-        doNothing().when(publicationDeleteService).deleteArtefactById(any(), any());
+        doNothing().when(publicationRemovalService).deleteArtefactById(any(), any());
         assertEquals(HttpStatus.OK, publicationController.deleteArtefact(TEST_STRING, TEST_STRING).getStatusCode(),
                      STATUS_CODE_MATCH
         );
@@ -393,7 +391,6 @@ class PublicationControllerTest {
     void testCreatePublicationLogsWhenHeaderIsPresent() throws IOException {
         when(validationService.validateHeaders(any())).thenReturn(headers);
         when(publicationCreationRunner.run(artefact, PAYLOAD, true)).thenReturn(artefactWithId);
-        when(publicationCreationService.maskEmail(TEST_STRING)).thenReturn(TEST_STRING);
 
         try (LogCaptor logCaptor = LogCaptor.forClass(PublicationController.class)) {
             publicationController.uploadPublication(
@@ -409,7 +406,7 @@ class PublicationControllerTest {
 
     @Test
     void testDeleteExpiredArtefactsSuccess() {
-        doNothing().when(publicationDeleteService).archiveExpiredArtefacts();
+        doNothing().when(publicationRemovalService).archiveExpiredArtefacts();
         assertThat(publicationController.archiveExpiredArtefacts().getStatusCode())
             .as(STATUS_CODE_MATCH)
             .isEqualTo(HttpStatus.NO_CONTENT);
@@ -420,7 +417,7 @@ class PublicationControllerTest {
         String issuerId = UUID.randomUUID().toString();
         String artefactId = UUID.randomUUID().toString();
 
-        doNothing().when(publicationDeleteService).archiveArtefactById(artefactId, issuerId);
+        doNothing().when(publicationRemovalService).archiveArtefactById(artefactId, issuerId);
 
         ResponseEntity<String> response = publicationController.archiveArtefact(issuerId, artefactId);
 

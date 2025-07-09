@@ -8,9 +8,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationArtefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationLocationService;
+import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationRemovalService;
 import uk.gov.hmcts.reform.pip.model.location.LocationType;
 import uk.gov.hmcts.reform.pip.model.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
@@ -27,6 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ConstantsTestHelper.STATUS_CODE_MATCH;
 
+@ActiveProfiles("test")
 @ExtendWith(MockitoExtension.class)
 class PublicationLocationControllerTest {
     private static final UUID ARTEFACT_ID = UUID.randomUUID();
@@ -36,8 +39,6 @@ class PublicationLocationControllerTest {
     private static final String PROVENANCE = "provenance";
     private static final String LOCATION_ID = "123";
     private static final LocalDateTime CONTENT_DATE = LocalDateTime.now();
-    private static final String PAYLOAD = "payload";
-    private static final Float PAYLOAD_SIZE = (float) PAYLOAD.getBytes().length / 1024;
     private static final String PAYLOAD_URL = "This is a test payload";
     private static final String NOT_EQUAL_MESSAGE = "The expected strings are not the same";
     private static final List<LocationArtefact> COURT_PER_LOCATION = new ArrayList<>();
@@ -56,11 +57,14 @@ class PublicationLocationControllerTest {
         .locationId(LOCATION_ID)
         .contentDate(CONTENT_DATE)
         .search(new ConcurrentHashMap<>())
-        .payloadSize(PAYLOAD_SIZE)
+        .payloadSize(10f)
         .build();
 
     @Mock
     private PublicationLocationService publicationLocationService;
+
+    @Mock
+    private PublicationRemovalService publicationRemovalService;
 
     @InjectMocks
     private PublicationLocationController publicationLocationController;
@@ -101,7 +105,7 @@ class PublicationLocationControllerTest {
     void testDeleteArtefactsByLocationReturnsOk() throws JsonProcessingException {
         int locationId = 1;
         String requesterId = UUID.randomUUID().toString();
-        when(publicationLocationService.deleteArtefactByLocation(locationId, requesterId)).thenReturn("Success");
+        when(publicationRemovalService.deleteArtefactByLocation(locationId, requesterId)).thenReturn("Success");
 
         assertEquals(HttpStatus.OK,
                      publicationLocationController.deleteArtefactsByLocation(requesterId, locationId).getStatusCode(),

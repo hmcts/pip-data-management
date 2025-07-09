@@ -2,7 +2,6 @@ package uk.gov.hmcts.reform.pip.data.management.service.publication;
 
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -10,10 +9,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
-import uk.gov.hmcts.reform.pip.data.management.database.LocationRepository;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ArtefactNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper;
-import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
@@ -23,22 +20,18 @@ import uk.gov.hmcts.reform.pip.model.publication.Sensitivity;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.ARTEFACT_ID;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.CONTENT_DATE;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.LOCATION_ID;
-import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.LOCATION_VENUE;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.PAYLOAD_URL;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.PROVENANCE;
-import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.PROVENANCE_ID;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.SEARCH_TERM_CASE_ID;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.SEARCH_TERM_CASE_NAME;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.SEARCH_TERM_CASE_URN;
@@ -55,88 +48,37 @@ import static uk.gov.hmcts.reform.pip.data.management.helpers.ConstantsTestHelpe
 @ActiveProfiles("test")
 @ExtendWith(MockitoExtension.class)
 class PublicationSearchServiceTest {
-    @Mock
-    ArtefactRepository artefactRepository;
+    private static final String ABC = "abc";
 
     @Mock
-    LocationRepository locationRepository;
+    private ArtefactRepository artefactRepository;
 
     @Mock
-    PublicationRetrievalService publicationRetrievalService;
+    private PublicationRetrievalService publicationRetrievalService;
 
     @InjectMocks
-    PublicationSearchService publicationSearchService;
+    private PublicationSearchService publicationSearchService;
 
-    private Artefact artefact;
-    private Artefact artefactWithPayloadUrl;
-    private Artefact artefactWithIdAndPayloadUrl;
-    private Artefact artefactWithIdAndPayloadUrlClassified;
-
-    private static final String ABC = "abc";
+    private final Artefact artefact = ArtefactConstantTestHelper.buildArtefact();
+    private final Artefact artefactWithIdAndPayloadUrl = ArtefactConstantTestHelper.buildArtefactWithIdAndPayloadUrl();
+    private final Artefact artefactWithIdAndPayloadUrlClassified = Artefact.builder()
+        .artefactId(ARTEFACT_ID)
+        .sourceArtefactId(SOURCE_ARTEFACT_ID)
+        .provenance(PROVENANCE)
+        .payload(PAYLOAD_URL)
+        .search(SEARCH_VALUES)
+        .displayFrom(LocalDateTime.now())
+        .displayTo(LocalDateTime.now())
+        .locationId(LOCATION_ID)
+        .contentDate(CONTENT_DATE)
+        .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
+        .language(Language.ENGLISH)
+        .sensitivity(Sensitivity.CLASSIFIED)
+        .build();
 
     @BeforeAll
     public static void setupSearchValues() {
         SEARCH_VALUES.put(TEST_KEY, List.of(TEST_VALUE));
-    }
-
-    @BeforeEach
-    void setup() {
-        createPayloads();
-        createClassifiedPayloads();
-
-        Location location = ArtefactConstantTestHelper.initialiseCourts();
-
-        lenient().when(artefactRepository.findArtefactByUpdateLogic(artefact.getLocationId(),
-                                                                    artefact.getContentDate(),
-                                                                    artefact.getLanguage(),
-                                                                    artefact.getListType(),
-                                                                    artefact.getProvenance()
-            ))
-            .thenReturn(Optional.empty());
-        lenient().when(artefactRepository.save(artefactWithPayloadUrl)).thenReturn(artefactWithIdAndPayloadUrl);
-        lenient().when(locationRepository.findByLocationIdByProvenance(PROVENANCE, PROVENANCE_ID,
-                                                                       LOCATION_VENUE
-            ))
-            .thenReturn(Optional.of(location));
-    }
-
-    private void createPayloads() {
-        artefact = ArtefactConstantTestHelper.buildArtefact();
-        artefactWithPayloadUrl = ArtefactConstantTestHelper.buildArtefactWithPayloadUrl();
-        artefactWithIdAndPayloadUrl = ArtefactConstantTestHelper.buildArtefactWithIdAndPayloadUrl();
-    }
-
-    private void createClassifiedPayloads() {
-
-        artefactWithIdAndPayloadUrlClassified = Artefact.builder()
-            .artefactId(ARTEFACT_ID)
-            .sourceArtefactId(SOURCE_ARTEFACT_ID)
-            .provenance(PROVENANCE)
-            .payload(PAYLOAD_URL)
-            .search(SEARCH_VALUES)
-            .displayFrom(LocalDateTime.now())
-            .displayTo(LocalDateTime.now())
-            .locationId(LOCATION_ID)
-            .contentDate(CONTENT_DATE)
-            .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
-            .language(Language.ENGLISH)
-            .sensitivity(Sensitivity.CLASSIFIED)
-            .build();
-
-        Location location = ArtefactConstantTestHelper.initialiseCourts();
-
-        lenient().when(artefactRepository.findArtefactByUpdateLogic(artefact.getLocationId(),
-                                                                    artefact.getContentDate(),
-                                                                    artefact.getLanguage(),
-                                                                    artefact.getListType(),
-                                                                    artefact.getProvenance()
-            ))
-            .thenReturn(Optional.empty());
-        lenient().when(artefactRepository.save(artefactWithPayloadUrl)).thenReturn(artefactWithIdAndPayloadUrl);
-        lenient().when(locationRepository.findByLocationIdByProvenance(PROVENANCE, PROVENANCE_ID,
-                                                                       LOCATION_VENUE
-            ))
-            .thenReturn(Optional.of(location));
     }
 
     @Test

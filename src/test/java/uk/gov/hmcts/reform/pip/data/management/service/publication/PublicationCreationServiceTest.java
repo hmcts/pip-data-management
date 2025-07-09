@@ -56,19 +56,19 @@ import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTe
 class PublicationCreationServiceTest {
 
     @Mock
-    ArtefactRepository artefactRepository;
+    private ArtefactRepository artefactRepository;
 
     @Mock
-    LocationRepository locationRepository;
+    private LocationRepository locationRepository;
 
     @Mock
-    AzureArtefactBlobService azureArtefactBlobService;
+    private AzureArtefactBlobService azureArtefactBlobService;
 
     @Mock
-    PublicationManagementService publicationManagementService;
+    private PublicationManagementService publicationManagementService;
 
     @InjectMocks
-    PublicationCreationService publicationCreationService;
+    private PublicationCreationService publicationCreationService;
 
     private Artefact artefact;
     private Artefact artefactWithPayloadUrl;
@@ -260,27 +260,6 @@ class PublicationCreationServiceTest {
     void testCreationOfNewArtefactWhenListTypeSjpPress() {
         publicationCreationService.applyInternalLocationId(artefact);
         assertThat(artefact.getLocationId()).isEqualTo(NO_COURT_EXISTS_IN_REFERENCE_DATA);
-    }
-
-    @Test
-    void testMaskEmail() {
-        assertEquals("t*******@email.com",
-                     publicationCreationService.maskEmail("testUser@email.com"),
-                     "Email was not masked correctly");
-    }
-
-    @Test
-    void testMaskEmailNotValidEmail() {
-        assertEquals("a****",
-                     publicationCreationService.maskEmail("abcde"),
-                     "Email was not masked correctly");
-    }
-
-    @Test
-    void testMaskEmailEmptyString() {
-        assertEquals("",
-                     publicationCreationService.maskEmail(""),
-                     "Email was not masked correctly");
     }
 
     @Test

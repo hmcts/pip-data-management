@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
+import uk.gov.hmcts.reform.pip.data.management.helpers.EmailHelper;
 import uk.gov.hmcts.reform.pip.data.management.helpers.NoMatchArtefactHelper;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.HeaderGroup;
@@ -36,7 +37,7 @@ import uk.gov.hmcts.reform.pip.data.management.service.ExcelConversionService;
 import uk.gov.hmcts.reform.pip.data.management.service.ValidationService;
 import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationCreationRunner;
 import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationCreationService;
-import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationDeleteService;
+import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationRemovalService;
 import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationRetrievalService;
 import uk.gov.hmcts.reform.pip.model.authentication.roles.IsAdmin;
 import uk.gov.hmcts.reform.pip.model.authentication.roles.IsPublisher;
@@ -88,7 +89,7 @@ public class PublicationController {
     private final PublicationCreationService publicationCreationService;
     private final PublicationCreationRunner publicationCreationRunner;
     private final PublicationRetrievalService publicationRetrievalService;
-    private final PublicationDeleteService publicationDeleteService;
+    private final PublicationRemovalService publicationRemovalService;
     private final ValidationService validationService;
     private final ExcelConversionService excelConversionService;
 
@@ -99,7 +100,7 @@ public class PublicationController {
      *                                      creation of publications.
      * @param publicationCreationRunner The service class that runs the publication creation process
      * @param publicationRetrievalService   The service used to retrieval publication and publication property
-     * @param publicationDeleteService The service used to Delete or Archive artefacts
+     * @param publicationRemovalService The service used to Delete or Archive artefacts
      * @param validationService The service that handle input validation of publications
      * @param excelConversionService The service handles conversion of Excel data to JSON format
      */
@@ -108,13 +109,13 @@ public class PublicationController {
                                  PublicationCreationRunner publicationCreationRunner,
                                  ValidationService validationService,
                                  PublicationRetrievalService publicationRetrievalService,
-                                 PublicationDeleteService publicationDeleteService,
+                                 PublicationRemovalService publicationRemovalService,
                                  ExcelConversionService excelConversionService) {
         this.publicationCreationService = publicationCreationService;
         this.publicationCreationRunner = publicationCreationRunner;
         this.validationService = validationService;
         this.publicationRetrievalService = publicationRetrievalService;
-        this.publicationDeleteService = publicationDeleteService;
+        this.publicationRemovalService = publicationRemovalService;
         this.excelConversionService = excelConversionService;
     }
 
@@ -172,7 +173,7 @@ public class PublicationController {
         Artefact artefact = createPublicationMetadataFromHeaders(headers, payload.length());
 
         Artefact createdItem = publicationCreationRunner.run(artefact, payload, true);
-        logManualUpload(publicationCreationService.maskEmail(issuerEmail), createdItem.getArtefactId().toString());
+        logManualUpload(EmailHelper.maskEmail(issuerEmail), createdItem.getArtefactId().toString());
 
         // Process the created artefact to generate PDF/Excel files and check/trigger the subscription process
         if (!NoMatchArtefactHelper.isNoMatchLocationId(createdItem.getLocationId())) {
@@ -240,7 +241,7 @@ public class PublicationController {
         artefact.setIsFlatFile(true);
 
         Artefact createdItem =  publicationCreationRunner.run(artefact, file);
-        logManualUpload(publicationCreationService.maskEmail(issuerEmail), createdItem.getArtefactId().toString());
+        logManualUpload(EmailHelper.maskEmail(issuerEmail), createdItem.getArtefactId().toString());
 
         if (!NoMatchArtefactHelper.isNoMatchLocationId(createdItem.getLocationId())) {
             publicationCreationService.processCreatedPublication(createdItem);
@@ -304,7 +305,7 @@ public class PublicationController {
         Artefact artefact = createPublicationMetadataFromHeaders(headers, payload.length());
 
         Artefact createdItem = publicationCreationRunner.run(artefact, payload, false);
-        logManualUpload(publicationCreationService.maskEmail(issuerEmail), createdItem.getArtefactId().toString());
+        logManualUpload(EmailHelper.maskEmail(issuerEmail), createdItem.getArtefactId().toString());
 
         // Process the created artefact to generate PDF and check/trigger the subscription process
         if (!NoMatchArtefactHelper.isNoMatchLocationId(createdItem.getLocationId())) {
@@ -390,7 +391,7 @@ public class PublicationController {
     @SecurityRequirement(name = BEARER_AUTHENTICATION)
     public ResponseEntity<String> deleteArtefact(@RequestHeader("x-issuer-id") String issuerId,
         @PathVariable String artefactId) {
-        publicationDeleteService.deleteArtefactById(artefactId, issuerId);
+        publicationRemovalService.deleteArtefactById(artefactId, issuerId);
         return ResponseEntity.ok("Successfully deleted artefact: " + artefactId);
     }
 
@@ -403,7 +404,7 @@ public class PublicationController {
     @IsAdmin
     @SecurityRequirement(name = BEARER_AUTHENTICATION)
     public ResponseEntity<Void> archiveExpiredArtefacts() {
-        publicationDeleteService.archiveExpiredArtefacts();
+        publicationRemovalService.archiveExpiredArtefacts();
         return ResponseEntity.noContent().build();
     }
 
@@ -418,7 +419,7 @@ public class PublicationController {
     @SecurityRequirement(name = BEARER_AUTHENTICATION)
     public ResponseEntity<String> archiveArtefact(@RequestHeader("x-issuer-id") String issuerId,
                                                   @PathVariable String id) {
-        publicationDeleteService.archiveArtefactById(id, issuerId);
+        publicationRemovalService.archiveArtefactById(id, issuerId);
         return ResponseEntity.ok(String.format("Artefact of ID %s has been archived", id));
     }
 

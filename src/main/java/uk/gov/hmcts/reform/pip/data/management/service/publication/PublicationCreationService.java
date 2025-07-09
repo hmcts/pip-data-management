@@ -159,18 +159,4 @@ public class PublicationCreationService {
             artefact.setLocationId(NoMatchArtefactHelper.buildNoMatchLocationId(artefact.getLocationId()));
         }
     }
-
-    /**
-     * Take in an email and mask it for writing out to the logs.
-     *
-     * @param emailToMask The email to mask
-     * @return A masked email
-     */
-    public String maskEmail(String emailToMask) {
-        // Sonar flags regex as a bug. However, unable to find a way to split this out.
-        if (emailToMask != null) {
-            return emailToMask.replaceAll("(^([^@])|(?!^)\\G)[^@]", "$1*"); //NOSONAR
-        }
-        return emailToMask;
-    }
 }

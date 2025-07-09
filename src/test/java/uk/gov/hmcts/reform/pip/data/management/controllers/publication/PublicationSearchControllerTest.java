@@ -7,6 +7,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationSearchService;
 import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
@@ -24,6 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ConstantsTestHelper.STATUS_CODE_MATCH;
 
+@ActiveProfiles("test")
 @ExtendWith(MockitoExtension.class)
 class PublicationSearchControllerTest {
     private static final UUID ARTEFACT_ID = UUID.randomUUID();
@@ -33,8 +35,6 @@ class PublicationSearchControllerTest {
     private static final String PROVENANCE = "provenance";
     private static final String LOCATION_ID = "123";
     private static final LocalDateTime CONTENT_DATE = LocalDateTime.now();
-    private static final String PAYLOAD = "payload";
-    private static final Float PAYLOAD_SIZE = (float) PAYLOAD.getBytes().length / 1024;
     private static final String PAYLOAD_URL = "This is a test payload";
     private static final String EMPTY_FIELD = "";
     private static final CaseSearchTerm SEARCH_TERM = CaseSearchTerm.CASE_ID;
@@ -55,7 +55,7 @@ class PublicationSearchControllerTest {
         .locationId(LOCATION_ID)
         .contentDate(CONTENT_DATE)
         .search(new ConcurrentHashMap<>())
-        .payloadSize(PAYLOAD_SIZE)
+        .payloadSize(10f)
         .build();
 
     @Mock

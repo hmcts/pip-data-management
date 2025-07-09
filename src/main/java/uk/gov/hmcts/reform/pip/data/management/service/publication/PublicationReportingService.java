@@ -23,8 +23,6 @@ public class PublicationReportingService {
     private final LocationRepository locationRepository;
     private final PublicationServicesService publicationServicesService;
 
-    private static final String MANUAL_UPLOAD_VALUE = "MANUAL_UPLOAD";
-
     @Autowired
     public PublicationReportingService(ArtefactRepository artefactRepository, LocationRepository locationRepository,
                                        PublicationServicesService publicationServicesService) {

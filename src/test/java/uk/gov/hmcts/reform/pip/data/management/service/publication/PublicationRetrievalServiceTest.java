@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.pip.data.management.service.publication;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,7 +19,6 @@ import uk.gov.hmcts.reform.pip.data.management.service.AccountManagementService;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 import uk.gov.hmcts.reform.pip.model.publication.Sensitivity;
 
-import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -34,10 +32,7 @@ import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTe
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.LOCATION_VENUE;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.PROVENANCE;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.PROVENANCE_ID;
-import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.SEARCH_VALUES;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.TEST_FILE;
-import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.TEST_KEY;
-import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.TEST_VALUE;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.USER_ID;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.VALIDATION_ARTEFACT_NOT_MATCH;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.VALIDATION_NOT_THROWN_MESSAGE;
@@ -45,35 +40,29 @@ import static uk.gov.hmcts.reform.pip.data.management.helpers.ConstantsTestHelpe
 
 @ActiveProfiles("test")
 @ExtendWith(MockitoExtension.class)
-@SuppressWarnings("PMD.ExcessiveImports")
 class PublicationRetrievalServiceTest {
     private static final String PAYLOAD = "payload";
 
     @Mock
-    ArtefactRepository artefactRepository;
+    private ArtefactRepository artefactRepository;
 
     @Mock
-    LocationRepository locationRepository;
+    private LocationRepository locationRepository;
 
     @Mock
-    AzureArtefactBlobService azureArtefactBlobService;
+    private AzureArtefactBlobService azureArtefactBlobService;
 
     @Mock
-    AccountManagementService accountManagementService;
+    private AccountManagementService accountManagementService;
 
     @InjectMocks
-    PublicationRetrievalService publicationRetrievalService;
+    private PublicationRetrievalService publicationRetrievalService;
 
     private Artefact artefact;
     private Artefact artefactClassified;
     private Artefact artefactWithPayloadUrl;
     private Artefact artefactWithPayloadUrlClassified;
     private Artefact artefactWithIdAndPayloadUrl;
-
-    @BeforeAll
-    public static void setupSearchValues() {
-        SEARCH_VALUES.put(TEST_KEY, List.of(TEST_VALUE));
-    }
 
     @BeforeEach
     void setup() {
