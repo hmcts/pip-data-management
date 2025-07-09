@@ -1577,6 +1577,27 @@ class PublicationManagementTest extends IntegrationTestBase {
     }
 
     @Test
+    void testGenerateArtefactSummaryCicWeeklyHearingList() throws Exception {
+        Artefact artefact = createNonStrategicPublication(
+            ListType.CIC_WEEKLY_HEARING_LIST, NON_STRATEGIC_FILES_LOCATION
+                + "cic-weekly-hearing-list/cicWeeklyHearingList.xlsx"
+        );
+
+        byte[] jsonData = getTestData(NON_STRATEGIC_FILES_LOCATION
+                                          + "cic-weekly-hearing-list/cicWeeklyHearingList.json");
+        when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(jsonData));
+
+        MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, artefact.getArtefactId())))
+            .andExpect(status().isOk()).andReturn();
+
+        String responseContent = response.getResponse().getContentAsString();
+        assertTrue(responseContent.contains("Date - 26 June 2025"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(HEARING_TIME_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(CASE_REFERENCE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(CASE_NAME_FIELD), CONTENT_MISMATCH_ERROR);
+    }
+
+    @Test
     void testGenerateArtefactSummaryNotFound() throws Exception {
         MvcResult mvcResult = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, ARTEFACT_ID_NOT_FOUND)))
             .andExpect(status().isNotFound()).andReturn();
