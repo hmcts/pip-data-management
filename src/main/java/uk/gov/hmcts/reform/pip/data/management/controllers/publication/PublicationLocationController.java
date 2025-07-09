@@ -22,7 +22,6 @@ import uk.gov.hmcts.reform.pip.data.management.models.location.LocationArtefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.views.ArtefactView;
 import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationLocationService;
-import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationRemovalService;
 import uk.gov.hmcts.reform.pip.model.authentication.roles.IsAdmin;
 import uk.gov.hmcts.reform.pip.model.location.LocationType;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
@@ -46,13 +45,10 @@ public class PublicationLocationController {
     private static final String BEARER_AUTHENTICATION = "bearerAuth";
 
     private final PublicationLocationService publicationLocationService;
-    private final PublicationRemovalService publicationRemovalService;
 
     @Autowired
-    public PublicationLocationController(PublicationLocationService publicationLocationService,
-                                         PublicationRemovalService publicationRemovalService) {
+    public PublicationLocationController(PublicationLocationService publicationLocationService) {
         this.publicationLocationService = publicationLocationService;
-        this.publicationRemovalService = publicationRemovalService;
     }
 
     @ApiResponse(responseCode = OK_CODE, description = "Data Management - Artefact count per location - request "
@@ -98,6 +94,6 @@ public class PublicationLocationController {
     public ResponseEntity<String> deleteArtefactsByLocation(
         @RequestHeader("x-user-id") String userId,
         @PathVariable Integer locationId) throws JsonProcessingException {
-        return ResponseEntity.ok(publicationRemovalService.deleteArtefactByLocation(locationId, userId));
+        return ResponseEntity.ok(publicationLocationService.deleteArtefactByLocation(locationId, userId));
     }
 }

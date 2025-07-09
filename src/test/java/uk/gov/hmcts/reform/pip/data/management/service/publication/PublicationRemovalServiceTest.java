@@ -20,7 +20,6 @@ import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.service.AccountManagementService;
 import uk.gov.hmcts.reform.pip.data.management.service.PublicationServicesService;
-import uk.gov.hmcts.reform.pip.data.management.service.location.LocationService;
 import uk.gov.hmcts.reform.pip.model.account.PiUser;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
@@ -32,12 +31,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -57,9 +54,7 @@ class PublicationRemovalServiceTest {
     private static final String USER_ID = UUID.randomUUID().toString();
     private static final String EMAIL_ADDRESS = "test@test.com";
     private static final String SSO_EMAIL = "sso@test.com";
-
     private static final Integer LOCATION_ID = 1;
-    private static final String LOCATION_NAME_PREFIX = "TEST_PIP_1234_";
 
     private final Artefact artefactWithPayloadUrl = ArtefactConstantTestHelper.buildArtefactWithPayloadUrl();
     private final Artefact artefactWithIdAndPayloadUrl = ArtefactConstantTestHelper.buildArtefactWithIdAndPayloadUrl();
@@ -80,9 +75,6 @@ class PublicationRemovalServiceTest {
 
     @Mock
     private AccountManagementService accountManagementService;
-
-    @Mock
-    private LocationService locationService;
 
     @Mock
     private PublicationManagementService publicationManagementService;
@@ -316,116 +308,70 @@ class PublicationRemovalServiceTest {
     void testDeleteArtefactByLocation() throws JsonProcessingException {
         location.setName("NAME");
 
-        try (LogCaptor logCaptor = LogCaptor.forClass(PublicationRemovalService.class)) {
-            when(artefactRepository.findActiveArtefactsForLocation(any(), eq(LOCATION_ID.toString())))
-                .thenReturn(List.of(artefactWithIdAndPayloadUrl));
-            when(locationRepository.getLocationByLocationId(LOCATION_ID))
-                .thenReturn(Optional.of(location));
-            when(accountManagementService.getUserById(any()))
-                .thenReturn(piUser);
-            when(accountManagementService.getAllAccounts("PI_AAD", "SYSTEM_ADMIN"))
-                .thenReturn(List.of(EMAIL_ADDRESS));
-            when(accountManagementService.getAllAccounts("SSO", "SYSTEM_ADMIN"))
-                .thenReturn(List.of(SSO_EMAIL));
+        when(locationRepository.getLocationByLocationId(LOCATION_ID))
+            .thenReturn(Optional.of(location));
+        when(accountManagementService.getUserById(any()))
+            .thenReturn(piUser);
+        when(accountManagementService.getAllAccounts("PI_AAD", "SYSTEM_ADMIN"))
+            .thenReturn(List.of(EMAIL_ADDRESS));
+        when(accountManagementService.getAllAccounts("SSO", "SYSTEM_ADMIN"))
+            .thenReturn(List.of(SSO_EMAIL));
 
-            List<String> systemAdminEmails = List.of(EMAIL_ADDRESS, SSO_EMAIL);
+        List<String> systemAdminEmails = List.of(EMAIL_ADDRESS, SSO_EMAIL);
 
-            when(publicationServicesService.sendSystemAdminEmail(systemAdminEmails, EMAIL_ADDRESS,
-                                                                 ActionResult.SUCCEEDED,
-                                                                 "Total 1 artefact(s) for location NAME",
-                                                                 ChangeType.DELETE_LOCATION_ARTEFACT))
-                .thenReturn("System admin message");
+        when(publicationServicesService.sendSystemAdminEmail(systemAdminEmails, EMAIL_ADDRESS,
+                                                             ActionResult.SUCCEEDED,
+                                                             "Total 1 artefact(s) for location NAME",
+                                                             ChangeType.DELETE_LOCATION_ARTEFACT))
+            .thenReturn("System admin message");
 
-            assertEquals("Total 1 artefact deleted for location id 1",
-                         publicationRemovalService.deleteArtefactByLocation(LOCATION_ID, USER_ID),
-                         "The artefacts for given location is not deleted");
+        publicationRemovalService.deleteArtefactByLocation(List.of(artefactWithIdAndPayloadUrl), LOCATION_ID, USER_ID);
 
-            InOrder orderVerifier = inOrder(azureArtefactBlobService, publicationManagementService,
-                                            artefactRepository, accountManagementService);
-            orderVerifier.verify(azureArtefactBlobService).deleteBlob(any());
-            orderVerifier.verify(publicationManagementService).deleteFiles(ARTEFACT_ID, ListType.CIVIL_DAILY_CAUSE_LIST,
-                                                                           Language.ENGLISH);
-            orderVerifier.verify(artefactRepository).delete(artefactWithIdAndPayloadUrl);
-            orderVerifier.verify(accountManagementService).sendDeletedArtefactForThirdParties(any());
-
-            assertTrue(logCaptor.getInfoLogs().get(0).contains("User " + USER_ID
-                                                                   + " attempting to delete all artefacts for location "
-                                                                   + LOCATION_ID + ". 1 artefact(s) found"),
-                       "Expected log does not exist");
-        }
-    }
-
-    @Test
-    void testDeleteArtefactByLocationWhenNoArtefactFound() {
-
-        try (LogCaptor logCaptor = LogCaptor.forClass(PublicationRemovalService.class)) {
-            when(artefactRepository.findActiveArtefactsForLocation(any(), eq(LOCATION_ID.toString())))
-                .thenReturn(List.of());
-            assertThrows(
-                ArtefactNotFoundException.class, () ->
-                    publicationRemovalService.deleteArtefactByLocation(LOCATION_ID, USER_ID),
-                "ArtefactNotFoundException not thrown when trying to delete a artefact"
-                    + " that does not exist"
-            );
-
-            assertTrue(logCaptor.getInfoLogs().get(0).contains("User " + USER_ID
-                                                                   + " attempting to delete all artefacts for location "
-                                                                   + LOCATION_ID + ". No artefacts found"),
-                       "Expected log does not exist");
-        }
+        InOrder orderVerifier = inOrder(azureArtefactBlobService, publicationManagementService,
+                                        artefactRepository, accountManagementService);
+        orderVerifier.verify(azureArtefactBlobService).deleteBlob(any());
+        orderVerifier.verify(publicationManagementService).deleteFiles(ARTEFACT_ID, ListType.CIVIL_DAILY_CAUSE_LIST,
+                                                                       Language.ENGLISH);
+        orderVerifier.verify(artefactRepository).delete(artefactWithIdAndPayloadUrl);
+        orderVerifier.verify(accountManagementService).sendDeletedArtefactForThirdParties(any());
     }
 
     @Test
     void testDeleteArtefactByLocationJsonProcessingException() throws JsonProcessingException {
-
-        when(artefactRepository.findActiveArtefactsForLocation(any(), eq(LOCATION_ID.toString())))
-            .thenReturn(List.of(artefactWithIdAndPayloadUrl));
-        when(locationRepository.getLocationByLocationId(LOCATION_ID))
-            .thenReturn(Optional.of(location));
-        when(accountManagementService.getUserById(USER_ID))
-            .thenReturn(piUser);
-        when(accountManagementService.getAllAccounts(any(), any()))
-            .thenThrow(JsonProcessingException.class);
+        when(locationRepository.getLocationByLocationId(LOCATION_ID)).thenReturn(Optional.of(location));
+        when(accountManagementService.getUserById(USER_ID)).thenReturn(piUser);
+        when(accountManagementService.getAllAccounts(any(), any())).thenThrow(JsonProcessingException.class);
 
         assertThrows(JsonProcessingException.class, () ->
-                         publicationRemovalService.deleteArtefactByLocation(LOCATION_ID, USER_ID),
+                         publicationRemovalService.deleteArtefactByLocation(List.of(artefactWithIdAndPayloadUrl),
+                                                                            LOCATION_ID, USER_ID),
                      "JsonProcessingException not thrown when trying to get errored system admin"
                          + " api response");
     }
 
     @Test
-    void testDeleteAllArtefactsWithLocationNamePrefix() {
+    void testDeleteArtefacts() {
         Artefact artefact1 = new Artefact();
-        Integer locationId1 = 1;
-        UUID artefactId1 = UUID.randomUUID();
         String payload1 = "payload/url1";
-        artefact1.setArtefactId(artefactId1);
-        artefact1.setLocationId(locationId1.toString());
+        artefact1.setArtefactId(UUID.randomUUID());
+        artefact1.setLocationId(LOCATION_ID.toString());
         artefact1.setPayload(payload1);
 
         Artefact artefact2 = new Artefact();
-        UUID artefactId2 = UUID.randomUUID();
         String payload2 = "payload/url2";
-        artefact2.setArtefactId(artefactId2);
-        artefact2.setLocationId(locationId1.toString());
+        artefact2.setArtefactId(UUID.randomUUID());
+        artefact2.setLocationId(LOCATION_ID.toString());
         artefact2.setPayload(payload2);
 
         Artefact artefact3 = new Artefact();
-        Integer locationId2 = 2;
-        UUID artefactId3 = UUID.randomUUID();
         String payload3 = "payload/url3";
-        artefact3.setArtefactId(artefactId3);
-        artefact3.setLocationId(locationId2.toString());
+        artefact3.setArtefactId(UUID.randomUUID());
+        artefact3.setLocationId(LOCATION_ID.toString());
         artefact3.setPayload(payload3);
 
-        when(locationService.getAllLocationsWithNamePrefix(LOCATION_NAME_PREFIX))
-            .thenReturn(List.of(locationId1, locationId2));
+        List<Artefact> artefactsToDelete = List.of(artefact1, artefact2, artefact3);
 
-        when(artefactRepository.findAllByLocationIdIn(List.of(locationId1.toString(), locationId2.toString())))
-            .thenReturn(List.of(artefact1, artefact2, artefact3));
-
-        assertThat(publicationRemovalService.deleteAllArtefactsWithLocationNamePrefix(LOCATION_NAME_PREFIX))
-            .isEqualTo("3 artefacts(s) deleted for location name starting with " + LOCATION_NAME_PREFIX);
+        publicationRemovalService.deleteArtefacts(artefactsToDelete);
 
         verify(azureArtefactBlobService).deleteBlob("url1");
         verify(azureArtefactBlobService).deleteBlob("url2");
@@ -435,33 +381,11 @@ class PublicationRemovalServiceTest {
     }
 
     @Test
-    void testDeleteAllArtefactsWithLocationNamePrefixWhenArtefactNotFound() {
-        Integer locationId = 1;
-
-        when(locationService.getAllLocationsWithNamePrefix(LOCATION_NAME_PREFIX))
-            .thenReturn(List.of(locationId));
-
-        when(artefactRepository.findAllByLocationIdIn(List.of(locationId.toString())))
-            .thenReturn(Collections.emptyList());
-
-        assertThat(publicationRemovalService.deleteAllArtefactsWithLocationNamePrefix(LOCATION_NAME_PREFIX))
-            .isEqualTo("0 artefacts(s) deleted for location name starting with " + LOCATION_NAME_PREFIX);
+    void testDeleteArtefactsWithNoArtefactsToDelete() {
+        publicationRemovalService.deleteArtefacts(Collections.emptyList());
 
         verifyNoInteractions(azureArtefactBlobService);
         verifyNoMoreInteractions(artefactRepository);
-        verifyNoInteractions(accountManagementService);
-    }
-
-    @Test
-    void testDeleteAllArtefactsWithLocationNamePrefixWhenLocationNotFound() {
-        when(locationService.getAllLocationsWithNamePrefix(LOCATION_NAME_PREFIX))
-            .thenReturn(Collections.emptyList());
-
-        assertThat(publicationRemovalService.deleteAllArtefactsWithLocationNamePrefix(LOCATION_NAME_PREFIX))
-            .isEqualTo("0 artefacts(s) deleted for location name starting with " + LOCATION_NAME_PREFIX);
-
-        verifyNoInteractions(azureArtefactBlobService);
-        verifyNoInteractions(artefactRepository);
         verifyNoInteractions(accountManagementService);
     }
 }

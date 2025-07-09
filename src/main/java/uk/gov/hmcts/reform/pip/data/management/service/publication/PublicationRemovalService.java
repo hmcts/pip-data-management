@@ -14,14 +14,12 @@ import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.service.AccountManagementService;
 import uk.gov.hmcts.reform.pip.data.management.service.PublicationServicesService;
-import uk.gov.hmcts.reform.pip.data.management.service.location.LocationService;
 import uk.gov.hmcts.reform.pip.model.account.PiUser;
 import uk.gov.hmcts.reform.pip.model.enums.UserActions;
 import uk.gov.hmcts.reform.pip.model.system.admin.ActionResult;
 import uk.gov.hmcts.reform.pip.model.system.admin.ChangeType;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -34,21 +32,18 @@ public class PublicationRemovalService {
 
     private final ArtefactRepository artefactRepository;
     private final LocationRepository locationRepository;
-    private final LocationService locationService;
     private final PublicationManagementService publicationManagementService;
     private final AzureArtefactBlobService azureArtefactBlobService;
     private final AccountManagementService accountManagementService;
     private final PublicationServicesService publicationServicesService;
 
     public PublicationRemovalService(ArtefactRepository artefactRepository, LocationRepository locationRepository,
-                                     LocationService locationService,
                                      PublicationManagementService publicationManagementService,
                                      AzureArtefactBlobService azureArtefactBlobService,
                                      AccountManagementService accountManagementService,
                                      PublicationServicesService publicationServicesService) {
         this.artefactRepository = artefactRepository;
         this.locationRepository = locationRepository;
-        this.locationService = locationService;
         this.publicationManagementService = publicationManagementService;
         this.azureArtefactBlobService = azureArtefactBlobService;
         this.accountManagementService = accountManagementService;
@@ -119,24 +114,9 @@ public class PublicationRemovalService {
         log.info(writeLog(issuerId, UserActions.REMOVE, artefactId));
     }
 
-    public String deleteArtefactByLocation(Integer locationId, String userId)
+    public void deleteArtefactByLocation(List<Artefact> artefactsToDelete, Integer locationId, String userId)
         throws JsonProcessingException {
-        List<Artefact> activeArtefacts = artefactRepository.findActiveArtefactsForLocation(LocalDateTime.now(),
-                                                                                           locationId.toString());
-        if (activeArtefacts.isEmpty()) {
-            log.info(writeLog(String.format("User %s attempting to delete all artefacts for location %s. "
-                                                + "No artefacts found",
-                                            userId, locationId)));
-            throw new ArtefactNotFoundException(String.format(
-                "No artefacts found with the location ID %s",
-                locationId
-            ));
-        }
-        log.info(writeLog(String.format("User %s attempting to delete all artefacts for location %s. "
-                                            + "%s artefact(s) found",
-                                        userId, locationId, activeArtefacts.size())));
-
-        activeArtefacts.forEach(artefact -> {
+        artefactsToDelete.forEach(artefact -> {
             handleArtefactDeletion(artefact);
             log.info(writeLog(
                 String.format("Artefact deleted by %s, with artefact id: %s",
@@ -145,26 +125,14 @@ public class PublicationRemovalService {
         });
         Optional<Location> location = locationRepository.getLocationByLocationId(locationId);
         notifySystemAdminAboutSubscriptionDeletion(
-            userId, String.format("Total %s artefact(s) for location %s", activeArtefacts.size(),
+            userId, String.format("Total %s artefact(s) for location %s", artefactsToDelete.size(),
                                   location.isPresent() ? location.get().getName() : "")
         );
-        return String.format("Total %s artefact deleted for location id %s", activeArtefacts.size(), locationId);
     }
 
-    public String deleteAllArtefactsWithLocationNamePrefix(String prefix) {
-        List<String> locationIds = locationService.getAllLocationsWithNamePrefix(prefix).stream()
-            .map(Object::toString)
-            .toList();
-
-        List<Artefact> artefactsToDelete = Collections.emptyList();
-        if (!locationIds.isEmpty()) {
-            artefactsToDelete = artefactRepository.findAllByLocationIdIn(locationIds);
-            artefactsToDelete.forEach(this::handleArtefactDeletion);
-        }
-        return String.format("%s artefacts(s) deleted for location name starting with %s",
-                             artefactsToDelete.size(), prefix);
+    public void deleteArtefacts(List<Artefact> artefacts) {
+        artefacts.forEach(this::handleArtefactDeletion);
     }
-
 
     public void handleArtefactDeletion(Artefact artefact) {
         deleteDataFromBlobStore(artefact);

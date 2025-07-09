@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.reform.pip.data.management.service.location.LocationService;
-import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationRemovalService;
+import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationLocationService;
 import uk.gov.hmcts.reform.pip.model.authentication.roles.IsAdmin;
 
 @RestController
@@ -33,13 +33,13 @@ public class TestingSupportController {
     private static final String CREATED_CODE = "201";
 
     private final LocationService locationService;
-    private final PublicationRemovalService publicationRemovalService;
+    private final PublicationLocationService publicationLocationService;
 
     @Autowired
     public TestingSupportController(LocationService locationService,
-                                    PublicationRemovalService publicationRemovalService) {
+                                    PublicationLocationService publicationLocationService) {
         this.locationService = locationService;
-        this.publicationRemovalService = publicationRemovalService;
+        this.publicationLocationService = publicationLocationService;
     }
 
     @ApiResponse(responseCode = CREATED_CODE,
@@ -68,7 +68,7 @@ public class TestingSupportController {
     @Transactional
     public ResponseEntity<String> deletePublicationsWithLocationNamePrefix(@PathVariable String locationNamePrefix) {
         return ResponseEntity.ok(
-            publicationRemovalService.deleteAllArtefactsWithLocationNamePrefix(locationNamePrefix)
+            publicationLocationService.deleteAllArtefactsWithLocationNamePrefix(locationNamePrefix)
         );
     }
 }

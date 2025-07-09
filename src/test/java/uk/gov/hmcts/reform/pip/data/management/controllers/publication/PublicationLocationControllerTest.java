@@ -12,7 +12,6 @@ import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationArtefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationLocationService;
-import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationRemovalService;
 import uk.gov.hmcts.reform.pip.model.location.LocationType;
 import uk.gov.hmcts.reform.pip.model.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
@@ -63,9 +62,6 @@ class PublicationLocationControllerTest {
     @Mock
     private PublicationLocationService publicationLocationService;
 
-    @Mock
-    private PublicationRemovalService publicationRemovalService;
-
     @InjectMocks
     private PublicationLocationController publicationLocationController;
 
@@ -105,7 +101,7 @@ class PublicationLocationControllerTest {
     void testDeleteArtefactsByLocationReturnsOk() throws JsonProcessingException {
         int locationId = 1;
         String requesterId = UUID.randomUUID().toString();
-        when(publicationRemovalService.deleteArtefactByLocation(locationId, requesterId)).thenReturn("Success");
+        when(publicationLocationService.deleteArtefactByLocation(locationId, requesterId)).thenReturn("Success");
 
         assertEquals(HttpStatus.OK,
                      publicationLocationController.deleteArtefactsByLocation(requesterId, locationId).getStatusCode(),
