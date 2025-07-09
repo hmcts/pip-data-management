@@ -124,10 +124,13 @@ pmd {
 
 configurations {
   functionalTestImplementation.extendsFrom testImplementation
+  functionalTestRuntimeOnly.extendsFrom runtimeOnly
 
   integrationTestImplementation.extendsFrom testImplementation
+  integrationTestRuntimeOnly.extendsFrom runtimeOnly
 
   smokeTestImplementation.extendsFrom functionalTestImplementation
+  smokeTestRuntimeOnly.extendsFrom runtimeOnly
 
   all {
     exclude group: 'commons-logging', module: 'commons-logging'
@@ -191,6 +194,7 @@ dependencyCheck {
   // range of 0-10 fails the build, anything greater and it doesn't fail the build
   failBuildOnCVSS = System.getProperty('dependencyCheck.failBuild') == 'true' ? 0 : 11
   suppressionFile = 'config/owasp/suppressions.xml'
+  skipTestGroups  = false
 
   analyzers {
     // Disable scanning of .NET related binaries
