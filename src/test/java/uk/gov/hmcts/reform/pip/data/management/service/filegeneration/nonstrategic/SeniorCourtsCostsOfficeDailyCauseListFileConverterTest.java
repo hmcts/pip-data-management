@@ -126,7 +126,7 @@ class SeniorCourtsCostsOfficeDailyCauseListFileConverterTest {
 
         softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).get(0).text())
             .as(IMPORTANT_INFORMATION_MESSAGE)
-            .contains("Hearings in the Senior Court Costs Office will be held in person unless the notice of hearing "
+            .contains("Hearings in the Senior Courts Costs Office will be held in person unless the notice of hearing "
                           + "has directed otherwise.");
 
         softly.assertThat(document.getElementsByClass(LINK_CLASS).get(0)
@@ -209,8 +209,8 @@ class SeniorCourtsCostsOfficeDailyCauseListFileConverterTest {
 
         softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).get(0).text())
             .as(IMPORTANT_INFORMATION_MESSAGE)
-            .contains("Bydd gwrandawiadau yn Uwch Swyddfa Costau’r Llys yn cael eu cynnal wyneb yn wyneb oni bai bod "
-                          + "yr hysbysiad o wrandawiad wedi cyfarwyddo fel arall.");
+            .contains("Bydd gwrandawiadau a gynhelir yn Swyddfa Costau’r Uwch Lysoedd yn cael eu cynnal yn wyneb yn "
+                          + "wyneb oni bai bod yr hysbysiad o wrandawiad wedi cyfarwyddo fel arall.");
 
         softly.assertThat(document.getElementsByClass(LINK_CLASS).get(0)
                               .getElementsByTag("a").get(0)
