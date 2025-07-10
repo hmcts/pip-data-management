@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.pip.data.management.service;
+package uk.gov.hmcts.reform.pip.data.management.service.publication;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.IOUtils;
@@ -15,8 +15,6 @@ import uk.gov.hmcts.reform.pip.data.management.models.PublicationFiles;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.service.location.LocationService;
-import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationFileGenerationService;
-import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationRetrievalService;
 import uk.gov.hmcts.reform.pip.data.management.utils.IntegrationBasicTestBase;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;

@@ -61,5 +61,4 @@ class PublicationRetrievalServiceTest extends IntegrationBasicTestBase {
     void shouldNotGeneratePdfIfPayloadSizeOverLimit() {
         assertFalse(artefactService.payloadWithinPdfLimit(60f), PAYLOAD_LIMIT_MESSAGE);
     }
-
 }
