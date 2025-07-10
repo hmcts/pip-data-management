@@ -7,8 +7,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import uk.gov.hmcts.reform.pip.data.management.service.LocationService;
-import uk.gov.hmcts.reform.pip.data.management.service.publication.ArtefactDeleteService;
+import uk.gov.hmcts.reform.pip.data.management.service.location.LocationService;
+import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationLocationService;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -23,7 +23,7 @@ class TestingSupportControllerTest {
     private static final String RESPONSE_BODY_MESSAGE = "Response body does not match";
 
     @Mock
-    private ArtefactDeleteService artefactDeleteService;
+    private PublicationLocationService publicationLocationService;
 
     @Mock
     private LocationService locationService;
@@ -67,7 +67,7 @@ class TestingSupportControllerTest {
     @Test
     void testDeletePublicationsWithLocationNamePrefixReturnsOk() {
         String responseMessage = "5 artefacts(s) deleted for location name starting with " + LOCATION_NAME_PREFIX;
-        when(artefactDeleteService.deleteAllArtefactsWithLocationNamePrefix(LOCATION_NAME_PREFIX))
+        when(publicationLocationService.deleteAllArtefactsWithLocationNamePrefix(LOCATION_NAME_PREFIX))
             .thenReturn(responseMessage);
 
         ResponseEntity<String> response = testingSupportController.deletePublicationsWithLocationNamePrefix(
