@@ -13,7 +13,7 @@ import uk.gov.hmcts.reform.pip.data.management.helpers.NoMatchArtefactHelper;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.service.AccountManagementService;
-import uk.gov.hmcts.reform.pip.data.management.service.SystemAdminNotificationService;
+import uk.gov.hmcts.reform.pip.data.management.service.PublicationServicesService;
 import uk.gov.hmcts.reform.pip.model.account.PiUser;
 import uk.gov.hmcts.reform.pip.model.enums.UserActions;
 import uk.gov.hmcts.reform.pip.model.system.admin.ActionResult;
@@ -22,6 +22,7 @@ import uk.gov.hmcts.reform.pip.model.system.admin.ChangeType;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
 
@@ -34,19 +35,19 @@ public class PublicationRemovalService {
     private final PublicationManagementService publicationManagementService;
     private final AzureArtefactBlobService azureArtefactBlobService;
     private final AccountManagementService accountManagementService;
-    private final SystemAdminNotificationService systemAdminNotificationService;
+    private final PublicationServicesService publicationServicesService;
 
     public PublicationRemovalService(ArtefactRepository artefactRepository, LocationRepository locationRepository,
                                      PublicationManagementService publicationManagementService,
                                      AzureArtefactBlobService azureArtefactBlobService,
                                      AccountManagementService accountManagementService,
-                                     SystemAdminNotificationService systemAdminNotificationService) {
+                                     PublicationServicesService publicationServicesService) {
         this.artefactRepository = artefactRepository;
         this.locationRepository = locationRepository;
         this.publicationManagementService = publicationManagementService;
         this.azureArtefactBlobService = azureArtefactBlobService;
         this.accountManagementService = accountManagementService;
-        this.systemAdminNotificationService = systemAdminNotificationService;
+        this.publicationServicesService = publicationServicesService;
     }
 
     /**
@@ -123,13 +124,9 @@ public class PublicationRemovalService {
             ));
         });
         Optional<Location> location = locationRepository.getLocationByLocationId(locationId);
-
-        PiUser userInfo = accountManagementService.getUserById(userId);
-        systemAdminNotificationService.sendEmailNotification(
-            userInfo.getEmail(), ActionResult.SUCCEEDED,
-            String.format("Total %s artefact(s) for location %s", artefactsToDelete.size(), location.isPresent()
-                    ? location.get().getName() : ""),
-            ChangeType.DELETE_LOCATION_ARTEFACT
+        notifySystemAdminAboutSubscriptionDeletion(
+            userId, String.format("Total %s artefact(s) for location %s", artefactsToDelete.size(),
+                                  location.isPresent() ? location.get().getName() : "")
         );
     }
 
@@ -148,5 +145,16 @@ public class PublicationRemovalService {
     private void handleArtefactArchiving(Artefact artefact) {
         deleteDataFromBlobStore(artefact);
         artefactRepository.archiveArtefact(artefact.getArtefactId().toString());
+    }
+
+    private void notifySystemAdminAboutSubscriptionDeletion(String userId, String additionalDetails)
+        throws JsonProcessingException {
+        PiUser userInfo = accountManagementService.getUserById(userId);
+        List<String> systemAdminsAad = accountManagementService.getAllAccounts("PI_AAD", "SYSTEM_ADMIN");
+        List<String> systemAdminsSso = accountManagementService.getAllAccounts("SSO", "SYSTEM_ADMIN");
+        List<String> systemAdmins = Stream.concat(systemAdminsAad.stream(), systemAdminsSso.stream()).toList();
+        publicationServicesService.sendSystemAdminEmail(systemAdmins, userInfo.getEmail(),
+                                                        ActionResult.SUCCEEDED, additionalDetails,
+                                                        ChangeType.DELETE_LOCATION_ARTEFACT);
     }
 }
