@@ -24,7 +24,7 @@ import uk.gov.hmcts.reform.pip.data.management.models.location.LocationDeletion;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationReference;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.service.AccountManagementService;
-import uk.gov.hmcts.reform.pip.data.management.service.PublicationServicesService;
+import uk.gov.hmcts.reform.pip.data.management.service.SystemAdminNotificationService;
 import uk.gov.hmcts.reform.pip.data.management.service.ValidationService;
 import uk.gov.hmcts.reform.pip.model.account.PiUser;
 import uk.gov.hmcts.reform.pip.model.location.LocationCsv;
@@ -73,7 +73,7 @@ class LocationServiceTest {
     private AccountManagementService accountManagementService;
 
     @Mock
-    private PublicationServicesService publicationService;
+    private SystemAdminNotificationService systemAdminNotificationService;
 
     @Mock
     private ValidationService validationService;
@@ -643,20 +643,17 @@ class LocationServiceTest {
             .thenReturn(List.of());
         when(accountManagementService.findSubscriptionsByLocationId(locationId.toString()))
             .thenReturn("[]");
-        when(accountManagementService.getAllAccounts(PI_AAD_PROVENANCE, SYSTEM_ADMIN))
-            .thenReturn(List.of(EMAIL));
-        when(publicationService.sendSystemAdminEmail(List.of(EMAIL), EMAIL,
-                                                     ActionResult.SUCCEEDED,
-                                                     String.format(
-                                                         "Location %s with Id %s has been deleted.",
-                                                         "NAME", locationId),
-                                                     ChangeType.DELETE_LOCATION)).thenReturn("");
-
         doNothing().when(locationRepository).deleteById(locationId);
 
         locationService.deleteLocation(locationId, userId);
 
         verify(locationRepository, times(1)).deleteById(locationId);
+        verify(systemAdminNotificationService).sendEmailNotification(
+            EMAIL, ActionResult.SUCCEEDED, String.format(
+                "Location %s with Id %s has been deleted.",
+                "NAME", locationId),
+            ChangeType.DELETE_LOCATION
+        );
     }
 
     @Test
@@ -667,23 +664,16 @@ class LocationServiceTest {
             .thenReturn(Optional.of(locationFirstExample));
         when(artefactRepository.findActiveArtefactsForLocation(any(), eq(locationId.toString())))
             .thenReturn(List.of(new Artefact()));
-        when(accountManagementService.getAllAccounts(PI_AAD_PROVENANCE, SYSTEM_ADMIN))
-            .thenReturn(List.of(EMAIL));
-        when(accountManagementService.getAllAccounts(SSO_PROVENANCE, SYSTEM_ADMIN))
-            .thenReturn(List.of(SSO_EMAIL));
-
-        List<String> systemAdminEmails = List.of(EMAIL, SSO_EMAIL);
-
         when(accountManagementService.getUserById(userId))
             .thenReturn(piUser);
-        when(publicationService.sendSystemAdminEmail(systemAdminEmails, EMAIL,
-            ActionResult.ATTEMPTED,
-"There are active artefacts for following location: " + LOCATION_NAME2,
-             ChangeType.DELETE_LOCATION))
-            .thenReturn("");
 
         LocationDeletion result = locationService.deleteLocation(locationId, userId);
         assertTrue(result.isExists(), "Found active artefact for a court");
+        verify(systemAdminNotificationService).sendEmailNotification(
+            EMAIL, ActionResult.ATTEMPTED,
+            String.format("There are active artefacts for following location: %s", LOCATION_NAME2),
+            ChangeType.DELETE_LOCATION
+        );
     }
 
     @Test
@@ -698,22 +688,16 @@ class LocationServiceTest {
             .thenReturn(List.of());
         when(accountManagementService.findSubscriptionsByLocationId(locationId.toString()))
             .thenReturn("[{},{}]");
-        when(accountManagementService.getAllAccounts(PI_AAD_PROVENANCE, SYSTEM_ADMIN))
-            .thenReturn(List.of(EMAIL));
-        when(accountManagementService.getAllAccounts(SSO_PROVENANCE, SYSTEM_ADMIN))
-            .thenReturn(List.of(SSO_EMAIL));
-
-        List<String> systemAdminEmails = List.of(EMAIL, SSO_EMAIL);
-
-        when(publicationService.sendSystemAdminEmail(systemAdminEmails, EMAIL,
-            ActionResult.ATTEMPTED,
-"There are active subscriptions for the following location: " + LOCATION_NAME2,
-            ChangeType.DELETE_LOCATION))
-            .thenReturn("");
 
         LocationDeletion result = locationService.deleteLocation(locationId, userId);
 
         assertTrue(result.isExists(), "Found active subscription for a court");
+
+        verify(systemAdminNotificationService).sendEmailNotification(
+            EMAIL, ActionResult.ATTEMPTED,
+            String.format("There are active subscriptions for the following location: %s", LOCATION_NAME2),
+            ChangeType.DELETE_LOCATION
+        );
     }
 
     @Test
