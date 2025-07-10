@@ -19,7 +19,7 @@ import uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelpe
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.service.AccountManagementService;
-import uk.gov.hmcts.reform.pip.data.management.service.PublicationServicesService;
+import uk.gov.hmcts.reform.pip.data.management.service.SystemAdminNotificationService;
 import uk.gov.hmcts.reform.pip.model.account.PiUser;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
@@ -35,6 +35,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -80,7 +81,7 @@ class PublicationRemovalServiceTest {
     private PublicationManagementService publicationManagementService;
 
     @Mock
-    private PublicationServicesService publicationServicesService;
+    private SystemAdminNotificationService systemAdminNotificationService;
 
     @InjectMocks
     private PublicationRemovalService publicationRemovalService;
@@ -171,11 +172,9 @@ class PublicationRemovalServiceTest {
 
     @Test
     void testDeleteArtefactByIdThrows() {
-        ArtefactNotFoundException ex = assertThrows(
-            ArtefactNotFoundException.class,
-            () -> publicationRemovalService.deleteArtefactById(TEST_VALUE, TEST_VALUE),
-            "ArtefactNotFoundException should be thrown"
-        );
+        ArtefactNotFoundException ex = assertThrows(ArtefactNotFoundException.class, () ->
+            publicationRemovalService.deleteArtefactById(TEST_VALUE, TEST_VALUE),
+            "ArtefactNotFoundException should be thrown");
 
         assertEquals("No artefact found with the ID: " + TEST_VALUE, ex.getMessage(),
                      MESSAGES_MATCH);
@@ -309,40 +308,35 @@ class PublicationRemovalServiceTest {
     @Test
     void testDeleteArtefactByLocation() throws JsonProcessingException {
         location.setName("NAME");
-
         when(locationRepository.getLocationByLocationId(LOCATION_ID))
             .thenReturn(Optional.of(location));
         when(accountManagementService.getUserById(any()))
             .thenReturn(piUser);
-        when(accountManagementService.getAllAccounts("PI_AAD", "SYSTEM_ADMIN"))
-            .thenReturn(List.of(EMAIL_ADDRESS));
-        when(accountManagementService.getAllAccounts("SSO", "SYSTEM_ADMIN"))
-            .thenReturn(List.of(SSO_EMAIL));
-
-        List<String> systemAdminEmails = List.of(EMAIL_ADDRESS, SSO_EMAIL);
-
-        when(publicationServicesService.sendSystemAdminEmail(systemAdminEmails, EMAIL_ADDRESS,
-                                                             ActionResult.SUCCEEDED,
-                                                             "Total 1 artefact(s) for location NAME",
-                                                             ChangeType.DELETE_LOCATION_ARTEFACT))
-            .thenReturn("System admin message");
 
         publicationRemovalService.deleteArtefactByLocation(List.of(artefactWithIdAndPayloadUrl), LOCATION_ID, USER_ID);
 
         InOrder orderVerifier = inOrder(azureArtefactBlobService, publicationManagementService,
-                                        artefactRepository, accountManagementService);
+                                        artefactRepository, accountManagementService, systemAdminNotificationService);
         orderVerifier.verify(azureArtefactBlobService).deleteBlob(any());
         orderVerifier.verify(publicationManagementService).deleteFiles(ARTEFACT_ID, ListType.CIVIL_DAILY_CAUSE_LIST,
                                                                        Language.ENGLISH);
         orderVerifier.verify(artefactRepository).delete(artefactWithIdAndPayloadUrl);
         orderVerifier.verify(accountManagementService).sendDeletedArtefactForThirdParties(any());
+        orderVerifier.verify(systemAdminNotificationService).sendEmailNotification(
+            EMAIL_ADDRESS, ActionResult.SUCCEEDED, "Total 1 artefact(s) for location NAME",
+            ChangeType.DELETE_LOCATION_ARTEFACT
+        );
     }
 
     @Test
     void testDeleteArtefactByLocationJsonProcessingException() throws JsonProcessingException {
+        location.setName("NAME");
         when(locationRepository.getLocationByLocationId(LOCATION_ID)).thenReturn(Optional.of(location));
         when(accountManagementService.getUserById(USER_ID)).thenReturn(piUser);
-        when(accountManagementService.getAllAccounts(any(), any())).thenThrow(JsonProcessingException.class);
+        doThrow(JsonProcessingException.class).when(systemAdminNotificationService).sendEmailNotification(
+            EMAIL_ADDRESS, ActionResult.SUCCEEDED, "Total 1 artefact(s) for location NAME",
+            ChangeType.DELETE_LOCATION_ARTEFACT
+        );
 
         assertThrows(JsonProcessingException.class, () ->
                          publicationRemovalService.deleteArtefactByLocation(List.of(artefactWithIdAndPayloadUrl),

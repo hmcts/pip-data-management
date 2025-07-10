@@ -27,7 +27,7 @@ import uk.gov.hmcts.reform.pip.data.management.models.location.LocationDeletion;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationReference;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.service.AccountManagementService;
-import uk.gov.hmcts.reform.pip.data.management.service.PublicationServicesService;
+import uk.gov.hmcts.reform.pip.data.management.service.SystemAdminNotificationService;
 import uk.gov.hmcts.reform.pip.data.management.service.ValidationService;
 import uk.gov.hmcts.reform.pip.model.account.PiUser;
 import uk.gov.hmcts.reform.pip.model.enums.UserActions;
@@ -49,10 +49,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
-import static uk.gov.hmcts.reform.pip.model.account.Roles.SYSTEM_ADMIN;
 
 /**
  * Service to handle the retrieval and filtering of locations.
@@ -67,7 +65,7 @@ public class LocationService {
 
     private final AccountManagementService accountManagementService;
 
-    private final PublicationServicesService publicationService;
+    private final SystemAdminNotificationService systemAdminNotificationService;
 
     private final ValidationService validationService;
 
@@ -76,13 +74,13 @@ public class LocationService {
     public LocationService(LocationRepository locationRepository,
                            ArtefactRepository artefactRepository,
                            AccountManagementService accountManagementService,
-                           PublicationServicesService publicationService,
+                           SystemAdminNotificationService systemAdminNotificationService,
                            ValidationService validationService,
                            LocationMetadataRepository locationMetadataRepository) {
         this.locationRepository = locationRepository;
         this.artefactRepository = artefactRepository;
         this.accountManagementService = accountManagementService;
-        this.publicationService = publicationService;
+        this.systemAdminNotificationService = systemAdminNotificationService;
         this.validationService = validationService;
         this.locationMetadataRepository = locationMetadataRepository;
     }
@@ -169,12 +167,11 @@ public class LocationService {
             locations.values().forEach(groupedLocation -> {
                 Location location = new Location(groupedLocation.get(0));
 
-                groupedLocation.stream().skip(1).forEach(
-                    locationCsv -> location.addLocationReference(new LocationReference(
+                groupedLocation.stream().skip(1).forEach(locationCsv ->
+                    location.addLocationReference(new LocationReference(
                         locationCsv.getProvenance(),
                         locationCsv.getProvenanceLocationId(),
-                        LocationType.valueOfCsv(locationCsv.getProvenanceLocationType()))
-                    ));
+                        LocationType.valueOfCsv(locationCsv.getProvenanceLocationType()))));
 
                 try {
                     validationService.containsHtmlTag(location.getName(), location.getWelshName());
@@ -187,8 +184,7 @@ public class LocationService {
                 } catch (ContainsForbiddenValuesException e) {
                     log.error(writeLog(String.format(
                         "Record with ID %d not saved. The location name '%s' or Welsh location name '%s' contains a "
-                            + "forbidden character", location.getLocationId(), location.getName(),
-                        location.getWelshName()
+                        + "forbidden character", location.getLocationId(), location.getName(), location.getWelshName()
                     )));
                 }
             });
@@ -223,25 +219,25 @@ public class LocationService {
 
         List<Location> allLocations = locationRepository.findAll();
         StatefulBeanToCsv<LocationCsv> beanToCsv = new StatefulBeanToCsvBuilder<LocationCsv>(writer).build();
-        allLocations.forEach(
-            location -> location.getLocationReferenceList().forEach(locationReference -> {
+        allLocations.forEach(location ->
+            location.getLocationReferenceList().forEach(locationReference -> {
                 try {
-                    beanToCsv.write(
-                        new LocationCsv(location.getLocationId(),
-                                        location.getName(),
-                                        location.getRegion(),
-                                        location.getJurisdiction(),
-                                        location.getJurisdictionType(),
-                                        locationReference.getProvenance(),
-                                        locationReference.getProvenanceLocationId(),
-                                        locationReference.getProvenanceLocationType().csvInput,
-                                        location.getWelshName(),
-                                        location.getWelshRegion(),
-                                        location.getWelshJurisdiction(),
-                                        location.getWelshJurisdictionType(),
-                                        location.getEmail(),
-                                        location.getContactNo())
-                    );
+                    beanToCsv.write(new LocationCsv(
+                        location.getLocationId(),
+                        location.getName(),
+                        location.getRegion(),
+                        location.getJurisdiction(),
+                        location.getJurisdictionType(),
+                        locationReference.getProvenance(),
+                        locationReference.getProvenanceLocationId(),
+                        locationReference.getProvenanceLocationType().csvInput,
+                        location.getWelshName(),
+                        location.getWelshRegion(),
+                        location.getWelshJurisdiction(),
+                        location.getWelshJurisdictionType(),
+                        location.getEmail(),
+                        location.getContactNo()
+                    ));
                 } catch (CsvDataTypeMismatchException | CsvRequiredFieldEmptyException e) {
                     throw new CsvParseException(String.format("Failed to create CSV with message: %s",
                                                               e.getMessage()));
@@ -272,9 +268,12 @@ public class LocationService {
             locationDeletion = checkActiveSubscriptionForLocation(location, userInfo.getEmail());
             if (!locationDeletion.isExists()) {
                 locationRepository.deleteById(locationId);
-                sendEmailToAllSystemAdmins(userInfo.getEmail(), ActionResult.SUCCEEDED,
-                                           String.format("Location %s with Id %s has been deleted.",
-                                                         location.getName(), location.getLocationId()));
+                systemAdminNotificationService.sendEmailNotification(
+                    userInfo.getEmail(), ActionResult.SUCCEEDED,
+                    String.format("Location %s with Id %s has been deleted.", location.getName(),
+                                  location.getLocationId()),
+                    ChangeType.DELETE_LOCATION
+                );
             }
         }
 
@@ -298,16 +297,7 @@ public class LocationService {
             .toList();
     }
 
-    private void sendEmailToAllSystemAdmins(String requesterEmail, ActionResult actionResult,
-                                            String additionalDetails) throws JsonProcessingException {
-        List<String> systemAdminsAad = accountManagementService.getAllAccounts("PI_AAD", SYSTEM_ADMIN.toString());
-        List<String> systemAdminsSso = accountManagementService.getAllAccounts("SSO", SYSTEM_ADMIN.toString());
-        List<String> systemAdmins = Stream.concat(systemAdminsAad.stream(), systemAdminsSso.stream()).toList();
-        publicationService.sendSystemAdminEmail(systemAdmins, requesterEmail, actionResult, additionalDetails,
-                                                ChangeType.DELETE_LOCATION);
-    }
-
-    private LocationDeletion checkActiveArtefactForLocation(Location location, String requestEmail)
+    private LocationDeletion checkActiveArtefactForLocation(Location location, String requesterEmail)
         throws JsonProcessingException {
         LocalDateTime searchDateTime = LocalDateTime.now();
         LocationDeletion locationDeletion = new LocationDeletion();
@@ -316,9 +306,11 @@ public class LocationService {
         if (!activeArtefacts.isEmpty()) {
             locationDeletion = new LocationDeletion("There are active artefacts for the given location.",
                                                     true);
-            sendEmailToAllSystemAdmins(requestEmail, ActionResult.ATTEMPTED,
-                                       String.format("There are active artefacts for following location: %s",
-                                                     location.getName()));
+            systemAdminNotificationService.sendEmailNotification(
+                requesterEmail, ActionResult.ATTEMPTED,
+                String.format("There are active artefacts for following location: %s", location.getName()),
+                ChangeType.DELETE_LOCATION
+            );
         }
         return locationDeletion;
     }
@@ -334,9 +326,11 @@ public class LocationService {
             if (!node.isEmpty()) {
                 locationDeletion = new LocationDeletion("There are active subscriptions for the given location.",
                                                         true);
-                sendEmailToAllSystemAdmins(requesterEmail, ActionResult.ATTEMPTED, String.format(
-                    "There are active subscriptions for the following location: %s", location.getName()
-                ));
+                systemAdminNotificationService.sendEmailNotification(
+                    requesterEmail, ActionResult.ATTEMPTED,
+                    String.format("There are active subscriptions for the following location: %s", location.getName()),
+                    ChangeType.DELETE_LOCATION
+                );
             }
         }
         return locationDeletion;
