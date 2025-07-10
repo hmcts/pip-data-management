@@ -2,12 +2,14 @@ package uk.gov.hmcts.reform.pip.data.management.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.pip.model.system.admin.ActionResult;
 import uk.gov.hmcts.reform.pip.model.system.admin.ChangeType;
 
 import java.util.List;
 import java.util.stream.Stream;
 
+@Service
 public class SystemAdminNotificationService {
     private final AccountManagementService accountManagementService;
     private final PublicationServicesService publicationServicesService;
