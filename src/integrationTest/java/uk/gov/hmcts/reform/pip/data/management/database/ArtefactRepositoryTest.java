@@ -58,7 +58,7 @@ class ArtefactRepositoryTest {
         artefact1.setLocationId(LOCATION_ID);
         artefact1.setListType(ListType.CIVIL_DAILY_CAUSE_LIST);
         artefact1.setIsArchived(false);
-        artefact1.setLastReceivedDate(publicationReceivedDateTime);
+        artefact1.setLastReceivedDate(publicationReceivedDateTime.minusDays(5));
         setCommonArtefactProperties(artefact1);
 
         Artefact savedArtefact = artefactRepository.save(artefact1);
@@ -68,7 +68,7 @@ class ArtefactRepositoryTest {
         artefact2.setLocationId(LOCATION_ID);
         artefact2.setListType(ListType.FAMILY_DAILY_CAUSE_LIST);
         artefact2.setIsArchived(false);
-        artefact2.setLastReceivedDate(publicationReceivedDateTime);
+        artefact2.setLastReceivedDate(publicationReceivedDateTime.minusDays(10));
         setCommonArtefactProperties(artefact2);
 
         savedArtefact = artefactRepository.save(artefact2);
@@ -78,7 +78,7 @@ class ArtefactRepositoryTest {
         artefact3.setLocationId(LOCATION_ID);
         artefact3.setListType(ListType.SJP_PUBLIC_LIST);
         artefact3.setIsArchived(false);
-        artefact3.setLastReceivedDate(publicationReceivedDateTime);
+        artefact3.setLastReceivedDate(publicationReceivedDateTime.minusDays(15));
         setCommonArtefactProperties(artefact3);
 
         savedArtefact = artefactRepository.save(artefact3);
@@ -88,7 +88,7 @@ class ArtefactRepositoryTest {
         artefact4.setLocationId(LOCATION_ID);
         artefact4.setListType(ListType.CIVIL_DAILY_CAUSE_LIST);
         artefact4.setIsArchived(true);
-        artefact4.setLastReceivedDate(publicationReceivedDateTime);
+        artefact4.setLastReceivedDate(publicationReceivedDateTime.minusDays(20));
         setCommonArtefactProperties(artefact4);
 
         savedArtefact = artefactRepository.save(artefact4);
@@ -98,7 +98,7 @@ class ArtefactRepositoryTest {
         artefact5.setLocationId(NO_MATCH_LOCATION_ID);
         artefact5.setListType(ListType.SJP_PUBLIC_LIST);
         artefact5.setIsArchived(false);
-        artefact5.setLastReceivedDate(publicationReceivedDateTime);
+        artefact5.setLastReceivedDate(publicationReceivedDateTime.minusDays(40));
         setCommonArtefactProperties(artefact5);
 
         savedArtefact = artefactRepository.save(artefact5);
@@ -312,8 +312,9 @@ class ArtefactRepositoryTest {
             .atStartOfDay();
         List<PublicationMiData> miDataList = artefactRepository.getMiData(publicationReceivedDate);
 
-        assertThat(miDataList).hasSize(5).extracting(PublicationMiData::getArtefactId)
-            .containsExactlyInAnyOrder(artefactId1, artefactId2, artefactId3, artefactId4, artefactId5);
+        //artefactId5 has last lastReceivedDate more than 31 days old, so it will not be picked.
+        assertThat(miDataList).hasSize(4).extracting(PublicationMiData::getArtefactId)
+            .containsExactlyInAnyOrder(artefactId1, artefactId2, artefactId3, artefactId4);
 
         PublicationMiData miData = miDataList.get(0);
         assertThat(miData.getSourceArtefactId()).isEqualTo(SOURCE_ARTEFACT_ID);
@@ -326,5 +327,34 @@ class ArtefactRepositoryTest {
         assertThat(miData.getContentDate()).isEqualTo(TODAY);
         assertThat(miData.getSensitivity()).isEqualTo(Sensitivity.PUBLIC);
         assertThat(miData.getSupersededCount()).isEqualTo(1);
+
+        //artefactId1has last lastReceivedDate 5 days old, so it will pick only that one.
+        publicationReceivedDate = LocalDate.now()
+            .minusDays(5)
+            .atStartOfDay();
+        miDataList = artefactRepository.getMiData(publicationReceivedDate);
+
+        assertThat(miDataList).hasSize(1).extracting(PublicationMiData::getArtefactId)
+            .containsExactlyInAnyOrder(artefactId1);
+
+        miData = miDataList.getFirst();
+        assertThat(miData.getSourceArtefactId()).isEqualTo(SOURCE_ARTEFACT_ID);
+        assertThat(miData.getLocationId()).isEqualTo(LOCATION_ID);
+        assertThat(miData.getListType()).isEqualTo(ListType.CIVIL_DAILY_CAUSE_LIST);
+        assertThat(miData.getLanguage()).isEqualTo(Language.ENGLISH);
+        assertThat(miData.getProvenance()).isEqualTo(PROVENANCE);
+        assertThat(miData.getDisplayFrom()).isEqualTo(YESTERDAY);
+        assertThat(miData.getDisplayTo()).isEqualTo(TOMORROW);
+        assertThat(miData.getContentDate()).isEqualTo(TODAY);
+        assertThat(miData.getSensitivity()).isEqualTo(Sensitivity.PUBLIC);
+        assertThat(miData.getSupersededCount()).isEqualTo(1);
+
+        //none of the publication has lastReceivedDate one day old. So it will return empty
+        publicationReceivedDate = LocalDate.now()
+            .minusDays(1)
+            .atStartOfDay();
+        miDataList = artefactRepository.getMiData(publicationReceivedDate);
+
+        assertThat(miDataList).hasSize(0);
     }
 }
