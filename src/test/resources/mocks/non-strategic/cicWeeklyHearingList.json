@@ -1,0 +1,22 @@
+[
+  {
+    "date": "26/06/2025",
+    "hearingTime": "10am",
+    "caseReferenceNumber": "1234",
+    "caseName": "This is a case name",
+    "venue/platform":"This is a venue name",
+    "judges": "Judge A",
+    "members": "Member A",
+    "additionalInformation": "This is additional information"
+  },
+  {
+    "date": "26/06/2025",
+    "hearingTime": "10:30am",
+    "caseReferenceNumber": "1235",
+    "caseName": "This is another case name",
+    "venue/platform":"This is another venue name",
+    "judges": "Judge B",
+    "members": "Member B",
+    "additionalInformation": "This is another additional information"
+  }
+]
