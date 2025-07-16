@@ -106,7 +106,8 @@ class PublicationRemovalServiceTest {
             InOrder orderVerifier = inOrder(azureArtefactBlobService, publicationFileManagementService,
                                             artefactRepository, accountManagementService);
             orderVerifier.verify(azureArtefactBlobService).deleteBlob(PAYLOAD_STRIPPED);
-            orderVerifier.verify(publicationFileManagementService).deleteFiles(ARTEFACT_ID, ListType.CIVIL_DAILY_CAUSE_LIST,
+            orderVerifier.verify(publicationFileManagementService).deleteFiles(ARTEFACT_ID,
+                                                                               ListType.CIVIL_DAILY_CAUSE_LIST,
                                                                                Language.ENGLISH);
             orderVerifier.verify(artefactRepository).delete(artefactWithIdAndPayloadUrl);
             orderVerifier.verify(accountManagementService)
@@ -213,7 +214,8 @@ class PublicationRemovalServiceTest {
         publicationRemovalService.archiveExpiredArtefacts();
         verify(artefactRepository).archiveArtefact(testArtefactId.toString());
         verify(azureArtefactBlobService).deleteBlob(PAYLOAD_STRIPPED);
-        verify(publicationFileManagementService).deleteFiles(testArtefactId, ListType.SJP_PUBLIC_LIST, Language.ENGLISH);
+        verify(publicationFileManagementService).deleteFiles(testArtefactId, ListType.SJP_PUBLIC_LIST,
+                                                             Language.ENGLISH);
         verifyNoInteractions(accountManagementService);
     }
 
