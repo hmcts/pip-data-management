@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pip.data.management.models.PublicationFileSizes;
-import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationManagementService;
+import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationFileManagementService;
 import uk.gov.hmcts.reform.pip.model.publication.FileType;
 
 import java.util.UUID;
@@ -21,7 +21,7 @@ import static org.mockito.Mockito.when;
 
 @ActiveProfiles("test")
 @ExtendWith(MockitoExtension.class)
-class PublicationManagementControllerTest {
+class PublicationFileManagementControllerTest {
     private static final String FILE = "123";
     private static final String USER_ID = "test";
     private static final UUID ARTEFACT_ID = UUID.randomUUID();
@@ -30,28 +30,18 @@ class PublicationManagementControllerTest {
     private static final String RESPONSE_BODY_MESSAGE = "Body did not match";
 
     @Mock
-    private PublicationManagementService publicationManagementService;
+    private PublicationFileManagementService publicationFileManagementService;
 
     @InjectMocks
-    PublicationManagementController publicationManagementController;
-
-    @Test
-    void testGenerateArtefactSummary() {
-        when(publicationManagementService.generateArtefactSummary(any())).thenReturn("test1234");
-        ResponseEntity<String> response = publicationManagementController
-            .generateArtefactSummary(UUID.randomUUID());
-
-        assertEquals(HttpStatus.OK, response.getStatusCode(), STATUS_MESSAGE);
-        assertEquals("test1234", response.getBody(), RESPONSE_BODY_MESSAGE);
-    }
+    PublicationFileManagementController publicationFileManagementController;
 
     @Test
     void testGetFile() {
-        when(publicationManagementService.getStoredPublication(any(), any(), any(), eq(USER_ID), eq(true),
-                                                               eq(false)
+        when(publicationFileManagementService.getStoredPublication(any(), any(), any(), eq(USER_ID), eq(true),
+                                                                   eq(false)
         )).thenReturn(FILE);
 
-        ResponseEntity<String> response = publicationManagementController.getFile(
+        ResponseEntity<String> response = publicationFileManagementController.getFile(
             UUID.randomUUID(), FileType.PDF, USER_ID, true, false, null
         );
 
@@ -61,9 +51,9 @@ class PublicationManagementControllerTest {
 
     @Test
     void testFileExists() {
-        when(publicationManagementService.fileExists(ARTEFACT_ID)).thenReturn(true);
+        when(publicationFileManagementService.fileExists(ARTEFACT_ID)).thenReturn(true);
 
-        ResponseEntity<Boolean> response = publicationManagementController.fileExists(ARTEFACT_ID);
+        ResponseEntity<Boolean> response = publicationFileManagementController.fileExists(ARTEFACT_ID);
         assertEquals(HttpStatus.OK, response.getStatusCode(), STATUS_MESSAGE);
         assertEquals(true, response.getBody(), RESPONSE_BODY_MESSAGE);
     }
@@ -71,9 +61,9 @@ class PublicationManagementControllerTest {
     @Test
     void testGetFileSizes() {
         PublicationFileSizes fileSizes = new PublicationFileSizes(1234L, null, 123L);
-        when(publicationManagementService.getFileSizes(ARTEFACT_ID)).thenReturn(fileSizes);
+        when(publicationFileManagementService.getFileSizes(ARTEFACT_ID)).thenReturn(fileSizes);
 
-        ResponseEntity<PublicationFileSizes> response = publicationManagementController.getFileSizes(ARTEFACT_ID);
+        ResponseEntity<PublicationFileSizes> response = publicationFileManagementController.getFileSizes(ARTEFACT_ID);
         assertEquals(HttpStatus.OK, response.getStatusCode(), STATUS_MESSAGE);
         assertEquals(fileSizes, response.getBody(), RESPONSE_BODY_MESSAGE);
     }

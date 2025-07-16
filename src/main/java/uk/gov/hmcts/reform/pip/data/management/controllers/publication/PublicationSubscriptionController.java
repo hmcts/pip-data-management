@@ -9,12 +9,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationSubscriptionService;
 import uk.gov.hmcts.reform.pip.model.authentication.roles.IsAdmin;
+
+import java.util.UUID;
 
 @Slf4j
 @Validated
@@ -23,12 +27,16 @@ import uk.gov.hmcts.reform.pip.model.authentication.roles.IsAdmin;
 @RequestMapping("/publication")
 public class PublicationSubscriptionController {
     private static final String NO_CONTENT_DESCRIPTION = "The request has been successfully fulfilled";
+    private static final String NOT_FOUND_MESSAGE = "No artefact found";
     private static final String UNAUTHORISED_MESSAGE = "Invalid access credential";
     private static final String FORBIDDEN_MESSAGE = "User has not been authorized";
 
+    private static final String OK_CODE = "200";
     private static final String NO_CONTENT_CODE = "204";
+    private static final String NOT_FOUND_CODE = "404";
     private static final String UNAUTHORISED_CODE = "401";
     private static final String FORBIDDEN_CODE = "403";
+    private static final String INTERNAL_ERROR_CODE = "500";
 
     private static final String BEARER_AUTHENTICATION = "bearerAuth";
 
@@ -52,4 +60,12 @@ public class PublicationSubscriptionController {
         return ResponseEntity.noContent().build();
     }
 
+    @ApiResponse(responseCode = OK_CODE, description = "Artefact summary string returned")
+    @ApiResponse(responseCode = NOT_FOUND_CODE, description = NOT_FOUND_MESSAGE)
+    @ApiResponse(responseCode = INTERNAL_ERROR_CODE, description = "Cannot process the artefact")
+    @Operation(summary = "Takes in an artefact ID and returns an artefact summary")
+    @GetMapping("/{artefactId}/summary")
+    public ResponseEntity<String> generateArtefactSummary(@PathVariable UUID artefactId) {
+        return ResponseEntity.ok(publicationSubscriptionService.generateArtefactSummary(artefactId));
+    }
 }

@@ -37,7 +37,7 @@ public class PublicationCreationService {
 
     private final LocationRepository locationRepository;
 
-    private final PublicationManagementService publicationManagementService;
+    private final PublicationFileManagementService publicationFileManagementService;
 
     private final PublicationSubscriptionService publicationSubscriptionService;
 
@@ -47,12 +47,12 @@ public class PublicationCreationService {
     public PublicationCreationService(ArtefactRepository artefactRepository,
                                       AzureArtefactBlobService azureArtefactBlobService,
                                       LocationRepository locationRepository,
-                                      PublicationManagementService publicationManagementService,
+                                      PublicationFileManagementService publicationFileManagementService,
                                       PublicationSubscriptionService publicationSubscriptionService) {
         this.artefactRepository = artefactRepository;
         this.azureArtefactBlobService = azureArtefactBlobService;
         this.locationRepository = locationRepository;
-        this.publicationManagementService = publicationManagementService;
+        this.publicationFileManagementService = publicationFileManagementService;
         this.publicationSubscriptionService = publicationSubscriptionService;
     }
 
@@ -108,7 +108,7 @@ public class PublicationCreationService {
 
     @Async
     public void processCreatedPublication(Artefact artefact, String payload) {
-        publicationManagementService.generateFiles(artefact.getArtefactId(), payload);
+        publicationFileManagementService.generateFiles(artefact.getArtefactId(), payload);
         publicationSubscriptionService.checkAndTriggerPublicationSubscription(artefact);
     }
 
@@ -136,7 +136,7 @@ public class PublicationCreationService {
             artefact.setArtefactId(value.getArtefactId());
             artefact.setPayload(value.getPayload());
             artefact.setSupersededCount(value.getSupersededCount() + 1);
-            publicationManagementService.deleteFiles(artefact.getArtefactId(), artefact.getListType(),
+            publicationFileManagementService.deleteFiles(artefact.getArtefactId(), artefact.getListType(),
                                                      artefact.getLanguage());
         });
         return foundArtefact.isPresent();

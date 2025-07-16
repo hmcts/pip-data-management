@@ -16,13 +16,13 @@ import java.util.UUID;
 @Service
 public class PublicationSearchService {
     private final ArtefactRepository artefactRepository;
-    private final PublicationRetrievalService artefactService;
+    private final PublicationRetrievalService publicationRetrievalService;
 
     @Autowired
     public PublicationSearchService(ArtefactRepository artefactRepository,
-                                    PublicationRetrievalService artefactService) {
+                                    PublicationRetrievalService publicationRetrievalService) {
         this.artefactRepository = artefactRepository;
-        this.artefactService = artefactService;
+        this.publicationRetrievalService = publicationRetrievalService;
     }
 
     /**
@@ -37,7 +37,9 @@ public class PublicationSearchService {
         LocalDateTime currDate = LocalDateTime.now();
         List<Artefact> artefacts = artefactRepository.findArtefactsByLocationId(searchValue, currDate);
 
-        return artefacts.stream().filter(artefact -> artefactService.isAuthorised(artefact, userId)).toList();
+        return artefacts.stream()
+            .filter(artefact -> publicationRetrievalService.isAuthorised(artefact, userId))
+            .toList();
     }
 
     /**
@@ -75,7 +77,9 @@ public class PublicationSearchService {
             default -> throw new IllegalArgumentException(String.format("Invalid search term: %s", searchTerm));
         }
 
-        artefacts = artefacts.stream().filter(artefact -> artefactService.isAuthorised(artefact, userId)).toList();
+        artefacts = artefacts.stream()
+            .filter(artefact -> publicationRetrievalService.isAuthorised(artefact, userId))
+            .toList();
 
         if (artefacts.isEmpty()) {
             throw new ArtefactNotFoundException(String.format("No Artefacts found with for %s with the value: %s",

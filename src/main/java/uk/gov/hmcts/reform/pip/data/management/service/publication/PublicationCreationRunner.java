@@ -22,16 +22,16 @@ import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
 public class PublicationCreationRunner {
     private final PublicationCreationService publicationCreationService;
 
-    private final PublicationRetrievalService artefactService;
+    private final PublicationRetrievalService publicationRetrievalService;
 
     private final JsonExtractor jsonExtractor;
 
     @Autowired
     public PublicationCreationRunner(PublicationCreationService publicationCreationService,
-                                     PublicationRetrievalService artefactService,
+                                     PublicationRetrievalService publicationRetrievalService,
                                      JsonExtractor jsonExtractor) {
         this.publicationCreationService = publicationCreationService;
-        this.artefactService = artefactService;
+        this.publicationRetrievalService = publicationRetrievalService;
         this.jsonExtractor = jsonExtractor;
     }
 
@@ -88,7 +88,7 @@ public class PublicationCreationRunner {
         preprocessPublicationForCreation(artefact);
         if (extractSearchTerms
             && payload != null
-            && artefactService.payloadWithinJsonSearchLimit(artefact.getPayloadSize())) {
+            && publicationRetrievalService.payloadWithinJsonSearchLimit(artefact.getPayloadSize())) {
             artefact.setSearch(jsonExtractor.extractSearchTerms(payload));
         } else {
             artefact.setSearch(Collections.emptyMap());

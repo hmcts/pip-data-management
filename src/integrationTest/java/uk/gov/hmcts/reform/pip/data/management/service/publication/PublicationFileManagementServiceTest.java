@@ -37,9 +37,9 @@ import static uk.gov.hmcts.reform.pip.model.publication.FileType.PDF;
 @ActiveProfiles("integration-basic")
 @SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class PublicationManagementServiceTest extends IntegrationBasicTestBase {
+class PublicationFileManagementServiceTest extends IntegrationBasicTestBase {
     @MockitoBean
-    private PublicationRetrievalService artefactService;
+    private PublicationRetrievalService publicationRetrievalService;
 
     @MockitoBean
     private LocationService locationService;
@@ -48,7 +48,7 @@ class PublicationManagementServiceTest extends IntegrationBasicTestBase {
     private AzurePublicationBlobService azureBlobService;
 
     @Autowired
-    private PublicationManagementService publicationManagementService;
+    private PublicationFileManagementService publicationFileManagementService;
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private static final Artefact ARTEFACT = new Artefact();
@@ -103,17 +103,17 @@ class PublicationManagementServiceTest extends IntegrationBasicTestBase {
         LOCATION.setRegion(Collections.singletonList("Region"));
         LOCATION.setWelshRegion(Collections.singletonList("Welsh region"));
 
-        when(artefactService.payloadWithinExcelLimit(argThat(arg -> arg <= 2048))).thenReturn(true);
-        when(artefactService.payloadWithinPdfLimit(argThat(arg -> arg <= 256))).thenReturn(true);
+        when(publicationRetrievalService.payloadWithinExcelLimit(argThat(arg -> arg <= 2048))).thenReturn(true);
+        when(publicationRetrievalService.payloadWithinPdfLimit(argThat(arg -> arg <= 256))).thenReturn(true);
     }
 
     @Test
     void testGenerateFilesSjpEnglish() {
-        when(artefactService.getMetadataByArtefactId(any())).thenReturn(ARTEFACT);
+        when(publicationRetrievalService.getMetadataByArtefactId(any())).thenReturn(ARTEFACT);
         when(locationService.getLocationById(any())).thenReturn(LOCATION);
         when(azureBlobService.uploadFile(any(), any())).thenReturn(UPLOADED);
 
-        publicationManagementService.generateFiles(TEST_ARTEFACT_ID, sjpPublicListInput);
+        publicationFileManagementService.generateFiles(TEST_ARTEFACT_ID, sjpPublicListInput);
 
         verify(azureBlobService).uploadFile(eq(TEST_ARTEFACT_ID + PDF.getExtension()), any());
         verify(azureBlobService).uploadFile(eq(TEST_ARTEFACT_ID + EXCEL.getExtension()), any());
@@ -123,11 +123,11 @@ class PublicationManagementServiceTest extends IntegrationBasicTestBase {
 
     @Test
     void testGenerateFilesSjpWelsh() {
-        when(artefactService.getMetadataByArtefactId(any())).thenReturn(WELSH_ARTEFACT);
+        when(publicationRetrievalService.getMetadataByArtefactId(any())).thenReturn(WELSH_ARTEFACT);
         when(locationService.getLocationById(any())).thenReturn(LOCATION);
         when(azureBlobService.uploadFile(any(), any())).thenReturn(UPLOADED);
 
-        publicationManagementService.generateFiles(TEST_ARTEFACT_ID, sjpPublicListInput);
+        publicationFileManagementService.generateFiles(TEST_ARTEFACT_ID, sjpPublicListInput);
 
         verify(azureBlobService).uploadFile(eq(TEST_ARTEFACT_ID + PDF.getExtension()), any());
         verify(azureBlobService).uploadFile(eq(TEST_ARTEFACT_ID + EXCEL.getExtension()), any());
@@ -138,11 +138,11 @@ class PublicationManagementServiceTest extends IntegrationBasicTestBase {
     @Test
     void testGenerateFilesNonSjpEnglish() {
         ARTEFACT.setListType(ListType.CIVIL_DAILY_CAUSE_LIST);
-        when(artefactService.getMetadataByArtefactId(any())).thenReturn(ARTEFACT);
+        when(publicationRetrievalService.getMetadataByArtefactId(any())).thenReturn(ARTEFACT);
         when(locationService.getLocationById(any())).thenReturn(LOCATION);
         when(azureBlobService.uploadFile(any(), any())).thenReturn(UPLOADED);
 
-        publicationManagementService.generateFiles(TEST_ARTEFACT_ID, civilDailyListInput);
+        publicationFileManagementService.generateFiles(TEST_ARTEFACT_ID, civilDailyListInput);
 
         verify(azureBlobService).uploadFile(eq(TEST_ARTEFACT_ID + PDF.getExtension()), any());
         verify(azureBlobService, never())
@@ -153,11 +153,11 @@ class PublicationManagementServiceTest extends IntegrationBasicTestBase {
     @Test
     void testGenerateFilesNonSjpWelsh() {
         WELSH_ARTEFACT.setListType(ListType.CIVIL_DAILY_CAUSE_LIST);
-        when(artefactService.getMetadataByArtefactId(any())).thenReturn(WELSH_ARTEFACT);
+        when(publicationRetrievalService.getMetadataByArtefactId(any())).thenReturn(WELSH_ARTEFACT);
         when(locationService.getLocationById(any())).thenReturn(LOCATION);
         when(azureBlobService.uploadFile(any(), any())).thenReturn(UPLOADED);
 
-        publicationManagementService.generateFiles(TEST_ARTEFACT_ID, civilDailyListInput);
+        publicationFileManagementService.generateFiles(TEST_ARTEFACT_ID, civilDailyListInput);
 
         verify(azureBlobService).uploadFile(eq(TEST_ARTEFACT_ID + PDF.getExtension()), any());
         verify(azureBlobService).uploadFile(eq(TEST_ARTEFACT_ID + WELSH_PDF_SUFFIX + PDF.getExtension()), any());

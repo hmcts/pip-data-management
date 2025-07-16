@@ -31,19 +31,19 @@ public class PublicationRemovalService {
 
     private final ArtefactRepository artefactRepository;
     private final LocationRepository locationRepository;
-    private final PublicationManagementService publicationManagementService;
+    private final PublicationFileManagementService publicationFileManagementService;
     private final AzureArtefactBlobService azureArtefactBlobService;
     private final AccountManagementService accountManagementService;
     private final SystemAdminNotificationService systemAdminNotificationService;
 
     public PublicationRemovalService(ArtefactRepository artefactRepository, LocationRepository locationRepository,
-                                     PublicationManagementService publicationManagementService,
+                                     PublicationFileManagementService publicationFileManagementService,
                                      AzureArtefactBlobService azureArtefactBlobService,
                                      AccountManagementService accountManagementService,
                                      SystemAdminNotificationService systemAdminNotificationService) {
         this.artefactRepository = artefactRepository;
         this.locationRepository = locationRepository;
-        this.publicationManagementService = publicationManagementService;
+        this.publicationFileManagementService = publicationFileManagementService;
         this.azureArtefactBlobService = azureArtefactBlobService;
         this.accountManagementService = accountManagementService;
         this.systemAdminNotificationService = systemAdminNotificationService;
@@ -94,8 +94,8 @@ public class PublicationRemovalService {
         // Delete the generated files for the publications if it's not a flat file
         if (artefact.getIsFlatFile().equals(Boolean.FALSE)
             && !NoMatchArtefactHelper.isNoMatchLocationId(artefact.getLocationId())) {
-            publicationManagementService.deleteFiles(artefact.getArtefactId(), artefact.getListType(),
-                                                     artefact.getLanguage());
+            publicationFileManagementService.deleteFiles(artefact.getArtefactId(), artefact.getListType(),
+                                                         artefact.getLanguage());
         }
     }
 

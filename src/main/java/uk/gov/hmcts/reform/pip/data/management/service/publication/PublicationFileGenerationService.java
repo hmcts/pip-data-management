@@ -39,7 +39,7 @@ public class PublicationFileGenerationService {
     private static final String SNL = "SNL";
     private static final String MANUAL_UPLOAD = "MANUAL_UPLOAD";
 
-    private final PublicationRetrievalService artefactService;
+    private final PublicationRetrievalService publicationRetrievalService;
     private final LocationService locationService;
     private final ListConversionFactory listConversionFactory;
 
@@ -47,10 +47,10 @@ public class PublicationFileGenerationService {
     private String pdfFont;
 
     @Autowired
-    public PublicationFileGenerationService(PublicationRetrievalService artefactService,
+    public PublicationFileGenerationService(PublicationRetrievalService publicationRetrievalService,
                                             LocationService locationService,
                                             ListConversionFactory listConversionFactory) {
-        this.artefactService = artefactService;
+        this.publicationRetrievalService = publicationRetrievalService;
         this.locationService = locationService;
         this.listConversionFactory = listConversionFactory;
         XRLog.setLoggerImpl(new Slf4jLogger());
@@ -74,8 +74,8 @@ public class PublicationFileGenerationService {
      * @throws ProcessingException error.
      */
     public Optional<PublicationFiles> generate(UUID artefactId, String payload) {
-        String rawJson = payload == null ? artefactService.getPayloadByArtefactId(artefactId) : payload;
-        Artefact artefact = artefactService.getMetadataByArtefactId(artefactId);
+        String rawJson = payload == null ? publicationRetrievalService.getPayloadByArtefactId(artefactId) : payload;
+        Artefact artefact = publicationRetrievalService.getMetadataByArtefactId(artefactId);
         Location location = locationService.getLocationById(Integer.valueOf(artefact.getLocationId()));
         JsonNode topLevelNode;
 
@@ -88,12 +88,12 @@ public class PublicationFileGenerationService {
                 return Optional.empty();
             }
             byte[] excel = new byte[0];
-            if (artefactService.payloadWithinExcelLimit(artefact.getPayloadSize())) {
+            if (publicationRetrievalService.payloadWithinExcelLimit(artefact.getPayloadSize())) {
                 excel = fileConverter.get().convertToExcel(topLevelNode, artefact.getListType());
             }
 
             Pair<byte[], byte[]> pdfs = Pair.of(new byte[0], new byte[0]);
-            if (artefactService.payloadWithinPdfLimit(artefact.getPayloadSize())) {
+            if (publicationRetrievalService.payloadWithinPdfLimit(artefact.getPayloadSize())) {
                 pdfs = generatePdfs(fileConverter.get(), topLevelNode, artefact, location);
             }
 

@@ -21,9 +21,6 @@ import uk.gov.hmcts.reform.pip.data.management.models.PublicationFileSizes;
 import uk.gov.hmcts.reform.pip.data.management.models.PublicationFiles;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.service.AccountManagementService;
-import uk.gov.hmcts.reform.pip.data.management.service.ListConversionFactory;
-import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.CivilDailyCauseListSummaryData;
-import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.NonStrategicListSummaryData;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 import uk.gov.hmcts.reform.pip.model.publication.Sensitivity;
@@ -53,35 +50,10 @@ import static uk.gov.hmcts.reform.pip.model.publication.FileType.PDF;
 @ActiveProfiles(profiles = "test")
 @ExtendWith(MockitoExtension.class)
 @SuppressWarnings({"PMD.ExcessiveImports"})
-class PublicationManagementServiceTest {
-    @Mock
-    private PublicationRetrievalService publicationRetrievalService;
-
-    @Mock
-    private AccountManagementService accountManagementService;
-
-    @Mock
-    private AzurePublicationBlobService azureBlobService;
-
-    @Mock
-    private PublicationFileGenerationService publicationFileGenerationService;
-
-    @Mock
-    private PublicationSummaryGenerationService publicationSummaryGenerationService;
-
-    @Mock
-    private ListConversionFactory listConversionFactory;
-
-    @Mock
-    private CivilDailyCauseListSummaryData civilDailyCauseListSummaryData;
-
-    @InjectMocks
-    private PublicationManagementService publicationManagementService;
-
+class PublicationFileManagementServiceTest {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private static final Artefact ARTEFACT = new Artefact();
 
-    private static final String RESPONSE_MESSAGE = "Response didn't contain expected text";
     private static final String NOT_FOUND_MESSAGE = "File not found";
     private static final String BYTES_NO_MATCH = "Bytes didn't match";
     private static final String EXCEPTION_NOT_MATCH = "Exception message should contain expected";
@@ -98,6 +70,21 @@ class PublicationManagementServiceTest {
     private static final String PAYLOAD = "Test payload";
     private static final byte[] EMPTY_BYTES = new byte[0];
     private static final byte[] BYTE_DATA = { 1 };
+
+    @Mock
+    private PublicationRetrievalService publicationRetrievalService;
+
+    @Mock
+    private AccountManagementService accountManagementService;
+
+    @Mock
+    private AzurePublicationBlobService azureBlobService;
+
+    @Mock
+    private PublicationFileGenerationService publicationFileGenerationService;
+
+    @InjectMocks
+    private PublicationFileManagementService publicationFileManagementService;
 
     @BeforeAll
     static void startup() {
@@ -121,7 +108,7 @@ class PublicationManagementServiceTest {
         when(publicationFileGenerationService.generate(TEST_ARTEFACT_ID, PAYLOAD))
             .thenReturn(Optional.of(new PublicationFiles(BYTE_DATA, EMPTY_BYTES, EMPTY_BYTES)));
 
-        publicationManagementService.generateFiles(TEST_ARTEFACT_ID, PAYLOAD);
+        publicationFileManagementService.generateFiles(TEST_ARTEFACT_ID, PAYLOAD);
 
         verify(azureBlobService).uploadFile(eq(TEST_ARTEFACT_ID + PDF.getExtension()), any());
         verify(azureBlobService, never())
@@ -134,7 +121,7 @@ class PublicationManagementServiceTest {
         when(publicationFileGenerationService.generate(TEST_ARTEFACT_ID, PAYLOAD))
             .thenReturn(Optional.of(new PublicationFiles(BYTE_DATA, BYTE_DATA, EMPTY_BYTES)));
 
-        publicationManagementService.generateFiles(TEST_ARTEFACT_ID, PAYLOAD);
+        publicationFileManagementService.generateFiles(TEST_ARTEFACT_ID, PAYLOAD);
 
         verify(azureBlobService).uploadFile(eq(TEST_ARTEFACT_ID + PDF.getExtension()), any());
         verify(azureBlobService).uploadFile(eq(TEST_ARTEFACT_ID + WELSH_PDF_SUFFIX + PDF.getExtension()), any());
@@ -146,7 +133,7 @@ class PublicationManagementServiceTest {
         when(publicationFileGenerationService.generate(TEST_ARTEFACT_ID, PAYLOAD))
             .thenReturn(Optional.of(new PublicationFiles(BYTE_DATA, EMPTY_BYTES, BYTE_DATA)));
 
-        publicationManagementService.generateFiles(TEST_ARTEFACT_ID, PAYLOAD);
+        publicationFileManagementService.generateFiles(TEST_ARTEFACT_ID, PAYLOAD);
 
         verify(azureBlobService).uploadFile(eq(TEST_ARTEFACT_ID + PDF.getExtension()), any());
         verify(azureBlobService, never())
@@ -159,7 +146,7 @@ class PublicationManagementServiceTest {
         when(publicationFileGenerationService.generate(TEST_ARTEFACT_ID, PAYLOAD))
             .thenReturn(Optional.of(new PublicationFiles(EMPTY_BYTES, EMPTY_BYTES, BYTE_DATA)));
 
-        publicationManagementService.generateFiles(TEST_ARTEFACT_ID, PAYLOAD);
+        publicationFileManagementService.generateFiles(TEST_ARTEFACT_ID, PAYLOAD);
 
         verify(azureBlobService, never()).uploadFile(eq(TEST_ARTEFACT_ID + PDF.getExtension()), any());
         verify(azureBlobService, never())
@@ -172,7 +159,7 @@ class PublicationManagementServiceTest {
         when(publicationFileGenerationService.generate(TEST_ARTEFACT_ID, PAYLOAD))
             .thenReturn(Optional.empty());
 
-        publicationManagementService.generateFiles(TEST_ARTEFACT_ID, PAYLOAD);
+        publicationFileManagementService.generateFiles(TEST_ARTEFACT_ID, PAYLOAD);
 
         verify(azureBlobService, never()).uploadFile(eq(TEST_ARTEFACT_ID + PDF.getExtension()), any());
         verify(azureBlobService, never())
@@ -181,55 +168,11 @@ class PublicationManagementServiceTest {
     }
 
     @Test
-    void testGenerateArtefactSummarySuccess() {
-        when(publicationRetrievalService.getMetadataByArtefactId(any())).thenReturn(ARTEFACT);
-        when(listConversionFactory.getArtefactSummaryData(any(ListType.class)))
-            .thenReturn(Optional.of(civilDailyCauseListSummaryData));
-        when(publicationRetrievalService.getPayloadByArtefactId(any())).thenReturn("{}");
-        when(publicationSummaryGenerationService.generate(any())).thenReturn(TEST);
-
-        String response = publicationManagementService.generateArtefactSummary(TEST_ARTEFACT_ID);
-        assertFalse(response.isEmpty(), RESPONSE_MESSAGE);
-
-        verify(civilDailyCauseListSummaryData).get(any());
-    }
-
-    @Test
-    void testGenerateArtefactSummaryNonStrategicPublishing() {
-        Artefact artefact = new Artefact();
-        artefact.setArtefactId(TEST_ARTEFACT_ID);
-        artefact.setListType(ListType.CST_WEEKLY_HEARING_LIST);
-
-        NonStrategicListSummaryData nonStrategicListSummaryData = new NonStrategicListSummaryData(
-            ListType.CST_WEEKLY_HEARING_LIST
-        );
-
-        when(publicationRetrievalService.getMetadataByArtefactId(any())).thenReturn(artefact);
-        when(listConversionFactory.getArtefactSummaryData(any(ListType.class)))
-            .thenReturn(Optional.of(nonStrategicListSummaryData));
-        when(publicationRetrievalService.getPayloadByArtefactId(any())).thenReturn("[{\"date\":\"01/01/2025\"}]");
-        when(publicationSummaryGenerationService.generate(any())).thenReturn(TEST);
-
-        String response = publicationManagementService.generateArtefactSummary(TEST_ARTEFACT_ID);
-        assertFalse(response.isEmpty(), RESPONSE_MESSAGE);
-    }
-
-    @Test
-    void testGenerateArtefactSummaryWhenSummaryIsEmpty() {
-        when(publicationRetrievalService.getMetadataByArtefactId(TEST_ARTEFACT_ID)).thenReturn(ARTEFACT);
-        when(listConversionFactory.getArtefactSummaryData(any(ListType.class))).thenReturn(Optional.empty());
-
-        assertEquals("", publicationManagementService.generateArtefactSummary(TEST_ARTEFACT_ID),
-                     RESPONSE_MESSAGE);
-        verify(publicationRetrievalService, never()).getPayloadByArtefactId(TEST_ARTEFACT_ID);
-    }
-
-    @Test
     void testGetStoredPdfPublicationSjp() {
         when(publicationRetrievalService.getMetadataByArtefactId(TEST_ARTEFACT_ID)).thenReturn(ARTEFACT);
         when(azureBlobService.getBlobFile(TEST_ARTEFACT_ID + PDF.getExtension())).thenReturn(TEST_BYTE);
 
-        String response = publicationManagementService.getStoredPublication(
+        String response = publicationFileManagementService.getStoredPublication(
             TEST_ARTEFACT_ID, PDF, null, TEST, true, false
         );
 
@@ -244,7 +187,7 @@ class PublicationManagementServiceTest {
             .getBlobFile(TEST_ARTEFACT_ID + WELSH_PDF_SUFFIX + PDF.getExtension());
 
         NotFoundException ex = assertThrows(NotFoundException.class, () ->
-            publicationManagementService.getStoredPublication(
+            publicationFileManagementService.getStoredPublication(
                 TEST_ARTEFACT_ID, PDF, null, TEST, true, true
             ));
 
@@ -257,7 +200,7 @@ class PublicationManagementServiceTest {
         when(publicationRetrievalService.getMetadataByArtefactId(TEST_ARTEFACT_ID)).thenReturn(artefact);
         when(azureBlobService.getBlobFile(TEST_ARTEFACT_ID + EXCEL.getExtension())).thenReturn(TEST_BYTE);
 
-        String response = publicationManagementService.getStoredPublication(
+        String response = publicationFileManagementService.getStoredPublication(
             TEST_ARTEFACT_ID, EXCEL, null, TEST, true, false
         );
 
@@ -271,7 +214,7 @@ class PublicationManagementServiceTest {
         when(publicationRetrievalService.getMetadataByArtefactId(TEST_ARTEFACT_ID)).thenReturn(ARTEFACT);
         when(azureBlobService.getBlobFile(TEST_ARTEFACT_ID + PDF.getExtension())).thenReturn(TEST_BYTE);
 
-        String response = publicationManagementService.getStoredPublication(
+        String response = publicationFileManagementService.getStoredPublication(
             TEST_ARTEFACT_ID, PDF, null, TEST, true, false
         );
 
@@ -286,7 +229,7 @@ class PublicationManagementServiceTest {
         when(azureBlobService.getBlobFile(TEST_ARTEFACT_ID + WELSH_PDF_SUFFIX + PDF.getExtension()))
             .thenReturn(TEST_BYTE);
 
-        String response = publicationManagementService.getStoredPublication(
+        String response = publicationFileManagementService.getStoredPublication(
             TEST_ARTEFACT_ID, PDF, null, TEST, true, true
         );
 
@@ -302,7 +245,7 @@ class PublicationManagementServiceTest {
             .getBlobFile(TEST_ARTEFACT_ID + EXCEL.getExtension());
 
         NotFoundException ex = assertThrows(NotFoundException.class, () ->
-            publicationManagementService.getStoredPublication(
+            publicationFileManagementService.getStoredPublication(
                 TEST_ARTEFACT_ID, EXCEL, null, TEST, true, false
             ));
 
@@ -314,7 +257,7 @@ class PublicationManagementServiceTest {
         when(publicationRetrievalService.getMetadataByArtefactId(any())).thenReturn(ARTEFACT);
         when(azureBlobService.getBlobFile(any())).thenReturn(TEST_BYTE);
 
-        String response = publicationManagementService.getStoredPublication(
+        String response = publicationFileManagementService.getStoredPublication(
             TEST_ARTEFACT_ID, PDF, 20, TEST, true, false
         );
 
@@ -328,7 +271,7 @@ class PublicationManagementServiceTest {
         when(azureBlobService.getBlobFile(any())).thenReturn(TEST_BYTE);
 
         FileSizeLimitException ex = assertThrows(FileSizeLimitException.class, () ->
-            publicationManagementService.getStoredPublication(
+            publicationFileManagementService.getStoredPublication(
                 TEST_ARTEFACT_ID, PDF, 2, TEST, true, false
             ));
 
@@ -343,7 +286,7 @@ class PublicationManagementServiceTest {
         when(publicationRetrievalService.getMetadataByArtefactId(any())).thenReturn(ARTEFACT);
         when(azureBlobService.getBlobFile(any())).thenReturn(TEST_BYTE);
 
-        String response = publicationManagementService.getStoredPublication(
+        String response = publicationFileManagementService.getStoredPublication(
             TEST_ARTEFACT_ID, PDF, null, TEST, false, false
         );
 
@@ -358,7 +301,7 @@ class PublicationManagementServiceTest {
         when(publicationRetrievalService.getMetadataByArtefactId(any())).thenReturn(ARTEFACT);
 
         UnauthorisedRequestException ex = assertThrows(UnauthorisedRequestException.class, () ->
-            publicationManagementService.getStoredPublication(
+            publicationFileManagementService.getStoredPublication(
                 TEST_ARTEFACT_ID, PDF, null, null, false, false
             ));
 
@@ -374,7 +317,7 @@ class PublicationManagementServiceTest {
         when(accountManagementService.getIsAuthorised(any(), any(), any())).thenReturn(false);
 
         UnauthorisedRequestException ex = assertThrows(UnauthorisedRequestException.class, () ->
-            publicationManagementService.getStoredPublication(
+            publicationFileManagementService.getStoredPublication(
                 TEST_ARTEFACT_ID, PDF, null, TEST_USER_ID, false, false
             ), "Expected exception to be thrown");
 
@@ -384,7 +327,7 @@ class PublicationManagementServiceTest {
 
     @Test
     void testDeleteFilesV2SjpEnglish() {
-        publicationManagementService.deleteFiles(TEST_ARTEFACT_ID, ListType.SJP_PUBLIC_LIST, Language.ENGLISH);
+        publicationFileManagementService.deleteFiles(TEST_ARTEFACT_ID, ListType.SJP_PUBLIC_LIST, Language.ENGLISH);
 
         verify(azureBlobService).deleteBlobFile(TEST_ARTEFACT_ID + PDF.getExtension());
         verify(azureBlobService, never()).deleteBlobFile(TEST_ARTEFACT_ID + WELSH_PDF_SUFFIX + PDF.getExtension());
@@ -393,7 +336,7 @@ class PublicationManagementServiceTest {
 
     @Test
     void testDeleteFilesV2SjpWelsh() {
-        publicationManagementService.deleteFiles(TEST_ARTEFACT_ID, ListType.SJP_PUBLIC_LIST, Language.WELSH);
+        publicationFileManagementService.deleteFiles(TEST_ARTEFACT_ID, ListType.SJP_PUBLIC_LIST, Language.WELSH);
 
         verify(azureBlobService).deleteBlobFile(TEST_ARTEFACT_ID + PDF.getExtension());
         verify(azureBlobService, never()).deleteBlobFile(TEST_ARTEFACT_ID + WELSH_PDF_SUFFIX + PDF.getExtension());
@@ -402,7 +345,7 @@ class PublicationManagementServiceTest {
 
     @Test
     void testDeleteFilesV2NonSjpEnglish() {
-        publicationManagementService.deleteFiles(TEST_ARTEFACT_ID, ListType.CIVIL_DAILY_CAUSE_LIST, Language.ENGLISH);
+        publicationFileManagementService.deleteFiles(TEST_ARTEFACT_ID, ListType.CIVIL_DAILY_CAUSE_LIST, Language.ENGLISH);
 
         verify(azureBlobService).deleteBlobFile(TEST_ARTEFACT_ID + PDF.getExtension());
         verify(azureBlobService, never()).deleteBlobFile(TEST_ARTEFACT_ID + WELSH_PDF_SUFFIX + PDF.getExtension());
@@ -411,7 +354,7 @@ class PublicationManagementServiceTest {
 
     @Test
     void testDeleteFilesV2NonSjpWelsh() {
-        publicationManagementService.deleteFiles(TEST_ARTEFACT_ID, ListType.CIVIL_DAILY_CAUSE_LIST, Language.WELSH);
+        publicationFileManagementService.deleteFiles(TEST_ARTEFACT_ID, ListType.CIVIL_DAILY_CAUSE_LIST, Language.WELSH);
 
         verify(azureBlobService).deleteBlobFile(TEST_ARTEFACT_ID + PDF.getExtension());
         verify(azureBlobService).deleteBlobFile(TEST_ARTEFACT_ID + WELSH_PDF_SUFFIX + PDF.getExtension());
@@ -423,7 +366,7 @@ class PublicationManagementServiceTest {
         when(azureBlobService.blobFileExists(TEST_ARTEFACT_ID + PDF.getExtension()))
             .thenReturn(true);
 
-        assertTrue(publicationManagementService.fileExists(TEST_ARTEFACT_ID), FILE_EXISTS_FLAG_MESSAGE);
+        assertTrue(publicationFileManagementService.fileExists(TEST_ARTEFACT_ID), FILE_EXISTS_FLAG_MESSAGE);
     }
 
     @Test
@@ -435,7 +378,7 @@ class PublicationManagementServiceTest {
         when(azureBlobService.blobFileExists(TEST_ARTEFACT_ID + EXCEL.getExtension()))
             .thenReturn(true);
 
-        assertTrue(publicationManagementService.fileExists(TEST_ARTEFACT_ID), FILE_EXISTS_FLAG_MESSAGE);
+        assertTrue(publicationFileManagementService.fileExists(TEST_ARTEFACT_ID), FILE_EXISTS_FLAG_MESSAGE);
     }
 
     @Test
@@ -447,7 +390,7 @@ class PublicationManagementServiceTest {
         when(azureBlobService.blobFileExists(TEST_ARTEFACT_ID + EXCEL.getExtension()))
             .thenReturn(false);
 
-        assertFalse(publicationManagementService.fileExists(TEST_ARTEFACT_ID), FILE_EXISTS_FLAG_MESSAGE);
+        assertFalse(publicationFileManagementService.fileExists(TEST_ARTEFACT_ID), FILE_EXISTS_FLAG_MESSAGE);
     }
 
     @Test
@@ -459,7 +402,7 @@ class PublicationManagementServiceTest {
         when(azureBlobService.getBlobSize(TEST_ARTEFACT_ID + EXCEL.getExtension()))
             .thenReturn(123L);
 
-        PublicationFileSizes fileSizes = publicationManagementService.getFileSizes(TEST_ARTEFACT_ID);
+        PublicationFileSizes fileSizes = publicationFileManagementService.getFileSizes(TEST_ARTEFACT_ID);
 
         assertNull(fileSizes.getAdditionalPdf(), FILE_SIZE_MESSAGE);
         assertEquals(1234L, fileSizes.getPrimaryPdf(), FILE_SIZE_MESSAGE);

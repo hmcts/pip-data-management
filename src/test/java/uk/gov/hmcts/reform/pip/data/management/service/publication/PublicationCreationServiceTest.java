@@ -65,7 +65,7 @@ class PublicationCreationServiceTest {
     private AzureArtefactBlobService azureArtefactBlobService;
 
     @Mock
-    private PublicationManagementService publicationManagementService;
+    private PublicationFileManagementService publicationFileManagementService;
 
     @InjectMocks
     private PublicationCreationService publicationCreationService;
@@ -203,7 +203,7 @@ class PublicationCreationServiceTest {
         Artefact returnedArtefact = publicationCreationService.createPublication(artefactToBeCreated, PAYLOAD);
 
         verify(azureArtefactBlobService).deleteBlob(anyString());
-        verify(publicationManagementService).deleteFiles(artefactToBeCreated.getArtefactId(),
+        verify(publicationFileManagementService).deleteFiles(artefactToBeCreated.getArtefactId(),
                                                          artefactToBeCreated.getListType(),
                                                          artefactToBeCreated.getLanguage());
 

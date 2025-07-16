@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.reform.pip.data.management.models.PublicationFileSizes;
-import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationManagementService;
+import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationFileManagementService;
 import uk.gov.hmcts.reform.pip.model.authentication.roles.IsAdmin;
 import uk.gov.hmcts.reform.pip.model.publication.FileType;
 
@@ -29,28 +29,18 @@ import java.util.UUID;
 @ApiResponse(responseCode = "403", description = "User has not been authorized")
 @IsAdmin
 @SecurityRequirement(name = "bearerAuth")
-public class PublicationManagementController {
+public class PublicationFileManagementController {
 
     private static final String NOT_FOUND_DESCRIPTION = "No artefact found";
-    private final PublicationManagementService publicationManagementService;
+    private final PublicationFileManagementService publicationFileManagementService;
 
     private static final String OK_CODE = "200";
     private static final String NOT_FOUND_CODE = "404";
     private static final String PAYLOAD_TOO_LARGE_CODE = "413";
-    private static final String INTERNAL_ERROR_CODE = "500";
 
     @Autowired
-    public PublicationManagementController(PublicationManagementService publicationManagementService) {
-        this.publicationManagementService = publicationManagementService;
-    }
-
-    @ApiResponse(responseCode = OK_CODE, description = "Artefact summary string returned")
-    @ApiResponse(responseCode = NOT_FOUND_CODE, description = NOT_FOUND_DESCRIPTION)
-    @ApiResponse(responseCode = INTERNAL_ERROR_CODE, description = "Cannot process the artefact")
-    @Operation(summary = "Takes in an artefact ID and returns an artefact summary")
-    @GetMapping("/{artefactId}/summary")
-    public ResponseEntity<String> generateArtefactSummary(@PathVariable UUID artefactId) {
-        return ResponseEntity.ok(publicationManagementService.generateArtefactSummary(artefactId));
+    public PublicationFileManagementController(PublicationFileManagementService publicationFileManagementService) {
+        this.publicationFileManagementService = publicationFileManagementService;
     }
 
     @ApiResponse(responseCode = OK_CODE, description = "PDF or Excel file for an artefact returned successfully")
@@ -66,7 +56,7 @@ public class PublicationManagementController {
         @RequestHeader(name = "x-additional-pdf", defaultValue = "false") boolean additionalPdf,
         @RequestParam(name = "maxFileSize", required = false) Integer maxFileSize) {
         return ResponseEntity.ok(
-            publicationManagementService.getStoredPublication(
+            publicationFileManagementService.getStoredPublication(
                 artefactId, fileType, maxFileSize, userId, system, additionalPdf
             )
         );
@@ -76,13 +66,13 @@ public class PublicationManagementController {
     @Operation(summary = "Checks if any publication file exists for the artefact")
     @GetMapping("/{artefactId}/exists")
     public ResponseEntity<Boolean> fileExists(@PathVariable UUID artefactId) {
-        return ResponseEntity.ok(publicationManagementService.fileExists(artefactId));
+        return ResponseEntity.ok(publicationFileManagementService.fileExists(artefactId));
     }
 
     @ApiResponse(responseCode = OK_CODE, description = "PDF or Excel file for an artefact exists")
     @Operation(summary = "Returns the publication file sizes from Azure blob storage")
     @GetMapping("/{artefactId}/sizes")
     public ResponseEntity<PublicationFileSizes> getFileSizes(@PathVariable UUID artefactId) {
-        return ResponseEntity.ok(publicationManagementService.getFileSizes(artefactId));
+        return ResponseEntity.ok(publicationFileManagementService.getFileSizes(artefactId));
     }
 }

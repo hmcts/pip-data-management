@@ -15,50 +15,50 @@ class PublicationRetrievalServiceTest extends IntegrationBasicTestBase {
     private static final String PAYLOAD_LIMIT_MESSAGE = "Payload limit result does not match";
 
     @Autowired
-    PublicationRetrievalService artefactService;
+    PublicationRetrievalService publicationRetrievalService;
 
     @Test
     void shouldGenerateJsonSearchIfPayloadSizeWithinLimit() {
-        assertTrue(artefactService.payloadWithinJsonSearchLimit(49f), PAYLOAD_LIMIT_MESSAGE);
+        assertTrue(publicationRetrievalService.payloadWithinJsonSearchLimit(49f), PAYLOAD_LIMIT_MESSAGE);
     }
 
     @Test
     void shouldGenerateJsonSearchIfNoPayloadSize() {
-        assertTrue(artefactService.payloadWithinJsonSearchLimit(null), PAYLOAD_LIMIT_MESSAGE);
+        assertTrue(publicationRetrievalService.payloadWithinJsonSearchLimit(null), PAYLOAD_LIMIT_MESSAGE);
     }
 
     @Test
     void shouldNotGenerateJsonSearchIfPayloadSizeOverLimit() {
-        assertFalse(artefactService.payloadWithinJsonSearchLimit(50f), PAYLOAD_LIMIT_MESSAGE);
+        assertFalse(publicationRetrievalService.payloadWithinJsonSearchLimit(50f), PAYLOAD_LIMIT_MESSAGE);
     }
 
     @Test
     void shouldGenerateExcelIfPayloadSizeWithinLimit() {
-        assertTrue(artefactService.payloadWithinExcelLimit(99f), PAYLOAD_LIMIT_MESSAGE);
+        assertTrue(publicationRetrievalService.payloadWithinExcelLimit(99f), PAYLOAD_LIMIT_MESSAGE);
     }
 
     @Test
     void shouldGenerateExcelIfNoPayloadSize() {
-        assertTrue(artefactService.payloadWithinExcelLimit(null), PAYLOAD_LIMIT_MESSAGE);
+        assertTrue(publicationRetrievalService.payloadWithinExcelLimit(null), PAYLOAD_LIMIT_MESSAGE);
     }
 
     @Test
     void shouldNotGenerateExcelIfPayloadSizeOverLimit() {
-        assertFalse(artefactService.payloadWithinExcelLimit(100f), PAYLOAD_LIMIT_MESSAGE);
+        assertFalse(publicationRetrievalService.payloadWithinExcelLimit(100f), PAYLOAD_LIMIT_MESSAGE);
     }
 
     @Test
     void shouldGeneratePdfIfPayloadSizeWithinLimit() {
-        assertTrue(artefactService.payloadWithinPdfLimit(59f), PAYLOAD_LIMIT_MESSAGE);
+        assertTrue(publicationRetrievalService.payloadWithinPdfLimit(59f), PAYLOAD_LIMIT_MESSAGE);
     }
 
     @Test
     void shouldGeneratePdfIfNoPayloadSize() {
-        assertTrue(artefactService.payloadWithinPdfLimit(null), PAYLOAD_LIMIT_MESSAGE);
+        assertTrue(publicationRetrievalService.payloadWithinPdfLimit(null), PAYLOAD_LIMIT_MESSAGE);
     }
 
     @Test
     void shouldNotGeneratePdfIfPayloadSizeOverLimit() {
-        assertFalse(artefactService.payloadWithinPdfLimit(60f), PAYLOAD_LIMIT_MESSAGE);
+        assertFalse(publicationRetrievalService.payloadWithinPdfLimit(60f), PAYLOAD_LIMIT_MESSAGE);
     }
 }

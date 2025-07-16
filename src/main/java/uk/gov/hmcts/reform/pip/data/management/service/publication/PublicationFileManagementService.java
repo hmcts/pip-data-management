@@ -30,30 +30,23 @@ import static uk.gov.hmcts.reform.pip.model.publication.FileType.PDF;
 
 @Slf4j
 @Service
-public class PublicationManagementService {
+public class PublicationFileManagementService {
     private static final String ADDITIONAL_PDF_SUFFIX = "_cy";
-    private static final ObjectMapper MAPPER = new ObjectMapper();
 
     private final AzurePublicationBlobService azureBlobService;
-    private final PublicationRetrievalService artefactService;
+    private final PublicationRetrievalService publicationRetrievalService;
     private final AccountManagementService accountManagementService;
-    private final ListConversionFactory listConversionFactory;
     private final PublicationFileGenerationService publicationFileGenerationService;
-    private final PublicationSummaryGenerationService publicationSummaryGenerationService;
 
     @Autowired
-    public PublicationManagementService(AzurePublicationBlobService azureBlobService,
-                                        PublicationRetrievalService artefactService,
-                                        AccountManagementService accountManagementService,
-                                        ListConversionFactory listConversionFactory,
-                                        PublicationFileGenerationService publicationFileGenerationService,
-                                        PublicationSummaryGenerationService publicationSummaryGenerationService) {
+    public PublicationFileManagementService(AzurePublicationBlobService azureBlobService,
+                                            PublicationRetrievalService publicationRetrievalService,
+                                            AccountManagementService accountManagementService,
+                                            PublicationFileGenerationService publicationFileGenerationService) {
         this.azureBlobService = azureBlobService;
-        this.artefactService = artefactService;
+        this.publicationRetrievalService = publicationRetrievalService;
         this.accountManagementService = accountManagementService;
-        this.listConversionFactory = listConversionFactory;
         this.publicationFileGenerationService = publicationFileGenerationService;
-        this.publicationSummaryGenerationService = publicationSummaryGenerationService;
     }
 
     /**
@@ -81,32 +74,6 @@ public class PublicationManagementService {
     }
 
     /**
-     * Generate the artefact summary by provided artefact id.
-     *
-     * @param artefactId The artefact Id to generate the summary for.
-     * @return A string of the generated summary
-     */
-    public String generateArtefactSummary(UUID artefactId) {
-        Artefact artefact = artefactService.getMetadataByArtefactId(artefactId);
-        Optional<ArtefactSummaryData> artefactSummaryData =
-            listConversionFactory.getArtefactSummaryData(artefact.getListType());
-
-        if (artefactSummaryData.isEmpty()) {
-            return "";
-        }
-
-        try {
-            String rawJson = artefactService.getPayloadByArtefactId(artefactId);
-            Map<String, List<Map<String, String>>> summaryData = artefactSummaryData.get()
-                .get(MAPPER.readTree(rawJson));
-
-            return publicationSummaryGenerationService.generate(summaryData);
-        } catch (JsonProcessingException ex) {
-            throw new ProcessingException(String.format("Failed to generate summary for artefact id %s", artefactId));
-        }
-    }
-
-    /**
      * Get the stored file (PDF or Excel) for an artefact.
      *
      * @param artefactId The artefact ID to get the file for.
@@ -119,7 +86,7 @@ public class PublicationManagementService {
      */
     public String getStoredPublication(UUID artefactId, FileType fileType, Integer maxFileSize, String userId,
                                        boolean system, boolean additionalPdf) {
-        Artefact artefact = artefactService.getMetadataByArtefactId(artefactId);
+        Artefact artefact = publicationRetrievalService.getMetadataByArtefactId(artefactId);
         if (!isAuthorised(artefact, userId, system)) {
             throw new UnauthorisedRequestException(
                 String.format("User with id %s is not authorised to access artefact with id %s", userId, artefactId)
