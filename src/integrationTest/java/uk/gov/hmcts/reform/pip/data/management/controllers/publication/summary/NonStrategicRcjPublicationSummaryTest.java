@@ -48,9 +48,8 @@ class NonStrategicRcjPublicationSummaryTest extends PublicationIntegrationTestBa
     private static final String RCJ_TIME_FIELD = "Time - 9am";
     private static final String RCJ_CASE_NUMBER_FIELD = "Case number - 12345";
     private static final String CASE_NUMBER_FIELD = "Case number - 1234";
-    private static final String RB_TIME_FIELD = "Time - 9am";
-    private static final String RB_CASE_NUMBER_FIELD = "Case number - 12345";
-    private static final String RB_CASE_NAME_FIELD = "Case name - Case name A";
+    private static final String CASE_NAME_FIELD = "Case name - Case name A";
+    private static final String CASE_DETAILS_FIELD = "Case details - Case details A";
 
     private static final String NON_STRATEGIC_FILES_LOCATION = "data/non-strategic/";
     private static final String ADMINISTRATIVE_COURT_DAILY_CAUSE_LISTS_JSON_FILE =
@@ -127,6 +126,7 @@ class NonStrategicRcjPublicationSummaryTest extends PublicationIntegrationTestBa
         String responseContent = response.getResponse().getContentAsString();
         assertTrue(responseContent.contains(RCJ_TIME_FIELD), CONTENT_MISMATCH_ERROR);
         assertTrue(responseContent.contains(RCJ_CASE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(CASE_DETAILS_FIELD), CONTENT_MISMATCH_ERROR);
     }
 
     @Test
@@ -146,6 +146,7 @@ class NonStrategicRcjPublicationSummaryTest extends PublicationIntegrationTestBa
         String responseContent = response.getResponse().getContentAsString();
         assertTrue(responseContent.contains(RCJ_TIME_FIELD), CONTENT_MISMATCH_ERROR);
         assertTrue(responseContent.contains(RCJ_CASE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(CASE_DETAILS_FIELD), CONTENT_MISMATCH_ERROR);
     }
 
     @Test
@@ -166,6 +167,7 @@ class NonStrategicRcjPublicationSummaryTest extends PublicationIntegrationTestBa
         String responseContent = response.getResponse().getContentAsString();
         assertTrue(responseContent.contains(RCJ_TIME_FIELD), CONTENT_MISMATCH_ERROR);
         assertTrue(responseContent.contains(RCJ_CASE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(CASE_DETAILS_FIELD), CONTENT_MISMATCH_ERROR);
     }
 
     @Test
@@ -185,6 +187,7 @@ class NonStrategicRcjPublicationSummaryTest extends PublicationIntegrationTestBa
         String responseContent = response.getResponse().getContentAsString();
         assertTrue(responseContent.contains(RCJ_TIME_FIELD), CONTENT_MISMATCH_ERROR);
         assertTrue(responseContent.contains(RCJ_CASE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(CASE_DETAILS_FIELD), CONTENT_MISMATCH_ERROR);
     }
 
     @Test
@@ -205,6 +208,7 @@ class NonStrategicRcjPublicationSummaryTest extends PublicationIntegrationTestBa
         String responseContent = response.getResponse().getContentAsString();
         assertTrue(responseContent.contains(RCJ_TIME_FIELD), CONTENT_MISMATCH_ERROR);
         assertTrue(responseContent.contains(RCJ_CASE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(CASE_DETAILS_FIELD), CONTENT_MISMATCH_ERROR);
     }
 
     @Test
@@ -225,6 +229,7 @@ class NonStrategicRcjPublicationSummaryTest extends PublicationIntegrationTestBa
         String responseContent = response.getResponse().getContentAsString();
         assertTrue(responseContent.contains(RCJ_TIME_FIELD), CONTENT_MISMATCH_ERROR);
         assertTrue(responseContent.contains(RCJ_CASE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(CASE_DETAILS_FIELD), CONTENT_MISMATCH_ERROR);
     }
 
     @Test
@@ -245,6 +250,7 @@ class NonStrategicRcjPublicationSummaryTest extends PublicationIntegrationTestBa
         String responseContent = response.getResponse().getContentAsString();
         assertTrue(responseContent.contains(RCJ_TIME_FIELD), CONTENT_MISMATCH_ERROR);
         assertTrue(responseContent.contains(RCJ_CASE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(CASE_DETAILS_FIELD), CONTENT_MISMATCH_ERROR);
     }
 
     @Test
@@ -265,6 +271,7 @@ class NonStrategicRcjPublicationSummaryTest extends PublicationIntegrationTestBa
         String responseContent = response.getResponse().getContentAsString();
         assertTrue(responseContent.contains(RCJ_TIME_FIELD), CONTENT_MISMATCH_ERROR);
         assertTrue(responseContent.contains(RCJ_CASE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(CASE_DETAILS_FIELD), CONTENT_MISMATCH_ERROR);
     }
 
     @Test
@@ -285,6 +292,7 @@ class NonStrategicRcjPublicationSummaryTest extends PublicationIntegrationTestBa
         String responseContent = response.getResponse().getContentAsString();
         assertTrue(responseContent.contains(RCJ_TIME_FIELD), CONTENT_MISMATCH_ERROR);
         assertTrue(responseContent.contains(RCJ_CASE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(CASE_DETAILS_FIELD), CONTENT_MISMATCH_ERROR);
     }
 
     @Test
@@ -305,6 +313,7 @@ class NonStrategicRcjPublicationSummaryTest extends PublicationIntegrationTestBa
         String responseContent = response.getResponse().getContentAsString();
         assertTrue(responseContent.contains(RCJ_TIME_FIELD), CONTENT_MISMATCH_ERROR);
         assertTrue(responseContent.contains(RCJ_CASE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(CASE_DETAILS_FIELD), CONTENT_MISMATCH_ERROR);
     }
 
     @Test
@@ -326,9 +335,9 @@ class NonStrategicRcjPublicationSummaryTest extends PublicationIntegrationTestBa
 
         String responseContent = response.getResponse().getContentAsString();
 
-        assertTrue(responseContent.contains(RB_TIME_FIELD), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains(RB_CASE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains(RB_CASE_NAME_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(RCJ_TIME_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(RCJ_CASE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(CASE_NAME_FIELD), CONTENT_MISMATCH_ERROR);
     }
 
     @Test
@@ -349,8 +358,9 @@ class NonStrategicRcjPublicationSummaryTest extends PublicationIntegrationTestBa
 
         String responseContent = response.getResponse().getContentAsString();
 
-        assertTrue(responseContent.contains(RB_TIME_FIELD), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains(RB_CASE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(RCJ_TIME_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(RCJ_CASE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(CASE_DETAILS_FIELD), CONTENT_MISMATCH_ERROR);
     }
 
     @Test
@@ -369,9 +379,9 @@ class NonStrategicRcjPublicationSummaryTest extends PublicationIntegrationTestBa
             .andExpect(status().isOk()).andReturn();
 
         String responseContent = response.getResponse().getContentAsString();
-        assertTrue(responseContent.contains(RB_TIME_FIELD), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains(RB_CASE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains(RB_CASE_NAME_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(RCJ_TIME_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(RCJ_CASE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(CASE_NAME_FIELD), CONTENT_MISMATCH_ERROR);
     }
 
     @Test
@@ -391,9 +401,9 @@ class NonStrategicRcjPublicationSummaryTest extends PublicationIntegrationTestBa
             .andExpect(status().isOk()).andReturn();
 
         String responseContent = response.getResponse().getContentAsString();
-        assertTrue(responseContent.contains(RB_TIME_FIELD), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains(RB_CASE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains(RB_CASE_NAME_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(RCJ_TIME_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(RCJ_CASE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(CASE_NAME_FIELD), CONTENT_MISMATCH_ERROR);
     }
 
     @Test
@@ -411,9 +421,9 @@ class NonStrategicRcjPublicationSummaryTest extends PublicationIntegrationTestBa
             .andExpect(status().isOk()).andReturn();
 
         String responseContent = response.getResponse().getContentAsString();
-        assertTrue(responseContent.contains(RB_TIME_FIELD), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains(RB_CASE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains(RB_CASE_NAME_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(RCJ_TIME_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(RCJ_CASE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(CASE_NAME_FIELD), CONTENT_MISMATCH_ERROR);
     }
 
     @Test
@@ -431,9 +441,9 @@ class NonStrategicRcjPublicationSummaryTest extends PublicationIntegrationTestBa
             .andExpect(status().isOk()).andReturn();
 
         String responseContent = response.getResponse().getContentAsString();
-        assertTrue(responseContent.contains(RB_TIME_FIELD), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains(RB_CASE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains(RB_CASE_NAME_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(RCJ_TIME_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(RCJ_CASE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(CASE_NAME_FIELD), CONTENT_MISMATCH_ERROR);
     }
 
     @Test
@@ -452,9 +462,9 @@ class NonStrategicRcjPublicationSummaryTest extends PublicationIntegrationTestBa
             .andExpect(status().isOk()).andReturn();
 
         String responseContent = response.getResponse().getContentAsString();
-        assertTrue(responseContent.contains(RB_TIME_FIELD), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains(RB_CASE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains(RB_CASE_NAME_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(RCJ_TIME_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(RCJ_CASE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(CASE_NAME_FIELD), CONTENT_MISMATCH_ERROR);
     }
 
     @Test
@@ -472,9 +482,9 @@ class NonStrategicRcjPublicationSummaryTest extends PublicationIntegrationTestBa
             .andExpect(status().isOk()).andReturn();
 
         String responseContent = response.getResponse().getContentAsString();
-        assertTrue(responseContent.contains(RB_TIME_FIELD), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains(RB_CASE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains(RB_CASE_NAME_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(RCJ_TIME_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(RCJ_CASE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(CASE_NAME_FIELD), CONTENT_MISMATCH_ERROR);
     }
 
     @Test
@@ -494,9 +504,9 @@ class NonStrategicRcjPublicationSummaryTest extends PublicationIntegrationTestBa
             .andExpect(status().isOk()).andReturn();
 
         String responseContent = response.getResponse().getContentAsString();
-        assertTrue(responseContent.contains(RB_TIME_FIELD), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains(RB_CASE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains(RB_CASE_NAME_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(RCJ_TIME_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(RCJ_CASE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(CASE_NAME_FIELD), CONTENT_MISMATCH_ERROR);
     }
 
     @Test
@@ -516,9 +526,9 @@ class NonStrategicRcjPublicationSummaryTest extends PublicationIntegrationTestBa
             .andExpect(status().isOk()).andReturn();
 
         String responseContent = response.getResponse().getContentAsString();
-        assertTrue(responseContent.contains(RB_TIME_FIELD), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains(RB_CASE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains(RB_CASE_NAME_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(RCJ_TIME_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(RCJ_CASE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(CASE_NAME_FIELD), CONTENT_MISMATCH_ERROR);
     }
 
     @Test
@@ -538,9 +548,9 @@ class NonStrategicRcjPublicationSummaryTest extends PublicationIntegrationTestBa
             .andExpect(status().isOk()).andReturn();
 
         String responseContent = response.getResponse().getContentAsString();
-        assertTrue(responseContent.contains(RB_TIME_FIELD), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains(RB_CASE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains(RB_CASE_NAME_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(RCJ_TIME_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(RCJ_CASE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(CASE_NAME_FIELD), CONTENT_MISMATCH_ERROR);
     }
 
     @Test
@@ -560,9 +570,9 @@ class NonStrategicRcjPublicationSummaryTest extends PublicationIntegrationTestBa
             .andExpect(status().isOk()).andReturn();
 
         String responseContent = response.getResponse().getContentAsString();
-        assertTrue(responseContent.contains(RB_TIME_FIELD), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains(RB_CASE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains(RB_CASE_NAME_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(RCJ_TIME_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(RCJ_CASE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(CASE_NAME_FIELD), CONTENT_MISMATCH_ERROR);
     }
 
     @Test
@@ -582,9 +592,9 @@ class NonStrategicRcjPublicationSummaryTest extends PublicationIntegrationTestBa
             .andExpect(status().isOk()).andReturn();
 
         String responseContent = response.getResponse().getContentAsString();
-        assertTrue(responseContent.contains(RB_TIME_FIELD), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains(RB_CASE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains(RB_CASE_NAME_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(RCJ_TIME_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(RCJ_CASE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(CASE_NAME_FIELD), CONTENT_MISMATCH_ERROR);
     }
 
     @Test
@@ -604,9 +614,9 @@ class NonStrategicRcjPublicationSummaryTest extends PublicationIntegrationTestBa
             .andExpect(status().isOk()).andReturn();
 
         String responseContent = response.getResponse().getContentAsString();
-        assertTrue(responseContent.contains(RB_TIME_FIELD), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains(RB_CASE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains(RB_CASE_NAME_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(RCJ_TIME_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(RCJ_CASE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(CASE_NAME_FIELD), CONTENT_MISMATCH_ERROR);
     }
 
     @Test
@@ -626,9 +636,9 @@ class NonStrategicRcjPublicationSummaryTest extends PublicationIntegrationTestBa
             .andExpect(status().isOk()).andReturn();
 
         String responseContent = response.getResponse().getContentAsString();
-        assertTrue(responseContent.contains(RB_TIME_FIELD), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains(RB_CASE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains(RB_CASE_NAME_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(RCJ_TIME_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(RCJ_CASE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(CASE_NAME_FIELD), CONTENT_MISMATCH_ERROR);
     }
 
     @Test
@@ -648,9 +658,9 @@ class NonStrategicRcjPublicationSummaryTest extends PublicationIntegrationTestBa
             .andExpect(status().isOk()).andReturn();
 
         String responseContent = response.getResponse().getContentAsString();
-        assertTrue(responseContent.contains(RB_TIME_FIELD), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains(RB_CASE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains(RB_CASE_NAME_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(RCJ_TIME_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(RCJ_CASE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(CASE_NAME_FIELD), CONTENT_MISMATCH_ERROR);
     }
 
     @Test
@@ -670,9 +680,9 @@ class NonStrategicRcjPublicationSummaryTest extends PublicationIntegrationTestBa
             .andExpect(status().isOk()).andReturn();
 
         String responseContent = response.getResponse().getContentAsString();
-        assertTrue(responseContent.contains(RB_TIME_FIELD), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains(RB_CASE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains(RB_CASE_NAME_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(RCJ_TIME_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(RCJ_CASE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(CASE_NAME_FIELD), CONTENT_MISMATCH_ERROR);
     }
 
     @Test
@@ -695,6 +705,7 @@ class NonStrategicRcjPublicationSummaryTest extends PublicationIntegrationTestBa
         assertTrue(responseContent.contains(TIME_FIELD), CONTENT_MISMATCH_ERROR);
         assertTrue(responseContent.contains(CASE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
         assertTrue(responseContent.contains(HEARING_TYPE_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(CASE_DETAILS_FIELD), CONTENT_MISMATCH_ERROR);
     }
 
     @Test
@@ -717,6 +728,7 @@ class NonStrategicRcjPublicationSummaryTest extends PublicationIntegrationTestBa
         assertTrue(responseContent.contains(TIME_FIELD), CONTENT_MISMATCH_ERROR);
         assertTrue(responseContent.contains(CASE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
         assertTrue(responseContent.contains(HEARING_TYPE_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(CASE_DETAILS_FIELD), CONTENT_MISMATCH_ERROR);
     }
 
     @Test
@@ -739,6 +751,7 @@ class NonStrategicRcjPublicationSummaryTest extends PublicationIntegrationTestBa
         assertTrue(responseContent.contains(TIME_FIELD), CONTENT_MISMATCH_ERROR);
         assertTrue(responseContent.contains(CASE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
         assertTrue(responseContent.contains(HEARING_TYPE_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(CASE_DETAILS_FIELD), CONTENT_MISMATCH_ERROR);
     }
 
     @Test
@@ -761,5 +774,6 @@ class NonStrategicRcjPublicationSummaryTest extends PublicationIntegrationTestBa
         assertTrue(responseContent.contains(TIME_FIELD), CONTENT_MISMATCH_ERROR);
         assertTrue(responseContent.contains(CASE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
         assertTrue(responseContent.contains(HEARING_TYPE_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(CASE_DETAILS_FIELD), CONTENT_MISMATCH_ERROR);
     }
 }
