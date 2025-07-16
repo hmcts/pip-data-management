@@ -20,17 +20,18 @@ import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
 @Slf4j
 @Service
 public class PublicationCreationRunner {
-    private final PublicationService publicationService;
+    private final PublicationCreationService publicationCreationService;
 
-    private final ArtefactService artefactService;
+    private final PublicationRetrievalService publicationRetrievalService;
 
     private final JsonExtractor jsonExtractor;
 
     @Autowired
-    public PublicationCreationRunner(PublicationService publicationService, ArtefactService artefactService,
+    public PublicationCreationRunner(PublicationCreationService publicationCreationService,
+                                     PublicationRetrievalService publicationRetrievalService,
                                      JsonExtractor jsonExtractor) {
-        this.publicationService = publicationService;
-        this.artefactService = artefactService;
+        this.publicationCreationService = publicationCreationService;
+        this.publicationRetrievalService = publicationRetrievalService;
         this.jsonExtractor = jsonExtractor;
     }
 
@@ -47,7 +48,7 @@ public class PublicationCreationRunner {
         Artefact createdArtefact;
 
         try {
-            createdArtefact = publicationService.createPublication(artefact, payload);
+            createdArtefact = publicationCreationService.createPublication(artefact, payload);
         } catch (CannotAcquireLockException | DataIntegrityViolationException ex) {
             throw new CreateArtefactConflictException(
                 "Deadlock when creating json publication. Please try again later."
@@ -71,7 +72,7 @@ public class PublicationCreationRunner {
         Artefact createdArtefact;
 
         try {
-            createdArtefact = publicationService.createPublication(artefact, file);
+            createdArtefact = publicationCreationService.createPublication(artefact, file);
         } catch (CannotAcquireLockException | DataIntegrityViolationException ex) {
             throw new CreateArtefactConflictException(
                 "Deadlock when creating flat file publication. Please try again later."
@@ -87,7 +88,7 @@ public class PublicationCreationRunner {
         preprocessPublicationForCreation(artefact);
         if (extractSearchTerms
             && payload != null
-            && artefactService.payloadWithinJsonSearchLimit(artefact.getPayloadSize())) {
+            && publicationRetrievalService.payloadWithinJsonSearchLimit(artefact.getPayloadSize())) {
             artefact.setSearch(jsonExtractor.extractSearchTerms(payload));
         } else {
             artefact.setSearch(Collections.emptyMap());
@@ -95,7 +96,7 @@ public class PublicationCreationRunner {
     }
 
     private void preprocessPublicationForCreation(Artefact artefact) {
-        publicationService.applyInternalLocationId(artefact);
+        publicationCreationService.applyInternalLocationId(artefact);
         artefact.setContentDate(artefact.getContentDate().toLocalDate().atTime(LocalTime.MIN));
         artefact.setLastReceivedDate(LocalDateTime.now());
     }
