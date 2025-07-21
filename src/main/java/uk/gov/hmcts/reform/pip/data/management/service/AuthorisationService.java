@@ -16,7 +16,6 @@ import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
 
 @Service("authorisationService")
 @Slf4j
-@SuppressWarnings("PMD.GodClass")
 public class AuthorisationService {
 
     private final AccountManagementService accountManagementService;
