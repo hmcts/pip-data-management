@@ -71,22 +71,31 @@ class PublicationManagementTest extends IntegrationTestBase {
     private static final String ARTEFACT_NOT_FOUND_MESSAGE = "No artefact found with the ID: ";
     private static final String NOT_FOUND_RESPONSE_MESSAGE = "Artefact not found message does not match";
     private static final String CONTENT_MISMATCH_ERROR = "Artefact summary content should match";
+    private static final String NULL_RESPONSE_ERROR = "Response should not be null";
+    private static final String UNEXPECTED_RESPONSE_ERROR = "Response does not contain expected result";
     private static final String FILE_TYPE_HEADER = "x-file-type";
+    private static final String USER_ID_HEADER = "x-user-id";
     private static final String MAX_FILE_SIZE_HEADER = "maxFileSize";
+    private static final String MAX_FILE_SIZE =  "2048000";
     private static final String UNAUTHORIZED_USERNAME = "unauthorized_username";
     private static final String UNAUTHORIZED_ROLE = "APPROLE_unknown.role";
     private static final String SYSTEM_HEADER = "x-system";
     private static final String REQUESTER_HEADER = "x-requester-id";
+    private static final String FALSE = "false";
+    private static final String TEST_CONTENT = "test content";
     private static final String CASE_REFERENCE_FIELD = "Case reference - 12341234";
     private static final String CASE_NAME_FIELD = "Case name - This is a case name";
+    private static final String CASE_DETAILS_FIELD = "Case details - Case details A";
     private static final String HEARING_TYPE_FIELD = "Hearing type - Directions";
     private static final String DATE_FIELD = "Date - 16 December 2024";
     private static final String HEARING_TIME_FIELD = "Hearing time - 10am";
+    private static final String IAC_HEARING_TIME_FIELD = "Hearing time - 10:30am";
     private static final String CASE_REFERENCE_NUMBER_FIELD = "Case reference number - 1234";
     private static final String TIME_FIELD = "Time - 10am";
     private static final String APPELLANT_NUMBER_FIELD = "Appellant - Appellant 1";
     private static final String RCJ_TIME_FIELD = "Time - 9am";
     private static final String RCJ_CASE_NUMBER_FIELD = "Case number - 12345";
+    private static final String CASE_NUMBER_FIELD = "Case number - 1234";
     private static final String RB_TIME_FIELD = "Time - 9am";
     private static final String RB_CASE_NUMBER_FIELD = "Case number - 12345";
     private static final String RB_CASE_NAME_FIELD = "Case name - Case name A";
@@ -110,6 +119,10 @@ class PublicationManagementTest extends IntegrationTestBase {
     private static final String SSCS_LISTS_JSON_FILE = NON_STRATEGIC_FILES_LOCATION
         + "sscs-daily-hearing-list/"
         + "sscsDailyHearingList.json";
+    private static final String ADMINISTRATIVE_COURT_DAILY_CAUSE_LISTS_JSON_FILE =
+        "administrative-court-daily-cause-list/administrativeCourtDailyCauseList.json";
+    private static final String ADMINISTRATIVE_COURT_DAILY_CAUSE_LISTS_EXCEL_FILE =
+        "administrative-court-daily-cause-list/administrativeCourtDailyCauseList.xlsx";
 
     private static final LocalDateTime DISPLAY_TO = LocalDateTime.now()
         .truncatedTo(ChronoUnit.SECONDS);
@@ -124,6 +137,7 @@ class PublicationManagementTest extends IntegrationTestBase {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     private static final String SJP_MOCK = "data/sjp-public-list/sjpPublicList.json";
+    private static final String SJP_PRESS_MOCK = "data/sjp-press-list/sjpPressList.json";
 
     private static MockMultipartFile file;
     private static final String EXCEL_FILE_TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
@@ -136,7 +150,7 @@ class PublicationManagementTest extends IntegrationTestBase {
     @BeforeAll
     static void setup() {
         file = new MockMultipartFile("file", "test.pdf",
-                                     MediaType.APPLICATION_PDF_VALUE, "test content".getBytes(
+                                     MediaType.APPLICATION_PDF_VALUE, TEST_CONTENT.getBytes(
             StandardCharsets.UTF_8)
         );
 
@@ -164,7 +178,7 @@ class PublicationManagementTest extends IntegrationTestBase {
     private Artefact createPublication(ListType listType, Sensitivity sensitivity, byte[] data) throws Exception {
         when(accountManagementService.getUserById(any())).thenReturn(piUser);
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .post("/publication")
+            .post(ROOT_URL)
             .header(PublicationConfiguration.TYPE_HEADER, ArtefactType.LIST)
             .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
             .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
@@ -236,23 +250,6 @@ class PublicationManagementTest extends IntegrationTestBase {
     private Artefact createSjpPublicListPublication() throws Exception {
         byte[] testPublication = getTestData(SJP_MOCK);
         return createPublication(ListType.SJP_PUBLIC_LIST, testPublication);
-    }
-
-    @Test
-    void testGenerateArtefactSummaryCareStandardsList() throws Exception {
-        byte[] data = getTestData("data/care-standards-list/careStandardsList.json");
-        Artefact artefact = createPublication(ListType.CARE_STANDARDS_LIST, data);
-
-        when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(data));
-
-        MvcResult response = mockMvc.perform(
-                get(String.format(GET_ARTEFACT_SUMMARY, artefact.getArtefactId())))
-            .andExpect(status().isOk()).andReturn();
-        String responseContent = response.getResponse().getContentAsString();
-
-        assertTrue(responseContent.contains("Case name - A Vs B"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Hearing date - 04 October"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Hearing type - mda"), CONTENT_MISMATCH_ERROR);
     }
 
     @Test
@@ -473,26 +470,10 @@ class PublicationManagementTest extends IntegrationTestBase {
         assertTrue(responseContent.contains("Offence - drink driving, Assault by beating"), CONTENT_MISMATCH_ERROR);
     }
 
-    @Test
-    void testGenerateArtefactSummaryPrimaryHealthTribunalHearingList() throws Exception {
-        byte[] data = getTestData("data/primary-health-list/primaryHealthList.json");
-        Artefact artefact = createPublication(ListType.PRIMARY_HEALTH_LIST, data);
-
-        when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(data));
-
-        MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, artefact.getArtefactId())))
-            .andExpect(status().isOk()).andReturn();
-
-        String responseContent = response.getResponse().getContentAsString();
-        assertTrue(responseContent.contains("Case name - A Vs B"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Hearing date - 04 October"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Hearing type - Remote - Teams"), CONTENT_MISMATCH_ERROR);
-    }
-
     @ParameterizedTest
     @EnumSource(value = ListType.class, names = {"SJP_PRESS_LIST", "SJP_DELTA_PRESS_LIST"})
     void testGenerateArtefactSummarySingleJusticeProcedurePressList(ListType listType) throws Exception {
-        byte[] data = getTestData("data/sjp-press-list/sjpPressList.json");
+        byte[] data = getTestData(SJP_PRESS_MOCK);
         Artefact artefact = createPublication(listType, data);
 
         when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(data));
@@ -620,7 +601,7 @@ class PublicationManagementTest extends IntegrationTestBase {
     @EnumSource(
         value = ListType.class,
         names = {
-            "UT_IAC_JR_LONDON_DAILY_HEARING_LIST",
+            "UT_IAC_JR_LEEDS_DAILY_HEARING_LIST",
             "UT_IAC_JR_MANCHESTER_DAILY_HEARING_LIST",
             "UT_IAC_JR_BIRMINGHAM_DAILY_HEARING_LIST",
             "UT_IAC_JR_CARDIFF_DAILY_HEARING_LIST"
@@ -642,7 +623,29 @@ class PublicationManagementTest extends IntegrationTestBase {
             .andExpect(status().isOk()).andReturn();
 
         String responseContent = response.getResponse().getContentAsString();
-        assertTrue(responseContent.contains("Hearing time - 10:30am"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(IAC_HEARING_TIME_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(CASE_REFERENCE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
+    }
+
+    @Test
+    void testGenerateArtefactSummaryUtIacJudicialReviewLondonDailyHearingList() throws Exception {
+        Artefact artefact = createNonStrategicPublication(
+            ListType.UT_IAC_JR_LONDON_DAILY_HEARING_LIST,
+            NON_STRATEGIC_FILES_LOCATION
+                + "ut-iac-judicial-review-london-daily-hearing-list/utIacJudicialReviewLondonDailyHearingList.xlsx"
+        );
+
+        byte[] jsonData = getTestData(
+            NON_STRATEGIC_FILES_LOCATION
+                + "ut-iac-judicial-review-london-daily-hearing-list/utIacJudicialReviewLondonDailyHearingList.json"
+        );
+        when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(jsonData));
+
+        MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, artefact.getArtefactId())))
+            .andExpect(status().isOk()).andReturn();
+
+        String responseContent = response.getResponse().getContentAsString();
+        assertTrue(responseContent.contains(IAC_HEARING_TIME_FIELD), CONTENT_MISMATCH_ERROR);
         assertTrue(responseContent.contains(CASE_REFERENCE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
     }
 
@@ -664,7 +667,7 @@ class PublicationManagementTest extends IntegrationTestBase {
             .andExpect(status().isOk()).andReturn();
 
         String responseContent = response.getResponse().getContentAsString();
-        assertTrue(responseContent.contains("Hearing time - 10:30am"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(IAC_HEARING_TIME_FIELD), CONTENT_MISMATCH_ERROR);
         assertTrue(responseContent.contains("Appeal reference number - 1234"), CONTENT_MISMATCH_ERROR);
     }
 
@@ -934,7 +937,7 @@ class PublicationManagementTest extends IntegrationTestBase {
         String responseContent = response.getResponse().getContentAsString();
         assertTrue(responseContent.contains("Appellant - Appellant A"), CONTENT_MISMATCH_ERROR);
         assertTrue(responseContent.contains("Appeal reference number - 12345"), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains("Hearing time - 10:30am"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(IAC_HEARING_TIME_FIELD), CONTENT_MISMATCH_ERROR);
     }
 
     @Test
@@ -955,6 +958,7 @@ class PublicationManagementTest extends IntegrationTestBase {
         String responseContent = response.getResponse().getContentAsString();
         assertTrue(responseContent.contains(RCJ_TIME_FIELD), CONTENT_MISMATCH_ERROR);
         assertTrue(responseContent.contains(RCJ_CASE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(CASE_DETAILS_FIELD), CONTENT_MISMATCH_ERROR);
     }
 
     @Test
@@ -974,6 +978,7 @@ class PublicationManagementTest extends IntegrationTestBase {
         String responseContent = response.getResponse().getContentAsString();
         assertTrue(responseContent.contains(RCJ_TIME_FIELD), CONTENT_MISMATCH_ERROR);
         assertTrue(responseContent.contains(RCJ_CASE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(CASE_DETAILS_FIELD), CONTENT_MISMATCH_ERROR);
     }
 
     @Test
@@ -994,6 +999,7 @@ class PublicationManagementTest extends IntegrationTestBase {
         String responseContent = response.getResponse().getContentAsString();
         assertTrue(responseContent.contains(RCJ_TIME_FIELD), CONTENT_MISMATCH_ERROR);
         assertTrue(responseContent.contains(RCJ_CASE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(CASE_DETAILS_FIELD), CONTENT_MISMATCH_ERROR);
     }
 
     @Test
@@ -1013,6 +1019,7 @@ class PublicationManagementTest extends IntegrationTestBase {
         String responseContent = response.getResponse().getContentAsString();
         assertTrue(responseContent.contains(RCJ_TIME_FIELD), CONTENT_MISMATCH_ERROR);
         assertTrue(responseContent.contains(RCJ_CASE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(CASE_DETAILS_FIELD), CONTENT_MISMATCH_ERROR);
     }
 
     @Test
@@ -1033,6 +1040,7 @@ class PublicationManagementTest extends IntegrationTestBase {
         String responseContent = response.getResponse().getContentAsString();
         assertTrue(responseContent.contains(RCJ_TIME_FIELD), CONTENT_MISMATCH_ERROR);
         assertTrue(responseContent.contains(RCJ_CASE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(CASE_DETAILS_FIELD), CONTENT_MISMATCH_ERROR);
     }
 
     @Test
@@ -1053,6 +1061,7 @@ class PublicationManagementTest extends IntegrationTestBase {
         String responseContent = response.getResponse().getContentAsString();
         assertTrue(responseContent.contains(RCJ_TIME_FIELD), CONTENT_MISMATCH_ERROR);
         assertTrue(responseContent.contains(RCJ_CASE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(CASE_DETAILS_FIELD), CONTENT_MISMATCH_ERROR);
     }
 
     @Test
@@ -1073,6 +1082,7 @@ class PublicationManagementTest extends IntegrationTestBase {
         String responseContent = response.getResponse().getContentAsString();
         assertTrue(responseContent.contains(RCJ_TIME_FIELD), CONTENT_MISMATCH_ERROR);
         assertTrue(responseContent.contains(RCJ_CASE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(CASE_DETAILS_FIELD), CONTENT_MISMATCH_ERROR);
     }
 
     @Test
@@ -1093,6 +1103,7 @@ class PublicationManagementTest extends IntegrationTestBase {
         String responseContent = response.getResponse().getContentAsString();
         assertTrue(responseContent.contains(RCJ_TIME_FIELD), CONTENT_MISMATCH_ERROR);
         assertTrue(responseContent.contains(RCJ_CASE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(CASE_DETAILS_FIELD), CONTENT_MISMATCH_ERROR);
     }
 
     @Test
@@ -1113,6 +1124,7 @@ class PublicationManagementTest extends IntegrationTestBase {
         String responseContent = response.getResponse().getContentAsString();
         assertTrue(responseContent.contains(RCJ_TIME_FIELD), CONTENT_MISMATCH_ERROR);
         assertTrue(responseContent.contains(RCJ_CASE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(CASE_DETAILS_FIELD), CONTENT_MISMATCH_ERROR);
     }
 
     @Test
@@ -1133,6 +1145,7 @@ class PublicationManagementTest extends IntegrationTestBase {
         String responseContent = response.getResponse().getContentAsString();
         assertTrue(responseContent.contains(RCJ_TIME_FIELD), CONTENT_MISMATCH_ERROR);
         assertTrue(responseContent.contains(RCJ_CASE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(CASE_DETAILS_FIELD), CONTENT_MISMATCH_ERROR);
     }
 
     @Test
@@ -1146,15 +1159,40 @@ class PublicationManagementTest extends IntegrationTestBase {
         byte[] jsonData = getTestData(NON_STRATEGIC_FILES_LOCATION
                                           + "intellectual-property-and-enterprise-court-daily-cause-list/"
                                           + "intellectualPropertyAndEnterpriseCourtDailyCauseList.json");
+
         when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(jsonData));
 
         MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, artefact.getArtefactId())))
             .andExpect(status().isOk()).andReturn();
 
         String responseContent = response.getResponse().getContentAsString();
+
         assertTrue(responseContent.contains(RB_TIME_FIELD), CONTENT_MISMATCH_ERROR);
         assertTrue(responseContent.contains(RB_CASE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
         assertTrue(responseContent.contains(RB_CASE_NAME_FIELD), CONTENT_MISMATCH_ERROR);
+    }
+
+    @Test
+    void testGenerateArtefactSummaryCourtOfAppealCivilDailyCauseList() throws Exception {
+        Artefact artefact = createNonStrategicPublication(
+            ListType.COURT_OF_APPEAL_CIVIL_DAILY_CAUSE_LIST, NON_STRATEGIC_FILES_LOCATION
+                + "court-of-appeal-civil-daily-cause-list/courtOfAppealCivilDailyCauseList.xlsx"
+        );
+
+        byte[] jsonData = getTestData(NON_STRATEGIC_FILES_LOCATION
+                                          + "court-of-appeal-civil-daily-cause-list/"
+                                          + "courtOfAppealCivilDailyCauseList.json");
+
+        when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(jsonData));
+
+        MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, artefact.getArtefactId())))
+            .andExpect(status().isOk()).andReturn();
+
+        String responseContent = response.getResponse().getContentAsString();
+
+        assertTrue(responseContent.contains(RB_TIME_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(RB_CASE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(CASE_DETAILS_FIELD), CONTENT_MISMATCH_ERROR);
     }
 
     @Test
@@ -1480,6 +1518,119 @@ class PublicationManagementTest extends IntegrationTestBase {
     }
 
     @Test
+    void testGenerateArtefactBirminghamAdministrativeCourtDailyCauseList() throws Exception {
+        Artefact artefact = createNonStrategicPublication(
+            ListType.BIRMINGHAM_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
+            NON_STRATEGIC_FILES_LOCATION
+                + ADMINISTRATIVE_COURT_DAILY_CAUSE_LISTS_EXCEL_FILE
+        );
+
+        byte[] jsonData = getTestData(
+            NON_STRATEGIC_FILES_LOCATION
+                + ADMINISTRATIVE_COURT_DAILY_CAUSE_LISTS_JSON_FILE);
+        when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(jsonData));
+
+        MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, artefact.getArtefactId())))
+            .andExpect(status().isOk()).andReturn();
+
+        String responseContent = response.getResponse().getContentAsString();
+        assertTrue(responseContent.contains(TIME_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(CASE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(HEARING_TYPE_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(CASE_DETAILS_FIELD), CONTENT_MISMATCH_ERROR);
+    }
+
+    @Test
+    void testGenerateArtefactBristolAndCardiffAdministrativeCourtDailyCauseList() throws Exception {
+        Artefact artefact = createNonStrategicPublication(
+            ListType.BRISTOL_AND_CARDIFF_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
+            NON_STRATEGIC_FILES_LOCATION
+                + ADMINISTRATIVE_COURT_DAILY_CAUSE_LISTS_EXCEL_FILE
+        );
+
+        byte[] jsonData = getTestData(
+            NON_STRATEGIC_FILES_LOCATION
+                + ADMINISTRATIVE_COURT_DAILY_CAUSE_LISTS_JSON_FILE);
+        when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(jsonData));
+
+        MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, artefact.getArtefactId())))
+            .andExpect(status().isOk()).andReturn();
+
+        String responseContent = response.getResponse().getContentAsString();
+        assertTrue(responseContent.contains(TIME_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(CASE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(HEARING_TYPE_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(CASE_DETAILS_FIELD), CONTENT_MISMATCH_ERROR);
+    }
+
+    @Test
+    void testGenerateArtefactLeedsAdministrativeCourtDailyCauseList() throws Exception {
+        Artefact artefact = createNonStrategicPublication(
+            ListType.LEEDS_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
+            NON_STRATEGIC_FILES_LOCATION
+                + ADMINISTRATIVE_COURT_DAILY_CAUSE_LISTS_EXCEL_FILE
+        );
+
+        byte[] jsonData = getTestData(
+            NON_STRATEGIC_FILES_LOCATION
+                + ADMINISTRATIVE_COURT_DAILY_CAUSE_LISTS_JSON_FILE);
+        when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(jsonData));
+
+        MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, artefact.getArtefactId())))
+            .andExpect(status().isOk()).andReturn();
+
+        String responseContent = response.getResponse().getContentAsString();
+        assertTrue(responseContent.contains(TIME_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(CASE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(HEARING_TYPE_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(CASE_DETAILS_FIELD), CONTENT_MISMATCH_ERROR);
+    }
+
+    @Test
+    void testGenerateArtefactManchesterAdministrativeCourtDailyCauseList() throws Exception {
+        Artefact artefact = createNonStrategicPublication(
+            ListType.MANCHESTER_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
+            NON_STRATEGIC_FILES_LOCATION
+                + ADMINISTRATIVE_COURT_DAILY_CAUSE_LISTS_EXCEL_FILE
+        );
+
+        byte[] jsonData = getTestData(
+            NON_STRATEGIC_FILES_LOCATION
+                + ADMINISTRATIVE_COURT_DAILY_CAUSE_LISTS_JSON_FILE);
+        when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(jsonData));
+
+        MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, artefact.getArtefactId())))
+            .andExpect(status().isOk()).andReturn();
+
+        String responseContent = response.getResponse().getContentAsString();
+        assertTrue(responseContent.contains(TIME_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(CASE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(HEARING_TYPE_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(CASE_DETAILS_FIELD), CONTENT_MISMATCH_ERROR);
+    }
+
+    @Test
+    void testGenerateArtefactSummaryCicWeeklyHearingList() throws Exception {
+        Artefact artefact = createNonStrategicPublication(
+            ListType.CIC_WEEKLY_HEARING_LIST, NON_STRATEGIC_FILES_LOCATION
+                + "cic-weekly-hearing-list/cicWeeklyHearingList.xlsx"
+        );
+
+        byte[] jsonData = getTestData(NON_STRATEGIC_FILES_LOCATION
+                                          + "cic-weekly-hearing-list/cicWeeklyHearingList.json");
+        when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(jsonData));
+
+        MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, artefact.getArtefactId())))
+            .andExpect(status().isOk()).andReturn();
+
+        String responseContent = response.getResponse().getContentAsString();
+        assertTrue(responseContent.contains("Date - 26 June 2025"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(HEARING_TIME_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(CASE_REFERENCE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains(CASE_NAME_FIELD), CONTENT_MISMATCH_ERROR);
+    }
+
+    @Test
     void testGenerateArtefactSummaryNotFound() throws Exception {
         MvcResult mvcResult = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, ARTEFACT_ID_NOT_FOUND)))
             .andExpect(status().isNotFound()).andReturn();
@@ -1515,7 +1666,7 @@ class PublicationManagementTest extends IntegrationTestBase {
 
         assertNotNull(
             response.getResponse().getContentAsString(),
-            "Response should not be null"
+            NULL_RESPONSE_ERROR
         );
     }
 
@@ -1534,7 +1685,7 @@ class PublicationManagementTest extends IntegrationTestBase {
 
         assertNotNull(
             response.getResponse().getContentAsString(),
-            "Response should not be null"
+            NULL_RESPONSE_ERROR
         );
     }
 
@@ -1551,20 +1702,20 @@ class PublicationManagementTest extends IntegrationTestBase {
                     .header(SYSTEM_HEADER, "true")
                     .header(FILE_TYPE_HEADER, PDF)
                     .header(REQUESTER_HEADER, SYSTEM_ADMIN_ID)
-                    .param(MAX_FILE_SIZE_HEADER, "2048000"))
+                    .param(MAX_FILE_SIZE_HEADER, MAX_FILE_SIZE))
 
             .andExpect(status().isOk()).andReturn();
 
         assertNotNull(
             response.getResponse().getContentAsString(),
-            "Response should not be null"
+            NULL_RESPONSE_ERROR
         );
         byte[] decodedBytes = Base64.getDecoder().decode(response.getResponse().getContentAsString());
         String decodedResponse = new String(decodedBytes);
 
         assertTrue(
-            decodedResponse.contains("test content"),
-            "Response does not contain expected result"
+            decodedResponse.contains(TEST_CONTENT),
+            UNEXPECTED_RESPONSE_ERROR
         );
     }
 
@@ -1576,13 +1727,13 @@ class PublicationManagementTest extends IntegrationTestBase {
         )).thenReturn(true);
         when(blobClient.downloadContent()).thenReturn(BinaryData.fromString(new String(file.getBytes())));
 
-        byte[] data = getTestData("data/sjp-press-list/sjpPressList.json");
+        byte[] data = getTestData(SJP_PRESS_MOCK);
         Artefact artefact = createPublication(ListType.SJP_PRESS_LIST, Sensitivity.CLASSIFIED, data);
         MockHttpServletRequestBuilder request =
             get(String.format(GET_FILE_URL, artefact.getArtefactId(), PDF))
                 .header(REQUESTER_HEADER, SYSTEM_ADMIN_ID)
-                .header(SYSTEM_HEADER, "false")
-                .param(MAX_FILE_SIZE_HEADER, "2048000");
+                .header(SYSTEM_HEADER, FALSE)
+                .param(MAX_FILE_SIZE_HEADER, MAX_FILE_SIZE);
 
         MvcResult response = mockMvc.perform(request)
             .andExpect(status().isOk()).andReturn();
@@ -1595,8 +1746,8 @@ class PublicationManagementTest extends IntegrationTestBase {
         String decodedResponse = new String(decodedBytes);
 
         assertTrue(
-            decodedResponse.contains("test content"),
-            "Response does not contain expected result"
+            decodedResponse.contains(TEST_CONTENT),
+            UNEXPECTED_RESPONSE_ERROR
         );
     }
 
@@ -1607,13 +1758,13 @@ class PublicationManagementTest extends IntegrationTestBase {
             UUID.fromString(SYSTEM_ADMIN_ID), ListType.SJP_PRESS_LIST, Sensitivity.CLASSIFIED
         )).thenReturn(false);
 
-        byte[] data = getTestData("data/sjp-press-list/sjpPressList.json");
+        byte[] data = getTestData(SJP_PRESS_MOCK);
         Artefact artefact = createPublication(ListType.SJP_PRESS_LIST, Sensitivity.CLASSIFIED, data);
         MockHttpServletRequestBuilder request =
             get(String.format(GET_FILE_URL, artefact.getArtefactId(), PDF))
                 .header(REQUESTER_HEADER, SYSTEM_ADMIN_ID)
-                .header(SYSTEM_HEADER, "false")
-                .param(MAX_FILE_SIZE_HEADER, "2048000");
+                .header(SYSTEM_HEADER, FALSE)
+                .param(MAX_FILE_SIZE_HEADER, MAX_FILE_SIZE);
 
         MvcResult response = mockMvc.perform(request)
             .andExpect(status().isForbidden()).andReturn();
@@ -1633,7 +1784,7 @@ class PublicationManagementTest extends IntegrationTestBase {
         MockHttpServletRequestBuilder request =
             get(String.format(GET_FILE_URL, artefactId, PDF))
                 .header(REQUESTER_HEADER, SYSTEM_ADMIN_ID)
-                .header(SYSTEM_HEADER, "false")
+                .header(SYSTEM_HEADER, FALSE)
                 .param(MAX_FILE_SIZE_HEADER, "10");
 
         MvcResult response = mockMvc.perform(request)
@@ -1647,7 +1798,7 @@ class PublicationManagementTest extends IntegrationTestBase {
         assertTrue(
             response.getResponse().getContentAsString().contains("File with type PDF for artefact with id "
                                                          + artefactId + " has size over the limit of 10 bytes"),
-            "Response does not contain expected result"
+            UNEXPECTED_RESPONSE_ERROR
         );
     }
 

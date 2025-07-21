@@ -1,5 +1,7 @@
 package uk.gov.hmcts.reform.pip.data.management.service;
 
+import com.microsoft.applicationinsights.TelemetryClient;
+import com.microsoft.applicationinsights.telemetry.SeverityLevel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -10,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ContainsForbiddenValuesException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.FlatFileException;
@@ -34,11 +37,17 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @ActiveProfiles("integration-basic")
 @SpringBootTest
-@SuppressWarnings("PMD.TooManyMethods")
 class ValidationServiceTest extends IntegrationBasicTestBase {
+
+    @MockitoBean
+    TelemetryClient telemetryClient;
 
     @Autowired
     ValidationService validationService;
@@ -60,17 +69,20 @@ class ValidationServiceTest extends IntegrationBasicTestBase {
     private static final String NOT_NULL_MESSAGE = "The returned value is null, but was not expected to be.";
     private static final String UNKNOWN_EXCEPTION = "Unknown exception when opening the paylaod file";
     private static final String CONTAINS_FORBIDDEN_VALUES_EXCEPTION = "Input contains a html tag";
-    private static final String RPT_LIST_JSON = "data/non-strategic/"
+    private static final String NON_STRATEGIC_FOLDER = "data/non-strategic/";
+    private static final String RPT_LIST_JSON = NON_STRATEGIC_FOLDER
         + "ftt-residential-property-tribunal-weekly-hearing-list/"
         + "fttResidentialPropertyTribunalWeeklyHearingList.json";
     private static final String SIAC_LIST_JSON = "data/non-strategic/siac-weekly-hearing-list/"
         + "siacWeeklyHearingList.json";
-    private static final String UT_IAC_LIST_JSON = "data/non-strategic/"
+    private static final String UT_IAC_LIST_JSON = NON_STRATEGIC_FOLDER
         + "ut-iac-judicial-review-daily-hearing-list/"
         + "utIacJudicialReviewDailyHearingList.json";
-    private static final String SSCS_LISTS_JSON_FILE = "data/non-strategic/"
+    private static final String SSCS_LISTS_JSON_FILE = NON_STRATEGIC_FOLDER
         + "sscs-daily-hearing-list/"
         + "sscsDailyHearingList.json";
+    private static final String ADMINISTRATIVE_COURT_DAILY_CAUSE_LISTS_JSON_FILE = NON_STRATEGIC_FOLDER
+        + "administrative-court-daily-cause-list/administrativeCourtDailyCauseList.json";
 
     private HeaderGroup headerGroup;
 
@@ -262,7 +274,8 @@ class ValidationServiceTest extends IntegrationBasicTestBase {
     }
 
     @ParameterizedTest
-    @EnumSource(value = ListType.class, names = {"SJP_PRESS_REGISTER", "CIC_DAILY_HEARING_LIST"})
+    @EnumSource(value = ListType.class, names = {"SJP_PRESS_REGISTER", "CIC_DAILY_HEARING_LIST",
+        "PCOL_DAILY_CAUSE_LIST"})
     void testValidateMasterSchemaWithoutErrors(ListType listType) throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream("data/jsonPayload.json")) {
@@ -336,11 +349,7 @@ class ValidationServiceTest extends IntegrationBasicTestBase {
             Arguments.of(ListType.IAC_DAILY_LIST,
                          "data/iac-daily-list/iacDailyList.json"),
             Arguments.of(ListType.IAC_DAILY_LIST_ADDITIONAL_CASES,
-                         "data/iac-daily-list/iacDailyList.json"),
-            Arguments.of(ListType.CARE_STANDARDS_LIST,
-                         "data/care-standards-list/careStandardsList.json"),
-            Arguments.of(ListType.PRIMARY_HEALTH_LIST,
-                         "data/primary-health-list/primaryHealthList.json")
+                         "data/iac-daily-list/iacDailyList.json")
         );
     }
 
@@ -354,7 +363,7 @@ class ValidationServiceTest extends IntegrationBasicTestBase {
                          "data/non-strategic/grc-weekly-hearing-list/grcWeeklyHearingList.json"),
             Arguments.of(ListType.WPAFCC_WEEKLY_HEARING_LIST,
                          "data/non-strategic/wpafcc-weekly-hearing-list/wpafccWeeklyHearingList.json"),
-            Arguments.of(ListType.UT_IAC_JR_LONDON_DAILY_HEARING_LIST,
+            Arguments.of(ListType.UT_IAC_JR_LEEDS_DAILY_HEARING_LIST,
                          UT_IAC_LIST_JSON),
             Arguments.of(ListType.UT_IAC_JR_MANCHESTER_DAILY_HEARING_LIST,
                          UT_IAC_LIST_JSON),
@@ -362,6 +371,9 @@ class ValidationServiceTest extends IntegrationBasicTestBase {
                          UT_IAC_LIST_JSON),
             Arguments.of(ListType.UT_IAC_JR_CARDIFF_DAILY_HEARING_LIST,
                          UT_IAC_LIST_JSON),
+            Arguments.of(ListType.UT_IAC_JR_LONDON_DAILY_HEARING_LIST,
+                          "data/non-strategic/ut-iac-judicial-review-london-daily-hearing-list/"
+                              + "utIacJudicialReviewLondonDailyHearingList.json"),
             Arguments.of(ListType.UT_IAC_STATUTORY_APPEALS_DAILY_HEARING_LIST,
                          "data/non-strategic/ut-iac-statutory-appeals-daily-hearing-list/"
                              + "utIacStatutoryAppealsDailyHearingList.json"),
@@ -441,6 +453,12 @@ class ValidationServiceTest extends IntegrationBasicTestBase {
             Arguments.of(ListType.MAYOR_AND_CITY_CIVIL_DAILY_CAUSE_LIST,
                          "data/non-strategic/mayor-and-city-civil-daily-cause-list/"
                              + "mayorAndCityCivilDailyCauseList.json"),
+            Arguments.of(ListType.INTERIM_APPLICATIONS_CHD_DAILY_CAUSE_LIST,
+                         "data/non-strategic/interim-applications-chd-daily-cause-list/"
+                             + "interimApplicationsChanceryDivisionDailyCauseList.json"),
+            Arguments.of(ListType.COURT_OF_APPEAL_CIVIL_DAILY_CAUSE_LIST,
+                         "data/non-strategic/court-of-appeal-civil-daily-cause-list/"
+                             + "courtOfAppealCivilDailyCauseList.json"),
             Arguments.of(ListType.INTELLECTUAL_PROPERTY_AND_ENTERPRISE_COURT_DAILY_CAUSE_LIST,
                          "data/non-strategic/intellectual-property-and-enterprise-court-daily-cause-list/"
                              + "intellectualPropertyAndEnterpriseCourtDailyCauseList.json"),
@@ -485,7 +503,17 @@ class ValidationServiceTest extends IntegrationBasicTestBase {
                              + "financialListChdKbDailyCauseList.json"),
             Arguments.of(ListType.INSOLVENCY_AND_COMPANIES_COURT_CHD_DAILY_CAUSE_LIST,
                          "data/non-strategic/insolvency_and_companies_court_chd_daily_cause_list/"
-                             + "insolvencyAndCompaniesCourtChdDailyCauseList.json")
+                             + "insolvencyAndCompaniesCourtChdDailyCauseList.json"),
+            Arguments.of(ListType.BIRMINGHAM_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
+                         ADMINISTRATIVE_COURT_DAILY_CAUSE_LISTS_JSON_FILE),
+            Arguments.of(ListType.BRISTOL_AND_CARDIFF_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
+                         ADMINISTRATIVE_COURT_DAILY_CAUSE_LISTS_JSON_FILE),
+            Arguments.of(ListType.MANCHESTER_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
+                         ADMINISTRATIVE_COURT_DAILY_CAUSE_LISTS_JSON_FILE),
+            Arguments.of(ListType.LEEDS_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
+                         ADMINISTRATIVE_COURT_DAILY_CAUSE_LISTS_JSON_FILE),
+            Arguments.of(ListType.CIC_WEEKLY_HEARING_LIST,
+                         "data/non-strategic/cic-weekly-hearing-list/cicWeeklyHearingList.json")
         );
     }
 
@@ -506,5 +534,35 @@ class ValidationServiceTest extends IntegrationBasicTestBase {
     void testContainsHtmlTagDoesNotThrow() {
         assertDoesNotThrow(() -> validationService.containsHtmlTag(COURT_NAME, COURT_NAME),
                            CONTAINS_FORBIDDEN_VALUES_EXCEPTION);
+    }
+
+    @Test
+    void testAppInsightsLogWhenUnableToParse() {
+        String text = new String("abcd".getBytes(), StandardCharsets.UTF_8);
+
+        assertThrows(PayloadValidationException.class, () ->
+            validationService.validateBody(text, headerGroup, true));
+
+        verify(telemetryClient, times(1)).trackTrace(eq("Unable to parse JSON payload"),
+                                                     eq(SeverityLevel.Error), argThat((argument) ->
+                                                         argument.get("LIST_TYPE")
+                                                             .equals(headerGroup.getListType().name())));
+    }
+
+    @Test
+    void testAppInsightsLogWhenFailedToValidateAgainstSchema() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader().getResourceAsStream(
+            "data/civil-daily-cause-list/civilDailyCauseListInvalid.json")) {
+
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            assertThrows(PayloadValidationException.class, () ->
+                validationService.validateBody(text, headerGroup, true));
+
+            verify(telemetryClient, times(1)).trackTrace(eq("Payload validation failed, 5 errors present"),
+                       eq(SeverityLevel.Error), argThat((argument) -> argument.get("ERROR")
+                                                                 .contains("sittingStart: "
+                                                                               + "does not match the regex pattern")));
+        }
     }
 }

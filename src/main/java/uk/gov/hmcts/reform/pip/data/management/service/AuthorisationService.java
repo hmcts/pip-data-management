@@ -181,6 +181,42 @@ public class AuthorisationService {
         return true;
     }
 
+    public boolean userCanAddLocationMetadata(String requesterId) {
+        if (!isUserSystemAdmin(requesterId)
+            || !isAdmin()) {
+            log.error(writeLog(
+                String.format("User with ID %s is forbidden to add location metadata", requesterId
+                )));
+            return false;
+        }
+
+        return true;
+    }
+
+    public boolean userCanUpdateLocationMetadata(String requesterId) {
+        if (!isUserSystemAdmin(requesterId)
+            || !isAdmin()) {
+            log.error(writeLog(
+                String.format("User with ID %s is forbidden to update location metadata", requesterId
+                )));
+            return false;
+        }
+
+        return true;
+    }
+
+    public boolean userCanDeleteLocationMetadata(String requesterId) {
+        if (!isUserSystemAdmin(requesterId)
+            || !isAdmin()) {
+            log.error(writeLog(
+                String.format("User with ID %s is forbidden to delete location metadata", requesterId
+                )));
+            return false;
+        }
+
+        return true;
+    }
+
     private boolean isUserAdmin(String requesterId) {
         if (requesterId != null && !requesterId.isEmpty()) {
             PiUser user = accountManagementService.getUserById(requesterId);

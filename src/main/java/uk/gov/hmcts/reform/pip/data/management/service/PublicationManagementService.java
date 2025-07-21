@@ -29,7 +29,6 @@ import static uk.gov.hmcts.reform.pip.model.publication.FileType.PDF;
 
 @Slf4j
 @Service
-@SuppressWarnings({"PMD.PreserveStackTrace"})
 public class PublicationManagementService {
     private static final String ADDITIONAL_PDF_SUFFIX = "_cy";
     private static final ObjectMapper MAPPER = new ObjectMapper();

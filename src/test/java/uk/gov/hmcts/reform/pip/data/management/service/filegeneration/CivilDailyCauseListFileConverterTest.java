@@ -20,7 +20,7 @@ import java.util.Objects;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ActiveProfiles("test")
-@SuppressWarnings({"PMD.JUnitAssertionsShouldIncludeMessage", "PMD.LooseCoupling"})
+@SuppressWarnings({"PMD.LooseCoupling"})
 class CivilDailyCauseListFileConverterTest {
     private static final String OXFORD_COURT = "Oxford Combined Court Centre";
     private static final String TITLE_TEXT = "Incorrect Title Text";

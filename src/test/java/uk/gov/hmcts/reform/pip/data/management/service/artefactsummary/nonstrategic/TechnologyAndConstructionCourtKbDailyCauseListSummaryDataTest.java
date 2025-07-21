@@ -1,47 +1,22 @@
 package uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.nonstrategic;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.commons.io.IOUtils;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
-import uk.gov.hmcts.reform.pip.data.management.service.ListConversionFactory;
-import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.ArtefactSummaryData;
 
 import java.io.IOException;
-import java.io.StringWriter;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.TECHNOLOGY_AND_CONSTRUCTION_COURT_KB_DAILY_CAUSE_LIST;
 
-class TechnologyAndConstructionCourtKbDailyCauseListSummaryDataTest {
-    private static final String NON_STRATEGIC_RESOURCE_FOLDER = "src/test/resources/mocks/non-strategic/";
-    private static final String SUMMARY_SECTIONS_MESSAGE = "Summary sections count does not match";
-    private static final String SUMMARY_CASES_MESSAGE = "Summary cases count does not match";
-    private static final String SUMMARY_FIELDS_MESSAGE = "Summary fields count does not match";
-    private static final String SUMMARY_FIELD_KEY_MESSAGE = "Summary field key does not match";
-    private static final String SUMMARY_FIELD_VALUE_MESSAGE = "Summary field value does not match";
+class TechnologyAndConstructionCourtKbDailyCauseListSummaryDataTest
+    extends NonStrategicCommonArtefactSummaryTestConfig {
 
     @Test
     void testTechnologyAndConstructionCourtKbDailyCauseListSummaryData() throws IOException {
-        StringWriter writer = new StringWriter();
-        IOUtils.copy(
-            Files.newInputStream(Paths.get(
-                NON_STRATEGIC_RESOURCE_FOLDER,
-                "technologyAndConstructionCourtKbDailyCauseList.json"
-            )), writer,
-            Charset.defaultCharset()
-        );
-
-        JsonNode payload = new ObjectMapper().readTree(writer.toString());
-        ArtefactSummaryData summaryData = new ListConversionFactory()
-            .getArtefactSummaryData(TECHNOLOGY_AND_CONSTRUCTION_COURT_KB_DAILY_CAUSE_LIST)
-            .get();
-        Map<String, List<Map<String, String>>> output = summaryData.get(payload);
+        Map<String, List<Map<String, String>>> output = getArtefactSummaryOutput(
+            "technologyAndConstructionCourtKbDailyCauseList.json",
+            TECHNOLOGY_AND_CONSTRUCTION_COURT_KB_DAILY_CAUSE_LIST);
 
         SoftAssertions softly = new SoftAssertions();
 

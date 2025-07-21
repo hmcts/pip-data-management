@@ -350,7 +350,7 @@ class PublicationServiceTest {
             localDateTime, "NoMatch2", ListType.CIVIL_DAILY_CAUSE_LIST);
 
         when(locationRepository.findAll()).thenReturn(List.of(location));
-        when(artefactRepository.getMiData()).thenReturn(List.of(publicationMiData, publicationMiData2));
+        when(artefactRepository.getMiData(any())).thenReturn(List.of(publicationMiData, publicationMiData2));
 
         List<PublicationMiData> publicationMiDataList = publicationService.getMiData();
 
@@ -373,7 +373,7 @@ class PublicationServiceTest {
             Sensitivity.PUBLIC, UUID.randomUUID().toString(), 0, ArtefactType.GENERAL_PUBLICATION,
             LocalDateTime.now(),"100", ListType.CIVIL_DAILY_CAUSE_LIST);
 
-        when(artefactRepository.getMiData()).thenReturn(List.of(publicationMiData));
+        when(artefactRepository.getMiData(any())).thenReturn(List.of(publicationMiData));
 
         List<PublicationMiData> publicationMiDataList = publicationService.getMiData();
 
@@ -388,7 +388,7 @@ class PublicationServiceTest {
             Sensitivity.PUBLIC, UUID.randomUUID().toString(), 0, ArtefactType.GENERAL_PUBLICATION,
             LocalDateTime.now(),"100.12", ListType.CIVIL_DAILY_CAUSE_LIST);
 
-        when(artefactRepository.getMiData()).thenReturn(List.of(publicationMiData));
+        when(artefactRepository.getMiData(any())).thenReturn(List.of(publicationMiData));
 
         List<PublicationMiData> publicationMiDataList = publicationService.getMiData();
 

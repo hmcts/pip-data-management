@@ -41,7 +41,6 @@ class SeniorCourtsCostsOfficeDailyCauseListFileConverterTest {
     private static final String VENUE_NAME_ELEMENT = "venue-name";
     private static final String ADDRESS_LINE1_ELEMENT = "address-line-1";
     private static final String ADDRESS_LINE2_ELEMENT = "address-line-2";
-    private static final String ADDRESS_LINE3_ELEMENT = "address-line-3";
     private static final String LIST_DATE_ELEMENT = "list-date";
     private static final String LAST_UPDATED_DATE_ELEMENT = "last-updated-date";
     private static final String SUMMARY_TITLE_CLASS = "govuk-details__summary-text";
@@ -107,13 +106,9 @@ class SeniorCourtsCostsOfficeDailyCauseListFileConverterTest {
 
         softly.assertThat(document.getElementById(ADDRESS_LINE1_ELEMENT).text())
             .as(VENUE_MESSAGE)
-            .isEqualTo("Thomas More Building");
-
-        softly.assertThat(document.getElementById(ADDRESS_LINE2_ELEMENT).text())
-            .as(VENUE_MESSAGE)
             .isEqualTo("Strand, London");
 
-        softly.assertThat(document.getElementById(ADDRESS_LINE3_ELEMENT).text())
+        softly.assertThat(document.getElementById(ADDRESS_LINE2_ELEMENT).text())
             .as(VENUE_MESSAGE)
             .isEqualTo("WC2A 2LL");
 
@@ -131,7 +126,7 @@ class SeniorCourtsCostsOfficeDailyCauseListFileConverterTest {
 
         softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).get(0).text())
             .as(IMPORTANT_INFORMATION_MESSAGE)
-            .contains("Hearings in the Senior Court Costs Office will be held in person unless the notice of hearing "
+            .contains("Hearings in the Senior Courts Costs Office will be held in person unless the notice of hearing "
                           + "has directed otherwise.");
 
         softly.assertThat(document.getElementsByClass(LINK_CLASS).get(0)
@@ -194,13 +189,9 @@ class SeniorCourtsCostsOfficeDailyCauseListFileConverterTest {
 
         softly.assertThat(document.getElementById(ADDRESS_LINE1_ELEMENT).text())
             .as(VENUE_MESSAGE)
-            .isEqualTo("Thomas More Building");
-
-        softly.assertThat(document.getElementById(ADDRESS_LINE2_ELEMENT).text())
-            .as(VENUE_MESSAGE)
             .isEqualTo("Strand, London");
 
-        softly.assertThat(document.getElementById(ADDRESS_LINE3_ELEMENT).text())
+        softly.assertThat(document.getElementById(ADDRESS_LINE2_ELEMENT).text())
             .as(VENUE_MESSAGE)
             .isEqualTo("WC2A 2LL");
 
@@ -218,8 +209,8 @@ class SeniorCourtsCostsOfficeDailyCauseListFileConverterTest {
 
         softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).get(0).text())
             .as(IMPORTANT_INFORMATION_MESSAGE)
-            .contains("Bydd gwrandawiadau yn Uwch Swyddfa Costau’r Llys yn cael eu cynnal wyneb yn wyneb oni bai bod "
-                          + "yr hysbysiad o wrandawiad wedi cyfarwyddo fel arall.");
+            .contains("Bydd gwrandawiadau a gynhelir yn Swyddfa Costau’r Uwch Lysoedd yn cael eu cynnal yn wyneb yn "
+                          + "wyneb oni bai bod yr hysbysiad o wrandawiad wedi cyfarwyddo fel arall.");
 
         softly.assertThat(document.getElementsByClass(LINK_CLASS).get(0)
                               .getElementsByTag("a").get(0)

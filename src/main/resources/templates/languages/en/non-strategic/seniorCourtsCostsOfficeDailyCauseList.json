@@ -1,10 +1,9 @@
 {
   "listName": "Senior Courts Costs Office Daily Cause List",
   "venueName": "Royal Courts of Justice",
-  "addressLine1": "Thomas More Building",
-  "addressLine2": "Strand, London",
-  "addressLine3": "WC2A 2LL",
-  "importantInformationLine1": "Hearings in the Senior Court Costs Office will be held in person unless the notice of hearing has directed otherwise.",
+  "addressLine1": "Strand, London",
+  "addressLine2": "WC2A 2LL",
+  "importantInformationLine1": "Hearings in the Senior Courts Costs Office will be held in person unless the notice of hearing has directed otherwise.",
   "importantInformationLine2": "Open justice is a fundamental principle of our justice system. You can attend a public hearing in person or you can apply for permission to observe remotely.",
   "importantInformationLine3": "Requests to observe remotely a hearing that is taking place at The Senior Courts Costs Office should be made in good time direct to: scco@justice.gov.uk putting the hearing date and time in the subject box. You may be asked to provide further details and you must provide an email address to be sent an appropriate link for access.",
   "importantInformationLine4": "The judge hearing the case will decide if it is appropriate for you to observe remotely. They will have regard to the interests of justice, the technical capacity for remote observation and what is necessary to secure the proper administration of justice.",
