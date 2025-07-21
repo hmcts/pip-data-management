@@ -41,12 +41,12 @@ public class ValidationService {
 
     private final JsonSchema masterSchema;
 
-    private final TelemetryClient telemetry = new TelemetryClient();
+    private final TelemetryClient telemetry;
 
     Map<ListType, JsonSchema> validationSchemas = new ConcurrentHashMap<>();
 
     @Autowired
-    public ValidationService(ValidationConfiguration validationConfiguration) {
+    public ValidationService(ValidationConfiguration validationConfiguration, TelemetryClient telemetry) {
         JsonSchemaFactory schemaFactory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V7);
 
         try (InputStream masterFile = this.getClass().getClassLoader()
@@ -68,6 +68,8 @@ public class ValidationService {
                 throw new PayloadValidationException(String.join(exception.getMessage()));
             }
         });
+
+        this.telemetry = telemetry;
     }
 
     /**
@@ -173,12 +175,13 @@ public class ValidationService {
 
             if (!errors.isEmpty()) {
                 propertiesMap.put("ERROR", errors.toString());
-                telemetry.trackTrace(jsonPayload, SeverityLevel.Error, propertiesMap);
+                telemetry.trackTrace(String.format("Payload validation failed, %s errors present", errors.size()),
+                                     SeverityLevel.Error, propertiesMap);
                 throw new PayloadValidationException(String.join(", ", errors));
             }
         } catch (IOException exception) {
             propertiesMap.put("ERROR", exception.getMessage());
-            telemetry.trackTrace(jsonPayload, SeverityLevel.Error, propertiesMap);
+            telemetry.trackTrace("Unable to parse JSON payload", SeverityLevel.Error, propertiesMap);
             throw new PayloadValidationException("Error while parsing JSON Payload");
         }
     }

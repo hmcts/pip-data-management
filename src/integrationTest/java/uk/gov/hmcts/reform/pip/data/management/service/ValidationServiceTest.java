@@ -1,5 +1,7 @@
 package uk.gov.hmcts.reform.pip.data.management.service;
 
+import com.microsoft.applicationinsights.TelemetryClient;
+import com.microsoft.applicationinsights.telemetry.SeverityLevel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -10,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ContainsForbiddenValuesException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.FlatFileException;
@@ -34,10 +37,17 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @ActiveProfiles("integration-basic")
 @SpringBootTest
 class ValidationServiceTest extends IntegrationBasicTestBase {
+
+    @MockitoBean
+    TelemetryClient telemetryClient;
 
     @Autowired
     ValidationService validationService;
@@ -524,5 +534,35 @@ class ValidationServiceTest extends IntegrationBasicTestBase {
     void testContainsHtmlTagDoesNotThrow() {
         assertDoesNotThrow(() -> validationService.containsHtmlTag(COURT_NAME, COURT_NAME),
                            CONTAINS_FORBIDDEN_VALUES_EXCEPTION);
+    }
+
+    @Test
+    void testAppInsightsLogWhenUnableToParse() {
+        String text = new String("abcd".getBytes(), StandardCharsets.UTF_8);
+
+        assertThrows(PayloadValidationException.class, () ->
+            validationService.validateBody(text, headerGroup, true));
+
+        verify(telemetryClient, times(1)).trackTrace(eq("Unable to parse JSON payload"),
+                                                     eq(SeverityLevel.Error), argThat((argument) ->
+                                                         argument.get("LIST_TYPE")
+                                                             .equals(headerGroup.getListType().name())));
+    }
+
+    @Test
+    void testAppInsightsLogWhenFailedToValidateAgainstSchema() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader().getResourceAsStream(
+            "data/civil-daily-cause-list/civilDailyCauseListInvalid.json")) {
+
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            assertThrows(PayloadValidationException.class, () ->
+                validationService.validateBody(text, headerGroup, true));
+
+            verify(telemetryClient, times(1)).trackTrace(eq("Payload validation failed, 5 errors present"),
+                       eq(SeverityLevel.Error), argThat((argument) -> argument.get("ERROR")
+                                                                 .contains("sittingStart: "
+                                                                               + "does not match the regex pattern")));
+        }
     }
 }
