@@ -102,7 +102,8 @@ class LocationMetadataTest extends IntegrationTestBase {
             MockMultipartFile csvFile
                 = new MockMultipartFile(LOCATION_LIST, csvInputStream);
 
-            MvcResult mvcResult = mockMvc.perform(multipart(UPLOAD_API).file(csvFile))
+            MvcResult mvcResult = mockMvc.perform(multipart(UPLOAD_API).file(csvFile)
+                                            .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID))
                 .andExpect(status().isOk()).andReturn();
 
             List<Location> locations = Arrays.asList(
