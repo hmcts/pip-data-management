@@ -71,7 +71,6 @@ class PublicationTest extends FunctionalTestBase {
     private static final ListType LIST_TYPE = ListType.CIVIL_DAILY_CAUSE_LIST;
     private static final String USER_ID_HEADER = "x-user-id";
     private static final String REQUESTER_ID_HEADER = "x-requester-id";
-    private static final String ISSUER_HEADER = "x-issuer-id";
     private static final String BASE_COURT_NAME = "TestLocation-PublicationTest";
     private static final String CASE_NUMBER = "4568454842";
     private static final String EMAIL = "test@hmcts.net";
@@ -98,7 +97,7 @@ class PublicationTest extends FunctionalTestBase {
         doDeleteRequest(TESTING_SUPPORT_LOCATION_URL + BASE_COURT_NAME, getBaseHeaderMap());
 
         Map<String, String> deleteArtefactHeaderMap = getBaseHeaderMap();
-        deleteArtefactHeaderMap.put(ISSUER_HEADER, EMAIL);
+        deleteArtefactHeaderMap.put(REQUESTER_ID_HEADER, EMAIL);
 
         if (!noMatchArtefactId.isBlank()) {
             doDeleteRequest(
@@ -247,7 +246,7 @@ class PublicationTest extends FunctionalTestBase {
         assertThat(returnedGetArtefactMetadata.getArtefactId().toString()).isEqualTo(artefactId);
 
         Map<String, String> deleteArtefactHeaderMap = getBaseHeaderMap();
-        deleteArtefactHeaderMap.put(ISSUER_HEADER, EMAIL);
+        deleteArtefactHeaderMap.put(REQUESTER_ID_HEADER, EMAIL);
 
         final Response responseGetAllRelevantArtefactsByLocationId = doGetRequest(
             ARTEFACT_BY_LOCATION_ID_URL + courtId, headerMap
@@ -297,7 +296,7 @@ class PublicationTest extends FunctionalTestBase {
         assertThat(returnedGetArtefactMetadata.getArtefactId().toString()).isEqualTo(artefactId);
 
         Map<String, String> deleteArtefactHeaderMap = getBaseHeaderMap();
-        deleteArtefactHeaderMap.put(ISSUER_HEADER, EMAIL);
+        deleteArtefactHeaderMap.put(REQUESTER_ID_HEADER, EMAIL);
 
         final Response responseDeleteArtefact = doDeleteRequest(
             PUBLICATION_URL + '/' + artefactId, deleteArtefactHeaderMap

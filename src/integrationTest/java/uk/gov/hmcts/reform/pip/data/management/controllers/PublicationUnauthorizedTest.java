@@ -244,7 +244,7 @@ class PublicationUnauthorizedTest extends IntegrationTestBase {
     void testUnauthorizedDeleteArtefact() throws Exception {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
             .delete("/publication/2dde8f1e-bfb6-11ec-9d64-0242ac120002")
-            .header("x-issuer-id", "abcde");
+            .header(REQUESTER_ID_HEADER, "abcde");
 
         mockMvc.perform(mockHttpServletRequestBuilder)
             .andExpect(status().isForbidden())

@@ -111,7 +111,6 @@ class PublicationTest extends IntegrationTestBase {
     private static final String TRUE = "true";
     private static final String FALSE = "false";
     private static final String ADMIN_HEADER = "x-admin";
-    private static final String ISSUER_HEADER = "x-issuer-id";
     private static final String EMAIL = "test@email.com";
 
     private static final String VALIDATION_EMPTY_RESPONSE = "Response should contain a Artefact";
@@ -1747,7 +1746,7 @@ class PublicationTest extends IntegrationTestBase {
 
         MockHttpServletRequestBuilder deleteRequest = MockMvcRequestBuilders
             .delete(PUBLICATION_URL + "/" + artefactToDelete.getArtefactId())
-            .header(ISSUER_HEADER, EMAIL);
+            .header(REQUESTER_ID_HEADER, EMAIL);
 
         MvcResult deleteResponse = mockMvc.perform(deleteRequest).andExpect(status().isOk()).andReturn();
 
@@ -1762,7 +1761,7 @@ class PublicationTest extends IntegrationTestBase {
 
         MockHttpServletRequestBuilder deleteRequest = MockMvcRequestBuilders
             .delete(PUBLICATION_URL + "/" + invalidId)
-            .header(ISSUER_HEADER, EMAIL);
+            .header(REQUESTER_ID_HEADER, EMAIL);
 
         MvcResult deleteResponse = mockMvc.perform(deleteRequest).andExpect(status().isNotFound()).andReturn();
 
