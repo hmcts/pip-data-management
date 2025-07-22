@@ -1,50 +1,22 @@
 package uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.nonstrategic;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.commons.io.IOUtils;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.ActiveProfiles;
-import uk.gov.hmcts.reform.pip.data.management.service.ListConversionFactory;
-import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.ArtefactSummaryData;
 
 import java.io.IOException;
-import java.io.StringWriter;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.MANCHESTER_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST;
 
 @ActiveProfiles("test")
-class ManchesterAdministrativeCourtDailyCauseListSummaryDataTest {
-
-    private static final String NON_STRATEGIC_RESOURCE_FOLDER = "src/test/resources/mocks/non-strategic/";
-    private static final String SUMMARY_SECTIONS_MESSAGE = "Summary sections count does not match";
-    private static final String SUMMARY_CASES_MESSAGE = "Summary cases count does not match";
-    private static final String SUMMARY_FIELDS_MESSAGE = "Summary fields count does not match";
-    private static final String SUMMARY_FIELD_KEY_MESSAGE = "Summary field key does not match";
-    private static final String SUMMARY_FIELD_VALUE_MESSAGE = "Summary field value does not match";
+class ManchesterAdministrativeCourtDailyCauseListSummaryDataTest extends NonStrategicCommonArtefactSummaryTestConfig {
 
     @Test
     void testManchesterAdministrativeCourtDailyCauseListSummaryData() throws IOException {
-        StringWriter writer = new StringWriter();
-        IOUtils.copy(
-            Files.newInputStream(Paths.get(
-                NON_STRATEGIC_RESOURCE_FOLDER,
-                "administrativeCourtDailyCauseList.json"
-            )), writer,
-            Charset.defaultCharset()
-        );
-
-        JsonNode payload = new ObjectMapper().readTree(writer.toString());
-        ArtefactSummaryData summaryData = new ListConversionFactory()
-            .getArtefactSummaryData(MANCHESTER_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST)
-            .get();
-        Map<String, List<Map<String, String>>> output = summaryData.get(payload);
+        Map<String, List<Map<String, String>>> output = getArtefactSummaryOutput(
+            "administrativeCourtDailyCauseList.json", MANCHESTER_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST);
 
         SoftAssertions softly = new SoftAssertions();
 
@@ -60,7 +32,7 @@ class ManchesterAdministrativeCourtDailyCauseListSummaryDataTest {
         Map<String, String> summaryFields = summaryCases.get(0);
         softly.assertThat(summaryFields)
             .as(SUMMARY_FIELDS_MESSAGE)
-            .hasSize(3);
+            .hasSize(4);
 
         List<String> keys = summaryFields.keySet()
             .stream()
@@ -78,6 +50,10 @@ class ManchesterAdministrativeCourtDailyCauseListSummaryDataTest {
             .as(SUMMARY_FIELD_KEY_MESSAGE)
             .isEqualTo("Hearing type");
 
+        softly.assertThat(keys.get(3))
+            .as(SUMMARY_FIELD_KEY_MESSAGE)
+            .isEqualTo("Case details");
+
         List<String> values = summaryFields.values()
             .stream()
             .toList();
@@ -93,6 +69,10 @@ class ManchesterAdministrativeCourtDailyCauseListSummaryDataTest {
         softly.assertThat(values.get(2))
             .as(SUMMARY_FIELD_VALUE_MESSAGE)
             .isEqualTo("Directions A");
+
+        softly.assertThat(values.get(3))
+            .as(SUMMARY_FIELD_VALUE_MESSAGE)
+            .isEqualTo("Case details A");
 
         softly.assertAll();
     }
