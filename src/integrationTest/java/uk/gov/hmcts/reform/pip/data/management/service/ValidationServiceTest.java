@@ -504,6 +504,9 @@ class ValidationServiceTest extends IntegrationBasicTestBase {
             Arguments.of(ListType.INSOLVENCY_AND_COMPANIES_COURT_CHD_DAILY_CAUSE_LIST,
                          "data/non-strategic/insolvency_and_companies_court_chd_daily_cause_list/"
                              + "insolvencyAndCompaniesCourtChdDailyCauseList.json"),
+            Arguments.of(ListType.SEND_DAILY_HEARING_LIST,
+                         "data/non-strategic/send-daily-hearing-list/"
+                             + "sendDailyHearingList.json"),
             Arguments.of(ListType.BIRMINGHAM_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
                          ADMINISTRATIVE_COURT_DAILY_CAUSE_LISTS_JSON_FILE),
             Arguments.of(ListType.BRISTOL_AND_CARDIFF_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
