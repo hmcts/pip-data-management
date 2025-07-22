@@ -443,9 +443,9 @@ public class PublicationController {
     @DeleteMapping("/{artefactId}")
     @IsAdmin
     @SecurityRequirement(name = BEARER_AUTHENTICATION)
-    public ResponseEntity<String> deleteArtefact(@RequestHeader("x-issuer-id") String issuerId,
+    public ResponseEntity<String> deleteArtefact(@RequestHeader(REQUESTER_ID_HEADER) String requesterId,
         @PathVariable String artefactId) {
-        artefactDeleteService.deleteArtefactById(artefactId, issuerId);
+        artefactDeleteService.deleteArtefactById(artefactId, requesterId);
         return ResponseEntity.ok("Successfully deleted artefact: " + artefactId);
     }
 
