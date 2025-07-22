@@ -2084,7 +2084,7 @@ class PublicationTest extends IntegrationTestBase {
         piUser.setEmail(EMAIL);
 
         when(accountManagementService.getUserById(USER_ID)).thenReturn(piUser);
-        when(accountManagementService.getAllAccounts(anyString(), eq(SYSTEM_ADMIN.toString())))
+        when(accountManagementService.getAllAccounts(anyString(), eq(SYSTEM_ADMIN.toString()), eq(SYSTEM_ADMIN_ID)))
             .thenReturn(List.of(EMAIL));
 
         Artefact artefactToDelete = createDailyList(Sensitivity.PUBLIC);

@@ -59,11 +59,11 @@ public class ArtefactDeleteService {
     /**
      * Method that handles the logic to archive an artefact and delete the stored blobs.
      *
-     * @param artefactId The ID of the artefact to be deleted.
-     * @param issuerId   The ID of the admin user who is attempting to delete the artefact.
+     * @param artefactId    The ID of the artefact to be deleted.
+     * @param requesterId   The ID of the admin user who is attempting to delete the artefact.
      */
     @Transactional
-    public void archiveArtefactById(String artefactId, String issuerId) {
+    public void archiveArtefactById(String artefactId, String requesterId) {
         Artefact artefactToArchive = artefactRepository.findArtefactByArtefactId(artefactId)
             .orElseThrow(() -> new ArtefactNotFoundException("No artefact found with the ID: " + artefactId));
 
@@ -71,7 +71,7 @@ public class ArtefactDeleteService {
         if (!NoMatchArtefactHelper.isNoMatchLocationId(artefactToArchive.getLocationId())) {
             accountManagementService.sendDeletedArtefactForThirdParties(artefactToArchive);
         }
-        log.info(writeLog(String.format("Artefact archived by %s, with artefact id: %s", issuerId, artefactId)));
+        log.info(writeLog(String.format("Artefact archived by %s, with artefact id: %s", requesterId, artefactId)));
     }
 
     /**
@@ -109,25 +109,25 @@ public class ArtefactDeleteService {
     /**
      * Attempts to delete an artefact along with the stored blobs.
      *
-     * @param artefactId The ID of the artefact to be deleted.
-     * @param issuerId   The ID of the admin user who is attempting to delete the artefact.
+     * @param artefactId    The ID of the artefact to be deleted.
+     * @param requesterId   The ID of the admin user who is attempting to delete the artefact.
      */
-    public void deleteArtefactById(String artefactId, String issuerId) {
+    public void deleteArtefactById(String artefactId, String requesterId) {
         Artefact artefactToDelete = artefactRepository.findArtefactByArtefactId(artefactId)
             .orElseThrow(() -> new ArtefactNotFoundException("No artefact found with the ID: " + artefactId));
 
         handleArtefactDeletion(artefactToDelete);
-        log.info(writeLog(issuerId, UserActions.REMOVE, artefactId));
+        log.info(writeLog(requesterId, UserActions.REMOVE, artefactId));
     }
 
-    public String deleteArtefactByLocation(Integer locationId, String userId)
+    public String deleteArtefactByLocation(Integer locationId, String requesterId)
         throws JsonProcessingException {
         List<Artefact> activeArtefacts = artefactRepository.findActiveArtefactsForLocation(LocalDateTime.now(),
                                                                                            locationId.toString());
         if (activeArtefacts.isEmpty()) {
             log.info(writeLog(String.format("User %s attempting to delete all artefacts for location %s. "
                                                 + "No artefacts found",
-                                            userId, locationId)));
+                                            requesterId, locationId)));
             throw new ArtefactNotFoundException(String.format(
                 "No artefacts found with the location ID %s",
                 locationId
@@ -135,17 +135,17 @@ public class ArtefactDeleteService {
         }
         log.info(writeLog(String.format("User %s attempting to delete all artefacts for location %s. "
                                             + "%s artefact(s) found",
-                                        userId, locationId, activeArtefacts.size())));
+                                        requesterId, locationId, activeArtefacts.size())));
 
         activeArtefacts.forEach(artefact -> {
             handleArtefactDeletion(artefact);
             log.info(writeLog(
                 String.format("Artefact deleted by %s, with artefact id: %s",
-                              userId, artefact.getArtefactId())
+                              requesterId, artefact.getArtefactId())
             ));
         });
         Optional<Location> location = locationRepository.getLocationByLocationId(locationId);
-        notifySystemAdminAboutSubscriptionDeletion(userId,
+        notifySystemAdminAboutSubscriptionDeletion(requesterId,
             String.format("Total %s artefact(s) for location %s", activeArtefacts.size(),
                           location.isPresent() ? location.get().getName() : ""));
         return String.format("Total %s artefact deleted for location id %s", activeArtefacts.size(), locationId);
@@ -178,11 +178,11 @@ public class ArtefactDeleteService {
         artefactRepository.archiveArtefact(artefact.getArtefactId().toString());
     }
 
-    private void notifySystemAdminAboutSubscriptionDeletion(String userId, String additionalDetails)
+    private void notifySystemAdminAboutSubscriptionDeletion(String requesterId, String additionalDetails)
         throws JsonProcessingException {
-        PiUser userInfo = accountManagementService.getUserById(userId);
-        List<String> systemAdminsAad = accountManagementService.getAllAccounts("PI_AAD", "SYSTEM_ADMIN");
-        List<String> systemAdminsSso = accountManagementService.getAllAccounts("SSO", "SYSTEM_ADMIN");
+        PiUser userInfo = accountManagementService.getUserById(requesterId);
+        List<String> systemAdminsAad = accountManagementService.getAllAccounts("PI_AAD", "SYSTEM_ADMIN", requesterId);
+        List<String> systemAdminsSso = accountManagementService.getAllAccounts("SSO", "SYSTEM_ADMIN", requesterId);
         List<String> systemAdmins = Stream.concat(systemAdminsAad.stream(), systemAdminsSso.stream()).toList();
         publicationServicesService.sendSystemAdminEmail(systemAdmins, userInfo.getEmail(),
             ActionResult.SUCCEEDED, additionalDetails, ChangeType.DELETE_LOCATION_ARTEFACT);

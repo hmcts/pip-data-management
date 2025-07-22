@@ -640,7 +640,7 @@ class LocationServiceTest {
             .thenReturn(List.of());
         when(accountManagementService.findSubscriptionsByLocationId(locationId.toString()))
             .thenReturn("[]");
-        when(accountManagementService.getAllAccounts(PI_AAD_PROVENANCE, SYSTEM_ADMIN))
+        when(accountManagementService.getAllAccounts(PI_AAD_PROVENANCE, SYSTEM_ADMIN, userId))
             .thenReturn(List.of(EMAIL));
         when(publicationService.sendSystemAdminEmail(List.of(EMAIL), EMAIL,
                                                      ActionResult.SUCCEEDED,
@@ -664,9 +664,9 @@ class LocationServiceTest {
             .thenReturn(Optional.of(locationFirstExample));
         when(artefactRepository.findActiveArtefactsForLocation(any(), eq(locationId.toString())))
             .thenReturn(List.of(new Artefact()));
-        when(accountManagementService.getAllAccounts(PI_AAD_PROVENANCE, SYSTEM_ADMIN))
+        when(accountManagementService.getAllAccounts(PI_AAD_PROVENANCE, SYSTEM_ADMIN, userId))
             .thenReturn(List.of(EMAIL));
-        when(accountManagementService.getAllAccounts(SSO_PROVENANCE, SYSTEM_ADMIN))
+        when(accountManagementService.getAllAccounts(SSO_PROVENANCE, SYSTEM_ADMIN, userId))
             .thenReturn(List.of(SSO_EMAIL));
 
         List<String> systemAdminEmails = List.of(EMAIL, SSO_EMAIL);
@@ -695,9 +695,9 @@ class LocationServiceTest {
             .thenReturn(List.of());
         when(accountManagementService.findSubscriptionsByLocationId(locationId.toString()))
             .thenReturn("[{},{}]");
-        when(accountManagementService.getAllAccounts(PI_AAD_PROVENANCE, SYSTEM_ADMIN))
+        when(accountManagementService.getAllAccounts(PI_AAD_PROVENANCE, SYSTEM_ADMIN, userId))
             .thenReturn(List.of(EMAIL));
-        when(accountManagementService.getAllAccounts(SSO_PROVENANCE, SYSTEM_ADMIN))
+        when(accountManagementService.getAllAccounts(SSO_PROVENANCE, SYSTEM_ADMIN, userId))
             .thenReturn(List.of(SSO_EMAIL));
 
         List<String> systemAdminEmails = List.of(EMAIL, SSO_EMAIL);
