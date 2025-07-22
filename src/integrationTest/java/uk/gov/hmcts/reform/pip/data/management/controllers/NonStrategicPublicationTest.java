@@ -267,6 +267,8 @@ class NonStrategicPublicationTest extends IntegrationTestBase {
 
     @Test
     void testNonStrategicPublicationUploadWhenFileContainsMultipleSheets() throws Exception {
+        when(accountManagementService.getUserById(any())).thenReturn(piUser);
+        
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
             .multipart(NON_STRATEGIC_PUBLICATION_URL)
             .file(excelFileMultiSheet);
@@ -282,6 +284,7 @@ class NonStrategicPublicationTest extends IntegrationTestBase {
             .header(PublicationConfiguration.COURT_ID, COURT_ID)
             .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
             .header(PublicationConfiguration.LANGUAGE_HEADER, Language.ENGLISH)
+            .header(PublicationConfiguration.REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID)
             .contentType(MediaType.MULTIPART_FORM_DATA);
 
         MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
