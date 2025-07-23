@@ -22,6 +22,8 @@ import uk.gov.hmcts.reform.pip.data.management.config.AzureBlobConfigurationTest
 import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.utils.IntegrationTestBase;
+import uk.gov.hmcts.reform.pip.model.account.PiUser;
+import uk.gov.hmcts.reform.pip.model.account.Roles;
 import uk.gov.hmcts.reform.pip.model.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
@@ -32,10 +34,13 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(classes = {Application.class, AzureBlobConfigurationTestConfiguration.class},
@@ -44,11 +49,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("integration")
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
 @WithMockUser(username = "admin", authorities = {"APPROLE_api.request.admin"})
+@SuppressWarnings({"PMD.ExcessiveImports"})
 class NonStrategicPublicationTest extends IntegrationTestBase {
     private static final String NON_STRATEGIC_PUBLICATION_URL = "/publication/non-strategic";
     private static final String PROVENANCE = "MANUAL_UPLOAD";
     private static MockMultipartFile file;
     private static MockMultipartFile excelFile;
+    private static PiUser piUser;
     private static MockMultipartFile excelFileMultiSheet;
     private static final String SOURCE_ARTEFACT_ID = "sourceArtefactId";
     private static final LocalDateTime DISPLAY_TO = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
@@ -60,6 +67,7 @@ class NonStrategicPublicationTest extends IntegrationTestBase {
 
     private static final String VALIDATION_EMPTY_RESPONSE = "Response should contain a Artefact";
     private static final String ARTEFACT_ID_POPULATED_MESSAGE = "Artefact ID should be populated";
+    private static final String SYSTEM_ADMIN_ID = UUID.randomUUID().toString();
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
@@ -74,6 +82,10 @@ class NonStrategicPublicationTest extends IntegrationTestBase {
         );
         excelFile = createExcelMultipartFile(
             "data/non-strategic/cst-weekly-hearing-list/cstWeeklyHearingList.xlsx");
+        piUser = new PiUser();
+        piUser.setUserId(UUID.randomUUID().toString());
+        piUser.setEmail("test@justice.gov.uk");
+        piUser.setRoles(Roles.SYSTEM_ADMIN);
         excelFileMultiSheet = createExcelMultipartFile(
             "data/non-strategic/interim-applications-chd-daily-cause-list/"
                 + "interimApplicationsChanceryDivisionDailyCauseList.xlsx");
@@ -92,6 +104,7 @@ class NonStrategicPublicationTest extends IntegrationTestBase {
 
     @Test
     void testNonStrategicPublicationUpload() throws Exception {
+        when(accountManagementService.getUserById(any())).thenReturn(piUser);
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
             .multipart(NON_STRATEGIC_PUBLICATION_URL)
             .file(excelFile);
@@ -107,6 +120,7 @@ class NonStrategicPublicationTest extends IntegrationTestBase {
             .header(PublicationConfiguration.COURT_ID, COURT_ID)
             .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
             .header(PublicationConfiguration.LANGUAGE_HEADER, Language.ENGLISH)
+            .header(PublicationConfiguration.REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID)
             .contentType(MediaType.MULTIPART_FORM_DATA);
 
         MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
@@ -135,6 +149,7 @@ class NonStrategicPublicationTest extends IntegrationTestBase {
     void testNonStrategicPublicationUploadWhenFileContainsEmptyRows(String fileName) throws Exception {
         MockMultipartFile fileWithBlankRows = createExcelMultipartFile(
             "data/non-strategic/other-test-files/" + fileName);
+        when(accountManagementService.getUserById(any())).thenReturn(piUser);
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
             .multipart(NON_STRATEGIC_PUBLICATION_URL)
@@ -151,6 +166,7 @@ class NonStrategicPublicationTest extends IntegrationTestBase {
             .header(PublicationConfiguration.COURT_ID, COURT_ID)
             .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
             .header(PublicationConfiguration.LANGUAGE_HEADER, Language.ENGLISH)
+            .header(PublicationConfiguration.REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID)
             .contentType(MediaType.MULTIPART_FORM_DATA);
 
         MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
@@ -162,6 +178,8 @@ class NonStrategicPublicationTest extends IntegrationTestBase {
 
     @Test
     void testNonStrategicUploadOfExistingPublication() throws Exception {
+        when(accountManagementService.getUserById(any())).thenReturn(piUser);
+
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
             .multipart(NON_STRATEGIC_PUBLICATION_URL)
             .file(excelFile);
@@ -176,6 +194,7 @@ class NonStrategicPublicationTest extends IntegrationTestBase {
         mockHttpServletRequestBuilder.header(PublicationConfiguration.COURT_ID, COURT_ID);
         mockHttpServletRequestBuilder.header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE);
         mockHttpServletRequestBuilder.header(PublicationConfiguration.LANGUAGE_HEADER, Language.ENGLISH);
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID);
         mockHttpServletRequestBuilder.contentType(MediaType.MULTIPART_FORM_DATA);
 
         final MvcResult createResponse = mockMvc.perform(mockHttpServletRequestBuilder)
@@ -197,6 +216,7 @@ class NonStrategicPublicationTest extends IntegrationTestBase {
         mockHttpServletRequestBuilder.header(PublicationConfiguration.COURT_ID, COURT_ID);
         mockHttpServletRequestBuilder.header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE);
         mockHttpServletRequestBuilder.header(PublicationConfiguration.LANGUAGE_HEADER, Language.ENGLISH);
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID);
         mockHttpServletRequestBuilder.contentType(MediaType.MULTIPART_FORM_DATA);
 
         final MvcResult updatedResponse = mockMvc.perform(mockHttpServletRequestBuilder)
@@ -218,6 +238,8 @@ class NonStrategicPublicationTest extends IntegrationTestBase {
 
     @Test
     void testNonStrategicPublicationUploadWithIncorrectFileType() throws Exception {
+        when(accountManagementService.getUserById(any())).thenReturn(piUser);
+
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
             .multipart(NON_STRATEGIC_PUBLICATION_URL)
             .file(file);
@@ -232,6 +254,7 @@ class NonStrategicPublicationTest extends IntegrationTestBase {
             .header(PublicationConfiguration.COURT_ID, COURT_ID)
             .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
             .header(PublicationConfiguration.LANGUAGE_HEADER, Language.ENGLISH)
+            .header(PublicationConfiguration.REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID)
             .contentType(MediaType.MULTIPART_FORM_DATA);
 
         MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
@@ -244,6 +267,8 @@ class NonStrategicPublicationTest extends IntegrationTestBase {
 
     @Test
     void testNonStrategicPublicationUploadWhenFileContainsMultipleSheets() throws Exception {
+        when(accountManagementService.getUserById(any())).thenReturn(piUser);
+        
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
             .multipart(NON_STRATEGIC_PUBLICATION_URL)
             .file(excelFileMultiSheet);
@@ -259,6 +284,7 @@ class NonStrategicPublicationTest extends IntegrationTestBase {
             .header(PublicationConfiguration.COURT_ID, COURT_ID)
             .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
             .header(PublicationConfiguration.LANGUAGE_HEADER, Language.ENGLISH)
+            .header(PublicationConfiguration.REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID)
             .contentType(MediaType.MULTIPART_FORM_DATA);
 
         MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)

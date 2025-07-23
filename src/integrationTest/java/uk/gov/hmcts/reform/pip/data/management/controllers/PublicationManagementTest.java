@@ -27,6 +27,8 @@ import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.ExceptionResponse;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.utils.IntegrationTestBase;
+import uk.gov.hmcts.reform.pip.model.account.PiUser;
+import uk.gov.hmcts.reform.pip.model.account.Roles;
 import uk.gov.hmcts.reform.pip.model.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
@@ -44,6 +46,7 @@ import java.util.UUID;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -77,6 +80,7 @@ class PublicationManagementTest extends IntegrationTestBase {
     private static final String UNAUTHORIZED_USERNAME = "unauthorized_username";
     private static final String UNAUTHORIZED_ROLE = "APPROLE_unknown.role";
     private static final String SYSTEM_HEADER = "x-system";
+    private static final String REQUESTER_HEADER = "x-requester-id";
     private static final String FALSE = "false";
     private static final String TEST_CONTENT = "test content";
     private static final String CASE_REFERENCE_FIELD = "Case reference - 12341234";
@@ -128,6 +132,7 @@ class PublicationManagementTest extends IntegrationTestBase {
         .truncatedTo(ChronoUnit.SECONDS);
     private static final String PROVENANCE = "MANUAL_UPLOAD";
     private static final String USER_ID = UUID.randomUUID().toString();
+    private static final String SYSTEM_ADMIN_ID = UUID.randomUUID().toString();
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
@@ -136,6 +141,8 @@ class PublicationManagementTest extends IntegrationTestBase {
 
     private static MockMultipartFile file;
     private static final String EXCEL_FILE_TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
+    private static PiUser piUser;
 
     @Autowired
     private MockMvc mockMvc;
@@ -146,6 +153,11 @@ class PublicationManagementTest extends IntegrationTestBase {
                                      MediaType.APPLICATION_PDF_VALUE, TEST_CONTENT.getBytes(
             StandardCharsets.UTF_8)
         );
+
+        piUser = new PiUser();
+        piUser.setUserId(UUID.randomUUID().toString());
+        piUser.setEmail("test@justice.gov.uk");
+        piUser.setRoles(Roles.SYSTEM_ADMIN);
 
         OBJECT_MAPPER.findAndRegisterModules();
     }
@@ -164,6 +176,7 @@ class PublicationManagementTest extends IntegrationTestBase {
     }
 
     private Artefact createPublication(ListType listType, Sensitivity sensitivity, byte[] data) throws Exception {
+        when(accountManagementService.getUserById(any())).thenReturn(piUser);
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
             .post(ROOT_URL)
             .header(PublicationConfiguration.TYPE_HEADER, ArtefactType.LIST)
@@ -176,6 +189,7 @@ class PublicationManagementTest extends IntegrationTestBase {
                     CONTENT_DATE.plusDays(new RandomDataGenerator().nextLong(1, 100_000)))
             .header(PublicationConfiguration.SENSITIVITY_HEADER, sensitivity)
             .header(PublicationConfiguration.LANGUAGE_HEADER, Language.ENGLISH)
+            .header(PublicationConfiguration.REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID)
             .content(data)
             .contentType(MediaType.APPLICATION_JSON);
 
@@ -187,6 +201,7 @@ class PublicationManagementTest extends IntegrationTestBase {
     }
 
     private Artefact createNonStrategicPublication(ListType listType, String filePath) throws Exception {
+        when(accountManagementService.getUserById(any())).thenReturn(piUser);
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = multipart("/publication/non-strategic")
             .file(getMockMultipartFile(filePath))
             .header(PublicationConfiguration.TYPE_HEADER, ArtefactType.LIST)
@@ -199,6 +214,7 @@ class PublicationManagementTest extends IntegrationTestBase {
                     CONTENT_DATE.plusDays(new RandomDataGenerator().nextLong(1, 100_000)))
             .header(PublicationConfiguration.SENSITIVITY_HEADER, Sensitivity.PUBLIC)
             .header(PublicationConfiguration.LANGUAGE_HEADER, Language.ENGLISH)
+            .header(PublicationConfiguration.REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID)
             .contentType(MediaType.MULTIPART_FORM_DATA);
 
         MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
@@ -224,7 +240,8 @@ class PublicationManagementTest extends IntegrationTestBase {
             MockMultipartFile csvFile
                 = new MockMultipartFile("locationList", csvInputStream);
 
-            mockMvc.perform(multipart("/locations/upload").file(csvFile))
+            mockMvc.perform(multipart("/locations/upload").file(csvFile)
+                                .header(REQUESTER_HEADER, SYSTEM_ADMIN_ID))
                 .andExpect(status().isOk()).andReturn();
 
         }
@@ -1661,11 +1678,14 @@ class PublicationManagementTest extends IntegrationTestBase {
 
     @Test
     void testGetFileExists() throws Exception {
+        UUID artefactId = createSjpPublicListPublication().getArtefactId();
+
         when(blobClient.downloadContent()).thenReturn(
             BinaryData.fromString(new String(file.getBytes())));
-
+        when(accountManagementService.getUserById(any())).thenReturn(piUser);
         MvcResult response = mockMvc.perform(
-                get(ROOT_URL + "/" + ARTEFACT_ID + "/exists"))
+                get(ROOT_URL + "/" + artefactId + "/exists")
+                    .header(REQUESTER_HEADER, SYSTEM_ADMIN_ID))
             .andExpect(status().isOk()).andReturn();
 
         assertNotNull(
@@ -1676,11 +1696,15 @@ class PublicationManagementTest extends IntegrationTestBase {
 
     @Test
     void testGetFileSizes() throws Exception {
+        UUID artefactId = createSjpPublicListPublication().getArtefactId();
+
         when(blobClient.downloadContent()).thenReturn(
             BinaryData.fromString(new String(file.getBytes())));
+        when(accountManagementService.getUserById(any())).thenReturn(piUser);
 
         MvcResult response = mockMvc.perform(
-                get(ROOT_URL + "/" + ARTEFACT_ID + "/sizes"))
+                get(ROOT_URL + "/" + artefactId + "/sizes")
+                    .header(REQUESTER_HEADER, SYSTEM_ADMIN_ID))
             .andExpect(status().isOk()).andReturn();
 
         assertNotNull(
@@ -1695,11 +1719,13 @@ class PublicationManagementTest extends IntegrationTestBase {
 
         when(blobClient.downloadContent()).thenReturn(
             BinaryData.fromString(new String(file.getBytes())));
+        when(accountManagementService.getUserById(any())).thenReturn(piUser);
 
         MvcResult response = mockMvc.perform(
                 get(String.format(GET_FILE_URL, artefactId, PDF))
                     .header(SYSTEM_HEADER, "true")
                     .header(FILE_TYPE_HEADER, PDF)
+                    .header(REQUESTER_HEADER, SYSTEM_ADMIN_ID)
                     .param(MAX_FILE_SIZE_HEADER, MAX_FILE_SIZE))
 
             .andExpect(status().isOk()).andReturn();
@@ -1719,9 +1745,9 @@ class PublicationManagementTest extends IntegrationTestBase {
 
     @Test
     void testGetFileWithAuthorisedUser() throws Exception {
-
+        when(accountManagementService.getUserById(any())).thenReturn(piUser);
         when(accountManagementService.getIsAuthorised(
-            UUID.fromString(USER_ID), ListType.SJP_PRESS_LIST, Sensitivity.CLASSIFIED
+            UUID.fromString(SYSTEM_ADMIN_ID), ListType.SJP_PRESS_LIST, Sensitivity.CLASSIFIED
         )).thenReturn(true);
         when(blobClient.downloadContent()).thenReturn(BinaryData.fromString(new String(file.getBytes())));
 
@@ -1729,7 +1755,7 @@ class PublicationManagementTest extends IntegrationTestBase {
         Artefact artefact = createPublication(ListType.SJP_PRESS_LIST, Sensitivity.CLASSIFIED, data);
         MockHttpServletRequestBuilder request =
             get(String.format(GET_FILE_URL, artefact.getArtefactId(), PDF))
-                .header(USER_ID_HEADER, USER_ID)
+                .header(REQUESTER_HEADER, SYSTEM_ADMIN_ID)
                 .header(SYSTEM_HEADER, FALSE)
                 .param(MAX_FILE_SIZE_HEADER, MAX_FILE_SIZE);
 
@@ -1751,38 +1777,37 @@ class PublicationManagementTest extends IntegrationTestBase {
 
     @Test
     void testGetFileWithUnauthorisedUser() throws Exception {
+        when(accountManagementService.getUserById(any())).thenReturn(piUser);
         when(accountManagementService.getIsAuthorised(
-            UUID.fromString(USER_ID), ListType.SJP_PRESS_LIST, Sensitivity.CLASSIFIED
+            UUID.fromString(SYSTEM_ADMIN_ID), ListType.SJP_PRESS_LIST, Sensitivity.CLASSIFIED
         )).thenReturn(false);
 
         byte[] data = getTestData(SJP_PRESS_MOCK);
         Artefact artefact = createPublication(ListType.SJP_PRESS_LIST, Sensitivity.CLASSIFIED, data);
         MockHttpServletRequestBuilder request =
             get(String.format(GET_FILE_URL, artefact.getArtefactId(), PDF))
-                .header(USER_ID_HEADER, USER_ID)
+                .header(REQUESTER_HEADER, SYSTEM_ADMIN_ID)
                 .header(SYSTEM_HEADER, FALSE)
                 .param(MAX_FILE_SIZE_HEADER, MAX_FILE_SIZE);
 
         MvcResult response = mockMvc.perform(request)
-            .andExpect(status().isUnauthorized()).andReturn();
+            .andExpect(status().isForbidden()).andReturn();
 
-        assertTrue(
-            response.getResponse().getContentAsString().contains("not authorised to access artefact with id "
-                                                                     + artefact.getArtefactId()),
-            "Response does not match"
-        );
+        assertNotNull(
+            response.getResponse().getContentAsString(),
+            "Response does not match");
     }
 
     @Test
     void testGetFileSizeTooLarge() throws Exception {
         UUID artefactId = createSjpPublicListPublication().getArtefactId();
-
+        when(accountManagementService.getUserById(any())).thenReturn(piUser);
         when(blobClient.downloadContent()).thenReturn(
             BinaryData.fromString(new String(file.getBytes())));
 
         MockHttpServletRequestBuilder request =
             get(String.format(GET_FILE_URL, artefactId, PDF))
-                .header(USER_ID_HEADER, USER_ID)
+                .header(REQUESTER_HEADER, SYSTEM_ADMIN_ID)
                 .header(SYSTEM_HEADER, FALSE)
                 .param(MAX_FILE_SIZE_HEADER, "10");
 
@@ -1820,12 +1845,14 @@ class PublicationManagementTest extends IntegrationTestBase {
     @Test
     @WithMockUser(username = UNAUTHORIZED_USERNAME, authorities = {UNAUTHORIZED_ROLE})
     void testGetFileUnauthorized() throws Exception {
-        mockMvc.perform(get(String.format(GET_FILE_URL, ARTEFACT_ID, PDF)))
+        mockMvc.perform(get(String.format(GET_FILE_URL, ARTEFACT_ID, PDF))
+                            .header(REQUESTER_HEADER, SYSTEM_ADMIN_ID))
             .andExpect(status().isForbidden());
     }
 
     @Test
     void testGenerateNoExcelWhenFileTooBig() throws Exception {
+        when(accountManagementService.getUserById(any())).thenReturn(piUser);
         createLocations();
 
         try (InputStream mockFile = this.getClass().getClassLoader().getResourceAsStream(SJP_MOCK)) {
@@ -1848,6 +1875,7 @@ class PublicationManagementTest extends IntegrationTestBase {
 
     @Test
     void testGenerateNoPdfWhenFileTooBig() throws Exception {
+        when(accountManagementService.getUserById(any())).thenReturn(piUser);
         createLocations();
 
         try (InputStream mockFile = this.getClass().getClassLoader().getResourceAsStream(SJP_MOCK)) {

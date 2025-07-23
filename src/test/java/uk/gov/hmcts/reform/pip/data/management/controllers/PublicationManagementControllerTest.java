@@ -21,7 +21,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class PublicationManagementControllerTest {
     private static final String FILE = "123";
-    private static final String USER_ID = "test";
+    private static final UUID USER_ID = UUID.randomUUID();
     private static final UUID ARTEFACT_ID = UUID.randomUUID();
 
     private static final String STATUS_MESSAGE = "Status did not match";
@@ -45,7 +45,7 @@ class PublicationManagementControllerTest {
 
     @Test
     void testGetFile() {
-        when(publicationManagementService.getStoredPublication(any(), any(), any(), eq(USER_ID), eq(true),
+        when(publicationManagementService.getStoredPublication(any(), any(), any(), eq(USER_ID.toString()), eq(true),
                                                                eq(false)
         )).thenReturn(FILE);
 
@@ -61,7 +61,7 @@ class PublicationManagementControllerTest {
     void testFileExists() {
         when(publicationManagementService.fileExists(ARTEFACT_ID)).thenReturn(true);
 
-        ResponseEntity<Boolean> response = publicationManagementController.fileExists(ARTEFACT_ID);
+        ResponseEntity<Boolean> response = publicationManagementController.fileExists(ARTEFACT_ID, USER_ID);
         assertEquals(HttpStatus.OK, response.getStatusCode(), STATUS_MESSAGE);
         assertEquals(true, response.getBody(), RESPONSE_BODY_MESSAGE);
     }
@@ -71,7 +71,8 @@ class PublicationManagementControllerTest {
         PublicationFileSizes fileSizes = new PublicationFileSizes(1234L, null, 123L);
         when(publicationManagementService.getFileSizes(ARTEFACT_ID)).thenReturn(fileSizes);
 
-        ResponseEntity<PublicationFileSizes> response = publicationManagementController.getFileSizes(ARTEFACT_ID);
+        ResponseEntity<PublicationFileSizes> response =
+            publicationManagementController.getFileSizes(ARTEFACT_ID, USER_ID);
         assertEquals(HttpStatus.OK, response.getStatusCode(), STATUS_MESSAGE);
         assertEquals(fileSizes, response.getBody(), RESPONSE_BODY_MESSAGE);
     }
