@@ -12,6 +12,8 @@ import uk.gov.hmcts.reform.pip.data.management.models.publication.NoMatchArtefac
 import uk.gov.hmcts.reform.pip.data.management.service.PublicationServicesService;
 import uk.gov.hmcts.reform.pip.model.report.PublicationMiData;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +39,11 @@ public class PublicationReportingService {
      */
     @SuppressWarnings("PMD.EmptyCatchBlock")
     public List<PublicationMiData> getMiData() {
-        List<PublicationMiData> publicationMiData =  artefactRepository.getMiData();
+        LocalDateTime publicationReceivedDate = LocalDate.now()
+            .minusDays(31)
+            .atStartOfDay();
+        List<PublicationMiData> publicationMiData =
+            artefactRepository.getMiData(publicationReceivedDate);
 
         Map<Integer, String> location = locationRepository.findAll()
             .stream().collect(Collectors.toMap(Location::getLocationId, Location::getName));
