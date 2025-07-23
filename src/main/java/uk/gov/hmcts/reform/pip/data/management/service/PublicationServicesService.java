@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
@@ -14,6 +13,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientException;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.FileProcessingException;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.FileUploadException;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.NoMatchArtefact;
 import uk.gov.hmcts.reform.pip.model.system.admin.ActionResult;
 import uk.gov.hmcts.reform.pip.model.system.admin.ChangeType;
@@ -94,17 +95,20 @@ public class PublicationServicesService {
                 .block();
         } catch (WebClientException ex) {
             log.error("File upload failed: {}", ex.getMessage());
-            throw new RuntimeException("Failed to upload file", ex);
+            throw new FileUploadException("Failed to upload file");
         } catch (IOException ex) {
             log.error("File processing error: {}", ex.getMessage());
-            throw new RuntimeException("File processing failed", ex);
+            throw new FileProcessingException("File processing failed");
         }
     }
 
-    private HttpHeaders createFileHeaders(MultipartFile file) throws IOException {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.parseMediaType(Objects.requireNonNull(file.getContentType())));
-        headers.setContentDispositionFormData("file", file.getOriginalFilename());
+    private MultiValueMap<String, String> createFileHeaders(MultipartFile file) throws IOException {
+        MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
+        headers.add(HttpHeaders.CONTENT_TYPE,
+                    MediaType.parseMediaType(Objects.requireNonNull(file.getContentType())).toString());
+        headers.add(HttpHeaders.CONTENT_DISPOSITION,
+                    "form-data; name=\"file\"; filename=\"" + file.getOriginalFilename() + "\"");
+
         return headers;
     }
 

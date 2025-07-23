@@ -89,7 +89,7 @@ public class ValidationService {
     }
 
     /**
-     * Method that will perform additional validation when request is for FlatFile
+     * Method that will perform additional validation when request is for FlatFile.
      *
      * @param headers - a hashmap of all the headers taken in by the endpoint. Importantly, this may contain nulls (i.e.
      *                cannot be replaced with a ConcurrentHashMap.

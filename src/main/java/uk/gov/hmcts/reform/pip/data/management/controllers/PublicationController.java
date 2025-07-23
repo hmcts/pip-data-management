@@ -256,7 +256,7 @@ public class PublicationController {
         validationService.validateBody(file);
 
         HeaderGroup headers = validationService.validateHeaders(initialHeaders, true);
-        Artefact artefact = createPublicationMetadataFromHeaders(headers, file.getSize());
+        Artefact artefact = createPublicationMetadataFromHeaders(headers, file.getSize(), true);
 
         if (type.equals(ArtefactType.LCSU)) {
             publicationServicesService.uploadHtmlFileToAwsS3Bucket(file);
@@ -575,7 +575,8 @@ public class PublicationController {
         return ResponseEntity.ok(artefactService.findAllNoMatchArtefacts());
     }
 
-    private Artefact createPublicationMetadataFromHeaders(HeaderGroup headers, long fileSizeInBytes) {
+    private Artefact createPublicationMetadataFromHeaders(HeaderGroup headers, long fileSizeInBytes,
+                                                          boolean isFlatFile) {
         return Artefact.builder()
             .provenance(headers.getProvenance())
             .sourceArtefactId(headers.getSourceArtefactId())
@@ -588,6 +589,11 @@ public class PublicationController {
             .locationId(headers.getCourtId())
             .contentDate(headers.getContentDate())
             .payloadSize((float) fileSizeInBytes / 1024)
+            .isFlatFile(isFlatFile)
             .build();
+    }
+
+    private Artefact createPublicationMetadataFromHeaders(HeaderGroup headers, long fileSizeInBytes) {
+        return createPublicationMetadataFromHeaders(headers, fileSizeInBytes, false);
     }
 }
