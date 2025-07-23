@@ -35,6 +35,7 @@ import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.HeaderGroup;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.views.ArtefactView;
 import uk.gov.hmcts.reform.pip.data.management.service.ExcelConversionService;
+import uk.gov.hmcts.reform.pip.data.management.service.PublicationServicesService;
 import uk.gov.hmcts.reform.pip.data.management.service.ValidationService;
 import uk.gov.hmcts.reform.pip.data.management.service.publication.ArtefactDeleteService;
 import uk.gov.hmcts.reform.pip.data.management.service.publication.ArtefactSearchService;
@@ -107,6 +108,7 @@ public class PublicationController {
     private final ValidationService validationService;
 
     private final ExcelConversionService excelConversionService;
+    private final PublicationServicesService publicationServicesService;
 
     private static final String DEFAULT_ADMIN_VALUE = "false";
 
@@ -127,7 +129,8 @@ public class PublicationController {
                                  ArtefactService artefactService,
                                  ArtefactDeleteService artefactDeleteService,
                                  ArtefactTriggerService artefactTriggerService,
-                                 ExcelConversionService excelConversionService) {
+                                 ExcelConversionService excelConversionService,
+                                 PublicationServicesService publicationServicesService) {
         this.publicationService = publicationService;
         this.publicationCreationRunner = publicationCreationRunner;
         this.validationService = validationService;
@@ -136,6 +139,7 @@ public class PublicationController {
         this.artefactDeleteService = artefactDeleteService;
         this.artefactTriggerService = artefactTriggerService;
         this.excelConversionService = excelConversionService;
+        this.publicationServicesService = publicationServicesService;
     }
 
     /**
@@ -239,7 +243,7 @@ public class PublicationController {
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime displayFrom,
         @RequestHeader(value = PublicationConfiguration.DISPLAY_TO_HEADER, required = false)
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime displayTo,
-        @RequestHeader(PublicationConfiguration.LIST_TYPE) ListType listType,
+        @RequestHeader(value = PublicationConfiguration.LIST_TYPE, required = false) ListType listType,
         @RequestHeader(PublicationConfiguration.COURT_ID) String courtId,
         @RequestHeader(PublicationConfiguration.CONTENT_DATE)
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime contentDate,
@@ -251,8 +255,14 @@ public class PublicationController {
         );
         validationService.validateBody(file);
 
-        HeaderGroup headers = validationService.validateHeaders(initialHeaders);
+        HeaderGroup headers = validationService.validateHeaders(initialHeaders, true);
         Artefact artefact = createPublicationMetadataFromHeaders(headers, file.getSize());
+
+        if (type.equals(ArtefactType.LCSU)) {
+            publicationServicesService.uploadHtmlFileToAwsS3Bucket(file);
+            return ResponseEntity.status(HttpStatus.CREATED)
+                .body(artefact);
+        }
 
         Map<String, List<Object>> search = new ConcurrentHashMap<>();
         search.put("location-id", List.of(headers.getCourtId()));

@@ -89,6 +89,32 @@ public class ValidationService {
     }
 
     /**
+     * Method that will perform additional validation when request is for FlatFile
+     *
+     * @param headers - a hashmap of all the headers taken in by the endpoint. Importantly, this may contain nulls (i.e.
+     *                cannot be replaced with a ConcurrentHashMap.
+     * @return Map(String, Object) - an amended version of the headers. If changes (i.e. conditional defaults)
+     *      are created, ensure the logic affects the headers map within this class.
+     */
+    public HeaderGroup validateHeaders(HeaderGroup headers, boolean isFlatFile) {
+        if (isFlatFile) {
+            validateHeadersForFlatFile(headers);
+        }
+        validateHeaders(headers);
+        return headers;
+    }
+
+    /**
+     * If incoming request file type is LIST, it must send LIST_TYPE header.
+     * @param headers The headers to validate.
+     */
+    private void validateHeadersForFlatFile(HeaderGroup headers) {
+        if (headers.getType().equals(ArtefactType.LIST)) {
+            validateRequiredHeader(PublicationConfiguration.LIST_TYPE, headers.getListType());
+        }
+    }
+
+    /**
      * By default, spring does not validate empty strings using the required flags in the @RequestHeader. Therefore
      * this check is required to validate that they are not empty
      * @param headers The headers to validate.

@@ -3,7 +3,14 @@ package uk.gov.hmcts.reform.pip.data.management.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientException;
@@ -13,7 +20,9 @@ import uk.gov.hmcts.reform.pip.model.system.admin.ChangeType;
 import uk.gov.hmcts.reform.pip.model.system.admin.DeleteLocationAction;
 import uk.gov.hmcts.reform.pip.model.system.admin.DeleteLocationArtefactAction;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 
 import static org.springframework.security.oauth2.client.web.reactive.function.client.ServerOAuth2AuthorizedClientExchangeFilterFunction.clientRegistrationId;
 import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
@@ -68,6 +77,35 @@ public class PublicationServicesService {
             ));
             return "";
         }
+    }
+
+    public String uploadHtmlFileToAwsS3Bucket(MultipartFile file) {
+        try {
+            MultiValueMap<String, HttpEntity<?>> parts = new LinkedMultiValueMap<>();
+            parts.add("file", new HttpEntity<>(file.getResource(), createFileHeaders(file)));
+
+            return webClient.post()
+                .uri(url + "/notify/upload-html-to-s3")
+                .contentType(MediaType.MULTIPART_FORM_DATA)
+                .body(BodyInserters.fromMultipartData(parts))
+                .attributes(clientRegistrationId("publicationServicesApi"))
+                .retrieve()
+                .bodyToMono(String.class)
+                .block();
+        } catch (WebClientException ex) {
+            log.error("File upload failed: {}", ex.getMessage());
+            throw new RuntimeException("Failed to upload file", ex);
+        } catch (IOException ex) {
+            log.error("File processing error: {}", ex.getMessage());
+            throw new RuntimeException("File processing failed", ex);
+        }
+    }
+
+    private HttpHeaders createFileHeaders(MultipartFile file) throws IOException {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.parseMediaType(Objects.requireNonNull(file.getContentType())));
+        headers.setContentDispositionFormData("file", file.getOriginalFilename());
+        return headers;
     }
 
     private DeleteLocationAction formatDeleteLocationSystemAdminAction(List<String> emails,
