@@ -20,6 +20,7 @@ import uk.gov.hmcts.reform.pip.data.management.database.LocationRepository;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ContainsForbiddenValuesException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CreateLocationConflictException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CsvParseException;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.LocationNameValidationException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.LocationNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.helpers.TestingSupportLocationHelper;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
@@ -45,6 +46,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -156,40 +158,25 @@ public class LocationService {
              Reader reader = new BufferedReader(inputStreamReader)) {
 
             List<LocationCsv> locationCsvList = new CsvToBeanBuilder<LocationCsv>(reader).withType(LocationCsv.class)
-                .build().parse();
+                    .build().parse();
+            validateLocationName(locationCsvList);
 
             Map<Integer, List<LocationCsv>> locations = locationCsvList.stream()
-                .collect(Collectors.groupingBy(LocationCsv::getUniqueId));
-
+                    .collect(Collectors.groupingBy(LocationCsv::getUniqueId));
 
             List<Location> savedLocations = new ArrayList<>();
             locations.values().forEach(groupedLocation -> {
                 Location location = new Location(groupedLocation.get(0));
-
                 groupedLocation.stream().skip(1).forEach(locationCsv ->
-                    location.addLocationReference(new LocationReference(
-                        locationCsv.getProvenance(),
-                        locationCsv.getProvenanceLocationId(),
-                        LocationType.valueOfCsv(locationCsv.getProvenanceLocationType()))));
-
-                try {
-                    validationService.containsHtmlTag(location.getName(), location.getWelshName());
-                    savedLocations.add(locationRepository.save(location));
-                } catch (DataIntegrityViolationException e) {
-                    log.error(writeLog(String.format(
-                        "Record with ID %d not saved. The location name '%s' or Welsh location name '%s' already "
-                            + "exists", location.getLocationId(), location.getName(), location.getWelshName()
-                    )));
-                } catch (ContainsForbiddenValuesException e) {
-                    log.error(writeLog(String.format(
-                        "Record with ID %d not saved. The location name '%s' or Welsh location name '%s' contains a "
-                        + "forbidden character", location.getLocationId(), location.getName(), location.getWelshName()
-                    )));
-                }
+                        location.addLocationReference(new LocationReference(
+                                locationCsv.getProvenance(),
+                                locationCsv.getProvenanceLocationId(),
+                                LocationType.valueOfCsv(locationCsv.getProvenanceLocationType()))));
+                savedLocations.add(locationRepository.save(location));
             });
-
             return savedLocations;
-
+        } catch (LocationNameValidationException e) {
+            throw e;
         } catch (Exception exception) {
             throw new CsvParseException(exception.getMessage());
         }
@@ -291,6 +278,51 @@ public class LocationService {
         return locationRepository.findAllByNameStartingWithIgnoreCase(prefix).stream()
             .map(Location::getLocationId)
             .toList();
+    }
+
+    private void validateLocationName(List<LocationCsv> locationCsvList) {
+        checkLocationNameDuplication(locationCsvList);
+        locationCsvList.forEach(inputLocation -> {
+            try {
+                validationService.containsHtmlTag(inputLocation.getLocationName(),
+                        inputLocation.getWelshLocationName());
+            } catch (ContainsForbiddenValuesException e) {
+                String message = String.format("Failed to upload locations. The location name '%s' or Welsh location "
+                        + "name '%s' contains a forbidden character", inputLocation.getLocationName(),
+                        inputLocation.getWelshLocationName());
+                log.error(writeLog(message));
+                throw new LocationNameValidationException(message);
+            }
+        });
+    }
+
+    private void checkLocationNameDuplication(List<LocationCsv> locationCsvList) {
+        List<Location> allLocations = locationRepository.findAll();
+        Set<String> duplicatedLocationNames = locationCsvList.stream()
+                .filter(inputLocation -> allLocations.stream().anyMatch(storedLocation ->
+                        inputLocation.getLocationName().equals(storedLocation.getName())
+                                && inputLocation.getUniqueId() != storedLocation.getLocationId()))
+                .map(inputLocation -> inputLocation.getLocationName())
+                .collect(Collectors.toSet());
+
+        Set<String> duplicatedWelshLocationNames = locationCsvList.stream()
+                .filter(inputLocation -> allLocations.stream().anyMatch(storedLocation ->
+                        inputLocation.getWelshLocationName().equals(storedLocation.getWelshName())
+                                && inputLocation.getUniqueId() != storedLocation.getLocationId()))
+                .map(inputLocation -> inputLocation.getWelshLocationName())
+                .collect(Collectors.toSet());
+
+        if (!duplicatedLocationNames.isEmpty()) {
+            String message = String.format("Failed to upload locations. Location name(s) %s already exist",
+                    duplicatedLocationNames.stream().collect(Collectors.joining(", ")));
+            log.error(writeLog(message));
+            throw new LocationNameValidationException(message);
+        } else if (!duplicatedWelshLocationNames.isEmpty()) {
+            String message = String.format("Failed to upload locations. Welsh location name(s) %s already exist",
+                    duplicatedWelshLocationNames.stream().collect(Collectors.joining(", ")));
+            log.error(writeLog(message));
+            throw new LocationNameValidationException(message);
+        }
     }
 
     private void sendEmailToAllSystemAdmins(String requesterEmail, ActionResult actionResult,
