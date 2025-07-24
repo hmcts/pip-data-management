@@ -8,7 +8,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 import org.testcontainers.shaded.org.apache.commons.io.IOUtils;
@@ -603,7 +602,7 @@ class LocationServiceTest {
 
     @Test
     void testCreateLocationWithExistingLocationName() {
-        when(locationRepository.save(any())).thenThrow(DataIntegrityViolationException.class);
+        when(locationRepository.findAll()).thenReturn(List.of(locationFirstExample));
 
         assertThatThrownBy(() -> locationService.createLocation(LOCATION_ID, LOCATION_NAME2))
             .as(CREATE_LOCATION_MESSAGE)
