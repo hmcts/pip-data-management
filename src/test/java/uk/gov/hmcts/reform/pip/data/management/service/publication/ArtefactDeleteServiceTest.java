@@ -380,9 +380,9 @@ class ArtefactDeleteServiceTest {
                 .thenReturn(Optional.of(location));
             when(accountManagementService.getUserById(any()))
                 .thenReturn(piUser);
-            when(accountManagementService.getAllAccounts("PI_AAD", "SYSTEM_ADMIN"))
+            when(accountManagementService.getAllAccounts("PI_AAD", "SYSTEM_ADMIN", userId))
                 .thenReturn(List.of(EMAIL_ADDRESS));
-            when(accountManagementService.getAllAccounts("SSO", "SYSTEM_ADMIN"))
+            when(accountManagementService.getAllAccounts("SSO", "SYSTEM_ADMIN", userId))
                 .thenReturn(List.of(SSO_EMAIL));
 
             List<String> systemAdminEmails = List.of(EMAIL_ADDRESS, SSO_EMAIL);
@@ -439,7 +439,7 @@ class ArtefactDeleteServiceTest {
             .thenReturn(Optional.of(location));
         when(accountManagementService.getUserById(userId))
             .thenReturn(piUser);
-        when(accountManagementService.getAllAccounts(any(), any()))
+        when(accountManagementService.getAllAccounts(any(), any(), any()))
             .thenThrow(JsonProcessingException.class);
 
         assertThrows(JsonProcessingException.class, () ->

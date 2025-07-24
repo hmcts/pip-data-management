@@ -948,7 +948,7 @@ class LocationApiTest extends IntegrationTestBase {
     @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})
     void testDeleteLocation() throws Exception {
         when(accountManagementService.getUserById(SYSTEM_ADMIN_ID)).thenReturn(piUser);
-        when(accountManagementService.getAllAccounts(anyString(), eq(SYSTEM_ADMIN.toString())))
+        when(accountManagementService.getAllAccounts(anyString(), eq(SYSTEM_ADMIN.toString()), eq(SYSTEM_ADMIN_ID)))
             .thenReturn(List.of(EMAIL));
         when(accountManagementService.findSubscriptionsByLocationId(any()))
             .thenReturn(Collections.emptyList().toString());
