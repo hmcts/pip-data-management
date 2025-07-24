@@ -126,8 +126,6 @@ validations:
     ET_DAILY_LIST: "schemas/et_daily_list.json"
     IAC_DAILY_LIST: "schemas/iac_daily_list.json"
     IAC_DAILY_LIST_ADDITIONAL_CASES: "schemas/iac_daily_list.json"
-    CARE_STANDARDS_LIST: "schemas/care_standards_list.json"
-    PRIMARY_HEALTH_LIST: "schemas/primary_health_list.json"
     CST_WEEKLY_HEARING_LIST: "schemas/non-strategic/cst_weekly_hearing_list.json"
     PHT_WEEKLY_HEARING_LIST: "schemas/non-strategic/pht_weekly_hearing_list.json"
     GRC_WEEKLY_HEARING_LIST: "schemas/non-strategic/grc_weekly_hearing_list.json"
@@ -190,6 +188,8 @@ validations:
     BRISTOL_AND_CARDIFF_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST: "schemas/non-strategic/administrative_court_daily_cause_list.json"
     MANCHESTER_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST: "schemas/non-strategic/administrative_court_daily_cause_list.json"
     LEEDS_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST: "schemas/non-strategic/administrative_court_daily_cause_list.json"
+    SEND_DAILY_HEARING_LIST: "schemas/non-strategic/send_daily_hearing_list.json"
+    CIC_WEEKLY_HEARING_LIST: "schemas/non-strategic/cic_weekly_hearing_list.json"
 springdoc:
   swagger-ui:
     path: /swagger-ui/

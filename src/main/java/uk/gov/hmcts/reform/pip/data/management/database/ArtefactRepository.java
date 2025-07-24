@@ -106,8 +106,9 @@ public interface ArtefactRepository extends JpaRepository<Artefact, Long> {
     @Query("SELECT new uk.gov.hmcts.reform.pip.model.report.PublicationMiData("
         + "artefactId, displayFrom, displayTo, language, provenance, sensitivity, sourceArtefactId, "
         + "supersededCount, type, contentDate, locationId, listType) "
-        + "FROM Artefact")
-    List<PublicationMiData> getMiData();
+        + "FROM Artefact "
+        + "WHERE lastReceivedDate >= :publicationReceivedDate ")
+    List<PublicationMiData> getMiData(@Param("publicationReceivedDate") LocalDateTime publicationReceivedDate);
 
     @Query(value = "SELECT * FROM Artefact "
         + "WHERE display_to >= :curr_date "
