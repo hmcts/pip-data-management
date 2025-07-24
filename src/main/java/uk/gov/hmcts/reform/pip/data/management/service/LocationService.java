@@ -20,6 +20,7 @@ import uk.gov.hmcts.reform.pip.data.management.database.LocationRepository;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ContainsForbiddenValuesException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CreateLocationConflictException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CsvParseException;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.DuplicatedLocationNameException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.LocationNameValidationException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.LocationNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.helpers.TestingSupportLocationHelper;
@@ -183,13 +184,13 @@ public class LocationService {
     }
 
     public String createLocation(Integer locationId, String locationName) {
-        try {
-            locationRepository.save(TestingSupportLocationHelper.createLocation(locationId, locationName));
-        } catch (DataIntegrityViolationException e) {
-            throw new CreateLocationConflictException(String.format(
-                "Location with ID %d not created. The location name '%s' already exists", locationId, locationName)
-            );
+        List<Location> allLocations = locationRepository.findAll();
+        if (allLocations.stream().anyMatch(location -> locationName.equals(location.getName()))) {
+            throw new CreateLocationConflictException(String.format("Location with ID %d not created. The location "
+                    + "name '%s' already exists", locationId, locationName));
         }
+
+        locationRepository.save(TestingSupportLocationHelper.createLocation(locationId, locationName));
         return String.format("Location with ID %s and name %s created successfully", locationId, locationName);
     }
 
