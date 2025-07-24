@@ -300,14 +300,14 @@ public class LocationService {
         Set<String> duplicatedLocationNames = locationCsvList.stream()
                 .filter(inputLocation -> allLocations.stream().anyMatch(storedLocation ->
                         inputLocation.getLocationName().equals(storedLocation.getName())
-                                && inputLocation.getUniqueId() != storedLocation.getLocationId()))
+                                && !inputLocation.getUniqueId().equals(storedLocation.getLocationId())))
                 .map(inputLocation -> inputLocation.getLocationName())
                 .collect(Collectors.toSet());
 
         Set<String> duplicatedWelshLocationNames = locationCsvList.stream()
                 .filter(inputLocation -> allLocations.stream().anyMatch(storedLocation ->
                         inputLocation.getWelshLocationName().equals(storedLocation.getWelshName())
-                                && inputLocation.getUniqueId() != storedLocation.getLocationId()))
+                                && !inputLocation.getUniqueId().equals(storedLocation.getLocationId())))
                 .map(inputLocation -> inputLocation.getWelshLocationName())
                 .collect(Collectors.toSet());
 
