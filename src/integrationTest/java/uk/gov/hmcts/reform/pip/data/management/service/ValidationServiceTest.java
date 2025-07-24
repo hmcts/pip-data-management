@@ -15,6 +15,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ContainsForbiddenValuesException;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.EmptyRequiredHeaderException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.FlatFileException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.HeaderValidationException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.PayloadValidationException;
@@ -44,6 +45,7 @@ import static org.mockito.Mockito.verify;
 
 @ActiveProfiles("integration-basic")
 @SpringBootTest
+@SuppressWarnings("PMD.ExcessiveImports")
 class ValidationServiceTest extends IntegrationBasicTestBase {
 
     @MockitoBean
@@ -220,6 +222,21 @@ class ValidationServiceTest extends IntegrationBasicTestBase {
             validationService.validateHeaders(headerGroup).getDisplayTo(),
             "The date to header should remain null"
         );
+    }
+
+    @Test
+    void testValidationOfArtefactTypeListWhenLisTypeNotProvided() {
+        headerGroup.setType(ArtefactType.LIST);
+        headerGroup.setListType(null);
+
+        EmptyRequiredHeaderException thrown = assertThrows(
+            EmptyRequiredHeaderException.class,
+            () -> validationService.validateHeaders(headerGroup, true),
+            "Expected exception when listType is null for LIST type"
+        );
+
+        assertEquals("x-list-type is mandatory however an empty value is provided",
+                     thrown.getMessage(), "x-list-type should be provided");
     }
 
     @Test

@@ -60,6 +60,7 @@ import static org.junit.Assert.fail;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -124,6 +125,7 @@ class PublicationTest extends IntegrationTestBase {
 
     private static String payload = "payload";
     private static MockMultipartFile file;
+    private static MockMultipartFile htmlFile;
 
     @Autowired
     private MockMvc mockMvc;
@@ -132,6 +134,10 @@ class PublicationTest extends IntegrationTestBase {
     public void setup() throws Exception {
         file = new MockMultipartFile("file", "test.pdf",
                                      MediaType.APPLICATION_PDF_VALUE, "test content".getBytes(
+            StandardCharsets.UTF_8)
+        );
+        htmlFile = new MockMultipartFile("file", "test.html",
+                                     MediaType.TEXT_HTML_VALUE, "test content".getBytes(
             StandardCharsets.UTF_8)
         );
 
@@ -2050,5 +2056,68 @@ class PublicationTest extends IntegrationTestBase {
 
             assertTrue(artefact.getSearch().isEmpty(), "Search has been generated when file size is too big");
         }
+    }
+
+    @Test
+    void uploadHtmlToS3Bucket() throws Exception {
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
+        mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(PUBLICATION_URL).file(htmlFile);
+
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.TYPE_HEADER, ArtefactType.LCSU)
+            .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
+            .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
+            .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
+            .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
+            .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO)
+            .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
+            .header(PublicationConfiguration.LIST_TYPE, LIST_TYPE)
+            .header(PublicationConfiguration.COURT_ID, COURT_ID)
+            .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
+            .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
+            .contentType(MediaType.MULTIPART_FORM_DATA);
+
+        MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
+            .andExpect(status().isCreated()).andReturn();
+
+        assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
+
+        Artefact artefact = OBJECT_MAPPER.readValue(
+            response.getResponse().getContentAsString(), Artefact.class);
+
+        assertNull(artefact.getArtefactId(), ARTEFACT_ID_POPULATED_MESSAGE);
+        assertEquals(
+            SOURCE_ARTEFACT_ID, artefact.getSourceArtefactId(), "Source artefact ID "
+            + "does not match input source artefact id");
+        assertEquals(ArtefactType.LCSU, artefact.getType(), "Artefact type does not match input artefact type");
+        assertEquals(DISPLAY_FROM, artefact.getDisplayFrom(), "Display from does not match input display from");
+        assertEquals(DISPLAY_TO, artefact.getDisplayTo(), "Display to does not match input display to");
+        assertEquals(PROVENANCE, artefact.getProvenance(), "Provenance does not match input provenance");
+        assertEquals(LANGUAGE, artefact.getLanguage(), "Language does not match input language");
+        assertEquals(SENSITIVITY, artefact.getSensitivity(), "Sensitivity does not match input sensitivity");
+        assertTrue(artefact.getIsFlatFile(), "Artefact does not have correct value for isFlatFile");
+
+    }
+
+    @Test
+    void failedPublicationWhenTypeIsListAndListTypeNotDefined() throws Exception {
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
+        mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
+
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.TYPE_HEADER, ArtefactType.LIST)
+            .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
+            .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
+            .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
+            .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
+            .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO)
+            .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
+            .header(PublicationConfiguration.COURT_ID, COURT_ID)
+            .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
+            .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
+            .contentType(MediaType.MULTIPART_FORM_DATA);
+
+        MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
+            .andExpect(status().isBadRequest()).andReturn();
+
+        assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
     }
 }

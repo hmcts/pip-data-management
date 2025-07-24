@@ -13,7 +13,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientException;
-import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.FileProcessingException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.FileUploadException;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.NoMatchArtefact;
 import uk.gov.hmcts.reform.pip.model.system.admin.ActionResult;
@@ -93,12 +92,9 @@ public class PublicationServicesService {
                 .retrieve()
                 .bodyToMono(String.class)
                 .block();
-        } catch (WebClientException ex) {
+        } catch (WebClientException | IOException ex) {
             log.error("File upload failed: {}", ex.getMessage());
             throw new FileUploadException("Failed to upload file");
-        } catch (IOException ex) {
-            log.error("File processing error: {}", ex.getMessage());
-            throw new FileProcessingException("File processing failed");
         }
     }
 
