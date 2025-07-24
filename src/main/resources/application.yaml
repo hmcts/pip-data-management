@@ -158,7 +158,6 @@ validations:
     SSCS_NORTH_WEST_DAILY_HEARING_LIST: "schemas/non-strategic/sscs_daily_hearing_list.json"
     SSCS_LONDON_DAILY_HEARING_LIST: "schemas/non-strategic/sscs_daily_hearing_list.json"
     LONDON_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST: "schemas/non-strategic/london_administrative_court_daily_cause_list.json"
-    PLANNING_COURT_DAILY_CAUSE_LIST: "schemas/non-strategic/planning_court_daily_cause_list.json"
     COUNTY_COURT_LONDON_CIVIL_DAILY_CAUSE_LIST: "schemas/non-strategic/county_court_london_civil_daily_cause_list.json"
     CIVIL_COURTS_RCJ_DAILY_CAUSE_LIST: "schemas/non-strategic/civil_courts_rcj_daily_cause_list.json"
     COURT_OF_APPEAL_CRIMINAL_DAILY_CAUSE_LIST: "schemas/non-strategic/court_of_appeal_criminal_daily_cause_list.json"
