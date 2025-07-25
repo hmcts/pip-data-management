@@ -14,9 +14,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.HeaderGroup;
 import uk.gov.hmcts.reform.pip.data.management.service.ExcelConversionService;
+import uk.gov.hmcts.reform.pip.data.management.service.PublicationServicesService;
 import uk.gov.hmcts.reform.pip.data.management.service.ValidationService;
 import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationCreationRunner;
 import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationCreationService;
@@ -39,9 +41,12 @@ import java.util.concurrent.ConcurrentHashMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -61,6 +66,7 @@ class PublicationControllerTest {
     private static final String PROVENANCE = "provenance";
     private static final Sensitivity SENSITIVITY = Sensitivity.PUBLIC;
     private static final ArtefactType ARTEFACT_TYPE = ArtefactType.LIST;
+    private static final ArtefactType ARTEFACT_TYPE_LCSU = ArtefactType.LCSU;
     private static final ListType LIST_TYPE = ListType.CIVIL_DAILY_CAUSE_LIST;
     private static final String LOCATION_ID = "123";
     private static final LocalDateTime CONTENT_DATE = LocalDateTime.now();
@@ -81,7 +87,9 @@ class PublicationControllerTest {
     private Artefact artefact;
     private Artefact artefactWithId;
     private Artefact artefactWithNoMatchLocationId;
+    private Artefact artefactWithoutId;
     private HeaderGroup headers;
+    private HeaderGroup lcsuHeaders;
 
     @Mock
     private PublicationCreationService publicationCreationService;
@@ -101,6 +109,9 @@ class PublicationControllerTest {
     @Mock
     private ExcelConversionService excelConversionService;
 
+    @Mock
+    private PublicationServicesService publicationServicesService;
+
     @InjectMocks
     private PublicationController publicationController;
 
@@ -108,6 +119,9 @@ class PublicationControllerTest {
     void setup() {
         headers = new HeaderGroup(PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE, SENSITIVITY, LANGUAGE,
                                   DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, LOCATION_ID, CONTENT_DATE
+        );
+        lcsuHeaders = new HeaderGroup(PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE_LCSU, SENSITIVITY, LANGUAGE,
+                                      DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, LOCATION_ID, CONTENT_DATE
         );
         artefact = Artefact.builder()
             .sourceArtefactId(SOURCE_ARTEFACT_ID)
@@ -155,6 +169,22 @@ class PublicationControllerTest {
             .contentDate(CONTENT_DATE)
             .search(new ConcurrentHashMap<>())
             .payloadSize(PAYLOAD_SIZE)
+            .build();
+
+        artefactWithoutId = Artefact.builder()
+            .sourceArtefactId(SOURCE_ARTEFACT_ID)
+            .displayFrom(DISPLAY_FROM)
+            .displayTo(DISPLAY_TO)
+            .language(LANGUAGE)
+            .provenance(PROVENANCE)
+            .sensitivity(SENSITIVITY)
+            .type(ARTEFACT_TYPE_LCSU)
+            .listType(LIST_TYPE)
+            .locationId(LOCATION_ID)
+            .contentDate(CONTENT_DATE)
+            .search(new ConcurrentHashMap<>())
+            .payloadSize(PAYLOAD_SIZE)
+            .isFlatFile(true)
             .build();
     }
 
@@ -294,7 +324,7 @@ class PublicationControllerTest {
         artefactWithId.setSearch(search);
         artefactWithId.setPayloadSize(0f);
 
-        when(validationService.validateHeaders(any())).thenReturn(headers);
+        when(validationService.validateHeaders(any(), anyBoolean())).thenReturn(headers);
         when(publicationCreationRunner.run(artefact, FILE)).thenReturn(artefactWithId);
 
         ResponseEntity<Artefact> responseEntity = publicationController.uploadPublication(
@@ -319,7 +349,7 @@ class PublicationControllerTest {
         artefactWithNoMatchLocationId.setSearch(search);
         artefactWithNoMatchLocationId.setPayloadSize(0f);
 
-        when(validationService.validateHeaders(any())).thenReturn(headers);
+        when(validationService.validateHeaders(any(), anyBoolean())).thenReturn(headers);
         when(publicationCreationRunner.run(artefact, FILE)).thenReturn(artefactWithNoMatchLocationId);
 
         ResponseEntity<Artefact> responseEntity = publicationController.uploadPublication(
@@ -372,6 +402,66 @@ class PublicationControllerTest {
 
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode(), STATUS_CODE_MATCH);
         assertEquals(artefactWithNoMatchLocationId, responseEntity.getBody(), ARTEFACT_MATCH_MESSAGE);
+    }
+
+    @Test
+    void testUploadHtmlFileToS3BucketSuccess() {
+        artefactWithoutId.setSearch(null);
+        artefactWithoutId.setIsFlatFile(true);
+        artefactWithoutId.setPayloadSize(0f);
+        artefactWithoutId.setType(ArtefactType.LCSU);
+
+        when(validationService.validateHeaders(any(), anyBoolean())).thenReturn(lcsuHeaders);
+        when(publicationServicesService.uploadHtmlFileToAwsS3Bucket(any())).thenReturn(any());
+
+        ResponseEntity<Artefact> responseEntity = publicationController.uploadPublication(
+            PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE_LCSU,
+            SENSITIVITY, LANGUAGE, DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, LOCATION_ID, CONTENT_DATE, TEST_STRING, FILE
+        );
+
+        assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode(), STATUS_CODE_MATCH);
+        assertEquals(artefactWithoutId, responseEntity.getBody(), ARTEFACT_MATCH_MESSAGE);
+    }
+
+    @Test
+    void testUploadHtmlFileToS3BucketFailWebClientException() {
+        when(validationService.validateHeaders(any(), anyBoolean())).thenReturn(lcsuHeaders);
+        WebClientResponseException webClientException =
+            new WebClientResponseException("Failed to upload file",
+                                           500, "Internal Server Error", null, null, null);
+
+        doThrow(webClientException).when(publicationServicesService).uploadHtmlFileToAwsS3Bucket(any());
+
+        try {
+            publicationController.uploadPublication(
+                PROVENANCE, SOURCE_ARTEFACT_ID, ArtefactType.LCSU,
+                SENSITIVITY, LANGUAGE, DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, LOCATION_ID, CONTENT_DATE, TEST_STRING, FILE
+            );
+            fail("Expected RuntimeException not thrown");
+        } catch (RuntimeException ex) {
+            assertTrue(ex.getMessage().contains("Failed to upload file"),
+                       "Exception message does not match expected message");
+        }
+    }
+
+    @Test
+    void testUploadHtmlFileToS3BucketFailIoException() {
+        when(validationService.validateHeaders(any(), anyBoolean())).thenReturn(lcsuHeaders);
+        IOException ioException = new IOException("File processing error");
+
+        doThrow(new RuntimeException("File processing failed", ioException))
+            .when(publicationServicesService).uploadHtmlFileToAwsS3Bucket(any());
+
+        try {
+            publicationController.uploadPublication(
+                PROVENANCE, SOURCE_ARTEFACT_ID, ArtefactType.LCSU,
+                SENSITIVITY, LANGUAGE, DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, LOCATION_ID, CONTENT_DATE, TEST_STRING, FILE
+            );
+            fail("Expected RuntimeException not thrown");
+        } catch (RuntimeException ex) {
+            assertTrue(ex.getMessage().contains("File processing failed"),
+                       "Exception message does not match expected message");
+        }
     }
 
     @Test

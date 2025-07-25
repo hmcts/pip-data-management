@@ -1154,7 +1154,7 @@ class PublicationTest extends PublicationIntegrationTestBase {
         Artefact artefact = OBJECT_MAPPER.readValue(
             response.getResponse().getContentAsString(), Artefact.class);
 
-        assertNull(artefact.getArtefactId(), ARTEFACT_ID_POPULATED_MESSAGE);
+        assertNull(artefact.getArtefactId(), "Artefact ID should be null for LCSU artefact");
         assertEquals(
             SOURCE_ARTEFACT_ID, artefact.getSourceArtefactId(), "Source artefact ID "
             + "does not match input source artefact id");
