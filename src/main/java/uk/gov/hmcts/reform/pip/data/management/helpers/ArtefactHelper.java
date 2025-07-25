@@ -3,7 +3,6 @@ package uk.gov.hmcts.reform.pip.data.management.helpers;
 public final class ArtefactHelper {
 
     private ArtefactHelper() {
-
     }
 
     /**

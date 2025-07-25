@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import uk.gov.hmcts.reform.pip.data.management.service.LocationService;
-import uk.gov.hmcts.reform.pip.data.management.service.publication.ArtefactDeleteService;
+import uk.gov.hmcts.reform.pip.data.management.service.location.LocationService;
+import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationLocationService;
 import uk.gov.hmcts.reform.pip.model.authentication.roles.IsAdmin;
 
 @RestController
@@ -32,14 +32,14 @@ public class TestingSupportController {
     private static final String OK_CODE = "200";
     private static final String CREATED_CODE = "201";
 
-    private final ArtefactDeleteService artefactDeleteService;
-
     private final LocationService locationService;
+    private final PublicationLocationService publicationLocationService;
 
     @Autowired
-    public TestingSupportController(ArtefactDeleteService artefactDeleteService, LocationService locationService) {
-        this.artefactDeleteService = artefactDeleteService;
+    public TestingSupportController(LocationService locationService,
+                                    PublicationLocationService publicationLocationService) {
         this.locationService = locationService;
+        this.publicationLocationService = publicationLocationService;
     }
 
     @ApiResponse(responseCode = CREATED_CODE,
@@ -67,6 +67,8 @@ public class TestingSupportController {
     @DeleteMapping("publication/{locationNamePrefix}")
     @Transactional
     public ResponseEntity<String> deletePublicationsWithLocationNamePrefix(@PathVariable String locationNamePrefix) {
-        return ResponseEntity.ok(artefactDeleteService.deleteAllArtefactsWithLocationNamePrefix(locationNamePrefix));
+        return ResponseEntity.ok(
+            publicationLocationService.deleteAllArtefactsWithLocationNamePrefix(locationNamePrefix)
+        );
     }
 }
