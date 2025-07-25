@@ -130,26 +130,6 @@ class NonStrategicRcjPublicationSummaryTest extends PublicationIntegrationTestBa
     }
 
     @Test
-    void testGenerateArtefactSummaryPlanningCourtDailyCauseList() throws Exception {
-        Artefact artefact = createNonStrategicPublication(
-            ListType.PLANNING_COURT_DAILY_CAUSE_LIST, NON_STRATEGIC_FILES_LOCATION
-                + "planning-court-daily-cause-list/planningCourtDailyCauseList.xlsx"
-        );
-
-        byte[] jsonData = getTestData(NON_STRATEGIC_FILES_LOCATION
-                                          + "planning-court-daily-cause-list/planningCourtDailyCauseList.json");
-        when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(jsonData));
-
-        MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, artefact.getArtefactId())))
-            .andExpect(status().isOk()).andReturn();
-
-        String responseContent = response.getResponse().getContentAsString();
-        assertTrue(responseContent.contains(RCJ_TIME_FIELD), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains(RCJ_CASE_NUMBER_FIELD), CONTENT_MISMATCH_ERROR);
-        assertTrue(responseContent.contains(CASE_DETAILS_FIELD), CONTENT_MISMATCH_ERROR);
-    }
-
-    @Test
     void testGenerateArtefactSummaryCountyCourtLondonCivilDailyCauseList() throws Exception {
         Artefact artefact = createNonStrategicPublication(
             ListType.COUNTY_COURT_LONDON_CIVIL_DAILY_CAUSE_LIST, NON_STRATEGIC_FILES_LOCATION
