@@ -50,10 +50,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
-import static uk.gov.hmcts.reform.pip.model.account.Roles.SYSTEM_ADMIN;
 
 /**
  * Service to handle the retrieval and filtering of locations.
@@ -328,15 +326,6 @@ public class LocationService {
             log.error(writeLog(message));
             throw new LocationNameValidationException(message);
         }
-    }
-
-    private void sendEmailToAllSystemAdmins(String requesterEmail, ActionResult actionResult,
-                                            String additionalDetails) throws JsonProcessingException {
-        List<String> systemAdminsAad = accountManagementService.getAllAccounts("PI_AAD", SYSTEM_ADMIN.toString());
-        List<String> systemAdminsSso = accountManagementService.getAllAccounts("SSO", SYSTEM_ADMIN.toString());
-        List<String> systemAdmins = Stream.concat(systemAdminsAad.stream(), systemAdminsSso.stream()).toList();
-        publicationService.sendSystemAdminEmail(systemAdmins, requesterEmail, actionResult, additionalDetails,
-                                                ChangeType.DELETE_LOCATION);
     }
 
     private LocationDeletion checkActiveArtefactForLocation(Location location, String requesterEmail)
