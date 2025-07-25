@@ -49,7 +49,7 @@ class LocationTest extends FunctionalTestBase {
     private static final String BASE_LOCATIONS_URL = "/locations";
     private static final String UPLOAD_LOCATIONS_URL = BASE_LOCATIONS_URL + "/upload";
     private static final String GET_LOCATION_BY_ID_URL = BASE_LOCATIONS_URL + "/" + TEST_LOCATION_ID_ONE;
-    private static final String GET_LOCATION_BY_NAME_URL = BASE_LOCATIONS_URL + "/name" + TEST_LOCATION_NAME_ONE
+    private static final String GET_LOCATION_BY_NAME_URL = BASE_LOCATIONS_URL + "/name/" + TEST_LOCATION_NAME_ONE
         + "/language/ENGLISH";
     private static final String GET_LOCATION_BY_NAME_V2_URL = BASE_LOCATIONS_URL + "/name";
     private static final String GET_LOCATION_BY_REGION_AND_JURISDICTION_URL = BASE_LOCATIONS_URL + "/filter";
