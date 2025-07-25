@@ -17,6 +17,7 @@ import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ExcelCon
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.FileSizeLimitException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.FlatFileException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.HeaderValidationException;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.LocationNameValidationException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.NotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.PayloadValidationException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ProcessingException;
@@ -144,10 +145,25 @@ public class GlobalExceptionHandler {
             .body(generateExceptionResponse(ex.getMessage()));
     }
 
+    @ExceptionHandler(LocationNameValidationException.class)
+    public ResponseEntity<ExceptionResponse> handle(LocationNameValidationException ex) {
+        log.error(writeLog("400, " + ex.getMessage()));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body(generateExceptionResponseWithUiError(ex.getMessage()));
+    }
+
     private ExceptionResponse generateExceptionResponse(String message) {
         ExceptionResponse exceptionResponse = new ExceptionResponse();
         exceptionResponse.setMessage(message);
         exceptionResponse.setTimestamp(LocalDateTime.now());
+        return exceptionResponse;
+    }
+
+    private ExceptionResponse generateExceptionResponseWithUiError(String message) {
+        UiExceptionResponse exceptionResponse = new UiExceptionResponse();
+        exceptionResponse.setMessage(message);
+        exceptionResponse.setTimestamp(LocalDateTime.now());
+        exceptionResponse.setUiError(true);
         return exceptionResponse;
     }
 }
