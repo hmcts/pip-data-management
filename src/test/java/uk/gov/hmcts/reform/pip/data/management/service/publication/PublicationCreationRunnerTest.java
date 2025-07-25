@@ -52,10 +52,10 @@ class PublicationCreationRunnerTest {
     private static final Float PAYLOAD_SIZE_OVER_LIMIT = 110f;
 
     @Mock
-    private PublicationService publicationService;
+    private PublicationCreationService publicationCreationService;
 
     @Mock
-    private ArtefactService artefactService;
+    private PublicationRetrievalService publicationRetrievalService;
 
     @Mock
     JsonExtractor jsonExtractor;
@@ -67,15 +67,17 @@ class PublicationCreationRunnerTest {
 
     @BeforeEach
     void setup() {
-        lenient().when(artefactService.payloadWithinJsonSearchLimit(PAYLOAD_SIZE_WITHIN_LIMIT)).thenReturn(true);
-        lenient().when(artefactService.payloadWithinJsonSearchLimit(PAYLOAD_SIZE_OVER_LIMIT)).thenReturn(false);
+        lenient().when(publicationRetrievalService.payloadWithinJsonSearchLimit(PAYLOAD_SIZE_WITHIN_LIMIT))
+            .thenReturn(true);
+        lenient().when(publicationRetrievalService.payloadWithinJsonSearchLimit(PAYLOAD_SIZE_OVER_LIMIT))
+            .thenReturn(false);
     }
 
     @Test
     void testRunMethodForJsonPublication() {
         Artefact artefact = ArtefactConstantTestHelper.buildArtefact();
         artefact.setPayloadSize(PAYLOAD_SIZE_WITHIN_LIMIT);
-        when(publicationService.createPublication(artefact, PAYLOAD)).thenReturn(artefact);
+        when(publicationCreationService.createPublication(artefact, PAYLOAD)).thenReturn(artefact);
         when(jsonExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
 
         Artefact returnedArtefact = publicationCreationRunner.run(artefact, PAYLOAD, true);
@@ -101,11 +103,11 @@ class PublicationCreationRunnerTest {
     void testRunMethodForJsonPublicationWithoutExtractingSearchTerms() {
         Artefact artefact = ArtefactConstantTestHelper.buildArtefact();
         artefact.setPayloadSize(PAYLOAD_SIZE_WITHIN_LIMIT);
-        when(publicationService.createPublication(artefact, PAYLOAD)).thenReturn(artefact);
+        when(publicationCreationService.createPublication(artefact, PAYLOAD)).thenReturn(artefact);
 
         Artefact returnedArtefact = publicationCreationRunner.run(artefact, PAYLOAD, false);
 
-        verify(publicationService).applyInternalLocationId(returnedArtefact);
+        verify(publicationCreationService).applyInternalLocationId(returnedArtefact);
         verify(jsonExtractor, never()).extractSearchTerms(PAYLOAD);
 
         SoftAssertions softly = new SoftAssertions();
@@ -125,7 +127,8 @@ class PublicationCreationRunnerTest {
     void testRunMethodForJsonPublicationWithCannotAcquireLockException() {
         Artefact artefact = ArtefactConstantTestHelper.buildArtefact();
         artefact.setPayloadSize(PAYLOAD_SIZE_WITHIN_LIMIT);
-        doThrow(CannotAcquireLockException.class).when(publicationService).createPublication(artefact, PAYLOAD);
+        doThrow(CannotAcquireLockException.class).when(publicationCreationService)
+            .createPublication(artefact, PAYLOAD);
         when(jsonExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
 
         assertThatThrownBy(() -> publicationCreationRunner.run(artefact, PAYLOAD, true))
@@ -142,7 +145,8 @@ class PublicationCreationRunnerTest {
     void testRunMethodForJsonPublicationWithDataIntegrityViolationException() {
         Artefact artefact = ArtefactConstantTestHelper.buildArtefact();
         artefact.setPayloadSize(PAYLOAD_SIZE_WITHIN_LIMIT);
-        doThrow(DataIntegrityViolationException.class).when(publicationService).createPublication(artefact, PAYLOAD);
+        doThrow(DataIntegrityViolationException.class).when(publicationCreationService)
+            .createPublication(artefact, PAYLOAD);
         when(jsonExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
 
         assertThatThrownBy(() -> publicationCreationRunner.run(artefact, PAYLOAD, true))
@@ -159,7 +163,7 @@ class PublicationCreationRunnerTest {
     void testSearchValuesNotGeneratedFOrJsonPublicationWhenPayloadOverLimit() {
         Artefact artefact = ArtefactConstantTestHelper.buildArtefact();
         artefact.setPayloadSize(PAYLOAD_SIZE_OVER_LIMIT);
-        when(publicationService.createPublication(artefact, PAYLOAD)).thenReturn(artefact);
+        when(publicationCreationService.createPublication(artefact, PAYLOAD)).thenReturn(artefact);
 
         Artefact returnedArtefact = publicationCreationRunner.run(artefact, PAYLOAD, true);
 
@@ -180,7 +184,7 @@ class PublicationCreationRunnerTest {
     @Test
     void testRuMethodForFlatFilePublication() {
         Artefact artefact = ArtefactConstantTestHelper.buildSjpPublicArtefact();
-        when(publicationService.createPublication(artefact, FILE)).thenReturn(artefact);
+        when(publicationCreationService.createPublication(artefact, FILE)).thenReturn(artefact);
 
         Artefact returnedArtefact = publicationCreationRunner.run(artefact, FILE);
 
@@ -201,7 +205,7 @@ class PublicationCreationRunnerTest {
     @Test
     void testRuMethodForFlatFilePublicationWithCannotAcquireLockException() {
         Artefact artefact = ArtefactConstantTestHelper.buildArtefact();
-        doThrow(CannotAcquireLockException.class).when(publicationService).createPublication(artefact, FILE);
+        doThrow(CannotAcquireLockException.class).when(publicationCreationService).createPublication(artefact, FILE);
 
         assertThatThrownBy(() -> publicationCreationRunner.run(artefact, FILE))
             .as(EXCEPTION_MESSAGE)
@@ -216,7 +220,8 @@ class PublicationCreationRunnerTest {
     @Test
     void testRuMethodForFlatFilePublicationWithDataIntegrityViolationException() {
         Artefact artefact = ArtefactConstantTestHelper.buildArtefact();
-        doThrow(DataIntegrityViolationException.class).when(publicationService).createPublication(artefact, FILE);
+        doThrow(DataIntegrityViolationException.class).when(publicationCreationService)
+            .createPublication(artefact, FILE);
 
         assertThatThrownBy(() -> publicationCreationRunner.run(artefact, FILE))
             .as(EXCEPTION_MESSAGE)
