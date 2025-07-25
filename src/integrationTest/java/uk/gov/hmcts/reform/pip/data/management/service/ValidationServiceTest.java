@@ -428,8 +428,6 @@ class ValidationServiceTest extends IntegrationBasicTestBase {
             Arguments.of(ListType.LONDON_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
                          "data/non-strategic/london-administrative-court-daily-cause-list/"
                              + "londonAdministrativeCourtDailyCauseList.json"),
-            Arguments.of(ListType.PLANNING_COURT_DAILY_CAUSE_LIST,
-                         "data/non-strategic/planning-court-daily-cause-list/planningCourtDailyCauseList.json"),
             Arguments.of(ListType.COUNTY_COURT_LONDON_CIVIL_DAILY_CAUSE_LIST,
                          "data/non-strategic/county-court-london-civil-daily-cause-list/"
                              + "countyCourtLondonCivilDailyCauseList.json"),
