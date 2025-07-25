@@ -93,6 +93,7 @@ public class ValidationService {
      *
      * @param headers - a hashmap of all the headers taken in by the endpoint. Importantly, this may contain nulls (i.e.
      *                cannot be replaced with a ConcurrentHashMap.
+     * @param isFlatFile - a boolean parameter which will mention whether publication is flat file or not.
      * @return Map(String, Object) - an amended version of the headers. If changes (i.e. conditional defaults)
      *      are created, ensure the logic affects the headers map within this class.
      */
