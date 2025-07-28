@@ -32,6 +32,7 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
@@ -51,6 +52,7 @@ class PublicationLocationTest extends PublicationIntegrationTestBase {
     private static final String PUBLICATION_URL = "/publication";
     private static final String LOCATION_TYPE_URL = PUBLICATION_URL + "/location-type/";
     private static final String COUNT_ENDPOINT = PUBLICATION_URL + "/count-by-location";
+    private static final String COUNT_BY_LOCATION_URL = PUBLICATION_URL + "/count-by-location";
     private static final String USER_ID = UUID.randomUUID().toString();
     private static final String COURT_ID = "1";
     private static final String USER_ID_HEADER = "x-user-id";
@@ -59,15 +61,26 @@ class PublicationLocationTest extends PublicationIntegrationTestBase {
     private static final LocalDateTime DISPLAY_FROM = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
     private static final LocalDateTime CONTENT_DATE = LocalDateTime.now().toLocalDate().atStartOfDay();
     private static final String ADMIN = "admin";
+    private static final String REQUESTER_ID_HEADER = "x-requester-id";
+    private static final String SYSTEM_ADMIN_ID = UUID.randomUUID().toString();
+
+    private static PiUser piUser;
 
     @BeforeAll
     void setup() throws Exception {
+        piUser = new PiUser();
+        piUser.setUserId(SYSTEM_ADMIN_ID);
+        piUser.setEmail("test@justice.gov.uk");
+        piUser.setRoles(SYSTEM_ADMIN);
+
         try (InputStream csvInputStream = PublicationTest.class.getClassLoader()
             .getResourceAsStream("location/UpdatedCsv.csv")) {
             MockMultipartFile csvFile
                 = new MockMultipartFile("locationList", csvInputStream);
 
+            when(accountManagementService.getUserById(any())).thenReturn(piUser);
             mockMvc.perform(MockMvcRequestBuilders.multipart("/locations/upload").file(csvFile)
+                                .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID)
                                 .with(user(ADMIN)
                                           .authorities(new SimpleGrantedAuthority("APPROLE_api.request.admin"))))
                 .andExpect(status().isOk()).andReturn();
@@ -77,7 +90,9 @@ class PublicationLocationTest extends PublicationIntegrationTestBase {
     @Test
     void testCountByLocationManualUpload() throws Exception {
         createDailyList(Sensitivity.PRIVATE);
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders.get(COUNT_ENDPOINT);
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
+            MockMvcRequestBuilders.get(COUNT_ENDPOINT)
+                .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID);
         MvcResult result = mockMvc.perform(mockHttpServletRequestBuilder)
             .andExpect(status().isOk())
             .andReturn();
@@ -86,7 +101,10 @@ class PublicationLocationTest extends PublicationIntegrationTestBase {
 
     @Test
     void testCountByLocationListAssist() throws Exception {
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders.get(COUNT_ENDPOINT);
+        when(accountManagementService.getUserById(any())).thenReturn(piUser);
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
+            MockMvcRequestBuilders.get(COUNT_ENDPOINT)
+                .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID);
         MvcResult result = mockMvc.perform(mockHttpServletRequestBuilder)
             .andExpect(status().isOk())
             .andReturn();
@@ -120,14 +138,17 @@ class PublicationLocationTest extends PublicationIntegrationTestBase {
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     void testGetAllNoMatchArtefacts() throws Exception {
+        when(accountManagementService.getUserById(any())).thenReturn(piUser);
         Artefact expectedArtefact = createDailyList(Sensitivity.PRIVATE, DISPLAY_FROM.minusMonths(2), DISPLAY_TO,
                                                     CONTENT_DATE, "NoMatch", COURT_ID
         );
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
-            MockMvcRequestBuilders.get("/publication/no-match");
+            MockMvcRequestBuilders.get("/publication/no-match")
+                .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID);
 
-        MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isOk()).andReturn();
+        MvcResult response =
+            mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isOk()).andReturn();
 
         String jsonOutput = response.getResponse().getContentAsString();
         JSONArray jsonArray = new JSONArray(jsonOutput);
@@ -156,13 +177,13 @@ class PublicationLocationTest extends PublicationIntegrationTestBase {
 
         MockHttpServletRequestBuilder preDeleteRequest = MockMvcRequestBuilders
             .get(PUBLICATION_URL + "/" + artefactToDelete.getArtefactId())
-            .header(USER_ID_HEADER, USER_ID);
+            .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID);
 
         mockMvc.perform(preDeleteRequest).andExpect(status().isOk());
 
         MockHttpServletRequestBuilder deleteRequest = MockMvcRequestBuilders
             .delete(PUBLICATION_URL + "/" + COURT_ID + "/deleteArtefacts")
-            .header(USER_ID_HEADER, USER_ID);
+            .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID);
 
         MvcResult deleteResponse = mockMvc.perform(deleteRequest).andExpect(status().isOk()).andReturn();
 
@@ -173,9 +194,10 @@ class PublicationLocationTest extends PublicationIntegrationTestBase {
 
     @Test
     void testDeleteArtefactsByLocationNotFound() throws Exception {
+        when(accountManagementService.getUserById(any())).thenReturn(piUser);
         MockHttpServletRequestBuilder deleteRequest = MockMvcRequestBuilders
             .delete(PUBLICATION_URL + "/" + 11 + "/deleteArtefacts")
-            .header(USER_ID_HEADER, USER_ID);
+            .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID);
 
         MvcResult deleteResponse = mockMvc.perform(deleteRequest).andExpect(status().isNotFound()).andReturn();
 
@@ -189,7 +211,10 @@ class PublicationLocationTest extends PublicationIntegrationTestBase {
     @Test
     @WithMockUser(username = ADMIN, authorities = { "APPROLE_api.request.unknown" })
     void testUnauthorizedCountByLocation() throws Exception {
-        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.get(COUNT_ENDPOINT);
+        when(accountManagementService.getUserById(any())).thenReturn(piUser);
+        MockHttpServletRequestBuilder request =
+            MockMvcRequestBuilders.get(COUNT_BY_LOCATION_URL)
+                .header(REQUESTER_ID_HEADER, USER_ID);
 
         mockMvc.perform(request)
             .andExpect(status().isForbidden())
@@ -199,8 +224,10 @@ class PublicationLocationTest extends PublicationIntegrationTestBase {
     @Test
     @WithMockUser(username = ADMIN, authorities = { "APPROLE_api.request.unknown" })
     void testUnauthorizedGetAllNoMatchArtefacts() throws Exception {
+        when(accountManagementService.getUserById(any())).thenReturn(piUser);
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
-            MockMvcRequestBuilders.get("/publication/no-match");
+            MockMvcRequestBuilders.get("/publication/no-match")
+                .header(REQUESTER_ID_HEADER, USER_ID);
 
         mockMvc.perform(mockHttpServletRequestBuilder)
             .andExpect(status().isForbidden())
@@ -210,9 +237,10 @@ class PublicationLocationTest extends PublicationIntegrationTestBase {
     @Test
     @WithMockUser(username = ADMIN, authorities = { "APPROLE_api.request.unknown" })
     void testDeleteArtefactsByLocationUnauthorized() throws Exception {
+        when(accountManagementService.getUserById(any())).thenReturn(piUser);
         MockHttpServletRequestBuilder deleteRequest = MockMvcRequestBuilders
             .delete("/publication/1/deleteArtefacts")
-            .header(USER_ID_HEADER, "123");
+            .header(REQUESTER_ID_HEADER, USER_ID);
 
         mockMvc.perform(deleteRequest)
             .andExpect(status().isForbidden())

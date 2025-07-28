@@ -25,6 +25,7 @@ import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.ExceptionResponse;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.utils.PublicationIntegrationTestBase;
+import uk.gov.hmcts.reform.pip.model.account.PiUser;
 import uk.gov.hmcts.reform.pip.model.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
@@ -43,8 +44,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static uk.gov.hmcts.reform.pip.model.account.Roles.SYSTEM_ADMIN;
 
 @SpringBootTest(classes = {Application.class, AzureBlobConfigurationTestConfiguration.class},
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -74,18 +78,26 @@ class PublicationUploadTest extends PublicationIntegrationTestBase {
     private static final String SEARCH_KEY_NOT_FOUND = "case-urn";
     private static final String SEARCH_VALUE_1 = "array-value-1";
     private static final String SEARCH_VALUE_2 = "array-value-2";
-    private static final String USER_ID_HEADER = "x-user-id";
 
     private static final String LOCATION_ID_SEARCH_KEY = "location-id";
 
     private static final String VALIDATION_EMPTY_RESPONSE = "Response should contain a Artefact";
     private static final String ARTEFACT_ID_POPULATED_MESSAGE = "Artefact ID should be populated";
+    private static final String REQUESTER_ID_HEADER = "x-requester-id";
+    private static final String SYSTEM_ADMIN_ID = UUID.randomUUID().toString();
 
     private static String payload = "payload";
     private static MockMultipartFile file;
 
+    private static PiUser piUser;
+
     @BeforeAll
     void setup() throws Exception {
+        piUser = new PiUser();
+        piUser.setUserId(SYSTEM_ADMIN_ID);
+        piUser.setEmail("test@justice.gov.uk");
+        piUser.setRoles(SYSTEM_ADMIN);
+
         file = new MockMultipartFile("file", "test.pdf",
                                      MediaType.APPLICATION_PDF_VALUE, "test content".getBytes(
             StandardCharsets.UTF_8)
@@ -101,8 +113,9 @@ class PublicationUploadTest extends PublicationIntegrationTestBase {
             .getResourceAsStream("location/UpdatedCsv.csv")) {
             MockMultipartFile csvFile
                 = new MockMultipartFile("locationList", csvInputStream);
-
+            when(accountManagementService.getUserById(any())).thenReturn(piUser);
             mockMvc.perform(MockMvcRequestBuilders.multipart("/locations/upload").file(csvFile)
+                                .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID)
                                 .with(user("admin")
                                           .authorities(new SimpleGrantedAuthority("APPROLE_api.request.admin"))))
                 .andExpect(status().isOk()).andReturn();
@@ -113,6 +126,7 @@ class PublicationUploadTest extends PublicationIntegrationTestBase {
     @ValueSource(booleans = {true, false})
     @DisplayName("Should create a valid artefact and return the created artefact to the user")
     void creationOfAValidArtefact(boolean isJson) throws Exception {
+        when(accountManagementService.getUserById(any())).thenReturn(piUser);
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
         if (isJson) {
             mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
@@ -130,6 +144,7 @@ class PublicationUploadTest extends PublicationIntegrationTestBase {
             .header(PublicationConfiguration.COURT_ID, COURT_ID)
             .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
+            .header(PublicationConfiguration.REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID)
             .contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
 
         MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
@@ -189,6 +204,7 @@ class PublicationUploadTest extends PublicationIntegrationTestBase {
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
     void creationOfAValidArtefactWithOnlyMandatoryFields(boolean isJson) throws Exception {
+        when(accountManagementService.getUserById(any())).thenReturn(piUser);
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
         if (isJson) {
             mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
@@ -204,7 +220,7 @@ class PublicationUploadTest extends PublicationIntegrationTestBase {
         mockHttpServletRequestBuilder.header(PublicationConfiguration.LIST_TYPE, LIST_TYPE);
         mockHttpServletRequestBuilder.header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE);
         mockHttpServletRequestBuilder.header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE);
-
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID);
         mockHttpServletRequestBuilder.contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
 
         MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
@@ -228,6 +244,7 @@ class PublicationUploadTest extends PublicationIntegrationTestBase {
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
     void testPopulateDefaultDateFrom(boolean isJson) throws Exception {
+        when(accountManagementService.getUserById(any())).thenReturn(piUser);
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
         if (isJson) {
             mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
@@ -243,6 +260,7 @@ class PublicationUploadTest extends PublicationIntegrationTestBase {
         mockHttpServletRequestBuilder.header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE);
         mockHttpServletRequestBuilder.header(PublicationConfiguration.LIST_TYPE, ListType.CIVIL_DAILY_CAUSE_LIST);
         mockHttpServletRequestBuilder.header(PublicationConfiguration.COURT_ID, COURT_ID);
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID);
         mockHttpServletRequestBuilder.contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
         MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
             .andExpect(status().isCreated()).andReturn();
@@ -260,6 +278,7 @@ class PublicationUploadTest extends PublicationIntegrationTestBase {
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
     void testPopulateDefaultSensitivity(boolean isJson) throws Exception {
+        when(accountManagementService.getUserById(any())).thenReturn(piUser);
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
         if (isJson) {
             mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
@@ -275,6 +294,7 @@ class PublicationUploadTest extends PublicationIntegrationTestBase {
         mockHttpServletRequestBuilder.header(PublicationConfiguration.LIST_TYPE, LIST_TYPE);
         mockHttpServletRequestBuilder.header(PublicationConfiguration.COURT_ID, COURT_ID);
         mockHttpServletRequestBuilder.header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE);
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID);
         mockHttpServletRequestBuilder.contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
         MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
             .andExpect(status().isCreated()).andReturn();
@@ -292,6 +312,7 @@ class PublicationUploadTest extends PublicationIntegrationTestBase {
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
     void updatingOfAnArtefactThatAlreadyExists(boolean isJson) throws Exception {
+        when(accountManagementService.getUserById(any())).thenReturn(piUser);
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
         if (isJson) {
             mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
@@ -309,6 +330,7 @@ class PublicationUploadTest extends PublicationIntegrationTestBase {
         mockHttpServletRequestBuilder.header(PublicationConfiguration.COURT_ID, COURT_ID);
         mockHttpServletRequestBuilder.header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE);
         mockHttpServletRequestBuilder.header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE);
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID);
         mockHttpServletRequestBuilder.contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
 
         final MvcResult createResponse =
@@ -330,6 +352,7 @@ class PublicationUploadTest extends PublicationIntegrationTestBase {
         mockHttpServletRequestBuilder.header(PublicationConfiguration.COURT_ID, COURT_ID);
         mockHttpServletRequestBuilder.header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE);
         mockHttpServletRequestBuilder.header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE);
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID);
         mockHttpServletRequestBuilder.contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
 
         final MvcResult updatedResponse = mockMvc.perform(mockHttpServletRequestBuilder).andExpect(
@@ -352,7 +375,7 @@ class PublicationUploadTest extends PublicationIntegrationTestBase {
             + "not contain the new display from");
     }
 
-    @DisplayName("Should throw a 400 bad request when payload is not of JSON through the JSON endpoint")
+    @DisplayName("Should throw a 403 forbidden when payload is not of JSON through the JSON endpoint")
     @Test
     void creationOfAJsonArtefactThatIsNotJson() throws Exception {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
@@ -367,16 +390,18 @@ class PublicationUploadTest extends PublicationIntegrationTestBase {
             .header(PublicationConfiguration.COURT_ID, COURT_ID)
             .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
+            .header(PublicationConfiguration.REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID)
             .content(PAYLOAD_UNKNOWN)
             .contentType(MediaType.APPLICATION_JSON);
 
-        mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isBadRequest()).andReturn();
+        mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isForbidden()).andReturn();
     }
 
     @DisplayName("Check that null date for general_publication still allows us to return the relevant artefact")
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
     void checkStatusUpdatesWithNullDateTo(boolean isJson) throws Exception {
+        when(accountManagementService.getUserById(any())).thenReturn(piUser);
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
 
         if (isJson) {
@@ -395,13 +420,14 @@ class PublicationUploadTest extends PublicationIntegrationTestBase {
             .header(PublicationConfiguration.COURT_ID, COURT_ID)
             .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
+            .header(PublicationConfiguration.REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID)
             .contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
 
         mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 = MockMvcRequestBuilders
             .get(SEARCH_COURT_URL + "/" + COURT_ID)
-            .header(USER_ID_HEADER, USER_ID);
+            .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID);
         MvcResult getResponse = mockMvc.perform(mockHttpServletRequestBuilder1)
             .andExpect(status().isOk())
             .andReturn();
@@ -418,6 +444,7 @@ class PublicationUploadTest extends PublicationIntegrationTestBase {
     @DisplayName("Should not create an invalid artefact")
     @Test
     void testCreationOfInvalidPublication() throws Exception {
+        when(accountManagementService.getUserById(any())).thenReturn(piUser);
         try (InputStream mockFile = this.getClass().getClassLoader()
             .getResourceAsStream("data/civil-daily-cause-list/civilDailyCauseListInvalid.json")) {
             MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
@@ -431,6 +458,7 @@ class PublicationUploadTest extends PublicationIntegrationTestBase {
                 .header(PublicationConfiguration.LIST_TYPE, ListType.CIVIL_DAILY_CAUSE_LIST)
                 .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
                 .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
+                .header(PublicationConfiguration.REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID)
                 .content(mockFile.readAllBytes())
                 .contentType(MediaType.APPLICATION_JSON);
 

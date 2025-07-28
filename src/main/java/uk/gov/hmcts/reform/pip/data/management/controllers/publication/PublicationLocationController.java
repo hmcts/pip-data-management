@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,7 +23,6 @@ import uk.gov.hmcts.reform.pip.data.management.models.location.LocationArtefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.views.ArtefactView;
 import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationLocationService;
-import uk.gov.hmcts.reform.pip.model.authentication.roles.IsAdmin;
 import uk.gov.hmcts.reform.pip.model.location.LocationType;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
@@ -43,6 +43,7 @@ public class PublicationLocationController {
     private static final String FORBIDDEN_CODE = "403";
 
     private static final String BEARER_AUTHENTICATION = "bearerAuth";
+    private static final String REQUESTER_ID_HEADER = "x-requester-id";
 
     private final PublicationLocationService publicationLocationService;
 
@@ -58,9 +59,11 @@ public class PublicationLocationController {
     @Operation(summary = "Return a count of artefacts per location")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/count-by-location")
-    @IsAdmin
     @SecurityRequirement(name = BEARER_AUTHENTICATION)
-    public ResponseEntity<List<LocationArtefact>> countByLocation() {
+    @PreAuthorize("@authorisationService.userCanGetPublicationsPerLocation(#requesterId)")
+    public ResponseEntity<List<LocationArtefact>> countByLocation(
+        @RequestHeader(value = REQUESTER_ID_HEADER, required = false) String requesterId
+    ) {
         return ResponseEntity.ok(publicationLocationService.countArtefactsByLocation());
     }
 
@@ -77,9 +80,11 @@ public class PublicationLocationController {
     @Operation(summary = "Get all no match publications")
     @GetMapping("/no-match")
     @JsonView(ArtefactView.Internal.class)
-    @IsAdmin
     @SecurityRequirement(name = BEARER_AUTHENTICATION)
-    public ResponseEntity<List<Artefact>> getAllNoMatchArtefacts() {
+    @PreAuthorize("@authorisationService.userCanGetAllNoMatchPublications(#requesterId)")
+    public ResponseEntity<List<Artefact>> getAllNoMatchArtefacts(
+        @RequestHeader(REQUESTER_ID_HEADER) String requesterId
+    ) {
         return ResponseEntity.ok(publicationLocationService.findAllNoMatchArtefacts());
     }
 
@@ -89,11 +94,11 @@ public class PublicationLocationController {
     @ApiResponse(responseCode = NOT_FOUND_CODE, description = "No artefact found with the location ID: {locationId}")
     @Operation(summary = "Delete all artefacts for given location from P&I")
     @DeleteMapping("/{locationId}/deleteArtefacts")
-    @IsAdmin
     @SecurityRequirement(name = BEARER_AUTHENTICATION)
+    @PreAuthorize("@authorisationService.userCanDeletePublicationsByLocation(#requesterId)")
     public ResponseEntity<String> deleteArtefactsByLocation(
-        @RequestHeader("x-user-id") String userId,
+        @RequestHeader(REQUESTER_ID_HEADER) String requesterId,
         @PathVariable Integer locationId) throws JsonProcessingException {
-        return ResponseEntity.ok(publicationLocationService.deleteArtefactByLocation(locationId, userId));
+        return ResponseEntity.ok(publicationLocationService.deleteArtefactByLocation(locationId, requesterId));
     }
 }

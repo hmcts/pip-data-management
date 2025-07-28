@@ -23,6 +23,7 @@ import uk.gov.hmcts.reform.pip.data.management.config.AzureBlobConfigurationTest
 import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.utils.PublicationIntegrationTestBase;
+import uk.gov.hmcts.reform.pip.model.account.PiUser;
 import uk.gov.hmcts.reform.pip.model.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
@@ -36,8 +37,11 @@ import java.util.Objects;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static uk.gov.hmcts.reform.pip.model.account.Roles.SYSTEM_ADMIN;
 
 @SpringBootTest(classes = {Application.class, AzureBlobConfigurationTestConfiguration.class},
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -46,6 +50,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
 @WithMockUser(username = "admin", authorities = {"APPROLE_api.request.admin"})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@SuppressWarnings("PMD.ExcessiveImports")
 class PublicationRetrievalSensitivityTest extends PublicationIntegrationTestBase {
     private static final String PUBLICATION_URL = "/publication";
     private static final String SEARCH_COURT_URL = PUBLICATION_URL + "/locationId";
@@ -63,12 +68,21 @@ class PublicationRetrievalSensitivityTest extends PublicationIntegrationTestBase
         .truncatedTo(ChronoUnit.SECONDS);
     private static final String USER_ID_HEADER = "x-user-id";
     private static final String VALIDATION_DISPLAY_FROM = "The expected Display From has not been returned";
+    private static final String REQUESTER_ID_HEADER = "x-requester-id";
+    private static final String SYSTEM_ADMIN_ID = UUID.randomUUID().toString();
 
     private static String payload = "payload";
     private static MockMultipartFile file;
 
+    private static PiUser piUser;
+
     @BeforeAll
     void setup() throws Exception {
+        piUser = new PiUser();
+        piUser.setUserId(SYSTEM_ADMIN_ID);
+        piUser.setEmail("test@justice.gov.uk");
+        piUser.setRoles(SYSTEM_ADMIN);
+
         file = new MockMultipartFile("file", "test.pdf",
                                      MediaType.APPLICATION_PDF_VALUE, "test content".getBytes(
             StandardCharsets.UTF_8)
@@ -84,8 +98,10 @@ class PublicationRetrievalSensitivityTest extends PublicationIntegrationTestBase
             .getResourceAsStream("location/UpdatedCsv.csv")) {
             MockMultipartFile csvFile
                 = new MockMultipartFile("locationList", csvInputStream);
+            when(accountManagementService.getUserById(any())).thenReturn(piUser);
 
             mockMvc.perform(MockMvcRequestBuilders.multipart("/locations/upload").file(csvFile)
+                                .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID)
                                 .with(user("admin")
                                           .authorities(new SimpleGrantedAuthority("APPROLE_api.request.admin"))))
                 .andExpect(status().isOk()).andReturn();
@@ -96,6 +112,7 @@ class PublicationRetrievalSensitivityTest extends PublicationIntegrationTestBase
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
     void verifyThatArtefactsAreReturnedForVerifiedUserWhenPublic(boolean isJson) throws Exception {
+        when(accountManagementService.getUserById(any())).thenReturn(piUser);
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
 
         if (isJson) {
@@ -115,6 +132,7 @@ class PublicationRetrievalSensitivityTest extends PublicationIntegrationTestBase
             .header(PublicationConfiguration.COURT_ID, COURT_ID)
             .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
+            .header(PublicationConfiguration.REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID)
             .contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
         MvcResult createResponse =
             mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isCreated()).andReturn();
@@ -129,7 +147,7 @@ class PublicationRetrievalSensitivityTest extends PublicationIntegrationTestBase
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 = MockMvcRequestBuilders
             .get(SEARCH_COURT_URL + "/" + COURT_ID)
-            .header(USER_ID_HEADER, USER_ID);
+            .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID);
         MvcResult getResponse =
             mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isOk()).andReturn();
 
@@ -147,6 +165,7 @@ class PublicationRetrievalSensitivityTest extends PublicationIntegrationTestBase
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
     void verifyThatArtefactsAreReturnedForUnverifiedUserWhenPublic(boolean isJson) throws Exception {
+        when(accountManagementService.getUserById(any())).thenReturn(piUser);
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
 
         if (isJson) {
@@ -166,6 +185,7 @@ class PublicationRetrievalSensitivityTest extends PublicationIntegrationTestBase
             .header(PublicationConfiguration.COURT_ID, COURT_ID)
             .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
+            .header(PublicationConfiguration.REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID)
             .contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
 
         MvcResult createResponse =
@@ -181,7 +201,7 @@ class PublicationRetrievalSensitivityTest extends PublicationIntegrationTestBase
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 = MockMvcRequestBuilders
             .get(SEARCH_COURT_URL + "/" + COURT_ID)
-            .header(USER_ID_HEADER, USER_ID);
+            .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID);
         MvcResult getResponse =
             mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isOk()).andReturn();
 
@@ -200,6 +220,8 @@ class PublicationRetrievalSensitivityTest extends PublicationIntegrationTestBase
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
     void verifyThatArtefactsAreNotReturnedForUnverifiedUserWhenClassified(boolean isJson) throws Exception {
+        when(accountManagementService.getUserById(any())).thenReturn(piUser);
+
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
 
         if (isJson) {
@@ -219,6 +241,7 @@ class PublicationRetrievalSensitivityTest extends PublicationIntegrationTestBase
             .header(PublicationConfiguration.COURT_ID, COURT_ID)
             .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
+            .header(PublicationConfiguration.REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID)
             .contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
 
         MvcResult createResponse =
@@ -249,6 +272,7 @@ class PublicationRetrievalSensitivityTest extends PublicationIntegrationTestBase
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
     void verifyThatArtefactsAreNotReturnedForUnverifiedUserWhenPrivate(boolean isJson) throws Exception {
+        when(accountManagementService.getUserById(any())).thenReturn(piUser);
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
 
         if (isJson) {
@@ -269,6 +293,7 @@ class PublicationRetrievalSensitivityTest extends PublicationIntegrationTestBase
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
             .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
+            .header(PublicationConfiguration.REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID)
             .contentType(isJson ? MediaType.APPLICATION_JSON : MediaType.MULTIPART_FORM_DATA);
 
         MvcResult createResponse =
@@ -283,7 +308,8 @@ class PublicationRetrievalSensitivityTest extends PublicationIntegrationTestBase
         );
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 = MockMvcRequestBuilders
-            .get(SEARCH_COURT_URL + "/" + COURT_ID);
+            .get(SEARCH_COURT_URL + "/" + COURT_ID)
+            .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID);
         MvcResult getResponse =
             mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isOk()).andReturn();
 

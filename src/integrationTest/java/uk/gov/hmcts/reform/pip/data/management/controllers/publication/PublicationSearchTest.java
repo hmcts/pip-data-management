@@ -18,6 +18,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import uk.gov.hmcts.reform.pip.data.management.Application;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.utils.PublicationIntegrationTestBase;
+import uk.gov.hmcts.reform.pip.model.account.PiUser;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 import uk.gov.hmcts.reform.pip.model.publication.Sensitivity;
 
@@ -28,9 +29,11 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static uk.gov.hmcts.reform.pip.model.account.Roles.SYSTEM_ADMIN;
 
 @SpringBootTest(classes = {Application.class},
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -43,12 +46,10 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
     private static final String PUBLICATION_URL = "/publication";
     private static final String SEARCH_COURT_URL = PUBLICATION_URL + "/locationId";
     private static final String SEARCH_URL = PUBLICATION_URL + "/search";
-    private static final String USER_ID = UUID.randomUUID().toString();
     private static final LocalDateTime DISPLAY_FROM = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
     private static final String COURT_ID = "1";
     private static final LocalDateTime CONTENT_DATE = LocalDateTime.now().toLocalDate().atStartOfDay()
         .truncatedTo(ChronoUnit.SECONDS);
-    private static final String USER_ID_HEADER = "x-user-id";
 
     private static final String TRUE = "true";
     private static final String FALSE = "false";
@@ -64,24 +65,42 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
     private static final String UNAUTHORIZED_USERNAME = "unauthorized_username";
     private static final String UNAUTHORIZED_ROLE = "APPROLE_unknown.role";
     private static final String FORBIDDEN_STATUS_CODE = "Status code does not match forbidden";
+    private static final String REQUESTER_ID_HEADER = "x-requester-id";
+    private static final String SYSTEM_ADMIN_ID = UUID.randomUUID().toString();
+
+    private static PiUser piUser;
 
     @BeforeAll
     public void setup() throws Exception {
+        piUser = new PiUser();
+        piUser.setUserId(SYSTEM_ADMIN_ID);
+        piUser.setEmail("test@justice.gov.uk");
+        piUser.setRoles(SYSTEM_ADMIN);
+
         try (InputStream csvInputStream = PublicationTest.class.getClassLoader()
                 .getResourceAsStream("location/UpdatedCsv.csv")) {
             MockMultipartFile csvFile
                     = new MockMultipartFile("locationList", csvInputStream);
+            when(accountManagementService.getUserById(any())).thenReturn(piUser);
+
             mockMvc.perform(MockMvcRequestBuilders.multipart("/locations/upload").file(csvFile)
+                                .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID)
                             .with(user(ADMIN)
                                     .authorities(new SimpleGrantedAuthority("APPROLE_api.request.admin"))))
                     .andExpect(status().isOk()).andReturn();
         }
+
+        piUser = new PiUser();
+        piUser.setUserId(SYSTEM_ADMIN_ID);
+        piUser.setEmail("test@justice.gov.uk");
+        piUser.setRoles(SYSTEM_ADMIN);
     }
 
     @Test
     void testAuthorisedGetArtefactByCaseIdSearchVerified() throws Exception {
+        when(accountManagementService.getUserById(any())).thenReturn(piUser);
         when(accountManagementService.getIsAuthorised(
-            UUID.fromString(USER_ID), ListType.CIVIL_DAILY_CAUSE_LIST, Sensitivity.PRIVATE
+            UUID.fromString(piUser.getUserId()), ListType.CIVIL_DAILY_CAUSE_LIST, Sensitivity.PRIVATE
         )).thenReturn(true);
 
         Artefact artefact = createDailyList(Sensitivity.PRIVATE);
@@ -90,7 +109,7 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
             MockMvcRequestBuilders.get(SEARCH_URL + VALID_CASE_ID_SEARCH);
 
         mockHttpServletRequestBuilder1
-            .header(USER_ID_HEADER, USER_ID);
+            .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID);
 
         MvcResult getResponse = mockMvc.perform(mockHttpServletRequestBuilder1)
             .andExpect(status().isOk())
@@ -104,8 +123,9 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
 
     @Test
     void testUnauthorisedGetArtefactByCaseIdSearchVerified() throws Exception {
+        when(accountManagementService.getUserById(any())).thenReturn(piUser);
         when(accountManagementService.getIsAuthorised(
-            UUID.fromString(USER_ID), ListType.CIVIL_DAILY_CAUSE_LIST, Sensitivity.PRIVATE
+            UUID.fromString(piUser.getUserId()), ListType.CIVIL_DAILY_CAUSE_LIST, Sensitivity.PRIVATE
         )).thenReturn(false);
 
         createDailyList(Sensitivity.PRIVATE);
@@ -114,7 +134,7 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
             MockMvcRequestBuilders.get(SEARCH_URL + VALID_CASE_ID_SEARCH);
 
         mockHttpServletRequestBuilder1
-            .header(USER_ID_HEADER, USER_ID);
+            .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID);
 
         MvcResult getResponse = mockMvc.perform(mockHttpServletRequestBuilder1)
             .andExpect(status().isNotFound())
@@ -128,10 +148,12 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
 
     @Test
     void testGetArtefactByCaseIdSearchUnverified() throws Exception {
+        when(accountManagementService.getUserById(any())).thenReturn(piUser);
         Artefact artefact = createDailyList(Sensitivity.PUBLIC);
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 =
-            MockMvcRequestBuilders.get(SEARCH_URL + VALID_CASE_ID_SEARCH);
+            MockMvcRequestBuilders.get(SEARCH_URL + VALID_CASE_ID_SEARCH)
+                .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID);
 
         MvcResult getResponse =
             mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isOk()).andReturn();
@@ -144,18 +166,21 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
 
     @Test
     void testGetArtefactByCaseIdSearchUnverifiedNotFound() throws Exception {
+        when(accountManagementService.getUserById(any())).thenReturn(piUser);
         createDailyList(Sensitivity.CLASSIFIED);
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 =
-            MockMvcRequestBuilders.get(SEARCH_URL + VALID_CASE_ID_SEARCH);
+            MockMvcRequestBuilders.get(SEARCH_URL + VALID_CASE_ID_SEARCH)
+                .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID);
 
         mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isNotFound()).andReturn();
     }
 
     @Test
     void testAuthorisedGetArtefactByCaseNameSearchVerified() throws Exception {
+        when(accountManagementService.getUserById(any())).thenReturn(piUser);
         when(accountManagementService.getIsAuthorised(
-            UUID.fromString(USER_ID), ListType.CIVIL_DAILY_CAUSE_LIST, Sensitivity.PRIVATE
+            UUID.fromString(piUser.getUserId()), ListType.CIVIL_DAILY_CAUSE_LIST, Sensitivity.PRIVATE
         )).thenReturn(true);
 
         Artefact artefact = createDailyList(Sensitivity.PRIVATE);
@@ -164,7 +189,7 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
             MockMvcRequestBuilders.get(SEARCH_URL + VALID_CASE_NAME_SEARCH);
 
         mockHttpServletRequestBuilder1
-            .header(USER_ID_HEADER, USER_ID);
+            .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID);
 
         MvcResult getResponse = mockMvc.perform(mockHttpServletRequestBuilder1)
             .andExpect(status().isOk())
@@ -178,8 +203,9 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
 
     @Test
     void testUnauthorisedGetArtefactByCaseNameSearchVerified() throws Exception {
+        when(accountManagementService.getUserById(any())).thenReturn(piUser);
         when(accountManagementService.getIsAuthorised(
-            UUID.fromString(USER_ID), ListType.CIVIL_DAILY_CAUSE_LIST, Sensitivity.PRIVATE
+            UUID.fromString(piUser.getUserId()), ListType.CIVIL_DAILY_CAUSE_LIST, Sensitivity.PRIVATE
         )).thenReturn(false);
 
         createDailyList(Sensitivity.PRIVATE);
@@ -188,7 +214,7 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
             MockMvcRequestBuilders.get(SEARCH_URL + VALID_CASE_NAME_SEARCH);
 
         mockHttpServletRequestBuilder1
-            .header(USER_ID_HEADER, USER_ID);
+            .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID);
 
         MvcResult getResponse = mockMvc.perform(mockHttpServletRequestBuilder1)
             .andExpect(status().isNotFound())
@@ -202,10 +228,12 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
 
     @Test
     void testGetArtefactByCaseNameSearchUnverified() throws Exception {
+        when(accountManagementService.getUserById(any())).thenReturn(piUser);
         Artefact artefact = createDailyList(Sensitivity.PUBLIC);
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 =
-            MockMvcRequestBuilders.get(SEARCH_URL + VALID_CASE_NAME_SEARCH);
+            MockMvcRequestBuilders.get(SEARCH_URL + VALID_CASE_NAME_SEARCH)
+                .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID);
 
         MvcResult getResponse =
             mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isOk()).andReturn();
@@ -230,8 +258,10 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
     @Test
     @WithMockUser(username = UNAUTHORIZED_USERNAME, authorities = {UNAUTHORIZED_ROLE})
     void testUnauthorizedGetAllRelevantArtefactsBySearchValue() throws Exception {
+        when(accountManagementService.getUserById(any())).thenReturn(piUser);
         MockHttpServletRequestBuilder request =
-            MockMvcRequestBuilders.get(SEARCH_URL + VALID_CASE_NAME_SEARCH);
+            MockMvcRequestBuilders.get(SEARCH_URL + VALID_CASE_NAME_SEARCH)
+                .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID);
 
         MvcResult archiveResponse = mockMvc.perform(request).andExpect(status().isForbidden()).andReturn();
 
