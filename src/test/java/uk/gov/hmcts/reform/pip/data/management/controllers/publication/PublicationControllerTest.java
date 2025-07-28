@@ -445,26 +445,6 @@ class PublicationControllerTest {
     }
 
     @Test
-    void testUploadHtmlFileToS3BucketFailIoException() {
-        when(validationService.validateHeaders(any(), anyBoolean())).thenReturn(lcsuHeaders);
-        IOException ioException = new IOException("File processing error");
-
-        doThrow(new RuntimeException("File processing failed", ioException))
-            .when(publicationServicesService).uploadHtmlFileToAwsS3Bucket(any());
-
-        try {
-            publicationController.uploadPublication(
-                PROVENANCE, SOURCE_ARTEFACT_ID, ArtefactType.LCSU,
-                SENSITIVITY, LANGUAGE, DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, LOCATION_ID, CONTENT_DATE, TEST_STRING, FILE
-            );
-            fail("Expected RuntimeException not thrown");
-        } catch (RuntimeException ex) {
-            assertTrue(ex.getMessage().contains("File processing failed"),
-                       "Exception message does not match expected message");
-        }
-    }
-
-    @Test
     void testDeleteArtefactReturnsOk() {
         doNothing().when(publicationRemovalService).deleteArtefactById(any(), any());
         assertEquals(HttpStatus.OK, publicationController.deleteArtefact(TEST_STRING, TEST_STRING).getStatusCode(),

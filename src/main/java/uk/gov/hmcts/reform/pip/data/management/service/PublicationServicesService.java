@@ -20,7 +20,6 @@ import uk.gov.hmcts.reform.pip.model.system.admin.ChangeType;
 import uk.gov.hmcts.reform.pip.model.system.admin.DeleteLocationAction;
 import uk.gov.hmcts.reform.pip.model.system.admin.DeleteLocationArtefactAction;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 
@@ -92,13 +91,13 @@ public class PublicationServicesService {
                 .retrieve()
                 .bodyToMono(String.class)
                 .block();
-        } catch (WebClientException | IOException ex) {
+        } catch (WebClientException ex) {
             log.error("File upload failed: {}", ex.getMessage());
             throw new FileUploadException("Failed to upload file");
         }
     }
 
-    private MultiValueMap<String, String> createFileHeaders(MultipartFile file) throws IOException {
+    private MultiValueMap<String, String> createFileHeaders(MultipartFile file) {
         MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
         headers.add(HttpHeaders.CONTENT_TYPE,
                     MediaType.parseMediaType(Objects.requireNonNull(file.getContentType())).toString());
