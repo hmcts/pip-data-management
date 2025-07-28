@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.pip.data.management.controllers.publication.summary;
 import com.azure.core.util.BinaryData;
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.apache.commons.math3.random.RandomDataGenerator;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,6 +17,8 @@ import uk.gov.hmcts.reform.pip.data.management.Application;
 import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.utils.PublicationIntegrationTestBase;
+import uk.gov.hmcts.reform.pip.model.account.PiUser;
+import uk.gov.hmcts.reform.pip.model.account.Roles;
 import uk.gov.hmcts.reform.pip.model.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
@@ -25,8 +28,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
@@ -64,8 +69,18 @@ class NonStrategicRcjPublicationSummaryTest extends PublicationIntegrationTestBa
     private static final LocalDateTime CONTENT_DATE = LocalDateTime.now().toLocalDate().atStartOfDay()
         .truncatedTo(ChronoUnit.SECONDS);
     private static final String PROVENANCE = "MANUAL_UPLOAD";
-
+    private static final String REQUESTER_HEADER = "x-requester-id";
     private static final String EXCEL_FILE_TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+    private static final String SYSTEM_ADMIN_ID = UUID.randomUUID().toString();
+    private static PiUser piUser;
+
+    @BeforeAll
+    static void setup() {
+        piUser = new PiUser();
+        piUser.setUserId(UUID.randomUUID().toString());
+        piUser.setEmail("test@justice.gov.uk");
+        piUser.setRoles(Roles.SYSTEM_ADMIN);
+    }
 
     private byte[] getTestData(String resourceName) throws IOException {
         byte[] data;
@@ -77,6 +92,7 @@ class NonStrategicRcjPublicationSummaryTest extends PublicationIntegrationTestBa
     }
 
     private Artefact createNonStrategicPublication(ListType listType, String filePath) throws Exception {
+        when(accountManagementService.getUserById(any())).thenReturn(piUser);
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = multipart("/publication/non-strategic")
             .file(getMockMultipartFile(filePath))
             .header(PublicationConfiguration.TYPE_HEADER, ArtefactType.LIST)
@@ -89,6 +105,7 @@ class NonStrategicRcjPublicationSummaryTest extends PublicationIntegrationTestBa
                     CONTENT_DATE.plusDays(new RandomDataGenerator().nextLong(1, 100_000)))
             .header(PublicationConfiguration.SENSITIVITY_HEADER, Sensitivity.PUBLIC)
             .header(PublicationConfiguration.LANGUAGE_HEADER, Language.ENGLISH)
+            .header(PublicationConfiguration.REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID)
             .contentType(MediaType.MULTIPART_FORM_DATA);
 
         MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)

@@ -5,7 +5,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
-import uk.gov.hmcts.reform.pip.data.management.service.publication.ArtefactService;
+import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationRetrievalService;
 import uk.gov.hmcts.reform.pip.model.account.PiUser;
 import uk.gov.hmcts.reform.pip.model.account.Roles;
 import uk.gov.hmcts.reform.pip.model.publication.Sensitivity;
@@ -19,12 +19,12 @@ import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
 public class AuthorisationService {
 
     private final AccountManagementService accountManagementService;
-    private final ArtefactService artefactService;
+    private final PublicationRetrievalService publicationRetrievalService;
 
     public AuthorisationService(AccountManagementService accountManagementService,
-                                ArtefactService artefactService) {
+                                PublicationRetrievalService publicationRetrievalService) {
         this.accountManagementService = accountManagementService;
-        this.artefactService = artefactService;
+        this.publicationRetrievalService = publicationRetrievalService;
     }
 
     public boolean userCanUploadPublication(String requesterId, String provenance) {
@@ -101,7 +101,7 @@ public class AuthorisationService {
             return false;
         }
 
-        Artefact artefact = artefactService.getMetadataByArtefactId(artefactId);
+        Artefact artefact = publicationRetrievalService.getMetadataByArtefactId(artefactId);
         if (!isAuthorised(artefact, requesterId, system)) {
             log.error(writeLog(
                 String.format("User with id %s is not authorised to access artefact with id %s", requesterId, artefactId
@@ -118,7 +118,7 @@ public class AuthorisationService {
             return false;
         }
 
-        Artefact artefact = artefactService.getMetadataByArtefactId(artefactId);
+        Artefact artefact = publicationRetrievalService.getMetadataByArtefactId(artefactId);
         if (!isAuthorised(artefact, requesterId, systemOrAdmin)) {
             log.error(writeLog(
                 String.format("User with id %s is not authorised to access artefact meta data with id %s",

@@ -13,7 +13,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
-import uk.gov.hmcts.reform.pip.data.management.service.publication.ArtefactService;
+import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationRetrievalService;
 import uk.gov.hmcts.reform.pip.model.account.PiUser;
 import uk.gov.hmcts.reform.pip.model.account.Roles;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
@@ -42,7 +42,7 @@ class AuthorisationServiceTest {
     private AccountManagementService accountManagementService;
 
     @Mock
-    private ArtefactService artefactService;
+    private PublicationRetrievalService publicationRetrievalService;
 
     @Mock
     private SecurityContext securityContext;
@@ -187,7 +187,7 @@ class AuthorisationServiceTest {
     void testUserCanAccessPublicationWhenPublicSensitivity() {
         Artefact artefact = new Artefact();
         artefact.setSensitivity(Sensitivity.PUBLIC);
-        when(artefactService.getMetadataByArtefactId(TEST_UUID)).thenReturn(artefact);
+        when(publicationRetrievalService.getMetadataByArtefactId(TEST_UUID)).thenReturn(artefact);
 
         List<GrantedAuthority> authorities = List.of(
             new SimpleGrantedAuthority(ADMIN_ROLE)
@@ -210,7 +210,7 @@ class AuthorisationServiceTest {
         Authentication auth = new TestingAuthenticationToken(TEST_USER_ID, null, authorities);
         SecurityContextHolder.getContext().setAuthentication(auth);
         when(securityContext.getAuthentication()).thenReturn(auth);
-        when(artefactService.getMetadataByArtefactId(TEST_UUID)).thenReturn(artefact);
+        when(publicationRetrievalService.getMetadataByArtefactId(TEST_UUID)).thenReturn(artefact);
 
         assertTrue(authorisationService.userCanAccessPublication(TEST_UUID, TEST_UUID, true),
                    "User cannot access publication with sensitivity PUBLIC");
@@ -227,7 +227,7 @@ class AuthorisationServiceTest {
         Authentication auth = new TestingAuthenticationToken(TEST_USER_ID, null, authorities);
         SecurityContextHolder.getContext().setAuthentication(auth);
         when(securityContext.getAuthentication()).thenReturn(auth);
-        when(artefactService.getMetadataByArtefactId(TEST_UUID)).thenReturn(artefact);
+        when(publicationRetrievalService.getMetadataByArtefactId(TEST_UUID)).thenReturn(artefact);
         when(accountManagementService.getIsAuthorised(TEST_UUID, LIST_TYPE, Sensitivity.PRIVATE))
             .thenReturn(true);
 
@@ -246,7 +246,7 @@ class AuthorisationServiceTest {
         Authentication auth = new TestingAuthenticationToken(TEST_USER_ID, null, authorities);
         SecurityContextHolder.getContext().setAuthentication(auth);
         when(securityContext.getAuthentication()).thenReturn(auth);
-        when(artefactService.getMetadataByArtefactId(TEST_UUID)).thenReturn(artefact);
+        when(publicationRetrievalService.getMetadataByArtefactId(TEST_UUID)).thenReturn(artefact);
         when(accountManagementService.getIsAuthorised(TEST_UUID, LIST_TYPE, Sensitivity.PRIVATE))
             .thenReturn(false);
 
@@ -264,7 +264,7 @@ class AuthorisationServiceTest {
         Authentication auth = new TestingAuthenticationToken(TEST_USER_ID, null, authorities);
         SecurityContextHolder.getContext().setAuthentication(auth);
 
-        when(artefactService.getMetadataByArtefactId(TEST_UUID)).thenReturn(artefact);
+        when(publicationRetrievalService.getMetadataByArtefactId(TEST_UUID)).thenReturn(artefact);
         when(securityContext.getAuthentication()).thenReturn(auth);
 
         assertTrue(authorisationService.userCanAccessPublicationData(TEST_UUID, TEST_UUID, true),

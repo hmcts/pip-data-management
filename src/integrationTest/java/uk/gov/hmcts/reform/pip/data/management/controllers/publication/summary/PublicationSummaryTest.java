@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.pip.data.management.controllers.publication.summary;
 import com.azure.core.util.BinaryData;
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.apache.commons.math3.random.RandomDataGenerator;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
@@ -19,6 +20,7 @@ import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.ExceptionResponse;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.utils.PublicationIntegrationTestBase;
+import uk.gov.hmcts.reform.pip.model.account.PiUser;
 import uk.gov.hmcts.reform.pip.model.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
@@ -32,9 +34,11 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static uk.gov.hmcts.reform.pip.model.account.Roles.SYSTEM_ADMIN;
 
 @SpringBootTest(classes = {Application.class}, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles({"integration", "disable-async"})
@@ -55,6 +59,10 @@ class PublicationSummaryTest extends PublicationIntegrationTestBase {
     private static final String CASE_NAME_FIELD = "Case name - This is a case name";
     private static final String HEARING_TYPE_FIELD = "Hearing type - Directions";
 
+    public static final String REQUESTER_ID_HEADER = "x-requester-id";
+    private static final String SYSTEM_ADMIN_ID = UUID.randomUUID().toString();
+
+
     private static final LocalDateTime DISPLAY_TO = LocalDateTime.now()
         .truncatedTo(ChronoUnit.SECONDS);
     private static final LocalDateTime DISPLAY_FROM = LocalDateTime.now().plusDays(1)
@@ -65,6 +73,8 @@ class PublicationSummaryTest extends PublicationIntegrationTestBase {
 
     private static final String SJP_MOCK = "data/sjp-public-list/sjpPublicList.json";
     private static final String SJP_PRESS_MOCK = "data/sjp-press-list/sjpPressList.json";
+
+    private static PiUser piUser;
 
     private byte[] getTestData(String resourceName) throws IOException {
         byte[] data;
@@ -80,6 +90,7 @@ class PublicationSummaryTest extends PublicationIntegrationTestBase {
     }
 
     private Artefact createPublication(ListType listType, Sensitivity sensitivity, byte[] data) throws Exception {
+        when(accountManagementService.getUserById(any())).thenReturn(piUser);
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
             .post(ROOT_URL)
             .header(PublicationConfiguration.TYPE_HEADER, ArtefactType.LIST)
@@ -92,6 +103,7 @@ class PublicationSummaryTest extends PublicationIntegrationTestBase {
                     CONTENT_DATE.plusDays(new RandomDataGenerator().nextLong(1, 100_000)))
             .header(PublicationConfiguration.SENSITIVITY_HEADER, sensitivity)
             .header(PublicationConfiguration.LANGUAGE_HEADER, Language.ENGLISH)
+            .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID)
             .content(data)
             .contentType(MediaType.APPLICATION_JSON);
 
@@ -100,6 +112,14 @@ class PublicationSummaryTest extends PublicationIntegrationTestBase {
 
         return OBJECT_MAPPER.readValue(
             response.getResponse().getContentAsString(), Artefact.class);
+    }
+
+    @BeforeAll
+    protected static void setup() {
+        piUser = new PiUser();
+        piUser.setUserId(SYSTEM_ADMIN_ID);
+        piUser.setEmail("test@justice.gov.uk");
+        piUser.setRoles(SYSTEM_ADMIN);
     }
 
     @Test
