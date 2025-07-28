@@ -55,6 +55,7 @@ class LocationApiTest extends LocationIntegrationTestBase {
     private static final String UPLOAD_API = ROOT_URL + "/upload";
     private static final String LOCATIONS_CSV = "location/ValidCsv.csv";
     private static final String CSV_WITH_EXISTING_LOCATION_NAME = "location/ValidCsvWithExistingLocationName.csv";
+    private static final String CSV_WITH_DUPLICATED_LOCATION_NAME = "location/ValidCsvWithDuplicatedLocationName.csv";
     private static final String CSV_WITHOUT_LOCATION_TYPE = "location/InvalidCsvWithoutLocationType.csv";
     private static final String DELETE_LOCATIONS_CSV = "location/ValidCsvForDeleteCourt.csv";
     private static final String UPDATED_CSV = "location/UpdatedCsv.csv";
@@ -320,11 +321,8 @@ class LocationApiTest extends LocationIntegrationTestBase {
     @Test
     @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})
     void testCreateLocationsWithCsvContainingExistingLocationName() throws Exception {
-        List<Location> createdLocations = createLocations(LOCATIONS_CSV);
-        assertEquals(4, createdLocations.size(), VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
-
         try (InputStream csvInputStream = this.getClass().getClassLoader()
-            .getResourceAsStream(CSV_WITH_EXISTING_LOCATION_NAME)) {
+            .getResourceAsStream(CSV_WITH_DUPLICATED_LOCATION_NAME)) {
             MockMultipartFile csvFile = new MockMultipartFile(LOCATION_LIST, csvInputStream);
 
             MvcResult mvcResult = mockMvc.perform(multipart(UPLOAD_API).file(csvFile))
@@ -336,8 +334,6 @@ class LocationApiTest extends LocationIntegrationTestBase {
 
             assertEquals("Failed to upload locations. Location name(s) Test Location already exist",
                          exceptionResponse.getMessage(), "Error message does not match");
-            assertEquals("Failed to upload locations. Location name(s) Test Location already exist",
-                         exceptionResponse.getMessage(), "Error message does not match");
             assertTrue(exceptionResponse.isUiError(), "UI error flag does not match");
 
             mvcResult = mockMvc.perform(get(ROOT_URL))
@@ -346,6 +342,37 @@ class LocationApiTest extends LocationIntegrationTestBase {
 
             Location[] returnedLocations = OBJECT_MAPPER.readValue(mvcResult.getResponse().getContentAsString(),
                                                                   Location[].class);
+            assertEquals(4, returnedLocations.length, VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
+        }
+    }
+
+    @Test
+    @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})
+    void testCreateLocationsWithCsvContainingDuplicatedLocationName() throws Exception {
+        List<Location> createdLocations = createLocations(LOCATIONS_CSV);
+        assertEquals(4, createdLocations.size(), VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
+
+        try (InputStream csvInputStream = this.getClass().getClassLoader()
+                .getResourceAsStream(CSV_WITH_EXISTING_LOCATION_NAME)) {
+            MockMultipartFile csvFile = new MockMultipartFile(LOCATION_LIST, csvInputStream);
+
+            MvcResult mvcResult = mockMvc.perform(multipart(UPLOAD_API).file(csvFile))
+                    .andExpect(status().isBadRequest()).andReturn();
+
+            UiExceptionResponse exceptionResponse = OBJECT_MAPPER.readValue(
+                    mvcResult.getResponse().getContentAsString(), UiExceptionResponse.class
+            );
+
+            assertEquals("Failed to upload locations. Location name(s) Test Location New already exist",
+                    exceptionResponse.getMessage(), "Error message does not match");
+            assertTrue(exceptionResponse.isUiError(), "UI error flag does not match");
+
+            mvcResult = mockMvc.perform(get(ROOT_URL))
+                    .andExpect(status().isOk())
+                    .andReturn();
+
+            Location[] returnedLocations = OBJECT_MAPPER.readValue(mvcResult.getResponse().getContentAsString(),
+                    Location[].class);
             assertEquals(4, returnedLocations.length, VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
         }
     }

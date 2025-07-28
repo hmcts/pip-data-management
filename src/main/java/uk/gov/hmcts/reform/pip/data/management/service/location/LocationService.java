@@ -11,6 +11,7 @@ import com.opencsv.exceptions.CsvDataTypeMismatchException;
 import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
@@ -172,11 +173,16 @@ public class LocationService {
                                 locationCsv.getProvenance(),
                                 locationCsv.getProvenanceLocationId(),
                                 LocationType.valueOfCsv(locationCsv.getProvenanceLocationType()))));
-                savedLocations.add(locationRepository.save(location));
+
+                savedLocations.add(locationRepository.saveAndFlush(location));
             });
             return savedLocations;
         } catch (LocationNameValidationException e) {
             throw e;
+        } catch (DataIntegrityViolationException e) {
+            String message = "Failed to upload locations. Location name constraint violated";
+            log.error(writeLog(message));
+            throw new LocationNameValidationException(message);
         } catch (Exception exception) {
             throw new CsvParseException(exception.getMessage());
         }
@@ -301,17 +307,26 @@ public class LocationService {
 
     private void checkLocationNameDuplication(List<LocationCsv> locationCsvList) {
         List<Location> allLocations = locationRepository.findAll();
+
+        // Check for duplicated location names in the CSV with the stored locations in database, and also with
+        // other records in the CSV file
         Set<String> duplicatedLocationNames = locationCsvList.stream()
-                .filter(inputLocation -> allLocations.stream().anyMatch(storedLocation ->
+                .filter(inputLocation -> (allLocations.stream().anyMatch(storedLocation ->
                         inputLocation.getLocationName().equals(storedLocation.getName())
                                 && !inputLocation.getUniqueId().equals(storedLocation.getLocationId())))
+                        || (locationCsvList.stream().anyMatch(inputLocation2 ->
+                        inputLocation.getLocationName().equals(inputLocation2.getLocationName())
+                                && !inputLocation.getUniqueId().equals(inputLocation2.getUniqueId()))))
                 .map(inputLocation -> inputLocation.getLocationName())
                 .collect(Collectors.toSet());
 
         Set<String> duplicatedWelshLocationNames = locationCsvList.stream()
-                .filter(inputLocation -> allLocations.stream().anyMatch(storedLocation ->
+                .filter(inputLocation -> (allLocations.stream().anyMatch(storedLocation ->
                         inputLocation.getWelshLocationName().equals(storedLocation.getWelshName())
                                 && !inputLocation.getUniqueId().equals(storedLocation.getLocationId())))
+                        || (locationCsvList.stream().anyMatch(inputLocation2 ->
+                        inputLocation.getWelshLocationName().equals(inputLocation2.getWelshLocationName())
+                                && !inputLocation.getUniqueId().equals(inputLocation2.getUniqueId()))))
                 .map(inputLocation -> inputLocation.getWelshLocationName())
                 .collect(Collectors.toSet());
 

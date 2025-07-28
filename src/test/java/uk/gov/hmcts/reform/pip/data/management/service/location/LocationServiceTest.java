@@ -112,10 +112,6 @@ class LocationServiceTest {
     private static final String CREATE_LOCATION_MESSAGE = "Location created message does not match";
     private static final String ERROR_LOG_MESSAGE = "Error log does not match";
     private static final String EMAIL = "test@test.com";
-    private static final String SSO_EMAIL = "sso@test.com";
-    private static final String SSO_PROVENANCE = "SSO";
-    private static final String PI_AAD_PROVENANCE = "PI_AAD";
-    private static final String SYSTEM_ADMIN = "SYSTEM_ADMIN";
 
     private static final String FILE = "file";
     private static final String FILE_NAME = "TestFileName";
@@ -146,7 +142,7 @@ class LocationServiceTest {
         locationCsvThirdExample.setProvenanceLocationType(VENUE);
         locationCsvThirdExample.setWelshLocationName(WELSH_LOCATION_NAME2);
         locationThirdExample = new Location(locationCsvThirdExample);
-        locationThirdExample.setLocationId(1);
+        locationThirdExample.setLocationId(4);
 
         locationDeletion = new LocationDeletion();
 
@@ -381,7 +377,7 @@ class LocationServiceTest {
 
     @Test
     void testHandleUploadLocationsOk() throws IOException {
-        when(locationRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+        when(locationRepository.saveAndFlush(any())).thenAnswer(invocation -> invocation.getArgument(0));
         try (InputStream inputStream = this.getClass().getClassLoader()
             .getResourceAsStream("csv/ValidCsv.csv")) {
 
@@ -431,7 +427,7 @@ class LocationServiceTest {
 
     @Test
     void testHandleUploadReferencesOk() throws IOException {
-        when(locationRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+        when(locationRepository.saveAndFlush(any())).thenAnswer(invocation -> invocation.getArgument(0));
         try (InputStream inputStream = this.getClass().getClassLoader()
             .getResourceAsStream("csv/ValidCsv.csv")) {
 
@@ -534,7 +530,7 @@ class LocationServiceTest {
                 .contains("Failed to upload locations. The location name 'Test Location <p>Hello world</p>' or "
                               + "Welsh location name 'Welsh Test Location other' contains a forbidden character");
 
-            verify(locationRepository, never()).save(any(Location.class));
+            verify(locationRepository, never()).saveAndFlush(any(Location.class));
         }
     }
 
@@ -551,7 +547,7 @@ class LocationServiceTest {
 
             assertThatThrownBy(() -> locationService.uploadLocations(multipartFile))
                 .isInstanceOf(LocationNameValidationException.class)
-                .hasMessage("Failed to upload locations. Location name(s) Test Location 2 already exist");
+                .hasMessage("Failed to upload locations. Location name(s) Test Location 3 already exist");
 
             assertThat(logCaptor.getErrorLogs())
                 .as(ERROR_LOG_MESSAGE)
@@ -559,15 +555,15 @@ class LocationServiceTest {
 
             assertThat(logCaptor.getErrorLogs().get(0))
                 .as(ERROR_LOG_MESSAGE)
-                .contains("Failed to upload locations. Location name(s) Test Location 2 already exist");
+                .contains("Failed to upload locations. Location name(s) Test Location 3 already exist");
 
-            verify(locationRepository, never()).save(any(Location.class));
+            verify(locationRepository, never()).saveAndFlush(any(Location.class));
         }
     }
 
     @Test
     void testUploadLocationCsvContainingExistingWelshLocationName() throws IOException {
-        when(locationRepository.findAll()).thenReturn(List.of(locationSecondExample, locationThirdExample));
+        when(locationRepository.findAll()).thenReturn(List.of(locationThirdExample));
 
         try (InputStream inputStream = this.getClass().getClassLoader()
             .getResourceAsStream("csv/ValidCsvWithExistingLocationName.csv");
@@ -588,7 +584,34 @@ class LocationServiceTest {
                 .as(ERROR_LOG_MESSAGE)
                 .contains("Failed to upload locations. Welsh location name(s) Welsh Test Location 2 already exist");
 
-            verify(locationRepository, never()).save(any(Location.class));
+            verify(locationRepository, never()).saveAndFlush(any(Location.class));
+        }
+    }
+
+    @Test
+    void testUploadLocationCsvWithDuplicatedLocationNameInCsv() throws IOException {
+        when(locationRepository.findAll()).thenReturn(Collections.emptyList());
+
+        try (InputStream inputStream = this.getClass().getClassLoader()
+            .getResourceAsStream("csv/ValidCsvWithDuplicatedLocationName.csv");
+             LogCaptor logCaptor = LogCaptor.forClass(LocationService.class)) {
+
+            MultipartFile multipartFile = new MockMultipartFile(FILE, FILE_NAME, FILE_TYPE,
+                                                                IOUtils.toByteArray(inputStream));
+
+            assertThatThrownBy(() -> locationService.uploadLocations(multipartFile))
+                .isInstanceOf(LocationNameValidationException.class)
+                .hasMessage("Failed to upload locations. Location name(s) Test Location 5 already exist");
+
+            assertThat(logCaptor.getErrorLogs())
+                .as(ERROR_LOG_MESSAGE)
+                .hasSize(1);
+
+            assertThat(logCaptor.getErrorLogs().get(0))
+                .as(ERROR_LOG_MESSAGE)
+                .contains("Failed to upload locations. Location name(s) Test Location 5 already exist");
+
+            verify(locationRepository, never()).saveAndFlush(any(Location.class));
         }
     }
 
