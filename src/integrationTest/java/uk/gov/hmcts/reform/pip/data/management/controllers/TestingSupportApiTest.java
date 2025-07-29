@@ -5,6 +5,7 @@ import com.microsoft.applicationinsights.web.dependencies.apachecommons.io.IOUti
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -46,6 +47,7 @@ import static uk.gov.hmcts.reform.pip.model.account.Roles.SYSTEM_ADMIN;
 @ActiveProfiles("integration")
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
 @WithMockUser(username = "admin", authorities = {"APPROLE_api.request.admin"})
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class TestingSupportApiTest extends IntegrationTestBase {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
@@ -88,7 +90,7 @@ class TestingSupportApiTest extends IntegrationTestBase {
     private MockMvc mockMvc;
 
     @BeforeAll
-    static void setup() {
+    void setup() {
         piUser = new PiUser();
         piUser.setUserId(SYSTEM_ADMIN_ID);
         piUser.setEmail("test@justice.gov.uk");
@@ -231,8 +233,8 @@ class TestingSupportApiTest extends IntegrationTestBase {
     }
 
     private MvcResult uploadPublication() throws Exception {
-        try (InputStream is = PublicationTest.class.getClassLoader().getResourceAsStream("data/artefact.json")) {
-            when(accountManagementService.getUserById(any())).thenReturn(piUser);
+        when(accountManagementService.getUserById(any())).thenReturn(piUser);
+        try (InputStream is = this.getClass().getClassLoader().getResourceAsStream("data/artefact.json")) {
             String payload = new String(IOUtils.toByteArray(Objects.requireNonNull(is)));
 
             MockHttpServletRequestBuilder postRequest = MockMvcRequestBuilders.post(PUBLICATION_URL)

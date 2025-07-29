@@ -86,7 +86,6 @@ import static uk.gov.hmcts.reform.pip.model.publication.ListType.PAAC_WEEKLY_HEA
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.PATENTS_COURT_CHD_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.PENSIONS_LIST_CHD_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.PHT_WEEKLY_HEARING_LIST;
-import static uk.gov.hmcts.reform.pip.model.publication.ListType.PLANNING_COURT_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.POAC_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.PROPERTY_TRUSTS_PROBATE_LIST_CHD_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.REVENUE_LIST_CHD_DAILY_CAUSE_LIST;
@@ -95,6 +94,7 @@ import static uk.gov.hmcts.reform.pip.model.publication.ListType.RPT_LONDON_WEEK
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.RPT_MIDLANDS_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.RPT_NORTHERN_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.RPT_SOUTHERN_WEEKLY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.SEND_DAILY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.SENIOR_COURTS_COSTS_OFFICE_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.SIAC_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.SJP_DELTA_PRESS_LIST;
@@ -121,7 +121,6 @@ import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_IAC_STATUTOR
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_LC_DAILY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_T_AND_CC_DAILY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.WPAFCC_WEEKLY_HEARING_LIST;
-
 
 @Component
 @SuppressWarnings({"PMD.ExcessiveImports"})
@@ -285,10 +284,6 @@ public class ListConversionFactory {
             new NonStrategicListFileConverter(),
             new NonStrategicListSummaryData(LONDON_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST)
         )),
-        Map.entry(PLANNING_COURT_DAILY_CAUSE_LIST, new ConversionPair(
-            new NonStrategicListFileConverter(),
-            new NonStrategicListSummaryData(PLANNING_COURT_DAILY_CAUSE_LIST)
-        )),
         Map.entry(COUNTY_COURT_LONDON_CIVIL_DAILY_CAUSE_LIST, new ConversionPair(
             new NonStrategicListFileConverter(),
             new NonStrategicListSummaryData(COUNTY_COURT_LONDON_CIVIL_DAILY_CAUSE_LIST)
@@ -408,6 +403,10 @@ public class ListConversionFactory {
         Map.entry(LEEDS_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST, new ConversionPair(
             new NonStrategicListFileConverter(),
             new NonStrategicListSummaryData(LEEDS_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST)
+        )),
+        Map.entry(SEND_DAILY_HEARING_LIST, new ConversionPair(
+            new NonStrategicListFileConverter(),
+            new NonStrategicListSummaryData(SEND_DAILY_HEARING_LIST)
         )),
         Map.entry(CIC_WEEKLY_HEARING_LIST, new ConversionPair(
             new NonStrategicListFileConverter(),

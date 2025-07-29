@@ -52,7 +52,6 @@ import static uk.gov.hmcts.reform.pip.model.publication.ListType.PAAC_WEEKLY_HEA
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.PATENTS_COURT_CHD_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.PENSIONS_LIST_CHD_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.PHT_WEEKLY_HEARING_LIST;
-import static uk.gov.hmcts.reform.pip.model.publication.ListType.PLANNING_COURT_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.POAC_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.PROPERTY_TRUSTS_PROBATE_LIST_CHD_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.REVENUE_LIST_CHD_DAILY_CAUSE_LIST;
@@ -61,6 +60,7 @@ import static uk.gov.hmcts.reform.pip.model.publication.ListType.RPT_LONDON_WEEK
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.RPT_MIDLANDS_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.RPT_NORTHERN_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.RPT_SOUTHERN_WEEKLY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.SEND_DAILY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.SENIOR_COURTS_COSTS_OFFICE_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.SIAC_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.SSCS_LONDON_DAILY_HEARING_LIST;
@@ -95,6 +95,7 @@ public class NonStrategicListSummaryData implements ArtefactSummaryData {
     private static final String APPEAL_REFERENCE_NUMBER = "appealReferenceNumber";
     private static final String APPELLANT = "appellant";
     private static final String HEARING_TYPE = "hearingType";
+    private static final String VENUE = "venue";
 
     private static final Map<ListType, List<String>> LIST_TYPE_SUMMARY_FIELDS = Map.ofEntries(
         Map.entry(CST_WEEKLY_HEARING_LIST, List.of(DATE, CASE_NAME)),
@@ -131,7 +132,6 @@ public class NonStrategicListSummaryData implements ArtefactSummaryData {
         Map.entry(SSCS_NORTH_WEST_DAILY_HEARING_LIST, List.of(HEARING_TIME, HEARING_TYPE, APPEAL_REFERENCE_NUMBER)),
         Map.entry(SSCS_LONDON_DAILY_HEARING_LIST, List.of(HEARING_TIME, HEARING_TYPE, APPEAL_REFERENCE_NUMBER)),
         Map.entry(LONDON_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST, List.of(TIME, CASE_NUMBER, CASE_DETAILS)),
-        Map.entry(PLANNING_COURT_DAILY_CAUSE_LIST, List.of(TIME, CASE_NUMBER, CASE_DETAILS)),
         Map.entry(COUNTY_COURT_LONDON_CIVIL_DAILY_CAUSE_LIST, List.of(TIME, CASE_NUMBER, CASE_DETAILS)),
         Map.entry(CIVIL_COURTS_RCJ_DAILY_CAUSE_LIST, List.of(TIME, CASE_NUMBER, CASE_DETAILS)),
         Map.entry(COURT_OF_APPEAL_CRIMINAL_DAILY_CAUSE_LIST, List.of(TIME, CASE_NUMBER, CASE_DETAILS)),
@@ -158,6 +158,7 @@ public class NonStrategicListSummaryData implements ArtefactSummaryData {
         Map.entry(COMPETITION_LIST_CHD_DAILY_CAUSE_LIST, List.of(TIME, CASE_NUMBER, CASE_NAME)),
         Map.entry(FINANCIAL_LIST_CHD_KB_DAILY_CAUSE_LIST, List.of(TIME, CASE_NUMBER, CASE_NAME)),
         Map.entry(INSOLVENCY_AND_COMPANIES_COURT_CHD_DAILY_CAUSE_LIST, List.of(TIME, CASE_NUMBER, CASE_NAME)),
+        Map.entry(SEND_DAILY_HEARING_LIST, List.of(TIME, CASE_REFERENCE_NUMBER, VENUE)),
         Map.entry(BIRMINGHAM_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST, List.of(TIME, CASE_NUMBER, HEARING_TYPE,
                                                                             CASE_DETAILS)),
         Map.entry(BRISTOL_AND_CARDIFF_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST, List.of(TIME, CASE_NUMBER, HEARING_TYPE,

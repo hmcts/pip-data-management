@@ -158,7 +158,6 @@ validations:
     SSCS_NORTH_WEST_DAILY_HEARING_LIST: "schemas/non-strategic/sscs_daily_hearing_list.json"
     SSCS_LONDON_DAILY_HEARING_LIST: "schemas/non-strategic/sscs_daily_hearing_list.json"
     LONDON_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST: "schemas/non-strategic/london_administrative_court_daily_cause_list.json"
-    PLANNING_COURT_DAILY_CAUSE_LIST: "schemas/non-strategic/planning_court_daily_cause_list.json"
     COUNTY_COURT_LONDON_CIVIL_DAILY_CAUSE_LIST: "schemas/non-strategic/county_court_london_civil_daily_cause_list.json"
     CIVIL_COURTS_RCJ_DAILY_CAUSE_LIST: "schemas/non-strategic/civil_courts_rcj_daily_cause_list.json"
     COURT_OF_APPEAL_CRIMINAL_DAILY_CAUSE_LIST: "schemas/non-strategic/court_of_appeal_criminal_daily_cause_list.json"
@@ -189,6 +188,7 @@ validations:
     BRISTOL_AND_CARDIFF_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST: "schemas/non-strategic/administrative_court_daily_cause_list.json"
     MANCHESTER_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST: "schemas/non-strategic/administrative_court_daily_cause_list.json"
     LEEDS_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST: "schemas/non-strategic/administrative_court_daily_cause_list.json"
+    SEND_DAILY_HEARING_LIST: "schemas/non-strategic/send_daily_hearing_list.json"
     CIC_WEEKLY_HEARING_LIST: "schemas/non-strategic/cic_weekly_hearing_list.json"
 springdoc:
   swagger-ui:

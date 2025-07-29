@@ -5,7 +5,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
-import uk.gov.hmcts.reform.pip.data.management.service.publication.ArtefactService;
+import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationRetrievalService;
 import uk.gov.hmcts.reform.pip.model.account.PiUser;
 import uk.gov.hmcts.reform.pip.model.account.Roles;
 import uk.gov.hmcts.reform.pip.model.publication.Sensitivity;
@@ -19,12 +19,12 @@ import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
 public class AuthorisationService {
 
     private final AccountManagementService accountManagementService;
-    private final ArtefactService artefactService;
+    private final PublicationRetrievalService publicationRetrievalService;
 
     public AuthorisationService(AccountManagementService accountManagementService,
-                                ArtefactService artefactService) {
+                                PublicationRetrievalService publicationRetrievalService) {
         this.accountManagementService = accountManagementService;
-        this.artefactService = artefactService;
+        this.publicationRetrievalService = publicationRetrievalService;
     }
 
     public boolean userCanUploadPublication(String requesterId, String provenance) {
@@ -36,7 +36,7 @@ public class AuthorisationService {
             return false;
         }
 
-        if (!isPublisher()) {
+        if (!hasOAuthPublisherRole()) {
             log.error(writeLog(
                 String.format("User with ID %s is forbidden to upload publication", requesterId
                 )));
@@ -48,7 +48,7 @@ public class AuthorisationService {
 
     public boolean userCanUploadLocation(String requesterId) {
         if (!isUserSystemAdmin(requesterId)
-                || !isAdmin()) {
+                || !hasOAuthAdminRole()) {
             log.error(writeLog(
                 String.format("User with ID %s is forbidden to upload location", requesterId
                 )));
@@ -60,7 +60,7 @@ public class AuthorisationService {
 
     public boolean userCanDeleteLocation(String requesterId) {
         if (!isUserSystemAdmin(requesterId)
-                || !isAdmin()) {
+                || !hasOAuthAdminRole()) {
             log.error(writeLog(
                 String.format("User with ID %s is forbidden to delete location", requesterId
                 )));
@@ -72,7 +72,7 @@ public class AuthorisationService {
 
     public boolean userCanGetPublicationsPerLocation(String requesterId) {
         if (!isUserSystemAdmin(requesterId)
-            || !isAdmin()) {
+            || !hasOAuthAdminRole()) {
             log.error(writeLog(
                 String.format("User with ID %s is forbidden to get publication per location", requesterId
                 )));
@@ -84,7 +84,7 @@ public class AuthorisationService {
 
     public boolean userCanGetLocationCsv(String requesterId) {
         if (!isUserSystemAdmin(requesterId)
-                || !isAdmin()) {
+                || !hasOAuthAdminRole()) {
             log.error(writeLog(
                 String.format("User with ID %s is forbidden to download location CSV", requesterId
                 )));
@@ -95,13 +95,13 @@ public class AuthorisationService {
     }
 
     public boolean userCanAccessPublication(UUID requesterId, UUID artefactId, boolean system) {
-        if (!isAdmin()) {
+        if (!hasOAuthAdminRole()) {
             log.error(writeLog(
                 "Api token permission is not authorised to access artefact meta data"));
             return false;
         }
 
-        Artefact artefact = artefactService.getMetadataByArtefactId(artefactId);
+        Artefact artefact = publicationRetrievalService.getMetadataByArtefactId(artefactId);
         if (!isAuthorised(artefact, requesterId, system)) {
             log.error(writeLog(
                 String.format("User with id %s is not authorised to access artefact with id %s", requesterId, artefactId
@@ -112,13 +112,13 @@ public class AuthorisationService {
     }
 
     public boolean userCanAccessPublicationData(UUID requesterId, UUID artefactId, boolean systemOrAdmin) {
-        if (!isAdmin()) {
+        if (!hasOAuthAdminRole()) {
             log.error(writeLog(
                 "Api token permission is not authorised to access artefact meta data"));
             return false;
         }
 
-        Artefact artefact = artefactService.getMetadataByArtefactId(artefactId);
+        Artefact artefact = publicationRetrievalService.getMetadataByArtefactId(artefactId);
         if (!isAuthorised(artefact, requesterId, systemOrAdmin)) {
             log.error(writeLog(
                 String.format("User with id %s is not authorised to access artefact meta data with id %s",
@@ -129,7 +129,7 @@ public class AuthorisationService {
     }
 
     public boolean userCanSearchInPublicationData() {
-        if (!isAdmin()) {
+        if (!hasOAuthAdminRole()) {
             log.error(writeLog("Action Search in publication is not allowed"));
             return false;
         }
@@ -137,7 +137,7 @@ public class AuthorisationService {
     }
 
     public boolean userCanSearchPublicationForLocation() {
-        if (!isAdmin()) {
+        if (!hasOAuthAdminRole()) {
             log.error(writeLog("Action Search in publication for Location is not allowed"));
             return false;
         }
@@ -146,7 +146,7 @@ public class AuthorisationService {
 
     public boolean userCanArchivePublications(String requesterId) {
         if (!isUserAdmin(requesterId)
-            || !isAdmin()) {
+            || !hasOAuthAdminRole()) {
             log.error(writeLog(
                 String.format("User with ID %s is forbidden to archive the publication", requesterId
                 )));
@@ -158,7 +158,7 @@ public class AuthorisationService {
 
     public boolean userCanDeletePublicationsByLocation(String requesterId) {
         if (!isUserSystemAdmin(requesterId)
-            || !isAdmin()) {
+            || !hasOAuthAdminRole()) {
             log.error(writeLog(
                 String.format("User with ID %s is forbidden to delete the publications by location", requesterId
                 )));
@@ -170,7 +170,7 @@ public class AuthorisationService {
 
     public boolean userCanGetAllNoMatchPublications(String requesterId) {
         if (!isUserSystemAdmin(requesterId)
-            || !isAdmin()) {
+            || !hasOAuthAdminRole()) {
             log.error(writeLog(
                 String.format("User with ID %s is forbidden to get all non match publications", requesterId
                 )));
@@ -182,7 +182,7 @@ public class AuthorisationService {
 
     public boolean userCanAddLocationMetadata(String requesterId) {
         if (!isUserSystemAdmin(requesterId)
-            || !isAdmin()) {
+            || !hasOAuthAdminRole()) {
             log.error(writeLog(
                 String.format("User with ID %s is forbidden to add location metadata", requesterId
                 )));
@@ -194,7 +194,7 @@ public class AuthorisationService {
 
     public boolean userCanUpdateLocationMetadata(String requesterId) {
         if (!isUserSystemAdmin(requesterId)
-            || !isAdmin()) {
+            || !hasOAuthAdminRole()) {
             log.error(writeLog(
                 String.format("User with ID %s is forbidden to update location metadata", requesterId
                 )));
@@ -206,7 +206,7 @@ public class AuthorisationService {
 
     public boolean userCanDeleteLocationMetadata(String requesterId) {
         if (!isUserSystemAdmin(requesterId)
-            || !isAdmin()) {
+            || !hasOAuthAdminRole()) {
             log.error(writeLog(
                 String.format("User with ID %s is forbidden to delete location metadata", requesterId
                 )));
@@ -238,13 +238,13 @@ public class AuthorisationService {
         return false;
     }
 
-    private boolean isPublisher() {
+    private boolean hasOAuthPublisherRole() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return hasAuthority(authentication, "APPROLE_api.publisher.admin")
             || hasAuthority(authentication, "APPROLE_api.request.admin");
     }
 
-    private boolean isAdmin() {
+    private boolean hasOAuthAdminRole() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return hasAuthority(authentication, "APPROLE_api.request.admin");
     }
