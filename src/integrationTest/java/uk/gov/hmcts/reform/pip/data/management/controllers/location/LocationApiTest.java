@@ -435,7 +435,7 @@ class LocationApiTest extends LocationIntegrationTestBase {
         piUser.setRoles(SYSTEM_ADMIN);
 
         when(accountManagementService.getUserById(any())).thenReturn(piUser);
-        when(accountManagementService.getAllAccounts(anyString(), eq(SYSTEM_ADMIN.toString())))
+        when(accountManagementService.getAllAccounts(anyString(), eq(SYSTEM_ADMIN.toString()), eq(SYSTEM_ADMIN_ID)))
             .thenReturn(List.of(EMAIL));
         when(accountManagementService.findSubscriptionsByLocationId(any()))
             .thenReturn(Collections.emptyList().toString());

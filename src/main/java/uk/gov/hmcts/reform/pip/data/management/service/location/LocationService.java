@@ -297,8 +297,8 @@ public class LocationService {
             .toList();
     }
 
-    private LocationDeletion checkActiveArtefactForLocation(Location location, String requesterEmail)
-        throws JsonProcessingException {
+    private LocationDeletion checkActiveArtefactForLocation(Location location, String requesterEmail,
+                                                            String requesterId) throws JsonProcessingException {
         LocalDateTime searchDateTime = LocalDateTime.now();
         LocationDeletion locationDeletion = new LocationDeletion();
         List<Artefact> activeArtefacts =
@@ -307,7 +307,7 @@ public class LocationService {
             locationDeletion = new LocationDeletion("There are active artefacts for the given location.",
                                                     true);
             systemAdminNotificationService.sendEmailNotification(
-                requesterEmail, ActionResult.ATTEMPTED,
+                requesterEmail, requesterId, ActionResult.ATTEMPTED,
                 String.format("There are active artefacts for following location: %s", location.getName()),
                 ChangeType.DELETE_LOCATION
             );
@@ -328,7 +328,7 @@ public class LocationService {
                 locationDeletion = new LocationDeletion("There are active subscriptions for the given location.",
                                                         true);
                 systemAdminNotificationService.sendEmailNotification(
-                    requesterEmail, ActionResult.ATTEMPTED,
+                    requesterEmail, requesterId, ActionResult.ATTEMPTED,
                     String.format("There are active subscriptions for the following location: %s", location.getName()),
                     ChangeType.DELETE_LOCATION
                 );

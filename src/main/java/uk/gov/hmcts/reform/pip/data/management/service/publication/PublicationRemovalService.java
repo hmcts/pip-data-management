@@ -113,24 +113,22 @@ public class PublicationRemovalService {
         log.info(writeLog(requesterId, UserActions.REMOVE, artefactId));
     }
 
-    public void deleteArtefactByLocation(List<Artefact> artefactsToDelete, Integer locationId, String userId)
+    public void deleteArtefactByLocation(List<Artefact> artefactsToDelete, Integer locationId, String requesterId)
         throws JsonProcessingException {
         artefactsToDelete.forEach(artefact -> {
             handleArtefactDeletion(artefact);
             log.info(writeLog(
                 String.format("Artefact deleted by %s, with artefact id: %s",
-                              userId, artefact.getArtefactId())
+                        requesterId, artefact.getArtefactId())
             ));
         });
         Optional<Location> location = locationRepository.getLocationByLocationId(locationId);
 
-        PiUser userInfo = accountManagementService.getUserById(userId);
-        systemAdminNotificationService.sendEmailNotification(
-            userInfo.getEmail(), ActionResult.SUCCEEDED,
-            String.format("Total %s artefact(s) for location %s", artefactsToDelete.size(), location.isPresent()
-                    ? location.get().getName() : ""),
-            ChangeType.DELETE_LOCATION_ARTEFACT
-        );
+        PiUser userInfo = accountManagementService.getUserById(requesterId);
+        String locationName = location.isPresent() ? location.get().getName() : "";
+        systemAdminNotificationService.sendEmailNotification(userInfo.getEmail(), requesterId, ActionResult.SUCCEEDED,
+                String.format("Total %s artefact(s) for location %s", artefactsToDelete.size(), locationName),
+                ChangeType.DELETE_LOCATION_ARTEFACT);
     }
 
     public void deleteArtefacts(List<Artefact> artefacts) {
