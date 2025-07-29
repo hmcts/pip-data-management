@@ -237,7 +237,7 @@ public class PublicationController {
         );
         validationService.validateBody(file);
 
-        HeaderGroup headers = validationService.validateHeaders(initialHeaders, true);
+        HeaderGroup headers = validationService.validateHeaders(initialHeaders);
         Artefact artefact = createPublicationMetadataFromHeaders(headers, file.getSize(), true);
 
         if (type.equals(ArtefactType.LCSU)) {

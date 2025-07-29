@@ -43,7 +43,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
@@ -324,7 +323,7 @@ class PublicationControllerTest {
         artefactWithId.setSearch(search);
         artefactWithId.setPayloadSize(0f);
 
-        when(validationService.validateHeaders(any(), anyBoolean())).thenReturn(headers);
+        when(validationService.validateHeaders(any())).thenReturn(headers);
         when(publicationCreationRunner.run(artefact, FILE)).thenReturn(artefactWithId);
 
         ResponseEntity<Artefact> responseEntity = publicationController.uploadPublication(
@@ -349,7 +348,7 @@ class PublicationControllerTest {
         artefactWithNoMatchLocationId.setSearch(search);
         artefactWithNoMatchLocationId.setPayloadSize(0f);
 
-        when(validationService.validateHeaders(any(), anyBoolean())).thenReturn(headers);
+        when(validationService.validateHeaders(any())).thenReturn(headers);
         when(publicationCreationRunner.run(artefact, FILE)).thenReturn(artefactWithNoMatchLocationId);
 
         ResponseEntity<Artefact> responseEntity = publicationController.uploadPublication(
@@ -411,7 +410,7 @@ class PublicationControllerTest {
         artefactWithoutId.setPayloadSize(0f);
         artefactWithoutId.setType(ArtefactType.LCSU);
 
-        when(validationService.validateHeaders(any(), anyBoolean())).thenReturn(lcsuHeaders);
+        when(validationService.validateHeaders(any())).thenReturn(lcsuHeaders);
         when(publicationServicesService.uploadHtmlFileToAwsS3Bucket(any())).thenReturn(any());
 
         ResponseEntity<Artefact> responseEntity = publicationController.uploadPublication(
@@ -425,7 +424,7 @@ class PublicationControllerTest {
 
     @Test
     void testUploadHtmlFileToS3BucketFailWebClientException() {
-        when(validationService.validateHeaders(any(), anyBoolean())).thenReturn(lcsuHeaders);
+        when(validationService.validateHeaders(any())).thenReturn(lcsuHeaders);
         WebClientResponseException webClientException =
             new WebClientResponseException("Failed to upload file",
                                            500, "Internal Server Error", null, null, null);

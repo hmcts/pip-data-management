@@ -231,7 +231,7 @@ class ValidationServiceTest extends IntegrationBasicTestBase {
 
         EmptyRequiredHeaderException thrown = assertThrows(
             EmptyRequiredHeaderException.class,
-            () -> validationService.validateHeaders(headerGroup, true),
+            () -> validationService.validateHeaders(headerGroup),
             "Expected exception when listType is null for LIST type"
         );
 

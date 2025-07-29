@@ -84,32 +84,16 @@ public class ValidationService {
         handleStringValidation(headers);
         handleDateValidation(headers);
         handleDefaultSensitivity(headers);
+        handleListValidation(headers);
 
         return headers;
     }
 
     /**
-     * Method that will perform additional validation when request is for FlatFile.
-     *
-     * @param headers - a hashmap of all the headers taken in by the endpoint. Importantly, this may contain nulls (i.e.
-     *                cannot be replaced with a ConcurrentHashMap.
-     * @param isFlatFile - a boolean parameter which will mention whether publication is flat file or not.
-     * @return Map(String, Object) - an amended version of the headers. If changes (i.e. conditional defaults)
-     *      are created, ensure the logic affects the headers map within this class.
-     */
-    public HeaderGroup validateHeaders(HeaderGroup headers, boolean isFlatFile) {
-        if (isFlatFile) {
-            validateHeadersForFlatFile(headers);
-        }
-        validateHeaders(headers);
-        return headers;
-    }
-
-    /**
-     * If incoming request file type is LIST, it must send LIST_TYPE header.
+     * If publication type is LIST, it must have LIST_TYPE header.
      * @param headers The headers to validate.
      */
-    private void validateHeadersForFlatFile(HeaderGroup headers) {
+    private void handleListValidation(HeaderGroup headers) {
         if (headers.getType().equals(ArtefactType.LIST)) {
             validateRequiredHeader(PublicationConfiguration.LIST_TYPE, headers.getListType());
         }
