@@ -322,7 +322,7 @@ class LocationApiTest extends LocationIntegrationTestBase {
     @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})
     void testCreateLocationsWithCsvContainingExistingLocationName() throws Exception {
         try (InputStream csvInputStream = this.getClass().getClassLoader()
-            .getResourceAsStream(CSV_WITH_DUPLICATED_LOCATION_NAME)) {
+            .getResourceAsStream(CSV_WITH_EXISTING_LOCATION_NAME)) {
             MockMultipartFile csvFile = new MockMultipartFile(LOCATION_LIST, csvInputStream);
 
             MvcResult mvcResult = mockMvc.perform(multipart(UPLOAD_API).file(csvFile))
@@ -353,7 +353,7 @@ class LocationApiTest extends LocationIntegrationTestBase {
         assertEquals(4, createdLocations.size(), VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
 
         try (InputStream csvInputStream = this.getClass().getClassLoader()
-                .getResourceAsStream(CSV_WITH_EXISTING_LOCATION_NAME)) {
+                .getResourceAsStream(CSV_WITH_DUPLICATED_LOCATION_NAME)) {
             MockMultipartFile csvFile = new MockMultipartFile(LOCATION_LIST, csvInputStream);
 
             MvcResult mvcResult = mockMvc.perform(multipart(UPLOAD_API).file(csvFile))
