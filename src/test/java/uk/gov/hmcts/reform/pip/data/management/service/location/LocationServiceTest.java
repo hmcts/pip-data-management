@@ -649,7 +649,7 @@ class LocationServiceTest {
 
         verify(locationRepository, times(1)).deleteById(locationId);
         verify(systemAdminNotificationService).sendEmailNotification(
-            EMAIL, ActionResult.SUCCEEDED, String.format(
+            EMAIL, userId, ActionResult.SUCCEEDED, String.format(
                 "Location %s with Id %s has been deleted.",
                 "NAME", locationId),
             ChangeType.DELETE_LOCATION
@@ -670,7 +670,7 @@ class LocationServiceTest {
         LocationDeletion result = locationService.deleteLocation(locationId, userId);
         assertTrue(result.isExists(), "Found active artefact for a court");
         verify(systemAdminNotificationService).sendEmailNotification(
-            EMAIL, ActionResult.ATTEMPTED,
+            EMAIL, userId, ActionResult.ATTEMPTED,
             String.format("There are active artefacts for following location: %s", LOCATION_NAME2),
             ChangeType.DELETE_LOCATION
         );
@@ -694,7 +694,7 @@ class LocationServiceTest {
         assertTrue(result.isExists(), "Found active subscription for a court");
 
         verify(systemAdminNotificationService).sendEmailNotification(
-            EMAIL, ActionResult.ATTEMPTED,
+            EMAIL, userId, ActionResult.ATTEMPTED,
             String.format("There are active subscriptions for the following location: %s", LOCATION_NAME2),
             ChangeType.DELETE_LOCATION
         );

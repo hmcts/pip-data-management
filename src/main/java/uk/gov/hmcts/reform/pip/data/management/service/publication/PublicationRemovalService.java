@@ -52,11 +52,11 @@ public class PublicationRemovalService {
     /**
      * Method that handles the logic to archive an artefact and delete the stored blobs.
      *
-     * @param artefactId The ID of the artefact to be deleted.
-     * @param issuerId   The ID of the admin user who is attempting to delete the artefact.
+     * @param artefactId    The ID of the artefact to be deleted.
+     * @param requesterId   The ID of the admin user who is attempting to delete the artefact.
      */
     @Transactional
-    public void archiveArtefactById(String artefactId, String issuerId) {
+    public void archiveArtefactById(String artefactId, String requesterId) {
         Artefact artefactToArchive = artefactRepository.findArtefactByArtefactId(artefactId)
             .orElseThrow(() -> new ArtefactNotFoundException("No artefact found with the ID: " + artefactId));
 
@@ -64,7 +64,7 @@ public class PublicationRemovalService {
         if (!NoMatchArtefactHelper.isNoMatchLocationId(artefactToArchive.getLocationId())) {
             accountManagementService.sendDeletedArtefactForThirdParties(artefactToArchive);
         }
-        log.info(writeLog(String.format("Artefact archived by %s, with artefact id: %s", issuerId, artefactId)));
+        log.info(writeLog(String.format("Artefact archived by %s, with artefact id: %s", requesterId, artefactId)));
     }
 
     /**
@@ -102,35 +102,33 @@ public class PublicationRemovalService {
     /**
      * Attempts to delete an artefact along with the stored blobs.
      *
-     * @param artefactId The ID of the artefact to be deleted.
-     * @param issuerId   The ID of the admin user who is attempting to delete the artefact.
+     * @param artefactId    The ID of the artefact to be deleted.
+     * @param requesterId   The ID of the admin user who is attempting to delete the artefact.
      */
-    public void deleteArtefactById(String artefactId, String issuerId) {
+    public void deleteArtefactById(String artefactId, String requesterId) {
         Artefact artefactToDelete = artefactRepository.findArtefactByArtefactId(artefactId)
             .orElseThrow(() -> new ArtefactNotFoundException("No artefact found with the ID: " + artefactId));
 
         handleArtefactDeletion(artefactToDelete);
-        log.info(writeLog(issuerId, UserActions.REMOVE, artefactId));
+        log.info(writeLog(requesterId, UserActions.REMOVE, artefactId));
     }
 
-    public void deleteArtefactByLocation(List<Artefact> artefactsToDelete, Integer locationId, String userId)
+    public void deleteArtefactByLocation(List<Artefact> artefactsToDelete, Integer locationId, String requesterId)
         throws JsonProcessingException {
         artefactsToDelete.forEach(artefact -> {
             handleArtefactDeletion(artefact);
             log.info(writeLog(
                 String.format("Artefact deleted by %s, with artefact id: %s",
-                              userId, artefact.getArtefactId())
+                        requesterId, artefact.getArtefactId())
             ));
         });
         Optional<Location> location = locationRepository.getLocationByLocationId(locationId);
 
-        PiUser userInfo = accountManagementService.getUserById(userId);
-        systemAdminNotificationService.sendEmailNotification(
-            userInfo.getEmail(), ActionResult.SUCCEEDED,
-            String.format("Total %s artefact(s) for location %s", artefactsToDelete.size(), location.isPresent()
-                    ? location.get().getName() : ""),
-            ChangeType.DELETE_LOCATION_ARTEFACT
-        );
+        PiUser userInfo = accountManagementService.getUserById(requesterId);
+        String locationName = location.isPresent() ? location.get().getName() : "";
+        systemAdminNotificationService.sendEmailNotification(userInfo.getEmail(), requesterId, ActionResult.SUCCEEDED,
+                String.format("Total %s artefact(s) for location %s", artefactsToDelete.size(), locationName),
+                ChangeType.DELETE_LOCATION_ARTEFACT);
     }
 
     public void deleteArtefacts(List<Artefact> artefacts) {
