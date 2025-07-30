@@ -93,4 +93,10 @@ class CustomExceptionsTest {
         ExcelConversionException excelConversionException = new ExcelConversionException(TEST_MESSAGE);
         assertEquals(TEST_MESSAGE, excelConversionException.getMessage(), ASSERTION_MESSAGE);
     }
+
+    @Test
+    void testLocationNameValidationException() {
+        LocationNameValidationException exception = new LocationNameValidationException(TEST_MESSAGE);
+        assertEquals(TEST_MESSAGE, exception.getMessage(), ASSERTION_MESSAGE);
+    }
 }

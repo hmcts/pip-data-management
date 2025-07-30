@@ -38,9 +38,6 @@ class CicWeeklyHearingListFileConverterTest {
     private static final String WELSH = "WELSH";
 
     private static final String HEADER_ELEMENT = "page-heading";
-    private static final String VENUE_LINE1_ELEMENT = "venue-line-1";
-    private static final String VENUE_LINE2_ELEMENT = "venue-line-2";
-    private static final String VENUE_LINE3_ELEMENT = "venue-line-3";
     private static final String LIST_DATE_ELEMENT = "list-date";
     private static final String LAST_UPDATED_DATE_ELEMENT = "last-updated-date";
     private static final String SUMMARY_TEXT_CLASS = "govuk-details__summary-text";
