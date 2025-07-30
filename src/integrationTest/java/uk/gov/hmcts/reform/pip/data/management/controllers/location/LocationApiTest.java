@@ -321,6 +321,9 @@ class LocationApiTest extends LocationIntegrationTestBase {
     @Test
     @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})
     void testCreateLocationsWithCsvContainingExistingLocationName() throws Exception {
+        List<Location> createdLocations = createLocations(LOCATIONS_CSV);
+        assertEquals(4, createdLocations.size(), VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
+
         try (InputStream csvInputStream = this.getClass().getClassLoader()
             .getResourceAsStream(CSV_WITH_EXISTING_LOCATION_NAME)) {
             MockMultipartFile csvFile = new MockMultipartFile(LOCATION_LIST, csvInputStream);
@@ -349,9 +352,6 @@ class LocationApiTest extends LocationIntegrationTestBase {
     @Test
     @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})
     void testCreateLocationsWithCsvContainingDuplicatedLocationName() throws Exception {
-        List<Location> createdLocations = createLocations(LOCATIONS_CSV);
-        assertEquals(4, createdLocations.size(), VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
-
         try (InputStream csvInputStream = this.getClass().getClassLoader()
                 .getResourceAsStream(CSV_WITH_DUPLICATED_LOCATION_NAME)) {
             MockMultipartFile csvFile = new MockMultipartFile(LOCATION_LIST, csvInputStream);
