@@ -51,6 +51,7 @@ class LocationTest extends FunctionalTestBase {
     private static final String GET_LOCATION_BY_ID_URL = BASE_LOCATIONS_URL + "/" + TEST_LOCATION_ID_ONE;
     private static final String GET_LOCATION_BY_NAME_URL = BASE_LOCATIONS_URL + "/name/" + TEST_LOCATION_NAME_ONE
         + "/language/ENGLISH";
+    private static final String GET_LOCATION_BY_NAME_V2_URL = BASE_LOCATIONS_URL + "/name";
     private static final String GET_LOCATION_BY_REGION_AND_JURISDICTION_URL = BASE_LOCATIONS_URL + "/filter";
     private static final String DOWNLOAD_CSV_LOCATIONS_URL = BASE_LOCATIONS_URL + "/download/csv";
     private static final String TESTING_SUPPORT_LOCATION_URL = "/testing-support/location/";
@@ -64,6 +65,7 @@ class LocationTest extends FunctionalTestBase {
     }
 
     @Test
+    @SuppressWarnings("PMD.NcssCount")
     void locationControllerHappyPathTests() {
         Map<String, String> headerMapUploadLocations = Map.of(AUTHORIZATION, BEARER + accessToken,
                                                               "Content-Type", MediaType.MULTIPART_FORM_DATA_VALUE
@@ -140,6 +142,16 @@ class LocationTest extends FunctionalTestBase {
         Location returnedLocationByName = responseGetLocationByName.as(Location.class);
         assertThat(returnedLocationByName.getLocationId()).isEqualTo(TEST_LOCATION_ID_ONE);
         assertThat(returnedLocationByName.getName()).isEqualTo(TEST_LOCATION_NAME_ONE);
+
+        final Response responseGetLocationByNameV2 = doGetRequest(
+            GET_LOCATION_BY_NAME_V2_URL,
+            getBaseHeaderMap(),
+            Map.of("locationName", TEST_LOCATION_NAME_ONE, "language", "en")
+        );
+        assertThat(responseGetLocationByNameV2.getStatusCode()).isEqualTo(OK.value());
+        Location returnedLocationByNameV2 = responseGetLocationByNameV2.as(Location.class);
+        assertThat(returnedLocationByNameV2.getLocationId()).isEqualTo(TEST_LOCATION_ID_ONE);
+        assertThat(returnedLocationByNameV2.getName()).isEqualTo(TEST_LOCATION_NAME_ONE);
 
 
         Map<String, Object> queryParameters = Map.of(
