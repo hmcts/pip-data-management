@@ -162,7 +162,7 @@ public class PublicationController {
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime displayFrom,
         @RequestHeader(value = PublicationConfiguration.DISPLAY_TO_HEADER, required = false)
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime displayTo,
-        @RequestHeader(PublicationConfiguration.LIST_TYPE) ListType listType,
+        @RequestHeader(value = PublicationConfiguration.LIST_TYPE, required = false) ListType listType,
         @RequestHeader(PublicationConfiguration.COURT_ID) String courtId,
         @RequestHeader(PublicationConfiguration.CONTENT_DATE)
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime contentDate,
@@ -299,7 +299,7 @@ public class PublicationController {
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime displayFrom,
         @RequestHeader(value = PublicationConfiguration.DISPLAY_TO_HEADER, required = false)
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime displayTo,
-        @RequestHeader(PublicationConfiguration.LIST_TYPE) ListType listType,
+        @RequestHeader(value = PublicationConfiguration.LIST_TYPE, required = false) ListType listType,
         @RequestHeader(PublicationConfiguration.COURT_ID) String courtId,
         @RequestHeader(PublicationConfiguration.CONTENT_DATE)
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime contentDate,
