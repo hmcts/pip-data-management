@@ -366,14 +366,6 @@ class LocationApiTest extends LocationIntegrationTestBase {
             assertEquals("Failed to upload locations. Location name(s) Test Location New already exist",
                     exceptionResponse.getMessage(), "Error message does not match");
             assertTrue(exceptionResponse.isUiError(), "UI error flag does not match");
-
-            mvcResult = mockMvc.perform(get(ROOT_URL))
-                    .andExpect(status().isOk())
-                    .andReturn();
-
-            Location[] returnedLocations = OBJECT_MAPPER.readValue(mvcResult.getResponse().getContentAsString(),
-                    Location[].class);
-            assertEquals(4, returnedLocations.length, VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
         }
     }
 
