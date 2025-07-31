@@ -1,0 +1,79 @@
+{
+  "document": {
+    "info": {
+      "parameters": {
+        "pi_run_date": "31/07/2025"
+      },
+      "start_time": "09:05:02"
+    },
+    "data": {
+      "job": {
+        "printdate": "31/07/2025",
+        "sessions": {
+          "session": [
+            {
+              "doh": "01/08/2025",
+              "lja": "North Northumbria Magistrates' Court",
+              "court": "North Shields Magistrates' Court",
+              "room": 1,
+              "sstart": "09:00",
+              "blocks": {
+                "block": [
+                  {
+                    "bstart": "09:00",
+                    "cases": {
+                      "case": [
+                        {
+                          "caseno": "1000000000",
+                          "def_name": "Mr Test User",
+                          "def_dob": "06/11/1975",
+                          "def_age": 50,
+                          "def_addr": {
+                            "line1": "1 High Street",
+                            "line5": "London",
+                            "pcode": "SW1A 1AA"
+                          },
+                          "inf": "POL01",
+                          "offences": {
+                            "offence": [
+                              {
+                               "code": "TH68001",
+                               "title": "Offence title 1",
+                               "sum": "Offence summary 1"
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "caseno": "1000000001",
+                          "def_name": "Mrs Test User",
+                          "def_dob": "01/07/1981",
+                          "def_age": 44,
+                          "def_addr": {
+                            "line1": "1 High Street",
+                            "line5": "London",
+                            "pcode": "SW1A 1AA"
+                          },
+                          "inf": "POL02",
+                          "offences": {
+                            "offence": [
+                              {
+                                "code": "TH68002",
+                                "title": "Offence title 2",
+                                "sum": "Offence summary 2"
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    }
+  }
+}
