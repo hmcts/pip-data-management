@@ -21,8 +21,24 @@ import java.nio.charset.StandardCharsets;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
+import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConfiguration.additionalInformationListMandatoryAttributes;
+import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConfiguration.appealReferenceNumberListMandatoryAttributes;
+import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConfiguration.appellantListMandatoryAttributes;
+import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConfiguration.caseDetailsListMandatoryAttributes;
+import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConfiguration.caseNameListMandatoryAttributes;
+import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConfiguration.caseNumberListMandatoryAttributes;
+import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConfiguration.caseReferenceNumberListMandatoryAttributes;
+import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConfiguration.caseTypeListMandatoryAttributes;
+import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConfiguration.dateListMandatoryAttributes;
+import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConfiguration.hearingTimeListMandatoryAttributes;
+import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConfiguration.hearingTypeListMandatoryAttributes;
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConfiguration.judgeListMandatoryAttributes;
+import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConfiguration.judgesListMandatoryAttributes;
+import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConfiguration.membersListMandatoryAttributes;
+import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConfiguration.timeListMandatoryAttributes;
+import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConfiguration.typeListMandatoryAttributes;
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConfiguration.venueListMandatoryAttributes;
+import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConfiguration.venuePlatformListMandatoryAttributes;
 
 @ActiveProfiles("integration-basic")
 @SpringBootTest
@@ -32,10 +48,27 @@ public class NonStrategicSchemaValidationTests  extends IntegrationBasicTestBase
     ValidationService validationService;
 
     public static Stream<Arguments> allMandatoryAttributes() {
-        return Stream.concat(
-            venueListMandatoryAttributes(),
-            judgeListMandatoryAttributes()
-        );
+        return Stream.of(
+                venueListMandatoryAttributes(),
+                judgeListMandatoryAttributes(),
+                timeListMandatoryAttributes(),
+                typeListMandatoryAttributes(),
+                caseNumberListMandatoryAttributes(),
+                caseNameListMandatoryAttributes(),
+                additionalInformationListMandatoryAttributes(),
+                appellantListMandatoryAttributes(),
+                appealReferenceNumberListMandatoryAttributes(),
+                caseTypeListMandatoryAttributes(),
+                hearingTypeListMandatoryAttributes(),
+                hearingTimeListMandatoryAttributes(),
+                caseDetailsListMandatoryAttributes(),
+                dateListMandatoryAttributes(),
+                caseReferenceNumberListMandatoryAttributes(),
+                venuePlatformListMandatoryAttributes(),
+                membersListMandatoryAttributes(),
+                judgesListMandatoryAttributes()
+            )
+            .flatMap(stream -> stream);
     }
 
     private record TestData(HeaderGroup headerGroup, JsonNode jsonNode) {}
