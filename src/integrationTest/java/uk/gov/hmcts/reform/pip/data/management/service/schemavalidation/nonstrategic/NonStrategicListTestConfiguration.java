@@ -19,7 +19,27 @@ public class NonStrategicListTestConfiguration {
     public static final ArtefactType ARTEFACT_TYPE = ArtefactType.LIST;
     public static final String COURT_ID = "123";
     public static final LocalDateTime CONTENT_DATE = LocalDateTime.now();
+    public static final String VENUE = "venue";
+    public static final String JUDGE = "judge";
+    public static final String TIME = "time";
+    public static final String TYPE = "type";
+    public static final String CASE_NUMBER = "caseNumber";
+    public static final String CASE_NAME = "caseName";
+    public static final String ADDITIONAL_INFORMATION = "additionalInformation";
+    public static final String APPELLANT = "appellant";
+    public static final String APPEAL_REFERENCE_NUMBER = "appealReferenceNumber";
     public static final String PARENT_JSON_FILE_PATH = "data/non-strategic";
+    public static final String CASE_TYPE = "caseType";
+    public static final String HEARING_TYPE = "hearingType";
+    public static final String HEARING_TIME = "hearingTime";
+    public static final String CASE_DETAILS = "caseDetails";
+    public static final String DATE = "date";
+    public static final String CASE_REFERENCE_NUMBER = "caseReferenceNumber";
+    public static final String VENUE_PLATFORM = "venue/platform";
+    public static final String MEMBERS = "members";
+    public static final String JUDGES = "judges";
+    public static final String HEARING_LIST_NODE = "hearingList";
+    public static final String FUTURE_JUDGMENTS_NODE = "futureJudgments";
     public static final String ADMIRALTY_COURT_KB_DAILY_CAUSE_LIST_JSON_FILE_PATH =
         PARENT_JSON_FILE_PATH + "/admiralty_court_kb_daily_cause_list/admiraltyCourtKbDailyCauseList.json";
     public static final String AST_DAILY_HEARING_LIST_JSON_FILE_PATH =
@@ -44,6 +64,8 @@ public class NonStrategicListTestConfiguration {
         PARENT_JSON_FILE_PATH + "/county-court-london-civil-daily-cause-list/countyCourtLondonCivilDailyCauseList.json";
     public static final String COURT_OF_APPEAL_CIVIL_DAILY_CAUSE_LIST_JSON_FILE_PATH = PARENT_JSON_FILE_PATH
         + "/court-of-appeal-civil-daily-cause-list/courtOfAppealCivilDailyCauseList.json";
+    public static final String COURT_OF_APPEAL_CRIMINAL_DAILY_CAUSE_LIST_JSON_FILE_PATH = PARENT_JSON_FILE_PATH
+        + "/court-of-appeal-criminal-daily-cause-list/courtOfAppealCriminalDailyCauseList.json";
 
     public record ListTypeConfig(ListType listType, String jsonFilePath, String validationField, String parentNode) {
         public ListTypeConfig {
@@ -64,61 +86,60 @@ public class NonStrategicListTestConfiguration {
             Arguments.of(new ListTypeConfig(
                 ListType.ADMIRALTY_COURT_KB_DAILY_CAUSE_LIST,
                 ADMIRALTY_COURT_KB_DAILY_CAUSE_LIST_JSON_FILE_PATH,
-                "venue")),
+                VENUE)),
             Arguments.of(new ListTypeConfig(
                 ListType.BIRMINGHAM_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
                 ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST_JSON_FILE_PATH,
-                "venue")),
+                VENUE)),
             Arguments.of(new ListTypeConfig(
                 ListType.BRISTOL_AND_CARDIFF_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
                 ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST_JSON_FILE_PATH,
-                "venue")),
+                VENUE)),
             Arguments.of(new ListTypeConfig(
                 ListType.BUSINESS_LIST_CHD_DAILY_CAUSE_LIST,
                 BUSINESS_LIST_CHD_DAILY_CAUSE_LIST_JSON_FILE_PATH,
-                "venue")),
+                VENUE)),
             Arguments.of(new ListTypeConfig(
                 ListType.CHANCERY_APPEALS_CHD_DAILY_CAUSE_LIST,
                 CHANCERY_APPEALS_CHD_DAILY_CAUSE_LIST_JSON_FILE_PATH,
-                "venue")),
+                VENUE)),
             Arguments.of(new ListTypeConfig(
                 ListType.CIVIL_COURTS_RCJ_DAILY_CAUSE_LIST,
                 CIVIL_COURTS_RCJ_DAILY_CAUSE_LIST_JSON_FILE_PATH,
-                "venue")),
+                VENUE)),
             Arguments.of(new ListTypeConfig(
                 ListType.COMMERCIAL_COURT_KB_DAILY_CAUSE_LIST,
                 COMMERCIAL_COURT_KB_DAILY_CAUSE_LIST_JSON_FILE_PATH,
-                "venue")),
+                VENUE)),
             Arguments.of(new ListTypeConfig(
                 ListType.COMPANIES_WINDING_UP_CHD_DAILY_CAUSE_LIST,
                 COMPANIES_WINDING_UP_CHD_DAILY_CAUSE_LIST_JSON_FILE_PATH,
-                "venue")),
+                VENUE)),
             Arguments.of(new ListTypeConfig(
                 ListType.COMPETITION_LIST_CHD_DAILY_CAUSE_LIST,
                 COMPETITION_LIST_CHD_DAILY_CAUSE_LIST_JSON_FILE_PATH,
-                "venue")),
+                VENUE)),
             Arguments.of(new ListTypeConfig(
                 ListType.COUNTY_COURT_LONDON_CIVIL_DAILY_CAUSE_LIST,
                 COUNTY_COURT_LONDON_CIVIL_DAILY_CAUSE_LIST_JSON_FILE_PATH,
-                "venue")),
+                VENUE)),
             Arguments.of(new ListTypeConfig(
                 ListType.COURT_OF_APPEAL_CIVIL_DAILY_CAUSE_LIST,
                 COURT_OF_APPEAL_CIVIL_DAILY_CAUSE_LIST_JSON_FILE_PATH,
-                "venue", "hearingList")),
+                VENUE, HEARING_LIST_NODE)),
             Arguments.of(new ListTypeConfig(
                 ListType.COURT_OF_APPEAL_CIVIL_DAILY_CAUSE_LIST,
                 COURT_OF_APPEAL_CIVIL_DAILY_CAUSE_LIST_JSON_FILE_PATH,
-                "venue", "futureJudgments")),
+                VENUE, FUTURE_JUDGMENTS_NODE)),
             Arguments.of(new ListTypeConfig(
                 ListType.COURT_OF_APPEAL_CRIMINAL_DAILY_CAUSE_LIST,
-                PARENT_JSON_FILE_PATH
-                    + "/court-of-appeal-criminal-daily-cause-list/courtOfAppealCriminalDailyCauseList.json",
-                "venue")),
+                COURT_OF_APPEAL_CRIMINAL_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                VENUE)),
             Arguments.of(new ListTypeConfig(
                 ListType.CST_WEEKLY_HEARING_LIST,
                 PARENT_JSON_FILE_PATH
                     + "/cst-weekly-hearing-list/cstWeeklyHearingList.json",
-                "venue"))
+                VENUE))
         );
     }
 
@@ -127,51 +148,55 @@ public class NonStrategicListTestConfiguration {
             Arguments.of(new ListTypeConfig(
                 ListType.ADMIRALTY_COURT_KB_DAILY_CAUSE_LIST,
                 ADMIRALTY_COURT_KB_DAILY_CAUSE_LIST_JSON_FILE_PATH,
-                "judge")),
+                JUDGE)),
             Arguments.of(new ListTypeConfig(
                 ListType.BIRMINGHAM_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
                 ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST_JSON_FILE_PATH,
-                "judge")),
+                JUDGE)),
             Arguments.of(new ListTypeConfig(
                 ListType.BRISTOL_AND_CARDIFF_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
                 ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST_JSON_FILE_PATH,
-                "judge")),
+                JUDGE)),
             Arguments.of(new ListTypeConfig(
                 ListType.BUSINESS_LIST_CHD_DAILY_CAUSE_LIST,
                 BUSINESS_LIST_CHD_DAILY_CAUSE_LIST_JSON_FILE_PATH,
-                "judge")),
+                JUDGE)),
             Arguments.of(new ListTypeConfig(
                 ListType.CHANCERY_APPEALS_CHD_DAILY_CAUSE_LIST,
                 CHANCERY_APPEALS_CHD_DAILY_CAUSE_LIST_JSON_FILE_PATH,
-                "judge")),
+                JUDGE)),
             Arguments.of(new ListTypeConfig(
                 ListType.CIVIL_COURTS_RCJ_DAILY_CAUSE_LIST,
                 CIVIL_COURTS_RCJ_DAILY_CAUSE_LIST_JSON_FILE_PATH,
-                "judge")),
+                JUDGE)),
             Arguments.of(new ListTypeConfig(
                 ListType.COMMERCIAL_COURT_KB_DAILY_CAUSE_LIST,
                 COMMERCIAL_COURT_KB_DAILY_CAUSE_LIST_JSON_FILE_PATH,
-                "judge")),
+                JUDGE)),
             Arguments.of(new ListTypeConfig(
                 ListType.COMPANIES_WINDING_UP_CHD_DAILY_CAUSE_LIST,
                 COMPANIES_WINDING_UP_CHD_DAILY_CAUSE_LIST_JSON_FILE_PATH,
-                "judge")),
+                JUDGE)),
             Arguments.of(new ListTypeConfig(
                 ListType.COMPETITION_LIST_CHD_DAILY_CAUSE_LIST,
                 COMPETITION_LIST_CHD_DAILY_CAUSE_LIST_JSON_FILE_PATH,
-                "judge")),
+                JUDGE)),
             Arguments.of(new ListTypeConfig(
                 ListType.COUNTY_COURT_LONDON_CIVIL_DAILY_CAUSE_LIST,
                 COUNTY_COURT_LONDON_CIVIL_DAILY_CAUSE_LIST_JSON_FILE_PATH,
-                "judge")),
+                JUDGE)),
             Arguments.of(new ListTypeConfig(
                 ListType.COURT_OF_APPEAL_CIVIL_DAILY_CAUSE_LIST,
                 COURT_OF_APPEAL_CIVIL_DAILY_CAUSE_LIST_JSON_FILE_PATH,
-                "judge", "hearingList")),
+                JUDGE, HEARING_LIST_NODE)),
             Arguments.of(new ListTypeConfig(
                 ListType.COURT_OF_APPEAL_CIVIL_DAILY_CAUSE_LIST,
                 COURT_OF_APPEAL_CIVIL_DAILY_CAUSE_LIST_JSON_FILE_PATH,
-                "judge", "futureJudgments"))
+                JUDGE, FUTURE_JUDGMENTS_NODE)),
+            Arguments.of(new ListTypeConfig(
+                ListType.COURT_OF_APPEAL_CRIMINAL_DAILY_CAUSE_LIST,
+                COURT_OF_APPEAL_CRIMINAL_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                JUDGE))
         );
     }
 
@@ -180,51 +205,55 @@ public class NonStrategicListTestConfiguration {
             Arguments.of(new ListTypeConfig(
                 ListType.ADMIRALTY_COURT_KB_DAILY_CAUSE_LIST,
                 ADMIRALTY_COURT_KB_DAILY_CAUSE_LIST_JSON_FILE_PATH,
-                "time")),
+                TIME)),
             Arguments.of(new ListTypeConfig(
                 ListType.BIRMINGHAM_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
                 ADMIRALTY_COURT_KB_DAILY_CAUSE_LIST_JSON_FILE_PATH,
-                "time")),
+                TIME)),
             Arguments.of(new ListTypeConfig(
                 ListType.BRISTOL_AND_CARDIFF_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
                 ADMIRALTY_COURT_KB_DAILY_CAUSE_LIST_JSON_FILE_PATH,
-                "time")),
+                TIME)),
             Arguments.of(new ListTypeConfig(
                 ListType.BUSINESS_LIST_CHD_DAILY_CAUSE_LIST,
                 BUSINESS_LIST_CHD_DAILY_CAUSE_LIST_JSON_FILE_PATH,
-                "time")),
+                TIME)),
             Arguments.of(new ListTypeConfig(
                 ListType.CHANCERY_APPEALS_CHD_DAILY_CAUSE_LIST,
                 CHANCERY_APPEALS_CHD_DAILY_CAUSE_LIST_JSON_FILE_PATH,
-                "time")),
+                TIME)),
             Arguments.of(new ListTypeConfig(
                 ListType.CIVIL_COURTS_RCJ_DAILY_CAUSE_LIST,
                 CIVIL_COURTS_RCJ_DAILY_CAUSE_LIST_JSON_FILE_PATH,
-                "time")),
+                TIME)),
             Arguments.of(new ListTypeConfig(
                 ListType.COMMERCIAL_COURT_KB_DAILY_CAUSE_LIST,
                 COMMERCIAL_COURT_KB_DAILY_CAUSE_LIST_JSON_FILE_PATH,
-                "time")),
+                TIME)),
             Arguments.of(new ListTypeConfig(
                 ListType.COMPANIES_WINDING_UP_CHD_DAILY_CAUSE_LIST,
                 COMPANIES_WINDING_UP_CHD_DAILY_CAUSE_LIST_JSON_FILE_PATH,
-                "time")),
+                TIME)),
             Arguments.of(new ListTypeConfig(
                 ListType.COMPETITION_LIST_CHD_DAILY_CAUSE_LIST,
                 COMPETITION_LIST_CHD_DAILY_CAUSE_LIST_JSON_FILE_PATH,
-                "time")),
+                TIME)),
             Arguments.of(new ListTypeConfig(
                 ListType.COUNTY_COURT_LONDON_CIVIL_DAILY_CAUSE_LIST,
                 COUNTY_COURT_LONDON_CIVIL_DAILY_CAUSE_LIST_JSON_FILE_PATH,
-                "time")),
+                TIME)),
             Arguments.of(new ListTypeConfig(
                 ListType.COURT_OF_APPEAL_CIVIL_DAILY_CAUSE_LIST,
                 COURT_OF_APPEAL_CIVIL_DAILY_CAUSE_LIST_JSON_FILE_PATH,
-                "time", "hearingList")),
+                TIME, HEARING_LIST_NODE)),
             Arguments.of(new ListTypeConfig(
                 ListType.COURT_OF_APPEAL_CIVIL_DAILY_CAUSE_LIST,
                 COURT_OF_APPEAL_CIVIL_DAILY_CAUSE_LIST_JSON_FILE_PATH,
-                "time", "futureJudgments"))
+                TIME, FUTURE_JUDGMENTS_NODE)),
+            Arguments.of(new ListTypeConfig(
+                ListType.COURT_OF_APPEAL_CRIMINAL_DAILY_CAUSE_LIST,
+                COURT_OF_APPEAL_CRIMINAL_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                TIME))
         );
     }
 
@@ -233,27 +262,27 @@ public class NonStrategicListTestConfiguration {
             Arguments.of(new ListTypeConfig(
                 ListType.ADMIRALTY_COURT_KB_DAILY_CAUSE_LIST,
                 ADMIRALTY_COURT_KB_DAILY_CAUSE_LIST_JSON_FILE_PATH,
-                "type")),
+                TYPE)),
             Arguments.of(new ListTypeConfig(
                 ListType.BUSINESS_LIST_CHD_DAILY_CAUSE_LIST,
                 BUSINESS_LIST_CHD_DAILY_CAUSE_LIST_JSON_FILE_PATH,
-                "type")),
+                TYPE)),
             Arguments.of(new ListTypeConfig(
                 ListType.CHANCERY_APPEALS_CHD_DAILY_CAUSE_LIST,
                 CHANCERY_APPEALS_CHD_DAILY_CAUSE_LIST_JSON_FILE_PATH,
-                "type")),
+                TYPE)),
             Arguments.of(new ListTypeConfig(
                 ListType.COMMERCIAL_COURT_KB_DAILY_CAUSE_LIST,
                 COMMERCIAL_COURT_KB_DAILY_CAUSE_LIST_JSON_FILE_PATH,
-                "type")),
+                TYPE)),
             Arguments.of(new ListTypeConfig(
                 ListType.COMPANIES_WINDING_UP_CHD_DAILY_CAUSE_LIST,
                 COMPANIES_WINDING_UP_CHD_DAILY_CAUSE_LIST_JSON_FILE_PATH,
-                "type")),
+                TYPE)),
             Arguments.of(new ListTypeConfig(
                 ListType.COMPETITION_LIST_CHD_DAILY_CAUSE_LIST,
                 COMPETITION_LIST_CHD_DAILY_CAUSE_LIST_JSON_FILE_PATH,
-                "type"))
+                TYPE))
         );
     }
 
@@ -262,51 +291,55 @@ public class NonStrategicListTestConfiguration {
             Arguments.of(new ListTypeConfig(
                 ListType.ADMIRALTY_COURT_KB_DAILY_CAUSE_LIST,
                 ADMIRALTY_COURT_KB_DAILY_CAUSE_LIST_JSON_FILE_PATH,
-                "caseNumber")),
+                CASE_NUMBER)),
             Arguments.of(new ListTypeConfig(
                 ListType.BIRMINGHAM_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
                 ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST_JSON_FILE_PATH,
-                "caseNumber")),
+                CASE_NUMBER)),
             Arguments.of(new ListTypeConfig(
                 ListType.BRISTOL_AND_CARDIFF_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
                 ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST_JSON_FILE_PATH,
-                "caseNumber")),
+                CASE_NUMBER)),
             Arguments.of(new ListTypeConfig(
                 ListType.BUSINESS_LIST_CHD_DAILY_CAUSE_LIST,
                 BUSINESS_LIST_CHD_DAILY_CAUSE_LIST_JSON_FILE_PATH,
-                "caseNumber")),
+                CASE_NUMBER)),
             Arguments.of(new ListTypeConfig(
                 ListType.CHANCERY_APPEALS_CHD_DAILY_CAUSE_LIST,
                 CHANCERY_APPEALS_CHD_DAILY_CAUSE_LIST_JSON_FILE_PATH,
-                "caseNumber")),
+                CASE_NUMBER)),
             Arguments.of(new ListTypeConfig(
                 ListType.CIVIL_COURTS_RCJ_DAILY_CAUSE_LIST,
                 CIVIL_COURTS_RCJ_DAILY_CAUSE_LIST_JSON_FILE_PATH,
-                "caseNumber")),
+                CASE_NUMBER)),
             Arguments.of(new ListTypeConfig(
                 ListType.COMMERCIAL_COURT_KB_DAILY_CAUSE_LIST,
                 COMMERCIAL_COURT_KB_DAILY_CAUSE_LIST_JSON_FILE_PATH,
-                "caseNumber")),
+                CASE_NUMBER)),
             Arguments.of(new ListTypeConfig(
                 ListType.COMPANIES_WINDING_UP_CHD_DAILY_CAUSE_LIST,
                 COMPANIES_WINDING_UP_CHD_DAILY_CAUSE_LIST_JSON_FILE_PATH,
-                "caseNumber")),
+                CASE_NUMBER)),
             Arguments.of(new ListTypeConfig(
                 ListType.COMPETITION_LIST_CHD_DAILY_CAUSE_LIST,
                 COMPETITION_LIST_CHD_DAILY_CAUSE_LIST_JSON_FILE_PATH,
-                "caseNumber")),
+                CASE_NUMBER)),
             Arguments.of(new ListTypeConfig(
                 ListType.COUNTY_COURT_LONDON_CIVIL_DAILY_CAUSE_LIST,
                 COUNTY_COURT_LONDON_CIVIL_DAILY_CAUSE_LIST_JSON_FILE_PATH,
-                "caseNumber")),
+                CASE_NUMBER)),
             Arguments.of(new ListTypeConfig(
                 ListType.COURT_OF_APPEAL_CIVIL_DAILY_CAUSE_LIST,
                 COURT_OF_APPEAL_CIVIL_DAILY_CAUSE_LIST_JSON_FILE_PATH,
-                "caseNumber", "hearingList")),
+                CASE_NUMBER, HEARING_LIST_NODE)),
             Arguments.of(new ListTypeConfig(
                 ListType.COURT_OF_APPEAL_CIVIL_DAILY_CAUSE_LIST,
                 COURT_OF_APPEAL_CIVIL_DAILY_CAUSE_LIST_JSON_FILE_PATH,
-                "caseNumber", "futureJudgments"))
+                CASE_NUMBER, FUTURE_JUDGMENTS_NODE)),
+            Arguments.of(new ListTypeConfig(
+                ListType.COURT_OF_APPEAL_CRIMINAL_DAILY_CAUSE_LIST,
+                COURT_OF_APPEAL_CRIMINAL_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                CASE_NUMBER))
         );
     }
 
@@ -315,31 +348,31 @@ public class NonStrategicListTestConfiguration {
             Arguments.of(new ListTypeConfig(
                 ListType.ADMIRALTY_COURT_KB_DAILY_CAUSE_LIST,
                 ADMIRALTY_COURT_KB_DAILY_CAUSE_LIST_JSON_FILE_PATH,
-                "caseName")),
+                CASE_NAME)),
             Arguments.of(new ListTypeConfig(
                 ListType.BUSINESS_LIST_CHD_DAILY_CAUSE_LIST,
                 BUSINESS_LIST_CHD_DAILY_CAUSE_LIST_JSON_FILE_PATH,
-                "caseName")),
+                CASE_NAME)),
             Arguments.of(new ListTypeConfig(
                 ListType.CHANCERY_APPEALS_CHD_DAILY_CAUSE_LIST,
                 CHANCERY_APPEALS_CHD_DAILY_CAUSE_LIST_JSON_FILE_PATH,
-                "caseName")),
+                CASE_NAME)),
             Arguments.of(new ListTypeConfig(
                 ListType.CIC_WEEKLY_HEARING_LIST,
                 CIC_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
-                "caseName")),
+                CASE_NAME)),
             Arguments.of(new ListTypeConfig(
                 ListType.COMMERCIAL_COURT_KB_DAILY_CAUSE_LIST,
                 COMMERCIAL_COURT_KB_DAILY_CAUSE_LIST_JSON_FILE_PATH,
-                "caseName")),
+                CASE_NAME)),
             Arguments.of(new ListTypeConfig(
                 ListType.COMPANIES_WINDING_UP_CHD_DAILY_CAUSE_LIST,
                 COMPANIES_WINDING_UP_CHD_DAILY_CAUSE_LIST_JSON_FILE_PATH,
-                "caseName")),
+                CASE_NAME)),
             Arguments.of(new ListTypeConfig(
                 ListType.COMPETITION_LIST_CHD_DAILY_CAUSE_LIST,
                 COMPETITION_LIST_CHD_DAILY_CAUSE_LIST_JSON_FILE_PATH,
-                "caseName"))
+                CASE_NAME))
         );
     }
 
@@ -348,59 +381,63 @@ public class NonStrategicListTestConfiguration {
             Arguments.of(new ListTypeConfig(
                 ListType.ADMIRALTY_COURT_KB_DAILY_CAUSE_LIST,
                 ADMIRALTY_COURT_KB_DAILY_CAUSE_LIST_JSON_FILE_PATH,
-                "additionalInformation")),
+                ADDITIONAL_INFORMATION)),
             Arguments.of(new ListTypeConfig(
                 ListType.AST_DAILY_HEARING_LIST,
                 AST_DAILY_HEARING_LIST_JSON_FILE_PATH,
-                "additionalInformation")),
+                ADDITIONAL_INFORMATION)),
             Arguments.of(new ListTypeConfig(
                 ListType.BIRMINGHAM_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
                 ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST_JSON_FILE_PATH,
-                "additionalInformation")),
+                ADDITIONAL_INFORMATION)),
             Arguments.of(new ListTypeConfig(
                 ListType.BRISTOL_AND_CARDIFF_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
                 ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST_JSON_FILE_PATH,
-                "additionalInformation")),
+                ADDITIONAL_INFORMATION)),
             Arguments.of(new ListTypeConfig(
                 ListType.BUSINESS_LIST_CHD_DAILY_CAUSE_LIST,
                 BUSINESS_LIST_CHD_DAILY_CAUSE_LIST_JSON_FILE_PATH,
-                "additionalInformation")),
+                ADDITIONAL_INFORMATION)),
             Arguments.of(new ListTypeConfig(
                 ListType.CHANCERY_APPEALS_CHD_DAILY_CAUSE_LIST,
                 CHANCERY_APPEALS_CHD_DAILY_CAUSE_LIST_JSON_FILE_PATH,
-                "additionalInformation")),
+                ADDITIONAL_INFORMATION)),
             Arguments.of(new ListTypeConfig(
                 ListType.CIC_WEEKLY_HEARING_LIST,
                 CIC_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
-                "additionalInformation")),
+                ADDITIONAL_INFORMATION)),
             Arguments.of(new ListTypeConfig(
                 ListType.CIVIL_COURTS_RCJ_DAILY_CAUSE_LIST,
                 CIVIL_COURTS_RCJ_DAILY_CAUSE_LIST_JSON_FILE_PATH,
-                "additionalInformation")),
+                ADDITIONAL_INFORMATION)),
             Arguments.of(new ListTypeConfig(
                 ListType.COMMERCIAL_COURT_KB_DAILY_CAUSE_LIST,
                 COMMERCIAL_COURT_KB_DAILY_CAUSE_LIST_JSON_FILE_PATH,
-                "additionalInformation")),
+                ADDITIONAL_INFORMATION)),
             Arguments.of(new ListTypeConfig(
                 ListType.COMPANIES_WINDING_UP_CHD_DAILY_CAUSE_LIST,
                 COMPANIES_WINDING_UP_CHD_DAILY_CAUSE_LIST_JSON_FILE_PATH,
-                "additionalInformation")),
+                ADDITIONAL_INFORMATION)),
             Arguments.of(new ListTypeConfig(
                 ListType.COMPETITION_LIST_CHD_DAILY_CAUSE_LIST,
                 COMPETITION_LIST_CHD_DAILY_CAUSE_LIST_JSON_FILE_PATH,
-                "additionalInformation")),
+                ADDITIONAL_INFORMATION)),
             Arguments.of(new ListTypeConfig(
                 ListType.COUNTY_COURT_LONDON_CIVIL_DAILY_CAUSE_LIST,
                 COUNTY_COURT_LONDON_CIVIL_DAILY_CAUSE_LIST_JSON_FILE_PATH,
-                "additionalInformation")),
+                ADDITIONAL_INFORMATION)),
             Arguments.of(new ListTypeConfig(
                 ListType.COURT_OF_APPEAL_CIVIL_DAILY_CAUSE_LIST,
                 COURT_OF_APPEAL_CIVIL_DAILY_CAUSE_LIST_JSON_FILE_PATH,
-                "additionalInformation", "hearingList")),
+                ADDITIONAL_INFORMATION, HEARING_LIST_NODE)),
             Arguments.of(new ListTypeConfig(
                 ListType.COURT_OF_APPEAL_CIVIL_DAILY_CAUSE_LIST,
                 COURT_OF_APPEAL_CIVIL_DAILY_CAUSE_LIST_JSON_FILE_PATH,
-                "additionalInformation", "futureJudgments"))
+                ADDITIONAL_INFORMATION, FUTURE_JUDGMENTS_NODE)),
+            Arguments.of(new ListTypeConfig(
+                ListType.COURT_OF_APPEAL_CRIMINAL_DAILY_CAUSE_LIST,
+                COURT_OF_APPEAL_CRIMINAL_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                ADDITIONAL_INFORMATION))
         );
     }
 
@@ -409,7 +446,7 @@ public class NonStrategicListTestConfiguration {
             Arguments.of(new ListTypeConfig(
                 ListType.AST_DAILY_HEARING_LIST,
                 AST_DAILY_HEARING_LIST_JSON_FILE_PATH,
-                "appellant"))
+                APPELLANT))
         );
     }
 
@@ -418,7 +455,7 @@ public class NonStrategicListTestConfiguration {
             Arguments.of(new ListTypeConfig(
                 ListType.AST_DAILY_HEARING_LIST,
                 AST_DAILY_HEARING_LIST_JSON_FILE_PATH,
-                "appealReferenceNumber"))
+                APPEAL_REFERENCE_NUMBER))
         );
     }
 
@@ -427,7 +464,7 @@ public class NonStrategicListTestConfiguration {
             Arguments.of(new ListTypeConfig(
                 ListType.AST_DAILY_HEARING_LIST,
                 AST_DAILY_HEARING_LIST_JSON_FILE_PATH,
-                "caseType"))
+                CASE_TYPE))
         );
     }
 
@@ -436,31 +473,35 @@ public class NonStrategicListTestConfiguration {
             Arguments.of(new ListTypeConfig(
                 ListType.AST_DAILY_HEARING_LIST,
                 AST_DAILY_HEARING_LIST_JSON_FILE_PATH,
-                "hearingType")),
+                HEARING_TYPE)),
             Arguments.of(new ListTypeConfig(
                 ListType.BIRMINGHAM_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
                 ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST_JSON_FILE_PATH,
-                "hearingType")),
+                HEARING_TYPE)),
             Arguments.of(new ListTypeConfig(
                 ListType.BRISTOL_AND_CARDIFF_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
                 ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST_JSON_FILE_PATH,
-                "hearingType")),
+                HEARING_TYPE)),
             Arguments.of(new ListTypeConfig(
                 ListType.CIVIL_COURTS_RCJ_DAILY_CAUSE_LIST,
                 CIVIL_COURTS_RCJ_DAILY_CAUSE_LIST_JSON_FILE_PATH,
-                "hearingType")),
+                HEARING_TYPE)),
             Arguments.of(new ListTypeConfig(
                 ListType.COUNTY_COURT_LONDON_CIVIL_DAILY_CAUSE_LIST,
                 COUNTY_COURT_LONDON_CIVIL_DAILY_CAUSE_LIST_JSON_FILE_PATH,
-                "hearingType")),
+                HEARING_TYPE)),
             Arguments.of(new ListTypeConfig(
                 ListType.COURT_OF_APPEAL_CIVIL_DAILY_CAUSE_LIST,
                 COURT_OF_APPEAL_CIVIL_DAILY_CAUSE_LIST_JSON_FILE_PATH,
-                "hearingType", "hearingList")),
+                HEARING_TYPE, HEARING_LIST_NODE)),
             Arguments.of(new ListTypeConfig(
                 ListType.COURT_OF_APPEAL_CIVIL_DAILY_CAUSE_LIST,
                 COURT_OF_APPEAL_CIVIL_DAILY_CAUSE_LIST_JSON_FILE_PATH,
-                "hearingType", "futureJudgments"))
+                HEARING_TYPE, FUTURE_JUDGMENTS_NODE)),
+            Arguments.of(new ListTypeConfig(
+                ListType.COURT_OF_APPEAL_CRIMINAL_DAILY_CAUSE_LIST,
+                COURT_OF_APPEAL_CRIMINAL_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                HEARING_TYPE))
         );
     }
 
@@ -469,11 +510,11 @@ public class NonStrategicListTestConfiguration {
             Arguments.of(new ListTypeConfig(
                 ListType.AST_DAILY_HEARING_LIST,
                 AST_DAILY_HEARING_LIST_JSON_FILE_PATH,
-                "hearingTime")),
+                HEARING_TIME)),
             Arguments.of(new ListTypeConfig(
                 ListType.CIC_WEEKLY_HEARING_LIST,
                 CIC_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
-                "hearingTime"))
+                HEARING_TIME))
         );
     }
 
@@ -482,27 +523,31 @@ public class NonStrategicListTestConfiguration {
             Arguments.of(new ListTypeConfig(
                 ListType.BIRMINGHAM_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
                 ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST_JSON_FILE_PATH,
-                "caseDetails")),
+                CASE_DETAILS)),
             Arguments.of(new ListTypeConfig(
                 ListType.BRISTOL_AND_CARDIFF_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
                 ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST_JSON_FILE_PATH,
-                "caseDetails")),
+                CASE_DETAILS)),
             Arguments.of(new ListTypeConfig(
                 ListType.CIVIL_COURTS_RCJ_DAILY_CAUSE_LIST,
                 CIVIL_COURTS_RCJ_DAILY_CAUSE_LIST_JSON_FILE_PATH,
-                "caseDetails")),
+                CASE_DETAILS)),
             Arguments.of(new ListTypeConfig(
                 ListType.COUNTY_COURT_LONDON_CIVIL_DAILY_CAUSE_LIST,
                 COUNTY_COURT_LONDON_CIVIL_DAILY_CAUSE_LIST_JSON_FILE_PATH,
-                "caseDetails")),
+                CASE_DETAILS)),
             Arguments.of(new ListTypeConfig(
                 ListType.COURT_OF_APPEAL_CIVIL_DAILY_CAUSE_LIST,
                 COURT_OF_APPEAL_CIVIL_DAILY_CAUSE_LIST_JSON_FILE_PATH,
-                "caseDetails", "hearingList")),
+                CASE_DETAILS, HEARING_LIST_NODE)),
             Arguments.of(new ListTypeConfig(
                 ListType.COURT_OF_APPEAL_CIVIL_DAILY_CAUSE_LIST,
                 COURT_OF_APPEAL_CIVIL_DAILY_CAUSE_LIST_JSON_FILE_PATH,
-                "caseDetails", "futureJudgments"))
+                CASE_DETAILS, FUTURE_JUDGMENTS_NODE)),
+            Arguments.of(new ListTypeConfig(
+                ListType.COURT_OF_APPEAL_CRIMINAL_DAILY_CAUSE_LIST,
+                COURT_OF_APPEAL_CRIMINAL_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                CASE_DETAILS))
         );
     }
 
@@ -511,7 +556,7 @@ public class NonStrategicListTestConfiguration {
             Arguments.of(new ListTypeConfig(
                 ListType.CIC_WEEKLY_HEARING_LIST,
                 CIC_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
-                "date"))
+                DATE))
         );
     }
 
@@ -520,7 +565,7 @@ public class NonStrategicListTestConfiguration {
             Arguments.of(new ListTypeConfig(
                 ListType.CIC_WEEKLY_HEARING_LIST,
                 CIC_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
-                "caseReferenceNumber"))
+                CASE_REFERENCE_NUMBER))
         );
     }
 
@@ -529,7 +574,7 @@ public class NonStrategicListTestConfiguration {
             Arguments.of(new ListTypeConfig(
                 ListType.CIC_WEEKLY_HEARING_LIST,
                 CIC_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
-                "venue/platform"))
+                VENUE_PLATFORM))
         );
     }
 
@@ -538,7 +583,7 @@ public class NonStrategicListTestConfiguration {
             Arguments.of(new ListTypeConfig(
                 ListType.CIC_WEEKLY_HEARING_LIST,
                 CIC_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
-                "members"))
+                MEMBERS))
         );
     }
 
@@ -547,7 +592,7 @@ public class NonStrategicListTestConfiguration {
             Arguments.of(new ListTypeConfig(
                 ListType.CIC_WEEKLY_HEARING_LIST,
                 CIC_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
-                "judges"))
+                JUDGES))
         );
     }
 }
