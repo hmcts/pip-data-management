@@ -30,6 +30,7 @@ import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.n
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConfiguration.caseReferenceNumberListMandatoryAttributes;
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConfiguration.caseTypeListMandatoryAttributes;
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConfiguration.dateListMandatoryAttributes;
+import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConfiguration.hearingLengthMandatoryAttributes;
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConfiguration.hearingTimeListMandatoryAttributes;
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConfiguration.hearingTypeListMandatoryAttributes;
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConfiguration.judgeListMandatoryAttributes;
@@ -66,7 +67,8 @@ public class NonStrategicSchemaValidationTests  extends IntegrationBasicTestBase
                 caseReferenceNumberListMandatoryAttributes(),
                 venuePlatformListMandatoryAttributes(),
                 membersListMandatoryAttributes(),
-                judgesListMandatoryAttributes()
+                judgesListMandatoryAttributes(),
+                hearingLengthMandatoryAttributes()
             )
             .flatMap(stream -> stream);
     }

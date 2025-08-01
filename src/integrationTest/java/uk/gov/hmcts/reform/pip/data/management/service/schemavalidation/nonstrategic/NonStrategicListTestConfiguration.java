@@ -38,6 +38,7 @@ public class NonStrategicListTestConfiguration {
     public static final String VENUE_PLATFORM = "venue/platform";
     public static final String MEMBERS = "members";
     public static final String JUDGES = "judges";
+    public static final String HEARING_LENGTH = "hearingLength";
     public static final String HEARING_LIST_NODE = "hearingList";
     public static final String FUTURE_JUDGMENTS_NODE = "futureJudgments";
     public static final String ADMIRALTY_COURT_KB_DAILY_CAUSE_LIST_JSON_FILE_PATH =
@@ -66,6 +67,8 @@ public class NonStrategicListTestConfiguration {
         + "/court-of-appeal-civil-daily-cause-list/courtOfAppealCivilDailyCauseList.json";
     public static final String COURT_OF_APPEAL_CRIMINAL_DAILY_CAUSE_LIST_JSON_FILE_PATH = PARENT_JSON_FILE_PATH
         + "/court-of-appeal-criminal-daily-cause-list/courtOfAppealCriminalDailyCauseList.json";
+    public static final String CST_WEEKLY_HEARING_LIST_JSON_FILE_PATH = PARENT_JSON_FILE_PATH
+        + "/cst-weekly-hearing-list/cstWeeklyHearingList.json";
 
     public record ListTypeConfig(ListType listType, String jsonFilePath, String validationField, String parentNode) {
         public ListTypeConfig {
@@ -137,8 +140,7 @@ public class NonStrategicListTestConfiguration {
                 VENUE)),
             Arguments.of(new ListTypeConfig(
                 ListType.CST_WEEKLY_HEARING_LIST,
-                PARENT_JSON_FILE_PATH
-                    + "/cst-weekly-hearing-list/cstWeeklyHearingList.json",
+                CST_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
                 VENUE))
         );
     }
@@ -372,6 +374,10 @@ public class NonStrategicListTestConfiguration {
             Arguments.of(new ListTypeConfig(
                 ListType.COMPETITION_LIST_CHD_DAILY_CAUSE_LIST,
                 COMPETITION_LIST_CHD_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                CASE_NAME)),
+            Arguments.of(new ListTypeConfig(
+                ListType.CST_WEEKLY_HEARING_LIST,
+                CST_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
                 CASE_NAME))
         );
     }
@@ -437,6 +443,10 @@ public class NonStrategicListTestConfiguration {
             Arguments.of(new ListTypeConfig(
                 ListType.COURT_OF_APPEAL_CRIMINAL_DAILY_CAUSE_LIST,
                 COURT_OF_APPEAL_CRIMINAL_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                ADDITIONAL_INFORMATION)),
+            Arguments.of(new ListTypeConfig(
+                ListType.CST_WEEKLY_HEARING_LIST,
+                CST_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
                 ADDITIONAL_INFORMATION))
         );
     }
@@ -501,6 +511,10 @@ public class NonStrategicListTestConfiguration {
             Arguments.of(new ListTypeConfig(
                 ListType.COURT_OF_APPEAL_CRIMINAL_DAILY_CAUSE_LIST,
                 COURT_OF_APPEAL_CRIMINAL_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                HEARING_TYPE)),
+            Arguments.of(new ListTypeConfig(
+                ListType.CST_WEEKLY_HEARING_LIST,
+                CST_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
                 HEARING_TYPE))
         );
     }
@@ -556,6 +570,10 @@ public class NonStrategicListTestConfiguration {
             Arguments.of(new ListTypeConfig(
                 ListType.CIC_WEEKLY_HEARING_LIST,
                 CIC_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
+                DATE)),
+            Arguments.of(new ListTypeConfig(
+                ListType.CST_WEEKLY_HEARING_LIST,
+                CST_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
                 DATE))
         );
     }
@@ -593,6 +611,15 @@ public class NonStrategicListTestConfiguration {
                 ListType.CIC_WEEKLY_HEARING_LIST,
                 CIC_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
                 JUDGES))
+        );
+    }
+
+    public static Stream<Arguments> hearingLengthMandatoryAttributes() {
+        return Stream.of(
+            Arguments.of(new ListTypeConfig(
+                ListType.CST_WEEKLY_HEARING_LIST,
+                CST_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
+                HEARING_LENGTH))
         );
     }
 }
