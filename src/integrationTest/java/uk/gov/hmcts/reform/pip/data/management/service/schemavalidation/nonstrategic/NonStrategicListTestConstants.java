@@ -53,6 +53,7 @@ public class NonStrategicListTestConstants {
     public static final String CASE_TITLE = "caseTitle";
     public static final String REPRESENTATIVE = "representative";
     public static final String LOCATION = "location";
+    public static final String INVALID_MESSAGE = "Invalid JSON list marked as valid";
 
     public static final String ADMIRALTY_COURT_KB_DAILY_CAUSE_LIST_JSON_FILE_PATH =
         PARENT_JSON_FILE_PATH + "/admiralty_court_kb_daily_cause_list/admiraltyCourtKbDailyCauseList.json";

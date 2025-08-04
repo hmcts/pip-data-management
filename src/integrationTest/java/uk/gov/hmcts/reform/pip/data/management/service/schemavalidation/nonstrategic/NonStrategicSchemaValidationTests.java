@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -19,6 +20,7 @@ import uk.gov.hmcts.reform.pip.data.management.utils.IntegrationBasicTestBase;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
@@ -57,10 +59,12 @@ import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.n
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.Configurations.TimeTestAttribute.timeMandatoryAttribute;
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.Configurations.TypeTestAttribute.typeMandatoryAttribute;
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.Configurations.VenueTestAttribute.venueMandatoryAttribute;
+import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.Configurations.timeFormatValidation.getListTypesWithTimeFormatValidation;
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConstants.ARTEFACT_TYPE;
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConstants.COURT_ID;
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConstants.DISPLAY_FROM;
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConstants.DISPLAY_TO;
+import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConstants.INVALID_MESSAGE;
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConstants.LANGUAGE;
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConstants.SENSITIVITY;
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConstants.SOURCE_ARTEFACT_ID;
@@ -117,6 +121,18 @@ public class NonStrategicSchemaValidationTests  extends IntegrationBasicTestBase
             .flatMap(stream -> stream);
     }
 
+    public static Stream<Arguments> timeFormateValidationScenarios() {
+        List<String> invalidTimes = List.of(
+            "10.30",
+            "101:30pm",
+            "10:300am"
+        );
+
+        return getListTypesWithTimeFormatValidation().stream()
+            .flatMap(listConfig -> invalidTimes.stream()
+                .map(invalidTime -> Arguments.of(listConfig, invalidTime)));
+    }
+
     private record TestData(HeaderGroup headerGroup, JsonNode jsonNode) {}
 
     private JsonNode getJsonNode(String json) throws JsonProcessingException {
@@ -169,5 +185,20 @@ public class NonStrategicSchemaValidationTests  extends IntegrationBasicTestBase
         assertThatExceptionOfType(PayloadValidationException.class)
             .isThrownBy(() -> validationService.validateBody(json, testData.headerGroup(), false))
             .withMessageContaining(fieldName);
+    }
+
+    @ParameterizedTest
+    @MethodSource("timeFormateValidationScenarios")
+    void shouldFailWhenInvalidTimeFormat(ListTypeTest listConfig, String invalidTime) throws IOException {
+        TestData testData = loadTestData(listConfig);
+
+        JsonNode node = testData.jsonNode();
+        String timeFieldPattern = "\"" + listConfig.getValidationField() + "\":\"[^\"]+\"";
+        String formattedJson = node.toString().replaceAll(timeFieldPattern,
+                                                    String.format("\"%s\":\"%s\"", listConfig.getValidationField(), invalidTime));
+
+        Assertions.assertThatExceptionOfType(PayloadValidationException.class)
+            .as(INVALID_MESSAGE)
+            .isThrownBy(() -> validationService.validateBody(formattedJson, testData.headerGroup(), false));
     }
 }
