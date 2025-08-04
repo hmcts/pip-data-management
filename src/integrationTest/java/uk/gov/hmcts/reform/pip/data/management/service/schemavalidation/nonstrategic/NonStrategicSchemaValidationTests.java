@@ -30,12 +30,17 @@ import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.n
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConfiguration.caseReferenceNumberListMandatoryAttributes;
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConfiguration.caseTypeListMandatoryAttributes;
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConfiguration.dateListMandatoryAttributes;
+import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConfiguration.emailMandatoryAttributes;
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConfiguration.hearingLengthMandatoryAttributes;
+import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConfiguration.hearingListMandatoryAttributes;
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConfiguration.hearingTimeListMandatoryAttributes;
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConfiguration.hearingTypeListMandatoryAttributes;
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConfiguration.judgeListMandatoryAttributes;
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConfiguration.judgesListMandatoryAttributes;
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConfiguration.membersListMandatoryAttributes;
+import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConfiguration.modeOfHearingMandatoryAttributes;
+import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConfiguration.nameToBeDisplayedMandatoryAttributes;
+import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConfiguration.openJusticeStatementDetailsMandatoryAttributes;
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConfiguration.timeListMandatoryAttributes;
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConfiguration.typeListMandatoryAttributes;
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConfiguration.venueListMandatoryAttributes;
@@ -68,7 +73,18 @@ public class NonStrategicSchemaValidationTests  extends IntegrationBasicTestBase
                 venuePlatformListMandatoryAttributes(),
                 membersListMandatoryAttributes(),
                 judgesListMandatoryAttributes(),
-                hearingLengthMandatoryAttributes()
+                hearingLengthMandatoryAttributes(),
+                modeOfHearingMandatoryAttributes(),
+                nameToBeDisplayedMandatoryAttributes(),
+                emailMandatoryAttributes()
+            )
+            .flatMap(stream -> stream);
+    }
+
+    public static Stream<Arguments> allMandatorySheets() {
+        return Stream.of(
+                hearingListMandatoryAttributes(),
+                openJusticeStatementDetailsMandatoryAttributes()
             )
             .flatMap(stream -> stream);
     }
@@ -102,13 +118,23 @@ public class NonStrategicSchemaValidationTests  extends IntegrationBasicTestBase
 
     @ParameterizedTest
     @MethodSource("allMandatoryAttributes")
-    void shouldFailWhenVenueMissing(NonStrategicListTestConfiguration.ListTypeConfig config) throws IOException {
+    void shouldFailWhenMissingMandatoryAttribute(NonStrategicListTestConfiguration.ListTypeConfig config) throws IOException {
         TestData testData = loadTestData(config);
         if (config.parentNode().isEmpty()) {
             ((ObjectNode) testData.jsonNode().get(0)).remove(config.validationField());
         } else {
             ((ObjectNode) testData.jsonNode().get(config.parentNode()).get(0)).remove(config.validationField());
         }
+        assertValidationFails(testData, config.validationField());
+    }
+
+    @ParameterizedTest
+    @MethodSource("allMandatorySheets")
+    void shouldFailWhenMissingSheet(NonStrategicListTestConfiguration.ListTypeConfig config) throws IOException {
+        TestData testData = loadTestData(config);
+
+        ((ObjectNode) testData.jsonNode()).remove(config.validationField());
+
         assertValidationFails(testData, config.validationField());
     }
 

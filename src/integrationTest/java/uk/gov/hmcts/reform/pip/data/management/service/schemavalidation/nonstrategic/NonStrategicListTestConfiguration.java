@@ -41,6 +41,13 @@ public class NonStrategicListTestConfiguration {
     public static final String HEARING_LENGTH = "hearingLength";
     public static final String HEARING_LIST_NODE = "hearingList";
     public static final String FUTURE_JUDGMENTS_NODE = "futureJudgments";
+    public static final String MODE_OF_HEARING = "modeOfHearing";
+    private static final String OPEN_JUSTICE_DETAILS_NODE = "openJusticeStatementDetails";
+    private static final String NAME_TO_BE_DISPLAYED = "nameToBeDisplayed";
+    private static final String EMAIL = "email";
+    private static final String LONDON_ADMINISTRATIVE_COURT_NODE = "londonAdministrativeCourt";
+    private static final String PLANNING_COURT_NODE = "planningCourt";
+
     public static final String ADMIRALTY_COURT_KB_DAILY_CAUSE_LIST_JSON_FILE_PATH =
         PARENT_JSON_FILE_PATH + "/admiralty_court_kb_daily_cause_list/admiraltyCourtKbDailyCauseList.json";
     public static final String AST_DAILY_HEARING_LIST_JSON_FILE_PATH =
@@ -69,6 +76,34 @@ public class NonStrategicListTestConfiguration {
         + "/court-of-appeal-criminal-daily-cause-list/courtOfAppealCriminalDailyCauseList.json";
     public static final String CST_WEEKLY_HEARING_LIST_JSON_FILE_PATH = PARENT_JSON_FILE_PATH
         + "/cst-weekly-hearing-list/cstWeeklyHearingList.json";
+    public static final String FAMILY_DIVISION_HIGH_COURT_DAILY_CAUSE_LIST_JSON_FILE_PATH =
+        PARENT_JSON_FILE_PATH + "/family-division-high-court-daily-cause-list/familyDivisionHighCourtDailyCauseList.json";
+    public static final String FINANCIAL_LISTS_CHD_DAILY_CAUSE_LIST_JSON_FILE_PATH =
+        PARENT_JSON_FILE_PATH + "/financial_list_chd_kb_daily_cause_list/financialListChdKbDailyCauseList.json";
+    public static final String FTT_LR_WEEKLY_HEARING_LIST_JSON_FILE_PATH =
+        PARENT_JSON_FILE_PATH + "/ftt-land-registry-tribunal-weekly-hearing-list/fttLandRegistryTribunalWeeklyHearingList.json";
+    public static final String FTT_TAX_WEEKLY_HEARING_LIST_JSON_FILE_PATH =
+        PARENT_JSON_FILE_PATH + "/ftt-tax-tribunal-weekly-hearing-list/fttTaxWeeklyHearingList.json";
+    public static final String GRC_WEEKLY_HEARING_LIST_JSON_FILE_PATH =
+        PARENT_JSON_FILE_PATH + "/grc-weekly-hearing-list/grcWeeklyHearingList.json";
+    public static final String INSOLVENCY_AND_COMPANIES_COURT_CHD_DAILY_CAUSE_LIST_JSON_FILE_PATH =
+        PARENT_JSON_FILE_PATH + "/insolvency_and_companies_court_chd_daily_cause_list/"
+            + "insolvencyAndCompaniesCourtChdDailyCauseList.json";
+    public static final String INTELLECTUAL_PROPERTY_AND_ENTERPRISE_COURT_DAILY_CAUSE_LIST_JSON_FILE_PATH =
+        PARENT_JSON_FILE_PATH + "/intellectual-property-and-enterprise-court-daily-cause-list/"
+            + "intellectualPropertyAndEnterpriseCourtDailyCauseList.json";
+    public static final String INTELLECTUAL_PROPERTY_LIST_CHD_DAILY_CAUSE_LIST_JSON_FILE_PATH =
+        PARENT_JSON_FILE_PATH + "/intellectual-property-list-chd-daily-cause-list/"
+            + "intellectualPropertyListChdDailyCauseList.json";
+    public static final String INTERIM_APPLICATION_CHANCERY_LIST_CHD_DAILY_CAUSE_LIST_JSON_FILE_PATH =
+        PARENT_JSON_FILE_PATH + "/interim-applications-chd-daily-cause-list/"
+            + "interimApplicationsChanceryDivisionDailyCauseList.json";
+    public static final String KINGS_BENCH_DIVISION_DAILY_CAUSE_LIST_JSON_FILE_PATH =
+        PARENT_JSON_FILE_PATH + "/kings-bench-division-daily-cause-list/kingsBenchDivisionDailyCauseList.json";
+    public static final String KINGS_BENCH_MASTERS_DAILY_CAUSE_LIST_JSON_FILE_PATH =
+        PARENT_JSON_FILE_PATH + "/kings-bench-masters-daily-cause-list/kingsBenchMastersDailyCauseList.json";
+    public static final String LONDON_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST_JSON_FILE_PATH =
+        PARENT_JSON_FILE_PATH + "/london-administrative-court-daily-cause-list/londonAdministrativeCourtDailyCauseList.json";
 
     public record ListTypeConfig(ListType listType, String jsonFilePath, String validationField, String parentNode) {
         public ListTypeConfig {
@@ -141,6 +176,58 @@ public class NonStrategicListTestConfiguration {
             Arguments.of(new ListTypeConfig(
                 ListType.CST_WEEKLY_HEARING_LIST,
                 CST_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
+                VENUE)),
+            Arguments.of(new ListTypeConfig(
+                ListType.FAMILY_DIVISION_HIGH_COURT_DAILY_CAUSE_LIST,
+                FAMILY_DIVISION_HIGH_COURT_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                VENUE)),
+            Arguments.of(new ListTypeConfig(
+                ListType.FINANCIAL_LIST_CHD_KB_DAILY_CAUSE_LIST,
+                FINANCIAL_LISTS_CHD_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                VENUE)),
+            Arguments.of(new ListTypeConfig(
+                ListType.GRC_WEEKLY_HEARING_LIST,
+                GRC_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
+                VENUE)),
+            Arguments.of(new ListTypeConfig(
+                ListType.INSOLVENCY_AND_COMPANIES_COURT_CHD_DAILY_CAUSE_LIST,
+                INSOLVENCY_AND_COMPANIES_COURT_CHD_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                VENUE)),
+            Arguments.of(new ListTypeConfig(
+                ListType.INTELLECTUAL_PROPERTY_AND_ENTERPRISE_COURT_DAILY_CAUSE_LIST,
+                INTELLECTUAL_PROPERTY_AND_ENTERPRISE_COURT_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                VENUE)),
+            Arguments.of(new ListTypeConfig(
+                ListType.INTELLECTUAL_PROPERTY_LIST_CHD_DAILY_CAUSE_LIST,
+                INTELLECTUAL_PROPERTY_LIST_CHD_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                VENUE)),
+            Arguments.of(new ListTypeConfig(
+                ListType.INTERIM_APPLICATIONS_CHD_DAILY_CAUSE_LIST,
+                INTERIM_APPLICATION_CHANCERY_LIST_CHD_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                VENUE, HEARING_LIST_NODE)),
+            Arguments.of(new ListTypeConfig(
+                ListType.KINGS_BENCH_DIVISION_DAILY_CAUSE_LIST,
+                KINGS_BENCH_DIVISION_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                VENUE)),
+            Arguments.of(new ListTypeConfig(
+                ListType.KINGS_BENCH_MASTERS_DAILY_CAUSE_LIST,
+                KINGS_BENCH_MASTERS_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                VENUE)),
+            Arguments.of(new ListTypeConfig(
+                ListType.LEEDS_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
+                ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                VENUE)),
+            Arguments.of(new ListTypeConfig(
+                ListType.LONDON_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
+                LONDON_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                VENUE, LONDON_ADMINISTRATIVE_COURT_NODE)),
+            Arguments.of(new ListTypeConfig(
+                ListType.LONDON_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
+                LONDON_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                VENUE, PLANNING_COURT_NODE)),
+            Arguments.of(new ListTypeConfig(
+                ListType.MANCHESTER_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
+                ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST_JSON_FILE_PATH,
                 VENUE))
         );
     }
@@ -198,6 +285,58 @@ public class NonStrategicListTestConfiguration {
             Arguments.of(new ListTypeConfig(
                 ListType.COURT_OF_APPEAL_CRIMINAL_DAILY_CAUSE_LIST,
                 COURT_OF_APPEAL_CRIMINAL_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                JUDGE)),
+            Arguments.of(new ListTypeConfig(
+                ListType.FAMILY_DIVISION_HIGH_COURT_DAILY_CAUSE_LIST,
+                FAMILY_DIVISION_HIGH_COURT_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                JUDGE)),
+            Arguments.of(new ListTypeConfig(
+                ListType.FINANCIAL_LIST_CHD_KB_DAILY_CAUSE_LIST,
+                FINANCIAL_LISTS_CHD_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                JUDGE)),
+            Arguments.of(new ListTypeConfig(
+                ListType.FTT_LR_WEEKLY_HEARING_LIST,
+                FTT_LR_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
+                JUDGE)),
+            Arguments.of(new ListTypeConfig(
+                ListType.INSOLVENCY_AND_COMPANIES_COURT_CHD_DAILY_CAUSE_LIST,
+                INSOLVENCY_AND_COMPANIES_COURT_CHD_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                JUDGE)),
+            Arguments.of(new ListTypeConfig(
+                ListType.INTELLECTUAL_PROPERTY_AND_ENTERPRISE_COURT_DAILY_CAUSE_LIST,
+                INTELLECTUAL_PROPERTY_AND_ENTERPRISE_COURT_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                JUDGE)),
+            Arguments.of(new ListTypeConfig(
+                ListType.INTELLECTUAL_PROPERTY_LIST_CHD_DAILY_CAUSE_LIST,
+                INTELLECTUAL_PROPERTY_LIST_CHD_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                JUDGE)),
+            Arguments.of(new ListTypeConfig(
+                ListType.INTERIM_APPLICATIONS_CHD_DAILY_CAUSE_LIST,
+                INTERIM_APPLICATION_CHANCERY_LIST_CHD_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                JUDGE, HEARING_LIST_NODE)),
+            Arguments.of(new ListTypeConfig(
+                ListType.KINGS_BENCH_DIVISION_DAILY_CAUSE_LIST,
+                KINGS_BENCH_DIVISION_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                JUDGE)),
+            Arguments.of(new ListTypeConfig(
+                ListType.KINGS_BENCH_MASTERS_DAILY_CAUSE_LIST,
+                KINGS_BENCH_MASTERS_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                JUDGE)),
+            Arguments.of(new ListTypeConfig(
+                ListType.LEEDS_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
+                ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                JUDGE)),
+            Arguments.of(new ListTypeConfig(
+                ListType.LONDON_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
+                LONDON_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                JUDGE, LONDON_ADMINISTRATIVE_COURT_NODE)),
+            Arguments.of(new ListTypeConfig(
+                ListType.LONDON_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
+                LONDON_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                JUDGE, PLANNING_COURT_NODE)),
+            Arguments.of(new ListTypeConfig(
+                ListType.MANCHESTER_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
+                ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST_JSON_FILE_PATH,
                 JUDGE))
         );
     }
@@ -255,6 +394,50 @@ public class NonStrategicListTestConfiguration {
             Arguments.of(new ListTypeConfig(
                 ListType.COURT_OF_APPEAL_CRIMINAL_DAILY_CAUSE_LIST,
                 COURT_OF_APPEAL_CRIMINAL_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                TIME)),
+            Arguments.of(new ListTypeConfig(
+                ListType.FAMILY_DIVISION_HIGH_COURT_DAILY_CAUSE_LIST,
+                FAMILY_DIVISION_HIGH_COURT_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                TIME)),
+            Arguments.of(new ListTypeConfig(
+                ListType.FINANCIAL_LIST_CHD_KB_DAILY_CAUSE_LIST,
+                FINANCIAL_LISTS_CHD_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                TIME)),
+            Arguments.of(new ListTypeConfig(
+                ListType.INTELLECTUAL_PROPERTY_AND_ENTERPRISE_COURT_DAILY_CAUSE_LIST,
+                INTELLECTUAL_PROPERTY_AND_ENTERPRISE_COURT_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                TIME)),
+            Arguments.of(new ListTypeConfig(
+                ListType.INTELLECTUAL_PROPERTY_LIST_CHD_DAILY_CAUSE_LIST,
+                INTELLECTUAL_PROPERTY_LIST_CHD_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                TIME)),
+            Arguments.of(new ListTypeConfig(
+                ListType.INTERIM_APPLICATIONS_CHD_DAILY_CAUSE_LIST,
+                INTERIM_APPLICATION_CHANCERY_LIST_CHD_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                TIME, HEARING_LIST_NODE)),
+            Arguments.of(new ListTypeConfig(
+                ListType.KINGS_BENCH_DIVISION_DAILY_CAUSE_LIST,
+                KINGS_BENCH_DIVISION_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                TIME)),
+            Arguments.of(new ListTypeConfig(
+                ListType.KINGS_BENCH_MASTERS_DAILY_CAUSE_LIST,
+                KINGS_BENCH_MASTERS_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                TIME)),
+            Arguments.of(new ListTypeConfig(
+                ListType.LEEDS_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
+                ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                TIME)),
+            Arguments.of(new ListTypeConfig(
+                ListType.LONDON_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
+                LONDON_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                TIME, LONDON_ADMINISTRATIVE_COURT_NODE)),
+            Arguments.of(new ListTypeConfig(
+                ListType.LONDON_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
+                LONDON_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                TIME, PLANNING_COURT_NODE)),
+            Arguments.of(new ListTypeConfig(
+                ListType.MANCHESTER_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
+                ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST_JSON_FILE_PATH,
                 TIME))
         );
     }
@@ -284,7 +467,27 @@ public class NonStrategicListTestConfiguration {
             Arguments.of(new ListTypeConfig(
                 ListType.COMPETITION_LIST_CHD_DAILY_CAUSE_LIST,
                 COMPETITION_LIST_CHD_DAILY_CAUSE_LIST_JSON_FILE_PATH,
-                TYPE))
+                TYPE)),
+            Arguments.of(new ListTypeConfig(
+                ListType.FINANCIAL_LIST_CHD_KB_DAILY_CAUSE_LIST,
+                FINANCIAL_LISTS_CHD_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                TYPE)),
+            Arguments.of(new ListTypeConfig(
+                ListType.INSOLVENCY_AND_COMPANIES_COURT_CHD_DAILY_CAUSE_LIST,
+                INSOLVENCY_AND_COMPANIES_COURT_CHD_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                TYPE)),
+            Arguments.of(new ListTypeConfig(
+                ListType.INTELLECTUAL_PROPERTY_AND_ENTERPRISE_COURT_DAILY_CAUSE_LIST,
+                INTELLECTUAL_PROPERTY_AND_ENTERPRISE_COURT_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                TYPE)),
+            Arguments.of(new ListTypeConfig(
+                ListType.INTELLECTUAL_PROPERTY_LIST_CHD_DAILY_CAUSE_LIST,
+                INTELLECTUAL_PROPERTY_LIST_CHD_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                TYPE)),
+            Arguments.of(new ListTypeConfig(
+                ListType.INTERIM_APPLICATIONS_CHD_DAILY_CAUSE_LIST,
+                INTERIM_APPLICATION_CHANCERY_LIST_CHD_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                TYPE, HEARING_LIST_NODE))
         );
     }
 
@@ -341,6 +544,50 @@ public class NonStrategicListTestConfiguration {
             Arguments.of(new ListTypeConfig(
                 ListType.COURT_OF_APPEAL_CRIMINAL_DAILY_CAUSE_LIST,
                 COURT_OF_APPEAL_CRIMINAL_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                CASE_NUMBER)),
+            Arguments.of(new ListTypeConfig(
+                ListType.FAMILY_DIVISION_HIGH_COURT_DAILY_CAUSE_LIST,
+                FAMILY_DIVISION_HIGH_COURT_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                CASE_NUMBER)),
+            Arguments.of(new ListTypeConfig(
+                ListType.FINANCIAL_LIST_CHD_KB_DAILY_CAUSE_LIST,
+                FINANCIAL_LISTS_CHD_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                CASE_NUMBER)),
+            Arguments.of(new ListTypeConfig(
+                ListType.INTELLECTUAL_PROPERTY_AND_ENTERPRISE_COURT_DAILY_CAUSE_LIST,
+                INTELLECTUAL_PROPERTY_AND_ENTERPRISE_COURT_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                CASE_NUMBER)),
+            Arguments.of(new ListTypeConfig(
+                ListType.INTELLECTUAL_PROPERTY_LIST_CHD_DAILY_CAUSE_LIST,
+                INTELLECTUAL_PROPERTY_LIST_CHD_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                CASE_NUMBER)),
+            Arguments.of(new ListTypeConfig(
+                ListType.INTERIM_APPLICATIONS_CHD_DAILY_CAUSE_LIST,
+                INTERIM_APPLICATION_CHANCERY_LIST_CHD_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                CASE_NUMBER, HEARING_LIST_NODE)),
+            Arguments.of(new ListTypeConfig(
+                ListType.KINGS_BENCH_DIVISION_DAILY_CAUSE_LIST,
+                KINGS_BENCH_DIVISION_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                CASE_NUMBER)),
+            Arguments.of(new ListTypeConfig(
+                ListType.KINGS_BENCH_MASTERS_DAILY_CAUSE_LIST,
+                KINGS_BENCH_MASTERS_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                CASE_NUMBER)),
+            Arguments.of(new ListTypeConfig(
+                ListType.LEEDS_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
+                ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                CASE_NUMBER)),
+            Arguments.of(new ListTypeConfig(
+                ListType.LONDON_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
+                LONDON_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                CASE_NUMBER, LONDON_ADMINISTRATIVE_COURT_NODE)),
+            Arguments.of(new ListTypeConfig(
+                ListType.LONDON_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
+                LONDON_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                CASE_NUMBER, PLANNING_COURT_NODE)),
+            Arguments.of(new ListTypeConfig(
+                ListType.MANCHESTER_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
+                ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST_JSON_FILE_PATH,
                 CASE_NUMBER))
         );
     }
@@ -378,7 +625,39 @@ public class NonStrategicListTestConfiguration {
             Arguments.of(new ListTypeConfig(
                 ListType.CST_WEEKLY_HEARING_LIST,
                 CST_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
-                CASE_NAME))
+                CASE_NAME)),
+            Arguments.of(new ListTypeConfig(
+                ListType.FINANCIAL_LIST_CHD_KB_DAILY_CAUSE_LIST,
+                FINANCIAL_LISTS_CHD_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                CASE_NAME)),
+            Arguments.of(new ListTypeConfig(
+                ListType.FTT_LR_WEEKLY_HEARING_LIST,
+                FTT_LR_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
+                CASE_NAME)),
+            Arguments.of(new ListTypeConfig(
+                ListType.FTT_TAX_WEEKLY_HEARING_LIST,
+                FTT_TAX_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
+                CASE_NAME)),
+            Arguments.of(new ListTypeConfig(
+                ListType.GRC_WEEKLY_HEARING_LIST,
+                GRC_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
+                CASE_NAME)),
+            Arguments.of(new ListTypeConfig(
+                ListType.INSOLVENCY_AND_COMPANIES_COURT_CHD_DAILY_CAUSE_LIST,
+                INSOLVENCY_AND_COMPANIES_COURT_CHD_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                CASE_NAME)),
+            Arguments.of(new ListTypeConfig(
+                ListType.INTELLECTUAL_PROPERTY_AND_ENTERPRISE_COURT_DAILY_CAUSE_LIST,
+                INTELLECTUAL_PROPERTY_AND_ENTERPRISE_COURT_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                CASE_NAME)),
+            Arguments.of(new ListTypeConfig(
+                ListType.INTELLECTUAL_PROPERTY_LIST_CHD_DAILY_CAUSE_LIST,
+                INTELLECTUAL_PROPERTY_LIST_CHD_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                CASE_NAME)),
+            Arguments.of(new ListTypeConfig(
+                ListType.INTERIM_APPLICATIONS_CHD_DAILY_CAUSE_LIST,
+                INTERIM_APPLICATION_CHANCERY_LIST_CHD_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                CASE_NAME, HEARING_LIST_NODE))
         );
     }
 
@@ -447,6 +726,58 @@ public class NonStrategicListTestConfiguration {
             Arguments.of(new ListTypeConfig(
                 ListType.CST_WEEKLY_HEARING_LIST,
                 CST_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
+                ADDITIONAL_INFORMATION)),
+            Arguments.of(new ListTypeConfig(
+                ListType.FAMILY_DIVISION_HIGH_COURT_DAILY_CAUSE_LIST,
+                FAMILY_DIVISION_HIGH_COURT_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                ADDITIONAL_INFORMATION)),
+            Arguments.of(new ListTypeConfig(
+                ListType.FINANCIAL_LIST_CHD_KB_DAILY_CAUSE_LIST,
+                FINANCIAL_LISTS_CHD_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                ADDITIONAL_INFORMATION)),
+            Arguments.of(new ListTypeConfig(
+                ListType.GRC_WEEKLY_HEARING_LIST,
+                GRC_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
+                ADDITIONAL_INFORMATION)),
+            Arguments.of(new ListTypeConfig(
+                ListType.INSOLVENCY_AND_COMPANIES_COURT_CHD_DAILY_CAUSE_LIST,
+                INSOLVENCY_AND_COMPANIES_COURT_CHD_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                ADDITIONAL_INFORMATION)),
+            Arguments.of(new ListTypeConfig(
+                ListType.INTELLECTUAL_PROPERTY_AND_ENTERPRISE_COURT_DAILY_CAUSE_LIST,
+                INTELLECTUAL_PROPERTY_AND_ENTERPRISE_COURT_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                ADDITIONAL_INFORMATION)),
+            Arguments.of(new ListTypeConfig(
+                ListType.INTELLECTUAL_PROPERTY_LIST_CHD_DAILY_CAUSE_LIST,
+                INTELLECTUAL_PROPERTY_LIST_CHD_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                ADDITIONAL_INFORMATION)),
+            Arguments.of(new ListTypeConfig(
+                ListType.INTERIM_APPLICATIONS_CHD_DAILY_CAUSE_LIST,
+                INTERIM_APPLICATION_CHANCERY_LIST_CHD_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                ADDITIONAL_INFORMATION, HEARING_LIST_NODE)),
+            Arguments.of(new ListTypeConfig(
+                ListType.KINGS_BENCH_DIVISION_DAILY_CAUSE_LIST,
+                KINGS_BENCH_DIVISION_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                ADDITIONAL_INFORMATION)),
+            Arguments.of(new ListTypeConfig(
+                ListType.KINGS_BENCH_MASTERS_DAILY_CAUSE_LIST,
+                KINGS_BENCH_MASTERS_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                ADDITIONAL_INFORMATION)),
+            Arguments.of(new ListTypeConfig(
+                ListType.LEEDS_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
+                ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                ADDITIONAL_INFORMATION)),
+            Arguments.of(new ListTypeConfig(
+                ListType.LONDON_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
+                LONDON_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                ADDITIONAL_INFORMATION, LONDON_ADMINISTRATIVE_COURT_NODE)),
+            Arguments.of(new ListTypeConfig(
+                ListType.LONDON_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
+                LONDON_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                ADDITIONAL_INFORMATION, PLANNING_COURT_NODE)),
+            Arguments.of(new ListTypeConfig(
+                ListType.MANCHESTER_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
+                ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST_JSON_FILE_PATH,
                 ADDITIONAL_INFORMATION))
         );
     }
@@ -515,6 +846,34 @@ public class NonStrategicListTestConfiguration {
             Arguments.of(new ListTypeConfig(
                 ListType.CST_WEEKLY_HEARING_LIST,
                 CST_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
+                HEARING_TYPE)),
+            Arguments.of(new ListTypeConfig(
+                ListType.FAMILY_DIVISION_HIGH_COURT_DAILY_CAUSE_LIST,
+                FAMILY_DIVISION_HIGH_COURT_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                HEARING_TYPE)),
+            Arguments.of(new ListTypeConfig(
+                ListType.KINGS_BENCH_DIVISION_DAILY_CAUSE_LIST,
+                KINGS_BENCH_DIVISION_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                HEARING_TYPE)),
+            Arguments.of(new ListTypeConfig(
+                ListType.KINGS_BENCH_MASTERS_DAILY_CAUSE_LIST,
+                KINGS_BENCH_MASTERS_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                HEARING_TYPE)),
+            Arguments.of(new ListTypeConfig(
+                ListType.LEEDS_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
+                ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                HEARING_TYPE)),
+            Arguments.of(new ListTypeConfig(
+                ListType.LONDON_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
+                LONDON_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                HEARING_TYPE, LONDON_ADMINISTRATIVE_COURT_NODE)),
+            Arguments.of(new ListTypeConfig(
+                ListType.LONDON_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
+                LONDON_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                HEARING_TYPE, PLANNING_COURT_NODE)),
+            Arguments.of(new ListTypeConfig(
+                ListType.MANCHESTER_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
+                ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST_JSON_FILE_PATH,
                 HEARING_TYPE))
         );
     }
@@ -528,6 +887,18 @@ public class NonStrategicListTestConfiguration {
             Arguments.of(new ListTypeConfig(
                 ListType.CIC_WEEKLY_HEARING_LIST,
                 CIC_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
+                HEARING_TIME)),
+            Arguments.of(new ListTypeConfig(
+                ListType.FTT_LR_WEEKLY_HEARING_LIST,
+                FTT_LR_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
+                HEARING_TIME)),
+            Arguments.of(new ListTypeConfig(
+                ListType.FTT_TAX_WEEKLY_HEARING_LIST,
+                FTT_TAX_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
+                HEARING_TIME)),
+            Arguments.of(new ListTypeConfig(
+                ListType.GRC_WEEKLY_HEARING_LIST,
+                GRC_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
                 HEARING_TIME))
         );
     }
@@ -561,6 +932,34 @@ public class NonStrategicListTestConfiguration {
             Arguments.of(new ListTypeConfig(
                 ListType.COURT_OF_APPEAL_CRIMINAL_DAILY_CAUSE_LIST,
                 COURT_OF_APPEAL_CRIMINAL_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                CASE_DETAILS)),
+            Arguments.of(new ListTypeConfig(
+                ListType.FAMILY_DIVISION_HIGH_COURT_DAILY_CAUSE_LIST,
+                FAMILY_DIVISION_HIGH_COURT_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                CASE_DETAILS)),
+            Arguments.of(new ListTypeConfig(
+                ListType.KINGS_BENCH_DIVISION_DAILY_CAUSE_LIST,
+                KINGS_BENCH_DIVISION_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                CASE_DETAILS)),
+            Arguments.of(new ListTypeConfig(
+                ListType.KINGS_BENCH_MASTERS_DAILY_CAUSE_LIST,
+                KINGS_BENCH_MASTERS_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                CASE_DETAILS)),
+            Arguments.of(new ListTypeConfig(
+                ListType.LEEDS_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
+                ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                CASE_DETAILS)),
+            Arguments.of(new ListTypeConfig(
+                ListType.LONDON_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
+                LONDON_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                CASE_DETAILS, LONDON_ADMINISTRATIVE_COURT_NODE)),
+            Arguments.of(new ListTypeConfig(
+                ListType.LONDON_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
+                LONDON_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                CASE_DETAILS, PLANNING_COURT_NODE)),
+            Arguments.of(new ListTypeConfig(
+                ListType.MANCHESTER_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
+                ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST_JSON_FILE_PATH,
                 CASE_DETAILS))
         );
     }
@@ -574,6 +973,18 @@ public class NonStrategicListTestConfiguration {
             Arguments.of(new ListTypeConfig(
                 ListType.CST_WEEKLY_HEARING_LIST,
                 CST_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
+                DATE)),
+            Arguments.of(new ListTypeConfig(
+                ListType.FTT_LR_WEEKLY_HEARING_LIST,
+                FTT_LR_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
+                DATE)),
+            Arguments.of(new ListTypeConfig(
+                ListType.FTT_TAX_WEEKLY_HEARING_LIST,
+                FTT_TAX_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
+                DATE)),
+            Arguments.of(new ListTypeConfig(
+                ListType.GRC_WEEKLY_HEARING_LIST,
+                GRC_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
                 DATE))
         );
     }
@@ -583,6 +994,18 @@ public class NonStrategicListTestConfiguration {
             Arguments.of(new ListTypeConfig(
                 ListType.CIC_WEEKLY_HEARING_LIST,
                 CIC_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
+                CASE_REFERENCE_NUMBER)),
+            Arguments.of(new ListTypeConfig(
+                ListType.FTT_LR_WEEKLY_HEARING_LIST,
+                FTT_LR_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
+                CASE_REFERENCE_NUMBER)),
+            Arguments.of(new ListTypeConfig(
+                ListType.FTT_TAX_WEEKLY_HEARING_LIST,
+                FTT_TAX_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
+                CASE_REFERENCE_NUMBER)),
+            Arguments.of(new ListTypeConfig(
+                ListType.GRC_WEEKLY_HEARING_LIST,
+                GRC_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
                 CASE_REFERENCE_NUMBER))
         );
     }
@@ -592,6 +1015,14 @@ public class NonStrategicListTestConfiguration {
             Arguments.of(new ListTypeConfig(
                 ListType.CIC_WEEKLY_HEARING_LIST,
                 CIC_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
+                VENUE_PLATFORM)),
+            Arguments.of(new ListTypeConfig(
+                ListType.FTT_LR_WEEKLY_HEARING_LIST,
+                FTT_LR_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
+                VENUE_PLATFORM)),
+            Arguments.of(new ListTypeConfig(
+                ListType.FTT_TAX_WEEKLY_HEARING_LIST,
+                FTT_TAX_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
                 VENUE_PLATFORM))
         );
     }
@@ -601,6 +1032,14 @@ public class NonStrategicListTestConfiguration {
             Arguments.of(new ListTypeConfig(
                 ListType.CIC_WEEKLY_HEARING_LIST,
                 CIC_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
+                MEMBERS)),
+            Arguments.of(new ListTypeConfig(
+                ListType.FTT_TAX_WEEKLY_HEARING_LIST,
+                FTT_TAX_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
+                MEMBERS)),
+            Arguments.of(new ListTypeConfig(
+                ListType.GRC_WEEKLY_HEARING_LIST,
+                GRC_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
                 MEMBERS))
         );
     }
@@ -610,6 +1049,14 @@ public class NonStrategicListTestConfiguration {
             Arguments.of(new ListTypeConfig(
                 ListType.CIC_WEEKLY_HEARING_LIST,
                 CIC_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
+                JUDGES)),
+            Arguments.of(new ListTypeConfig(
+                ListType.FTT_TAX_WEEKLY_HEARING_LIST,
+                FTT_TAX_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
+                JUDGES)),
+            Arguments.of(new ListTypeConfig(
+                ListType.GRC_WEEKLY_HEARING_LIST,
+                GRC_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
                 JUDGES))
         );
     }
@@ -620,6 +1067,51 @@ public class NonStrategicListTestConfiguration {
                 ListType.CST_WEEKLY_HEARING_LIST,
                 CST_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
                 HEARING_LENGTH))
+        );
+    }
+
+    public static Stream<Arguments> modeOfHearingMandatoryAttributes() {
+        return Stream.of(
+            Arguments.of(new ListTypeConfig(
+                ListType.GRC_WEEKLY_HEARING_LIST,
+                GRC_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
+                MODE_OF_HEARING))
+        );
+    }
+
+    public static Stream<Arguments> hearingListMandatoryAttributes() {
+        return Stream.of(
+            Arguments.of(new ListTypeConfig(
+                ListType.INTERIM_APPLICATIONS_CHD_DAILY_CAUSE_LIST,
+                INTERIM_APPLICATION_CHANCERY_LIST_CHD_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                HEARING_LIST_NODE))
+        );
+    }
+
+    public static Stream<Arguments> openJusticeStatementDetailsMandatoryAttributes() {
+        return Stream.of(
+            Arguments.of(new ListTypeConfig(
+                ListType.INTERIM_APPLICATIONS_CHD_DAILY_CAUSE_LIST,
+                INTERIM_APPLICATION_CHANCERY_LIST_CHD_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                OPEN_JUSTICE_DETAILS_NODE))
+        );
+    }
+
+    public static Stream<Arguments> nameToBeDisplayedMandatoryAttributes() {
+        return Stream.of(
+            Arguments.of(new ListTypeConfig(
+                ListType.INTERIM_APPLICATIONS_CHD_DAILY_CAUSE_LIST,
+                INTERIM_APPLICATION_CHANCERY_LIST_CHD_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                NAME_TO_BE_DISPLAYED, OPEN_JUSTICE_DETAILS_NODE))
+        );
+    }
+
+    public static Stream<Arguments> emailMandatoryAttributes() {
+        return Stream.of(
+            Arguments.of(new ListTypeConfig(
+                ListType.INTERIM_APPLICATIONS_CHD_DAILY_CAUSE_LIST,
+                INTERIM_APPLICATION_CHANCERY_LIST_CHD_DAILY_CAUSE_LIST_JSON_FILE_PATH,
+                EMAIL, OPEN_JUSTICE_DETAILS_NODE))
         );
     }
 }
