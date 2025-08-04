@@ -17,7 +17,6 @@ import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.n
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConstants.CIC_WEEKLY_HEARING_LIST_JSON_FILE_PATH;
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConstants.COURT_ROOM;
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConstants.CST_WEEKLY_HEARING_LIST_JSON_FILE_PATH;
-import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConstants.DATE;
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConstants.EMAIL;
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConstants.FTA_RESPONDENT;
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConstants.FTT_LR_WEEKLY_HEARING_LIST_JSON_FILE_PATH;
@@ -27,7 +26,6 @@ import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.n
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConstants.HEARING_LIST_NODE;
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConstants.HEARING_METHOD;
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConstants.INTERIM_APPLICATION_CHANCERY_LIST_CHD_DAILY_CAUSE_LIST_JSON_FILE_PATH;
-import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConstants.JUDGES;
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConstants.LOCATION;
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConstants.MEMBERS;
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConstants.MODE_OF_HEARING;
@@ -114,31 +112,6 @@ public final class CommonMiscAttributes {
             .map(Arguments::of);
     }
 
-    public static Stream<Arguments> dateMandatoryAttribute() {
-        Map<ListType, String> listTypeJsonFile = Map.ofEntries(
-            entry(ListType.CIC_WEEKLY_HEARING_LIST, CIC_WEEKLY_HEARING_LIST_JSON_FILE_PATH),
-            entry(ListType.CST_WEEKLY_HEARING_LIST, CST_WEEKLY_HEARING_LIST_JSON_FILE_PATH),
-            entry(ListType.FTT_LR_WEEKLY_HEARING_LIST, FTT_LR_WEEKLY_HEARING_LIST_JSON_FILE_PATH),
-            entry(ListType.FTT_TAX_WEEKLY_HEARING_LIST, FTT_TAX_WEEKLY_HEARING_LIST_JSON_FILE_PATH),
-            entry(ListType.GRC_WEEKLY_HEARING_LIST, GRC_WEEKLY_HEARING_LIST_JSON_FILE_PATH),
-            entry(ListType.PAAC_WEEKLY_HEARING_LIST, SIAC_WEEKLY_HEARING_LIST_JSON_FILE_PATH),
-            entry(ListType.SIAC_WEEKLY_HEARING_LIST, SIAC_WEEKLY_HEARING_LIST_JSON_FILE_PATH),
-            entry(ListType.POAC_WEEKLY_HEARING_LIST, SIAC_WEEKLY_HEARING_LIST_JSON_FILE_PATH),
-            entry(ListType.PHT_WEEKLY_HEARING_LIST, PHT_WEEKLY_HEARING_LIST_JSON_FILE_PATH),
-            entry(ListType.RPT_EASTERN_WEEKLY_HEARING_LIST, RPT_WEEKLY_HEARING_LIST_JSON_FILE_PATH),
-            entry(ListType.RPT_LONDON_WEEKLY_HEARING_LIST, RPT_WEEKLY_HEARING_LIST_JSON_FILE_PATH),
-            entry(ListType.RPT_MIDLANDS_WEEKLY_HEARING_LIST, RPT_WEEKLY_HEARING_LIST_JSON_FILE_PATH),
-            entry(ListType.RPT_NORTHERN_WEEKLY_HEARING_LIST, RPT_WEEKLY_HEARING_LIST_JSON_FILE_PATH),
-            entry(ListType.RPT_SOUTHERN_WEEKLY_HEARING_LIST, RPT_WEEKLY_HEARING_LIST_JSON_FILE_PATH),
-            entry(ListType.WPAFCC_WEEKLY_HEARING_LIST, WPAFCC_WEEKLY_HEARING_LIST_JSON_FILE_PATH)
-        );
-
-        return ListTypeTestInput.generateListTypeTestInputsForAttribute(listTypeJsonFile,
-            new EnumMap<>(ListType.class), DATE)
-            .stream()
-            .map(Arguments::of);
-    }
-
     public static Stream<Arguments> venuePlatformMandatoryAttribute() {
         Map<ListType, String> listTypeJsonFile = Map.ofEntries(
             entry(ListType.CIC_WEEKLY_HEARING_LIST, CIC_WEEKLY_HEARING_LIST_JSON_FILE_PATH),
@@ -170,40 +143,6 @@ public final class CommonMiscAttributes {
 
         return ListTypeTestInput.generateListTypeTestInputsForAttribute(listTypeJsonFile,
             new EnumMap<>(ListType.class), MEMBERS)
-            .stream()
-            .map(Arguments::of);
-    }
-
-    public static Stream<Arguments> judgesMandatoryAttribute() {
-        Map<ListType, String> listTypeJsonFile = Map.ofEntries(
-            entry(ListType.CIC_WEEKLY_HEARING_LIST, CIC_WEEKLY_HEARING_LIST_JSON_FILE_PATH),
-            entry(ListType.FTT_TAX_WEEKLY_HEARING_LIST, FTT_TAX_WEEKLY_HEARING_LIST_JSON_FILE_PATH),
-            entry(ListType.GRC_WEEKLY_HEARING_LIST, GRC_WEEKLY_HEARING_LIST_JSON_FILE_PATH),
-            entry(ListType.RPT_EASTERN_WEEKLY_HEARING_LIST, RPT_WEEKLY_HEARING_LIST_JSON_FILE_PATH),
-            entry(ListType.RPT_LONDON_WEEKLY_HEARING_LIST, RPT_WEEKLY_HEARING_LIST_JSON_FILE_PATH),
-            entry(ListType.RPT_MIDLANDS_WEEKLY_HEARING_LIST, RPT_WEEKLY_HEARING_LIST_JSON_FILE_PATH),
-            entry(ListType.RPT_NORTHERN_WEEKLY_HEARING_LIST, RPT_WEEKLY_HEARING_LIST_JSON_FILE_PATH),
-            entry(ListType.RPT_SOUTHERN_WEEKLY_HEARING_LIST, RPT_WEEKLY_HEARING_LIST_JSON_FILE_PATH),
-            entry(ListType.UT_AAC_DAILY_HEARING_LIST,
-                  UT_ADMINISTRATIVE_APPEALS_CHAMBER_DAILY_HEARING_LIST_JSON_FILE_PATH),
-            entry(ListType.UT_IAC_JR_BIRMINGHAM_DAILY_HEARING_LIST,
-                  UT_IAC_JUDICIAL_REVIEWS_DAILY_HEARING_LIST_JSON_FILE_PATH),
-            entry(ListType.UT_IAC_JR_CARDIFF_DAILY_HEARING_LIST,
-                  UT_IAC_JUDICIAL_REVIEWS_DAILY_HEARING_LIST_JSON_FILE_PATH),
-            entry(ListType.UT_IAC_JR_LEEDS_DAILY_HEARING_LIST,
-                  UT_IAC_JUDICIAL_REVIEWS_DAILY_HEARING_LIST_JSON_FILE_PATH),
-            entry(ListType.UT_IAC_JR_LONDON_DAILY_HEARING_LIST,
-                  UT_IAC_JUDICIAL_REVIEWS_DAILY_HEARING_LIST_JSON_FILE_PATH),
-            entry(ListType.UT_IAC_JR_MANCHESTER_DAILY_HEARING_LIST,
-                  UT_IAC_JUDICIAL_REVIEWS_DAILY_HEARING_LIST_JSON_FILE_PATH),
-            entry(ListType.UT_IAC_STATUTORY_APPEALS_DAILY_HEARING_LIST,
-                  UT_IAC_STATUTORY_APPEALS_DAILY_HEARING_LIST_JSON_FILE_PATH),
-            entry(ListType.UT_LC_DAILY_HEARING_LIST, UT_LANDS_CHAMBER_DAILY_HEARING_LIST_JSON_FILE_PATH),
-            entry(ListType.UT_T_AND_CC_DAILY_HEARING_LIST, UT_TAX_CHAMBER_DAILY_HEARING_LIST_JSON_FILE_PATH)
-        );
-
-        return ListTypeTestInput.generateListTypeTestInputsForAttribute(listTypeJsonFile,
-            new EnumMap<>(ListType.class), JUDGES)
             .stream()
             .map(Arguments::of);
     }
