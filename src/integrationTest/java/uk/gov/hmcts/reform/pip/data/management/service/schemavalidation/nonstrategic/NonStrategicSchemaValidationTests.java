@@ -39,9 +39,6 @@ import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.n
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.CaseNameAttribute.caseNameMandatoryAttribute;
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.CaseNumberAttribute.caseNumberMandatoryAttribute;
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.CaseReferenceNumberAttribute.caseReferenceNumberMandatoryAttribute;
-import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.HearingTimeAttribute.hearingTimeMandatoryAttribute;
-import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.HearingTypeAttribute.hearingTypeMandatoryAttribute;
-import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.JudgeTestAttribute.judgeMandatoryAttribute;
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.CommonMiscAttributes.appealReferenceNumberMandatoryAttribute;
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.CommonMiscAttributes.appellantMandatoryAttribute;
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.CommonMiscAttributes.caseTitleMandatoryAttribute;
@@ -64,6 +61,9 @@ import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.n
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.CommonMiscAttributes.respondentMandatoryAttribute;
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.CommonMiscAttributes.timeEstimateMandatoryAttribute;
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.CommonMiscAttributes.venuePlatformMandatoryAttribute;
+import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.HearingTimeAttribute.hearingTimeMandatoryAttribute;
+import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.HearingTypeAttribute.hearingTypeMandatoryAttribute;
+import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.JudgeTestAttribute.judgeMandatoryAttribute;
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.TimeFormatValidation.getListTypesWithTimeFormatValidation;
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.TimeTestAttribute.timeMandatoryAttribute;
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.TypeTestAttribute.typeMandatoryAttribute;
