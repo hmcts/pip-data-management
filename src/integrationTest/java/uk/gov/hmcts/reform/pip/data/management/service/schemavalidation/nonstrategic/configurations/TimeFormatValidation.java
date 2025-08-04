@@ -46,7 +46,7 @@ import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.n
 
 @SuppressWarnings("PMD.ExcessiveImports")
 public final class TimeFormatValidation {
-    private static final Map<ListType, String> LIST_TYPE_TO_JSON_FILE = Map.ofEntries(
+    private static final Map<ListType, String> LIST_TYPE_JSON_FILE = Map.ofEntries(
         entry(ListType.ADMIRALTY_COURT_KB_DAILY_CAUSE_LIST, ADMIRALTY_COURT_KB_DAILY_CAUSE_LIST_JSON_FILE_PATH),
         entry(ListType.BUSINESS_LIST_CHD_DAILY_CAUSE_LIST, BUSINESS_LIST_CHD_DAILY_CAUSE_LIST_JSON_FILE_PATH),
         entry(ListType.CHANCERY_APPEALS_CHD_DAILY_CAUSE_LIST, CHANCERY_APPEALS_CHD_DAILY_CAUSE_LIST_JSON_FILE_PATH),
@@ -109,7 +109,7 @@ public final class TimeFormatValidation {
         entry(ListType.RPT_SOUTHERN_WEEKLY_HEARING_LIST, RPT_WEEKLY_HEARING_LIST_JSON_FILE_PATH)
     );
 
-    private static final Map<ListType, List<String>> LIST_TYPE_TO_PARENT_NODES = Map.of(
+    private static final Map<ListType, List<String>> LIST_TYPE_JSON_FILE_PARENT_NODES = Map.of(
         ListType.COURT_OF_APPEAL_CIVIL_DAILY_CAUSE_LIST,
         List.of(HEARING_LIST_NODE, FUTURE_JUDGMENTS_NODE),
         ListType.LONDON_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
@@ -119,8 +119,8 @@ public final class TimeFormatValidation {
     );
 
     public static List<ListTypeTestInput> getListTypesWithTimeFormatValidation() {
-        return ListTypeTestInput.generateListTypeTestInputsForAttribute(LIST_TYPE_TO_JSON_FILE,
-                LIST_TYPE_TO_PARENT_NODES, TIME);
+        return ListTypeTestInput.generateListTypeTestInputsForAttribute(LIST_TYPE_JSON_FILE,
+                LIST_TYPE_JSON_FILE_PARENT_NODES, TIME);
     }
 
     private TimeFormatValidation() {
