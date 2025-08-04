@@ -6,7 +6,7 @@ import uk.gov.hmcts.reform.pip.model.publication.Sensitivity;
 
 import java.time.LocalDateTime;
 
-public class NonStrategicListTestConstants {
+public final class NonStrategicListTestConstants {
     public static final String SOURCE_ARTEFACT_ID = "sourceArtefactId";
     public static final LocalDateTime DISPLAY_FROM = LocalDateTime.now();
     public static final LocalDateTime DISPLAY_TO = LocalDateTime.now().plusDays(1);
@@ -84,11 +84,13 @@ public class NonStrategicListTestConstants {
     public static final String CST_WEEKLY_HEARING_LIST_JSON_FILE_PATH = PARENT_JSON_FILE_PATH
         + "/cst-weekly-hearing-list/cstWeeklyHearingList.json";
     public static final String FAMILY_DIVISION_HIGH_COURT_DAILY_CAUSE_LIST_JSON_FILE_PATH =
-        PARENT_JSON_FILE_PATH + "/family-division-high-court-daily-cause-list/familyDivisionHighCourtDailyCauseList.json";
+        PARENT_JSON_FILE_PATH + "/family-division-high-court-daily-cause-list/"
+            + "familyDivisionHighCourtDailyCauseList.json";
     public static final String FINANCIAL_LISTS_CHD_DAILY_CAUSE_LIST_JSON_FILE_PATH =
         PARENT_JSON_FILE_PATH + "/financial_list_chd_kb_daily_cause_list/financialListChdKbDailyCauseList.json";
     public static final String FTT_LR_WEEKLY_HEARING_LIST_JSON_FILE_PATH =
-        PARENT_JSON_FILE_PATH + "/ftt-land-registry-tribunal-weekly-hearing-list/fttLandRegistryTribunalWeeklyHearingList.json";
+        PARENT_JSON_FILE_PATH + "/ftt-land-registry-tribunal-weekly-hearing-list/"
+            + "fttLandRegistryTribunalWeeklyHearingList.json";
     public static final String FTT_TAX_WEEKLY_HEARING_LIST_JSON_FILE_PATH =
         PARENT_JSON_FILE_PATH + "/ftt-tax-tribunal-weekly-hearing-list/fttTaxWeeklyHearingList.json";
     public static final String GRC_WEEKLY_HEARING_LIST_JSON_FILE_PATH =
@@ -110,9 +112,11 @@ public class NonStrategicListTestConstants {
     public static final String KINGS_BENCH_MASTERS_DAILY_CAUSE_LIST_JSON_FILE_PATH =
         PARENT_JSON_FILE_PATH + "/kings-bench-masters-daily-cause-list/kingsBenchMastersDailyCauseList.json";
     public static final String LONDON_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST_JSON_FILE_PATH =
-        PARENT_JSON_FILE_PATH + "/london-administrative-court-daily-cause-list/londonAdministrativeCourtDailyCauseList.json";
+        PARENT_JSON_FILE_PATH + "/london-administrative-court-daily-cause-list/"
+            + "londonAdministrativeCourtDailyCauseList.json";
     public static final String LONDON_CIRCUIT_COURT_DAILY_CAUSE_LIST_JSON_FILE_PATH =
-        PARENT_JSON_FILE_PATH + "/london-circuit-commercial-court-kb-daily-cause-list/londonCircuitCommercialCourtKbDailyCauseList.json";
+        PARENT_JSON_FILE_PATH + "/london-circuit-commercial-court-kb-daily-cause-list/"
+            + "londonCircuitCommercialCourtKbDailyCauseList.json";
     public static final String MAYOR_AND_CITY_CIVIL_DAILY_CAUSE_LIST_JSON_FILE_PATH =
         PARENT_JSON_FILE_PATH + "/mayor-and-city-civil-daily-cause-list/mayorAndCityCivilDailyCauseList.json";
     public static final String SIAC_WEEKLY_HEARING_LIST_JSON_FILE_PATH =
@@ -132,7 +136,8 @@ public class NonStrategicListTestConstants {
     public static final String SEND_DAILY_HEARING_LIST_JSON_FILE_PATH =
         PARENT_JSON_FILE_PATH + "/send-daily-hearing-list/sendDailyHearingList.json";
     public static final String SENIOR_COURTS_COSTS_OFFICE_DAILY_CAUSE_LIST_JSON_FILE_PATH =
-        PARENT_JSON_FILE_PATH + "/senior-courts-costs-office-daily-cause-list/seniorCourtsCostsOfficeDailyCauseList.json";
+        PARENT_JSON_FILE_PATH + "/senior-courts-costs-office-daily-cause-list/"
+            + "seniorCourtsCostsOfficeDailyCauseList.json";
     public static final String SSCS_DAILY_HEARING_LIST_JSON_FILE_PATH =
         PARENT_JSON_FILE_PATH + "/sscs-daily-hearing-list/sscsDailyHearingList.json";
     public static final String TECHNOLOGY_AND_CONSTRUCTION_COURT_KB_DAILY_CAUSE_LIST_JSON_FILE_PATH =
@@ -144,7 +149,8 @@ public class NonStrategicListTestConstants {
     public static final String UT_IAC_JUDICIAL_REVIEWS_DAILY_HEARING_LIST_JSON_FILE_PATH =
         PARENT_JSON_FILE_PATH + "/ut-iac-judicial-review-daily-hearing-list/utIacJudicialReviewDailyHearingList.json";
     public static final String UT_IAC_STATUTORY_APPEALS_DAILY_HEARING_LIST_JSON_FILE_PATH =
-        PARENT_JSON_FILE_PATH + "/ut-iac-statutory-appeals-daily-hearing-list/utIacStatutoryAppealsDailyHearingList.json";
+        PARENT_JSON_FILE_PATH + "/ut-iac-statutory-appeals-daily-hearing-list/"
+            + "utIacStatutoryAppealsDailyHearingList.json";
     public static final String UT_LANDS_CHAMBER_DAILY_HEARING_LIST_JSON_FILE_PATH =
         PARENT_JSON_FILE_PATH + "/ut-lands-chamber-daily-hearing-list/utLandsChamberDailyHearingList.json";
     public static final String UT_TAX_CHAMBER_DAILY_HEARING_LIST_JSON_FILE_PATH =
@@ -152,4 +158,7 @@ public class NonStrategicListTestConstants {
             + "utTaxAndChanceryChamberDailyHearingList.json";
     public static final String WPAFCC_WEEKLY_HEARING_LIST_JSON_FILE_PATH =
         PARENT_JSON_FILE_PATH + "/wpafcc-weekly-hearing-list/wpafccWeeklyHearingList.json";
+
+    private NonStrategicListTestConstants() {
+    }
 }

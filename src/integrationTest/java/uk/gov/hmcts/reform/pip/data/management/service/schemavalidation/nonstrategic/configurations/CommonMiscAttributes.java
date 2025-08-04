@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.Configurations;
+package uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations;
 
 import org.junit.jupiter.params.provider.Arguments;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
@@ -46,47 +46,50 @@ import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.n
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConstants.VENUE_PLATFORM;
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConstants.WPAFCC_WEEKLY_HEARING_LIST_JSON_FILE_PATH;
 
-public class NonStrategicListAttributes {
+@SuppressWarnings("PMD.ExcessiveImports")
+public final class CommonMiscAttributes {
+    private CommonMiscAttributes() {
+    }
 
     public static Stream<Arguments> appellantMandatoryAttribute() {
         return Stream.of(
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.AST_DAILY_HEARING_LIST,
                 AST_DAILY_HEARING_LIST_JSON_FILE_PATH,
                 APPELLANT)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.SSCS_LONDON_DAILY_HEARING_LIST,
                 SSCS_DAILY_HEARING_LIST_JSON_FILE_PATH,
                 APPELLANT)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.SSCS_MIDLANDS_DAILY_HEARING_LIST,
                 SSCS_DAILY_HEARING_LIST_JSON_FILE_PATH,
                 APPELLANT)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.SSCS_NORTH_EAST_DAILY_HEARING_LIST,
                 SSCS_DAILY_HEARING_LIST_JSON_FILE_PATH,
                 APPELLANT)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.SSCS_NORTH_WEST_DAILY_HEARING_LIST,
                 SSCS_DAILY_HEARING_LIST_JSON_FILE_PATH,
                 APPELLANT)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.SSCS_SCOTLAND_DAILY_HEARING_LIST,
                 SSCS_DAILY_HEARING_LIST_JSON_FILE_PATH,
                 APPELLANT)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.SSCS_SOUTH_EAST_DAILY_HEARING_LIST,
                 SSCS_DAILY_HEARING_LIST_JSON_FILE_PATH,
                 APPELLANT)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.SSCS_WALES_AND_SOUTH_WEST_DAILY_HEARING_LIST,
                 SSCS_DAILY_HEARING_LIST_JSON_FILE_PATH,
                 APPELLANT)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.UT_AAC_DAILY_HEARING_LIST,
                 UT_ADMINISTRATIVE_APPEALS_CHAMBER_DAILY_HEARING_LIST_JSON_FILE_PATH,
                 APPELLANT)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.UT_IAC_STATUTORY_APPEALS_DAILY_HEARING_LIST,
                 UT_IAC_STATUTORY_APPEALS_DAILY_HEARING_LIST_JSON_FILE_PATH,
                 APPELLANT))
@@ -95,39 +98,39 @@ public class NonStrategicListAttributes {
 
     public static Stream<Arguments> appealReferenceNumberMandatoryAttribute() {
         return Stream.of(
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.AST_DAILY_HEARING_LIST,
                 AST_DAILY_HEARING_LIST_JSON_FILE_PATH,
                 APPEAL_REFERENCE_NUMBER)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.SSCS_LONDON_DAILY_HEARING_LIST,
                 SSCS_DAILY_HEARING_LIST_JSON_FILE_PATH,
                 APPEAL_REFERENCE_NUMBER)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.SSCS_MIDLANDS_DAILY_HEARING_LIST,
                 SSCS_DAILY_HEARING_LIST_JSON_FILE_PATH,
                 APPEAL_REFERENCE_NUMBER)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.SSCS_NORTH_EAST_DAILY_HEARING_LIST,
                 SSCS_DAILY_HEARING_LIST_JSON_FILE_PATH,
                 APPEAL_REFERENCE_NUMBER)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.SSCS_NORTH_WEST_DAILY_HEARING_LIST,
                 SSCS_DAILY_HEARING_LIST_JSON_FILE_PATH,
                 APPEAL_REFERENCE_NUMBER)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.SSCS_SCOTLAND_DAILY_HEARING_LIST,
                 SSCS_DAILY_HEARING_LIST_JSON_FILE_PATH,
                 APPEAL_REFERENCE_NUMBER)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.SSCS_SOUTH_EAST_DAILY_HEARING_LIST,
                 SSCS_DAILY_HEARING_LIST_JSON_FILE_PATH,
                 APPEAL_REFERENCE_NUMBER)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.SSCS_WALES_AND_SOUTH_WEST_DAILY_HEARING_LIST,
                 SSCS_DAILY_HEARING_LIST_JSON_FILE_PATH,
                 APPEAL_REFERENCE_NUMBER)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.UT_IAC_STATUTORY_APPEALS_DAILY_HEARING_LIST,
                 UT_IAC_STATUTORY_APPEALS_DAILY_HEARING_LIST_JSON_FILE_PATH,
                 APPEAL_REFERENCE_NUMBER))
@@ -136,27 +139,27 @@ public class NonStrategicListAttributes {
 
     public static Stream<Arguments> caseTypeMandatoryAttribute() {
         return Stream.of(
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.AST_DAILY_HEARING_LIST,
                 AST_DAILY_HEARING_LIST_JSON_FILE_PATH,
                 CASE_TYPE)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.RPT_EASTERN_WEEKLY_HEARING_LIST,
                 RPT_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
                 CASE_TYPE)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.RPT_LONDON_WEEKLY_HEARING_LIST,
                 RPT_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
                 CASE_TYPE)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.RPT_MIDLANDS_WEEKLY_HEARING_LIST,
                 RPT_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
                 CASE_TYPE)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.RPT_NORTHERN_WEEKLY_HEARING_LIST,
                 RPT_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
                 CASE_TYPE)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.RPT_SOUTHERN_WEEKLY_HEARING_LIST,
                 RPT_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
                 CASE_TYPE))
@@ -165,63 +168,63 @@ public class NonStrategicListAttributes {
 
     public static Stream<Arguments> dateMandatoryAttribute() {
         return Stream.of(
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.CIC_WEEKLY_HEARING_LIST,
                 CIC_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
                 DATE)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.CST_WEEKLY_HEARING_LIST,
                 CST_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
                 DATE)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.FTT_LR_WEEKLY_HEARING_LIST,
                 FTT_LR_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
                 DATE)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.FTT_TAX_WEEKLY_HEARING_LIST,
                 FTT_TAX_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
                 DATE)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.GRC_WEEKLY_HEARING_LIST,
                 GRC_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
                 DATE)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.PAAC_WEEKLY_HEARING_LIST,
                 SIAC_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
                 DATE)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.SIAC_WEEKLY_HEARING_LIST,
                 SIAC_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
                 DATE)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.POAC_WEEKLY_HEARING_LIST,
                 SIAC_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
                 DATE)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.PHT_WEEKLY_HEARING_LIST,
                 PHT_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
                 DATE)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.RPT_EASTERN_WEEKLY_HEARING_LIST,
                 RPT_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
                 DATE)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.RPT_LONDON_WEEKLY_HEARING_LIST,
                 RPT_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
                 DATE)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.RPT_MIDLANDS_WEEKLY_HEARING_LIST,
                 RPT_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
                 DATE)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.RPT_NORTHERN_WEEKLY_HEARING_LIST,
                 RPT_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
                 DATE)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.RPT_SOUTHERN_WEEKLY_HEARING_LIST,
                 RPT_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
                 DATE)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.WPAFCC_WEEKLY_HEARING_LIST,
                 WPAFCC_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
                 DATE))
@@ -230,15 +233,15 @@ public class NonStrategicListAttributes {
 
     public static Stream<Arguments> venuePlatformMandatoryAttribute() {
         return Stream.of(
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.CIC_WEEKLY_HEARING_LIST,
                 CIC_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
                 VENUE_PLATFORM)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.FTT_LR_WEEKLY_HEARING_LIST,
                 FTT_LR_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
                 VENUE_PLATFORM)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.FTT_TAX_WEEKLY_HEARING_LIST,
                 FTT_TAX_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
                 VENUE_PLATFORM))
@@ -247,47 +250,47 @@ public class NonStrategicListAttributes {
 
     public static Stream<Arguments> membersMandatoryAttribute() {
         return Stream.of(
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.CIC_WEEKLY_HEARING_LIST,
                 CIC_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
                 MEMBERS)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.FTT_TAX_WEEKLY_HEARING_LIST,
                 FTT_TAX_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
                 MEMBERS)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.GRC_WEEKLY_HEARING_LIST,
                 GRC_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
                 MEMBERS)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.RPT_EASTERN_WEEKLY_HEARING_LIST,
                 RPT_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
                 MEMBERS)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.RPT_LONDON_WEEKLY_HEARING_LIST,
                 RPT_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
                 MEMBERS)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.RPT_MIDLANDS_WEEKLY_HEARING_LIST,
                 RPT_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
                 MEMBERS)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.RPT_NORTHERN_WEEKLY_HEARING_LIST,
                 RPT_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
                 MEMBERS)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.RPT_SOUTHERN_WEEKLY_HEARING_LIST,
                 RPT_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
                 MEMBERS)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.UT_AAC_DAILY_HEARING_LIST,
                 UT_ADMINISTRATIVE_APPEALS_CHAMBER_DAILY_HEARING_LIST_JSON_FILE_PATH,
                 MEMBERS)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.UT_LC_DAILY_HEARING_LIST,
                 UT_LANDS_CHAMBER_DAILY_HEARING_LIST_JSON_FILE_PATH,
                 MEMBERS)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.UT_T_AND_CC_DAILY_HEARING_LIST,
                 UT_TAX_CHAMBER_DAILY_HEARING_LIST_JSON_FILE_PATH,
                 MEMBERS))
@@ -296,71 +299,71 @@ public class NonStrategicListAttributes {
 
     public static Stream<Arguments> judgesMandatoryAttribute() {
         return Stream.of(
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.CIC_WEEKLY_HEARING_LIST,
                 CIC_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
                 JUDGES)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.FTT_TAX_WEEKLY_HEARING_LIST,
                 FTT_TAX_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
                 JUDGES)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.GRC_WEEKLY_HEARING_LIST,
                 GRC_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
                 JUDGES)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.RPT_EASTERN_WEEKLY_HEARING_LIST,
                 RPT_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
                 JUDGES)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.RPT_LONDON_WEEKLY_HEARING_LIST,
                 RPT_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
                 JUDGES)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.RPT_MIDLANDS_WEEKLY_HEARING_LIST,
                 RPT_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
                 JUDGES)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.RPT_NORTHERN_WEEKLY_HEARING_LIST,
                 RPT_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
                 JUDGES)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.RPT_SOUTHERN_WEEKLY_HEARING_LIST,
                 RPT_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
                 JUDGES)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.UT_AAC_DAILY_HEARING_LIST,
                 UT_ADMINISTRATIVE_APPEALS_CHAMBER_DAILY_HEARING_LIST_JSON_FILE_PATH,
                 JUDGES)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.UT_IAC_JR_BIRMINGHAM_DAILY_HEARING_LIST,
                 UT_IAC_JUDICIAL_REVIEWS_DAILY_HEARING_LIST_JSON_FILE_PATH,
                 JUDGES)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.UT_IAC_JR_CARDIFF_DAILY_HEARING_LIST,
                 UT_IAC_JUDICIAL_REVIEWS_DAILY_HEARING_LIST_JSON_FILE_PATH,
                 JUDGES)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.UT_IAC_JR_LEEDS_DAILY_HEARING_LIST,
                 UT_IAC_JUDICIAL_REVIEWS_DAILY_HEARING_LIST_JSON_FILE_PATH,
                 JUDGES)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.UT_IAC_JR_LONDON_DAILY_HEARING_LIST,
                 UT_IAC_JUDICIAL_REVIEWS_DAILY_HEARING_LIST_JSON_FILE_PATH,
                 JUDGES)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.UT_IAC_JR_MANCHESTER_DAILY_HEARING_LIST,
                 UT_IAC_JUDICIAL_REVIEWS_DAILY_HEARING_LIST_JSON_FILE_PATH,
                 JUDGES)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.UT_IAC_STATUTORY_APPEALS_DAILY_HEARING_LIST,
                 UT_IAC_STATUTORY_APPEALS_DAILY_HEARING_LIST_JSON_FILE_PATH,
                 JUDGES)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.UT_LC_DAILY_HEARING_LIST,
                 UT_LANDS_CHAMBER_DAILY_HEARING_LIST_JSON_FILE_PATH,
                 JUDGES)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.UT_T_AND_CC_DAILY_HEARING_LIST,
                 UT_TAX_CHAMBER_DAILY_HEARING_LIST_JSON_FILE_PATH,
                 JUDGES))
@@ -369,11 +372,11 @@ public class NonStrategicListAttributes {
 
     public static Stream<Arguments> hearingLengthMandatoryAttribute() {
         return Stream.of(
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.CST_WEEKLY_HEARING_LIST,
                 CST_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
                 HEARING_LENGTH)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.PHT_WEEKLY_HEARING_LIST,
                 PHT_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
                 HEARING_LENGTH))
@@ -382,19 +385,19 @@ public class NonStrategicListAttributes {
 
     public static Stream<Arguments> modeOfHearingMandatoryAttribute() {
         return Stream.of(
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.GRC_WEEKLY_HEARING_LIST,
                 GRC_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
                 MODE_OF_HEARING)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.UT_AAC_DAILY_HEARING_LIST,
                 UT_ADMINISTRATIVE_APPEALS_CHAMBER_DAILY_HEARING_LIST_JSON_FILE_PATH,
                 MODE_OF_HEARING)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.UT_LC_DAILY_HEARING_LIST,
                 UT_LANDS_CHAMBER_DAILY_HEARING_LIST_JSON_FILE_PATH,
                 MODE_OF_HEARING)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.WPAFCC_WEEKLY_HEARING_LIST,
                 WPAFCC_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
                 MODE_OF_HEARING))
@@ -403,7 +406,7 @@ public class NonStrategicListAttributes {
 
     public static Stream<Arguments> hearingListMandatoryAttributes() {
         return Stream.of(
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.INTERIM_APPLICATIONS_CHD_DAILY_CAUSE_LIST,
                 INTERIM_APPLICATION_CHANCERY_LIST_CHD_DAILY_CAUSE_LIST_JSON_FILE_PATH,
                 HEARING_LIST_NODE))
@@ -412,7 +415,7 @@ public class NonStrategicListAttributes {
 
     public static Stream<Arguments> openJusticeStatementDetailsMandatoryAttributes() {
         return Stream.of(
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.INTERIM_APPLICATIONS_CHD_DAILY_CAUSE_LIST,
                 INTERIM_APPLICATION_CHANCERY_LIST_CHD_DAILY_CAUSE_LIST_JSON_FILE_PATH,
                 OPEN_JUSTICE_DETAILS_NODE))
@@ -421,7 +424,7 @@ public class NonStrategicListAttributes {
 
     public static Stream<Arguments> nameToBeDisplayedMandatoryAttribute() {
         return Stream.of(
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.INTERIM_APPLICATIONS_CHD_DAILY_CAUSE_LIST,
                 INTERIM_APPLICATION_CHANCERY_LIST_CHD_DAILY_CAUSE_LIST_JSON_FILE_PATH,
                 NAME_TO_BE_DISPLAYED, OPEN_JUSTICE_DETAILS_NODE))
@@ -430,7 +433,7 @@ public class NonStrategicListAttributes {
 
     public static Stream<Arguments> emailMandatoryAttribute() {
         return Stream.of(
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.INTERIM_APPLICATIONS_CHD_DAILY_CAUSE_LIST,
                 INTERIM_APPLICATION_CHANCERY_LIST_CHD_DAILY_CAUSE_LIST_JSON_FILE_PATH,
                 EMAIL, OPEN_JUSTICE_DETAILS_NODE))
@@ -439,43 +442,43 @@ public class NonStrategicListAttributes {
 
     public static Stream<Arguments> courtRoomMandatoryAttribute() {
         return Stream.of(
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.PAAC_WEEKLY_HEARING_LIST,
                 SIAC_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
                 COURT_ROOM)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.SIAC_WEEKLY_HEARING_LIST,
                 SIAC_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
                 COURT_ROOM)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.POAC_WEEKLY_HEARING_LIST,
                 SIAC_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
                 COURT_ROOM)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.SSCS_LONDON_DAILY_HEARING_LIST,
                 SSCS_DAILY_HEARING_LIST_JSON_FILE_PATH,
                 COURT_ROOM)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.SSCS_MIDLANDS_DAILY_HEARING_LIST,
                 SSCS_DAILY_HEARING_LIST_JSON_FILE_PATH,
                 COURT_ROOM)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.SSCS_NORTH_EAST_DAILY_HEARING_LIST,
                 SSCS_DAILY_HEARING_LIST_JSON_FILE_PATH,
                 COURT_ROOM)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.SSCS_NORTH_WEST_DAILY_HEARING_LIST,
                 SSCS_DAILY_HEARING_LIST_JSON_FILE_PATH,
                 COURT_ROOM)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.SSCS_SCOTLAND_DAILY_HEARING_LIST,
                 SSCS_DAILY_HEARING_LIST_JSON_FILE_PATH,
                 COURT_ROOM)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.SSCS_SOUTH_EAST_DAILY_HEARING_LIST,
                 SSCS_DAILY_HEARING_LIST_JSON_FILE_PATH,
                 COURT_ROOM)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.SSCS_WALES_AND_SOUTH_WEST_DAILY_HEARING_LIST,
                 SSCS_DAILY_HEARING_LIST_JSON_FILE_PATH,
                 COURT_ROOM))
@@ -484,23 +487,23 @@ public class NonStrategicListAttributes {
 
     public static Stream<Arguments> hearingMethodMandatoryAttribute() {
         return Stream.of(
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.RPT_EASTERN_WEEKLY_HEARING_LIST,
                 RPT_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
                 HEARING_METHOD)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.RPT_LONDON_WEEKLY_HEARING_LIST,
                 RPT_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
                 HEARING_METHOD)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.RPT_MIDLANDS_WEEKLY_HEARING_LIST,
                 RPT_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
                 HEARING_METHOD)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.RPT_NORTHERN_WEEKLY_HEARING_LIST,
                 RPT_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
                 HEARING_METHOD)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.RPT_SOUTHERN_WEEKLY_HEARING_LIST,
                 RPT_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
                 HEARING_METHOD))
@@ -509,7 +512,7 @@ public class NonStrategicListAttributes {
 
     public static Stream<Arguments> respondentMandatoryAttribute() {
         return Stream.of(
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.SEND_DAILY_HEARING_LIST,
                 SEND_DAILY_HEARING_LIST_JSON_FILE_PATH,
                 RESPONDENT))
@@ -518,7 +521,7 @@ public class NonStrategicListAttributes {
 
     public static Stream<Arguments> timeEstimateMandatoryAttribute() {
         return Stream.of(
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.SEND_DAILY_HEARING_LIST,
                 SEND_DAILY_HEARING_LIST_JSON_FILE_PATH,
                 TIME_ESTIMATE))
@@ -527,31 +530,31 @@ public class NonStrategicListAttributes {
 
     public static Stream<Arguments> panelMandatoryAttribute() {
         return Stream.of(
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.SSCS_LONDON_DAILY_HEARING_LIST,
                 SSCS_DAILY_HEARING_LIST_JSON_FILE_PATH,
                 PANEL)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.SSCS_MIDLANDS_DAILY_HEARING_LIST,
                 SSCS_DAILY_HEARING_LIST_JSON_FILE_PATH,
                 PANEL)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.SSCS_NORTH_EAST_DAILY_HEARING_LIST,
                 SSCS_DAILY_HEARING_LIST_JSON_FILE_PATH,
                 PANEL)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.SSCS_NORTH_WEST_DAILY_HEARING_LIST,
                 SSCS_DAILY_HEARING_LIST_JSON_FILE_PATH,
                 PANEL)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.SSCS_SCOTLAND_DAILY_HEARING_LIST,
                 SSCS_DAILY_HEARING_LIST_JSON_FILE_PATH,
                 PANEL)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.SSCS_SOUTH_EAST_DAILY_HEARING_LIST,
                 SSCS_DAILY_HEARING_LIST_JSON_FILE_PATH,
                 PANEL)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.WPAFCC_WEEKLY_HEARING_LIST,
                 WPAFCC_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
                 PANEL))
@@ -560,31 +563,31 @@ public class NonStrategicListAttributes {
 
     public static Stream<Arguments> ftaRespondentMandatoryAttribute() {
         return Stream.of(
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.SSCS_LONDON_DAILY_HEARING_LIST,
                 SSCS_DAILY_HEARING_LIST_JSON_FILE_PATH,
                 FTA_RESPONDENT)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.SSCS_MIDLANDS_DAILY_HEARING_LIST,
                 SSCS_DAILY_HEARING_LIST_JSON_FILE_PATH,
                 FTA_RESPONDENT)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.SSCS_NORTH_EAST_DAILY_HEARING_LIST,
                 SSCS_DAILY_HEARING_LIST_JSON_FILE_PATH,
                 FTA_RESPONDENT)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.SSCS_NORTH_WEST_DAILY_HEARING_LIST,
                 SSCS_DAILY_HEARING_LIST_JSON_FILE_PATH,
                 FTA_RESPONDENT)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.SSCS_SCOTLAND_DAILY_HEARING_LIST,
                 SSCS_DAILY_HEARING_LIST_JSON_FILE_PATH,
                 FTA_RESPONDENT)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.SSCS_SOUTH_EAST_DAILY_HEARING_LIST,
                 SSCS_DAILY_HEARING_LIST_JSON_FILE_PATH,
                 FTA_RESPONDENT)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.SSCS_WALES_AND_SOUTH_WEST_DAILY_HEARING_LIST,
                 SSCS_DAILY_HEARING_LIST_JSON_FILE_PATH,
                 FTA_RESPONDENT))
@@ -593,27 +596,27 @@ public class NonStrategicListAttributes {
 
     public static Stream<Arguments> caseTitleMandatoryAttribute() {
         return Stream.of(
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.UT_IAC_JR_BIRMINGHAM_DAILY_HEARING_LIST,
                 UT_IAC_JUDICIAL_REVIEWS_DAILY_HEARING_LIST_JSON_FILE_PATH,
                 CASE_TITLE
             )),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.UT_IAC_JR_CARDIFF_DAILY_HEARING_LIST,
                 UT_IAC_JUDICIAL_REVIEWS_DAILY_HEARING_LIST_JSON_FILE_PATH,
                 CASE_TITLE
             )),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.UT_IAC_JR_LEEDS_DAILY_HEARING_LIST,
                 UT_IAC_JUDICIAL_REVIEWS_DAILY_HEARING_LIST_JSON_FILE_PATH,
                 CASE_TITLE
             )),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.UT_IAC_JR_LONDON_DAILY_HEARING_LIST,
                 UT_IAC_JUDICIAL_REVIEWS_DAILY_HEARING_LIST_JSON_FILE_PATH,
                 CASE_TITLE
             )),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.UT_IAC_JR_MANCHESTER_DAILY_HEARING_LIST,
                 UT_IAC_JUDICIAL_REVIEWS_DAILY_HEARING_LIST_JSON_FILE_PATH,
                 CASE_TITLE
@@ -623,12 +626,12 @@ public class NonStrategicListAttributes {
 
     public static Stream<Arguments> representativeMandatoryAttribute() {
         return Stream.of(
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.UT_IAC_JR_LONDON_DAILY_HEARING_LIST,
                 UT_IAC_JUDICIAL_REVIEWS_DAILY_HEARING_LIST_JSON_FILE_PATH,
                 REPRESENTATIVE
             )),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.UT_IAC_STATUTORY_APPEALS_DAILY_HEARING_LIST,
                 UT_IAC_STATUTORY_APPEALS_DAILY_HEARING_LIST_JSON_FILE_PATH,
                 REPRESENTATIVE))
@@ -637,7 +640,7 @@ public class NonStrategicListAttributes {
 
     public static Stream<Arguments> locationMandatoryAttribute() {
         return Stream.of(
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.UT_IAC_STATUTORY_APPEALS_DAILY_HEARING_LIST,
                 UT_IAC_STATUTORY_APPEALS_DAILY_HEARING_LIST_JSON_FILE_PATH,
                 LOCATION))

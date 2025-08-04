@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.Configurations;
+package uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations;
 
 import org.junit.jupiter.params.provider.Arguments;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
@@ -19,94 +19,97 @@ import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.n
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConstants.UT_TAX_CHAMBER_DAILY_HEARING_LIST_JSON_FILE_PATH;
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConstants.WPAFCC_WEEKLY_HEARING_LIST_JSON_FILE_PATH;
 
-public class CaseReferenceNumberAttribute {
+public final class CaseReferenceNumberAttribute {
+    private CaseReferenceNumberAttribute() {
+    }
+
     public static Stream<Arguments> caseReferenceNumberMandatoryAttribute() {
         return Stream.of(
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.CIC_WEEKLY_HEARING_LIST,
                 CIC_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
                 CASE_REFERENCE_NUMBER)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.FTT_LR_WEEKLY_HEARING_LIST,
                 FTT_LR_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
                 CASE_REFERENCE_NUMBER)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.FTT_TAX_WEEKLY_HEARING_LIST,
                 FTT_TAX_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
                 CASE_REFERENCE_NUMBER)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.GRC_WEEKLY_HEARING_LIST,
                 GRC_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
                 CASE_REFERENCE_NUMBER)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.PAAC_WEEKLY_HEARING_LIST,
                 SIAC_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
                 CASE_REFERENCE_NUMBER)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.SIAC_WEEKLY_HEARING_LIST,
                 SIAC_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
                 CASE_REFERENCE_NUMBER)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.POAC_WEEKLY_HEARING_LIST,
                 SIAC_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
                 CASE_REFERENCE_NUMBER)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.RPT_EASTERN_WEEKLY_HEARING_LIST,
                 RPT_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
                 CASE_REFERENCE_NUMBER)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.RPT_LONDON_WEEKLY_HEARING_LIST,
                 RPT_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
                 CASE_REFERENCE_NUMBER)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.RPT_MIDLANDS_WEEKLY_HEARING_LIST,
                 RPT_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
                 CASE_REFERENCE_NUMBER)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.RPT_NORTHERN_WEEKLY_HEARING_LIST,
                 RPT_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
                 CASE_REFERENCE_NUMBER)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.RPT_SOUTHERN_WEEKLY_HEARING_LIST,
                 RPT_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
                 CASE_REFERENCE_NUMBER)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.SEND_DAILY_HEARING_LIST,
                 SEND_DAILY_HEARING_LIST_JSON_FILE_PATH,
                 CASE_REFERENCE_NUMBER)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.UT_AAC_DAILY_HEARING_LIST,
                 UT_ADMINISTRATIVE_APPEALS_CHAMBER_DAILY_HEARING_LIST_JSON_FILE_PATH,
                 CASE_REFERENCE_NUMBER)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.UT_IAC_JR_BIRMINGHAM_DAILY_HEARING_LIST,
                 UT_IAC_JUDICIAL_REVIEWS_DAILY_HEARING_LIST_JSON_FILE_PATH,
                 CASE_REFERENCE_NUMBER)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.UT_IAC_JR_CARDIFF_DAILY_HEARING_LIST,
                 UT_IAC_JUDICIAL_REVIEWS_DAILY_HEARING_LIST_JSON_FILE_PATH,
                 CASE_REFERENCE_NUMBER)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.UT_IAC_JR_LEEDS_DAILY_HEARING_LIST,
                 UT_IAC_JUDICIAL_REVIEWS_DAILY_HEARING_LIST_JSON_FILE_PATH,
                 CASE_REFERENCE_NUMBER)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.UT_IAC_JR_LONDON_DAILY_HEARING_LIST,
                 UT_IAC_JUDICIAL_REVIEWS_DAILY_HEARING_LIST_JSON_FILE_PATH,
                 CASE_REFERENCE_NUMBER)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.UT_IAC_JR_MANCHESTER_DAILY_HEARING_LIST,
                 UT_IAC_JUDICIAL_REVIEWS_DAILY_HEARING_LIST_JSON_FILE_PATH,
                 CASE_REFERENCE_NUMBER)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.UT_LC_DAILY_HEARING_LIST,
                 UT_LANDS_CHAMBER_DAILY_HEARING_LIST_JSON_FILE_PATH,
                 CASE_REFERENCE_NUMBER)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.UT_T_AND_CC_DAILY_HEARING_LIST,
                 UT_TAX_CHAMBER_DAILY_HEARING_LIST_JSON_FILE_PATH,
                 CASE_REFERENCE_NUMBER)),
-            Arguments.of(new ListTypeTest(
+            Arguments.of(new ListTypeTestInput(
                 ListType.WPAFCC_WEEKLY_HEARING_LIST,
                 WPAFCC_WEEKLY_HEARING_LIST_JSON_FILE_PATH,
                 CASE_REFERENCE_NUMBER))
