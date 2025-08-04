@@ -16,7 +16,7 @@ import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.n
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConstants.UT_IAC_STATUTORY_APPEALS_DAILY_HEARING_LIST_JSON_FILE_PATH;
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConstants.WPAFCC_WEEKLY_HEARING_LIST_JSON_FILE_PATH;
 
-public class HearingTimeTestConfigurations {
+public class HearingTimeAttribute {
     public static Stream<Arguments> hearingTimeMandatoryAttribute() {
         return Stream.of(
             Arguments.of(new ListTypeTest(

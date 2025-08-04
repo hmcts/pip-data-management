@@ -22,7 +22,7 @@ import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.n
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConstants.PLANNING_COURT_NODE;
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConstants.SENIOR_COURTS_COSTS_OFFICE_DAILY_CAUSE_LIST_JSON_FILE_PATH;
 
-public class CaseDetailsTestConfigurations {
+public class CaseDetailsAttribute {
     public static Stream<Arguments> caseDetailsMandatoryAttribute() {
         return Stream.of(
             Arguments.of(new ListTypeTest(

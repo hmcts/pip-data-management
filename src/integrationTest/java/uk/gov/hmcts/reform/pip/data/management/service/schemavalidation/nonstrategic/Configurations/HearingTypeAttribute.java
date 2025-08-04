@@ -32,7 +32,7 @@ import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.n
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConstants.UT_LANDS_CHAMBER_DAILY_HEARING_LIST_JSON_FILE_PATH;
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConstants.UT_TAX_CHAMBER_DAILY_HEARING_LIST_JSON_FILE_PATH;
 
-public class HearingTypeTestConfigurations {
+public class HearingTypeAttribute {
     public static Stream<Arguments> hearingTypeMandatoryAttribute() {
         return Stream.of(
             Arguments.of(new ListTypeTest(

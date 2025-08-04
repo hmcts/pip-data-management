@@ -19,7 +19,7 @@ import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.n
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConstants.UT_TAX_CHAMBER_DAILY_HEARING_LIST_JSON_FILE_PATH;
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConstants.WPAFCC_WEEKLY_HEARING_LIST_JSON_FILE_PATH;
 
-public class CaseReferenceNumberTestConfigurations {
+public class CaseReferenceNumberAttribute {
     public static Stream<Arguments> caseReferenceNumberMandatoryAttribute() {
         return Stream.of(
             Arguments.of(new ListTypeTest(
