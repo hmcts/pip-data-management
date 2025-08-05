@@ -31,15 +31,15 @@ public class AuthorisationService {
         if ("MANUAL_UPLOAD".equals(provenance)
             && !isUserAdmin(requesterId)) {
             log.error(writeLog(
-                String.format("User with ID %s is forbidden to upload publication", requesterId
-                )));
+                String.format("User with ID %s is forbidden to upload publication", requesterId)
+            ));
             return false;
         }
 
         if (!hasOAuthPublisherRole()) {
             log.error(writeLog(
-                String.format("User with ID %s is forbidden to upload publication", requesterId
-                )));
+                String.format("User with ID %s is forbidden to upload publication", requesterId)
+            ));
             return false;
         }
 
@@ -50,8 +50,8 @@ public class AuthorisationService {
         if (!isUserSystemAdmin(requesterId)
                 || !hasOAuthAdminRole()) {
             log.error(writeLog(
-                String.format("User with ID %s is forbidden to upload location", requesterId
-                )));
+                String.format("User with ID %s is forbidden to upload location", requesterId)
+            ));
             return false;
         }
 
@@ -62,8 +62,8 @@ public class AuthorisationService {
         if (!isUserSystemAdmin(requesterId)
                 || !hasOAuthAdminRole()) {
             log.error(writeLog(
-                String.format("User with ID %s is forbidden to delete location", requesterId
-                )));
+                String.format("User with ID %s is forbidden to delete location", requesterId)
+            ));
             return false;
         }
 
@@ -74,8 +74,8 @@ public class AuthorisationService {
         if (!isUserSystemAdmin(requesterId)
             || !hasOAuthAdminRole()) {
             log.error(writeLog(
-                String.format("User with ID %s is forbidden to get publication per location", requesterId
-                )));
+                String.format("User with ID %s is forbidden to get publication per location", requesterId)
+            ));
             return false;
         }
 
@@ -86,59 +86,48 @@ public class AuthorisationService {
         if (!isUserSystemAdmin(requesterId)
                 || !hasOAuthAdminRole()) {
             log.error(writeLog(
-                String.format("User with ID %s is forbidden to download location CSV", requesterId
-                )));
+                String.format("User with ID %s is forbidden to download location CSV", requesterId)
+            ));
             return false;
         }
 
-        return true;
-    }
-
-    public boolean userCanAccessPublication(UUID requesterId, UUID artefactId, boolean system) {
-        if (!hasOAuthAdminRole()) {
-            log.error(writeLog(
-                "Api token permission is not authorised to access artefact meta data"));
-            return false;
-        }
-
-        Artefact artefact = publicationRetrievalService.getMetadataByArtefactId(artefactId);
-        if (!isAuthorised(artefact, requesterId, system)) {
-            log.error(writeLog(
-                String.format("User with id %s is not authorised to access artefact with id %s", requesterId, artefactId
-                )));
-            return false;
-        }
         return true;
     }
 
     public boolean userCanAccessPublicationData(UUID requesterId, UUID artefactId, boolean systemOrAdmin) {
         if (!hasOAuthAdminRole()) {
-            log.error(writeLog(
-                "Api token permission is not authorised to access artefact meta data"));
+            log.error(writeLog("API token permission missing when accessing publication data"));
             return false;
         }
 
         Artefact artefact = publicationRetrievalService.getMetadataByArtefactId(artefactId);
         if (!isAuthorised(artefact, requesterId, systemOrAdmin)) {
             log.error(writeLog(
-                String.format("User with id %s is not authorised to access artefact meta data with id %s",
-                              requesterId, artefactId)));
+                String.format("User with ID %s is not authorised to access publication data with ID %s",
+                              requesterId, artefactId)
+            ));
             return false;
         }
         return true;
     }
 
-    public boolean userCanSearchInPublicationData() {
-        if (!hasOAuthAdminRole()) {
-            log.error(writeLog("Action Search in publication is not allowed"));
+    public boolean userCanSearchInPublicationData(UUID requesterId) {
+        if (!(hasOAuthAdminRole() && isVerifiedUser(requesterId.toString()))) {
+            log.error(writeLog(
+                String.format("User with ID %s is not authorised to search for publication by search value",
+                              requesterId)
+            ));
             return false;
         }
         return true;
     }
 
-    public boolean userCanSearchPublicationForLocation() {
-        if (!hasOAuthAdminRole()) {
-            log.error(writeLog("Action Search in publication for Location is not allowed"));
+    public boolean userCanSearchForPublicationByLocation(UUID requesterId) {
+        if (!(hasOAuthAdminRole()
+            && (isVerifiedUser(requesterId.toString()) || isUserAdmin(requesterId.toString())))) {
+            log.error(writeLog(
+                String.format("User with ID %s is not authorised to search for publication by location", requesterId)
+            ));
             return false;
         }
         return true;
@@ -148,8 +137,8 @@ public class AuthorisationService {
         if (!isUserAdmin(requesterId)
             || !hasOAuthAdminRole()) {
             log.error(writeLog(
-                String.format("User with ID %s is forbidden to archive the publication", requesterId
-                )));
+                String.format("User with ID %s is forbidden to archive the publication", requesterId)
+            ));
             return false;
         }
 
@@ -160,8 +149,8 @@ public class AuthorisationService {
         if (!isUserSystemAdmin(requesterId)
             || !hasOAuthAdminRole()) {
             log.error(writeLog(
-                String.format("User with ID %s is forbidden to delete the publications by location", requesterId
-                )));
+                String.format("User with ID %s is forbidden to delete the publications by location", requesterId)
+            ));
             return false;
         }
 
@@ -172,8 +161,8 @@ public class AuthorisationService {
         if (!isUserSystemAdmin(requesterId)
             || !hasOAuthAdminRole()) {
             log.error(writeLog(
-                String.format("User with ID %s is forbidden to get all non match publications", requesterId
-                )));
+                String.format("User with ID %s is forbidden to get all non match publications", requesterId)
+            ));
             return false;
         }
 
@@ -184,8 +173,8 @@ public class AuthorisationService {
         if (!isUserSystemAdmin(requesterId)
             || !hasOAuthAdminRole()) {
             log.error(writeLog(
-                String.format("User with ID %s is forbidden to add location metadata", requesterId
-                )));
+                String.format("User with ID %s is forbidden to add location metadata", requesterId)
+            ));
             return false;
         }
 
@@ -196,8 +185,8 @@ public class AuthorisationService {
         if (!isUserSystemAdmin(requesterId)
             || !hasOAuthAdminRole()) {
             log.error(writeLog(
-                String.format("User with ID %s is forbidden to update location metadata", requesterId
-                )));
+                String.format("User with ID %s is forbidden to update location metadata", requesterId)
+            ));
             return false;
         }
 
@@ -208,8 +197,8 @@ public class AuthorisationService {
         if (!isUserSystemAdmin(requesterId)
             || !hasOAuthAdminRole()) {
             log.error(writeLog(
-                String.format("User with ID %s is forbidden to delete location metadata", requesterId
-                )));
+                String.format("User with ID %s is forbidden to delete location metadata", requesterId)
+            ));
             return false;
         }
 
@@ -238,6 +227,17 @@ public class AuthorisationService {
         return false;
     }
 
+    private boolean isVerifiedUser(String requesterId) {
+        if (requesterId != null && !requesterId.isEmpty()) {
+            PiUser user = accountManagementService.getUserById(requesterId);
+            if (user != null && user.getRoles() != null) {
+                return Roles.VERIFIED.equals(user.getRoles());
+            }
+        }
+
+        return false;
+    }
+
     private boolean hasOAuthPublisherRole() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return hasAuthority(authentication, "APPROLE_api.publisher.admin")
@@ -254,18 +254,11 @@ public class AuthorisationService {
             .anyMatch(granted -> granted.getAuthority().equals(role));
     }
 
-    public boolean isAuthorisedWithoutAdmin(Artefact artefact, UUID userId) {
-        return isAuthorised(artefact, userId, false);
-    }
-
     private boolean isAuthorised(Artefact artefact, UUID userId, boolean systemOrAdmin) {
         if (systemOrAdmin || artefact.getSensitivity().equals(Sensitivity.PUBLIC)) {
             return true;
-        } else if (userId == null) {
-            return false;
         }
-        return accountManagementService.getIsAuthorised(userId, artefact.getListType(),
-                                                                               artefact.getSensitivity());
+        return userId != null
+            && accountManagementService.getIsAuthorised(userId, artefact.getListType(), artefact.getSensitivity());
     }
-
 }

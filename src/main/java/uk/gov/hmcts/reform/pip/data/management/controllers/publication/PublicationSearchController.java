@@ -63,10 +63,10 @@ public class PublicationSearchController {
     @GetMapping("/search/{searchTerm}/{searchValue}")
     @JsonView(ArtefactView.Internal.class)
     @SecurityRequirement(name = BEARER_AUTHENTICATION)
-    @PreAuthorize("@authorisationService.userCanSearchInPublicationData()")
+    @PreAuthorize("@authorisationService.userCanSearchInPublicationData(#requesterId)")
     public ResponseEntity<List<Artefact>> getAllRelevantArtefactsBySearchValue(
         @PathVariable CaseSearchTerm searchTerm, @PathVariable String searchValue,
-        @RequestHeader(value = REQUESTER_ID_HEADER, required = false) UUID requesterId) {
+        @RequestHeader(REQUESTER_ID_HEADER) UUID requesterId) {
         return ResponseEntity.ok(publicationSearchService.findAllBySearch(searchTerm, searchValue, requesterId));
     }
 
@@ -79,7 +79,7 @@ public class PublicationSearchController {
     @GetMapping("/locationId/{locationId}")
     @JsonView(ArtefactView.Internal.class)
     @SecurityRequirement(name = BEARER_AUTHENTICATION)
-    @PreAuthorize("@authorisationService.userCanSearchPublicationForLocation()")
+    @PreAuthorize("@authorisationService.userCanSearchForPublicationByLocation(#requesterId)")
     public ResponseEntity<List<Artefact>> getAllRelevantArtefactsByLocationId(
         @PathVariable String locationId,
         @RequestHeader(value = REQUESTER_ID_HEADER, required = false) UUID requesterId,

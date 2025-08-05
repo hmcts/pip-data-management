@@ -189,14 +189,13 @@ class AuthorisationServiceTest {
         artefact.setSensitivity(Sensitivity.PUBLIC);
         when(publicationRetrievalService.getMetadataByArtefactId(TEST_UUID)).thenReturn(artefact);
 
-        List<GrantedAuthority> authorities = List.of(
-            new SimpleGrantedAuthority(ADMIN_ROLE)
-        );
+        List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(ADMIN_ROLE));
         Authentication auth = new TestingAuthenticationToken(TEST_USER_ID, null, authorities);
         SecurityContextHolder.getContext().setAuthentication(auth);
         when(securityContext.getAuthentication()).thenReturn(auth);
+        when(publicationRetrievalService.getMetadataByArtefactId(TEST_UUID)).thenReturn(artefact);
 
-        assertTrue(authorisationService.userCanAccessPublication(TEST_UUID, TEST_UUID, false),
+        assertTrue(authorisationService.userCanAccessPublicationData(TEST_UUID, TEST_UUID, false),
                    "User cannot access publication with sensitivity PUBLIC");
     }
 
@@ -212,7 +211,7 @@ class AuthorisationServiceTest {
         when(securityContext.getAuthentication()).thenReturn(auth);
         when(publicationRetrievalService.getMetadataByArtefactId(TEST_UUID)).thenReturn(artefact);
 
-        assertTrue(authorisationService.userCanAccessPublication(TEST_UUID, TEST_UUID, true),
+        assertTrue(authorisationService.userCanAccessPublicationData(TEST_UUID, TEST_UUID, true),
                    "User cannot access publication with sensitivity PUBLIC");
     }
 
@@ -231,7 +230,7 @@ class AuthorisationServiceTest {
         when(accountManagementService.getIsAuthorised(TEST_UUID, LIST_TYPE, Sensitivity.PRIVATE))
             .thenReturn(true);
 
-        assertTrue(authorisationService.userCanAccessPublication(TEST_UUID, TEST_UUID, false),
+        assertTrue(authorisationService.userCanAccessPublicationData(TEST_UUID, TEST_UUID, false),
                    "Authorised User cannot access private publication");
     }
 
@@ -250,29 +249,12 @@ class AuthorisationServiceTest {
         when(accountManagementService.getIsAuthorised(TEST_UUID, LIST_TYPE, Sensitivity.PRIVATE))
             .thenReturn(false);
 
-        assertFalse(authorisationService.userCanAccessPublication(TEST_UUID, TEST_UUID, false),
+        assertFalse(authorisationService.userCanAccessPublicationData(TEST_UUID, TEST_UUID, false),
                     "Unauthorised User can access private publication");
     }
 
     @Test
-    void testUserCanAccessPublicationDataWhenAuthorisedAndAdmin() {
-        Artefact artefact = new Artefact();
-        artefact.setSensitivity(Sensitivity.PUBLIC);
-        List<GrantedAuthority> authorities = List.of(
-            new SimpleGrantedAuthority(ADMIN_ROLE)
-        );
-        Authentication auth = new TestingAuthenticationToken(TEST_USER_ID, null, authorities);
-        SecurityContextHolder.getContext().setAuthentication(auth);
-
-        when(publicationRetrievalService.getMetadataByArtefactId(TEST_UUID)).thenReturn(artefact);
-        when(securityContext.getAuthentication()).thenReturn(auth);
-
-        assertTrue(authorisationService.userCanAccessPublicationData(TEST_UUID, TEST_UUID, true),
-                   "Authorised User cannot access private publication");
-    }
-
-    @Test
-    void testUserCannotAccessPublicationDataWhenNotAdmin() {
+    void testUserCannotAccessPublicationDataWhenNotOAuthAdminRole() {
         Artefact artefact = new Artefact();
         artefact.setSensitivity(Sensitivity.PUBLIC);
         List<GrantedAuthority> authorities = List.of(
@@ -287,7 +269,7 @@ class AuthorisationServiceTest {
     }
 
     @Test
-    void testUserCanSearchInPublicationDataWhenAdmin() {
+    void testVerifiedUserCanSearchInPublicationData() {
         List<GrantedAuthority> authorities = List.of(
             new SimpleGrantedAuthority(ADMIN_ROLE)
         );
@@ -295,18 +277,77 @@ class AuthorisationServiceTest {
         SecurityContextHolder.getContext().setAuthentication(auth);
 
         when(securityContext.getAuthentication()).thenReturn(auth);
+        when(accountManagementService.getUserById(TEST_UUID.toString()))
+            .thenReturn(createUser(Roles.VERIFIED));
 
-        assertTrue(authorisationService.userCanSearchInPublicationData(),
-                   "API Token with Admin User cannot search publication");
+        assertTrue(authorisationService.userCanSearchInPublicationData(TEST_UUID),
+                   "Verified user should be able to search in publication data");
     }
 
     @Test
-    void testUserCannotSearchInPublicationDataWhenNotAdmin() {
+    void testAdminUserCannotSearchInPublicationData() {
+        List<GrantedAuthority> authorities = List.of(
+            new SimpleGrantedAuthority(ADMIN_ROLE)
+        );
+        Authentication auth = new TestingAuthenticationToken(TEST_USER_ID, null, authorities);
+        SecurityContextHolder.getContext().setAuthentication(auth);
+
+        when(securityContext.getAuthentication()).thenReturn(auth);
+        when(accountManagementService.getUserById(TEST_UUID.toString()))
+            .thenReturn(createUser(Roles.SYSTEM_ADMIN));
+
+        assertFalse(authorisationService.userCanSearchInPublicationData(TEST_UUID),
+                   "Admin user should not be able to search in publication data");
+    }
+
+    @Test
+    void testUserCannotSearchInPublicationDataWhenNotOAuthAdminRole() {
         when(securityContext.getAuthentication()).thenReturn(authentication);
         when(authentication.getAuthorities()).thenReturn(Collections.emptyList());
 
-        assertFalse(authorisationService.userCanSearchInPublicationData(),
-                    "API Token without Admin permission can search publication");
+        assertFalse(authorisationService.userCanSearchInPublicationData(TEST_UUID),
+                    "Should not be able to search in publication data without OAuth admin role");
+    }
+
+    @Test
+    void testVerifiedUserCanSearchForPublicationByLocation() {
+        List<GrantedAuthority> authorities = List.of(
+            new SimpleGrantedAuthority(ADMIN_ROLE)
+        );
+        Authentication auth = new TestingAuthenticationToken(TEST_USER_ID, null, authorities);
+        SecurityContextHolder.getContext().setAuthentication(auth);
+
+        when(securityContext.getAuthentication()).thenReturn(auth);
+        when(accountManagementService.getUserById(TEST_UUID.toString()))
+            .thenReturn(createUser(Roles.VERIFIED));
+
+        assertTrue(authorisationService.userCanSearchForPublicationByLocation(TEST_UUID),
+                   "Verified user should be able to search for publication by location");
+    }
+
+    @Test
+    void testAdminUserCanSearchForPublicationByLocation() {
+        List<GrantedAuthority> authorities = List.of(
+            new SimpleGrantedAuthority(ADMIN_ROLE)
+        );
+        Authentication auth = new TestingAuthenticationToken(TEST_USER_ID, null, authorities);
+        SecurityContextHolder.getContext().setAuthentication(auth);
+
+        when(securityContext.getAuthentication()).thenReturn(auth);
+        when(accountManagementService.getUserById(TEST_UUID.toString()))
+            .thenReturn(createUser(Roles.SYSTEM_ADMIN));
+
+        assertTrue(authorisationService.userCanSearchForPublicationByLocation(TEST_UUID),
+                    "Admin user should be able to search for publication by location");
+    }
+
+    @Test
+    void testUserCannotSearchForPublicationByLocationWhenNotOAuthAdminRole() {
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        when(authentication.getAuthorities()).thenReturn(Collections.emptyList());
+
+        assertFalse(authorisationService.userCanSearchForPublicationByLocation(TEST_UUID),
+                    "Should not be able to search for publication by location without OAuth admin role");
     }
 
     @Test
@@ -323,14 +364,6 @@ class AuthorisationServiceTest {
 
         assertTrue(authorisationService.userCanArchivePublications(TEST_USER_ID),
                    "API Token with Admin permission cannot archive publication");
-    }
-
-    @Test
-    void testIsAuthorisedWithoutAdmin() {
-        Artefact artefact = new Artefact();
-        artefact.setSensitivity(Sensitivity.PUBLIC);
-        assertTrue(authorisationService.isAuthorisedWithoutAdmin(artefact, TEST_UUID),
-                   "API Token without Admin permission can archive publication");
     }
 
     @Test

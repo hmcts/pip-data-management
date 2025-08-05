@@ -51,7 +51,7 @@ public class PublicationFileManagementController {
     @ApiResponse(responseCode = PAYLOAD_TOO_LARGE_CODE, description = "File size too large")
     @Operation(summary = "Takes in an artefact ID and returns the stored PDF or Excel file ")
     @GetMapping("/{artefactId}/{fileType}")
-    @PreAuthorize("@authorisationService.userCanAccessPublication(#requesterId, #artefactId, #system)")
+    @PreAuthorize("@authorisationService.userCanAccessPublicationData(#requesterId, #artefactId, #system)")
     public ResponseEntity<String> getFile(
         @PathVariable UUID artefactId,
         @PathVariable  FileType fileType,
@@ -69,7 +69,7 @@ public class PublicationFileManagementController {
     @ApiResponse(responseCode = OK_CODE, description = "PDF or Excel file for an artefact exists")
     @Operation(summary = "Checks if any publication file exists for the artefact")
     @GetMapping("/{artefactId}/exists")
-    @PreAuthorize("@authorisationService.userCanAccessPublication(#requesterId, #artefactId, false)")
+    @PreAuthorize("@authorisationService.userCanAccessPublicationData(#requesterId, #artefactId, false)")
     public ResponseEntity<Boolean> fileExists(
         @PathVariable UUID artefactId,
         @RequestHeader(value = REQUESTER_ID_HEADER, required = false) UUID requesterId) {
@@ -79,7 +79,7 @@ public class PublicationFileManagementController {
     @ApiResponse(responseCode = OK_CODE, description = "PDF or Excel file for an artefact exists")
     @Operation(summary = "Returns the publication file sizes from Azure blob storage")
     @GetMapping("/{artefactId}/sizes")
-    @PreAuthorize("@authorisationService.userCanAccessPublication(#requesterId, #artefactId, false)")
+    @PreAuthorize("@authorisationService.userCanAccessPublicationData(#requesterId, #artefactId, false)")
     public ResponseEntity<PublicationFileSizes> getFileSizes(
         @PathVariable UUID artefactId,
         @RequestHeader(value = REQUESTER_ID_HEADER, required = false) UUID requesterId

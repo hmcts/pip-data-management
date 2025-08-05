@@ -62,7 +62,7 @@ public class PublicationLocationController {
     @SecurityRequirement(name = BEARER_AUTHENTICATION)
     @PreAuthorize("@authorisationService.userCanGetPublicationsPerLocation(#requesterId)")
     public ResponseEntity<List<LocationArtefact>> countByLocation(
-        @RequestHeader(value = REQUESTER_ID_HEADER, required = false) String requesterId
+        @RequestHeader(REQUESTER_ID_HEADER) String requesterId
     ) {
         return ResponseEntity.ok(publicationLocationService.countArtefactsByLocation());
     }
