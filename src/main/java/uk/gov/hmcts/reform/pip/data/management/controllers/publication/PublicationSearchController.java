@@ -94,7 +94,7 @@ public class PublicationSearchController {
     @Operation(summary = "Get a series of publications matching a given locationId (e.g. locationId)")
     @GetMapping("/locationId/{locationId}")
     @JsonView(ArtefactView.Internal.class)
-    @PreAuthorize("@authorisationService.userCanSearchForPublicationByLocation(#requesterId)")
+    @PreAuthorize("@authorisationService.userCanSearchForPublicationByLocation(#requesterId, #isAdmin)")
     public ResponseEntity<List<Artefact>> getAllRelevantArtefactsByLocationId(
         @PathVariable String locationId,
         @RequestHeader(value = REQUESTER_ID_HEADER, required = false) UUID requesterId,

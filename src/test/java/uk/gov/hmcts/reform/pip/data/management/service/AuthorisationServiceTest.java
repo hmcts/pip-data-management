@@ -317,7 +317,7 @@ class AuthorisationServiceTest {
         when(accountManagementService.getUserById(TEST_UUID.toString()))
             .thenReturn(createUser(Roles.VERIFIED));
 
-        assertTrue(authorisationService.userCanSearchForPublicationByLocation(TEST_UUID),
+        assertTrue(authorisationService.userCanSearchForPublicationByLocation(TEST_UUID, false),
                    "Verified user should be able to search for publication by location");
     }
 
@@ -333,8 +333,22 @@ class AuthorisationServiceTest {
         when(accountManagementService.getUserById(TEST_UUID.toString()))
             .thenReturn(createUser(Roles.SYSTEM_ADMIN));
 
-        assertTrue(authorisationService.userCanSearchForPublicationByLocation(TEST_UUID),
+        assertTrue(authorisationService.userCanSearchForPublicationByLocation(TEST_UUID, false),
                     "Admin user should be able to search for publication by location");
+    }
+
+    @Test
+    void testUserCanSearchForPublicationByLocationWhenISAdminFlagIsSet() {
+        List<GrantedAuthority> authorities = List.of(
+            new SimpleGrantedAuthority(ADMIN_ROLE)
+        );
+        Authentication auth = new TestingAuthenticationToken(TEST_USER_ID, null, authorities);
+        SecurityContextHolder.getContext().setAuthentication(auth);
+
+        when(securityContext.getAuthentication()).thenReturn(auth);
+
+        assertTrue(authorisationService.userCanSearchForPublicationByLocation(null, true),
+                   "Admin user should be able to search for publication by location");
     }
 
     @Test
@@ -342,7 +356,7 @@ class AuthorisationServiceTest {
         when(securityContext.getAuthentication()).thenReturn(authentication);
         when(authentication.getAuthorities()).thenReturn(Collections.emptyList());
 
-        assertFalse(authorisationService.userCanSearchForPublicationByLocation(TEST_UUID),
+        assertFalse(authorisationService.userCanSearchForPublicationByLocation(TEST_UUID, false),
                     "Should not be able to search for publication by location without OAuth admin role");
     }
 
