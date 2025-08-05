@@ -64,6 +64,7 @@ import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
 @RestController
 @Tag(name = "Data Management Publications API")
 @RequestMapping("/publication")
+@SecurityRequirement(name = "bearerAuth")
 @SuppressWarnings({"PMD.ExcessiveImports", "PMD.CouplingBetweenObjects"})
 public class PublicationController {
     private static final String USER_ID_HEADER = "x-user-id";
@@ -83,7 +84,6 @@ public class PublicationController {
     private static final String FORBIDDEN_CODE = "403";
     private static final String CONFLICT_CODE = "409";
 
-    private static final String BEARER_AUTHENTICATION = "bearerAuth";
     private static final String DEFAULT_ADMIN_VALUE = "false";
 
     private final PublicationCreationService publicationCreationService;
@@ -145,7 +145,6 @@ public class PublicationController {
     @Valid
     @JsonView(ArtefactView.External.class)
     @IsPublisher
-    @SecurityRequirement(name = BEARER_AUTHENTICATION)
     public ResponseEntity<Artefact> uploadPublication(
         @RequestHeader(PublicationConfiguration.PROVENANCE_HEADER) String provenance,
         @RequestHeader(value = PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, required = false)
@@ -208,7 +207,6 @@ public class PublicationController {
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @JsonView(ArtefactView.External.class)
     @IsPublisher
-    @SecurityRequirement(name = BEARER_AUTHENTICATION)
     public ResponseEntity<Artefact> uploadPublication(
         @RequestHeader(PublicationConfiguration.PROVENANCE_HEADER) String provenance,
         @RequestHeader(value = PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, required = false)
@@ -276,7 +274,6 @@ public class PublicationController {
     @PostMapping(value = "/non-strategic", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @JsonView(ArtefactView.External.class)
     @IsPublisher
-    @SecurityRequirement(name = BEARER_AUTHENTICATION)
     public ResponseEntity<Artefact> nonStrategicUploadPublication(
         @RequestHeader(PublicationConfiguration.PROVENANCE_HEADER) String provenance,
         @RequestHeader(value = PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, required = false)
@@ -323,7 +320,6 @@ public class PublicationController {
     @GetMapping("/{artefactId}")
     @JsonView(ArtefactView.Internal.class)
     @IsAdmin
-    @SecurityRequirement(name = BEARER_AUTHENTICATION)
     public ResponseEntity<Artefact> getArtefactMetadata(
         @PathVariable UUID artefactId, @RequestHeader(value = USER_ID_HEADER, required = false) UUID userId,
                                        @RequestHeader(value = ADMIN_HEADER, defaultValue = DEFAULT_ADMIN_VALUE,
@@ -340,7 +336,6 @@ public class PublicationController {
     @Operation(summary = "Gets the the payload for the blob, given a specific artefact ID")
     @GetMapping("/{artefactId}/payload")
     @IsAdmin
-    @SecurityRequirement(name = BEARER_AUTHENTICATION)
     public ResponseEntity<String> getArtefactPayload(
         @PathVariable UUID artefactId,
         @RequestHeader(value = USER_ID_HEADER, required = false) UUID userId,
@@ -357,7 +352,6 @@ public class PublicationController {
     @Operation(summary = "Gets the the payload for the blob, given a specific artefact ID")
     @GetMapping(value = "/{artefactId}/file", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     @IsAdmin
-    @SecurityRequirement(name = BEARER_AUTHENTICATION)
     public ResponseEntity<Resource> getArtefactFile(
         @PathVariable UUID artefactId,
         @RequestHeader(value = USER_ID_HEADER, required = false) UUID userId,
@@ -388,7 +382,6 @@ public class PublicationController {
     @Operation(summary = "Delete a artefact and its list from P&I")
     @DeleteMapping("/{artefactId}")
     @IsAdmin
-    @SecurityRequirement(name = BEARER_AUTHENTICATION)
     public ResponseEntity<String> deleteArtefact(@RequestHeader("x-issuer-id") String issuerId,
         @PathVariable String artefactId) {
         publicationRemovalService.deleteArtefactById(artefactId, issuerId);
@@ -402,7 +395,6 @@ public class PublicationController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/expired")
     @IsAdmin
-    @SecurityRequirement(name = BEARER_AUTHENTICATION)
     public ResponseEntity<Void> archiveExpiredArtefacts() {
         publicationRemovalService.archiveExpiredArtefacts();
         return ResponseEntity.noContent().build();
@@ -416,7 +408,6 @@ public class PublicationController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PutMapping("/{id}/archive")
     @IsAdmin
-    @SecurityRequirement(name = BEARER_AUTHENTICATION)
     public ResponseEntity<String> archiveArtefact(@RequestHeader("x-issuer-id") String issuerId,
                                                   @PathVariable String id) {
         publicationRemovalService.archiveArtefactById(id, issuerId);
