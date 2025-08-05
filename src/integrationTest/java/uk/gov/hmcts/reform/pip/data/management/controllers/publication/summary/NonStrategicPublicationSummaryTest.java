@@ -34,8 +34,8 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static uk.gov.hmcts.reform.pip.data.management.controllers.publication.summary.configurations.NonStrategicListTestCases.provideRcjTestCases;
-import static uk.gov.hmcts.reform.pip.data.management.controllers.publication.summary.configurations.NonStrategicListTestCases.provideTribunalTestCases;
+import static uk.gov.hmcts.reform.pip.data.management.controllers.publication.summary.configurations.NonStrategicRcjListTestCases.provideRcjTestCases;
+import static uk.gov.hmcts.reform.pip.data.management.controllers.publication.summary.configurations.NonStrategicTribunalListTestCases.provideTribunalTestCases;
 
 @SpringBootTest(classes = {Application.class}, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles({"integration", "disable-async"})
