@@ -256,7 +256,7 @@ class PublicationRetrievalSensitivityTest extends PublicationIntegrationTestBase
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 = MockMvcRequestBuilders
             .get(SEARCH_COURT_URL + "/" + COURT_ID)
-            .header(ADMIN_HEADER, true);
+            .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID);
         MvcResult getResponse =
             mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isOk()).andReturn();
 
