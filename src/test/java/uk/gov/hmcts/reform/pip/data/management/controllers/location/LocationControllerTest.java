@@ -41,6 +41,8 @@ class LocationControllerTest {
 
     private static final String FIRST_LOCATION_NOT_FOUND = "First location not contained within list";
     private static final String SECOND_LOCATION_NOT_FOUND = "Second location not contained within list";
+    private static final String LOCATION_NAME_SEARCH_STATUS_MESSAGE = "Location name search has not returned OK";
+    private static final String LOCATION_NAME_SEARCH_BODY_MESSAGE = "Returned location does not match";
 
     Location firstLocation;
     Location secondLocation;
@@ -109,47 +111,53 @@ class LocationControllerTest {
     }
 
     @Test
+    @Deprecated
     void testGetLocationByNameReturnsLocation() {
         when(locationService.getLocationByName(secondLocation.getName(), ENGLISH_LANGUAGE))
-            .thenReturn(secondLocation);
+                .thenReturn(secondLocation);
 
-        assertEquals(secondLocation, locationController.getLocationByName(
-            secondLocation.getName(), ENGLISH_LANGUAGE).getBody(),
-                     "Returned location does not match expected location"
-        );
+        ResponseEntity<Location> response = locationController.getLocationByName(secondLocation.getName(),
+                ENGLISH_LANGUAGE);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode(), LOCATION_NAME_SEARCH_STATUS_MESSAGE);
+        assertEquals(secondLocation, response.getBody(), LOCATION_NAME_SEARCH_BODY_MESSAGE);
     }
 
     @Test
-    void testGetWelshLocationByNameReturnsLocation() {
-        when(locationService.getLocationByName(secondLocation.getName(), WELSH_LANGUAGE))
+    @Deprecated
+    void testGetLocationByWelshNameReturnsLocation() {
+        when(locationService.getLocationByName(secondLocation.getWelshName(), WELSH_LANGUAGE))
             .thenReturn(secondLocation);
 
-        assertEquals(secondLocation, locationController.getLocationByName(
-            secondLocation.getName(), WELSH_LANGUAGE).getBody(),
-                     "Returned location does not match expected location"
-        );
+        ResponseEntity<Location> response = locationController.getLocationByName(secondLocation.getWelshName(),
+                WELSH_LANGUAGE);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode(), LOCATION_NAME_SEARCH_STATUS_MESSAGE);
+        assertEquals(secondLocation, response.getBody(), LOCATION_NAME_SEARCH_BODY_MESSAGE);
     }
 
     @Test
-    void testGetLocationByNameReturnsOk() {
+    void testGetLocationByNameV2ReturnsLocation() {
         when(locationService.getLocationByName(secondLocation.getName(), ENGLISH_LANGUAGE))
-            .thenReturn(secondLocation);
+                .thenReturn(secondLocation);
 
-        assertEquals(HttpStatus.OK, locationController.getLocationByName(
-            secondLocation.getName(), ENGLISH_LANGUAGE).getStatusCode(),
-                     "Location Name search has not returned OK"
-        );
+        ResponseEntity<Location> response = locationController.getLocationByNameV2(secondLocation.getName(),
+                ENGLISH_LANGUAGE);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode(), LOCATION_NAME_SEARCH_STATUS_MESSAGE);
+        assertEquals(secondLocation, response.getBody(), LOCATION_NAME_SEARCH_BODY_MESSAGE);
     }
 
     @Test
-    void testGetWelshLocationByNameReturnsOk() {
-        when(locationService.getLocationByName(secondLocation.getName(), WELSH_LANGUAGE))
-            .thenReturn(secondLocation);
+    void testGetLocationByWelshNameV2ReturnsLocation() {
+        when(locationService.getLocationByName(secondLocation.getWelshName(), WELSH_LANGUAGE))
+                .thenReturn(secondLocation);
 
-        assertEquals(HttpStatus.OK, locationController.getLocationByName(
-            secondLocation.getName(), WELSH_LANGUAGE).getStatusCode(),
-                     "Location Name search has not returned OK"
-        );
+        ResponseEntity<Location> response = locationController.getLocationByNameV2(secondLocation.getWelshName(),
+                WELSH_LANGUAGE);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode(), LOCATION_NAME_SEARCH_STATUS_MESSAGE);
+        assertEquals(secondLocation, response.getBody(), LOCATION_NAME_SEARCH_BODY_MESSAGE);
     }
 
     @Test
