@@ -56,7 +56,6 @@ class PublicationRetrievalSensitivityTest extends PublicationIntegrationTestBase
     private static final String SEARCH_COURT_URL = PUBLICATION_URL + "/locationId";
     private static final ArtefactType ARTEFACT_TYPE = ArtefactType.LIST;
     private static final Sensitivity SENSITIVITY = Sensitivity.PUBLIC;
-    private static final String USER_ID = UUID.randomUUID().toString();
     private static final String PROVENANCE = "MANUAL_UPLOAD";
     private static final String SOURCE_ARTEFACT_ID = "sourceArtefactId";
     private static final LocalDateTime DISPLAY_TO = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
@@ -66,9 +65,9 @@ class PublicationRetrievalSensitivityTest extends PublicationIntegrationTestBase
     private static final String COURT_ID = "1";
     private static final LocalDateTime CONTENT_DATE = LocalDateTime.now().toLocalDate().atStartOfDay()
         .truncatedTo(ChronoUnit.SECONDS);
-    private static final String USER_ID_HEADER = "x-user-id";
     private static final String VALIDATION_DISPLAY_FROM = "The expected Display From has not been returned";
     private static final String REQUESTER_ID_HEADER = "x-requester-id";
+    private static final String ADMIN_HEADER = "x-admin";
     private static final String SYSTEM_ADMIN_ID = UUID.randomUUID().toString();
 
     private static String payload = "payload";
@@ -256,7 +255,8 @@ class PublicationRetrievalSensitivityTest extends PublicationIntegrationTestBase
         );
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 = MockMvcRequestBuilders
-            .get(SEARCH_COURT_URL + "/" + COURT_ID);
+            .get(SEARCH_COURT_URL + "/" + COURT_ID)
+            .header(ADMIN_HEADER, true);
         MvcResult getResponse =
             mockMvc.perform(mockHttpServletRequestBuilder1).andExpect(status().isOk()).andReturn();
 
