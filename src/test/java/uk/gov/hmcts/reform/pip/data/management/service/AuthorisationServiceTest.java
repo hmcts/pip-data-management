@@ -277,8 +277,6 @@ class AuthorisationServiceTest {
         SecurityContextHolder.getContext().setAuthentication(auth);
 
         when(securityContext.getAuthentication()).thenReturn(auth);
-        when(accountManagementService.getUserById(TEST_UUID.toString()))
-            .thenReturn(createUser(Roles.VERIFIED));
 
         assertTrue(authorisationService.userCanSearchInPublicationData(TEST_UUID),
                    "Verified user should be able to search in publication data");
@@ -293,10 +291,8 @@ class AuthorisationServiceTest {
         SecurityContextHolder.getContext().setAuthentication(auth);
 
         when(securityContext.getAuthentication()).thenReturn(auth);
-        when(accountManagementService.getUserById(TEST_UUID.toString()))
-            .thenReturn(createUser(Roles.SYSTEM_ADMIN));
 
-        assertFalse(authorisationService.userCanSearchInPublicationData(TEST_UUID),
+        assertTrue(authorisationService.userCanSearchInPublicationData(TEST_UUID),
                    "Admin user should not be able to search in publication data");
     }
 

@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.util.StringUtils;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationRetrievalService;
 import uk.gov.hmcts.reform.pip.model.account.PiUser;
@@ -112,7 +113,7 @@ public class AuthorisationService {
     }
 
     public boolean  userCanSearchInPublicationData(UUID requesterId) {
-        if (!(hasOAuthAdminRole() && isVerifiedUser(requesterId.toString()))) {
+        if (!hasOAuthAdminRole()) {
             log.error(writeLog(
                 String.format("User with ID %s is not authorised to search for publication by search value",
                               requesterId)
@@ -206,7 +207,7 @@ public class AuthorisationService {
     }
 
     private boolean isUserAdmin(String requesterId) {
-        if (requesterId != null && !requesterId.isEmpty()) {
+        if (!StringUtils.isEmpty(requesterId)) {
             PiUser user = accountManagementService.getUserById(requesterId);
             if (user != null && user.getRoles() != null) {
                 return Roles.ALL_ADMINS.contains(user.getRoles());
@@ -217,7 +218,7 @@ public class AuthorisationService {
     }
 
     private boolean isUserSystemAdmin(String requesterId) {
-        if (requesterId != null && !requesterId.isEmpty()) {
+        if (!StringUtils.isEmpty(requesterId)) {
             PiUser user = accountManagementService.getUserById(requesterId);
             if (user != null && user.getRoles() != null) {
                 return Roles.SYSTEM_ADMIN.equals(user.getRoles());
@@ -228,7 +229,7 @@ public class AuthorisationService {
     }
 
     private boolean isVerifiedUser(String requesterId) {
-        if (requesterId != null && !requesterId.isEmpty()) {
+        if (!StringUtils.isEmpty(requesterId)) {
             PiUser user = accountManagementService.getUserById(requesterId);
             if (user != null && user.getRoles() != null) {
                 return Roles.VERIFIED.equals(user.getRoles());

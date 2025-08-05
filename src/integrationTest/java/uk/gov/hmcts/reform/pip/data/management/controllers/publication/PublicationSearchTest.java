@@ -190,10 +190,9 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
 
         Artefact artefact = createDailyList(Sensitivity.PRIVATE);
 
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
-            MockMvcRequestBuilders.get(SEARCH_URL + VALID_CASE_NAME_SEARCH);
-
-        mockHttpServletRequestBuilder.header(REQUESTER_ID_HEADER, VERIFIED_USER_ID);
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+            .get(SEARCH_URL + VALID_CASE_NAME_SEARCH)
+            .header(REQUESTER_ID_HEADER, VERIFIED_USER_ID);
 
         MvcResult getResponse = mockMvc.perform(mockHttpServletRequestBuilder)
             .andExpect(status().isOk())
