@@ -25,6 +25,8 @@ import java.util.List;
 @RestController
 @Tag(name = "Data Management - API for publication report generation")
 @RequestMapping("/publication")
+@IsAdmin
+@SecurityRequirement(name = "bearerAuth")
 public class PublicationReportingController {
     private static final String NO_CONTENT_DESCRIPTION = "The request has been successfully fulfilled";
     private static final String UNAUTHORISED_MESSAGE = "Invalid access credential";
@@ -34,8 +36,6 @@ public class PublicationReportingController {
     private static final String NO_CONTENT_CODE = "204";
     private static final String UNAUTHORISED_CODE = "401";
     private static final String FORBIDDEN_CODE = "403";
-
-    private static final String BEARER_AUTHENTICATION = "bearerAuth";
 
     private final PublicationReportingService publicationReportingService;
 
@@ -49,8 +49,6 @@ public class PublicationReportingController {
     @ApiResponse(responseCode = FORBIDDEN_CODE, description = FORBIDDEN_MESSAGE)
     @Operation(summary = "Returns MI data for artefacts")
     @GetMapping("/mi-data")
-    @IsAdmin
-    @SecurityRequirement(name = BEARER_AUTHENTICATION)
     public ResponseEntity<List<PublicationMiData>> getMiData() {
         return ResponseEntity.ok().body(publicationReportingService.getMiData());
     }
@@ -61,8 +59,6 @@ public class PublicationReportingController {
     @Operation(summary = "Report artefacts which do not match any location")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PostMapping("/no-match/reporting")
-    @IsAdmin
-    @SecurityRequirement(name = BEARER_AUTHENTICATION)
     public ResponseEntity<Void> reportNoMatchArtefacts() {
         publicationReportingService.reportNoMatchArtefacts();
         return ResponseEntity.noContent().build();
