@@ -183,7 +183,7 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
 
     @Test
     void testAuthorisedGetArtefactByCaseNameSearchVerified() throws Exception {
-        when(accountManagementService.getUserById(any())).thenReturn(verifiedUser);
+        when(accountManagementService.getUserById(VERIFIED_USER_ID.toString())).thenReturn(verifiedUser);
         when(accountManagementService.getIsAuthorised(
             VERIFIED_USER_ID, ListType.CIVIL_DAILY_CAUSE_LIST, Sensitivity.PRIVATE
         )).thenReturn(true);
@@ -206,7 +206,7 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
 
     @Test
     void testUnauthorisedGetArtefactByCaseNameSearchVerified() throws Exception {
-        when(accountManagementService.getUserById(any())).thenReturn(verifiedUser);
+        when(accountManagementService.getUserById(VERIFIED_USER_ID.toString())).thenReturn(verifiedUser);
         when(accountManagementService.getIsAuthorised(
             VERIFIED_USER_ID, ListType.CIVIL_DAILY_CAUSE_LIST, Sensitivity.PRIVATE
         )).thenReturn(false);
