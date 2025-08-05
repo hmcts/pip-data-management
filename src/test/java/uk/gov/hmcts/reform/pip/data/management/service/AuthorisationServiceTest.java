@@ -270,6 +270,8 @@ class AuthorisationServiceTest {
 
     @Test
     void testVerifiedUserCanSearchInPublicationData() {
+        when(accountManagementService.getUserById(TEST_UUID.toString()))
+            .thenReturn(createUser(Roles.VERIFIED));
         List<GrantedAuthority> authorities = List.of(
             new SimpleGrantedAuthority(ADMIN_ROLE)
         );
@@ -284,6 +286,8 @@ class AuthorisationServiceTest {
 
     @Test
     void testAdminUserCannotSearchInPublicationData() {
+        when(accountManagementService.getUserById(TEST_UUID.toString()))
+            .thenReturn(createUser(Roles.SYSTEM_ADMIN));
         List<GrantedAuthority> authorities = List.of(
             new SimpleGrantedAuthority(ADMIN_ROLE)
         );
@@ -292,7 +296,7 @@ class AuthorisationServiceTest {
 
         when(securityContext.getAuthentication()).thenReturn(auth);
 
-        assertTrue(authorisationService.userCanSearchInPublicationData(TEST_UUID),
+        assertFalse(authorisationService.userCanSearchInPublicationData(TEST_UUID),
                    "Admin user should not be able to search in publication data");
     }
 
