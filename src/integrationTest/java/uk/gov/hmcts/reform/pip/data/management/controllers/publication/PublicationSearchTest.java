@@ -77,12 +77,11 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
     private static final UUID SYSTEM_ADMIN_ID = UUID.randomUUID();
     private static final UUID VERIFIED_USER_ID = UUID.randomUUID();
 
-    private static PiUser systemAdminUser;
     private static PiUser verifiedUser;
 
     @BeforeAll
     public void setup() throws Exception {
-        systemAdminUser = new PiUser();
+        PiUser systemAdminUser = new PiUser();
         systemAdminUser.setUserId(SYSTEM_ADMIN_ID.toString());
         systemAdminUser.setEmail("test@justice.gov.uk");
         systemAdminUser.setRoles(SYSTEM_ADMIN);
