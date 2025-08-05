@@ -451,7 +451,8 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
             .get(SEARCH_URL)
             .param(SEARCH_TERM_PARAM, CaseSearchTerm.CASE_NAME.name())
-            .param(SEARCH_VALUE_PARAM, CASE_NAME_SEARCH_VALUE);
+            .param(SEARCH_VALUE_PARAM, CASE_NAME_SEARCH_VALUE)
+            .header(REQUESTER_ID_HEADER, VERIFIED_USER_ID);
 
         mockMvc.perform(request)
             .andExpect(status().isForbidden());
@@ -459,20 +460,20 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
 
     @Test
     void testGetCourtByIdShowsAllCourtsForAdmin() throws Exception {
+        when(accountManagementService.getUserById(any())).thenReturn(systemAdminUser);
         Artefact inDateArtefact = createDailyList(Sensitivity.PUBLIC, DISPLAY_FROM.minusMonths(2), CONTENT_DATE);
         Artefact futureArtefact = createDailyList(Sensitivity.PUBLIC, DISPLAY_FROM.plusMonths(1),
                                                   CONTENT_DATE.plusDays(1));
 
         assertEquals(inDateArtefact.getDisplayFrom(), DISPLAY_FROM.minusMonths(2),
-                     VALIDATION_DISPLAY_FROM
-        );
+                     VALIDATION_DISPLAY_FROM);
         assertEquals(futureArtefact.getDisplayFrom(), DISPLAY_FROM.plusMonths(1),
-                     VALIDATION_DISPLAY_FROM
-        );
+                     VALIDATION_DISPLAY_FROM);
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
             .get(SEARCH_COURT_URL + "/" + COURT_ID)
-            .header(ADMIN_HEADER, FALSE);
+            .header(ADMIN_HEADER, FALSE)
+            .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID);
 
         MvcResult nonAdminResponse =
             mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isOk()).andReturn();
