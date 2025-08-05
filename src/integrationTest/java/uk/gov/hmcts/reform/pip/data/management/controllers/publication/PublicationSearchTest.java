@@ -46,7 +46,7 @@ import static uk.gov.hmcts.reform.pip.model.account.Roles.VERIFIED;
 @WithMockUser(username = "admin", authorities = {"APPROLE_api.request.admin"})
 class PublicationSearchTest extends PublicationIntegrationTestBase {
     private static final String PUBLICATION_URL = "/publication";
-    private static final String SEARCH_COURT_URL = PUBLICATION_URL + "/locationId";
+    private static final String SEARCH_BY_COURT_URL = PUBLICATION_URL + "/locationId";
     private static final String SEARCH_URL = PUBLICATION_URL + "/search";
     private static final LocalDateTime DISPLAY_FROM = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
     private static final String COURT_ID = "1";
@@ -470,7 +470,7 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
                      VALIDATION_DISPLAY_FROM);
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .get(SEARCH_COURT_URL + "/" + COURT_ID)
+            .get(SEARCH_BY_COURT_URL + "/" + COURT_ID)
             .header(ADMIN_HEADER, FALSE)
             .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID);
 
@@ -478,7 +478,7 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
             mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isOk()).andReturn();
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 = MockMvcRequestBuilders
-            .get(SEARCH_COURT_URL + "/" + COURT_ID)
+            .get(SEARCH_BY_COURT_URL + "/" + COURT_ID)
             .header(ADMIN_HEADER, TRUE);
 
         MvcResult adminResponse = mockMvc.perform(mockHttpServletRequestBuilder1)
@@ -495,7 +495,7 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
     @WithMockUser(username = ADMIN, authorities = { "APPROLE_api.request.unknown" })
     void testUnauthorizedGetByCourtId() throws Exception {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .get(SEARCH_COURT_URL + "/" + COURT_ID)
+            .get(SEARCH_BY_COURT_URL + "/" + COURT_ID)
             .header(VERIFICATION_HEADER, TRUE);
 
         mockMvc.perform(mockHttpServletRequestBuilder)
