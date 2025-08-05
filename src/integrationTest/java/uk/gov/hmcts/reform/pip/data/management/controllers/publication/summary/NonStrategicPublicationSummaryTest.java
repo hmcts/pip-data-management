@@ -34,15 +34,15 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static uk.gov.hmcts.reform.pip.data.management.controllers.publication.summary.configurations.RcjListTestCases.provideRcjTestCases;
+import static uk.gov.hmcts.reform.pip.data.management.controllers.publication.summary.configurations.NonStrategicListTestCases.provideRcjTestCases;
+import static uk.gov.hmcts.reform.pip.data.management.controllers.publication.summary.configurations.NonStrategicListTestCases.provideTribunalTestCases;
 
 @SpringBootTest(classes = {Application.class}, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles({"integration", "disable-async"})
 @AutoConfigureMockMvc
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
 @WithMockUser(username = "admin", authorities = {"APPROLE_api.request.admin"})
-class NonStrategicRcjPublicationSummaryTest extends PublicationIntegrationTestBase {
-
+class NonStrategicPublicationSummaryTest extends PublicationIntegrationTestBase {
     private static final String ROOT_URL = "/publication";
     private static final String GET_ARTEFACT_SUMMARY = ROOT_URL + "/%s/summary";
     private static final String CONTENT_MISMATCH_ERROR = "Artefact summary content should match";
@@ -59,7 +59,10 @@ class NonStrategicRcjPublicationSummaryTest extends PublicationIntegrationTestBa
     private static final String EXCEL_FILE_TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 
     private static Stream<ListTestCaseSettings> provideTestCases() {
-        return provideRcjTestCases();
+        return Stream.concat(
+            provideRcjTestCases(),
+            provideTribunalTestCases()
+        );
     }
 
     @ParameterizedTest
