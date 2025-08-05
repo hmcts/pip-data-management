@@ -95,8 +95,6 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
                 .getResourceAsStream("location/UpdatedCsv.csv")) {
             MockMultipartFile csvFile
                     = new MockMultipartFile("locationList", csvInputStream);
-            when(accountManagementService.getUserById(any())).thenReturn(systemAdminUser);
-
             mockMvc.perform(MockMvcRequestBuilders.multipart("/locations/upload").file(csvFile)
                                 .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID)
                             .with(user(ADMIN)
