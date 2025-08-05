@@ -19,4 +19,11 @@ public class ListTestCaseSettings {
         this.jsonFilePath = jsonFilePath;
         this.expectedFields = Arrays.copyOf(expectedFields, expectedFields.length);
     }
+
+    public static ListTestCaseSettings withoutExcel(
+        ListType listType,
+        String jsonFilePath,
+        String... expectedFields) {
+        return new ListTestCaseSettings(listType, null, jsonFilePath, expectedFields);
+    }
 }
