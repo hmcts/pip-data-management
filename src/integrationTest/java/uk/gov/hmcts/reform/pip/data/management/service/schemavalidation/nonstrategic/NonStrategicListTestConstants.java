@@ -148,6 +148,9 @@ public final class NonStrategicListTestConstants {
             + "utAdministrativeAppealsChamberDailyHearingList.json";
     public static final String UT_IAC_JUDICIAL_REVIEWS_DAILY_HEARING_LIST_JSON_FILE_PATH =
         PARENT_JSON_FILE_PATH + "/ut-iac-judicial-review-daily-hearing-list/utIacJudicialReviewDailyHearingList.json";
+    public static final String UT_IAC_JUDICIAL_REVIEWS_LONDON_DAILY_HEARING_LIST_JSON_FILE_PATH =
+        PARENT_JSON_FILE_PATH + "/ut-iac-judicial-review-london-daily-hearing-list/"
+            + "utIacJudicialReviewLondonDailyHearingList.json";
     public static final String UT_IAC_STATUTORY_APPEALS_DAILY_HEARING_LIST_JSON_FILE_PATH =
         PARENT_JSON_FILE_PATH + "/ut-iac-statutory-appeals-daily-hearing-list/"
             + "utIacStatutoryAppealsDailyHearingList.json";

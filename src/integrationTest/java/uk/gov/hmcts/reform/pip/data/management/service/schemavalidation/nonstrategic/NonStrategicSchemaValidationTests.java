@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatNoException;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.CONTENT_DATE;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.PROVENANCE;
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConstants.ARTEFACT_TYPE;
@@ -66,6 +67,7 @@ import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.n
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.JudgesAttribute.judgesMandatoryAttribute;
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.TimeFormatValidation.getListTypesWithTimeFormatValidation;
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.TimeTestAttribute.timeMandatoryAttribute;
+import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.TimeTrailingSpaceValidation.getListTypesAllowTrailingSpaceInTime;
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.TypeTestAttribute.typeMandatoryAttribute;
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.VenueTestAttribute.venueMandatoryAttribute;
 
@@ -118,6 +120,13 @@ class NonStrategicSchemaValidationTests  extends IntegrationBasicTestBase {
         return Stream.of(
                 hearingListMandatoryAttributes(),
                 openJusticeStatementDetailsMandatoryAttributes()
+            )
+            .flatMap(stream -> stream);
+    }
+
+    public static Stream<Arguments> allListsWithTimeTrailingSpaceAllowed() {
+        return Stream.of(
+                getListTypesAllowTrailingSpaceInTime()
             )
             .flatMap(stream -> stream);
     }
@@ -181,11 +190,24 @@ class NonStrategicSchemaValidationTests  extends IntegrationBasicTestBase {
         assertValidationFails(testData, config.getValidationField());
     }
 
+    @ParameterizedTest
+    @MethodSource("allListsWithTimeTrailingSpaceAllowed")
+    void shouldPassWhenTimeHasTrailingSpace(ListTypeTestInput config) throws IOException {
+        TestData testData = loadTestData(config);
+        assertValidationPass(testData);
+    }
+
     private void assertValidationFails(TestData testData, String fieldName) {
         String json = testData.jsonNode().toString();
         assertThatExceptionOfType(PayloadValidationException.class)
             .isThrownBy(() -> validationService.validateBody(json, testData.headerGroup(), false))
             .withMessageContaining(fieldName);
+    }
+
+    private void assertValidationPass(TestData testData) {
+        String json = testData.jsonNode().toString();
+        assertThatNoException()
+            .isThrownBy(() -> validationService.validateBody(json, testData.headerGroup(), false));
     }
 
     @ParameterizedTest

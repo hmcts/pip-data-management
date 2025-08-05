@@ -17,6 +17,7 @@ import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.n
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConstants.HEARING_TIME;
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConstants.SSCS_DAILY_HEARING_LIST_JSON_FILE_PATH;
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConstants.UT_IAC_JUDICIAL_REVIEWS_DAILY_HEARING_LIST_JSON_FILE_PATH;
+import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConstants.UT_IAC_JUDICIAL_REVIEWS_LONDON_DAILY_HEARING_LIST_JSON_FILE_PATH;
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConstants.UT_IAC_STATUTORY_APPEALS_DAILY_HEARING_LIST_JSON_FILE_PATH;
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConstants.WPAFCC_WEEKLY_HEARING_LIST_JSON_FILE_PATH;
 
@@ -41,7 +42,7 @@ public final class HearingTimeAttribute {
         entry(ListType.UT_IAC_JR_LEEDS_DAILY_HEARING_LIST,
               UT_IAC_JUDICIAL_REVIEWS_DAILY_HEARING_LIST_JSON_FILE_PATH),
         entry(ListType.UT_IAC_JR_LONDON_DAILY_HEARING_LIST,
-              UT_IAC_JUDICIAL_REVIEWS_DAILY_HEARING_LIST_JSON_FILE_PATH),
+              UT_IAC_JUDICIAL_REVIEWS_LONDON_DAILY_HEARING_LIST_JSON_FILE_PATH),
         entry(ListType.UT_IAC_JR_MANCHESTER_DAILY_HEARING_LIST,
               UT_IAC_JUDICIAL_REVIEWS_DAILY_HEARING_LIST_JSON_FILE_PATH),
         entry(ListType.UT_IAC_STATUTORY_APPEALS_DAILY_HEARING_LIST,
