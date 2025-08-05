@@ -65,6 +65,7 @@ class PublicationSearchControllerTest {
     private PublicationSearchController publicationSearchController;
 
     @Test
+    @Deprecated
     void testGetArtefactsBySearchReturnsWhenTrue() {
         when(publicationSearchService.findAllBySearch(SEARCH_TERM, TEST_STRING, USER_ID))
             .thenReturn(List.of(ARTEFACT_WITH_ID));
@@ -75,11 +76,33 @@ class PublicationSearchControllerTest {
     }
 
     @Test
+    @Deprecated
     void testGetArtefactsBySearchReturnsWhenFalse() {
         when(publicationSearchService.findAllBySearch(SEARCH_TERM, TEST_STRING, USER_ID))
             .thenReturn(List.of(ARTEFACT_WITH_ID));
         assertEquals(HttpStatus.OK, publicationSearchController
                          .getAllRelevantArtefactsBySearchValue(SEARCH_TERM, TEST_STRING, USER_ID)
+                         .getStatusCode(),
+                     STATUS_CODE_MATCH
+        );
+    }
+
+    @Test
+    void testGetArtefactsBySearchV2ReturnsWhenTrue() {
+        when(publicationSearchService.findAllBySearch(SEARCH_TERM, TEST_STRING, USER_ID))
+            .thenReturn(List.of(ARTEFACT_WITH_ID));
+        assertEquals(HttpStatus.OK, publicationSearchController
+                         .getAllRelevantArtefactsBySearchValueV2(SEARCH_TERM, TEST_STRING, USER_ID).getStatusCode(),
+                     STATUS_CODE_MATCH
+        );
+    }
+
+    @Test
+    void testGetArtefactsBySearchV2ReturnsWhenFalse() {
+        when(publicationSearchService.findAllBySearch(SEARCH_TERM, TEST_STRING, USER_ID))
+            .thenReturn(List.of(ARTEFACT_WITH_ID));
+        assertEquals(HttpStatus.OK, publicationSearchController
+                         .getAllRelevantArtefactsBySearchValueV2(SEARCH_TERM, TEST_STRING, USER_ID)
                          .getStatusCode(),
                      STATUS_CODE_MATCH
         );
