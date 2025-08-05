@@ -82,8 +82,8 @@ public class PublicationSearchController {
     @PreAuthorize("@authorisationService.userCanSearchInPublicationData(#requesterId)")
     public ResponseEntity<List<Artefact>> getAllRelevantArtefactsBySearchValueV2(
             @RequestParam CaseSearchTerm searchTerm, @RequestParam String searchValue,
-            @RequestHeader(REQUESTER_ID_HEADER) UUID userId) {
-        return ResponseEntity.ok(publicationSearchService.findAllBySearch(searchTerm, searchValue, userId));
+            @RequestHeader(REQUESTER_ID_HEADER) UUID requesterId) {
+        return ResponseEntity.ok(publicationSearchService.findAllBySearch(searchTerm, searchValue, requesterId));
     }
 
     @ApiResponse(responseCode = OK_CODE, description = "List of Artefacts matching the given locationId and "
