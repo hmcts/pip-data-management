@@ -45,6 +45,7 @@ import static uk.gov.hmcts.reform.pip.data.management.utils.TestUtil.randomLocat
 
 @ActiveProfiles(profiles = "functional")
 @SpringBootTest(classes = {OAuthClient.class})
+@SuppressWarnings("PMD.ExcessiveImports")
 class PublicationTest extends FunctionalTestBase {
 
     @Value("${test-user-id}")

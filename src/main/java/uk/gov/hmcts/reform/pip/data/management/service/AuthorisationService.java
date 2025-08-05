@@ -111,7 +111,7 @@ public class AuthorisationService {
         return true;
     }
 
-    public boolean userCanSearchInPublicationData(UUID requesterId) {
+    public boolean  userCanSearchInPublicationData(UUID requesterId) {
         if (!(hasOAuthAdminRole() && isVerifiedUser(requesterId.toString()))) {
             log.error(writeLog(
                 String.format("User with ID %s is not authorised to search for publication by search value",

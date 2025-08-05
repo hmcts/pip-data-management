@@ -79,9 +79,10 @@ public class PublicationSearchController {
             + "CASE_URN/CASE_ID/CASE_NAME)")
     @GetMapping("/search")
     @JsonView(ArtefactView.Internal.class)
+    @PreAuthorize("@authorisationService.userCanSearchInPublicationData(#requesterId)")
     public ResponseEntity<List<Artefact>> getAllRelevantArtefactsBySearchValueV2(
             @RequestParam CaseSearchTerm searchTerm, @RequestParam String searchValue,
-            @RequestHeader(value = REQUESTER_ID_HEADER,  required = false) UUID userId) {
+            @RequestHeader(REQUESTER_ID_HEADER) UUID userId) {
         return ResponseEntity.ok(publicationSearchService.findAllBySearch(searchTerm, searchValue, userId));
     }
 
