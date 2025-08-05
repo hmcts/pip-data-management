@@ -338,7 +338,7 @@ class AuthorisationServiceTest {
     }
 
     @Test
-    void testUserCanSearchForPublicationByLocationWhenISAdminFlagIsSet() {
+    void testUserCanSearchForPublicationByLocationWhenIsAdminFlagIsSet() {
         List<GrantedAuthority> authorities = List.of(
             new SimpleGrantedAuthority(ADMIN_ROLE)
         );
