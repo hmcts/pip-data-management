@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.views.ArtefactView;
@@ -28,8 +29,8 @@ import java.util.UUID;
 @RestController
 @Tag(name = "Data Management - API for filtering and searching publications")
 @RequestMapping("/publication")
+@SecurityRequirement(name = "bearerAuth")
 public class PublicationSearchController {
-    private static final String USER_ID_HEADER = "x-user-id";
     private static final String ADMIN_HEADER = "x-admin";
 
     private static final String NOT_FOUND_DESCRIPTION =
@@ -42,7 +43,6 @@ public class PublicationSearchController {
     private static final String UNAUTHORISED_CODE = "401";
     private static final String FORBIDDEN_CODE = "403";
 
-    private static final String BEARER_AUTHENTICATION = "bearerAuth";
     private static final String DEFAULT_ADMIN_VALUE = "false";
     private static final String REQUESTER_ID_HEADER = "x-requester-id";
 
@@ -59,15 +59,30 @@ public class PublicationSearchController {
     @ApiResponse(responseCode = FORBIDDEN_CODE, description = FORBIDDEN_MESSAGE)
     @ApiResponse(responseCode = NOT_FOUND_CODE, description = NOT_FOUND_DESCRIPTION)
     @Operation(summary = "Get a series of publications matching a given case search value (e.g. "
-        + "CASE_URN/CASE_ID/CASE_NAME)")
+            + "CASE_URN/CASE_ID/CASE_NAME)")
     @GetMapping("/search/{searchTerm}/{searchValue}")
     @JsonView(ArtefactView.Internal.class)
-    @SecurityRequirement(name = BEARER_AUTHENTICATION)
     @PreAuthorize("@authorisationService.userCanSearchInPublicationData(#requesterId)")
+    @Deprecated
     public ResponseEntity<List<Artefact>> getAllRelevantArtefactsBySearchValue(
         @PathVariable CaseSearchTerm searchTerm, @PathVariable String searchValue,
         @RequestHeader(REQUESTER_ID_HEADER) UUID requesterId) {
         return ResponseEntity.ok(publicationSearchService.findAllBySearch(searchTerm, searchValue, requesterId));
+    }
+
+    @ApiResponse(responseCode = OK_CODE, description = "List of Artefacts matching"
+            + " a given case value, verification parameters and date requirements")
+    @ApiResponse(responseCode = UNAUTHORISED_CODE, description = UNAUTHORISED_MESSAGE)
+    @ApiResponse(responseCode = FORBIDDEN_CODE, description = FORBIDDEN_MESSAGE)
+    @ApiResponse(responseCode = NOT_FOUND_CODE, description = NOT_FOUND_DESCRIPTION)
+    @Operation(summary = "Get a series of publications matching a given case search value (e.g. "
+            + "CASE_URN/CASE_ID/CASE_NAME)")
+    @GetMapping("/search")
+    @JsonView(ArtefactView.Internal.class)
+    public ResponseEntity<List<Artefact>> getAllRelevantArtefactsBySearchValueV2(
+            @RequestParam CaseSearchTerm searchTerm, @RequestParam String searchValue,
+            @RequestHeader(value = REQUESTER_ID_HEADER,  required = false) UUID userId) {
+        return ResponseEntity.ok(publicationSearchService.findAllBySearch(searchTerm, searchValue, userId));
     }
 
     @ApiResponse(responseCode = OK_CODE, description = "List of Artefacts matching the given locationId and "
@@ -78,7 +93,6 @@ public class PublicationSearchController {
     @Operation(summary = "Get a series of publications matching a given locationId (e.g. locationId)")
     @GetMapping("/locationId/{locationId}")
     @JsonView(ArtefactView.Internal.class)
-    @SecurityRequirement(name = BEARER_AUTHENTICATION)
     @PreAuthorize("@authorisationService.userCanSearchForPublicationByLocation(#requesterId)")
     public ResponseEntity<List<Artefact>> getAllRelevantArtefactsByLocationId(
         @PathVariable String locationId,
