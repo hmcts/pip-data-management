@@ -8,11 +8,11 @@ import java.util.List;
 import java.util.Map;
 
 @Data
-public final class ListTypeTestInput {
-    private final ListType listType;
-    private final String jsonFilePath;
-    private final String validationField;
-    private final String parentNode;
+public class ListTypeTestInput {
+    private ListType listType;
+    private String jsonFilePath;
+    private String validationField;
+    private String parentNode;
 
     public ListTypeTestInput(ListType listType, String jsonFilePath, String validationField, String parentNode) {
         this.listType = listType;
