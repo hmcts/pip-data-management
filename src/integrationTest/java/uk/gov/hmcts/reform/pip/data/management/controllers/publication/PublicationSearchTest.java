@@ -31,6 +31,7 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -95,6 +96,11 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
                 .getResourceAsStream("location/UpdatedCsv.csv")) {
             MockMultipartFile csvFile
                     = new MockMultipartFile("locationList", csvInputStream);
+            lenient().when(accountManagementService.getUserById(SYSTEM_ADMIN_ID.toString()))
+                .thenReturn(systemAdminUser);
+            lenient().when(accountManagementService.getUserById(VERIFIED_USER_ID.toString()))
+                .thenReturn(verifiedUser);
+
             mockMvc.perform(MockMvcRequestBuilders.multipart("/locations/upload").file(csvFile)
                                 .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID)
                             .with(user(ADMIN)
@@ -105,7 +111,6 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
 
     @Test
     void testAuthorisedGetArtefactByCaseIdSearchVerified() throws Exception {
-        when(accountManagementService.getUserById(any())).thenReturn(verifiedUser);
         when(accountManagementService.getIsAuthorised(
             VERIFIED_USER_ID, ListType.CIVIL_DAILY_CAUSE_LIST, Sensitivity.PRIVATE
         )).thenReturn(true);
@@ -128,7 +133,6 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
 
     @Test
     void testUnauthorisedGetArtefactByCaseIdSearchVerified() throws Exception {
-        when(accountManagementService.getUserById(any())).thenReturn(verifiedUser);
         when(accountManagementService.getIsAuthorised(
             VERIFIED_USER_ID, ListType.CIVIL_DAILY_CAUSE_LIST, Sensitivity.PRIVATE
         )).thenReturn(false);
@@ -151,7 +155,6 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
 
     @Test
     void testGetArtefactByCaseIdSearchUnverified() throws Exception {
-        when(accountManagementService.getUserById(any())).thenReturn(verifiedUser);
         Artefact artefact = createDailyList(Sensitivity.PUBLIC);
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
@@ -169,7 +172,6 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
 
     @Test
     void testGetArtefactByCaseIdSearchUnverifiedNotFound() throws Exception {
-        when(accountManagementService.getUserById(any())).thenReturn(verifiedUser);
         createDailyList(Sensitivity.CLASSIFIED);
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
@@ -181,7 +183,6 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
 
     @Test
     void testAuthorisedGetArtefactByCaseNameSearchVerified() throws Exception {
-        when(accountManagementService.getUserById(any())).thenReturn(verifiedUser);
         when(accountManagementService.getIsAuthorised(
             VERIFIED_USER_ID, ListType.CIVIL_DAILY_CAUSE_LIST, Sensitivity.PRIVATE
         )).thenReturn(true);
@@ -204,7 +205,6 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
 
     @Test
     void testUnauthorisedGetArtefactByCaseNameSearchVerified() throws Exception {
-        when(accountManagementService.getUserById(any())).thenReturn(verifiedUser);
         when(accountManagementService.getIsAuthorised(
             VERIFIED_USER_ID, ListType.CIVIL_DAILY_CAUSE_LIST, Sensitivity.PRIVATE
         )).thenReturn(false);
@@ -227,7 +227,6 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
 
     @Test
     void testGetArtefactByCaseNameSearchUnverified() throws Exception {
-        when(accountManagementService.getUserById(any())).thenReturn(verifiedUser);
         Artefact artefact = createDailyList(Sensitivity.PUBLIC);
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
@@ -245,7 +244,6 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
 
     @Test
     void testGetArtefactByCaseNameSearchUnverifiedNotFound() throws Exception {
-        when(accountManagementService.getUserById(any())).thenReturn(verifiedUser);
         createDailyList(Sensitivity.CLASSIFIED);
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
@@ -258,7 +256,6 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
     @Test
     @WithMockUser(username = UNAUTHORIZED_USERNAME, authorities = {UNAUTHORIZED_ROLE})
     void testUnauthorizedGetAllRelevantArtefactsBySearchValue() throws Exception {
-        when(accountManagementService.getUserById(any())).thenReturn(verifiedUser);
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
             .get(SEARCH_URL + VALID_CASE_NAME_SEARCH)
             .header(REQUESTER_ID_HEADER, VERIFIED_USER_ID);
@@ -297,7 +294,6 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
 
     @Test
     void testUnauthorisedGetArtefactByCaseIdSearchV2Verified() throws Exception {
-        when(accountManagementService.getUserById(any())).thenReturn(verifiedUser);
         when(accountManagementService.getIsAuthorised(
             VERIFIED_USER_ID, ListType.CIVIL_DAILY_CAUSE_LIST, Sensitivity.PRIVATE
         )).thenReturn(false);
@@ -322,7 +318,6 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
 
     @Test
     void testGetArtefactByCaseIdSearchV2Unverified() throws Exception {
-        when(accountManagementService.getUserById(any())).thenReturn(verifiedUser);
         Artefact artefact = createDailyList(Sensitivity.PUBLIC);
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
@@ -343,7 +338,6 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
 
     @Test
     void testGetArtefactByCaseIdSearchV2UnverifiedNotFound() throws Exception {
-        when(accountManagementService.getUserById(any())).thenReturn(verifiedUser);
         createDailyList(Sensitivity.CLASSIFIED);
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
@@ -358,7 +352,6 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
 
     @Test
     void testAuthorisedGetArtefactByCaseNameSearchV2Verified() throws Exception {
-        when(accountManagementService.getUserById(any())).thenReturn(verifiedUser);
         when(accountManagementService.getIsAuthorised(
             VERIFIED_USER_ID, ListType.CIVIL_DAILY_CAUSE_LIST, Sensitivity.PRIVATE
         )).thenReturn(true);
@@ -383,7 +376,6 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
 
     @Test
     void testUnauthorisedGetArtefactByCaseNameSearchV2Verified() throws Exception {
-        when(accountManagementService.getUserById(any())).thenReturn(verifiedUser);
         when(accountManagementService.getIsAuthorised(
             VERIFIED_USER_ID, ListType.CIVIL_DAILY_CAUSE_LIST, Sensitivity.PRIVATE
         )).thenReturn(false);
@@ -408,7 +400,6 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
 
     @Test
     void testGetArtefactByCaseNameSearchV2Unverified() throws Exception {
-        when(accountManagementService.getUserById(any())).thenReturn(verifiedUser);
         Artefact artefact = createDailyList(Sensitivity.PUBLIC);
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
@@ -429,7 +420,6 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
 
     @Test
     void testGetArtefactByCaseNameSearchV2UnverifiedNotFound() throws Exception {
-        when(accountManagementService.getUserById(any())).thenReturn(verifiedUser);
         createDailyList(Sensitivity.CLASSIFIED);
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
@@ -457,7 +447,6 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
 
     @Test
     void testGetCourtByIdShowsAllCourtsForAdmin() throws Exception {
-        when(accountManagementService.getUserById(any())).thenReturn(systemAdminUser);
         Artefact inDateArtefact = createDailyList(Sensitivity.PUBLIC, DISPLAY_FROM.minusMonths(2), CONTENT_DATE);
         Artefact futureArtefact = createDailyList(Sensitivity.PUBLIC, DISPLAY_FROM.plusMonths(1),
                                                   CONTENT_DATE.plusDays(1));
