@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.pip.data.management.controllers.publication;
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.json.JSONArray;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -35,6 +36,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -77,14 +79,18 @@ class PublicationLocationTest extends PublicationIntegrationTestBase {
             .getResourceAsStream("location/UpdatedCsv.csv")) {
             MockMultipartFile csvFile
                 = new MockMultipartFile("locationList", csvInputStream);
-
-            when(accountManagementService.getUserById(any())).thenReturn(piUser);
+            when(accountManagementService.getUserById(SYSTEM_ADMIN_ID)).thenReturn(piUser);
             mockMvc.perform(MockMvcRequestBuilders.multipart("/locations/upload").file(csvFile)
                                 .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID)
                                 .with(user(ADMIN)
                                           .authorities(new SimpleGrantedAuthority("APPROLE_api.request.admin"))))
                 .andExpect(status().isOk()).andReturn();
         }
+    }
+
+    @BeforeEach
+    void setupBeforeEach() {
+        lenient().when(accountManagementService.getUserById(SYSTEM_ADMIN_ID)).thenReturn(piUser);
     }
 
     @Test

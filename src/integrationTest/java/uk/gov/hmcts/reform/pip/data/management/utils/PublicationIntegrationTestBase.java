@@ -69,7 +69,7 @@ public class PublicationIntegrationTestBase extends IntegrationTestBase {
 
     protected Artefact createDailyList(Sensitivity sensitivity, LocalDateTime displayFrom, LocalDateTime displayTo,
                                        LocalDateTime contentDate, String provenance, String courtId) throws Exception {
-        when(accountManagementService.getUserById(any())).thenReturn(piUser);
+        when(accountManagementService.getUserById(SYSTEM_ADMIN_ID)).thenReturn(piUser);
 
         try (InputStream mockFile = this.getClass().getClassLoader()
             .getResourceAsStream("data/civil-daily-cause-list/civilDailyCauseList.json")) {

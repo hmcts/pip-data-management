@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.pip.data.management.controllers.publication;
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.json.JSONArray;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -30,7 +31,6 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
@@ -78,10 +78,11 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
     private static final UUID VERIFIED_USER_ID = UUID.randomUUID();
 
     private static PiUser verifiedUser;
+    private static PiUser systemAdminUser;
 
     @BeforeAll
     public void setup() throws Exception {
-        PiUser systemAdminUser = new PiUser();
+        systemAdminUser = new PiUser();
         systemAdminUser.setUserId(SYSTEM_ADMIN_ID.toString());
         systemAdminUser.setEmail("test@justice.gov.uk");
         systemAdminUser.setRoles(SYSTEM_ADMIN);
@@ -95,10 +96,9 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
                 .getResourceAsStream("location/UpdatedCsv.csv")) {
             MockMultipartFile csvFile
                     = new MockMultipartFile("locationList", csvInputStream);
-            lenient().when(accountManagementService.getUserById(SYSTEM_ADMIN_ID.toString()))
+
+            when(accountManagementService.getUserById(SYSTEM_ADMIN_ID.toString()))
                 .thenReturn(systemAdminUser);
-            lenient().when(accountManagementService.getUserById(VERIFIED_USER_ID.toString()))
-                .thenReturn(verifiedUser);
 
             mockMvc.perform(MockMvcRequestBuilders.multipart("/locations/upload").file(csvFile)
                                 .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID)
@@ -106,6 +106,14 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
                                     .authorities(new SimpleGrantedAuthority("APPROLE_api.request.admin"))))
                     .andExpect(status().isOk()).andReturn();
         }
+    }
+
+    @BeforeEach
+    public void setupBeforeEach() {
+        lenient().when(accountManagementService.getUserById(SYSTEM_ADMIN_ID.toString()))
+            .thenReturn(systemAdminUser);
+        lenient().when(accountManagementService.getUserById(VERIFIED_USER_ID.toString()))
+            .thenReturn(verifiedUser);
     }
 
     @Test
@@ -268,7 +276,6 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
 
     @Test
     void testAuthorisedGetArtefactByCaseIdSearchV2Verified() throws Exception {
-        when(accountManagementService.getUserById(any())).thenReturn(verifiedUser);
         when(accountManagementService.getIsAuthorised(
             VERIFIED_USER_ID, ListType.CIVIL_DAILY_CAUSE_LIST, Sensitivity.PRIVATE
         )).thenReturn(true);

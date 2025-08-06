@@ -8,6 +8,7 @@ import com.google.gson.JsonParser;
 import com.microsoft.applicationinsights.web.dependencies.apachecommons.io.IOUtils;
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -53,6 +54,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -86,7 +88,6 @@ class PublicationTest extends PublicationIntegrationTestBase {
     private static final String USER_ID_HEADER = "x-user-id";
 
     private static final String ADMIN_HEADER = "x-admin";
-    private static final String ISSUER_HEADER = "x-issuer-id";
     private static final String EMAIL = "test@email.com";
 
     private static final String VALIDATION_EMPTY_RESPONSE = "Response should contain a Artefact";
@@ -121,7 +122,7 @@ class PublicationTest extends PublicationIntegrationTestBase {
             .getResourceAsStream("location/UpdatedCsv.csv")) {
             MockMultipartFile csvFile
                 = new MockMultipartFile("locationList", csvInputStream);
-            when(accountManagementService.getUserById(any())).thenReturn(piUser);
+            when(accountManagementService.getUserById(SYSTEM_ADMIN_ID)).thenReturn(piUser);
 
             mockMvc.perform(MockMvcRequestBuilders.multipart("/locations/upload").file(csvFile)
                                 .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID)
@@ -129,6 +130,11 @@ class PublicationTest extends PublicationIntegrationTestBase {
                                           .authorities(new SimpleGrantedAuthority("APPROLE_api.request.admin"))))
                 .andExpect(status().isOk()).andReturn();
         }
+    }
+
+    @BeforeEach
+    void setupBeforeEach() {
+        lenient().when(accountManagementService.getUserById(SYSTEM_ADMIN_ID)).thenReturn(piUser);
     }
 
     @Test
