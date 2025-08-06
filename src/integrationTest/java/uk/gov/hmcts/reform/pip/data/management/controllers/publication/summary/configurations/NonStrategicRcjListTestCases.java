@@ -154,58 +154,58 @@ public final class NonStrategicRcjListTestCases {
 
             new ListTestCaseSettings(
                 ListType.ADMIRALTY_COURT_KB_DAILY_CAUSE_LIST,
-                "admiralty_court_kb_daily_cause_list/admiraltyCourtKbDailyCauseList.xlsx",
-                "admiralty_court_kb_daily_cause_list/admiraltyCourtKbDailyCauseList.json",
+                "admiralty-court-kb-daily-cause_list/admiraltyCourtKbDailyCauseList.xlsx",
+                "admiralty-court-kb-daily-cause_list/admiraltyCourtKbDailyCauseList.json",
                 RCJ_TIME_FIELD, RCJ_CASE_NUMBER_FIELD, CASE_NAME_FIELD
             ),
 
             new ListTestCaseSettings(
                 ListType.BUSINESS_LIST_CHD_DAILY_CAUSE_LIST,
-                "business_list_chd_daily_cause_list/businessListChdDailyCauseList.xlsx",
-                "business_list_chd_daily_cause_list/businessListChdDailyCauseList.json",
+                "business-list-chd-daily-cause-list/businessListChdDailyCauseList.xlsx",
+                "business-list-chd-daily-cause-list/businessListChdDailyCauseList.json",
                 RCJ_TIME_FIELD, RCJ_CASE_NUMBER_FIELD, CASE_NAME_FIELD
             ),
 
             new ListTestCaseSettings(
                 ListType.CHANCERY_APPEALS_CHD_DAILY_CAUSE_LIST,
-                "chancery_appeals_chd_daily_cause_list/chanceryAppealsChdDailyCauseList.xlsx",
-                "chancery_appeals_chd_daily_cause_list/chanceryAppealsChdDailyCauseList.json",
+                "chancery-appeals-chd-daily-cause-list/chanceryAppealsChdDailyCauseList.xlsx",
+                "chancery-appeals-chd-daily-cause-list/chanceryAppealsChdDailyCauseList.json",
                 RCJ_TIME_FIELD, RCJ_CASE_NUMBER_FIELD, CASE_NAME_FIELD
             ),
 
             new ListTestCaseSettings(
                 ListType.COMMERCIAL_COURT_KB_DAILY_CAUSE_LIST,
-                "commercial_court_kb_daily_cause_list/commercialCourtKbDailyCauseList.xlsx",
-                "commercial_court_kb_daily_cause_list/commercialCourtKbDailyCauseList.json",
+                "commercial-court-kb-daily-cause-list/commercialCourtKbDailyCauseList.xlsx",
+                "commercial-court-kb-daily-cause-list/commercialCourtKbDailyCauseList.json",
                 RCJ_TIME_FIELD, RCJ_CASE_NUMBER_FIELD, CASE_NAME_FIELD
             ),
 
             new ListTestCaseSettings(
                 ListType.COMPANIES_WINDING_UP_CHD_DAILY_CAUSE_LIST,
-                "companies_winding_up_chd_daily_cause_list/companiesWindingUpChdDailyCauseList.xlsx",
-                "companies_winding_up_chd_daily_cause_list/companiesWindingUpChdDailyCauseList.json",
+                "companies-winding-up-chd-daily-cause-list/companiesWindingUpChdDailyCauseList.xlsx",
+                "companies-winding-up-chd-daily-cause-list/companiesWindingUpChdDailyCauseList.json",
                 RCJ_TIME_FIELD, RCJ_CASE_NUMBER_FIELD, CASE_NAME_FIELD
             ),
 
             new ListTestCaseSettings(
                 ListType.COMPETITION_LIST_CHD_DAILY_CAUSE_LIST,
-                "competition_list_chd_daily_cause_list/competitionListChdDailyCauseList.xlsx",
-                "competition_list_chd_daily_cause_list/competitionListChdDailyCauseList.json",
+                "competition-list-chd-daily-cause-list/competitionListChdDailyCauseList.xlsx",
+                "competition-list-chd-daily-cause-list/competitionListChdDailyCauseList.json",
                 RCJ_TIME_FIELD, RCJ_CASE_NUMBER_FIELD, CASE_NAME_FIELD
             ),
 
             new ListTestCaseSettings(
                 ListType.FINANCIAL_LIST_CHD_KB_DAILY_CAUSE_LIST,
-                "financial_list_chd_kb_daily_cause_list/financialListChdKbDailyCauseList.xlsx",
-                "financial_list_chd_kb_daily_cause_list/financialListChdKbDailyCauseList.json",
+                "financial-list-chd-kb-daily-cause-list/financialListChdKbDailyCauseList.xlsx",
+                "financial-list-chd-kb-daily-cause-list/financialListChdKbDailyCauseList.json",
                 RCJ_TIME_FIELD, RCJ_CASE_NUMBER_FIELD, CASE_NAME_FIELD
             ),
 
             new ListTestCaseSettings(
                 ListType.INSOLVENCY_AND_COMPANIES_COURT_CHD_DAILY_CAUSE_LIST,
-                "insolvency_and_companies_court_chd_daily_cause_list/"
+                "insolvency-and-companies-court-chd-daily-cause-list/"
                     + "insolvencyAndCompaniesCourtChdDailyCauseList.xlsx",
-                "insolvency_and_companies_court_chd_daily_cause_list/"
+                "insolvency-and-companies-court-chd-daily-cause-list/"
                     + "insolvencyAndCompaniesCourtChdDailyCauseList.json",
                 RCJ_TIME_FIELD, RCJ_CASE_NUMBER_FIELD, CASE_NAME_FIELD
             ),

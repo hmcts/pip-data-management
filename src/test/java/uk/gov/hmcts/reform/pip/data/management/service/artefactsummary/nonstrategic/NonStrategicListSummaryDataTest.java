@@ -1,11 +1,9 @@
-package uk.gov.hmcts.reform.pip.data.management.service.artefactsummary;
+package uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.nonstrategic;
 
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.test.context.ActiveProfiles;
-import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.nonstrategic.ListTestCaseSettings;
-import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.nonstrategic.NonStrategicCommonArtefactSummaryTestConfig;
 
 import java.io.IOException;
 import java.util.List;

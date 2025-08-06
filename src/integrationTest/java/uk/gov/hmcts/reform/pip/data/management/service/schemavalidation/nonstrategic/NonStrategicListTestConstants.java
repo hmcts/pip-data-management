@@ -56,25 +56,25 @@ public final class NonStrategicListTestConstants {
     public static final String INVALID_MESSAGE = "Invalid JSON list marked as valid";
 
     public static final String ADMIRALTY_COURT_KB_DAILY_CAUSE_LIST_JSON_FILE_PATH =
-        PARENT_JSON_FILE_PATH + "/admiralty_court_kb_daily_cause_list/admiraltyCourtKbDailyCauseList.json";
+        PARENT_JSON_FILE_PATH + "/admiralty-court-kb-daily-cause_list/admiraltyCourtKbDailyCauseList.json";
     public static final String AST_DAILY_HEARING_LIST_JSON_FILE_PATH =
         PARENT_JSON_FILE_PATH + "/ast-daily-hearing-list/astDailyHearingList.json";
     public static final String ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST_JSON_FILE_PATH =
         PARENT_JSON_FILE_PATH + "/administrative-court-daily-cause-list/administrativeCourtDailyCauseList.json";
     public static final String BUSINESS_LIST_CHD_DAILY_CAUSE_LIST_JSON_FILE_PATH =
-        PARENT_JSON_FILE_PATH + "/business_list_chd_daily_cause_list/businessListChdDailyCauseList.json";
+        PARENT_JSON_FILE_PATH + "/business-list-chd-daily-cause-list/businessListChdDailyCauseList.json";
     public static final String CHANCERY_APPEALS_CHD_DAILY_CAUSE_LIST_JSON_FILE_PATH =
-        PARENT_JSON_FILE_PATH + "/chancery_appeals_chd_daily_cause_list/chanceryAppealsChdDailyCauseList.json";
+        PARENT_JSON_FILE_PATH + "/chancery-appeals-chd-daily-cause-list/chanceryAppealsChdDailyCauseList.json";
     public static final String CIC_WEEKLY_HEARING_LIST_JSON_FILE_PATH =
         PARENT_JSON_FILE_PATH + "/cic-weekly-hearing-list/cicWeeklyHearingList.json";
     public static final String CIVIL_COURTS_RCJ_DAILY_CAUSE_LIST_JSON_FILE_PATH =
         PARENT_JSON_FILE_PATH + "/civil-courts-rcj-daily-cause-list/civilCourtsRcjDailyCauseList.json";
     public static final String COMMERCIAL_COURT_KB_DAILY_CAUSE_LIST_JSON_FILE_PATH =
-        PARENT_JSON_FILE_PATH + "/commercial_court_kb_daily_cause_list/commercialCourtKbDailyCauseList.json";
+        PARENT_JSON_FILE_PATH + "/commercial-court-kb-daily-cause-list/commercialCourtKbDailyCauseList.json";
     public static final String COMPANIES_WINDING_UP_CHD_DAILY_CAUSE_LIST_JSON_FILE_PATH =
-        PARENT_JSON_FILE_PATH + "/companies_winding_up_chd_daily_cause_list/companiesWindingUpChdDailyCauseList.json";
+        PARENT_JSON_FILE_PATH + "/companies-winding-up-chd-daily-cause-list/companiesWindingUpChdDailyCauseList.json";
     public static final String COMPETITION_LIST_CHD_DAILY_CAUSE_LIST_JSON_FILE_PATH =
-        PARENT_JSON_FILE_PATH + "/competition_list_chd_daily_cause_list/competitionListChdDailyCauseList.json";
+        PARENT_JSON_FILE_PATH + "/competition-list-chd-daily-cause-list/competitionListChdDailyCauseList.json";
     public static final String COUNTY_COURT_LONDON_CIVIL_DAILY_CAUSE_LIST_JSON_FILE_PATH =
         PARENT_JSON_FILE_PATH + "/county-court-london-civil-daily-cause-list/countyCourtLondonCivilDailyCauseList.json";
     public static final String COURT_OF_APPEAL_CIVIL_DAILY_CAUSE_LIST_JSON_FILE_PATH = PARENT_JSON_FILE_PATH
@@ -87,7 +87,7 @@ public final class NonStrategicListTestConstants {
         PARENT_JSON_FILE_PATH + "/family-division-high-court-daily-cause-list/"
             + "familyDivisionHighCourtDailyCauseList.json";
     public static final String FINANCIAL_LISTS_CHD_DAILY_CAUSE_LIST_JSON_FILE_PATH =
-        PARENT_JSON_FILE_PATH + "/financial_list_chd_kb_daily_cause_list/financialListChdKbDailyCauseList.json";
+        PARENT_JSON_FILE_PATH + "/financial-list-chd-kb-daily-cause-list/financialListChdKbDailyCauseList.json";
     public static final String FTT_LR_WEEKLY_HEARING_LIST_JSON_FILE_PATH =
         PARENT_JSON_FILE_PATH + "/ftt-land-registry-tribunal-weekly-hearing-list/"
             + "fttLandRegistryTribunalWeeklyHearingList.json";
@@ -96,7 +96,7 @@ public final class NonStrategicListTestConstants {
     public static final String GRC_WEEKLY_HEARING_LIST_JSON_FILE_PATH =
         PARENT_JSON_FILE_PATH + "/grc-weekly-hearing-list/grcWeeklyHearingList.json";
     public static final String INSOLVENCY_AND_COMPANIES_COURT_CHD_DAILY_CAUSE_LIST_JSON_FILE_PATH =
-        PARENT_JSON_FILE_PATH + "/insolvency_and_companies_court_chd_daily_cause_list/"
+        PARENT_JSON_FILE_PATH + "/insolvency-and-companies-court-chd-daily-cause-list/"
             + "insolvencyAndCompaniesCourtChdDailyCauseList.json";
     public static final String INTELLECTUAL_PROPERTY_AND_ENTERPRISE_COURT_DAILY_CAUSE_LIST_JSON_FILE_PATH =
         PARENT_JSON_FILE_PATH + "/intellectual-property-and-enterprise-court-daily-cause-list/"
