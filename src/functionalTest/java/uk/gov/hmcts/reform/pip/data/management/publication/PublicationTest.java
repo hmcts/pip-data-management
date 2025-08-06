@@ -458,13 +458,14 @@ class PublicationTest extends FunctionalTestBase {
         uploadArtefact(getJsonString(randomCaseNumber), courtId, Sensitivity.CLASSIFIED, PROVENANCE);
 
         Map<String, String> headerMap = getBaseHeaderMap();
-        headerMap.put(USER_ID_HEADER, userId);
+        headerMap.put(REQUESTER_ID_HEADER, systemAdminUserId);
 
         final Response searchValueResponse = doGetRequest(
             ARTEFACT_BY_SEARCH_VALUE_URL + SearchType.CASE_ID + '/' + randomCaseNumber, headerMap
         );
 
-        assertThat(searchValueResponse.getStatusCode()).isEqualTo(NOT_FOUND.value());
+        assertThat(searchValueResponse.getStatusCode())
+            .isEqualTo(FORBIDDEN.value());
     }
 
     @Test
@@ -474,12 +475,13 @@ class PublicationTest extends FunctionalTestBase {
         uploadArtefact(getJsonString(randomCaseNumber), courtId, Sensitivity.CLASSIFIED, PROVENANCE);
 
         Map<String, String> headerMap = getBaseHeaderMap();
-        headerMap.put(USER_ID_HEADER, UUID.randomUUID().toString());
+        headerMap.put(REQUESTER_ID_HEADER, UUID.randomUUID().toString());
 
         final Response searchValueResponse = doGetRequest(
             ARTEFACT_BY_SEARCH_VALUE_URL + SearchType.CASE_ID + '/' + randomCaseNumber, headerMap
         );
-        assertThat(searchValueResponse.getStatusCode()).isEqualTo(NOT_FOUND.value());
+        assertThat(searchValueResponse.getStatusCode())
+            .isEqualTo(FORBIDDEN.value());
     }
 
     @Test
@@ -488,13 +490,14 @@ class PublicationTest extends FunctionalTestBase {
         uploadArtefact(getJsonString(randomCaseNumber), courtId, Sensitivity.CLASSIFIED, PROVENANCE);
 
         Map<String, String> headerMap = getBaseHeaderMap();
-        headerMap.put(USER_ID_HEADER, userId);
+        headerMap.put(REQUESTER_ID_HEADER, systemAdminUserId);
 
         final Response searchValueResponse = doGetRequest(
             ARTEFACT_BY_SEARCH_VALUE_V2_URL, headerMap,
             Map.of(SEARCH_TERM_PARAM, CaseSearchTerm.CASE_ID, SEARCH_VALUE_PARAM, randomCaseNumber)
         );
-        assertThat(searchValueResponse.getStatusCode()).isEqualTo(NOT_FOUND.value());
+        assertThat(searchValueResponse.getStatusCode())
+            .isEqualTo(FORBIDDEN.value());
     }
 
     @Test
@@ -503,13 +506,14 @@ class PublicationTest extends FunctionalTestBase {
         uploadArtefact(getJsonString(randomCaseNumber), courtId, Sensitivity.CLASSIFIED, PROVENANCE);
 
         Map<String, String> headerMap = getBaseHeaderMap();
-        headerMap.put(USER_ID_HEADER, UUID.randomUUID().toString());
+        headerMap.put(REQUESTER_ID_HEADER, UUID.randomUUID().toString());
 
         final Response searchValueResponse = doGetRequest(
             ARTEFACT_BY_SEARCH_VALUE_V2_URL, headerMap,
             Map.of(SEARCH_TERM_PARAM, CaseSearchTerm.CASE_ID, SEARCH_VALUE_PARAM, randomCaseNumber)
         );
-        assertThat(searchValueResponse.getStatusCode()).isEqualTo(NOT_FOUND.value());
+        assertThat(searchValueResponse.getStatusCode())
+            .isEqualTo(FORBIDDEN.value());
     }
 
     @Test
@@ -517,7 +521,7 @@ class PublicationTest extends FunctionalTestBase {
         uploadFlatFile(courtId, Sensitivity.CLASSIFIED);
 
         Map<String, String> headerMap = getBaseHeaderMap();
-        headerMap.put(USER_ID_HEADER, userId);
+        headerMap.put(REQUESTER_ID_HEADER, userId);
 
         final Response responseGetArtefactMetadata = doGetRequest(
             PUBLICATION_URL + "/locationId/" + courtId, headerMap
@@ -532,14 +536,14 @@ class PublicationTest extends FunctionalTestBase {
         uploadFlatFile(courtId, Sensitivity.CLASSIFIED);
 
         Map<String, String> headerMap = getBaseHeaderMap();
-        headerMap.put(USER_ID_HEADER, UUID.randomUUID().toString());
+        headerMap.put(REQUESTER_ID_HEADER, UUID.randomUUID().toString());
 
         final Response responseGetArtefactMetadata = doGetRequest(
             PUBLICATION_URL + "/locationId/" + courtId, headerMap
         );
 
-        assertThat(responseGetArtefactMetadata.getStatusCode()).isEqualTo(OK.value());
-        assertThat(responseGetArtefactMetadata.as(Artefact[].class).length).isEqualTo(0);
+        assertThat(responseGetArtefactMetadata.getStatusCode())
+            .isEqualTo(FORBIDDEN.value());
     }
 
     @Test
