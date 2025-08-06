@@ -63,7 +63,7 @@ class PublicationSummaryTest extends PublicationIntegrationTestBase {
         .truncatedTo(ChronoUnit.SECONDS);
     private static final String PROVENANCE = "MANUAL_UPLOAD";
 
-    static Stream<ListTestCaseSettings> provideTestCaseSettings() {
+    static Stream<ListTestCaseSettings> publicationSummaryTestCases() {
         return providePublicationSummaryTestCases();
     }
 
@@ -104,7 +104,7 @@ class PublicationSummaryTest extends PublicationIntegrationTestBase {
     }
 
     @ParameterizedTest
-    @MethodSource("provideTestCaseSettings")
+    @MethodSource("publicationSummaryTestCases")
     void testGenerateArtefactSummary(ListTestCaseSettings testCaseSetting) throws Exception {
         byte[] data = getTestData(testCaseSetting.getJsonFilePath());
         Artefact artefact = createPublication(testCaseSetting.getListType(), data);

@@ -58,7 +58,7 @@ class NonStrategicPublicationSummaryTest extends PublicationIntegrationTestBase 
     private static final String PROVENANCE = "MANUAL_UPLOAD";
     private static final String EXCEL_FILE_TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 
-    private static Stream<ListTestCaseSettings> provideTestCases() {
+    private static Stream<ListTestCaseSettings> nonStrategicPublicationSummaryTestCases() {
         return Stream.concat(
             provideRcjTestCases(),
             provideTribunalTestCases()
@@ -66,7 +66,7 @@ class NonStrategicPublicationSummaryTest extends PublicationIntegrationTestBase 
     }
 
     @ParameterizedTest
-    @MethodSource("provideTestCases")
+    @MethodSource("nonStrategicPublicationSummaryTestCases")
     void testGenerateArtefactSummary(ListTestCaseSettings testCase) throws Exception {
         Artefact artefact = createNonStrategicPublication(
             testCase.getListType(),

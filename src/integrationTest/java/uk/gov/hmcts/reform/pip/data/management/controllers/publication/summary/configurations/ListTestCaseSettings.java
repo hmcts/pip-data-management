@@ -3,27 +3,27 @@ package uk.gov.hmcts.reform.pip.data.management.controllers.publication.summary.
 import lombok.Data;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
-import java.util.Arrays;
+import java.util.List;
 
 @Data
 public class ListTestCaseSettings {
     private ListType listType;
     private String excelFilePath;
     private String jsonFilePath;
-    private String[] expectedFields;
+    private List<String> expectedFields;
 
     public ListTestCaseSettings(ListType listType, String excelFilePath,
-                                String jsonFilePath, String... expectedFields) {
+                                String jsonFilePath, List<String> expectedFields) {
         this.listType = listType;
         this.excelFilePath = excelFilePath;
         this.jsonFilePath = jsonFilePath;
-        this.expectedFields = Arrays.copyOf(expectedFields, expectedFields.length);
+        this.expectedFields = expectedFields;
     }
 
     public static ListTestCaseSettings withoutExcel(
         ListType listType,
         String jsonFilePath,
-        String... expectedFields) {
+        List<String> expectedFields) {
         return new ListTestCaseSettings(listType, null, jsonFilePath, expectedFields);
     }
 }
