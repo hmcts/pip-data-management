@@ -12,6 +12,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -111,6 +112,7 @@ public class LocationController {
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @IsAdmin
     @SecurityRequirement(name = BEARER_AUTHENTICATION)
+    @Transactional
     public ResponseEntity<Collection<Location>> uploadLocations(@RequestPart MultipartFile locationList) {
         return ResponseEntity.ok(locationService.uploadLocations(locationList));
     }
