@@ -8,7 +8,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 import org.testcontainers.shaded.org.apache.commons.io.IOUtils;
@@ -18,6 +17,7 @@ import uk.gov.hmcts.reform.pip.data.management.database.LocationRepository;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ContainsForbiddenValuesException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CreateLocationConflictException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CsvParseException;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.LocationNameValidationException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.LocationNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationDeletion;
@@ -51,13 +51,14 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-@SuppressWarnings({"PMD.ExcessiveImports"})
+@SuppressWarnings({"PMD.ExcessiveImports", "PMD.TooManyMethods"})
 class LocationServiceTest {
 
     @Mock
@@ -83,6 +84,7 @@ class LocationServiceTest {
 
     Location locationFirstExample;
     Location locationSecondExample;
+    Location locationThirdExample;
     Location locationInvalidExample;
     LocationDeletion locationDeletion;
     PiUser piUser;
@@ -102,16 +104,14 @@ class LocationServiceTest {
     private static final String WELSH_LOCATION_NAME2 = "Welsh Test Location 2";
     private static final String LOCATION_NAME3 = "Test Location 3";
     private static final String WELSH_LOCATION_NAME3 = "Welsh Test Location 3";
+    private static final String LOCATION_NAME4 = "Test Location 4";
+    private static final String VENUE = "venue";
 
     private static final String FIRST_LOCATION_NOT_FOUND = "First location has not been found";
     private static final String SECOND_LOCATION_NOT_FOUND = "Second location has not been found";
     private static final String CREATE_LOCATION_MESSAGE = "Location created message does not match";
     private static final String ERROR_LOG_MESSAGE = "Error log does not match";
     private static final String EMAIL = "test@test.com";
-    private static final String SSO_EMAIL = "sso@test.com";
-    private static final String SSO_PROVENANCE = "SSO";
-    private static final String PI_AAD_PROVENANCE = "PI_AAD";
-    private static final String SYSTEM_ADMIN = "SYSTEM_ADMIN";
 
     private static final String FILE = "file";
     private static final String FILE_NAME = "TestFileName";
@@ -121,7 +121,7 @@ class LocationServiceTest {
     void setup() {
         LocationCsv locationCsvFirstExample = new LocationCsv();
         locationCsvFirstExample.setLocationName(LOCATION_NAME2);
-        locationCsvFirstExample.setProvenanceLocationType("venue");
+        locationCsvFirstExample.setProvenanceLocationType(VENUE);
         locationCsvFirstExample.setWelshLocationName(WELSH_LOCATION_NAME2);
         locationCsvFirstExample.setJurisdiction(List.of("Tribunal"));
         locationCsvFirstExample.setWelshJurisdiction(List.of("Tribiwnlys"));
@@ -132,9 +132,17 @@ class LocationServiceTest {
 
         LocationCsv locationCsvSecondExample = new LocationCsv();
         locationCsvSecondExample.setLocationName(LOCATION_NAME3);
-        locationCsvSecondExample.setProvenanceLocationType("venue");
+        locationCsvSecondExample.setProvenanceLocationType(VENUE);
         locationCsvSecondExample.setWelshLocationName(WELSH_LOCATION_NAME3);
         locationSecondExample = new Location(locationCsvSecondExample);
+        locationSecondExample.setLocationId(3);
+
+        LocationCsv locationCsvThirdExample = new LocationCsv();
+        locationCsvThirdExample.setLocationName(LOCATION_NAME4);
+        locationCsvThirdExample.setProvenanceLocationType(VENUE);
+        locationCsvThirdExample.setWelshLocationName(WELSH_LOCATION_NAME2);
+        locationThirdExample = new Location(locationCsvThirdExample);
+        locationThirdExample.setLocationId(4);
 
         locationDeletion = new LocationDeletion();
 
@@ -369,7 +377,7 @@ class LocationServiceTest {
 
     @Test
     void testHandleUploadLocationsOk() throws IOException {
-        when(locationRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+        when(locationRepository.saveAndFlush(any())).thenAnswer(invocation -> invocation.getArgument(0));
         try (InputStream inputStream = this.getClass().getClassLoader()
             .getResourceAsStream("csv/ValidCsv.csv")) {
 
@@ -419,7 +427,7 @@ class LocationServiceTest {
 
     @Test
     void testHandleUploadReferencesOk() throws IOException {
-        when(locationRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+        when(locationRepository.saveAndFlush(any())).thenAnswer(invocation -> invocation.getArgument(0));
         try (InputStream inputStream = this.getClass().getClassLoader()
             .getResourceAsStream("csv/ValidCsv.csv")) {
 
@@ -492,15 +500,14 @@ class LocationServiceTest {
     void testHandleUploadContainsInvalidCourtName() throws IOException {
         LocationCsv locationCsvInvalidExample = new LocationCsv();
         locationCsvInvalidExample.setLocationName(INVALID_LOCATION_NAME);
-        locationCsvInvalidExample.setProvenanceLocationType("venue");
+        locationCsvInvalidExample.setProvenanceLocationType(VENUE);
         locationCsvInvalidExample.setWelshLocationName(WELSH_LOCATION_NAME2);
         locationInvalidExample = new Location(locationCsvInvalidExample);
         locationInvalidExample.setLocationId(2);
 
-        when(locationRepository.save(any()))
-            .thenReturn(locationFirstExample)
-            .thenThrow(ContainsForbiddenValuesException.class)
-            .thenReturn(locationInvalidExample);
+        doNothing().when(validationService).containsHtmlTag(eq(LOCATION_NAME2), any());
+        doThrow(ContainsForbiddenValuesException.class).when(validationService)
+            .containsHtmlTag(eq(INVALID_LOCATION_NAME), any());
 
         try (InputStream inputStream = this.getClass().getClassLoader()
             .getResourceAsStream("csv/ValidCsvWithInvalidCourtName.csv");
@@ -509,7 +516,10 @@ class LocationServiceTest {
             MultipartFile multipartFile = new MockMultipartFile(FILE, FILE_NAME, FILE_TYPE,
                                                                 IOUtils.toByteArray(inputStream));
 
-            List<Location> locations = new ArrayList<>(locationService.uploadLocations(multipartFile));
+            assertThatThrownBy(() -> locationService.uploadLocations(multipartFile))
+                .isInstanceOf(LocationNameValidationException.class)
+                .hasMessage("Failed to upload locations. The location name 'Test Location <p>Hello world</p>' or "
+                                + "Welsh location name 'Welsh Test Location other' contains a forbidden character");
 
             assertThat(logCaptor.getErrorLogs())
                 .as(ERROR_LOG_MESSAGE)
@@ -517,20 +527,16 @@ class LocationServiceTest {
 
             assertThat(logCaptor.getErrorLogs().get(0))
                 .as(ERROR_LOG_MESSAGE)
-                .contains("Record with ID 2 not saved. The location name 'Test Location <p>Hello world</p>' or "
+                .contains("Failed to upload locations. The location name 'Test Location <p>Hello world</p>' or "
                               + "Welsh location name 'Welsh Test Location other' contains a forbidden character");
 
-            assertThat(locations)
-                .hasSize(1);
+            verify(locationRepository, never()).saveAndFlush(any(Location.class));
         }
     }
 
     @Test
-    void testUploadLocationCsvContainingExistingLocations() throws IOException {
-        when(locationRepository.save(any()))
-            .thenReturn(locationFirstExample)
-            .thenThrow(DataIntegrityViolationException.class)
-            .thenReturn(locationSecondExample);
+    void testUploadLocationCsvContainingExistingEnglishLocationName() throws IOException {
+        when(locationRepository.findAll()).thenReturn(List.of(locationFirstExample, locationSecondExample));
 
         try (InputStream inputStream = this.getClass().getClassLoader()
             .getResourceAsStream("csv/ValidCsvWithExistingLocationName.csv");
@@ -539,26 +545,9 @@ class LocationServiceTest {
             MultipartFile multipartFile = new MockMultipartFile(FILE, FILE_NAME, FILE_TYPE,
                                                                 IOUtils.toByteArray(inputStream));
 
-            List<Location> locations = new ArrayList<>(locationService.uploadLocations(multipartFile));
-
-            assertThat(locations)
-                .hasSize(2);
-
-            assertThat(locations.get(0).getName())
-                .as("Location name does not match")
-                .isEqualTo(LOCATION_NAME2);
-
-            assertThat(locations.get(0).getWelshName())
-                .as("Welsh location name does not match")
-                .isEqualTo(WELSH_LOCATION_NAME2);
-
-            assertThat(locations.get(1).getName())
-                .as("Location name does not match")
-                .isEqualTo(LOCATION_NAME3);
-
-            assertThat(locations.get(1).getWelshName())
-                .as("Welsh location name does not match")
-                .isEqualTo(WELSH_LOCATION_NAME3);
+            assertThatThrownBy(() -> locationService.uploadLocations(multipartFile))
+                .isInstanceOf(LocationNameValidationException.class)
+                .hasMessage("Failed to upload locations. Location name(s) Test Location 3 already exist");
 
             assertThat(logCaptor.getErrorLogs())
                 .as(ERROR_LOG_MESSAGE)
@@ -566,11 +555,65 @@ class LocationServiceTest {
 
             assertThat(logCaptor.getErrorLogs().get(0))
                 .as(ERROR_LOG_MESSAGE)
-                .contains("Record with ID 2 not saved. The location name 'Test Location 2' or Welsh location name "
-                              + "'Welsh Test Location 2' already exists");
+                .contains("Failed to upload locations. Location name(s) Test Location 3 already exist");
+
+            verify(locationRepository, never()).saveAndFlush(any(Location.class));
         }
     }
 
+    @Test
+    void testUploadLocationCsvContainingExistingWelshLocationName() throws IOException {
+        when(locationRepository.findAll()).thenReturn(List.of(locationThirdExample));
+
+        try (InputStream inputStream = this.getClass().getClassLoader()
+            .getResourceAsStream("csv/ValidCsvWithExistingLocationName.csv");
+             LogCaptor logCaptor = LogCaptor.forClass(LocationService.class)) {
+
+            MultipartFile multipartFile = new MockMultipartFile(FILE, FILE_NAME, FILE_TYPE,
+                                                                IOUtils.toByteArray(inputStream));
+
+            assertThatThrownBy(() -> locationService.uploadLocations(multipartFile))
+                .isInstanceOf(LocationNameValidationException.class)
+                .hasMessage("Failed to upload locations. Welsh location name(s) Welsh Test Location 2 already exist");
+
+            assertThat(logCaptor.getErrorLogs())
+                .as(ERROR_LOG_MESSAGE)
+                .hasSize(1);
+
+            assertThat(logCaptor.getErrorLogs().get(0))
+                .as(ERROR_LOG_MESSAGE)
+                .contains("Failed to upload locations. Welsh location name(s) Welsh Test Location 2 already exist");
+
+            verify(locationRepository, never()).saveAndFlush(any(Location.class));
+        }
+    }
+
+    @Test
+    void testUploadLocationCsvWithDuplicatedLocationNameInCsv() throws IOException {
+        when(locationRepository.findAll()).thenReturn(Collections.emptyList());
+
+        try (InputStream inputStream = this.getClass().getClassLoader()
+            .getResourceAsStream("csv/ValidCsvWithDuplicatedLocationName.csv");
+             LogCaptor logCaptor = LogCaptor.forClass(LocationService.class)) {
+
+            MultipartFile multipartFile = new MockMultipartFile(FILE, FILE_NAME, FILE_TYPE,
+                                                                IOUtils.toByteArray(inputStream));
+
+            assertThatThrownBy(() -> locationService.uploadLocations(multipartFile))
+                .isInstanceOf(LocationNameValidationException.class)
+                .hasMessage("Failed to upload locations. Location name(s) Test Location 5 already exist");
+
+            assertThat(logCaptor.getErrorLogs())
+                .as(ERROR_LOG_MESSAGE)
+                .hasSize(1);
+
+            assertThat(logCaptor.getErrorLogs().get(0))
+                .as(ERROR_LOG_MESSAGE)
+                .contains("Failed to upload locations. Location name(s) Test Location 5 already exist");
+
+            verify(locationRepository, never()).saveAndFlush(any(Location.class));
+        }
+    }
 
     @Test
     void testCreateLocationSuccess() {
@@ -585,7 +628,7 @@ class LocationServiceTest {
 
     @Test
     void testCreateLocationWithExistingLocationName() {
-        when(locationRepository.save(any())).thenThrow(DataIntegrityViolationException.class);
+        when(locationRepository.findAll()).thenReturn(List.of(locationFirstExample));
 
         assertThatThrownBy(() -> locationService.createLocation(LOCATION_ID, LOCATION_NAME2))
             .as(CREATE_LOCATION_MESSAGE)
