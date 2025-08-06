@@ -419,7 +419,8 @@ class LocationApiTest extends LocationIntegrationTestBase {
             .getResourceAsStream(CSV_WITH_EXISTING_LOCATION_NAME)) {
             MockMultipartFile csvFile = new MockMultipartFile(LOCATION_LIST, csvInputStream);
 
-            MvcResult mvcResult = mockMvc.perform(multipart(UPLOAD_API).file(csvFile))
+            MvcResult mvcResult = mockMvc.perform(multipart(UPLOAD_API).file(csvFile)
+                                                      .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID))
                 .andExpect(status().isBadRequest()).andReturn();
 
             UiExceptionResponse exceptionResponse = OBJECT_MAPPER.readValue(
@@ -443,11 +444,13 @@ class LocationApiTest extends LocationIntegrationTestBase {
     @Test
     @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})
     void testCreateLocationsWithCsvContainingDuplicatedLocationName() throws Exception {
+        when(accountManagementService.getUserById(any())).thenReturn(piUser);
         try (InputStream csvInputStream = this.getClass().getClassLoader()
                 .getResourceAsStream(CSV_WITH_DUPLICATED_LOCATION_NAME)) {
             MockMultipartFile csvFile = new MockMultipartFile(LOCATION_LIST, csvInputStream);
 
-            MvcResult mvcResult = mockMvc.perform(multipart(UPLOAD_API).file(csvFile))
+            MvcResult mvcResult = mockMvc.perform(multipart(UPLOAD_API).file(csvFile)
+                                                      .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID))
                     .andExpect(status().isBadRequest()).andReturn();
 
             UiExceptionResponse exceptionResponse = OBJECT_MAPPER.readValue(
