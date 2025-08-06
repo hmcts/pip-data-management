@@ -17,6 +17,7 @@ import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ExcelCon
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.FileSizeLimitException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.FlatFileException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.HeaderValidationException;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.LocationNameValidationException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.LocationNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.NotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.PayloadValidationException;
@@ -291,5 +292,17 @@ class GlobalExceptionHandlerTest {
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode(), BAD_REQUEST_ASSERTION);
         assertNotNull(responseEntity.getBody(), ASSERTION_RESPONSE_BODY);
         assertEquals(TEST_MESSAGE, responseEntity.getBody().getMessage(), ASSERTION_MESSAGE);
+    }
+
+    @Test
+    void testHandleLocationNameValidationException() {
+        LocationNameValidationException exception = new LocationNameValidationException(TEST_MESSAGE);
+
+        ResponseEntity<ExceptionResponse> responseEntity = globalExceptionHandler.handle(exception);
+
+        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode(), BAD_REQUEST_ASSERTION);
+        assertNotNull(responseEntity.getBody(), ASSERTION_RESPONSE_BODY);
+        assertEquals(TEST_MESSAGE, responseEntity.getBody().getMessage(),
+                     ASSERTION_MESSAGE);
     }
 }

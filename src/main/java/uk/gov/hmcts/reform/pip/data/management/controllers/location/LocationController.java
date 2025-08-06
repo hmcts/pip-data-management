@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -113,6 +114,7 @@ public class LocationController {
     @ApiResponse(responseCode = FORBIDDEN_CODE, description = FORBIDDEN_MESSAGE)
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @SecurityRequirement(name = BEARER_AUTHENTICATION)
+    @Transactional
     @PreAuthorize("@authorisationService.userCanUploadLocation(#requesterId)")
     public ResponseEntity<Collection<Location>> uploadLocations(
         @RequestPart MultipartFile locationList,
