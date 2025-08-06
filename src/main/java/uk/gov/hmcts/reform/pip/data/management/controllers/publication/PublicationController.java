@@ -67,7 +67,6 @@ import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
 @SecurityRequirement(name = "bearerAuth")
 @SuppressWarnings({"PMD.ExcessiveImports", "PMD.CouplingBetweenObjects"})
 public class PublicationController {
-    private static final String USER_ID_HEADER = "x-user-id";
     private static final String ADMIN_HEADER = "x-admin";
 
     private static final String NO_CONTENT_DESCRIPTION = "The request has been successfully fulfilled";

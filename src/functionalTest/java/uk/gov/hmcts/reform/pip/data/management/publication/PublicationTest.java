@@ -225,7 +225,7 @@ class PublicationTest extends FunctionalTestBase {
         assertThat(returnedArtefact.toString()).contains(CASE_NUMBER, "A Vs B");
 
         Map<String, String> headerMap = getBaseHeaderMap();
-        headerMap.put(USER_ID_HEADER, userId);
+        headerMap.put(REQUESTER_ID_HEADER, userId);
 
         String artefactId = returnedArtefact.getArtefactId().toString();
         final Response responseGetArtefactPayload = doGetRequest(
@@ -453,7 +453,7 @@ class PublicationTest extends FunctionalTestBase {
 
     @Test
     @Deprecated
-    void testGetArtefactsBySearchValueWhenUserIsUnauthorised() throws IOException {
+    void testGetArtefactsBySearchValueWhenRequesterIsUnauthorised() throws IOException {
         String randomCaseNumber = Integer.toString(ThreadLocalRandom.current().nextInt(100_000, 200_000));
         uploadArtefact(getJsonString(randomCaseNumber), courtId, Sensitivity.CLASSIFIED, PROVENANCE);
 
@@ -470,7 +470,7 @@ class PublicationTest extends FunctionalTestBase {
 
     @Test
     @Deprecated
-    void testGetArtefactsBySearchValueWhenUserDoesNotExist() throws IOException {
+    void testGetArtefactsBySearchValueWhenRequesterDoesNotExist() throws IOException {
         String randomCaseNumber = Integer.toString(ThreadLocalRandom.current().nextInt(100_000, 200_000));
         uploadArtefact(getJsonString(randomCaseNumber), courtId, Sensitivity.CLASSIFIED, PROVENANCE);
 
@@ -485,7 +485,7 @@ class PublicationTest extends FunctionalTestBase {
     }
 
     @Test
-    void testGetArtefactsBySearchValueV2WhenUserIsUnauthorised() throws IOException {
+    void testGetArtefactsBySearchValueV2WhenRequesterIsUnauthorised() throws IOException {
         String randomCaseNumber = Integer.toString(ThreadLocalRandom.current().nextInt(100_000, 200_000));
         uploadArtefact(getJsonString(randomCaseNumber), courtId, Sensitivity.CLASSIFIED, PROVENANCE);
 
@@ -501,7 +501,7 @@ class PublicationTest extends FunctionalTestBase {
     }
 
     @Test
-    void testGetArtefactsBySearchValueV2WhenUserDoesNotExist() throws IOException {
+    void testGetArtefactsBySearchValueV2WhenRequesterDoesNotExist() throws IOException {
         String randomCaseNumber = Integer.toString(ThreadLocalRandom.current().nextInt(100_000, 200_000));
         uploadArtefact(getJsonString(randomCaseNumber), courtId, Sensitivity.CLASSIFIED, PROVENANCE);
 
@@ -517,11 +517,11 @@ class PublicationTest extends FunctionalTestBase {
     }
 
     @Test
-    void testGetArtefactsByLocationIdWhenUserIsUnauthorised() {
+    void testGetArtefactsByLocationIdWhenRequesterIsUnauthorised() {
         uploadFlatFile(courtId, Sensitivity.CLASSIFIED);
 
         Map<String, String> headerMap = getBaseHeaderMap();
-        headerMap.put(REQUESTER_ID_HEADER, userId);
+        headerMap.put(REQUESTER_ID_HEADER, systemAdminUserId);
 
         final Response responseGetArtefactMetadata = doGetRequest(
             PUBLICATION_URL + "/locationId/" + courtId, headerMap
@@ -532,7 +532,7 @@ class PublicationTest extends FunctionalTestBase {
     }
 
     @Test
-    void testGetArtefactsByLocationIdWhenUserDoesNotExist() {
+    void testGetArtefactsByLocationIdWhenRequesterDoesNotExist() {
         uploadFlatFile(courtId, Sensitivity.CLASSIFIED);
 
         Map<String, String> headerMap = getBaseHeaderMap();
