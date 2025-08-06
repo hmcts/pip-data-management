@@ -54,7 +54,7 @@ public final class HearingTimeAttribute {
         Collections.emptyMap();
 
     public static Stream<Arguments> hearingTimeMandatoryAttribute() {
-        return ListTypeTestInput.generateListTypeTestInputsForAttribute(LIST_TYPE_JSON_FILE,
+        return SchemaValidationTestInput.generateListTypeTestInputsForAttribute(LIST_TYPE_JSON_FILE,
             LIST_TYPE_JSON_FILE_PARENT_NODES, HEARING_TIME)
             .stream()
             .map(Arguments::of);

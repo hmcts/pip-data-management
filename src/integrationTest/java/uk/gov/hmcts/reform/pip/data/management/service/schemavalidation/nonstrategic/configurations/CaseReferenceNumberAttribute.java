@@ -60,7 +60,7 @@ public final class CaseReferenceNumberAttribute {
         Collections.emptyMap();
 
     public static Stream<Arguments> caseReferenceNumberMandatoryAttribute() {
-        return ListTypeTestInput.generateListTypeTestInputsForAttribute(LIST_TYPE_JSON_FILE,
+        return SchemaValidationTestInput.generateListTypeTestInputsForAttribute(LIST_TYPE_JSON_FILE,
             LIST_TYPE_JSON_FILE_PARENT_NODES, CASE_REFERENCE_NUMBER)
             .stream()
             .map(Arguments::of);

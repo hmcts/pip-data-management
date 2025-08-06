@@ -103,7 +103,7 @@ public final class JudgeTestAttribute {
     );
 
     public static Stream<Arguments> judgeMandatoryAttribute() {
-        return ListTypeTestInput.generateListTypeTestInputsForAttribute(LIST_TYPE_JSON_FILE,
+        return SchemaValidationTestInput.generateListTypeTestInputsForAttribute(LIST_TYPE_JSON_FILE,
             LIST_TYPE_JSON_FILE_PARENT_NODES, JUDGE)
             .stream()
             .map(Arguments::of);

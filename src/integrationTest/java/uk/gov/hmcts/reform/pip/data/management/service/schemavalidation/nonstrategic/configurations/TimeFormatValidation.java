@@ -118,9 +118,9 @@ public final class TimeFormatValidation {
         List.of(HEARING_LIST_NODE)
     );
 
-    public static List<ListTypeTestInput> getListTypesWithTimeFormatValidation() {
-        return ListTypeTestInput.generateListTypeTestInputsForAttribute(LIST_TYPE_JSON_FILE,
-                LIST_TYPE_JSON_FILE_PARENT_NODES, TIME);
+    public static List<SchemaValidationTestInput> getListTypesWithTimeFormatValidation() {
+        return SchemaValidationTestInput.generateListTypeTestInputsForAttribute(LIST_TYPE_JSON_FILE,
+            LIST_TYPE_JSON_FILE_PARENT_NODES, TIME);
     }
 
     private TimeFormatValidation() {

@@ -43,7 +43,7 @@ public final class DateAttribute {
         Collections.emptyMap();
 
     public static Stream<Arguments> dateMandatoryAttribute() {
-        return ListTypeTestInput.generateListTypeTestInputsForAttribute(LIST_TYPE_JSON_FILE,
+        return SchemaValidationTestInput.generateListTypeTestInputsForAttribute(LIST_TYPE_JSON_FILE,
             LIST_TYPE_JSON_FILE_PARENT_NODES, DATE)
             .stream()
             .map(Arguments::of);

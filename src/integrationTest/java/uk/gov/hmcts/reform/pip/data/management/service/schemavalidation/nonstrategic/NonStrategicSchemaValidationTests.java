@@ -14,7 +14,7 @@ import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.PayloadValidationException;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.HeaderGroup;
 import uk.gov.hmcts.reform.pip.data.management.service.ValidationService;
-import uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.ListTypeTestInput;
+import uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.SchemaValidationTestInput;
 import uk.gov.hmcts.reform.pip.data.management.utils.IntegrationBasicTestBase;
 
 import java.io.IOException;
@@ -150,7 +150,7 @@ class NonStrategicSchemaValidationTests  extends IntegrationBasicTestBase {
         return mapper.readValue(json, JsonNode.class);
     }
 
-    private TestData loadTestData(ListTypeTestInput config) throws IOException {
+    private TestData loadTestData(SchemaValidationTestInput config) throws IOException {
         try (InputStream jsonInput = getClass().getClassLoader()
             .getResourceAsStream(config.getJsonFilePath())) {
             String jsonContent = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
@@ -172,7 +172,7 @@ class NonStrategicSchemaValidationTests  extends IntegrationBasicTestBase {
 
     @ParameterizedTest
     @MethodSource("allMandatoryAttributes")
-    void shouldFailWhenMissingMandatoryAttribute(ListTypeTestInput config) throws IOException {
+    void shouldFailWhenMissingMandatoryAttribute(SchemaValidationTestInput config) throws IOException {
         TestData testData = loadTestData(config);
         if (config.getParentNode().isEmpty()) {
             ((ObjectNode) testData.jsonNode().get(0)).remove(config.getValidationField());
@@ -184,7 +184,7 @@ class NonStrategicSchemaValidationTests  extends IntegrationBasicTestBase {
 
     @ParameterizedTest
     @MethodSource("allMandatorySheets")
-    void shouldFailWhenMissingSheet(ListTypeTestInput config) throws IOException {
+    void shouldFailWhenMissingSheet(SchemaValidationTestInput config) throws IOException {
         TestData testData = loadTestData(config);
         ((ObjectNode) testData.jsonNode()).remove(config.getValidationField());
         assertValidationFails(testData, config.getValidationField());
@@ -192,7 +192,7 @@ class NonStrategicSchemaValidationTests  extends IntegrationBasicTestBase {
 
     @ParameterizedTest
     @MethodSource("allListsWithTimeTrailingSpaceAllowed")
-    void shouldPassWhenTimeHasTrailingSpace(ListTypeTestInput config) throws IOException {
+    void shouldPassWhenTimeHasTrailingSpace(SchemaValidationTestInput config) throws IOException {
         TestData testData = loadTestData(config);
         assertValidationPass(testData);
     }
@@ -212,7 +212,7 @@ class NonStrategicSchemaValidationTests  extends IntegrationBasicTestBase {
 
     @ParameterizedTest
     @MethodSource("timeFormateValidationScenarios")
-    void shouldFailWhenInvalidTimeFormat(ListTypeTestInput listConfig, String invalidTime) throws IOException {
+    void shouldFailWhenInvalidTimeFormat(SchemaValidationTestInput listConfig, String invalidTime) throws IOException {
         TestData testData = loadTestData(listConfig);
 
         JsonNode node = testData.jsonNode();

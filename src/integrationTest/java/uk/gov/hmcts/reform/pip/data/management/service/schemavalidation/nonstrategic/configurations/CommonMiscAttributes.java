@@ -70,7 +70,7 @@ public final class CommonMiscAttributes {
                   UT_IAC_STATUTORY_APPEALS_DAILY_HEARING_LIST_JSON_FILE_PATH)
         );
 
-        return ListTypeTestInput.generateListTypeTestInputsForAttribute(listTypeJsonFile,
+        return SchemaValidationTestInput.generateListTypeTestInputsForAttribute(listTypeJsonFile,
             new EnumMap<>(ListType.class), APPELLANT)
             .stream()
             .map(Arguments::of);
@@ -91,7 +91,7 @@ public final class CommonMiscAttributes {
                   UT_IAC_STATUTORY_APPEALS_DAILY_HEARING_LIST_JSON_FILE_PATH)
         );
 
-        return ListTypeTestInput.generateListTypeTestInputsForAttribute(listTypeJsonFile,
+        return SchemaValidationTestInput.generateListTypeTestInputsForAttribute(listTypeJsonFile,
             new EnumMap<>(ListType.class), APPEAL_REFERENCE_NUMBER)
             .stream()
             .map(Arguments::of);
@@ -107,7 +107,7 @@ public final class CommonMiscAttributes {
             entry(ListType.RPT_SOUTHERN_WEEKLY_HEARING_LIST, RPT_WEEKLY_HEARING_LIST_JSON_FILE_PATH)
         );
 
-        return ListTypeTestInput.generateListTypeTestInputsForAttribute(listTypeJsonFile,
+        return SchemaValidationTestInput.generateListTypeTestInputsForAttribute(listTypeJsonFile,
             new EnumMap<>(ListType.class), CASE_TYPE)
             .stream()
             .map(Arguments::of);
@@ -120,7 +120,7 @@ public final class CommonMiscAttributes {
             entry(ListType.FTT_TAX_WEEKLY_HEARING_LIST, FTT_TAX_WEEKLY_HEARING_LIST_JSON_FILE_PATH)
         );
 
-        return ListTypeTestInput.generateListTypeTestInputsForAttribute(listTypeJsonFile,
+        return SchemaValidationTestInput.generateListTypeTestInputsForAttribute(listTypeJsonFile,
             new EnumMap<>(ListType.class), VENUE_PLATFORM)
             .stream()
             .map(Arguments::of);
@@ -142,7 +142,7 @@ public final class CommonMiscAttributes {
             entry(ListType.UT_T_AND_CC_DAILY_HEARING_LIST, UT_TAX_CHAMBER_DAILY_HEARING_LIST_JSON_FILE_PATH)
         );
 
-        return ListTypeTestInput.generateListTypeTestInputsForAttribute(listTypeJsonFile,
+        return SchemaValidationTestInput.generateListTypeTestInputsForAttribute(listTypeJsonFile,
             new EnumMap<>(ListType.class), MEMBERS)
             .stream()
             .map(Arguments::of);
@@ -154,7 +154,7 @@ public final class CommonMiscAttributes {
             entry(ListType.PHT_WEEKLY_HEARING_LIST, PHT_WEEKLY_HEARING_LIST_JSON_FILE_PATH)
         );
 
-        return ListTypeTestInput.generateListTypeTestInputsForAttribute(listTypeJsonFile,
+        return SchemaValidationTestInput.generateListTypeTestInputsForAttribute(listTypeJsonFile,
             new EnumMap<>(ListType.class), HEARING_LENGTH)
             .stream()
             .map(Arguments::of);
@@ -169,7 +169,7 @@ public final class CommonMiscAttributes {
             entry(ListType.WPAFCC_WEEKLY_HEARING_LIST, WPAFCC_WEEKLY_HEARING_LIST_JSON_FILE_PATH)
         );
 
-        return ListTypeTestInput.generateListTypeTestInputsForAttribute(listTypeJsonFile,
+        return SchemaValidationTestInput.generateListTypeTestInputsForAttribute(listTypeJsonFile,
             new EnumMap<>(ListType.class), MODE_OF_HEARING)
             .stream()
             .map(Arguments::of);
@@ -186,7 +186,7 @@ public final class CommonMiscAttributes {
             List.of(HEARING_LIST_NODE)
         );
 
-        return ListTypeTestInput.generateListTypeTestInputsForAttribute(listTypeJsonFile,
+        return SchemaValidationTestInput.generateListTypeTestInputsForAttribute(listTypeJsonFile,
             listTypeJsonFileParentNode, HEARING_LIST_NODE)
             .stream()
             .map(Arguments::of);
@@ -203,7 +203,7 @@ public final class CommonMiscAttributes {
             List.of(OPEN_JUSTICE_DETAILS_NODE)
         );
 
-        return ListTypeTestInput.generateListTypeTestInputsForAttribute(listTypeJsonFile,
+        return SchemaValidationTestInput.generateListTypeTestInputsForAttribute(listTypeJsonFile,
             listTypeJsonFileParentNode, OPEN_JUSTICE_DETAILS_NODE)
             .stream()
             .map(Arguments::of);
@@ -220,7 +220,7 @@ public final class CommonMiscAttributes {
             List.of(OPEN_JUSTICE_DETAILS_NODE)
         );
 
-        return ListTypeTestInput.generateListTypeTestInputsForAttribute(listTypeJsonFile,
+        return SchemaValidationTestInput.generateListTypeTestInputsForAttribute(listTypeJsonFile,
             listTypeJsonFileParentNode, NAME_TO_BE_DISPLAYED)
             .stream()
             .map(Arguments::of);
@@ -237,7 +237,7 @@ public final class CommonMiscAttributes {
             List.of(OPEN_JUSTICE_DETAILS_NODE)
         );
 
-        return ListTypeTestInput.generateListTypeTestInputsForAttribute(listTypeJsonFile,
+        return SchemaValidationTestInput.generateListTypeTestInputsForAttribute(listTypeJsonFile,
             listTypeJsonFileParentNode, EMAIL)
             .stream()
             .map(Arguments::of);
@@ -258,7 +258,7 @@ public final class CommonMiscAttributes {
         );
 
 
-        return ListTypeTestInput.generateListTypeTestInputsForAttribute(listTypeJsonFile,
+        return SchemaValidationTestInput.generateListTypeTestInputsForAttribute(listTypeJsonFile,
             new EnumMap<>(ListType.class), COURT_ROOM)
             .stream()
             .map(Arguments::of);
@@ -273,7 +273,7 @@ public final class CommonMiscAttributes {
             entry(ListType.RPT_SOUTHERN_WEEKLY_HEARING_LIST, RPT_WEEKLY_HEARING_LIST_JSON_FILE_PATH)
         );
 
-        return ListTypeTestInput.generateListTypeTestInputsForAttribute(listTypeJsonFile,
+        return SchemaValidationTestInput.generateListTypeTestInputsForAttribute(listTypeJsonFile,
             new EnumMap<>(ListType.class), HEARING_METHOD)
             .stream()
             .map(Arguments::of);
@@ -284,7 +284,7 @@ public final class CommonMiscAttributes {
             entry(ListType.SEND_DAILY_HEARING_LIST, SEND_DAILY_HEARING_LIST_JSON_FILE_PATH)
         );
 
-        return ListTypeTestInput.generateListTypeTestInputsForAttribute(listTypeJsonFile,
+        return SchemaValidationTestInput.generateListTypeTestInputsForAttribute(listTypeJsonFile,
             new EnumMap<>(ListType.class), RESPONDENT)
             .stream()
             .map(Arguments::of);
@@ -295,7 +295,7 @@ public final class CommonMiscAttributes {
             entry(ListType.SEND_DAILY_HEARING_LIST, SEND_DAILY_HEARING_LIST_JSON_FILE_PATH)
         );
 
-        return ListTypeTestInput.generateListTypeTestInputsForAttribute(listTypeJsonFile,
+        return SchemaValidationTestInput.generateListTypeTestInputsForAttribute(listTypeJsonFile,
             new EnumMap<>(ListType.class), TIME_ESTIMATE)
             .stream()
             .map(Arguments::of);
@@ -312,7 +312,7 @@ public final class CommonMiscAttributes {
             entry(ListType.WPAFCC_WEEKLY_HEARING_LIST, WPAFCC_WEEKLY_HEARING_LIST_JSON_FILE_PATH)
         );
 
-        return ListTypeTestInput.generateListTypeTestInputsForAttribute(listTypeJsonFile,
+        return SchemaValidationTestInput.generateListTypeTestInputsForAttribute(listTypeJsonFile,
             new EnumMap<>(ListType.class), PANEL)
             .stream()
             .map(Arguments::of);
@@ -329,7 +329,7 @@ public final class CommonMiscAttributes {
             entry(ListType.SSCS_WALES_AND_SOUTH_WEST_DAILY_HEARING_LIST, SSCS_DAILY_HEARING_LIST_JSON_FILE_PATH)
         );
 
-        return ListTypeTestInput.generateListTypeTestInputsForAttribute(listTypeJsonFile,
+        return SchemaValidationTestInput.generateListTypeTestInputsForAttribute(listTypeJsonFile,
             new EnumMap<>(ListType.class), FTA_RESPONDENT)
             .stream()
             .map(Arguments::of);
@@ -349,7 +349,7 @@ public final class CommonMiscAttributes {
                   UT_IAC_JUDICIAL_REVIEWS_DAILY_HEARING_LIST_JSON_FILE_PATH)
         );
 
-        return ListTypeTestInput.generateListTypeTestInputsForAttribute(listTypeJsonFile,
+        return SchemaValidationTestInput.generateListTypeTestInputsForAttribute(listTypeJsonFile,
             new EnumMap<>(ListType.class), CASE_TITLE)
             .stream()
             .map(Arguments::of);
@@ -363,7 +363,7 @@ public final class CommonMiscAttributes {
                   UT_IAC_STATUTORY_APPEALS_DAILY_HEARING_LIST_JSON_FILE_PATH)
         );
 
-        return ListTypeTestInput.generateListTypeTestInputsForAttribute(listTypeJsonFile,
+        return SchemaValidationTestInput.generateListTypeTestInputsForAttribute(listTypeJsonFile,
             new EnumMap<>(ListType.class), REPRESENTATIVE)
             .stream()
             .map(Arguments::of);
@@ -375,7 +375,7 @@ public final class CommonMiscAttributes {
                   UT_IAC_STATUTORY_APPEALS_DAILY_HEARING_LIST_JSON_FILE_PATH)
         );
 
-        return ListTypeTestInput.generateListTypeTestInputsForAttribute(listTypeJsonFile,
+        return SchemaValidationTestInput.generateListTypeTestInputsForAttribute(listTypeJsonFile,
             new EnumMap<>(ListType.class), LOCATION)
             .stream()
             .map(Arguments::of);
