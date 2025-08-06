@@ -16,7 +16,7 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import uk.gov.hmcts.reform.pip.data.management.Application;
 import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
-import uk.gov.hmcts.reform.pip.data.management.controllers.publication.summary.configurations.ListTestCaseSettings;
+import uk.gov.hmcts.reform.pip.data.management.controllers.publication.summary.configurations.PublicationSummaryTestInput;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.ExceptionResponse;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.utils.PublicationIntegrationTestBase;
@@ -63,7 +63,7 @@ class PublicationSummaryTest extends PublicationIntegrationTestBase {
         .truncatedTo(ChronoUnit.SECONDS);
     private static final String PROVENANCE = "MANUAL_UPLOAD";
 
-    static Stream<ListTestCaseSettings> publicationSummaryTestCases() {
+    static Stream<PublicationSummaryTestInput> publicationSummaryTestCases() {
         return providePublicationSummaryTestCases();
     }
 
@@ -105,7 +105,7 @@ class PublicationSummaryTest extends PublicationIntegrationTestBase {
 
     @ParameterizedTest
     @MethodSource("publicationSummaryTestCases")
-    void testGenerateArtefactSummary(ListTestCaseSettings testCaseSetting) throws Exception {
+    void testGenerateArtefactSummary(PublicationSummaryTestInput testCaseSetting) throws Exception {
         byte[] data = getTestData(testCaseSetting.getJsonFilePath());
         Artefact artefact = createPublication(testCaseSetting.getListType(), data);
 

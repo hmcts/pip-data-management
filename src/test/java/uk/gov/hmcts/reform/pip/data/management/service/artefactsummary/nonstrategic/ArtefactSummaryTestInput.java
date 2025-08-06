@@ -6,7 +6,7 @@ import uk.gov.hmcts.reform.pip.model.publication.ListType;
 import java.util.List;
 
 @Data
-public class ListTestCaseSettings {
+public class ArtefactSummaryTestInput {
     private String jsonFileName;
     private ListType listType;
     private int expectedSectionCount;
@@ -15,9 +15,9 @@ public class ListTestCaseSettings {
     private List<String> expectedFieldKeys;
     private List<String> expectedFieldValues;
 
-    public ListTestCaseSettings(String jsonFileName, ListType listType, int expectedSectionCount,
-                                int expectedCaseCount, int expectedFieldCount,
-                                List<String> expectedFieldKeys, List<String> expectedFieldValues) {
+    public ArtefactSummaryTestInput(String jsonFileName, ListType listType, int expectedSectionCount,
+                                    int expectedCaseCount, int expectedFieldCount,
+                                    List<String> expectedFieldKeys, List<String> expectedFieldValues) {
         this.jsonFileName = jsonFileName;
         this.listType = listType;
         this.expectedSectionCount = expectedSectionCount;

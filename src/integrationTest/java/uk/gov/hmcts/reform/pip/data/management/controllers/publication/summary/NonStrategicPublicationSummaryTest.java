@@ -15,7 +15,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import uk.gov.hmcts.reform.pip.data.management.Application;
 import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
-import uk.gov.hmcts.reform.pip.data.management.controllers.publication.summary.configurations.ListTestCaseSettings;
+import uk.gov.hmcts.reform.pip.data.management.controllers.publication.summary.configurations.PublicationSummaryTestInput;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.utils.PublicationIntegrationTestBase;
 import uk.gov.hmcts.reform.pip.model.publication.ArtefactType;
@@ -58,7 +58,7 @@ class NonStrategicPublicationSummaryTest extends PublicationIntegrationTestBase 
     private static final String PROVENANCE = "MANUAL_UPLOAD";
     private static final String EXCEL_FILE_TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 
-    private static Stream<ListTestCaseSettings> nonStrategicPublicationSummaryTestCases() {
+    private static Stream<PublicationSummaryTestInput> nonStrategicPublicationSummaryTestCases() {
         return Stream.concat(
             provideRcjTestCases(),
             provideTribunalTestCases()
@@ -67,7 +67,7 @@ class NonStrategicPublicationSummaryTest extends PublicationIntegrationTestBase 
 
     @ParameterizedTest
     @MethodSource("nonStrategicPublicationSummaryTestCases")
-    void testGenerateArtefactSummary(ListTestCaseSettings testCase) throws Exception {
+    void testGenerateArtefactSummary(PublicationSummaryTestInput testCase) throws Exception {
         Artefact artefact = createNonStrategicPublication(
             testCase.getListType(),
             NON_STRATEGIC_FILES_LOCATION + testCase.getExcelFilePath()

@@ -15,13 +15,13 @@ import static uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.no
 @ActiveProfiles("test")
 class NonStrategicListSummaryDataTest  extends NonStrategicCommonArtefactSummaryTestConfig {
 
-    private static Stream<ListTestCaseSettings> summaryDataTestCases() {
+    private static Stream<ArtefactSummaryTestInput> summaryDataTestCases() {
         return provideTestCases();
     }
 
     @ParameterizedTest
     @MethodSource("summaryDataTestCases")
-    void testArtefactSummaryData(ListTestCaseSettings testCase) throws IOException {
+    void testArtefactSummaryData(ArtefactSummaryTestInput testCase) throws IOException {
         Map<String, List<Map<String, String>>> output = getArtefactSummaryOutput(
             testCase.getJsonFileName(), testCase.getListType());
 
