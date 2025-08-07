@@ -56,7 +56,7 @@ public final class NonStrategicListTestConstants {
     public static final String INVALID_MESSAGE = "Invalid JSON list marked as valid";
 
     public static final String ADMIRALTY_COURT_KB_DAILY_CAUSE_LIST_JSON_FILE_PATH =
-        PARENT_JSON_FILE_PATH + "/admiralty-court-kb-daily-cause_list/admiraltyCourtKbDailyCauseList.json";
+        PARENT_JSON_FILE_PATH + "/admiralty-court-kb-daily-cause-list/admiraltyCourtKbDailyCauseList.json";
     public static final String AST_DAILY_HEARING_LIST_JSON_FILE_PATH =
         PARENT_JSON_FILE_PATH + "/ast-daily-hearing-list/astDailyHearingList.json";
     public static final String ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST_JSON_FILE_PATH =

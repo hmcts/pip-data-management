@@ -155,8 +155,8 @@ public final class NonStrategicRcjListTestCases {
 
             new PublicationSummaryTestInput(
                 ListType.ADMIRALTY_COURT_KB_DAILY_CAUSE_LIST,
-                "admiralty-court-kb-daily-cause_list/admiraltyCourtKbDailyCauseList.xlsx",
-                "admiralty-court-kb-daily-cause_list/admiraltyCourtKbDailyCauseList.json",
+                "admiralty-court-kb-daily-cause-list/admiraltyCourtKbDailyCauseList.xlsx",
+                "admiralty-court-kb-daily-cause-list/admiraltyCourtKbDailyCauseList.json",
                 List.of(RCJ_TIME_FIELD, RCJ_CASE_NUMBER_FIELD, CASE_NAME_FIELD)
             ),
 

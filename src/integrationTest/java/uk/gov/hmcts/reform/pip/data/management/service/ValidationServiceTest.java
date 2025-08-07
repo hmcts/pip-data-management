@@ -479,7 +479,7 @@ class ValidationServiceTest extends IntegrationBasicTestBase {
                          "data/non-strategic/technology-and-construction-court-kb-daily-cause-list/"
                              + "technologyAndConstructionCourtKbDailyCauseList.json"),
             Arguments.of(ListType.ADMIRALTY_COURT_KB_DAILY_CAUSE_LIST,
-                         "data/non-strategic/admiralty-court-kb-daily-cause_list/"
+                         "data/non-strategic/admiralty-court-kb-daily-cause-list/"
                              + "admiraltyCourtKbDailyCauseList.json"),
             Arguments.of(ListType.BUSINESS_LIST_CHD_DAILY_CAUSE_LIST,
                          "data/non-strategic/business-list-chd-daily-cause-list/"
