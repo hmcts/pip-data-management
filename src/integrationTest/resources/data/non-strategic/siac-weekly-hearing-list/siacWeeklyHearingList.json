@@ -7,5 +7,14 @@
     "hearingType" : "Type of Hearing 1",
     "courtroom" : "Courtroom 1",
     "additionalInformation" : "Additional Information 1"
+  },
+  {
+    "date" : "12/12/2024",
+    "time" : "11am  ",
+    "appellant" : "Appellant 2",
+    "caseReferenceNumber" : "123452",
+    "hearingType" : "Type of Hearing 2",
+    "courtroom" : "Courtroom 2",
+    "additionalInformation" : "Additional Information 2"
   }
 ]

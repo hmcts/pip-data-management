@@ -12,7 +12,7 @@
     {
       "venue": "Venue B",
       "judge": "Judge B",
-      "time": "11:30am",
+      "time": "11:30am  ",
       "caseNumber": "12356",
       "caseDetails": "Case details B",
       "hearingType": "Hearing type B",
