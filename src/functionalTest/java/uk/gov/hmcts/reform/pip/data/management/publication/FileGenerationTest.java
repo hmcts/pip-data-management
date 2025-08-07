@@ -187,7 +187,6 @@ class FileGenerationTest extends FunctionalTestBase {
         assertNull(publicationFileSizes.getAdditionalPdf(), "Additional PDF has been generated");
         assertNotNull(publicationFileSizes.getExcel(), "Excel has not been generated");
 
-        headerMap.put(X_SYSTEM_FILE_HEADER, Boolean.TRUE.toString());
         headerMap.put(REQUESTER_ID_HEADER, testUserId);
         Response additionalPdfResponse = doGetRequest(
             String.format(GET_FILE_URL, artefact.getArtefactId(), "EXCEL"), headerMap);
@@ -214,7 +213,6 @@ class FileGenerationTest extends FunctionalTestBase {
         assertNotNull(publicationFileSizes.getAdditionalPdf(), "Additional PDF has not been generated");
         assertNull(publicationFileSizes.getExcel(), "Excel has been generated");
 
-        headerMap.put(X_SYSTEM_FILE_HEADER, Boolean.TRUE.toString());
         headerMap.put("x-additional-pdf", Boolean.TRUE.toString());
         headerMap.put(REQUESTER_ID_HEADER, testUserId);
 
@@ -252,7 +250,6 @@ class FileGenerationTest extends FunctionalTestBase {
                                               Sensitivity.PUBLIC
         );
 
-        headerMap.put(X_SYSTEM_FILE_HEADER, Boolean.TRUE.toString());
         headerMap.put(REQUESTER_ID_HEADER, testUserId);
 
         Response additionalPdfResponse = doGetRequest(
