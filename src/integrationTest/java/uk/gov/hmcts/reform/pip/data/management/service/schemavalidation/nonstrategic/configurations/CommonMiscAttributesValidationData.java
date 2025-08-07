@@ -3,7 +3,6 @@ package uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstra
 import org.junit.jupiter.params.provider.Arguments;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
-import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -31,8 +30,8 @@ import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.n
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConstants.TIME_ESTIMATE;
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConstants.VENUE_PLATFORM;
 
-public final class CommonMiscAttributes {
-    private CommonMiscAttributes() {
+public final class CommonMiscAttributesValidationData {
+    private CommonMiscAttributesValidationData() {
     }
 
     public static Stream<Arguments> appellantMandatoryAttribute() {
@@ -49,10 +48,9 @@ public final class CommonMiscAttributes {
             ListTypeEntries.UT_IAC_STATUTORY_APPEALS_DAILY_HEARING_LIST_ENTRY
         );
 
-        return SchemaValidationTestInput.generateListTypeTestInputsForAttribute(listTypeJsonFile,
-            new EnumMap<>(ListType.class), APPELLANT)
-            .stream()
-            .map(Arguments::of);
+        AbstractSchemaValidationTestDataProvider attributeValidationProvider =
+                new CommonAttributesSchemaValidationTestDataProvider(listTypeJsonFile, APPELLANT);
+        return attributeValidationProvider.attributeValidationTestInputs();
     }
 
     public static Stream<Arguments> appealReferenceNumberMandatoryAttribute() {
@@ -68,10 +66,9 @@ public final class CommonMiscAttributes {
             ListTypeEntries.UT_IAC_STATUTORY_APPEALS_DAILY_HEARING_LIST_ENTRY
         );
 
-        return SchemaValidationTestInput.generateListTypeTestInputsForAttribute(listTypeJsonFile,
-            new EnumMap<>(ListType.class), APPEAL_REFERENCE_NUMBER)
-            .stream()
-            .map(Arguments::of);
+        AbstractSchemaValidationTestDataProvider attributeValidationProvider =
+                new CommonAttributesSchemaValidationTestDataProvider(listTypeJsonFile, APPEAL_REFERENCE_NUMBER);
+        return attributeValidationProvider.attributeValidationTestInputs();
     }
 
     public static Stream<Arguments> caseTypeMandatoryAttribute() {
@@ -84,10 +81,9 @@ public final class CommonMiscAttributes {
             ListTypeEntries.RPT_SOUTHERN_WEEKLY_HEARING_LIST_ENTRY
         );
 
-        return SchemaValidationTestInput.generateListTypeTestInputsForAttribute(listTypeJsonFile,
-            new EnumMap<>(ListType.class), CASE_TYPE)
-            .stream()
-            .map(Arguments::of);
+        AbstractSchemaValidationTestDataProvider attributeValidationProvider =
+            new CommonAttributesSchemaValidationTestDataProvider(listTypeJsonFile, CASE_TYPE);
+        return attributeValidationProvider.attributeValidationTestInputs();
     }
 
     public static Stream<Arguments> venuePlatformMandatoryAttribute() {
@@ -97,10 +93,9 @@ public final class CommonMiscAttributes {
             ListTypeEntries.FTT_TAX_WEEKLY_HEARING_LIST_ENTRY
         );
 
-        return SchemaValidationTestInput.generateListTypeTestInputsForAttribute(listTypeJsonFile,
-            new EnumMap<>(ListType.class), VENUE_PLATFORM)
-            .stream()
-            .map(Arguments::of);
+        AbstractSchemaValidationTestDataProvider attributeValidationProvider =
+            new CommonAttributesSchemaValidationTestDataProvider(listTypeJsonFile, VENUE_PLATFORM);
+        return attributeValidationProvider.attributeValidationTestInputs();
     }
 
     public static Stream<Arguments> membersMandatoryAttribute() {
@@ -118,10 +113,9 @@ public final class CommonMiscAttributes {
             ListTypeEntries.UT_T_AND_CC_DAILY_HEARING_LIST_ENTRY
         );
 
-        return SchemaValidationTestInput.generateListTypeTestInputsForAttribute(listTypeJsonFile,
-            new EnumMap<>(ListType.class), MEMBERS)
-            .stream()
-            .map(Arguments::of);
+        AbstractSchemaValidationTestDataProvider attributeValidationProvider =
+            new CommonAttributesSchemaValidationTestDataProvider(listTypeJsonFile, MEMBERS);
+        return attributeValidationProvider.attributeValidationTestInputs();
     }
 
     public static Stream<Arguments> hearingLengthMandatoryAttribute() {
@@ -130,10 +124,9 @@ public final class CommonMiscAttributes {
             ListTypeEntries.PHT_WEEKLY_HEARING_LIST_ENTRY
         );
 
-        return SchemaValidationTestInput.generateListTypeTestInputsForAttribute(listTypeJsonFile,
-            new EnumMap<>(ListType.class), HEARING_LENGTH)
-            .stream()
-            .map(Arguments::of);
+        AbstractSchemaValidationTestDataProvider attributeValidationProvider =
+            new CommonAttributesSchemaValidationTestDataProvider(listTypeJsonFile, HEARING_LENGTH);
+        return attributeValidationProvider.attributeValidationTestInputs();
     }
 
     public static Stream<Arguments> modeOfHearingMandatoryAttribute() {
@@ -144,10 +137,9 @@ public final class CommonMiscAttributes {
             ListTypeEntries.WPAFCC_WEEKLY_HEARING_LIST_ENTRY
         );
 
-        return SchemaValidationTestInput.generateListTypeTestInputsForAttribute(listTypeJsonFile,
-            new EnumMap<>(ListType.class), MODE_OF_HEARING)
-            .stream()
-            .map(Arguments::of);
+        AbstractSchemaValidationTestDataProvider attributeValidationProvider =
+            new CommonAttributesSchemaValidationTestDataProvider(listTypeJsonFile, MODE_OF_HEARING);
+        return attributeValidationProvider.attributeValidationTestInputs();
     }
 
     public static Stream<Arguments> hearingListMandatoryAttributes() {
@@ -160,10 +152,10 @@ public final class CommonMiscAttributes {
             List.of(HEARING_LIST_NODE)
         );
 
-        return SchemaValidationTestInput.generateListTypeTestInputsForAttribute(listTypeJsonFile,
-            listTypeJsonFileParentNode, HEARING_LIST_NODE)
-            .stream()
-            .map(Arguments::of);
+        AbstractSchemaValidationTestDataProvider attributeValidationProvider =
+            new CommonAttributesSchemaValidationTestDataProvider(listTypeJsonFile, listTypeJsonFileParentNode,
+                                                                 HEARING_LIST_NODE);
+        return attributeValidationProvider.attributeValidationTestInputs();
     }
 
     public static Stream<Arguments> openJusticeStatementDetailsMandatoryAttributes() {
@@ -176,10 +168,10 @@ public final class CommonMiscAttributes {
             List.of(OPEN_JUSTICE_DETAILS_NODE)
         );
 
-        return SchemaValidationTestInput.generateListTypeTestInputsForAttribute(listTypeJsonFile,
-            listTypeJsonFileParentNode, OPEN_JUSTICE_DETAILS_NODE)
-            .stream()
-            .map(Arguments::of);
+        AbstractSchemaValidationTestDataProvider attributeValidationProvider =
+            new CommonAttributesSchemaValidationTestDataProvider(listTypeJsonFile, listTypeJsonFileParentNode,
+                                                                 OPEN_JUSTICE_DETAILS_NODE);
+        return attributeValidationProvider.attributeValidationTestInputs();
     }
 
     public static Stream<Arguments> nameToBeDisplayedMandatoryAttribute() {
@@ -192,10 +184,10 @@ public final class CommonMiscAttributes {
             List.of(OPEN_JUSTICE_DETAILS_NODE)
         );
 
-        return SchemaValidationTestInput.generateListTypeTestInputsForAttribute(listTypeJsonFile,
-            listTypeJsonFileParentNode, NAME_TO_BE_DISPLAYED)
-            .stream()
-            .map(Arguments::of);
+        AbstractSchemaValidationTestDataProvider attributeValidationProvider =
+            new CommonAttributesSchemaValidationTestDataProvider(listTypeJsonFile, listTypeJsonFileParentNode,
+                                                                 NAME_TO_BE_DISPLAYED);
+        return attributeValidationProvider.attributeValidationTestInputs();
     }
 
     public static Stream<Arguments> emailMandatoryAttribute() {
@@ -208,10 +200,10 @@ public final class CommonMiscAttributes {
             List.of(OPEN_JUSTICE_DETAILS_NODE)
         );
 
-        return SchemaValidationTestInput.generateListTypeTestInputsForAttribute(listTypeJsonFile,
-            listTypeJsonFileParentNode, EMAIL)
-            .stream()
-            .map(Arguments::of);
+        AbstractSchemaValidationTestDataProvider attributeValidationProvider =
+            new CommonAttributesSchemaValidationTestDataProvider(listTypeJsonFile, listTypeJsonFileParentNode,
+                                                                 EMAIL);
+        return attributeValidationProvider.attributeValidationTestInputs();
     }
 
     public static Stream<Arguments> courtRoomMandatoryAttribute() {
@@ -228,10 +220,9 @@ public final class CommonMiscAttributes {
             ListTypeEntries.SSCS_WALES_AND_SOUTH_WEST_DAILY_HEARING_LIST_ENTRY
         );
 
-        return SchemaValidationTestInput.generateListTypeTestInputsForAttribute(listTypeJsonFile,
-            new EnumMap<>(ListType.class), COURT_ROOM)
-            .stream()
-            .map(Arguments::of);
+        AbstractSchemaValidationTestDataProvider attributeValidationProvider =
+            new CommonAttributesSchemaValidationTestDataProvider(listTypeJsonFile, COURT_ROOM);
+        return attributeValidationProvider.attributeValidationTestInputs();
     }
 
     public static Stream<Arguments> hearingMethodMandatoryAttribute() {
@@ -243,10 +234,9 @@ public final class CommonMiscAttributes {
             ListTypeEntries.RPT_LONDON_WEEKLY_HEARING_LIST_ENTRY
         );
 
-        return SchemaValidationTestInput.generateListTypeTestInputsForAttribute(listTypeJsonFile,
-            new EnumMap<>(ListType.class), HEARING_METHOD)
-            .stream()
-            .map(Arguments::of);
+        AbstractSchemaValidationTestDataProvider attributeValidationProvider =
+            new CommonAttributesSchemaValidationTestDataProvider(listTypeJsonFile, HEARING_METHOD);
+        return attributeValidationProvider.attributeValidationTestInputs();
     }
 
     public static Stream<Arguments> respondentMandatoryAttribute() {
@@ -254,10 +244,9 @@ public final class CommonMiscAttributes {
             entry(ListType.SEND_DAILY_HEARING_LIST, SEND_DAILY_HEARING_LIST_JSON_FILE_PATH)
         );
 
-        return SchemaValidationTestInput.generateListTypeTestInputsForAttribute(listTypeJsonFile,
-            new EnumMap<>(ListType.class), RESPONDENT)
-            .stream()
-            .map(Arguments::of);
+        AbstractSchemaValidationTestDataProvider attributeValidationProvider =
+            new CommonAttributesSchemaValidationTestDataProvider(listTypeJsonFile, RESPONDENT);
+        return attributeValidationProvider.attributeValidationTestInputs();
     }
 
     public static Stream<Arguments> timeEstimateMandatoryAttribute() {
@@ -265,10 +254,9 @@ public final class CommonMiscAttributes {
             entry(ListType.SEND_DAILY_HEARING_LIST, SEND_DAILY_HEARING_LIST_JSON_FILE_PATH)
         );
 
-        return SchemaValidationTestInput.generateListTypeTestInputsForAttribute(listTypeJsonFile,
-            new EnumMap<>(ListType.class), TIME_ESTIMATE)
-            .stream()
-            .map(Arguments::of);
+        AbstractSchemaValidationTestDataProvider attributeValidationProvider =
+            new CommonAttributesSchemaValidationTestDataProvider(listTypeJsonFile, TIME_ESTIMATE);
+        return attributeValidationProvider.attributeValidationTestInputs();
     }
 
     public static Stream<Arguments> panelMandatoryAttribute() {
@@ -283,10 +271,9 @@ public final class CommonMiscAttributes {
             ListTypeEntries.WPAFCC_WEEKLY_HEARING_LIST_ENTRY
         );
 
-        return SchemaValidationTestInput.generateListTypeTestInputsForAttribute(listTypeJsonFile,
-            new EnumMap<>(ListType.class), PANEL)
-            .stream()
-            .map(Arguments::of);
+        AbstractSchemaValidationTestDataProvider attributeValidationProvider =
+            new CommonAttributesSchemaValidationTestDataProvider(listTypeJsonFile, PANEL);
+        return attributeValidationProvider.attributeValidationTestInputs();
     }
 
     public static Stream<Arguments> ftaRespondentMandatoryAttribute() {
@@ -300,10 +287,9 @@ public final class CommonMiscAttributes {
             ListTypeEntries.SSCS_WALES_AND_SOUTH_WEST_DAILY_HEARING_LIST_ENTRY
         );
 
-        return SchemaValidationTestInput.generateListTypeTestInputsForAttribute(listTypeJsonFile,
-            new EnumMap<>(ListType.class), FTA_RESPONDENT)
-            .stream()
-            .map(Arguments::of);
+        AbstractSchemaValidationTestDataProvider attributeValidationProvider =
+            new CommonAttributesSchemaValidationTestDataProvider(listTypeJsonFile, FTA_RESPONDENT);
+        return attributeValidationProvider.attributeValidationTestInputs();
     }
 
     public static Stream<Arguments> caseTitleMandatoryAttribute() {
@@ -315,10 +301,9 @@ public final class CommonMiscAttributes {
             ListTypeEntries.UT_IAC_JR_MANCHESTER_DAILY_HEARING_LIST_ENTRY
         );
 
-        return SchemaValidationTestInput.generateListTypeTestInputsForAttribute(listTypeJsonFile,
-            new EnumMap<>(ListType.class), CASE_TITLE)
-            .stream()
-            .map(Arguments::of);
+        AbstractSchemaValidationTestDataProvider attributeValidationProvider =
+            new CommonAttributesSchemaValidationTestDataProvider(listTypeJsonFile, CASE_TITLE);
+        return attributeValidationProvider.attributeValidationTestInputs();
     }
 
     public static Stream<Arguments> representativeMandatoryAttribute() {
@@ -327,10 +312,9 @@ public final class CommonMiscAttributes {
             ListTypeEntries.UT_IAC_STATUTORY_APPEALS_DAILY_HEARING_LIST_ENTRY
         );
 
-        return SchemaValidationTestInput.generateListTypeTestInputsForAttribute(listTypeJsonFile,
-            new EnumMap<>(ListType.class), REPRESENTATIVE)
-            .stream()
-            .map(Arguments::of);
+        AbstractSchemaValidationTestDataProvider attributeValidationProvider =
+            new CommonAttributesSchemaValidationTestDataProvider(listTypeJsonFile, REPRESENTATIVE);
+        return attributeValidationProvider.attributeValidationTestInputs();
     }
 
     public static Stream<Arguments> locationMandatoryAttribute() {
@@ -338,10 +322,9 @@ public final class CommonMiscAttributes {
             ListTypeEntries.UT_IAC_STATUTORY_APPEALS_DAILY_HEARING_LIST_ENTRY
         );
 
-        return SchemaValidationTestInput.generateListTypeTestInputsForAttribute(listTypeJsonFile,
-            new EnumMap<>(ListType.class), LOCATION)
-            .stream()
-            .map(Arguments::of);
+        AbstractSchemaValidationTestDataProvider attributeValidationProvider =
+            new CommonAttributesSchemaValidationTestDataProvider(listTypeJsonFile, LOCATION);
+        return attributeValidationProvider.attributeValidationTestInputs();
     }
 
 }

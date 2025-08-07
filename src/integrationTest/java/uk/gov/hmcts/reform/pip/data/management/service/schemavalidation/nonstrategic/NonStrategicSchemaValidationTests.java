@@ -14,7 +14,21 @@ import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.PayloadValidationException;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.HeaderGroup;
 import uk.gov.hmcts.reform.pip.data.management.service.ValidationService;
+import uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.AdditionalInformationValidationData;
+import uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.CaseDetailsValidationData;
+import uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.CaseNameValidationData;
+import uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.CaseReferenceNumberValidationData;
+import uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.DateValidationData;
+import uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.HearingTimeValidationData;
+import uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.HearingTypeValidationData;
+import uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.JudgeValidationData;
+import uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.JudgesValidationData;
 import uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.SchemaValidationTestInput;
+import uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.TimeFormatValidationData;
+import uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.TimeTrailingSpaceValidationData;
+import uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.TimeValidationData;
+import uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.TypeValidationData;
+import uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.VenueValidationData;
 import uk.gov.hmcts.reform.pip.data.management.utils.IntegrationBasicTestBase;
 
 import java.io.IOException;
@@ -35,41 +49,26 @@ import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.n
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConstants.LANGUAGE;
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConstants.SENSITIVITY;
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConstants.SOURCE_ARTEFACT_ID;
-import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.AdditionalInformationAttribute.additionalInformationMandatoryAttribute;
-import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.CaseDetailsAttribute.caseDetailsMandatoryAttribute;
-import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.CaseNameAttribute.caseNameMandatoryAttribute;
-import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.CaseNumberAttribute.caseNumberMandatoryAttribute;
-import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.CaseReferenceNumberAttribute.caseReferenceNumberMandatoryAttribute;
-import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.CommonMiscAttributes.appealReferenceNumberMandatoryAttribute;
-import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.CommonMiscAttributes.appellantMandatoryAttribute;
-import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.CommonMiscAttributes.caseTitleMandatoryAttribute;
-import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.CommonMiscAttributes.caseTypeMandatoryAttribute;
-import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.CommonMiscAttributes.courtRoomMandatoryAttribute;
-import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.CommonMiscAttributes.emailMandatoryAttribute;
-import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.CommonMiscAttributes.ftaRespondentMandatoryAttribute;
-import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.CommonMiscAttributes.hearingLengthMandatoryAttribute;
-import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.CommonMiscAttributes.hearingListMandatoryAttributes;
-import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.CommonMiscAttributes.hearingMethodMandatoryAttribute;
-import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.CommonMiscAttributes.locationMandatoryAttribute;
-import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.CommonMiscAttributes.membersMandatoryAttribute;
-import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.CommonMiscAttributes.modeOfHearingMandatoryAttribute;
-import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.CommonMiscAttributes.nameToBeDisplayedMandatoryAttribute;
-import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.CommonMiscAttributes.openJusticeStatementDetailsMandatoryAttributes;
-import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.CommonMiscAttributes.panelMandatoryAttribute;
-import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.CommonMiscAttributes.representativeMandatoryAttribute;
-import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.CommonMiscAttributes.respondentMandatoryAttribute;
-import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.CommonMiscAttributes.timeEstimateMandatoryAttribute;
-import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.CommonMiscAttributes.venuePlatformMandatoryAttribute;
-import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.DateAttribute.dateMandatoryAttribute;
-import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.HearingTimeAttribute.hearingTimeMandatoryAttribute;
-import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.HearingTypeAttribute.hearingTypeMandatoryAttribute;
-import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.JudgeTestAttribute.judgeMandatoryAttribute;
-import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.JudgesAttribute.judgesMandatoryAttribute;
-import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.TimeFormatValidation.getListTypesWithTimeFormatValidation;
-import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.TimeTestAttribute.timeMandatoryAttribute;
-import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.TimeTrailingSpaceValidation.getListTypesAllowTrailingSpaceInTime;
-import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.TypeTestAttribute.typeMandatoryAttribute;
-import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.VenueTestAttribute.venueMandatoryAttribute;
+import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.CommonMiscAttributesValidationData.appealReferenceNumberMandatoryAttribute;
+import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.CommonMiscAttributesValidationData.appellantMandatoryAttribute;
+import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.CommonMiscAttributesValidationData.caseTitleMandatoryAttribute;
+import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.CommonMiscAttributesValidationData.caseTypeMandatoryAttribute;
+import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.CommonMiscAttributesValidationData.courtRoomMandatoryAttribute;
+import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.CommonMiscAttributesValidationData.emailMandatoryAttribute;
+import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.CommonMiscAttributesValidationData.ftaRespondentMandatoryAttribute;
+import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.CommonMiscAttributesValidationData.hearingLengthMandatoryAttribute;
+import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.CommonMiscAttributesValidationData.hearingListMandatoryAttributes;
+import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.CommonMiscAttributesValidationData.hearingMethodMandatoryAttribute;
+import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.CommonMiscAttributesValidationData.locationMandatoryAttribute;
+import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.CommonMiscAttributesValidationData.membersMandatoryAttribute;
+import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.CommonMiscAttributesValidationData.modeOfHearingMandatoryAttribute;
+import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.CommonMiscAttributesValidationData.nameToBeDisplayedMandatoryAttribute;
+import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.CommonMiscAttributesValidationData.openJusticeStatementDetailsMandatoryAttributes;
+import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.CommonMiscAttributesValidationData.panelMandatoryAttribute;
+import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.CommonMiscAttributesValidationData.representativeMandatoryAttribute;
+import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.CommonMiscAttributesValidationData.respondentMandatoryAttribute;
+import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.CommonMiscAttributesValidationData.timeEstimateMandatoryAttribute;
+import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.CommonMiscAttributesValidationData.venuePlatformMandatoryAttribute;
 
 @ActiveProfiles("integration-basic")
 @SpringBootTest
@@ -81,24 +80,24 @@ class NonStrategicSchemaValidationTests  extends IntegrationBasicTestBase {
 
     public static Stream<Arguments> allMandatoryAttributes() {
         return Stream.of(
-                venueMandatoryAttribute(),
-                judgeMandatoryAttribute(),
-                timeMandatoryAttribute(),
-                typeMandatoryAttribute(),
-                caseNumberMandatoryAttribute(),
-                caseNameMandatoryAttribute(),
-                additionalInformationMandatoryAttribute(),
+                new VenueValidationData().attributeValidationTestInputs(),
+                new JudgeValidationData().attributeValidationTestInputs(),
+                new TimeValidationData().attributeValidationTestInputs(),
+                new TypeValidationData().attributeValidationTestInputs(),
+                new CaseNameValidationData().attributeValidationTestInputs(),
+                new CaseNameValidationData().attributeValidationTestInputs(),
+                new AdditionalInformationValidationData().attributeValidationTestInputs(),
+                new HearingTypeValidationData().attributeValidationTestInputs(),
+                new HearingTimeValidationData().attributeValidationTestInputs(),
+                new CaseDetailsValidationData().attributeValidationTestInputs(),
+                new DateValidationData().attributeValidationTestInputs(),
+                new CaseReferenceNumberValidationData().attributeValidationTestInputs(),
+                new JudgesValidationData().attributeValidationTestInputs(),
+                venuePlatformMandatoryAttribute(),
+                membersMandatoryAttribute(),
                 appellantMandatoryAttribute(),
                 appealReferenceNumberMandatoryAttribute(),
                 caseTypeMandatoryAttribute(),
-                hearingTypeMandatoryAttribute(),
-                hearingTimeMandatoryAttribute(),
-                caseDetailsMandatoryAttribute(),
-                dateMandatoryAttribute(),
-                caseReferenceNumberMandatoryAttribute(),
-                venuePlatformMandatoryAttribute(),
-                membersMandatoryAttribute(),
-                judgesMandatoryAttribute(),
                 hearingLengthMandatoryAttribute(),
                 modeOfHearingMandatoryAttribute(),
                 nameToBeDisplayedMandatoryAttribute(),
@@ -126,7 +125,7 @@ class NonStrategicSchemaValidationTests  extends IntegrationBasicTestBase {
 
     public static Stream<Arguments> allListsWithTimeTrailingSpaceAllowed() {
         return Stream.of(
-                getListTypesAllowTrailingSpaceInTime()
+                new TimeTrailingSpaceValidationData().attributeValidationTestInputs()
             )
             .flatMap(stream -> stream);
     }
@@ -138,9 +137,14 @@ class NonStrategicSchemaValidationTests  extends IntegrationBasicTestBase {
             "10:300am"
         );
 
-        return getListTypesWithTimeFormatValidation().stream()
-            .flatMap(listConfig -> invalidTimes.stream()
-                .map(invalidTime -> Arguments.of(listConfig, invalidTime)));
+        List<SchemaValidationTestInput> attributeValidationTestInputs = new TimeFormatValidationData()
+            .attributeValidationTestInputs()
+            .map(arg -> (SchemaValidationTestInput) arg.get()[0])
+            .toList();
+
+        return attributeValidationTestInputs.stream()
+            .flatMap(config -> invalidTimes.stream()
+                .map(invalidTime -> Arguments.of(config, invalidTime)));
     }
 
     private record TestData(HeaderGroup headerGroup, JsonNode jsonNode) {}
