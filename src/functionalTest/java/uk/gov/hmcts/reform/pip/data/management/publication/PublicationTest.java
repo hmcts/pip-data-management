@@ -210,7 +210,7 @@ class PublicationTest extends FunctionalTestBase {
     }
 
     @Test
-    void testPublicationEndpointsWithHtmlFileUpload() throws Exception {
+    void testPublicationEndpointWithHtmlFileUploadToS3Bucket() throws Exception {
         Map<String, String> headerMapUploadHtmlFile = getBaseHeaderMap();
         headerMapUploadHtmlFile.put(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE_LCSU.toString());
         headerMapUploadHtmlFile.put(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE);
@@ -237,6 +237,7 @@ class PublicationTest extends FunctionalTestBase {
         assertThat(returnedArtefact.getType()).isEqualTo(ARTEFACT_TYPE_LCSU);
         assertThat(returnedArtefact.getProvenance()).isEqualTo(PROVENANCE);
         assertThat(returnedArtefact.getLocationId()).contains(courtId);
+        assertThat(returnedArtefact.getIsFlatFile()).isTrue();
     }
 
     @Test
