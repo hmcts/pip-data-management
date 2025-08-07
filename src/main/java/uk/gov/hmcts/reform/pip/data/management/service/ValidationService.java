@@ -84,8 +84,19 @@ public class ValidationService {
         handleStringValidation(headers);
         handleDateValidation(headers);
         handleDefaultSensitivity(headers);
+        handleListValidation(headers);
 
         return headers;
+    }
+
+    /**
+     * If publication type is LIST, it must have LIST_TYPE header.
+     * @param headers The headers to validate.
+     */
+    private void handleListValidation(HeaderGroup headers) {
+        if (headers.getType().equals(ArtefactType.LIST)) {
+            validateRequiredHeader(PublicationConfiguration.LIST_TYPE, headers.getListType());
+        }
     }
 
     /**
