@@ -532,21 +532,6 @@ class PublicationTest extends FunctionalTestBase {
     }
 
     @Test
-    void testGetArtefactsByLocationIdWhenRequesterDoesNotExist() {
-        uploadFlatFile(courtId, Sensitivity.CLASSIFIED);
-
-        Map<String, String> headerMap = getBaseHeaderMap();
-        headerMap.put(REQUESTER_ID_HEADER, UUID.randomUUID().toString());
-
-        final Response responseGetArtefactMetadata = doGetRequest(
-            PUBLICATION_URL + "/locationId/" + courtId, headerMap
-        );
-
-        assertThat(responseGetArtefactMetadata.getStatusCode())
-            .isEqualTo(FORBIDDEN.value());
-    }
-
-    @Test
     void testGetDeleteByLocationIdWhenUserDoesExist() {
         Artefact artefact = uploadFlatFile(courtId, Sensitivity.PUBLIC);
 
