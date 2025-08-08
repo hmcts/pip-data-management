@@ -410,7 +410,7 @@ public class PublicationController {
     @IsAdmin
     public ResponseEntity<String> archiveArtefact(@RequestHeader("x-issuer-id") String issuerId,
                                                   @PathVariable String id) {
-        publicationRemovalService.archiveArtefactById(id, issuerId);
+        publicationRemovalService.archiveArtefactById(id, issuerId, Boolean.TRUE);
         return ResponseEntity.ok(String.format("Artefact of ID %s has been archived", id));
     }
 

@@ -5,11 +5,14 @@ import nl.altindag.log.LogCaptor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.ActiveProfiles;
+import uk.gov.hmcts.reform.pip.data.management.database.ArtefactArchivedRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.AzureArtefactBlobService;
 import uk.gov.hmcts.reform.pip.data.management.database.LocationRepository;
@@ -18,6 +21,7 @@ import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.NotFound
 import uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
+import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactArchived;
 import uk.gov.hmcts.reform.pip.data.management.service.AccountManagementService;
 import uk.gov.hmcts.reform.pip.data.management.service.SystemAdminNotificationService;
 import uk.gov.hmcts.reform.pip.model.account.PiUser;
@@ -28,6 +32,7 @@ import uk.gov.hmcts.reform.pip.model.system.admin.ChangeType;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -54,7 +59,6 @@ import static uk.gov.hmcts.reform.pip.data.management.helpers.ConstantsTestHelpe
 class PublicationRemovalServiceTest {
     private static final String USER_ID = UUID.randomUUID().toString();
     private static final String EMAIL_ADDRESS = "test@test.com";
-    private static final String SSO_EMAIL = "sso@test.com";
     private static final Integer LOCATION_ID = 1;
 
     private final Artefact artefactWithPayloadUrl = ArtefactConstantTestHelper.buildArtefactWithPayloadUrl();
@@ -62,11 +66,25 @@ class PublicationRemovalServiceTest {
     private final Artefact artefactWithNoMatchLocationId = ArtefactConstantTestHelper
         .buildNoMatchArtefactWithIdAndPayloadUrl();
 
+    private final ArtefactArchived archivedArtefactWithPayloadUrl = new
+        ArtefactArchived(artefactWithPayloadUrl, Boolean.FALSE);
+    private final ArtefactArchived archivedArtefactWithIdAndPayloadUrl = new
+        ArtefactArchived(artefactWithIdAndPayloadUrl, Boolean.FALSE);
+    private final ArtefactArchived archivedManuallyArtefactWithIdAndPayloadUrl = new
+        ArtefactArchived(artefactWithIdAndPayloadUrl, Boolean.TRUE);
+    private final ArtefactArchived archivedArtefactWithNoMatchLocationId = new
+        ArtefactArchived(artefactWithNoMatchLocationId, Boolean.FALSE);
+    private final ArtefactArchived artefactArchivedManuallyWithNoMatchLocationId =
+        new ArtefactArchived(artefactWithNoMatchLocationId, Boolean.TRUE);
+
     private final Location location = ArtefactConstantTestHelper.initialiseCourts();
     private PiUser piUser;
 
     @Mock
     private ArtefactRepository artefactRepository;
+
+    @Mock
+    private ArtefactArchivedRepository artefactArchivedRepository;
 
     @Mock
     private LocationRepository locationRepository;
@@ -186,7 +204,10 @@ class PublicationRemovalServiceTest {
         when(artefactRepository.findOutdatedArtefacts(any())).thenReturn(List.of(artefactWithIdAndPayloadUrl));
         publicationRemovalService.archiveExpiredArtefacts();
 
-        verify(artefactRepository).archiveArtefact(ARTEFACT_ID.toString());
+        Mockito.verify(artefactArchivedRepository).save(
+            matchesArchivedArtefact(archivedArtefactWithIdAndPayloadUrl)
+        );
+        verify(artefactRepository).delete(artefactWithIdAndPayloadUrl);
         verify(azureArtefactBlobService).deleteBlob(PAYLOAD_STRIPPED);
         verify(publicationFileManagementService).deleteFiles(ARTEFACT_ID, ListType.CIVIL_DAILY_CAUSE_LIST,
                                                              Language.ENGLISH);
@@ -198,7 +219,10 @@ class PublicationRemovalServiceTest {
         when(artefactRepository.findOutdatedArtefacts(any())).thenReturn(List.of(artefactWithNoMatchLocationId));
         publicationRemovalService.archiveExpiredArtefacts();
 
-        verify(artefactRepository).archiveArtefact(ARTEFACT_ID.toString());
+        Mockito.verify(artefactArchivedRepository).save(
+            matchesArchivedArtefact(archivedArtefactWithNoMatchLocationId)
+        );
+        verify(artefactRepository).delete(artefactWithNoMatchLocationId);
         verify(azureArtefactBlobService).deleteBlob(PAYLOAD_STRIPPED);
         verifyNoInteractions(publicationFileManagementService);
         verifyNoInteractions(accountManagementService);
@@ -209,10 +233,15 @@ class PublicationRemovalServiceTest {
         UUID testArtefactId = UUID.randomUUID();
         artefactWithPayloadUrl.setArtefactId(testArtefactId);
         artefactWithPayloadUrl.setListType(ListType.SJP_PUBLIC_LIST);
+        archivedArtefactWithPayloadUrl.setArtefactId(testArtefactId);
+        archivedArtefactWithPayloadUrl.setListType(ListType.SJP_PUBLIC_LIST);
         when(artefactRepository.findOutdatedArtefacts(any())).thenReturn(List.of(artefactWithPayloadUrl));
 
         publicationRemovalService.archiveExpiredArtefacts();
-        verify(artefactRepository).archiveArtefact(testArtefactId.toString());
+        Mockito.verify(artefactArchivedRepository).save(
+            matchesArchivedArtefact(archivedArtefactWithPayloadUrl)
+        );
+        verify(artefactRepository).delete(artefactWithPayloadUrl);
         verify(azureArtefactBlobService).deleteBlob(PAYLOAD_STRIPPED);
         verify(publicationFileManagementService).deleteFiles(testArtefactId, ListType.SJP_PUBLIC_LIST,
                                                              Language.ENGLISH);
@@ -224,10 +253,17 @@ class PublicationRemovalServiceTest {
         UUID testArtefactId = UUID.randomUUID();
         artefactWithPayloadUrl.setArtefactId(testArtefactId);
         artefactWithPayloadUrl.setListType(ListType.SJP_PRESS_LIST);
+        archivedArtefactWithPayloadUrl.setArtefactId(testArtefactId);
+        archivedArtefactWithPayloadUrl.setListType(ListType.SJP_PRESS_LIST);
         when(artefactRepository.findOutdatedArtefacts(any())).thenReturn(List.of(artefactWithPayloadUrl));
 
         publicationRemovalService.archiveExpiredArtefacts();
-        verify(artefactRepository).archiveArtefact(testArtefactId.toString());
+
+        Mockito.verify(artefactArchivedRepository).save(
+            matchesArchivedArtefact(archivedArtefactWithPayloadUrl)
+        );
+
+        verify(artefactRepository).delete(artefactWithPayloadUrl);
         verify(azureArtefactBlobService).deleteBlob(PAYLOAD_STRIPPED);
         verify(publicationFileManagementService).deleteFiles(testArtefactId, ListType.SJP_PRESS_LIST, Language.ENGLISH);
         verifyNoInteractions(accountManagementService);
@@ -240,10 +276,17 @@ class PublicationRemovalServiceTest {
         artefactWithPayloadUrl.setListType(ListType.SJP_PRESS_LIST);
         artefactWithPayloadUrl.setIsFlatFile(true);
 
+        archivedArtefactWithPayloadUrl.setArtefactId(testArtefactId);
+        archivedArtefactWithPayloadUrl.setListType(ListType.SJP_PRESS_LIST);
+        archivedArtefactWithPayloadUrl.setIsFlatFile(true);
+
         when(artefactRepository.findOutdatedArtefacts(any())).thenReturn(List.of(artefactWithPayloadUrl));
         publicationRemovalService.archiveExpiredArtefacts();
 
-        verify(artefactRepository).archiveArtefact(testArtefactId.toString());
+        Mockito.verify(artefactArchivedRepository).save(
+            matchesArchivedArtefact(archivedArtefactWithPayloadUrl)
+        );
+        verify(artefactRepository).delete(artefactWithPayloadUrl);
         verify(azureArtefactBlobService).deleteBlob(PAYLOAD_STRIPPED);
         verifyNoInteractions(publicationFileManagementService);
         verifyNoInteractions(accountManagementService);
@@ -252,10 +295,15 @@ class PublicationRemovalServiceTest {
     @Test
     void testArchiveExpiredArtefactsFlatFileWithNoMatchLocationId() {
         artefactWithNoMatchLocationId.setIsFlatFile(true);
+        archivedArtefactWithNoMatchLocationId.setIsFlatFile(true);
         when(artefactRepository.findOutdatedArtefacts(any())).thenReturn(List.of(artefactWithNoMatchLocationId));
+
         publicationRemovalService.archiveExpiredArtefacts();
 
-        verify(artefactRepository).archiveArtefact(ARTEFACT_ID.toString());
+        Mockito.verify(artefactArchivedRepository).save(
+            matchesArchivedArtefact(archivedArtefactWithNoMatchLocationId)
+        );
+        verify(artefactRepository).delete(artefactWithNoMatchLocationId);
         verify(azureArtefactBlobService).deleteBlob(PAYLOAD_STRIPPED);
         verifyNoInteractions(publicationFileManagementService);
         verifyNoInteractions(accountManagementService);
@@ -274,9 +322,12 @@ class PublicationRemovalServiceTest {
         when(artefactRepository.findArtefactByArtefactId(ARTEFACT_ID.toString()))
             .thenReturn(Optional.of(artefactWithIdAndPayloadUrl));
 
-        publicationRemovalService.archiveArtefactById(ARTEFACT_ID.toString(), UUID.randomUUID().toString());
+        publicationRemovalService.archiveArtefactById(ARTEFACT_ID.toString(), UUID.randomUUID().toString(), true);
 
-        verify(artefactRepository).archiveArtefact(ARTEFACT_ID.toString());
+        Mockito.verify(artefactArchivedRepository).save(
+            matchesArchivedArtefact(archivedManuallyArtefactWithIdAndPayloadUrl)
+        );
+        verify(artefactRepository).delete(artefactWithIdAndPayloadUrl);
         verify(azureArtefactBlobService).deleteBlob(PAYLOAD_STRIPPED);
         verify(publicationFileManagementService).deleteFiles(ARTEFACT_ID, ListType.CIVIL_DAILY_CAUSE_LIST,
                                                              Language.ENGLISH);
@@ -288,9 +339,12 @@ class PublicationRemovalServiceTest {
         when(artefactRepository.findArtefactByArtefactId(ARTEFACT_ID.toString()))
             .thenReturn(Optional.of(artefactWithNoMatchLocationId));
 
-        publicationRemovalService.archiveArtefactById(ARTEFACT_ID.toString(), UUID.randomUUID().toString());
+        publicationRemovalService.archiveArtefactById(ARTEFACT_ID.toString(), UUID.randomUUID().toString(), true);
 
-        verify(artefactRepository).archiveArtefact(ARTEFACT_ID.toString());
+        Mockito.verify(artefactArchivedRepository).save(
+            matchesArchivedArtefact(artefactArchivedManuallyWithNoMatchLocationId)
+        );
+        verify(artefactRepository).delete(artefactWithNoMatchLocationId);
         verify(azureArtefactBlobService).deleteBlob(PAYLOAD_STRIPPED);
         verifyNoInteractions(publicationFileManagementService);
         verifyNoInteractions(accountManagementService);
@@ -303,7 +357,7 @@ class PublicationRemovalServiceTest {
 
         String randomUuID = UUID.randomUUID().toString();
         assertThrows(NotFoundException.class, () -> {
-            publicationRemovalService.archiveArtefactById(artefactId, randomUuID);
+            publicationRemovalService.archiveArtefactById(artefactId, randomUuID, true);
         }, "Attempting to archive an artefact that does not exist should throw an exception");
     }
 
@@ -385,5 +439,22 @@ class PublicationRemovalServiceTest {
         verifyNoInteractions(azureArtefactBlobService);
         verifyNoMoreInteractions(artefactRepository);
         verifyNoInteractions(accountManagementService);
+    }
+
+    private static ArtefactArchived matchesArchivedArtefact(ArtefactArchived expected) {
+        return ArgumentMatchers.argThat(actual -> actual.getArtefactId().equals(expected.getArtefactId()) &&
+            actual.getContentDate().equals(expected.getContentDate()) &&
+            Objects.equals(actual.getDisplayFrom(), expected.getDisplayFrom()) &&
+            Objects.equals(actual.getDisplayTo(), expected.getDisplayTo()) &&
+            actual.getIsFlatFile() == expected.getIsFlatFile() &&
+            actual.getLanguage() == expected.getLanguage() &&
+            actual.getListType() == expected.getListType() &&
+            Objects.equals(actual.getLocationId(), expected.getLocationId()) &&
+            Objects.equals(actual.getProvenance(), expected.getProvenance()) &&
+            actual.getSensitivity() == expected.getSensitivity() &&
+            Objects.equals(actual.getType(), expected.getType()) &&
+            Objects.equals(actual.getLastReceivedDate(), expected.getLastReceivedDate()) &&
+            Objects.equals(actual.getSupersededCount(), expected.getSupersededCount())
+        );
     }
 }

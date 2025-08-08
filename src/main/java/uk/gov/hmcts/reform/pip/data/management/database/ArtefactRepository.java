@@ -36,10 +36,11 @@ public interface ArtefactRepository extends JpaRepository<Artefact, Long> {
     String LANGUAGE_PARAM = "language";
     String LIST_TYPE_PARAM = "list_type";
     String PROVENANCE_PARAM = "provenance";
+    String IS_MANUALLY_DELETED_PARAM = "isManuallyDeleted";
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("SELECT a FROM Artefact a WHERE a.locationId = :location_id AND a.contentDate = :content_date AND "
-        + "a.language = :language AND a.listType = :list_type AND a.provenance = :provenance AND a.isArchived != true")
+        + "a.language = :language AND a.listType = :list_type AND a.provenance = :provenance")
     Optional<Artefact> findArtefactByUpdateLogic(@Param(LOCATION_ID_PARAM) String locationId,
                                                  @Param(CONTENT_DATE_PARAM) LocalDateTime contentDate,
                                                  @Param(LANGUAGE_PARAM) Language language,
@@ -47,26 +48,26 @@ public interface ArtefactRepository extends JpaRepository<Artefact, Long> {
                                                  @Param(PROVENANCE_PARAM) String provenance);
 
     @Query(value = "select * from Artefact where artefact_id = CAST(:artefact_id AS uuid) and display_from < "
-        + ":curr_date and (display_to > :curr_date or display_to is null) and is_archived != true",
+        + ":curr_date and (display_to > :curr_date or display_to is null)",
         nativeQuery = true)
     Optional<Artefact> findByArtefactId(@Param(ARTEFACT_ID_PARAM) String artefactId,
                                         @Param(CURRENT_DATE_PARAM) LocalDateTime currentDate);
 
     @Query(value = "select * from Artefact where location_id = :location_id and display_from < "
-        + ":curr_date and (display_to > :curr_date or display_to is null) and is_archived != true",
+        + ":curr_date and (display_to > :curr_date or display_to is null)",
         nativeQuery = true)
     List<Artefact> findArtefactsByLocationId(@Param(LOCATION_ID_PARAM) String locationId,
                                              @Param(CURRENT_DATE_PARAM) LocalDateTime currentDate);
 
     @Query(value = INITIAL_SELECT + "WHERE LOWER(searchDetails.caseDetails ->> 'caseName') LIKE LOWER"
         + "('%' || :caseName || '%') and display_from < :curr_date and (display_to > :curr_date or display_to is "
-        + "null) and is_archived != true",
+        + "null)",
         nativeQuery = true)
     List<Artefact> findArtefactByCaseName(@Param(CASE_NAME_PARAM) String caseName,
                                           @Param(CURRENT_DATE_PARAM) LocalDateTime currentDate);
 
     @Query(value = INITIAL_SELECT + "WHERE searchDetails.caseDetails ->> :searchTerm = :searchValue and "
-        + "display_from < :curr_date and (display_to > :curr_date or display_to is null) and is_archived != true",
+        + "display_from < :curr_date and (display_to > :curr_date or display_to is null)",
         nativeQuery = true)
     List<Artefact> findArtefactBySearch(@Param(SEARCH_TERM_PARAM) String searchTerm,
                                         @Param(SEARCH_VAL_PARAM) String searchVal,
@@ -75,12 +76,11 @@ public interface ArtefactRepository extends JpaRepository<Artefact, Long> {
 
     @Query(value = "select location_id, count(distinct artefact_id) from artefact "
         + "where location_id ~ '^[0-9]+$' "
-        + "and is_archived != true "
         + "group by location_id",
         nativeQuery = true)
     List<Object[]> countArtefactsByLocation();
 
-    @Query(value = "select * from Artefact where location_id = :location_id and is_archived != true",
+    @Query(value = "select * from Artefact where location_id = :location_id",
         nativeQuery = true)
     List<Artefact> findArtefactsByLocationIdAdmin(@Param(LOCATION_ID_PARAM) String locationId);
 
@@ -88,19 +88,19 @@ public interface ArtefactRepository extends JpaRepository<Artefact, Long> {
         nativeQuery = true)
     Optional<Artefact> findArtefactByArtefactId(@Param(ARTEFACT_ID_PARAM) String artefactId);
 
-    @Query(value = "SELECT * FROM Artefact WHERE DATE(display_from) = :curr_date and is_archived != true",
+    @Query(value = "SELECT * FROM Artefact WHERE DATE(display_from) = :curr_date",
         nativeQuery = true)
     List<Artefact> findArtefactsByDisplayFrom(@Param(CURRENT_DATE_PARAM) LocalDate today);
 
-    @Query(value = "SELECT * FROM Artefact WHERE display_to < :curr_date AND is_archived != true", nativeQuery = true)
+    @Query(value = "SELECT * FROM Artefact WHERE display_to < :curr_date", nativeQuery = true)
     List<Artefact> findOutdatedArtefacts(@Param(CURRENT_DATE_PARAM) LocalDateTime today);
 
-    @Query(value = "SELECT * FROM Artefact WHERE location_id LIKE '%NoMatch%' and is_archived != true",
+    @Query(value = "SELECT * FROM Artefact WHERE location_id LIKE '%NoMatch%'",
         nativeQuery = true)
     List<Artefact> findAllNoMatchArtefacts();
 
-    @Query(value = "SELECT COUNT(artefact_id) FROM Artefact WHERE location_id LIKE '%NoMatch%' and is_archived != "
-        + "true", nativeQuery = true)
+    @Query(value = "SELECT COUNT(artefact_id) FROM Artefact WHERE location_id LIKE '%NoMatch%'",
+        nativeQuery = true)
     Integer countNoMatchArtefacts();
 
     @Query("SELECT new uk.gov.hmcts.reform.pip.model.report.PublicationMiData("
@@ -112,15 +112,10 @@ public interface ArtefactRepository extends JpaRepository<Artefact, Long> {
 
     @Query(value = "SELECT * FROM Artefact "
         + "WHERE display_to >= :curr_date "
-        + "and location_id = :location_id "
-        + "and is_archived != true", nativeQuery = true)
+        + "and location_id = :location_id",
+        nativeQuery = true)
     List<Artefact> findActiveArtefactsForLocation(@Param(CURRENT_DATE_PARAM) LocalDateTime today,
                                                   @Param(LOCATION_ID_PARAM) String locationId);
-
-    @Modifying
-    @Query(value = "UPDATE artefact SET payload = '', source_artefact_id = '', search = '{}', is_archived = true "
-        + "WHERE artefact_id = CAST(:artefact_id AS uuid)", nativeQuery = true)
-    void archiveArtefact(@Param(ARTEFACT_ID_PARAM) String artefactId);
 
     List<Artefact> findAllByLocationIdIn(List<String> locationId);
 

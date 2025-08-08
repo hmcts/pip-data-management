@@ -17,8 +17,6 @@ import uk.gov.hmcts.reform.pip.model.report.PublicationMiData;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -279,30 +277,6 @@ class ArtefactRepositoryTest {
                                                                      INVALID_LOCATION_ID))
             .as(ARTEFACT_EMPTY_MESSAGE)
             .isEmpty();
-    }
-
-    @Test
-    void shouldArchiveArtefact() {
-        Artefact artefact = new Artefact();
-        artefact.setPayload("Test payload");
-        artefact.setSourceArtefactId("123");
-        artefact.setSearch(Map.of("1", List.of("Test")));
-        artefact.setIsArchived(false);
-        Artefact savedArtefact = artefactRepository.save(artefact);
-
-        artefactRepository.archiveArtefact(savedArtefact.getArtefactId().toString());
-
-        Optional<Artefact> updatedArtefact = artefactRepository.findArtefactByArtefactId(
-            savedArtefact.getArtefactId().toString()
-        );
-
-        assertThat(updatedArtefact)
-            .as(ARTEFACT_MATCHED_MESSAGE)
-            .isPresent()
-            .hasValueSatisfying(a -> a.getPayload().isEmpty())
-            .hasValueSatisfying(a -> a.getSourceArtefactId().isEmpty())
-            .hasValueSatisfying(a -> a.getSearch().isEmpty())
-            .hasValueSatisfying(Artefact::getIsArchived);
     }
 
     @Test
