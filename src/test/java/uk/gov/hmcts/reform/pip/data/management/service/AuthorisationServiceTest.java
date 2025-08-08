@@ -319,7 +319,7 @@ class AuthorisationServiceTest {
 
         when(securityContext.getAuthentication()).thenReturn(auth);
 
-        assertTrue(authorisationService.userCanSearchForPublicationByLocation(null, false),
+        assertTrue(authorisationService.userCanSearchForPublicationByLocation(),
                    "Admin user should be able to search for publication by location");
     }
 
@@ -328,7 +328,7 @@ class AuthorisationServiceTest {
         when(securityContext.getAuthentication()).thenReturn(authentication);
         when(authentication.getAuthorities()).thenReturn(Collections.emptyList());
 
-        assertFalse(authorisationService.userCanSearchForPublicationByLocation(TEST_UUID, false),
+        assertFalse(authorisationService.userCanSearchForPublicationByLocation(),
                     "Should not be able to search for publication by location without OAuth admin role");
     }
 

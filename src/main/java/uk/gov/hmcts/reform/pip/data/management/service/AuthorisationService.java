@@ -123,11 +123,9 @@ public class AuthorisationService {
         return true;
     }
 
-    public boolean userCanSearchForPublicationByLocation(UUID requesterId, boolean isAdmin) {
+    public boolean userCanSearchForPublicationByLocation() {
         if (!hasOAuthAdminRole()) {
-            log.error(writeLog(
-                String.format("User with ID %s is not authorised to search for publication by location", requesterId)
-            ));
+            log.error(writeLog("Action Search for publication by Location is not allowed"));
             return false;
         }
         return true;
