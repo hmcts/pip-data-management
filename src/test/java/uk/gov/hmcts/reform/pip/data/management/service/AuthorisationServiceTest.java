@@ -310,39 +310,7 @@ class AuthorisationServiceTest {
     }
 
     @Test
-    void testVerifiedUserCanSearchForPublicationByLocation() {
-        List<GrantedAuthority> authorities = List.of(
-            new SimpleGrantedAuthority(ADMIN_ROLE)
-        );
-        Authentication auth = new TestingAuthenticationToken(TEST_USER_ID, null, authorities);
-        SecurityContextHolder.getContext().setAuthentication(auth);
-
-        when(securityContext.getAuthentication()).thenReturn(auth);
-        when(accountManagementService.getUserById(TEST_UUID.toString()))
-            .thenReturn(createUser(Roles.VERIFIED));
-
-        assertTrue(authorisationService.userCanSearchForPublicationByLocation(TEST_UUID, false),
-                   "Verified user should be able to search for publication by location");
-    }
-
-    @Test
-    void testAdminUserCanSearchForPublicationByLocation() {
-        List<GrantedAuthority> authorities = List.of(
-            new SimpleGrantedAuthority(ADMIN_ROLE)
-        );
-        Authentication auth = new TestingAuthenticationToken(TEST_USER_ID, null, authorities);
-        SecurityContextHolder.getContext().setAuthentication(auth);
-
-        when(securityContext.getAuthentication()).thenReturn(auth);
-        when(accountManagementService.getUserById(TEST_UUID.toString()))
-            .thenReturn(createUser(Roles.SYSTEM_ADMIN));
-
-        assertTrue(authorisationService.userCanSearchForPublicationByLocation(TEST_UUID, false),
-                    "Admin user should be able to search for publication by location");
-    }
-
-    @Test
-    void testUserCanSearchForPublicationByLocationWhenIsAdminFlagIsSet() {
+    void testUserCanSearchForPublicationByLocationWheHasOAuthAdminRole() {
         List<GrantedAuthority> authorities = List.of(
             new SimpleGrantedAuthority(ADMIN_ROLE)
         );
@@ -351,7 +319,7 @@ class AuthorisationServiceTest {
 
         when(securityContext.getAuthentication()).thenReturn(auth);
 
-        assertTrue(authorisationService.userCanSearchForPublicationByLocation(null, true),
+        assertTrue(authorisationService.userCanSearchForPublicationByLocation(null, false),
                    "Admin user should be able to search for publication by location");
     }
 

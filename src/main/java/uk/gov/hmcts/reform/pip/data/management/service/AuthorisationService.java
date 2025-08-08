@@ -124,9 +124,7 @@ public class AuthorisationService {
     }
 
     public boolean userCanSearchForPublicationByLocation(UUID requesterId, boolean isAdmin) {
-        if (!(hasOAuthAdminRole()
-            && (isAdmin || (requesterId != null
-            && (isVerifiedUser(requesterId.toString()) || isUserSystemAdmin(requesterId.toString())))))) {
+        if (!hasOAuthAdminRole()) {
             log.error(writeLog(
                 String.format("User with ID %s is not authorised to search for publication by location", requesterId)
             ));
