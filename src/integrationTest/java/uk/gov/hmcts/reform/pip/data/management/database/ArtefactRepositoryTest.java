@@ -9,6 +9,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
+import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactArchived;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 import uk.gov.hmcts.reform.pip.model.publication.Sensitivity;
@@ -16,6 +17,7 @@ import uk.gov.hmcts.reform.pip.model.report.PublicationMiData;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.UUID;
 
@@ -35,6 +37,8 @@ class ArtefactRepositoryTest {
     private static final String INVALID_LOCATION_ID = "9";
     private static final String INVALID_ARTEFACT_ID = UUID.randomUUID().toString();
     private static final String PROVENANCE = "MANUAL_UPLOAD";
+    private static final LocalDateTime DISPLAY_TO =
+        LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS).plusDays(3);
     private static final String ARTEFACT_MATCHED_MESSAGE = "Artefact does not match";
     private static final String ARTEFACT_EMPTY_MESSAGE = "Artefact is not empty";
     private static final String RESULT_MATCHED_MESSAGE = "Result does not match";
@@ -48,6 +52,9 @@ class ArtefactRepositoryTest {
     @Autowired
     ArtefactRepository artefactRepository;
 
+    @Autowired
+    ArtefactArchivedRepository artefactArchivedRepository;
+
     @BeforeAll
     void setup() {
         LocalDateTime publicationReceivedDateTime = LocalDateTime.now();
@@ -55,7 +62,7 @@ class ArtefactRepositoryTest {
         Artefact artefact1 = new Artefact();
         artefact1.setLocationId(LOCATION_ID);
         artefact1.setListType(ListType.CIVIL_DAILY_CAUSE_LIST);
-        artefact1.setIsArchived(false);
+        artefact1.setDisplayTo(DISPLAY_TO);
         artefact1.setLastReceivedDate(publicationReceivedDateTime.minusDays(5));
         setCommonArtefactProperties(artefact1);
 
@@ -65,7 +72,7 @@ class ArtefactRepositoryTest {
         Artefact artefact2 = new Artefact();
         artefact2.setLocationId(LOCATION_ID);
         artefact2.setListType(ListType.FAMILY_DAILY_CAUSE_LIST);
-        artefact2.setIsArchived(false);
+        artefact2.setDisplayTo(DISPLAY_TO);
         artefact2.setLastReceivedDate(publicationReceivedDateTime.minusDays(10));
         setCommonArtefactProperties(artefact2);
 
@@ -75,27 +82,35 @@ class ArtefactRepositoryTest {
         Artefact artefact3 = new Artefact();
         artefact3.setLocationId(LOCATION_ID);
         artefact3.setListType(ListType.SJP_PUBLIC_LIST);
-        artefact3.setIsArchived(false);
+        artefact3.setDisplayTo(DISPLAY_TO);
         artefact3.setLastReceivedDate(publicationReceivedDateTime.minusDays(15));
         setCommonArtefactProperties(artefact3);
 
         savedArtefact = artefactRepository.save(artefact3);
         artefactId3 = savedArtefact.getArtefactId();
 
-        Artefact artefact4 = new Artefact();
+        ArtefactArchived artefact4 = new ArtefactArchived();
+        artefact4.setArtefactId(UUID.randomUUID());
         artefact4.setLocationId(LOCATION_ID);
         artefact4.setListType(ListType.CIVIL_DAILY_CAUSE_LIST);
-        artefact4.setIsArchived(true);
+        artefact4.setDisplayTo(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS).minusDays(60));
         artefact4.setLastReceivedDate(publicationReceivedDateTime.minusDays(20));
-        setCommonArtefactProperties(artefact4);
+        artefact4.setContentDate(TODAY);
+        artefact4.setLanguage(Language.ENGLISH);
+        artefact4.setProvenance(PROVENANCE);
+        artefact4.setDisplayFrom(YESTERDAY);
+        artefact4.setDisplayTo(TOMORROW);
+        artefact4.setSensitivity(Sensitivity.PUBLIC);
+        artefact4.setSupersededCount(1);
 
-        savedArtefact = artefactRepository.save(artefact4);
-        artefactId4 = savedArtefact.getArtefactId();
+        ArtefactArchived savedArtefactArchived =
+            artefactArchivedRepository.save(artefact4);
+        artefactId4 = savedArtefactArchived.getArtefactId();
 
         Artefact artefact5 = new Artefact();
         artefact5.setLocationId(NO_MATCH_LOCATION_ID);
         artefact5.setListType(ListType.SJP_PUBLIC_LIST);
-        artefact5.setIsArchived(false);
+        artefact5.setDisplayTo(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS).minusDays(60));
         artefact5.setLastReceivedDate(publicationReceivedDateTime.minusDays(40));
         setCommonArtefactProperties(artefact5);
 
@@ -201,7 +216,7 @@ class ArtefactRepositoryTest {
 
     @Test
     void shouldFindArtefactByArtefactId() {
-        assertThat(artefactRepository.findArtefactByArtefactId(artefactId4.toString()))
+        assertThat(artefactRepository.findArtefactByArtefactId(artefactId3.toString()))
             .as(ARTEFACT_MATCHED_MESSAGE)
             .isPresent()
             .hasValueSatisfying(a -> a.getArtefactId().equals(4));

@@ -15,6 +15,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -1002,8 +1003,8 @@ class PublicationTest extends PublicationIntegrationTestBase {
     @Test
     void testArchiveExpiredArtefactsSuccess() throws Exception {
         Artefact artefactToExpire = createDailyList(Sensitivity.PUBLIC, DISPLAY_FROM.minusMonths(9),
-                                                    DISPLAY_FROM.minusMonths(6),
-                                                    DISPLAY_FROM.minusMonths(10), PROVENANCE, COURT_ID);
+                                                    DISPLAY_TO.minusMonths(6),
+                                                    CONTENT_DATE.minusMonths(10), PROVENANCE, COURT_ID);
 
         MockHttpServletRequestBuilder adminGetRequest = MockMvcRequestBuilders
             .get(PUBLICATION_URL + "/" + artefactToExpire.getArtefactId())
@@ -1011,11 +1012,12 @@ class PublicationTest extends PublicationIntegrationTestBase {
             .header(ADMIN_HEADER, true);
         MvcResult response = mockMvc.perform(adminGetRequest).andExpect(status().isOk()).andReturn();
 
-        Artefact artefactNotExpired = OBJECT_MAPPER.readValue(
+        Artefact artefactExpired = OBJECT_MAPPER.readValue(
             response.getResponse().getContentAsString(),
             Artefact.class
         );
-        assertTrue(!artefactNotExpired.getIsArchived(), SHOULD_RETURN_EXPECTED_ARTEFACT);
+        assertTrue(artefactExpired.getDisplayTo().isBefore(LocalDateTime.now()),
+                   SHOULD_RETURN_EXPECTED_ARTEFACT);
 
         MockHttpServletRequestBuilder deleteRequest = MockMvcRequestBuilders
             .delete(ARCHIVE_EXPIRED_ARTEFACTS_URL);
@@ -1026,14 +1028,11 @@ class PublicationTest extends PublicationIntegrationTestBase {
             .header(USER_ID_HEADER, USER_ID)
             .header(ADMIN_HEADER, true);
 
-        MvcResult archiveResponse = mockMvc.perform(adminGetRequestAfterDelete).andExpect(status().isOk()).andReturn();
-
-        Artefact artefactExired = OBJECT_MAPPER.readValue(
-            archiveResponse.getResponse().getContentAsString(),
-            Artefact.class
-        );
-        assertTrue(artefactExired.getIsArchived(), SHOULD_RETURN_EXPECTED_ARTEFACT);
-
+        MvcResult archiveResponse = mockMvc.perform(adminGetRequestAfterDelete)
+            .andReturn();
+        assertEquals(
+            HttpStatus.NOT_FOUND.value(), archiveResponse.getResponse().getStatus(),
+            "Expected status code 404 found");
     }
 
     @Test

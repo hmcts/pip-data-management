@@ -2,6 +2,8 @@ package uk.gov.hmcts.reform.pip.data.management.models.publication;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Data;
@@ -36,9 +38,11 @@ public class ArtefactArchived {
     private Boolean isFlatFile;
 
     @Column(name = "language")
+    @Enumerated(EnumType.STRING)
     private Language language;
 
     @Column(name = "list_type")
+    @Enumerated(EnumType.STRING)
     private ListType listType;
 
     @Column(name = "location_id")
@@ -48,9 +52,11 @@ public class ArtefactArchived {
     private String provenance;
 
     @Column(name = "sensitivity")
+    @Enumerated(EnumType.STRING)
     private Sensitivity sensitivity;
 
     @Column(name = "type")
+    @Enumerated(EnumType.STRING)
     private ArtefactType type;
 
     @Column(name = "last_received_date")

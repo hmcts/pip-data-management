@@ -15,6 +15,7 @@ import uk.gov.hmcts.reform.pip.model.report.PublicationMiData;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -104,11 +105,27 @@ public interface ArtefactRepository extends JpaRepository<Artefact, Long> {
     Integer countNoMatchArtefacts();
 
     @Query("SELECT new uk.gov.hmcts.reform.pip.model.report.PublicationMiData("
-        + "artefactId, displayFrom, displayTo, language, provenance, sensitivity, sourceArtefactId, "
+        + "artefactId, displayFrom, displayTo, language, "
+        + "provenance, sensitivity, sourceArtefactId, "
         + "supersededCount, type, contentDate, locationId, listType) "
         + "FROM Artefact "
-        + "WHERE lastReceivedDate >= :publicationReceivedDate ")
-    List<PublicationMiData> getMiData(@Param("publicationReceivedDate") LocalDateTime publicationReceivedDate);
+        + "WHERE lastReceivedDate >= :publicationReceivedDate")
+    List<PublicationMiData> getActiveArtefacts(@Param("publicationReceivedDate") LocalDateTime date);
+
+    @Query("SELECT new uk.gov.hmcts.reform.pip.model.report.PublicationMiData("
+        + "artefactId, displayFrom, displayTo, language, "
+        + "provenance, sensitivity, '' as sourceArtefactId, "  // Empty string for sourceArtefactId
+        + "supersededCount, type, contentDate, locationId, listType) "
+        + "FROM ArtefactArchived "
+        + "WHERE lastReceivedDate >= :publicationReceivedDate")
+    List<PublicationMiData> getArchivedArtefacts(@Param("publicationReceivedDate") LocalDateTime date);
+
+    default List<PublicationMiData> getMiData(LocalDateTime publicationReceivedDate) {
+        List<PublicationMiData> result = new ArrayList<>();
+        result.addAll(getActiveArtefacts(publicationReceivedDate));
+        result.addAll(getArchivedArtefacts(publicationReceivedDate));
+        return result;
+    }
 
     @Query(value = "SELECT * FROM Artefact "
         + "WHERE display_to >= :curr_date "
