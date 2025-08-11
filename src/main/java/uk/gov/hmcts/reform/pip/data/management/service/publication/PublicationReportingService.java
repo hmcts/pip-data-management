@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.pip.data.management.service.publication;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import uk.gov.hmcts.reform.pip.data.management.database.ArtefactArchivedRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.LocationRepository;
 import uk.gov.hmcts.reform.pip.data.management.helpers.NoMatchArtefactHelper;
@@ -22,13 +23,17 @@ import java.util.stream.Collectors;
 @Service
 public class PublicationReportingService {
     private final ArtefactRepository artefactRepository;
+    private final ArtefactArchivedRepository artefactArchivedRepository;
     private final LocationRepository locationRepository;
     private final PublicationServicesService publicationServicesService;
 
     @Autowired
-    public PublicationReportingService(ArtefactRepository artefactRepository, LocationRepository locationRepository,
+    public PublicationReportingService(ArtefactRepository artefactRepository,
+                                       ArtefactArchivedRepository artefactArchivedRepository,
+                                       LocationRepository locationRepository,
                                        PublicationServicesService publicationServicesService) {
         this.artefactRepository = artefactRepository;
+        this.artefactArchivedRepository = artefactArchivedRepository;
         this.locationRepository = locationRepository;
         this.publicationServicesService = publicationServicesService;
     }
@@ -44,6 +49,11 @@ public class PublicationReportingService {
             .atStartOfDay();
         List<PublicationMiData> publicationMiData =
             artefactRepository.getMiData(publicationReceivedDate);
+        List<PublicationMiData> archivedPublicationMiData =
+            artefactArchivedRepository.getArchivedArtefacts(publicationReceivedDate);
+        if (archivedPublicationMiData != null && !archivedPublicationMiData.isEmpty()) {
+            publicationMiData.addAll(archivedPublicationMiData);
+        }
 
         Map<Integer, String> location = locationRepository.findAll()
             .stream().collect(Collectors.toMap(Location::getLocationId, Location::getName));

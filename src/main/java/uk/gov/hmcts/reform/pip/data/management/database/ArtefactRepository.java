@@ -15,7 +15,6 @@ import uk.gov.hmcts.reform.pip.model.report.PublicationMiData;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,7 +36,6 @@ public interface ArtefactRepository extends JpaRepository<Artefact, Long> {
     String LANGUAGE_PARAM = "language";
     String LIST_TYPE_PARAM = "list_type";
     String PROVENANCE_PARAM = "provenance";
-    String IS_MANUALLY_DELETED_PARAM = "isManuallyDeleted";
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("SELECT a FROM Artefact a WHERE a.locationId = :location_id AND a.contentDate = :content_date AND "
@@ -77,32 +75,42 @@ public interface ArtefactRepository extends JpaRepository<Artefact, Long> {
 
     @Query(value = "select location_id, count(distinct artefact_id) from artefact "
         + "where location_id ~ '^[0-9]+$' "
+        + "and (display_to > :curr_date or display_to is null)"
         + "group by location_id",
         nativeQuery = true)
-    List<Object[]> countArtefactsByLocation();
+    List<Object[]> countArtefactsByLocation(@Param(CURRENT_DATE_PARAM) LocalDateTime currentDate);
 
-    @Query(value = "select * from Artefact where location_id = :location_id",
+    @Query(value = "select * from Artefact "
+        + "where location_id = :location_id "
+        + "and (display_to > :curr_date or display_to is null)",
         nativeQuery = true)
-    List<Artefact> findArtefactsByLocationIdAdmin(@Param(LOCATION_ID_PARAM) String locationId);
+    List<Artefact> findArtefactsByLocationIdAdmin(@Param(LOCATION_ID_PARAM) String locationId,
+                                                  @Param(CURRENT_DATE_PARAM) LocalDateTime currentDate);
 
     @Query(value = "select * from Artefact where artefact_id = CAST(:artefact_id AS uuid)",
         nativeQuery = true)
     Optional<Artefact> findArtefactByArtefactId(@Param(ARTEFACT_ID_PARAM) String artefactId);
 
-    @Query(value = "SELECT * FROM Artefact WHERE DATE(display_from) = :curr_date",
+    @Query(value = "SELECT * FROM Artefact "
+        + "WHERE DATE(display_from) = :curr_date "
+        + "AND (display_to > :curr_date or display_to is null)",
         nativeQuery = true)
-    List<Artefact> findArtefactsByDisplayFrom(@Param(CURRENT_DATE_PARAM) LocalDate today);
+    List<Artefact> findArtefactsByDisplayFrom(@Param(CURRENT_DATE_PARAM) LocalDate today,
+                                              @Param(CURRENT_DATE_PARAM) LocalDateTime currentDate);
 
-    @Query(value = "SELECT * FROM Artefact WHERE display_to < :curr_date", nativeQuery = true)
+    @Query(value = "SELECT * FROM Artefact "
+        + "WHERE display_to < :curr_date", nativeQuery = true)
     List<Artefact> findOutdatedArtefacts(@Param(CURRENT_DATE_PARAM) LocalDateTime today);
 
     @Query(value = "SELECT * FROM Artefact WHERE location_id LIKE '%NoMatch%'",
         nativeQuery = true)
     List<Artefact> findAllNoMatchArtefacts();
 
-    @Query(value = "SELECT COUNT(artefact_id) FROM Artefact WHERE location_id LIKE '%NoMatch%'",
+    @Query(value = "SELECT COUNT(artefact_id) FROM Artefact "
+        + "WHERE location_id LIKE '%NoMatch%'"
+        + "AND (display_to > :curr_date or display_to is null)",
         nativeQuery = true)
-    Integer countNoMatchArtefacts();
+    Integer countNoMatchArtefacts(@Param(CURRENT_DATE_PARAM) LocalDateTime currentDate);
 
     @Query("SELECT new uk.gov.hmcts.reform.pip.model.report.PublicationMiData("
         + "artefactId, displayFrom, displayTo, language, "
@@ -110,22 +118,7 @@ public interface ArtefactRepository extends JpaRepository<Artefact, Long> {
         + "supersededCount, type, contentDate, locationId, listType) "
         + "FROM Artefact "
         + "WHERE lastReceivedDate >= :publicationReceivedDate")
-    List<PublicationMiData> getActiveArtefacts(@Param("publicationReceivedDate") LocalDateTime date);
-
-    @Query("SELECT new uk.gov.hmcts.reform.pip.model.report.PublicationMiData("
-        + "artefactId, displayFrom, displayTo, language, "
-        + "provenance, sensitivity, '' as sourceArtefactId, "  // Empty string for sourceArtefactId
-        + "supersededCount, type, contentDate, locationId, listType) "
-        + "FROM ArtefactArchived "
-        + "WHERE lastReceivedDate >= :publicationReceivedDate")
-    List<PublicationMiData> getArchivedArtefacts(@Param("publicationReceivedDate") LocalDateTime date);
-
-    default List<PublicationMiData> getMiData(LocalDateTime publicationReceivedDate) {
-        List<PublicationMiData> result = new ArrayList<>();
-        result.addAll(getActiveArtefacts(publicationReceivedDate));
-        result.addAll(getArchivedArtefacts(publicationReceivedDate));
-        return result;
-    }
+    List<PublicationMiData> getMiData(@Param("publicationReceivedDate") LocalDateTime date);
 
     @Query(value = "SELECT * FROM Artefact "
         + "WHERE display_to >= :curr_date "
