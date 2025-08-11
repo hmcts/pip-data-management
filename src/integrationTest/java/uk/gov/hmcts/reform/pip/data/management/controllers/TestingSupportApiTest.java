@@ -232,7 +232,7 @@ class TestingSupportApiTest extends IntegrationTestBase {
                 .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
                 .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
                 .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
-                .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO)
+                .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO.plusDays(2))
                 .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
                 .header(PublicationConfiguration.LIST_TYPE, LIST_TYPE)
                 .header(PublicationConfiguration.COURT_ID, LOCATION_ID)
