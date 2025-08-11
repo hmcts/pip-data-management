@@ -9,7 +9,6 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.InOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactArchivedRepository;
@@ -204,7 +203,7 @@ class PublicationRemovalServiceTest {
         when(artefactRepository.findOutdatedArtefacts(any())).thenReturn(List.of(artefactWithIdAndPayloadUrl));
         publicationRemovalService.archiveExpiredArtefacts();
 
-        Mockito.verify(artefactArchivedRepository).save(
+        verify(artefactArchivedRepository).save(
             matchesArchivedArtefact(archivedArtefactWithIdAndPayloadUrl)
         );
         verify(artefactRepository).delete(artefactWithIdAndPayloadUrl);
@@ -219,7 +218,7 @@ class PublicationRemovalServiceTest {
         when(artefactRepository.findOutdatedArtefacts(any())).thenReturn(List.of(artefactWithNoMatchLocationId));
         publicationRemovalService.archiveExpiredArtefacts();
 
-        Mockito.verify(artefactArchivedRepository).save(
+        verify(artefactArchivedRepository).save(
             matchesArchivedArtefact(archivedArtefactWithNoMatchLocationId)
         );
         verify(artefactRepository).delete(artefactWithNoMatchLocationId);
@@ -238,7 +237,7 @@ class PublicationRemovalServiceTest {
         when(artefactRepository.findOutdatedArtefacts(any())).thenReturn(List.of(artefactWithPayloadUrl));
 
         publicationRemovalService.archiveExpiredArtefacts();
-        Mockito.verify(artefactArchivedRepository).save(
+        verify(artefactArchivedRepository).save(
             matchesArchivedArtefact(archivedArtefactWithPayloadUrl)
         );
         verify(artefactRepository).delete(artefactWithPayloadUrl);
@@ -259,7 +258,7 @@ class PublicationRemovalServiceTest {
 
         publicationRemovalService.archiveExpiredArtefacts();
 
-        Mockito.verify(artefactArchivedRepository).save(
+        verify(artefactArchivedRepository).save(
             matchesArchivedArtefact(archivedArtefactWithPayloadUrl)
         );
 
@@ -283,7 +282,7 @@ class PublicationRemovalServiceTest {
         when(artefactRepository.findOutdatedArtefacts(any())).thenReturn(List.of(artefactWithPayloadUrl));
         publicationRemovalService.archiveExpiredArtefacts();
 
-        Mockito.verify(artefactArchivedRepository).save(
+        verify(artefactArchivedRepository).save(
             matchesArchivedArtefact(archivedArtefactWithPayloadUrl)
         );
         verify(artefactRepository).delete(artefactWithPayloadUrl);
@@ -300,7 +299,7 @@ class PublicationRemovalServiceTest {
 
         publicationRemovalService.archiveExpiredArtefacts();
 
-        Mockito.verify(artefactArchivedRepository).save(
+        verify(artefactArchivedRepository).save(
             matchesArchivedArtefact(archivedArtefactWithNoMatchLocationId)
         );
         verify(artefactRepository).delete(artefactWithNoMatchLocationId);
@@ -324,7 +323,7 @@ class PublicationRemovalServiceTest {
 
         publicationRemovalService.archiveArtefactById(ARTEFACT_ID.toString(), UUID.randomUUID().toString(), true);
 
-        Mockito.verify(artefactArchivedRepository).save(
+        verify(artefactArchivedRepository).save(
             matchesArchivedArtefact(archivedManuallyArtefactWithIdAndPayloadUrl)
         );
         verify(artefactRepository).delete(artefactWithIdAndPayloadUrl);
@@ -341,7 +340,7 @@ class PublicationRemovalServiceTest {
 
         publicationRemovalService.archiveArtefactById(ARTEFACT_ID.toString(), UUID.randomUUID().toString(), true);
 
-        Mockito.verify(artefactArchivedRepository).save(
+        verify(artefactArchivedRepository).save(
             matchesArchivedArtefact(artefactArchivedManuallyWithNoMatchLocationId)
         );
         verify(artefactRepository).delete(artefactWithNoMatchLocationId);
@@ -442,19 +441,19 @@ class PublicationRemovalServiceTest {
     }
 
     private static ArtefactArchived matchesArchivedArtefact(ArtefactArchived expected) {
-        return ArgumentMatchers.argThat(actual -> actual.getArtefactId().equals(expected.getArtefactId()) &&
-            actual.getContentDate().equals(expected.getContentDate()) &&
-            Objects.equals(actual.getDisplayFrom(), expected.getDisplayFrom()) &&
-            Objects.equals(actual.getDisplayTo(), expected.getDisplayTo()) &&
-            actual.getIsFlatFile() == expected.getIsFlatFile() &&
-            actual.getLanguage() == expected.getLanguage() &&
-            actual.getListType() == expected.getListType() &&
-            Objects.equals(actual.getLocationId(), expected.getLocationId()) &&
-            Objects.equals(actual.getProvenance(), expected.getProvenance()) &&
-            actual.getSensitivity() == expected.getSensitivity() &&
-            Objects.equals(actual.getType(), expected.getType()) &&
-            Objects.equals(actual.getLastReceivedDate(), expected.getLastReceivedDate()) &&
-            Objects.equals(actual.getSupersededCount(), expected.getSupersededCount())
+        return ArgumentMatchers.argThat(actual -> actual.getArtefactId().equals(expected.getArtefactId())
+            && actual.getContentDate().equals(expected.getContentDate())
+            && Objects.equals(actual.getDisplayFrom(), expected.getDisplayFrom())
+            && Objects.equals(actual.getDisplayTo(), expected.getDisplayTo())
+            && Objects.equals(actual.getIsFlatFile(), expected.getIsFlatFile())
+            && actual.getLanguage() == expected.getLanguage()
+            && actual.getListType() == expected.getListType()
+            && Objects.equals(actual.getLocationId(), expected.getLocationId())
+            && Objects.equals(actual.getProvenance(), expected.getProvenance())
+            && actual.getSensitivity() == expected.getSensitivity()
+            && Objects.equals(actual.getType(), expected.getType())
+            && Objects.equals(actual.getLastReceivedDate(), expected.getLastReceivedDate())
+            && Objects.equals(actual.getSupersededCount(), expected.getSupersededCount())
         );
     }
 }
