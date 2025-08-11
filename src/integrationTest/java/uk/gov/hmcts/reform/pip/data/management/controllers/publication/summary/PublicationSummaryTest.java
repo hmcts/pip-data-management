@@ -368,6 +368,26 @@ class PublicationSummaryTest extends PublicationIntegrationTestBase {
         assertTrue(responseContent.contains("Case reference - 12341235"), CONTENT_MISMATCH_ERROR);
     }
 
+    @ParameterizedTest
+    @EnumSource(value = ListType.class, names = {"MAGISTRATES_ADULT_COURT_LIST_DAILY",
+        "MAGISTRATES_ADULT_COURT_LIST_FUTURE"})
+    void testGenerateArtefactSummaryMagistratesAdultCourtList(ListType listType) throws Exception {
+        byte[] data = getTestData("data/magistrates-adult-court-list/magistratesAdultCourtList.json");
+        Artefact artefact = createPublication(listType, data);
+
+        when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(data));
+
+        MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, artefact.getArtefactId())))
+            .andExpect(status().isOk()).andReturn();
+
+        String responseContent = response.getResponse().getContentAsString();
+        assertTrue(responseContent.contains("Defendant name - Mr Test User"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains("Informant - POL01"),
+                   CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains("Case number - 1000000000"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains("Offence title - Offence title 1"), CONTENT_MISMATCH_ERROR);
+    }
+
     @Test
     void testGenerateArtefactSummaryNotFound() throws Exception {
         MvcResult mvcResult = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, ARTEFACT_ID_NOT_FOUND)))
