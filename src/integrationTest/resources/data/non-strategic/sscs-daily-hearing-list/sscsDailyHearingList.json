@@ -9,5 +9,16 @@
     "panel" : "Panel 1",
     "fta/respondent" : "Respondent 1",
     "additionalInformation" : "Additional information 1"
+  },
+  {
+    "venue" : "Venue 2",
+    "appealReferenceNumber" : "12345672",
+    "hearingType" : "Directions",
+    "appellant" : "Appellant 2",
+    "courtroom" : "Courtroom 2",
+    "hearingTime" : "10am  ",
+    "panel" : "Panel 2",
+    "fta/respondent" : "Respondent 2",
+    "additionalInformation" : "Additional information 2"
   }
 ]
