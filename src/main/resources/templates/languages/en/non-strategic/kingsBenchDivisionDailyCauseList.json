@@ -1,8 +1,5 @@
 {
   "listName": "King’s Bench Division Daily Cause List",
-  "venueName": "Royal Courts of Justice",
-  "addressLine1": "Strand, London",
-  "addressLine2": "WC2A 2LL",
   "importantInformationLine1": "The hearing will be available to representatives of the media upon request. It will be organised and conducted using MS Teams (unless otherwise stated).",
   "importantInformationLine2": "Any media representative (or any other member of the public) wishing to witness the hearing will need to do so over the internet and provide an email address at which to be sent an appropriate link for access. Please contact kbjudgeslistingoffice@justice.gov.uk.",
   "importantInformationLine3": "Remote hand-down: This judgment will be handed down remotely by circulation to the parties or their representatives by email and release to The National Archives.",
@@ -10,14 +7,5 @@
   "importantInformationLine5": "In-person hearings –  Any bundles to be filed must be provided in hard-copy at least 3 days before the hearing. These may be brought to room WG07 for delivery.",
   "remoteHearingsHeading": "Remote hearings before a Judge",
   "remoteJudgementsHeading": "Remote judgments",
-  "bundlesHeading": "Bundles",
-  "tableHeaders": [
-    "Venue",
-    "Judge",
-    "Time",
-    "Case number",
-    "Case details",
-    "Hearing type",
-    "Additional information"
-  ]
+  "bundlesHeading": "Bundles"
 }
