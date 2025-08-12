@@ -6,20 +6,20 @@
     "data": {
       "job": {
         "printdate": "31/07/2025",
-        "sessions": {
-          "session": [
-            {
+        "sessions": [
+          {
+            "session": {
               "lja": "North Northumbria Magistrates' Court",
               "court": "North Shields Magistrates' Court",
               "room": 1,
               "sstart": "09:00",
-              "blocks": {
-                "block": [
-                  {
+              "blocks": [
+                {
+                  "block": {
                     "bstart": "09:00",
-                    "cases": {
-                      "case": [
-                        {
+                    "cases": [
+                      {
+                        "case": {
                           "caseno": "1000000000",
                           "def_name": "Mr Test User",
                           "def_dob": "06/11/1975",
@@ -30,19 +30,21 @@
                             "pcode": "SW1A 1AA"
                           },
                           "inf": "POL01",
-                          "offences": {
-                            "offence": [
-                              {
+                          "offences": [
+                            {
+                              "offence": {
                                 "code": "TH68001",
                                 "title": "Offence title 1",
                                 "cy_title": "Welsh offence title 1",
                                 "sum": "Offence summary 1",
                                 "cy_sum": "Welsh offence summary 1"
                               }
-                            ]
-                          }
-                        },
-                        {
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "case": {
                           "caseno": "1000000001",
                           "def_name": "Mrs Test User",
                           "def_dob": "01/07/1981",
@@ -53,34 +55,36 @@
                             "pcode": "SW1A 1AA"
                           },
                           "inf": "POL02",
-                          "offences": {
-                            "offence": [
-                              {
+                          "offences": [
+                            {
+                              "offence": {
                                 "code": "TH68002",
                                 "title": "Offence title 2",
                                 "sum": "Offence summary 2"
                               }
-                            ]
-                          }
+                            }
+                          ]
                         }
-                      ]
-                    }
+                      }
+                    ]
                   }
-                ]
-              }
-            },
-            {
+                }
+              ]
+            }
+          },
+          {
+            "session": {
               "lja": "North Northumbria Magistrates' Court",
               "court": "North Shields Magistrates' Court",
               "room": 2,
               "sstart": "10:00",
-              "blocks": {
-                "block": [
-                  {
+              "blocks": [
+                {
+                  "block": {
                     "bstart": "10:00",
-                    "cases": {
-                      "case": [
-                        {
+                    "cases": [
+                      {
+                        "case": {
                           "caseno": "1000000002",
                           "def_name": "Mr Test User 2",
                           "def_dob": "07/01/1975",
@@ -91,29 +95,33 @@
                             "pcode": "SW1A 1AA"
                           },
                           "inf": "POL03",
-                          "offences": {
-                            "offence": [
-                              {
+                          "offences": [
+                            {
+                              "offence": {
                                 "code": "TH68003",
                                 "title": "Offence title 3",
                                 "sum": "Offence summary 3"
-                              },
-                              {
+                              }
+                            },
+                            {
+                              "offence": {
                                 "code": "TH68004",
                                 "title": "Offence title 4",
                                 "sum": "Offence summary 4"
                               }
-                            ]
-                          }
+                            }
+                          ]
                         }
-                      ]
-                    }
-                  },
-                  {
+                      }
+                    ]
+                  }
+                },
+                {
+                  "block": {
                     "bstart": "14:00",
-                    "cases": {
-                      "case": [
-                        {
+                    "cases": [
+                      {
+                        "case": {
                           "caseno": "1000000003",
                           "def_name": "Mr Test User 3",
                           "def_dob": "12/02/1985",
@@ -124,24 +132,24 @@
                             "pcode": "SW1A 1AA"
                           },
                           "inf": "POL04",
-                          "offences": {
-                            "offence": [
-                              {
+                          "offences": [
+                            {
+                              "offence": {
                                 "code": "TH68005",
                                 "title": "Offence title 5",
                                 "sum": "Offence summary 5"
                               }
-                            ]
-                          }
+                            }
+                          ]
                         }
-                      ]
-                    }
+                      }
+                    ]
                   }
-                ]
-              }
+                }
+              ]
             }
-          ]
-        }
+          }
+        ]
       }
     }
   }

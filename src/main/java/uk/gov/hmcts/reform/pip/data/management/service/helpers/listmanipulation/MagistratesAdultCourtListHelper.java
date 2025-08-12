@@ -18,7 +18,8 @@ public final class MagistratesAdultCourtListHelper {
     public static List<MagistratesAdultCourtList> processPayload(JsonNode payload, Language language) {
         List<MagistratesAdultCourtList> results = new ArrayList<>();
 
-        payload.get("document").get("data").get("job").get("sessions").get("session").forEach(sessionNode -> {
+        payload.get("document").get("data").get("job").get("sessions").forEach(sessionsNode -> {
+            JsonNode sessionNode = sessionsNode.get("session");
             MagistratesAdultCourtList result = new MagistratesAdultCourtList();
             result.setLja(sessionNode.get("lja").asText());
             result.setCourtName(sessionNode.get("court").asText());
@@ -27,11 +28,13 @@ public final class MagistratesAdultCourtListHelper {
                                                                     "HH:mm"));
             List<CaseInfo> cases = new ArrayList<>();
 
-            sessionNode.get("blocks").get("block").forEach(blockNode -> {
-                blockNode.get("cases").get("case").forEach(caseNode -> {
+            sessionNode.get("blocks").forEach(blocksNode -> {
+                blocksNode.get("block").get("cases").forEach(casesNode -> {
+                    JsonNode caseNode = casesNode.get("case");
                     CaseInfo caseInfo = new CaseInfo();
-                    caseInfo.setBlockStartTime(DateHelper.convertTimeFormat(blockNode.get("bstart").asText(),
-                                                                            "HH:mm"));
+                    caseInfo.setBlockStartTime(
+                        DateHelper.convertTimeFormat(blocksNode.get("block").get("bstart").asText(), "HH:mm")
+                    );
                     caseInfo.setCaseNumber(caseNode.get("caseno").asText());
                     caseInfo.setDefendantName(caseNode.get("def_name").asText());
                     caseInfo.setDefendantDob(GeneralHelper.findAndReturnNodeText(caseNode, "def_dob"));
@@ -59,13 +62,14 @@ public final class MagistratesAdultCourtListHelper {
         return GeneralHelper.convertToDelimitedString(fullAddress, ", ");
     }
 
-    private static Offence processOffences(JsonNode offencesNode, Language language) {
+    private static Offence processOffences(JsonNode offences, Language language) {
         List<String> offenceCodes = new ArrayList<>();
         List<String> offenceTitles = new ArrayList<>();
         List<String> offenceSummaries = new ArrayList<>();
 
-        if (offencesNode.has("offence")) {
-            offencesNode.get("offence").forEach(offenceNode -> {
+        offences.forEach(offencesNode -> {
+            if (offencesNode.has("offence")) {
+                JsonNode offenceNode = offencesNode.get("offence");
                 offenceCodes.add(offenceNode.get("code").asText());
                 String offenceTitle = offenceNode.get(
                     language == Language.WELSH && offenceNode.has("cy_title") ? "cy_title" : "title"
@@ -75,8 +79,9 @@ public final class MagistratesAdultCourtListHelper {
                     language == Language.WELSH && offenceNode.has("cy_sum") ? "cy_sum" : "sum"
                 ).asText();
                 offenceSummaries.add(offenceSummary);
-            });
-        }
+            }
+        });
+
         return new Offence(
             GeneralHelper.convertToDelimitedString(offenceCodes, ", "),
             GeneralHelper.convertToDelimitedString(offenceTitles, ", "),
