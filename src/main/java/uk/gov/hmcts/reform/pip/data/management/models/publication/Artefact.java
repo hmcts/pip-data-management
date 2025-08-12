@@ -135,13 +135,6 @@ public class Artefact {
     private String payload;
 
     /**
-     * A marker to show whether the artefact is archived.
-     */
-    @Builder.Default
-    @JsonView(ArtefactView.Internal.class)
-    private Boolean isArchived = false;
-
-    /**
      * Date/Time to indicate when the artefact was last received.
      */
     @JsonView(ArtefactView.Internal.class)

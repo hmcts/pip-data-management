@@ -17,8 +17,7 @@ SELECT artefact.artefact_id,
        artefact.list_type,
        artefact.superseded_count,
        artefact.last_received_date,
-       false AS is_archived,
-       artefact.is_flat_file
+       false AS is_archived
 FROM artefact
 UNION ALL
 SELECT artefact_archived.artefact_id,
@@ -34,6 +33,5 @@ SELECT artefact_archived.artefact_id,
        artefact_archived.list_type,
        artefact_archived.superseded_count,
        artefact_archived.last_received_date,
-       true AS is_archived,
-       artefact_archived.is_flat_file
+       true AS is_archived
 FROM artefact_archived;
