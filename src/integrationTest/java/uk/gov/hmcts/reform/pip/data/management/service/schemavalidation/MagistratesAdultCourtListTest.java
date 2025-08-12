@@ -26,7 +26,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ActiveProfiles("integration-basic")
 @SpringBootTest
-@SuppressWarnings("PMD.TooManyMethods")
 class MagistratesAdultCourtListTest extends IntegrationBasicTestBase {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private static final String MAGISTRATES_ADULT_COURT_LIST_DAILY = "MAGISTRATES_ADULT_COURT_LIST_DAILY";
@@ -41,7 +40,6 @@ class MagistratesAdultCourtListTest extends IntegrationBasicTestBase {
     private static final String PRINT_DATE = "printdate";
     private static final String SESSIONS = "sessions";
     private static final String SESSION = "session";
-    private static final String DOH = "doh";
     private static final String LJA = "lja";
     private static final String COURT = "court";
     private static final String ROOM = "room";
@@ -173,29 +171,6 @@ class MagistratesAdultCourtListTest extends IntegrationBasicTestBase {
             ((ObjectNode) node.get(DOCUMENT).get(DATA).get(JOB)
                 .get(SESSIONS))
                 .remove(SESSION);
-
-            assertThrows(
-                PayloadValidationException.class,
-                () -> validationService.validateBody(node.toString(), headerGroup, true),
-                INVALID_JSON_MESSAGE);
-        }
-    }
-
-    @ParameterizedTest
-    @EnumSource(value = ListType.class,
-        names = {MAGISTRATES_ADULT_COURT_LIST_DAILY, MAGISTRATES_ADULT_COURT_LIST_FUTURE})
-    void testValidateWithErrorWhenDohMissing(ListType listType) throws IOException {
-        HeaderGroup headerGroup = new HeaderGroup(PROVENANCE, "", ArtefactType.LIST, Sensitivity.PUBLIC,
-                                                  Language.ENGLISH, DISPLAY_FROM, DISPLAY_TO, listType, COURT_ID,
-                                                  CONTENT_DATE);
-        try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(MAGISTRATES_ADULT_COURT_LIST_VALID_JSON)) {
-            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
-
-            JsonNode node = OBJECT_MAPPER.readValue(text, JsonNode.class);
-            ((ObjectNode) node.get(DOCUMENT).get(DATA).get(JOB)
-                .get(SESSIONS).get(SESSION).get(0))
-                .remove(DOH);
 
             assertThrows(
                 PayloadValidationException.class,
@@ -730,29 +705,6 @@ class MagistratesAdultCourtListTest extends IntegrationBasicTestBase {
 
             String listJson = node.toString()
                 .replaceAll("\"printdate\":\"[^\"]+\"", "\"printdate\":\"2025/07/31\"");
-            assertThrows(
-                PayloadValidationException.class,
-                () -> validationService.validateBody(listJson, headerGroup, true),
-                INVALID_JSON_MESSAGE);
-        }
-    }
-
-    @ParameterizedTest
-    @EnumSource(value = ListType.class,
-        names = {MAGISTRATES_ADULT_COURT_LIST_DAILY, MAGISTRATES_ADULT_COURT_LIST_FUTURE})
-    void testValidateWithErrorWhenInvalidDohFormat(ListType listType) throws IOException {
-        HeaderGroup headerGroup = new HeaderGroup(PROVENANCE, "", ArtefactType.LIST, Sensitivity.PUBLIC,
-                                                  Language.ENGLISH, DISPLAY_FROM, DISPLAY_TO, listType, COURT_ID,
-                                                  CONTENT_DATE);
-        try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(MAGISTRATES_ADULT_COURT_LIST_VALID_JSON)) {
-            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
-
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode node = mapper.readValue(text, JsonNode.class);
-
-            String listJson = node.toString()
-                .replaceAll("\"doh\":\"[^\"]+\"", "\"doh\":\"01-08-2025\"");
             assertThrows(
                 PayloadValidationException.class,
                 () -> validationService.validateBody(listJson, headerGroup, true),

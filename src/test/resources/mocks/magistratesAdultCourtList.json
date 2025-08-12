@@ -9,7 +9,6 @@
         "sessions": {
           "session": [
             {
-              "doh": "01/08/2025",
               "lja": "North Northumbria Magistrates' Court",
               "court": "North Shields Magistrates' Court",
               "room": 1,
@@ -71,7 +70,6 @@
               }
             },
             {
-              "doh": "01/08/2025",
               "lja": "North Northumbria Magistrates' Court",
               "court": "North Shields Magistrates' Court",
               "room": 2,

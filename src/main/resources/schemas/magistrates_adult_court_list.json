@@ -98,7 +98,6 @@
                         "title": "Job session",
                         "type": "object",
                         "required": [
-                          "doh",
                           "lja",
                           "court",
                           "room",
@@ -106,11 +105,6 @@
                           "blocks"
                         ],
                         "properties": {
-                          "doh": {
-                            "title": "Date of hearing in the format dd/mm/yyyy",
-                            "type": "string",
-                            "pattern": "^\\d{2}/\\d{2}/\\d{4}$"
-                          },
                           "lja": {
                             "title": "Local justice area name",
                             "type": "string",
