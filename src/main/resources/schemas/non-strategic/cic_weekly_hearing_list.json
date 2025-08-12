@@ -32,7 +32,7 @@
         "examples": [
           "10:30am"
         ],
-        "pattern": "^\\d{1,2}([:.]\\d{2})?[ap]m$"
+        "pattern": "^\\d{1,2}([:.]\\d{2})?[ap]m\\s*$"
       },
       "caseReferenceNumber": {
         "title": "Case reference number",
