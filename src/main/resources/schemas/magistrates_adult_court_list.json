@@ -87,14 +87,14 @@
                 },
                 "sessions": {
                   "title": "List of job sessions",
-                  "type": "object",
-                  "required": [
-                    "session"
-                  ],
-                  "properties": {
-                    "session": {
-                      "type": "array",
-                      "items": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "session"
+                    ],
+                    "properties": {
+                      "session": {
                         "title": "Job session",
                         "type": "object",
                         "required": [
@@ -127,14 +127,14 @@
                           },
                           "blocks": {
                             "title": "List of session blocks",
-                            "type": "object",
-                            "required": [
-                              "block"
-                            ],
-                            "properties": {
-                              "block": {
-                                "type": "array",
-                                "items": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "required": [
+                                "block"
+                              ],
+                              "properties": {
+                                "block": {
                                   "title": "Session block",
                                   "type": "object",
                                   "required": [
@@ -149,14 +149,14 @@
                                     },
                                     "cases": {
                                       "title": "List of hearing cases",
-                                      "type": "object",
-                                      "required": [
-                                        "case"
-                                      ],
-                                      "properties": {
-                                        "case": {
-                                          "type": "array",
-                                          "items": {
+                                      "type": "array",
+                                      "items": {
+                                        "type": "object",
+                                        "required": [
+                                          "case"
+                                        ],
+                                        "properties": {
+                                          "case": {
                                             "title": "Hearing case",
                                             "type": "object",
                                             "required": [
@@ -202,13 +202,13 @@
                                                 "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                               },
                                               "offences": {
-                                                "title": "List of offences",
-                                                "type": "object",
-                                                "properties": {
-                                                  "offence": {
-                                                    "type": "array",
-                                                    "items": {
-                                                      "title": "Offence",
+                                                "title": "List of criminal offences",
+                                                "type": "array",
+                                                "items": {
+                                                  "type": "object",
+                                                  "properties": {
+                                                    "offence": {
+                                                      "title": "Criminal offence",
                                                       "type": "object",
                                                       "required": [
                                                         "code",

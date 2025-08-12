@@ -169,7 +169,7 @@ class MagistratesAdultCourtListTest extends IntegrationBasicTestBase {
 
             JsonNode node = OBJECT_MAPPER.readValue(text, JsonNode.class);
             ((ObjectNode) node.get(DOCUMENT).get(DATA).get(JOB)
-                .get(SESSIONS))
+                .get(SESSIONS).get(0))
                 .remove(SESSION);
 
             assertThrows(
@@ -192,7 +192,7 @@ class MagistratesAdultCourtListTest extends IntegrationBasicTestBase {
 
             JsonNode node = OBJECT_MAPPER.readValue(text, JsonNode.class);
             ((ObjectNode) node.get(DOCUMENT).get(DATA).get(JOB)
-                .get(SESSIONS).get(SESSION).get(0))
+                .get(SESSIONS).get(0).get(SESSION))
                 .remove(LJA);
 
             assertThrows(
@@ -215,7 +215,7 @@ class MagistratesAdultCourtListTest extends IntegrationBasicTestBase {
 
             JsonNode node = OBJECT_MAPPER.readValue(text, JsonNode.class);
             ((ObjectNode) node.get(DOCUMENT).get(DATA).get(JOB)
-                .get(SESSIONS).get(SESSION).get(0))
+                .get(SESSIONS).get(0).get(SESSION))
                 .remove(COURT);
 
             assertThrows(
@@ -238,7 +238,7 @@ class MagistratesAdultCourtListTest extends IntegrationBasicTestBase {
 
             JsonNode node = OBJECT_MAPPER.readValue(text, JsonNode.class);
             ((ObjectNode) node.get(DOCUMENT).get(DATA).get(JOB)
-                .get(SESSIONS).get(SESSION).get(0))
+                .get(SESSIONS).get(0).get(SESSION))
                 .remove(ROOM);
 
             assertThrows(
@@ -261,7 +261,7 @@ class MagistratesAdultCourtListTest extends IntegrationBasicTestBase {
 
             JsonNode node = OBJECT_MAPPER.readValue(text, JsonNode.class);
             ((ObjectNode) node.get(DOCUMENT).get(DATA).get(JOB)
-                .get(SESSIONS).get(SESSION).get(0))
+                .get(SESSIONS).get(0).get(SESSION))
                 .remove(SSTART);
 
             assertThrows(
@@ -284,7 +284,7 @@ class MagistratesAdultCourtListTest extends IntegrationBasicTestBase {
 
             JsonNode node = OBJECT_MAPPER.readValue(text, JsonNode.class);
             ((ObjectNode) node.get(DOCUMENT).get(DATA).get(JOB)
-                .get(SESSIONS).get(SESSION).get(0))
+                .get(SESSIONS).get(0).get(SESSION))
                 .remove(BLOCKS);
 
             assertThrows(
@@ -307,8 +307,8 @@ class MagistratesAdultCourtListTest extends IntegrationBasicTestBase {
 
             JsonNode node = OBJECT_MAPPER.readValue(text, JsonNode.class);
             ((ObjectNode) node.get(DOCUMENT).get(DATA).get(JOB)
-                .get(SESSIONS).get(SESSION).get(0)
-                .get(BLOCKS))
+                .get(SESSIONS).get(0).get(SESSION)
+                .get(BLOCKS).get(0))
                 .remove(BLOCK);
 
             assertThrows(
@@ -331,8 +331,8 @@ class MagistratesAdultCourtListTest extends IntegrationBasicTestBase {
 
             JsonNode node = OBJECT_MAPPER.readValue(text, JsonNode.class);
             ((ObjectNode) node.get(DOCUMENT).get(DATA).get(JOB)
-                .get(SESSIONS).get(SESSION).get(0)
-                .get(BLOCKS).get(BLOCK).get(0))
+                .get(SESSIONS).get(0).get(SESSION)
+                .get(BLOCKS).get(0).get(BLOCK))
                 .remove(BSTART);
 
             assertThrows(
@@ -355,8 +355,8 @@ class MagistratesAdultCourtListTest extends IntegrationBasicTestBase {
 
             JsonNode node = OBJECT_MAPPER.readValue(text, JsonNode.class);
             ((ObjectNode) node.get(DOCUMENT).get(DATA).get(JOB)
-                .get(SESSIONS).get(SESSION).get(0)
-                .get(BLOCKS).get(BLOCK).get(0))
+                .get(SESSIONS).get(0).get(SESSION)
+                .get(BLOCKS).get(0).get(BLOCK))
                 .remove(CASES);
 
             assertThrows(
@@ -379,9 +379,9 @@ class MagistratesAdultCourtListTest extends IntegrationBasicTestBase {
 
             JsonNode node = OBJECT_MAPPER.readValue(text, JsonNode.class);
             ((ObjectNode) node.get(DOCUMENT).get(DATA).get(JOB)
-                .get(SESSIONS).get(SESSION).get(0)
-                .get(BLOCKS).get(BLOCK).get(0)
-                .get(CASES))
+                .get(SESSIONS).get(0).get(SESSION)
+                .get(BLOCKS).get(0).get(BLOCK)
+                .get(CASES).get(0))
                 .remove(CASE);
 
             assertThrows(
@@ -403,10 +403,10 @@ class MagistratesAdultCourtListTest extends IntegrationBasicTestBase {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = OBJECT_MAPPER.readValue(text, JsonNode.class);
-            ((ObjectNode) node.get(DOCUMENT).get(DATA).get(JOB).get(SESSIONS)
-                .get(SESSION).get(0)
-                .get(BLOCKS).get(BLOCK).get(0)
-                .get(CASES).get(CASE).get(0))
+            ((ObjectNode) node.get(DOCUMENT).get(DATA).get(JOB)
+                .get(SESSIONS).get(0).get(SESSION)
+                .get(BLOCKS).get(0).get(BLOCK)
+                .get(CASES).get(0).get(CASE))
                 .remove(CASE_NUM);
 
             assertThrows(
@@ -429,9 +429,9 @@ class MagistratesAdultCourtListTest extends IntegrationBasicTestBase {
 
             JsonNode node = OBJECT_MAPPER.readValue(text, JsonNode.class);
             ((ObjectNode) node.get(DOCUMENT).get(DATA).get(JOB)
-                .get(SESSIONS).get(SESSION).get(0)
-                .get(BLOCKS).get(BLOCK).get(0)
-                .get(CASES).get(CASE).get(0))
+                .get(SESSIONS).get(0).get(SESSION)
+                .get(BLOCKS).get(0).get(BLOCK)
+                .get(CASES).get(0).get(CASE))
                 .remove(DEF_NAME);
 
             assertThrows(
@@ -454,9 +454,9 @@ class MagistratesAdultCourtListTest extends IntegrationBasicTestBase {
 
             JsonNode node = OBJECT_MAPPER.readValue(text, JsonNode.class);
             ((ObjectNode) node.get(DOCUMENT).get(DATA).get(JOB)
-                .get(SESSIONS).get(SESSION).get(0)
-                .get(BLOCKS).get(BLOCK).get(0)
-                .get(CASES).get(CASE).get(0))
+                .get(SESSIONS).get(0).get(SESSION)
+                .get(BLOCKS).get(0).get(BLOCK)
+                .get(CASES).get(0).get(CASE))
                 .remove(DEF_ADDR);
 
             assertThrows(
@@ -479,9 +479,9 @@ class MagistratesAdultCourtListTest extends IntegrationBasicTestBase {
 
             JsonNode node = OBJECT_MAPPER.readValue(text, JsonNode.class);
             ((ObjectNode) node.get(DOCUMENT).get(DATA).get(JOB)
-                .get(SESSIONS).get(SESSION).get(0)
-                .get(BLOCKS).get(BLOCK).get(0)
-                .get(CASES).get(CASE).get(0)
+                .get(SESSIONS).get(0).get(SESSION)
+                .get(BLOCKS).get(0).get(BLOCK)
+                .get(CASES).get(0).get(CASE)
                 .get(DEF_ADDR))
                 .remove(LINE1);
 
@@ -505,9 +505,9 @@ class MagistratesAdultCourtListTest extends IntegrationBasicTestBase {
 
             JsonNode node = OBJECT_MAPPER.readValue(text, JsonNode.class);
             ((ObjectNode) node.get(DOCUMENT).get(DATA).get(JOB)
-                .get(SESSIONS).get(SESSION).get(0)
-                .get(BLOCKS).get(BLOCK).get(0)
-                .get(CASES).get(CASE).get(0))
+                .get(SESSIONS).get(0).get(SESSION)
+                .get(BLOCKS).get(0).get(BLOCK)
+                .get(CASES).get(0).get(CASE))
                 .remove(INF);
 
             assertThrows(
@@ -530,9 +530,9 @@ class MagistratesAdultCourtListTest extends IntegrationBasicTestBase {
 
             JsonNode node = OBJECT_MAPPER.readValue(text, JsonNode.class);
             ((ObjectNode) node.get(DOCUMENT).get(DATA).get(JOB)
-                .get(SESSIONS).get(SESSION).get(0)
-                .get(BLOCKS).get(BLOCK).get(0)
-                .get(CASES).get(CASE).get(0))
+                .get(SESSIONS).get(0).get(SESSION)
+                .get(BLOCKS).get(0).get(BLOCK)
+                .get(CASES).get(0).get(CASE))
                 .remove(OFFENCES);
 
             assertThrows(
@@ -555,10 +555,10 @@ class MagistratesAdultCourtListTest extends IntegrationBasicTestBase {
 
             JsonNode node = OBJECT_MAPPER.readValue(text, JsonNode.class);
             ((ObjectNode) node.get(DOCUMENT).get(DATA).get(JOB)
-                .get(SESSIONS).get(SESSION).get(0)
-                .get(BLOCKS).get(BLOCK).get(0)
-                .get(CASES).get(CASE).get(0)
-                .get(OFFENCES).get(OFFENCE).get(0))
+                .get(SESSIONS).get(0).get(SESSION)
+                .get(BLOCKS).get(0).get(BLOCK)
+                .get(CASES).get(0).get(CASE)
+                .get(OFFENCES).get(0).get(OFFENCE))
                 .remove(CODE);
 
             assertThrows(
@@ -581,10 +581,10 @@ class MagistratesAdultCourtListTest extends IntegrationBasicTestBase {
 
             JsonNode node = OBJECT_MAPPER.readValue(text, JsonNode.class);
             ((ObjectNode) node.get(DOCUMENT).get(DATA).get(JOB)
-                .get(SESSIONS).get(SESSION).get(0)
-                .get(BLOCKS).get(BLOCK).get(0)
-                .get(CASES).get(CASE).get(0)
-                .get(OFFENCES).get(OFFENCE).get(0))
+                .get(SESSIONS).get(0).get(SESSION)
+                .get(BLOCKS).get(0).get(BLOCK)
+                .get(CASES).get(0).get(CASE)
+                .get(OFFENCES).get(0).get(OFFENCE))
                 .remove(TITLE);
 
             assertThrows(
@@ -607,10 +607,10 @@ class MagistratesAdultCourtListTest extends IntegrationBasicTestBase {
 
             JsonNode node = OBJECT_MAPPER.readValue(text, JsonNode.class);
             ((ObjectNode) node.get(DOCUMENT).get(DATA).get(JOB)
-                .get(SESSIONS).get(SESSION).get(0)
-                .get(BLOCKS).get(BLOCK).get(0)
-                .get(CASES).get(CASE).get(0)
-                .get(OFFENCES).get(OFFENCE).get(0))
+                .get(SESSIONS).get(0).get(SESSION)
+                .get(BLOCKS).get(0).get(BLOCK)
+                .get(CASES).get(0).get(CASE)
+                .get(OFFENCES).get(0).get(OFFENCE))
                 .remove(SUM);
 
             assertThrows(
