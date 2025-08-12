@@ -53,25 +53,23 @@ public class PublicationLocationService {
         return artefactRepository.findAllNoMatchArtefacts();
     }
 
-    public String deleteArtefactByLocation(Integer locationId, String userId)
+    public String deleteArtefactByLocation(Integer locationId, String requesterId)
         throws JsonProcessingException {
         List<Artefact> activeArtefacts = artefactRepository.findActiveArtefactsForLocation(
             LocalDateTime.now(),
             locationId.toString());
         if (activeArtefacts.isEmpty()) {
             log.info(writeLog(String.format("User %s attempting to delete all artefacts for location %s. "
-                                                + "No artefacts found",
-                                            userId, locationId)));
+                            + "No artefacts found", requesterId, locationId)));
             throw new ArtefactNotFoundException(String.format(
                 "No artefacts found with the location ID %s",
                 locationId
             ));
         }
         log.info(writeLog(String.format("User %s attempting to delete all artefacts for location %s. "
-                                            + "%s artefact(s) found",
-                                        userId, locationId, activeArtefacts.size())));
+                        + "%s artefact(s) found", requesterId, locationId, activeArtefacts.size())));
 
-        publicationRemovalService.deleteArtefactByLocation(activeArtefacts, locationId, userId);
+        publicationRemovalService.deleteArtefactByLocation(activeArtefacts, locationId, requesterId);
         return String.format("Total %s artefact deleted for location id %s", activeArtefacts.size(), locationId);
     }
 
