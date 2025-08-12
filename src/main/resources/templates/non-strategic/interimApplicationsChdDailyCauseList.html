@@ -131,9 +131,9 @@
 <div>
   <h2 id="page-heading" class="govuk-heading-l" th:text="${i18n.listName}"/>
   <div>
-    <p id="venue-line-1" class="govuk-body no-margin-bottom govuk-!-font-weight-bold" th:text="${i18n.venueLine1}"/>
-    <p id="venue-line-2" class="govuk-body no-margin-bottom" th:text="${i18n.venueLine2}"/>
-    <p id="venue-line-3" class="govuk-body" th:text="${i18n.venueLine3}"/>
+    <p id="venue-line-1" class="govuk-body no-margin-bottom govuk-!-font-weight-bold" th:text="${i18n.venueNameRolls}"/>
+    <p id="venue-line-2" class="govuk-body no-margin-bottom" th:text="${i18n.addressLineRolls1}"/>
+    <p id="venue-line-3" class="govuk-body" th:text="${i18n.addressLineRolls2}"/>
   </div>
   <p id="list-date" class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-1" th:text="${i18n.listDate + contentDate}"/>
   <p id="last-updated-date" class="govuk-body" th:text="${i18n.lastUpdated + lastUpdatedDate + i18n.at + lastUpdatedTime}"/>
@@ -156,7 +156,7 @@
     <table class="govuk-table">
       <thead class="govuk-table__header">
       <tr>
-        <th:block th:each="header: ${i18n.tableHeaders}">
+        <th:block th:each="header: ${i18n.tableHeadersCommon1}">
           <th th:text="${header}" scope="col" class="govuk-table__header"/>
         </th:block>
       </tr>
