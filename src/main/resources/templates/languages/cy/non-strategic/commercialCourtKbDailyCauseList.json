@@ -1,19 +1,4 @@
 {
   "listName": "Rhestr Achosion Dyddiol y Llys Masnach (Adran Mainc y Brenin)",
-  "venueName": "Rolls Building",
-  "addressLine1": "Fetter Lane, London",
-  "addressLine2": "EC4A 1NL",
-  "importantInformationHeading1": "Gwrandawiadau o bell gerbron Barnwr yr Uchel Lys",
-  "importantInformationLine1": "Bydd y gwrandawiad ar gael i gynrychiolwyr y cyfryngau ar gais. Bydd yn cael ei drefnu a'i gynnal gan ddefnyddio MS Teams (oni nodir yn wahanol). Bydd angen i unrhyw gynrychiolydd y cyfryngau (neu unrhyw aelod arall o'r cyhoedd) sy'n dymuno gweld y gwrandawiad wneud hynny dros y rhyngrwyd a darparu cyfeiriad e-bost i gael dolen briodol ar gyfer cael mynediad. Cysylltwch â comct.listing@justice.gov.uk.",
-  "importantInformationHeading2": "Dyfarniadau o bell",
-  "importantInformationLine2": "Traddodi o Bell: Bydd y dyfarniad hwn yn cael ei draddodi o bell trwy gylchrediad i'r partïon neu eu cynrychiolwyr trwy e-bost a'i ryddhau i'r Archifau Cenedlaethol. Dylai copi o'r dyfarniad ar ffurf derfynol fel y'i rhoddwyd fod ar gael ar wefan yr Archifau Cenedlaethol yn fuan wedyn. Gall aelodau'r cyfryngau gael copi ar gais trwy e-bost i'r Swyddfa Farnwrol press.enquiries@judiciary.uk",
-  "tableHeaders": [
-    "Barnwr",
-    "Amser",
-    "Leoliad",
-    "Math",
-    "Rhif yr achos",
-    "Enw’r achos",
-    "Gwybodaeth ychwanegol"
-  ]
+  "importantInformationLine1": "Bydd y gwrandawiad ar gael i gynrychiolwyr y cyfryngau ar gais. Bydd yn cael ei drefnu a'i gynnal gan ddefnyddio MS Teams (oni nodir yn wahanol). Bydd angen i unrhyw gynrychiolydd y cyfryngau (neu unrhyw aelod arall o'r cyhoedd) sy'n dymuno gweld y gwrandawiad wneud hynny dros y rhyngrwyd a darparu cyfeiriad e-bost i gael dolen briodol ar gyfer cael mynediad. Cysylltwch â comct.listing@justice.gov.uk."
 }

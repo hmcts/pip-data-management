@@ -1,19 +1,6 @@
 {
   "listName": "Rhestr Achosion Dyddiol Ariannol (Adran Siawnsri /Adran Mainc y Brenin/Llys Masnach)",
-  "venueName": "Rolls Building",
-  "addressLine1": "Fetter Lane, London",
-  "addressLine2": "EC4A 1NL",
   "importantInformationHeading1": "Gwrandawiadau o bell gerbron Barnwr yr Adran Siawnsri",
-  "importantInformationLine1": "Os yw cynrychiolydd o'r cyfryngau neu aelod o'r cyhoedd yn dymuno mynychu'r gwrandawiad, dylent gysylltu â'r swyddfa restru yn chanceryjudgeslisting@justice.gov.uk a fydd yn eu rhoi mewn cysylltiad â'r unigolyn perthnasol.",
   "importantInformationHeading2": "Gwrandawiadau o bell gerbron Barnwr y Llys Masnach",
-  "importantInformationLine2": "Bydd y gwrandawiad ar gael i gynrychiolwyr y cyfryngau ar gais. Bydd yn cael ei drefnu a'i gynnal gan ddefnyddio MS Teams (oni nodir yn wahanol). Bydd angen i unrhyw gynrychiolydd y cyfryngau (neu unrhyw aelod arall o'r cyhoedd) sy'n dymuno gweld y gwrandawiad wneud hynny dros y rhyngrwyd a darparu cyfeiriad e-bost i gael dolen briodol ar gyfer cael mynediad. Cysylltwch â comct.listing@justice.gov.uk.",
-  "tableHeaders": [
-    "Barnwr",
-    "Amser",
-    "Leoliad",
-    "Math",
-    "Rhif yr achos",
-    "Enw’r achos",
-    "Gwybodaeth ychwanegol"
-  ]
+  "importantInformationLine2": "Bydd y gwrandawiad ar gael i gynrychiolwyr y cyfryngau ar gais. Bydd yn cael ei drefnu a'i gynnal gan ddefnyddio MS Teams (oni nodir yn wahanol). Bydd angen i unrhyw gynrychiolydd y cyfryngau (neu unrhyw aelod arall o'r cyhoedd) sy'n dymuno gweld y gwrandawiad wneud hynny dros y rhyngrwyd a darparu cyfeiriad e-bost i gael dolen briodol ar gyfer cael mynediad. Cysylltwch â comct.listing@justice.gov.uk."
 }
