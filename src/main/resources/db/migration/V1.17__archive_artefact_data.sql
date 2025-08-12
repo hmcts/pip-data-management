@@ -1,3 +1,6 @@
+--
+-- Move archived artefact data to the archived artefact table
+--
 DO
 $CR$
   DECLARE
