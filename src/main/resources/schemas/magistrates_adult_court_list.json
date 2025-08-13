@@ -86,173 +86,140 @@
                   "pattern": "^\\d{2}/\\d{2}/\\d{4}$"
                 },
                 "sessions": {
-                  "title": "List of job sessions",
                   "type": "array",
                   "items": {
+                    "title": "Job session",
                     "type": "object",
                     "required": [
-                      "session"
+                      "lja",
+                      "court",
+                      "room",
+                      "sstart",
+                      "blocks"
                     ],
                     "properties": {
-                      "session": {
-                        "title": "Job session",
-                        "type": "object",
-                        "required": [
-                          "lja",
-                          "court",
-                          "room",
-                          "sstart",
-                          "blocks"
-                        ],
-                        "properties": {
-                          "lja": {
-                            "title": "Local justice area name",
-                            "type": "string",
-                            "maxLength": 100,
-                            "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
-                          },
-                          "court": {
-                            "title": "Courthouse name",
-                            "type": "string",
-                            "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
-                          },
-                          "room": {
-                            "title": "Courtroom name",
-                            "type": "integer"
-                          },
-                          "sstart": {
-                            "title": "Session start time in the format hh:mm",
-                            "type": "string",
-                            "pattern": "^\\d{2}:\\d{2}$"
-                          },
-                          "blocks": {
-                            "title": "List of session blocks",
-                            "type": "array",
-                            "items": {
-                              "type": "object",
-                              "required": [
-                                "block"
-                              ],
-                              "properties": {
-                                "block": {
-                                  "title": "Session block",
-                                  "type": "object",
-                                  "required": [
-                                    "bstart",
-                                    "cases"
-                                  ],
-                                  "properties": {
-                                    "bstart": {
-                                      "title": "Block start time in the format hh:mm",
-                                      "type": "string",
-                                      "pattern": "^\\d{2}:\\d{2}$"
-                                    },
-                                    "cases": {
-                                      "title": "List of hearing cases",
-                                      "type": "array",
-                                      "items": {
-                                        "type": "object",
-                                        "required": [
-                                          "case"
-                                        ],
-                                        "properties": {
-                                          "case": {
-                                            "title": "Hearing case",
-                                            "type": "object",
-                                            "required": [
-                                              "caseno",
-                                              "def_name",
-                                              "def_addr",
-                                              "inf",
-                                              "offences"
-                                            ],
-                                            "properties": {
-                                              "caseno": {
-                                                "title": "Case number",
-                                                "type": "string",
-                                                "minLength": 10,
-                                                "maxLength": 10,
-                                                "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
-                                              },
-                                              "def_name": {
-                                                "title": "Defendant name",
-                                                "type": "string",
-                                                "maxLength": 200,
-                                                "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
-                                              },
-                                              "def_dob": {
-                                                "title": "Defendant date of birth in the format dd/mm/yyyy",
-                                                "type": "string",
-                                                "pattern": "^\\d{2}/\\d{2}/\\d{4}$"
-                                              },
-                                              "def_age": {
-                                                "title": "Defendant age",
-                                                "type": "integer"
-                                              },
-                                              "def_addr": {
-                                                "title": "Defendant address",
-                                                "$ref": "#/$defs/address",
-                                                "required": [
-                                                  "line1"
-                                                ]
-                                              },
-                                              "inf": {
-                                                "title": "Internal code for the cases' informant",
-                                                "type": "string",
-                                                "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
-                                              },
-                                              "offences": {
-                                                "title": "List of criminal offences",
-                                                "type": "array",
-                                                "items": {
-                                                  "type": "object",
-                                                  "properties": {
-                                                    "offence": {
-                                                      "title": "Criminal offence",
-                                                      "type": "object",
-                                                      "required": [
-                                                        "code",
-                                                        "title",
-                                                        "sum"
-                                                      ],
-                                                      "properties": {
-                                                        "code": {
-                                                          "title": "CJS offence code",
-                                                          "type": "string",
-                                                          "maxLength": 10,
-                                                          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
-                                                        },
-                                                        "title": {
-                                                          "title": "Offence title",
-                                                          "type": "string",
-                                                          "maxLength": 120,
-                                                          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
-                                                        },
-                                                        "cy_title": {
-                                                          "title": "Welsh offence title",
-                                                          "type": "string",
-                                                          "maxLength": 120,
-                                                          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
-                                                        },
-                                                        "sum": {
-                                                          "title": "Offence wording",
-                                                          "type": "string",
-                                                          "maxLength": 4000,
-                                                          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
-                                                        },
-                                                        "cy_sum": {
-                                                          "title": "Welsh offence wording",
-                                                          "type": "string",
-                                                          "maxLength": 4000,
-                                                          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
-                                                        }
-                                                      }
-                                                    }
-                                                  }
-                                                }
-                                              }
-                                            }
-                                          }
+                      "lja": {
+                        "title": "Local justice area name",
+                        "type": "string",
+                        "maxLength": 100,
+                        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+                      },
+                      "court": {
+                        "title": "Courthouse name",
+                        "type": "string",
+                        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+                      },
+                      "room": {
+                        "title": "Courtroom name",
+                        "type": "integer"
+                      },
+                      "sstart": {
+                        "title": "Session start time in the format hh:mm",
+                        "type": "string",
+                        "pattern": "^\\d{2}:\\d{2}$"
+                      },
+                      "blocks": {
+                        "type": "array",
+                        "items": {
+                          "title": "Session block",
+                          "type": "object",
+                          "required": [
+                            "bstart",
+                            "cases"
+                          ],
+                          "properties": {
+                            "bstart": {
+                              "title": "Block start time in the format hh:mm",
+                              "type": "string",
+                              "pattern": "^\\d{2}:\\d{2}$"
+                            },
+                            "cases": {
+                              "type": "array",
+                              "items": {
+                                "title": "Hearing case",
+                                "type": "object",
+                                "required": [
+                                  "caseno",
+                                  "def_name",
+                                  "def_addr",
+                                  "inf",
+                                  "offences"
+                                ],
+                                "properties": {
+                                  "caseno": {
+                                    "title": "Case number",
+                                    "type": "string",
+                                    "minLength": 10,
+                                    "maxLength": 10,
+                                    "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+                                  },
+                                  "def_name": {
+                                    "title": "Defendant name",
+                                    "type": "string",
+                                    "maxLength": 200,
+                                    "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+                                  },
+                                  "def_dob": {
+                                    "title": "Defendant date of birth in the format dd/mm/yyyy",
+                                    "type": "string",
+                                    "pattern": "^\\d{2}/\\d{2}/\\d{4}$"
+                                  },
+                                  "def_age": {
+                                    "title": "Defendant age",
+                                    "type": "integer"
+                                  },
+                                  "def_addr": {
+                                    "title": "Defendant address",
+                                    "$ref": "#/$defs/address",
+                                    "required": [
+                                      "line1"
+                                    ]
+                                  },
+                                  "inf": {
+                                    "title": "Internal code for the cases' informant",
+                                    "type": "string",
+                                    "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+                                  },
+                                  "offences": {
+                                    "type": "array",
+                                    "items": {
+                                      "title": "Criminal offence",
+                                      "type": "object",
+                                      "required": [
+                                        "code",
+                                        "title",
+                                        "sum"
+                                      ],
+                                      "properties": {
+                                        "code": {
+                                          "title": "CJS offence code",
+                                          "type": "string",
+                                          "maxLength": 10,
+                                          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+                                        },
+                                        "title": {
+                                          "title": "Offence title",
+                                          "type": "string",
+                                          "maxLength": 120,
+                                          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+                                        },
+                                        "cy_title": {
+                                          "title": "Welsh offence title",
+                                          "type": "string",
+                                          "maxLength": 120,
+                                          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+                                        },
+                                        "sum": {
+                                          "title": "Offence wording",
+                                          "type": "string",
+                                          "maxLength": 4000,
+                                          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+                                        },
+                                        "cy_sum": {
+                                          "title": "Welsh offence wording",
+                                          "type": "string",
+                                          "maxLength": 4000,
+                                          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                         }
                                       }
                                     }
