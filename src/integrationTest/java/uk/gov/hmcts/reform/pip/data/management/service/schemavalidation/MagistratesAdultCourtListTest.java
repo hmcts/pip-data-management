@@ -39,23 +39,19 @@ class MagistratesAdultCourtListTest extends IntegrationBasicTestBase {
     private static final String JOB = "job";
     private static final String PRINT_DATE = "printdate";
     private static final String SESSIONS = "sessions";
-    private static final String SESSION = "session";
     private static final String LJA = "lja";
     private static final String COURT = "court";
     private static final String ROOM = "room";
     private static final String SSTART = "sstart";
     private static final String BLOCKS = "blocks";
-    private static final String BLOCK = "block";
     private static final String BSTART = "bstart";
     private static final String CASES = "cases";
-    private static final String CASE = "case";
     private static final String CASE_NUM = "caseno";
     private static final String DEF_NAME = "def_name";
     private static final String DEF_ADDR = "def_addr";
     private static final String LINE1 = "line1";
     private static final String INF = "inf";
     private static final String OFFENCES = "offences";
-    private static final String OFFENCE = "offence";
     private static final String CODE = "code";
     private static final String TITLE = "title";
     private static final String SUM = "sum";
@@ -159,29 +155,6 @@ class MagistratesAdultCourtListTest extends IntegrationBasicTestBase {
     @ParameterizedTest
     @EnumSource(value = ListType.class,
         names = {MAGISTRATES_ADULT_COURT_LIST_DAILY, MAGISTRATES_ADULT_COURT_LIST_FUTURE})
-    void testValidateWithErrorWhenSessionMissing(ListType listType) throws IOException {
-        HeaderGroup headerGroup = new HeaderGroup(PROVENANCE, "", ArtefactType.LIST, Sensitivity.PUBLIC,
-                                                  Language.ENGLISH, DISPLAY_FROM, DISPLAY_TO, listType, COURT_ID,
-                                                  CONTENT_DATE);
-        try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(MAGISTRATES_ADULT_COURT_LIST_VALID_JSON)) {
-            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
-
-            JsonNode node = OBJECT_MAPPER.readValue(text, JsonNode.class);
-            ((ObjectNode) node.get(DOCUMENT).get(DATA).get(JOB)
-                .get(SESSIONS).get(0))
-                .remove(SESSION);
-
-            assertThrows(
-                PayloadValidationException.class,
-                () -> validationService.validateBody(node.toString(), headerGroup, true),
-                INVALID_JSON_MESSAGE);
-        }
-    }
-
-    @ParameterizedTest
-    @EnumSource(value = ListType.class,
-        names = {MAGISTRATES_ADULT_COURT_LIST_DAILY, MAGISTRATES_ADULT_COURT_LIST_FUTURE})
     void testValidateWithErrorWhenLjaMissing(ListType listType) throws IOException {
         HeaderGroup headerGroup = new HeaderGroup(PROVENANCE, "", ArtefactType.LIST, Sensitivity.PUBLIC,
                                                   Language.ENGLISH, DISPLAY_FROM, DISPLAY_TO, listType, COURT_ID,
@@ -192,7 +165,7 @@ class MagistratesAdultCourtListTest extends IntegrationBasicTestBase {
 
             JsonNode node = OBJECT_MAPPER.readValue(text, JsonNode.class);
             ((ObjectNode) node.get(DOCUMENT).get(DATA).get(JOB)
-                .get(SESSIONS).get(0).get(SESSION))
+                .get(SESSIONS).get(0))
                 .remove(LJA);
 
             assertThrows(
@@ -215,7 +188,7 @@ class MagistratesAdultCourtListTest extends IntegrationBasicTestBase {
 
             JsonNode node = OBJECT_MAPPER.readValue(text, JsonNode.class);
             ((ObjectNode) node.get(DOCUMENT).get(DATA).get(JOB)
-                .get(SESSIONS).get(0).get(SESSION))
+                .get(SESSIONS).get(0))
                 .remove(COURT);
 
             assertThrows(
@@ -238,7 +211,7 @@ class MagistratesAdultCourtListTest extends IntegrationBasicTestBase {
 
             JsonNode node = OBJECT_MAPPER.readValue(text, JsonNode.class);
             ((ObjectNode) node.get(DOCUMENT).get(DATA).get(JOB)
-                .get(SESSIONS).get(0).get(SESSION))
+                .get(SESSIONS).get(0))
                 .remove(ROOM);
 
             assertThrows(
@@ -261,7 +234,7 @@ class MagistratesAdultCourtListTest extends IntegrationBasicTestBase {
 
             JsonNode node = OBJECT_MAPPER.readValue(text, JsonNode.class);
             ((ObjectNode) node.get(DOCUMENT).get(DATA).get(JOB)
-                .get(SESSIONS).get(0).get(SESSION))
+                .get(SESSIONS).get(0))
                 .remove(SSTART);
 
             assertThrows(
@@ -284,32 +257,8 @@ class MagistratesAdultCourtListTest extends IntegrationBasicTestBase {
 
             JsonNode node = OBJECT_MAPPER.readValue(text, JsonNode.class);
             ((ObjectNode) node.get(DOCUMENT).get(DATA).get(JOB)
-                .get(SESSIONS).get(0).get(SESSION))
+                .get(SESSIONS).get(0))
                 .remove(BLOCKS);
-
-            assertThrows(
-                PayloadValidationException.class,
-                () -> validationService.validateBody(node.toString(), headerGroup, true),
-                INVALID_JSON_MESSAGE);
-        }
-    }
-
-    @ParameterizedTest
-    @EnumSource(value = ListType.class,
-        names = {MAGISTRATES_ADULT_COURT_LIST_DAILY, MAGISTRATES_ADULT_COURT_LIST_FUTURE})
-    void testValidateWithErrorWhenBlockMissing(ListType listType) throws IOException {
-        HeaderGroup headerGroup = new HeaderGroup(PROVENANCE, "", ArtefactType.LIST, Sensitivity.PUBLIC,
-                                                  Language.ENGLISH, DISPLAY_FROM, DISPLAY_TO, listType, COURT_ID,
-                                                  CONTENT_DATE);
-        try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(MAGISTRATES_ADULT_COURT_LIST_VALID_JSON)) {
-            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
-
-            JsonNode node = OBJECT_MAPPER.readValue(text, JsonNode.class);
-            ((ObjectNode) node.get(DOCUMENT).get(DATA).get(JOB)
-                .get(SESSIONS).get(0).get(SESSION)
-                .get(BLOCKS).get(0))
-                .remove(BLOCK);
 
             assertThrows(
                 PayloadValidationException.class,
@@ -331,8 +280,8 @@ class MagistratesAdultCourtListTest extends IntegrationBasicTestBase {
 
             JsonNode node = OBJECT_MAPPER.readValue(text, JsonNode.class);
             ((ObjectNode) node.get(DOCUMENT).get(DATA).get(JOB)
-                .get(SESSIONS).get(0).get(SESSION)
-                .get(BLOCKS).get(0).get(BLOCK))
+                .get(SESSIONS).get(0)
+                .get(BLOCKS).get(0))
                 .remove(BSTART);
 
             assertThrows(
@@ -355,34 +304,9 @@ class MagistratesAdultCourtListTest extends IntegrationBasicTestBase {
 
             JsonNode node = OBJECT_MAPPER.readValue(text, JsonNode.class);
             ((ObjectNode) node.get(DOCUMENT).get(DATA).get(JOB)
-                .get(SESSIONS).get(0).get(SESSION)
-                .get(BLOCKS).get(0).get(BLOCK))
+                .get(SESSIONS).get(0)
+                .get(BLOCKS).get(0))
                 .remove(CASES);
-
-            assertThrows(
-                PayloadValidationException.class,
-                () -> validationService.validateBody(node.toString(), headerGroup, true),
-                INVALID_JSON_MESSAGE);
-        }
-    }
-
-    @ParameterizedTest
-    @EnumSource(value = ListType.class,
-        names = {MAGISTRATES_ADULT_COURT_LIST_DAILY, MAGISTRATES_ADULT_COURT_LIST_FUTURE})
-    void testValidateWithErrorWhenCaseMissing(ListType listType) throws IOException {
-        HeaderGroup headerGroup = new HeaderGroup(PROVENANCE, "", ArtefactType.LIST, Sensitivity.PUBLIC,
-                                                  Language.ENGLISH, DISPLAY_FROM, DISPLAY_TO, listType, COURT_ID,
-                                                  CONTENT_DATE);
-        try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(MAGISTRATES_ADULT_COURT_LIST_VALID_JSON)) {
-            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
-
-            JsonNode node = OBJECT_MAPPER.readValue(text, JsonNode.class);
-            ((ObjectNode) node.get(DOCUMENT).get(DATA).get(JOB)
-                .get(SESSIONS).get(0).get(SESSION)
-                .get(BLOCKS).get(0).get(BLOCK)
-                .get(CASES).get(0))
-                .remove(CASE);
 
             assertThrows(
                 PayloadValidationException.class,
@@ -404,9 +328,9 @@ class MagistratesAdultCourtListTest extends IntegrationBasicTestBase {
 
             JsonNode node = OBJECT_MAPPER.readValue(text, JsonNode.class);
             ((ObjectNode) node.get(DOCUMENT).get(DATA).get(JOB)
-                .get(SESSIONS).get(0).get(SESSION)
-                .get(BLOCKS).get(0).get(BLOCK)
-                .get(CASES).get(0).get(CASE))
+                .get(SESSIONS).get(0)
+                .get(BLOCKS).get(0)
+                .get(CASES).get(0))
                 .remove(CASE_NUM);
 
             assertThrows(
@@ -429,9 +353,9 @@ class MagistratesAdultCourtListTest extends IntegrationBasicTestBase {
 
             JsonNode node = OBJECT_MAPPER.readValue(text, JsonNode.class);
             ((ObjectNode) node.get(DOCUMENT).get(DATA).get(JOB)
-                .get(SESSIONS).get(0).get(SESSION)
-                .get(BLOCKS).get(0).get(BLOCK)
-                .get(CASES).get(0).get(CASE))
+                .get(SESSIONS).get(0)
+                .get(BLOCKS).get(0)
+                .get(CASES).get(0))
                 .remove(DEF_NAME);
 
             assertThrows(
@@ -454,9 +378,9 @@ class MagistratesAdultCourtListTest extends IntegrationBasicTestBase {
 
             JsonNode node = OBJECT_MAPPER.readValue(text, JsonNode.class);
             ((ObjectNode) node.get(DOCUMENT).get(DATA).get(JOB)
-                .get(SESSIONS).get(0).get(SESSION)
-                .get(BLOCKS).get(0).get(BLOCK)
-                .get(CASES).get(0).get(CASE))
+                .get(SESSIONS).get(0)
+                .get(BLOCKS).get(0)
+                .get(CASES).get(0))
                 .remove(DEF_ADDR);
 
             assertThrows(
@@ -479,9 +403,9 @@ class MagistratesAdultCourtListTest extends IntegrationBasicTestBase {
 
             JsonNode node = OBJECT_MAPPER.readValue(text, JsonNode.class);
             ((ObjectNode) node.get(DOCUMENT).get(DATA).get(JOB)
-                .get(SESSIONS).get(0).get(SESSION)
-                .get(BLOCKS).get(0).get(BLOCK)
-                .get(CASES).get(0).get(CASE)
+                .get(SESSIONS).get(0)
+                .get(BLOCKS).get(0)
+                .get(CASES).get(0)
                 .get(DEF_ADDR))
                 .remove(LINE1);
 
@@ -505,9 +429,9 @@ class MagistratesAdultCourtListTest extends IntegrationBasicTestBase {
 
             JsonNode node = OBJECT_MAPPER.readValue(text, JsonNode.class);
             ((ObjectNode) node.get(DOCUMENT).get(DATA).get(JOB)
-                .get(SESSIONS).get(0).get(SESSION)
-                .get(BLOCKS).get(0).get(BLOCK)
-                .get(CASES).get(0).get(CASE))
+                .get(SESSIONS).get(0)
+                .get(BLOCKS).get(0)
+                .get(CASES).get(0))
                 .remove(INF);
 
             assertThrows(
@@ -530,9 +454,9 @@ class MagistratesAdultCourtListTest extends IntegrationBasicTestBase {
 
             JsonNode node = OBJECT_MAPPER.readValue(text, JsonNode.class);
             ((ObjectNode) node.get(DOCUMENT).get(DATA).get(JOB)
-                .get(SESSIONS).get(0).get(SESSION)
-                .get(BLOCKS).get(0).get(BLOCK)
-                .get(CASES).get(0).get(CASE))
+                .get(SESSIONS).get(0)
+                .get(BLOCKS).get(0)
+                .get(CASES).get(0))
                 .remove(OFFENCES);
 
             assertThrows(
@@ -555,10 +479,10 @@ class MagistratesAdultCourtListTest extends IntegrationBasicTestBase {
 
             JsonNode node = OBJECT_MAPPER.readValue(text, JsonNode.class);
             ((ObjectNode) node.get(DOCUMENT).get(DATA).get(JOB)
-                .get(SESSIONS).get(0).get(SESSION)
-                .get(BLOCKS).get(0).get(BLOCK)
-                .get(CASES).get(0).get(CASE)
-                .get(OFFENCES).get(0).get(OFFENCE))
+                .get(SESSIONS).get(0)
+                .get(BLOCKS).get(0)
+                .get(CASES).get(0)
+                .get(OFFENCES).get(0))
                 .remove(CODE);
 
             assertThrows(
@@ -581,10 +505,10 @@ class MagistratesAdultCourtListTest extends IntegrationBasicTestBase {
 
             JsonNode node = OBJECT_MAPPER.readValue(text, JsonNode.class);
             ((ObjectNode) node.get(DOCUMENT).get(DATA).get(JOB)
-                .get(SESSIONS).get(0).get(SESSION)
-                .get(BLOCKS).get(0).get(BLOCK)
-                .get(CASES).get(0).get(CASE)
-                .get(OFFENCES).get(0).get(OFFENCE))
+                .get(SESSIONS).get(0)
+                .get(BLOCKS).get(0)
+                .get(CASES).get(0)
+                .get(OFFENCES).get(0))
                 .remove(TITLE);
 
             assertThrows(
@@ -607,10 +531,10 @@ class MagistratesAdultCourtListTest extends IntegrationBasicTestBase {
 
             JsonNode node = OBJECT_MAPPER.readValue(text, JsonNode.class);
             ((ObjectNode) node.get(DOCUMENT).get(DATA).get(JOB)
-                .get(SESSIONS).get(0).get(SESSION)
-                .get(BLOCKS).get(0).get(BLOCK)
-                .get(CASES).get(0).get(CASE)
-                .get(OFFENCES).get(0).get(OFFENCE))
+                .get(SESSIONS).get(0)
+                .get(BLOCKS).get(0)
+                .get(CASES).get(0)
+                .get(OFFENCES).get(0))
                 .remove(SUM);
 
             assertThrows(
