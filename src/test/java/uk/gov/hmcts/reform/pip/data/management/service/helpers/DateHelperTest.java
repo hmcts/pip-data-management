@@ -215,7 +215,7 @@ class DateHelperTest {
             .isEqualTo("2 hours 30 mins");
     }
 
-    private static Stream<Arguments> parameters() {
+    private static Stream<Arguments> parametersForFormatStartTime() {
         return Stream.of(
             Arguments.of("2022-12-10T15:30:52.123Z", "3:30pm"),
             Arguments.of("2022-12-10T15:00:52.123Z", "3pm")
@@ -223,7 +223,7 @@ class DateHelperTest {
     }
 
     @ParameterizedTest
-    @MethodSource("parameters")
+    @MethodSource("parametersForFormatStartTime")
     void testFormatStartTime(String value, String expected) {
         ObjectNode sittingNode = MAPPER.createObjectNode();
         sittingNode.put(SITTING_START, value);
@@ -232,5 +232,37 @@ class DateHelperTest {
         assertThat(sittingNode.get("time").asText())
             .as(ERR_MSG)
             .isEqualTo(expected);
+    }
+
+    private static Stream<Arguments> parametersForConvertDateFormat() {
+        return Stream.of(
+            Arguments.of("25-08-10", "yy-MM-dd"),
+            Arguments.of("10-08-2025", "dd-MM-yyyy"),
+            Arguments.of("10/08/2025", "dd/MM/yyyy")
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("parametersForConvertDateFormat")
+    void testConvertDateFormat(String input, String originalFormat) {
+        assertThat(DateHelper.convertDateFormat(input, originalFormat))
+            .as(ERR_MSG)
+            .isEqualTo("10 August 2025");
+    }
+
+    private static Stream<Arguments> parametersForConvertTimeFormat() {
+        return Stream.of(
+            Arguments.of("10:30:10", "HH:mm:ss"),
+            Arguments.of("10.30", "HH.mm"),
+            Arguments.of("10:30:10.123", "HH:mm:ss.SSS")
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("parametersForConvertTimeFormat")
+    void testConvertTimeFormat(String input, String originalFormat) {
+        assertThat(DateHelper.convertTimeFormat(input, originalFormat))
+            .as(ERR_MSG)
+            .isEqualTo("10:30am");
     }
 }
