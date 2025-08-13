@@ -1,242 +1,127 @@
 {
-  "$defs": {
-    "address": {
-      "title": "Address Details",
-      "type": "object",
-      "properties": {
-        "line1": {
-          "title": "Address line 1",
-          "type": "string",
-          "maxLength": 35,
-          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
-        },
-        "line2": {
-          "title": "Address line 2",
-          "type": "string",
-          "maxLength": 35,
-          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
-        },
-        "line3": {
-          "title": "Address line 3",
-          "type": "string",
-          "maxLength": 35,
-          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
-        },
-        "line4": {
-          "title": "Address line 4",
-          "type": "string",
-          "maxLength": 35,
-          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
-        },
-        "line5": {
-          "title": "Address line 5",
-          "type": "string",
-          "maxLength": 35,
-          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
-        },
-        "pcode": {
-          "title": "Address postcode",
-          "type": "string",
-          "maxLength": 8,
-          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
-        }
-      }
-    }
-  },
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "Root",
-  "type": "object",
-  "required": [
-    "document"
-  ],
-  "properties": {
-    "document": {
-      "title": "Document details",
-      "type": "object",
-      "properties": {
-        "info": {
-          "title": "Document information",
-          "type": "object",
-          "properties": {
-            "start_time": {
-              "title": "Run start time in the format hh:mm:ss",
-              "type": "string",
-              "pattern": "^\\d{2}:\\d{2}:\\d{2}$"
-            }
-          }
-        },
-        "data": {
-          "title": "Document data",
-          "type": "object",
-          "required": [
-            "job"
-          ],
-          "properties": {
-            "job": {
-              "title": "Job details",
-              "type": "object",
-              "required": [
-                "printdate",
-                "sessions"
-              ],
-              "properties": {
-                "printdate": {
-                  "title": "Date in the format DD/MM/YYYY",
-                  "type": "string",
-                  "pattern": "^\\d{2}/\\d{2}/\\d{4}$"
-                },
-                "sessions": {
-                  "type": "array",
-                  "items": {
-                    "title": "Job session",
-                    "type": "object",
-                    "required": [
-                      "lja",
-                      "court",
-                      "room",
-                      "sstart",
-                      "blocks"
-                    ],
-                    "properties": {
-                      "lja": {
-                        "title": "Local justice area name",
-                        "type": "string",
-                        "maxLength": 100,
-                        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
-                      },
-                      "court": {
-                        "title": "Courthouse name",
-                        "type": "string",
-                        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
-                      },
-                      "room": {
-                        "title": "Courtroom name",
-                        "type": "integer"
-                      },
-                      "sstart": {
-                        "title": "Session start time in the format hh:mm",
-                        "type": "string",
-                        "pattern": "^\\d{2}:\\d{2}$"
-                      },
-                      "blocks": {
-                        "type": "array",
-                        "items": {
-                          "title": "Session block",
-                          "type": "object",
-                          "required": [
-                            "bstart",
-                            "cases"
-                          ],
-                          "properties": {
-                            "bstart": {
-                              "title": "Block start time in the format hh:mm",
-                              "type": "string",
-                              "pattern": "^\\d{2}:\\d{2}$"
-                            },
-                            "cases": {
-                              "type": "array",
-                              "items": {
-                                "title": "Hearing case",
-                                "type": "object",
-                                "required": [
-                                  "caseno",
-                                  "def_name",
-                                  "def_addr",
-                                  "inf",
-                                  "offences"
-                                ],
-                                "properties": {
-                                  "caseno": {
-                                    "title": "Case number",
-                                    "type": "string",
-                                    "minLength": 10,
-                                    "maxLength": 10,
-                                    "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
-                                  },
-                                  "def_name": {
-                                    "title": "Defendant name",
-                                    "type": "string",
-                                    "maxLength": 200,
-                                    "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
-                                  },
-                                  "def_dob": {
-                                    "title": "Defendant date of birth in the format dd/mm/yyyy",
-                                    "type": "string",
-                                    "pattern": "^\\d{2}/\\d{2}/\\d{4}$"
-                                  },
-                                  "def_age": {
-                                    "title": "Defendant age",
-                                    "type": "integer"
-                                  },
-                                  "def_addr": {
-                                    "title": "Defendant address",
-                                    "$ref": "#/$defs/address",
-                                    "required": [
-                                      "line1"
-                                    ]
-                                  },
-                                  "inf": {
-                                    "title": "Internal code for the cases' informant",
-                                    "type": "string",
-                                    "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
-                                  },
-                                  "offences": {
-                                    "type": "array",
-                                    "items": {
-                                      "title": "Criminal offence",
-                                      "type": "object",
-                                      "required": [
-                                        "code",
-                                        "title",
-                                        "sum"
-                                      ],
-                                      "properties": {
-                                        "code": {
-                                          "title": "CJS offence code",
-                                          "type": "string",
-                                          "maxLength": 10,
-                                          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
-                                        },
-                                        "title": {
-                                          "title": "Offence title",
-                                          "type": "string",
-                                          "maxLength": 120,
-                                          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
-                                        },
-                                        "cy_title": {
-                                          "title": "Welsh offence title",
-                                          "type": "string",
-                                          "maxLength": 120,
-                                          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
-                                        },
-                                        "sum": {
-                                          "title": "Offence wording",
-                                          "type": "string",
-                                          "maxLength": 4000,
-                                          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
-                                        },
-                                        "cy_sum": {
-                                          "title": "Welsh offence wording",
-                                          "type": "string",
-                                          "maxLength": 4000,
-                                          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
-                                        }
-                                      }
-                                    }
-                                  }
-                                }
-                              }
-                            }
-                          }
-                        }
+  "document": {
+    "info": {
+      "start_time": "09:05:02"
+    },
+    "data": {
+      "job": {
+        "printdate": "31/07/2025",
+        "sessions": [
+          {
+            "lja": "North Northumbria Magistrates' Court",
+            "court": "North Shields Magistrates' Court",
+            "room": 1,
+            "sstart": "09:00",
+            "blocks": [
+              {
+                "bstart": "09:00",
+                "cases": [
+                  {
+                    "caseno": "1000000000",
+                    "def_name": "Mr Test User",
+                    "def_dob": "06/11/1975",
+                    "def_age": 50,
+                    "def_addr": {
+                      "line1": "1 High Street",
+                      "line5": "London",
+                      "pcode": "SW1A 1AA"
+                    },
+                    "inf": "POL01",
+                    "offences": [
+                      {
+                        "code": "TH68001",
+                        "title": "Offence title 1",
+                        "cy_title": "Welsh offence title 1",
+                        "sum": "Offence summary 1",
+                        "cy_sum": "Welsh offence summary 1"
                       }
-                    }
+                    ]
+                  },
+                  {
+                    "caseno": "1000000001",
+                    "def_name": "Mrs Test User",
+                    "def_dob": "01/07/1981",
+                    "def_age": 44,
+                    "def_addr": {
+                      "line1": "1 High Street",
+                      "line5": "London",
+                      "pcode": "SW1A 1AA"
+                    },
+                    "inf": "POL02",
+                    "offences": [
+                      {
+                        "code": "TH68002",
+                        "title": "Offence title 2",
+                        "sum": "Offence summary 2"
+                      }
+                    ]
                   }
-                }
+                ]
               }
-            }
+            ]
+          },
+          {
+            "lja": "North Northumbria Magistrates' Court",
+            "court": "North Shields Magistrates' Court",
+            "room": 2,
+            "sstart": "10:00",
+            "blocks": [
+              {
+                "bstart": "10:00",
+                "cases": [
+                  {
+                    "caseno": "1000000002",
+                    "def_name": "Mr Test User 2",
+                    "def_dob": "07/01/1975",
+                    "def_age": 50,
+                    "def_addr": {
+                      "line1": "2 High Street",
+                      "line5": "London",
+                      "pcode": "SW1A 1AA"
+                    },
+                    "inf": "POL03",
+                    "offences": [
+                      {
+                        "code": "TH68003",
+                        "title": "Offence title 3",
+                        "sum": "Offence summary 3"
+                      },
+                      {
+                        "code": "TH68004",
+                        "title": "Offence title 4",
+                        "sum": "Offence summary 4"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "bstart": "14:00",
+                "cases": [
+                  {
+                    "caseno": "1000000003",
+                    "def_name": "Mr Test User 3",
+                    "def_dob": "12/02/1985",
+                    "def_age": 40,
+                    "def_addr": {
+                      "line1": "3 High Street",
+                      "line5": "London",
+                      "pcode": "SW1A 1AA"
+                    },
+                    "inf": "POL04",
+                    "offences": [
+                      {
+                        "code": "TH68005",
+                        "title": "Offence title 5",
+                        "sum": "Offence summary 5"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
           }
-        }
+        ]
       }
     }
   }
