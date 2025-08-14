@@ -57,7 +57,6 @@ class ArtefactRepositorySearchTest {
         artefact1.setSearch(caseNumberSearchValues);
         artefact1.setDisplayFrom(YESTERDAY);
         artefact1.setDisplayTo(TOMORROW);
-        artefact1.setIsArchived(false);
 
         Artefact savedArtefact = artefactRepository.save(artefact1);
         artefactId1 = savedArtefact.getArtefactId();
@@ -67,7 +66,6 @@ class ArtefactRepositorySearchTest {
         artefact2.setSearch(caseUrnSearchValues);
         artefact2.setDisplayFrom(YESTERDAY);
         artefact2.setDisplayTo(TOMORROW);
-        artefact2.setIsArchived(false);
 
         savedArtefact = artefactRepository.save(artefact2);
         artefactId2 = savedArtefact.getArtefactId();

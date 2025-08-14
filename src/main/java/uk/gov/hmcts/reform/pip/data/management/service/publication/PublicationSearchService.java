@@ -51,8 +51,10 @@ public class PublicationSearchService {
      * @return list of matching artefacts.
      */
     public List<Artefact> findAllByLocationIdAdmin(String locationId, UUID userId, boolean isAdmin) {
+        LocalDateTime currDate = LocalDateTime.now();
         return isAdmin
-            ? artefactRepository.findArtefactsByLocationIdAdmin(locationId) : findAllByLocationId(locationId, userId);
+            ? artefactRepository.findArtefactsByLocationIdAdmin(locationId, currDate)
+                : findAllByLocationId(locationId, userId);
     }
 
     /**
