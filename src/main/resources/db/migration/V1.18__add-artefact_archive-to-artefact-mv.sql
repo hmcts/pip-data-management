@@ -3,7 +3,7 @@
 --
 DROP MATERIALIZED VIEW IF EXISTS sdp_mat_view_artefact;
 
-CREATE MATERIALIZED VIEW IF NOT EXISTS sdp_mat_view_artefact AS
+CREATE MATERIALIZED VIEW sdp_mat_view_artefact AS
 SELECT artefact.artefact_id,
        artefact.display_from,
        artefact.display_to,

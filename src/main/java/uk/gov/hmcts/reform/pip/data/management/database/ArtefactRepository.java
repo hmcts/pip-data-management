@@ -36,6 +36,7 @@ public interface ArtefactRepository extends JpaRepository<Artefact, Long> {
     String LANGUAGE_PARAM = "language";
     String LIST_TYPE_PARAM = "list_type";
     String PROVENANCE_PARAM = "provenance";
+    String CURRENT_DATETIME_PARAM = "curr_datetime";
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("SELECT a FROM Artefact a WHERE a.locationId = :location_id AND a.contentDate = :content_date AND "
@@ -93,10 +94,10 @@ public interface ArtefactRepository extends JpaRepository<Artefact, Long> {
 
     @Query(value = "SELECT * FROM Artefact "
         + "WHERE DATE(display_from) = :curr_date "
-        + "AND (display_to > :curr_date or display_to is null)",
+        + "AND (display_to > :curr_datetime or display_to is null)",
         nativeQuery = true)
     List<Artefact> findArtefactsByDisplayFrom(@Param(CURRENT_DATE_PARAM) LocalDate today,
-                                              @Param(CURRENT_DATE_PARAM) LocalDateTime currentDate);
+                                              @Param(CURRENT_DATETIME_PARAM) LocalDateTime currentDate);
 
     @Query(value = "SELECT * FROM Artefact "
         + "WHERE display_to < :curr_date", nativeQuery = true)
