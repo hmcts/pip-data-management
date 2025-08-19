@@ -11,7 +11,7 @@
     {
         "venue": "This is a venue name",
         "judges": "Judge B",
-        "hearingTime": "11am",
+        "hearingTime": "11am  ",
         "caseReferenceNumber": "5678",
         "caseTitle": "Case B",
         "hearingType": "Hearing type B",
