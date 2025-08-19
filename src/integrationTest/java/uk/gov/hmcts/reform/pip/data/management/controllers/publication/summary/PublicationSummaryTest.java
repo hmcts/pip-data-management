@@ -389,9 +389,9 @@ class PublicationSummaryTest extends PublicationIntegrationTestBase {
     }
 
     @Test
-    void testGenerateArtefactSummaryMagistratesPublicAdultCourtList(ListType listType) throws Exception {
+    void testGenerateArtefactSummaryMagistratesPublicAdultCourtList() throws Exception {
         byte[] data = getTestData("data/magistrates-public-adult-court-list/magistratesPublicAdultCourtList.json");
-        Artefact artefact = createPublication(listType, data);
+        Artefact artefact = createPublication(ListType.MAGISTRATES_PUBLIC_ADULT_COURT_LIST_DAILY, data);
 
         when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(data));
 
