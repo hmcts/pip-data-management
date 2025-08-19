@@ -9,6 +9,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
@@ -35,6 +36,9 @@ class MagistratesAdultCourtListFileConverterTest {
     private static final String LANGUAGE = "language";
     private static final String LIST_TYPE = "listType";
 
+    private static final String HTML_MESSAGE = "No html found";
+    private static final String TITLE_MESSAGE = "Incorrect title found";
+    private static final String GOVUK_HEADING_L = "govuk-heading-l";
     private static final String HEADER_MESSAGE = "Incorrect header text";
     private static final String BODY_MESSAGE = "Incorrect body text";
     private static final String COURT_ROOM_HEADING_MESSAGE = "Court room heading does not match";
@@ -43,23 +47,30 @@ class MagistratesAdultCourtListFileConverterTest {
 
     private static final String BODY_CLASS = "govuk-body";
 
-    private final MagistratesAdultCourtListFileConverter converter = new MagistratesAdultCourtListFileConverter();
+    private final MagistratesAdultCourtListFileConverter standardConverter =
+        new MagistratesAdultCourtListFileConverter(true);
+    private final MagistratesAdultCourtListFileConverter publicConverter =
+        new MagistratesAdultCourtListFileConverter(false);
 
-    private JsonNode inputJson;
-    private Map<String, Object> englishLanguageResource;
-    private Map<String, Object> welshLanguageResource;
+    private JsonNode standardInputJson;
+    private Map<String, Object> standardEnglishLanguageResource;
+    private Map<String, Object> standardWelshLanguageResource;
+
+    private JsonNode publicInputJson;
+    private Map<String, Object> publicEnglishLanguageResource;
+    private Map<String, Object> publicWelshLanguageResource;
 
     @BeforeAll
     void setup() throws IOException {
         try (InputStream inputStream = getClass().getResourceAsStream("/mocks/magistratesAdultCourtList.json")) {
             String inputRaw = IOUtils.toString(inputStream, Charset.defaultCharset());
-            inputJson = OBJECT_MAPPER.readTree(inputRaw);
+            standardInputJson = OBJECT_MAPPER.readTree(inputRaw);
         }
 
         try (InputStream languageFile = Thread.currentThread()
             .getContextClassLoader()
             .getResourceAsStream("templates/languages/en/magistratesAdultCourtListDaily.json")) {
-            englishLanguageResource = OBJECT_MAPPER.readValue(
+            standardEnglishLanguageResource = OBJECT_MAPPER.readValue(
                 Objects.requireNonNull(languageFile).readAllBytes(), new TypeReference<>() {
                 });
         }
@@ -67,7 +78,28 @@ class MagistratesAdultCourtListFileConverterTest {
         try (InputStream languageFile = Thread.currentThread()
             .getContextClassLoader()
             .getResourceAsStream("templates/languages/cy/magistratesAdultCourtListDaily.json")) {
-            welshLanguageResource = OBJECT_MAPPER.readValue(
+            standardWelshLanguageResource = OBJECT_MAPPER.readValue(
+                Objects.requireNonNull(languageFile).readAllBytes(), new TypeReference<>() {
+                });
+        }
+
+        try (InputStream inputStream = getClass().getResourceAsStream("/mocks/magistratesPublicAdultCourtList.json")) {
+            String inputRaw = IOUtils.toString(inputStream, Charset.defaultCharset());
+            publicInputJson = OBJECT_MAPPER.readTree(inputRaw);
+        }
+
+        try (InputStream languageFile = Thread.currentThread()
+            .getContextClassLoader()
+            .getResourceAsStream("templates/languages/en/magistratesPublicAdultCourtList.json")) {
+            publicEnglishLanguageResource = OBJECT_MAPPER.readValue(
+                Objects.requireNonNull(languageFile).readAllBytes(), new TypeReference<>() {
+                });
+        }
+
+        try (InputStream languageFile = Thread.currentThread()
+            .getContextClassLoader()
+            .getResourceAsStream("templates/languages/cy/magistratesPublicAdultCourtList.json")) {
+            publicWelshLanguageResource = OBJECT_MAPPER.readValue(
                 Objects.requireNonNull(languageFile).readAllBytes(), new TypeReference<>() {
                 });
         }
@@ -86,23 +118,58 @@ class MagistratesAdultCourtListFileConverterTest {
     @ParameterizedTest
     @EnumSource(value = ListType.class, names = {MAGISTRATES_ADULT_COURT_LIST_DAILY,
         MAGISTRATES_ADULT_COURT_LIST_FUTURE})
-    void testGeneralListInformationInEnglish(ListType listType) throws IOException {
+    void testStandardGeneralListInformationInEnglish(ListType listType) throws IOException {
         Map<String, String> metadata = createMetaDattaMap(listType, Language.ENGLISH);
-        String outputHtml = converter.convert(inputJson, metadata, englishLanguageResource);
+        String outputHtml = standardConverter.convert(standardInputJson, metadata, standardEnglishLanguageResource);
         Document document = Jsoup.parse(outputHtml);
         SoftAssertions softly = new SoftAssertions();
 
         softly.assertThat(outputHtml)
-            .as("No html found")
+            .as(HTML_MESSAGE)
             .isNotEmpty();
 
         softly.assertThat(document.title())
-            .as("incorrect title found.")
+            .as(TITLE_MESSAGE)
             .isEqualTo("Magistrates Standard List");
 
-        softly.assertThat(document.getElementsByClass("govuk-heading-l").get(0).text())
+        softly.assertThat(document.getElementsByClass(GOVUK_HEADING_L).get(0).text())
             .as(HEADER_MESSAGE)
             .contains("Magistrates Standard List for location");
+
+        softly.assertThat(document.getElementsByClass(BODY_CLASS).get(0).text())
+            .as(BODY_MESSAGE)
+            .isEqualTo("List for 1 August 2025");
+
+        softly.assertThat(document.getElementsByClass(BODY_CLASS).get(1).text())
+            .as(BODY_MESSAGE)
+            .isEqualTo("Last updated 31 July 2025 at 9:05am");
+
+        softly.assertThat(document.getElementsByClass(BODY_CLASS).get(2).text())
+            .as(BODY_MESSAGE)
+            .contains("Restrictions on publishing or writing about these cases");
+
+        softly.assertAll();
+    }
+
+    @Test
+    void testPublicGeneralListInformationInEnglish() throws IOException {
+        Map<String, String> metadata = createMetaDattaMap(ListType.MAGISTRATES_PUBLIC_ADULT_COURT_LIST_DAILY,
+                                                          Language.ENGLISH);
+        String outputHtml = publicConverter.convert(publicInputJson, metadata, publicEnglishLanguageResource);
+        Document document = Jsoup.parse(outputHtml);
+        SoftAssertions softly = new SoftAssertions();
+
+        softly.assertThat(outputHtml)
+            .as(HTML_MESSAGE)
+            .isNotEmpty();
+
+        softly.assertThat(document.title())
+            .as(TITLE_MESSAGE)
+            .isEqualTo("Magistrates Public List");
+
+        softly.assertThat(document.getElementsByClass(GOVUK_HEADING_L).get(0).text())
+            .as(HEADER_MESSAGE)
+            .contains("Magistrates Public List for location");
 
         softly.assertThat(document.getElementsByClass(BODY_CLASS).get(0).text())
             .as(BODY_MESSAGE)
@@ -122,23 +189,58 @@ class MagistratesAdultCourtListFileConverterTest {
     @ParameterizedTest
     @EnumSource(value = ListType.class, names = {MAGISTRATES_ADULT_COURT_LIST_DAILY,
         MAGISTRATES_ADULT_COURT_LIST_FUTURE})
-    void testGeneralListInformationInWelsh(ListType listType) throws IOException {
+    void testStandardGeneralListInformationInWelsh(ListType listType) throws IOException {
         Map<String, String> metadata = createMetaDattaMap(listType, Language.WELSH);
-        String outputHtml = converter.convert(inputJson, metadata, welshLanguageResource);
+        String outputHtml = standardConverter.convert(standardInputJson, metadata, standardWelshLanguageResource);
         Document document = Jsoup.parse(outputHtml);
         SoftAssertions softly = new SoftAssertions();
 
         softly.assertThat(outputHtml)
-            .as("No html found")
+            .as(HTML_MESSAGE)
             .isNotEmpty();
 
         softly.assertThat(document.title())
-            .as("incorrect title found.")
+            .as(TITLE_MESSAGE)
             .isEqualTo("Rhestr Safonol y Llys Ynadon");
 
-        softly.assertThat(document.getElementsByClass("govuk-heading-l").get(0).text())
+        softly.assertThat(document.getElementsByClass(GOVUK_HEADING_L).get(0).text())
             .as(HEADER_MESSAGE)
             .contains("Rhestr Safonol y Llys Ynadon ar gyfer location");
+
+        softly.assertThat(document.getElementsByClass(BODY_CLASS).get(0).text())
+            .as(BODY_MESSAGE)
+            .isEqualTo("Rhestr ar gyfer 1 August 2025");
+
+        softly.assertThat(document.getElementsByClass(BODY_CLASS).get(1).text())
+            .as(BODY_MESSAGE)
+            .isEqualTo("Diweddarwyd diwethaf 31 July 2025 am 9:05am");
+
+        softly.assertThat(document.getElementsByClass(BODY_CLASS).get(2).text())
+            .as(BODY_MESSAGE)
+            .contains("Cyfyngiadau ar gyhoeddi neu ysgrifennu am yr achosion hyn");
+
+        softly.assertAll();
+    }
+
+    @Test
+    void testPublicGeneralListInformationInWelsh() throws IOException {
+        Map<String, String> metadata = createMetaDattaMap(ListType.MAGISTRATES_PUBLIC_ADULT_COURT_LIST_DAILY,
+                                                          Language.WELSH);
+        String outputHtml = publicConverter.convert(publicInputJson, metadata, publicWelshLanguageResource);
+        Document document = Jsoup.parse(outputHtml);
+        SoftAssertions softly = new SoftAssertions();
+
+        softly.assertThat(outputHtml)
+            .as(HTML_MESSAGE)
+            .isNotEmpty();
+
+        softly.assertThat(document.title())
+            .as(TITLE_MESSAGE)
+            .isEqualTo("Magistrates Public List");
+
+        softly.assertThat(document.getElementsByClass(GOVUK_HEADING_L).get(0).text())
+            .as(HEADER_MESSAGE)
+            .contains("Magistrates Public List for location");
 
         softly.assertThat(document.getElementsByClass(BODY_CLASS).get(0).text())
             .as(BODY_MESSAGE)
@@ -158,10 +260,21 @@ class MagistratesAdultCourtListFileConverterTest {
     @ParameterizedTest
     @EnumSource(value = ListType.class, names = {MAGISTRATES_ADULT_COURT_LIST_DAILY,
         MAGISTRATES_ADULT_COURT_LIST_FUTURE})
-    void testSessionHeadings(ListType listType) throws IOException {
+    void testStandardSessionHeadings(ListType listType) throws IOException {
         Map<String, String> metadata = createMetaDattaMap(listType, Language.ENGLISH);
-        String result = converter.convert(inputJson, metadata, englishLanguageResource);
-        Document document = Jsoup.parse(result);
+        String result = standardConverter.convert(standardInputJson, metadata, standardEnglishLanguageResource);
+        assertSessionHeadings(Jsoup.parse(result));
+    }
+
+    @Test
+    void testPublicSessionHeadings() throws IOException {
+        Map<String, String> metadata = createMetaDattaMap(ListType.MAGISTRATES_PUBLIC_ADULT_COURT_LIST_DAILY,
+                                                          Language.ENGLISH);
+        String result = publicConverter.convert(publicInputJson, metadata, publicEnglishLanguageResource);
+        assertSessionHeadings(Jsoup.parse(result));
+    }
+
+    private void assertSessionHeadings(Document document) {
         SoftAssertions softly = new SoftAssertions();
 
         softly.assertThat(document.getElementsByClass("site-header"))
@@ -191,9 +304,9 @@ class MagistratesAdultCourtListFileConverterTest {
     @ParameterizedTest
     @EnumSource(value = ListType.class, names = {MAGISTRATES_ADULT_COURT_LIST_DAILY,
         MAGISTRATES_ADULT_COURT_LIST_FUTURE})
-    void testTableHeaders(ListType listType) throws IOException {
+    void testStandardTableHeaders(ListType listType) throws IOException {
         Map<String, String> metadata = createMetaDattaMap(listType, Language.ENGLISH);
-        String outputHtml = converter.convert(inputJson, metadata, englishLanguageResource);
+        String outputHtml = standardConverter.convert(standardInputJson, metadata, standardEnglishLanguageResource);
         Document document = Jsoup.parse(outputHtml);
 
         assertThat(document.getElementsByClass("govuk-table__head").get(0)
@@ -215,12 +328,31 @@ class MagistratesAdultCourtListFileConverterTest {
             );
     }
 
+    @Test
+    void testPublicTableHeaders() throws IOException {
+        Map<String, String> metadata = createMetaDattaMap(ListType.MAGISTRATES_PUBLIC_ADULT_COURT_LIST_DAILY,
+                                                          Language.ENGLISH);
+        String outputHtml = publicConverter.convert(publicInputJson, metadata, publicEnglishLanguageResource);
+        Document document = Jsoup.parse(outputHtml);
+
+        assertThat(document.getElementsByClass("govuk-table__head").get(0)
+                       .getElementsByTag("th"))
+            .as("Incorrect table headers")
+            .hasSize(3)
+            .extracting(Element::text)
+            .containsExactly(
+                "Listing Time",
+                "Defendant Name",
+                "Case Number"
+            );
+    }
+
     @ParameterizedTest
     @EnumSource(value = ListType.class, names = {MAGISTRATES_ADULT_COURT_LIST_DAILY,
         MAGISTRATES_ADULT_COURT_LIST_FUTURE})
     void testTableContents(ListType listType) throws IOException {
         Map<String, String> metadata = createMetaDattaMap(listType, Language.ENGLISH);
-        String outputHtml = converter.convert(inputJson, metadata, englishLanguageResource);
+        String outputHtml = standardConverter.convert(standardInputJson, metadata, standardEnglishLanguageResource);
         Document document = Jsoup.parse(outputHtml);
         assertThat(document.getElementsByClass("govuk-table__body").get(0)
                        .getElementsByTag("td"))
@@ -238,6 +370,24 @@ class MagistratesAdultCourtListFileConverterTest {
                 "TH68001",
                 "Offence title 1",
                 "Offence summary 1"
+            );
+    }
+
+    @Test
+    void testPublicTableContents() throws IOException {
+        Map<String, String> metadata = createMetaDattaMap(ListType.MAGISTRATES_PUBLIC_ADULT_COURT_LIST_DAILY,
+                                                          Language.ENGLISH);
+        String outputHtml = publicConverter.convert(publicInputJson, metadata, publicEnglishLanguageResource);
+        Document document = Jsoup.parse(outputHtml);
+        assertThat(document.getElementsByClass("govuk-table__body").get(0)
+                       .getElementsByTag("td"))
+            .as("Incorrect table body")
+            .hasSize(6)
+            .extracting(Element::text)
+            .contains(
+                "9am",
+                "Mr Test User",
+                "1000000000"
             );
     }
 }
