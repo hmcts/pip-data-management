@@ -173,7 +173,7 @@ public class PublicationController {
         );
 
         HeaderGroup headers = validationService.validateHeaders(initialHeaders);
-        validationService.validateBody(payload, initialHeaders, true);
+        validationService.validateBody(payload, initialHeaders, validateMasterSchema(listType));
         Artefact artefact = createPublicationMetadataFromHeaders(headers, payload.length());
 
         Artefact createdItem = publicationCreationRunner.run(artefact, payload, true);
@@ -451,5 +451,10 @@ public class PublicationController {
 
     private Artefact createPublicationMetadataFromHeaders(HeaderGroup headers, long fileSizeInBytes) {
         return createPublicationMetadataFromHeaders(headers, fileSizeInBytes, false);
+    }
+    
+    private boolean validateMasterSchema(ListType listType) {
+        return !(listType.equals(ListType.MAGISTRATES_ADULT_COURT_LIST_DAILY)
+            || listType.equals(ListType.MAGISTRATES_ADULT_COURT_LIST_FUTURE));
     }
 }
