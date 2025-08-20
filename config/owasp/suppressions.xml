@@ -14,4 +14,8 @@
     <notes>This vulnerability exists across azure identity and microsoft authentication libraries </notes>
     <cve>CVE-2024-35255</cve>
   </suppress>
+  <suppress>
+    <notes>Temporary suppression while spring boot / tomcat is reviewed</notes>
+    <cve>CVE-2025-48989</cve>
+  </suppress>
 </suppressions>
