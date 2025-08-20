@@ -6,6 +6,8 @@ import org.apache.commons.io.IOUtils;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.magistratesadultcourtlist.CaseInfo;
 import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.magistratesadultcourtlist.MagistratesAdultCourtList;
@@ -23,23 +25,33 @@ import java.util.List;
 class MagistratesAdultCourtListHelperTest {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
-    private static JsonNode inputJson;
+    private static JsonNode standardInputJson;
+    private static JsonNode publicInputJson;
 
     @BeforeAll
     public static void setup()  throws IOException {
-        StringWriter magistratesPublicWriter = new StringWriter();
+        StringWriter magistratesWriter = new StringWriter();
         IOUtils.copy(
             Files.newInputStream(Paths.get("src/test/resources/mocks/magistratesAdultCourtList.json")),
-            magistratesPublicWriter, Charset.defaultCharset()
+            magistratesWriter, Charset.defaultCharset()
         );
 
-        inputJson = OBJECT_MAPPER.readTree(magistratesPublicWriter.toString());
+        standardInputJson = OBJECT_MAPPER.readTree(magistratesWriter.toString());
+
+        IOUtils.copy(
+            Files.newInputStream(Paths.get("src/test/resources/mocks/magistratesPublicAdultCourtList.json")),
+            magistratesWriter, Charset.defaultCharset()
+        );
+
+        publicInputJson = OBJECT_MAPPER.readTree(magistratesWriter.toString());
     }
 
-    @Test
-    void testMagistratesAdultCourtListResultCount() {
-        List<MagistratesAdultCourtList> results = MagistratesAdultCourtListHelper.processPayload(inputJson,
-                                                                                                 Language.ENGLISH);
+    @ParameterizedTest
+    @ValueSource(booleans = {true, false})
+    void testMagistratesAdultCourtListResultCount(boolean isStandardList) {
+        List<MagistratesAdultCourtList> results = MagistratesAdultCourtListHelper.processPayload(
+            isStandardList ? standardInputJson : publicInputJson,
+            Language.ENGLISH, isStandardList);
         SoftAssertions softly = new SoftAssertions();
 
         softly.assertThat(results)
@@ -59,10 +71,12 @@ class MagistratesAdultCourtListHelperTest {
         softly.assertAll();
     }
 
-    @Test
-    void testCourtAndSessionInfo() {
-        List<MagistratesAdultCourtList> results = MagistratesAdultCourtListHelper.processPayload(inputJson,
-                                                                                                 Language.ENGLISH);
+    @ParameterizedTest
+    @ValueSource(booleans = {true, false})
+    void testCourtAndSessionInfo(boolean isStandardList) {
+        List<MagistratesAdultCourtList> results = MagistratesAdultCourtListHelper.processPayload(
+            isStandardList ? standardInputJson : publicInputJson,
+            Language.ENGLISH, isStandardList);
         MagistratesAdultCourtList result = results.get(0);
         SoftAssertions softly = new SoftAssertions();
 
@@ -85,10 +99,12 @@ class MagistratesAdultCourtListHelperTest {
         softly.assertAll();
     }
 
-    @Test
-    void testCaseInfo() {
-        List<MagistratesAdultCourtList> results = MagistratesAdultCourtListHelper.processPayload(inputJson,
-                                                                                                 Language.ENGLISH);
+    @ParameterizedTest
+    @ValueSource(booleans = {true, false})
+    void testCaseInfo(boolean isStandardList) {
+        List<MagistratesAdultCourtList> results = MagistratesAdultCourtListHelper.processPayload(
+            isStandardList ? standardInputJson : publicInputJson,
+            Language.ENGLISH, isStandardList);
         CaseInfo caseInfo = results.get(0).getCases().get(0);
         SoftAssertions softly = new SoftAssertions();
 
@@ -104,29 +120,32 @@ class MagistratesAdultCourtListHelperTest {
             .as("Magistrates Adult Court List defendant name does not match")
             .isEqualTo("Mr Test User");
 
-        softly.assertThat(caseInfo.getDefendantDob())
-            .as("Magistrates Adult Court List defendant dob does not match")
-            .isEqualTo("06/11/1975");
+        if (isStandardList) {
+            softly.assertThat(caseInfo.getDefendantDob())
+                .as("Magistrates Adult Court List defendant dob does not match")
+                .isEqualTo("06/11/1975");
 
-        softly.assertThat(caseInfo.getDefendantAge())
-            .as("Magistrates Adult Court List defendant age does not match")
-            .isEqualTo("50");
+            softly.assertThat(caseInfo.getDefendantAge())
+                .as("Magistrates Adult Court List defendant age does not match")
+                .isEqualTo("50");
 
-        softly.assertThat(caseInfo.getDefendantAddress())
-            .as("Magistrates Adult Court List defendant address does not match")
-            .isEqualTo("1 High Street, London, SW1A 1AA");
+            softly.assertThat(caseInfo.getDefendantAddress())
+                .as("Magistrates Adult Court List defendant address does not match")
+                .isEqualTo("1 High Street, London, SW1A 1AA");
 
-        softly.assertThat(caseInfo.getInformant())
-            .as("Magistrates Adult Court List informant does not match")
-            .isEqualTo("POL01");
+            softly.assertThat(caseInfo.getInformant())
+                .as("Magistrates Adult Court List informant does not match")
+                .isEqualTo("POL01");
+        }
 
         softly.assertAll();
     }
 
     @Test
     void testOffenceInfo() {
-        List<MagistratesAdultCourtList> results = MagistratesAdultCourtListHelper.processPayload(inputJson,
-                                                                                                 Language.ENGLISH);
+        List<MagistratesAdultCourtList> results = MagistratesAdultCourtListHelper.processPayload(
+            standardInputJson,
+            Language.ENGLISH, true);
         Offence offence = results.get(0).getCases().get(0).getOffence();
         SoftAssertions softly = new SoftAssertions();
 
@@ -147,8 +166,9 @@ class MagistratesAdultCourtListHelperTest {
 
     @Test
     void testWelshOffenceInfo() {
-        List<MagistratesAdultCourtList> results = MagistratesAdultCourtListHelper.processPayload(inputJson,
-                                                                                                 Language.WELSH);
+        List<MagistratesAdultCourtList> results = MagistratesAdultCourtListHelper.processPayload(
+            standardInputJson,
+            Language.WELSH, true);
         Offence offence = results.get(0).getCases().get(0).getOffence();
         SoftAssertions softly = new SoftAssertions();
 

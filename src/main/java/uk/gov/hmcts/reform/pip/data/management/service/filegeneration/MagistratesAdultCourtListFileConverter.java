@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.pip.data.management.service.filegeneration;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import lombok.AllArgsConstructor;
 import org.thymeleaf.context.Context;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.DateHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.listmanipulation.MagistratesAdultCourtListHelper;
@@ -9,7 +10,11 @@ import uk.gov.hmcts.reform.pip.model.publication.Language;
 import java.io.IOException;
 import java.util.Map;
 
+@AllArgsConstructor
 public class MagistratesAdultCourtListFileConverter implements FileConverter {
+
+    private boolean isStandardList;
+
     @Override
     public String convert(JsonNode payload, Map<String, String> metadata,
                           Map<String, Object> languageResources) throws IOException {
@@ -34,7 +39,8 @@ public class MagistratesAdultCourtListFileConverter implements FileConverter {
         }
 
         Language language = Language.valueOf(metadata.get("language"));
-        context.setVariable("listData", MagistratesAdultCourtListHelper.processPayload(payload, language));
+        context.setVariable("listData",
+                            MagistratesAdultCourtListHelper.processPayload(payload, language, isStandardList));
 
         return TemplateEngine.processTemplate(metadata.get("listType"), context);
     }
