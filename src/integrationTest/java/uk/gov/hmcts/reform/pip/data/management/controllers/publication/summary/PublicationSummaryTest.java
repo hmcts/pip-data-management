@@ -5,6 +5,7 @@ import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.apache.commons.math3.random.RandomDataGenerator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -118,6 +119,26 @@ class PublicationSummaryTest extends PublicationIntegrationTestBase {
         for (String expectedAssertion : testCaseSetting.getExpectedFields()) {
             assertTrue(responseContent.contains(expectedAssertion), CONTENT_MISMATCH_ERROR);
         }
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = ListType.class, names = {"MAGISTRATES_ADULT_COURT_LIST_DAILY",
+        "MAGISTRATES_ADULT_COURT_LIST_FUTURE"})
+    void testGenerateArtefactSummaryMagistratesAdultCourtList(ListType listType) throws Exception {
+        byte[] data = getTestData("data/magistrates-adult-court-list/magistratesAdultCourtList.json");
+        Artefact artefact = createPublication(listType, data);
+
+        when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(data));
+
+        MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, artefact.getArtefactId())))
+            .andExpect(status().isOk()).andReturn();
+
+        String responseContent = response.getResponse().getContentAsString();
+        assertTrue(responseContent.contains("Defendant name - Mr Test User"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains("Informant - POL01"),
+                   CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains("Case number - 1000000000"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains("Offence title - Offence title 1"), CONTENT_MISMATCH_ERROR);
     }
 
     @Test
