@@ -6,7 +6,9 @@ import uk.gov.hmcts.reform.pip.model.publication.Language;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -18,6 +20,7 @@ public final class DateHelper {
     private static final String EUROPE_LONDON = "Europe/London";
     private static final int MINUTES_PER_HOUR = 60;
     private static final int HOURS_PER_DAY = 24;
+    private static final String DATE_FORMAT = "dd MMMM yyyy";
 
     private DateHelper() {
         throw new UnsupportedOperationException();
@@ -25,7 +28,7 @@ public final class DateHelper {
 
     public static String formatTimeStampToBst(String timestamp, Language language, boolean isTimeOnly,
                                               boolean isBothDateAndTime) {
-        return formatTimeStampToBst(timestamp, language, isTimeOnly, isBothDateAndTime, "dd MMMM yyyy");
+        return formatTimeStampToBst(timestamp, language, isTimeOnly, isBothDateAndTime, DATE_FORMAT);
     }
 
     public static String formatTimeStampToBst(String timestamp, Language language, boolean isTimeOnly,
@@ -49,7 +52,7 @@ public final class DateHelper {
     }
 
     public static String formatLocalDateTimeToBst(LocalDateTime date) {
-        return date.format(DateTimeFormatter.ofPattern("dd MMMM yyyy", Locale.UK));
+        return date.format(DateTimeFormatter.ofPattern(DATE_FORMAT, Locale.UK));
     }
 
     static String formatDurationInDays(int days, Language language) {
@@ -142,5 +145,23 @@ public final class DateHelper {
 
         String time = dtf.format(sittingStart);
         ((ObjectNode) sitting).put("time", time);
+    }
+
+    public static String convertDateFormat(String input, String originalFormat) {
+        DateTimeFormatter originalFormatter = DateTimeFormatter.ofPattern(originalFormat, Locale.UK);
+        DateTimeFormatter newFormatter = DateTimeFormatter.ofPattern(DATE_FORMAT, Locale.UK);
+
+        LocalDate date = LocalDate.parse(input, originalFormatter);
+        return date.format(newFormatter);
+    }
+
+    public static String convertTimeFormat(String input, String originalFormat) {
+        DateTimeFormatter originalFormatter = DateTimeFormatter.ofPattern(originalFormat, Locale.UK);
+
+        LocalTime time = LocalTime.parse(input, originalFormatter);
+        String newFormat = (time.getMinute() == 0) ? "ha" : "h:mma";
+        DateTimeFormatter newFormatter = DateTimeFormatter.ofPattern(newFormat, Locale.UK);
+
+        return time.format(newFormatter);
     }
 }
