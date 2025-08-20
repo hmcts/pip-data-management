@@ -1,0 +1,131 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Root",
+  "type": "object",
+  "required": [
+    "document"
+  ],
+  "properties": {
+    "document": {
+      "title": "Document details",
+      "type": "object",
+      "properties": {
+        "info": {
+          "title": "Document information",
+          "type": "object",
+          "properties": {
+            "start_time": {
+              "title": "Run start time in the format hh:mm:ss",
+              "type": "string",
+              "pattern": "^\\d{2}:\\d{2}:\\d{2}$"
+            }
+          }
+        },
+        "data": {
+          "title": "Document data",
+          "type": "object",
+          "required": [
+            "job"
+          ],
+          "properties": {
+            "job": {
+              "title": "Job details",
+              "type": "object",
+              "required": [
+                "printdate",
+                "sessions"
+              ],
+              "properties": {
+                "printdate": {
+                  "title": "Date in the format DD/MM/YYYY",
+                  "type": "string",
+                  "pattern": "^\\d{2}/\\d{2}/\\d{4}$"
+                },
+                "sessions": {
+                  "type": "array",
+                  "items": {
+                    "title": "Job session",
+                    "type": "object",
+                    "required": [
+                      "lja",
+                      "court",
+                      "room",
+                      "sstart",
+                      "blocks"
+                    ],
+                    "properties": {
+                      "lja": {
+                        "title": "Local justice area name",
+                        "type": "string",
+                        "maxLength": 100,
+                        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+                      },
+                      "court": {
+                        "title": "Courthouse name",
+                        "type": "string",
+                        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+                      },
+                      "room": {
+                        "title": "Courtroom name",
+                        "type": "integer"
+                      },
+                      "sstart": {
+                        "title": "Session start time in the format hh:mm",
+                        "type": "string",
+                        "pattern": "^\\d{2}:\\d{2}$"
+                      },
+                      "blocks": {
+                        "type": "array",
+                        "items": {
+                          "title": "Session block",
+                          "type": "object",
+                          "required": [
+                            "bstart",
+                            "cases"
+                          ],
+                          "properties": {
+                            "bstart": {
+                              "title": "Block start time in the format hh:mm",
+                              "type": "string",
+                              "pattern": "^\\d{2}:\\d{2}$"
+                            },
+                            "cases": {
+                              "type": "array",
+                              "items": {
+                                "title": "Hearing case",
+                                "type": "object",
+                                "required": [
+                                  "caseno",
+                                  "def_name"
+                                ],
+                                "properties": {
+                                  "caseno": {
+                                    "title": "Case number",
+                                    "type": "string",
+                                    "minLength": 10,
+                                    "maxLength": 10,
+                                    "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+                                  },
+                                  "def_name": {
+                                    "title": "Defendant name",
+                                    "type": "string",
+                                    "maxLength": 200,
+                                    "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
