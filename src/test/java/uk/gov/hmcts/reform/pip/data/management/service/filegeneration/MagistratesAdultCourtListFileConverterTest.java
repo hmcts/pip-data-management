@@ -236,11 +236,11 @@ class MagistratesAdultCourtListFileConverterTest {
 
         softly.assertThat(document.title())
             .as(TITLE_MESSAGE)
-            .isEqualTo("Magistrates Public List");
+            .isEqualTo("Rhestr Gyhoeddus y Llys Ynadon");
 
         softly.assertThat(document.getElementsByClass(GOVUK_HEADING_L).get(0).text())
             .as(HEADER_MESSAGE)
-            .contains("Magistrates Public List for location");
+            .contains("Rhestr Gyhoeddus y Llys Ynadon ar gyfer location");
 
         softly.assertThat(document.getElementsByClass(BODY_CLASS).get(0).text())
             .as(BODY_MESSAGE)
