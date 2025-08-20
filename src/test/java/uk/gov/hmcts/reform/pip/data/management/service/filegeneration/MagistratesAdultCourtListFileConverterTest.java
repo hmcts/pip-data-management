@@ -90,7 +90,7 @@ class MagistratesAdultCourtListFileConverterTest {
 
         try (InputStream languageFile = Thread.currentThread()
             .getContextClassLoader()
-            .getResourceAsStream("templates/languages/en/magistratesPublicAdultCourtList.json")) {
+            .getResourceAsStream("templates/languages/en/magistratesPublicAdultCourtListDaily.json")) {
             publicEnglishLanguageResource = OBJECT_MAPPER.readValue(
                 Objects.requireNonNull(languageFile).readAllBytes(), new TypeReference<>() {
                 });
@@ -98,7 +98,7 @@ class MagistratesAdultCourtListFileConverterTest {
 
         try (InputStream languageFile = Thread.currentThread()
             .getContextClassLoader()
-            .getResourceAsStream("templates/languages/cy/magistratesPublicAdultCourtList.json")) {
+            .getResourceAsStream("templates/languages/cy/magistratesPublicAdultCourtListDaily.json")) {
             publicWelshLanguageResource = OBJECT_MAPPER.readValue(
                 Objects.requireNonNull(languageFile).readAllBytes(), new TypeReference<>() {
                 });
