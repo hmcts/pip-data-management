@@ -12,7 +12,7 @@
     "appealReferenceNumber": "12346",
     "caseType": "Case type B",
     "hearingType": "Hearing type B",
-    "hearingTime": "11am",
+    "hearingTime": "11am  ",
     "additionalInformation": "This is another additional information"
   }
 ]
