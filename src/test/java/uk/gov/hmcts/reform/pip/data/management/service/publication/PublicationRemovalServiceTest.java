@@ -325,7 +325,7 @@ class PublicationRemovalServiceTest {
         orderVerifier.verify(artefactRepository).delete(artefactWithIdAndPayloadUrl);
         orderVerifier.verify(accountManagementService).sendDeletedArtefactForThirdParties(any());
         orderVerifier.verify(systemAdminNotificationService).sendEmailNotification(
-            EMAIL_ADDRESS, ActionResult.SUCCEEDED, "Total 1 artefact(s) for location NAME",
+            EMAIL_ADDRESS, USER_ID, ActionResult.SUCCEEDED, "Total 1 artefact(s) for location NAME",
             ChangeType.DELETE_LOCATION_ARTEFACT
         );
     }
@@ -336,7 +336,7 @@ class PublicationRemovalServiceTest {
         when(locationRepository.getLocationByLocationId(LOCATION_ID)).thenReturn(Optional.of(location));
         when(accountManagementService.getUserById(USER_ID)).thenReturn(piUser);
         doThrow(JsonProcessingException.class).when(systemAdminNotificationService).sendEmailNotification(
-            EMAIL_ADDRESS, ActionResult.SUCCEEDED, "Total 1 artefact(s) for location NAME",
+            EMAIL_ADDRESS, USER_ID, ActionResult.SUCCEEDED, "Total 1 artefact(s) for location NAME",
             ChangeType.DELETE_LOCATION_ARTEFACT
         );
 

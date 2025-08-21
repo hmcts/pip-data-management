@@ -32,6 +32,7 @@ import static uk.gov.hmcts.reform.pip.data.management.helpers.ConstantsTestHelpe
 @ExtendWith(MockitoExtension.class)
 class PublicationLocationControllerTest {
     private static final UUID ARTEFACT_ID = UUID.randomUUID();
+    private static final UUID USER_ID = UUID.randomUUID();
     private static final String SOURCE_ARTEFACT_ID = "sourceArtefactId";
     private static final LocalDateTime DISPLAY_FROM = LocalDateTime.now();
     private static final LocalDateTime DISPLAY_TO = LocalDateTime.now();
@@ -69,7 +70,8 @@ class PublicationLocationControllerTest {
     void checkCountArtefactByLocationReturnsData() {
         COURT_PER_LOCATION.add(new LocationArtefact("1", 2));
         when(publicationLocationService.countArtefactsByLocation()).thenReturn(COURT_PER_LOCATION);
-        ResponseEntity<List<LocationArtefact>> result = publicationLocationController.countByLocation();
+        ResponseEntity<List<LocationArtefact>> result =
+            publicationLocationController.countByLocation("123-456");
         assertEquals(HttpStatus.OK, result.getStatusCode(), STATUS_CODE_MATCH);
         assertEquals(COURT_PER_LOCATION, result.getBody(), NOT_EQUAL_MESSAGE);
     }
@@ -91,7 +93,8 @@ class PublicationLocationControllerTest {
 
         when(publicationLocationService.findAllNoMatchArtefacts()).thenReturn(artefactList);
 
-        ResponseEntity<List<Artefact>> response = publicationLocationController.getAllNoMatchArtefacts();
+        ResponseEntity<List<Artefact>> response =
+            publicationLocationController.getAllNoMatchArtefacts(USER_ID.toString());
 
         assertEquals(HttpStatus.OK, response.getStatusCode(), STATUS_CODE_MATCH);
         assertEquals(artefactList, response.getBody(), "Body should match");
