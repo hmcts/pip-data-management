@@ -1179,6 +1179,29 @@ class PublicationTest extends PublicationIntegrationTestBase {
     }
 
     @Test
+    void failedPublicationWhenTypeIsListAndListTypeNotDefined() throws Exception {
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
+        mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
+
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.TYPE_HEADER, ArtefactType.LIST)
+            .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
+            .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
+            .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
+            .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
+            .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO)
+            .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
+            .header(PublicationConfiguration.COURT_ID, COURT_ID)
+            .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
+            .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
+            .contentType(MediaType.MULTIPART_FORM_DATA);
+
+        MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
+            .andExpect(status().isBadRequest()).andReturn();
+
+        assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
+    }
+
+    @Test
     void testLcsuArtefactTypeInProdEnvironmentReturnsBadRequest() throws Exception {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
             .multipart(PUBLICATION_URL)
