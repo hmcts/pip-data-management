@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
@@ -94,6 +95,9 @@ public class PublicationController {
     private final ValidationService validationService;
     private final ExcelConversionService excelConversionService;
     private final PublicationServicesService publicationServicesService;
+
+    @Value("${ENV:local}")
+    private String environment;
 
     /**
      * Constructor for Publication controller.
@@ -237,6 +241,16 @@ public class PublicationController {
 
         HeaderGroup headers = validationService.validateHeaders(initialHeaders);
         Artefact artefact = createPublicationMetadataFromHeaders(headers, file.getSize(), true);
+
+        if (type.equals(ArtefactType.LCSU) && "prod".equalsIgnoreCase(environment)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                Artefact.builder()
+                    .type(type)
+                    .provenance(provenance)
+                    .payload("LCSU artefact type is not supported.")
+                    .build()
+            );
+        }
 
         if (type.equals(ArtefactType.LCSU)) {
             publicationServicesService.uploadHtmlFileToAwsS3Bucket(file);
@@ -452,7 +466,7 @@ public class PublicationController {
     private Artefact createPublicationMetadataFromHeaders(HeaderGroup headers, long fileSizeInBytes) {
         return createPublicationMetadataFromHeaders(headers, fileSizeInBytes, false);
     }
-    
+
     private boolean validateMasterSchema(ListType listType) {
         return !(listType.equals(ListType.MAGISTRATES_ADULT_COURT_LIST_DAILY)
             || listType.equals(ListType.MAGISTRATES_ADULT_COURT_LIST_FUTURE));

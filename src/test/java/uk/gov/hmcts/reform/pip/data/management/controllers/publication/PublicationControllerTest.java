@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
@@ -517,5 +518,23 @@ class PublicationControllerTest {
         assertEquals(String.format("Artefact of ID %s has been archived", artefactId),
                      response.getBody(), "Response from archiving does not match expected message"
         );
+    }
+
+    @Test
+    void testInvalidLcsuArtefactTypeForProdEnvironmentReturnsBadRequest() {
+        when(validationService.validateHeaders(any())).thenReturn(lcsuHeaders);
+
+        // Set the environment field to "prod" for this specific test
+        ReflectionTestUtils.setField(publicationController, "environment", "prod");
+
+        ResponseEntity<Artefact> response = publicationController.uploadPublication(
+            PROVENANCE, SOURCE_ARTEFACT_ID, ArtefactType.LCSU,
+            SENSITIVITY, LANGUAGE, DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, LOCATION_ID, CONTENT_DATE, TEST_STRING, FILE
+        );
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode(),
+                     "Expected HTTP 400 Bad Request for LCSU artefacts in production environment");
+        assertEquals("LCSU artefact type is not supported.", response.getBody().getPayload(),
+                     "Response body payload does not match expected message");
     }
 }

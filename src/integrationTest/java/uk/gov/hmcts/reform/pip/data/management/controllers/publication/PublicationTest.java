@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -20,6 +21,9 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -91,6 +95,10 @@ class PublicationTest extends PublicationIntegrationTestBase {
     private static String payload = "payload";
     private static MockMultipartFile file;
     private static MockMultipartFile htmlFile;
+
+
+    @Autowired
+    private PublicationController publicationController; // Inject the controller to modify its environment field
 
     @BeforeAll
     void setup() throws Exception {
@@ -1130,6 +1138,9 @@ class PublicationTest extends PublicationIntegrationTestBase {
 
     @Test
     void uploadHtmlToS3Bucket() throws Exception {
+        // Dynamically set the ENV property to "local" for this specific test
+        ReflectionTestUtils.setField(publicationController, "environment", "local");
+
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
         mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(PUBLICATION_URL).file(htmlFile);
 
@@ -1165,29 +1176,44 @@ class PublicationTest extends PublicationIntegrationTestBase {
         assertEquals(LANGUAGE, artefact.getLanguage(), "Language does not match input language");
         assertEquals(SENSITIVITY, artefact.getSensitivity(), "Sensitivity does not match input sensitivity");
         assertTrue(artefact.getIsFlatFile(), "Artefact does not have correct value for isFlatFile");
-
     }
 
     @Test
-    void failedPublicationWhenTypeIsListAndListTypeNotDefined() throws Exception {
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
-        mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
+    void testLcsuArtefactTypeInProdEnvironmentReturnsBadRequest() throws Exception {
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+            .multipart(PUBLICATION_URL)
+            .file(htmlFile);
 
-        mockHttpServletRequestBuilder.header(PublicationConfiguration.TYPE_HEADER, ArtefactType.LIST)
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.TYPE_HEADER, ArtefactType.LCSU)
             .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
             .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
             .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
             .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO)
             .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
+            .header(PublicationConfiguration.LIST_TYPE, LIST_TYPE)
             .header(PublicationConfiguration.COURT_ID, COURT_ID)
             .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
             .contentType(MediaType.MULTIPART_FORM_DATA);
 
-        MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
-            .andExpect(status().isBadRequest()).andReturn();
 
-        assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
+        MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
+            .andExpect(status().isBadRequest())
+            .andReturn();
+
+        assertNotNull(response.getResponse().getContentAsString(), "Response should not be null");
+
+        Artefact artefact = OBJECT_MAPPER.readValue(response.getResponse().getContentAsString(), Artefact.class);
+
+        assertEquals("LCSU artefact type is not supported.", artefact.getPayload(),
+                     "Payload does not match expected message");
+        assertEquals(ArtefactType.LCSU, artefact.getType(), "Artefact type does not match input artefact type");
+        assertEquals(PROVENANCE, artefact.getProvenance(), "Provenance does not match input provenance");
+    }
+
+    @DynamicPropertySource
+    static void setProperties(DynamicPropertyRegistry registry) {
+        registry.add("ENV", () -> "prod");
     }
 }
