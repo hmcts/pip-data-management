@@ -21,8 +21,6 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
@@ -1202,7 +1200,10 @@ class PublicationTest extends PublicationIntegrationTestBase {
     }
 
     @Test
-    void testLcsuArtefactTypeInProdEnvironmentReturnsBadRequest() throws Exception {
+    void testLcsuArtefactTypeInProdEnvironmentThrowsCustomException() throws Exception {
+        // Ensure the environment is set to "prod" dynamically
+        ReflectionTestUtils.setField(publicationController, "environment", "prod");
+
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
             .multipart(PUBLICATION_URL)
             .file(htmlFile);
@@ -1220,23 +1221,11 @@ class PublicationTest extends PublicationIntegrationTestBase {
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
             .contentType(MediaType.MULTIPART_FORM_DATA);
 
-
-        MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
+        mockMvc.perform(mockHttpServletRequestBuilder)
             .andExpect(status().isBadRequest())
-            .andReturn();
-
-        assertNotNull(response.getResponse().getContentAsString(), "Response should not be null");
-
-        Artefact artefact = OBJECT_MAPPER.readValue(response.getResponse().getContentAsString(), Artefact.class);
-
-        assertEquals("LCSU artefact type is not supported.", artefact.getPayload(),
-                     "Payload does not match expected message");
-        assertEquals(ArtefactType.LCSU, artefact.getType(), "Artefact type does not match input artefact type");
-        assertEquals(PROVENANCE, artefact.getProvenance(), "Provenance does not match input provenance");
-    }
-
-    @DynamicPropertySource
-    static void setProperties(DynamicPropertyRegistry registry) {
-        registry.add("ENV", () -> "prod");
+            .andExpect(result -> assertTrue(
+                result.getResponse().getContentAsString().contains("LCSU artefact type is not supported."),
+                "Expected error message not found in response"
+            ));
     }
 }

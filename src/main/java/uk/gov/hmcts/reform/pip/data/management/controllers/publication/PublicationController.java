@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.LcsuArtefactNotSupportedException;
 import uk.gov.hmcts.reform.pip.data.management.helpers.EmailHelper;
 import uk.gov.hmcts.reform.pip.data.management.helpers.NoMatchArtefactHelper;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
@@ -243,13 +244,7 @@ public class PublicationController {
         Artefact artefact = createPublicationMetadataFromHeaders(headers, file.getSize(), true);
 
         if (type.equals(ArtefactType.LCSU) && "prod".equalsIgnoreCase(environment)) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
-                Artefact.builder()
-                    .type(type)
-                    .provenance(provenance)
-                    .payload("LCSU artefact type is not supported.")
-                    .build()
-            );
+            throw new LcsuArtefactNotSupportedException("LCSU artefact type is not supported.");
         }
 
         if (type.equals(ArtefactType.LCSU)) {

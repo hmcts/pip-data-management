@@ -18,6 +18,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.LcsuArtefactNotSupportedException;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.HeaderGroup;
 import uk.gov.hmcts.reform.pip.data.management.service.ExcelConversionService;
@@ -43,6 +44,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
@@ -521,20 +523,26 @@ class PublicationControllerTest {
     }
 
     @Test
-    void testInvalidLcsuArtefactTypeForProdEnvironmentReturnsBadRequest() {
+    void testInvalidLcsuArtefactTypeForProdEnvironmentSendsBadRequest() {
         when(validationService.validateHeaders(any())).thenReturn(lcsuHeaders);
 
-        // Set the environment field to "prod" for this specific test
+        // Ensure the environment field is set to "prod"
         ReflectionTestUtils.setField(publicationController, "environment", "prod");
 
-        ResponseEntity<Artefact> response = publicationController.uploadPublication(
-            PROVENANCE, SOURCE_ARTEFACT_ID, ArtefactType.LCSU,
-            SENSITIVITY, LANGUAGE, DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, LOCATION_ID, CONTENT_DATE, TEST_STRING, FILE
-        );
+        LcsuArtefactNotSupportedException exception = null;
 
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode(),
-                     "Expected HTTP 400 Bad Request for LCSU artefacts in production environment");
-        assertEquals("LCSU artefact type is not supported.", response.getBody().getPayload(),
-                     "Response body payload does not match expected message");
+        try {
+            publicationController.uploadPublication(
+                PROVENANCE, SOURCE_ARTEFACT_ID, ArtefactType.LCSU,
+                SENSITIVITY, LANGUAGE, DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, LOCATION_ID, CONTENT_DATE, TEST_STRING, FILE
+            );
+        } catch (LcsuArtefactNotSupportedException ex) {
+            exception = ex;
+        }
+
+        // Validate that the exception is thrown and contains the correct message
+        assertNotNull(exception, "Expected LcsuArtefactNotSupportedException to be thrown");
+        assertEquals("LCSU artefact type is not supported.", exception.getMessage(),
+                     "Exception message does not match expected");
     }
 }

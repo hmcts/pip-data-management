@@ -17,6 +17,7 @@ import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ExcelCon
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.FileSizeLimitException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.FlatFileException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.HeaderValidationException;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.LcsuArtefactNotSupportedException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.LocationNameValidationException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.LocationNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.NotFoundException;
@@ -31,6 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
+@SuppressWarnings("PMD.CouplingBetweenObjects")
 class GlobalExceptionHandlerTest {
 
     @Mock
@@ -304,5 +306,18 @@ class GlobalExceptionHandlerTest {
         assertNotNull(responseEntity.getBody(), ASSERTION_RESPONSE_BODY);
         assertEquals(TEST_MESSAGE, responseEntity.getBody().getMessage(),
                      ASSERTION_MESSAGE);
+    }
+
+    @Test
+    void testHandleLcsuArtefactNotSupportedException() {
+        String errorMessage = "LCSU artefact type is not supported.";
+        LcsuArtefactNotSupportedException exception = new LcsuArtefactNotSupportedException(errorMessage);
+
+        ResponseEntity<ExceptionResponse> response = globalExceptionHandler.handle(exception);
+
+        assertNotNull(response, "Response should not be null");
+        assertEquals(400, response.getStatusCodeValue(), "Status code should be 400");
+        assertNotNull(response.getBody(), "Response body should not be null");
+        assertEquals(errorMessage, response.getBody().getMessage(), "Error message should match");
     }
 }
