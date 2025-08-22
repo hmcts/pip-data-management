@@ -16,6 +16,7 @@ import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.Contains
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.DateValidationException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.EmptyRequiredHeaderException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.FlatFileException;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.HeaderValidationException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.PayloadValidationException;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.HeaderGroup;
 import uk.gov.hmcts.reform.pip.model.publication.ArtefactType;
@@ -84,6 +85,7 @@ public class ValidationService {
         handleStringValidation(headers);
         handleDateValidation(headers);
         handleDefaultSensitivity(headers);
+        handleListTypeDeprecation(headers);
 
         return headers;
     }
@@ -96,6 +98,18 @@ public class ValidationService {
     private void handleStringValidation(HeaderGroup headers) {
         validateRequiredHeader(PublicationConfiguration.PROVENANCE_HEADER, headers.getProvenance());
         validateRequiredHeader(PublicationConfiguration.COURT_ID, headers.getCourtId());
+    }
+
+    /**
+     * This validates that the list type being sent in, is not deprecated and therefore no longer accepted.
+     * @param headers The headers to validate.
+     */
+    private void handleListTypeDeprecation(HeaderGroup headers) {
+        if (headers.getListType() != null && headers.getListType().isDeprecated()) {
+            throw new HeaderValidationException(
+                String.format("List type %s is deprecated and can no longer be used", headers.getListType())
+            );
+        }
     }
 
     /**
