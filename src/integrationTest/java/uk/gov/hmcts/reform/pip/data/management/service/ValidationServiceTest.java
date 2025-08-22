@@ -188,7 +188,7 @@ class ValidationServiceTest extends IntegrationBasicTestBase {
     @ParameterizedTest
     @EnumSource(value = ListType.class, names = {"CIC_DAILY_HEARING_LIST", "CARE_STANDARDS_LIST",
         "PRIMARY_HEALTH_LIST"})
-    void testCreationOfPublicationWithDeprecatedListType(ListType listType) throws IOException {
+    void testCreationOfPublicationWithDeprecatedListType(ListType listType) {
         headerGroup.setListType(listType);
 
         HeaderValidationException dateHeaderValidationException =
