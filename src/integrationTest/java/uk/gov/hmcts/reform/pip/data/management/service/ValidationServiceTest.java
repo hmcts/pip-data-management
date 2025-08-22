@@ -301,7 +301,6 @@ class ValidationServiceTest extends IntegrationBasicTestBase {
         }
     }
 
-
     @ParameterizedTest
     @MethodSource("parameters")
     void testValidateWithoutErrorsForValidArtefact(ListType listType, String resource) throws IOException {
