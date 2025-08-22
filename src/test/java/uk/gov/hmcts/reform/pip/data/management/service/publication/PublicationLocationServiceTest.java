@@ -63,7 +63,7 @@ class PublicationLocationServiceTest {
         artefactsPerLocations.add(new LocationArtefact("noMatch", 0));
         List<Object[]> result = new ArrayList<>();
         result.add(new Object[]{"1", "3"});
-        when(artefactRepository.countArtefactsByLocation()).thenReturn(result);
+        when(artefactRepository.countArtefactsByLocation(any())).thenReturn(result);
         assertEquals(artefactsPerLocations, publicationLocationService.countArtefactsByLocation(),
                      MESSAGES_MATCH);
     }

@@ -36,12 +36,14 @@ public class PublicationLocationService {
 
     public List<LocationArtefact> countArtefactsByLocation() {
         List<LocationArtefact> artefactsPerLocations = new ArrayList<>();
-        List<Object[]> returnedData = artefactRepository.countArtefactsByLocation();
+        LocalDateTime currDate = LocalDateTime.now();
+        List<Object[]> returnedData = artefactRepository.countArtefactsByLocation(currDate);
         for (Object[] result : returnedData) {
             artefactsPerLocations.add(
                 new LocationArtefact(result[0].toString(), Integer.parseInt(result[1].toString())));
         }
-        artefactsPerLocations.add(new LocationArtefact("noMatch", artefactRepository.countNoMatchArtefacts()));
+        artefactsPerLocations.add(
+            new LocationArtefact("noMatch", artefactRepository.countNoMatchArtefacts(currDate)));
         return artefactsPerLocations;
     }
 

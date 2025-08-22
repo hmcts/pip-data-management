@@ -377,7 +377,7 @@ class PublicationSearchServiceTest {
 
     @Test
     void testFindAllByCourtIdAdmin() {
-        when(artefactRepository.findArtefactsByLocationIdAdmin(TEST_VALUE)).thenReturn(List.of(artefact));
+        when(artefactRepository.findArtefactsByLocationIdAdmin(any(), any())).thenReturn(List.of(artefact));
         assertEquals(List.of(artefact), publicationSearchService.findAllByLocationIdAdmin(TEST_VALUE, USER_ID, true),
                      VALIDATION_ARTEFACT_NOT_MATCH
         );
