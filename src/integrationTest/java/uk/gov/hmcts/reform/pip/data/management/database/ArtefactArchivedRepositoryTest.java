@@ -88,7 +88,7 @@ class ArtefactArchivedRepositoryTest {
         LocalDateTime publicationReceivedDate = LocalDate.now()
             .minusDays(31)
             .atStartOfDay();
-        List<PublicationMiData> miDataList = artefactArchivedRepository.getArchivedArtefacts(publicationReceivedDate);
+        List<PublicationMiData> miDataList = artefactArchivedRepository.getArchivedMiData(publicationReceivedDate);
 
         //artefactId2 has last lastReceivedDate more than 31 days old, so it will not be picked.
         assertThat(miDataList).hasSize(1).extracting(PublicationMiData::getArtefactId)
@@ -111,7 +111,7 @@ class ArtefactArchivedRepositoryTest {
         publicationReceivedDate = LocalDate.now()
             .minusDays(1)
             .atStartOfDay();
-        miDataList = artefactArchivedRepository.getArchivedArtefacts(publicationReceivedDate);
+        miDataList = artefactArchivedRepository.getArchivedMiData(publicationReceivedDate);
 
         assertThat(miDataList).hasSize(0);
     }

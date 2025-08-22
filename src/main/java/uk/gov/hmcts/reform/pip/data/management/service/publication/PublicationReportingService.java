@@ -50,7 +50,7 @@ public class PublicationReportingService {
         List<PublicationMiData> publicationMiData =
             artefactRepository.getMiData(publicationReceivedDate);
         List<PublicationMiData> archivedPublicationMiData =
-            artefactArchivedRepository.getArchivedArtefacts(publicationReceivedDate);
+            artefactArchivedRepository.getArchivedMiData(publicationReceivedDate);
         if (!archivedPublicationMiData.isEmpty()) {
             publicationMiData.addAll(archivedPublicationMiData);
         }
