@@ -315,9 +315,9 @@ class GlobalExceptionHandlerTest {
 
         ResponseEntity<ExceptionResponse> response = globalExceptionHandler.handle(exception);
 
-        assertNotNull(response, "Response should not be null");
-        assertEquals(400, response.getStatusCodeValue(), "Status code should be 400");
-        assertNotNull(response.getBody(), "Response body should not be null");
-        assertEquals(errorMessage, response.getBody().getMessage(), "Error message should match");
+        assertNotNull(response, ASSERTION_RESPONSE_BODY);
+        assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCodeValue(), BAD_REQUEST_ASSERTION);
+        assertNotNull(response.getBody(), NOT_NULL_MESSAGE);
+        assertEquals(errorMessage, response.getBody().getMessage(), ASSERTION_MESSAGE);
     }
 }

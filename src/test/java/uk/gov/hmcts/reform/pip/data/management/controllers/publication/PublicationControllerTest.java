@@ -44,7 +44,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
@@ -431,6 +431,8 @@ class PublicationControllerTest {
 
     @Test
     void testUploadHtmlFileToS3BucketSuccess() {
+        ReflectionTestUtils.setField(publicationController, "enableLcsu", true);
+
         artefactWithoutId.setSearch(null);
         artefactWithoutId.setIsFlatFile(true);
         artefactWithoutId.setPayloadSize(0f);
@@ -450,6 +452,7 @@ class PublicationControllerTest {
 
     @Test
     void testUploadHtmlFileToS3BucketFailWebClientException() {
+        ReflectionTestUtils.setField(publicationController, "enableLcsu", true);
         when(validationService.validateHeaders(any())).thenReturn(lcsuHeaders);
         WebClientResponseException webClientException =
             new WebClientResponseException("Failed to upload file",
@@ -526,22 +529,18 @@ class PublicationControllerTest {
     void testInvalidLcsuArtefactTypeForProdEnvironmentSendsBadRequest() {
         when(validationService.validateHeaders(any())).thenReturn(lcsuHeaders);
 
-        // Ensure the environment field is set to "prod"
-        ReflectionTestUtils.setField(publicationController, "environment", "prod");
+        ReflectionTestUtils.setField(publicationController, "enableLcsu", false);
 
-        LcsuArtefactNotSupportedException exception = null;
-
-        try {
-            publicationController.uploadPublication(
+        LcsuArtefactNotSupportedException exception = assertThrows(
+            LcsuArtefactNotSupportedException.class,
+            () -> publicationController.uploadPublication(
                 PROVENANCE, SOURCE_ARTEFACT_ID, ArtefactType.LCSU,
                 SENSITIVITY, LANGUAGE, DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, LOCATION_ID, CONTENT_DATE, TEST_STRING, FILE
-            );
-        } catch (LcsuArtefactNotSupportedException ex) {
-            exception = ex;
-        }
+            ),
+            "Expected LcsuArtefactNotSupportedException to be thrown"
+        );
 
-        // Validate that the exception is thrown and contains the correct message
-        assertNotNull(exception, "Expected LcsuArtefactNotSupportedException to be thrown");
+        // Validate that the exception contains the correct message
         assertEquals("LCSU artefact type is not supported.", exception.getMessage(),
                      "Exception message does not match expected");
     }

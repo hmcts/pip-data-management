@@ -212,4 +212,7 @@ logging:
 testingSupport:
   enableApi: ${ENABLE_TESTING_SUPPORT_API:true}
 
+pdda:
+  enableLcsu: ${LCSU_ENABLED:true}
+
 

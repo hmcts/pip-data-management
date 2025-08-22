@@ -1136,12 +1136,10 @@ class PublicationTest extends PublicationIntegrationTestBase {
 
     @Test
     void uploadHtmlToS3Bucket() throws Exception {
-        // Dynamically set the ENV property to "local" for this specific test
-        ReflectionTestUtils.setField(publicationController, "environment", "local");
+        ReflectionTestUtils.setField(publicationController, "enableLcsu", true);
 
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
-        mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(PUBLICATION_URL).file(htmlFile);
-
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
+            MockMvcRequestBuilders.multipart(PUBLICATION_URL).file(htmlFile);
         mockHttpServletRequestBuilder.header(PublicationConfiguration.TYPE_HEADER, ArtefactType.LCSU)
             .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
@@ -1201,8 +1199,7 @@ class PublicationTest extends PublicationIntegrationTestBase {
 
     @Test
     void testLcsuArtefactTypeInProdEnvironmentThrowsCustomException() throws Exception {
-        // Ensure the environment is set to "prod" dynamically
-        ReflectionTestUtils.setField(publicationController, "environment", "prod");
+        ReflectionTestUtils.setField(publicationController, "enableLcsu", false);
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
             .multipart(PUBLICATION_URL)

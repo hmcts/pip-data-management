@@ -97,8 +97,8 @@ public class PublicationController {
     private final ExcelConversionService excelConversionService;
     private final PublicationServicesService publicationServicesService;
 
-    @Value("${ENV:local}")
-    private String environment;
+    @Value("${pdda.enableLcsu}")
+    private boolean enableLcsu;
 
     /**
      * Constructor for Publication controller.
@@ -172,7 +172,6 @@ public class PublicationController {
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime contentDate,
         @RequestHeader(value = "x-issuer-email", required = false) String issuerEmail,
         @RequestBody String payload) {
-
         HeaderGroup initialHeaders = new HeaderGroup(provenance, sourceArtefactId, type, sensitivity, language,
                                                      displayFrom, displayTo, listType, courtId, contentDate
         );
@@ -243,7 +242,7 @@ public class PublicationController {
         HeaderGroup headers = validationService.validateHeaders(initialHeaders);
         Artefact artefact = createPublicationMetadataFromHeaders(headers, file.getSize(), true);
 
-        if (type.equals(ArtefactType.LCSU) && "prod".equalsIgnoreCase(environment)) {
+        if (type.equals(ArtefactType.LCSU) && !enableLcsu) {
             throw new LcsuArtefactNotSupportedException("LCSU artefact type is not supported.");
         }
 
