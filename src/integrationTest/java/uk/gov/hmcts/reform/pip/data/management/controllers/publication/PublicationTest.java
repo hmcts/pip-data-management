@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -20,6 +21,7 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -91,6 +93,10 @@ class PublicationTest extends PublicationIntegrationTestBase {
     private static String payload = "payload";
     private static MockMultipartFile file;
     private static MockMultipartFile htmlFile;
+
+
+    @Autowired
+    private PublicationController publicationController; // Inject the controller to modify its environment field
 
     @BeforeAll
     void setup() throws Exception {
@@ -1130,9 +1136,10 @@ class PublicationTest extends PublicationIntegrationTestBase {
 
     @Test
     void uploadHtmlToS3Bucket() throws Exception {
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
-        mockHttpServletRequestBuilder = MockMvcRequestBuilders.multipart(PUBLICATION_URL).file(htmlFile);
+        ReflectionTestUtils.setField(publicationController, "enableLcsu", true);
 
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
+            MockMvcRequestBuilders.multipart(PUBLICATION_URL).file(htmlFile);
         mockHttpServletRequestBuilder.header(PublicationConfiguration.TYPE_HEADER, ArtefactType.LCSU)
             .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
@@ -1165,7 +1172,6 @@ class PublicationTest extends PublicationIntegrationTestBase {
         assertEquals(LANGUAGE, artefact.getLanguage(), "Language does not match input language");
         assertEquals(SENSITIVITY, artefact.getSensitivity(), "Sensitivity does not match input sensitivity");
         assertTrue(artefact.getIsFlatFile(), "Artefact does not have correct value for isFlatFile");
-
     }
 
     @Test
@@ -1189,5 +1195,34 @@ class PublicationTest extends PublicationIntegrationTestBase {
             .andExpect(status().isBadRequest()).andReturn();
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
+    }
+
+    @Test
+    void testLcsuArtefactTypeInProdEnvironmentThrowsCustomException() throws Exception {
+        ReflectionTestUtils.setField(publicationController, "enableLcsu", false);
+
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+            .multipart(PUBLICATION_URL)
+            .file(htmlFile);
+
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.TYPE_HEADER, ArtefactType.LCSU)
+            .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
+            .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
+            .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
+            .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
+            .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO)
+            .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
+            .header(PublicationConfiguration.LIST_TYPE, LIST_TYPE)
+            .header(PublicationConfiguration.COURT_ID, COURT_ID)
+            .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
+            .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
+            .contentType(MediaType.MULTIPART_FORM_DATA);
+
+        mockMvc.perform(mockHttpServletRequestBuilder)
+            .andExpect(status().isBadRequest())
+            .andExpect(result -> assertTrue(
+                result.getResponse().getContentAsString().contains("LCSU artefact type is not supported."),
+                "Expected error message not found in response"
+            ));
     }
 }

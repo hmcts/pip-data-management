@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
@@ -28,6 +29,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.LcsuArtefactNotSupportedException;
 import uk.gov.hmcts.reform.pip.data.management.helpers.EmailHelper;
 import uk.gov.hmcts.reform.pip.data.management.helpers.NoMatchArtefactHelper;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
@@ -94,6 +96,9 @@ public class PublicationController {
     private final ValidationService validationService;
     private final ExcelConversionService excelConversionService;
     private final PublicationServicesService publicationServicesService;
+
+    @Value("${pdda.enableLcsu}")
+    private boolean enableLcsu;
 
     /**
      * Constructor for Publication controller.
@@ -167,7 +172,6 @@ public class PublicationController {
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime contentDate,
         @RequestHeader(value = "x-issuer-email", required = false) String issuerEmail,
         @RequestBody String payload) {
-
         HeaderGroup initialHeaders = new HeaderGroup(provenance, sourceArtefactId, type, sensitivity, language,
                                                      displayFrom, displayTo, listType, courtId, contentDate
         );
@@ -237,6 +241,10 @@ public class PublicationController {
 
         HeaderGroup headers = validationService.validateHeaders(initialHeaders);
         Artefact artefact = createPublicationMetadataFromHeaders(headers, file.getSize(), true);
+
+        if (type.equals(ArtefactType.LCSU) && !enableLcsu) {
+            throw new LcsuArtefactNotSupportedException("LCSU artefact type is not supported.");
+        }
 
         if (type.equals(ArtefactType.LCSU)) {
             publicationServicesService.uploadHtmlFileToAwsS3Bucket(file);
@@ -452,7 +460,7 @@ public class PublicationController {
     private Artefact createPublicationMetadataFromHeaders(HeaderGroup headers, long fileSizeInBytes) {
         return createPublicationMetadataFromHeaders(headers, fileSizeInBytes, false);
     }
-    
+
     private boolean validateMasterSchema(ListType listType) {
         return !(listType.equals(ListType.MAGISTRATES_ADULT_COURT_LIST_DAILY)
             || listType.equals(ListType.MAGISTRATES_ADULT_COURT_LIST_FUTURE));
