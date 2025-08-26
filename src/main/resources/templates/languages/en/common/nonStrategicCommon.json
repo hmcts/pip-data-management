@@ -21,7 +21,7 @@
   "remoteJudgementsText": "Remote hand-down: This judgment will be handed down remotely by circulation to the parties or their representatives by email and release to The National Archives. A copy of the judgment in final form as handed down should be available on The National Archives website shortly thereafter. Members of the media can obtain a copy on request by email to the Judicial Office press.enquiries@judiciary.uk.",
   "observeHearingLinkText": "Observe a court or tribunal hearing as a journalist, researcher or member of the public",
   "observeHearingLink": "https://www.gov.uk/guidance/observe-a-court-or-tribunal-hearing",
-  "tableHeadersCommon1": [
+  "commonKbChdDailyCauseListTableHeaders": [
     "Judge",
     "Time",
     "Venue",
@@ -30,7 +30,7 @@
     "Case name",
     "Additional information"
   ],
-  "tableHeadersCommon2": [
+  "commonNsDailyCauseListTableHeaders": [
     "Venue",
     "Judge",
     "Time",

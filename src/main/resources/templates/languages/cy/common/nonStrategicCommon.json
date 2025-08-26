@@ -21,7 +21,7 @@
   "remoteJudgementsText": "Traddodi o Bell: Bydd y dyfarniad hwn yn cael ei draddodi o bell trwy gylchrediad i'r partïon neu eu cynrychiolwyr trwy e-bost a'i ryddhau i'r Archifau Cenedlaethol. Dylai copi o'r dyfarniad ar ffurf derfynol fel y'i rhoddwyd fod ar gael ar wefan yr Archifau Cenedlaethol yn fuan wedyn. Gall aelodau'r cyfryngau gael copi ar gais trwy e-bost i'r Swyddfa Farnwrol press.enquiries@judiciary.uk.",
   "observeHearingLinkText": "Arsylwi gwrandawiad llys neu dribiwnlys fel newyddiadurwr, ymchwilydd neu aelod o'r cyhoedd",
   "observeHearingLink": "https://www.gov.uk/guidance/observe-a-court-or-tribunal-hearing",
-  "tableHeadersCommon1": [
+  "commonKbChdDailyCauseListTableHeaders": [
     "Barnwr",
     "Amser",
     "Lleoliad",
@@ -30,7 +30,7 @@
     "Enw’r achos",
     "Gwybodaeth ychwanegol"
   ],
-  "tableHeadersCommon2": [
+  "commonNsDailyCauseListTableHeaders": [
     "Lleoliad",
     "Barnwr",
     "Amser",
