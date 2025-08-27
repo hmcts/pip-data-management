@@ -1,0 +1,272 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Root",
+  "type": "object",
+  "required": [
+    "DailyList"
+  ],
+  "properties": {
+    "DailyList": {
+      "type": "object",
+      "required": [
+        "DocumentID",
+        "ListHeader",
+        "CrownCourt",
+        "CourtLists"
+      ],
+      "properties": {
+        "DocumentID": {
+          "type": "object",
+          "required": ["UniqueID", "DocumentType"],
+          "properties": {
+            "UniqueID": { "type": "string" },
+            "DocumentType": { "type": "string" }
+          }
+        },
+        "ListHeader": {
+          "type": "object",
+          "required": ["StartDate", "Version", "PublishedTime"],
+          "properties": {
+            "StartDate": { "type": "string", "format": "date" },
+            "EndDate": { "type": "string", "format": "date" },
+            "Version": { "type": "string" },
+            "PublishedTime": { "type": "string", "format": "date-time" }
+          }
+        },
+        "CrownCourt": {
+          "type": "object",
+          "required": ["CourtHouseType", "CourtHouseCode", "CourtHouseName"],
+          "properties": {
+            "CourtHouseType": {
+              "type": "string",
+              "enum": ["Crown Court", "Magistrates Court", "Youth Court"]
+            },
+            "CourtHouseCode": { "type": "string", "pattern": "^[0-9]{3,4}$" },
+            "CourtHouseName": { "type": "string" },
+            "CourtHouseAddress": {
+              "type": "object",
+              "properties": {
+                "Line": {
+                  "type": "array",
+                  "maxItems": 5,
+                  "items": { "type": "string" }
+                },
+                "Postcode": { "type": "string" }
+              }
+            },
+            "CourtHouseTelephone": { "type": "string" }
+          }
+        },
+        "CourtLists": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["CourtHouse", "Sittings"],
+            "properties": {
+              "CourtHouse": {
+                "type": "object",
+                "required": ["CourtHouseType", "CourtHouseCode", "CourtHouseName"],
+                "properties": {
+                  "CourtHouseType": {
+                    "type": "string",
+                    "enum": ["Crown Court", "Magistrates Court", "Youth Court"]
+                  },
+                  "CourtHouseCode": { "type": "string", "pattern": "^[0-9]{3,4}$" },
+                  "CourtHouseShortName": { "type": "string" },
+                  "CourtHouseName": { "type": "string" },
+                  "CourtHouseAddress": {
+                    "type": "object",
+                    "properties": {
+                      "Line": {
+                        "type": "array",
+                        "maxItems": 5,
+                        "items": { "type": "string" }
+                      },
+                      "Postcode": { "type": "string" }
+                    }
+                  },
+                  "CourtHouseTelephone": { "type": "string" }
+                }
+              },
+              "Sittings": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "CourtRoomNumber",
+                    "Judiciary",
+                    "Hearings"
+                  ],
+                  "properties": {
+                    "CourtRoomNumber": { "type": "integer" },
+                    "SittingAt": { "type": "string", "format": "time"},
+                    "SittingPriority": {
+                      "type": "string",
+                      "enum": ["T", "F", "R"]
+                    },
+                    "SittingNote": { "type": "string" },
+                    "Judiciary": {
+                      "type": "object",
+                      "required": ["Judge"],
+                      "properties": {
+                        "Judge": {
+                          "type": "object",
+                          "required": ["CitizenNameSurname"],
+                          "properties": {
+                            "CitizenNameTitle": { "type": "string" },
+                            "CitizenNameForename": { "type": "string" },
+                            "CitizenNameSurname": { "type": "string" },
+                            "CitizenNameSuffix": { "type": "string" },
+                            "CitizenNameRequestedName": { "type": "string" }
+                          }
+                        },
+                        "Justice": {
+                          "type": "array",
+                          "maxItems": 4,
+                          "items": {
+                            "type": "object",
+                            "required": ["CitizenNameSurname"],
+                            "properties": {
+                              "CitizenNameTitle": { "type": "string" },
+                              "CitizenNameForename": { "type": "string" },
+                              "CitizenNameSurname": { "type": "string" },
+                              "CitizenNameSuffix": { "type": "string" },
+                              "CitizenNameRequestedName": { "type": "string" }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "Hearings": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "required": [
+                          "HearingSequenceNumber",
+                          "HearingDetails",
+                          "CaseNumber"
+                        ],
+                        "properties": {
+                          "HearingSequenceNumber": { "type": "integer" },
+                          "HearingDetails": {
+                            "type": "object",
+                            "required": ["HearingDescription"],
+                            "properties": {
+                              "HearingDescription": { "type": "string" },
+                              "HearingType": { "type": "string" }
+                            }
+                          },
+                          "TimeMarkingNote": { "type": "string" },
+                          "CaseNumber": { "type": "string" },
+                          "Prosecution": {
+                            "type": "object",
+                            "properties": {
+                              "ProsecutingReference": { "type": "string" },
+                              "ProsecutingOrganisation": {
+                                "type": "object",
+                                "required": ["OrganisationName"],
+                                "properties": {
+                                  "OrganisationName": { "type": "string" }
+                                }
+                              },
+                              "ProsecutingAuthority": {
+                                "type": "string",
+                                "enum": ["Crown Prosecution Service",
+                                  "Customs and Excise",
+                                  "Department of Trade and Industry",
+                                  "Inland Revenue",
+                                  "Other Prosecutor"]
+                              }
+                            }
+                          },
+                          "CommittingCourt": {
+                            "type": "object",
+                            "required": ["CourtHouseType", "CourtHouseCode", "CourtHouseName"],
+                            "properties": {
+                              "CourtHouseType": {
+                                "type": "string",
+                                "enum": ["Crown Court", "Magistrates Court", "Youth Court"]
+                              },
+                              "CourtHouseCode": { "type": "string", "pattern": "^[0-9]{3,4}$" },
+                              "CourtHouseShortName": { "type": "string" },
+                              "CourtHouseName": { "type": "string" }
+                            }
+                          },
+                          "ListNote": { "type": "string" },
+                          "Defendants": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "PersonalDetails": {
+                                  "type": "object",
+                                  "properties": {
+                                    "Name": { "type": "string" },
+                                    "MaskedName": { "type": "string" },
+                                    "IsMasked": { "type": "string",
+                                      "enum": ["yes", "no"]
+                                    },
+                                    "DateOfBirth": { "type": "string", "format": "date" },
+                                    "Age": { "type": "integer" },
+                                    "Sex": {
+                                      "type": "string",
+                                      "enum": ["unknown", "male", "female", "indeterminate"]
+                                    },
+                                    "Address": {
+                                      "type": "object",
+                                      "properties": {
+                                        "Line": {
+                                          "type": "array",
+                                          "maxItems": 5,
+                                          "items": { "type": "string" }
+                                        },
+                                        "Postcode": { "type": "string" }
+                                      }
+                                    },
+                                    "Nationality": { "type": "string" }
+                                  }
+                                },
+                                "URN": { "type": "string" },
+                                "PrisonerID": { "type": "string" },
+                                "PrisonLocation": {
+                                  "type": "object",
+                                  "required": ["Location"],
+                                  "properties": {
+                                    "Location": {
+                                      "type": "array",
+                                      "items": { "type": "string" }
+                                    }
+                                  }
+                                },
+                                "Charges": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "object",
+                                    "required": ["OffenceStatement"],
+                                    "properties": {
+                                      "OffenceStatement": { "type": "string" },
+                                      "IndictmentCountNumber": { "type": "integer" },
+                                      "CJSoffenceCode": { "type": "string" }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          },
+                          "Respondent": {
+                            "type": "array",
+                            "items": { "type": "string" }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

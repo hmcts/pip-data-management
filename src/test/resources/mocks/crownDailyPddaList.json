@@ -1,0 +1,120 @@
+{
+  "DailyList": {
+    "DocumentID": {
+      "UniqueID": "TEST-UNIQUE-ID-001",
+      "DocumentType": "TestDocumentType"
+    },
+    "ListHeader": {
+      "StartDate": "2024-01-01",
+      "EndDate": "2024-01-02",
+      "Version": "test-version-1",
+      "PublishedTime": "2024-01-01T10:00:00Z"
+    },
+    "CrownCourt": {
+      "CourtHouseType": "Crown Court",
+      "CourtHouseCode": "1234",
+      "CourtHouseName": "Test Crown Court",
+      "CourtHouseAddress": {
+        "Line": ["Test Address Line 1", "Test Address Line 2"],
+        "Postcode": "TEST1 1AA"
+      },
+      "CourtHouseTelephone": "0000000000"
+    },
+    "CourtLists": [
+      {
+        "CourtHouse": {
+          "CourtHouseType": "Crown Court",
+          "CourtHouseCode": "1234",
+          "CourtHouseShortName": "TestShortName",
+          "CourtHouseName": "Test Court House",
+          "CourtHouseAddress": {
+            "Line": ["Test Court Address Line 1"],
+            "Postcode": "TEST2 2BB"
+          },
+          "CourtHouseTelephone": "1111111111"
+        },
+        "Sittings": [
+          {
+            "CourtRoomNumber": 1,
+            "SittingAt": "09:00:00",
+            "SittingPriority": "T",
+            "SittingNote": "Test Sitting Note",
+            "Judiciary": {
+              "Judge": {
+                "CitizenNameTitle": "TestTitle",
+                "CitizenNameForename": "TestForename",
+                "CitizenNameSurname": "TestSurname",
+                "CitizenNameSuffix": "TestSuffix",
+                "CitizenNameRequestedName": "TestRequestedName"
+              },
+              "Justice": [
+                {
+                  "CitizenNameTitle": "JusticeTitle",
+                  "CitizenNameForename": "JusticeForename",
+                  "CitizenNameSurname": "JusticeSurname",
+                  "CitizenNameSuffix": "JusticeSuffix",
+                  "CitizenNameRequestedName": "JusticeRequestedName"
+                }
+              ]
+            },
+            "Hearings": [
+              {
+                "HearingSequenceNumber": 1,
+                "HearingDetails": {
+                  "HearingDescription": "Test Hearing Description",
+                  "HearingType": "TestType"
+                },
+                "TimeMarkingNote": "Test Time Marking Note",
+                "CaseNumber": "TEST-CASE-001",
+                "Prosecution": {
+                  "ProsecutingReference": "TestProsecutingRef",
+                  "ProsecutingOrganisation": {
+                    "OrganisationName": "Test Organisation"
+                  },
+                  "ProsecutingAuthority": "Crown Prosecution Service"
+                },
+                "CommittingCourt": {
+                  "CourtHouseType": "Magistrates Court",
+                  "CourtHouseCode": "5678",
+                  "CourtHouseShortName": "TestMagShort",
+                  "CourtHouseName": "Test Magistrates Court"
+                },
+                "ListNote": "Test List Note",
+                "Defendants": [
+                  {
+                    "PersonalDetails": {
+                      "Name": "Test Defendant",
+                      "MaskedName": "Test Masked",
+                      "IsMasked": "no",
+                      "DateOfBirth": "2000-01-01",
+                      "Age": 24,
+                      "Sex": "unknown",
+                      "Address": {
+                        "Line": ["Test Defendant Address"],
+                        "Postcode": "TEST3 3CC"
+                      },
+                      "Nationality": "TestNationality"
+                    },
+                    "URN": "TEST-URN-001",
+                    "PrisonerID": "TEST-PRISONER-001",
+                    "PrisonLocation": {
+                      "Location": ["Test Prison Location"]
+                    },
+                    "Charges": [
+                      {
+                        "OffenceStatement": "Test Offence",
+                        "IndictmentCountNumber": 1,
+                        "CJSoffenceCode": "TESTCODE"
+                      }
+                    ]
+                  }
+                ],
+                "Respondent": ["Test Respondent"]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,198 @@
+{
+  "FirmList": {
+    "DocumentID": {
+      "DocumentName": "TestDocumentName",
+      "UniqueID": "TestUniqueID",
+      "DocumentType": "TestDocumentType",
+      "TimeStamp": "2024-01-01T10:00:00Z",
+      "Version": "TestVersion",
+      "SecurityClassification": "TestSecurity"
+    },
+    "ListHeader": {
+      "StartDate": "2024-01-01",
+      "EndDate": "2024-01-02",
+      "Version": "TestVersion",
+      "PublishedTime": "2024-01-01T10:00:00Z"
+    },
+    "CrownCourt": {
+      "CourtHouseType": "Crown Court",
+      "CourtHouseCode": "1234",
+      "CourtHouseName": "TestCourtHouseName",
+      "CourtHouseAddress": {
+        "Line": ["TestAddressLine1", "TestAddressLine2"],
+        "Postcode": "TestPostcode"
+      },
+      "CourtHouseTelephone": "TestTelephone"
+    },
+    "CourtLists": [
+      {
+        "SittingDate": "2024-01-01",
+        "CourtHouse": {
+          "CourtHouseType": "Crown Court",
+          "CourtHouseCode": "1234",
+          "CourtHouseShortName": "TestShortName",
+          "CourtHouseName": "TestCourtHouseName",
+          "CourtHouseAddress": {
+            "Line": ["TestAddressLine1"],
+            "Postcode": "TestPostcode"
+          },
+          "CourtHouseTelephone": "TestTelephone"
+        },
+        "Sittings": [
+          {
+            "CourtRoomNumber": 1,
+            "SittingSequenceNo": "TestSeqNo",
+            "SittingAt": "10:00:00",
+            "SittingPriority": "T",
+            "SittingNote": "TestSittingNote",
+            "Judiciary": {
+              "Judge": {
+                "CitizenNameTitle": "Mr",
+                "CitizenNameForename": "TestJudgeForename",
+                "CitizenNameSurname": "TestJudgeSurname",
+                "CitizenNameSuffix": "Jr",
+                "CitizenNameRequestedName": "TestJudgeRequested"
+              },
+              "Justice": [
+                {
+                  "CitizenNameTitle": "Ms",
+                  "CitizenNameForename": "TestJusticeForename",
+                  "CitizenNameSurname": "TestJusticeSurname",
+                  "CitizenNameSuffix": "Sr",
+                  "CitizenNameRequestedName": "TestJusticeRequested"
+                }
+              ]
+            },
+            "Hearings": [
+              {
+                "HearingSequenceNumber": 1,
+                "HearingDetails": {
+                  "HearingDescription": "TestHearingDescription",
+                  "HearingDate": "2024-01-01",
+                  "HearingEndDate": "2024-01-02",
+                  "HearingType": "ABC"
+                },
+                "TimeMarkingNote": "TestTimeMarkingNote",
+                "CaseNumber": "TestCaseNumber",
+                "Prosecution": {
+                  "Advocate": {
+                    "PersonalDetails": {
+                      "Name": "TestAdvocateName",
+                      "MaskedName": "TestAdvocateMasked",
+                      "IsMasked": "no"
+                    }
+                  },
+                  "ProsecutingReference": "TestProsecutingRef",
+                  "ProsecutingOrganisation": {
+                    "OrganisationName": "TestProsecutingOrg"
+                  },
+                  "ProsecutingAuthority": "Crown Prosecution Service"
+                },
+                "CommittingCourt": {
+                  "CourtHouseType": "Crown Court",
+                  "CourtHouseCode": "5678",
+                  "CourtHouseShortName": "TestOriginShortName",
+                  "CourtHouseName": "TestOriginName"
+                },
+                "ListNote": "TestListNote",
+                "Defendants": [
+                  {
+                    "PersonalDetails": {
+                      "Name": "TestDefendantName",
+                      "MaskedName": "TestMaskedName",
+                      "IsMasked": "no",
+                      "DateOfBirth": "2000-01-01",
+                      "Age": 24,
+                      "Sex": "male",
+                      "Address": {
+                        "Line": ["TestDefendantAddress"],
+                        "Postcode": "TestDefendantPostcode"
+                      },
+                      "Nationality": "TestNationality"
+                    },
+                    "URN": "TestURN",
+                    "Counsel": [
+                      {
+                        "Solicitor": [
+                          {
+                            "Party": {
+                              "Person": {
+                                "Name": "TestSolicitorName",
+                                "MaskedName": "TestSolicitorMasked",
+                                "IsMasked": "no",
+                                "DateOfBirth": "1980-01-01",
+                                "Sex": "female",
+                                "Address": {
+                                  "Line": ["TestSolicitorAddress"],
+                                  "Postcode": "TestSolicitorPostcode"
+                                }
+                              },
+                              "Organisation": {
+                                "OrganisationName": "TestSolicitorOrg"
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    ],
+                    "Charges": [
+                      {
+                        "OffenceStatement": "TestOffenceStatement",
+                        "IndictmentCountNumber": 1,
+                        "CJSoffenceCode": "TestCJSCode"
+                      }
+                    ]
+                  }
+                ],
+                "Respondent": ["TestRespondent"]
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "ReserveList": [
+      {
+        "HearingDetails": {
+          "HearingDescription": "TestReserveHearing",
+          "HearingDate": "2024-01-03",
+          "HearingEndDate": "2024-01-04",
+          "HearingType": "DEF"
+        },
+        "CaseNumber": "TestReserveCaseNumber",
+        "Prosecution": {
+          "Advocate": {
+            "PersonalDetails": {
+              "Name": "TestReserveAdvocate",
+              "MaskedName": "TestReserveAdvocateMasked",
+              "IsMasked": "yes"
+            }
+          },
+          "ProsecutingReference": "TestReserveProsecutingRef",
+          "ProsecutingOrganisation": {
+            "OrganisationName": "TestReserveProsecutingOrg"
+          },
+          "ProsecutingAuthority": "Other Prosecutor"
+        },
+        "CommittingCourt": {
+          "CourtHouseType": "Magistrates Court",
+          "CourtHouseCode": "4321",
+          "CourtHouseShortName": "TestReserveOriginShortName",
+          "CourtHouseName": "TestReserveOriginName"
+        },
+        "ListNote": "TestReserveListNote",
+        "Defendants": [
+          {
+            "PersonalDetails": {
+              "Name": "TestReserveDefendant",
+              "MaskedName": "TestReserveMasked",
+              "IsMasked": "yes"
+            },
+            "URN": "TestReserveURN"
+          }
+        ],
+        "Respondent": ["TestReserveRespondent"]
+      }
+    ]
+  }
+}
