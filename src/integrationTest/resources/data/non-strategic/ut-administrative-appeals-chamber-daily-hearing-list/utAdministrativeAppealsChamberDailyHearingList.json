@@ -8,5 +8,15 @@
     "modeOfHearing":"Mode of hearing 1",
     "venue":"Venue 1",
     "additionalInformation":"Additional information 1"
+  },
+  {
+    "time":"10am  ",
+    "appellant":"Appellant 2",
+    "caseReferenceNumber":"123412342",
+    "judges":"Judge B",
+    "members":"Member B",
+    "modeOfHearing":"Mode of hearing 2",
+    "venue":"Venue 2",
+    "additionalInformation":"Additional information 2"
   }
 ]
