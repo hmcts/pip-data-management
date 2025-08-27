@@ -1,0 +1,754 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Root",
+  "type": "object",
+  "required": [
+    "WarnedList"
+  ],
+  "properties": {
+    "WarnedList": {
+      "type": "object",
+      "required": [
+        "DocumentID",
+        "ListHeader",
+        "CrownCourt",
+        "CourtLists"
+      ],
+      "properties": {
+        "DocumentID": {
+          "type": "object",
+          "required": [
+            "DocumentName",
+            "UniqueID",
+            "DocumentType"
+          ],
+          "properties": {
+            "DocumentName": {
+              "type": "string"
+            },
+            "UniqueID": {
+              "type": "string"
+            },
+            "DocumentType": {
+              "type": "string"
+            }
+          }
+        },
+        "ListHeader": {
+          "type": "object",
+          "required": [
+            "StartDate",
+            "Version",
+            "PublishedTime"
+          ],
+          "properties": {
+            "StartDate": {
+              "type": "string",
+              "format": "date"
+            },
+            "EndDate": {
+              "type": "string",
+              "format": "date"
+            },
+            "Version": {
+              "type": "string"
+            },
+            "PublishedTime": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        },
+        "CrownCourt": {
+          "type": "object",
+          "required": [
+            "CourtHouseType",
+            "CourtHouseCode",
+            "CourtHouseName"
+          ],
+          "properties": {
+            "CourtHouseType": {
+              "type": "string",
+              "enum": [
+                "Crown Court",
+                "Magistrates Court",
+                "Youth Court"
+              ]
+            },
+            "CourtHouseCode": {
+              "type": "string",
+              "pattern": "^[0-9]{3,4}$"
+            },
+            "CourtHouseName": {
+              "type": "string"
+            },
+            "CourtHouseAddress": {
+              "type": "object",
+              "properties": {
+                "Line": {
+                  "type": "array",
+                  "maxItems": 5,
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "Postcode": {
+                  "type": "string"
+                }
+              }
+            },
+            "CourtHouseTelephone": {
+              "type": "string"
+            }
+          }
+        },
+        "ListingInstruction": {
+          "type": "array",
+          "maxItems": 3,
+          "items": {
+            "type": "string"
+          }
+        },
+        "CourtLists": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "CourtHouse",
+              "WithoutFixedDate"
+            ],
+            "properties": {
+              "CourtHouse": {
+                "type": "object",
+                "required": [
+                  "CourtHouseType",
+                  "CourtHouseCode",
+                  "CourtHouseName"
+                ],
+                "properties": {
+                  "CourtHouseType": {
+                    "type": "string",
+                    "enum": [
+                      "Crown Court",
+                      "Magistrates Court",
+                      "Youth Court"
+                    ]
+                  },
+                  "CourtHouseCode": {
+                    "type": "string",
+                    "pattern": "^[0-9]{3,4}$"
+                  },
+                  "CourtHouseShortName": {
+                    "type": "string"
+                  },
+                  "CourtHouseName": {
+                    "type": "string"
+                  },
+                  "CourtHouseAddress": {
+                    "type": "object",
+                    "properties": {
+                      "Line": {
+                        "type": "array",
+                        "maxItems": 5,
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "Postcode": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "CourtHouseTelephone": {
+                    "type": "string"
+                  }
+                }
+              },
+              "WithFixedDate": {
+                "type": "object",
+                "required": [
+                  "HearingType",
+                  "Fixture"
+                ],
+                "properties": {
+                  "HearingType": {
+                    "type": "string",
+                    "pattern": "^[A-Z]{3}$"
+                  },
+                  "Fixture": {
+                    "type": "object",
+                    "required": [
+                      "Cases"
+                    ],
+                    "properties": {
+                      "FixedDate": {
+                        "type": "string",
+                        "format": "date"
+                      },
+                      "Notes": {
+                        "type": "string"
+                      },
+                      "Cases": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "required": [
+                            "CaseNumber",
+                            "Defendants"
+                          ],
+                          "properties": {
+                            "CaseNumber": {
+                              "type": "string"
+                            },
+                            "CaseArrivedFrom": {
+                              "type": "object",
+                              "properties": {
+                                "OriginatingCourt": {
+                                  "type": "object",
+                                  "required": [
+                                    "CourtHouseCode",
+                                    "CourtHouseName"
+                                  ],
+                                  "properties": {
+                                    "CourtHouseCode": {
+                                      "type": "string",
+                                      "pattern": "^[0-9]{3,4}$"
+                                    },
+                                    "CourtHouseShortName": {
+                                      "type": "string"
+                                    },
+                                    "CourtHouseName": {
+                                      "type": "string"
+                                    }
+                                  }
+                                },
+                                "Section53": {
+                                  "type": "string",
+                                  "enum": [ "yes", "no" ]
+                                }
+                              }
+                            },
+                            "Hearing": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "required": [
+                                  "HearingDescription",
+                                  "HearingType"
+                                ],
+                                "properties": {
+                                  "HearingDescription": {
+                                    "type": "string"
+                                  },
+                                  "HearingDate": {
+                                    "type": "string",
+                                    "format": "date"
+                                  },
+                                  "HearingEndDate": {
+                                    "type": "string",
+                                    "format": "date"
+                                  },
+                                  "ListNote": {
+                                    "type": "string"
+                                  },
+                                  "HearingType": {
+                                    "type": "string",
+                                    "pattern": "^[A-Z]{3}$"
+                                  }
+                                }
+                              }
+                            },
+                            "Defendants": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "required": [
+                                  "PersonalDetails"
+                                ],
+                                "properties": {
+                                  "PersonalDetails": {
+                                    "type": "object",
+                                    "required": [
+                                      "Name",
+                                      "IsMasked"
+                                    ],
+                                    "properties": {
+                                      "Name": {
+                                        "type": "string"
+                                      },
+                                      "MaskedName": {
+                                        "type": "string"
+                                      },
+                                      "IsMasked": {
+                                        "type": "string",
+                                        "enum": [
+                                          "yes",
+                                          "no"
+                                        ]
+                                      },
+                                      "DateOfBirth": {
+                                        "type": "string",
+                                        "format": "date"
+                                      },
+                                      "Age": {
+                                        "type": "integer"
+                                      },
+                                      "Sex": {
+                                        "type": "string",
+                                        "enum": [
+                                          "unknown",
+                                          "male",
+                                          "female",
+                                          "indeterminate"
+                                        ]
+                                      },
+                                      "Address": {
+                                        "type": "object",
+                                        "properties": {
+                                          "Line": {
+                                            "type": "array",
+                                            "maxItems": 5,
+                                            "items": {
+                                              "type": "string"
+                                            }
+                                          },
+                                          "Postcode": {
+                                            "type": "string"
+                                          }
+                                        }
+                                      },
+                                      "Nationality": {
+                                        "type": "string"
+                                      }
+                                    }
+                                  },
+                                  "URN": {
+                                    "type": "string"
+                                  },
+                                  "PrisonerID": {
+                                    "type": "string"
+                                  },
+                                  "PrisonLocation": {
+                                    "type": "object",
+                                    "required": [
+                                      "Location"
+                                    ],
+                                    "properties": {
+                                      "Location": {
+                                        "type": "array",
+                                        "items": {
+                                          "type": "string"
+                                        }
+                                      }
+                                    }
+                                  },
+                                  "CustodyStatus": {
+                                    "type": "string",
+                                    "enum": [
+                                      "On bail",
+                                      "On remand",
+                                      "In care",
+                                      "In custody",
+                                      "Not applicable"
+                                    ]
+                                  },
+                                  "Counsel": {
+                                    "type": "array",
+                                    "items": {
+                                      "type": "object",
+                                      "properties": {
+                                        "Solicitor": {
+                                          "type": "array",
+                                          "items": {
+                                            "type": "object",
+                                            "properties": {
+                                              "Party": {
+                                                "type": "object",
+                                                "properties": {
+                                                  "Organisation": {
+                                                    "type": "object",
+                                                    "required": [
+                                                      "OrganisationName"
+                                                    ],
+                                                    "properties": {
+                                                      "OrganisationName": {
+                                                        "type": "string"
+                                                      }
+                                                    }
+                                                  }
+                                                }
+                                              }
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  },
+                                  "Charges": {
+                                    "type": "array",
+                                    "items": {
+                                      "type": "object",
+                                      "required": [
+                                        "OffenceStatement"
+                                      ],
+                                      "properties": {
+                                        "OffenceStatement": {
+                                          "type": "string"
+                                        },
+                                        "IndictmentCountNumber": {
+                                          "type": "integer"
+                                        },
+                                        "CJSoffenceCode": {
+                                          "type": "string"
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            },
+                            "Prosecution": {
+                              "type": "object",
+                              "properties": {
+                                "ProsecutingOrganisation": {
+                                  "type": "object",
+                                  "required": [
+                                    "OrganisationName"
+                                  ],
+                                  "properties": {
+                                    "OrganisationName": {
+                                      "type": "string"
+                                    }
+                                  }
+                                },
+                                "ProsecutingAuthority": {
+                                  "type": "string",
+                                  "enum": [
+                                    "Crown Prosecution Service",
+                                    "Customs and Excise",
+                                    "Department of Trade and Industry",
+                                    "Inland Revenue",
+                                    "Other Prosecutor"
+                                  ]
+                                }
+                              }
+                            },
+                            "LinkedCases": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "required": [
+                                  "CaseNumber"
+                                ],
+                                "properties": {
+                                  "CaseNumber": {
+                                    "type": "string"
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "WithoutFixedDate": {
+                "type": "object",
+                "required": [
+                  "HearingType",
+                  "Fixture"
+                ],
+                "properties": {
+                  "HearingType": {
+                    "type": "string",
+                    "pattern": "^[A-Z]{3}$"
+                  },
+                  "Fixture": {
+                    "type": "object",
+                    "required": [
+                      "Cases"
+                    ],
+                    "properties": {
+                      "FixedDate": {
+                        "type": "string",
+                        "format": "date"
+                      },
+                      "Notes": {
+                        "type": "string"
+                      },
+                      "Cases": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "required": [
+                            "CaseNumber",
+                            "Defendants"
+                          ],
+                          "properties": {
+                            "CaseNumber": {
+                              "type": "string"
+                            },
+                            "CaseArrivedFrom": {
+                              "type": "object",
+                              "properties": {
+                                "OriginatingCourt": {
+                                  "type": "object",
+                                  "required": [
+                                    "CourtHouseCode",
+                                    "CourtHouseName"
+                                  ],
+                                  "properties": {
+                                    "CourtHouseCode": {
+                                      "type": "string",
+                                      "pattern": "^[0-9]{3,4}$"
+                                    },
+                                    "CourtHouseShortName": {
+                                      "type": "string"
+                                    },
+                                    "CourtHouseName": {
+                                      "type": "string"
+                                    }
+                                  }
+                                },
+                                "Section53": {
+                                  "type": "string",
+                                  "enum": [ "yes", "no" ]
+                                }
+                              }
+                            },
+                            "Hearing": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "required": [
+                                  "HearingDescription",
+                                  "HearingType"
+                                ],
+                                "properties": {
+                                  "HearingDescription": {
+                                    "type": "string"
+                                  },
+                                  "HearingDate": {
+                                    "type": "string",
+                                    "format": "date"
+                                  },
+                                  "HearingEndDate": {
+                                    "type": "string",
+                                    "format": "date"
+                                  },
+                                  "ListNote": {
+                                    "type": "string"
+                                  },
+                                  "HearingType": {
+                                    "type": "string",
+                                    "pattern": "^[A-Z]{3}$"
+                                  }
+                                }
+                              }
+                            },
+                            "Defendants": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "required": [
+                                  "PersonalDetails"
+                                ],
+                                "properties": {
+                                  "PersonalDetails": {
+                                    "type": "object",
+                                    "required": [
+                                      "Name",
+                                      "IsMasked"
+                                    ],
+                                    "properties": {
+                                      "Name": {
+                                        "type": "string"
+                                      },
+                                      "MaskedName": {
+                                        "type": "string"
+                                      },
+                                      "IsMasked": {
+                                        "type": "string",
+                                        "enum": [
+                                          "yes",
+                                          "no"
+                                        ]
+                                      },
+                                      "DateOfBirth": {
+                                        "type": "string",
+                                        "format": "date"
+                                      },
+                                      "Age": {
+                                        "type": "integer"
+                                      },
+                                      "Sex": {
+                                        "type": "string",
+                                        "enum": [
+                                          "unknown",
+                                          "male",
+                                          "female",
+                                          "indeterminate"
+                                        ]
+                                      },
+                                      "Address": {
+                                        "type": "object",
+                                        "properties": {
+                                          "Line": {
+                                            "type": "array",
+                                            "maxItems": 5,
+                                            "items": {
+                                              "type": "string"
+                                            }
+                                          },
+                                          "Postcode": {
+                                            "type": "string"
+                                          }
+                                        }
+                                      },
+                                      "Nationality": {
+                                        "type": "string"
+                                      }
+                                    }
+                                  },
+                                  "URN": {
+                                    "type": "string"
+                                  },
+                                  "PrisonerID": {
+                                    "type": "string"
+                                  },
+                                  "PrisonLocation": {
+                                    "type": "object",
+                                    "required": [
+                                      "Location"
+                                    ],
+                                    "properties": {
+                                      "Location": {
+                                        "type": "array",
+                                        "items": {
+                                          "type": "string"
+                                        }
+                                      }
+                                    }
+                                  },
+                                  "CustodyStatus": {
+                                    "type": "string",
+                                    "enum": [
+                                      "On bail",
+                                      "On remand",
+                                      "In care",
+                                      "In custody",
+                                      "Not applicable"
+                                    ]
+                                  },
+                                  "Counsel": {
+                                    "type": "array",
+                                    "items": {
+                                      "type": "object",
+                                      "properties": {
+                                        "Solicitor": {
+                                          "type": "array",
+                                          "items": {
+                                            "type": "object",
+                                            "properties": {
+                                              "Party": {
+                                                "type": "object",
+                                                "properties": {
+                                                  "Organisation": {
+                                                    "type": "object",
+                                                    "required": [
+                                                      "OrganisationName"
+                                                    ],
+                                                    "properties": {
+                                                      "OrganisationName": {
+                                                        "type": "string"
+                                                      }
+                                                    }
+                                                  }
+                                                }
+                                              }
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  },
+                                  "Charges": {
+                                    "type": "array",
+                                    "items": {
+                                      "type": "object",
+                                      "required": [
+                                        "OffenceStatement"
+                                      ],
+                                      "properties": {
+                                        "OffenceStatement": {
+                                          "type": "string"
+                                        },
+                                        "IndictmentCountNumber": {
+                                          "type": "integer"
+                                        },
+                                        "CJSoffenceCode": {
+                                          "type": "string"
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            },
+                            "Prosecution": {
+                              "type": "object",
+                              "properties": {
+                                "ProsecutingOrganisation": {
+                                  "type": "object",
+                                  "required": [
+                                    "OrganisationName"
+                                  ],
+                                  "properties": {
+                                    "OrganisationName": {
+                                      "type": "string"
+                                    }
+                                  }
+                                },
+                                "ProsecutingAuthority": {
+                                  "type": "string",
+                                  "enum": [
+                                    "Crown Prosecution Service",
+                                    "Customs and Excise",
+                                    "Department of Trade and Industry",
+                                    "Inland Revenue",
+                                    "Other Prosecutor"
+                                  ]
+                                }
+                              }
+                            },
+                            "LinkedCases": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "required": [
+                                  "CaseNumber"
+                                ],
+                                "properties": {
+                                  "CaseNumber": {
+                                    "type": "string"
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
