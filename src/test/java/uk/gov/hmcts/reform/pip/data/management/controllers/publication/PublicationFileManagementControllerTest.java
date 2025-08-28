@@ -23,7 +23,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class PublicationFileManagementControllerTest {
     private static final String FILE = "123";
-    private static final String USER_ID = "test";
+    private static final UUID USER_ID = UUID.randomUUID();
     private static final UUID ARTEFACT_ID = UUID.randomUUID();
 
     private static final String STATUS_MESSAGE = "Status did not match";
@@ -37,8 +37,8 @@ class PublicationFileManagementControllerTest {
 
     @Test
     void testGetFile() {
-        when(publicationFileManagementService.getStoredPublication(any(), any(), any(), eq(USER_ID), eq(true),
-                                                                   eq(false)
+        when(publicationFileManagementService.getStoredPublication(any(), any(), any(),
+            eq(USER_ID.toString()), eq(true), eq(false)
         )).thenReturn(FILE);
 
         ResponseEntity<String> response = publicationFileManagementController.getFile(
@@ -53,7 +53,7 @@ class PublicationFileManagementControllerTest {
     void testFileExists() {
         when(publicationFileManagementService.fileExists(ARTEFACT_ID)).thenReturn(true);
 
-        ResponseEntity<Boolean> response = publicationFileManagementController.fileExists(ARTEFACT_ID);
+        ResponseEntity<Boolean> response = publicationFileManagementController.fileExists(ARTEFACT_ID, USER_ID);
         assertEquals(HttpStatus.OK, response.getStatusCode(), STATUS_MESSAGE);
         assertEquals(true, response.getBody(), RESPONSE_BODY_MESSAGE);
     }
@@ -63,7 +63,8 @@ class PublicationFileManagementControllerTest {
         PublicationFileSizes fileSizes = new PublicationFileSizes(1234L, null, 123L);
         when(publicationFileManagementService.getFileSizes(ARTEFACT_ID)).thenReturn(fileSizes);
 
-        ResponseEntity<PublicationFileSizes> response = publicationFileManagementController.getFileSizes(ARTEFACT_ID);
+        ResponseEntity<PublicationFileSizes> response =
+            publicationFileManagementController.getFileSizes(ARTEFACT_ID, USER_ID);
         assertEquals(HttpStatus.OK, response.getStatusCode(), STATUS_MESSAGE);
         assertEquals(fileSizes, response.getBody(), RESPONSE_BODY_MESSAGE);
     }

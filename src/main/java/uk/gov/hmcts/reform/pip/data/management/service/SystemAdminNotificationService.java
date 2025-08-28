@@ -21,10 +21,10 @@ public class SystemAdminNotificationService {
         this.publicationServicesService = publicationServicesService;
     }
 
-    public void sendEmailNotification(String requesterEmail, ActionResult actionResult,
+    public void sendEmailNotification(String requesterEmail, String requesterId, ActionResult actionResult,
                                       String additionalDetails, ChangeType changeType) throws JsonProcessingException {
-        List<String> systemAdminsAad = accountManagementService.getAllAccounts("PI_AAD", "SYSTEM_ADMIN");
-        List<String> systemAdminsSso = accountManagementService.getAllAccounts("SSO", "SYSTEM_ADMIN");
+        List<String> systemAdminsAad = accountManagementService.getAllAccounts("PI_AAD", "SYSTEM_ADMIN", requesterId);
+        List<String> systemAdminsSso = accountManagementService.getAllAccounts("SSO", "SYSTEM_ADMIN", requesterId);
         List<String> systemAdmins = Stream.concat(systemAdminsAad.stream(), systemAdminsSso.stream()).toList();
         publicationServicesService.sendSystemAdminEmail(systemAdmins, requesterEmail, actionResult,
                                                         additionalDetails, changeType);
