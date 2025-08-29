@@ -52,6 +52,7 @@ class MagistratesAdultCourtListHelperTest {
         List<MagistratesAdultCourtList> results = MagistratesAdultCourtListHelper.processPayload(
             isStandardList ? standardInputJson : publicInputJson,
             Language.ENGLISH, isStandardList);
+
         SoftAssertions softly = new SoftAssertions();
 
         softly.assertThat(results)
@@ -77,6 +78,7 @@ class MagistratesAdultCourtListHelperTest {
         List<MagistratesAdultCourtList> results = MagistratesAdultCourtListHelper.processPayload(
             isStandardList ? standardInputJson : publicInputJson,
             Language.ENGLISH, isStandardList);
+
         MagistratesAdultCourtList result = results.get(0);
         SoftAssertions softly = new SoftAssertions();
 
@@ -105,6 +107,7 @@ class MagistratesAdultCourtListHelperTest {
         List<MagistratesAdultCourtList> results = MagistratesAdultCourtListHelper.processPayload(
             isStandardList ? standardInputJson : publicInputJson,
             Language.ENGLISH, isStandardList);
+
         CaseInfo caseInfo = results.get(0).getCases().get(0);
         SoftAssertions softly = new SoftAssertions();
 

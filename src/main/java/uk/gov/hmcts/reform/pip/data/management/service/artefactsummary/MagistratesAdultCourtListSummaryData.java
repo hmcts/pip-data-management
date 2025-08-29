@@ -51,5 +51,4 @@ public class MagistratesAdultCourtListSummaryData implements ArtefactSummaryData
         );
         return summaryCases;
     }
-
 }

@@ -8,5 +8,15 @@
     "hearingType":"Hearing type 1",
     "venue":"Venue 1",
     "additionalInformation":"Additional information 1"
+  },
+  {
+    "time":"10am  ",
+    "caseReferenceNumber":"123412342",
+    "caseName":"This is a case name 2",
+    "judges":"Judge B",
+    "members":"Member B",
+    "hearingType":"Hearing type 2",
+    "venue":"Venue 2",
+    "additionalInformation":"Additional information 2"
   }
 ]
