@@ -47,6 +47,7 @@ import static uk.gov.hmcts.reform.pip.model.account.Roles.SYSTEM_ADMIN;
 @ActiveProfiles("integration")
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
 @DirtiesContext(classMode = AFTER_EACH_TEST_METHOD)
+@WithMockUser(username = "admin", authorities = {"APPROLE_api.request.admin"})
 class LocationApiTest extends LocationIntegrationTestBase {
     private static final String ROOT_URL = "/locations";
     private static final String GET_LOCATION_BY_ID_ENDPOINT = ROOT_URL + "/";
@@ -74,14 +75,11 @@ class LocationApiTest extends LocationIntegrationTestBase {
         "Unexpected number of locations has been returned";
     private static final String VALIDATION_LOCATION_NAME_NOT_AS_EXPECTED = "Location name is not as expected";
 
-    private static final String USERNAME = "admin";
-    private static final String VALID_ROLE = "APPROLE_api.request.admin";
     private static final String LOCATION_LIST = "locationList";
     private static final String USER_ID_HEADER = "x-user-id";
     private static final String EMAIL = "test@justice.gov.uk";
 
     @Test
-    @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})
     void testGetAllLocationsReturnsCorrectLocations() throws Exception {
         List<Location> locations = createLocations(LOCATIONS_CSV);
 
@@ -105,7 +103,6 @@ class LocationApiTest extends LocationIntegrationTestBase {
     }
 
     @Test
-    @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})
     void testGetLocationByIdReturnsSuccess() throws Exception {
         List<Location> locations = createLocations(LOCATIONS_CSV);
 
@@ -138,7 +135,6 @@ class LocationApiTest extends LocationIntegrationTestBase {
     }
 
     @Test
-    @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})
     void testGetLocationByNameReturnsSuccess() throws Exception {
         List<Location> locations = createLocations(LOCATIONS_CSV);
 
@@ -176,7 +172,6 @@ class LocationApiTest extends LocationIntegrationTestBase {
     }
 
     @Test
-    @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})
     void testGetWelshLocationByNameReturnsSuccess() throws Exception {
         List<Location> locations = createLocations(LOCATIONS_CSV);
 
@@ -213,7 +208,6 @@ class LocationApiTest extends LocationIntegrationTestBase {
     }
 
     @Test
-    @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})
     void testCreateLocationsCoreData() throws Exception {
         List<Location> createdLocations = createLocations(LOCATIONS_CSV);
 
@@ -237,7 +231,6 @@ class LocationApiTest extends LocationIntegrationTestBase {
     }
 
     @Test
-    @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})
     void testCreateLocationsReferenceData() throws Exception {
         List<Location> createdLocations = createLocations(LOCATIONS_CSV);
 
@@ -271,7 +264,6 @@ class LocationApiTest extends LocationIntegrationTestBase {
     }
 
     @Test
-    @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})
     void testCreateLocationsDataWithSecondChange() throws Exception {
         createLocations(LOCATIONS_CSV);
         createLocations(UPDATED_CSV);
@@ -321,7 +313,6 @@ class LocationApiTest extends LocationIntegrationTestBase {
     }
 
     @Test
-    @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})
     void testCreateLocationsWithCsvContainingExistingLocationName() throws Exception {
         List<Location> createdLocations = createLocations(LOCATIONS_CSV);
         assertEquals(4, createdLocations.size(), VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
@@ -352,7 +343,6 @@ class LocationApiTest extends LocationIntegrationTestBase {
     }
 
     @Test
-    @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})
     void testCreateLocationsWithCsvContainingDuplicatedLocationName() throws Exception {
         try (InputStream csvInputStream = this.getClass().getClassLoader()
                 .getResourceAsStream(CSV_WITH_DUPLICATED_LOCATION_NAME)) {
@@ -372,7 +362,6 @@ class LocationApiTest extends LocationIntegrationTestBase {
     }
 
     @Test
-    @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})
     void testInvalidCsv() throws Exception {
         try (InputStream csvInputStream = this.getClass().getClassLoader()
             .getResourceAsStream("location/InvalidCsv.txt")) {
@@ -385,7 +374,6 @@ class LocationApiTest extends LocationIntegrationTestBase {
     }
 
     @Test
-    @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})
     void testUploadLocations() throws Exception {
         try (InputStream csvInputStream = this.getClass().getClassLoader()
             .getResourceAsStream(LOCATIONS_CSV)) {
@@ -417,7 +405,6 @@ class LocationApiTest extends LocationIntegrationTestBase {
     }
 
     @Test
-    @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})
     void testUploadLocationsBadRequest() throws Exception {
         try (InputStream csvInputStream = this.getClass().getClassLoader()
             .getResourceAsStream(CSV_WITHOUT_LOCATION_TYPE)) {
@@ -430,6 +417,7 @@ class LocationApiTest extends LocationIntegrationTestBase {
     }
 
     @Test
+    @WithMockUser(username = "unauthorized_account", authorities = {"APPROLE_unknown.account"})
     void testUploadLocationsUnauthorised() throws Exception {
         try (InputStream csvInputStream = this.getClass().getClassLoader()
             .getResourceAsStream(LOCATIONS_CSV)) {
@@ -437,12 +425,11 @@ class LocationApiTest extends LocationIntegrationTestBase {
                 = new MockMultipartFile(LOCATION_LIST, csvInputStream);
 
             mockMvc.perform(multipart(UPLOAD_API).file(csvFile))
-                .andExpect(status().isUnauthorized());
+                .andExpect(status().isForbidden());
         }
     }
 
     @Test
-    @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})
     void testDeleteLocation() throws Exception {
         PiUser piUser = new PiUser();
         piUser.setUserId(USER_ID);
@@ -469,7 +456,6 @@ class LocationApiTest extends LocationIntegrationTestBase {
     }
 
     @Test
-    @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})
     void testDeleteLocationNotFound() throws Exception {
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
@@ -490,7 +476,6 @@ class LocationApiTest extends LocationIntegrationTestBase {
     }
 
     @Test
-    @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})
     void testDownloadLocations() throws Exception {
         List<Location> createdLocations = createLocations(LOCATIONS_CSV);
 
@@ -509,10 +494,11 @@ class LocationApiTest extends LocationIntegrationTestBase {
     }
 
     @Test
+    @WithMockUser(username = "unauthorized_account", authorities = {"APPROLE_unknown.account"})
     void testDownloadLocationsNotAuthorised() throws Exception {
         mockMvc.perform(
                 get(DOWNLOAD_LOCATIONS_ENDPOINT))
-            .andExpect(status().isUnauthorized());
+            .andExpect(status().isForbidden());
     }
 }
 
