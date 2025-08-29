@@ -74,19 +74,8 @@ public class LocationController {
     @ApiResponse(responseCode = OK_CODE, description = "Location found")
     @ApiResponse(responseCode = NOT_FOUND_CODE, description = "No Location found with the search {input}")
     @Operation(summary = "Gets a Location by searching by the Location name and returning")
-    @GetMapping("/name/{locationName}/language/{language}")
-    @Deprecated
-    public ResponseEntity<Location> getLocationByName(
-            @Parameter(description = "The search input to retrieve", required = true) @PathVariable String locationName,
-            @PathVariable String language) {
-        return ResponseEntity.ok(locationService.getLocationByName(locationName, language));
-    }
-
-    @ApiResponse(responseCode = OK_CODE, description = "Location found")
-    @ApiResponse(responseCode = NOT_FOUND_CODE, description = "No Location found with the search {input}")
-    @Operation(summary = "Gets a Location by searching by the Location name and returning")
     @GetMapping("/name")
-    public ResponseEntity<Location> getLocationByNameV2(
+    public ResponseEntity<Location> getLocationByName(
             @RequestParam String locationName,
             @RequestParam(defaultValue = "en", required = false) String language) {
         return ResponseEntity.ok(locationService.getLocationByName(locationName, language));
@@ -142,5 +131,4 @@ public class LocationController {
             .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_VALUE)
             .body(locationService.downloadLocations());
     }
-
 }
