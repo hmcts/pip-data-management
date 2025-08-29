@@ -111,8 +111,7 @@ class LocationControllerTest {
     }
 
     @Test
-    @Deprecated
-    void testGetLocationByNameReturnsLocation() {
+    void testGetLocationByNameV2ReturnsLocation() {
         when(locationService.getLocationByName(secondLocation.getName(), ENGLISH_LANGUAGE))
                 .thenReturn(secondLocation);
 
@@ -124,36 +123,11 @@ class LocationControllerTest {
     }
 
     @Test
-    @Deprecated
-    void testGetLocationByWelshNameReturnsLocation() {
-        when(locationService.getLocationByName(secondLocation.getWelshName(), WELSH_LANGUAGE))
-            .thenReturn(secondLocation);
-
-        ResponseEntity<Location> response = locationController.getLocationByName(secondLocation.getWelshName(),
-                WELSH_LANGUAGE);
-
-        assertEquals(HttpStatus.OK, response.getStatusCode(), LOCATION_NAME_SEARCH_STATUS_MESSAGE);
-        assertEquals(secondLocation, response.getBody(), LOCATION_NAME_SEARCH_BODY_MESSAGE);
-    }
-
-    @Test
-    void testGetLocationByNameV2ReturnsLocation() {
-        when(locationService.getLocationByName(secondLocation.getName(), ENGLISH_LANGUAGE))
-                .thenReturn(secondLocation);
-
-        ResponseEntity<Location> response = locationController.getLocationByNameV2(secondLocation.getName(),
-                ENGLISH_LANGUAGE);
-
-        assertEquals(HttpStatus.OK, response.getStatusCode(), LOCATION_NAME_SEARCH_STATUS_MESSAGE);
-        assertEquals(secondLocation, response.getBody(), LOCATION_NAME_SEARCH_BODY_MESSAGE);
-    }
-
-    @Test
     void testGetLocationByWelshNameV2ReturnsLocation() {
         when(locationService.getLocationByName(secondLocation.getWelshName(), WELSH_LANGUAGE))
                 .thenReturn(secondLocation);
 
-        ResponseEntity<Location> response = locationController.getLocationByNameV2(secondLocation.getWelshName(),
+        ResponseEntity<Location> response = locationController.getLocationByName(secondLocation.getWelshName(),
                 WELSH_LANGUAGE);
 
         assertEquals(HttpStatus.OK, response.getStatusCode(), LOCATION_NAME_SEARCH_STATUS_MESSAGE);

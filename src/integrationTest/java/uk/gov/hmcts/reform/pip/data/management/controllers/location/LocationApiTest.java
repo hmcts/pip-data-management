@@ -50,8 +50,7 @@ import static uk.gov.hmcts.reform.pip.model.account.Roles.SYSTEM_ADMIN;
 class LocationApiTest extends LocationIntegrationTestBase {
     private static final String ROOT_URL = "/locations";
     private static final String GET_LOCATION_BY_ID_ENDPOINT = ROOT_URL + "/";
-    private static final String GET_LOCATION_BY_NAME_ENDPOINT = ROOT_URL + "/name/%s/language/%s";
-    private static final String GET_LOCATION_BY_NAME_V2_ENDPOINT = ROOT_URL + "/name";
+    private static final String GET_LOCATION_BY_NAME_ENDPOINT = ROOT_URL + "/name";
     private static final String DOWNLOAD_LOCATIONS_ENDPOINT = ROOT_URL + "/download/csv";
     private static final String UPLOAD_API = ROOT_URL + "/upload";
     private static final String LOCATIONS_CSV = "location/ValidCsv.csv";
@@ -140,87 +139,13 @@ class LocationApiTest extends LocationIntegrationTestBase {
 
     @Test
     @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})
-    @Deprecated
     void testGetLocationByNameReturnsSuccess() throws Exception {
         List<Location> locations = createLocations(LOCATIONS_CSV);
 
         Location location = locations.get(0);
 
-        MvcResult mvcResult = mockMvc.perform(get(String.format(GET_LOCATION_BY_NAME_ENDPOINT,
-                                                                location.getName(), ENGLISH_LANGUAGE_PARAM_VALUE
-            )))
-            .andExpect(status().isOk())
-            .andReturn();
-
-        Location returnedLocation = OBJECT_MAPPER.readValue(
-            mvcResult.getResponse().getContentAsString(),
-            Location.class
-        );
-
-        assertEquals(location, returnedLocation, VALIDATION_UNKNOWN_LOCATION);
-    }
-
-    @Test
-    @Deprecated
-    void testGetLocationByNameReturnsNotFound() throws Exception {
-        MvcResult mvcResult = mockMvc.perform(get(String.format(GET_LOCATION_BY_NAME_ENDPOINT,
-                                                                INVALID_LOCATION_NAME, ENGLISH_LANGUAGE_PARAM_VALUE
-            )))
-            .andExpect(status().isNotFound())
-            .andReturn();
-
-        ExceptionResponse exceptionResponse =
-            OBJECT_MAPPER.readValue(mvcResult.getResponse().getContentAsString(), ExceptionResponse.class);
-
-        assertEquals(NO_LOCATION_FOUND_ERROR, exceptionResponse.getMessage(), LOCATION_NAME_SEARCH_MESSAGE);
-    }
-
-    @Test
-    @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})
-    @Deprecated
-    void testGetWelshLocationByNameReturnsSuccess() throws Exception {
-        List<Location> locations = createLocations(LOCATIONS_CSV);
-
-        Location location = locations.get(0);
-
-        MvcResult mvcResult = mockMvc.perform(get(String.format(GET_LOCATION_BY_NAME_ENDPOINT,
-                                                                location.getWelshName(), WELSH_LANGUAGE_PARAM_VALUE
-            )))
-            .andExpect(status().isOk())
-            .andReturn();
-
-        Location returnedLocation = OBJECT_MAPPER.readValue(
-            mvcResult.getResponse().getContentAsString(),
-            Location.class
-        );
-
-        assertEquals(location, returnedLocation, VALIDATION_UNKNOWN_LOCATION);
-    }
-
-    @Test
-    @Deprecated
-    void testGetWelshLocationByNameReturnsNotFound() throws Exception {
-        MvcResult mvcResult = mockMvc.perform(get(String.format(GET_LOCATION_BY_NAME_ENDPOINT,
-                                                                INVALID_LOCATION_NAME, WELSH_LANGUAGE_PARAM_VALUE
-            )))
-            .andExpect(status().isNotFound())
-            .andReturn();
-
-        ExceptionResponse exceptionResponse =
-            OBJECT_MAPPER.readValue(mvcResult.getResponse().getContentAsString(), ExceptionResponse.class);
-
-        assertEquals(NO_LOCATION_FOUND_ERROR, exceptionResponse.getMessage(), LOCATION_NAME_SEARCH_MESSAGE);
-    }
-
-    @Test
-    @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})
-    void testGetLocationByNameV2ReturnsSuccess() throws Exception {
-        List<Location> locations = createLocations(LOCATIONS_CSV);
-
-        Location location = locations.get(0);
-
         MvcResult mvcResult = mockMvc.perform(
-                get(GET_LOCATION_BY_NAME_V2_ENDPOINT)
+                get(GET_LOCATION_BY_NAME_ENDPOINT)
                     .param(LOCATION_NAME_PARAM, location.getName())
                     .param(LANGUAGE_PARAM, ENGLISH_LANGUAGE_PARAM_VALUE))
             .andExpect(status().isOk())
@@ -235,10 +160,10 @@ class LocationApiTest extends LocationIntegrationTestBase {
     }
 
     @Test
-    void testGetLocationByNameV2ReturnsNotFound() throws Exception {
+    void testGetLocationByNameReturnsNotFound() throws Exception {
 
         MvcResult mvcResult = mockMvc.perform(
-            get(GET_LOCATION_BY_NAME_V2_ENDPOINT)
+            get(GET_LOCATION_BY_NAME_ENDPOINT)
                 .param(LOCATION_NAME_PARAM, INVALID_LOCATION_NAME)
                 .param(LANGUAGE_PARAM, ENGLISH_LANGUAGE_PARAM_VALUE))
             .andExpect(status().isNotFound())
@@ -252,13 +177,13 @@ class LocationApiTest extends LocationIntegrationTestBase {
 
     @Test
     @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})
-    void testGetWelshLocationByNameV2ReturnsSuccess() throws Exception {
+    void testGetWelshLocationByNameReturnsSuccess() throws Exception {
         List<Location> locations = createLocations(LOCATIONS_CSV);
 
         Location location = locations.get(0);
 
         MvcResult mvcResult = mockMvc.perform(
-                get(GET_LOCATION_BY_NAME_V2_ENDPOINT)
+                get(GET_LOCATION_BY_NAME_ENDPOINT)
                     .param(LOCATION_NAME_PARAM, location.getWelshName())
                     .param(LANGUAGE_PARAM, WELSH_LANGUAGE_PARAM_VALUE))
             .andExpect(status().isOk())
@@ -273,9 +198,9 @@ class LocationApiTest extends LocationIntegrationTestBase {
     }
 
     @Test
-    void testGetWelshLocationByNameV2ReturnsNotFound() throws Exception {
+    void testGetWelshLocationByNameReturnsNotFound() throws Exception {
         MvcResult mvcResult = mockMvc.perform(
-                get(GET_LOCATION_BY_NAME_V2_ENDPOINT)
+                get(GET_LOCATION_BY_NAME_ENDPOINT)
                     .param(LOCATION_NAME_PARAM, INVALID_LOCATION_NAME)
                     .param(LANGUAGE_PARAM, WELSH_LANGUAGE_PARAM_VALUE))
             .andExpect(status().isNotFound())
@@ -590,5 +515,4 @@ class LocationApiTest extends LocationIntegrationTestBase {
             .andExpect(status().isUnauthorized());
     }
 }
-
 
