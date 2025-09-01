@@ -35,6 +35,7 @@ class AccountManagementServiceTest {
     private static final String TRIGGER_RECEIVED = "Trigger has been received";
     private static final String PI_USER_EMAIL = "test_user@justice.gov.uk";
     private static final String PI_USER_RESPONSE = "{\"email\":\"test_user@justice.gov.uk\"}";
+    private static final String REQUESTER_ID = UUID.randomUUID().toString();
 
     private final LogCaptor logCaptor = LogCaptor.forClass(AccountManagementService.class);
 
@@ -100,7 +101,7 @@ class AccountManagementServiceTest {
             "{\"content\":[{\"email\":\"test_email_account_pip@hmcts.net\",\"roles\":\"SYSTEM_ADMIN\"}]}"
         ));
 
-        List<String> result = accountManagementService.getAllAccounts("prov", "role");
+        List<String> result = accountManagementService.getAllAccounts("prov", "role", REQUESTER_ID);
         assertFalse(result.isEmpty(), "System admin users have not been returned from the server");
     }
 
@@ -108,7 +109,7 @@ class AccountManagementServiceTest {
     void testGetAllAccountsError() throws JsonProcessingException {
         mockAccountManagementEndpoint.enqueue(new MockResponse().setResponseCode(BAD_REQUEST.value()));
 
-        List<String> result = accountManagementService.getAllAccounts("prov", "role");
+        List<String> result = accountManagementService.getAllAccounts("prov", "role", REQUESTER_ID);
         assertTrue(result.get(0).contains("Failed to find all the accounts"),
                    "System admin users have not been returned from the server");
     }
