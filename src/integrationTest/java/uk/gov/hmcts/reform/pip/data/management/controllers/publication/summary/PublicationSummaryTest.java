@@ -160,6 +160,21 @@ class PublicationSummaryTest extends PublicationIntegrationTestBase {
     }
 
     @Test
+    void testGenerateArtefactSummaryMagistratesPublicAdultCourtList() throws Exception {
+        byte[] data = getTestData("data/magistrates-public-adult-court-list/magistratesPublicAdultCourtList.json");
+        Artefact artefact = createPublication(ListType.MAGISTRATES_PUBLIC_ADULT_COURT_LIST_DAILY, data);
+
+        when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(data));
+
+        MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, artefact.getArtefactId())))
+            .andExpect(status().isOk()).andReturn();
+
+        String responseContent = response.getResponse().getContentAsString();
+        assertTrue(responseContent.contains("Defendant name - Mr Test User"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains("Case number - 1000000000"), CONTENT_MISMATCH_ERROR);
+    }
+
+    @Test
     void testGenerateArtefactSummaryNotFound() throws Exception {
         MvcResult mvcResult = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, ARTEFACT_ID_NOT_FOUND)))
             .andExpect(status().isNotFound()).andReturn();
