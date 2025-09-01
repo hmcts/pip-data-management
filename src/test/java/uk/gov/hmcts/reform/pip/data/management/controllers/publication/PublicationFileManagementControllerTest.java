@@ -42,7 +42,7 @@ class PublicationFileManagementControllerTest {
         )).thenReturn(FILE);
 
         ResponseEntity<String> response = publicationFileManagementController.getFile(
-            UUID.randomUUID(), FileType.PDF, USER_ID, true, false, null
+            UUID.randomUUID(), FileType.PDF, USER_ID.toString(), true, false, null
         );
 
         assertEquals(HttpStatus.OK, response.getStatusCode(), STATUS_MESSAGE);
