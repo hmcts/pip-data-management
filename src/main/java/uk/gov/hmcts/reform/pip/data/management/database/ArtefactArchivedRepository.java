@@ -20,4 +20,6 @@ public interface ArtefactArchivedRepository extends JpaRepository<ArtefactArchiv
         + "FROM ArtefactArchived "
         + "WHERE lastReceivedDate >= :publicationReceivedDate")
     List<PublicationMiData> getArchivedMiData(@Param("publicationReceivedDate") LocalDateTime date);
+
+    void deleteAllByLocationIdIn(List<String> locationIds);
 }
