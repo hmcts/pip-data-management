@@ -439,6 +439,7 @@ public class PublicationController {
     private boolean validateMasterSchema(ListType listType) {
         return !(listType.equals(ListType.MAGISTRATES_ADULT_COURT_LIST_DAILY)
             || listType.equals(ListType.MAGISTRATES_ADULT_COURT_LIST_FUTURE)
+            || listType.equals(ListType.MAGISTRATES_PUBLIC_ADULT_COURT_LIST_DAILY)
             || listType.equals(ListType.CROWN_DAILY_PDDA_LIST)
             || listType.equals(ListType.CROWN_FIRM_PDDA_LIST)
             || listType.equals(ListType.CROWN_WARNED_PDDA_LIST));
