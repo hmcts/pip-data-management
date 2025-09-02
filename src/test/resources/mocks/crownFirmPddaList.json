@@ -73,11 +73,18 @@
                   "HearingType": "ABC"
                 },
                 "TimeMarkingNote": "TestTimeMarkingNote",
-                "CaseNumber": "TestCaseNumber",
+                "CaseNumber": "T00112233",
+                "CaseNumberCath": "T00112233",
                 "Prosecution": {
                   "Advocate": {
                     "PersonalDetails": {
-                      "Name": "TestAdvocateName",
+                      "Name": {
+                        "CitizenNameTitle": "TestAdvocateTitle",
+                        "CitizenNameForename": "TestAdvocateForename",
+                        "CitizenNameSurname": "TestAdvocateSurname",
+                        "CitizenNameSuffix": "TestAdvocateSuffix",
+                        "CitizenNameRequestedName": "TestAdvocateRequestedName"
+                      },
                       "MaskedName": "TestAdvocateMasked",
                       "IsMasked": "no"
                     }
@@ -98,10 +105,19 @@
                 "Defendants": [
                   {
                     "PersonalDetails": {
-                      "Name": "TestDefendantName",
+                      "Name": {
+                        "CitizenNameTitle": "TestDefendantTitle",
+                        "CitizenNameForename": "TestDefendantForename",
+                        "CitizenNameSurname": "TestDefendantSurname",
+                        "CitizenNameSuffix": "TestDefendantSuffix",
+                        "CitizenNameRequestedName": "TestDefendantRequestedName"
+                      },
                       "MaskedName": "TestMaskedName",
                       "IsMasked": "no",
-                      "DateOfBirth": "2000-01-01",
+                      "DateOfBirth": {
+                        "BirthDate": "2000-01-01",
+                        "VerifiedBy": "not verified"
+                      },
                       "Age": 24,
                       "Sex": "male",
                       "Address": {
@@ -120,7 +136,10 @@
                                 "Name": "TestSolicitorName",
                                 "MaskedName": "TestSolicitorMasked",
                                 "IsMasked": "no",
-                                "DateOfBirth": "1980-01-01",
+                                "DateOfBirth": {
+                                  "BirthDate": "1980-01-01",
+                                  "VerifiedBy": "not verified"
+                                },
                                 "Sex": "female",
                                 "Address": {
                                   "Line": ["TestSolicitorAddress"],
@@ -159,11 +178,18 @@
           "HearingEndDate": "2024-01-04",
           "HearingType": "DEF"
         },
-        "CaseNumber": "TestReserveCaseNumber",
+        "CaseNumber": "T00112244",
+        "CaseNumberCath": "T00112244",
         "Prosecution": {
           "Advocate": {
             "PersonalDetails": {
-              "Name": "TestReserveAdvocate",
+              "Name": {
+                "CitizenNameTitle": "TestReserveAdvocateTitle",
+                "CitizenNameForename": "TestReserveAdvocateForename",
+                "CitizenNameSurname": "TestReserveAdvocateSurname",
+                "CitizenNameSuffix": "TestReserveAdvocateSuffix",
+                "CitizenNameRequestedName": "TestReserveAdvocateRequestedName"
+              },
               "MaskedName": "TestReserveAdvocateMasked",
               "IsMasked": "yes"
             }
@@ -184,7 +210,13 @@
         "Defendants": [
           {
             "PersonalDetails": {
-              "Name": "TestReserveDefendant",
+              "Name": {
+                "CitizenNameTitle": "TestReserveTitle",
+                "CitizenNameForename": "TestReserveForename",
+                "CitizenNameSurname": "TestReserveSurname",
+                "CitizenNameSuffix": "TestReserveSuffix",
+                "CitizenNameRequestedName": "TestReserveRequestedName"
+              },
               "MaskedName": "TestReserveMasked",
               "IsMasked": "yes"
             },

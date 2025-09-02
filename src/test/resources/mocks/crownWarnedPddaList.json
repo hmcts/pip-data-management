@@ -42,7 +42,8 @@
             "Notes": "TestNotes",
             "Cases": [
               {
-                "CaseNumber": "TestCaseNumber1",
+                "CaseNumber": "T00112233",
+                "CaseNumberCath": "T00112233",
                 "CaseArrivedFrom": {
                   "OriginatingCourt": {
                     "CourtHouseCode": "5678",
@@ -63,10 +64,19 @@
                 "Defendants": [
                   {
                     "PersonalDetails": {
-                      "Name": "TestDefendantName",
+                      "Name": {
+                        "CitizenNameTitle": "TestDefendantTitle",
+                        "CitizenNameForename": "TestDefendantForename",
+                        "CitizenNameSurname": "TestDefendantSurname",
+                        "CitizenNameSuffix": "TestDefendantSuffix",
+                        "CitizenNameRequestedName": "TestDefendantRequestedName"
+                      },
                       "MaskedName": "TestMaskedName",
                       "IsMasked": "no",
-                      "DateOfBirth": "2000-01-01",
+                      "DateOfBirth": {
+                        "BirthDate": "2000-01-01",
+                        "VerifiedBy": "not verified"
+                      },
                       "Age": 24,
                       "Sex": "male",
                       "Address": {
@@ -125,7 +135,8 @@
             "Notes": "TestNotes2",
             "Cases": [
               {
-                "CaseNumber": "TestCaseNumber2",
+                "CaseNumber": "T00112244",
+                "CaseNumberCath": "T00112244",
                 "CaseArrivedFrom": {
                   "OriginatingCourt": {
                     "CourtHouseCode": "4321",
@@ -146,10 +157,19 @@
                 "Defendants": [
                   {
                     "PersonalDetails": {
-                      "Name": "TestDefendantName2",
+                      "Name": {
+                        "CitizenNameTitle": "TestDefendantTitle",
+                        "CitizenNameForename": "TestDefendantForename",
+                        "CitizenNameSurname": "TestDefendantSurname",
+                        "CitizenNameSuffix": "TestDefendantSuffix",
+                        "CitizenNameRequestedName": "TestDefendantRequestedName"
+                      },
                       "MaskedName": "TestMaskedName2",
                       "IsMasked": "yes",
-                      "DateOfBirth": "1990-01-01",
+                      "DateOfBirth": {
+                        "BirthDate": "1990-01-01",
+                        "VerifiedBy": "not verified"
+                      },
                       "Age": 34,
                       "Sex": "female",
                       "Address": {

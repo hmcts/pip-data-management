@@ -65,7 +65,8 @@
                   "HearingType": "TestType"
                 },
                 "TimeMarkingNote": "Test Time Marking Note",
-                "CaseNumber": "TEST-CASE-001",
+                "CaseNumber": "T00112233",
+                "CaseNumberCath": "T00112233",
                 "Prosecution": {
                   "ProsecutingReference": "TestProsecutingRef",
                   "ProsecutingOrganisation": {
@@ -83,10 +84,19 @@
                 "Defendants": [
                   {
                     "PersonalDetails": {
-                      "Name": "Test Defendant",
+                      "Name": {
+                        "CitizenNameTitle": "TestDefendantTitle",
+                        "CitizenNameForename": "TestDefendantForename",
+                        "CitizenNameSurname": "TestDefendantSurname",
+                        "CitizenNameSuffix": "TestDefendantSuffix",
+                        "CitizenNameRequestedName": "TestDefendantRequestedName"
+                      },
                       "MaskedName": "Test Masked",
                       "IsMasked": "no",
-                      "DateOfBirth": "2000-01-01",
+                      "DateOfBirth": {
+                        "BirthDate": "2000-01-01",
+                        "VerifiedBy": "not verified"
+                      },
                       "Age": 24,
                       "Sex": "unknown",
                       "Address": {
