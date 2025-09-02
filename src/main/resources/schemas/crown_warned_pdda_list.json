@@ -287,8 +287,21 @@
                                         ]
                                       },
                                       "DateOfBirth": {
-                                        "type": "string",
-                                        "format": "date"
+                                        "type": "object",
+                                        "properties": {
+                                          "BirthDate": { "type": "string", "format": "date"},
+                                          "VerifiedBy": {
+                                            "type": "string",
+                                            "enum": [
+                                              "not verified",
+                                              "accepted on balance of probabilities",
+                                              "secondary certificate",
+                                              "certified copy of birth certificate",
+                                              "short form birth certificate or certificate of registration of birth",
+                                              "birth certificate"
+                                            ]
+                                          }
+                                        }
                                       },
                                       "Age": {
                                         "type": "integer"
@@ -577,8 +590,21 @@
                                         ]
                                       },
                                       "DateOfBirth": {
-                                        "type": "string",
-                                        "format": "date"
+                                        "type": "object",
+                                        "properties": {
+                                          "BirthDate": { "type": "string", "format": "date"},
+                                          "VerifiedBy": {
+                                            "type": "string",
+                                            "enum": [
+                                              "not verified",
+                                              "accepted on balance of probabilities",
+                                              "secondary certificate",
+                                              "certified copy of birth certificate",
+                                              "short form birth certificate or certificate of registration of birth",
+                                              "birth certificate"
+                                            ]
+                                          }
+                                        }
                                       },
                                       "Age": {
                                         "type": "integer"
