@@ -12,6 +12,7 @@ import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.EtDailyLi
 import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.EtFortnightlyPressListSummaryData;
 import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.FamilyMixedDailyCauseListSummaryData;
 import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.IacDailyListSummaryData;
+import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.MagistratesAdultCourtListSummaryData;
 import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.MagistratesPublicListSummaryData;
 import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.MagistratesStandardListSummaryData;
 import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.NonStrategicListSummaryData;
@@ -27,6 +28,7 @@ import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.EtFortnigh
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.FamilyDailyCauseListFileConverter;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.FileConverter;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.IacDailyListFileConverter;
+import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.MagistratesAdultCourtListFileConverter;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.MagistratesPublicListFileConverter;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.MagistratesStandardListFileConverter;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.NonStrategicListFileConverter;
@@ -78,6 +80,9 @@ import static uk.gov.hmcts.reform.pip.model.publication.ListType.KINGS_BENCH_MAS
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.LEEDS_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.LONDON_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.LONDON_CIRCUIT_COMMERCIAL_COURT_KB_DAILY_CAUSE_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.MAGISTRATES_ADULT_COURT_LIST_DAILY;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.MAGISTRATES_ADULT_COURT_LIST_FUTURE;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.MAGISTRATES_PUBLIC_ADULT_COURT_LIST_DAILY;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.MAGISTRATES_PUBLIC_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.MAGISTRATES_STANDARD_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.MANCHESTER_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST;
@@ -411,6 +416,18 @@ public class ListConversionFactory {
         Map.entry(CIC_WEEKLY_HEARING_LIST, new ConversionPair(
             new NonStrategicListFileConverter(),
             new NonStrategicListSummaryData(CIC_WEEKLY_HEARING_LIST)
+        )),
+        Map.entry(MAGISTRATES_ADULT_COURT_LIST_DAILY, new ConversionPair(
+            new MagistratesAdultCourtListFileConverter(true),
+            new MagistratesAdultCourtListSummaryData(true)
+        )),
+        Map.entry(MAGISTRATES_ADULT_COURT_LIST_FUTURE, new ConversionPair(
+            new MagistratesAdultCourtListFileConverter(true),
+            new MagistratesAdultCourtListSummaryData(true)
+        )),
+        Map.entry(MAGISTRATES_PUBLIC_ADULT_COURT_LIST_DAILY, new ConversionPair(
+            new MagistratesAdultCourtListFileConverter(false),
+            new MagistratesAdultCourtListSummaryData(false)
         ))
     );
 

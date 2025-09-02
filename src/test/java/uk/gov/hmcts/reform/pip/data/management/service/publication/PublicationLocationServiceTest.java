@@ -8,6 +8,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.ActiveProfiles;
+import uk.gov.hmcts.reform.pip.data.management.database.ArtefactArchivedRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ArtefactNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper;
@@ -46,6 +47,9 @@ class PublicationLocationServiceTest {
 
     @Mock
     private ArtefactRepository artefactRepository;
+
+    @Mock
+    private ArtefactArchivedRepository artefactArchivedRepository;
 
     @Mock
     private LocationService locationService;
@@ -181,7 +185,7 @@ class PublicationLocationServiceTest {
 
         when(artefactRepository.findAllByLocationIdIn(List.of(locationId1.toString(), locationId2.toString())))
             .thenReturn(artefactsToDelete);
-
+        doNothing().when(artefactArchivedRepository).deleteAllByLocationIdIn(any());
         doNothing().when(publicationRemovalService).deleteArtefacts(artefactsToDelete);
 
         assertThat(publicationLocationService.deleteAllArtefactsWithLocationNamePrefix(LOCATION_NAME_PREFIX))
