@@ -195,7 +195,8 @@
                             }
                           },
                           "TimeMarkingNote": { "type": "string" },
-                          "CaseNumber": { "type": "string" },
+                          "CaseNumber": { "type": "string", "pattern": "^[A-Z][0-9]{8}$" },
+                          "CaseNumberCath": { "type": "string", "pattern": "^[A-Z][0-9]{8}$" },
                           "Prosecution": {
                             "type": "object",
                             "properties": {

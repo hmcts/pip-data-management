@@ -198,8 +198,10 @@
                           ],
                           "properties": {
                             "CaseNumber": {
-                              "type": "string"
+                              "type": "string",
+                              "pattern": "^[A-Z][0-9]{8}$"
                             },
+                            "CaseNumberCath": { "type": "string", "pattern": "^[A-Z][0-9]{8}$" },
                             "CaseArrivedFrom": {
                               "type": "object",
                               "properties": {
@@ -527,8 +529,10 @@
                           ],
                           "properties": {
                             "CaseNumber": {
-                              "type": "string"
+                              "type": "string",
+                              "pattern": "^[A-Z][0-9]{8}$"
                             },
+                            "CaseNumberCath": { "type": "string", "pattern": "^[A-Z][0-9]{8}$" },
                             "CaseArrivedFrom": {
                               "type": "object",
                               "properties": {
