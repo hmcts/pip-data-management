@@ -113,11 +113,30 @@
                           "type": "object",
                           "required": ["CitizenNameSurname"],
                           "properties": {
-                            "CitizenNameTitle": { "type": "string" },
-                            "CitizenNameForename": { "type": "string" },
-                            "CitizenNameSurname": { "type": "string" },
-                            "CitizenNameSuffix": { "type": "string" },
-                            "CitizenNameRequestedName": { "type": "string" }
+                            "CitizenNameTitle": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 35
+                            },
+                            "CitizenNameForename": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 35
+                            },
+                            "CitizenNameSurname": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 35
+                            },
+                            "CitizenNameSuffix": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 35
+                            },
+                            "CitizenNameRequestedName": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 70}
                           }
                         },
                         "Justice": {
@@ -127,11 +146,30 @@
                             "type": "object",
                             "required": ["CitizenNameSurname"],
                             "properties": {
-                              "CitizenNameTitle": { "type": "string" },
-                              "CitizenNameForename": { "type": "string" },
-                              "CitizenNameSurname": { "type": "string" },
-                              "CitizenNameSuffix": { "type": "string" },
-                              "CitizenNameRequestedName": { "type": "string" }
+                              "CitizenNameTitle": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 35
+                              },
+                              "CitizenNameForename": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 35
+                              },
+                              "CitizenNameSurname": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 35
+                              },
+                              "CitizenNameSuffix": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 35
+                              },
+                              "CitizenNameRequestedName": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 70}
                             }
                           }
                         }
@@ -201,7 +239,35 @@
                                 "PersonalDetails": {
                                   "type": "object",
                                   "properties": {
-                                    "Name": { "type": "string" },
+                                    "Name": {
+                                      "type": "object",
+                                      "properties": {
+                                        "CitizenNameTitle": {
+                                          "type": "string",
+                                          "minLength": 1,
+                                          "maxLength": 35
+                                        },
+                                        "CitizenNameForename": {
+                                          "type": "string",
+                                          "minLength": 1,
+                                          "maxLength": 35
+                                        },
+                                        "CitizenNameSurname": {
+                                          "type": "string",
+                                          "minLength": 1,
+                                          "maxLength": 35
+                                        },
+                                        "CitizenNameSuffix": {
+                                          "type": "string",
+                                          "minLength": 1,
+                                          "maxLength": 35
+                                        },
+                                        "CitizenNameRequestedName": {
+                                          "type": "string",
+                                          "minLength": 1,
+                                          "maxLength": 70}
+                                      }
+                                    },
                                     "MaskedName": { "type": "string" },
                                     "IsMasked": { "type": "string",
                                       "enum": ["yes", "no"]
