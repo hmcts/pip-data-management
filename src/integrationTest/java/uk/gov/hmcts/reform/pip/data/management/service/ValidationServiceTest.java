@@ -187,6 +187,21 @@ class ValidationServiceTest extends IntegrationBasicTestBase {
         );
     }
 
+    @ParameterizedTest
+    @EnumSource(value = ListType.class, names = {"CIC_DAILY_HEARING_LIST", "CARE_STANDARDS_LIST",
+        "PRIMARY_HEALTH_LIST"})
+    void testCreationOfPublicationWithDeprecatedListType(ListType listType) {
+        headerGroup.setListType(listType);
+
+        HeaderValidationException dateHeaderValidationException =
+            assertThrows(HeaderValidationException.class, () -> {
+                validationService.validateHeaders(headerGroup);
+            });
+        assertEquals(String.format("List type %s is deprecated and can no longer be used", listType),
+                     dateHeaderValidationException.getMessage(), VALIDATION_EXPECTED_MESSAGE
+        );
+    }
+
     @Test
     void testCreationOfPublicationJudgementAndOutcomeTypeAndEmptyDateFrom() {
         headerGroup.setType(ArtefactType.JUDGEMENTS_AND_OUTCOMES);
@@ -291,7 +306,7 @@ class ValidationServiceTest extends IntegrationBasicTestBase {
     }
 
     @ParameterizedTest
-    @EnumSource(value = ListType.class, names = {"SJP_PRESS_REGISTER", "CIC_DAILY_HEARING_LIST",
+    @EnumSource(value = ListType.class, names = {"SJP_PRESS_REGISTER",
         "PCOL_DAILY_CAUSE_LIST"})
     void testValidateMasterSchemaWithoutErrors(ListType listType) throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
@@ -370,7 +385,9 @@ class ValidationServiceTest extends IntegrationBasicTestBase {
             Arguments.of(ListType.MAGISTRATES_ADULT_COURT_LIST_DAILY,
                          "data/magistrates-adult-court-list/magistratesAdultCourtList.json"),
             Arguments.of(ListType.MAGISTRATES_ADULT_COURT_LIST_FUTURE,
-                         "data/magistrates-adult-court-list/magistratesAdultCourtList.json")
+                         "data/magistrates-adult-court-list/magistratesAdultCourtList.json"),
+            Arguments.of(ListType.MAGISTRATES_PUBLIC_ADULT_COURT_LIST_DAILY,
+                         "data/magistrates-public-adult-court-list/magistratesPublicAdultCourtList.json")
         );
     }
 

@@ -210,16 +210,19 @@ class PublicationControllerTest {
     }
 
     @ParameterizedTest
-    @EnumSource(value = ListType.class, names = {"MAGISTRATES_ADULT_COURT_LIST_DAILY",
-        "MAGISTRATES_ADULT_COURT_LIST_FUTURE"})
-    void shouldNotValidateMasterSchemaForMagistratesAdultCourtList() {
+    @EnumSource(value = ListType.class, names = {
+        "MAGISTRATES_ADULT_COURT_LIST_DAILY",
+        "MAGISTRATES_ADULT_COURT_LIST_FUTURE",
+        "MAGISTRATES_PUBLIC_ADULT_COURT_LIST_DAILY"
+    })
+    void shouldNotValidateMasterSchemaForMagistratesAdultCourtLists(ListType listType) {
         when(validationService.validateHeaders(any())).thenReturn(headers);
         when(publicationCreationRunner.run(artefact, PAYLOAD, true)).thenReturn(artefactWithId);
 
         ResponseEntity<Artefact> responseEntity = publicationController.uploadPublication(
             PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE, SENSITIVITY, LANGUAGE,
             DISPLAY_FROM, DISPLAY_TO,
-            ListType.MAGISTRATES_ADULT_COURT_LIST_DAILY, LOCATION_ID, CONTENT_DATE, TEST_STRING, PAYLOAD
+            listType, LOCATION_ID, CONTENT_DATE, TEST_STRING, PAYLOAD
         );
 
         verify(validationService).validateBody(eq(PAYLOAD), any(), eq(false));
