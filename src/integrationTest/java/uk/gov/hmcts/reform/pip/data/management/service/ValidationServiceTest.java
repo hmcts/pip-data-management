@@ -355,7 +355,13 @@ class ValidationServiceTest extends IntegrationBasicTestBase {
             Arguments.of(ListType.MAGISTRATES_ADULT_COURT_LIST_FUTURE,
                          "data/magistrates-adult-court-list/magistratesAdultCourtList.json"),
             Arguments.of(ListType.MAGISTRATES_PUBLIC_ADULT_COURT_LIST_DAILY,
-                         "data/magistrates-public-adult-court-list/magistratesPublicAdultCourtList.json")
+                         "data/magistrates-public-adult-court-list/magistratesPublicAdultCourtList.json"),
+            Arguments.of(ListType.CROWN_DAILY_PDDA_LIST,
+                         "data/crown-daily-pdda-list/crownDailyPddaList.json"),
+            Arguments.of(ListType.CROWN_WARNED_PDDA_LIST,
+                         "data/crown-warned-pdda-list/crownWarnedPddaList.json"),
+            Arguments.of(ListType.CROWN_FIRM_PDDA_LIST,
+                         "data/crown-firm-pdda-list/crownFirmPddaList.json")
         );
     }
 
@@ -520,13 +526,7 @@ class ValidationServiceTest extends IntegrationBasicTestBase {
             Arguments.of(ListType.LEEDS_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
                          ADMINISTRATIVE_COURT_DAILY_CAUSE_LISTS_JSON_FILE),
             Arguments.of(ListType.CIC_WEEKLY_HEARING_LIST,
-                         "data/non-strategic/cic-weekly-hearing-list/cicWeeklyHearingList.json"),
-            Arguments.of(ListType.CROWN_DAILY_PDDA_LIST,
-                         "data/crown-daily-pdda-list/crownDailyPddaList.json"),
-            Arguments.of(ListType.CROWN_WARNED_PDDA_LIST,
-                         "data/crown-warned-pdda-list/crownWarnedPddaList.json"),
-            Arguments.of(ListType.CROWN_FIRM_PDDA_LIST,
-                         "data/crown-firm-pdda-list/crownFirmPddaList.json")
+                         "data/non-strategic/cic-weekly-hearing-list/cicWeeklyHearingList.json")
         );
     }
 
