@@ -214,7 +214,8 @@
                         "required": [
                           "HearingSequenceNumber",
                           "HearingDetails",
-                          "CaseNumber"
+                          "CaseNumber",
+                          CaseNumberCaTH
                         ],
                         "properties": {
                           "HearingSequenceNumber": { "type": "integer" },
@@ -233,7 +234,7 @@
                           },
                           "TimeMarkingNote": { "type": "string" },
                           "CaseNumber": { "type": "string", "pattern": "^[A-Z][0-9]{8}$" },
-                          "CaseNumberCath": { "type": "string", "pattern": "^[A-Z][0-9]{8}$" },
+                          "CaseNumberCaTH": { "type": "string", "pattern": "^[A-Z][0-9]{8}$" },
                           "Prosecution": {
                             "type": "object",
                             "properties": {
@@ -513,7 +514,8 @@
             "type": "object",
             "required": [
               "HearingDetails",
-              "CaseNumber"
+              "CaseNumber",
+              "CaseNumberCaTH"
             ],
             "properties": {
               "HearingDetails": {
@@ -530,7 +532,7 @@
                 }
               },
               "CaseNumber": { "type": "string", "pattern": "^[A-Z][0-9]{8}$" },
-              "CaseNumberCath": { "type": "string", "pattern": "^[A-Z][0-9]{8}$" },
+              "CaseNumberCaTH": { "type": "string", "pattern": "^[A-Z][0-9]{8}$" },
               "Prosecution": {
                 "type": "object",
                 "properties": {

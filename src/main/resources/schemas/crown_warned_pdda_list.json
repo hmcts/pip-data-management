@@ -194,14 +194,15 @@
                           "type": "object",
                           "required": [
                             "CaseNumber",
-                            "Defendants"
+                            "Defendants",
+                            "CaseNumberCaTH"
                           ],
                           "properties": {
                             "CaseNumber": {
                               "type": "string",
                               "pattern": "^[A-Z][0-9]{8}$"
                             },
-                            "CaseNumberCath": { "type": "string", "pattern": "^[A-Z][0-9]{8}$" },
+                            "CaseNumberCaTH": { "type": "string", "pattern": "^[A-Z][0-9]{8}$" },
                             "CaseArrivedFrom": {
                               "type": "object",
                               "properties": {
@@ -525,14 +526,15 @@
                           "type": "object",
                           "required": [
                             "CaseNumber",
-                            "Defendants"
+                            "Defendants",
+                            "CaseNumberCaTH"
                           ],
                           "properties": {
                             "CaseNumber": {
                               "type": "string",
                               "pattern": "^[A-Z][0-9]{8}$"
                             },
-                            "CaseNumberCath": { "type": "string", "pattern": "^[A-Z][0-9]{8}$" },
+                            "CaseNumberCaTH": { "type": "string", "pattern": "^[A-Z][0-9]{8}$" },
                             "CaseArrivedFrom": {
                               "type": "object",
                               "properties": {
