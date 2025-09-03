@@ -17,6 +17,7 @@ import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ExcelCon
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.FileSizeLimitException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.FlatFileException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.HeaderValidationException;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.LcsuArtefactNotSupportedException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.LocationNameValidationException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.NotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.PayloadValidationException;
@@ -150,6 +151,13 @@ public class GlobalExceptionHandler {
         log.error(writeLog("400, " + ex.getMessage()));
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
             .body(generateExceptionResponseWithUiError(ex.getMessage()));
+    }
+
+    @ExceptionHandler(LcsuArtefactNotSupportedException.class)
+    public ResponseEntity<ExceptionResponse> handle(LcsuArtefactNotSupportedException ex) {
+        log.error(writeLog("400, " + ex.getMessage()));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body(generateExceptionResponse(ex.getMessage()));
     }
 
     private ExceptionResponse generateExceptionResponse(String message) {
