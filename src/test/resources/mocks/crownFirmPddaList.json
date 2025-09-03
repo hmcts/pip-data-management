@@ -74,7 +74,7 @@
                 },
                 "TimeMarkingNote": "TestTimeMarkingNote",
                 "CaseNumber": "T00112233",
-                "CaseNumberCath": "T00112233",
+                "CaseNumberCaTH": "T00112233",
                 "Prosecution": {
                   "Advocate": {
                     "PersonalDetails": {
@@ -179,7 +179,7 @@
           "HearingType": "DEF"
         },
         "CaseNumber": "T00112244",
-        "CaseNumberCath": "T00112244",
+        "CaseNumberCaTH": "T00112244",
         "Prosecution": {
           "Advocate": {
             "PersonalDetails": {

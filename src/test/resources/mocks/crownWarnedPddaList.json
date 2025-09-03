@@ -43,7 +43,7 @@
             "Cases": [
               {
                 "CaseNumber": "T00112233",
-                "CaseNumberCath": "T00112233",
+                "CaseNumberCaTH": "T00112233",
                 "CaseArrivedFrom": {
                   "OriginatingCourt": {
                     "CourtHouseCode": "5678",
@@ -136,7 +136,7 @@
             "Cases": [
               {
                 "CaseNumber": "T00112244",
-                "CaseNumberCath": "T00112244",
+                "CaseNumberCaTH": "T00112244",
                 "CaseArrivedFrom": {
                   "OriginatingCourt": {
                     "CourtHouseCode": "4321",
