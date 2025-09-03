@@ -215,7 +215,7 @@
                           "HearingSequenceNumber",
                           "HearingDetails",
                           "CaseNumber",
-                          CaseNumberCaTH
+                          "CaseNumberCaTH"
                         ],
                         "properties": {
                           "HearingSequenceNumber": { "type": "integer" },
