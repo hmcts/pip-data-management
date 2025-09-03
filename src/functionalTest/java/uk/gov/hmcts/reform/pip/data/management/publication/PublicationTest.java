@@ -62,6 +62,7 @@ class PublicationTest extends FunctionalTestBase {
     private static final String TESTING_SUPPORT_PUBLICATION_URL = "/testing-support/publication/";
 
     private static final ArtefactType ARTEFACT_TYPE = ArtefactType.LIST;
+    private static final ArtefactType ARTEFACT_TYPE_LCSU = ArtefactType.LCSU;
     private static final String PROVENANCE = "MANUAL_UPLOAD";
     private static final String SOURCE_ARTEFACT_ID = "sourceArtefactId";
     private static final LocalDateTime DISPLAY_FROM = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
@@ -118,9 +119,11 @@ class PublicationTest extends FunctionalTestBase {
             .getResourceAsStream("data/civilDailyCauseList.json")) {
             String jsonString = new String(jsonFile.readAllBytes(), StandardCharsets.UTF_8);
 
-            return JsonPath.parse(jsonString).set("$.courtLists[0].courtHouse"
-                                                      + ".courtRoom[0].session[0].sittings[0]"
-                                                      + ".hearing[0].case[0].caseNumber", caseNumber).jsonString();
+            return JsonPath.parse(jsonString).set(
+                "$.courtLists[0].courtHouse"
+                    + ".courtRoom[0].session[0].sittings[0]"
+                    + ".hearing[0].case[0].caseNumber", caseNumber
+            ).jsonString();
         }
     }
 
@@ -204,6 +207,37 @@ class PublicationTest extends FunctionalTestBase {
 
         assertThat(responseUploadNonStrategicFile.getStatusCode()).isEqualTo(CREATED.value());
         return responseUploadNonStrategicFile.as(Artefact.class);
+    }
+
+    @Test
+    void testPublicationEndpointWithHtmlFileUploadToS3Bucket() throws Exception {
+        Map<String, String> headerMapUploadHtmlFile = getBaseHeaderMap();
+        headerMapUploadHtmlFile.put(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE_LCSU.toString());
+        headerMapUploadHtmlFile.put(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE);
+        headerMapUploadHtmlFile.put(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM.toString());
+        headerMapUploadHtmlFile.put(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_FROM.plusDays(1).toString());
+        headerMapUploadHtmlFile.put(PublicationConfiguration.COURT_ID, courtId);
+        headerMapUploadHtmlFile.put(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE.toString());
+        headerMapUploadHtmlFile.put(PublicationConfiguration.SENSITIVITY_HEADER, Sensitivity.PUBLIC.toString());
+        headerMapUploadHtmlFile.put(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE.toString());
+        headerMapUploadHtmlFile.put("Content-Type", MediaType.MULTIPART_FORM_DATA_VALUE);
+
+        String filePath = this.getClass().getClassLoader().getResource("data/testFile.html").getPath();
+        File htmlFile = new File(filePath);
+
+        final Response responseUploadHtmlFile = doPostRequestMultiPart(
+            PUBLICATION_URL,
+            headerMapUploadHtmlFile,
+            "",
+            htmlFile
+        );
+
+        assertThat(responseUploadHtmlFile.getStatusCode()).isEqualTo(CREATED.value());
+        Artefact returnedArtefact = responseUploadHtmlFile.as(Artefact.class);
+        assertThat(returnedArtefact.getType()).isEqualTo(ARTEFACT_TYPE_LCSU);
+        assertThat(returnedArtefact.getProvenance()).isEqualTo(PROVENANCE);
+        assertThat(returnedArtefact.getLocationId()).contains(courtId);
+        assertThat(returnedArtefact.getIsFlatFile()).isTrue();
     }
 
     @Test
