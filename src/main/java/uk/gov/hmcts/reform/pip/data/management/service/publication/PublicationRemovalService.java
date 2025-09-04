@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import uk.gov.hmcts.reform.pip.data.management.database.ArtefactArchivedRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.AzureArtefactBlobService;
 import uk.gov.hmcts.reform.pip.data.management.database.LocationRepository;
@@ -12,6 +13,7 @@ import uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactHelper;
 import uk.gov.hmcts.reform.pip.data.management.helpers.NoMatchArtefactHelper;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
+import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactArchived;
 import uk.gov.hmcts.reform.pip.data.management.service.AccountManagementService;
 import uk.gov.hmcts.reform.pip.data.management.service.SystemAdminNotificationService;
 import uk.gov.hmcts.reform.pip.model.account.PiUser;
@@ -31,6 +33,7 @@ public class PublicationRemovalService {
 
     private final ArtefactRepository artefactRepository;
     private final LocationRepository locationRepository;
+    private final ArtefactArchivedRepository artefactArchivedRepository;
     private final PublicationFileManagementService publicationFileManagementService;
     private final AzureArtefactBlobService azureArtefactBlobService;
     private final AccountManagementService accountManagementService;
@@ -40,13 +43,15 @@ public class PublicationRemovalService {
                                      PublicationFileManagementService publicationFileManagementService,
                                      AzureArtefactBlobService azureArtefactBlobService,
                                      AccountManagementService accountManagementService,
-                                     SystemAdminNotificationService systemAdminNotificationService) {
+                                     SystemAdminNotificationService systemAdminNotificationService,
+                                     ArtefactArchivedRepository artefactArchivedRepository) {
         this.artefactRepository = artefactRepository;
         this.locationRepository = locationRepository;
         this.publicationFileManagementService = publicationFileManagementService;
         this.azureArtefactBlobService = azureArtefactBlobService;
         this.accountManagementService = accountManagementService;
         this.systemAdminNotificationService = systemAdminNotificationService;
+        this.artefactArchivedRepository = artefactArchivedRepository;
     }
 
     /**
@@ -56,11 +61,11 @@ public class PublicationRemovalService {
      * @param issuerId   The ID of the admin user who is attempting to delete the artefact.
      */
     @Transactional
-    public void archiveArtefactById(String artefactId, String issuerId) {
+    public void archiveArtefactById(String artefactId, String issuerId, Boolean isManuallyDeleted) {
         Artefact artefactToArchive = artefactRepository.findArtefactByArtefactId(artefactId)
             .orElseThrow(() -> new ArtefactNotFoundException("No artefact found with the ID: " + artefactId));
 
-        handleArtefactArchiving(artefactToArchive);
+        handleArtefactArchiving(artefactToArchive, isManuallyDeleted);
         if (!NoMatchArtefactHelper.isNoMatchLocationId(artefactToArchive.getLocationId())) {
             accountManagementService.sendDeletedArtefactForThirdParties(artefactToArchive);
         }
@@ -74,7 +79,7 @@ public class PublicationRemovalService {
     public void archiveExpiredArtefacts() {
         LocalDateTime searchDateTime = LocalDateTime.now();
         List<Artefact> outdatedArtefacts = artefactRepository.findOutdatedArtefacts(searchDateTime);
-        outdatedArtefacts.forEach(this::handleArtefactArchiving);
+        outdatedArtefacts.forEach(artefact -> handleArtefactArchiving(artefact, Boolean.FALSE));
 
         log.info(writeLog(
             String.format("%s outdated artefacts found and archived for before %s",
@@ -145,8 +150,10 @@ public class PublicationRemovalService {
         }
     }
 
-    private void handleArtefactArchiving(Artefact artefact) {
+    private void handleArtefactArchiving(Artefact artefact, Boolean isManuallyDeleted) {
         deleteDataFromBlobStore(artefact);
-        artefactRepository.archiveArtefact(artefact.getArtefactId().toString());
+        ArtefactArchived artefactArchived = new ArtefactArchived(artefact, isManuallyDeleted);
+        artefactArchivedRepository.save(artefactArchived);
+        artefactRepository.delete(artefact);
     }
 }

@@ -11,6 +11,7 @@ import uk.gov.hmcts.reform.pip.data.management.service.ListConversionFactory;
 import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.ArtefactSummaryData;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -54,7 +55,7 @@ public class PublicationSubscriptionService {
      * Scheduled method that checks daily for newly dated from artefacts.
      */
     public void checkNewlyActiveArtefacts() {
-        artefactRepository.findArtefactsByDisplayFrom(LocalDate.now())
+        artefactRepository.findArtefactsByDisplayFrom(LocalDate.now(), LocalDateTime.now())
             .forEach(accountManagementService::sendArtefactForSubscription);
     }
 
