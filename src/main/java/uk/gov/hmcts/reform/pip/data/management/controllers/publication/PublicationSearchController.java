@@ -61,25 +61,9 @@ public class PublicationSearchController {
     @ApiResponse(responseCode = NOT_FOUND_CODE, description = NOT_FOUND_DESCRIPTION)
     @Operation(summary = "Get a series of publications matching a given case search value (e.g. "
             + "CASE_URN/CASE_ID/CASE_NAME)")
-    @GetMapping("/search/{searchTerm}/{searchValue}")
-    @JsonView(ArtefactView.Internal.class)
-    @Deprecated
-    public ResponseEntity<List<Artefact>> getAllRelevantArtefactsBySearchValue(
-            @PathVariable CaseSearchTerm searchTerm, @PathVariable String searchValue,
-            @RequestHeader(value = USER_ID_HEADER,  required = false) UUID userId) {
-        return ResponseEntity.ok(publicationSearchService.findAllBySearch(searchTerm, searchValue, userId));
-    }
-
-    @ApiResponse(responseCode = OK_CODE, description = "List of Artefacts matching"
-            + " a given case value, verification parameters and date requirements")
-    @ApiResponse(responseCode = UNAUTHORISED_CODE, description = UNAUTHORISED_MESSAGE)
-    @ApiResponse(responseCode = FORBIDDEN_CODE, description = FORBIDDEN_MESSAGE)
-    @ApiResponse(responseCode = NOT_FOUND_CODE, description = NOT_FOUND_DESCRIPTION)
-    @Operation(summary = "Get a series of publications matching a given case search value (e.g. "
-            + "CASE_URN/CASE_ID/CASE_NAME)")
     @GetMapping("/search")
     @JsonView(ArtefactView.Internal.class)
-    public ResponseEntity<List<Artefact>> getAllRelevantArtefactsBySearchValueV2(
+    public ResponseEntity<List<Artefact>> getAllRelevantArtefactsBySearchValue(
             @RequestParam CaseSearchTerm searchTerm, @RequestParam String searchValue,
             @RequestHeader(value = USER_ID_HEADER,  required = false) UUID userId) {
         return ResponseEntity.ok(publicationSearchService.findAllBySearch(searchTerm, searchValue, userId));
