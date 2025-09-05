@@ -112,8 +112,8 @@
                         "CitizenNameSuffix": "TestDefendantSuffix",
                         "CitizenNameRequestedName": "TestDefendantRequestedName"
                       },
-                      "MaskedName": "TestMaskedName",
-                      "IsMasked": "no",
+                      "MaskedName": "1TestMaskedName",
+                      "IsMasked": "yes",
                       "DateOfBirth": {
                         "BirthDate": "2000-01-01",
                         "VerifiedBy": "not verified"
@@ -133,7 +133,13 @@
                           {
                             "Party": {
                               "Person": {
-                                "Name": "TestSolicitorName",
+                                "Name": {
+                                  "CitizenNameTitle": "TestTitle",
+                                  "CitizenNameForename": "TestForename",
+                                  "CitizenNameSurname": "TestSurname",
+                                  "CitizenNameSuffix": "TestSuffix",
+                                  "CitizenNameRequestedName": "TestSolicitorRequestedName"
+                                },
                                 "MaskedName": "TestSolicitorMasked",
                                 "IsMasked": "no",
                                 "DateOfBirth": {
@@ -161,6 +167,29 @@
                         "CJSoffenceCode": "TestCJSCode"
                       }
                     ]
+                  },
+                  {
+                    "PersonalDetails": {
+                      "Name": {
+                        "CitizenNameTitle": "TestDefendantTitle",
+                        "CitizenNameForename": "TestDefendantForename",
+                        "CitizenNameSurname": "TestDefendantSurname",
+                        "CitizenNameSuffix": "TestDefendantSuffix",
+                        "CitizenNameRequestedName": "2TestDefendantRequestedName"
+                      },
+                      "IsMasked": "no"
+                    }
+                  },
+                  {
+                    "PersonalDetails": {
+                      "Name": {
+                        "CitizenNameTitle": "3TestDefendantTitle",
+                        "CitizenNameForename": "3TestDefendantForename",
+                        "CitizenNameSurname": "3TestDefendantSurname",
+                        "CitizenNameSuffix": "3TestDefendantSuffix"
+                      },
+                      "IsMasked": "no"
+                    }
                   }
                 ],
                 "Respondent": ["TestRespondent"]
