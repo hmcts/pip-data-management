@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static java.util.Collections.emptyList;
 import static java.util.Map.Entry.comparingByKey;
 
 /**
@@ -60,6 +61,17 @@ public final class GeneralHelper {
             return convertToDelimitedString(values, delimiter);
         }
         return "";
+    }
+
+    public static List<String> returnNodeArray(JsonNode node, String nodeName) {
+        if (node.has(nodeName)) {
+            List<String> values = new ArrayList<>();
+            node.get(nodeName)
+                .forEach(n -> values.add(n.asText()));
+
+            return values;
+        }
+        return emptyList();
     }
 
     public static String convertToDelimitedString(List<String> values, String delimiter) {

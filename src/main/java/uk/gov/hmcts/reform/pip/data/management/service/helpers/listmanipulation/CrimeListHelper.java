@@ -24,6 +24,7 @@ public final class CrimeListHelper {
     private static final String COMBINED_REPORTING_RESTRICTION_DETAIL = "combinedReportingRestriction";
     private static final String LINKED_CASES = "linkedCases";
     private static final String COURT_ROOM_NAME = "courtRoomName";
+    private static final String COURT_HOUSE_ADDRESS = "CourtHouseAddress";
 
     private static final String SESSION_COURT_ROOM = "formattedSessionCourtRoom";
     private static final String NO_BORDER_BOTTOM = "no-border-bottom";
@@ -151,5 +152,17 @@ public final class CrimeListHelper {
         fullAddress.add(GeneralHelper.findAndReturnNodeText(addressNode, "county"));
 
         return GeneralHelper.convertToDelimitedString(fullAddress, ", ");
+    }
+
+    public static String formatAddress(JsonNode courtDetails) {
+        if (courtDetails.has(COURT_HOUSE_ADDRESS)) {
+            List<String> address = GeneralHelper.returnNodeArray(courtDetails.get(COURT_HOUSE_ADDRESS), "Line");
+
+            address.add(GeneralHelper.findAndReturnNodeText(courtDetails.get(COURT_HOUSE_ADDRESS), "Postcode"));
+            if (address.getFirst() != null && address.getLast() != null) {
+                return GeneralHelper.convertToDelimitedString(address, ", ");
+            }
+        }
+        return "";
     }
 }
