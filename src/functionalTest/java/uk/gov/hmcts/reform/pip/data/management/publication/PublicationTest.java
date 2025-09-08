@@ -224,6 +224,7 @@ class PublicationTest extends FunctionalTestBase {
         headerMapUploadHtmlFile.put(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE.toString());
         headerMapUploadHtmlFile.put(PublicationConfiguration.SENSITIVITY_HEADER, Sensitivity.PUBLIC.toString());
         headerMapUploadHtmlFile.put(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE.toString());
+        headerMapUploadHtmlFile.put(PublicationConfiguration.REQUESTER_ID_HEADER, systemAdminUserId);
         headerMapUploadHtmlFile.put("Content-Type", MediaType.MULTIPART_FORM_DATA_VALUE);
 
         String filePath = this.getClass().getClassLoader().getResource("data/testFile.html").getPath();
@@ -477,7 +478,7 @@ class PublicationTest extends FunctionalTestBase {
         uploadArtefact(getJsonString(randomCaseNumber), courtId, Sensitivity.CLASSIFIED, PROVENANCE);
 
         Map<String, String> headerMap = getBaseHeaderMap();
-        headerMap.put(REQUESTER_ID_HEADER, systemAdminUserId);
+        headerMap.put(REQUESTER_ID_HEADER, userId);
 
         final Response searchValueResponse = doGetRequest(
             ARTEFACT_BY_SEARCH_VALUE_URL, headerMap,
