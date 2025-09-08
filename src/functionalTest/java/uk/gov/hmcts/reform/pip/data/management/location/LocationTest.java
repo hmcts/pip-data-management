@@ -18,7 +18,6 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import static com.github.dockerjava.zerodep.shaded.org.apache.hc.core5.http.HttpHeaders.AUTHORIZATION;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -45,6 +44,7 @@ class LocationTest extends FunctionalTestBase {
     private static final Integer TEST_LOCATION_ID_THREE = 2003;
     private static final String TEST_JURISDICTION = "Test Jurisdiction";
     private static final String TEST_REGION = "North East";
+    private static final String REQUESTER_ID_HEADER = "x-requester-id";
 
     private static final String BASE_LOCATIONS_URL = "/locations";
     private static final String UPLOAD_LOCATIONS_URL = BASE_LOCATIONS_URL + "/upload";
@@ -65,7 +65,8 @@ class LocationTest extends FunctionalTestBase {
     @Test
     void locationControllerHappyPathTests() {
         Map<String, String> headerMapUploadLocations = Map.of(AUTHORIZATION, BEARER + accessToken,
-                                                              "Content-Type", MediaType.MULTIPART_FORM_DATA_VALUE
+                                                              "Content-Type", MediaType.MULTIPART_FORM_DATA_VALUE,
+                                                              REQUESTER_ID_HEADER, systemAdminUserId
         );
 
         String filePath = this.getClass().getClassLoader().getResource("location/ValidLocations.csv").getPath();
@@ -159,9 +160,12 @@ class LocationTest extends FunctionalTestBase {
         assertThat(returnedLocationByRegionAndJurisdiction[0].getLocationId()).isEqualTo(TEST_LOCATION_ID_THREE);
         assertThat(returnedLocationByRegionAndJurisdiction[0].getName()).isEqualTo(TEST_LOCATION_NAME_THREE);
 
+        Map<String, String> headerMapDownloadCsv = getBaseHeaderMap();
+        headerMapDownloadCsv.put(REQUESTER_ID_HEADER, systemAdminUserId);
+
         final Response responseDownloadCsv = doGetRequest(
             DOWNLOAD_CSV_LOCATIONS_URL,
-            getBaseHeaderMap()
+            headerMapDownloadCsv
         );
         assertThat(responseDownloadCsv.getStatusCode()).isEqualTo(OK.value());
         assertThat(responseDownloadCsv.asString()).contains(TEST_LOCATION_NAME_ONE);
@@ -169,7 +173,7 @@ class LocationTest extends FunctionalTestBase {
         assertThat(responseDownloadCsv.asString()).contains(TEST_LOCATION_NAME_THREE);
 
         Map<String, String> deleteHeaderMap = Map.of(AUTHORIZATION, BEARER + accessToken,
-                                                     "x-user-id", systemAdminUserId
+                                                     REQUESTER_ID_HEADER, systemAdminUserId
         );
 
         final Response responseDeleteLocationById = doDeleteRequest(
@@ -192,7 +196,7 @@ class LocationTest extends FunctionalTestBase {
         );
 
         Map<String, String> deleteHeaderMap = Map.of(AUTHORIZATION, BEARER + accessToken,
-                                                     "x-user-id", UUID.randomUUID().toString()
+                                                     REQUESTER_ID_HEADER, systemAdminUserId
         );
         final Response responseDeleteLocationById = doDeleteRequest(
             "/locations/" + courtId,

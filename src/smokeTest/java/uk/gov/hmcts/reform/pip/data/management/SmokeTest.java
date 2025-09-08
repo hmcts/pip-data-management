@@ -5,6 +5,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pip.data.management.utils.OAuthClient;
@@ -33,6 +34,7 @@ import static uk.gov.hmcts.reform.pip.data.management.config.PublicationConfigur
 import static uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration.LANGUAGE_HEADER;
 import static uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration.LIST_TYPE;
 import static uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration.PROVENANCE_HEADER;
+import static uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration.REQUESTER_ID_HEADER;
 import static uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration.SENSITIVITY_HEADER;
 import static uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration.TYPE_HEADER;
 
@@ -51,6 +53,9 @@ class SmokeTest extends SmokeTestBase {
 
     private String locationId;
     private String locationName;
+
+    @Value("${test-system-admin-id}")
+    private String systemAdminUserId;
 
     @BeforeAll
     void startup() {
@@ -98,6 +103,7 @@ class SmokeTest extends SmokeTestBase {
         headerMapUploadJsonFile.put(CONTENT_DATE, LocalDateTime.now().toString());
         headerMapUploadJsonFile.put(SENSITIVITY_HEADER, Sensitivity.PUBLIC.toString());
         headerMapUploadJsonFile.put(LANGUAGE_HEADER, Language.ENGLISH.toString());
+        headerMapUploadJsonFile.put(REQUESTER_ID_HEADER, systemAdminUserId);
 
         Response response = doPostRequest(PUBLICATION_URL, headerMapUploadJsonFile, jsonData);
 
