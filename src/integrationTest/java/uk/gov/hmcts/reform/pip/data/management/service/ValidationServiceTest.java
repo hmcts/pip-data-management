@@ -15,6 +15,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ContainsForbiddenValuesException;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.EmptyRequiredHeaderException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.FlatFileException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.HeaderValidationException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.PayloadValidationException;
@@ -44,6 +45,7 @@ import static org.mockito.Mockito.verify;
 
 @ActiveProfiles("integration-basic")
 @SpringBootTest
+@SuppressWarnings("PMD.ExcessiveImports")
 class ValidationServiceTest extends IntegrationBasicTestBase {
 
     @MockitoBean
@@ -185,6 +187,21 @@ class ValidationServiceTest extends IntegrationBasicTestBase {
         );
     }
 
+    @ParameterizedTest
+    @EnumSource(value = ListType.class, names = {"CIC_DAILY_HEARING_LIST", "CARE_STANDARDS_LIST",
+        "PRIMARY_HEALTH_LIST"})
+    void testCreationOfPublicationWithDeprecatedListType(ListType listType) {
+        headerGroup.setListType(listType);
+
+        HeaderValidationException dateHeaderValidationException =
+            assertThrows(HeaderValidationException.class, () -> {
+                validationService.validateHeaders(headerGroup);
+            });
+        assertEquals(String.format("List type %s is deprecated and can no longer be used", listType),
+                     dateHeaderValidationException.getMessage(), VALIDATION_EXPECTED_MESSAGE
+        );
+    }
+
     @Test
     void testCreationOfPublicationJudgementAndOutcomeTypeAndEmptyDateFrom() {
         headerGroup.setType(ArtefactType.JUDGEMENTS_AND_OUTCOMES);
@@ -220,6 +237,21 @@ class ValidationServiceTest extends IntegrationBasicTestBase {
             validationService.validateHeaders(headerGroup).getDisplayTo(),
             "The date to header should remain null"
         );
+    }
+
+    @Test
+    void testValidationOfArtefactTypeListWhenLisTypeNotProvided() {
+        headerGroup.setType(ArtefactType.LIST);
+        headerGroup.setListType(null);
+
+        EmptyRequiredHeaderException thrown = assertThrows(
+            EmptyRequiredHeaderException.class,
+            () -> validationService.validateHeaders(headerGroup),
+            "Expected exception when listType is null for LIST type"
+        );
+
+        assertEquals("x-list-type is mandatory however an empty value is provided",
+                     thrown.getMessage(), "x-list-type should be provided");
     }
 
     @Test
@@ -274,7 +306,7 @@ class ValidationServiceTest extends IntegrationBasicTestBase {
     }
 
     @ParameterizedTest
-    @EnumSource(value = ListType.class, names = {"SJP_PRESS_REGISTER", "CIC_DAILY_HEARING_LIST",
+    @EnumSource(value = ListType.class, names = {"SJP_PRESS_REGISTER",
         "PCOL_DAILY_CAUSE_LIST"})
     void testValidateMasterSchemaWithoutErrors(ListType listType) throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()

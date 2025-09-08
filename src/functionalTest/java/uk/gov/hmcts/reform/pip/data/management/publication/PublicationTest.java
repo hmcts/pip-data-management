@@ -20,7 +20,6 @@ import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 import uk.gov.hmcts.reform.pip.model.publication.Sensitivity;
 import uk.gov.hmcts.reform.pip.model.report.PublicationMiData;
-import uk.gov.hmcts.reform.pip.model.subscription.SearchType;
 
 import java.io.File;
 import java.io.IOException;
@@ -57,16 +56,15 @@ class PublicationTest extends FunctionalTestBase {
     private static final String PUBLICATION_URL = "/publication";
     private static final String NON_STRATEGIC_UPLOAD_PUBLICATION_URL = PUBLICATION_URL + "/non-strategic";
     private static final String ARTEFACT_BY_LOCATION_ID_URL = PUBLICATION_URL + "/locationId/";
-    private static final String ARTEFACT_BY_SEARCH_VALUE_URL = PUBLICATION_URL + "/search/";
-    private static final String ARTEFACT_BY_SEARCH_VALUE_V2_URL = PUBLICATION_URL + "/search";
+    private static final String ARTEFACT_BY_SEARCH_VALUE_URL = PUBLICATION_URL + "/search";
     private static final String DELETE_ARTEFACTS_BY_LOCATION_ID = PUBLICATION_URL + "/%s/deleteArtefacts";
     private static final String MI_DATA_URL = PUBLICATION_URL + "/mi-data";
-
 
     private static final String TESTING_SUPPORT_LOCATION_URL = "/testing-support/location/";
     private static final String TESTING_SUPPORT_PUBLICATION_URL = "/testing-support/publication/";
 
     private static final ArtefactType ARTEFACT_TYPE = ArtefactType.LIST;
+    private static final ArtefactType ARTEFACT_TYPE_LCSU = ArtefactType.LCSU;
     private static final String PROVENANCE = "MANUAL_UPLOAD";
     private static final String SOURCE_ARTEFACT_ID = "sourceArtefactId";
     private static final LocalDateTime DISPLAY_FROM = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
@@ -123,9 +121,11 @@ class PublicationTest extends FunctionalTestBase {
             .getResourceAsStream("data/civilDailyCauseList.json")) {
             String jsonString = new String(jsonFile.readAllBytes(), StandardCharsets.UTF_8);
 
-            return JsonPath.parse(jsonString).set("$.courtLists[0].courtHouse"
-                                                      + ".courtRoom[0].session[0].sittings[0]"
-                                                      + ".hearing[0].case[0].caseNumber", caseNumber).jsonString();
+            return JsonPath.parse(jsonString).set(
+                "$.courtLists[0].courtHouse"
+                    + ".courtRoom[0].session[0].sittings[0]"
+                    + ".hearing[0].case[0].caseNumber", caseNumber
+            ).jsonString();
         }
     }
 
@@ -215,6 +215,37 @@ class PublicationTest extends FunctionalTestBase {
     }
 
     @Test
+    void testPublicationEndpointWithHtmlFileUploadToS3Bucket() throws Exception {
+        Map<String, String> headerMapUploadHtmlFile = getBaseHeaderMap();
+        headerMapUploadHtmlFile.put(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE_LCSU.toString());
+        headerMapUploadHtmlFile.put(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE);
+        headerMapUploadHtmlFile.put(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM.toString());
+        headerMapUploadHtmlFile.put(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_FROM.plusDays(1).toString());
+        headerMapUploadHtmlFile.put(PublicationConfiguration.COURT_ID, courtId);
+        headerMapUploadHtmlFile.put(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE.toString());
+        headerMapUploadHtmlFile.put(PublicationConfiguration.SENSITIVITY_HEADER, Sensitivity.PUBLIC.toString());
+        headerMapUploadHtmlFile.put(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE.toString());
+        headerMapUploadHtmlFile.put("Content-Type", MediaType.MULTIPART_FORM_DATA_VALUE);
+
+        String filePath = this.getClass().getClassLoader().getResource("data/testFile.html").getPath();
+        File htmlFile = new File(filePath);
+
+        final Response responseUploadHtmlFile = doPostRequestMultiPart(
+            PUBLICATION_URL,
+            headerMapUploadHtmlFile,
+            "",
+            htmlFile
+        );
+
+        assertThat(responseUploadHtmlFile.getStatusCode()).isEqualTo(CREATED.value());
+        Artefact returnedArtefact = responseUploadHtmlFile.as(Artefact.class);
+        assertThat(returnedArtefact.getType()).isEqualTo(ARTEFACT_TYPE_LCSU);
+        assertThat(returnedArtefact.getProvenance()).isEqualTo(PROVENANCE);
+        assertThat(returnedArtefact.getLocationId()).contains(courtId);
+        assertThat(returnedArtefact.getIsFlatFile()).isTrue();
+    }
+
+    @Test
     void testPublicationEndpointsWithJsonFileUpload() throws Exception {
         String randomCaseNumber = Integer.toString(ThreadLocalRandom.current().nextInt(100_000, 200_000));
         String jsonString = getJsonString(randomCaseNumber);
@@ -235,24 +266,14 @@ class PublicationTest extends FunctionalTestBase {
         assertThat(responseGetArtefactPayload.asString()).isEqualTo(jsonString);
 
         final Response responseGetAllRelevantArtefactsBySearchValue = doGetRequest(
-            ARTEFACT_BY_SEARCH_VALUE_URL + SearchType.CASE_ID + '/' + randomCaseNumber, headerMap
+            ARTEFACT_BY_SEARCH_VALUE_URL, headerMap,
+            Map.of(SEARCH_TERM_PARAM, CaseSearchTerm.CASE_ID, SEARCH_VALUE_PARAM, randomCaseNumber)
         );
         assertThat(responseGetAllRelevantArtefactsBySearchValue.getStatusCode()).isEqualTo(OK.value());
 
         Artefact[] returnedGetAllRelevantArtefactsBySearchValue = responseGetAllRelevantArtefactsBySearchValue.as(
             Artefact[].class);
         assertThat(returnedGetAllRelevantArtefactsBySearchValue[0].getArtefactId().toString()).isEqualTo(artefactId);
-
-        final Response responseGetAllRelevantArtefactsBySearchValueV2 = doGetRequest(
-            ARTEFACT_BY_SEARCH_VALUE_V2_URL, headerMap,
-            Map.of(SEARCH_TERM_PARAM, CaseSearchTerm.CASE_ID, SEARCH_VALUE_PARAM, randomCaseNumber)
-        );
-        assertThat(responseGetAllRelevantArtefactsBySearchValueV2.getStatusCode()).isEqualTo(OK.value());
-
-        Artefact[] returnedGetAllRelevantArtefactsBySearchValueV2 = responseGetAllRelevantArtefactsBySearchValueV2.as(
-            Artefact[].class);
-        assertThat(returnedGetAllRelevantArtefactsBySearchValueV2[0].getArtefactId().toString()).isEqualTo(artefactId);
-
 
         final Response responseGetArtefactMetadata = doGetRequest(
             PUBLICATION_URL + '/' + artefactId, headerMap
@@ -452,8 +473,7 @@ class PublicationTest extends FunctionalTestBase {
     }
 
     @Test
-    @Deprecated
-    void testGetArtefactsBySearchValueWhenRequesterIsUnauthorised() throws IOException {
+    void testGetArtefactsBySearchValueWhenUserIsUnauthorised() throws IOException {
         String randomCaseNumber = Integer.toString(ThreadLocalRandom.current().nextInt(100_000, 200_000));
         uploadArtefact(getJsonString(randomCaseNumber), courtId, Sensitivity.CLASSIFIED, PROVENANCE);
 
@@ -461,16 +481,14 @@ class PublicationTest extends FunctionalTestBase {
         headerMap.put(REQUESTER_ID_HEADER, systemAdminUserId);
 
         final Response searchValueResponse = doGetRequest(
-            ARTEFACT_BY_SEARCH_VALUE_URL + SearchType.CASE_ID + '/' + randomCaseNumber, headerMap
+            ARTEFACT_BY_SEARCH_VALUE_URL, headerMap,
+            Map.of(SEARCH_TERM_PARAM, CaseSearchTerm.CASE_ID, SEARCH_VALUE_PARAM, randomCaseNumber)
         );
-
-        assertThat(searchValueResponse.getStatusCode())
-            .isEqualTo(FORBIDDEN.value());
+        assertThat(searchValueResponse.getStatusCode()).isEqualTo(NOT_FOUND.value());
     }
 
     @Test
-    @Deprecated
-    void testGetArtefactsBySearchValueWhenRequesterDoesNotExist() throws IOException {
+    void testGetArtefactsBySearchValueWhenUserDoesNotExist() throws IOException {
         String randomCaseNumber = Integer.toString(ThreadLocalRandom.current().nextInt(100_000, 200_000));
         uploadArtefact(getJsonString(randomCaseNumber), courtId, Sensitivity.CLASSIFIED, PROVENANCE);
 
@@ -493,7 +511,7 @@ class PublicationTest extends FunctionalTestBase {
         headerMap.put(REQUESTER_ID_HEADER, systemAdminUserId);
 
         final Response searchValueResponse = doGetRequest(
-            ARTEFACT_BY_SEARCH_VALUE_V2_URL, headerMap,
+            ARTEFACT_BY_SEARCH_VALUE_URL, headerMap,
             Map.of(SEARCH_TERM_PARAM, CaseSearchTerm.CASE_ID, SEARCH_VALUE_PARAM, randomCaseNumber)
         );
         assertThat(searchValueResponse.getStatusCode())
@@ -509,7 +527,7 @@ class PublicationTest extends FunctionalTestBase {
         headerMap.put(REQUESTER_ID_HEADER, UUID.randomUUID().toString());
 
         final Response searchValueResponse = doGetRequest(
-            ARTEFACT_BY_SEARCH_VALUE_V2_URL, headerMap,
+            ARTEFACT_BY_SEARCH_VALUE_URL, headerMap,
             Map.of(SEARCH_TERM_PARAM, CaseSearchTerm.CASE_ID, SEARCH_VALUE_PARAM, randomCaseNumber)
         );
         assertThat(searchValueResponse.getStatusCode())

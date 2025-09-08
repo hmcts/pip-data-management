@@ -68,8 +68,6 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
     private static final String VALIDATION_DISPLAY_FROM = "The expected Display From has not been returned";
     private static final String SHOULD_RETURN_EXPECTED_ARTEFACT = "Should return expected artefact";
 
-    private static final String VALID_CASE_ID_SEARCH = "/CASE_ID/45684548";
-    private static final String VALID_CASE_NAME_SEARCH = "/CASE_NAME/Smith";
     private static final String UNAUTHORIZED_USERNAME = "unauthorized_username";
     private static final String UNAUTHORIZED_ROLE = "APPROLE_unknown.role";
     private static final String FORBIDDEN_STATUS_CODE = "Status code does not match forbidden";
@@ -125,8 +123,12 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
         Artefact artefact = createDailyList(Sensitivity.PRIVATE);
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .get(SEARCH_URL + VALID_CASE_ID_SEARCH)
+            .get(SEARCH_URL)
+            .param(SEARCH_TERM_PARAM, CaseSearchTerm.CASE_ID.name())
+            .param(SEARCH_VALUE_PARAM, CASE_ID_SEARCH_VALUE)
             .header(REQUESTER_ID_HEADER, VERIFIED_USER_ID);
+
+        mockHttpServletRequestBuilder.header(USER_ID_HEADER, USER_ID);
 
         MvcResult getResponse = mockMvc.perform(mockHttpServletRequestBuilder)
             .andExpect(status().isOk())
@@ -147,8 +149,12 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
         createDailyList(Sensitivity.PRIVATE);
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .get(SEARCH_URL + VALID_CASE_ID_SEARCH)
+            .get(SEARCH_URL)
+            .param(SEARCH_TERM_PARAM, CaseSearchTerm.CASE_ID.name())
+            .param(SEARCH_VALUE_PARAM, CASE_ID_SEARCH_VALUE)
             .header(REQUESTER_ID_HEADER, VERIFIED_USER_ID);
+
+        mockHttpServletRequestBuilder.header(USER_ID_HEADER, USER_ID);
 
         MvcResult getResponse = mockMvc.perform(mockHttpServletRequestBuilder)
             .andExpect(status().isNotFound())
@@ -165,11 +171,14 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
         Artefact artefact = createDailyList(Sensitivity.PUBLIC);
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .get(SEARCH_URL + VALID_CASE_ID_SEARCH)
+            .get(SEARCH_URL)
+            .param(SEARCH_TERM_PARAM, CaseSearchTerm.CASE_ID.name())
+            .param(SEARCH_VALUE_PARAM, CASE_ID_SEARCH_VALUE)
             .header(REQUESTER_ID_HEADER, VERIFIED_USER_ID);
 
-        MvcResult getResponse =
-            mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isOk()).andReturn();
+        MvcResult getResponse = mockMvc.perform(mockHttpServletRequestBuilder)
+            .andExpect(status().isOk())
+            .andReturn();
 
         assertTrue(
             getResponse.getResponse().getContentAsString().contains(artefact.getArtefactId().toString()),
@@ -181,11 +190,14 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
     void testGetArtefactByCaseIdSearchUnverifiedNotFound() throws Exception {
         createDailyList(Sensitivity.CLASSIFIED);
 
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
-            MockMvcRequestBuilders.get(SEARCH_URL + VALID_CASE_ID_SEARCH)
-                .header(REQUESTER_ID_HEADER, VERIFIED_USER_ID);
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+            .get(SEARCH_URL)
+            .param(SEARCH_TERM_PARAM, CaseSearchTerm.CASE_ID.name())
+            .param(SEARCH_VALUE_PARAM, CASE_ID_SEARCH_VALUE)
+            .header(REQUESTER_ID_HEADER, VERIFIED_USER_ID);
 
-        mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isNotFound());
+        mockMvc.perform(mockHttpServletRequestBuilder)
+            .andExpect(status().isNotFound());
     }
 
     @Test
@@ -197,8 +209,12 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
         Artefact artefact = createDailyList(Sensitivity.PRIVATE);
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .get(SEARCH_URL + VALID_CASE_NAME_SEARCH)
+            .get(SEARCH_URL)
+            .param(SEARCH_TERM_PARAM, CaseSearchTerm.CASE_NAME.name())
+            .param(SEARCH_VALUE_PARAM, CASE_NAME_SEARCH_VALUE)
             .header(REQUESTER_ID_HEADER, VERIFIED_USER_ID);
+
+        mockHttpServletRequestBuilder.header(USER_ID_HEADER, USER_ID);
 
         MvcResult getResponse = mockMvc.perform(mockHttpServletRequestBuilder)
             .andExpect(status().isOk())
@@ -219,8 +235,12 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
         createDailyList(Sensitivity.PRIVATE);
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .get(SEARCH_URL + VALID_CASE_NAME_SEARCH)
+            .get(SEARCH_URL)
+            .param(SEARCH_TERM_PARAM, CaseSearchTerm.CASE_NAME.name())
+            .param(SEARCH_VALUE_PARAM, CASE_NAME_SEARCH_VALUE)
             .header(REQUESTER_ID_HEADER, VERIFIED_USER_ID);
+
+        mockHttpServletRequestBuilder.header(USER_ID_HEADER, USER_ID);
 
         MvcResult getResponse = mockMvc.perform(mockHttpServletRequestBuilder)
             .andExpect(status().isNotFound())
@@ -237,11 +257,14 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
         Artefact artefact = createDailyList(Sensitivity.PUBLIC);
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .get(SEARCH_URL + VALID_CASE_NAME_SEARCH)
+            .get(SEARCH_URL)
+            .param(SEARCH_TERM_PARAM, CaseSearchTerm.CASE_NAME.name())
+            .param(SEARCH_VALUE_PARAM, CASE_NAME_SEARCH_VALUE)
             .header(REQUESTER_ID_HEADER, VERIFIED_USER_ID);
 
-        MvcResult getResponse =
-            mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isOk()).andReturn();
+        MvcResult getResponse = mockMvc.perform(mockHttpServletRequestBuilder)
+            .andExpect(status().isOk())
+            .andReturn();
 
         assertTrue(
             getResponse.getResponse().getContentAsString().contains(artefact.getArtefactId().toString()),
@@ -254,10 +277,13 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
         createDailyList(Sensitivity.CLASSIFIED);
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .get(SEARCH_URL + VALID_CASE_NAME_SEARCH)
+            .get(SEARCH_URL)
+            .param(SEARCH_TERM_PARAM, CaseSearchTerm.CASE_NAME.name())
+            .param(SEARCH_VALUE_PARAM, CASE_NAME_SEARCH_VALUE)
             .header(REQUESTER_ID_HEADER, VERIFIED_USER_ID);
 
-        mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isNotFound()).andReturn();
+        mockMvc.perform(mockHttpServletRequestBuilder)
+            .andExpect(status().isNotFound());
     }
 
     @Test

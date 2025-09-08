@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
@@ -29,12 +30,14 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.LcsuArtefactNotSupportedException;
 import uk.gov.hmcts.reform.pip.data.management.helpers.EmailHelper;
 import uk.gov.hmcts.reform.pip.data.management.helpers.NoMatchArtefactHelper;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.HeaderGroup;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.views.ArtefactView;
 import uk.gov.hmcts.reform.pip.data.management.service.ExcelConversionService;
+import uk.gov.hmcts.reform.pip.data.management.service.PublicationServicesService;
 import uk.gov.hmcts.reform.pip.data.management.service.ValidationService;
 import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationCreationRunner;
 import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationCreationService;
@@ -92,6 +95,10 @@ public class PublicationController {
     private final PublicationRemovalService publicationRemovalService;
     private final ValidationService validationService;
     private final ExcelConversionService excelConversionService;
+    private final PublicationServicesService publicationServicesService;
+
+    @Value("${pdda.enableLcsu}")
+    private boolean enableLcsu;
 
     /**
      * Constructor for Publication controller.
@@ -103,6 +110,7 @@ public class PublicationController {
      * @param publicationRemovalService The service used to Delete or Archive artefacts
      * @param validationService The service that handle input validation of publications
      * @param excelConversionService The service handles conversion of Excel data to JSON format
+     * @param publicationServicesService The service handles communication with publication service
      */
     @Autowired
     public PublicationController(PublicationCreationService publicationCreationService,
@@ -110,13 +118,15 @@ public class PublicationController {
                                  ValidationService validationService,
                                  PublicationRetrievalService publicationRetrievalService,
                                  PublicationRemovalService publicationRemovalService,
-                                 ExcelConversionService excelConversionService) {
+                                 ExcelConversionService excelConversionService,
+                                 PublicationServicesService publicationServicesService) {
         this.publicationCreationService = publicationCreationService;
         this.publicationCreationRunner = publicationCreationRunner;
         this.validationService = validationService;
         this.publicationRetrievalService = publicationRetrievalService;
         this.publicationRemovalService = publicationRemovalService;
         this.excelConversionService = excelConversionService;
+        this.publicationServicesService = publicationServicesService;
     }
 
     /**
@@ -156,13 +166,12 @@ public class PublicationController {
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime displayFrom,
         @RequestHeader(value = PublicationConfiguration.DISPLAY_TO_HEADER, required = false)
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime displayTo,
-        @RequestHeader(PublicationConfiguration.LIST_TYPE) ListType listType,
+        @RequestHeader(value = PublicationConfiguration.LIST_TYPE, required = false) ListType listType,
         @RequestHeader(PublicationConfiguration.COURT_ID) String courtId,
         @RequestHeader(PublicationConfiguration.CONTENT_DATE)
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime contentDate,
         @RequestHeader(value = REQUESTER_ID_HEADER, required = false) String requesterId,
         @RequestBody String payload) {
-
         HeaderGroup initialHeaders = new HeaderGroup(provenance, sourceArtefactId, type, sensitivity, language,
                                                      displayFrom, displayTo, listType, courtId, contentDate
         );
@@ -187,7 +196,7 @@ public class PublicationController {
      *
      * @param provenance       Name of the source system.
      * @param sourceArtefactId Unique ID of what publication is called by source system.
-     * @param type             List / Outcome / Judgement / Status Updates.
+     * @param type             List / Outcome / General Publication / LCSU Updates.
      * @param sensitivity      Level of sensitivity.
      * @param language         Language of publication.
      * @param displayFrom      Date / Time from which the publication will be displayed.
@@ -218,7 +227,7 @@ public class PublicationController {
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime displayFrom,
         @RequestHeader(value = PublicationConfiguration.DISPLAY_TO_HEADER, required = false)
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime displayTo,
-        @RequestHeader(PublicationConfiguration.LIST_TYPE) ListType listType,
+        @RequestHeader(value = PublicationConfiguration.LIST_TYPE, required = false) ListType listType,
         @RequestHeader(PublicationConfiguration.COURT_ID) String courtId,
         @RequestHeader(PublicationConfiguration.CONTENT_DATE)
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime contentDate,
@@ -231,7 +240,17 @@ public class PublicationController {
         validationService.validateBody(file);
 
         HeaderGroup headers = validationService.validateHeaders(initialHeaders);
-        Artefact artefact = createPublicationMetadataFromHeaders(headers, file.getSize());
+        Artefact artefact = createPublicationMetadataFromHeaders(headers, file.getSize(), true);
+
+        if (type.equals(ArtefactType.LCSU) && !enableLcsu) {
+            throw new LcsuArtefactNotSupportedException("LCSU artefact type is not supported.");
+        }
+
+        if (type.equals(ArtefactType.LCSU)) {
+            publicationServicesService.uploadHtmlFileToAwsS3Bucket(file);
+            return ResponseEntity.status(HttpStatus.CREATED)
+                .body(artefact);
+        }
 
         Map<String, List<Object>> search = new ConcurrentHashMap<>();
         search.put("location-id", List.of(headers.getCourtId()));
@@ -285,7 +304,7 @@ public class PublicationController {
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime displayFrom,
         @RequestHeader(value = PublicationConfiguration.DISPLAY_TO_HEADER, required = false)
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime displayTo,
-        @RequestHeader(PublicationConfiguration.LIST_TYPE) ListType listType,
+        @RequestHeader(value = PublicationConfiguration.LIST_TYPE, required = false) ListType listType,
         @RequestHeader(PublicationConfiguration.COURT_ID) String courtId,
         @RequestHeader(PublicationConfiguration.CONTENT_DATE)
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime contentDate,
@@ -421,7 +440,8 @@ public class PublicationController {
         }
     }
 
-    private Artefact createPublicationMetadataFromHeaders(HeaderGroup headers, long fileSizeInBytes) {
+    private Artefact createPublicationMetadataFromHeaders(HeaderGroup headers, long fileSizeInBytes,
+                                                          boolean isFlatFile) {
         return Artefact.builder()
             .provenance(headers.getProvenance())
             .sourceArtefactId(headers.getSourceArtefactId())
@@ -434,7 +454,12 @@ public class PublicationController {
             .locationId(headers.getCourtId())
             .contentDate(headers.getContentDate())
             .payloadSize((float) fileSizeInBytes / 1024)
+            .isFlatFile(isFlatFile)
             .build();
+    }
+
+    private Artefact createPublicationMetadataFromHeaders(HeaderGroup headers, long fileSizeInBytes) {
+        return createPublicationMetadataFromHeaders(headers, fileSizeInBytes, false);
     }
 
     private boolean validateMasterSchema(ListType listType) {
