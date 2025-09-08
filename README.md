@@ -42,8 +42,8 @@
 In practice, the service is usually containerized within a hosted kubernetes environment within Azure.
 
 Broadly speaking, this service has components relating to:
-- The persistence, validation, retrieval and manipulation of court publications and canonical location information (reference data).
-- The generation, retrieval and manipulation of alternative publishing formats used throughout the subscription process (such as PDFs).
+- The persistence, validation, retrieval and manipulation of court publications and canonical location information (reference data)
+- The generation, retrieval and manipulation of alternative publishing formats used throughout the subscription process (such as PDFs)
 
 ##### Publications
 
