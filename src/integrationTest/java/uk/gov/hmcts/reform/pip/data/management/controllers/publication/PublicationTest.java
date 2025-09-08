@@ -80,6 +80,7 @@ class PublicationTest extends PublicationIntegrationTestBase {
     private static final Sensitivity SENSITIVITY = Sensitivity.PUBLIC;
     private static final String USER_ID = UUID.randomUUID().toString();
     private static final String PROVENANCE = "MANUAL_UPLOAD";
+    private static final String PROVENANCE_PDDA = "PDDA";
     private static final String SOURCE_ARTEFACT_ID = "sourceArtefactId";
     private static final LocalDateTime DISPLAY_TO = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
     private static final LocalDateTime DISPLAY_FROM = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
@@ -1256,13 +1257,14 @@ class PublicationTest extends PublicationIntegrationTestBase {
     @Test
     void uploadHtmlToS3Bucket() throws Exception {
         ReflectionTestUtils.setField(publicationController, "enableLcsu", true);
-
+        when(accountManagementService.getUserById(any())).thenReturn(piUser);
+        when(accountManagementService.getIsAuthorised(any(), any(), any())).thenReturn(true);
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
             MockMvcRequestBuilders.multipart(PUBLICATION_URL).file(htmlFile);
         mockHttpServletRequestBuilder.header(PublicationConfiguration.TYPE_HEADER, ArtefactType.LCSU)
             .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
-            .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
+            .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE_PDDA)
             .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
             .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO)
             .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
@@ -1287,7 +1289,7 @@ class PublicationTest extends PublicationIntegrationTestBase {
         assertEquals(ArtefactType.LCSU, artefact.getType(), "Artefact type does not match input artefact type");
         assertEquals(DISPLAY_FROM, artefact.getDisplayFrom(), "Display from does not match input display from");
         assertEquals(DISPLAY_TO, artefact.getDisplayTo(), "Display to does not match input display to");
-        assertEquals(PROVENANCE, artefact.getProvenance(), "Provenance does not match input provenance");
+        assertEquals(PROVENANCE_PDDA, artefact.getProvenance(), "Provenance does not match input provenance");
         assertEquals(LANGUAGE, artefact.getLanguage(), "Language does not match input language");
         assertEquals(SENSITIVITY, artefact.getSensitivity(), "Sensitivity does not match input sensitivity");
         assertTrue(artefact.getIsFlatFile(), "Artefact does not have correct value for isFlatFile");
@@ -1301,7 +1303,7 @@ class PublicationTest extends PublicationIntegrationTestBase {
         mockHttpServletRequestBuilder.header(PublicationConfiguration.TYPE_HEADER, ArtefactType.LIST)
             .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
-            .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
+            .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE_PDDA)
             .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
             .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO)
             .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
@@ -1319,6 +1321,8 @@ class PublicationTest extends PublicationIntegrationTestBase {
     @Test
     void testLcsuArtefactTypeInProdEnvironmentThrowsCustomException() throws Exception {
         ReflectionTestUtils.setField(publicationController, "enableLcsu", false);
+        when(accountManagementService.getUserById(any())).thenReturn(piUser);
+        when(accountManagementService.getIsAuthorised(any(), any(), any())).thenReturn(true);
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
             .multipart(PUBLICATION_URL)
@@ -1327,7 +1331,7 @@ class PublicationTest extends PublicationIntegrationTestBase {
         mockHttpServletRequestBuilder.header(PublicationConfiguration.TYPE_HEADER, ArtefactType.LCSU)
             .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
             .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
-            .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
+            .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE_PDDA)
             .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
             .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO)
             .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)

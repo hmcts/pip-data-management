@@ -77,7 +77,6 @@ class LocationApiTest extends LocationIntegrationTestBase {
     private static final String VALIDATION_LOCATION_NAME_NOT_AS_EXPECTED = "Location name is not as expected";
 
     private static final String LOCATION_LIST = "locationList";
-    private static final String USER_ID_HEADER = "x-user-id";
     private static final String EMAIL = "test@justice.gov.uk";
 
     public static final String REQUESTER_ID_HEADER = "x-requester-id";
@@ -438,6 +437,15 @@ class LocationApiTest extends LocationIntegrationTestBase {
     @Test
     @WithMockUser(username = "unauthorized_account", authorities = {"APPROLE_unknown.account"})
     void testUploadLocationsUnauthorised() throws Exception {
+        PiUser piUser = new PiUser();
+        piUser.setUserId(USER_ID);
+        piUser.setEmail(EMAIL);
+        piUser.setRoles(SYSTEM_ADMIN);
+
+        when(accountManagementService.getUserById(any())).thenReturn(piUser);
+        when(accountManagementService.getAllAccounts(anyString(), eq(SYSTEM_ADMIN.toString()), eq(SYSTEM_ADMIN_ID)))
+            .thenReturn(List.of(EMAIL));
+
         try (InputStream csvInputStream = this.getClass().getClassLoader()
             .getResourceAsStream(LOCATIONS_CSV)) {
             MockMultipartFile csvFile
@@ -445,7 +453,7 @@ class LocationApiTest extends LocationIntegrationTestBase {
 
             mockMvc.perform(multipart(UPLOAD_API).file(csvFile)
                                 .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID))
-                .andExpect(status().isUnauthorized());
+                .andExpect(status().isForbidden());
         }
     }
 
@@ -518,10 +526,19 @@ class LocationApiTest extends LocationIntegrationTestBase {
     @Test
     @WithMockUser(username = "unauthorized_account", authorities = {"APPROLE_unknown.account"})
     void testDownloadLocationsNotAuthorised() throws Exception {
+        PiUser piUser = new PiUser();
+        piUser.setUserId(USER_ID);
+        piUser.setEmail(EMAIL);
+        piUser.setRoles(SYSTEM_ADMIN);
+
+        when(accountManagementService.getUserById(any())).thenReturn(piUser);
+        when(accountManagementService.getAllAccounts(anyString(), eq(SYSTEM_ADMIN.toString()), eq(SYSTEM_ADMIN_ID)))
+            .thenReturn(List.of(EMAIL));
+
         mockMvc.perform(
                 get(DOWNLOAD_LOCATIONS_ENDPOINT)
                     .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID))
-            .andExpect(status().isUnauthorized());
+            .andExpect(status().isForbidden());
     }
 }
 

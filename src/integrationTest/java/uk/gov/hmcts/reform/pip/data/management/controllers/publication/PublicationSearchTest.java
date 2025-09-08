@@ -128,8 +128,6 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
             .param(SEARCH_VALUE_PARAM, CASE_ID_SEARCH_VALUE)
             .header(REQUESTER_ID_HEADER, VERIFIED_USER_ID);
 
-        mockHttpServletRequestBuilder.header(USER_ID_HEADER, USER_ID);
-
         MvcResult getResponse = mockMvc.perform(mockHttpServletRequestBuilder)
             .andExpect(status().isOk())
             .andReturn();
@@ -153,8 +151,6 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
             .param(SEARCH_TERM_PARAM, CaseSearchTerm.CASE_ID.name())
             .param(SEARCH_VALUE_PARAM, CASE_ID_SEARCH_VALUE)
             .header(REQUESTER_ID_HEADER, VERIFIED_USER_ID);
-
-        mockHttpServletRequestBuilder.header(USER_ID_HEADER, USER_ID);
 
         MvcResult getResponse = mockMvc.perform(mockHttpServletRequestBuilder)
             .andExpect(status().isNotFound())
@@ -214,8 +210,6 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
             .param(SEARCH_VALUE_PARAM, CASE_NAME_SEARCH_VALUE)
             .header(REQUESTER_ID_HEADER, VERIFIED_USER_ID);
 
-        mockHttpServletRequestBuilder.header(USER_ID_HEADER, USER_ID);
-
         MvcResult getResponse = mockMvc.perform(mockHttpServletRequestBuilder)
             .andExpect(status().isOk())
             .andReturn();
@@ -239,8 +233,6 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
             .param(SEARCH_TERM_PARAM, CaseSearchTerm.CASE_NAME.name())
             .param(SEARCH_VALUE_PARAM, CASE_NAME_SEARCH_VALUE)
             .header(REQUESTER_ID_HEADER, VERIFIED_USER_ID);
-
-        mockHttpServletRequestBuilder.header(USER_ID_HEADER, USER_ID);
 
         MvcResult getResponse = mockMvc.perform(mockHttpServletRequestBuilder)
             .andExpect(status().isNotFound())
@@ -290,7 +282,9 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
     @WithMockUser(username = UNAUTHORIZED_USERNAME, authorities = {UNAUTHORIZED_ROLE})
     void testUnauthorizedGetAllRelevantArtefactsBySearchValue() throws Exception {
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-            .get(SEARCH_URL + VALID_CASE_NAME_SEARCH)
+            .get(SEARCH_URL)
+            .param(SEARCH_TERM_PARAM, CaseSearchTerm.CASE_NAME.name())
+            .param(SEARCH_VALUE_PARAM, CASE_NAME_SEARCH_VALUE)
             .header(REQUESTER_ID_HEADER, VERIFIED_USER_ID);
 
         MvcResult archiveResponse = mockMvc.perform(request).andExpect(status().isForbidden()).andReturn();

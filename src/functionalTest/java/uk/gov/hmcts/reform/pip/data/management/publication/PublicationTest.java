@@ -44,7 +44,6 @@ import static uk.gov.hmcts.reform.pip.data.management.utils.TestUtil.randomLocat
 
 @ActiveProfiles(profiles = "functional")
 @SpringBootTest(classes = {OAuthClient.class})
-@SuppressWarnings("PMD.ExcessiveImports")
 class PublicationTest extends FunctionalTestBase {
 
     @Value("${test-user-id}")
@@ -496,14 +495,15 @@ class PublicationTest extends FunctionalTestBase {
         headerMap.put(REQUESTER_ID_HEADER, UUID.randomUUID().toString());
 
         final Response searchValueResponse = doGetRequest(
-            ARTEFACT_BY_SEARCH_VALUE_URL + SearchType.CASE_ID + '/' + randomCaseNumber, headerMap
+            ARTEFACT_BY_SEARCH_VALUE_URL, headerMap,
+            Map.of(SEARCH_TERM_PARAM, CaseSearchTerm.CASE_ID, SEARCH_VALUE_PARAM, randomCaseNumber)
         );
         assertThat(searchValueResponse.getStatusCode())
             .isEqualTo(FORBIDDEN.value());
     }
 
     @Test
-    void testGetArtefactsBySearchValueV2WhenRequesterIsUnauthorised() throws IOException {
+    void testGetArtefactsBySearchValueWhenRequesterIsUnauthorised() throws IOException {
         String randomCaseNumber = Integer.toString(ThreadLocalRandom.current().nextInt(100_000, 200_000));
         uploadArtefact(getJsonString(randomCaseNumber), courtId, Sensitivity.CLASSIFIED, PROVENANCE);
 
@@ -519,7 +519,7 @@ class PublicationTest extends FunctionalTestBase {
     }
 
     @Test
-    void testGetArtefactsBySearchValueV2WhenRequesterDoesNotExist() throws IOException {
+    void testGetArtefactsBySearchValueWhenRequesterDoesNotExist() throws IOException {
         String randomCaseNumber = Integer.toString(ThreadLocalRandom.current().nextInt(100_000, 200_000));
         uploadArtefact(getJsonString(randomCaseNumber), courtId, Sensitivity.CLASSIFIED, PROVENANCE);
 
