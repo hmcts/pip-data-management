@@ -1,4 +1,47 @@
 {
+  "$defs": {
+    "CitizenName": {
+      "type": "object",
+      "properties": {
+        "CitizenNameTitle": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 35
+        },
+        "CitizenNameForename": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 35
+        },
+        "CitizenNameSurname": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 35
+        },
+        "CitizenNameSuffix": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 35
+        },
+        "CitizenNameRequestedName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 70
+        }
+      }
+    },
+    "Address": {
+      "type": "object",
+      "properties": {
+        "Line": {
+          "type": "array",
+          "maxItems": 5,
+          "items": { "type": "string" }
+        },
+        "Postcode": { "type": "string" }
+      }
+    }
+  },
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Root",
   "type": "object",
@@ -62,15 +105,7 @@
             "CourtHouseCode": { "type": "string", "pattern": "^[0-9]{3,4}$" },
             "CourtHouseName": { "type": "string" },
             "CourtHouseAddress": {
-              "type": "object",
-              "properties": {
-                "Line": {
-                  "type": "array",
-                  "maxItems": 5,
-                  "items": { "type": "string" }
-                },
-                "Postcode": { "type": "string" }
-              }
+              "$ref": "#/$defs/Address"
             },
             "CourtHouseTelephone": { "type": "string" }
           }
@@ -106,15 +141,7 @@
                   "CourtHouseShortName": { "type": "string" },
                   "CourtHouseName": { "type": "string" },
                   "CourtHouseAddress": {
-                    "type": "object",
-                    "properties": {
-                      "Line": {
-                        "type": "array",
-                        "maxItems": 5,
-                        "items": { "type": "string" }
-                      },
-                      "Postcode": { "type": "string" }
-                    }
+                    "$ref": "#/$defs/Address"
                   },
                   "CourtHouseTelephone": { "type": "string" }
                 }
@@ -142,67 +169,15 @@
                       "required": ["Judge"],
                       "properties": {
                         "Judge": {
-                          "type": "object",
-                          "required": ["CitizenNameSurname"],
-                          "properties": {
-                            "CitizenNameTitle": {
-                              "type": "string",
-                              "minLength": 1,
-                              "maxLength": 35
-                            },
-                            "CitizenNameForename": {
-                              "type": "string",
-                              "minLength": 1,
-                              "maxLength": 35
-                            },
-                            "CitizenNameSurname": {
-                              "type": "string",
-                              "minLength": 1,
-                              "maxLength": 35
-                            },
-                            "CitizenNameSuffix": {
-                              "type": "string",
-                              "minLength": 1,
-                              "maxLength": 35
-                            },
-                            "CitizenNameRequestedName": {
-                              "type": "string",
-                              "minLength": 1,
-                              "maxLength": 70}
-                          }
+                          "$ref": "#/$defs/CitizenName",
+                          "required": ["CitizenNameSurname"]
                         },
                         "Justice": {
                           "type": "array",
                           "maxItems": 4,
                           "items": {
-                            "type": "object",
-                            "required": ["CitizenNameSurname"],
-                            "properties": {
-                              "CitizenNameTitle": {
-                                "type": "string",
-                                "minLength": 1,
-                                "maxLength": 35
-                              },
-                              "CitizenNameForename": {
-                                "type": "string",
-                                "minLength": 1,
-                                "maxLength": 35
-                              },
-                              "CitizenNameSurname": {
-                                "type": "string",
-                                "minLength": 1,
-                                "maxLength": 35
-                              },
-                              "CitizenNameSuffix": {
-                                "type": "string",
-                                "minLength": 1,
-                                "maxLength": 35
-                              },
-                              "CitizenNameRequestedName": {
-                                "type": "string",
-                                "minLength": 1,
-                                "maxLength": 70}
-                            }
+                            "$ref": "#/$defs/CitizenName",
+                            "required": ["CitizenNameSurname"]
                           }
                         }
                       }
@@ -247,33 +222,7 @@
                                     "required": ["Name", "IsMasked"],
                                     "properties": {
                                       "Name": {
-                                        "type": "object",
-                                        "properties": {
-                                          "CitizenNameTitle": {
-                                            "type": "string",
-                                            "minLength": 1,
-                                            "maxLength": 35
-                                          },
-                                          "CitizenNameForename": {
-                                            "type": "string",
-                                            "minLength": 1,
-                                            "maxLength": 35
-                                          },
-                                          "CitizenNameSurname": {
-                                            "type": "string",
-                                            "minLength": 1,
-                                            "maxLength": 35
-                                          },
-                                          "CitizenNameSuffix": {
-                                            "type": "string",
-                                            "minLength": 1,
-                                            "maxLength": 35
-                                          },
-                                          "CitizenNameRequestedName": {
-                                            "type": "string",
-                                            "minLength": 1,
-                                            "maxLength": 70}
-                                        }
+                                        "$ref": "#/$defs/CitizenName"
                                       },
                                       "MaskedName": { "type": "string" },
                                       "IsMasked": { "type": "string", "enum": ["yes", "no"] }
@@ -334,33 +283,7 @@
                                   "required": ["Name", "IsMasked"],
                                   "properties": {
                                     "Name": {
-                                      "type": "object",
-                                      "properties": {
-                                        "CitizenNameTitle": {
-                                          "type": "string",
-                                          "minLength": 1,
-                                          "maxLength": 35
-                                        },
-                                        "CitizenNameForename": {
-                                          "type": "string",
-                                          "minLength": 1,
-                                          "maxLength": 35
-                                        },
-                                        "CitizenNameSurname": {
-                                          "type": "string",
-                                          "minLength": 1,
-                                          "maxLength": 35
-                                        },
-                                        "CitizenNameSuffix": {
-                                          "type": "string",
-                                          "minLength": 1,
-                                          "maxLength": 35
-                                        },
-                                        "CitizenNameRequestedName": {
-                                          "type": "string",
-                                          "minLength": 1,
-                                          "maxLength": 70}
-                                      }
+                                      "$ref": "#/$defs/CitizenName"
                                     },
                                     "MaskedName": { "type": "string" },
                                     "IsMasked": { "type": "string", "enum": ["yes", "no"] },
@@ -392,15 +315,7 @@
                                       ]
                                     },
                                     "Address": {
-                                      "type": "object",
-                                      "properties": {
-                                        "Line": {
-                                          "type": "array",
-                                          "maxItems": 5,
-                                          "items": { "type": "string" }
-                                        },
-                                        "Postcode": { "type": "string" }
-                                      }
+                                      "$ref": "#/$defs/Address"
                                     },
                                     "Nationality": { "type": "string" }
                                   }
@@ -424,33 +339,7 @@
                                                   "required": ["Name", "IsMasked"],
                                                   "properties": {
                                                     "Name": {
-                                                      "type": "object",
-                                                      "properties": {
-                                                        "CitizenNameTitle": {
-                                                          "type": "string",
-                                                          "minLength": 1,
-                                                          "maxLength": 35
-                                                        },
-                                                        "CitizenNameForename": {
-                                                          "type": "string",
-                                                          "minLength": 1,
-                                                          "maxLength": 35
-                                                        },
-                                                        "CitizenNameSurname": {
-                                                          "type": "string",
-                                                          "minLength": 1,
-                                                          "maxLength": 35
-                                                        },
-                                                        "CitizenNameSuffix": {
-                                                          "type": "string",
-                                                          "minLength": 1,
-                                                          "maxLength": 35
-                                                        },
-                                                        "CitizenNameRequestedName": {
-                                                          "type": "string",
-                                                          "minLength": 1,
-                                                          "maxLength": 70}
-                                                      }
+                                                      "$ref": "#/$defs/CitizenName"
                                                     },
                                                     "MaskedName": { "type": "string" },
                                                     "IsMasked": { "type": "string", "enum": ["yes", "no"] },
@@ -481,15 +370,7 @@
                                                       ]
                                                     },
                                                     "Address": {
-                                                      "type": "object",
-                                                      "properties": {
-                                                        "Line": {
-                                                          "type": "array",
-                                                          "maxItems": 5,
-                                                          "items": { "type": "string" }
-                                                        },
-                                                        "Postcode": { "type": "string" }
-                                                      }
+                                                      "$ref": "#/$defs/Address"
                                                     }
                                                   }
                                                 },
@@ -573,33 +454,7 @@
                         "required": ["Name", "IsMasked"],
                         "properties": {
                           "Name": {
-                            "type": "object",
-                            "properties": {
-                              "CitizenNameTitle": {
-                                "type": "string",
-                                "minLength": 1,
-                                "maxLength": 35
-                              },
-                              "CitizenNameForename": {
-                                "type": "string",
-                                "minLength": 1,
-                                "maxLength": 35
-                              },
-                              "CitizenNameSurname": {
-                                "type": "string",
-                                "minLength": 1,
-                                "maxLength": 35
-                              },
-                              "CitizenNameSuffix": {
-                                "type": "string",
-                                "minLength": 1,
-                                "maxLength": 35
-                              },
-                              "CitizenNameRequestedName": {
-                                "type": "string",
-                                "minLength": 1,
-                                "maxLength": 70}
-                            }
+                            "$ref": "#/$defs/CitizenName"
                           },
                           "MaskedName": { "type": "string" },
                           "IsMasked": { "type": "string", "enum": ["yes", "no"] }
@@ -660,33 +515,7 @@
                       "required": ["Name", "IsMasked"],
                       "properties": {
                         "Name": {
-                          "type": "object",
-                          "properties": {
-                            "CitizenNameTitle": {
-                              "type": "string",
-                              "minLength": 1,
-                              "maxLength": 35
-                            },
-                            "CitizenNameForename": {
-                              "type": "string",
-                              "minLength": 1,
-                              "maxLength": 35
-                            },
-                            "CitizenNameSurname": {
-                              "type": "string",
-                              "minLength": 1,
-                              "maxLength": 35
-                            },
-                            "CitizenNameSuffix": {
-                              "type": "string",
-                              "minLength": 1,
-                              "maxLength": 35
-                            },
-                            "CitizenNameRequestedName": {
-                              "type": "string",
-                              "minLength": 1,
-                              "maxLength": 70}
-                          }
+                          "$ref": "#/$defs/CitizenName"
                         },
                         "MaskedName": { "type": "string" },
                         "IsMasked": { "type": "string", "enum": ["yes", "no"] }

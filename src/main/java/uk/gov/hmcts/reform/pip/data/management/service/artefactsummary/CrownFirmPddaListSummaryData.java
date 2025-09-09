@@ -12,15 +12,12 @@ import java.util.Map;
 public class CrownFirmPddaListSummaryData implements ArtefactSummaryData {
     @Override
     public Map<String, List<Map<String, String>>> get(JsonNode payload) {
-        CrownFirmPddaListHelper.crownFirmPddaListFormatted(payload);
-        return processCrownPddaFirmList(payload);
-    }
+        CrownFirmPddaListHelper.processPayload(payload);
 
-    private Map<String, List<Map<String, String>>> processCrownPddaFirmList(JsonNode node) {
         List<Map<String, String>> summaryCases = new ArrayList<>();
-        CrownFirmPddaListHelper.crownFirmPddaListFormatted(node).forEach(item ->
-            item.getSittings().forEach(sitting ->
-                sitting.getHearings().forEach(hearing -> {
+        CrownFirmPddaListHelper.processPayload(payload).forEach(
+            item -> item.getSittings().forEach(
+                sitting -> sitting.getHearings().forEach(hearing -> {
                     Map<String, String> map = ImmutableMap.of(
                         "Defendant", hearing.getDefendantName(),
                         "Prosecuting authority", hearing.getProsecutingAuthority(),

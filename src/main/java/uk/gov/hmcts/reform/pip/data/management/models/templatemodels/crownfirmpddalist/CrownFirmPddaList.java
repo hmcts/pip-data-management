@@ -12,7 +12,7 @@ import java.util.List;
 public class CrownFirmPddaList {
     private String sittingDate;
     private String courtName;
-    private String courtAddress;
+    private List<String> courtAddress;
     private String courtPhone;
     private List<SittingInfo> sittings;
 }

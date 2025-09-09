@@ -34,8 +34,8 @@ class CrownFirmPddaListHelperTest {
     }
 
     @Test
-    void testCrownFirmPddaListFormattedMethod() {
-        List<CrownFirmPddaList> results = CrownFirmPddaListHelper.crownFirmPddaListFormatted(inputJson);
+    void testProcessPayloadMethod() {
+        List<CrownFirmPddaList> results = CrownFirmPddaListHelper.processPayload(inputJson);
 
         SoftAssertions softly = new SoftAssertions();
 
@@ -57,7 +57,7 @@ class CrownFirmPddaListHelperTest {
 
     @Test
     void testCourtListInfo() {
-        List<CrownFirmPddaList> results = CrownFirmPddaListHelper.crownFirmPddaListFormatted(inputJson);
+        List<CrownFirmPddaList> results = CrownFirmPddaListHelper.processPayload(inputJson);
 
         CrownFirmPddaList result = results.getFirst();
 
@@ -84,7 +84,7 @@ class CrownFirmPddaListHelperTest {
 
     @Test
     void testSittingInfo() {
-        List<CrownFirmPddaList> results = CrownFirmPddaListHelper.crownFirmPddaListFormatted(inputJson);
+        List<CrownFirmPddaList> results = CrownFirmPddaListHelper.processPayload(inputJson);
 
         SittingInfo result = results.getFirst().getSittings().getFirst();
 
@@ -107,7 +107,7 @@ class CrownFirmPddaListHelperTest {
 
     @Test
     void testHearingInfo() {
-        List<CrownFirmPddaList> results = CrownFirmPddaListHelper.crownFirmPddaListFormatted(inputJson);
+        List<CrownFirmPddaList> results = CrownFirmPddaListHelper.processPayload(inputJson);
 
         HearingInfo result = results.getFirst().getSittings().getFirst().getHearings().getFirst();
 

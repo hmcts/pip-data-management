@@ -3,7 +3,7 @@
   "pdfAccessibility": " Tudalen PDF/UA ",
   "of": " o ",
   "listName": "Rhestr Cwmni Llys y Goron",
-  "headerPart1": "Rhestr Cwmni Llys y Goron ar gyfer ",
+  "heading": "Rhestr Cwmni Llys y Goron ar gyfer ",
   "listDate": "Rhestr ar gyfer ",
   "to": " i ",
   "listUpdated": "Diweddarwyd diwethaf: ",
@@ -17,8 +17,7 @@
   "restrictionInformationP4": "I ganfod pa gyfyngiadau riportio sy'n berthnasol ar achos penodol, cysylltwch â'r:",
   "restrictionBulletPoint1": "llys yn uniongyrchol",
   "restrictionBulletPoint2": "Gwasanaeth Llysoedd a Thribiwnlysoedd EM ar 0330 808 4407",
-  "courtRoom": "Courtroom ",
-  "colon": " : ",
+  "courtRoom": "Ystafell llys ",
   "tableHeaders": [
     "Yn eistedd yn",
     "Cyfeirnod yr Achos",
