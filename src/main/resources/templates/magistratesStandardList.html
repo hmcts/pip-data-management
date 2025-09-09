@@ -1,30 +1,9 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
+  <style th:replace="common-styles/page-govuk-styles :: page-govuk-classes"></style>
   <style th:inline="text">
-    @page {
-      margin: 30px 20px;
-
-      @bottom-center {
-        font-family: 'openSans';
-        font-size: 16px;
-        color: grey;
-        content: "[[${i18n.serviceName + i18n.pdfAccessibility}]]" counter(page) "[[${i18n.of}]]" counter(pages) ".";
-      }
-    }
-
-    @page landscapePage {
-      size: A4 landscape;
-    }
-
-    .landscape {
-      page: landscapePage;
-    }
-
     body {
-      font-family: 'openSans';
-      color: #0b0c0c;
-      padding: 2px;
       font-size: 105%;
     }
 
@@ -33,7 +12,7 @@
       color: black;
     }
 
-    .govuk-heading-l, .govuk-heading-m {
+    .govuk-heading-m {
       color: #0b0c0c;
       font-family: "openSans";
       font-weight: 700;
@@ -48,40 +27,16 @@
       font-size: 1.25rem;
     }
 
-    .govuk-body {
-      color: #0b0c0c;
-      font-family: "openSans";
-      font-weight: 400;
-      font-size: 16px;
-      line-height: 1.25;
-      margin-top: 0;
-      margin-bottom: 15px;
-    }
-
-    .govuk-\!-font-weight-bold {
-      font-weight: 700 !important;
-    }
-
     .site-address {
       margin-top: 0.5em;
     }
 
     .govuk-table {
-      font-family: "openSans";
-      font-weight: 400;
-      font-size: 16px;
-      line-height: 1.25;
-      color: #0b0c0c;
       width: 100%;
-      border-spacing: 0;
-      border-collapse: collapse;
     }
 
     .govuk-table__cell {
-      padding: 5px 20px 5px 0;
-      border-bottom: 1px solid #b1b4b6;
-      text-align: left;
-      vertical-align: top;
+      padding: 5px 20px 5px 0; !important;
     }
 
     .restriction-list-section {
@@ -182,30 +137,22 @@
     }
 
     .govuk-details {
-      font-size: 1.1875rem;
-      line-height: 1.31579;
-      margin-bottom: 30px;
+      color: gray !important;
+      font-size: 1.1875rem !important;
+      line-height: 1.31579 !important;
+      margin-bottom: 30px !important;
+      display: initial !important;
     }
 
     .govuk-details__summary {
-      display: inline-block;
-      position: relative;
-      margin-bottom: 5px;
-      padding-left: 25px;
-      color: grey;
-      cursor: pointer;
+      color: grey !important;
     }
 
     .govuk-details__summary-text {
       text-decoration: underline;
     }
 
-    .govuk-details__text {
-      padding-top: 15px;
-      padding-bottom: 15px;
-      padding-left: 20px;
-      border-left: 5px solid #b1b4b6;
-    }
+
 
     .govuk-\!-margin-top-1 {
       margin-top: 15px;

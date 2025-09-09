@@ -1,143 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <style th:inline="text">
-        @page {
-            margin: 30px 20px;
+  <style th:replace="common-styles/page-govuk-styles :: page-govuk-classes"></style>
+  <style th:inline="text">
+    body {
+      font-size: 105%;
+    }
+    h1, h4 {
+      font-family: "openSans";
+      color: black;
+    }
+    .govuk-heading-m {
+      color: #0b0c0c;
+      font-family: "openSans";
+      font-weight: 700;
+      font-size: 24px;
+      line-height: 1.04167;
+      display: block;
+      margin-top: 0;
+      margin-bottom: 20px;
+    }
+    .govuk-heading-m {
+      font-size: 1.25rem;
+    }
 
-            @bottom-center {
-                font-family: 'openSans';
-                font-size: 16px;
-                color: grey;
-                content: "[[${i18n.serviceName + i18n.pdfAccessibility}]]" counter(page) "[[${i18n.of}]]" counter(pages) ".";
-            }
-        }
+    .govuk-\!-padding-top-6 {
+      padding-top: 30px !important;
+    }
+    .govuk-\!-padding-bottom-3 {
+      padding-bottom: 15px !important;
+    }
+    .govuk-\!-margin-bottom-1 {
+      margin-bottom: 5px;
+    }
+    .no-margin-bottom {
+      margin-bottom: 0 !important;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .govuk-table {
+      table-layout: fixed;
+      width: 1050px;
+    }
 
-        @page landscapePage {
-            size: A4 landscape;
-        }
-
-        .landscape {
-            page: landscapePage;
-        }
-
-        body {
-            font-family: 'openSans';
-            color: #0b0c0c;
-            padding: 2px;
-            font-size: 105%;
-        }
-
-        h1, h4 {
-            font-family: "openSans";
-            color: black;
-        }
-
-        .govuk-heading-l, .govuk-heading-m {
-            color: #0b0c0c;
-            font-family: "openSans";
-            font-weight: 700;
-            font-size: 24px;
-            line-height: 1.04167;
-            display: block;
-            margin-top: 0;
-            margin-bottom: 20px;
-        }
-
-        .govuk-heading-m {
-            font-size: 1.25rem;
-        }
-
-        .govuk-body {
-            color: #0b0c0c;
-            font-family: "openSans";
-            font-weight: 400;
-            font-size: 16px;
-            line-height: 1.25;
-            margin-top: 0;
-            margin-bottom: 15px;
-        }
-
-        .govuk-\!-padding-top-6 {
-            padding-top: 30px !important;
-        }
-
-        .govuk-\!-padding-bottom-3 {
-            padding-bottom: 15px !important;
-        }
-
-        .govuk-\!-margin-bottom-1 {
-            margin-bottom: 5px;
-        }
-
-        .no-margin-bottom {
-            margin-bottom: 0 !important;
-        }
-
-        .govuk-\!-font-weight-bold {
-            font-weight: 700 !important;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .govuk-table {
-            table-layout: fixed;
-            font-family: "openSans";
-            font-weight: 400;
-            font-size: 16px;
-            line-height: 1.25;
-            color: #0b0c0c;
-            width: 1050px;
-            margin-bottom: 20px;
-            border-spacing: 0;
-            border-collapse: collapse;
-        }
-
-        .govuk-table__header, .govuk-table__cell {
-            padding: 10px 20px 10px 0;
-            border-bottom: 1px solid #b1b4b6;
-            text-align: left;
-            vertical-align: top;
-        }
-
-        .govuk-table__header {
-            font-weight: 700;
-        }
-
-        .govuk-details {
-            font-family: "openSans";
-            font-weight: 400;
-            font-size: 16px;
-            line-height: 1.25;
-            color: #0b0c0c;
-            margin-bottom: 20px;
-            display: block;
-        }
-
-        .govuk-details__summary {
-            display: inline-block;
-            position: relative;
-            margin-bottom: 5px;
-            padding-left: 25px;
-            color: #0b0c0c;
-            cursor: pointer;
-        }
-
-        .govuk-details__text {
-            padding-top: 15px;
-            padding-bottom: 15px;
-            padding-left: 20px;
-            border-left: 5px solid #b1b4b6;
-        }
-    </style>
-    <meta charset="UTF-8"/>
-    <meta name="subject" content="Accessible PDF template"/>
-    <meta name="author" content="HMCTS Court and Tribunal Hearings"/>
-    <meta name="description" content="Document description - vital for compliance."/>
-    <title th:text="${i18n.listName}" />
+  </style>
+  <meta charset="UTF-8"/>
+  <meta name="subject" content="Accessible PDF template"/>
+  <meta name="author" content="HMCTS Court and Tribunal Hearings"/>
+  <meta name="description" content="Document description - vital for compliance."/>
+  <title th:text="${i18n.listName}" />
 </head>
 <body>
 <div>

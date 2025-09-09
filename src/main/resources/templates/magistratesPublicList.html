@@ -1,50 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <style th:replace="common-styles/page-govuk-styles :: page-govuk-classes"></style>
   <style th:inline="text">
-    @page {
-      margin: 30px 20px;
-
-      @bottom-center {
-        font-family: 'openSans';
-        font-size: 16px;
-        color: grey;
-        content: "[[${i18n.serviceName + i18n.pdfAccessibility}]]" counter(page) "[[${i18n.of}]]" counter(pages) ".";
-      }
-    }
-
-    @page landscapePage {
-      size: A4 landscape;
-    }
-
-    .landscape {
-      page: landscapePage;
-    }
-
     body {
-      font-family: 'openSans';
-      color: #0b0c0c;
-      padding: 2px;
       font-size: 14px;
     }
 
     h1 {
       font-family: "openSans";
       color: black;
-    }
-
-    .govuk-body {
-      color: #0b0c0c;
-      font-family: "openSans";
-      font-weight: 400;
-      font-size: 16px;
-      line-height: 1.25;
-      margin-top: 0;
-      margin-bottom: 15px;
-    }
-
-    .govuk-\!-font-weight-bold {
-      font-weight: 700 !important;
     }
 
     .govuk-\!-margin-bottom-1 {
@@ -65,30 +30,12 @@
     }
 
     .govuk-table {
-      font-family: "openSans";
-      font-weight: 400;
-      font-size: 14px;
-      line-height: 1.25;
-      color: #0b0c0c;
-      width: 100%;
-      margin-bottom: 20px;
-      border-spacing: 0;
-      border-collapse: collapse;
+       font-size: 14px; !important;
+       width: 100%;
     }
 
     .no-wrap {
       white-space: nowrap;
-    }
-
-    .govuk-table__header, .govuk-table__cell {
-      padding: 10px 20px 10px 0;
-      border-bottom: 1px solid #b1b4b6;
-      text-align: left;
-      vertical-align: top;
-    }
-
-    .govuk-table__header {
-      font-weight: 700;
     }
 
     .restriction-list-section {
@@ -147,17 +94,6 @@
 
     .no-border-bottom {
       border-bottom: 0;
-    }
-
-    .govuk-heading-l {
-      color: #0b0c0c;
-      font-family: "openSans";
-      font-weight: 700;
-      font-size: 24px;
-      line-height: 1.04167;
-      display: block;
-      margin-top: 0;
-      margin-bottom: 20px;
     }
   </style>
   <meta charset="UTF-8"/>
