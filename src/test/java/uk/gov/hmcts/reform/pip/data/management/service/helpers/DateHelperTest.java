@@ -16,6 +16,7 @@ import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ActiveProfiles("test")
+@SuppressWarnings("PMD.TooManyMethods")
 class DateHelperTest {
 
     private static final String ERR_MSG = "Helper method doesn't seem to be working correctly";
@@ -248,6 +249,13 @@ class DateHelperTest {
         assertThat(DateHelper.convertDateFormat(input, originalFormat))
             .as(ERR_MSG)
             .isEqualTo("10 August 2025");
+    }
+
+    @Test
+    void testConvertDateFormatWithCustomFormat() {
+        assertThat(DateHelper.convertDateFormat("2025-09-10", "yyyy-MM-dd", "EEEE dd MMMM yyyy"))
+            .as(ERR_MSG)
+            .isEqualTo("Wednesday 10 September 2025");
     }
 
     private static Stream<Arguments> parametersForConvertTimeFormat() {

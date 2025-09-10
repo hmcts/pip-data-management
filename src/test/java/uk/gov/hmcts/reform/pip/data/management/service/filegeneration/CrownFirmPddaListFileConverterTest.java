@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.IOUtils;
+import org.assertj.core.api.SoftAssertions;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.junit.jupiter.api.Test;
@@ -18,18 +19,18 @@ import java.time.Instant;
 import java.util.Map;
 import java.util.Objects;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 class CrownFirmPddaListFileConverterTest {
+    private static final String HEADING_XL_CLASS = "govuk-heading-xl";
+    private static final String HEADING_L_CLASS = "govuk-heading-l";
+    private static final String BODY_CLASS = "govuk-body";
+
+    private static final String HEADING_MESSAGE = "Heading does not match";
+    private static final String BODY_MESSAGE = "Body does not match";
 
     private final CrownFirmPddaListFileConverter crownFirmPddaListConverter = new CrownFirmPddaListFileConverter();
 
-    private static final String HEADER_TEXT = "Incorrect header text";
-    private static final String PROVENANCE = "provenance";
-    private static final String CLASS_BODY = "govuk-body";
-
     @Test
-    void testCrownFirmListTemplate() throws IOException {
+    void testCrownFirmPddaListTemplate() throws IOException {
         Map<String, Object> language;
         try (InputStream languageFile = Thread.currentThread()
             .getContextClassLoader().getResourceAsStream("templates/languages/en/crownFirmPddaList.json")) {
@@ -39,12 +40,11 @@ class CrownFirmPddaListFileConverterTest {
         }
         StringWriter writer = new StringWriter();
         IOUtils.copy(
-            Files.newInputStream(Paths.get("src/test/resources/mocks/",
-                                           "crownFirmPddaList.json")), writer,
-            Charset.defaultCharset()
+            Files.newInputStream(Paths.get("src/test/resources/mocks/", "crownFirmPddaList.json")),
+            writer, Charset.defaultCharset()
         );
         Map<String, String> metadataMap = Map.of("contentDate", Instant.now().toString(),
-                                                 PROVENANCE, PROVENANCE,
+                                                 "provenance", "MANUAL_UPLOAD",
                                                  "locationName", "location",
                                                  "language", "ENGLISH",
                                                  "listType", "CROWN_FIRM_PDDA_LIST"
@@ -53,30 +53,50 @@ class CrownFirmPddaListFileConverterTest {
         JsonNode inputJson = new ObjectMapper().readTree(writer.toString());
         String outputHtml = crownFirmPddaListConverter.convert(inputJson, metadataMap, language);
         Document document = Jsoup.parse(outputHtml);
-        assertThat(outputHtml).as("No html found").isNotEmpty();
 
-        assertThat(document.title()).as("incorrect title found.")
+        SoftAssertions softly = new SoftAssertions();
+
+        softly.assertThat(outputHtml)
+            .as("No html found")
+            .isNotEmpty();
+
+        softly.assertThat(document.title())
+            .as("incorrect title found.")
             .isEqualTo("Crown Firm List");
 
-        assertThat(document.getElementsByClass("govuk-heading-l")
-                       .get(0).text())
-            .as(HEADER_TEXT).contains("Crown Firm List for");
+        softly.assertThat(document.getElementsByClass(HEADING_XL_CLASS).get(0).text())
+            .as(HEADING_MESSAGE)
+            .contains("Crown Firm List for location");
 
-        assertThat(document.getElementsByClass(CLASS_BODY)
-                       .get(0).text())
-            .as(HEADER_TEXT).contains("List for 01 January 2024 to 02 January 2024");
+        softly.assertThat(document.getElementsByClass(BODY_CLASS).get(0).text())
+            .as(BODY_MESSAGE)
+            .contains("List for 10 September 2025 to 11 September 2025");
 
-        assertThat(document.getElementsByClass(CLASS_BODY)
-                       .get(1).text())
-            .as(HEADER_TEXT).contains("Last updated: 01 January 2024 at 10am");
+        softly.assertThat(document.getElementsByClass(BODY_CLASS).get(1).text())
+            .as(BODY_MESSAGE)
+            .contains("Last updated 09 September 2025 at 11am");
 
-        assertThat(document.getElementsByClass(CLASS_BODY)
-                       .get(2).text())
-            .as(HEADER_TEXT).contains("Version");
+        softly.assertThat(document.getElementsByClass(BODY_CLASS).get(2).text())
+            .as(BODY_MESSAGE)
+            .contains("Version 1.0");
+
+        softly.assertThat(document.getElementsByClass(BODY_CLASS).get(3).text())
+            .as(BODY_MESSAGE)
+            .contains("1 Main Road London A1 1AA");
+
+        softly.assertThat(document.getElementsByClass(BODY_CLASS).get(4).text())
+            .as(BODY_MESSAGE)
+            .contains("Restrictions on publishing or writing about these cases");
+
+        softly.assertThat(document.getElementsByClass(HEADING_L_CLASS).get(0).text())
+            .as(HEADING_MESSAGE)
+            .contains("Wednesday 10 September 2025");
+
+        softly.assertAll();
     }
 
     @Test
-    void testCrownFirmListTemplateWelsh() throws IOException {
+    void testCrownFirmPddaListTemplateWelsh() throws IOException {
         Map<String, Object> language;
         try (InputStream languageFile = Thread.currentThread()
             .getContextClassLoader().getResourceAsStream("templates/languages/cy/crownFirmPddaList.json")) {
@@ -85,13 +105,14 @@ class CrownFirmPddaListFileConverterTest {
                 });
         }
         StringWriter writer = new StringWriter();
-        IOUtils.copy(Files.newInputStream(Paths.get("src/test/resources/mocks/",
-                                                    "crownFirmPddaList.json")), writer,
-                     Charset.defaultCharset()
+        IOUtils.copy(
+            Files.newInputStream(Paths.get("src/test/resources/mocks/", "crownFirmPddaList.json")),
+            writer,
+            Charset.defaultCharset()
         );
         Map<String, String> metadataMap = Map.of("contentDate", Instant.now().toString(),
-                                                 PROVENANCE, PROVENANCE,
-                                                 "locationName", "location",
+                                                 "provenance", "MANUAL_UPLOAD",
+                                                 "locationName", "welsh location",
                                                  "language", "WELSH",
                                                  "listType", "CROWN_FIRM_PDDA_LIST"
         );
@@ -99,27 +120,46 @@ class CrownFirmPddaListFileConverterTest {
         JsonNode inputJson = new ObjectMapper().readTree(writer.toString());
         String outputHtml = crownFirmPddaListConverter.convert(inputJson, metadataMap, language);
         Document document = Jsoup.parse(outputHtml);
-        assertThat(outputHtml).as("No html found").isNotEmpty();
 
-        assertThat(document.title()).as("incorrect title found.")
+        SoftAssertions softly = new SoftAssertions();
+
+        softly.assertThat(outputHtml)
+            .as("No html found")
+            .isNotEmpty();
+
+        softly.assertThat(document.title())
+            .as("incorrect title found.")
             .isEqualTo("Rhestr Cwmni Llys y Goron");
 
-        assertThat(document.getElementsByClass("govuk-heading-l")
-                       .get(0).text())
-            .as(HEADER_TEXT).contains("Rhestr Cwmni Llys y Goron ar gyfer");
+        softly.assertThat(document.getElementsByClass(HEADING_XL_CLASS).get(0).text())
+            .as(HEADING_MESSAGE)
+            .contains("Rhestr Cwmni Llys y Goron ar gyfer welsh location");
 
-        assertThat(document.getElementsByClass(CLASS_BODY)
-                       .get(0).text())
-            .as(HEADER_TEXT).contains("Rhestr ar gyfer");
+        softly.assertThat(document.getElementsByClass(BODY_CLASS).get(0).text())
+            .as(BODY_MESSAGE)
+            .contains("Rhestr ar gyfer 10 September 2025 i 11 September 2025");
 
-        assertThat(document.getElementsByClass(CLASS_BODY)
-                       .get(1).text())
-            .as(HEADER_TEXT).contains("Diweddarwyd diwethaf");
+        softly.assertThat(document.getElementsByClass(BODY_CLASS).get(1).text())
+            .as(BODY_MESSAGE)
+            .contains("Diweddarwyd diwethaf 09 September 2025 am 11am");
 
-        assertThat(document.getElementsByClass(CLASS_BODY)
-                       .get(2).text())
-            .as(HEADER_TEXT).contains("Fersiwn");
+        softly.assertThat(document.getElementsByClass(BODY_CLASS).get(2).text())
+            .as(BODY_MESSAGE)
+            .contains("Fersiwn 1.0");
 
+        softly.assertThat(document.getElementsByClass(BODY_CLASS).get(3).text())
+            .as(BODY_MESSAGE)
+            .contains("1 Main Road London A1 1AA");
+
+        softly.assertThat(document.getElementsByClass(BODY_CLASS).get(4).text())
+            .as(BODY_MESSAGE)
+            .contains("Cyfyngiadau ar gyhoeddi neu ysgrifennu am yr achosion hyn");
+
+        softly.assertThat(document.getElementsByClass(HEADING_L_CLASS).get(0).text())
+            .as(HEADING_MESSAGE)
+            .contains("Wednesday 10 September 2025");
+
+        softly.assertAll();
     }
 
 }
