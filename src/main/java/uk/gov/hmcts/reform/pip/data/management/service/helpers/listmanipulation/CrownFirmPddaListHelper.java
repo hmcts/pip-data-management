@@ -77,7 +77,7 @@ public final class CrownFirmPddaListHelper {
         List<String> addressLines = new ArrayList<>();
         if (address.has("Line")) {
             address.get("Line").forEach(line -> {
-                if(!line.asText().isEmpty()) {
+                if (!line.asText().isEmpty()) {
                     addressLines.add(line.asText());
                 }
             });
@@ -92,7 +92,6 @@ public final class CrownFirmPddaListHelper {
     }
 
     private static List<String> processCourtAddress(JsonNode courtList) {
-        List<String> addressLines = new ArrayList<>();
         JsonNode courtHouse = courtList.get(COURT_HOUSE);
         return courtHouse.has(COURT_HOUSE_ADDRESS) ? formatAddress(courtHouse.get(COURT_HOUSE_ADDRESS))
             : Collections.emptyList();
@@ -104,9 +103,9 @@ public final class CrownFirmPddaListHelper {
         sitting.get(HEARINGS).forEach(hearing -> {
             HearingInfo hearingInfo = new HearingInfo();
             hearingInfo.setCaseNumber(hearing.get(CASE_NUMBER_CATH).asText());
-            hearingInfo.setDefendantName(formatDefendantName(hearing));
+            hearingInfo.setDefendantName(hearing.has(DEFENDANTS) ? formatDefendantName(hearing) : "");
             hearingInfo.setHearingType(hearing.get(HEARING_DETAILS).get(HEARING_DESCRIPTION).asText());
-            hearingInfo.setRepresentativeName(formatRepresentativeName(hearing));
+            hearingInfo.setRepresentativeName(hearing.has(DEFENDANTS) ? formatRepresentativeName(hearing) : "");
             hearingInfo.setProsecutingAuthority(GeneralHelper.findAndReturnNodeText(hearing.get(PROSECUTION),
                                                                                     PROSECUTING_AUTHORITY));
             hearingInfo.setListNote(GeneralHelper.findAndReturnNodeText(hearing, LIST_NOTE));
@@ -141,40 +140,38 @@ public final class CrownFirmPddaListHelper {
     }
 
     private static String formatDefendantName(JsonNode hearing) {
-        if (hearing.has(DEFENDANTS)) {
-            List<String> names = new ArrayList<>();
-            hearing.get(DEFENDANTS).forEach(defendant -> {
-                names.add(useMaskedNameIfRequested(defendant.get(PERSONAL_DETAILS)));
-            });
-            return GeneralHelper.convertToDelimitedString(names, ", ");
-        }
-        return "";
+        List<String> names = new ArrayList<>();
+        hearing.get(DEFENDANTS).forEach(
+            defendant -> names.add(useMaskedNameIfRequested(defendant.get(PERSONAL_DETAILS)))
+        );
+        return GeneralHelper.convertToDelimitedString(names, ", ");
     }
 
     private static String formatRepresentativeName(JsonNode hearing) {
         List<String> names = new ArrayList<>();
-        if (hearing.has(DEFENDANTS)) {
-            hearing.get(DEFENDANTS).forEach(defendant -> {
-                if (defendant.has(COUNSEL)) {
-                    defendant.get(COUNSEL).forEach(counsel -> {
-                        if (counsel.has(SOLICITOR)) {
-                            counsel.get(SOLICITOR).forEach(solicitor -> {
-                                if (solicitor.has(PARTY)) {
-                                    JsonNode party = solicitor.get(PARTY);
-                                    if (party.has("Person")) {
-                                        names.add(useMaskedNameIfRequested(party.get("Person")));
-                                    } else if (party.has("Organisation")) {
-                                        names.add(party.get("Organisation").get("OrganisationName").asText());
-                                    }
-                                }
-                            });
-                        }
-                    });
-                }
-            });
-        }
-
+        hearing.get(DEFENDANTS).forEach(defendant -> {
+            if (defendant.has(COUNSEL)) {
+                defendant.get(COUNSEL).forEach(counsel -> {
+                    if (counsel.has(SOLICITOR)) {
+                        setSolicitorName(counsel, names);
+                    }
+                });
+            }
+        });
         return GeneralHelper.convertToDelimitedString(names, ", ");
+    }
+
+    private static void setSolicitorName(JsonNode counsel, List<String> names) {
+        counsel.get(SOLICITOR).forEach(solicitor -> {
+            if (solicitor.has(PARTY)) {
+                JsonNode party = solicitor.get(PARTY);
+                if (party.has("Person")) {
+                    names.add(useMaskedNameIfRequested(party.get("Person")));
+                } else if (party.has("Organisation")) {
+                    names.add(party.get("Organisation").get("OrganisationName").asText());
+                }
+            }
+        });
     }
 
     private static String useMaskedNameIfRequested(JsonNode nameDetails) {

@@ -4,8 +4,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import org.thymeleaf.context.Context;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.DateHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.GeneralHelper;
-import uk.gov.hmcts.reform.pip.data.management.service.helpers.LocationHelper;
-import uk.gov.hmcts.reform.pip.data.management.service.helpers.listmanipulation.CrimeListHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.listmanipulation.CrownFirmPddaListHelper;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 
