@@ -137,23 +137,27 @@
                           {
                             "Party": {
                               "Person": {
-                                "Name": {
-                                  "CitizenNameTitle": "Mr",
-                                  "CitizenNameForename": "TestForename",
-                                  "CitizenNameSurname": "TestSurname",
-                                  "CitizenNameSuffix": "TestSuffix",
-                                  "CitizenNameRequestedName": "TestSolicitorRequestedName"
-                                },
-                                "MaskedName": "TestSolicitorMasked",
-                                "IsMasked": "no",
-                                "DateOfBirth": {
-                                  "BirthDate": "1980-01-01",
-                                  "VerifiedBy": "not verified"
-                                },
-                                "Sex": "female",
-                                "Address": {
-                                  "Line": ["TestSolicitorAddress"],
-                                  "Postcode": "TestSolicitorPostcode"
+                                "PersonalDetails": {
+                                  "Name": {
+                                    "CitizenNameTitle": "Mr",
+                                    "CitizenNameForename": "TestForename",
+                                    "CitizenNameSurname": "TestSurname",
+                                    "CitizenNameSuffix": "TestSuffix",
+                                    "CitizenNameRequestedName": "TestSolicitorRequestedName"
+                                  },
+                                  "MaskedName": "TestSolicitorMasked",
+                                  "IsMasked": "no",
+                                  "DateOfBirth": {
+                                    "BirthDate": "1980-01-01",
+                                    "VerifiedBy": "not verified"
+                                  },
+                                  "Sex": "female",
+                                  "Address": {
+                                    "Line": [
+                                      "TestSolicitorAddress"
+                                    ],
+                                    "Postcode": "TestSolicitorPostcode"
+                                  }
                                 }
                               }
                             }

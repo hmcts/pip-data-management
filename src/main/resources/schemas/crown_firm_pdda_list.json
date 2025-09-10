@@ -336,41 +336,56 @@
                                               "properties": {
                                                 "Person": {
                                                   "type": "object",
-                                                  "required": ["Name", "IsMasked"],
-                                                  "properties": {
-                                                    "Name": {
-                                                      "$ref": "#/$defs/CitizenName"
-                                                    },
-                                                    "MaskedName": { "type": "string" },
-                                                    "IsMasked": { "type": "string", "enum": ["yes", "no"] },
-                                                    "DateOfBirth": {
-                                                      "type": "object",
-                                                      "properties": {
-                                                        "BirthDate": { "type": "string", "format": "date"},
-                                                        "VerifiedBy": {
-                                                          "type": "string",
-                                                          "enum": [
-                                                            "not verified",
-                                                            "accepted on balance of probabilities",
-                                                            "secondary certificate",
-                                                            "certified copy of birth certificate",
-                                                            "short form birth certificate or certificate of registration of birth",
-                                                            "birth certificate"
-                                                          ]
+                                                  "required": ["PersonalDetails"],
+                                                  "PersonalDetails": {
+                                                    "type": "object",
+                                                    "required": ["Name", "IsMasked"],
+                                                    "properties": {
+                                                      "Name": {
+                                                        "$ref": "#/$defs/CitizenName"
+                                                      },
+                                                      "MaskedName": {
+                                                        "type": "string"
+                                                      },
+                                                      "IsMasked": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                          "yes",
+                                                          "no"
+                                                        ]
+                                                      },
+                                                      "DateOfBirth": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                          "BirthDate": {
+                                                            "type": "string",
+                                                            "format": "date"
+                                                          },
+                                                          "VerifiedBy": {
+                                                            "type": "string",
+                                                            "enum": [
+                                                              "not verified",
+                                                              "accepted on balance of probabilities",
+                                                              "secondary certificate",
+                                                              "certified copy of birth certificate",
+                                                              "short form birth certificate or certificate of registration of birth",
+                                                              "birth certificate"
+                                                            ]
+                                                          }
                                                         }
+                                                      },
+                                                      "Sex": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                          "unknown",
+                                                          "male",
+                                                          "female",
+                                                          "indeterminate"
+                                                        ]
+                                                      },
+                                                      "Address": {
+                                                        "$ref": "#/$defs/Address"
                                                       }
-                                                    },
-                                                    "Sex": {
-                                                      "type": "string",
-                                                      "enum": [
-                                                        "unknown",
-                                                        "male",
-                                                        "female",
-                                                        "indeterminate"
-                                                      ]
-                                                    },
-                                                    "Address": {
-                                                      "$ref": "#/$defs/Address"
                                                     }
                                                   }
                                                 },
