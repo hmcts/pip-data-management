@@ -83,6 +83,10 @@
         page-break-after: always;
       }
 
+      .govuk-accordion__section-header {
+        border-top: 1px solid #b1b4b6;
+      }
+
       .govuk-table {
         font-family: "openSans";
         font-weight: 400;
@@ -218,8 +222,10 @@
           <p class="govuk-body govuk-!-font-weight-bold" th:text="${courtList.courtPhone}"/>
 
           <div class="govuk-accordion" id="accordion-default" th:each="sitting : ${courtList.sittings}">
-            <h3 class="govuk-heading-m site-address" tabindex="0"
-                th:text="${i18n.courtRoom + sitting.courtRoomNumber + ': ' + sitting.judgeName}"/>
+            <div class="govuk-accordion__section-header">
+              <h3 class="govuk-heading-m site-address" tabindex="0" th:text="${i18n.courtRoom + sitting.courtRoomNumber + ': ' + sitting.judgeName}"/>
+              <p class="govuk-body govuk-!-font-weight-bold" th:text="${i18n.sittingAt + sitting.sittingAt}"/>
+            </div>
             <div class="govuk-accordion__section-content">
               <div class="parent-box overflow-table">
                 <table class="govuk-table">
@@ -233,7 +239,6 @@
                   <tbody class="govuk-table__body">
                   <th:block th:each="hearing : ${sitting.hearings}">
                     <tr class="govuk-table__row">
-                      <td class="govuk-table__cell no-wrap" th:text="${sitting.sittingAt}"/>
                       <td class="govuk-table__cell no-wrap" th:text="${hearing.caseNumber}"/>
                       <td class="govuk-table__cell" th:text="${hearing.defendantName}"/>
                       <td class="govuk-table__cell" th:text="${hearing.hearingType}"/>

@@ -51,7 +51,7 @@ class CrownFirmPddaListSummaryDataTest {
         List<Map<String, String>> summaryCases = output.get(null);
         softly.assertThat(summaryCases)
             .as(SUMMARY_CASES_MESSAGE)
-            .hasSize(1);
+            .hasSize(2);
 
         Map<String, String> summaryFields = summaryCases.get(0);
         softly.assertThat(summaryFields)
@@ -93,8 +93,7 @@ class CrownFirmPddaListSummaryDataTest {
 
         softly.assertThat(values.get(0))
             .as(SUMMARY_FIELD_VALUE_MESSAGE)
-            .isEqualTo("1TestMaskedName, 2TestDefendantRequestedName, 3TestDefendantTitle"
-                           + " 3TestDefendantForename 3TestDefendantSurname 3TestDefendantSuffix");
+            .isEqualTo("TestMaskedName, Mr TestDefendantForename TestDefendantSurname TestDefendantSuffix");
 
         softly.assertThat(values.get(1))
             .as(SUMMARY_FIELD_VALUE_MESSAGE)

@@ -227,8 +227,8 @@
               {
                 "HearingSequenceNumber": 1,
                 "HearingDetails": {
-                  "HearingDescription": "TestHearingDescription",
-                  "HearingDate": "2025-09-1q",
+                  "HearingDescription": "TestHearingDescription2",
+                  "HearingDate": "2025-09-10",
                   "HearingEndDate": "2025-09-11",
                   "HearingType": "ABC"
                 },
@@ -260,7 +260,7 @@
                   "CourtHouseShortName": "TestOriginShortName",
                   "CourtHouseName": "TestOriginName"
                 },
-                "ListNote": "TestListNote",
+                "ListNote": "TestListNote2",
                 "Defendants": [
                   {
                     "PersonalDetails": {
@@ -309,6 +309,60 @@
                   }
                 ],
                 "Respondent": ["TestRespondent"]
+              }
+            ]
+          },
+          {
+            "CourtRoomNumber": 6,
+            "SittingSequenceNo": "TestSeqNo",
+            "SittingAt": "15:00:00",
+            "SittingPriority": "T",
+            "SittingNote": "TestSittingNote",
+            "Judiciary": {
+              "Judge": {
+                "CitizenNameTitle": "Mr",
+                "CitizenNameForename": "TestJudgeForename",
+                "CitizenNameSurname": "TestJudgeSurname"
+              }
+            },
+            "Hearings": [
+              {
+                "HearingSequenceNumber": 1,
+                "HearingDetails": {
+                  "HearingDescription": "TestHearingDescription3",
+                  "HearingDate": "2025-09-10",
+                  "HearingEndDate": "2025-09-11",
+                  "HearingType": "ABC"
+                },
+                "TimeMarkingNote": "TestTimeMarkingNote",
+                "CaseNumber": "T00112235",
+                "CaseNumberCaTH": "T00112235",
+                "Prosecution": {
+                  "Advocate": {
+                    "PersonalDetails": {
+                      "Name": {
+                        "CitizenNameTitle": "Mr",
+                        "CitizenNameForename": "TestAdvocateForename",
+                        "CitizenNameSurname": "TestAdvocateSurname",
+                        "CitizenNameRequestedName": "TestAdvocateRequestedName"
+                      },
+                      "MaskedName": "TestAdvocateMasked",
+                      "IsMasked": "no"
+                    }
+                  },
+                  "ProsecutingReference": "TestProsecutingRef",
+                  "ProsecutingOrganisation": {
+                    "OrganisationName": "TestProsecutingOrg"
+                  },
+                  "ProsecutingAuthority": "Other Prosecutor"
+                },
+                "CommittingCourt": {
+                  "CourtHouseType": "Crown Court",
+                  "CourtHouseCode": "5678",
+                  "CourtHouseShortName": "TestOriginShortName",
+                  "CourtHouseName": "TestOriginName"
+                },
+                "ListNote": "TestListNote3"
               }
             ]
           }

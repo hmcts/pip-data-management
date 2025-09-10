@@ -32,6 +32,9 @@ public final class CrownFirmPddaListHelper {
     private static final String HEARING_DESCRIPTION = "HearingDescription";
     private static final String LIST_NOTE = "ListNote";
     private static final String PERSONAL_DETAILS = "PersonalDetails";
+    private static final String PERSON = "Person";
+    private static final String ORGANISATION = "Organisation";
+    private static final String ORGANISATION_NAME = "OrganisationName";
     private static final String PROSECUTION = "Prosecution";
     private static final String DEFENDANTS = "Defendants";
     private static final String COUNSEL = "Counsel";
@@ -165,10 +168,10 @@ public final class CrownFirmPddaListHelper {
         counsel.get(SOLICITOR).forEach(solicitor -> {
             if (solicitor.has(PARTY)) {
                 JsonNode party = solicitor.get(PARTY);
-                if (party.has("Person")) {
-                    names.add(useMaskedNameIfRequested(party.get("Person")));
-                } else if (party.has("Organisation")) {
-                    names.add(party.get("Organisation").get("OrganisationName").asText());
+                if (party.has(PERSON)) {
+                    names.add(useMaskedNameIfRequested(party.get(PERSON).get(PERSONAL_DETAILS)));
+                } else if (party.has(ORGANISATION)) {
+                    names.add(party.get(ORGANISATION).get(ORGANISATION_NAME).asText());
                 }
             }
         });
