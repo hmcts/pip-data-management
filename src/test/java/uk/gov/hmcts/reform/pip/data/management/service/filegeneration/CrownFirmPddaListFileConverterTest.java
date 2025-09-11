@@ -20,8 +20,7 @@ import java.util.Map;
 import java.util.Objects;
 
 class CrownFirmPddaListFileConverterTest {
-    private static final String HEADING_XL_CLASS = "govuk-heading-xl";
-    private static final String HEADING_L_CLASS = "govuk-heading-l";
+    private static final String HEADING_CLASS = "govuk-heading-l";
     private static final String BODY_CLASS = "govuk-body";
 
     private static final String HEADING_MESSAGE = "Heading does not match";
@@ -64,7 +63,7 @@ class CrownFirmPddaListFileConverterTest {
             .as("incorrect title found.")
             .isEqualTo("Crown Firm List");
 
-        softly.assertThat(document.getElementsByClass(HEADING_XL_CLASS).get(0).text())
+        softly.assertThat(document.getElementsByClass(HEADING_CLASS).get(0).text())
             .as(HEADING_MESSAGE)
             .contains("Crown Firm List for location");
 
@@ -88,7 +87,7 @@ class CrownFirmPddaListFileConverterTest {
             .as(BODY_MESSAGE)
             .contains("Restrictions on publishing or writing about these cases");
 
-        softly.assertThat(document.getElementsByClass(HEADING_L_CLASS).get(0).text())
+        softly.assertThat(document.getElementsByClass(HEADING_CLASS).get(1).text())
             .as(HEADING_MESSAGE)
             .contains("Wednesday 10 September 2025");
 
@@ -131,7 +130,7 @@ class CrownFirmPddaListFileConverterTest {
             .as("incorrect title found.")
             .isEqualTo("Rhestr Cwmni Llys y Goron");
 
-        softly.assertThat(document.getElementsByClass(HEADING_XL_CLASS).get(0).text())
+        softly.assertThat(document.getElementsByClass(HEADING_CLASS).get(0).text())
             .as(HEADING_MESSAGE)
             .contains("Rhestr Cwmni Llys y Goron ar gyfer welsh location");
 
@@ -155,7 +154,7 @@ class CrownFirmPddaListFileConverterTest {
             .as(BODY_MESSAGE)
             .contains("Cyfyngiadau ar gyhoeddi neu ysgrifennu am yr achosion hyn");
 
-        softly.assertThat(document.getElementsByClass(HEADING_L_CLASS).get(0).text())
+        softly.assertThat(document.getElementsByClass(HEADING_CLASS).get(1).text())
             .as(HEADING_MESSAGE)
             .contains("Wednesday 10 September 2025");
 

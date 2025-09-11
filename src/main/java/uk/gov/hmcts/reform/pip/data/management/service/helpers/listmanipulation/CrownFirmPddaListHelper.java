@@ -57,19 +57,7 @@ public final class CrownFirmPddaListHelper {
             result.setCourtAddress(processCourtAddress(courtList));
             result.setCourtPhone(GeneralHelper.findAndReturnNodeText(courtList.get(COURT_HOUSE),
                                                                      COURT_HOUSE_TELEPHONE));
-            List<SittingInfo> sittings = new ArrayList<>();
-
-            courtList.get(SITTINGS).forEach(sitting -> {
-                SittingInfo sittingInfo = new SittingInfo();
-                sittingInfo.setCourtRoomNumber(sitting.get(COURT_ROOM_NUMBER).asText());
-                sittingInfo.setSittingAt(formatSittingTime(sitting, SITTING_AT));
-                sittingInfo.setJudgeName(formatJudgeName(sitting.get(JUDICIARY)));
-
-                List<HearingInfo> hearings = processHearingInfo(sitting);
-                sittingInfo.setHearings(hearings);
-                sittings.add(sittingInfo);
-            });
-            result.setSittings(sittings);
+            result.setSittings(processSittingInfo(courtList));
             results.add(result);
         });
 
@@ -94,10 +82,20 @@ public final class CrownFirmPddaListHelper {
 
     }
 
-    private static List<String> processCourtAddress(JsonNode courtList) {
-        JsonNode courtHouse = courtList.get(COURT_HOUSE);
-        return courtHouse.has(COURT_HOUSE_ADDRESS) ? formatAddress(courtHouse.get(COURT_HOUSE_ADDRESS))
-            : Collections.emptyList();
+    private static List<SittingInfo> processSittingInfo(JsonNode courtList) {
+        List<SittingInfo> sittings = new ArrayList<>();
+
+        courtList.get(SITTINGS).forEach(sitting -> {
+            SittingInfo sittingInfo = new SittingInfo();
+            sittingInfo.setCourtRoomNumber(sitting.get(COURT_ROOM_NUMBER).asText());
+            sittingInfo.setSittingAt(formatSittingTime(sitting, SITTING_AT));
+            sittingInfo.setJudgeName(formatJudgeName(sitting.get(JUDICIARY)));
+
+            sittingInfo.setHearings(processHearingInfo(sitting));
+            sittings.add(sittingInfo);
+        });
+
+        return sittings;
     }
 
     private static List<HearingInfo> processHearingInfo(JsonNode sitting) {
@@ -106,17 +104,26 @@ public final class CrownFirmPddaListHelper {
         sitting.get(HEARINGS).forEach(hearing -> {
             HearingInfo hearingInfo = new HearingInfo();
             hearingInfo.setCaseNumber(hearing.get(CASE_NUMBER_CATH).asText());
-            hearingInfo.setDefendantName(hearing.has(DEFENDANTS) ? formatDefendantName(hearing) : "");
+            hearingInfo.setDefendantName(hearing.has(DEFENDANTS) ? formatDefendantName(hearing.get(DEFENDANTS)) : "");
             hearingInfo.setHearingType(hearing.get(HEARING_DETAILS).get(HEARING_DESCRIPTION).asText());
-            hearingInfo.setRepresentativeName(hearing.has(DEFENDANTS) ? formatRepresentativeName(hearing) : "");
-            hearingInfo.setProsecutingAuthority(GeneralHelper.findAndReturnNodeText(hearing.get(PROSECUTION),
-                                                                                    PROSECUTING_AUTHORITY));
+            hearingInfo.setRepresentativeName(hearing.has(DEFENDANTS)
+                                                  ? formatRepresentativeName(hearing.get(DEFENDANTS)) : "");
+            hearingInfo.setProsecutingAuthority(hearing.has(PROSECUTION)
+                                                    ? GeneralHelper.findAndReturnNodeText(hearing.get(PROSECUTION),
+                                                                                          PROSECUTING_AUTHORITY)
+                                                    : "");
             hearingInfo.setListNote(GeneralHelper.findAndReturnNodeText(hearing, LIST_NOTE));
 
             hearings.add(hearingInfo);
         });
 
         return hearings;
+    }
+
+    private static List<String> processCourtAddress(JsonNode courtList) {
+        JsonNode courtHouse = courtList.get(COURT_HOUSE);
+        return courtHouse.has(COURT_HOUSE_ADDRESS) ? formatAddress(courtHouse.get(COURT_HOUSE_ADDRESS))
+            : Collections.emptyList();
     }
 
     private static String formatSittingDate(JsonNode courtList, String nodeName) {
@@ -126,7 +133,7 @@ public final class CrownFirmPddaListHelper {
 
     private static String formatSittingTime(JsonNode sitting, String nodeName) {
         String time = GeneralHelper.findAndReturnNodeText(sitting, nodeName);
-        return DateHelper.convertTimeFormat(time, "HH:mm:ss");
+        return time.isEmpty() ? "" : DateHelper.convertTimeFormat(time, "HH:mm:ss");
     }
 
     private static String formatJudgeName(JsonNode judiciary) {
@@ -142,17 +149,15 @@ public final class CrownFirmPddaListHelper {
         return GeneralHelper.convertToDelimitedString(names, ", ");
     }
 
-    private static String formatDefendantName(JsonNode hearing) {
+    private static String formatDefendantName(JsonNode defendants) {
         List<String> names = new ArrayList<>();
-        hearing.get(DEFENDANTS).forEach(
-            defendant -> names.add(useMaskedNameIfRequested(defendant.get(PERSONAL_DETAILS)))
-        );
+        defendants.forEach(defendant -> names.add(useMaskedNameIfRequested(defendant.get(PERSONAL_DETAILS))));
         return GeneralHelper.convertToDelimitedString(names, ", ");
     }
 
-    private static String formatRepresentativeName(JsonNode hearing) {
+    private static String formatRepresentativeName(JsonNode defendants) {
         List<String> names = new ArrayList<>();
-        hearing.get(DEFENDANTS).forEach(defendant -> {
+        defendants.forEach(defendant -> {
             if (defendant.has(COUNSEL)) {
                 defendant.get(COUNSEL).forEach(counsel -> {
                     if (counsel.has(SOLICITOR)) {

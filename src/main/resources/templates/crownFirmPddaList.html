@@ -33,7 +33,7 @@
         color: black;
       }
 
-      .govuk-heading-xl, .govuk-heading-l, .govuk-heading-m {
+      .govuk-heading-l, .govuk-heading-m {
         color: #0b0c0c;
         font-family: "openSans";
         font-weight: 700;
@@ -42,10 +42,6 @@
         display: block;
         margin-top: 0;
         margin-bottom: 20px;
-      }
-
-      .govuk-heading-xl {
-        font-size: 2rem;
       }
 
       .govuk-heading-m {
@@ -173,7 +169,7 @@
 
   <body>
     <div>
-      <h1 id="page-heading" class="govuk-heading-xl site-address" th:text="${i18n.heading + locationName}"/>
+      <h1 id="page-heading" class="govuk-heading-l site-address" th:text="${i18n.heading + locationName}"/>
       <div th:if="${endDate != ''}">
         <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-1" th:text="${i18n.listDate + startDate + i18n.to + endDate}"/>
       </div>
@@ -224,7 +220,9 @@
           <div class="govuk-accordion" id="accordion-default" th:each="sitting : ${courtList.sittings}">
             <div class="govuk-accordion__section-header">
               <h3 class="govuk-heading-m site-address" tabindex="0" th:text="${i18n.courtRoom + sitting.courtRoomNumber + ': ' + sitting.judgeName}"/>
-              <p class="govuk-body govuk-!-font-weight-bold" th:text="${i18n.sittingAt + sitting.sittingAt}"/>
+              <div th:if="${sitting.sittingAt != ''}">
+                <p class="govuk-body govuk-!-font-weight-bold" th:text="${i18n.sittingAt + sitting.sittingAt}"/>
+              </div>
             </div>
             <div class="govuk-accordion__section-content">
               <div class="parent-box overflow-table">
