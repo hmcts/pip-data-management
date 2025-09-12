@@ -71,7 +71,7 @@ class CrownFirmPddaListSummaryDataTest {
 
         softly.assertThat(keys.get(0))
             .as(SUMMARY_FIELD_KEY_MESSAGE)
-            .isEqualTo("Defendant");
+            .isEqualTo("Defendant name(s)");
 
         softly.assertThat(keys.get(1))
             .as(SUMMARY_FIELD_KEY_MESSAGE)

@@ -167,7 +167,7 @@ class PublicationSummaryTest extends PublicationIntegrationTestBase {
             .andExpect(status().isOk()).andReturn();
 
         String responseContent = response.getResponse().getContentAsString();
-        assertTrue(responseContent.contains("Defendant - TestMaskedName, Mr TestDefendantForename "
+        assertTrue(responseContent.contains("Defendant name(s) - TestMaskedName, Mr TestDefendantForename "
                                                 + "TestDefendantSurname TestDefendantSuffix"),
                    CONTENT_MISMATCH_ERROR);
         assertTrue(responseContent.contains("Prosecuting authority - Crown Prosecution Service"),

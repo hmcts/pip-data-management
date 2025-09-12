@@ -19,7 +19,7 @@ public class CrownFirmPddaListSummaryData implements ArtefactSummaryData {
             item -> item.getSittings().forEach(
                 sitting -> sitting.getHearings().forEach(hearing -> {
                     Map<String, String> map = ImmutableMap.of(
-                        "Defendant", hearing.getDefendantName(),
+                        "Defendant name(s)", hearing.getDefendantName(),
                         "Prosecuting authority", hearing.getProsecutingAuthority(),
                         "Case reference", hearing.getCaseNumber(),
                         "Hearing type", hearing.getHearingType()
