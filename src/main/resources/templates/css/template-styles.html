@@ -101,6 +101,101 @@
       font-weight: 700;
     }
   </style>
+
+  <style th:fragment="accordion-classes" th:inline="text">
+    .govuk-accordion__section-heading {
+      margin-top: 0;
+      margin-bottom: 0;
+      padding-top: 15px;
+      padding-bottom: 15px;
+      font-family: "openSans";
+      font-weight: 700;
+      font-size: 18px;
+      line-height: 1.11111;
+      color: #0b0c0c;
+      display: block;
+    }
+
+    .govuk-accordion {
+      page-break-after: always;
+    }
+  </style>
+
+  <style th:fragment="warning-govuk-classes" th:inline="text">
+    .govuk-warning-text__icon {
+      font-weight: 300;
+      box-sizing: border-box;
+      display: inline-block;
+      position: absolute;
+      left: 0;
+      min-width: 35px;
+      min-height: 35px;
+      border: 1px solid #0b0c0c;
+      border-radius: 50%;
+      color: #ffffff;
+      background: #0b0c0c;
+      font-size: 30px;
+      line-height: 30px;
+      text-align: center;
+    }
+
+    .govuk-warning-text {
+      position: relative;
+      padding: 10px 0;
+    }
+
+    .govuk-warning-text__text {
+      font-weight: 500;
+      color: #0b0c0c;
+      display: block;
+      padding-left: 45px;
+    }
+
+    .govuk-warning-text__assistive {
+      position: absolute !important;
+      width: 1px !important;
+      height: 1px !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      overflow: hidden !important;
+      clip-path: inset(50%) !important;
+      border: 0 !important;
+      white-space: nowrap !important;
+    }
+  </style>
+
+  <style th:fragment="body-classes" th:inline="text">
+    h1, h4 {
+      font-family: "openSans";
+      color: black;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .govuk-table {
+      table-layout: fixed;
+      width: 1050px;
+    }
+
+  </style>
+
+  <style th:fragment="margin-padding-classes" th:inline="text">
+    .govuk-\!-padding-bottom-3 {
+      padding-bottom: 15px !important;
+    }
+
+    .govuk-\!-margin-bottom-1 {
+      margin-bottom: 5px;
+    }
+
+    .no-margin-bottom {
+      margin-bottom: 0 !important;
+    }
+
+  </style>
 </head>
 <body>
 </body>
