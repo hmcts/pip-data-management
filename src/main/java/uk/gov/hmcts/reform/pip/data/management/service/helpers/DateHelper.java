@@ -148,8 +148,12 @@ public final class DateHelper {
     }
 
     public static String convertDateFormat(String input, String originalFormat) {
+        return convertDateFormat(input, originalFormat, DATE_FORMAT);
+    }
+
+    public static String convertDateFormat(String input, String originalFormat, String newFormat) {
         DateTimeFormatter originalFormatter = DateTimeFormatter.ofPattern(originalFormat, Locale.UK);
-        DateTimeFormatter newFormatter = DateTimeFormatter.ofPattern(DATE_FORMAT, Locale.UK);
+        DateTimeFormatter newFormatter = DateTimeFormatter.ofPattern(newFormat, Locale.UK);
 
         LocalDate date = LocalDate.parse(input, originalFormatter);
         return date.format(newFormatter);

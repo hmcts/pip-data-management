@@ -7,6 +7,7 @@ import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.CivilDail
 import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.CopDailyCauseListSummaryData;
 import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.CrownDailyListSummaryData;
 import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.CrownFirmListSummaryData;
+import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.CrownFirmPddaListSummaryData;
 import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.CrownWarnedListSummaryData;
 import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.EtDailyListSummaryData;
 import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.EtFortnightlyPressListSummaryData;
@@ -22,6 +23,7 @@ import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.CivilDaily
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.CopDailyCauseListFileConverter;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.CrownDailyListFileConverter;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.CrownFirmListFileConverter;
+import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.CrownFirmPddaListFileConverter;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.CrownWarnedListFileConverter;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.EtDailyListFileConverter;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.EtFortnightlyPressListFileConverter;
@@ -59,6 +61,7 @@ import static uk.gov.hmcts.reform.pip.model.publication.ListType.COURT_OF_APPEAL
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.COURT_OF_APPEAL_CRIMINAL_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.CROWN_DAILY_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.CROWN_FIRM_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.CROWN_FIRM_PDDA_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.CROWN_WARNED_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.CST_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.ET_DAILY_LIST;
@@ -428,6 +431,10 @@ public class ListConversionFactory {
         Map.entry(MAGISTRATES_PUBLIC_ADULT_COURT_LIST_DAILY, new ConversionPair(
             new MagistratesAdultCourtListFileConverter(false),
             new MagistratesAdultCourtListSummaryData(false)
+        )),
+        Map.entry(CROWN_FIRM_PDDA_LIST, new ConversionPair(
+            new CrownFirmPddaListFileConverter(),
+            new CrownFirmPddaListSummaryData()
         ))
     );
 
