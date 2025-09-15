@@ -1,4 +1,82 @@
 {
+  "$defs": {
+    "PersonalDetails": {
+      "type": "object",
+      "required": ["Name", "IsMasked"],
+      "properties": {
+        "Name": {
+          "type": "object",
+          "properties": {
+            "CitizenNameTitle": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 35
+            },
+            "CitizenNameForename": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 35
+            },
+            "CitizenNameSurname": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 35
+            },
+            "CitizenNameSuffix": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 35
+            },
+            "CitizenNameRequestedName": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 70}
+          }
+        },
+        "MaskedName": { "type": "string" },
+        "IsMasked": { "type": "string", "enum": ["yes", "no"] },
+        "DateOfBirth": {
+          "type": "object",
+          "properties": {
+            "BirthDate": { "type": "string", "format": "date"},
+            "VerifiedBy": {
+              "type": "string",
+              "enum": [
+                "not verified",
+                "accepted on balance of probabilities",
+                "secondary certificate",
+                "certified copy of birth certificate",
+                "short form birth certificate or certificate of registration of birth",
+                "birth certificate"
+              ]
+            }
+          }
+        },
+        "Age": { "type": "integer" },
+        "Sex": {
+          "type": "string",
+          "enum": [
+            "unknown",
+            "male",
+            "female",
+            "indeterminate"
+          ]
+        },
+        "Address": {
+          "type": "object",
+          "properties": {
+            "Line": {
+              "type": "array",
+              "maxItems": 5,
+              "items": { "type": "string" }
+            },
+            "Postcode": { "type": "string" }
+          }
+        },
+        "Nationality": { "type": "string" }
+      }
+    }
+  },
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Root",
   "type": "object",
@@ -216,6 +294,15 @@
                                   "Department of Trade and Industry",
                                   "Inland Revenue",
                                   "Other Prosecutor"]
+                              },
+                              "advocate": {
+                                "type": "object",
+                                "properties": {
+                                  "PersonalDetails": {
+                                    "description": "Personal details of the advocate",
+                                    "$ref": "#/$defs/PersonalDetails"
+                                  }
+                                }
                               }
                             }
                           },
@@ -239,76 +326,8 @@
                               "type": "object",
                               "properties": {
                                 "PersonalDetails": {
-                                  "type": "object",
-                                  "properties": {
-                                    "Name": {
-                                      "type": "object",
-                                      "properties": {
-                                        "CitizenNameTitle": {
-                                          "type": "string",
-                                          "minLength": 1,
-                                          "maxLength": 35
-                                        },
-                                        "CitizenNameForename": {
-                                          "type": "string",
-                                          "minLength": 1,
-                                          "maxLength": 35
-                                        },
-                                        "CitizenNameSurname": {
-                                          "type": "string",
-                                          "minLength": 1,
-                                          "maxLength": 35
-                                        },
-                                        "CitizenNameSuffix": {
-                                          "type": "string",
-                                          "minLength": 1,
-                                          "maxLength": 35
-                                        },
-                                        "CitizenNameRequestedName": {
-                                          "type": "string",
-                                          "minLength": 1,
-                                          "maxLength": 70}
-                                      }
-                                    },
-                                    "MaskedName": { "type": "string" },
-                                    "IsMasked": { "type": "string",
-                                      "enum": ["yes", "no"]
-                                    },
-                                    "DateOfBirth": {
-                                      "type": "object",
-                                      "properties": {
-                                        "BirthDate": { "type": "string", "format": "date"},
-                                        "VerifiedBy": {
-                                          "type": "string",
-                                          "enum": [
-                                            "not verified",
-                                            "accepted on balance of probabilities",
-                                            "secondary certificate",
-                                            "certified copy of birth certificate",
-                                            "short form birth certificate or certificate of registration of birth",
-                                            "birth certificate"
-                                          ]
-                                        }
-                                      }
-                                    },
-                                    "Age": { "type": "integer" },
-                                    "Sex": {
-                                      "type": "string",
-                                      "enum": ["unknown", "male", "female", "indeterminate"]
-                                    },
-                                    "Address": {
-                                      "type": "object",
-                                      "properties": {
-                                        "Line": {
-                                          "type": "array",
-                                          "maxItems": 5,
-                                          "items": { "type": "string" }
-                                        },
-                                        "Postcode": { "type": "string" }
-                                      }
-                                    },
-                                    "Nationality": { "type": "string" }
-                                  }
+                                  "description": "Personal details of the defendant",
+                                  "$ref": "#/$defs/PersonalDetails"
                                 },
                                 "URN": { "type": "string" },
                                 "PrisonerID": { "type": "string" },
