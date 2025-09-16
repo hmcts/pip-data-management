@@ -17,6 +17,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import uk.gov.hmcts.reform.pip.data.management.Application;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.utils.PublicationIntegrationTestBase;
+import uk.gov.hmcts.reform.pip.model.account.PiUser;
 import uk.gov.hmcts.reform.pip.model.publication.Sensitivity;
 import uk.gov.hmcts.reform.pip.model.report.PublicationMiData;
 
@@ -24,11 +25,15 @@ import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static uk.gov.hmcts.reform.pip.model.account.Roles.SYSTEM_ADMIN;
 
 @SpringBootTest(classes = {Application.class},
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -45,15 +50,23 @@ class PublicationReportingTest extends PublicationIntegrationTestBase {
     private static final String PROVENANCE = "MANUAL_UPLOAD";
     private static final String ADMIN = "admin";
     private static final String VALIDATION_MI_REPORT = "Should successfully retrieve MI data";
+    private static final String REQUESTER_ID_HEADER = "x-requester-id";
+    private static final String SYSTEM_ADMIN_ID = UUID.randomUUID().toString();
 
     @BeforeAll
     void setup() throws Exception {
+        PiUser piUser = new PiUser();
+        piUser.setUserId(SYSTEM_ADMIN_ID);
+        piUser.setEmail("test@justice.gov.uk");
+        piUser.setRoles(SYSTEM_ADMIN);
+
         try (InputStream csvInputStream = PublicationTest.class.getClassLoader()
             .getResourceAsStream("location/UpdatedCsv.csv")) {
             MockMultipartFile csvFile
                 = new MockMultipartFile("locationList", csvInputStream);
-
+            when(accountManagementService.getUserById(any())).thenReturn(piUser);
             mockMvc.perform(MockMvcRequestBuilders.multipart("/locations/upload").file(csvFile)
+                                .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID)
                                 .with(user(ADMIN)
                                           .authorities(new SimpleGrantedAuthority("APPROLE_api.request.admin"))))
                 .andExpect(status().isOk()).andReturn();
@@ -87,7 +100,8 @@ class PublicationReportingTest extends PublicationIntegrationTestBase {
         Artefact artefact = createSscsDailyList(Sensitivity.PUBLIC, "UnknownProvenance");
 
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-            .get(MI_REPORTING_DATA_URL);
+            .get(MI_REPORTING_DATA_URL)
+            .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID);
 
         MvcResult responseMiData = mockMvc.perform(request).andExpect(status().isOk()).andReturn();
         assertNotNull(responseMiData.getResponse(), VALIDATION_MI_REPORT);
