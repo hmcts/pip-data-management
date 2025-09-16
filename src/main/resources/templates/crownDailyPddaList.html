@@ -213,7 +213,7 @@
 
       <div class="govuk-accordion" id="accordion-default" th:each="sitting : ${courtList.sittings}">
         <div class="govuk-accordion__section-header">
-          <h3 class="govuk-heading-m site-address" tabindex="0" th:text="${i18n.courtRoom + sitting.courtRoomNumber + ': ' + sitting.judgeName}"/>
+          <h3 class="govuk-heading-m site-address" tabindex="0" th:text="${i18n.court + sitting.courtRoomNumber + ': ' + sitting.judgeName}"/>
           <div th:if="${sitting.sittingAt != ''}">
             <p class="govuk-body govuk-!-font-weight-bold" th:text="${i18n.sittingAt + sitting.sittingAt}"/>
           </div>
