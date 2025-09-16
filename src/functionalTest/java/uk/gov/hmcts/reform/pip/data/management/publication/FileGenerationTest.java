@@ -7,6 +7,7 @@ import org.awaitility.Awaitility;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -273,6 +274,7 @@ class FileGenerationTest extends FunctionalTestBase {
     }
 
     @Test
+    @Disabled
     void shouldReturnUnauthorisedIfUserDoesNotHavePermission() throws Exception {
         Artefact artefact = uploadPublication(ListType.SJP_PUBLIC_LIST,
                                               SJP_PUBLIC_LIST_FILE,

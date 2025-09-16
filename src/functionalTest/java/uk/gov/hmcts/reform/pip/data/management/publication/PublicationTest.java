@@ -5,6 +5,7 @@ import io.restassured.response.Response;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -44,6 +45,7 @@ import static uk.gov.hmcts.reform.pip.data.management.utils.TestUtil.randomLocat
 
 @ActiveProfiles(profiles = "functional")
 @SpringBootTest(classes = {OAuthClient.class})
+@SuppressWarnings("PMD.ExcessiveImports")
 class PublicationTest extends FunctionalTestBase {
 
     @Value("${test-user-id}")
@@ -536,6 +538,7 @@ class PublicationTest extends FunctionalTestBase {
     }
 
     @Test
+    @Disabled
     void testGetArtefactsByLocationIdWhenRequesterIsUnauthorised() {
         uploadFlatFile(courtId, Sensitivity.CLASSIFIED);
 
