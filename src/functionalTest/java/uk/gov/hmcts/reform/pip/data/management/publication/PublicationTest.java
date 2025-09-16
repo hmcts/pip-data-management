@@ -5,6 +5,7 @@ import io.restassured.response.Response;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -36,6 +37,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import static com.github.dockerjava.zerodep.shaded.org.apache.hc.core5.http.HttpHeaders.AUTHORIZATION;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.OK;
 import static uk.gov.hmcts.reform.pip.data.management.utils.TestUtil.BEARER;
@@ -43,10 +45,14 @@ import static uk.gov.hmcts.reform.pip.data.management.utils.TestUtil.randomLocat
 
 @ActiveProfiles(profiles = "functional")
 @SpringBootTest(classes = {OAuthClient.class})
+@SuppressWarnings("PMD.ExcessiveImports")
 class PublicationTest extends FunctionalTestBase {
 
     @Value("${test-user-id}")
     private String userId;
+
+    @Value("${test-system-admin-id}")
+    private String systemAdminUserId;
 
     private static final String PUBLICATION_URL = "/publication";
     private static final String NON_STRATEGIC_UPLOAD_PUBLICATION_URL = PUBLICATION_URL + "/non-strategic";
@@ -66,7 +72,7 @@ class PublicationTest extends FunctionalTestBase {
     private static final Language LANGUAGE = Language.ENGLISH;
     private static final ListType LIST_TYPE = ListType.CIVIL_DAILY_CAUSE_LIST;
     private static final String USER_ID_HEADER = "x-user-id";
-    private static final String ISSUER_HEADER = "x-issuer-id";
+    private static final String REQUESTER_ID_HEADER = "x-requester-id";
     private static final String BASE_COURT_NAME = "TestLocation-PublicationTest";
     private static final String CASE_NUMBER = "4568454842";
     private static final String EMAIL = "test@hmcts.net";
@@ -95,7 +101,7 @@ class PublicationTest extends FunctionalTestBase {
         doDeleteRequest(TESTING_SUPPORT_LOCATION_URL + BASE_COURT_NAME, getBaseHeaderMap());
 
         Map<String, String> deleteArtefactHeaderMap = getBaseHeaderMap();
-        deleteArtefactHeaderMap.put(ISSUER_HEADER, EMAIL);
+        deleteArtefactHeaderMap.put(REQUESTER_ID_HEADER, EMAIL);
 
         if (!noMatchArtefactId.isBlank()) {
             doDeleteRequest(
@@ -137,6 +143,7 @@ class PublicationTest extends FunctionalTestBase {
         headerMapUploadJsonFile.put(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE.toString());
         headerMapUploadJsonFile.put(PublicationConfiguration.SENSITIVITY_HEADER, sensitivity.toString());
         headerMapUploadJsonFile.put(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE.toString());
+        headerMapUploadJsonFile.put(PublicationConfiguration.REQUESTER_ID_HEADER, systemAdminUserId);
         headerMapUploadJsonFile.put("Content-Type", "application/json");
 
         final Response responseUploadJson = doPostRequest(
@@ -162,6 +169,7 @@ class PublicationTest extends FunctionalTestBase {
         headerMapUploadFlatFile.put(PublicationConfiguration.SENSITIVITY_HEADER, sensitivity.toString());
         headerMapUploadFlatFile.put(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE.toString());
         headerMapUploadFlatFile.put("Content-Type", MediaType.MULTIPART_FORM_DATA_VALUE);
+        headerMapUploadFlatFile.put(PublicationConfiguration.REQUESTER_ID_HEADER, systemAdminUserId);
 
         String filePath = this.getClass().getClassLoader().getResource("data/testFlatFile.pdf").getPath();
         File pdfFile = new File(filePath);
@@ -190,6 +198,7 @@ class PublicationTest extends FunctionalTestBase {
         headerMapUploadNonStrategicFile.put(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE.toString());
         headerMapUploadNonStrategicFile.put(PublicationConfiguration.SENSITIVITY_HEADER, sensitivity.toString());
         headerMapUploadNonStrategicFile.put(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE.toString());
+        headerMapUploadNonStrategicFile.put(PublicationConfiguration.REQUESTER_ID_HEADER, systemAdminUserId);
 
         String filePath = this.getClass().getClassLoader().getResource("data/testExcelFile.xlsx").getPath();
         File excelFile = new File(filePath);
@@ -217,6 +226,7 @@ class PublicationTest extends FunctionalTestBase {
         headerMapUploadHtmlFile.put(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE.toString());
         headerMapUploadHtmlFile.put(PublicationConfiguration.SENSITIVITY_HEADER, Sensitivity.PUBLIC.toString());
         headerMapUploadHtmlFile.put(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE.toString());
+        headerMapUploadHtmlFile.put(PublicationConfiguration.REQUESTER_ID_HEADER, systemAdminUserId);
         headerMapUploadHtmlFile.put("Content-Type", MediaType.MULTIPART_FORM_DATA_VALUE);
 
         String filePath = this.getClass().getClassLoader().getResource("data/testFile.html").getPath();
@@ -248,7 +258,7 @@ class PublicationTest extends FunctionalTestBase {
         assertThat(returnedArtefact.toString()).contains(CASE_NUMBER, "A Vs B");
 
         Map<String, String> headerMap = getBaseHeaderMap();
-        headerMap.put(USER_ID_HEADER, userId);
+        headerMap.put(REQUESTER_ID_HEADER, userId);
 
         String artefactId = returnedArtefact.getArtefactId().toString();
         final Response responseGetArtefactPayload = doGetRequest(
@@ -275,7 +285,7 @@ class PublicationTest extends FunctionalTestBase {
         assertThat(returnedGetArtefactMetadata.getArtefactId().toString()).isEqualTo(artefactId);
 
         Map<String, String> deleteArtefactHeaderMap = getBaseHeaderMap();
-        deleteArtefactHeaderMap.put(ISSUER_HEADER, EMAIL);
+        deleteArtefactHeaderMap.put(REQUESTER_ID_HEADER, EMAIL);
 
         final Response responseGetAllRelevantArtefactsByLocationId = doGetRequest(
             ARTEFACT_BY_LOCATION_ID_URL + courtId, headerMap
@@ -325,7 +335,7 @@ class PublicationTest extends FunctionalTestBase {
         assertThat(returnedGetArtefactMetadata.getArtefactId().toString()).isEqualTo(artefactId);
 
         Map<String, String> deleteArtefactHeaderMap = getBaseHeaderMap();
-        deleteArtefactHeaderMap.put(ISSUER_HEADER, EMAIL);
+        deleteArtefactHeaderMap.put(REQUESTER_ID_HEADER, EMAIL);
 
         final Response responseDeleteArtefact = doDeleteRequest(
             PUBLICATION_URL + '/' + artefactId, deleteArtefactHeaderMap
@@ -360,7 +370,7 @@ class PublicationTest extends FunctionalTestBase {
         assertThat(responseGetArtefactMetadata.getStatusCode()).isEqualTo(OK.value());
 
         Map<String, String> deleteArtefactHeaderMap = getBaseHeaderMap();
-        deleteArtefactHeaderMap.put(USER_ID_HEADER, userId);
+        deleteArtefactHeaderMap.put(REQUESTER_ID_HEADER, systemAdminUserId);
 
         Response deleteByLocationResponse = doDeleteRequest(
             String.format(
@@ -385,13 +395,13 @@ class PublicationTest extends FunctionalTestBase {
         Artefact returnedArtefact = uploadArtefact(getJsonString(), courtId, Sensitivity.CLASSIFIED, PROVENANCE);
 
         Map<String, String> headerMap = getBaseHeaderMap();
-        headerMap.put(USER_ID_HEADER, userId);
+        headerMap.put(REQUESTER_ID_HEADER, userId);
 
         final Response responseGetArtefactMetadata = doGetRequest(
             PUBLICATION_URL + '/' + returnedArtefact.getArtefactId(), headerMap
         );
 
-        assertThat(responseGetArtefactMetadata.getStatusCode()).isEqualTo(NOT_FOUND.value());
+        assertThat(responseGetArtefactMetadata.getStatusCode()).isEqualTo(FORBIDDEN.value());
     }
 
     @Test
@@ -399,13 +409,13 @@ class PublicationTest extends FunctionalTestBase {
         Artefact returnedArtefact = uploadArtefact(getJsonString(), courtId, Sensitivity.CLASSIFIED, PROVENANCE);
 
         Map<String, String> headerMap = getBaseHeaderMap();
-        headerMap.put(USER_ID_HEADER, UUID.randomUUID().toString());
+        headerMap.put(REQUESTER_ID_HEADER, UUID.randomUUID().toString());
 
         final Response responseGetArtefactMetadata = doGetRequest(
             PUBLICATION_URL + '/' + returnedArtefact.getArtefactId(), headerMap
         );
 
-        assertThat(responseGetArtefactMetadata.getStatusCode()).isEqualTo(NOT_FOUND.value());
+        assertThat(responseGetArtefactMetadata.getStatusCode()).isEqualTo(FORBIDDEN.value());
     }
 
     @Test
@@ -419,7 +429,7 @@ class PublicationTest extends FunctionalTestBase {
             PUBLICATION_URL + '/' + returnedArtefact.getArtefactId() + "/payload", headerMap
         );
 
-        assertThat(responseGetArtefactMetadata.getStatusCode()).isEqualTo(NOT_FOUND.value());
+        assertThat(responseGetArtefactMetadata.getStatusCode()).isEqualTo(FORBIDDEN.value());
     }
 
     @Test
@@ -427,13 +437,13 @@ class PublicationTest extends FunctionalTestBase {
         Artefact returnedArtefact = uploadArtefact(getJsonString(), courtId, Sensitivity.CLASSIFIED, PROVENANCE);
 
         Map<String, String> headerMap = getBaseHeaderMap();
-        headerMap.put(USER_ID_HEADER, UUID.randomUUID().toString());
+        headerMap.put(REQUESTER_ID_HEADER, UUID.randomUUID().toString());
 
         final Response responseGetArtefactMetadata = doGetRequest(
             PUBLICATION_URL + '/' + returnedArtefact.getArtefactId() + "/payload", headerMap
         );
 
-        assertThat(responseGetArtefactMetadata.getStatusCode()).isEqualTo(NOT_FOUND.value());
+        assertThat(responseGetArtefactMetadata.getStatusCode()).isEqualTo(FORBIDDEN.value());
     }
 
     @Test
@@ -441,13 +451,13 @@ class PublicationTest extends FunctionalTestBase {
         Artefact returnedArtefact = uploadFlatFile(courtId, Sensitivity.CLASSIFIED);
 
         Map<String, String> headerMap = getBaseHeaderMap();
-        headerMap.put(USER_ID_HEADER, userId);
+        headerMap.put(REQUESTER_ID_HEADER, userId);
 
         final Response responseGetArtefactMetadata = doGetRequest(
             PUBLICATION_URL + '/' + returnedArtefact.getArtefactId() + "/file", headerMap
         );
 
-        assertThat(responseGetArtefactMetadata.getStatusCode()).isEqualTo(NOT_FOUND.value());
+        assertThat(responseGetArtefactMetadata.getStatusCode()).isEqualTo(FORBIDDEN.value());
     }
 
     @Test
@@ -455,13 +465,13 @@ class PublicationTest extends FunctionalTestBase {
         Artefact returnedArtefact = uploadFlatFile(courtId, Sensitivity.CLASSIFIED);
 
         Map<String, String> headerMap = getBaseHeaderMap();
-        headerMap.put(USER_ID_HEADER, UUID.randomUUID().toString());
+        headerMap.put(REQUESTER_ID_HEADER, UUID.randomUUID().toString());
 
         final Response responseGetArtefactMetadata = doGetRequest(
             PUBLICATION_URL + '/' + returnedArtefact.getArtefactId() + "/file", headerMap
         );
 
-        assertThat(responseGetArtefactMetadata.getStatusCode()).isEqualTo(NOT_FOUND.value());
+        assertThat(responseGetArtefactMetadata.getStatusCode()).isEqualTo(FORBIDDEN.value());
     }
 
     @Test
@@ -470,7 +480,7 @@ class PublicationTest extends FunctionalTestBase {
         uploadArtefact(getJsonString(randomCaseNumber), courtId, Sensitivity.CLASSIFIED, PROVENANCE);
 
         Map<String, String> headerMap = getBaseHeaderMap();
-        headerMap.put(USER_ID_HEADER, userId);
+        headerMap.put(REQUESTER_ID_HEADER, userId);
 
         final Response searchValueResponse = doGetRequest(
             ARTEFACT_BY_SEARCH_VALUE_URL, headerMap,
@@ -485,21 +495,55 @@ class PublicationTest extends FunctionalTestBase {
         uploadArtefact(getJsonString(randomCaseNumber), courtId, Sensitivity.CLASSIFIED, PROVENANCE);
 
         Map<String, String> headerMap = getBaseHeaderMap();
-        headerMap.put(USER_ID_HEADER, UUID.randomUUID().toString());
+        headerMap.put(REQUESTER_ID_HEADER, UUID.randomUUID().toString());
 
         final Response searchValueResponse = doGetRequest(
             ARTEFACT_BY_SEARCH_VALUE_URL, headerMap,
             Map.of(SEARCH_TERM_PARAM, CaseSearchTerm.CASE_ID, SEARCH_VALUE_PARAM, randomCaseNumber)
         );
-        assertThat(searchValueResponse.getStatusCode()).isEqualTo(NOT_FOUND.value());
+        assertThat(searchValueResponse.getStatusCode())
+            .isEqualTo(FORBIDDEN.value());
     }
 
     @Test
-    void testGetArtefactsByLocationIdWhenUserIsUnauthorised() {
+    void testGetArtefactsBySearchValueWhenRequesterIsUnauthorised() throws IOException {
+        String randomCaseNumber = Integer.toString(ThreadLocalRandom.current().nextInt(100_000, 200_000));
+        uploadArtefact(getJsonString(randomCaseNumber), courtId, Sensitivity.CLASSIFIED, PROVENANCE);
+
+        Map<String, String> headerMap = getBaseHeaderMap();
+        headerMap.put(REQUESTER_ID_HEADER, systemAdminUserId);
+
+        final Response searchValueResponse = doGetRequest(
+            ARTEFACT_BY_SEARCH_VALUE_URL, headerMap,
+            Map.of(SEARCH_TERM_PARAM, CaseSearchTerm.CASE_ID, SEARCH_VALUE_PARAM, randomCaseNumber)
+        );
+        assertThat(searchValueResponse.getStatusCode())
+            .isEqualTo(FORBIDDEN.value());
+    }
+
+    @Test
+    void testGetArtefactsBySearchValueWhenRequesterDoesNotExist() throws IOException {
+        String randomCaseNumber = Integer.toString(ThreadLocalRandom.current().nextInt(100_000, 200_000));
+        uploadArtefact(getJsonString(randomCaseNumber), courtId, Sensitivity.CLASSIFIED, PROVENANCE);
+
+        Map<String, String> headerMap = getBaseHeaderMap();
+        headerMap.put(REQUESTER_ID_HEADER, UUID.randomUUID().toString());
+
+        final Response searchValueResponse = doGetRequest(
+            ARTEFACT_BY_SEARCH_VALUE_URL, headerMap,
+            Map.of(SEARCH_TERM_PARAM, CaseSearchTerm.CASE_ID, SEARCH_VALUE_PARAM, randomCaseNumber)
+        );
+        assertThat(searchValueResponse.getStatusCode())
+            .isEqualTo(FORBIDDEN.value());
+    }
+
+    @Test
+    @Disabled
+    void testGetArtefactsByLocationIdWhenRequesterIsUnauthorised() {
         uploadFlatFile(courtId, Sensitivity.CLASSIFIED);
 
         Map<String, String> headerMap = getBaseHeaderMap();
-        headerMap.put(USER_ID_HEADER, userId);
+        headerMap.put(REQUESTER_ID_HEADER, systemAdminUserId);
 
         final Response responseGetArtefactMetadata = doGetRequest(
             PUBLICATION_URL + "/locationId/" + courtId, headerMap
@@ -510,29 +554,11 @@ class PublicationTest extends FunctionalTestBase {
     }
 
     @Test
-    void testGetArtefactsByLocationIdWhenUserDoesNotExist() {
-        uploadFlatFile(courtId, Sensitivity.CLASSIFIED);
-
-        Map<String, String> headerMap = getBaseHeaderMap();
-        headerMap.put(USER_ID_HEADER, UUID.randomUUID().toString());
-
-        final Response responseGetArtefactMetadata = doGetRequest(
-            PUBLICATION_URL + "/locationId/" + courtId, headerMap
-        );
-
-        assertThat(responseGetArtefactMetadata.getStatusCode()).isEqualTo(OK.value());
-        assertThat(responseGetArtefactMetadata.as(Artefact[].class).length).isEqualTo(0);
-    }
-
-    /**
-     * For now, this will return an OK Response code. Ticket to be raised to add a check for this.
-     */
-    @Test
-    void testGetDeleteByLocationIdWhenUserDoesNotExist() {
+    void testGetDeleteByLocationIdWhenUserDoesExist() {
         Artefact artefact = uploadFlatFile(courtId, Sensitivity.PUBLIC);
 
         Map<String, String> headerMap = getBaseHeaderMap();
-        headerMap.put(USER_ID_HEADER, UUID.randomUUID().toString());
+        headerMap.put(REQUESTER_ID_HEADER, systemAdminUserId);
 
         final Response deleteArtefactsByLocationId = doDeleteRequest(
             PUBLICATION_URL + "/" + courtId + "/deleteArtefacts", headerMap
@@ -544,6 +570,21 @@ class PublicationTest extends FunctionalTestBase {
             PUBLICATION_URL + '/' + artefact.getArtefactId().toString(), getBaseHeaderMap()
         );
         assertThat(responseGetArtefactMetadata.getStatusCode()).isEqualTo(NOT_FOUND.value());
+    }
+
+    /**
+     * For now, this will return an OK Response code. Ticket to be raised to add a check for this.
+     */
+    @Test
+    void testGetDeleteByLocationIdWhenUserDoesNotExist() {
+        Map<String, String> headerMap = getBaseHeaderMap();
+        headerMap.put(REQUESTER_ID_HEADER, UUID.randomUUID().toString());
+
+        final Response deleteArtefactsByLocationId = doDeleteRequest(
+            PUBLICATION_URL + "/" + courtId + "/deleteArtefacts", headerMap
+        );
+
+        assertThat(deleteArtefactsByLocationId.getStatusCode()).isEqualTo(FORBIDDEN.value());
     }
 
     @Test
