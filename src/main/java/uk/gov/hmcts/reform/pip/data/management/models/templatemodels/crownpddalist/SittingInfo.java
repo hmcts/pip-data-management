@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.pip.data.management.models.templatemodels.crownfirmpddalist;
+package uk.gov.hmcts.reform.pip.data.management.models.templatemodels.crownpddalist;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

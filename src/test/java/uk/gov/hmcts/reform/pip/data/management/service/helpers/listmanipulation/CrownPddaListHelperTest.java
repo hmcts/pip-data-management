@@ -6,10 +6,14 @@ import org.apache.commons.io.IOUtils;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.test.context.ActiveProfiles;
-import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.crownfirmpddalist.CrownFirmPddaList;
-import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.crownfirmpddalist.HearingInfo;
-import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.crownfirmpddalist.SittingInfo;
+import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.crownpddalist.CrownPddaList;
+import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.crownpddalist.HearingInfo;
+import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.crownpddalist.SittingInfo;
+import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -17,31 +21,46 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.stream.Stream;
 
 @ActiveProfiles("test")
-class CrownFirmPddaListHelperTest {
+class CrownPddaListHelperTest {
     private static final String RESULT_COUNT_MESSAGE = "Result count does not match";
     private static final String COURT_LIST_INFO_MESSAGE = "Court list info does not match";
     private static final String SITTING_INFO_MESSAGE = "Sitting info does not match";
     private static final String HEARING_INFO_MESSAGE = "Hearing info does not match";
 
-
-    private static JsonNode inputJson;
+    private static JsonNode dailyListInputJson;
+    private static JsonNode firmListInputJson;
 
     @BeforeAll
     public static void setup() throws IOException {
-        StringWriter writer = new StringWriter();
+        StringWriter dailyListWriter = new StringWriter();
         IOUtils.copy(
-            Files.newInputStream(Paths.get("src/test/resources/mocks/crownFirmPddaList.json")), writer,
+            Files.newInputStream(Paths.get("src/test/resources/mocks/crownDailyPddaList.json")), dailyListWriter,
             Charset.defaultCharset()
         );
+        dailyListInputJson = new ObjectMapper().readTree(dailyListWriter.toString());
 
-        inputJson = new ObjectMapper().readTree(writer.toString());
+        StringWriter firmListWriter = new StringWriter();
+        IOUtils.copy(
+            Files.newInputStream(Paths.get("src/test/resources/mocks/crownFirmPddaList.json")), firmListWriter,
+            Charset.defaultCharset()
+        );
+        firmListInputJson = new ObjectMapper().readTree(firmListWriter.toString());
     }
 
-    @Test
-    void testProcessPayloadMethod() {
-        List<CrownFirmPddaList> results = CrownFirmPddaListHelper.processPayload(inputJson);
+    private static Stream<Arguments> listTypeAndInputJsonProvider() {
+        return Stream.of(
+            Arguments.of(ListType.CROWN_DAILY_PDDA_LIST, dailyListInputJson),
+            Arguments.of(ListType.CROWN_FIRM_PDDA_LIST, firmListInputJson)
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("listTypeAndInputJsonProvider")
+    void testProcessPayloadMethod(ListType listType, JsonNode inputJson) {
+        List<CrownPddaList> results = CrownPddaListHelper.processPayload(inputJson, listType);
         SoftAssertions softly = new SoftAssertions();
 
         softly.assertThat(results)
@@ -65,13 +84,13 @@ class CrownFirmPddaListHelperTest {
             .hasSize(1);
 
         softly.assertAll();
-
     }
 
-    @Test
-    void testCourtListInfo() {
-        List<CrownFirmPddaList> results = CrownFirmPddaListHelper.processPayload(inputJson);
-        CrownFirmPddaList result = results.getFirst();
+    @ParameterizedTest
+    @MethodSource("listTypeAndInputJsonProvider")
+    void testCourtListInfo(ListType listType, JsonNode inputJson) {
+        List<CrownPddaList> results = CrownPddaListHelper.processPayload(inputJson, listType);
+        CrownPddaList result = results.getFirst();
         SoftAssertions softly = new SoftAssertions();
 
         softly.assertThat(result.getSittingDate())
@@ -94,9 +113,10 @@ class CrownFirmPddaListHelperTest {
         softly.assertAll();
     }
 
-    @Test
-    void testSittingInfo() {
-        List<CrownFirmPddaList> results = CrownFirmPddaListHelper.processPayload(inputJson);
+    @ParameterizedTest
+    @MethodSource("listTypeAndInputJsonProvider")
+    void testSittingInfo(ListType listType, JsonNode inputJson) {
+        List<CrownPddaList> results = CrownPddaListHelper.processPayload(inputJson, listType);
 
         SittingInfo result = results.getFirst().getSittings().getFirst();
 
@@ -117,9 +137,10 @@ class CrownFirmPddaListHelperTest {
         softly.assertAll();
     }
 
-    @Test
-    void testHearingInfo() {
-        List<CrownFirmPddaList> results = CrownFirmPddaListHelper.processPayload(inputJson);
+    @ParameterizedTest
+    @MethodSource("listTypeAndInputJsonProvider")
+    void testHearingInfo(ListType listType, JsonNode inputJson) {
+        List<CrownPddaList> results = CrownPddaListHelper.processPayload(inputJson, listType);
 
         HearingInfo result = results.getFirst().getSittings().getFirst().getHearings().getFirst();
 

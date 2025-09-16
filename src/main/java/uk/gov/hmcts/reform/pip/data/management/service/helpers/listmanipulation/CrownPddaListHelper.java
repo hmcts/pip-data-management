@@ -1,18 +1,20 @@
 package uk.gov.hmcts.reform.pip.data.management.service.helpers.listmanipulation;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.crownfirmpddalist.CrownFirmPddaList;
-import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.crownfirmpddalist.HearingInfo;
-import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.crownfirmpddalist.SittingInfo;
+import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.crownpddalist.CrownPddaList;
+import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.crownpddalist.HearingInfo;
+import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.crownpddalist.SittingInfo;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.DateHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.GeneralHelper;
+import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public final class CrownFirmPddaListHelper {
+public final class CrownPddaListHelper {
 
+    private static final String DAILY_LIST = "DailyList";
     private static final String FIRM_LIST = "FirmList";
     private static final String COURT_LIST = "CourtLists";
     private static final String COURT_HOUSE = "CourtHouse";
@@ -43,23 +45,27 @@ public final class CrownFirmPddaListHelper {
     private static final String PROSECUTING_AUTHORITY = "ProsecutingAuthority";
     private static final String YES = "yes";
 
-    private CrownFirmPddaListHelper() {
+    private CrownPddaListHelper() {
     }
 
-    public static List<CrownFirmPddaList> processPayload(JsonNode payload) {
-        List<CrownFirmPddaList> results = new ArrayList<>();
+    public static List<CrownPddaList> processPayload(JsonNode payload, ListType listType) {
+        List<CrownPddaList> results = new ArrayList<>();
 
-        payload.get(FIRM_LIST).get(COURT_LIST).forEach(courtList -> {
-            CrownFirmPddaList result = new CrownFirmPddaList();
+        boolean isDailyList = ListType.CROWN_DAILY_PDDA_LIST.equals(listType);
+        payload.get(isDailyList ? DAILY_LIST : FIRM_LIST).get(COURT_LIST)
+            .forEach(courtList -> {
+                CrownPddaList result = new CrownPddaList();
 
-            result.setSittingDate(formatSittingDate(courtList, SITTING_DATE));
-            result.setCourtName(courtList.get(COURT_HOUSE).get(COURT_HOUSE_NAME).asText());
-            result.setCourtAddress(processCourtAddress(courtList));
-            result.setCourtPhone(GeneralHelper.findAndReturnNodeText(courtList.get(COURT_HOUSE),
-                                                                     COURT_HOUSE_TELEPHONE));
-            result.setSittings(processSittingInfo(courtList));
-            results.add(result);
-        });
+                if (!isDailyList) {
+                    result.setSittingDate(formatSittingDate(courtList, SITTING_DATE));
+                }
+                result.setCourtName(courtList.get(COURT_HOUSE).get(COURT_HOUSE_NAME).asText());
+                result.setCourtAddress(processCourtAddress(courtList));
+                result.setCourtPhone(GeneralHelper.findAndReturnNodeText(courtList.get(COURT_HOUSE),
+                                                                         COURT_HOUSE_TELEPHONE));
+                result.setSittings(processSittingInfo(courtList, isDailyList));
+                results.add(result);
+            });
 
         return results;
     }
@@ -82,7 +88,7 @@ public final class CrownFirmPddaListHelper {
 
     }
 
-    private static List<SittingInfo> processSittingInfo(JsonNode courtList) {
+    private static List<SittingInfo> processSittingInfo(JsonNode courtList, boolean isDailyList) {
         List<SittingInfo> sittings = new ArrayList<>();
 
         courtList.get(SITTINGS).forEach(sitting -> {
@@ -91,14 +97,14 @@ public final class CrownFirmPddaListHelper {
             sittingInfo.setSittingAt(formatSittingTime(sitting, SITTING_AT));
             sittingInfo.setJudgeName(formatJudgeName(sitting.get(JUDICIARY)));
 
-            sittingInfo.setHearings(processHearingInfo(sitting));
+            sittingInfo.setHearings(processHearingInfo(sitting, isDailyList));
             sittings.add(sittingInfo);
         });
 
         return sittings;
     }
 
-    private static List<HearingInfo> processHearingInfo(JsonNode sitting) {
+    private static List<HearingInfo> processHearingInfo(JsonNode sitting, boolean isDailyList) {
         List<HearingInfo> hearings = new ArrayList<>();
 
         sitting.get(HEARINGS).forEach(hearing -> {
@@ -106,8 +112,10 @@ public final class CrownFirmPddaListHelper {
             hearingInfo.setCaseNumber(hearing.get(CASE_NUMBER_CATH).asText());
             hearingInfo.setDefendantName(hearing.has(DEFENDANTS) ? formatDefendantName(hearing.get(DEFENDANTS)) : "");
             hearingInfo.setHearingType(hearing.get(HEARING_DETAILS).get(HEARING_DESCRIPTION).asText());
-            hearingInfo.setRepresentativeName(hearing.has(DEFENDANTS)
-                                                  ? formatRepresentativeName(hearing.get(DEFENDANTS)) : "");
+            if (!isDailyList) {
+                hearingInfo.setRepresentativeName(hearing.has(DEFENDANTS)
+                                                      ? formatRepresentativeName(hearing.get(DEFENDANTS)) : "");
+            }
             hearingInfo.setProsecutingAuthority(hearing.has(PROSECUTION)
                                                     ? GeneralHelper.findAndReturnNodeText(hearing.get(PROSECUTION),
                                                                                           PROSECUTING_AUTHORITY)

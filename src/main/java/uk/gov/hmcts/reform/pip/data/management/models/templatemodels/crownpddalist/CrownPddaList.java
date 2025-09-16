@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.pip.data.management.models.templatemodels.crownfirmpddalist;
+package uk.gov.hmcts.reform.pip.data.management.models.templatemodels.crownpddalist;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,7 +9,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CrownFirmPddaList {
+public class CrownPddaList {
     private String sittingDate;
     private String courtName;
     private List<String> courtAddress;

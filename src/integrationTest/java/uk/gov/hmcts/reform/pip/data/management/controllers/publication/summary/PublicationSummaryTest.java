@@ -157,6 +157,26 @@ class PublicationSummaryTest extends PublicationIntegrationTestBase {
     }
 
     @Test
+    void testGenerateArtefactSummaryCrownDailyPddaList() throws Exception {
+        byte[] data = getTestData("data/crown-daily-pdda-list/crownDailyPddaList.json");
+        Artefact artefact = createPublication(ListType.CROWN_FIRM_PDDA_LIST, data);
+
+        when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(data));
+
+        MvcResult response = mockMvc.perform(get(String.format(GET_ARTEFACT_SUMMARY, artefact.getArtefactId())))
+            .andExpect(status().isOk()).andReturn();
+
+        String responseContent = response.getResponse().getContentAsString();
+        assertTrue(responseContent.contains("Defendant name(s) - TestMaskedName, Mr TestDefendantForename "
+                                                + "TestDefendantSurname TestDefendantSuffix"),
+                   CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains("Prosecuting authority - Crown Prosecution Service"),
+                   CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains("Case reference - T00112233"), CONTENT_MISMATCH_ERROR);
+        assertTrue(responseContent.contains("Hearing type - TestHearingDescription"), CONTENT_MISMATCH_ERROR);
+    }
+
+    @Test
     void testGenerateArtefactSummaryCrownFirmPddaList() throws Exception {
         byte[] data = getTestData("data/crown-firm-pdda-list/crownFirmPddaList.json");
         Artefact artefact = createPublication(ListType.CROWN_FIRM_PDDA_LIST, data);

@@ -1,12 +1,18 @@
 package uk.gov.hmcts.reform.pip.data.management.service.artefactsummary;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.IOUtils;
 import org.assertj.core.api.SoftAssertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pip.data.management.service.ListConversionFactory;
+import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -15,11 +21,13 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.CROWN_DAILY_PDDA_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.CROWN_FIRM_PDDA_LIST;
 
 @ActiveProfiles("test")
-class CrownFirmPddaListSummaryDataTest {
+class CrownPddaListSummaryDataTest {
 
     private static final String SUMMARY_SECTIONS_MESSAGE = "Summary sections count does not match";
     private static final String SUMMARY_CASES_MESSAGE = "Summary cases count does not match";
@@ -27,20 +35,39 @@ class CrownFirmPddaListSummaryDataTest {
     private static final String SUMMARY_FIELD_KEY_MESSAGE = "Summary field key does not match";
     private static final String SUMMARY_FIELD_VALUE_MESSAGE = "Summary field value does not match";
 
-    @Test
-    void testCrownFirmPddaListTemplate() throws IOException {
-        StringWriter writer = new StringWriter();
-        IOUtils.copy(Files.newInputStream(Paths.get(
-                         "src/test/resources/mocks/",
-                         "crownFirmPddaList.json"
-                     )), writer,
-                     Charset.defaultCharset()
-        );
+    private static JsonNode dailyListInputJson;
+    private static JsonNode firmListInputJson;
 
-        JsonNode payload = new ObjectMapper().readTree(writer.toString());
+    @BeforeAll
+    public static void setup() throws IOException {
+        StringWriter dailyListWriter = new StringWriter();
+        IOUtils.copy(
+            Files.newInputStream(Paths.get("src/test/resources/mocks/crownDailyPddaList.json")), dailyListWriter,
+            Charset.defaultCharset()
+        );
+        dailyListInputJson = new ObjectMapper().readTree(dailyListWriter.toString());
+
+        StringWriter firmListWriter = new StringWriter();
+        IOUtils.copy(
+            Files.newInputStream(Paths.get("src/test/resources/mocks/crownFirmPddaList.json")), firmListWriter,
+            Charset.defaultCharset()
+        );
+        firmListInputJson = new ObjectMapper().readTree(firmListWriter.toString());
+    }
+
+    private static Stream<Arguments> listTypeAndInputJsonProvider() {
+        return Stream.of(
+            Arguments.of(CROWN_DAILY_PDDA_LIST, dailyListInputJson),
+            Arguments.of(CROWN_FIRM_PDDA_LIST, firmListInputJson)
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("listTypeAndInputJsonProvider")
+    void testCrownFirmPddaListTemplate(ListType listType, JsonNode inputJson) throws JsonProcessingException {
         Map<String, List<Map<String, String>>> output = new ListConversionFactory()
-            .getArtefactSummaryData(CROWN_FIRM_PDDA_LIST).get()
-            .get(payload);
+            .getArtefactSummaryData(listType).get()
+            .get(inputJson);
 
         SoftAssertions softly = new SoftAssertions();
 
