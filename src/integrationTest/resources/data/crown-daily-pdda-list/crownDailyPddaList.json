@@ -1,15 +1,12 @@
 {
   "DailyList": {
     "DocumentID": {
-      "DocumentName": "TestDocumentName",
       "UniqueID": "TestUniqueID",
-      "DocumentType": "TestDocumentType",
-      "TimeStamp": "2025-09-09T10:00:00Z",
-      "Version": "1.0",
-      "SecurityClassification": "TestSecurity"
+      "DocumentType": "TestDocumentType"
     },
     "ListHeader": {
       "StartDate": "2025-09-10",
+      "StartDate": "2025-09-11",
       "Version": "1.0",
       "PublishedTime": "2025-09-09T10:00:00Z"
     },
@@ -45,7 +42,6 @@
         "Sittings": [
           {
             "CourtRoomNumber": 1,
-            "SittingSequenceNo": "TestSeqNo",
             "SittingAt": "10:00:00",
             "SittingPriority": "T",
             "SittingNote": "TestSittingNote",
@@ -71,8 +67,6 @@
                 "HearingSequenceNumber": 1,
                 "HearingDetails": {
                   "HearingDescription": "TestHearingDescription",
-                  "HearingDate": "2025-09-10",
-                  "HearingEndDate": "2025-09-10",
                   "HearingType": "ABC"
                 },
                 "TimeMarkingNote": "TestTimeMarkingNote",
@@ -129,40 +123,10 @@
                       "Nationality": "TestNationality"
                     },
                     "URN": "TestURN",
-                    "Counsel": [
-                      {
-                        "Solicitor": [
-                          {
-                            "Party": {
-                              "Person": {
-                                "PersonalDetails": {
-                                  "Name": {
-                                    "CitizenNameTitle": "Mr",
-                                    "CitizenNameForename": "TestForename",
-                                    "CitizenNameSurname": "TestSurname",
-                                    "CitizenNameSuffix": "TestSuffix",
-                                    "CitizenNameRequestedName": "TestSolicitorRequestedName"
-                                  },
-                                  "MaskedName": "TestSolicitorMasked",
-                                  "IsMasked": "no",
-                                  "DateOfBirth": {
-                                    "BirthDate": "1980-01-01",
-                                    "VerifiedBy": "not verified"
-                                  },
-                                  "Sex": "female",
-                                  "Address": {
-                                    "Line": [
-                                      "TestSolicitorAddress"
-                                    ],
-                                    "Postcode": "TestSolicitorPostcode"
-                                  }
-                                }
-                              }
-                            }
-                          }
-                        ]
-                      }
-                    ],
+                    "PrisonerID": "TestPrisonerID",
+                    "PrisonLocation": {
+                      "Location": ["TestPrisoneLocation"]
+                    },
                     "Charges": [
                       {
                         "OffenceStatement": "TestOffenceStatement",
@@ -207,7 +171,6 @@
         "Sittings": [
           {
             "CourtRoomNumber": 5,
-            "SittingSequenceNo": "TestSeqNo",
             "SittingAt": "14:00:00",
             "SittingPriority": "T",
             "SittingNote": "TestSittingNote",
@@ -225,8 +188,6 @@
                 "HearingSequenceNumber": 1,
                 "HearingDetails": {
                   "HearingDescription": "TestHearingDescription2",
-                  "HearingDate": "2025-09-10",
-                  "HearingEndDate": "2025-09-11",
                   "HearingType": "ABC"
                 },
                 "TimeMarkingNote": "TestTimeMarkingNote",
@@ -283,19 +244,10 @@
                       "Nationality": "TestNationality"
                     },
                     "URN": "TestURN",
-                    "Counsel": [
-                      {
-                        "Solicitor": [
-                          {
-                            "Party": {
-                              "Organisation": {
-                                "OrganisationName": "TestSolicitorOrg"
-                              }
-                            }
-                          }
-                        ]
-                      }
-                    ],
+                    "PrisonerID": "TestPrisonerID",
+                    "PrisonLocation": {
+                      "Location": ["TestPrisoneLocation"]
+                    },
                     "Charges": [
                       {
                         "OffenceStatement": "TestOffenceStatement",
@@ -311,7 +263,6 @@
           },
           {
             "CourtRoomNumber": 6,
-            "SittingSequenceNo": "TestSeqNo",
             "SittingAt": "15:00:00",
             "SittingPriority": "T",
             "SittingNote": "TestSittingNote",
@@ -327,8 +278,6 @@
                 "HearingSequenceNumber": 1,
                 "HearingDetails": {
                   "HearingDescription": "TestHearingDescription3",
-                  "HearingDate": "2025-09-10",
-                  "HearingEndDate": "2025-09-11",
                   "HearingType": "ABC"
                 },
                 "TimeMarkingNote": "TestTimeMarkingNote",
@@ -364,62 +313,6 @@
             ]
           }
         ]
-      }
-    ],
-    "ReserveList": [
-      {
-        "HearingDetails": {
-          "HearingDescription": "TestReserveHearing",
-          "HearingDate": "2025-09-11",
-          "HearingEndDate": "2025-09-11",
-          "HearingType": "DEF"
-        },
-        "CaseNumber": "T00112244",
-        "CaseNumberCaTH": "T00112244",
-        "Prosecution": {
-          "Advocate": {
-            "PersonalDetails": {
-              "Name": {
-                "CitizenNameTitle": "Mr",
-                "CitizenNameForename": "TestReserveAdvocateForename",
-                "CitizenNameSurname": "TestReserveAdvocateSurname",
-                "CitizenNameSuffix": "TestReserveAdvocateSuffix",
-                "CitizenNameRequestedName": "TestReserveAdvocateRequestedName"
-              },
-              "MaskedName": "TestReserveAdvocateMasked",
-              "IsMasked": "yes"
-            }
-          },
-          "ProsecutingReference": "TestReserveProsecutingRef",
-          "ProsecutingOrganisation": {
-            "OrganisationName": "TestReserveProsecutingOrg"
-          },
-          "ProsecutingAuthority": "Other Prosecutor"
-        },
-        "CommittingCourt": {
-          "CourtHouseType": "Magistrates Court",
-          "CourtHouseCode": "4321",
-          "CourtHouseShortName": "TestReserveOriginShortName",
-          "CourtHouseName": "TestReserveOriginName"
-        },
-        "ListNote": "TestReserveListNote",
-        "Defendants": [
-          {
-            "PersonalDetails": {
-              "Name": {
-                "CitizenNameTitle": "Mr",
-                "CitizenNameForename": "TestReserveForename",
-                "CitizenNameSurname": "TestReserveSurname",
-                "CitizenNameSuffix": "TestReserveSuffix",
-                "CitizenNameRequestedName": "TestReserveRequestedName"
-              },
-              "MaskedName": "TestReserveMasked",
-              "IsMasked": "yes"
-            },
-            "URN": "TestReserveURN"
-          }
-        ],
-        "Respondent": ["TestReserveRespondent"]
       }
     ]
   }
