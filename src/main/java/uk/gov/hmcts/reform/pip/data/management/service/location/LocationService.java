@@ -243,10 +243,10 @@ public class LocationService {
 
     /**
      * This method will delete a location from the database.
-     * @param locationId The ID of the location to delete.
-     * @param userId The ID of the user who is deleting the location.
+     * @param locationId    The ID of the location to delete.
+     * @param requesterId   The ID of the user who is deleting the location.
      */
-    public LocationDeletion deleteLocation(Integer locationId, String userId)
+    public LocationDeletion deleteLocation(Integer locationId, String requesterId)
         throws JsonProcessingException {
         LocationDeletion locationDeletion;
         Location location = locationRepository.getLocationByLocationId(locationId)
@@ -254,16 +254,16 @@ public class LocationService {
                 String.format("No location found with the id: %s", locationId)
             ));
 
-        PiUser userInfo = accountManagementService.getUserById(userId);
-        locationDeletion = checkActiveArtefactForLocation(location, userInfo.getEmail());
+        PiUser userInfo = accountManagementService.getUserById(requesterId);
+        locationDeletion = checkActiveArtefactForLocation(location, userInfo.getEmail(), requesterId);
         if (!locationDeletion.isExists()) {
-            locationDeletion = checkActiveSubscriptionForLocation(location, userInfo.getEmail());
+            locationDeletion = checkActiveSubscriptionForLocation(location, userInfo.getEmail(), requesterId);
             if (!locationDeletion.isExists()) {
                 locationRepository.deleteById(locationId);
                 systemAdminNotificationService.sendEmailNotification(
-                    userInfo.getEmail(), ActionResult.SUCCEEDED,
-                    String.format("Location %s with Id %s has been deleted.", location.getName(),
-                                  location.getLocationId()),
+                    userInfo.getEmail(), requesterId, ActionResult.SUCCEEDED,
+                    String.format("Location %s with Id %s has been deleted.",
+                            location.getName(), location.getLocationId()),
                     ChangeType.DELETE_LOCATION
                 );
             }
@@ -343,8 +343,8 @@ public class LocationService {
         }
     }
 
-    private LocationDeletion checkActiveArtefactForLocation(Location location, String requesterEmail)
-        throws JsonProcessingException {
+    private LocationDeletion checkActiveArtefactForLocation(Location location, String requesterEmail,
+                                                            String requesterId) throws JsonProcessingException {
         LocalDateTime searchDateTime = LocalDateTime.now();
         LocationDeletion locationDeletion = new LocationDeletion();
         List<Artefact> activeArtefacts =
@@ -353,7 +353,7 @@ public class LocationService {
             locationDeletion = new LocationDeletion("There are active artefacts for the given location.",
                                                     true);
             systemAdminNotificationService.sendEmailNotification(
-                requesterEmail, ActionResult.ATTEMPTED,
+                requesterEmail, requesterId, ActionResult.ATTEMPTED,
                 String.format("There are active artefacts for following location: %s", location.getName()),
                 ChangeType.DELETE_LOCATION
             );
@@ -361,7 +361,8 @@ public class LocationService {
         return locationDeletion;
     }
 
-    private LocationDeletion checkActiveSubscriptionForLocation(Location location, String requesterEmail)
+    private LocationDeletion checkActiveSubscriptionForLocation(Location location, String requesterEmail,
+                                                                String requesterId)
         throws JsonProcessingException {
         LocationDeletion locationDeletion = new LocationDeletion();
         String result =
@@ -373,7 +374,7 @@ public class LocationService {
                 locationDeletion = new LocationDeletion("There are active subscriptions for the given location.",
                                                         true);
                 systemAdminNotificationService.sendEmailNotification(
-                    requesterEmail, ActionResult.ATTEMPTED,
+                    requesterEmail, requesterId, ActionResult.ATTEMPTED,
                     String.format("There are active subscriptions for the following location: %s", location.getName()),
                     ChangeType.DELETE_LOCATION
                 );
