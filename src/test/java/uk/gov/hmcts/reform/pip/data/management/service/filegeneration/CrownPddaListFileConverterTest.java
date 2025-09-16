@@ -18,20 +18,30 @@ import java.nio.file.Paths;
 import java.time.Instant;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.CROWN_DAILY_PDDA_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.CROWN_FIRM_PDDA_LIST;
 
 class CrownPddaListFileConverterTest {
+    private static final String TEST_FILE_PATH = "src/test/resources/mocks/";
+
+    private static final String LANGUAGE = "language";
+    private static final String LIST_TYPE = "listType";
     private static final String HEADING_CLASS = "govuk-heading-l";
     private static final String BODY_CLASS = "govuk-body";
 
+    private static final String ADDRESS = "1 Main Road London A1 1AA";
     private static final String HEADING_MESSAGE = "Heading does not match";
     private static final String BODY_MESSAGE = "Body does not match";
 
+    private static final Map<String, String> COMMON_METADATA = Map.of("contentDate", Instant.now().toString(),
+                                                                      "provenance", "MANUAL_UPLOAD",
+                                                                      "locationName", "location"
+    );
+
     @Test
     void testCrownDailyPddaListTemplate() throws IOException {
-        CrownPddaListFileConverter crownDailyPddaListConverter = new CrownPddaListFileConverter(CROWN_DAILY_PDDA_LIST);
         Map<String, Object> language;
 
         try (InputStream languageFile = Thread.currentThread()
@@ -42,33 +52,32 @@ class CrownPddaListFileConverterTest {
         }
         StringWriter writer = new StringWriter();
         IOUtils.copy(
-            Files.newInputStream(Paths.get("src/test/resources/mocks/", "crownDailyPddaList.json")),
+            Files.newInputStream(Paths.get(TEST_FILE_PATH, "crownDailyPddaList.json")),
             writer, Charset.defaultCharset()
         );
-        Map<String, String> metadataMap = Map.of("contentDate", Instant.now().toString(),
-                                                 "provenance", "MANUAL_UPLOAD",
-                                                 "locationName", "location",
-                                                 "language", "ENGLISH",
-                                                 "listType", "CROWN_DAILY_PDDA_LIST"
-        );
+        Map<String, String> metadataMap = new ConcurrentHashMap<>(COMMON_METADATA);
+        metadataMap.put(LANGUAGE, "ENGLISH");
+        metadataMap.put(LIST_TYPE, "CROWN_DAILY_PDDA_LIST");
 
         JsonNode inputJson = new ObjectMapper().readTree(writer.toString());
+        CrownPddaListFileConverter crownDailyPddaListConverter = new CrownPddaListFileConverter(CROWN_DAILY_PDDA_LIST);
+
         String outputHtml = crownDailyPddaListConverter.convert(inputJson, metadataMap, language);
         Document document = Jsoup.parse(outputHtml);
 
         SoftAssertions softly = new SoftAssertions();
 
         softly.assertThat(outputHtml)
-            .as("No html found")
+            .as("No Daily list html found")
             .isNotEmpty();
 
         softly.assertThat(document.title())
-            .as("incorrect title found.")
-            .isEqualTo("Crown Firm List");
+            .as("incorrect Daily list title found.")
+            .isEqualTo("Crown Daily List");
 
         softly.assertThat(document.getElementsByClass(HEADING_CLASS).get(0).text())
             .as(HEADING_MESSAGE)
-            .contains("Crown Firm List for location");
+            .contains("Crown Daily List for location");
 
         softly.assertThat(document.getElementsByClass(BODY_CLASS).get(0).text())
             .as(BODY_MESSAGE)
@@ -84,7 +93,7 @@ class CrownPddaListFileConverterTest {
 
         softly.assertThat(document.getElementsByClass(BODY_CLASS).get(3).text())
             .as(BODY_MESSAGE)
-            .contains("1 Main Road London A1 1AA");
+            .contains(ADDRESS);
 
         softly.assertThat(document.getElementsByClass(BODY_CLASS).get(4).text())
             .as(BODY_MESSAGE)
@@ -92,14 +101,13 @@ class CrownPddaListFileConverterTest {
 
         softly.assertThat(document.getElementsByClass(HEADING_CLASS).get(1).text())
             .as(HEADING_MESSAGE)
-            .contains("Wednesday 10 September 2025");
+            .contains("TestCourtHouseName");
 
         softly.assertAll();
     }
 
     @Test
     void testCrownDailyPddaListTemplateWelsh() throws IOException {
-        CrownPddaListFileConverter crownDailyPddaListConverter = new CrownPddaListFileConverter(CROWN_DAILY_PDDA_LIST);
         Map<String, Object> language;
 
         try (InputStream languageFile = Thread.currentThread()
@@ -110,34 +118,33 @@ class CrownPddaListFileConverterTest {
         }
         StringWriter writer = new StringWriter();
         IOUtils.copy(
-            Files.newInputStream(Paths.get("src/test/resources/mocks/", "crownDailyPddaList.json")),
+            Files.newInputStream(Paths.get(TEST_FILE_PATH, "crownDailyPddaList.json")),
             writer,
             Charset.defaultCharset()
         );
-        Map<String, String> metadataMap = Map.of("contentDate", Instant.now().toString(),
-                                                 "provenance", "MANUAL_UPLOAD",
-                                                 "locationName", "welsh location",
-                                                 "language", "WELSH",
-                                                 "listType", "CROWN_DAILY_PDDA_LIST"
-        );
+        Map<String, String> metadataMap = new ConcurrentHashMap<>(COMMON_METADATA);
+        metadataMap.put(LANGUAGE, "WELSH");
+        metadataMap.put(LIST_TYPE, "CROWN_DAILY_PDDA_LIST");
 
         JsonNode inputJson = new ObjectMapper().readTree(writer.toString());
+        CrownPddaListFileConverter crownDailyPddaListConverter = new CrownPddaListFileConverter(CROWN_DAILY_PDDA_LIST);
+
         String outputHtml = crownDailyPddaListConverter.convert(inputJson, metadataMap, language);
         Document document = Jsoup.parse(outputHtml);
 
         SoftAssertions softly = new SoftAssertions();
 
         softly.assertThat(outputHtml)
-            .as("No html found")
+            .as("No Daily list html found")
             .isNotEmpty();
 
         softly.assertThat(document.title())
-            .as("incorrect title found.")
-            .isEqualTo("Rhestr Cwmni Llys y Goron");
+            .as("incorrect Daily list title found.")
+            .isEqualTo("Rhestr Ddyddiol Llys y Goron");
 
         softly.assertThat(document.getElementsByClass(HEADING_CLASS).get(0).text())
             .as(HEADING_MESSAGE)
-            .contains("Rhestr Cwmni Llys y Goron ar gyfer welsh location");
+            .contains("Rhestr Ddyddiol Llys y Goron ar gyfer location");
 
         softly.assertThat(document.getElementsByClass(BODY_CLASS).get(0).text())
             .as(BODY_MESSAGE)
@@ -153,7 +160,7 @@ class CrownPddaListFileConverterTest {
 
         softly.assertThat(document.getElementsByClass(BODY_CLASS).get(3).text())
             .as(BODY_MESSAGE)
-            .contains("1 Main Road London A1 1AA");
+            .contains(ADDRESS);
 
         softly.assertThat(document.getElementsByClass(BODY_CLASS).get(4).text())
             .as(BODY_MESSAGE)
@@ -161,14 +168,13 @@ class CrownPddaListFileConverterTest {
 
         softly.assertThat(document.getElementsByClass(HEADING_CLASS).get(1).text())
             .as(HEADING_MESSAGE)
-            .contains("Wednesday 10 September 2025");
+            .contains("TestCourtHouseName");
 
         softly.assertAll();
     }
 
     @Test
     void testCrownFirmPddaListTemplate() throws IOException {
-        CrownPddaListFileConverter crownFirmPddaListConverter = new CrownPddaListFileConverter(CROWN_FIRM_PDDA_LIST);
         Map<String, Object> language;
 
         try (InputStream languageFile = Thread.currentThread()
@@ -179,28 +185,27 @@ class CrownPddaListFileConverterTest {
         }
         StringWriter writer = new StringWriter();
         IOUtils.copy(
-            Files.newInputStream(Paths.get("src/test/resources/mocks/", "crownFirmPddaList.json")),
+            Files.newInputStream(Paths.get(TEST_FILE_PATH, "crownFirmPddaList.json")),
             writer, Charset.defaultCharset()
         );
-        Map<String, String> metadataMap = Map.of("contentDate", Instant.now().toString(),
-                                                 "provenance", "MANUAL_UPLOAD",
-                                                 "locationName", "location",
-                                                 "language", "ENGLISH",
-                                                 "listType", "CROWN_FIRM_PDDA_LIST"
-        );
+        Map<String, String> metadataMap = new ConcurrentHashMap<>(COMMON_METADATA);
+        metadataMap.put(LANGUAGE, "ENGLISH");
+        metadataMap.put(LIST_TYPE, "CROWN_FIRM_PDDA_LIST");
 
         JsonNode inputJson = new ObjectMapper().readTree(writer.toString());
+        CrownPddaListFileConverter crownFirmPddaListConverter = new CrownPddaListFileConverter(CROWN_FIRM_PDDA_LIST);
+
         String outputHtml = crownFirmPddaListConverter.convert(inputJson, metadataMap, language);
         Document document = Jsoup.parse(outputHtml);
 
         SoftAssertions softly = new SoftAssertions();
 
         softly.assertThat(outputHtml)
-            .as("No html found")
+            .as("No Firm list html found")
             .isNotEmpty();
 
         softly.assertThat(document.title())
-            .as("incorrect title found.")
+            .as("incorrect Firm list title found.")
             .isEqualTo("Crown Firm List");
 
         softly.assertThat(document.getElementsByClass(HEADING_CLASS).get(0).text())
@@ -221,7 +226,7 @@ class CrownPddaListFileConverterTest {
 
         softly.assertThat(document.getElementsByClass(BODY_CLASS).get(3).text())
             .as(BODY_MESSAGE)
-            .contains("1 Main Road London A1 1AA");
+            .contains(ADDRESS);
 
         softly.assertThat(document.getElementsByClass(BODY_CLASS).get(4).text())
             .as(BODY_MESSAGE)
@@ -236,7 +241,6 @@ class CrownPddaListFileConverterTest {
 
     @Test
     void testCrownFirmPddaListTemplateWelsh() throws IOException {
-        CrownPddaListFileConverter crownFirmPddaListConverter = new CrownPddaListFileConverter(CROWN_FIRM_PDDA_LIST);
         Map<String, Object> language;
 
         try (InputStream languageFile = Thread.currentThread()
@@ -247,34 +251,33 @@ class CrownPddaListFileConverterTest {
         }
         StringWriter writer = new StringWriter();
         IOUtils.copy(
-            Files.newInputStream(Paths.get("src/test/resources/mocks/", "crownFirmPddaList.json")),
+            Files.newInputStream(Paths.get(TEST_FILE_PATH, "crownFirmPddaList.json")),
             writer,
             Charset.defaultCharset()
         );
-        Map<String, String> metadataMap = Map.of("contentDate", Instant.now().toString(),
-                                                 "provenance", "MANUAL_UPLOAD",
-                                                 "locationName", "welsh location",
-                                                 "language", "WELSH",
-                                                 "listType", "CROWN_FIRM_PDDA_LIST"
-        );
+        Map<String, String> metadataMap = new ConcurrentHashMap<>(COMMON_METADATA);
+        metadataMap.put(LANGUAGE, "WELSH");
+        metadataMap.put(LIST_TYPE, "CROWN_FIRM_PDDA_LIST");
 
         JsonNode inputJson = new ObjectMapper().readTree(writer.toString());
+        CrownPddaListFileConverter crownFirmPddaListConverter = new CrownPddaListFileConverter(CROWN_FIRM_PDDA_LIST);
+
         String outputHtml = crownFirmPddaListConverter.convert(inputJson, metadataMap, language);
         Document document = Jsoup.parse(outputHtml);
 
         SoftAssertions softly = new SoftAssertions();
 
         softly.assertThat(outputHtml)
-            .as("No html found")
+            .as("No Firm list html found")
             .isNotEmpty();
 
         softly.assertThat(document.title())
-            .as("incorrect title found.")
+            .as("incorrect Firm list title found.")
             .isEqualTo("Rhestr Cwmni Llys y Goron");
 
         softly.assertThat(document.getElementsByClass(HEADING_CLASS).get(0).text())
             .as(HEADING_MESSAGE)
-            .contains("Rhestr Cwmni Llys y Goron ar gyfer welsh location");
+            .contains("Rhestr Cwmni Llys y Goron ar gyfer location");
 
         softly.assertThat(document.getElementsByClass(BODY_CLASS).get(0).text())
             .as(BODY_MESSAGE)
@@ -290,7 +293,7 @@ class CrownPddaListFileConverterTest {
 
         softly.assertThat(document.getElementsByClass(BODY_CLASS).get(3).text())
             .as(BODY_MESSAGE)
-            .contains("1 Main Road London A1 1AA");
+            .contains(ADDRESS);
 
         softly.assertThat(document.getElementsByClass(BODY_CLASS).get(4).text())
             .as(BODY_MESSAGE)

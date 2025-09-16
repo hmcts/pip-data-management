@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.IOUtils;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -25,6 +24,8 @@ import java.util.stream.Stream;
 
 @ActiveProfiles("test")
 class CrownPddaListHelperTest {
+    private static final String TEST_PROVIDER = "listTypeAndInputJsonProvider";
+
     private static final String RESULT_COUNT_MESSAGE = "Result count does not match";
     private static final String COURT_LIST_INFO_MESSAGE = "Court list info does not match";
     private static final String SITTING_INFO_MESSAGE = "Sitting info does not match";
@@ -58,7 +59,7 @@ class CrownPddaListHelperTest {
     }
 
     @ParameterizedTest
-    @MethodSource("listTypeAndInputJsonProvider")
+    @MethodSource(TEST_PROVIDER)
     void testProcessPayloadMethod(ListType listType, JsonNode inputJson) {
         List<CrownPddaList> results = CrownPddaListHelper.processPayload(inputJson, listType);
         SoftAssertions softly = new SoftAssertions();
@@ -87,15 +88,17 @@ class CrownPddaListHelperTest {
     }
 
     @ParameterizedTest
-    @MethodSource("listTypeAndInputJsonProvider")
+    @MethodSource(TEST_PROVIDER)
     void testCourtListInfo(ListType listType, JsonNode inputJson) {
         List<CrownPddaList> results = CrownPddaListHelper.processPayload(inputJson, listType);
         CrownPddaList result = results.getFirst();
         SoftAssertions softly = new SoftAssertions();
 
-        softly.assertThat(result.getSittingDate())
-            .as(COURT_LIST_INFO_MESSAGE)
-            .isEqualTo("Wednesday 10 September 2025");
+        if (ListType.CROWN_FIRM_PDDA_LIST.equals(listType)) {
+            softly.assertThat(result.getSittingDate())
+                .as(COURT_LIST_INFO_MESSAGE)
+                .isEqualTo("Wednesday 10 September 2025");
+        }
 
         softly.assertThat(result.getCourtName())
             .as(COURT_LIST_INFO_MESSAGE)
@@ -114,7 +117,7 @@ class CrownPddaListHelperTest {
     }
 
     @ParameterizedTest
-    @MethodSource("listTypeAndInputJsonProvider")
+    @MethodSource(TEST_PROVIDER)
     void testSittingInfo(ListType listType, JsonNode inputJson) {
         List<CrownPddaList> results = CrownPddaListHelper.processPayload(inputJson, listType);
 
@@ -138,7 +141,7 @@ class CrownPddaListHelperTest {
     }
 
     @ParameterizedTest
-    @MethodSource("listTypeAndInputJsonProvider")
+    @MethodSource(TEST_PROVIDER)
     void testHearingInfo(ListType listType, JsonNode inputJson) {
         List<CrownPddaList> results = CrownPddaListHelper.processPayload(inputJson, listType);
 
@@ -158,10 +161,6 @@ class CrownPddaListHelperTest {
             .as(HEARING_INFO_MESSAGE)
             .isEqualTo("TestHearingDescription");
 
-        softly.assertThat(result.getRepresentativeName())
-            .as(HEARING_INFO_MESSAGE)
-            .isEqualTo("TestSolicitorRequestedName");
-
         softly.assertThat(result.getProsecutingAuthority())
             .as(HEARING_INFO_MESSAGE)
             .isEqualTo("Crown Prosecution Service");
@@ -169,6 +168,12 @@ class CrownPddaListHelperTest {
         softly.assertThat(result.getListNote())
             .as(HEARING_INFO_MESSAGE)
             .isEqualTo("TestListNote");
+
+        if (ListType.CROWN_FIRM_PDDA_LIST.equals(listType)) {
+            softly.assertThat(result.getRepresentativeName())
+                .as(HEARING_INFO_MESSAGE)
+                .isEqualTo("TestSolicitorRequestedName");
+        }
 
         softly.assertAll();
     }
