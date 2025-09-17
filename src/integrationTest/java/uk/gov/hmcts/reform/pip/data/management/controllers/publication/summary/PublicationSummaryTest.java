@@ -159,7 +159,7 @@ class PublicationSummaryTest extends PublicationIntegrationTestBase {
     @Test
     void testGenerateArtefactSummaryCrownDailyPddaList() throws Exception {
         byte[] data = getTestData("data/crown-daily-pdda-list/crownDailyPddaList.json");
-        Artefact artefact = createPublication(ListType.CROWN_FIRM_PDDA_LIST, data);
+        Artefact artefact = createPublication(ListType.CROWN_DAILY_PDDA_LIST, data);
 
         when(blobClient.downloadContent()).thenReturn(BinaryData.fromBytes(data));
 
