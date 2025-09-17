@@ -49,8 +49,7 @@
                     "CourtHouseCode": "5678",
                     "CourtHouseShortName": "TestOriginShortName",
                     "CourtHouseName": "TestOriginName"
-                  },
-                  "Section53": "yes"
+                  }
                 },
                 "Hearing": [
                   {
@@ -137,12 +136,7 @@
               {
                 "CaseNumber": "T00112244",
                 "CaseNumberCaTH": "T00112244",
-                "CaseArrivedFrom": {
-                  "OriginatingCourt": {
-                    "CourtHouseCode": "4321",
-                    "CourtHouseShortName": "TestOriginShortName2",
-                    "CourtHouseName": "TestOriginName2"
-                  },
+                "CaseArrivedFrom": {},
                   "Section53": "no"
                 },
                 "Hearing": [

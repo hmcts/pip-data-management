@@ -69,6 +69,7 @@ class CrownWarnedPddaListTest extends IntegrationBasicTestBase {
     private static final String CASE_NUMBER_CATH = "CaseNumberCaTH";
     private static final String CASE_ARRIVED_FROM = "CaseArrivedFrom";
     private static final String ORIGINATING_COURT = "OriginatingCourt";
+    private static final String SECTION_53 = "Section53";
     private static final String ORGANISATION_NAME = "OrganisationName";
     private static final String OFFENCE_STATEMENT = "OffenceStatement";
 
@@ -871,7 +872,7 @@ class CrownWarnedPddaListTest extends IntegrationBasicTestBase {
 
             JsonNode node = getJsonNode(text);
             ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(COURT_LISTS).get(0).get(WITHOUT_FIXED_DATE).get(FIXTURE)
-                .get(CASES).get(0).get(CASE_ARRIVED_FROM).get(ORIGINATING_COURT)).remove(COURT_HOUSE_CODE);
+                .get(CASES).get(0).get(CASE_ARRIVED_FROM)).remove(SECTION_53);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
@@ -888,7 +889,7 @@ class CrownWarnedPddaListTest extends IntegrationBasicTestBase {
 
             JsonNode node = getJsonNode(text);
             ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(COURT_LISTS).get(0).get(WITHOUT_FIXED_DATE).get(FIXTURE)
-                .get(CASES).get(0).get(CASE_ARRIVED_FROM).get(ORIGINATING_COURT)).remove(COURT_HOUSE_NAME);
+                .get(CASES).get(0).get(CASE_ARRIVED_FROM)).remove(SECTION_53);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
