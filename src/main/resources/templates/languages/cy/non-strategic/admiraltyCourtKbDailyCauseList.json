@@ -1,21 +1,6 @@
 {
   "listName": "Rhestr Achosion Dyddiol Llys y Morlys (Adran Mainc y Brenin)",
-  "venueName": "Rolls Building",
-  "addressLine1": "Fetter Lane, London",
-  "addressLine2": "EC4A 1NL",
-  "importantInformationHeading1": "Gwrandawiadau o bell gerbron Barnwr yr Uchel Lys",
   "importantInformationLine1": "Bydd y gwrandawiad ar gael i gynrychiolwyr y cyfryngau ar gais. Bydd yn cael ei drefnu a'i gynnal gan ddefnyddio MS Teams (oni nodir yn wahanol). Bydd angen i unrhyw gynrychiolydd y cyfryngau (neu unrhyw aelod arall o'r cyhoedd) sy'n dymuno gweld y gwrandawiad wneud hynny dros y rhyngrwyd a darparu cyfeiriad e-bost i gael dolen briodol ar gyfer cael mynediad. Cysylltwch â comct.listing@justice.gov.uk.",
-  "importantInformationHeading2": "Gwrandawiadau o bell gerbron Cofrestrydd y Morlys",
-  "importantInformationLine2": "Gwrandawiad o bell trwy MS Teams. I gael manylion am gael mynediad i'r gwrandawiad, cysylltwch â admiralty.registrar@justice.gov.uk. Dylai unrhyw barti sy'n mynychu'r gwrandawiad wyneb yn wyneb yn yr Adeilad Rolls gysylltu ag aelod o staff yn Swyddfa’r Rhestrau a fydd wedyn yn eu cysylltu â'r gwrandawiadau o bell.",
-  "importantInformationHeading3": "Dyfarniadau o bell",
-  "importantInformationLine3": "Traddodi o Bell: Bydd y dyfarniad hwn yn cael ei draddodi o bell trwy gylchrediad i'r partïon neu eu cynrychiolwyr trwy e-bost a'i ryddhau i'r Archifau Cenedlaethol. Dylai copi o'r dyfarniad ar ffurf derfynol fel y'i rhoddwyd fod ar gael ar wefan yr Archifau Cenedlaethol yn fuan wedyn. Gall aelodau'r cyfryngau gael copi ar gais trwy e-bost i'r Swyddfa Farnwrol press.enquiries@judiciary.uk",
-  "tableHeaders": [
-    "Barnwr",
-    "Amser",
-    "Leoliad",
-    "Math",
-    "Rhif yr achos",
-    "Enw’r achos",
-    "Gwybodaeth ychwanegol"
-  ]
+  "remoteHearingsAdmiraltyRegistrarHeading": "Gwrandawiadau o bell gerbron Cofrestrydd y Morlys",
+  "remoteHearingsAdmiraltyRegistrarText": "Gwrandawiad o bell trwy MS Teams. I gael manylion am gael mynediad i'r gwrandawiad, cysylltwch â admiralty.registrar@justice.gov.uk. Dylai unrhyw barti sy'n mynychu'r gwrandawiad wyneb yn wyneb yn yr Adeilad Rolls gysylltu ag aelod o staff yn Swyddfa’r Rhestrau a fydd wedyn yn eu cysylltu â'r gwrandawiadau o bell."
 }

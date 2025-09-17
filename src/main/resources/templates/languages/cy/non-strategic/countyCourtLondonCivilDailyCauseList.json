@@ -1,18 +1,6 @@
 {
   "listName": "Rhestr Achosion Dyddiol Sifil yn y Llys Sirol yng Nghanol Llundain",
-  "venueName": "Llysoedd Barn Brenhinol",
   "addressLine1": "Thomas More Building",
-  "addressLine2": "Strand, London",
-  "addressLine3": "WC2A 2LL",
   "importantInformationLine1": "Llys Sirol Canol Llundain a Llys Maer a Dinas Llundain – Bydd gwrandawiadau ar gyfer Llys Sirol Canol Llundain yn cael eu gwrando yn Adeilad Thomas More, sydd wedi’i leoli yn y Llysoedd Barn Brenhinol. Rhestrir achosion hefyd yn Llys Maer a Dinas Llundain, Adeiladau’r Guildhall, Stryd Basinghall, Llundain, EC2V 5AR. Oherwydd argaeledd barnwrol, gellir symud achosion rhwng y Llys Sirol yng Nghanol Llundain a Llys Maer a Dinas Llundain. Gwnewch yn siŵr eich bod yn gwirio rhestrau achosion Llys Sirol Canol Llundain a Llys Maer a Dinas Llundain y diwrnod cyn eich gwrandawiad. Anelir at gyhoeddi rhestrau erbyn 5pm.",
-  "importantInformationLine2": "Dylid gwneud ceisiadau ar gyfer y cyfryngau ac eraill, gan gynnwys blogwyr cyfreithiol, i Lys Sirol Canol Llundain drwy enquiries.centrallondon.countycourt@justice.gov.uk neu Lys Maer a Dinas Llundain drwy enquiries.centrallondon.countycourt@justice.gov.uk. Yna gwneir trefniadau i chi fynychu. Wrth ystyried y defnydd o dechnoleg ffôn a fideo, bydd y farnwriaeth yn ystyried egwyddorion cyfiawnder agored. Gall y llys eithrio arsylwyr lle bo angen i sicrhau gweinyddiaeth briodol cyfiawnder.",
-  "tableHeaders": [
-    "Lleoliad",
-    "Barnwr",
-    "Amser",
-    "Rhif yr achos",
-    "Manylion yr achos",
-    "Math o Wrandawiad",
-    "Gwybodaeth ychwanegol"
-  ]
+  "importantInformationLine2": "Dylid gwneud ceisiadau ar gyfer y cyfryngau ac eraill, gan gynnwys blogwyr cyfreithiol, i Lys Sirol Canol Llundain drwy enquiries.centrallondon.countycourt@justice.gov.uk neu Lys Maer a Dinas Llundain drwy enquiries.centrallondon.countycourt@justice.gov.uk. Yna gwneir trefniadau i chi fynychu. Wrth ystyried y defnydd o dechnoleg ffôn a fideo, bydd y farnwriaeth yn ystyried egwyddorion cyfiawnder agored. Gall y llys eithrio arsylwyr lle bo angen i sicrhau gweinyddiaeth briodol cyfiawnder."
 }

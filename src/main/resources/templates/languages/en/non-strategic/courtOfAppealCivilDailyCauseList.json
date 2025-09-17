@@ -1,8 +1,5 @@
 {
   "listName": "Court of Appeal (Civil Division) Daily Cause List",
-  "venueName": "Royal Courts of Justice",
-  "addressLine1": "Strand, London",
-  "addressLine2": "WC2A 2LL",
   "importantInformationLine1": "Most cases in the Court of Appeal (Civil Division) are now live streamed. More information about hearings to be live streamed can be found at the ",
   "importantInformationLine2": "To view a live stream click on the case title in ",
   "importantInformationLine3": " There is no requirement to ask for permission from the Court.",
@@ -12,15 +9,6 @@
   "liveStreamLink": "https://www.judiciary.uk/the-court-of-appeal-civil-division-live-streaming-of-court-hearings/",
   "liveStreamLinkText": "Court of Appeal (Civil Division) Live Stream site.",
   "futureJudgementsNotice": "Notice for future judgments",
-  "tableHeaders": [
-    "Venue",
-    "Judge",
-    "Time",
-    "Case number",
-    "Case details",
-    "Hearing type",
-    "Additional information"
-  ],
   "futureJudgementTableHeaders": [
     "Date",
     "Venue",

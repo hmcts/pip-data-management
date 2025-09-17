@@ -1,8 +1,5 @@
 {
   "listName": "Rhestr Achosion Dyddiol Adran Deulu yr Uchel Lys",
-  "venueName": "Llysoedd Barn Brenhinol",
-  "addressLine1": "Strand, London",
-  "addressLine2": "WC2A 2LL",
   "importantInformationLine1": "Bydd unrhyw gais a wneir ar ôl 1 Mawrth 2022 yn cael ei restru fel gwrandawiad wyneb yn wyneb oni bai bod cais i'w wrando o bell wedi'i wneud cyn y gwrandawiad a'i ganiatáu gan farnwr. Bydd pob gwrandawiad arall yn cael ei restru yn unol â chyfarwyddyd y barnwr yn y gwrandawiad blaenorol.",
   "importantInformationLine2": "Dylai aelodau achrededig o'r wasg, blogwyr cyfreithiol neu aelodau o'r cyhoedd sy'n dymuno mynychu gwrandawiad o bell e-bostio eu cais i rcj.familyhighcourt@justice.gov.uk a rcj.familylisting@justice.gov.uk a fydd yn anfon eich manylion e-bost at Dîm Cydymaith y Llys. Dylid anfon ceisiadau drwy e-bost y diwrnod cyn y gwrandawiad, neu dim hwyrach na 9am ar ddiwrnod y gwrandawiad i osgoi unrhyw oedi wrth geisio ymuno â’r gwrandawiad.",
   "importantInformationLine3": "Bydd y trefniadau presennol yn cael eu hadolygu.",
@@ -12,14 +9,5 @@
   "importantInformationLine7": "Bydd y dyfarniad hwn yn cael ei draddodi o bell trwy gylchrediad i'r partïon neu eu cynrychiolwyr trwy e-bost a'i ryddhau i'r Archifau Cenedlaethol. Dylai copi o'r dyfarniad ar ffurf derfynol fel y'i rhoddwyd fod ar gael ar wefan yr Archifau Cenedlaethol yn fuan wedyn.",
   "courtOfProtectionHeading": "Llys Gwarchod (Llysoedd Barn Brenhinol)",
   "tipstaffHeading": "Tipstaff",
-  "judgementsHeading": "Dyfarniadau",
-  "tableHeaders": [
-    "Lleoliad",
-    "Barnwr",
-    "Amser",
-    "Rhif yr achos",
-    "Manylion yr achos",
-    "Math o Wrandawiad",
-    "Gwybodaeth ychwanegol"
-  ]
+  "judgementsHeading": "Dyfarniadau"
 }

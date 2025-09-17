@@ -1,19 +1,7 @@
 {
   "listName": "Interim Applications List (Chancery Division) Daily Cause List",
-  "venueLine1": "Rolls Building",
-  "venueLine2": "Fetter Lane, London",
-  "venueLine3": "EC4A 1NL",
   "openJusticeMessage1": "Parties should contact the clerk to the Interim Judge, ",
   "openJusticeSeparator": ", ",
   "openJusticeMessage2": " as early as possible.",
-  "openJusticeMessage3": "An application should not be listed before the Interim Applications Judge unless the overall time required to deal with the application is 2 hours or less. The 2 hour maximum includes the judge’s pre-reading time, the hearing of the application, delivery of judgment and time for dealing with costs. If the judge considers that the estimate will exceed the 2 hour limit it may be stood out of the interim applications list.",
-  "tableHeaders": [
-    "Judge",
-    "Time",
-    "Venue",
-    "Type",
-    "Case number",
-    "Case name",
-    "Additional information"
-  ]
+  "openJusticeMessage3": "An application should not be listed before the Interim Applications Judge unless the overall time required to deal with the application is 2 hours or less. The 2 hour maximum includes the judge’s pre-reading time, the hearing of the application, delivery of judgment and time for dealing with costs. If the judge considers that the estimate will exceed the 2 hour limit it may be stood out of the interim applications list."
 }

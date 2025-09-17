@@ -2,14 +2,5 @@
   "listName": "Manchester Administrative Court Daily Cause List",
   "importantInformationText1": "A hearing before the Administrative Court in Manchester is a public hearing unless otherwise specified. If any person or representative of the media wishes to attend a remote hearing they should contact the listing office in good time before the scheduled hearing, either by emailing manchester@administrativecourtoffice.justice.gov.uk or by calling 0161 240 5313.",
   "importantInformationHeading2": "Judgments",
-  "importantInformationText2": "Judgments handed down by the judge remotely will be released by circulation to the parties’ representatives by email and release to the National Archives. The date and time for hand-down will be deemed to be not before time listed. A copy of the judgment in final form as handed down can be made available after that time, on request by email.",
-  "tableHeaders": [
-    "Venue",
-    "Judge",
-    "Time",
-    "Case number",
-    "Case details",
-    "Hearing type",
-    "Additional information"
-  ]
+  "importantInformationText2": "Judgments handed down by the judge remotely will be released by circulation to the parties’ representatives by email and release to the National Archives. The date and time for hand-down will be deemed to be not before time listed. A copy of the judgment in final form as handed down can be made available after that time, on request by email."
 }

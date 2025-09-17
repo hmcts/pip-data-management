@@ -1,8 +1,5 @@
 {
   "listName": "Family Division of the High Court Daily Cause List",
-  "venueName": "Royal Courts of Justice",
-  "addressLine1": "Strand, London",
-  "addressLine2": "WC2A 2LL",
   "importantInformationLine1": "Any application made after 1 March 2022 will be listed as an in person hearing unless an application for it to be heard remotely has been made prior to the hearing and granted by a judge. All other hearings will be listed in accordance with the direction of the judge at the previous hearing.",
   "importantInformationLine2": "Accredited members of the press, legal bloggers or members of the public who wish to attend remote hearing should email their request to rcj.familyhighcourt@justice.gov.uk and rcj.familylisting@justice.gov.uk who will forward your email details to the Associates Team. Requests should be emailed the day before the hearing, or no later than 9am on the day of the hearing to avoid any delay in being able to join the hearing.",
   "importantInformationLine3": "The present arrangements will be kept under review.",
@@ -12,14 +9,5 @@
   "importantInformationLine7": "Judgments will be handed down remotely by circulation to the parties or their representatives by email and released to the National Archives. A copy of the judgment in final form as handed down should be available on the National Archives website shortly thereafter.",
   "courtOfProtectionHeading": "Court of Protection (Royal Courts of Justice)",
   "tipstaffHeading": "Tipstaff",
-  "judgementsHeading": "Judgments",
-  "tableHeaders": [
-    "Venue",
-    "Judge",
-    "Time",
-    "Case number",
-    "Case details",
-    "Hearing type",
-    "Additional information"
-  ]
+  "judgementsHeading": "Judgments"
 }
