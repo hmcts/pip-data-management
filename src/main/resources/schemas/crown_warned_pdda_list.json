@@ -204,7 +204,7 @@
                 }
               },
               "WithFixedDate": {
-                "type": "object",
+                "type": "array",
                 "required": [
                   "HearingType",
                   "Fixture"
