@@ -1,4 +1,43 @@
 {
+  "$defs": {
+    "CaseArrivedFrom": {
+      "type": "object",
+      "oneOf": [
+        {
+          "required": ["OriginatingCourt"],
+          "properties": {
+            "OriginatingCourt": {
+              "type": "object",
+              "required": ["CourtHouseCode", "CourtHouseName"],
+              "properties": {
+                "CourtHouseCode": {
+                  "type": "string",
+                  "pattern": "^[0-9]{3,4}$"
+                },
+                "CourtHouseShortName": {
+                  "type": "string"
+                },
+                "CourtHouseName": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "required": ["Section53"],
+          "properties": {
+            "Section53": {
+              "type": "string",
+              "enum": ["yes", "no"]
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    }
+  },
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Root",
   "type": "object",
@@ -204,32 +243,8 @@
                             },
                             "CaseNumberCaTH": { "type": "string", "pattern": "^[A-Z][0-9]{8}$" },
                             "CaseArrivedFrom": {
-                              "type": "object",
-                              "properties": {
-                                "OriginatingCourt": {
-                                  "type": "object",
-                                  "required": [
-                                    "CourtHouseCode",
-                                    "CourtHouseName"
-                                  ],
-                                  "properties": {
-                                    "CourtHouseCode": {
-                                      "type": "string",
-                                      "pattern": "^[0-9]{3,4}$"
-                                    },
-                                    "CourtHouseShortName": {
-                                      "type": "string"
-                                    },
-                                    "CourtHouseName": {
-                                      "type": "string"
-                                    }
-                                  }
-                                },
-                                "Section53": {
-                                  "type": "string",
-                                  "enum": [ "yes", "no" ]
-                                }
-                              }
+                              "description": "Case arrived from details for WithFixedDate",
+                              "$ref": "#/$defs/CaseArrivedFrom"
                             },
                             "Hearing": {
                               "type": "array",
@@ -536,32 +551,8 @@
                             },
                             "CaseNumberCaTH": { "type": "string", "pattern": "^[A-Z][0-9]{8}$" },
                             "CaseArrivedFrom": {
-                              "type": "object",
-                              "properties": {
-                                "OriginatingCourt": {
-                                  "type": "object",
-                                  "required": [
-                                    "CourtHouseCode",
-                                    "CourtHouseName"
-                                  ],
-                                  "properties": {
-                                    "CourtHouseCode": {
-                                      "type": "string",
-                                      "pattern": "^[0-9]{3,4}$"
-                                    },
-                                    "CourtHouseShortName": {
-                                      "type": "string"
-                                    },
-                                    "CourtHouseName": {
-                                      "type": "string"
-                                    }
-                                  }
-                                },
-                                "Section53": {
-                                  "type": "string",
-                                  "enum": [ "yes", "no" ]
-                                }
-                              }
+                              "description": "Case arrived from details for WithoutFixedDate",
+                              "$ref": "#/$defs/CaseArrivedFrom"
                             },
                             "Hearing": {
                               "type": "array",
@@ -834,5 +825,5 @@
       }
     }
   }
-}
+},
 
