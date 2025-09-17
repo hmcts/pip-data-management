@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -38,6 +39,8 @@ public class PublicationFileManagementController {
     private static final String NOT_FOUND_CODE = "404";
     private static final String PAYLOAD_TOO_LARGE_CODE = "413";
 
+    private static final String REQUESTER_ID_HEADER = "x-requester-id";
+
     @Autowired
     public PublicationFileManagementController(PublicationFileManagementService publicationFileManagementService) {
         this.publicationFileManagementService = publicationFileManagementService;
@@ -48,16 +51,17 @@ public class PublicationFileManagementController {
     @ApiResponse(responseCode = PAYLOAD_TOO_LARGE_CODE, description = "File size too large")
     @Operation(summary = "Takes in an artefact ID and returns the stored PDF or Excel file ")
     @GetMapping("/{artefactId}/{fileType}")
+    @PreAuthorize("@authorisationService.userCanAccessPublicationData(#requesterId, #artefactId, #system)")
     public ResponseEntity<String> getFile(
         @PathVariable UUID artefactId,
         @PathVariable  FileType fileType,
-        @RequestHeader(value = "x-user-id", required = false) String userId,
+        @RequestHeader(value = REQUESTER_ID_HEADER, required = false) String requesterId,
         @RequestHeader(value = "x-system", required = false) boolean system,
         @RequestHeader(name = "x-additional-pdf", defaultValue = "false") boolean additionalPdf,
         @RequestParam(name = "maxFileSize", required = false) Integer maxFileSize) {
         return ResponseEntity.ok(
             publicationFileManagementService.getStoredPublication(
-                artefactId, fileType, maxFileSize, userId, system, additionalPdf
+                artefactId, fileType, maxFileSize, requesterId, system, additionalPdf
             )
         );
     }
@@ -65,14 +69,21 @@ public class PublicationFileManagementController {
     @ApiResponse(responseCode = OK_CODE, description = "PDF or Excel file for an artefact exists")
     @Operation(summary = "Checks if any publication file exists for the artefact")
     @GetMapping("/{artefactId}/exists")
-    public ResponseEntity<Boolean> fileExists(@PathVariable UUID artefactId) {
+    @PreAuthorize("@authorisationService.userCanAccessPublicationData(#requesterId, #artefactId, false)")
+    public ResponseEntity<Boolean> fileExists(
+        @PathVariable UUID artefactId,
+        @RequestHeader(value = REQUESTER_ID_HEADER, required = false) UUID requesterId) {
         return ResponseEntity.ok(publicationFileManagementService.fileExists(artefactId));
     }
 
     @ApiResponse(responseCode = OK_CODE, description = "PDF or Excel file for an artefact exists")
     @Operation(summary = "Returns the publication file sizes from Azure blob storage")
     @GetMapping("/{artefactId}/sizes")
-    public ResponseEntity<PublicationFileSizes> getFileSizes(@PathVariable UUID artefactId) {
+    @PreAuthorize("@authorisationService.userCanAccessPublicationData(#requesterId, #artefactId, false)")
+    public ResponseEntity<PublicationFileSizes> getFileSizes(
+        @PathVariable UUID artefactId,
+        @RequestHeader(value = REQUESTER_ID_HEADER, required = false) UUID requesterId
+    ) {
         return ResponseEntity.ok(publicationFileManagementService.getFileSizes(artefactId));
     }
 }

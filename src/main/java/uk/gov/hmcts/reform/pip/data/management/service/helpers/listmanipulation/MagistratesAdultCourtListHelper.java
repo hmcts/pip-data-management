@@ -15,7 +15,8 @@ public final class MagistratesAdultCourtListHelper {
     private MagistratesAdultCourtListHelper() {
     }
 
-    public static List<MagistratesAdultCourtList> processPayload(JsonNode payload, Language language) {
+    public static List<MagistratesAdultCourtList> processPayload(
+        JsonNode payload, Language language, boolean standardList) {
         List<MagistratesAdultCourtList> results = new ArrayList<>();
 
         payload.get("document").get("data").get("job").get("sessions").forEach(sessionNode -> {
@@ -35,11 +36,14 @@ public final class MagistratesAdultCourtListHelper {
                     );
                     caseInfo.setCaseNumber(caseNode.get("caseno").asText());
                     caseInfo.setDefendantName(caseNode.get("def_name").asText());
-                    caseInfo.setDefendantDob(GeneralHelper.findAndReturnNodeText(caseNode, "def_dob"));
-                    caseInfo.setDefendantAge(GeneralHelper.findAndReturnNodeText(caseNode, "def_age"));
-                    caseInfo.setDefendantAddress(formatDefendantAddress(caseNode.get("def_addr")));
-                    caseInfo.setInformant(caseNode.get("inf").asText());
-                    caseInfo.setOffence(processOffences(caseNode.get("offences"), language));
+
+                    if (standardList) {
+                        caseInfo.setDefendantDob(GeneralHelper.findAndReturnNodeText(caseNode, "def_dob"));
+                        caseInfo.setDefendantAge(GeneralHelper.findAndReturnNodeText(caseNode, "def_age"));
+                        caseInfo.setDefendantAddress(formatDefendantAddress(caseNode.get("def_addr")));
+                        caseInfo.setInformant(caseNode.get("inf").asText());
+                        caseInfo.setOffence(processOffences(caseNode.get("offences"), language));
+                    }
                     cases.add(caseInfo);
                 })
             );

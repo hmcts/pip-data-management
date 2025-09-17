@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.IOUtils;
 import org.assertj.core.api.SoftAssertions;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.springframework.test.context.ActiveProfiles;
@@ -60,13 +61,51 @@ class MagistratesAdultCourtListSummaryDataTest {
             .as(SUMMARY_FIELDS_MESSAGE)
             .hasSize(4);
 
-        assertSummaryFieldKeys(softly, summaryFields);
-        assertSummaryFieldValues(softly, summaryFields);
+        assertStandardSummaryFieldKeys(softly, summaryFields);
+        assertStandardSummaryFieldValues(softly, summaryFields);
 
         softly.assertAll();
     }
 
-    private void assertSummaryFieldKeys(SoftAssertions softly, Map<String, String> summaryFields) {
+    @Test
+    void testPublicMagistratesAdultCourtListTemplate() throws IOException {
+        StringWriter writer = new StringWriter();
+        IOUtils.copy(
+            Files.newInputStream(Paths.get(
+                "src/test/resources/mocks/",
+                "magistratesPublicAdultCourtList.json"
+            )), writer,
+            Charset.defaultCharset()
+        );
+
+        JsonNode payload = new ObjectMapper().readTree(writer.toString());
+        Map<String, List<Map<String, String>>> output = new ListConversionFactory()
+            .getArtefactSummaryData(ListType.MAGISTRATES_PUBLIC_ADULT_COURT_LIST_DAILY).get()
+            .get(payload);
+
+        SoftAssertions softly = new SoftAssertions();
+
+        softly.assertThat(output)
+            .as(SUMMARY_SECTIONS_MESSAGE)
+            .hasSize(1);
+
+        List<Map<String, String>> summaryCases = output.get(null);
+        softly.assertThat(summaryCases)
+            .as(SUMMARY_CASES_MESSAGE)
+            .hasSize(4);
+
+        Map<String, String> summaryFields = summaryCases.get(0);
+        softly.assertThat(summaryFields)
+            .as(SUMMARY_FIELDS_MESSAGE)
+            .hasSize(2);
+
+        assertPublicSummaryFieldKeys(softly, summaryFields);
+        assertPublicSummaryFieldValues(softly, summaryFields);
+
+        softly.assertAll();
+    }
+
+    private void assertStandardSummaryFieldKeys(SoftAssertions softly, Map<String, String> summaryFields) {
         List<String> keys = summaryFields.keySet()
             .stream()
             .toList();
@@ -88,7 +127,7 @@ class MagistratesAdultCourtListSummaryDataTest {
             .isEqualTo("Offence title");
     }
 
-    private void assertSummaryFieldValues(SoftAssertions softly, Map<String, String> summaryFields) {
+    private void assertStandardSummaryFieldValues(SoftAssertions softly, Map<String, String> summaryFields) {
         List<String> values = summaryFields.values()
             .stream()
             .toList();
@@ -108,5 +147,33 @@ class MagistratesAdultCourtListSummaryDataTest {
         softly.assertThat(values.get(3))
             .as(SUMMARY_FIELD_VALUE_MESSAGE)
             .isEqualTo("Offence title 1");
+    }
+
+    private void assertPublicSummaryFieldKeys(SoftAssertions softly, Map<String, String> summaryFields) {
+        List<String> keys = summaryFields.keySet()
+            .stream()
+            .toList();
+
+        softly.assertThat(keys.get(0))
+            .as(SUMMARY_FIELD_KEY_MESSAGE)
+            .isEqualTo("Defendant name");
+
+        softly.assertThat(keys.get(1))
+            .as(SUMMARY_FIELD_KEY_MESSAGE)
+            .isEqualTo("Case number");
+    }
+
+    private void assertPublicSummaryFieldValues(SoftAssertions softly, Map<String, String> summaryFields) {
+        List<String> values = summaryFields.values()
+            .stream()
+            .toList();
+
+        softly.assertThat(values.get(0))
+            .as(SUMMARY_FIELD_VALUE_MESSAGE)
+            .isEqualTo("Mr Test User");
+
+        softly.assertThat(values.get(1))
+            .as(SUMMARY_FIELD_VALUE_MESSAGE)
+            .isEqualTo("1000000000");
     }
 }
