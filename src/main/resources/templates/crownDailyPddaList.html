@@ -174,9 +174,9 @@
   <p class="govuk-body" th:text="${i18n.listUpdated + publicationDate + i18n.at + publicationTime}"/>
   <p class="govuk-body" th:text="${i18n.versionText + version}"/>
   <p class="govuk-body">
-          <span th:each="address : ${venueAddress}">
-            <td th:text="${address}"/>
-          </span>
+    <span th:each="address : ${venueAddress}">
+      <td th:text="${address}"/>
+    </span>
   </p>
   <div class="govuk-grid restriction-list-section">
     <div class="govuk-body">
@@ -206,8 +206,8 @@
       <h2 class="govuk-heading-l site-address" tabindex="0" th:text="${courtList.courtName}"/>
       <p class="govuk-body govuk-!-font-weight-bold">
         <span th:each="address : ${courtList.courtAddress}">
-              <td th:text="${address}"/>
-            </span>
+          <td th:text="${address}"/>
+        </span>
       </p>
       <p class="govuk-body govuk-!-font-weight-bold" th:text="${courtList.courtPhone}"/>
 
