@@ -35,7 +35,8 @@
           },
           "CourtHouseTelephone": "TestTelephone"
         },
-        "WithFixedDate": {
+        "WithFixedDate": [
+          {
           "HearingType": "ABC",
           "Fixture": {
             "FixedDate": "2024-01-01",
@@ -126,7 +127,8 @@
               }
             ]
           }
-        },
+        }
+        ],
         "WithoutFixedDate": {
           "HearingType": "XYZ",
           "Fixture": {

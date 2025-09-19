@@ -179,9 +179,9 @@
       <p class="govuk-body" th:text="${i18n.listUpdated + publicationDate + i18n.at + publicationTime}"/>
       <p class="govuk-body" th:text="${i18n.versionText + version}"/>
       <p class="govuk-body">
-          <span th:each="address : ${venueAddress}">
-            <td th:text="${address}"/>
-          </span>
+        <span th:each="address : ${venueAddress}">
+          <td th:text="${address}"/>
+        </span>
       </p>
       <div class="govuk-grid restriction-list-section">
         <div class="govuk-body">
