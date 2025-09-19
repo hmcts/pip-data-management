@@ -2,20 +2,25 @@ package uk.gov.hmcts.reform.pip.data.management.service.artefactsummary;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.collect.ImmutableMap;
-import uk.gov.hmcts.reform.pip.data.management.service.helpers.listmanipulation.CrownFirmPddaListHelper;
+import lombok.AllArgsConstructor;
+import uk.gov.hmcts.reform.pip.data.management.service.helpers.listmanipulation.CrownPddaListHelper;
+import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-public class CrownFirmPddaListSummaryData implements ArtefactSummaryData {
+@AllArgsConstructor
+public class CrownPddaListSummaryData implements ArtefactSummaryData {
+    private ListType listType;
+
     @Override
     public Map<String, List<Map<String, String>>> get(JsonNode payload) {
-        CrownFirmPddaListHelper.processPayload(payload);
+        CrownPddaListHelper.processPayload(payload, listType);
 
         List<Map<String, String>> summaryCases = new ArrayList<>();
-        CrownFirmPddaListHelper.processPayload(payload).forEach(
+        CrownPddaListHelper.processPayload(payload, listType).forEach(
             item -> item.getSittings().forEach(
                 sitting -> sitting.getHearings().forEach(hearing -> {
                     Map<String, String> map = ImmutableMap.of(

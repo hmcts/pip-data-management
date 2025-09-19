@@ -1,17 +1,23 @@
 package uk.gov.hmcts.reform.pip.data.management.service.filegeneration;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import lombok.AllArgsConstructor;
 import org.thymeleaf.context.Context;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.DateHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.GeneralHelper;
-import uk.gov.hmcts.reform.pip.data.management.service.helpers.listmanipulation.CrownFirmPddaListHelper;
+import uk.gov.hmcts.reform.pip.data.management.service.helpers.listmanipulation.CrownPddaListHelper;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
+import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
 import java.util.Map;
 
-public class CrownFirmPddaListFileConverter  implements FileConverter {
+@AllArgsConstructor
+public class CrownPddaListFileConverter implements FileConverter {
+    private static final String DAILY_LIST = "DailyList";
     private static final String FIRM_LIST = "FirmList";
     private static final String LIST_HEADER = "ListHeader";
+
+    private ListType listType;
 
     @Override
     public String convert(JsonNode artefact, Map<String, String> metadata, Map<String, Object> languageResources) {
@@ -21,18 +27,22 @@ public class CrownFirmPddaListFileConverter  implements FileConverter {
         context.setVariable("locationName", metadata.get("locationName"));
         context.setVariable("provenance", metadata.get("provenance"));
 
-        processDateInfo(context, artefact, metadata);
-        processVenueAddress(context, artefact);
+        JsonNode listNode = ListType.CROWN_DAILY_PDDA_LIST.equals(listType)
+            ? artefact.get(DAILY_LIST)
+            : artefact.get(FIRM_LIST);
 
-        context.setVariable("version", artefact.get(FIRM_LIST).get(LIST_HEADER).get("Version").asText());
-        context.setVariable("listData", CrownFirmPddaListHelper.processPayload(artefact));
+        processDateInfo(context, listNode, metadata);
+        processVenueAddress(context, listNode);
 
-        return TemplateEngine.processTemplate(metadata.get("listType"), context);
+        context.setVariable("version", listNode.get(LIST_HEADER).get("Version").asText());
+        context.setVariable("listData", CrownPddaListHelper.processPayload(artefact, listType));
+
+        return TemplateEngine.processTemplate(listType.name(), context);
     }
 
-    private void processDateInfo(Context context, JsonNode artefact, Map<String, String> metadata) {
+    private void processDateInfo(Context context, JsonNode listNode, Map<String, String> metadata) {
         Language language = Language.valueOf(metadata.get("language"));
-        JsonNode listHeader = artefact.get(FIRM_LIST).get(LIST_HEADER);
+        JsonNode listHeader = listNode.get(LIST_HEADER);
         String publicationDateTime = listHeader.get("PublishedTime").asText();
         context.setVariable("publicationDate",
                             DateHelper.formatTimeStampToBst(publicationDateTime, language, false, false));
@@ -48,11 +58,11 @@ public class CrownFirmPddaListFileConverter  implements FileConverter {
         }
     }
 
-    private void processVenueAddress(Context context, JsonNode artefact) {
-        JsonNode crownCourt = artefact.get(FIRM_LIST).get("CrownCourt");
+    private void processVenueAddress(Context context, JsonNode listNode) {
+        JsonNode crownCourt = listNode.get("CrownCourt");
         if (crownCourt.has("CourtHouseAddress")) {
             context.setVariable("venueAddress",
-                                CrownFirmPddaListHelper.formatAddress(crownCourt.get("CourtHouseAddress")));
+                                CrownPddaListHelper.formatAddress(crownCourt.get("CourtHouseAddress")));
         }
     }
 }
