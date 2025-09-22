@@ -771,7 +771,7 @@ class CrownWarnedPddaListTest extends IntegrationBasicTestBase {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(COURT_LISTS).get(0).get(WITHOUT_FIXED_DATE))
+            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(COURT_LISTS).get(0).get(WITHOUT_FIXED_DATE).get(0))
                 .remove(HEARING_TYPE);
 
             String listJson = node.toString();
@@ -788,7 +788,7 @@ class CrownWarnedPddaListTest extends IntegrationBasicTestBase {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(COURT_LISTS).get(0).get(WITHOUT_FIXED_DATE)).remove(FIXTURE);
+            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(COURT_LISTS).get(0).get(WITHOUT_FIXED_DATE).get(0)).remove(FIXTURE);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
@@ -804,7 +804,7 @@ class CrownWarnedPddaListTest extends IntegrationBasicTestBase {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(COURT_LISTS).get(0).get(WITHOUT_FIXED_DATE).get(FIXTURE))
+            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(COURT_LISTS).get(0).get(WITHOUT_FIXED_DATE).get(0).get(FIXTURE))
                 .remove(CASES);
 
             String listJson = node.toString();
@@ -821,7 +821,7 @@ class CrownWarnedPddaListTest extends IntegrationBasicTestBase {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(COURT_LISTS).get(0).get(WITHOUT_FIXED_DATE).get(FIXTURE)
+            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(COURT_LISTS).get(0).get(WITHOUT_FIXED_DATE).get(0).get(FIXTURE)
                 .get(CASES).get(0)).remove(CASE_NUMBER);
 
             String listJson = node.toString();
@@ -838,7 +838,7 @@ class CrownWarnedPddaListTest extends IntegrationBasicTestBase {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(COURT_LISTS).get(0).get(WITHOUT_FIXED_DATE).get(FIXTURE)
+            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(COURT_LISTS).get(0).get(WITHOUT_FIXED_DATE).get(0).get(FIXTURE)
                 .get(CASES).get(0)).remove(CASE_NUMBER_CATH);
 
             String listJson = node.toString();
@@ -855,7 +855,7 @@ class CrownWarnedPddaListTest extends IntegrationBasicTestBase {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(COURT_LISTS).get(0).get(WITHOUT_FIXED_DATE).get(FIXTURE)
+            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(COURT_LISTS).get(0).get(WITHOUT_FIXED_DATE).get(0).get(FIXTURE)
                 .get(CASES).get(0)).remove(DEFENDANTS);
 
             String listJson = node.toString();
@@ -872,7 +872,7 @@ class CrownWarnedPddaListTest extends IntegrationBasicTestBase {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(COURT_LISTS).get(0).get(WITHOUT_FIXED_DATE).get(FIXTURE)
+            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(COURT_LISTS).get(0).get(WITHOUT_FIXED_DATE).get(0).get(FIXTURE)
                 .get(CASES).get(0).get(CASE_ARRIVED_FROM)).remove(SECTION_53);
 
             String listJson = node.toString();
@@ -889,7 +889,7 @@ class CrownWarnedPddaListTest extends IntegrationBasicTestBase {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(COURT_LISTS).get(0).get(WITHOUT_FIXED_DATE).get(FIXTURE)
+            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(COURT_LISTS).get(0).get(WITHOUT_FIXED_DATE).get(0).get(FIXTURE)
                 .get(CASES).get(0).get(CASE_ARRIVED_FROM)).remove(SECTION_53);
 
             String listJson = node.toString();
@@ -906,7 +906,7 @@ class CrownWarnedPddaListTest extends IntegrationBasicTestBase {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(COURT_LISTS).get(0).get(WITHOUT_FIXED_DATE).get(FIXTURE)
+            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(COURT_LISTS).get(0).get(WITHOUT_FIXED_DATE).get(0).get(FIXTURE)
                 .get(CASES).get(0).get(HEARING).get(0)).remove(HEARING_DESCRIPTION);
 
             String listJson = node.toString();
@@ -923,7 +923,7 @@ class CrownWarnedPddaListTest extends IntegrationBasicTestBase {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(COURT_LISTS).get(0).get(WITHOUT_FIXED_DATE).get(FIXTURE)
+            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(COURT_LISTS).get(0).get(WITHOUT_FIXED_DATE).get(0).get(FIXTURE)
                 .get(CASES).get(0).get(HEARING).get(0)).remove(HEARING_TYPE);
 
             String listJson = node.toString();
@@ -940,7 +940,7 @@ class CrownWarnedPddaListTest extends IntegrationBasicTestBase {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(COURT_LISTS).get(0).get(WITHOUT_FIXED_DATE).get(FIXTURE)
+            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(COURT_LISTS).get(0).get(WITHOUT_FIXED_DATE).get(0).get(FIXTURE)
                 .get(CASES).get(0).get(DEFENDANTS).get(0)).remove(PERSONAL_DETAILS);
 
             String listJson = node.toString();
@@ -957,7 +957,7 @@ class CrownWarnedPddaListTest extends IntegrationBasicTestBase {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(COURT_LISTS).get(0).get(WITHOUT_FIXED_DATE).get(FIXTURE)
+            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(COURT_LISTS).get(0).get(WITHOUT_FIXED_DATE).get(0).get(FIXTURE)
                 .get(CASES).get(0).get(DEFENDANTS).get(0).get(PERSONAL_DETAILS)).remove(NAME);
 
             String listJson = node.toString();
@@ -974,7 +974,7 @@ class CrownWarnedPddaListTest extends IntegrationBasicTestBase {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(COURT_LISTS).get(0).get(WITHOUT_FIXED_DATE).get(FIXTURE)
+            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(COURT_LISTS).get(0).get(WITHOUT_FIXED_DATE).get(0).get(FIXTURE)
                 .get(CASES).get(0).get(DEFENDANTS).get(0).get(PERSONAL_DETAILS)).remove(IS_MASKED);
 
             String listJson = node.toString();
@@ -991,7 +991,7 @@ class CrownWarnedPddaListTest extends IntegrationBasicTestBase {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(COURT_LISTS).get(0).get(WITHOUT_FIXED_DATE).get(FIXTURE)
+            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(COURT_LISTS).get(0).get(WITHOUT_FIXED_DATE).get(0).get(FIXTURE)
                 .get(CASES).get(0).get(DEFENDANTS).get(0).get("PrisonLocation")).remove(LOCATION);
 
             String listJson = node.toString();
@@ -1008,7 +1008,7 @@ class CrownWarnedPddaListTest extends IntegrationBasicTestBase {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(COURT_LISTS).get(0).get(WITHOUT_FIXED_DATE).get(FIXTURE)
+            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(COURT_LISTS).get(0).get(WITHOUT_FIXED_DATE).get(0).get(FIXTURE)
                 .get(CASES).get(0).get(DEFENDANTS).get(0).get("Counsel").get(0).get("Solicitor").get(0).get("Party")
                 .get("Organisation")).remove(ORGANISATION_NAME);
 
@@ -1026,7 +1026,7 @@ class CrownWarnedPddaListTest extends IntegrationBasicTestBase {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(COURT_LISTS).get(0).get(WITHOUT_FIXED_DATE).get(FIXTURE)
+            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(COURT_LISTS).get(0).get(WITHOUT_FIXED_DATE).get(0).get(FIXTURE)
                 .get(CASES).get(0).get(DEFENDANTS).get(0).get("Charges").get(0)).remove(OFFENCE_STATEMENT);
 
             String listJson = node.toString();
@@ -1043,7 +1043,7 @@ class CrownWarnedPddaListTest extends IntegrationBasicTestBase {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(COURT_LISTS).get(0).get(WITHOUT_FIXED_DATE).get(FIXTURE)
+            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(COURT_LISTS).get(0).get(WITHOUT_FIXED_DATE).get(0).get(FIXTURE)
                 .get(CASES).get(0).get("Prosecution").get("ProsecutingOrganisation")).remove(ORGANISATION_NAME);
 
             String listJson = node.toString();
@@ -1060,7 +1060,7 @@ class CrownWarnedPddaListTest extends IntegrationBasicTestBase {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(COURT_LISTS).get(0).get(WITHOUT_FIXED_DATE).get(FIXTURE)
+            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(COURT_LISTS).get(0).get(WITHOUT_FIXED_DATE).get(0).get(FIXTURE)
                 .get(CASES).get(0).get("LinkedCases").get(0)).remove(CASE_NUMBER);
 
             String listJson = node.toString();

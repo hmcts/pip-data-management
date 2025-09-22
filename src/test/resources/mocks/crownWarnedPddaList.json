@@ -129,9 +129,10 @@
           }
         }
         ],
-        "WithoutFixedDate": {
-          "HearingType": "XYZ",
-          "Fixture": {
+        "WithoutFixedDate": [
+          {
+            "HearingType": "XYZ",
+            "Fixture": {
             "FixedDate": "2024-01-03",
             "Notes": "TestNotes2",
             "Cases": [
@@ -216,7 +217,8 @@
               }
             ]
           }
-        }
+          }
+        ]
       }
     ]
   }
