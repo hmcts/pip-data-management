@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,7 +20,6 @@ import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.views.ArtefactView;
 import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationSearchService;
 import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
-import uk.gov.hmcts.reform.pip.model.authentication.roles.IsAdmin;
 
 import java.util.List;
 import java.util.UUID;
@@ -29,10 +29,8 @@ import java.util.UUID;
 @RestController
 @Tag(name = "Data Management - API for filtering and searching publications")
 @RequestMapping("/publication")
-@IsAdmin
 @SecurityRequirement(name = "bearerAuth")
 public class PublicationSearchController {
-    private static final String USER_ID_HEADER = "x-user-id";
     private static final String ADMIN_HEADER = "x-admin";
 
     private static final String NOT_FOUND_DESCRIPTION =
@@ -46,6 +44,7 @@ public class PublicationSearchController {
     private static final String FORBIDDEN_CODE = "403";
 
     private static final String DEFAULT_ADMIN_VALUE = "false";
+    private static final String REQUESTER_ID_HEADER = "x-requester-id";
 
     private final PublicationSearchService publicationSearchService;
 
@@ -55,7 +54,7 @@ public class PublicationSearchController {
     }
 
     @ApiResponse(responseCode = OK_CODE, description = "List of Artefacts matching"
-            + " a given case value, verification parameters and date requirements")
+        + " a given case value, verification parameters and date requirements")
     @ApiResponse(responseCode = UNAUTHORISED_CODE, description = UNAUTHORISED_MESSAGE)
     @ApiResponse(responseCode = FORBIDDEN_CODE, description = FORBIDDEN_MESSAGE)
     @ApiResponse(responseCode = NOT_FOUND_CODE, description = NOT_FOUND_DESCRIPTION)
@@ -63,10 +62,11 @@ public class PublicationSearchController {
             + "CASE_URN/CASE_ID/CASE_NAME)")
     @GetMapping("/search")
     @JsonView(ArtefactView.Internal.class)
+    @PreAuthorize("@authorisationService.userCanSearchInPublicationData(#requesterId)")
     public ResponseEntity<List<Artefact>> getAllRelevantArtefactsBySearchValue(
             @RequestParam CaseSearchTerm searchTerm, @RequestParam String searchValue,
-            @RequestHeader(value = USER_ID_HEADER,  required = false) UUID userId) {
-        return ResponseEntity.ok(publicationSearchService.findAllBySearch(searchTerm, searchValue, userId));
+            @RequestHeader(REQUESTER_ID_HEADER) UUID requesterId) {
+        return ResponseEntity.ok(publicationSearchService.findAllBySearch(searchTerm, searchValue, requesterId));
     }
 
     @ApiResponse(responseCode = OK_CODE, description = "List of Artefacts matching the given locationId and "
@@ -77,10 +77,11 @@ public class PublicationSearchController {
     @Operation(summary = "Get a series of publications matching a given locationId (e.g. locationId)")
     @GetMapping("/locationId/{locationId}")
     @JsonView(ArtefactView.Internal.class)
+    @PreAuthorize("@authorisationService.userCanSearchForPublicationByLocation()")
     public ResponseEntity<List<Artefact>> getAllRelevantArtefactsByLocationId(
         @PathVariable String locationId,
-        @RequestHeader(value = USER_ID_HEADER, required = false) UUID userId,
+        @RequestHeader(value = REQUESTER_ID_HEADER, required = false) UUID requesterId,
         @RequestHeader(value = ADMIN_HEADER, defaultValue = DEFAULT_ADMIN_VALUE, required = false) Boolean isAdmin) {
-        return ResponseEntity.ok(publicationSearchService.findAllByLocationIdAdmin(locationId, userId, isAdmin));
+        return ResponseEntity.ok(publicationSearchService.findAllByLocationIdAdmin(locationId, requesterId, isAdmin));
     }
 }

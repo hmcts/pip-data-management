@@ -12,6 +12,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,11 +24,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationDeletion;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationViews;
 import uk.gov.hmcts.reform.pip.data.management.service.location.LocationService;
-import uk.gov.hmcts.reform.pip.model.authentication.roles.IsAdmin;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -46,6 +47,8 @@ public class LocationController {
     private static final String UNAUTHORISED_MESSAGE = "Invalid access credential";
     private static final String FORBIDDEN_MESSAGE = "User has not been authorized";
     private static final String BEARER_AUTHENTICATION = "bearerAuth";
+
+    private static final String REQUESTER_ID_HEADER = PublicationConfiguration.REQUESTER_ID_HEADER;
 
     private final LocationService locationService;
 
@@ -99,10 +102,12 @@ public class LocationController {
     @ApiResponse(responseCode = UNAUTHORISED_CODE, description = UNAUTHORISED_MESSAGE)
     @ApiResponse(responseCode = FORBIDDEN_CODE, description = FORBIDDEN_MESSAGE)
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @IsAdmin
     @SecurityRequirement(name = BEARER_AUTHENTICATION)
     @Transactional
-    public ResponseEntity<Collection<Location>> uploadLocations(@RequestPart MultipartFile locationList) {
+    @PreAuthorize("@authorisationService.userCanUploadLocation(#requesterId)")
+    public ResponseEntity<Collection<Location>> uploadLocations(
+        @RequestPart MultipartFile locationList,
+        @RequestHeader(REQUESTER_ID_HEADER) String requesterId) {
         return ResponseEntity.ok(locationService.uploadLocations(locationList));
     }
 
@@ -111,22 +116,23 @@ public class LocationController {
     @ApiResponse(responseCode = UNAUTHORISED_CODE, description = UNAUTHORISED_MESSAGE)
     @ApiResponse(responseCode = FORBIDDEN_CODE, description = FORBIDDEN_MESSAGE)
     @DeleteMapping("/{locationId}")
-    @IsAdmin
     @SecurityRequirement(name = BEARER_AUTHENTICATION)
+    @PreAuthorize("@authorisationService.userCanDeleteLocation(#requesterId)")
     public ResponseEntity<LocationDeletion> deleteLocation(
-        @RequestHeader("x-user-id") String userId,
+        @RequestHeader(REQUESTER_ID_HEADER) String requesterId,
         @PathVariable Integer locationId)
         throws JsonProcessingException {
-        return ResponseEntity.ok(locationService.deleteLocation(locationId, userId));
+        return ResponseEntity.ok(locationService.deleteLocation(locationId, requesterId));
     }
 
     @ApiResponse(responseCode = OK_CODE, description = "CSV of the reference data")
     @ApiResponse(responseCode = UNAUTHORISED_CODE, description = UNAUTHORISED_MESSAGE)
     @ApiResponse(responseCode = FORBIDDEN_CODE, description = FORBIDDEN_MESSAGE)
     @GetMapping("/download/csv")
-    @IsAdmin
     @SecurityRequirement(name = BEARER_AUTHENTICATION)
-    public ResponseEntity<byte[]> downloadLocations() throws IOException {
+    @PreAuthorize("@authorisationService.userCanGetLocationCsv(#requesterId)")
+    public ResponseEntity<byte[]> downloadLocations(
+        @RequestHeader(REQUESTER_ID_HEADER) String requesterId) throws IOException {
         return ResponseEntity.ok()
             .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_VALUE)
             .body(locationService.downloadLocations());
