@@ -387,6 +387,8 @@ class ValidationServiceTest extends IntegrationBasicTestBase {
             Arguments.of(ListType.MAGISTRATES_ADULT_COURT_LIST_FUTURE,
                          "data/magistrates-adult-court-list/magistratesAdultCourtList.json"),
             Arguments.of(ListType.MAGISTRATES_PUBLIC_ADULT_COURT_LIST_DAILY,
+                         "data/magistrates-public-adult-court-list/magistratesPublicAdultCourtList.json"),
+            Arguments.of(ListType.MAGISTRATES_PUBLIC_ADULT_COURT_LIST_FUTURE,
                          "data/magistrates-public-adult-court-list/magistratesPublicAdultCourtList.json")
         );
     }
