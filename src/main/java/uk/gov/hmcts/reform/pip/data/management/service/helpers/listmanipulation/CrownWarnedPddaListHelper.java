@@ -21,6 +21,7 @@ public final class CrownWarnedPddaListHelper {
     private CrownWarnedPddaListHelper() {
     }
 
+    @SuppressWarnings("PMD.UseConcurrentHashMap")
     public static Map<String, List<CrownWarnedPddaList>> processPayload(JsonNode warnedPddaListData) {
         Map<String, List<CrownWarnedPddaList>> groupedData = new LinkedHashMap<>();
 
@@ -63,9 +64,9 @@ public final class CrownWarnedPddaListHelper {
                 Optional.ofNullable(hearingCase.get("Hearing"))
                     .filter(JsonNode::isArray)
                     .ifPresent(hearings -> hearings.forEach(hearing -> {
-                        String hearingDescription = !isWithoutFixedDate
-                            ? (hearing.has("HearingDescription") ? hearing.get("HearingDescription").asText() : "")
-                            : "To be allocated";
+                        String hearingDescription = isWithoutFixedDate
+                            ? "To be allocated"
+                            : hearing.has("HearingDescription") ? hearing.get("HearingDescription").asText() : "";
 
                         groupedData.computeIfAbsent(hearingDescription, k -> new ArrayList<>())
                             .add(formatCaseInformation(fixedDate, hearing, hearingCase));
