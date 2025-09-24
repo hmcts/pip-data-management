@@ -213,7 +213,8 @@ class PublicationControllerTest {
     @EnumSource(value = ListType.class, names = {
         "MAGISTRATES_ADULT_COURT_LIST_DAILY",
         "MAGISTRATES_ADULT_COURT_LIST_FUTURE",
-        "MAGISTRATES_PUBLIC_ADULT_COURT_LIST_DAILY"
+        "MAGISTRATES_PUBLIC_ADULT_COURT_LIST_DAILY",
+        "MAGISTRATES_PUBLIC_ADULT_COURT_LIST_FUTURE"
     })
     void shouldNotValidateMasterSchemaForMagistratesAdultCourtLists(ListType listType) {
         when(validationService.validateHeaders(any())).thenReturn(headers);
