@@ -157,7 +157,7 @@ public final class CrownPddaListHelper {
         return GeneralHelper.convertToDelimitedString(names, ", ");
     }
 
-    private static String formatDefendantName(JsonNode defendants) {
+    public static String formatDefendantName(JsonNode defendants) {
         List<String> names = new ArrayList<>();
         defendants.forEach(defendant -> names.add(useMaskedNameIfRequested(defendant.get(PERSONAL_DETAILS))));
         return GeneralHelper.convertToDelimitedString(names, ", ");
