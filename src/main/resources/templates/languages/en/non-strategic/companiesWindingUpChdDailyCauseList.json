@@ -1,17 +1,5 @@
 {
   "listName": "Companies Winding Up (Chancery Division) Daily Cause List",
-  "venueName": "Rolls Building",
-  "addressLine1": "Fetter Lane, London",
-  "addressLine2": "EC4A 1NL",
   "importantInformationHeading1": "Company Insolvency Pro Bono Scheme",
-  "importantInformationLine1": "The Company Insolvency Pro Bono Scheme provides free legal advice and/or representation in court on Wednesdays. If you have a case listed in the winding up court, please come to Consultation Room 17 on the 2nd Floor of the Rolls Building to speak with a barrister on Wednesday morning. You can also email in advance on admin@companyinsolvencyscheme.com.",
-  "tableHeaders": [
-    "Judge",
-    "Time",
-    "Venue",
-    "Type",
-    "Case number",
-    "Case name",
-    "Additional information"
-  ]
+  "importantInformationLine1": "The Company Insolvency Pro Bono Scheme provides free legal advice and/or representation in court on Wednesdays. If you have a case listed in the winding up court, please come to Consultation Room 17 on the 2nd Floor of the Rolls Building to speak with a barrister on Wednesday morning. You can also email in advance on admin@companyinsolvencyscheme.com."
 }
