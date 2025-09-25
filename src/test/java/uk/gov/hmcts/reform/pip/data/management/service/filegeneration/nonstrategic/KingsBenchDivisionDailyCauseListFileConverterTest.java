@@ -213,7 +213,7 @@ class KingsBenchDivisionDailyCauseListFileConverterTest {
                 "Amser",
                 "Rhif yr achos",
                 "Manylion yr achos",
-                "Math o Wrandawiad",
+                "Math o wrandawiad",
                 "Gwybodaeth ychwanegol"
             );
 
