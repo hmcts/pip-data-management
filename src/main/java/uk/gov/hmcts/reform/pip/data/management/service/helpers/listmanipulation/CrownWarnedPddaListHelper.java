@@ -1,7 +1,9 @@
 package uk.gov.hmcts.reform.pip.data.management.service.helpers.listmanipulation;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import org.apache.logging.log4j.util.Strings;
 import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.crownpddalist.CrownWarnedPddaList;
+import uk.gov.hmcts.reform.pip.data.management.service.helpers.GeneralHelper;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -56,7 +58,7 @@ public final class CrownWarnedPddaListHelper {
     private static void formatFixture(JsonNode fixtureDate, Map<String,
         List<CrownWarnedPddaList>> groupedData, boolean isWithoutFixedDate) {
         JsonNode fixture = fixtureDate.get("Fixture");
-        String fixedDate = fixture.has("FixedDate") ? fixture.get("FixedDate").asText() : null;
+        String fixedDate = GeneralHelper.findAndReturnNodeText(fixture, "FixedDate");
 
         Optional.ofNullable(fixture.get("Cases"))
             .filter(JsonNode::isArray)
@@ -66,7 +68,7 @@ public final class CrownWarnedPddaListHelper {
                     .ifPresent(hearings -> hearings.forEach(hearing -> {
                         String hearingDescription = isWithoutFixedDate
                             ? "To be allocated"
-                            : hearing.has("HearingDescription") ? hearing.get("HearingDescription").asText() : "";
+                            : GeneralHelper.findAndReturnNodeText(hearing, "HearingDescription");
 
                         groupedData.computeIfAbsent(hearingDescription, k -> new ArrayList<>())
                             .add(formatCaseInformation(fixedDate, hearing, hearingCase));
@@ -82,7 +84,8 @@ public final class CrownWarnedPddaListHelper {
         }
 
         String prosecutingAuthority = "";
-        if (hearingCase.has("Prosecution") && hearingCase.get("Prosecution").has("ProsecutingAuthority")) {
+        if (hearingCase.has("Prosecution")
+            && hearingCase.get("Prosecution").has("ProsecutingAuthority")) {
             prosecutingAuthority = hearingCase.get("Prosecution").get("ProsecutingAuthority").asText();
         }
 
@@ -99,10 +102,10 @@ public final class CrownWarnedPddaListHelper {
             })
             .orElse("");
 
-        String listingNotes = hearing.has("ListNote") ? hearing.get("ListNote").asText() : "";
+        String listingNotes = GeneralHelper.findAndReturnNodeText(hearing, "ListNote");
 
         String formattedDate = "";
-        if (fixedDate != null && !fixedDate.isEmpty()) {
+        if (Strings.isNotEmpty(fixedDate)) {
             try {
                 LocalDate date = LocalDate.parse(fixedDate);
                 formattedDate = date.format(DATE_FORMATTER);
@@ -110,7 +113,7 @@ public final class CrownWarnedPddaListHelper {
                 formattedDate = "";
             }
         }
-        String caseReference = hearingCase.has("CaseNumberCaTH") ? hearingCase.get("CaseNumberCaTH").asText() : "";
+        String caseReference = GeneralHelper.findAndReturnNodeText(hearingCase, "CaseNumberCaTH");
         return new CrownWarnedPddaList(formattedDate, caseReference, defendantNames,
                                    prosecutingAuthority, linkedCases, listingNotes);
     }
