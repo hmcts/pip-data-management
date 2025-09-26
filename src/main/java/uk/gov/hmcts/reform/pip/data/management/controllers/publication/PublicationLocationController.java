@@ -27,6 +27,7 @@ import uk.gov.hmcts.reform.pip.model.location.LocationType;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
 import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 @Validated
@@ -62,7 +63,7 @@ public class PublicationLocationController {
     @SecurityRequirement(name = BEARER_AUTHENTICATION)
     @PreAuthorize("@authorisationService.userCanGetPublicationsPerLocation(#requesterId)")
     public ResponseEntity<List<LocationArtefact>> countByLocation(
-        @RequestHeader(REQUESTER_ID_HEADER) String requesterId
+        @RequestHeader(REQUESTER_ID_HEADER) UUID requesterId
     ) {
         return ResponseEntity.ok(publicationLocationService.countArtefactsByLocation());
     }
@@ -83,7 +84,7 @@ public class PublicationLocationController {
     @SecurityRequirement(name = BEARER_AUTHENTICATION)
     @PreAuthorize("@authorisationService.userCanGetAllNoMatchPublications(#requesterId)")
     public ResponseEntity<List<Artefact>> getAllNoMatchArtefacts(
-        @RequestHeader(REQUESTER_ID_HEADER) String requesterId
+        @RequestHeader(REQUESTER_ID_HEADER) UUID requesterId
     ) {
         return ResponseEntity.ok(publicationLocationService.findAllNoMatchArtefacts());
     }
@@ -97,7 +98,7 @@ public class PublicationLocationController {
     @SecurityRequirement(name = BEARER_AUTHENTICATION)
     @PreAuthorize("@authorisationService.userCanDeletePublicationsByLocation(#requesterId)")
     public ResponseEntity<String> deleteArtefactsByLocation(
-        @RequestHeader(REQUESTER_ID_HEADER) String requesterId,
+        @RequestHeader(REQUESTER_ID_HEADER) UUID requesterId,
         @PathVariable Integer locationId) throws JsonProcessingException {
         return ResponseEntity.ok(publicationLocationService.deleteArtefactByLocation(locationId, requesterId));
     }

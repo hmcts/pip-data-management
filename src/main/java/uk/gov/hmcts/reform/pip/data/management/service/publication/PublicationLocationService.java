@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
 
@@ -53,7 +54,7 @@ public class PublicationLocationService {
         return artefactRepository.findAllNoMatchArtefacts();
     }
 
-    public String deleteArtefactByLocation(Integer locationId, String requesterId)
+    public String deleteArtefactByLocation(Integer locationId, UUID requesterId)
         throws JsonProcessingException {
         List<Artefact> activeArtefacts = artefactRepository.findActiveArtefactsForLocation(
             LocalDateTime.now(),

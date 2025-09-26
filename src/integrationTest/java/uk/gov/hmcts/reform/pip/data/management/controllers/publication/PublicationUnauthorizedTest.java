@@ -48,12 +48,11 @@ class PublicationUnauthorizedTest extends IntegrationTestBase {
     private static final String PUBLICATION_URL = "/publication";
     private static final String NON_STRATEGIC_PUBLICATION_URL = PUBLICATION_URL + "/non-strategic";
     private static final String ARCHIVE_EXPIRED_ARTEFACTS_URL = PUBLICATION_URL + "/expired";
-    private static final String ISSUER_HEADER = "x-issuer-id";
     private static final String VERIFICATION_HEADER = "verification";
     private static final String VERIFICATION_TRUE = "true";
     private static final String REQUESTER_ID_HEADER = "x-requester-id";
     private static final UUID TEST_ARTEFACT_ID = UUID.randomUUID();
-    private static final String USER_ID = "123";
+    private static final UUID USER_ID = UUID.randomUUID();
     private static final Artefact ARTEFACT = new Artefact();
     private static final String SYSTEM_ADMIN_ID = UUID.randomUUID().toString();
 
@@ -213,7 +212,7 @@ class PublicationUnauthorizedTest extends IntegrationTestBase {
     void testUnauthorizedDeleteArtefact() throws Exception {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
             .delete("/publication/2dde8f1e-bfb6-11ec-9d64-0242ac120002")
-            .header(REQUESTER_ID_HEADER, "abcde");
+            .header(REQUESTER_ID_HEADER, UUID.randomUUID());
 
         mockMvc.perform(mockHttpServletRequestBuilder)
             .andExpect(status().isForbidden())

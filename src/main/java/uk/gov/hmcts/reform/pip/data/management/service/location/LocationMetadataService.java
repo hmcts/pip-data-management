@@ -29,9 +29,9 @@ public class LocationMetadataService {
      * @param actioningUserId The userId who is performing this action
      */
     public void createLocationMetadata(LocationMetadata locationMetadata,
-                                                   String actioningUserId) {
+                                                   UUID actioningUserId) {
         try {
-            log.info(writeLog(actioningUserId, UserActions.ADD_LOCATION_METADATA,
+            log.info(writeLog(actioningUserId.toString(), UserActions.ADD_LOCATION_METADATA,
                     locationMetadata.getLocationId().toString()));
             locationMetadataRepository.save(locationMetadata);
         } catch (DataIntegrityViolationException e) {
@@ -49,7 +49,7 @@ public class LocationMetadataService {
      * @param id The location Metadata id
      * @param actioningUserId The userId who is performing this action
      */
-    public void deleteById(String id, String actioningUserId) {
+    public void deleteById(String id, UUID actioningUserId) {
         UUID locationMetadataId = UUID.fromString(id);
         locationMetadataRepository.findById(locationMetadataId)
             .orElseThrow(() -> new LocationMetadataNotFoundException(
@@ -58,7 +58,7 @@ public class LocationMetadataService {
 
         locationMetadataRepository.deleteById(locationMetadataId);
 
-        log.info(writeLog(actioningUserId, UserActions.DELETE_LOCATION_METADATA,
+        log.info(writeLog(actioningUserId.toString(), UserActions.DELETE_LOCATION_METADATA,
                           locationMetadataId.toString()));
     }
 
@@ -69,8 +69,8 @@ public class LocationMetadataService {
      * @param actioningUserId The userId who is performing this action
      */
     public void updateLocationMetadata(LocationMetadata locationMetadata, String id,
-                                       String actioningUserId) {
-        log.info(writeLog(actioningUserId, UserActions.UPDATE_LOCATION_METADATA,
+                                       UUID actioningUserId) {
+        log.info(writeLog(actioningUserId.toString(), UserActions.UPDATE_LOCATION_METADATA,
                           locationMetadata.getLocationId().toString()));
         UUID locationMetadataId = UUID.fromString(id);
         locationMetadataRepository.findById(locationMetadataId)

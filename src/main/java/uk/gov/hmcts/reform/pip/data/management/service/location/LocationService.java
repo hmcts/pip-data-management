@@ -50,6 +50,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
@@ -246,7 +247,7 @@ public class LocationService {
      * @param locationId    The ID of the location to delete.
      * @param requesterId   The ID of the user who is deleting the location.
      */
-    public LocationDeletion deleteLocation(Integer locationId, String requesterId)
+    public LocationDeletion deleteLocation(Integer locationId, UUID requesterId)
         throws JsonProcessingException {
         LocationDeletion locationDeletion;
         Location location = locationRepository.getLocationByLocationId(locationId)
@@ -344,7 +345,7 @@ public class LocationService {
     }
 
     private LocationDeletion checkActiveArtefactForLocation(Location location, String requesterEmail,
-                                                            String requesterId) throws JsonProcessingException {
+                                                            UUID requesterId) throws JsonProcessingException {
         LocalDateTime searchDateTime = LocalDateTime.now();
         LocationDeletion locationDeletion = new LocationDeletion();
         List<Artefact> activeArtefacts =
@@ -362,7 +363,7 @@ public class LocationService {
     }
 
     private LocationDeletion checkActiveSubscriptionForLocation(Location location, String requesterEmail,
-                                                                String requesterId)
+                                                                UUID requesterId)
         throws JsonProcessingException {
         LocationDeletion locationDeletion = new LocationDeletion();
         String result =

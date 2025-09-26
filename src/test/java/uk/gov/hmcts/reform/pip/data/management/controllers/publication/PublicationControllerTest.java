@@ -199,7 +199,7 @@ class PublicationControllerTest {
 
         ResponseEntity<Artefact> responseEntity = publicationController.uploadPublication(
             PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE, SENSITIVITY, LANGUAGE,
-            DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, LOCATION_ID, CONTENT_DATE, TEST_STRING, PAYLOAD
+            DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, LOCATION_ID, CONTENT_DATE, USER_ID, PAYLOAD
         );
 
         verify(validationService).validateBody(eq(PAYLOAD), any(), eq(true));
@@ -222,7 +222,7 @@ class PublicationControllerTest {
         ResponseEntity<Artefact> responseEntity = publicationController.uploadPublication(
             PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE, SENSITIVITY, LANGUAGE,
             DISPLAY_FROM, DISPLAY_TO,
-            listType, LOCATION_ID, CONTENT_DATE, TEST_STRING, PAYLOAD
+            listType, LOCATION_ID, CONTENT_DATE, USER_ID, PAYLOAD
         );
 
         verify(validationService).validateBody(eq(PAYLOAD), any(), eq(false));
@@ -239,7 +239,7 @@ class PublicationControllerTest {
 
         ResponseEntity<Artefact> responseEntity = publicationController.uploadPublication(
             PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE, SENSITIVITY, LANGUAGE,
-            DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, LOCATION_ID, CONTENT_DATE, TEST_STRING, PAYLOAD
+            DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, LOCATION_ID, CONTENT_DATE, USER_ID, PAYLOAD
         );
 
         verify(publicationCreationService, never()).processCreatedPublication(any(Artefact.class), eq(PAYLOAD));
@@ -357,7 +357,7 @@ class PublicationControllerTest {
 
         ResponseEntity<Artefact> responseEntity = publicationController.uploadPublication(
             PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE,
-            SENSITIVITY, LANGUAGE, DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, LOCATION_ID, CONTENT_DATE, TEST_STRING, FILE
+            SENSITIVITY, LANGUAGE, DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, LOCATION_ID, CONTENT_DATE, USER_ID, FILE
         );
 
         verify(publicationCreationService).processCreatedPublication(any(Artefact.class));
@@ -382,7 +382,7 @@ class PublicationControllerTest {
 
         ResponseEntity<Artefact> responseEntity = publicationController.uploadPublication(
             PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE,
-            SENSITIVITY, LANGUAGE, DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, LOCATION_ID, CONTENT_DATE, TEST_STRING, FILE
+            SENSITIVITY, LANGUAGE, DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, LOCATION_ID, CONTENT_DATE, USER_ID, FILE
         );
 
         verify(publicationCreationService, never()).processCreatedPublication(any(Artefact.class));
@@ -402,7 +402,7 @@ class PublicationControllerTest {
 
         ResponseEntity<Artefact> responseEntity = publicationController.nonStrategicUploadPublication(
             PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE, SENSITIVITY, LANGUAGE, DISPLAY_FROM, DISPLAY_TO,
-            LIST_TYPE, LOCATION_ID, CONTENT_DATE, TEST_STRING, file
+            LIST_TYPE, LOCATION_ID, CONTENT_DATE, USER_ID, file
         );
 
         verify(publicationCreationService).processCreatedPublication(artefactWithId, PAYLOAD);
@@ -423,7 +423,7 @@ class PublicationControllerTest {
 
         ResponseEntity<Artefact> responseEntity = publicationController.nonStrategicUploadPublication(
             PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE, SENSITIVITY, LANGUAGE, DISPLAY_FROM, DISPLAY_TO,
-            LIST_TYPE, LOCATION_ID, CONTENT_DATE, TEST_STRING, file
+            LIST_TYPE, LOCATION_ID, CONTENT_DATE, USER_ID, file
         );
 
         verify(publicationCreationService, never()).processCreatedPublication(artefactWithId, PAYLOAD);
@@ -446,7 +446,7 @@ class PublicationControllerTest {
 
         ResponseEntity<Artefact> responseEntity = publicationController.uploadPublication(
             PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE_LCSU,
-            SENSITIVITY, LANGUAGE, DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, LOCATION_ID, CONTENT_DATE, TEST_STRING, FILE
+            SENSITIVITY, LANGUAGE, DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, LOCATION_ID, CONTENT_DATE, USER_ID, FILE
         );
 
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode(), STATUS_CODE_MATCH);
@@ -466,7 +466,7 @@ class PublicationControllerTest {
         try {
             publicationController.uploadPublication(
                 PROVENANCE, SOURCE_ARTEFACT_ID, ArtefactType.LCSU,
-                SENSITIVITY, LANGUAGE, DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, LOCATION_ID, CONTENT_DATE, TEST_STRING, FILE
+                SENSITIVITY, LANGUAGE, DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, LOCATION_ID, CONTENT_DATE, USER_ID, FILE
             );
             fail("Expected RuntimeException not thrown");
         } catch (RuntimeException ex) {
@@ -478,12 +478,12 @@ class PublicationControllerTest {
     @Test
     void testDeleteArtefactReturnsOk() {
         doNothing().when(publicationRemovalService).deleteArtefactById(any(), any());
-        assertEquals(HttpStatus.OK, publicationController.deleteArtefact(TEST_STRING, TEST_STRING).getStatusCode(),
+        assertEquals(HttpStatus.OK, publicationController.deleteArtefact(USER_ID, TEST_STRING).getStatusCode(),
                      STATUS_CODE_MATCH
         );
         assertEquals(
             DELETED_MESSAGE + TEST_STRING,
-            publicationController.deleteArtefact(TEST_STRING, TEST_STRING).getBody(),
+            publicationController.deleteArtefact(USER_ID, TEST_STRING).getBody(),
             MESSAGES_MATCH
         );
     }
@@ -496,7 +496,7 @@ class PublicationControllerTest {
         try (LogCaptor logCaptor = LogCaptor.forClass(PublicationController.class)) {
             publicationController.uploadPublication(
                 PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE,
-                SENSITIVITY, LANGUAGE, DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, LOCATION_ID, CONTENT_DATE, TEST_STRING,
+                SENSITIVITY, LANGUAGE, DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, LOCATION_ID, CONTENT_DATE, USER_ID,
                 PAYLOAD
             );
             assertEquals(1, logCaptor.getInfoLogs().size(), "Should have logged upload");
@@ -515,7 +515,7 @@ class PublicationControllerTest {
 
     @Test
     void testArchiveArtefact() {
-        String issuerId = UUID.randomUUID().toString();
+        UUID issuerId = UUID.randomUUID();
         String artefactId = UUID.randomUUID().toString();
 
         doNothing().when(publicationRemovalService).archiveArtefactById(artefactId, issuerId);
@@ -538,7 +538,7 @@ class PublicationControllerTest {
             LcsuArtefactNotSupportedException.class,
             () -> publicationController.uploadPublication(
                 PROVENANCE, SOURCE_ARTEFACT_ID, ArtefactType.LCSU,
-                SENSITIVITY, LANGUAGE, DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, LOCATION_ID, CONTENT_DATE, TEST_STRING, FILE
+                SENSITIVITY, LANGUAGE, DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, LOCATION_ID, CONTENT_DATE, USER_ID, FILE
             ),
             "Expected LcsuArtefactNotSupportedException to be thrown"
         );
