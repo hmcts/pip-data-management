@@ -83,11 +83,8 @@ public final class CrownWarnedPddaListHelper {
             defendantNames = CrownPddaListHelper.formatDefendantName(hearingCase.get("Defendants"));
         }
 
-        String prosecutingAuthority = "";
-        if (hearingCase.has("Prosecution")
-            && hearingCase.get("Prosecution").has("ProsecutingAuthority")) {
-            prosecutingAuthority = hearingCase.get("Prosecution").get("ProsecutingAuthority").asText();
-        }
+        String prosecutingAuthority =
+                GeneralHelper.findAndReturnNodeText(hearingCase.get("Prosecution"), "ProsecutingAuthority");
 
         String linkedCases = Optional.ofNullable(hearingCase.get("LinkedCases"))
             .filter(JsonNode::isArray)
