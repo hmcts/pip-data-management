@@ -83,6 +83,7 @@
                         "CitizenNameRequestedName": "AdvocateRequestedName"
                       },
                       "IsMasked": "no"
+                    }
                   }
                 },
                 "CommittingCourt": {
@@ -139,3 +140,4 @@
     ]
   }
 }
+

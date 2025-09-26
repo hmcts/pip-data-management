@@ -84,58 +84,60 @@
                       },
                       "IsMasked": "no"
                     }
-                  },
-                  "CommittingCourt": {
-                    "CourtHouseType": "Magistrates Court",
-                    "CourtHouseCode": "5678",
-                    "CourtHouseShortName": "TestMagShort",
-                    "CourtHouseName": "Test Magistrates Court"
-                  },
-                  "ListNote": "Test List Note",
-                  "Defendants": [
-                    {
-                      "PersonalDetails": {
-                        "Name": {
-                          "CitizenNameTitle": "TestDefendantTitle",
-                          "CitizenNameForename": "TestDefendantForename",
-                          "CitizenNameSurname": "TestDefendantSurname",
-                          "CitizenNameSuffix": "TestDefendantSuffix",
-                          "CitizenNameRequestedName": "TestDefendantRequestedName"
-                        },
-                        "MaskedName": "Test Masked",
-                        "IsMasked": "no",
-                        "DateOfBirth": {
-                          "BirthDate": "2000-01-01",
-                          "VerifiedBy": "not verified"
-                        },
-                        "Age": 24,
-                        "Sex": "unknown",
-                        "Address": {
-                          "Line": ["Test Defendant Address"],
-                          "Postcode": "TEST3 3CC"
-                        },
-                        "Nationality": "TestNationality"
+                  }
+                },
+                "CommittingCourt": {
+                  "CourtHouseType": "Magistrates Court",
+                  "CourtHouseCode": "5678",
+                  "CourtHouseShortName": "TestMagShort",
+                  "CourtHouseName": "Test Magistrates Court"
+                },
+                "ListNote": "Test List Note",
+                "Defendants": [
+                  {
+                    "PersonalDetails": {
+                      "Name": {
+                        "CitizenNameTitle": "TestDefendantTitle",
+                        "CitizenNameForename": "TestDefendantForename",
+                        "CitizenNameSurname": "TestDefendantSurname",
+                        "CitizenNameSuffix": "TestDefendantSuffix",
+                        "CitizenNameRequestedName": "TestDefendantRequestedName"
                       },
-                      "URN": "TEST-URN-001",
-                      "PrisonerID": "TEST-PRISONER-001",
-                      "PrisonLocation": {
-                        "Location": ["Test Prison Location"]
+                      "MaskedName": "Test Masked",
+                      "IsMasked": "no",
+                      "DateOfBirth": {
+                        "BirthDate": "2000-01-01",
+                        "VerifiedBy": "not verified"
                       },
-                      "Charges": [
-                        {
-                          "OffenceStatement": "Test Offence",
-                          "IndictmentCountNumber": 1,
-                          "CJSoffenceCode": "TESTCODE"
-                        }
-                      ]
-                    }
-                  ],
-                  "Respondent": ["Test Respondent"]
-                }
-                ]
+                      "Age": 24,
+                      "Sex": "unknown",
+                      "Address": {
+                        "Line": ["Test Defendant Address"],
+                        "Postcode": "TEST3 3CC"
+                      },
+                      "Nationality": "TestNationality"
+                    },
+                    "URN": "TEST-URN-001",
+                    "PrisonerID": "TEST-PRISONER-001",
+                    "PrisonLocation": {
+                      "Location": ["Test Prison Location"]
+                    },
+                    "Charges": [
+                      {
+                        "OffenceStatement": "Test Offence",
+                        "IndictmentCountNumber": 1,
+                        "CJSoffenceCode": "TESTCODE"
+                      }
+                    ]
+                  }
+                ],
+                "Respondent": ["Test Respondent"]
               }
             ]
           }
         ]
       }
-    }
+    ]
+  }
+}
+
