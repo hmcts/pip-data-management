@@ -31,7 +31,7 @@ public class LocationMetadataService {
     public void createLocationMetadata(LocationMetadata locationMetadata,
                                                    UUID actioningUserId) {
         try {
-            log.info(writeLog(actioningUserId.toString(), UserActions.ADD_LOCATION_METADATA,
+            log.info(writeLog(actioningUserId, UserActions.ADD_LOCATION_METADATA,
                     locationMetadata.getLocationId().toString()));
             locationMetadataRepository.save(locationMetadata);
         } catch (DataIntegrityViolationException e) {
@@ -58,7 +58,7 @@ public class LocationMetadataService {
 
         locationMetadataRepository.deleteById(locationMetadataId);
 
-        log.info(writeLog(actioningUserId.toString(), UserActions.DELETE_LOCATION_METADATA,
+        log.info(writeLog(actioningUserId, UserActions.DELETE_LOCATION_METADATA,
                           locationMetadataId.toString()));
     }
 
@@ -70,7 +70,7 @@ public class LocationMetadataService {
      */
     public void updateLocationMetadata(LocationMetadata locationMetadata, String id,
                                        UUID actioningUserId) {
-        log.info(writeLog(actioningUserId.toString(), UserActions.UPDATE_LOCATION_METADATA,
+        log.info(writeLog(actioningUserId, UserActions.UPDATE_LOCATION_METADATA,
                           locationMetadata.getLocationId().toString()));
         UUID locationMetadataId = UUID.fromString(id);
         locationMetadataRepository.findById(locationMetadataId)

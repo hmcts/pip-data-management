@@ -435,7 +435,7 @@ public class PublicationController {
 
     private void logManualUpload(UUID issuerId, String artefactId) {
         if (issuerId != null) {
-            log.info(writeLog(issuerId.toString(), UserActions.UPLOAD, artefactId));
+            log.info(writeLog(issuerId, UserActions.UPLOAD, artefactId));
         }
     }
 

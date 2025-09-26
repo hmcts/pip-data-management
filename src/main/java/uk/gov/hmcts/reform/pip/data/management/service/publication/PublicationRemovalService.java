@@ -111,7 +111,7 @@ public class PublicationRemovalService {
             .orElseThrow(() -> new ArtefactNotFoundException("No artefact found with the ID: " + artefactId));
 
         handleArtefactDeletion(artefactToDelete);
-        log.info(writeLog(requesterId.toString(), UserActions.REMOVE, artefactId));
+        log.info(writeLog(requesterId, UserActions.REMOVE, artefactId));
     }
 
     public void deleteArtefactByLocation(List<Artefact> artefactsToDelete, Integer locationId, UUID requesterId)
