@@ -242,8 +242,9 @@
                                   "Inland Revenue",
                                   "Other Prosecutor"]
                               },
-                              "advocate": {
+                              "Advocate": {
                                 "type": "object",
+                                "required": ["PersonalDetails"],
                                 "properties": {
                                   "PersonalDetails": {
                                     "description": "Personal details of the advocate",
@@ -271,6 +272,7 @@
                             "type": "array",
                             "items": {
                               "type": "object",
+                              "required": ["PersonalDetails"],
                               "properties": {
                                 "PersonalDetails": {
                                   "description": "Personal details of the defendant",
