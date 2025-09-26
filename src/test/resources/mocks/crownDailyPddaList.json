@@ -89,7 +89,19 @@
                   "ProsecutingOrganisation": {
                     "OrganisationName": "TestProsecutingOrg"
                   },
-                  "ProsecutingAuthority": "Crown Prosecution Service"
+                  "ProsecutingAuthority": "Crown Prosecution Service",
+                  "Advocate": {
+                    "PersonalDetails": {
+                      "Name": {
+                        "CitizenNameTitle": "AdvocateTitle",
+                        "CitizenNameForename": "AdvocateForename",
+                        "CitizenNameSurname": "AdvocateSurname",
+                        "CitizenNameSuffix": "AdvocateSuffix",
+                        "CitizenNameRequestedName": "AdvocateRequestedName"
+                      },
+                      "IsMasked": "no"
+                    }
+                  }
                 },
                 "CommittingCourt": {
                   "CourtHouseType": "Crown Court",
@@ -317,3 +329,4 @@
     ]
   }
 }
+

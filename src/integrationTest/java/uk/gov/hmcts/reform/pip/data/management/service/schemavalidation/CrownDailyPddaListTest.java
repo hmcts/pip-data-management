@@ -65,6 +65,11 @@ class CrownDailyPddaListTest extends IntegrationBasicTestBase {
     private static final String CASE_NUMBER_CATH = "CaseNumberCaTH";
     private static final String ORGANISATION_NAME = "OrganisationName";
     private static final String OFFENCE_STATEMENT = "OffenceStatement";
+    private static final String PERSONAL_DETAILS = "PersonalDetails";
+    private static final String NAME = "Name";
+    private static final String IS_MASKED = "IsMasked";
+    private static final String DEFENDANTS = "Defendants";
+    private static final String PROSECUTION = "Prosecution";
 
     private static final String SOURCE_ARTEFACT_ID = "sourceArtefactId";
     private static final LocalDateTime DISPLAY_FROM = LocalDateTime.now();
@@ -609,7 +614,109 @@ class CrownDailyPddaListTest extends IntegrationBasicTestBase {
 
             JsonNode node = getJsonNode(text);
             ((ObjectNode) node.get(DAILY_LIST_SCHEMA).get(COURT_LISTS).get(0).get(SITTINGS).get(0).get(HEARINGS)
-                .get(0).get("Prosecution").get("ProsecutingOrganisation")).remove(ORGANISATION_NAME);
+                .get(0).get(PROSECUTION).get("ProsecutingOrganisation")).remove(ORGANISATION_NAME);
+
+            String listJson = node.toString();
+            assertThrows(PayloadValidationException.class, () ->
+                             validationService.validateBody(listJson, headerGroup, true),
+                         CROWN_DAILY_PDDA_LIST_INVALID_MESSAGE);
+        }
+    }
+
+    @Test
+    void testValidateWithErrorsAdvocatePersonalDetailsMissingInCrownDailyPddaList() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream(CROWN_DAILY_PDDA_LIST_VALID_JSON)) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            JsonNode node = getJsonNode(text);
+            ((ObjectNode) node.get(DAILY_LIST_SCHEMA).get(COURT_LISTS).get(0).get(SITTINGS).get(0).get(HEARINGS)
+                .get(0).get(PROSECUTION).get("Advocate")).remove(PERSONAL_DETAILS);
+
+            String listJson = node.toString();
+            assertThrows(PayloadValidationException.class, () ->
+                             validationService.validateBody(listJson, headerGroup, true),
+                         CROWN_DAILY_PDDA_LIST_INVALID_MESSAGE);
+        }
+    }
+
+    @Test
+    void testValidateWithErrorsAdvocateNameMissingInCrownDailyPddaList() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream(CROWN_DAILY_PDDA_LIST_VALID_JSON)) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            JsonNode node = getJsonNode(text);
+            ((ObjectNode) node.get(DAILY_LIST_SCHEMA).get(COURT_LISTS).get(0).get(SITTINGS).get(0).get(HEARINGS)
+                .get(0).get(PROSECUTION).get("Advocate").get(PERSONAL_DETAILS)).remove(NAME);
+
+            String listJson = node.toString();
+            assertThrows(PayloadValidationException.class, () ->
+                             validationService.validateBody(listJson, headerGroup, true),
+                         CROWN_DAILY_PDDA_LIST_INVALID_MESSAGE);
+        }
+    }
+
+    @Test
+    void testValidateWithErrorsAdvocateIsMaskedMissingInCrownDailyPddaList() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream(CROWN_DAILY_PDDA_LIST_VALID_JSON)) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            JsonNode node = getJsonNode(text);
+            ((ObjectNode) node.get(DAILY_LIST_SCHEMA).get(COURT_LISTS).get(0).get(SITTINGS).get(0).get(HEARINGS)
+                .get(0).get(PROSECUTION).get("Advocate").get(PERSONAL_DETAILS)).remove(IS_MASKED);
+
+            String listJson = node.toString();
+            assertThrows(PayloadValidationException.class, () ->
+                             validationService.validateBody(listJson, headerGroup, true),
+                         CROWN_DAILY_PDDA_LIST_INVALID_MESSAGE);
+        }
+    }
+
+    @Test
+    void testValidateWithErrorsDefendantPersonalDetailsMissingInCrownDailyPddaList() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream(CROWN_DAILY_PDDA_LIST_VALID_JSON)) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            JsonNode node = getJsonNode(text);
+            ((ObjectNode) node.get(DAILY_LIST_SCHEMA).get(COURT_LISTS).get(0).get(SITTINGS).get(0).get(HEARINGS)
+                .get(0).get(DEFENDANTS).get(0)).remove(PERSONAL_DETAILS);
+
+            String listJson = node.toString();
+            assertThrows(PayloadValidationException.class, () ->
+                             validationService.validateBody(listJson, headerGroup, true),
+                         CROWN_DAILY_PDDA_LIST_INVALID_MESSAGE);
+        }
+    }
+
+    @Test
+    void testValidateWithErrorsDefendantNameMissingInCrownDailyPddaList() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream(CROWN_DAILY_PDDA_LIST_VALID_JSON)) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            JsonNode node = getJsonNode(text);
+            ((ObjectNode) node.get(DAILY_LIST_SCHEMA).get(COURT_LISTS).get(0).get(SITTINGS).get(0).get(HEARINGS)
+                .get(0).get(DEFENDANTS).get(0).get(PERSONAL_DETAILS)).remove(NAME);
+
+            String listJson = node.toString();
+            assertThrows(PayloadValidationException.class, () ->
+                             validationService.validateBody(listJson, headerGroup, true),
+                         CROWN_DAILY_PDDA_LIST_INVALID_MESSAGE);
+        }
+    }
+
+    @Test
+    void testValidateWithErrorsDefendantIsMaskedMissingInCrownDailyPddaList() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream(CROWN_DAILY_PDDA_LIST_VALID_JSON)) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            JsonNode node = getJsonNode(text);
+            ((ObjectNode) node.get(DAILY_LIST_SCHEMA).get(COURT_LISTS).get(0).get(SITTINGS).get(0).get(HEARINGS)
+                .get(0).get(DEFENDANTS).get(0).get(PERSONAL_DETAILS)).remove(IS_MASKED);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
@@ -626,7 +733,7 @@ class CrownDailyPddaListTest extends IntegrationBasicTestBase {
 
             JsonNode node = getJsonNode(text);
             ((ObjectNode) node.get(DAILY_LIST_SCHEMA).get(COURT_LISTS).get(0).get(SITTINGS).get(0).get(HEARINGS)
-                .get(0).get("Defendants").get(0).get("Charges").get(0)).remove(OFFENCE_STATEMENT);
+                .get(0).get(DEFENDANTS).get(0).get("Charges").get(0)).remove(OFFENCE_STATEMENT);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
