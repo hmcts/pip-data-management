@@ -68,6 +68,8 @@ class CrownDailyPddaListTest extends IntegrationBasicTestBase {
     private static final String PERSONAL_DETAILS = "PersonalDetails";
     private static final String NAME = "Name";
     private static final String IS_MASKED = "IsMasked";
+    private static final String DEFENDANTS = "Defendants";
+    private static final String PROSECUTION = "Prosecution";
 
     private static final String SOURCE_ARTEFACT_ID = "sourceArtefactId";
     private static final LocalDateTime DISPLAY_FROM = LocalDateTime.now();
@@ -612,7 +614,7 @@ class CrownDailyPddaListTest extends IntegrationBasicTestBase {
 
             JsonNode node = getJsonNode(text);
             ((ObjectNode) node.get(DAILY_LIST_SCHEMA).get(COURT_LISTS).get(0).get(SITTINGS).get(0).get(HEARINGS)
-                .get(0).get("Prosecution").get("ProsecutingOrganisation")).remove(ORGANISATION_NAME);
+                .get(0).get(PROSECUTION).get("ProsecutingOrganisation")).remove(ORGANISATION_NAME);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
@@ -629,7 +631,7 @@ class CrownDailyPddaListTest extends IntegrationBasicTestBase {
 
             JsonNode node = getJsonNode(text);
             ((ObjectNode) node.get(DAILY_LIST_SCHEMA).get(COURT_LISTS).get(0).get(SITTINGS).get(0).get(HEARINGS)
-                .get(0).get("Prosecution").get("Advocate")).remove(PERSONAL_DETAILS);
+                .get(0).get(PROSECUTION).get("Advocate")).remove(PERSONAL_DETAILS);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
@@ -646,7 +648,7 @@ class CrownDailyPddaListTest extends IntegrationBasicTestBase {
 
             JsonNode node = getJsonNode(text);
             ((ObjectNode) node.get(DAILY_LIST_SCHEMA).get(COURT_LISTS).get(0).get(SITTINGS).get(0).get(HEARINGS)
-                .get(0).get("Prosecution").get("Advocate").get(PERSONAL_DETAILS)).remove(NAME);
+                .get(0).get(PROSECUTION).get("Advocate").get(PERSONAL_DETAILS)).remove(NAME);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
@@ -663,7 +665,7 @@ class CrownDailyPddaListTest extends IntegrationBasicTestBase {
 
             JsonNode node = getJsonNode(text);
             ((ObjectNode) node.get(DAILY_LIST_SCHEMA).get(COURT_LISTS).get(0).get(SITTINGS).get(0).get(HEARINGS)
-                .get(0).get("Prosecution").get("Advocate").get(PERSONAL_DETAILS)).remove(IS_MASKED);
+                .get(0).get(PROSECUTION).get("Advocate").get(PERSONAL_DETAILS)).remove(IS_MASKED);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
@@ -680,7 +682,7 @@ class CrownDailyPddaListTest extends IntegrationBasicTestBase {
 
             JsonNode node = getJsonNode(text);
             ((ObjectNode) node.get(DAILY_LIST_SCHEMA).get(COURT_LISTS).get(0).get(SITTINGS).get(0).get(HEARINGS)
-                .get(0).get("Defendants").get(0)).remove(PERSONAL_DETAILS);
+                .get(0).get(DEFENDANTS).get(0)).remove(PERSONAL_DETAILS);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
@@ -697,7 +699,7 @@ class CrownDailyPddaListTest extends IntegrationBasicTestBase {
 
             JsonNode node = getJsonNode(text);
             ((ObjectNode) node.get(DAILY_LIST_SCHEMA).get(COURT_LISTS).get(0).get(SITTINGS).get(0).get(HEARINGS)
-                .get(0).get("Defendants").get(0).get(PERSONAL_DETAILS)).remove(NAME);
+                .get(0).get(DEFENDANTS).get(0).get(PERSONAL_DETAILS)).remove(NAME);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
@@ -714,7 +716,7 @@ class CrownDailyPddaListTest extends IntegrationBasicTestBase {
 
             JsonNode node = getJsonNode(text);
             ((ObjectNode) node.get(DAILY_LIST_SCHEMA).get(COURT_LISTS).get(0).get(SITTINGS).get(0).get(HEARINGS)
-                .get(0).get("Defendants").get(0).get(PERSONAL_DETAILS)).remove(IS_MASKED);
+                .get(0).get(DEFENDANTS).get(0).get(PERSONAL_DETAILS)).remove(IS_MASKED);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
@@ -731,7 +733,7 @@ class CrownDailyPddaListTest extends IntegrationBasicTestBase {
 
             JsonNode node = getJsonNode(text);
             ((ObjectNode) node.get(DAILY_LIST_SCHEMA).get(COURT_LISTS).get(0).get(SITTINGS).get(0).get(HEARINGS)
-                .get(0).get("Defendants").get(0).get("Charges").get(0)).remove(OFFENCE_STATEMENT);
+                .get(0).get(DEFENDANTS).get(0).get("Charges").get(0)).remove(OFFENCE_STATEMENT);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
