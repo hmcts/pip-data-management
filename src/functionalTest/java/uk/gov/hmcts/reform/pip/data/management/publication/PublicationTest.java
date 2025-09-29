@@ -52,6 +52,9 @@ class PublicationTest extends FunctionalTestBase {
     @Value("${test-system-admin-id}")
     private String systemAdminUserId;
 
+    @Value("${test-admin-ctsc-id}")
+    private String adminCtscUserId;
+
     private static final String PUBLICATION_URL = "/publication";
     private static final String NON_STRATEGIC_UPLOAD_PUBLICATION_URL = PUBLICATION_URL + "/non-strategic";
     private static final String ARTEFACT_BY_LOCATION_ID_URL = PUBLICATION_URL + "/locationId/";
@@ -540,7 +543,7 @@ class PublicationTest extends FunctionalTestBase {
         uploadFlatFile(courtId, Sensitivity.CLASSIFIED);
 
         Map<String, String> headerMap = getBaseHeaderMap();
-        headerMap.put(REQUESTER_ID_HEADER, userId);
+        headerMap.put(REQUESTER_ID_HEADER, adminCtscUserId);
 
         final Response responseGetArtefactMetadata = doGetRequest(
             PUBLICATION_URL + "/locationId/" + courtId, headerMap
