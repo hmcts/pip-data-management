@@ -274,7 +274,6 @@ class FileGenerationTest extends FunctionalTestBase {
     }
 
     @Test
-    @Disabled
     void shouldReturnUnauthorisedIfUserDoesNotHavePermission() throws Exception {
         Artefact artefact = uploadPublication(ListType.SJP_PUBLIC_LIST,
                                               SJP_PUBLIC_LIST_FILE,
@@ -282,7 +281,7 @@ class FileGenerationTest extends FunctionalTestBase {
                                               Sensitivity.CLASSIFIED
         );
 
-        headerMap.put(REQUESTER_ID_HEADER, systemAdminUserId);
+        headerMap.put(REQUESTER_ID_HEADER, testUserId);
         Response additionalPdfResponse = doGetRequest(
             String.format(GET_FILE_URL, artefact.getArtefactId(), FileType.PDF.name()), headerMap);
         assertThat(additionalPdfResponse.getStatusCode()).isEqualTo(FORBIDDEN.value());
