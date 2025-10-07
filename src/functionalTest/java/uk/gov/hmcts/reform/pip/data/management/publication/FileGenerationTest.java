@@ -7,7 +7,6 @@ import org.awaitility.Awaitility;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -72,6 +71,9 @@ class FileGenerationTest extends FunctionalTestBase {
 
     @Value("${test-system-admin-id}")
     private String systemAdminUserId;
+
+    @Value("${test-admin-ctsc-id}")
+    private String adminCtscUserId;
 
     private static LocalDateTime contentDate = LocalDateTime.now().toLocalDate().atStartOfDay()
         .truncatedTo(ChronoUnit.SECONDS);
@@ -274,7 +276,6 @@ class FileGenerationTest extends FunctionalTestBase {
     }
 
     @Test
-    @Disabled
     void shouldReturnUnauthorisedIfUserDoesNotHavePermission() throws Exception {
         Artefact artefact = uploadPublication(ListType.SJP_PUBLIC_LIST,
                                               SJP_PUBLIC_LIST_FILE,
@@ -282,7 +283,7 @@ class FileGenerationTest extends FunctionalTestBase {
                                               Sensitivity.CLASSIFIED
         );
 
-        headerMap.put(REQUESTER_ID_HEADER, systemAdminUserId);
+        headerMap.put(REQUESTER_ID_HEADER, adminCtscUserId);
         Response additionalPdfResponse = doGetRequest(
             String.format(GET_FILE_URL, artefact.getArtefactId(), FileType.PDF.name()), headerMap);
         assertThat(additionalPdfResponse.getStatusCode()).isEqualTo(FORBIDDEN.value());

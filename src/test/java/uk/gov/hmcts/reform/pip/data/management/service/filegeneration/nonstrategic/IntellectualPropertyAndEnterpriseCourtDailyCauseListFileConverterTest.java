@@ -180,7 +180,7 @@ class IntellectualPropertyAndEnterpriseCourtDailyCauseListFileConverterTest {
 
         softly.assertThat(document.getElementById(VENUE_NAME_ELEMENT).text())
             .as(VENUE_MESSAGE)
-            .isEqualTo("Rolls Building");
+            .isEqualTo("Adeilad Rolls");
 
         softly.assertThat(document.getElementById(ADDRESS_LINE1_ELEMENT).text())
             .as(VENUE_MESSAGE)
@@ -215,7 +215,7 @@ class IntellectualPropertyAndEnterpriseCourtDailyCauseListFileConverterTest {
             .containsExactly(
                 "Barnwr",
                 "Amser",
-                "Leoliad",
+                "Lleoliad",
                 "Math",
                 "Rhif yr achos",
                 "Enw’r achos",
