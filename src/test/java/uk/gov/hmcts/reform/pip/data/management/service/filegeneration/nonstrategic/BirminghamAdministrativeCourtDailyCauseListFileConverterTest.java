@@ -221,7 +221,7 @@ class BirminghamAdministrativeCourtDailyCauseListFileConverterTest {
             .extracting(Element::text)
             .containsExactly(
                 "Lleoliad",
-                "Barnwyr",
+                "Barnwr",
                 "Amser",
                 "Rhif yr achos",
                 "Manylion yr achos",

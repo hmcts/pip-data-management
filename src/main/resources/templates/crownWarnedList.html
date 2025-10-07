@@ -1,38 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <style th:replace="css/template-styles :: page-govuk-classes"></style>
+  <style th:replace="css/template-styles :: accordion-classes"></style>
+  <style th:replace="css/template-styles :: warning-govuk-classes"></style>
   <style th:inline="text">
-    @page {
-      margin: 30px 20px;
-
-      @bottom-center {
-        font-family: 'openSans';
-        font-size: 16px;
-        color: grey;
-        content: "[[${i18n.serviceName + i18n.pdfAccessibility}]]" counter(page) "[[${i18n.of}]]" counter(pages) ".";
-      }
-    }
-
-    @page landscapePage {
-      size: A4 landscape;
-    }
-
-    .landscape {
-      page: landscapePage;
-    }
-
-    body {
-      font-family: 'openSans';
-      color: #0b0c0c;
-      padding: 2px;
-      font-size: 105%;
-    }
-
-    h1, h4 {
-      font-family: "openSans";
-      color: black;
-    }
-
     .hearing-details {
       position: relative;
       top: 2em;
@@ -48,42 +20,8 @@
     }
 
     .govuk-accordion__section-heading {
-      margin-top: 0;
-      margin-bottom: 0;
-      padding-top: 15px;
-      padding-bottom: 15px;
-      font-family: "openSans";
-      font-weight: 700;
-      font-size: 20px;
-      font-size: 1.125rem;
-      line-height: 1.11111;
-      color: #0b0c0c;
-      display: block;
-    }
-
-    .govuk-accordion {
-      page-break-after: always;
-    }
-
-    .govuk-heading-l {
-      color: #0b0c0c;
-      font-family: "openSans";
-      font-weight: 700;
-      font-size: 24px;
-      line-height: 1.04167;
-      display: block;
-      margin-top: 0;
-      margin-bottom: 20px;
-    }
-
-    .govuk-body {
-      color: #0b0c0c;
-      font-family: "openSans";
-      font-weight: 400;
-      font-size: 16px;
-      line-height: 1.25;
-      margin-top: 0;
-      margin-bottom: 15px;
+      font-size: 20px !important;
+      font-size: 1.125rem !important;
     }
 
     table {
@@ -93,75 +31,11 @@
 
     .govuk-table {
       table-layout: fixed;
-      font-family: "openSans";
-      font-weight: 400;
-      font-size: 16px;
-      line-height: 1.25;
-      color: #0b0c0c;
       width: 1050px;
-      margin-bottom: 20px;
-      border-spacing: 0;
-      border-collapse: collapse;
-    }
-
-    .govuk-table__header, .govuk-table__cell {
-      padding: 10px 20px 10px 0;
-      border-bottom: 1px solid #b1b4b6;
-      text-align: left;
-      vertical-align: top;
     }
 
     .no-border-bottom {
       border-bottom: 0;
-    }
-
-    .no-wrap {
-      white-space: nowrap;
-    }
-
-    .govuk-table__header {
-      font-weight: 700;
-    }
-
-    .govuk-warning-text {
-      position: relative;
-      padding: 10px 0;
-    }
-
-    .govuk-warning-text__icon {
-      font-weight: 300;
-      box-sizing: border-box;
-      display: inline-block;
-      position: absolute;
-      left: 0;
-      min-width: 35px;
-      min-height: 35px;
-      border: 1px solid #0b0c0c;
-      border-radius: 50%;
-      color: #ffffff;
-      background: #0b0c0c;
-      font-size: 30px;
-      line-height: 30px;
-      text-align: center;
-    }
-
-    .govuk-warning-text__text {
-      font-weight: 500;
-      color: #0b0c0c;
-      display: block;
-      padding-left: 45px;
-    }
-
-    .govuk-warning-text__assistive {
-      position: absolute !important;
-      width: 1px !important;
-      height: 1px !important;
-      margin: 0 !important;
-      padding: 0 !important;
-      overflow: hidden !important;
-      clip-path: inset(50%) !important;
-      border: 0 !important;
-      white-space: nowrap !important;
     }
   </style>
   <meta charset="UTF-8"/>
