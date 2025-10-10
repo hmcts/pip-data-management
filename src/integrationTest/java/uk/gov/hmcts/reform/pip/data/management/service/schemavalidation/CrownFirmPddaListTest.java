@@ -786,7 +786,7 @@ class CrownFirmPddaListTest extends IntegrationBasicTestBase {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(FIRM_LIST_SCHEMA).get(COURT_LISTS).get(0).get(SITTINGS).get(0).get(HEARINGS).get(0)
+            ((ObjectNode) node.get(FIRM_LIST_SCHEMA).get(COURT_LISTS).get(1).get(SITTINGS).get(0).get(HEARINGS).get(0)
                 .get(DEFENDANTS).get(0).get("Counsel").get(0).get("Solicitor").get(0).get("Party")
                 .get("Organisation")).remove(ORGANISATION_NAME);
 
