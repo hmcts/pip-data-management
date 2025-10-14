@@ -1,0 +1,225 @@
+{
+  "WarnedList": {
+    "DocumentID": {
+      "DocumentName": "TestDocumentName",
+      "UniqueID": "TestUniqueID",
+      "DocumentType": "TestDocumentType"
+    },
+    "ListHeader": {
+      "StartDate": "2024-01-01",
+      "EndDate": "2024-01-02",
+      "Version": "TestVersion",
+      "PublishedTime": "2024-01-01T10:00:00Z"
+    },
+    "CrownCourt": {
+      "CourtHouseType": "Crown Court",
+      "CourtHouseCode": "1234",
+      "CourtHouseName": "TestCourtHouseName",
+      "CourtHouseAddress": {
+        "Line": ["TestAddressLine1", "TestAddressLine2"],
+        "Postcode": "TestPostcode"
+      },
+      "CourtHouseTelephone": "TestTelephone"
+    },
+    "ListingInstruction": ["TestInstruction1", "TestInstruction2"],
+    "CourtLists": [
+      {
+        "CourtHouse": {
+          "CourtHouseType": "Crown Court",
+          "CourtHouseCode": "1234",
+          "CourtHouseShortName": "TestShortName",
+          "CourtHouseName": "TestCourtHouseName",
+          "CourtHouseAddress": {
+            "Line": ["TestAddressLine1"],
+            "Postcode": "TestPostcode"
+          },
+          "CourtHouseTelephone": "TestTelephone"
+        },
+        "WithFixedDate": [
+          {
+          "HearingType": "ABC",
+          "Fixture": {
+            "FixedDate": "2024-01-01",
+            "Notes": "TestNotes",
+            "Cases": [
+              {
+                "CaseNumber": "T00112233",
+                "CaseNumberCaTH": "T00112233",
+                "CaseArrivedFrom": {
+                  "OriginatingCourt": {
+                    "CourtHouseCode": "5678",
+                    "CourtHouseShortName": "TestOriginShortName",
+                    "CourtHouseName": "TestOriginName"
+                  }
+                },
+                "Hearing": [
+                  {
+                    "HearingDescription": "TestHearingDescription",
+                    "HearingDate": "2024-01-01",
+                    "HearingEndDate": "2024-01-02",
+                    "ListNote": "TestListNote",
+                    "HearingType": "DEF"
+                  }
+                ],
+                "Defendants": [
+                  {
+                    "PersonalDetails": {
+                      "Name": {
+                        "CitizenNameTitle": "TestDefendantTitle",
+                        "CitizenNameForename": "TestDefendantForename",
+                        "CitizenNameSurname": "TestDefendantSurname",
+                        "CitizenNameSuffix": "TestDefendantSuffix",
+                        "CitizenNameRequestedName": "TestDefendantRequestedName"
+                      },
+                      "MaskedName": "TestMaskedName",
+                      "IsMasked": "no",
+                      "DateOfBirth": {
+                        "BirthDate": "2000-01-01",
+                        "VerifiedBy": "not verified"
+                      },
+                      "Age": 24,
+                      "Sex": "male",
+                      "Address": {
+                        "Line": ["TestDefendantAddress"],
+                        "Postcode": "TestDefendantPostcode"
+                      },
+                      "Nationality": "TestNationality"
+                    },
+                    "URN": "TestURN",
+                    "PrisonerID": "TestPrisonerID",
+                    "PrisonLocation": {
+                      "Location": ["TestPrisonLocation"]
+                    },
+                    "CustodyStatus": "On bail",
+                    "Counsel": [
+                      {
+                        "Solicitor": [
+                          {
+                            "Party": {
+                              "Organisation": {
+                                "OrganisationName": "TestSolicitorOrg"
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    ],
+                    "Charges": [
+                      {
+                        "OffenceStatement": "TestOffenceStatement",
+                        "IndictmentCountNumber": 1,
+                        "CJSoffenceCode": "TestCJSCode"
+                      }
+                    ]
+                  }
+                ],
+                "Prosecution": {
+                  "ProsecutingOrganisation": {
+                    "OrganisationName": "TestProsecutingOrg"
+                  },
+                  "ProsecutingAuthority": "Crown Prosecution Service"
+                },
+                "LinkedCases": [
+                  {
+                    "CaseNumber": "TestLinkedCaseNumber"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+        ],
+        "WithoutFixedDate": [
+          {
+          "HearingType": "XYZ",
+          "Fixture": {
+            "FixedDate": "2024-01-03",
+            "Notes": "TestNotes2",
+            "Cases": [
+              {
+                "CaseNumber": "T00112244",
+                "CaseNumberCaTH": "T00112244",
+                "CaseArrivedFrom": {
+                  "Section53": "no"
+                },
+                "Hearing": [
+                  {
+                    "HearingDescription": "TestHearingDescription2",
+                    "HearingDate": "2024-01-03",
+                    "HearingEndDate": "2024-01-04",
+                    "ListNote": "TestListNote2",
+                    "HearingType": "GHI"
+                  }
+                ],
+                "Defendants": [
+                  {
+                    "PersonalDetails": {
+                      "Name": {
+                        "CitizenNameTitle": "TestDefendantTitle",
+                        "CitizenNameForename": "TestDefendantForename",
+                        "CitizenNameSurname": "TestDefendantSurname",
+                        "CitizenNameSuffix": "TestDefendantSuffix",
+                        "CitizenNameRequestedName": "TestDefendantRequestedName"
+                      },
+                      "MaskedName": "TestMaskedName2",
+                      "IsMasked": "yes",
+                      "DateOfBirth": {
+                        "BirthDate": "1990-01-01",
+                        "VerifiedBy": "not verified"
+                      },
+                      "Age": 34,
+                      "Sex": "female",
+                      "Address": {
+                        "Line": ["TestDefendantAddress2"],
+                        "Postcode": "TestDefendantPostcode2"
+                      },
+                      "Nationality": "TestNationality2"
+                    },
+                    "URN": "TestURN2",
+                    "PrisonerID": "TestPrisonerID2",
+                    "PrisonLocation": {
+                      "Location": ["TestPrisonLocation2"]
+                    },
+                    "CustodyStatus": "In custody",
+                    "Counsel": [
+                      {
+                        "Solicitor": [
+                          {
+                            "Party": {
+                              "Organisation": {
+                                "OrganisationName": "TestSolicitorOrg2"
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    ],
+                    "Charges": [
+                      {
+                        "OffenceStatement": "TestOffenceStatement2",
+                        "IndictmentCountNumber": 2,
+                        "CJSoffenceCode": "TestCJSCode2"
+                      }
+                    ]
+                  }
+                ],
+                "Prosecution": {
+                  "ProsecutingOrganisation": {
+                    "OrganisationName": "TestProsecutingOrg2"
+                  },
+                  "ProsecutingAuthority": "Other Prosecutor"
+                },
+                "LinkedCases": [
+                  {
+                    "CaseNumber": "TestLinkedCaseNumber2"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+        ]
+      }
+    ]
+  }
+}
