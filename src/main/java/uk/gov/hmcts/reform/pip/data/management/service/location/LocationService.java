@@ -17,14 +17,11 @@ import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.LocationMetadataRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.LocationRepository;
-import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ContainsForbiddenValuesException;
-import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CreateLocationConflictException;
-import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CsvParseException;
-import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.LocationNameValidationException;
-import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.LocationNotFoundException;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.*;
 import uk.gov.hmcts.reform.pip.data.management.helpers.TestingSupportLocationHelper;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationDeletion;
+import uk.gov.hmcts.reform.pip.data.management.models.location.LocationMetadata;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationReference;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.service.AccountManagementService;
@@ -72,19 +69,21 @@ public class LocationService {
     private final ValidationService validationService;
 
     private final LocationMetadataRepository locationMetadataRepository;
+    private final LocationMetadataService locationMetadataService;
 
     public LocationService(LocationRepository locationRepository,
                            ArtefactRepository artefactRepository,
                            AccountManagementService accountManagementService,
                            SystemAdminNotificationService systemAdminNotificationService,
                            ValidationService validationService,
-                           LocationMetadataRepository locationMetadataRepository) {
+                           LocationMetadataRepository locationMetadataRepository, LocationMetadataService locationMetadataService) {
         this.locationRepository = locationRepository;
         this.artefactRepository = artefactRepository;
         this.accountManagementService = accountManagementService;
         this.systemAdminNotificationService = systemAdminNotificationService;
         this.validationService = validationService;
         this.locationMetadataRepository = locationMetadataRepository;
+        this.locationMetadataService = locationMetadataService;
     }
 
     /**
@@ -259,13 +258,18 @@ public class LocationService {
         if (!locationDeletion.isExists()) {
             locationDeletion = checkActiveSubscriptionForLocation(location, userInfo.getEmail(), requesterId);
             if (!locationDeletion.isExists()) {
-                locationRepository.deleteById(locationId);
-                systemAdminNotificationService.sendEmailNotification(
-                    userInfo.getEmail(), requesterId, ActionResult.SUCCEEDED,
-                    String.format("Location %s with Id %s has been deleted.",
-                            location.getName(), location.getLocationId()),
-                    ChangeType.DELETE_LOCATION
-                );
+                locationDeletion = checkActiveMetadataForLocation(location, userInfo.getEmail(), requesterId);
+                if (!locationDeletion.isExists()) {
+                    locationRepository.deleteById(locationId);
+                    systemAdminNotificationService.sendEmailNotification(
+                        userInfo.getEmail(), requesterId, ActionResult.SUCCEEDED,
+                        String.format(
+                            "Location %s with Id %s has been deleted.",
+                            location.getName(), location.getLocationId()
+                        ),
+                        ChangeType.DELETE_LOCATION
+                    );
+                }
             }
         }
 
@@ -382,4 +386,21 @@ public class LocationService {
         }
         return locationDeletion;
     }
+
+    private LocationDeletion checkActiveMetadataForLocation(Location location, String requesterEmail,
+                                                            String requesterId)
+        throws JsonProcessingException {
+            LocationDeletion locationDeletion = new LocationDeletion();
+            Optional<LocationMetadata> locationMetadata = locationMetadataRepository.findByLocationId(location.getLocationId());
+            if (!locationMetadata.isEmpty()) {
+                locationDeletion = new LocationDeletion(
+                    "There is metadata exists for the given location", true);
+                systemAdminNotificationService.sendEmailNotification(
+                    requesterEmail, requesterId, ActionResult.ATTEMPTED,
+                    String.format("There is metadata exists for the following location: %s", location.getName()),
+                    ChangeType.DELETE_LOCATION
+                );
+            }
+            return locationDeletion;
+        }
 }
