@@ -199,7 +199,7 @@
         },
         "responses": {
           "201": {
-            "description": "Details about the created artefact. The majority will match the headers sent in, with the following exceptions: \n  \n - artefactId: This is the unique identifier for the artefact within CaTH  \n - payload: The URL where the payload is stored  \n - search: Data extracted from the payload to allow searching and filtering within CaTH  \n - isFlatFile: false for JSON uploads, true for file uploads",
+            "description": "Details about the created artefact. The majority will match the headers sent in, with the following exceptions: \n  \n - artefactId: This is the unique identifier for the artefact within CaTH. If the x-type is LCSU, this will be blank as CaTH acts as a pass through for these publications  \n - payload: The URL where the payload is stored  \n - search: Data extracted from the payload to allow searching and filtering within CaTH  \n - isFlatFile: false for JSON uploads, true for file uploads",
             "content": {
               "application/json": {
                 "schema": {
