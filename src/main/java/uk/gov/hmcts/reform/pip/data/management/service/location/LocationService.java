@@ -17,7 +17,11 @@ import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.LocationMetadataRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.LocationRepository;
-import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.*;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ContainsForbiddenValuesException;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CreateLocationConflictException;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CsvParseException;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.LocationNameValidationException;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.LocationNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.helpers.TestingSupportLocationHelper;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationDeletion;
@@ -76,7 +80,8 @@ public class LocationService {
                            AccountManagementService accountManagementService,
                            SystemAdminNotificationService systemAdminNotificationService,
                            ValidationService validationService,
-                           LocationMetadataRepository locationMetadataRepository, LocationMetadataService locationMetadataService) {
+                           LocationMetadataRepository locationMetadataRepository,
+                           LocationMetadataService locationMetadataService) {
         this.locationRepository = locationRepository;
         this.artefactRepository = artefactRepository;
         this.accountManagementService = accountManagementService;
@@ -390,17 +395,18 @@ public class LocationService {
     private LocationDeletion checkActiveMetadataForLocation(Location location, String requesterEmail,
                                                             String requesterId)
         throws JsonProcessingException {
-            LocationDeletion locationDeletion = new LocationDeletion();
-            Optional<LocationMetadata> locationMetadata = locationMetadataRepository.findByLocationId(location.getLocationId());
-            if (!locationMetadata.isEmpty()) {
-                locationDeletion = new LocationDeletion(
-                    "There is metadata exists for the given location", true);
-                systemAdminNotificationService.sendEmailNotification(
-                    requesterEmail, requesterId, ActionResult.ATTEMPTED,
-                    String.format("There is metadata exists for the following location: %s", location.getName()),
-                    ChangeType.DELETE_LOCATION
-                );
-            }
-            return locationDeletion;
+        LocationDeletion locationDeletion = new LocationDeletion();
+        Optional<LocationMetadata> locationMetadata =
+            locationMetadataRepository.findByLocationId(location.getLocationId());
+        if (!locationMetadata.isEmpty()) {
+            locationDeletion = new LocationDeletion(
+                "There is metadata exists for the given location", true);
+            systemAdminNotificationService.sendEmailNotification(
+                requesterEmail, requesterId, ActionResult.ATTEMPTED,
+                String.format("There is metadata exists for the following location: %s", location.getName()),
+                ChangeType.DELETE_LOCATION
+            );
         }
+        return locationDeletion;
+    }
 }
