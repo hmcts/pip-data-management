@@ -263,7 +263,7 @@ public class LocationService {
         if (!locationDeletion.isExists()) {
             locationDeletion = checkActiveSubscriptionForLocation(location, userInfo.getEmail(), requesterId);
             if (!locationDeletion.isExists()) {
-                locationDeletion = checkActiveMetadataForLocation(location, userInfo.getEmail(), requesterId);
+                locationDeletion = checkLocationMetadataExists(location, userInfo.getEmail(), requesterId);
                 if (!locationDeletion.isExists()) {
                     locationRepository.deleteById(locationId);
                     systemAdminNotificationService.sendEmailNotification(
@@ -392,7 +392,7 @@ public class LocationService {
         return locationDeletion;
     }
 
-    private LocationDeletion checkActiveMetadataForLocation(Location location, String requesterEmail,
+    private LocationDeletion checkLocationMetadataExists(Location location, String requesterEmail,
                                                             String requesterId)
         throws JsonProcessingException {
         LocationDeletion locationDeletion = new LocationDeletion();
