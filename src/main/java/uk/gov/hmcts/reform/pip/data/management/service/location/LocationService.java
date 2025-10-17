@@ -392,13 +392,12 @@ public class LocationService {
         return locationDeletion;
     }
 
-    private LocationDeletion checkLocationMetadataExists(Location location, String requesterEmail,
-                                                            String requesterId)
+    private LocationDeletion checkLocationMetadataExists(Location location, String requesterEmail, String requesterId)
         throws JsonProcessingException {
         LocationDeletion locationDeletion = new LocationDeletion();
         Optional<LocationMetadata> locationMetadata =
             locationMetadataRepository.findByLocationId(location.getLocationId());
-        if (!locationMetadata.isEmpty()) {
+        if (locationMetadata.isPresent()) {
             locationDeletion = new LocationDeletion(
                 "There is metadata exists for the given location", true);
             systemAdminNotificationService.sendEmailNotification(
