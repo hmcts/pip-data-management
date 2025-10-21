@@ -212,10 +212,9 @@ dependencies {
   implementation group: 'net.logstash.logback', name: 'logstash-logback-encoder', version: '8.1'
   implementation group: 'org.postgresql', name: 'postgresql', version: '42.7.7'
 
-  implementation group: 'com.github.hmcts', name: 'pip-data-models', version: '2.3.24'
+  implementation group: 'com.github.hmcts', name: 'pip-data-models', version: 'PUB-3036-Removing-old-crown-lists-6ca9974'
   implementation 'com.networknt:json-schema-validator:1.5.8'
   implementation group: 'com.google.guava', name: 'guava', version: '33.4.8-jre'
-
   implementation group: 'org.apache.poi', name: 'poi-ooxml', version: '5.4.1'
   implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.18.0'
   implementation group: 'com.openhtmltopdf', name: 'openhtmltopdf-pdfbox', version: '1.0.10'
