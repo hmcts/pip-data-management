@@ -31,7 +31,7 @@ import static org.mockito.Mockito.when;
 @SuppressWarnings("PMD.TooManyMethods")
 class AuthorisationServiceTest {
 
-    private static final String TEST_USER_ID = "123";
+    private static final UUID TEST_USER_ID = UUID.randomUUID();
     private static final UUID TEST_UUID = UUID.randomUUID();
     private static final String PUBLISHER_ROLE = "APPROLE_api.publisher.admin";
     private static final String ADMIN_ROLE = "APPROLE_api.request.admin";
@@ -270,7 +270,7 @@ class AuthorisationServiceTest {
 
     @Test
     void testVerifiedUserCanSearchInPublicationData() {
-        when(accountManagementService.getUserById(TEST_UUID.toString()))
+        when(accountManagementService.getUserById(TEST_UUID))
             .thenReturn(createUser(Roles.VERIFIED));
         List<GrantedAuthority> authorities = List.of(
             new SimpleGrantedAuthority(ADMIN_ROLE)
@@ -286,7 +286,7 @@ class AuthorisationServiceTest {
 
     @Test
     void testAdminUserCannotSearchInPublicationData() {
-        when(accountManagementService.getUserById(TEST_UUID.toString()))
+        when(accountManagementService.getUserById(TEST_UUID))
             .thenReturn(createUser(Roles.SYSTEM_ADMIN));
         List<GrantedAuthority> authorities = List.of(
             new SimpleGrantedAuthority(ADMIN_ROLE)

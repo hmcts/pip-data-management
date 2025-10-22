@@ -31,7 +31,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.LcsuArtefactNotSupportedException;
-import uk.gov.hmcts.reform.pip.data.management.helpers.EmailHelper;
 import uk.gov.hmcts.reform.pip.data.management.helpers.NoMatchArtefactHelper;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.HeaderGroup;
@@ -170,7 +169,7 @@ public class PublicationController {
         @RequestHeader(PublicationConfiguration.COURT_ID) String courtId,
         @RequestHeader(PublicationConfiguration.CONTENT_DATE)
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime contentDate,
-        @RequestHeader(value = REQUESTER_ID_HEADER, required = false) String requesterId,
+        @RequestHeader(value = REQUESTER_ID_HEADER, required = false) UUID requesterId,
         @RequestBody String payload) {
         HeaderGroup initialHeaders = new HeaderGroup(provenance, sourceArtefactId, type, sensitivity, language,
                                                      displayFrom, displayTo, listType, courtId, contentDate
@@ -181,7 +180,7 @@ public class PublicationController {
         Artefact artefact = createPublicationMetadataFromHeaders(headers, payload.length());
 
         Artefact createdItem = publicationCreationRunner.run(artefact, payload, true);
-        logManualUpload(EmailHelper.maskEmail(requesterId), createdItem.getArtefactId().toString());
+        logManualUpload(requesterId, createdItem.getArtefactId().toString());
 
         // Process the created artefact to generate PDF/Excel files and check/trigger the subscription process
         if (!NoMatchArtefactHelper.isNoMatchLocationId(createdItem.getLocationId())) {
@@ -231,7 +230,7 @@ public class PublicationController {
         @RequestHeader(PublicationConfiguration.COURT_ID) String courtId,
         @RequestHeader(PublicationConfiguration.CONTENT_DATE)
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime contentDate,
-        @RequestHeader(value = REQUESTER_ID_HEADER, required = false) String requesterId,
+        @RequestHeader(value = REQUESTER_ID_HEADER, required = false) UUID requesterId,
         @RequestPart MultipartFile file) {
 
         HeaderGroup initialHeaders = new HeaderGroup(provenance, sourceArtefactId, type, sensitivity, language,
@@ -258,7 +257,7 @@ public class PublicationController {
         artefact.setIsFlatFile(true);
 
         Artefact createdItem =  publicationCreationRunner.run(artefact, file);
-        logManualUpload(EmailHelper.maskEmail(requesterId), createdItem.getArtefactId().toString());
+        logManualUpload(requesterId, createdItem.getArtefactId().toString());
 
         if (!NoMatchArtefactHelper.isNoMatchLocationId(createdItem.getLocationId())) {
             publicationCreationService.processCreatedPublication(createdItem);
@@ -308,7 +307,7 @@ public class PublicationController {
         @RequestHeader(PublicationConfiguration.COURT_ID) String courtId,
         @RequestHeader(PublicationConfiguration.CONTENT_DATE)
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime contentDate,
-        @RequestHeader(value = REQUESTER_ID_HEADER, required = false) String requesterId,
+        @RequestHeader(value = REQUESTER_ID_HEADER, required = false) UUID requesterId,
         @RequestPart MultipartFile file) {
         HeaderGroup initialHeaders = new HeaderGroup(provenance, sourceArtefactId, type, sensitivity, language,
                                                      displayFrom, displayTo, listType, courtId, contentDate);
@@ -321,7 +320,7 @@ public class PublicationController {
         Artefact artefact = createPublicationMetadataFromHeaders(headers, payload.length());
 
         Artefact createdItem = publicationCreationRunner.run(artefact, payload, false);
-        logManualUpload(EmailHelper.maskEmail(requesterId), createdItem.getArtefactId().toString());
+        logManualUpload(requesterId, createdItem.getArtefactId().toString());
 
         // Process the created artefact to generate PDF and check/trigger the subscription process
         if (!NoMatchArtefactHelper.isNoMatchLocationId(createdItem.getLocationId())) {
@@ -402,7 +401,7 @@ public class PublicationController {
     @Operation(summary = "Delete a artefact and its list from P&I")
     @DeleteMapping("/{artefactId}")
     @IsAdmin
-    public ResponseEntity<String> deleteArtefact(@RequestHeader(REQUESTER_ID_HEADER) String requesterId,
+    public ResponseEntity<String> deleteArtefact(@RequestHeader(REQUESTER_ID_HEADER) UUID requesterId,
         @PathVariable String artefactId) {
         publicationRemovalService.deleteArtefactById(artefactId, requesterId);
         return ResponseEntity.ok("Successfully deleted artefact: " + artefactId);
@@ -428,13 +427,13 @@ public class PublicationController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PutMapping("/{id}/archive")
     @PreAuthorize("@authorisationService.userCanArchivePublications(#requesterId)")
-    public ResponseEntity<String> archiveArtefact(@RequestHeader(REQUESTER_ID_HEADER) String requesterId,
+    public ResponseEntity<String> archiveArtefact(@RequestHeader(REQUESTER_ID_HEADER) UUID requesterId,
                                                   @PathVariable String id) {
         publicationRemovalService.archiveArtefactById(id, requesterId);
         return ResponseEntity.ok(String.format("Artefact of ID %s has been archived", id));
     }
 
-    private void logManualUpload(String issuerId, String artefactId) {
+    private void logManualUpload(UUID issuerId, String artefactId) {
         if (issuerId != null) {
             log.info(writeLog(issuerId, UserActions.UPLOAD, artefactId));
         }

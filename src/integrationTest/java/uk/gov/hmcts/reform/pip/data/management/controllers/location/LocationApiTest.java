@@ -80,14 +80,14 @@ class LocationApiTest extends LocationIntegrationTestBase {
     private static final String EMAIL = "test@justice.gov.uk";
 
     public static final String REQUESTER_ID_HEADER = "x-requester-id";
-    private static final String SYSTEM_ADMIN_ID = UUID.randomUUID().toString();
+    private static final UUID SYSTEM_ADMIN_ID = UUID.randomUUID();
 
     private static PiUser piUser;
 
     @BeforeAll
     protected static void setup() {
         piUser = new PiUser();
-        piUser.setUserId(SYSTEM_ADMIN_ID);
+        piUser.setUserId(SYSTEM_ADMIN_ID.toString());
         piUser.setEmail("test@justice.gov.uk");
         piUser.setRoles(SYSTEM_ADMIN);
     }

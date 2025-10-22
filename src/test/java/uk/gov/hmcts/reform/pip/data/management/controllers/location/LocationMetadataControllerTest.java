@@ -27,7 +27,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class LocationMetadataControllerTest {
 
-    private static final String REQUESTER_ID = "user-123";
+    private static final UUID REQUESTER_ID = UUID.randomUUID();
     private static final String LOCATION_ID = "123";
     private static final String UUID_STRING = UUID.randomUUID().toString();
     private static final String NOT_FOUND = "Not found";
@@ -47,28 +47,28 @@ class LocationMetadataControllerTest {
     @Test
     void testAddLocationMetaDataSuccess() {
         LocationMetadata locationMetadata = createTestLocationMetadata();
-        doNothing().when(locationMetadataService).createLocationMetadata(any(), anyString());
+        doNothing().when(locationMetadataService).createLocationMetadata(any(), any(UUID.class));
 
         ResponseEntity<String> response =
             locationMetaDataController.addLocationMetaData(REQUESTER_ID, locationMetadata);
 
         assertEquals(HttpStatus.CREATED, response.getStatusCode(),
                      "Response status should be CREATED (201) for successful addition");
-        assertEquals("Location metadata successfully added by user user-123", response.getBody(),
+        assertEquals("Location metadata successfully added by user " + REQUESTER_ID, response.getBody(),
                      "Response message should confirm successful addition with correct user ID");
     }
 
     @Test
     void testUpdateLocationMetaDataSuccess() {
         LocationMetadata locationMetadata = createTestLocationMetadata();
-        doNothing().when(locationMetadataService).updateLocationMetadata(any(), any(), anyString());
+        doNothing().when(locationMetadataService).updateLocationMetadata(any(), any(), any(UUID.class));
 
         ResponseEntity<String> response =
-            locationMetaDataController.updateLocationMetaData(REQUESTER_ID, "user-123", locationMetadata);
+            locationMetaDataController.updateLocationMetaData(UUID_STRING, REQUESTER_ID, locationMetadata);
 
         assertEquals(HttpStatus.OK, response.getStatusCode(),
                      "Response status should be OK (200) for successful update");
-        assertEquals("Location metadata successfully updated by user user-123", response.getBody(),
+        assertEquals("Location metadata successfully updated by user " + REQUESTER_ID, response.getBody(),
                      "Response message should confirm successful update with correct user ID");
     }
 
@@ -76,11 +76,11 @@ class LocationMetadataControllerTest {
     void testUpdateLocationMetaDataNotFound() {
         LocationMetadata locationMetadata = createTestLocationMetadata();
         doThrow(new LocationMetadataNotFoundException(NOT_FOUND))
-            .when(locationMetadataService).updateLocationMetadata(any(), any(), anyString());
+            .when(locationMetadataService).updateLocationMetadata(any(), any(), any(UUID.class));
 
         LocationMetadataNotFoundException exception = assertThrows(
             LocationMetadataNotFoundException.class,
-            () -> locationMetaDataController.updateLocationMetaData(REQUESTER_ID, UUID_STRING, locationMetadata),
+            () -> locationMetaDataController.updateLocationMetaData(UUID_STRING, REQUESTER_ID, locationMetadata),
             "Should throw LocationMetaDataNotFoundException when metadata not found"
         );
 
@@ -90,21 +90,21 @@ class LocationMetadataControllerTest {
 
     @Test
     void testDeleteLocationMetaDataSuccess() {
-        doNothing().when(locationMetadataService).deleteById(anyString(), anyString());
+        doNothing().when(locationMetadataService).deleteById(anyString(), any(UUID.class));
 
         ResponseEntity<String> response =
             locationMetaDataController.deleteLocationMetaData(REQUESTER_ID, UUID_STRING);
 
         assertEquals(HttpStatus.OK, response.getStatusCode(),
                      "Response status should be OK (200) for successful deletion");
-        assertEquals("Location metadata successfully deleted by user user-123", response.getBody(),
+        assertEquals("Location metadata successfully deleted by user " + REQUESTER_ID, response.getBody(),
                      "Response message should confirm successful deletion with correct user ID");
     }
 
     @Test
     void testDeleteLocationMetaDataNotFound() {
         doThrow(new LocationMetadataNotFoundException(NOT_FOUND))
-            .when(locationMetadataService).deleteById(anyString(), anyString());
+            .when(locationMetadataService).deleteById(anyString(), any(UUID.class));
 
         LocationMetadataNotFoundException exception = assertThrows(
             LocationMetadataNotFoundException.class,
