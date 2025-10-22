@@ -55,23 +55,21 @@ class PublicationLocationTest extends PublicationIntegrationTestBase {
     private static final String LOCATION_TYPE_URL = PUBLICATION_URL + "/location-type/";
     private static final String COUNT_ENDPOINT = PUBLICATION_URL + "/count-by-location";
     private static final String COUNT_BY_LOCATION_URL = PUBLICATION_URL + "/count-by-location";
-    private static final String USER_ID = UUID.randomUUID().toString();
     private static final String COURT_ID = "1";
-    private static final String USER_ID_HEADER = "x-user-id";
     private static final String EMAIL = "test@email.com";
     private static final LocalDateTime DISPLAY_TO = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
     private static final LocalDateTime DISPLAY_FROM = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
     private static final LocalDateTime CONTENT_DATE = LocalDateTime.now().toLocalDate().atStartOfDay();
     private static final String ADMIN = "admin";
     private static final String REQUESTER_ID_HEADER = "x-requester-id";
-    private static final String SYSTEM_ADMIN_ID = UUID.randomUUID().toString();
+    private static final UUID SYSTEM_ADMIN_ID = UUID.randomUUID();
 
     private static PiUser piUser;
 
     @BeforeAll
     void setup() throws Exception {
         piUser = new PiUser();
-        piUser.setUserId(SYSTEM_ADMIN_ID);
+        piUser.setUserId(SYSTEM_ADMIN_ID.toString());
         piUser.setEmail("test@justice.gov.uk");
         piUser.setRoles(SYSTEM_ADMIN);
 
@@ -172,10 +170,11 @@ class PublicationLocationTest extends PublicationIntegrationTestBase {
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     void testDeleteArtefactsByLocation() throws Exception {
         PiUser piUser = new PiUser();
-        piUser.setUserId(USER_ID);
+        piUser.setUserId(SYSTEM_ADMIN_ID.toString());
+        piUser.setRoles(SYSTEM_ADMIN);
         piUser.setEmail(EMAIL);
 
-        when(accountManagementService.getUserById(USER_ID)).thenReturn(piUser);
+        when(accountManagementService.getUserById(SYSTEM_ADMIN_ID)).thenReturn(piUser);
         when(accountManagementService.getAllAccounts(anyString(), eq(SYSTEM_ADMIN.toString()), eq(SYSTEM_ADMIN_ID)))
             .thenReturn(List.of(EMAIL));
 
@@ -220,7 +219,7 @@ class PublicationLocationTest extends PublicationIntegrationTestBase {
         when(accountManagementService.getUserById(any())).thenReturn(piUser);
         MockHttpServletRequestBuilder request =
             MockMvcRequestBuilders.get(COUNT_BY_LOCATION_URL)
-                .header(REQUESTER_ID_HEADER, USER_ID);
+                .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID);
 
         mockMvc.perform(request)
             .andExpect(status().isForbidden())
@@ -233,7 +232,7 @@ class PublicationLocationTest extends PublicationIntegrationTestBase {
         when(accountManagementService.getUserById(any())).thenReturn(piUser);
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
             MockMvcRequestBuilders.get("/publication/no-match")
-                .header(REQUESTER_ID_HEADER, USER_ID);
+                .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID);
 
         mockMvc.perform(mockHttpServletRequestBuilder)
             .andExpect(status().isForbidden())
@@ -246,7 +245,7 @@ class PublicationLocationTest extends PublicationIntegrationTestBase {
         when(accountManagementService.getUserById(any())).thenReturn(piUser);
         MockHttpServletRequestBuilder deleteRequest = MockMvcRequestBuilders
             .delete("/publication/1/deleteArtefacts")
-            .header(REQUESTER_ID_HEADER, USER_ID);
+            .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID);
 
         mockMvc.perform(deleteRequest)
             .andExpect(status().isForbidden())

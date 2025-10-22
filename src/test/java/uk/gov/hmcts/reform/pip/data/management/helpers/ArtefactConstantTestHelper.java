@@ -40,7 +40,7 @@ public final class ArtefactConstantTestHelper {
     public static final String VALIDATION_ARTEFACT_NOT_MATCH = "Artefacts do not match";
     public static final String ROWID_RETURNS_UUID = "Row ID must match returned UUID";
     public static final String LOCATION_TYPE_MATCH = "Location types should match";
-    public static final String DELETION_TRACK_LOG_MESSAGE = "Track: TestValue, Removed %s, at ";
+    public static final String DELETION_TRACK_LOG_MESSAGE = "Track: %s, Removed %s, at ";
     public static final String NO_COURT_EXISTS_IN_REFERENCE_DATA = "NoMatch1234";
     public static final String VALIDATION_MORE_THAN_PUBLIC = "More than the public artefact has been found";
     public static final String VALIDATION_NOT_THROWN_MESSAGE = "Expected exception has not been thrown";

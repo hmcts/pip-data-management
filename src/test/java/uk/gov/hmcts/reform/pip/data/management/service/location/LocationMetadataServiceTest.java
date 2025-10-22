@@ -24,7 +24,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class LocationMetadataServiceTest {
 
-    private static final String ACTIONING_USER_ID = "user-123";
+    private static final UUID ACTIONING_USER_ID = UUID.randomUUID();
     private static final String LOCATION_ID = "123";
     private static final String UUID_STRING = UUID.randomUUID().toString();
     private static final UUID TEST_UUID = UUID.fromString(UUID_STRING);
