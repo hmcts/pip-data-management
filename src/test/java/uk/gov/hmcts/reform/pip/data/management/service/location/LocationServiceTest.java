@@ -21,6 +21,7 @@ import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.Location
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.LocationNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationDeletion;
+import uk.gov.hmcts.reform.pip.data.management.models.location.LocationMetadata;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationReference;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.service.AccountManagementService;
@@ -739,6 +740,32 @@ class LocationServiceTest {
         verify(systemAdminNotificationService).sendEmailNotification(
             EMAIL, userId, ActionResult.ATTEMPTED,
             String.format("There are active subscriptions for the following location: %s", LOCATION_NAME2),
+            ChangeType.DELETE_LOCATION
+        );
+    }
+
+    @Test
+    void testDeleteLocationWhenMetadataFound() throws JsonProcessingException {
+        Integer locationId = 1;
+
+        when(locationRepository.getLocationByLocationId(locationId))
+            .thenReturn(Optional.of(locationFirstExample));
+        when(accountManagementService.getUserById(userId))
+            .thenReturn(piUser);
+        when(artefactRepository.findActiveArtefactsForLocation(any(), eq(locationId.toString())))
+            .thenReturn(List.of());
+        when(accountManagementService.findSubscriptionsByLocationId(locationId.toString()))
+            .thenReturn("[]");
+        when(locationMetadataRepository.findByLocationId(locationId))
+             .thenReturn(Optional.of(new LocationMetadata()));
+
+        LocationDeletion result = locationService.deleteLocation(locationId, userId);
+
+        assertTrue(result.isExists(), "There is metadata exists for the given location.");
+
+        verify(systemAdminNotificationService).sendEmailNotification(
+            EMAIL, userId, ActionResult.ATTEMPTED,
+            String.format("There is metadata exists for the following location: %s", LOCATION_NAME2),
             ChangeType.DELETE_LOCATION
         );
     }
