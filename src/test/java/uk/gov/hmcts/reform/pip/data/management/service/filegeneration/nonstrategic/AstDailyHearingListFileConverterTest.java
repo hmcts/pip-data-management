@@ -229,7 +229,7 @@ class AstDailyHearingListFileConverterTest {
 
         softly.assertThat(document.getElementById(OBSERVE_HEARING_ELEMENT).text())
             .as(BODY_MESSAGE)
-            .isEqualTo("Am ragor o wybodaeth ewch i: https://www.gov.uk/guidance/observe-a-court-or-tribunal-hearing");
+            .isEqualTo("Am fwy o wybodaeth, ewch i https://www.gov.uk/guidance/observe-a-court-or-tribunal-hearing");
 
         softly.assertThat(document.getElementsByTag("th"))
             .as(TABLE_HEADERS_MESSAGE)
