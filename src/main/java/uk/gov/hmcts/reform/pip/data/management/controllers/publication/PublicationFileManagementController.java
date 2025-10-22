@@ -55,7 +55,7 @@ public class PublicationFileManagementController {
     public ResponseEntity<String> getFile(
         @PathVariable UUID artefactId,
         @PathVariable  FileType fileType,
-        @RequestHeader(value = REQUESTER_ID_HEADER, required = false) String requesterId,
+        @RequestHeader(value = REQUESTER_ID_HEADER, required = false) UUID requesterId,
         @RequestHeader(value = "x-system", required = false) boolean system,
         @RequestHeader(name = "x-additional-pdf", defaultValue = "false") boolean additionalPdf,
         @RequestParam(name = "maxFileSize", required = false) Integer maxFileSize) {

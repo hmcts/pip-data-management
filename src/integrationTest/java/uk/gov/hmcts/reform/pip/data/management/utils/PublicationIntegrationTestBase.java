@@ -41,7 +41,7 @@ public class PublicationIntegrationTestBase extends IntegrationTestBase {
     private static final String COURT_ID = "1";
     private static final LocalDateTime CONTENT_DATE = LocalDateTime.now().toLocalDate().atStartOfDay()
         .truncatedTo(ChronoUnit.SECONDS);
-    private static final String SYSTEM_ADMIN_ID = UUID.randomUUID().toString();
+    private static final UUID SYSTEM_ADMIN_ID = UUID.randomUUID();
 
     private static PiUser piUser;
 
@@ -51,7 +51,7 @@ public class PublicationIntegrationTestBase extends IntegrationTestBase {
     @BeforeAll
     public void startup() {
         piUser = new PiUser();
-        piUser.setUserId(SYSTEM_ADMIN_ID);
+        piUser.setUserId(SYSTEM_ADMIN_ID.toString());
         piUser.setEmail("test@justice.gov.uk");
         piUser.setRoles(SYSTEM_ADMIN);
 

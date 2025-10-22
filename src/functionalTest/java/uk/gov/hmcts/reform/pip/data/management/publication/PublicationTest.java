@@ -286,7 +286,7 @@ class PublicationTest extends FunctionalTestBase {
         assertThat(returnedGetArtefactMetadata.getArtefactId().toString()).isEqualTo(artefactId);
 
         Map<String, String> deleteArtefactHeaderMap = getBaseHeaderMap();
-        deleteArtefactHeaderMap.put(REQUESTER_ID_HEADER, EMAIL);
+        deleteArtefactHeaderMap.put(REQUESTER_ID_HEADER, systemAdminUserId);
 
         final Response responseGetAllRelevantArtefactsByLocationId = doGetRequest(
             ARTEFACT_BY_LOCATION_ID_URL + courtId, headerMap
@@ -336,7 +336,7 @@ class PublicationTest extends FunctionalTestBase {
         assertThat(returnedGetArtefactMetadata.getArtefactId().toString()).isEqualTo(artefactId);
 
         Map<String, String> deleteArtefactHeaderMap = getBaseHeaderMap();
-        deleteArtefactHeaderMap.put(REQUESTER_ID_HEADER, EMAIL);
+        deleteArtefactHeaderMap.put(REQUESTER_ID_HEADER, systemAdminUserId);
 
         final Response responseDeleteArtefact = doDeleteRequest(
             PUBLICATION_URL + '/' + artefactId, deleteArtefactHeaderMap

@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.thymeleaf.util.StringUtils;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationRetrievalService;
 import uk.gov.hmcts.reform.pip.model.account.PiUser;
@@ -28,7 +27,7 @@ public class AuthorisationService {
         this.publicationRetrievalService = publicationRetrievalService;
     }
 
-    public boolean userCanUploadPublication(String requesterId, String provenance) {
+    public boolean userCanUploadPublication(UUID requesterId, String provenance) {
         if ("MANUAL_UPLOAD".equals(provenance)
             && !isUserAdmin(requesterId)) {
             log.error(writeLog(
@@ -47,7 +46,7 @@ public class AuthorisationService {
         return true;
     }
 
-    public boolean userCanUploadLocation(String requesterId) {
+    public boolean userCanUploadLocation(UUID requesterId) {
         if (!isUserSystemAdmin(requesterId)
                 || !hasOAuthAdminRole()) {
             log.error(writeLog(
@@ -59,7 +58,7 @@ public class AuthorisationService {
         return true;
     }
 
-    public boolean userCanDeleteLocation(String requesterId) {
+    public boolean userCanDeleteLocation(UUID requesterId) {
         if (!isUserSystemAdmin(requesterId)
                 || !hasOAuthAdminRole()) {
             log.error(writeLog(
@@ -71,7 +70,7 @@ public class AuthorisationService {
         return true;
     }
 
-    public boolean userCanGetPublicationsPerLocation(String requesterId) {
+    public boolean userCanGetPublicationsPerLocation(UUID requesterId) {
         if (!isUserSystemAdmin(requesterId)
             || !hasOAuthAdminRole()) {
             log.error(writeLog(
@@ -83,7 +82,7 @@ public class AuthorisationService {
         return true;
     }
 
-    public boolean userCanGetLocationCsv(String requesterId) {
+    public boolean userCanGetLocationCsv(UUID requesterId) {
         if (!isUserSystemAdmin(requesterId)
                 || !hasOAuthAdminRole()) {
             log.error(writeLog(
@@ -113,7 +112,7 @@ public class AuthorisationService {
     }
 
     public boolean  userCanSearchInPublicationData(UUID requesterId) {
-        if (!(hasOAuthAdminRole() && requesterId != null && isVerifiedUser(requesterId.toString()))) {
+        if (!(hasOAuthAdminRole() && isVerifiedUser(requesterId))) {
             log.error(writeLog(
                 String.format("User with ID %s is not authorised to search for publication by search value",
                               requesterId)
@@ -131,7 +130,7 @@ public class AuthorisationService {
         return true;
     }
 
-    public boolean userCanArchivePublications(String requesterId) {
+    public boolean userCanArchivePublications(UUID requesterId) {
         if (!isUserAdmin(requesterId)
             || !hasOAuthAdminRole()) {
             log.error(writeLog(
@@ -143,7 +142,7 @@ public class AuthorisationService {
         return true;
     }
 
-    public boolean userCanDeletePublicationsByLocation(String requesterId) {
+    public boolean userCanDeletePublicationsByLocation(UUID requesterId) {
         if (!isUserSystemAdmin(requesterId)
             || !hasOAuthAdminRole()) {
             log.error(writeLog(
@@ -155,7 +154,7 @@ public class AuthorisationService {
         return true;
     }
 
-    public boolean userCanGetAllNoMatchPublications(String requesterId) {
+    public boolean userCanGetAllNoMatchPublications(UUID requesterId) {
         if (!isUserSystemAdmin(requesterId)
             || !hasOAuthAdminRole()) {
             log.error(writeLog(
@@ -167,7 +166,7 @@ public class AuthorisationService {
         return true;
     }
 
-    public boolean userCanAddLocationMetadata(String requesterId) {
+    public boolean userCanAddLocationMetadata(UUID requesterId) {
         if (!isUserSystemAdmin(requesterId)
             || !hasOAuthAdminRole()) {
             log.error(writeLog(
@@ -179,7 +178,7 @@ public class AuthorisationService {
         return true;
     }
 
-    public boolean userCanUpdateLocationMetadata(String requesterId) {
+    public boolean userCanUpdateLocationMetadata(UUID requesterId) {
         if (!isUserSystemAdmin(requesterId)
             || !hasOAuthAdminRole()) {
             log.error(writeLog(
@@ -191,7 +190,7 @@ public class AuthorisationService {
         return true;
     }
 
-    public boolean userCanDeleteLocationMetadata(String requesterId) {
+    public boolean userCanDeleteLocationMetadata(UUID requesterId) {
         if (!isUserSystemAdmin(requesterId)
             || !hasOAuthAdminRole()) {
             log.error(writeLog(
@@ -203,8 +202,8 @@ public class AuthorisationService {
         return true;
     }
 
-    private boolean isUserAdmin(String requesterId) {
-        if (!StringUtils.isEmpty(requesterId)) {
+    private boolean isUserAdmin(UUID requesterId) {
+        if (requesterId != null) {
             PiUser user = accountManagementService.getUserById(requesterId);
             if (user != null && user.getRoles() != null) {
                 return Roles.ALL_ADMINS.contains(user.getRoles());
@@ -214,8 +213,8 @@ public class AuthorisationService {
         return false;
     }
 
-    private boolean isUserSystemAdmin(String requesterId) {
-        if (!StringUtils.isEmpty(requesterId)) {
+    private boolean isUserSystemAdmin(UUID requesterId) {
+        if (requesterId != null) {
             PiUser user = accountManagementService.getUserById(requesterId);
             if (user != null && user.getRoles() != null) {
                 return Roles.SYSTEM_ADMIN.equals(user.getRoles());
@@ -225,8 +224,8 @@ public class AuthorisationService {
         return false;
     }
 
-    private boolean isVerifiedUser(String requesterId) {
-        if (!StringUtils.isEmpty(requesterId)) {
+    private boolean isVerifiedUser(UUID requesterId) {
+        if (requesterId != null) {
             PiUser user = accountManagementService.getUserById(requesterId);
             if (user != null && user.getRoles() != null) {
                 return Roles.VERIFIED.equals(user.getRoles());

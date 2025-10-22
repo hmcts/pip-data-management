@@ -95,7 +95,7 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
             MockMultipartFile csvFile
                     = new MockMultipartFile("locationList", csvInputStream);
 
-            when(accountManagementService.getUserById(SYSTEM_ADMIN_ID.toString()))
+            when(accountManagementService.getUserById(SYSTEM_ADMIN_ID))
                 .thenReturn(systemAdminUser);
 
             mockMvc.perform(MockMvcRequestBuilders.multipart("/locations/upload").file(csvFile)
@@ -108,9 +108,9 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
 
     @BeforeEach
     public void setupBeforeEach() {
-        lenient().when(accountManagementService.getUserById(SYSTEM_ADMIN_ID.toString()))
+        lenient().when(accountManagementService.getUserById(SYSTEM_ADMIN_ID))
             .thenReturn(systemAdminUser);
-        lenient().when(accountManagementService.getUserById(VERIFIED_USER_ID.toString()))
+        lenient().when(accountManagementService.getUserById(VERIFIED_USER_ID))
             .thenReturn(verifiedUser);
     }
 

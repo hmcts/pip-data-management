@@ -22,6 +22,7 @@ import uk.gov.hmcts.reform.pip.model.system.admin.ChangeType;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
 
@@ -56,7 +57,7 @@ public class PublicationRemovalService {
      * @param requesterId   The ID of the admin user who is attempting to delete the artefact.
      */
     @Transactional
-    public void archiveArtefactById(String artefactId, String requesterId) {
+    public void archiveArtefactById(String artefactId, UUID requesterId) {
         Artefact artefactToArchive = artefactRepository.findArtefactByArtefactId(artefactId)
             .orElseThrow(() -> new ArtefactNotFoundException("No artefact found with the ID: " + artefactId));
 
@@ -105,7 +106,7 @@ public class PublicationRemovalService {
      * @param artefactId    The ID of the artefact to be deleted.
      * @param requesterId   The ID of the admin user who is attempting to delete the artefact.
      */
-    public void deleteArtefactById(String artefactId, String requesterId) {
+    public void deleteArtefactById(String artefactId, UUID requesterId) {
         Artefact artefactToDelete = artefactRepository.findArtefactByArtefactId(artefactId)
             .orElseThrow(() -> new ArtefactNotFoundException("No artefact found with the ID: " + artefactId));
 
@@ -113,7 +114,7 @@ public class PublicationRemovalService {
         log.info(writeLog(requesterId, UserActions.REMOVE, artefactId));
     }
 
-    public void deleteArtefactByLocation(List<Artefact> artefactsToDelete, Integer locationId, String requesterId)
+    public void deleteArtefactByLocation(List<Artefact> artefactsToDelete, Integer locationId, UUID requesterId)
         throws JsonProcessingException {
         artefactsToDelete.forEach(artefact -> {
             handleArtefactDeletion(artefact);

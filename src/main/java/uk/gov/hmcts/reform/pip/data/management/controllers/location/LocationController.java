@@ -33,6 +33,7 @@ import uk.gov.hmcts.reform.pip.data.management.service.location.LocationService;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @Tag(name = "Data Management location list API")
@@ -107,7 +108,7 @@ public class LocationController {
     @PreAuthorize("@authorisationService.userCanUploadLocation(#requesterId)")
     public ResponseEntity<Collection<Location>> uploadLocations(
         @RequestPart MultipartFile locationList,
-        @RequestHeader(REQUESTER_ID_HEADER) String requesterId) {
+        @RequestHeader(REQUESTER_ID_HEADER) UUID requesterId) {
         return ResponseEntity.ok(locationService.uploadLocations(locationList));
     }
 
@@ -119,7 +120,7 @@ public class LocationController {
     @SecurityRequirement(name = BEARER_AUTHENTICATION)
     @PreAuthorize("@authorisationService.userCanDeleteLocation(#requesterId)")
     public ResponseEntity<LocationDeletion> deleteLocation(
-        @RequestHeader(REQUESTER_ID_HEADER) String requesterId,
+        @RequestHeader(REQUESTER_ID_HEADER) UUID requesterId,
         @PathVariable Integer locationId)
         throws JsonProcessingException {
         return ResponseEntity.ok(locationService.deleteLocation(locationId, requesterId));
@@ -132,7 +133,7 @@ public class LocationController {
     @SecurityRequirement(name = BEARER_AUTHENTICATION)
     @PreAuthorize("@authorisationService.userCanGetLocationCsv(#requesterId)")
     public ResponseEntity<byte[]> downloadLocations(
-        @RequestHeader(REQUESTER_ID_HEADER) String requesterId) throws IOException {
+        @RequestHeader(REQUESTER_ID_HEADER) UUID requesterId) throws IOException {
         return ResponseEntity.ok()
             .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_VALUE)
             .body(locationService.downloadLocations());

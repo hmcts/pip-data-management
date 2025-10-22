@@ -89,7 +89,7 @@ class LocationServiceTest {
     Location locationInvalidExample;
     LocationDeletion locationDeletion;
     PiUser piUser;
-    String userId;
+    UUID userId;
 
     private static final String FAMILY_LOCATION =  "Family Location";
     private static final String MAGISTRATES_LOCATION = "Magistrates Location";
@@ -147,10 +147,10 @@ class LocationServiceTest {
 
         locationDeletion = new LocationDeletion();
 
-        userId = UUID.randomUUID().toString();
+        userId = UUID.randomUUID();
         piUser = new PiUser();
         piUser.setEmail(EMAIL);
-        piUser.setUserId(userId);
+        piUser.setUserId(userId.toString());
     }
 
     @Test
@@ -779,7 +779,7 @@ class LocationServiceTest {
 
         LocationNotFoundException locationNotFoundException =
             assertThrows(LocationNotFoundException.class, () ->
-                locationService.deleteLocation(locationId, UUID.randomUUID().toString()));
+                locationService.deleteLocation(locationId, userId));
 
         assertEquals("No location found with the id: 1", locationNotFoundException.getMessage(),
                      "Exception does not contain expected message");
