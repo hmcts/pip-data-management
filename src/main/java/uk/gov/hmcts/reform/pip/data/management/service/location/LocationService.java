@@ -393,7 +393,7 @@ public class LocationService {
         return locationDeletion;
     }
 
-    private LocationDeletion checkLocationMetadataExists(Location location, String requesterEmail, String requesterId)
+    private LocationDeletion checkLocationMetadataExists(Location location, String requesterEmail, UUID requesterId)
         throws JsonProcessingException {
         LocationDeletion locationDeletion = new LocationDeletion();
         Optional<LocationMetadata> locationMetadata =
