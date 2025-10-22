@@ -21,6 +21,7 @@ import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.Location
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.LocationNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationDeletion;
+import uk.gov.hmcts.reform.pip.data.management.models.location.LocationMetadata;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationReference;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.service.AccountManagementService;
@@ -88,7 +89,7 @@ class LocationServiceTest {
     Location locationInvalidExample;
     LocationDeletion locationDeletion;
     PiUser piUser;
-    String userId;
+    UUID userId;
 
     private static final String FAMILY_LOCATION =  "Family Location";
     private static final String MAGISTRATES_LOCATION = "Magistrates Location";
@@ -146,10 +147,10 @@ class LocationServiceTest {
 
         locationDeletion = new LocationDeletion();
 
-        userId = UUID.randomUUID().toString();
+        userId = UUID.randomUUID();
         piUser = new PiUser();
         piUser.setEmail(EMAIL);
-        piUser.setUserId(userId);
+        piUser.setUserId(userId.toString());
     }
 
     @Test
@@ -744,6 +745,32 @@ class LocationServiceTest {
     }
 
     @Test
+    void testDeleteLocationWhenMetadataFound() throws JsonProcessingException {
+        Integer locationId = 1;
+
+        when(locationRepository.getLocationByLocationId(locationId))
+            .thenReturn(Optional.of(locationFirstExample));
+        when(accountManagementService.getUserById(userId))
+            .thenReturn(piUser);
+        when(artefactRepository.findActiveArtefactsForLocation(any(), eq(locationId.toString())))
+            .thenReturn(List.of());
+        when(accountManagementService.findSubscriptionsByLocationId(locationId.toString()))
+            .thenReturn("[]");
+        when(locationMetadataRepository.findByLocationId(locationId))
+             .thenReturn(Optional.of(new LocationMetadata()));
+
+        LocationDeletion result = locationService.deleteLocation(locationId, userId);
+
+        assertTrue(result.isExists(), "There is metadata exists for the given location.");
+
+        verify(systemAdminNotificationService).sendEmailNotification(
+            EMAIL, userId, ActionResult.ATTEMPTED,
+            String.format("There is metadata exists for the following location: %s", LOCATION_NAME2),
+            ChangeType.DELETE_LOCATION
+        );
+    }
+
+    @Test
     void testDeleteLocationWhereNotFound() {
         int locationId = 1;
 
@@ -752,7 +779,7 @@ class LocationServiceTest {
 
         LocationNotFoundException locationNotFoundException =
             assertThrows(LocationNotFoundException.class, () ->
-                locationService.deleteLocation(locationId, UUID.randomUUID().toString()));
+                locationService.deleteLocation(locationId, userId));
 
         assertEquals("No location found with the id: 1", locationNotFoundException.getMessage(),
                      "Exception does not contain expected message");

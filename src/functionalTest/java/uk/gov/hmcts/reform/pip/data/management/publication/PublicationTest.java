@@ -5,7 +5,6 @@ import io.restassured.response.Response;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -45,7 +44,6 @@ import static uk.gov.hmcts.reform.pip.data.management.utils.TestUtil.randomLocat
 
 @ActiveProfiles(profiles = "functional")
 @SpringBootTest(classes = {OAuthClient.class})
-@SuppressWarnings("PMD.ExcessiveImports")
 class PublicationTest extends FunctionalTestBase {
 
     @Value("${test-user-id}")
@@ -53,6 +51,9 @@ class PublicationTest extends FunctionalTestBase {
 
     @Value("${test-system-admin-id}")
     private String systemAdminUserId;
+
+    @Value("${test-admin-ctsc-id}")
+    private String adminCtscUserId;
 
     private static final String PUBLICATION_URL = "/publication";
     private static final String NON_STRATEGIC_UPLOAD_PUBLICATION_URL = PUBLICATION_URL + "/non-strategic";
@@ -285,7 +286,7 @@ class PublicationTest extends FunctionalTestBase {
         assertThat(returnedGetArtefactMetadata.getArtefactId().toString()).isEqualTo(artefactId);
 
         Map<String, String> deleteArtefactHeaderMap = getBaseHeaderMap();
-        deleteArtefactHeaderMap.put(REQUESTER_ID_HEADER, EMAIL);
+        deleteArtefactHeaderMap.put(REQUESTER_ID_HEADER, systemAdminUserId);
 
         final Response responseGetAllRelevantArtefactsByLocationId = doGetRequest(
             ARTEFACT_BY_LOCATION_ID_URL + courtId, headerMap
@@ -335,7 +336,7 @@ class PublicationTest extends FunctionalTestBase {
         assertThat(returnedGetArtefactMetadata.getArtefactId().toString()).isEqualTo(artefactId);
 
         Map<String, String> deleteArtefactHeaderMap = getBaseHeaderMap();
-        deleteArtefactHeaderMap.put(REQUESTER_ID_HEADER, EMAIL);
+        deleteArtefactHeaderMap.put(REQUESTER_ID_HEADER, systemAdminUserId);
 
         final Response responseDeleteArtefact = doDeleteRequest(
             PUBLICATION_URL + '/' + artefactId, deleteArtefactHeaderMap
@@ -538,12 +539,11 @@ class PublicationTest extends FunctionalTestBase {
     }
 
     @Test
-    @Disabled
     void testGetArtefactsByLocationIdWhenRequesterIsUnauthorised() {
         uploadFlatFile(courtId, Sensitivity.CLASSIFIED);
 
         Map<String, String> headerMap = getBaseHeaderMap();
-        headerMap.put(REQUESTER_ID_HEADER, systemAdminUserId);
+        headerMap.put(REQUESTER_ID_HEADER, adminCtscUserId);
 
         final Response responseGetArtefactMetadata = doGetRequest(
             PUBLICATION_URL + "/locationId/" + courtId, headerMap

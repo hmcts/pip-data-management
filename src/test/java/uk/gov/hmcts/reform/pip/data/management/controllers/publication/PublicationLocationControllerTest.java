@@ -71,7 +71,7 @@ class PublicationLocationControllerTest {
         COURT_PER_LOCATION.add(new LocationArtefact("1", 2));
         when(publicationLocationService.countArtefactsByLocation()).thenReturn(COURT_PER_LOCATION);
         ResponseEntity<List<LocationArtefact>> result =
-            publicationLocationController.countByLocation("123-456");
+            publicationLocationController.countByLocation(USER_ID);
         assertEquals(HttpStatus.OK, result.getStatusCode(), STATUS_CODE_MATCH);
         assertEquals(COURT_PER_LOCATION, result.getBody(), NOT_EQUAL_MESSAGE);
     }
@@ -94,7 +94,7 @@ class PublicationLocationControllerTest {
         when(publicationLocationService.findAllNoMatchArtefacts()).thenReturn(artefactList);
 
         ResponseEntity<List<Artefact>> response =
-            publicationLocationController.getAllNoMatchArtefacts(USER_ID.toString());
+            publicationLocationController.getAllNoMatchArtefacts(USER_ID);
 
         assertEquals(HttpStatus.OK, response.getStatusCode(), STATUS_CODE_MATCH);
         assertEquals(artefactList, response.getBody(), "Body should match");
@@ -103,11 +103,10 @@ class PublicationLocationControllerTest {
     @Test
     void testDeleteArtefactsByLocationReturnsOk() throws JsonProcessingException {
         int locationId = 1;
-        String requesterId = UUID.randomUUID().toString();
-        when(publicationLocationService.deleteArtefactByLocation(locationId, requesterId)).thenReturn("Success");
+        when(publicationLocationService.deleteArtefactByLocation(locationId, USER_ID)).thenReturn("Success");
 
         assertEquals(HttpStatus.OK,
-                     publicationLocationController.deleteArtefactsByLocation(requesterId, locationId).getStatusCode(),
+                     publicationLocationController.deleteArtefactsByLocation(USER_ID, locationId).getStatusCode(),
                      "Delete artefacts for location endpoint has not returned OK");
     }
 }

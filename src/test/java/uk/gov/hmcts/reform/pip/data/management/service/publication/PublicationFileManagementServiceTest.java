@@ -59,11 +59,10 @@ class PublicationFileManagementServiceTest {
     private static final String EXCEPTION_NOT_MATCH = "Exception message should contain expected";
     private static final String FILE_EXISTS_FLAG_MESSAGE = "File exists flag does not match";
     private static final String FILE_SIZE_MESSAGE = "File size does not match";
-    private static final String TEST = "test";
-    private static final byte[] TEST_BYTE = TEST.getBytes();
+    private static final byte[] TEST_BYTE = "test".getBytes();
 
     private static final UUID TEST_ARTEFACT_ID = UUID.randomUUID();
-    private static final String TEST_USER_ID = UUID.randomUUID().toString();
+    private static final UUID TEST_USER_ID = UUID.randomUUID();
 
     private static final String WELSH_PDF_SUFFIX = "_cy";
 
@@ -173,7 +172,7 @@ class PublicationFileManagementServiceTest {
         when(azureBlobService.getBlobFile(TEST_ARTEFACT_ID + PDF.getExtension())).thenReturn(TEST_BYTE);
 
         String response = publicationFileManagementService.getStoredPublication(
-            TEST_ARTEFACT_ID, PDF, null, TEST, true, false
+            TEST_ARTEFACT_ID, PDF, null, TEST_USER_ID, true, false
         );
 
         byte[] decodedBytes = Base64.getDecoder().decode(response);
@@ -188,7 +187,7 @@ class PublicationFileManagementServiceTest {
 
         NotFoundException ex = assertThrows(NotFoundException.class, () ->
             publicationFileManagementService.getStoredPublication(
-                TEST_ARTEFACT_ID, PDF, null, TEST, true, true
+                TEST_ARTEFACT_ID, PDF, null, TEST_USER_ID, true, true
             ));
 
         assertTrue(ex.getMessage().contains(NOT_FOUND_MESSAGE), EXCEPTION_NOT_MATCH);
@@ -201,7 +200,7 @@ class PublicationFileManagementServiceTest {
         when(azureBlobService.getBlobFile(TEST_ARTEFACT_ID + EXCEL.getExtension())).thenReturn(TEST_BYTE);
 
         String response = publicationFileManagementService.getStoredPublication(
-            TEST_ARTEFACT_ID, EXCEL, null, TEST, true, false
+            TEST_ARTEFACT_ID, EXCEL, null, TEST_USER_ID, true, false
         );
 
         byte[] decodedBytes = Base64.getDecoder().decode(response);
@@ -215,7 +214,7 @@ class PublicationFileManagementServiceTest {
         when(azureBlobService.getBlobFile(TEST_ARTEFACT_ID + PDF.getExtension())).thenReturn(TEST_BYTE);
 
         String response = publicationFileManagementService.getStoredPublication(
-            TEST_ARTEFACT_ID, PDF, null, TEST, true, false
+            TEST_ARTEFACT_ID, PDF, null, TEST_USER_ID, true, false
         );
 
         byte[] decodedBytes = Base64.getDecoder().decode(response);
@@ -230,7 +229,7 @@ class PublicationFileManagementServiceTest {
             .thenReturn(TEST_BYTE);
 
         String response = publicationFileManagementService.getStoredPublication(
-            TEST_ARTEFACT_ID, PDF, null, TEST, true, true
+            TEST_ARTEFACT_ID, PDF, null, TEST_USER_ID, true, true
         );
 
         byte[] decodedBytes = Base64.getDecoder().decode(response);
@@ -246,7 +245,7 @@ class PublicationFileManagementServiceTest {
 
         NotFoundException ex = assertThrows(NotFoundException.class, () ->
             publicationFileManagementService.getStoredPublication(
-                TEST_ARTEFACT_ID, EXCEL, null, TEST, true, false
+                TEST_ARTEFACT_ID, EXCEL, null, TEST_USER_ID, true, false
             ));
 
         assertTrue(ex.getMessage().contains(NOT_FOUND_MESSAGE), EXCEPTION_NOT_MATCH);
@@ -258,7 +257,7 @@ class PublicationFileManagementServiceTest {
         when(azureBlobService.getBlobFile(any())).thenReturn(TEST_BYTE);
 
         String response = publicationFileManagementService.getStoredPublication(
-            TEST_ARTEFACT_ID, PDF, 20, TEST, true, false
+            TEST_ARTEFACT_ID, PDF, 20, TEST_USER_ID, true, false
         );
 
         byte[] decodedBytes = Base64.getDecoder().decode(response);
@@ -272,7 +271,7 @@ class PublicationFileManagementServiceTest {
 
         FileSizeLimitException ex = assertThrows(FileSizeLimitException.class, () ->
             publicationFileManagementService.getStoredPublication(
-                TEST_ARTEFACT_ID, PDF, 2, TEST, true, false
+                TEST_ARTEFACT_ID, PDF, 2, TEST_USER_ID, true, false
             ));
 
         assertTrue(ex.getMessage().contains("File with type PDF for artefact with id " + TEST_ARTEFACT_ID
@@ -287,7 +286,7 @@ class PublicationFileManagementServiceTest {
         when(azureBlobService.getBlobFile(any())).thenReturn(TEST_BYTE);
 
         String response = publicationFileManagementService.getStoredPublication(
-            TEST_ARTEFACT_ID, PDF, null, TEST, false, false
+            TEST_ARTEFACT_ID, PDF, null, TEST_USER_ID, false, false
         );
 
         byte[] decodedBytes = Base64.getDecoder().decode(response);

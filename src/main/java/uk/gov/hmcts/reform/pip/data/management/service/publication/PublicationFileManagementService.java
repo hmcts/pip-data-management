@@ -76,7 +76,7 @@ public class PublicationFileManagementService {
      * @param additionalPdf Is getting the additional Welsh PDF?
      * @return A Base64 encoded string of the file.
      */
-    public String getStoredPublication(UUID artefactId, FileType fileType, Integer maxFileSize, String userId,
+    public String getStoredPublication(UUID artefactId, FileType fileType, Integer maxFileSize, UUID userId,
                                        boolean system, boolean additionalPdf) {
         Artefact artefact = publicationRetrievalService.getMetadataByArtefactId(artefactId);
         if (!isAuthorised(artefact, userId, system)) {
@@ -143,13 +143,13 @@ public class PublicationFileManagementService {
         );
     }
 
-    private boolean isAuthorised(Artefact artefact, String userId, boolean system) {
+    private boolean isAuthorised(Artefact artefact, UUID userId, boolean system) {
         if (system || artefact.getSensitivity().equals(Sensitivity.PUBLIC)) {
             return true;
         } else if (userId == null) {
             return false;
         }
-        return accountManagementService.getIsAuthorised(UUID.fromString(userId), artefact.getListType(),
+        return accountManagementService.getIsAuthorised(userId, artefact.getListType(),
                                                         artefact.getSensitivity());
     }
 }
