@@ -138,7 +138,9 @@ class KingsBenchMastersDailyCauseListFileConverterTest {
                               .getElementsByTag("a").get(0)
                               .attr(HREF))
             .as(IMPORTANT_INFORMATION_MESSAGE)
-            .isEqualTo("https://www.judiciary.uk/guidance-and-resources/kings-bench-guide-2024/");
+            .isEqualTo("https://www.judiciary.uk/guidance-and-resources/kings-bench-guide-2025/#:~:text="
+                   + "The%20King%E2%80%99s%20Bench%20Guide%202025%20has%20been%20published.,Division.%20%E2%80%A2%20"
+                   + "updated%20KB%20Masters%E2%80%99%20Clerks%E2%80%99%20contact%20details");
 
         softly.assertThat(document.getElementsByClass(LINK_CLASS).get(1)
                               .getElementsByTag("a").get(0)
@@ -232,7 +234,9 @@ class KingsBenchMastersDailyCauseListFileConverterTest {
                               .getElementsByTag("a").get(0)
                               .attr(HREF))
             .as(IMPORTANT_INFORMATION_MESSAGE)
-            .isEqualTo("https://www.judiciary.uk/guidance-and-resources/kings-bench-guide-2024/");
+            .isEqualTo("https://www.judiciary.uk/guidance-and-resources/kings-bench-guide-2025/#:~:text="
+                   + "The%20King%E2%80%99s%20Bench%20Guide%202025%20has%20been%20published.,Division.%20%E2%80%A2%20"
+                   + "updated%20KB%20Masters%E2%80%99%20Clerks%E2%80%99%20contact%20details");
 
         softly.assertThat(document.getElementsByClass(LINK_CLASS).get(1)
                               .getElementsByTag("a").get(0)
