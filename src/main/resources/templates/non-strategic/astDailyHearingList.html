@@ -28,7 +28,10 @@
     <div class="govuk-details__text">
       <p id="open-justice-message" class="govuk-body" th:text="${i18n.openJusticeMessage}"/>
       <p id="join-hearing-message" class="govuk-body" th:text="${i18n.joinHearingMessage}"/>
-      <a id="observe-hearing" th:href="${i18n.observeHearingLink}" class="govuk-link" th:title="${i18n.astObserveHearingLinkText}" th:text="${i18n.astObserveHearingLinkText}" />
+      <p id="observe-hearing" class="govuk-body">
+        <span th:text="${i18n.observeHearingText}"></span>
+        <a th:href="${i18n.observeHearingLink}" class="govuk-link" th:text="${i18n.observeHearingLink}"></a>
+      </p>
     </div>
   </details>
 
