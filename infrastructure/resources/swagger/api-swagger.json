@@ -2,7 +2,6 @@
   "openapi": "3.1.1",
   "info": {
     "title": "CaTH Inbound Publication API",
-    "summary": "An API for sending in publications to the CaTH service",
     "description": "This API is the inbound API for publications into the CaTH service. It also contains a health endpoint to check the service status.  \n  \n All endpoints are secured using bearer authentication.",
     "contact": {
       "name": "CaTH Team",
