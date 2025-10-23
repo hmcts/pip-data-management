@@ -1,44 +1,53 @@
 {
-  "openapi": "3.0.3",
+  "openapi": "3.1.1",
   "info": {
-    "title": "CaTH Data Management Service",
-    "description": "Use this service for CRUD operations of court publications and Locations.",
+    "title": "CaTH Inbound Publication API",
+    "description": "This API is the inbound API for publications into the CaTH service. It also contains a health endpoint to check the service status.  \n  \n All endpoints are secured using bearer authentication.",
     "contact": {
-      "name": "P&I Team",
-      "url": "https://tools.hmcts.net/confluence/display/PUBH/Publication+Hub",
+      "name": "CaTH Team",
       "email": "publicationinformation@hmcts.net"
     },
     "version": "1.0.0"
   },
   "servers": [
     {
-      "url": "https://pip-data-management.staging.platform.hmcts.net",
-      "description": "Generated server url"
-    }
-  ],
-  "tags": [
+      "url": "https://sds-api-mgmt.staging.platform.hmcts.net",
+      "description": "Staging URL"
+    },
     {
-      "name": "Data Management Publications API",
-      "description": "Publication Controller"
-    }
-  ],
-  "security": [
+      "url": "https://sds-api-mgmt.test.platform.hmcts.net",
+      "description": "Test URL"
+    },
     {
-      "bearerAuth": []
+      "url": "https://sds-api-mgmt.ithc.platform.hmcts.net",
+      "description": "ITHC URL"
+    },
+    {
+      "url": "https://sds-api-mgmt.demo.platform.hmcts.net",
+      "description": "Demo URL"
+    },
+    {
+      "url": "https://sds-api-mgmt.platform.hmcts.net",
+      "description": "Live URL"
     }
   ],
+  "security": [{
+    "bearerAuth": []
+  }],
   "paths": {
     "/publication": {
       "post": {
-        "tags": [
-          "Data Management Publications API"
-        ],
         "summary": "Upload a new publication",
+        "description": "This is the core endpoint to upload a new publication to CaTH. There are several headers detailed below, alongside the a request body which can either be a JSON object or a multipart-file.  \n \n Publications will superseded/overwritten if the following five headers match an existing, active publication: x-location-id, x-content-date, x-language, x-list-type, x-provenance  \n \n If the upload is a JSON object, it will be validated against the associated schema defined in the x-list-type header. Please see the table below for the mappings between list types and schemas  \n  \n  <ul><li><a href=\"https://github.com/hmcts/pip-data-management/blob/master/src/main/resources/schemas/civil_and_family_daily_cause_list.json\">CIVIL_AND_FAMILY_DAILY_CAUSE_LIST</a></li><li><a href=\"https://github.com/hmcts/pip-data-management/blob/master/src/main/resources/schemas/civil_daily_cause_list.json\">CIVIL_DAILY_CAUSE_LIST</a></li><li><a href=\"https://github.com/hmcts/pip-data-management/blob/master/src/main/resources/schemas/family_daily_cause_list.json\">FAMILY_DAILY_CAUSE_LIST</a></li><li><a href=\"https://github.com/hmcts/pip-data-management/blob/master/src/main/resources/schemas/iac_daily_list.json\">IAC_DAILY_LIST</a></li><li><a href=\"https://github.com/hmcts/pip-data-management/blob/master/src/main/resources/schemas/single_justice_procedure_public.json\">SJP_PUBLIC_LIST / SJP_DELTA_PUBLIC_LIST</a></li><li><a href=\"https://github.com/hmcts/pip-data-management/blob/master/src/main/resources/schemas/single_justice_procedure_press.json\">SJP_PRESS_LIST / SJP_DELTA_PRESS_LIST</a></li><li><a href=\"https://github.com/hmcts/pip-data-management/blob/master/src/main/resources/schemas/magistrates_adult_court_list.json\">MAGISTRATES_ADULT_COURT_LIST_DAILY</a></li><li><a href=\"https://github.com/hmcts/pip-data-management/blob/master/src/main/resources/schemas/magistrates_adult_court_list.json\">MAGISTRATES_ADULT_COURT_LIST_FUTURE</a></li><li><a href=\"https://github.com/hmcts/pip-data-management/blob/master/src/main/resources/schemas/magistrates_public_adult_court_list.json\">MAGISTRATES_PUBLIC_ADULT_COURT_LIST_DAILY</a></li><li><a href=\"https://github.com/hmcts/pip-data-management/blob/master/src/main/resources/schemas/magistrates_public_adult_court_list.json\">MAGISTRATES_PUBLIC_ADULT_COURT_LIST_FUTURE</a></li><li><a href=\"https://github.com/hmcts/pip-data-management/blob/master/src/main/resources/schemas/crown_daily_pdda_list.json\">CROWN_DAILY_PDDA_LIST</a></li><li><a href=\"https://github.com/hmcts/pip-data-management/blob/master/src/main/resources/schemas/crown_warned_pdda_list.json\">CROWN_WARNED_PDDA_LIST</a></li><li><a href=\"https://github.com/hmcts/pip-data-management/blob/master/src/main/resources/schemas/crown_firm_pdda_list.json\">CROWN_FIRM_PDDA_LIST</a></li></ul>",
+        "tags": [
+          "Data Management API"
+        ],
         "operationId": "uploadPublication",
         "parameters": [
           {
             "name": "x-provenance",
             "in": "header",
+            "description": "This is used to identify the source system of the publication and is also used to map the x-court-id header to a location within CaTH (See x-court-id for more details)  \n  \n Although this is a String rather than an ENUM, it is important that this value is agreed with the CaTH team to ensure the mapping to the locations is set up correctly.",
             "required": true,
             "schema": {
               "type": "string"
@@ -48,6 +57,7 @@
             "name": "x-source-artefact-id",
             "in": "header",
             "required": false,
+            "description": "This field is optional and can be used to store the identifier assigned by the source system for the published data, if required by the source system",
             "schema": {
               "type": "string"
             }
@@ -56,12 +66,12 @@
             "name": "x-type",
             "in": "header",
             "required": true,
+            "description": "Identifies the type of publication being sent. If this is set to 'LIST', then x-list-type must be provided.",
             "schema": {
               "type": "string",
               "enum": [
                 "LIST",
-                "JUDGEMENTS_AND_OUTCOMES",
-                "GENERAL_PUBLICATION"
+                "LCSU"
               ]
             }
           },
@@ -69,13 +79,13 @@
             "name": "x-sensitivity",
             "in": "header",
             "required": false,
+            "description": "This defines the visibility of the publication being sent to users.  \n  \n PUBLIC - This is the default value and means that the publication will be visible to all users  \n  \n PRIVATE - Visible to all verified users \n  \n CLASSIFIED - Visible to verified users from a specific IDAM, which is determined from the x-list-type",
             "schema": {
               "type": "string",
               "enum": [
                 "PUBLIC",
-                "CLASSIFIED",
-                "INTERNAL",
-                "PRIVATE"
+                "PRIVATE",
+                "CLASSIFIED"
               ]
             }
           },
@@ -83,12 +93,12 @@
             "name": "x-language",
             "in": "header",
             "required": true,
+            "description": "The language of the publication being sent",
             "schema": {
               "type": "string",
               "enum": [
                 "ENGLISH",
-                "WELSH",
-                "BI_LINGUAL"
+                "WELSH"
               ]
             }
           },
@@ -96,6 +106,8 @@
             "name": "x-display-from",
             "in": "header",
             "required": false,
+            "description": "When the publication should be displayed from in CaTH, in ISO 8601 format",
+            "example": "2025-09-29T14:00:00.001Z",
             "schema": {
               "type": "string",
               "format": "date-time"
@@ -105,6 +117,8 @@
             "name": "x-display-to",
             "in": "header",
             "required": false,
+            "description": "When the publication should be displayed to in CaTH, in ISO 8601 format",
+            "example": "2025-09-29T15:00:00.001Z",
             "schema": {
               "type": "string",
               "format": "date-time"
@@ -114,6 +128,7 @@
             "name": "x-list-type",
             "in": "header",
             "required": true,
+            "description": "The list type for the data being sent. Only set when x-type is set to 'LIST'. This is used to determine the schema that the JSON body will be validated against, as well as determining the IDAM group for CLASSIFIED publications.  \n  \n Please see the table in the description for links to the schemas associated with each list type.",
             "schema": {
               "type": "string",
               "enum": [
@@ -121,23 +136,17 @@
                 "SJP_DELTA_PUBLIC_LIST",
                 "SJP_PRESS_LIST",
                 "SJP_DELTA_PRESS_LIST",
-                "SJP_PRESS_REGISTER",
-                "CROWN_DAILY_LIST",
-                "CROWN_FIRM_LIST",
-                "CROWN_WARNED_LIST",
-                "MAGISTRATES_PUBLIC_LIST",
-                "MAGISTRATES_STANDARD_LIST",
                 "CIVIL_DAILY_CAUSE_LIST",
                 "FAMILY_DAILY_CAUSE_LIST",
                 "CIVIL_AND_FAMILY_DAILY_CAUSE_LIST",
-                "COP_DAILY_CAUSE_LIST",
-                "ET_FORTNIGHTLY_PRESS_LIST",
-                "ET_DAILY_LIST",
-                "SSCS_DAILY_LIST",
-                "SSCS_DAILY_LIST_ADDITIONAL_HEARINGS",
+                "MAGISTRATES_ADULT_COURT_LIST_DAILY",
+                "MAGISTRATES_ADULT_COURT_LIST_FUTURE",
+                "MAGISTRATES_PUBLIC_ADULT_COURT_LIST_DAILY",
+                "MAGISTRATES_PUBLIC_ADULT_COURT_LIST_FUTURE",
                 "IAC_DAILY_LIST",
-                "IAC_DAILY_LIST_ADDITIONAL_CASES",
-                "PCOL_DAILY_CAUSE_LIST"
+                "CROWN_DAILY_PDDA_LIST",
+                "CROWN_FIRM_PDDA_LIST",
+                "CROWN_WARNED_PDDA_LIST"
               ]
             }
           },
@@ -145,6 +154,7 @@
             "name": "x-court-id",
             "in": "header",
             "required": true,
+            "description": "The ID representing the location the publication should be uploaded to. These can be specific to the source system, and should be agreed with the CaTH team prior to onboarding onto the API so that configuration is in place. The combination of this field and the x-provenance header determines which internal CaTH location the publication is mapped to.",
             "schema": {
               "type": "string"
             }
@@ -153,25 +163,20 @@
             "name": "x-content-date",
             "in": "header",
             "required": true,
+            "description": "The date that the content being sent is for, in ISO 8601 format. If the publication is for longer than a day, this date should be the first date it is for.",
             "schema": {
               "type": "string",
               "format": "date-time"
             }
-          },
-          {
-            "name": "x-issuer-email",
-            "in": "header",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
           }
         ],
         "requestBody": {
+          "description": "This is the content of the publication. It can either be a JSON object, which will be validated against the schema associated with the x-list-type header, or a multipart file upload.  \n  \n If sending a JSON object, the 'Content-Type' header must be set to 'application/json'. If sending a file, the 'Content-Type' header must be set to 'multipart/form-data' and the file should be sent as a form field called 'file'.",
           "content": {
             "application/json": {
               "schema": {
-                "type": "string"
+                "type": "string",
+                "example": "<JSON object representing the publication being sent. See schemas in the description>"
               }
             },
             "multipart/form-data": {
@@ -193,41 +198,39 @@
         },
         "responses": {
           "201": {
-            "description": "Artefact.class instance for the artefact that has been created",
+            "description": "Details about the created artefact. The majority will match the headers sent in, with the following exceptions: \n  \n - artefactId: This is the unique identifier for the artefact within CaTH. If the x-type is LCSU, this will be blank as CaTH acts as a pass through for these publications  \n - payload: The URL where the payload is stored  \n - search: Data extracted from the payload to allow searching and filtering within CaTH  \n - isFlatFile: false for JSON uploads, true for file uploads",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Artefact"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error with the request. Please see response body for details.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
                 }
               }
             }
           },
           "401": {
-            "description": "Invalid access credential",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/Artefact"
-                }
-              }
-            }
+            "description": "If authorization has failed (e.g. no access credential provided)",
+            "content": {}
           },
           "403": {
-            "description": "User has not been authorized",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/Artefact"
-                }
-              }
-            }
+            "description": "Authentication has failed",
+            "content": {}
           },
           "409": {
             "description": "Conflict while uploading publication",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Artefact"
+                  "$ref": "#/components/schemas/Message"
                 }
               }
             }
@@ -238,15 +241,17 @@
     "/": {
       "get": {
         "tags": [
-          "Data Management root API"
+          "Data Management API"
         ],
         "summary": "Get Welcome",
+        "description": "Endpoint to check the service is running",
         "operationId": "welcome",
         "responses": {
           "200": {
-            "description": "OK",
+            "description": "Returned if service is running",
             "content": {
-              "*/*": {
+              "text/plain": {
+                "example": "Welcome to pip-data-management",
                 "schema": {
                   "type": "string"
                 }
@@ -254,24 +259,12 @@
             }
           },
           "401": {
-            "description": "Invalid access credential",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/Artefact"
-                }
-              }
-            }
+            "description": "If authorization has failed (e.g. no access credential provided)",
+            "content": {}
           },
           "403": {
-            "description": "User has not been authorized",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/Artefact"
-                }
-              }
-            }
+            "description": "Authentication has failed",
+            "content": {}
           }
         }
       }
@@ -316,20 +309,21 @@
           "listType": {
             "type": "string",
             "enum": [
+              "SJP_PUBLIC_LIST",
+              "SJP_DELTA_PUBLIC_LIST",
+              "SJP_PRESS_LIST",
+              "SJP_DELTA_PRESS_LIST",
               "CIVIL_DAILY_CAUSE_LIST",
-              "CROWN_DAILY_LIST",
-              "CROWN_FIRM_LIST",
-              "CROWN_WARNED_LIST",
               "FAMILY_DAILY_CAUSE_LIST",
               "CIVIL_AND_FAMILY_DAILY_CAUSE_LIST",
-              "MAGISTRATES_PUBLIC_LIST",
-              "MAGISTRATES_STANDARD_LIST",
-              "SJP_PRESS_LIST",
-              "SJP_PUBLIC_LIST",
-              "SSCS_DAILY_LIST",
-              "ET_FORTNIGHTLY_PRESS_LIST",
-              "ET_DAILY_LIST",
-              "IAC_DAILY_LIST"
+              "MAGISTRATES_ADULT_COURT_LIST_DAILY",
+              "MAGISTRATES_ADULT_COURT_LIST_FUTURE",
+              "MAGISTRATES_PUBLIC_ADULT_COURT_LIST_DAILY",
+              "MAGISTRATES_PUBLIC_ADULT_COURT_LIST_FUTURE",
+              "IAC_DAILY_LIST",
+              "CROWN_DAILY_PDDA_LIST",
+              "CROWN_FIRM_PDDA_LIST",
+              "CROWN_WARNED_PDDA_LIST"
             ]
           },
           "payload": {
@@ -351,7 +345,6 @@
             "type": "string",
             "enum": [
               "CLASSIFIED",
-              "INTERNAL",
               "PRIVATE",
               "PUBLIC"
             ]
@@ -362,10 +355,22 @@
           "type": {
             "type": "string",
             "enum": [
-              "GENERAL_PUBLICATION",
-              "JUDGEMENTS_AND_OUTCOMES",
-              "LIST"
+              "LIST",
+              "LCSU"
             ]
+          }
+        }
+      },
+      "Message": {
+        "title": "Message",
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
           }
         }
       }
