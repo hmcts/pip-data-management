@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.IOUtils;
 import org.assertj.core.api.SoftAssertions;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.springframework.test.context.ActiveProfiles;
@@ -67,8 +66,10 @@ class MagistratesAdultCourtListSummaryDataTest {
         softly.assertAll();
     }
 
-    @Test
-    void testPublicMagistratesAdultCourtListTemplate() throws IOException {
+    @ParameterizedTest
+    @EnumSource(value = ListType.class, names = {"MAGISTRATES_PUBLIC_ADULT_COURT_LIST_DAILY",
+        "MAGISTRATES_PUBLIC_ADULT_COURT_LIST_FUTURE"})
+    void testPublicMagistratesAdultCourtListTemplate(ListType listType) throws IOException {
         StringWriter writer = new StringWriter();
         IOUtils.copy(
             Files.newInputStream(Paths.get(
@@ -80,7 +81,7 @@ class MagistratesAdultCourtListSummaryDataTest {
 
         JsonNode payload = new ObjectMapper().readTree(writer.toString());
         Map<String, List<Map<String, String>>> output = new ListConversionFactory()
-            .getArtefactSummaryData(ListType.MAGISTRATES_PUBLIC_ADULT_COURT_LIST_DAILY).get()
+            .getArtefactSummaryData(listType).get()
             .get(payload);
 
         SoftAssertions softly = new SoftAssertions();
