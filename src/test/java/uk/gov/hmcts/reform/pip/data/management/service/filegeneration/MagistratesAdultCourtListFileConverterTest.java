@@ -9,7 +9,6 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
@@ -44,6 +43,9 @@ class MagistratesAdultCourtListFileConverterTest {
     private static final String COURT_ROOM_HEADING_MESSAGE = "Court room heading does not match";
     private static final String MAGISTRATES_ADULT_COURT_LIST_DAILY = "MAGISTRATES_ADULT_COURT_LIST_DAILY";
     private static final String MAGISTRATES_ADULT_COURT_LIST_FUTURE = "MAGISTRATES_ADULT_COURT_LIST_FUTURE";
+    private static final String MAGISTRATES_PUBLIC_ADULT_COURT_LIST_DAILY = "MAGISTRATES_PUBLIC_ADULT_COURT_LIST_DAILY";
+    private static final String MAGISTRATES_PUBLIC_ADULT_COURT_LIST_FUTURE =
+        "MAGISTRATES_PUBLIC_ADULT_COURT_LIST_FUTURE";
 
     private static final String BODY_CLASS = "govuk-body";
 
@@ -105,7 +107,7 @@ class MagistratesAdultCourtListFileConverterTest {
         }
     }
 
-    private Map<String, String> createMetaDattaMap(ListType listType, Language language) {
+    private Map<String, String> createMetaDataMap(ListType listType, Language language) {
         return Map.of(
             CONTENT_DATE, "1 August 2025",
             PROVENANCE, PROVENANCE,
@@ -119,7 +121,7 @@ class MagistratesAdultCourtListFileConverterTest {
     @EnumSource(value = ListType.class, names = {MAGISTRATES_ADULT_COURT_LIST_DAILY,
         MAGISTRATES_ADULT_COURT_LIST_FUTURE})
     void testStandardGeneralListInformationInEnglish(ListType listType) throws IOException {
-        Map<String, String> metadata = createMetaDattaMap(listType, Language.ENGLISH);
+        Map<String, String> metadata = createMetaDataMap(listType, Language.ENGLISH);
         String outputHtml = standardConverter.convert(standardInputJson, metadata, standardEnglishLanguageResource);
         Document document = Jsoup.parse(outputHtml);
         SoftAssertions softly = new SoftAssertions();
@@ -151,10 +153,11 @@ class MagistratesAdultCourtListFileConverterTest {
         softly.assertAll();
     }
 
-    @Test
-    void testPublicGeneralListInformationInEnglish() throws IOException {
-        Map<String, String> metadata = createMetaDattaMap(ListType.MAGISTRATES_PUBLIC_ADULT_COURT_LIST_DAILY,
-                                                          Language.ENGLISH);
+    @ParameterizedTest
+    @EnumSource(value = ListType.class, names = {MAGISTRATES_PUBLIC_ADULT_COURT_LIST_DAILY,
+        MAGISTRATES_PUBLIC_ADULT_COURT_LIST_FUTURE})
+    void testPublicGeneralListInformationInEnglish(ListType listType) throws IOException {
+        Map<String, String> metadata = createMetaDataMap(listType, Language.ENGLISH);
         String outputHtml = publicConverter.convert(publicInputJson, metadata, publicEnglishLanguageResource);
         Document document = Jsoup.parse(outputHtml);
         SoftAssertions softly = new SoftAssertions();
@@ -190,7 +193,7 @@ class MagistratesAdultCourtListFileConverterTest {
     @EnumSource(value = ListType.class, names = {MAGISTRATES_ADULT_COURT_LIST_DAILY,
         MAGISTRATES_ADULT_COURT_LIST_FUTURE})
     void testStandardGeneralListInformationInWelsh(ListType listType) throws IOException {
-        Map<String, String> metadata = createMetaDattaMap(listType, Language.WELSH);
+        Map<String, String> metadata = createMetaDataMap(listType, Language.WELSH);
         String outputHtml = standardConverter.convert(standardInputJson, metadata, standardWelshLanguageResource);
         Document document = Jsoup.parse(outputHtml);
         SoftAssertions softly = new SoftAssertions();
@@ -222,10 +225,11 @@ class MagistratesAdultCourtListFileConverterTest {
         softly.assertAll();
     }
 
-    @Test
-    void testPublicGeneralListInformationInWelsh() throws IOException {
-        Map<String, String> metadata = createMetaDattaMap(ListType.MAGISTRATES_PUBLIC_ADULT_COURT_LIST_DAILY,
-                                                          Language.WELSH);
+    @ParameterizedTest
+    @EnumSource(value = ListType.class, names = {MAGISTRATES_PUBLIC_ADULT_COURT_LIST_DAILY,
+        MAGISTRATES_PUBLIC_ADULT_COURT_LIST_FUTURE})
+    void testPublicGeneralListInformationInWelsh(ListType listType) throws IOException {
+        Map<String, String> metadata = createMetaDataMap(listType, Language.WELSH);
         String outputHtml = publicConverter.convert(publicInputJson, metadata, publicWelshLanguageResource);
         Document document = Jsoup.parse(outputHtml);
         SoftAssertions softly = new SoftAssertions();
@@ -261,15 +265,16 @@ class MagistratesAdultCourtListFileConverterTest {
     @EnumSource(value = ListType.class, names = {MAGISTRATES_ADULT_COURT_LIST_DAILY,
         MAGISTRATES_ADULT_COURT_LIST_FUTURE})
     void testStandardSessionHeadings(ListType listType) throws IOException {
-        Map<String, String> metadata = createMetaDattaMap(listType, Language.ENGLISH);
+        Map<String, String> metadata = createMetaDataMap(listType, Language.ENGLISH);
         String result = standardConverter.convert(standardInputJson, metadata, standardEnglishLanguageResource);
         assertSessionHeadings(Jsoup.parse(result));
     }
 
-    @Test
-    void testPublicSessionHeadings() throws IOException {
-        Map<String, String> metadata = createMetaDattaMap(ListType.MAGISTRATES_PUBLIC_ADULT_COURT_LIST_DAILY,
-                                                          Language.ENGLISH);
+    @ParameterizedTest
+    @EnumSource(value = ListType.class, names = {MAGISTRATES_PUBLIC_ADULT_COURT_LIST_DAILY,
+        MAGISTRATES_PUBLIC_ADULT_COURT_LIST_FUTURE})
+    void testPublicSessionHeadings(ListType listType) throws IOException {
+        Map<String, String> metadata = createMetaDataMap(listType, Language.ENGLISH);
         String result = publicConverter.convert(publicInputJson, metadata, publicEnglishLanguageResource);
         assertSessionHeadings(Jsoup.parse(result));
     }
@@ -305,7 +310,7 @@ class MagistratesAdultCourtListFileConverterTest {
     @EnumSource(value = ListType.class, names = {MAGISTRATES_ADULT_COURT_LIST_DAILY,
         MAGISTRATES_ADULT_COURT_LIST_FUTURE})
     void testStandardTableHeaders(ListType listType) throws IOException {
-        Map<String, String> metadata = createMetaDattaMap(listType, Language.ENGLISH);
+        Map<String, String> metadata = createMetaDataMap(listType, Language.ENGLISH);
         String outputHtml = standardConverter.convert(standardInputJson, metadata, standardEnglishLanguageResource);
         Document document = Jsoup.parse(outputHtml);
 
@@ -328,10 +333,11 @@ class MagistratesAdultCourtListFileConverterTest {
             );
     }
 
-    @Test
-    void testPublicTableHeaders() throws IOException {
-        Map<String, String> metadata = createMetaDattaMap(ListType.MAGISTRATES_PUBLIC_ADULT_COURT_LIST_DAILY,
-                                                          Language.ENGLISH);
+    @ParameterizedTest
+    @EnumSource(value = ListType.class, names = {MAGISTRATES_PUBLIC_ADULT_COURT_LIST_DAILY,
+        MAGISTRATES_PUBLIC_ADULT_COURT_LIST_FUTURE})
+    void testPublicTableHeaders(ListType listType) throws IOException {
+        Map<String, String> metadata = createMetaDataMap(listType, Language.ENGLISH);
         String outputHtml = publicConverter.convert(publicInputJson, metadata, publicEnglishLanguageResource);
         Document document = Jsoup.parse(outputHtml);
 
@@ -351,7 +357,7 @@ class MagistratesAdultCourtListFileConverterTest {
     @EnumSource(value = ListType.class, names = {MAGISTRATES_ADULT_COURT_LIST_DAILY,
         MAGISTRATES_ADULT_COURT_LIST_FUTURE})
     void testTableContents(ListType listType) throws IOException {
-        Map<String, String> metadata = createMetaDattaMap(listType, Language.ENGLISH);
+        Map<String, String> metadata = createMetaDataMap(listType, Language.ENGLISH);
         String outputHtml = standardConverter.convert(standardInputJson, metadata, standardEnglishLanguageResource);
         Document document = Jsoup.parse(outputHtml);
         assertThat(document.getElementsByClass("govuk-table__body").get(0)
@@ -373,10 +379,11 @@ class MagistratesAdultCourtListFileConverterTest {
             );
     }
 
-    @Test
-    void testPublicTableContents() throws IOException {
-        Map<String, String> metadata = createMetaDattaMap(ListType.MAGISTRATES_PUBLIC_ADULT_COURT_LIST_DAILY,
-                                                          Language.ENGLISH);
+    @ParameterizedTest
+    @EnumSource(value = ListType.class, names = {MAGISTRATES_PUBLIC_ADULT_COURT_LIST_DAILY,
+        MAGISTRATES_PUBLIC_ADULT_COURT_LIST_FUTURE})
+    void testPublicTableContents(ListType listType) throws IOException {
+        Map<String, String> metadata = createMetaDataMap(listType, Language.ENGLISH);
         String outputHtml = publicConverter.convert(publicInputJson, metadata, publicEnglishLanguageResource);
         Document document = Jsoup.parse(outputHtml);
         assertThat(document.getElementsByClass("govuk-table__body").get(0)
