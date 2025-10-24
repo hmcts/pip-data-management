@@ -80,7 +80,7 @@ class FileGenerationTest extends FunctionalTestBase {
 
     private Map<String, String> headerMap;
 
-    @Value("${test-user-id}")
+    @Value("${b2c-test-account-id}")
     public String testUserId;
 
     @BeforeAll

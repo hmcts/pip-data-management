@@ -46,7 +46,7 @@ import static uk.gov.hmcts.reform.pip.data.management.utils.TestUtil.randomLocat
 @SpringBootTest(classes = {OAuthClient.class})
 class PublicationTest extends FunctionalTestBase {
 
-    @Value("${test-user-id}")
+    @Value("${b2c-test-account-id}")
     private String userId;
 
     @Value("${test-system-admin-id}")
