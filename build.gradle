@@ -224,6 +224,7 @@ dependencies {
   implementation 'org.springframework.boot:spring-boot-starter-jdbc'
   implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
   implementation 'com.azure.spring:spring-cloud-azure-starter-active-directory:5.23.0'
+  implementation 'com.azure.spring:spring-cloud-azure-starter-active-directory:5.23.0'
   implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
   implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
   implementation 'com.opencsv:opencsv:5.12.0'
