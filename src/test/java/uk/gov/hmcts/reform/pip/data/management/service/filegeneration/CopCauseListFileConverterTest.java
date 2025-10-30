@@ -156,7 +156,7 @@ class CopCauseListFileConverterTest {
 
         assertThat(document.getElementsByTag("th"))
             .as("Incorrect table headers")
-            .hasSize(24)
+            .hasSize(28)
             .extracting(Element::text)
             .startsWith("Start Time",
                         "Case Ref",
@@ -174,7 +174,7 @@ class CopCauseListFileConverterTest {
                 "2:30pm",
                 "12341234",
                 "ThisIsACaseName",
-                "This is case type",
+                "This is a case type",
                 "Criminal",
                 "1 hour [1 of 2]",
                 "Teams, In-Person",

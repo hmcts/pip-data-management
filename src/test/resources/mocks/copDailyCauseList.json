@@ -88,6 +88,7 @@
                           {
                             "caseNumber": "12341234",
                             "caseName": "ThisIsACaseName",
+                            "caseType": "This is a case type",
                             "caseSequenceIndicator": "1 of 2"
                           }
                         ],
@@ -140,6 +141,7 @@
                           {
                             "caseNumber": "12341234",
                             "caseName": "ThisIsACaseName",
+                            "caseType": "This is a case type",
                             "caseSequenceIndicator": "1 of 2"
                           }
                         ],
