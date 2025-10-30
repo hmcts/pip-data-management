@@ -161,6 +161,7 @@ class CopCauseListFileConverterTest {
             .startsWith("Start Time",
                         "Case Ref",
                         "Case Details",
+                        "Case Type",
                         "Hearing Type",
                         "Time Estimate",
                         "Hearing Channel"
@@ -172,7 +173,8 @@ class CopCauseListFileConverterTest {
             .containsSequence(
                 "2:30pm",
                 "12341234",
-                "ThisIsACaseSuppressionName",
+                "ThisIsACaseName",
+                "This is case type",
                 "Criminal",
                 "1 hour [1 of 2]",
                 "Teams, In-Person",
