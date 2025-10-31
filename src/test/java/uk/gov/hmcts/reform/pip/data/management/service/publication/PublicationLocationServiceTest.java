@@ -71,9 +71,9 @@ class PublicationLocationServiceTest {
     @Test
     void testGetLocationTypeVenue() {
         List<ListType> venueListTypes = new ArrayList<>();
-        venueListTypes.add(ListType.CROWN_DAILY_LIST);
-        venueListTypes.add(ListType.CROWN_FIRM_LIST);
-        venueListTypes.add(ListType.CROWN_WARNED_LIST);
+        venueListTypes.add(ListType.CROWN_DAILY_PDDA_LIST);
+        venueListTypes.add(ListType.CROWN_FIRM_PDDA_LIST);
+        venueListTypes.add(ListType.CROWN_WARNED_PDDA_LIST);
         venueListTypes.add(ListType.MAGISTRATES_PUBLIC_LIST);
         venueListTypes.add(ListType.MAGISTRATES_STANDARD_LIST);
         venueListTypes.add(ListType.CIVIL_DAILY_CAUSE_LIST);
