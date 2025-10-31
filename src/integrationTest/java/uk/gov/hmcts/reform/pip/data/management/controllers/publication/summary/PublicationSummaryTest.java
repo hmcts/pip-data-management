@@ -159,8 +159,10 @@ class PublicationSummaryTest extends PublicationIntegrationTestBase {
         assertTrue(responseContent.contains("Offence title - Offence title 1"), CONTENT_MISMATCH_ERROR);
     }
 
-    @Test
-    void testGenerateArtefactSummaryMagistratesPublicAdultCourtList() throws Exception {
+    @ParameterizedTest
+    @EnumSource(value = ListType.class, names = {"MAGISTRATES_PUBLIC_ADULT_COURT_LIST_DAILY",
+        "MAGISTRATES_PUBLIC_ADULT_COURT_LIST_FUTURE"})
+    void testGenerateArtefactSummaryMagistratesPublicAdultCourtList(ListType listType) throws Exception {
         byte[] data = getTestData("data/magistrates-public-adult-court-list/magistratesPublicAdultCourtList.json");
         Artefact artefact = createPublication(ListType.MAGISTRATES_PUBLIC_ADULT_COURT_LIST_DAILY, data);
 

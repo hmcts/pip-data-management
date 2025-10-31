@@ -198,7 +198,7 @@ class LocationControllerTest {
 
     @Test
     void testUploadLocationsReturnsNewLocations() throws IOException {
-        String requesterId = UUID.randomUUID().toString();
+        UUID requesterId = UUID.randomUUID();
         try (InputStream inputStream = this.getClass().getClassLoader()
             .getResourceAsStream("csv/ValidCsv.csv")) {
 
@@ -220,7 +220,7 @@ class LocationControllerTest {
 
     @Test
     void testUploadLocationsReturnsOk() throws IOException {
-        String requesterId = UUID.randomUUID().toString();
+        UUID requesterId = UUID.randomUUID();
 
         try (InputStream inputStream = this.getClass().getClassLoader()
             .getResourceAsStream("csv/ValidCsv.csv")) {
@@ -240,7 +240,7 @@ class LocationControllerTest {
     @Test
     void testDeleteLocationReturnsOk() throws JsonProcessingException {
         int locationId = 1;
-        String requesterId = UUID.randomUUID().toString();
+        UUID requesterId = UUID.randomUUID();
         LocationDeletion locationDeletion = new LocationDeletion();
         when(locationService.deleteLocation(locationId, requesterId)).thenReturn(locationDeletion);
 
@@ -253,7 +253,7 @@ class LocationControllerTest {
         byte[] testByte = new byte[10];
         when(locationService.downloadLocations()).thenReturn(testByte);
 
-        ResponseEntity<byte[]> controllerResponse = locationController.downloadLocations("123-456");
+        ResponseEntity<byte[]> controllerResponse = locationController.downloadLocations(UUID.randomUUID());
         assertEquals(HttpStatus.OK, controllerResponse.getStatusCode(), "Status did not match expected");
         assertEquals(testByte, controllerResponse.getBody(), "Body did not match expected");
     }

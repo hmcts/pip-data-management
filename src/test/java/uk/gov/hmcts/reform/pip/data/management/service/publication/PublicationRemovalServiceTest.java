@@ -52,9 +52,8 @@ import static uk.gov.hmcts.reform.pip.data.management.helpers.ConstantsTestHelpe
 @ExtendWith(MockitoExtension.class)
 @SuppressWarnings({"PMD.ExcessiveImports"})
 class PublicationRemovalServiceTest {
-    private static final String USER_ID = UUID.randomUUID().toString();
+    private static final UUID USER_ID = UUID.randomUUID();
     private static final String EMAIL_ADDRESS = "test@test.com";
-    private static final String SSO_EMAIL = "sso@test.com";
     private static final Integer LOCATION_ID = 1;
 
     private final Artefact artefactWithPayloadUrl = ArtefactConstantTestHelper.buildArtefactWithPayloadUrl();
@@ -90,7 +89,7 @@ class PublicationRemovalServiceTest {
     void setup() {
         piUser = new PiUser();
         piUser.setEmail(EMAIL_ADDRESS);
-        piUser.setUserId(USER_ID);
+        piUser.setUserId(USER_ID.toString());
     }
 
     @Test
@@ -99,9 +98,9 @@ class PublicationRemovalServiceTest {
             when(artefactRepository.findArtefactByArtefactId(ARTEFACT_ID.toString()))
                 .thenReturn(Optional.of(artefactWithIdAndPayloadUrl));
 
-            publicationRemovalService.deleteArtefactById(ARTEFACT_ID.toString(), TEST_VALUE);
-            assertTrue(logCaptor.getInfoLogs().get(0).contains(String.format(DELETION_TRACK_LOG_MESSAGE, ARTEFACT_ID)),
-                       MESSAGES_MATCH);
+            publicationRemovalService.deleteArtefactById(ARTEFACT_ID.toString(), USER_ID);
+            assertTrue(logCaptor.getInfoLogs().get(0).contains(String.format(DELETION_TRACK_LOG_MESSAGE,
+                                                                             USER_ID, ARTEFACT_ID)), MESSAGES_MATCH);
 
             InOrder orderVerifier = inOrder(azureArtefactBlobService, publicationFileManagementService,
                                             artefactRepository, accountManagementService);
@@ -121,9 +120,9 @@ class PublicationRemovalServiceTest {
             when(artefactRepository.findArtefactByArtefactId(ARTEFACT_ID.toString()))
                 .thenReturn(Optional.of(artefactWithNoMatchLocationId));
 
-            publicationRemovalService.deleteArtefactById(ARTEFACT_ID.toString(), TEST_VALUE);
-            assertTrue(logCaptor.getInfoLogs().get(0).contains(String.format(DELETION_TRACK_LOG_MESSAGE, ARTEFACT_ID)),
-                       MESSAGES_MATCH);
+            publicationRemovalService.deleteArtefactById(ARTEFACT_ID.toString(), USER_ID);
+            assertTrue(logCaptor.getInfoLogs().get(0).contains(String.format(DELETION_TRACK_LOG_MESSAGE,
+                                                                             USER_ID, ARTEFACT_ID)), MESSAGES_MATCH);
 
             verify(artefactRepository).delete(artefactWithNoMatchLocationId);
             verify(azureArtefactBlobService).deleteBlob(PAYLOAD_STRIPPED);
@@ -139,9 +138,9 @@ class PublicationRemovalServiceTest {
             when(artefactRepository.findArtefactByArtefactId(ARTEFACT_ID.toString()))
                 .thenReturn(Optional.of(artefactWithIdAndPayloadUrl));
 
-            publicationRemovalService.deleteArtefactById(ARTEFACT_ID.toString(), TEST_VALUE);
-            assertTrue(logCaptor.getInfoLogs().get(0).contains(String.format(DELETION_TRACK_LOG_MESSAGE, ARTEFACT_ID)),
-                       MESSAGES_MATCH);
+            publicationRemovalService.deleteArtefactById(ARTEFACT_ID.toString(), USER_ID);
+            assertTrue(logCaptor.getInfoLogs().get(0).contains(String.format(DELETION_TRACK_LOG_MESSAGE,
+                                                                             USER_ID, ARTEFACT_ID)), MESSAGES_MATCH);
 
             InOrder orderVerifier = inOrder(azureArtefactBlobService, publicationFileManagementService,
                                             artefactRepository, accountManagementService);
@@ -160,9 +159,9 @@ class PublicationRemovalServiceTest {
             when(artefactRepository.findArtefactByArtefactId(ARTEFACT_ID.toString()))
                 .thenReturn(Optional.of(artefactWithNoMatchLocationId));
 
-            publicationRemovalService.deleteArtefactById(ARTEFACT_ID.toString(), TEST_VALUE);
-            assertTrue(logCaptor.getInfoLogs().get(0).contains(String.format(DELETION_TRACK_LOG_MESSAGE, ARTEFACT_ID)),
-                       MESSAGES_MATCH);
+            publicationRemovalService.deleteArtefactById(ARTEFACT_ID.toString(), USER_ID);
+            assertTrue(logCaptor.getInfoLogs().get(0).contains(String.format(DELETION_TRACK_LOG_MESSAGE,
+                                                                             USER_ID, ARTEFACT_ID)), MESSAGES_MATCH);
 
             verify(artefactRepository).delete(artefactWithNoMatchLocationId);
             verify(azureArtefactBlobService).deleteBlob(PAYLOAD_STRIPPED);
@@ -174,7 +173,7 @@ class PublicationRemovalServiceTest {
     @Test
     void testDeleteArtefactByIdThrows() {
         ArtefactNotFoundException ex = assertThrows(ArtefactNotFoundException.class, () ->
-            publicationRemovalService.deleteArtefactById(TEST_VALUE, TEST_VALUE),
+            publicationRemovalService.deleteArtefactById(TEST_VALUE, USER_ID),
             "ArtefactNotFoundException should be thrown");
 
         assertEquals("No artefact found with the ID: " + TEST_VALUE, ex.getMessage(),
@@ -274,7 +273,7 @@ class PublicationRemovalServiceTest {
         when(artefactRepository.findArtefactByArtefactId(ARTEFACT_ID.toString()))
             .thenReturn(Optional.of(artefactWithIdAndPayloadUrl));
 
-        publicationRemovalService.archiveArtefactById(ARTEFACT_ID.toString(), UUID.randomUUID().toString());
+        publicationRemovalService.archiveArtefactById(ARTEFACT_ID.toString(), USER_ID);
 
         verify(artefactRepository).archiveArtefact(ARTEFACT_ID.toString());
         verify(azureArtefactBlobService).deleteBlob(PAYLOAD_STRIPPED);
@@ -288,7 +287,7 @@ class PublicationRemovalServiceTest {
         when(artefactRepository.findArtefactByArtefactId(ARTEFACT_ID.toString()))
             .thenReturn(Optional.of(artefactWithNoMatchLocationId));
 
-        publicationRemovalService.archiveArtefactById(ARTEFACT_ID.toString(), UUID.randomUUID().toString());
+        publicationRemovalService.archiveArtefactById(ARTEFACT_ID.toString(), USER_ID);
 
         verify(artefactRepository).archiveArtefact(ARTEFACT_ID.toString());
         verify(azureArtefactBlobService).deleteBlob(PAYLOAD_STRIPPED);
@@ -301,9 +300,8 @@ class PublicationRemovalServiceTest {
         String artefactId = UUID.randomUUID().toString();
         when(artefactRepository.findArtefactByArtefactId(artefactId)).thenReturn(Optional.empty());
 
-        String randomUuID = UUID.randomUUID().toString();
         assertThrows(NotFoundException.class, () -> {
-            publicationRemovalService.archiveArtefactById(artefactId, randomUuID);
+            publicationRemovalService.archiveArtefactById(artefactId, USER_ID);
         }, "Attempting to archive an artefact that does not exist should throw an exception");
     }
 

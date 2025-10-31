@@ -35,7 +35,7 @@ class AccountManagementServiceTest {
     private static final String TRIGGER_RECEIVED = "Trigger has been received";
     private static final String PI_USER_EMAIL = "test_user@justice.gov.uk";
     private static final String PI_USER_RESPONSE = "{\"email\":\"test_user@justice.gov.uk\"}";
-    private static final String REQUESTER_ID = UUID.randomUUID().toString();
+    private static final UUID REQUESTER_ID = UUID.randomUUID();
 
     private final LogCaptor logCaptor = LogCaptor.forClass(AccountManagementService.class);
 
@@ -82,7 +82,7 @@ class AccountManagementServiceTest {
                                                   .setHeader("content-type", "application/json")
                                                   .setBody(PI_USER_RESPONSE));
 
-        PiUser result = accountManagementService.getUserById(UUID.randomUUID().toString());
+        PiUser result = accountManagementService.getUserById(REQUESTER_ID);
         assertEquals(PI_USER_EMAIL, result.getEmail(),
                      "User information has not been returned from the server");
     }
@@ -91,7 +91,7 @@ class AccountManagementServiceTest {
     void testGetUserInfoError() {
         mockAccountManagementEndpoint.enqueue(new MockResponse().setResponseCode(BAD_REQUEST.value()));
 
-        PiUser result = accountManagementService.getUserById(UUID.randomUUID().toString());
+        PiUser result = accountManagementService.getUserById(REQUESTER_ID);
         assertNull(result.getEmail(), "User information been returned from the server");
     }
 

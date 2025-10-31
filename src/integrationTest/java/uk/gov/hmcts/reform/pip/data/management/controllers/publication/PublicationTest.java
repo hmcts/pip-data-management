@@ -78,7 +78,6 @@ class PublicationTest extends PublicationIntegrationTestBase {
     private static final String ARCHIVE_EXPIRED_ARTEFACTS_URL = PUBLICATION_URL + "/expired";
     private static final ArtefactType ARTEFACT_TYPE = ArtefactType.LIST;
     private static final Sensitivity SENSITIVITY = Sensitivity.PUBLIC;
-    private static final String USER_ID = UUID.randomUUID().toString();
     private static final String PROVENANCE = "MANUAL_UPLOAD";
     private static final String PROVENANCE_PDDA = "PDDA";
     private static final String SOURCE_ARTEFACT_ID = "sourceArtefactId";
@@ -97,7 +96,7 @@ class PublicationTest extends PublicationIntegrationTestBase {
     private static final String VALIDATION_EMPTY_RESPONSE = "Response should contain a Artefact";
     private static final String SHOULD_RETURN_EXPECTED_ARTEFACT = "Should return expected artefact";
     private static final String REQUESTER_ID_HEADER = "x-requester-id";
-    private static final String SYSTEM_ADMIN_ID = UUID.randomUUID().toString();
+    private static final UUID SYSTEM_ADMIN_ID = UUID.randomUUID();
 
     private static String payload = "payload";
     private static MockMultipartFile file;
@@ -112,7 +111,7 @@ class PublicationTest extends PublicationIntegrationTestBase {
     @BeforeAll
     void setup() throws Exception {
         piUser = new PiUser();
-        piUser.setUserId(SYSTEM_ADMIN_ID);
+        piUser.setUserId(SYSTEM_ADMIN_ID.toString());
         piUser.setEmail("test@justice.gov.uk");
         piUser.setRoles(SYSTEM_ADMIN);
 
@@ -183,7 +182,7 @@ class PublicationTest extends PublicationIntegrationTestBase {
 
         response = mockMvc.perform(MockMvcRequestBuilders
                                        .get(PUBLICATION_URL + "/" + artefact.getArtefactId() + FILE_URL)
-                                       .header(REQUESTER_ID_HEADER, USER_ID))
+                                       .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID))
             .andExpect(status().isOk()).andReturn();
 
         assertNotNull(response.getResponse().getContentAsString(), VALIDATION_EMPTY_RESPONSE);
@@ -353,7 +352,7 @@ class PublicationTest extends PublicationIntegrationTestBase {
     void retrieveFileOfAnArtefactWhereNotFound() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders
                             .get("/publication/7d734e8d-ba1d-4730-bd8b-09a970be00cc/file")
-                            .header(USER_ID_HEADER, USER_ID))
+                            .header(USER_ID_HEADER, SYSTEM_ADMIN_ID))
             .andExpect(status().isNotFound()).andReturn();
     }
 
@@ -516,7 +515,7 @@ class PublicationTest extends PublicationIntegrationTestBase {
     @DisplayName("Payload endpoint should not return the payload when user is not authorised")
     void retrievePayloadOfAnArtefactWhereUserNotAuthorized() throws Exception {
         when(accountManagementService.getUserById(any())).thenReturn(piUser);
-        when(accountManagementService.getIsAuthorised(UUID.fromString(USER_ID), LIST_TYPE, Sensitivity.CLASSIFIED))
+        when(accountManagementService.getIsAuthorised(SYSTEM_ADMIN_ID, LIST_TYPE, Sensitivity.CLASSIFIED))
             .thenReturn(false);
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
@@ -1017,7 +1016,7 @@ class PublicationTest extends PublicationIntegrationTestBase {
 
         MockHttpServletRequestBuilder deleteRequest = MockMvcRequestBuilders
             .delete(PUBLICATION_URL + "/" + artefactToDelete.getArtefactId())
-            .header(REQUESTER_ID_HEADER, EMAIL);
+            .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID);
 
         MvcResult deleteResponse = mockMvc.perform(deleteRequest).andExpect(status().isOk()).andReturn();
 
@@ -1032,7 +1031,7 @@ class PublicationTest extends PublicationIntegrationTestBase {
 
         MockHttpServletRequestBuilder deleteRequest = MockMvcRequestBuilders
             .delete(PUBLICATION_URL + "/" + invalidId)
-            .header(REQUESTER_ID_HEADER, EMAIL);
+            .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID);
 
         MvcResult deleteResponse = mockMvc.perform(deleteRequest).andExpect(status().isNotFound()).andReturn();
 
@@ -1172,10 +1171,11 @@ class PublicationTest extends PublicationIntegrationTestBase {
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     void testDeleteArtefactsByLocation() throws Exception {
         PiUser piUser = new PiUser();
-        piUser.setUserId(USER_ID);
+        piUser.setUserId(SYSTEM_ADMIN_ID.toString());
+        piUser.setRoles(SYSTEM_ADMIN);
         piUser.setEmail(EMAIL);
 
-        when(accountManagementService.getUserById(USER_ID)).thenReturn(piUser);
+        when(accountManagementService.getUserById(SYSTEM_ADMIN_ID)).thenReturn(piUser);
         when(accountManagementService.getAllAccounts(anyString(), eq(SYSTEM_ADMIN.toString()), eq(SYSTEM_ADMIN_ID)))
             .thenReturn(List.of(EMAIL));
 
