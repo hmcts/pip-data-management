@@ -360,17 +360,12 @@
                                               ],
                                               "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                             },
-                                            "reportingRestrictionDetail": {
+                                            "reportingRestrictions": {
                                               "title": "Reporting Restrictions Detail",
                                               "description": "The detail / wording of any reporting restrictions attached to the case",
-                                              "type": "array",
-                                              "items": {
-                                                "type": "string",
-                                                "default": "",
-                                                "examples": [
-                                                  "This is a reporting restrictions detail"
-                                                ],
-                                                "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+                                              "type": "string",
+                                              "examples": "This is a reporting restrictions detail",
+                                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                               }
                                             }
                                           }

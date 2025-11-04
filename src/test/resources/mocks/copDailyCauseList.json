@@ -51,10 +51,7 @@
                             "caseName": "ThisIsACaseName",
                             "caseType": "This is a case type",
                             "caseSequenceIndicator": "1 of 2",
-                            "reportingRestrictionDetail": [
-                              "Reporting restriction 1",
-                              "Reporting restriction 2"
-                            ]
+                            "reportingRestrictions": "Reporting restriction 1, Reporting restriction 2"
                           }
                         ],
                         "hearingType": "Criminal"
