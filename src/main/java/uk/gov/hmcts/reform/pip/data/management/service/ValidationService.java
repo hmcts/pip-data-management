@@ -4,9 +4,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microsoft.applicationinsights.TelemetryClient;
 import com.microsoft.applicationinsights.telemetry.SeverityLevel;
-import com.networknt.schema.Schema;
-import com.networknt.schema.SchemaRegistry;
-import com.networknt.schema.SpecificationVersion;
+import com.networknt.schema.JsonSchema;
+import com.networknt.schema.JsonSchemaFactory;
+import com.networknt.schema.SpecVersion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -40,20 +40,20 @@ import java.util.regex.Pattern;
 @Service
 public class ValidationService {
 
-    private final Schema masterSchema;
+    private final JsonSchema masterSchema;
 
     private final TelemetryClient telemetry;
 
-    Map<ListType, Schema> validationSchemas = new ConcurrentHashMap<>();
+    Map<ListType, JsonSchema> validationSchemas = new ConcurrentHashMap<>();
 
     @Autowired
     public ValidationService(ValidationConfiguration validationConfiguration, TelemetryClient telemetry) {
-        SchemaRegistry schemaFactory = SchemaRegistry.withDefaultDialect(SpecificationVersion.DRAFT_7);
+        JsonSchemaFactory schemaFactory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V7);
 
         try (InputStream masterFile = this.getClass().getClassLoader()
             .getResourceAsStream(validationConfiguration.getMasterSchema())) {
             masterSchema = schemaFactory.getSchema(masterFile);
-        } catch (IOException | RuntimeException exception) {
+        } catch (Exception exception) {
             throw new PayloadValidationException(String.join(exception.getMessage()));
         }
 
@@ -65,7 +65,7 @@ public class ValidationService {
                     ListType.valueOf(key),
                     schemaFactory.getSchema(schemaFile)
                 );
-            } catch (IOException | RuntimeException exception) {
+            } catch (Exception exception) {
                 throw new PayloadValidationException(String.join(exception.getMessage()));
             }
         });

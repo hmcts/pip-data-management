@@ -209,12 +209,13 @@ dependencies {
   implementation "org.apache.logging.log4j:log4j-to-slf4j:${log4JVersion}"
   implementation 'org.postgresql:postgresql:42.7.8'
   implementation 'com.github.hmcts:pip-data-models:2.3.27'
-  implementation 'com.networknt:json-schema-validator:2.0.0'
+  implementation 'com.networknt:json-schema-validator:1.5.8'
   implementation 'com.google.guava:guava:33.5.0-jre'
   implementation 'org.apache.poi:poi-ooxml:5.4.1'
   implementation 'org.apache.commons:commons-lang3:3.19.0'
   implementation 'com.openhtmltopdf:openhtmltopdf-pdfbox:1.0.10'
   implementation 'com.openhtmltopdf:openhtmltopdf-slf4j:1.0.10'
+  implementation 'net.logstash.logback:logstash-logback-encoder:9.0'
 
   implementation 'org.springframework.boot:spring-boot-starter-validation'
   implementation 'org.springframework.boot:spring-boot-starter-jdbc'
