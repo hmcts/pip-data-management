@@ -12,7 +12,6 @@ public final class JsonHelper {
         throw new UnsupportedOperationException();
     }
 
-    @SuppressWarnings("PMD.AvoidCatchingNPE")
     public static JsonNode safeRemoveNode(String jsonPath, JsonNode node) {
         String[] stringArray = jsonPath.split("\\.");
         JsonNode outputNode = node;
