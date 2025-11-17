@@ -342,7 +342,7 @@
                                             },
                                             "caseName": {
                                               "title": "Case Name",
-                                              "description": "COP will be using both this for their lists",
+                                              "description": "COP will be using this for their lists",
                                               "type": "string",
                                               "default": "",
                                               "examples": [
