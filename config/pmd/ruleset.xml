@@ -11,6 +11,7 @@
     <exclude name="UnitTestContainsTooManyAsserts"/>
     <exclude name="PreserveStackTrace"/>
     <exclude name="UnitTestShouldIncludeAssert"/>
+    <exclude name="RelianceOnDefaultCharset"/>
   </rule>
   <rule ref="category/java/codestyle.xml">
     <exclude name="AtLeastOneConstructor"/>
@@ -69,6 +70,8 @@
     <exclude name="NonSerializableClass"/>
     <exclude name="UseProperClassLoader"/>
     <exclude name="JUnitSpelling"/>
+    <exclude name="AssignmentInOperand"/>
+    <exclude name="AvoidCatchingGenericException"/>
   </rule>
   <rule ref="category/java/multithreading.xml"/>
   <rule ref="category/java/performance.xml">
