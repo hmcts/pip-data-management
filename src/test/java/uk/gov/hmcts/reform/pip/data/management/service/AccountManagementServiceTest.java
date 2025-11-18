@@ -35,6 +35,7 @@ class AccountManagementServiceTest {
     private static final String TRIGGER_RECEIVED = "Trigger has been received";
     private static final String PI_USER_EMAIL = "test_user@justice.gov.uk";
     private static final String PI_USER_RESPONSE = "{\"email\":\"test_user@justice.gov.uk\"}";
+    private static final UUID REQUESTER_ID = UUID.randomUUID();
 
     private final LogCaptor logCaptor = LogCaptor.forClass(AccountManagementService.class);
 
@@ -81,7 +82,7 @@ class AccountManagementServiceTest {
                                                   .setHeader("content-type", "application/json")
                                                   .setBody(PI_USER_RESPONSE));
 
-        PiUser result = accountManagementService.getUserById(UUID.randomUUID().toString());
+        PiUser result = accountManagementService.getUserById(REQUESTER_ID);
         assertEquals(PI_USER_EMAIL, result.getEmail(),
                      "User information has not been returned from the server");
     }
@@ -90,7 +91,7 @@ class AccountManagementServiceTest {
     void testGetUserInfoError() {
         mockAccountManagementEndpoint.enqueue(new MockResponse().setResponseCode(BAD_REQUEST.value()));
 
-        PiUser result = accountManagementService.getUserById(UUID.randomUUID().toString());
+        PiUser result = accountManagementService.getUserById(REQUESTER_ID);
         assertNull(result.getEmail(), "User information been returned from the server");
     }
 
@@ -100,7 +101,7 @@ class AccountManagementServiceTest {
             "{\"content\":[{\"email\":\"test_email_account_pip@hmcts.net\",\"roles\":\"SYSTEM_ADMIN\"}]}"
         ));
 
-        List<String> result = accountManagementService.getAllAccounts("prov", "role");
+        List<String> result = accountManagementService.getAllAccounts("prov", "role", REQUESTER_ID);
         assertFalse(result.isEmpty(), "System admin users have not been returned from the server");
     }
 
@@ -108,7 +109,7 @@ class AccountManagementServiceTest {
     void testGetAllAccountsError() throws JsonProcessingException {
         mockAccountManagementEndpoint.enqueue(new MockResponse().setResponseCode(BAD_REQUEST.value()));
 
-        List<String> result = accountManagementService.getAllAccounts("prov", "role");
+        List<String> result = accountManagementService.getAllAccounts("prov", "role", REQUESTER_ID);
         assertTrue(result.get(0).contains("Failed to find all the accounts"),
                    "System admin users have not been returned from the server");
     }

@@ -111,8 +111,7 @@ class LocationControllerTest {
     }
 
     @Test
-    @Deprecated
-    void testGetLocationByNameReturnsLocation() {
+    void testGetLocationByNameV2ReturnsLocation() {
         when(locationService.getLocationByName(secondLocation.getName(), ENGLISH_LANGUAGE))
                 .thenReturn(secondLocation);
 
@@ -124,36 +123,11 @@ class LocationControllerTest {
     }
 
     @Test
-    @Deprecated
-    void testGetLocationByWelshNameReturnsLocation() {
-        when(locationService.getLocationByName(secondLocation.getWelshName(), WELSH_LANGUAGE))
-            .thenReturn(secondLocation);
-
-        ResponseEntity<Location> response = locationController.getLocationByName(secondLocation.getWelshName(),
-                WELSH_LANGUAGE);
-
-        assertEquals(HttpStatus.OK, response.getStatusCode(), LOCATION_NAME_SEARCH_STATUS_MESSAGE);
-        assertEquals(secondLocation, response.getBody(), LOCATION_NAME_SEARCH_BODY_MESSAGE);
-    }
-
-    @Test
-    void testGetLocationByNameV2ReturnsLocation() {
-        when(locationService.getLocationByName(secondLocation.getName(), ENGLISH_LANGUAGE))
-                .thenReturn(secondLocation);
-
-        ResponseEntity<Location> response = locationController.getLocationByNameV2(secondLocation.getName(),
-                ENGLISH_LANGUAGE);
-
-        assertEquals(HttpStatus.OK, response.getStatusCode(), LOCATION_NAME_SEARCH_STATUS_MESSAGE);
-        assertEquals(secondLocation, response.getBody(), LOCATION_NAME_SEARCH_BODY_MESSAGE);
-    }
-
-    @Test
     void testGetLocationByWelshNameV2ReturnsLocation() {
         when(locationService.getLocationByName(secondLocation.getWelshName(), WELSH_LANGUAGE))
                 .thenReturn(secondLocation);
 
-        ResponseEntity<Location> response = locationController.getLocationByNameV2(secondLocation.getWelshName(),
+        ResponseEntity<Location> response = locationController.getLocationByName(secondLocation.getWelshName(),
                 WELSH_LANGUAGE);
 
         assertEquals(HttpStatus.OK, response.getStatusCode(), LOCATION_NAME_SEARCH_STATUS_MESSAGE);
@@ -224,7 +198,7 @@ class LocationControllerTest {
 
     @Test
     void testUploadLocationsReturnsNewLocations() throws IOException {
-
+        UUID requesterId = UUID.randomUUID();
         try (InputStream inputStream = this.getClass().getClassLoader()
             .getResourceAsStream("csv/ValidCsv.csv")) {
 
@@ -234,8 +208,8 @@ class LocationControllerTest {
 
             when(locationService.uploadLocations(multipartFile)).thenReturn(List.of(firstLocation, secondLocation));
 
-            List<Location> returnedLocations = new ArrayList<>(locationController.uploadLocations(multipartFile)
-                                                                   .getBody());
+            List<Location> returnedLocations = new ArrayList<>(
+                locationController.uploadLocations(multipartFile, requesterId).getBody());
 
             assertEquals(2, returnedLocations.size(), "Unexpected number of location have been returned");
             assertTrue(returnedLocations.contains(firstLocation), FIRST_LOCATION_NOT_FOUND);
@@ -246,6 +220,7 @@ class LocationControllerTest {
 
     @Test
     void testUploadLocationsReturnsOk() throws IOException {
+        UUID requesterId = UUID.randomUUID();
 
         try (InputStream inputStream = this.getClass().getClassLoader()
             .getResourceAsStream("csv/ValidCsv.csv")) {
@@ -256,7 +231,7 @@ class LocationControllerTest {
 
             when(locationService.uploadLocations(multipartFile)).thenReturn(List.of(firstLocation, secondLocation));
 
-            assertEquals(HttpStatus.OK, locationController.uploadLocations(multipartFile).getStatusCode(),
+            assertEquals(HttpStatus.OK, locationController.uploadLocations(multipartFile, requesterId).getStatusCode(),
                          "Upload locations endpoint has not returned OK");
         }
 
@@ -265,7 +240,7 @@ class LocationControllerTest {
     @Test
     void testDeleteLocationReturnsOk() throws JsonProcessingException {
         int locationId = 1;
-        String requesterId = UUID.randomUUID().toString();
+        UUID requesterId = UUID.randomUUID();
         LocationDeletion locationDeletion = new LocationDeletion();
         when(locationService.deleteLocation(locationId, requesterId)).thenReturn(locationDeletion);
 
@@ -278,7 +253,7 @@ class LocationControllerTest {
         byte[] testByte = new byte[10];
         when(locationService.downloadLocations()).thenReturn(testByte);
 
-        ResponseEntity<byte[]> controllerResponse = locationController.downloadLocations();
+        ResponseEntity<byte[]> controllerResponse = locationController.downloadLocations(UUID.randomUUID());
         assertEquals(HttpStatus.OK, controllerResponse.getStatusCode(), "Status did not match expected");
         assertEquals(testByte, controllerResponse.getBody(), "Body did not match expected");
     }

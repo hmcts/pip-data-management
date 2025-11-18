@@ -41,7 +41,7 @@ import static uk.gov.hmcts.reform.pip.data.management.helpers.ConstantsTestHelpe
 class PublicationLocationServiceTest {
     private static final Integer LOCATION_ID = 1;
     private static final String LOCATION_NAME_PREFIX = "TEST_PIP_1234_";
-    private static final String USER_ID = UUID.randomUUID().toString();
+    private static final UUID USER_ID = UUID.randomUUID();
 
     private final Artefact artefact = ArtefactConstantTestHelper.buildArtefact();
 

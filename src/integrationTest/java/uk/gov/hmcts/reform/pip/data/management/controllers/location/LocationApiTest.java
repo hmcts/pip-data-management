@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.pip.data.management.controllers.location;
 
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -47,11 +48,11 @@ import static uk.gov.hmcts.reform.pip.model.account.Roles.SYSTEM_ADMIN;
 @ActiveProfiles("integration")
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
 @DirtiesContext(classMode = AFTER_EACH_TEST_METHOD)
+@WithMockUser(username = "admin", authorities = {"APPROLE_api.request.admin"})
 class LocationApiTest extends LocationIntegrationTestBase {
     private static final String ROOT_URL = "/locations";
     private static final String GET_LOCATION_BY_ID_ENDPOINT = ROOT_URL + "/";
-    private static final String GET_LOCATION_BY_NAME_ENDPOINT = ROOT_URL + "/name/%s/language/%s";
-    private static final String GET_LOCATION_BY_NAME_V2_ENDPOINT = ROOT_URL + "/name";
+    private static final String GET_LOCATION_BY_NAME_ENDPOINT = ROOT_URL + "/name";
     private static final String DOWNLOAD_LOCATIONS_ENDPOINT = ROOT_URL + "/download/csv";
     private static final String UPLOAD_API = ROOT_URL + "/upload";
     private static final String LOCATIONS_CSV = "location/ValidCsv.csv";
@@ -75,14 +76,23 @@ class LocationApiTest extends LocationIntegrationTestBase {
         "Unexpected number of locations has been returned";
     private static final String VALIDATION_LOCATION_NAME_NOT_AS_EXPECTED = "Location name is not as expected";
 
-    private static final String USERNAME = "admin";
-    private static final String VALID_ROLE = "APPROLE_api.request.admin";
     private static final String LOCATION_LIST = "locationList";
-    private static final String USER_ID_HEADER = "x-user-id";
     private static final String EMAIL = "test@justice.gov.uk";
 
+    public static final String REQUESTER_ID_HEADER = "x-requester-id";
+    private static final UUID SYSTEM_ADMIN_ID = UUID.randomUUID();
+
+    private static PiUser piUser;
+
+    @BeforeAll
+    protected static void setup() {
+        piUser = new PiUser();
+        piUser.setUserId(SYSTEM_ADMIN_ID.toString());
+        piUser.setEmail("test@justice.gov.uk");
+        piUser.setRoles(SYSTEM_ADMIN);
+    }
+
     @Test
-    @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})
     void testGetAllLocationsReturnsCorrectLocations() throws Exception {
         List<Location> locations = createLocations(LOCATIONS_CSV);
 
@@ -106,7 +116,6 @@ class LocationApiTest extends LocationIntegrationTestBase {
     }
 
     @Test
-    @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})
     void testGetLocationByIdReturnsSuccess() throws Exception {
         List<Location> locations = createLocations(LOCATIONS_CSV);
 
@@ -139,88 +148,13 @@ class LocationApiTest extends LocationIntegrationTestBase {
     }
 
     @Test
-    @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})
-    @Deprecated
     void testGetLocationByNameReturnsSuccess() throws Exception {
         List<Location> locations = createLocations(LOCATIONS_CSV);
 
         Location location = locations.get(0);
 
-        MvcResult mvcResult = mockMvc.perform(get(String.format(GET_LOCATION_BY_NAME_ENDPOINT,
-                                                                location.getName(), ENGLISH_LANGUAGE_PARAM_VALUE
-            )))
-            .andExpect(status().isOk())
-            .andReturn();
-
-        Location returnedLocation = OBJECT_MAPPER.readValue(
-            mvcResult.getResponse().getContentAsString(),
-            Location.class
-        );
-
-        assertEquals(location, returnedLocation, VALIDATION_UNKNOWN_LOCATION);
-    }
-
-    @Test
-    @Deprecated
-    void testGetLocationByNameReturnsNotFound() throws Exception {
-        MvcResult mvcResult = mockMvc.perform(get(String.format(GET_LOCATION_BY_NAME_ENDPOINT,
-                                                                INVALID_LOCATION_NAME, ENGLISH_LANGUAGE_PARAM_VALUE
-            )))
-            .andExpect(status().isNotFound())
-            .andReturn();
-
-        ExceptionResponse exceptionResponse =
-            OBJECT_MAPPER.readValue(mvcResult.getResponse().getContentAsString(), ExceptionResponse.class);
-
-        assertEquals(NO_LOCATION_FOUND_ERROR, exceptionResponse.getMessage(), LOCATION_NAME_SEARCH_MESSAGE);
-    }
-
-    @Test
-    @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})
-    @Deprecated
-    void testGetWelshLocationByNameReturnsSuccess() throws Exception {
-        List<Location> locations = createLocations(LOCATIONS_CSV);
-
-        Location location = locations.get(0);
-
-        MvcResult mvcResult = mockMvc.perform(get(String.format(GET_LOCATION_BY_NAME_ENDPOINT,
-                                                                location.getWelshName(), WELSH_LANGUAGE_PARAM_VALUE
-            )))
-            .andExpect(status().isOk())
-            .andReturn();
-
-        Location returnedLocation = OBJECT_MAPPER.readValue(
-            mvcResult.getResponse().getContentAsString(),
-            Location.class
-        );
-
-        assertEquals(location, returnedLocation, VALIDATION_UNKNOWN_LOCATION);
-    }
-
-    @Test
-    @Deprecated
-    void testGetWelshLocationByNameReturnsNotFound() throws Exception {
-        MvcResult mvcResult = mockMvc.perform(get(String.format(GET_LOCATION_BY_NAME_ENDPOINT,
-                                                                INVALID_LOCATION_NAME, WELSH_LANGUAGE_PARAM_VALUE
-            )))
-            .andExpect(status().isNotFound())
-            .andReturn();
-
-        ExceptionResponse exceptionResponse =
-            OBJECT_MAPPER.readValue(mvcResult.getResponse().getContentAsString(), ExceptionResponse.class);
-
-        assertEquals(NO_LOCATION_FOUND_ERROR, exceptionResponse.getMessage(), LOCATION_NAME_SEARCH_MESSAGE);
-    }
-
-    @Test
-    @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})
-    void testGetLocationByNameV2ReturnsSuccess() throws Exception {
-        List<Location> locations = createLocations(LOCATIONS_CSV);
-
-        Location location = locations.get(0);
-
         MvcResult mvcResult = mockMvc.perform(
-                get(GET_LOCATION_BY_NAME_V2_ENDPOINT)
+                get(GET_LOCATION_BY_NAME_ENDPOINT)
                     .param(LOCATION_NAME_PARAM, location.getName())
                     .param(LANGUAGE_PARAM, ENGLISH_LANGUAGE_PARAM_VALUE))
             .andExpect(status().isOk())
@@ -235,10 +169,10 @@ class LocationApiTest extends LocationIntegrationTestBase {
     }
 
     @Test
-    void testGetLocationByNameV2ReturnsNotFound() throws Exception {
+    void testGetLocationByNameReturnsNotFound() throws Exception {
 
         MvcResult mvcResult = mockMvc.perform(
-            get(GET_LOCATION_BY_NAME_V2_ENDPOINT)
+            get(GET_LOCATION_BY_NAME_ENDPOINT)
                 .param(LOCATION_NAME_PARAM, INVALID_LOCATION_NAME)
                 .param(LANGUAGE_PARAM, ENGLISH_LANGUAGE_PARAM_VALUE))
             .andExpect(status().isNotFound())
@@ -251,14 +185,13 @@ class LocationApiTest extends LocationIntegrationTestBase {
     }
 
     @Test
-    @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})
-    void testGetWelshLocationByNameV2ReturnsSuccess() throws Exception {
+    void testGetWelshLocationByNameReturnsSuccess() throws Exception {
         List<Location> locations = createLocations(LOCATIONS_CSV);
 
         Location location = locations.get(0);
 
         MvcResult mvcResult = mockMvc.perform(
-                get(GET_LOCATION_BY_NAME_V2_ENDPOINT)
+                get(GET_LOCATION_BY_NAME_ENDPOINT)
                     .param(LOCATION_NAME_PARAM, location.getWelshName())
                     .param(LANGUAGE_PARAM, WELSH_LANGUAGE_PARAM_VALUE))
             .andExpect(status().isOk())
@@ -273,9 +206,9 @@ class LocationApiTest extends LocationIntegrationTestBase {
     }
 
     @Test
-    void testGetWelshLocationByNameV2ReturnsNotFound() throws Exception {
+    void testGetWelshLocationByNameReturnsNotFound() throws Exception {
         MvcResult mvcResult = mockMvc.perform(
-                get(GET_LOCATION_BY_NAME_V2_ENDPOINT)
+                get(GET_LOCATION_BY_NAME_ENDPOINT)
                     .param(LOCATION_NAME_PARAM, INVALID_LOCATION_NAME)
                     .param(LANGUAGE_PARAM, WELSH_LANGUAGE_PARAM_VALUE))
             .andExpect(status().isNotFound())
@@ -288,7 +221,6 @@ class LocationApiTest extends LocationIntegrationTestBase {
     }
 
     @Test
-    @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})
     void testCreateLocationsCoreData() throws Exception {
         List<Location> createdLocations = createLocations(LOCATIONS_CSV);
 
@@ -312,7 +244,6 @@ class LocationApiTest extends LocationIntegrationTestBase {
     }
 
     @Test
-    @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})
     void testCreateLocationsReferenceData() throws Exception {
         List<Location> createdLocations = createLocations(LOCATIONS_CSV);
 
@@ -346,7 +277,6 @@ class LocationApiTest extends LocationIntegrationTestBase {
     }
 
     @Test
-    @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})
     void testCreateLocationsDataWithSecondChange() throws Exception {
         createLocations(LOCATIONS_CSV);
         createLocations(UPDATED_CSV);
@@ -396,7 +326,6 @@ class LocationApiTest extends LocationIntegrationTestBase {
     }
 
     @Test
-    @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})
     void testCreateLocationsWithCsvContainingExistingLocationName() throws Exception {
         List<Location> createdLocations = createLocations(LOCATIONS_CSV);
         assertEquals(4, createdLocations.size(), VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
@@ -405,7 +334,8 @@ class LocationApiTest extends LocationIntegrationTestBase {
             .getResourceAsStream(CSV_WITH_EXISTING_LOCATION_NAME)) {
             MockMultipartFile csvFile = new MockMultipartFile(LOCATION_LIST, csvInputStream);
 
-            MvcResult mvcResult = mockMvc.perform(multipart(UPLOAD_API).file(csvFile))
+            MvcResult mvcResult = mockMvc.perform(multipart(UPLOAD_API).file(csvFile)
+                                                      .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID))
                 .andExpect(status().isBadRequest()).andReturn();
 
             UiExceptionResponse exceptionResponse = OBJECT_MAPPER.readValue(
@@ -427,13 +357,14 @@ class LocationApiTest extends LocationIntegrationTestBase {
     }
 
     @Test
-    @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})
     void testCreateLocationsWithCsvContainingDuplicatedLocationName() throws Exception {
+        when(accountManagementService.getUserById(any())).thenReturn(piUser);
         try (InputStream csvInputStream = this.getClass().getClassLoader()
                 .getResourceAsStream(CSV_WITH_DUPLICATED_LOCATION_NAME)) {
             MockMultipartFile csvFile = new MockMultipartFile(LOCATION_LIST, csvInputStream);
 
-            MvcResult mvcResult = mockMvc.perform(multipart(UPLOAD_API).file(csvFile))
+            MvcResult mvcResult = mockMvc.perform(multipart(UPLOAD_API).file(csvFile)
+                                                      .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID))
                     .andExpect(status().isBadRequest()).andReturn();
 
             UiExceptionResponse exceptionResponse = OBJECT_MAPPER.readValue(
@@ -447,7 +378,6 @@ class LocationApiTest extends LocationIntegrationTestBase {
     }
 
     @Test
-    @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})
     void testInvalidCsv() throws Exception {
         try (InputStream csvInputStream = this.getClass().getClassLoader()
             .getResourceAsStream("location/InvalidCsv.txt")) {
@@ -460,14 +390,15 @@ class LocationApiTest extends LocationIntegrationTestBase {
     }
 
     @Test
-    @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})
     void testUploadLocations() throws Exception {
+        when(accountManagementService.getUserById(any())).thenReturn(piUser);
         try (InputStream csvInputStream = this.getClass().getClassLoader()
             .getResourceAsStream(LOCATIONS_CSV)) {
             MockMultipartFile csvFile
                 = new MockMultipartFile(LOCATION_LIST, csvInputStream);
 
-            MvcResult mvcResult = mockMvc.perform(multipart(UPLOAD_API).file(csvFile))
+            MvcResult mvcResult = mockMvc.perform(multipart(UPLOAD_API).file(csvFile)
+                                                      .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID))
                 .andExpect(status().isOk()).andReturn();
 
             List<String> inputCsv;
@@ -492,7 +423,6 @@ class LocationApiTest extends LocationIntegrationTestBase {
     }
 
     @Test
-    @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})
     void testUploadLocationsBadRequest() throws Exception {
         try (InputStream csvInputStream = this.getClass().getClassLoader()
             .getResourceAsStream(CSV_WITHOUT_LOCATION_TYPE)) {
@@ -505,26 +435,37 @@ class LocationApiTest extends LocationIntegrationTestBase {
     }
 
     @Test
+    @WithMockUser(username = "unauthorized_account", authorities = {"APPROLE_unknown.account"})
     void testUploadLocationsUnauthorised() throws Exception {
+        PiUser piUser = new PiUser();
+        piUser.setUserId(USER_ID);
+        piUser.setEmail(EMAIL);
+        piUser.setRoles(SYSTEM_ADMIN);
+
+        when(accountManagementService.getUserById(any())).thenReturn(piUser);
+        when(accountManagementService.getAllAccounts(anyString(), eq(SYSTEM_ADMIN.toString()), eq(SYSTEM_ADMIN_ID)))
+            .thenReturn(List.of(EMAIL));
+
         try (InputStream csvInputStream = this.getClass().getClassLoader()
             .getResourceAsStream(LOCATIONS_CSV)) {
             MockMultipartFile csvFile
                 = new MockMultipartFile(LOCATION_LIST, csvInputStream);
 
-            mockMvc.perform(multipart(UPLOAD_API).file(csvFile))
-                .andExpect(status().isUnauthorized());
+            mockMvc.perform(multipart(UPLOAD_API).file(csvFile)
+                                .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID))
+                .andExpect(status().isForbidden());
         }
     }
 
     @Test
-    @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})
     void testDeleteLocation() throws Exception {
         PiUser piUser = new PiUser();
         piUser.setUserId(USER_ID);
         piUser.setEmail(EMAIL);
+        piUser.setRoles(SYSTEM_ADMIN);
 
-        when(accountManagementService.getUserById(USER_ID)).thenReturn(piUser);
-        when(accountManagementService.getAllAccounts(anyString(), eq(SYSTEM_ADMIN.toString())))
+        when(accountManagementService.getUserById(any())).thenReturn(piUser);
+        when(accountManagementService.getAllAccounts(anyString(), eq(SYSTEM_ADMIN.toString()), eq(SYSTEM_ADMIN_ID)))
             .thenReturn(List.of(EMAIL));
         when(accountManagementService.findSubscriptionsByLocationId(any()))
             .thenReturn(Collections.emptyList().toString());
@@ -533,7 +474,7 @@ class LocationApiTest extends LocationIntegrationTestBase {
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
             .delete(GET_LOCATION_BY_ID_ENDPOINT + createdLocations.get(0).getLocationId())
-            .header(USER_ID_HEADER, USER_ID);
+            .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID);
 
         mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isOk()).andReturn();
 
@@ -544,12 +485,11 @@ class LocationApiTest extends LocationIntegrationTestBase {
     }
 
     @Test
-    @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})
     void testDeleteLocationNotFound() throws Exception {
-
+        when(accountManagementService.getUserById(any())).thenReturn(piUser);
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
             .delete(GET_LOCATION_BY_ID_ENDPOINT + "1234")
-            .header(USER_ID_HEADER, USER_ID);
+            .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID);
 
         mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isNotFound()).andReturn();
     }
@@ -559,18 +499,18 @@ class LocationApiTest extends LocationIntegrationTestBase {
     void testDeleteLocationNotAuthorised() throws Exception {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
             .delete(GET_LOCATION_BY_ID_ENDPOINT + "1234")
-            .header(USER_ID_HEADER, USER_ID);
+            .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID);
 
         mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isForbidden()).andReturn();
     }
 
     @Test
-    @WithMockUser(username = USERNAME, authorities = {VALID_ROLE})
     void testDownloadLocations() throws Exception {
         List<Location> createdLocations = createLocations(LOCATIONS_CSV);
 
         MvcResult mvcResult = mockMvc.perform(
-                get(DOWNLOAD_LOCATIONS_ENDPOINT))
+                get(DOWNLOAD_LOCATIONS_ENDPOINT)
+                    .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID))
             .andExpect(status().isOk())
             .andReturn();
         String returnedLocations = mvcResult.getResponse().getContentAsString();
@@ -584,11 +524,21 @@ class LocationApiTest extends LocationIntegrationTestBase {
     }
 
     @Test
+    @WithMockUser(username = "unauthorized_account", authorities = {"APPROLE_unknown.account"})
     void testDownloadLocationsNotAuthorised() throws Exception {
+        PiUser piUser = new PiUser();
+        piUser.setUserId(USER_ID);
+        piUser.setEmail(EMAIL);
+        piUser.setRoles(SYSTEM_ADMIN);
+
+        when(accountManagementService.getUserById(any())).thenReturn(piUser);
+        when(accountManagementService.getAllAccounts(anyString(), eq(SYSTEM_ADMIN.toString()), eq(SYSTEM_ADMIN_ID)))
+            .thenReturn(List.of(EMAIL));
+
         mockMvc.perform(
-                get(DOWNLOAD_LOCATIONS_ENDPOINT))
-            .andExpect(status().isUnauthorized());
+                get(DOWNLOAD_LOCATIONS_ENDPOINT)
+                    .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID))
+            .andExpect(status().isForbidden());
     }
 }
-
 
