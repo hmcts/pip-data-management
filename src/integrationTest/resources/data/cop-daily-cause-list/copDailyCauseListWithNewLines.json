@@ -48,11 +48,10 @@
                         "case": [
                           {
                             "caseNumber": "1234\r\n1234",
-                            "caseSuppressionName": "ThisIsACaseSuppressionName\r\n",
+                            "caseName": "ThisIsACaseName\r\n",
+                            "caseType": "ThisIsACaseType\r\n",
                             "caseSequenceIndicator": "1 of \r\n2",
-                            "reportingRestrictionDetail": [
-                              "Reporting restriction\r\n 1"
-                            ]
+                            "reportingRestrictions": "Reporting\r\n restriction 1, Reporting \r\nrestriction 2"
                           }
                         ],
                         "hearingType": "Criminal\r\n"

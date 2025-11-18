@@ -36,7 +36,7 @@ public final class PublicationSummaryTestCases {
                 ListType.COP_DAILY_CAUSE_LIST,
                 "data/cop-daily-cause-list/copDailyCauseList.json",
                 List.of(CASE_REFERENCE_FIELD,
-                "Case details - ThisIsACaseSuppressionName",
+                "Case details - ThisIsACaseName",
                 "Hearing type - Criminal")
             ),
             PublicationSummaryTestInput.withoutExcel(

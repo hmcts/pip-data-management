@@ -53,7 +53,7 @@ class CopDailyCauseListSummaryDataTest {
         Map<String, String> summaryFields = summaryCases.get(0);
         softly.assertThat(summaryFields)
             .as(SUMMARY_FIELDS_MESSAGE)
-            .hasSize(3);
+            .hasSize(4);
 
         assertSummaryFieldKeys(softly, summaryFields);
         assertSummaryFieldValues(softly, summaryFields);
@@ -76,6 +76,10 @@ class CopDailyCauseListSummaryDataTest {
 
         softly.assertThat(keys.get(2))
             .as(SUMMARY_FIELD_KEY_MESSAGE)
+            .isEqualTo("Case type");
+
+        softly.assertThat(keys.get(3))
+            .as(SUMMARY_FIELD_KEY_MESSAGE)
             .isEqualTo("Hearing type");
     }
 
@@ -90,9 +94,13 @@ class CopDailyCauseListSummaryDataTest {
 
         softly.assertThat(values.get(1))
             .as(SUMMARY_FIELD_VALUE_MESSAGE)
-            .isEqualTo("ThisIsACaseSuppressionName");
+            .isEqualTo("ThisIsACaseName");
 
         softly.assertThat(values.get(2))
+            .as(SUMMARY_FIELD_VALUE_MESSAGE)
+            .isEqualTo("This is a case type");
+
+        softly.assertThat(values.get(3))
             .as(SUMMARY_FIELD_VALUE_MESSAGE)
             .isEqualTo("Criminal");
     }

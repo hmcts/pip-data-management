@@ -190,7 +190,7 @@
             "title": "Court House",
             "description": "The court house that owns the court rooms",
             "type": "object",
-            "required": ["courtHouseName", "courtHouseContact", "courtRoom"],
+            "required": ["courtHouseName", "courtRoom"],
             "properties": {
               "courtHouseName": {
                 "description": "Name of the court house",
@@ -340,9 +340,9 @@
                                               ],
                                               "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                             },
-                                            "caseSuppressionName": {
-                                              "title": "Case Suppression Name",
-                                              "description": "COP will be using both this and Case Name for their lists",
+                                            "caseName": {
+                                              "title": "Case Name",
+                                              "description": "COP will be using this for their lists",
                                               "type": "string",
                                               "default": "",
                                               "examples": [
@@ -350,17 +350,22 @@
                                               ],
                                               "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                             },
-                                            "reportingRestrictionDetail": {
+                                            "caseType": {
+                                              "title": "Case Type",
+                                              "description": "This will be type of the case.",
+                                              "type": "string",
+                                              "default": "",
+                                              "examples": [
+                                                "normal"
+                                              ],
+                                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+                                            },
+                                            "reportingRestrictions": {
                                               "title": "Reporting Restrictions Detail",
                                               "description": "The detail / wording of any reporting restrictions attached to the case",
-                                              "type": "array",
-                                              "items": {
-                                                "type": "string",
-                                                "default": "",
-                                                "examples": [
-                                                  "This is a reporting restrictions detail"
-                                                ],
-                                                "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+                                              "type": "string",
+                                              "examples": "This is a reporting restrictions detail",
+                                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                               }
                                             }
                                           }

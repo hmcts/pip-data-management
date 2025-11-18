@@ -123,7 +123,7 @@ class CopListHelperTest {
 
     @Test
     void testReportingRestriction() {
-        FamilyMixedListHelper.manipulatedListData(inputJson, Language.ENGLISH);
+        CopListHelper.manipulateCopListData(inputJson, Language.ENGLISH);
 
         assertThat(inputJson.get(COURT_LISTS).get(0)
                        .get(COURT_HOUSE)

@@ -687,11 +687,6 @@
                                                 }
                                               }
                                             },
-                                            "caseSuppressionName": {
-                                              "title": "Case Suppression Name",
-                                              "type": "string",
-                                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
-                                            },
                                             "hearingNumber": {
                                               "title": "Hearing number",
                                               "type": "string",

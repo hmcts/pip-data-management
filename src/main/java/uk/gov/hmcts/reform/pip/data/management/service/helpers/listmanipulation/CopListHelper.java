@@ -17,7 +17,7 @@ public final class CopListHelper {
     private static final String SESSION = "session";
     private static final String SITTINGS = "sittings";
     private static final String HEARING = "hearing";
-    private static final String REPORTING_RESTRICTION_DETAIL = "reportingRestrictionDetail";
+    private static final String REPORTING_RESTRICTIONS = "reportingRestrictions";
 
     private CopListHelper() {
     }
@@ -44,7 +44,10 @@ public final class CopListHelper {
                                 manipulateCaseInformation(hearingCase);
                                 ((ObjectNode) hearingCase).put(
                                     "formattedReportingRestriction",
-                                    GeneralHelper.formatNodeArray(hearingCase, REPORTING_RESTRICTION_DETAIL, ", ")
+                                    hearingCase.has(REPORTING_RESTRICTIONS)
+                                        && hearingCase.get(REPORTING_RESTRICTIONS) != null
+                                        ? hearingCase.get(REPORTING_RESTRICTIONS).asText()
+                                        : ""
                                 );
                             })
                         );

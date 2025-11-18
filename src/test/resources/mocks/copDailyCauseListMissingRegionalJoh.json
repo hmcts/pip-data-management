@@ -43,7 +43,7 @@
                         "case": [
                           {
                             "caseNumber": "12341234",
-                            "caseSuppressionName": "ThisIsACaseSuppressionName",
+                            "caseName": "ThisIsACaseName",
                             "caseSequenceIndicator": "1 of 2"
                           }
                         ],
@@ -73,7 +73,7 @@
                         "case": [
                           {
                             "caseNumber": "12341234",
-                            "caseSuppressionName": "ThisIsACaseSuppressionName",
+                            "caseName": "ThisIsACaseName",
                             "caseSequenceIndicator": "1 of 2"
                           }
                         ],
@@ -125,7 +125,7 @@
                         "case": [
                           {
                             "caseNumber": "12341234",
-                            "caseSuppressionName": "ThisIsACaseSuppressionName",
+                            "caseName": "ThisIsACaseName",
                             "caseSequenceIndicator": "1 of 2"
                           }
                         ],
@@ -159,7 +159,8 @@
                         "case": [
                           {
                             "caseNumber": "12341234",
-                            "caseSuppressionName": "ThisIsACaseSuppressionName",
+                            "caseName": "ThisIsACaseName",
+                            "caseType": "Case Type",
                             "caseSequenceIndicator": "1 of 2"
                           }
                         ],
