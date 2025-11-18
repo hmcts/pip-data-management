@@ -72,7 +72,6 @@ public final class GeneralHelper {
         return safeGetNode(jsonPath, node) == null ? "" : safeGetNode(jsonPath, node).asText();
     }
 
-    @SuppressWarnings("PMD.AvoidCatchingNPE")
     public static JsonNode safeGetNode(String jsonPath, JsonNode node) {
         String[] stringArray = jsonPath.split("\\.");
         JsonNode outputNode = node;

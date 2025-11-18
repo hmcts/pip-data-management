@@ -19,6 +19,8 @@ import uk.gov.hmcts.reform.pip.data.management.models.location.LocationMetadata;
 import uk.gov.hmcts.reform.pip.data.management.service.location.LocationMetadataService;
 import uk.gov.hmcts.reform.pip.model.authentication.roles.IsAdmin;
 
+import java.util.UUID;
+
 @RestController
 @Tag(name = "Data Management location metadata list API")
 @RequestMapping("/location-metadata")
@@ -52,7 +54,7 @@ public class LocationMetadataController {
     @SecurityRequirement(name = BEARER_AUTHENTICATION)
     @PreAuthorize("@authorisationService.userCanAddLocationMetadata(#requesterId)")
     public ResponseEntity<String> addLocationMetaData(
-        @RequestHeader(REQUESTER_ID_HEADER) String requesterId,
+        @RequestHeader(REQUESTER_ID_HEADER) UUID requesterId,
         @RequestBody LocationMetadata locationMetadata) {
         locationMetadataService.createLocationMetadata(locationMetadata, requesterId);
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -71,7 +73,7 @@ public class LocationMetadataController {
     @PreAuthorize("@authorisationService.userCanUpdateLocationMetadata(#requesterId)")
     public ResponseEntity<String> updateLocationMetaData(
         @PathVariable String id,
-        @RequestHeader(REQUESTER_ID_HEADER) String requesterId,
+        @RequestHeader(REQUESTER_ID_HEADER) UUID requesterId,
         @RequestBody LocationMetadata locationMetadata) {
         locationMetadataService.updateLocationMetadata(locationMetadata, id, requesterId);
         return ResponseEntity.status(HttpStatus.OK)
@@ -89,7 +91,7 @@ public class LocationMetadataController {
     @SecurityRequirement(name = BEARER_AUTHENTICATION)
     @PreAuthorize("@authorisationService.userCanDeleteLocationMetadata(#requesterId)")
     public ResponseEntity<String> deleteLocationMetaData(
-        @RequestHeader(REQUESTER_ID_HEADER) String requesterId,
+        @RequestHeader(REQUESTER_ID_HEADER) UUID requesterId,
         @PathVariable String id) {
         locationMetadataService.deleteById(id, requesterId);
         return ResponseEntity.status(HttpStatus.OK)

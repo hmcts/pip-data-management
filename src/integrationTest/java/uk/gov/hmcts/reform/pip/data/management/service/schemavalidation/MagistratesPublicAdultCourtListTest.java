@@ -3,7 +3,8 @@ package uk.gov.hmcts.reform.pip.data.management.service.schemavalidation;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
@@ -27,6 +28,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @SpringBootTest
 class MagistratesPublicAdultCourtListTest extends IntegrationBasicTestBase {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+    private static final String MAGISTRATES_PUBLIC_ADULT_COURT_LIST_DAILY = "MAGISTRATES_PUBLIC_ADULT_COURT_LIST_DAILY";
+    private static final String MAGISTRATES_PUBLIC_ADULT_COURT_LIST_FUTURE =
+        "MAGISTRATES_PUBLIC_ADULT_COURT_LIST_FUTURE";
     private static final String MAGISTRATES_PUBLIC_ADULT_COURT_LIST_VALID_JSON =
         "data/magistrates-public-adult-court-list/magistratesPublicAdultCourtList.json";
     private static final String INVALID_JSON_MESSAGE = "Invalid JSON marked as valid";
@@ -55,20 +59,13 @@ class MagistratesPublicAdultCourtListTest extends IntegrationBasicTestBase {
     @Autowired
     ValidationService validationService;
 
-    private final HeaderGroup headerGroup = new HeaderGroup(
-        PROVENANCE, "",
-        ArtefactType.LIST,
-        Sensitivity.PUBLIC,
-        Language.ENGLISH,
-        DISPLAY_FROM,
-        DISPLAY_TO,
-        ListType.MAGISTRATES_PUBLIC_ADULT_COURT_LIST_DAILY,
-        COURT_ID,
-        CONTENT_DATE
-    );
-
-    @Test
-    void testValidateWithErrorWhenDocumentMissing() throws IOException {
+    @ParameterizedTest
+    @EnumSource(value = ListType.class,
+        names = {MAGISTRATES_PUBLIC_ADULT_COURT_LIST_DAILY, MAGISTRATES_PUBLIC_ADULT_COURT_LIST_FUTURE})
+    void testValidateWithErrorWhenDocumentMissing(ListType listType) throws IOException {
+        HeaderGroup headerGroup = new HeaderGroup(PROVENANCE, "", ArtefactType.LIST, Sensitivity.PUBLIC,
+                                                  Language.ENGLISH, DISPLAY_FROM, DISPLAY_TO, listType, COURT_ID,
+                                                  CONTENT_DATE);
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(MAGISTRATES_PUBLIC_ADULT_COURT_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
@@ -83,8 +80,13 @@ class MagistratesPublicAdultCourtListTest extends IntegrationBasicTestBase {
         }
     }
 
-    @Test
-    void testValidateWithErrorWhenJobMissing() throws IOException {
+    @ParameterizedTest
+    @EnumSource(value = ListType.class,
+        names = {MAGISTRATES_PUBLIC_ADULT_COURT_LIST_DAILY, MAGISTRATES_PUBLIC_ADULT_COURT_LIST_FUTURE})
+    void testValidateWithErrorWhenJobMissing(ListType listType) throws IOException {
+        HeaderGroup headerGroup = new HeaderGroup(PROVENANCE, "", ArtefactType.LIST, Sensitivity.PUBLIC,
+                                                  Language.ENGLISH, DISPLAY_FROM, DISPLAY_TO, listType, COURT_ID,
+                                                  CONTENT_DATE);
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(MAGISTRATES_PUBLIC_ADULT_COURT_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
@@ -100,8 +102,13 @@ class MagistratesPublicAdultCourtListTest extends IntegrationBasicTestBase {
         }
     }
 
-    @Test
-    void testValidateWithErrorWhenPrintDateMissing() throws IOException {
+    @ParameterizedTest
+    @EnumSource(value = ListType.class,
+        names = {MAGISTRATES_PUBLIC_ADULT_COURT_LIST_DAILY, MAGISTRATES_PUBLIC_ADULT_COURT_LIST_FUTURE})
+    void testValidateWithErrorWhenPrintDateMissing(ListType listType) throws IOException {
+        HeaderGroup headerGroup = new HeaderGroup(PROVENANCE, "", ArtefactType.LIST, Sensitivity.PUBLIC,
+                                                  Language.ENGLISH, DISPLAY_FROM, DISPLAY_TO, listType, COURT_ID,
+                                                  CONTENT_DATE);
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(MAGISTRATES_PUBLIC_ADULT_COURT_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
@@ -117,8 +124,13 @@ class MagistratesPublicAdultCourtListTest extends IntegrationBasicTestBase {
         }
     }
 
-    @Test
-    void testValidateWithErrorWhenSessionsMissing() throws IOException {
+    @ParameterizedTest
+    @EnumSource(value = ListType.class,
+        names = {MAGISTRATES_PUBLIC_ADULT_COURT_LIST_DAILY, MAGISTRATES_PUBLIC_ADULT_COURT_LIST_FUTURE})
+    void testValidateWithErrorWhenSessionsMissing(ListType listType) throws IOException {
+        HeaderGroup headerGroup = new HeaderGroup(PROVENANCE, "", ArtefactType.LIST, Sensitivity.PUBLIC,
+                                                  Language.ENGLISH, DISPLAY_FROM, DISPLAY_TO, listType, COURT_ID,
+                                                  CONTENT_DATE);
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(MAGISTRATES_PUBLIC_ADULT_COURT_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
@@ -134,8 +146,13 @@ class MagistratesPublicAdultCourtListTest extends IntegrationBasicTestBase {
         }
     }
 
-    @Test
-    void testValidateWithErrorWhenLjaMissing() throws IOException {
+    @ParameterizedTest
+    @EnumSource(value = ListType.class,
+        names = {MAGISTRATES_PUBLIC_ADULT_COURT_LIST_DAILY, MAGISTRATES_PUBLIC_ADULT_COURT_LIST_FUTURE})
+    void testValidateWithErrorWhenLjaMissing(ListType listType) throws IOException {
+        HeaderGroup headerGroup = new HeaderGroup(PROVENANCE, "", ArtefactType.LIST, Sensitivity.PUBLIC,
+                                                  Language.ENGLISH, DISPLAY_FROM, DISPLAY_TO, listType, COURT_ID,
+                                                  CONTENT_DATE);
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(MAGISTRATES_PUBLIC_ADULT_COURT_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
@@ -152,8 +169,13 @@ class MagistratesPublicAdultCourtListTest extends IntegrationBasicTestBase {
         }
     }
 
-    @Test
-    void testValidateWithErrorWhenCourtMissing() throws IOException {
+    @ParameterizedTest
+    @EnumSource(value = ListType.class,
+        names = {MAGISTRATES_PUBLIC_ADULT_COURT_LIST_DAILY, MAGISTRATES_PUBLIC_ADULT_COURT_LIST_FUTURE})
+    void testValidateWithErrorWhenCourtMissing(ListType listType) throws IOException {
+        HeaderGroup headerGroup = new HeaderGroup(PROVENANCE, "", ArtefactType.LIST, Sensitivity.PUBLIC,
+                                                  Language.ENGLISH, DISPLAY_FROM, DISPLAY_TO, listType, COURT_ID,
+                                                  CONTENT_DATE);
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(MAGISTRATES_PUBLIC_ADULT_COURT_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
@@ -170,8 +192,13 @@ class MagistratesPublicAdultCourtListTest extends IntegrationBasicTestBase {
         }
     }
 
-    @Test
-    void testValidateWithErrorWhenRoomMissing() throws IOException {
+    @ParameterizedTest
+    @EnumSource(value = ListType.class,
+        names = {MAGISTRATES_PUBLIC_ADULT_COURT_LIST_DAILY, MAGISTRATES_PUBLIC_ADULT_COURT_LIST_FUTURE})
+    void testValidateWithErrorWhenRoomMissing(ListType listType) throws IOException {
+        HeaderGroup headerGroup = new HeaderGroup(PROVENANCE, "", ArtefactType.LIST, Sensitivity.PUBLIC,
+                                                  Language.ENGLISH, DISPLAY_FROM, DISPLAY_TO, listType, COURT_ID,
+                                                  CONTENT_DATE);
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(MAGISTRATES_PUBLIC_ADULT_COURT_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
@@ -188,8 +215,13 @@ class MagistratesPublicAdultCourtListTest extends IntegrationBasicTestBase {
         }
     }
 
-    @Test
-    void testValidateWithErrorWhenSstartMissing() throws IOException {
+    @ParameterizedTest
+    @EnumSource(value = ListType.class,
+        names = {MAGISTRATES_PUBLIC_ADULT_COURT_LIST_DAILY, MAGISTRATES_PUBLIC_ADULT_COURT_LIST_FUTURE})
+    void testValidateWithErrorWhenSstartMissing(ListType listType) throws IOException {
+        HeaderGroup headerGroup = new HeaderGroup(PROVENANCE, "", ArtefactType.LIST, Sensitivity.PUBLIC,
+                                                  Language.ENGLISH, DISPLAY_FROM, DISPLAY_TO, listType, COURT_ID,
+                                                  CONTENT_DATE);
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(MAGISTRATES_PUBLIC_ADULT_COURT_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
@@ -206,8 +238,13 @@ class MagistratesPublicAdultCourtListTest extends IntegrationBasicTestBase {
         }
     }
 
-    @Test
-    void testValidateWithErrorWhenBlocksMissing() throws IOException {
+    @ParameterizedTest
+    @EnumSource(value = ListType.class,
+        names = {MAGISTRATES_PUBLIC_ADULT_COURT_LIST_DAILY, MAGISTRATES_PUBLIC_ADULT_COURT_LIST_FUTURE})
+    void testValidateWithErrorWhenBlocksMissing(ListType listType) throws IOException {
+        HeaderGroup headerGroup = new HeaderGroup(PROVENANCE, "", ArtefactType.LIST, Sensitivity.PUBLIC,
+                                                  Language.ENGLISH, DISPLAY_FROM, DISPLAY_TO, listType, COURT_ID,
+                                                  CONTENT_DATE);
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(MAGISTRATES_PUBLIC_ADULT_COURT_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
@@ -224,8 +261,13 @@ class MagistratesPublicAdultCourtListTest extends IntegrationBasicTestBase {
         }
     }
 
-    @Test
-    void testValidateWithErrorWhenBstartMissing() throws IOException {
+    @ParameterizedTest
+    @EnumSource(value = ListType.class,
+        names = {MAGISTRATES_PUBLIC_ADULT_COURT_LIST_DAILY, MAGISTRATES_PUBLIC_ADULT_COURT_LIST_FUTURE})
+    void testValidateWithErrorWhenBstartMissing(ListType listType) throws IOException {
+        HeaderGroup headerGroup = new HeaderGroup(PROVENANCE, "", ArtefactType.LIST, Sensitivity.PUBLIC,
+                                                  Language.ENGLISH, DISPLAY_FROM, DISPLAY_TO, listType, COURT_ID,
+                                                  CONTENT_DATE);
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(MAGISTRATES_PUBLIC_ADULT_COURT_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
@@ -243,8 +285,13 @@ class MagistratesPublicAdultCourtListTest extends IntegrationBasicTestBase {
         }
     }
 
-    @Test
-    void testValidateWithErrorWhenCasesMissing() throws IOException {
+    @ParameterizedTest
+    @EnumSource(value = ListType.class,
+        names = {MAGISTRATES_PUBLIC_ADULT_COURT_LIST_DAILY, MAGISTRATES_PUBLIC_ADULT_COURT_LIST_FUTURE})
+    void testValidateWithErrorWhenCasesMissing(ListType listType) throws IOException {
+        HeaderGroup headerGroup = new HeaderGroup(PROVENANCE, "", ArtefactType.LIST, Sensitivity.PUBLIC,
+                                                  Language.ENGLISH, DISPLAY_FROM, DISPLAY_TO, listType, COURT_ID,
+                                                  CONTENT_DATE);
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(MAGISTRATES_PUBLIC_ADULT_COURT_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
@@ -262,8 +309,13 @@ class MagistratesPublicAdultCourtListTest extends IntegrationBasicTestBase {
         }
     }
 
-    @Test
-    void testValidateWithErrorWhenCaseNumMissing() throws IOException {
+    @ParameterizedTest
+    @EnumSource(value = ListType.class,
+        names = {MAGISTRATES_PUBLIC_ADULT_COURT_LIST_DAILY, MAGISTRATES_PUBLIC_ADULT_COURT_LIST_FUTURE})
+    void testValidateWithErrorWhenCaseNumMissing(ListType listType) throws IOException {
+        HeaderGroup headerGroup = new HeaderGroup(PROVENANCE, "", ArtefactType.LIST, Sensitivity.PUBLIC,
+                                                  Language.ENGLISH, DISPLAY_FROM, DISPLAY_TO, listType, COURT_ID,
+                                                  CONTENT_DATE);
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(MAGISTRATES_PUBLIC_ADULT_COURT_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
@@ -282,8 +334,13 @@ class MagistratesPublicAdultCourtListTest extends IntegrationBasicTestBase {
         }
     }
 
-    @Test
-    void testValidateWithErrorWhenDefNameMissing() throws IOException {
+    @ParameterizedTest
+    @EnumSource(value = ListType.class,
+        names = {MAGISTRATES_PUBLIC_ADULT_COURT_LIST_DAILY, MAGISTRATES_PUBLIC_ADULT_COURT_LIST_FUTURE})
+    void testValidateWithErrorWhenDefNameMissing(ListType listType) throws IOException {
+        HeaderGroup headerGroup = new HeaderGroup(PROVENANCE, "", ArtefactType.LIST, Sensitivity.PUBLIC,
+                                                  Language.ENGLISH, DISPLAY_FROM, DISPLAY_TO, listType, COURT_ID,
+                                                  CONTENT_DATE);
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(MAGISTRATES_PUBLIC_ADULT_COURT_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
@@ -302,8 +359,13 @@ class MagistratesPublicAdultCourtListTest extends IntegrationBasicTestBase {
         }
     }
 
-    @Test
-    void testValidateWithErrorWhenCaseNumberHaveLengthLessThan10() throws IOException {
+    @ParameterizedTest
+    @EnumSource(value = ListType.class,
+        names = {MAGISTRATES_PUBLIC_ADULT_COURT_LIST_DAILY, MAGISTRATES_PUBLIC_ADULT_COURT_LIST_FUTURE})
+    void testValidateWithErrorWhenCaseNumberHaveLengthLessThan10(ListType listType) throws IOException {
+        HeaderGroup headerGroup = new HeaderGroup(PROVENANCE, "", ArtefactType.LIST, Sensitivity.PUBLIC,
+                                                  Language.ENGLISH, DISPLAY_FROM, DISPLAY_TO, listType, COURT_ID,
+                                                  CONTENT_DATE);
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(MAGISTRATES_PUBLIC_ADULT_COURT_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
@@ -320,8 +382,13 @@ class MagistratesPublicAdultCourtListTest extends IntegrationBasicTestBase {
         }
     }
 
-    @Test
-    void testValidateWithErrorWhenCaseNumberHaveLengthGreaterThan10() throws IOException {
+    @ParameterizedTest
+    @EnumSource(value = ListType.class,
+        names = {MAGISTRATES_PUBLIC_ADULT_COURT_LIST_DAILY, MAGISTRATES_PUBLIC_ADULT_COURT_LIST_FUTURE})
+    void testValidateWithErrorWhenCaseNumberHaveLengthGreaterThan10(ListType listType) throws IOException {
+        HeaderGroup headerGroup = new HeaderGroup(PROVENANCE, "", ArtefactType.LIST, Sensitivity.PUBLIC,
+                                                  Language.ENGLISH, DISPLAY_FROM, DISPLAY_TO, listType, COURT_ID,
+                                                  CONTENT_DATE);
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(MAGISTRATES_PUBLIC_ADULT_COURT_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
@@ -338,8 +405,13 @@ class MagistratesPublicAdultCourtListTest extends IntegrationBasicTestBase {
         }
     }
 
-    @Test
-    void testValidateWithErrorWhenInvalidPrintDateFormat() throws IOException {
+    @ParameterizedTest
+    @EnumSource(value = ListType.class,
+        names = {MAGISTRATES_PUBLIC_ADULT_COURT_LIST_DAILY, MAGISTRATES_PUBLIC_ADULT_COURT_LIST_FUTURE})
+    void testValidateWithErrorWhenInvalidPrintDateFormat(ListType listType) throws IOException {
+        HeaderGroup headerGroup = new HeaderGroup(PROVENANCE, "", ArtefactType.LIST, Sensitivity.PUBLIC,
+                                                  Language.ENGLISH, DISPLAY_FROM, DISPLAY_TO, listType, COURT_ID,
+                                                  CONTENT_DATE);
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(MAGISTRATES_PUBLIC_ADULT_COURT_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
@@ -356,8 +428,13 @@ class MagistratesPublicAdultCourtListTest extends IntegrationBasicTestBase {
         }
     }
 
-    @Test
-    void testValidateWithErrorWhenInvalidSstartTimeFormat() throws IOException {
+    @ParameterizedTest
+    @EnumSource(value = ListType.class,
+        names = {MAGISTRATES_PUBLIC_ADULT_COURT_LIST_DAILY, MAGISTRATES_PUBLIC_ADULT_COURT_LIST_FUTURE})
+    void testValidateWithErrorWhenInvalidSstartTimeFormat(ListType listType) throws IOException {
+        HeaderGroup headerGroup = new HeaderGroup(PROVENANCE, "", ArtefactType.LIST, Sensitivity.PUBLIC,
+                                                  Language.ENGLISH, DISPLAY_FROM, DISPLAY_TO, listType, COURT_ID,
+                                                  CONTENT_DATE);
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(MAGISTRATES_PUBLIC_ADULT_COURT_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
@@ -374,8 +451,13 @@ class MagistratesPublicAdultCourtListTest extends IntegrationBasicTestBase {
         }
     }
 
-    @Test
-    void testValidateWithErrorWhenInvalidBstartTimeFormat() throws IOException {
+    @ParameterizedTest
+    @EnumSource(value = ListType.class,
+        names = {MAGISTRATES_PUBLIC_ADULT_COURT_LIST_DAILY, MAGISTRATES_PUBLIC_ADULT_COURT_LIST_FUTURE})
+    void testValidateWithErrorWhenInvalidBstartTimeFormat(ListType listType) throws IOException {
+        HeaderGroup headerGroup = new HeaderGroup(PROVENANCE, "", ArtefactType.LIST, Sensitivity.PUBLIC,
+                                                  Language.ENGLISH, DISPLAY_FROM, DISPLAY_TO, listType, COURT_ID,
+                                                  CONTENT_DATE);
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(MAGISTRATES_PUBLIC_ADULT_COURT_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);

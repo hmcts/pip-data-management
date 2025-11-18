@@ -13,12 +13,13 @@ import uk.gov.hmcts.reform.pip.model.location.LocationType;
 
 import java.util.UUID;
 
+
+/**
+ * This class captures the LocationReference, which contains the source ID for each court.
+ */
 @Entity
 @Data
 @NoArgsConstructor
-/**
- * This class captures the CourtReference, which contains the source ID for each court.
- */
 public class LocationReference {
 
     @Id

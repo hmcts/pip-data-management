@@ -58,11 +58,12 @@ public class AccountManagementService {
         }
     }
 
-    public List<String> getAllAccounts(String provenances, String role)
+    public List<String> getAllAccounts(String provenances, String role, UUID requesterId)
         throws JsonProcessingException  {
         try {
             String result = webClient.get()
                 .uri(String.format("%s/account/all?provenances=%s&roles=%s", url, provenances, role))
+                .header("x-requester-id", requesterId.toString())
                 .retrieve()
                 .bodyToMono(String.class)
                 .block();
@@ -76,10 +77,11 @@ public class AccountManagementService {
         }
     }
 
-    public PiUser getUserById(String userId) {
+    public PiUser getUserById(UUID userId) {
         try {
             return webClient.get()
                 .uri(url + "/account/" + userId)
+                .header("x-requester-id", userId.toString())
                 .retrieve()
                 .bodyToMono(PiUser.class)
                 .block();

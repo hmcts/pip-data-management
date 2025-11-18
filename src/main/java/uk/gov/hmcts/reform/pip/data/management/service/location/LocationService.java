@@ -25,6 +25,7 @@ import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.Location
 import uk.gov.hmcts.reform.pip.data.management.helpers.TestingSupportLocationHelper;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationDeletion;
+import uk.gov.hmcts.reform.pip.data.management.models.location.LocationMetadata;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationReference;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.service.AccountManagementService;
@@ -50,6 +51,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
@@ -72,19 +74,22 @@ public class LocationService {
     private final ValidationService validationService;
 
     private final LocationMetadataRepository locationMetadataRepository;
+    private final LocationMetadataService locationMetadataService;
 
     public LocationService(LocationRepository locationRepository,
                            ArtefactRepository artefactRepository,
                            AccountManagementService accountManagementService,
                            SystemAdminNotificationService systemAdminNotificationService,
                            ValidationService validationService,
-                           LocationMetadataRepository locationMetadataRepository) {
+                           LocationMetadataRepository locationMetadataRepository,
+                           LocationMetadataService locationMetadataService) {
         this.locationRepository = locationRepository;
         this.artefactRepository = artefactRepository;
         this.accountManagementService = accountManagementService;
         this.systemAdminNotificationService = systemAdminNotificationService;
         this.validationService = validationService;
         this.locationMetadataRepository = locationMetadataRepository;
+        this.locationMetadataService = locationMetadataService;
     }
 
     /**
@@ -243,10 +248,10 @@ public class LocationService {
 
     /**
      * This method will delete a location from the database.
-     * @param locationId The ID of the location to delete.
-     * @param userId The ID of the user who is deleting the location.
+     * @param locationId    The ID of the location to delete.
+     * @param requesterId   The ID of the user who is deleting the location.
      */
-    public LocationDeletion deleteLocation(Integer locationId, String userId)
+    public LocationDeletion deleteLocation(Integer locationId, UUID requesterId)
         throws JsonProcessingException {
         LocationDeletion locationDeletion;
         Location location = locationRepository.getLocationByLocationId(locationId)
@@ -254,18 +259,23 @@ public class LocationService {
                 String.format("No location found with the id: %s", locationId)
             ));
 
-        PiUser userInfo = accountManagementService.getUserById(userId);
-        locationDeletion = checkActiveArtefactForLocation(location, userInfo.getEmail());
+        PiUser userInfo = accountManagementService.getUserById(requesterId);
+        locationDeletion = checkActiveArtefactForLocation(location, userInfo.getEmail(), requesterId);
         if (!locationDeletion.isExists()) {
-            locationDeletion = checkActiveSubscriptionForLocation(location, userInfo.getEmail());
+            locationDeletion = checkActiveSubscriptionForLocation(location, userInfo.getEmail(), requesterId);
             if (!locationDeletion.isExists()) {
-                locationRepository.deleteById(locationId);
-                systemAdminNotificationService.sendEmailNotification(
-                    userInfo.getEmail(), ActionResult.SUCCEEDED,
-                    String.format("Location %s with Id %s has been deleted.", location.getName(),
-                                  location.getLocationId()),
-                    ChangeType.DELETE_LOCATION
-                );
+                locationDeletion = checkLocationMetadataExists(location, userInfo.getEmail(), requesterId);
+                if (!locationDeletion.isExists()) {
+                    locationRepository.deleteById(locationId);
+                    systemAdminNotificationService.sendEmailNotification(
+                        userInfo.getEmail(), requesterId, ActionResult.SUCCEEDED,
+                        String.format(
+                            "Location %s with Id %s has been deleted.",
+                            location.getName(), location.getLocationId()
+                        ),
+                        ChangeType.DELETE_LOCATION
+                    );
+                }
             }
         }
 
@@ -343,8 +353,8 @@ public class LocationService {
         }
     }
 
-    private LocationDeletion checkActiveArtefactForLocation(Location location, String requesterEmail)
-        throws JsonProcessingException {
+    private LocationDeletion checkActiveArtefactForLocation(Location location, String requesterEmail,
+                                                            UUID requesterId) throws JsonProcessingException {
         LocalDateTime searchDateTime = LocalDateTime.now();
         LocationDeletion locationDeletion = new LocationDeletion();
         List<Artefact> activeArtefacts =
@@ -353,7 +363,7 @@ public class LocationService {
             locationDeletion = new LocationDeletion("There are active artefacts for the given location.",
                                                     true);
             systemAdminNotificationService.sendEmailNotification(
-                requesterEmail, ActionResult.ATTEMPTED,
+                requesterEmail, requesterId, ActionResult.ATTEMPTED,
                 String.format("There are active artefacts for following location: %s", location.getName()),
                 ChangeType.DELETE_LOCATION
             );
@@ -361,7 +371,8 @@ public class LocationService {
         return locationDeletion;
     }
 
-    private LocationDeletion checkActiveSubscriptionForLocation(Location location, String requesterEmail)
+    private LocationDeletion checkActiveSubscriptionForLocation(Location location, String requesterEmail,
+                                                                UUID requesterId)
         throws JsonProcessingException {
         LocationDeletion locationDeletion = new LocationDeletion();
         String result =
@@ -373,11 +384,28 @@ public class LocationService {
                 locationDeletion = new LocationDeletion("There are active subscriptions for the given location.",
                                                         true);
                 systemAdminNotificationService.sendEmailNotification(
-                    requesterEmail, ActionResult.ATTEMPTED,
+                    requesterEmail, requesterId, ActionResult.ATTEMPTED,
                     String.format("There are active subscriptions for the following location: %s", location.getName()),
                     ChangeType.DELETE_LOCATION
                 );
             }
+        }
+        return locationDeletion;
+    }
+
+    private LocationDeletion checkLocationMetadataExists(Location location, String requesterEmail, UUID requesterId)
+        throws JsonProcessingException {
+        LocationDeletion locationDeletion = new LocationDeletion();
+        Optional<LocationMetadata> locationMetadata =
+            locationMetadataRepository.findByLocationId(location.getLocationId());
+        if (locationMetadata.isPresent()) {
+            locationDeletion = new LocationDeletion(
+                "There is metadata exists for the given location", true);
+            systemAdminNotificationService.sendEmailNotification(
+                requesterEmail, requesterId, ActionResult.ATTEMPTED,
+                String.format("There is metadata exists for the following location: %s", location.getName()),
+                ChangeType.DELETE_LOCATION
+            );
         }
         return locationDeletion;
     }

@@ -8,12 +8,14 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,19 +30,19 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
-import uk.gov.hmcts.reform.pip.data.management.helpers.EmailHelper;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.LcsuArtefactNotSupportedException;
 import uk.gov.hmcts.reform.pip.data.management.helpers.NoMatchArtefactHelper;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.HeaderGroup;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.views.ArtefactView;
 import uk.gov.hmcts.reform.pip.data.management.service.ExcelConversionService;
+import uk.gov.hmcts.reform.pip.data.management.service.PublicationServicesService;
 import uk.gov.hmcts.reform.pip.data.management.service.ValidationService;
 import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationCreationRunner;
 import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationCreationService;
 import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationRemovalService;
 import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationRetrievalService;
 import uk.gov.hmcts.reform.pip.model.authentication.roles.IsAdmin;
-import uk.gov.hmcts.reform.pip.model.authentication.roles.IsPublisher;
 import uk.gov.hmcts.reform.pip.model.enums.UserActions;
 import uk.gov.hmcts.reform.pip.model.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
@@ -67,7 +69,6 @@ import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
 @SecurityRequirement(name = "bearerAuth")
 @SuppressWarnings({"PMD.ExcessiveImports", "PMD.CouplingBetweenObjects"})
 public class PublicationController {
-    private static final String USER_ID_HEADER = "x-user-id";
     private static final String ADMIN_HEADER = "x-admin";
 
     private static final String NO_CONTENT_DESCRIPTION = "The request has been successfully fulfilled";
@@ -85,6 +86,7 @@ public class PublicationController {
     private static final String CONFLICT_CODE = "409";
 
     private static final String DEFAULT_ADMIN_VALUE = "false";
+    private static final String REQUESTER_ID_HEADER = "x-requester-id";
 
     private final PublicationCreationService publicationCreationService;
     private final PublicationCreationRunner publicationCreationRunner;
@@ -92,6 +94,10 @@ public class PublicationController {
     private final PublicationRemovalService publicationRemovalService;
     private final ValidationService validationService;
     private final ExcelConversionService excelConversionService;
+    private final PublicationServicesService publicationServicesService;
+
+    @Value("${pdda.enableLcsu}")
+    private boolean enableLcsu;
 
     /**
      * Constructor for Publication controller.
@@ -103,6 +109,7 @@ public class PublicationController {
      * @param publicationRemovalService The service used to Delete or Archive artefacts
      * @param validationService The service that handle input validation of publications
      * @param excelConversionService The service handles conversion of Excel data to JSON format
+     * @param publicationServicesService The service handles communication with publication service
      */
     @Autowired
     public PublicationController(PublicationCreationService publicationCreationService,
@@ -110,13 +117,15 @@ public class PublicationController {
                                  ValidationService validationService,
                                  PublicationRetrievalService publicationRetrievalService,
                                  PublicationRemovalService publicationRemovalService,
-                                 ExcelConversionService excelConversionService) {
+                                 ExcelConversionService excelConversionService,
+                                 PublicationServicesService publicationServicesService) {
         this.publicationCreationService = publicationCreationService;
         this.publicationCreationRunner = publicationCreationRunner;
         this.validationService = validationService;
         this.publicationRetrievalService = publicationRetrievalService;
         this.publicationRemovalService = publicationRemovalService;
         this.excelConversionService = excelConversionService;
+        this.publicationServicesService = publicationServicesService;
     }
 
     /**
@@ -144,7 +153,7 @@ public class PublicationController {
     @PostMapping
     @Valid
     @JsonView(ArtefactView.External.class)
-    @IsPublisher
+    @PreAuthorize("@authorisationService.userCanUploadPublication(#requesterId, #provenance)")
     public ResponseEntity<Artefact> uploadPublication(
         @RequestHeader(PublicationConfiguration.PROVENANCE_HEADER) String provenance,
         @RequestHeader(value = PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, required = false)
@@ -156,13 +165,12 @@ public class PublicationController {
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime displayFrom,
         @RequestHeader(value = PublicationConfiguration.DISPLAY_TO_HEADER, required = false)
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime displayTo,
-        @RequestHeader(PublicationConfiguration.LIST_TYPE) ListType listType,
+        @RequestHeader(value = PublicationConfiguration.LIST_TYPE, required = false) ListType listType,
         @RequestHeader(PublicationConfiguration.COURT_ID) String courtId,
         @RequestHeader(PublicationConfiguration.CONTENT_DATE)
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime contentDate,
-        @RequestHeader(value = "x-issuer-email", required = false) String issuerEmail,
+        @RequestHeader(value = REQUESTER_ID_HEADER, required = false) UUID requesterId,
         @RequestBody String payload) {
-
         HeaderGroup initialHeaders = new HeaderGroup(provenance, sourceArtefactId, type, sensitivity, language,
                                                      displayFrom, displayTo, listType, courtId, contentDate
         );
@@ -172,7 +180,7 @@ public class PublicationController {
         Artefact artefact = createPublicationMetadataFromHeaders(headers, payload.length());
 
         Artefact createdItem = publicationCreationRunner.run(artefact, payload, true);
-        logManualUpload(EmailHelper.maskEmail(issuerEmail), createdItem.getArtefactId().toString());
+        logManualUpload(requesterId, createdItem.getArtefactId().toString());
 
         // Process the created artefact to generate PDF/Excel files and check/trigger the subscription process
         if (!NoMatchArtefactHelper.isNoMatchLocationId(createdItem.getLocationId())) {
@@ -187,7 +195,7 @@ public class PublicationController {
      *
      * @param provenance       Name of the source system.
      * @param sourceArtefactId Unique ID of what publication is called by source system.
-     * @param type             List / Outcome / Judgement / Status Updates.
+     * @param type             List / Outcome / General Publication / LCSU Updates.
      * @param sensitivity      Level of sensitivity.
      * @param language         Language of publication.
      * @param displayFrom      Date / Time from which the publication will be displayed.
@@ -206,7 +214,7 @@ public class PublicationController {
     @Operation(summary = "Upload a new publication")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @JsonView(ArtefactView.External.class)
-    @IsPublisher
+    @PreAuthorize("@authorisationService.userCanUploadPublication(#requesterId, #provenance)")
     public ResponseEntity<Artefact> uploadPublication(
         @RequestHeader(PublicationConfiguration.PROVENANCE_HEADER) String provenance,
         @RequestHeader(value = PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, required = false)
@@ -218,11 +226,11 @@ public class PublicationController {
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime displayFrom,
         @RequestHeader(value = PublicationConfiguration.DISPLAY_TO_HEADER, required = false)
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime displayTo,
-        @RequestHeader(PublicationConfiguration.LIST_TYPE) ListType listType,
+        @RequestHeader(value = PublicationConfiguration.LIST_TYPE, required = false) ListType listType,
         @RequestHeader(PublicationConfiguration.COURT_ID) String courtId,
         @RequestHeader(PublicationConfiguration.CONTENT_DATE)
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime contentDate,
-        @RequestHeader(value = "x-issuer-email", required = false) String issuerEmail,
+        @RequestHeader(value = REQUESTER_ID_HEADER, required = false) UUID requesterId,
         @RequestPart MultipartFile file) {
 
         HeaderGroup initialHeaders = new HeaderGroup(provenance, sourceArtefactId, type, sensitivity, language,
@@ -231,7 +239,17 @@ public class PublicationController {
         validationService.validateBody(file);
 
         HeaderGroup headers = validationService.validateHeaders(initialHeaders);
-        Artefact artefact = createPublicationMetadataFromHeaders(headers, file.getSize());
+        Artefact artefact = createPublicationMetadataFromHeaders(headers, file.getSize(), true);
+
+        if (type.equals(ArtefactType.LCSU) && !enableLcsu) {
+            throw new LcsuArtefactNotSupportedException("LCSU artefact type is not supported.");
+        }
+
+        if (type.equals(ArtefactType.LCSU)) {
+            publicationServicesService.uploadHtmlFileToAwsS3Bucket(file);
+            return ResponseEntity.status(HttpStatus.CREATED)
+                .body(artefact);
+        }
 
         Map<String, List<Object>> search = new ConcurrentHashMap<>();
         search.put("location-id", List.of(headers.getCourtId()));
@@ -239,7 +257,7 @@ public class PublicationController {
         artefact.setIsFlatFile(true);
 
         Artefact createdItem =  publicationCreationRunner.run(artefact, file);
-        logManualUpload(EmailHelper.maskEmail(issuerEmail), createdItem.getArtefactId().toString());
+        logManualUpload(requesterId, createdItem.getArtefactId().toString());
 
         if (!NoMatchArtefactHelper.isNoMatchLocationId(createdItem.getLocationId())) {
             publicationCreationService.processCreatedPublication(createdItem);
@@ -273,7 +291,7 @@ public class PublicationController {
     @Operation(summary = "Non-strategic - upload a new publication")
     @PostMapping(value = "/non-strategic", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @JsonView(ArtefactView.External.class)
-    @IsPublisher
+    @PreAuthorize("@authorisationService.userCanUploadPublication(#requesterId, #provenance)")
     public ResponseEntity<Artefact> nonStrategicUploadPublication(
         @RequestHeader(PublicationConfiguration.PROVENANCE_HEADER) String provenance,
         @RequestHeader(value = PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, required = false)
@@ -285,11 +303,11 @@ public class PublicationController {
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime displayFrom,
         @RequestHeader(value = PublicationConfiguration.DISPLAY_TO_HEADER, required = false)
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime displayTo,
-        @RequestHeader(PublicationConfiguration.LIST_TYPE) ListType listType,
+        @RequestHeader(value = PublicationConfiguration.LIST_TYPE, required = false) ListType listType,
         @RequestHeader(PublicationConfiguration.COURT_ID) String courtId,
         @RequestHeader(PublicationConfiguration.CONTENT_DATE)
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime contentDate,
-        @RequestHeader(value = "x-issuer-email", required = false) String issuerEmail,
+        @RequestHeader(value = REQUESTER_ID_HEADER, required = false) UUID requesterId,
         @RequestPart MultipartFile file) {
         HeaderGroup initialHeaders = new HeaderGroup(provenance, sourceArtefactId, type, sensitivity, language,
                                                      displayFrom, displayTo, listType, courtId, contentDate);
@@ -302,7 +320,7 @@ public class PublicationController {
         Artefact artefact = createPublicationMetadataFromHeaders(headers, payload.length());
 
         Artefact createdItem = publicationCreationRunner.run(artefact, payload, false);
-        logManualUpload(EmailHelper.maskEmail(issuerEmail), createdItem.getArtefactId().toString());
+        logManualUpload(requesterId, createdItem.getArtefactId().toString());
 
         // Process the created artefact to generate PDF and check/trigger the subscription process
         if (!NoMatchArtefactHelper.isNoMatchLocationId(createdItem.getLocationId())) {
@@ -319,14 +337,15 @@ public class PublicationController {
     @Operation(summary = "Gets the metadata for the blob, given a specific artefact id")
     @GetMapping("/{artefactId}")
     @JsonView(ArtefactView.Internal.class)
-    @IsAdmin
+    @PreAuthorize("@authorisationService.userCanAccessPublicationData(#requesterId, #artefactId, #isAdmin)")
     public ResponseEntity<Artefact> getArtefactMetadata(
-        @PathVariable UUID artefactId, @RequestHeader(value = USER_ID_HEADER, required = false) UUID userId,
-                                       @RequestHeader(value = ADMIN_HEADER, defaultValue = DEFAULT_ADMIN_VALUE,
-                                           required = false) Boolean isAdmin) {
+        @PathVariable UUID artefactId,
+        @RequestHeader(value = REQUESTER_ID_HEADER, required = false) UUID requesterId,
+        @RequestHeader(value = ADMIN_HEADER, defaultValue = DEFAULT_ADMIN_VALUE,
+            required = false) Boolean isAdmin) {
         return ResponseEntity.ok(isAdmin.equals(Boolean.TRUE)
                                     ? publicationRetrievalService.getMetadataByArtefactId(artefactId) :
-                                     publicationRetrievalService.getMetadataByArtefactId(artefactId, userId));
+                                     publicationRetrievalService.getMetadataByArtefactId(artefactId, requesterId));
     }
 
     @ApiResponse(responseCode = OK_CODE, description = "Blob data from the given request in text format.")
@@ -335,14 +354,14 @@ public class PublicationController {
     @ApiResponse(responseCode = NOT_FOUND_CODE, description = NOT_FOUND_DESCRIPTION)
     @Operation(summary = "Gets the the payload for the blob, given a specific artefact ID")
     @GetMapping("/{artefactId}/payload")
-    @IsAdmin
+    @PreAuthorize("@authorisationService.userCanAccessPublicationData(#requesterId, #artefactId, #isAdmin)")
     public ResponseEntity<String> getArtefactPayload(
         @PathVariable UUID artefactId,
-        @RequestHeader(value = USER_ID_HEADER, required = false) UUID userId,
+        @RequestHeader(value = REQUESTER_ID_HEADER, required = false) UUID requesterId,
         @RequestHeader(value = ADMIN_HEADER, defaultValue = DEFAULT_ADMIN_VALUE, required = false) Boolean isAdmin) {
         return ResponseEntity.ok(isAdmin.equals(Boolean.TRUE)
                                     ? publicationRetrievalService.getPayloadByArtefactId(artefactId) :
-                                     publicationRetrievalService.getPayloadByArtefactId(artefactId, userId));
+                                     publicationRetrievalService.getPayloadByArtefactId(artefactId, requesterId));
     }
 
     @ApiResponse(responseCode = OK_CODE, description = "Blob data from the given request as a file.")
@@ -351,10 +370,10 @@ public class PublicationController {
     @ApiResponse(responseCode = NOT_FOUND_CODE, description = NOT_FOUND_DESCRIPTION)
     @Operation(summary = "Gets the the payload for the blob, given a specific artefact ID")
     @GetMapping(value = "/{artefactId}/file", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-    @IsAdmin
+    @PreAuthorize("@authorisationService.userCanAccessPublicationData(#requesterId, #artefactId, #isAdmin)")
     public ResponseEntity<Resource> getArtefactFile(
         @PathVariable UUID artefactId,
-        @RequestHeader(value = USER_ID_HEADER, required = false) UUID userId,
+        @RequestHeader(value = REQUESTER_ID_HEADER, required = false) UUID requesterId,
         @RequestHeader(value = ADMIN_HEADER, defaultValue = DEFAULT_ADMIN_VALUE, required = false) Boolean isAdmin) {
 
         Resource file;
@@ -363,8 +382,8 @@ public class PublicationController {
             file = publicationRetrievalService.getFlatFileByArtefactID(artefactId);
             metadata = publicationRetrievalService.getMetadataByArtefactId(artefactId);
         } else {
-            file = publicationRetrievalService.getFlatFileByArtefactID(artefactId, userId);
-            metadata = publicationRetrievalService.getMetadataByArtefactId(artefactId, userId);
+            file = publicationRetrievalService.getFlatFileByArtefactID(artefactId, requesterId);
+            metadata = publicationRetrievalService.getMetadataByArtefactId(artefactId, requesterId);
         }
 
         String fileType = metadata.getSourceArtefactId();
@@ -382,9 +401,9 @@ public class PublicationController {
     @Operation(summary = "Delete a artefact and its list from P&I")
     @DeleteMapping("/{artefactId}")
     @IsAdmin
-    public ResponseEntity<String> deleteArtefact(@RequestHeader("x-issuer-id") String issuerId,
+    public ResponseEntity<String> deleteArtefact(@RequestHeader(REQUESTER_ID_HEADER) UUID requesterId,
         @PathVariable String artefactId) {
-        publicationRemovalService.deleteArtefactById(artefactId, issuerId);
+        publicationRemovalService.deleteArtefactById(artefactId, requesterId);
         return ResponseEntity.ok("Successfully deleted artefact: " + artefactId);
     }
 
@@ -407,20 +426,21 @@ public class PublicationController {
     @Operation(summary = "Archive an artefact by ID")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PutMapping("/{id}/archive")
-    @IsAdmin
-    public ResponseEntity<String> archiveArtefact(@RequestHeader("x-issuer-id") String issuerId,
+    @PreAuthorize("@authorisationService.userCanArchivePublications(#requesterId)")
+    public ResponseEntity<String> archiveArtefact(@RequestHeader(REQUESTER_ID_HEADER) UUID requesterId,
                                                   @PathVariable String id) {
-        publicationRemovalService.archiveArtefactById(id, issuerId, Boolean.TRUE);
+        publicationRemovalService.archiveArtefactById(id, requesterId, Boolean.TRUE);
         return ResponseEntity.ok(String.format("Artefact of ID %s has been archived", id));
     }
 
-    private void logManualUpload(String issuerId, String artefactId) {
+    private void logManualUpload(UUID issuerId, String artefactId) {
         if (issuerId != null) {
             log.info(writeLog(issuerId, UserActions.UPLOAD, artefactId));
         }
     }
 
-    private Artefact createPublicationMetadataFromHeaders(HeaderGroup headers, long fileSizeInBytes) {
+    private Artefact createPublicationMetadataFromHeaders(HeaderGroup headers, long fileSizeInBytes,
+                                                          boolean isFlatFile) {
         return Artefact.builder()
             .provenance(headers.getProvenance())
             .sourceArtefactId(headers.getSourceArtefactId())
@@ -433,12 +453,21 @@ public class PublicationController {
             .locationId(headers.getCourtId())
             .contentDate(headers.getContentDate())
             .payloadSize((float) fileSizeInBytes / 1024)
+            .isFlatFile(isFlatFile)
             .build();
+    }
+
+    private Artefact createPublicationMetadataFromHeaders(HeaderGroup headers, long fileSizeInBytes) {
+        return createPublicationMetadataFromHeaders(headers, fileSizeInBytes, false);
     }
 
     private boolean validateMasterSchema(ListType listType) {
         return !(listType.equals(ListType.MAGISTRATES_ADULT_COURT_LIST_DAILY)
             || listType.equals(ListType.MAGISTRATES_ADULT_COURT_LIST_FUTURE)
-            || listType.equals(ListType.MAGISTRATES_PUBLIC_ADULT_COURT_LIST_DAILY));
+            || listType.equals(ListType.MAGISTRATES_PUBLIC_ADULT_COURT_LIST_DAILY)
+            || listType.equals(ListType.MAGISTRATES_PUBLIC_ADULT_COURT_LIST_FUTURE)
+            || listType.equals(ListType.CROWN_DAILY_PDDA_LIST)
+            || listType.equals(ListType.CROWN_FIRM_PDDA_LIST)
+            || listType.equals(ListType.CROWN_WARNED_PDDA_LIST));
     }
 }

@@ -15,10 +15,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.LcsuArtefactNotSupportedException;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.HeaderGroup;
 import uk.gov.hmcts.reform.pip.data.management.service.ExcelConversionService;
+import uk.gov.hmcts.reform.pip.data.management.service.PublicationServicesService;
 import uk.gov.hmcts.reform.pip.data.management.service.ValidationService;
 import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationCreationRunner;
 import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationCreationService;
@@ -40,10 +44,13 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -63,6 +70,7 @@ class PublicationControllerTest {
     private static final String PROVENANCE = "provenance";
     private static final Sensitivity SENSITIVITY = Sensitivity.PUBLIC;
     private static final ArtefactType ARTEFACT_TYPE = ArtefactType.LIST;
+    private static final ArtefactType ARTEFACT_TYPE_LCSU = ArtefactType.LCSU;
     private static final ListType LIST_TYPE = ListType.CIVIL_DAILY_CAUSE_LIST;
     private static final String LOCATION_ID = "123";
     private static final LocalDateTime CONTENT_DATE = LocalDateTime.now();
@@ -83,7 +91,9 @@ class PublicationControllerTest {
     private Artefact artefact;
     private Artefact artefactWithId;
     private Artefact artefactWithNoMatchLocationId;
+    private Artefact artefactWithoutId;
     private HeaderGroup headers;
+    private HeaderGroup lcsuHeaders;
 
     @Mock
     private PublicationCreationService publicationCreationService;
@@ -103,6 +113,9 @@ class PublicationControllerTest {
     @Mock
     private ExcelConversionService excelConversionService;
 
+    @Mock
+    private PublicationServicesService publicationServicesService;
+
     @InjectMocks
     private PublicationController publicationController;
 
@@ -110,6 +123,9 @@ class PublicationControllerTest {
     void setup() {
         headers = new HeaderGroup(PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE, SENSITIVITY, LANGUAGE,
                                   DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, LOCATION_ID, CONTENT_DATE
+        );
+        lcsuHeaders = new HeaderGroup(PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE_LCSU, SENSITIVITY, LANGUAGE,
+                                      DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, LOCATION_ID, CONTENT_DATE
         );
         artefact = Artefact.builder()
             .sourceArtefactId(SOURCE_ARTEFACT_ID)
@@ -158,6 +174,22 @@ class PublicationControllerTest {
             .search(new ConcurrentHashMap<>())
             .payloadSize(PAYLOAD_SIZE)
             .build();
+
+        artefactWithoutId = Artefact.builder()
+            .sourceArtefactId(SOURCE_ARTEFACT_ID)
+            .displayFrom(DISPLAY_FROM)
+            .displayTo(DISPLAY_TO)
+            .language(LANGUAGE)
+            .provenance(PROVENANCE)
+            .sensitivity(SENSITIVITY)
+            .type(ARTEFACT_TYPE_LCSU)
+            .listType(LIST_TYPE)
+            .locationId(LOCATION_ID)
+            .contentDate(CONTENT_DATE)
+            .search(new ConcurrentHashMap<>())
+            .payloadSize(PAYLOAD_SIZE)
+            .isFlatFile(true)
+            .build();
     }
 
     @Test
@@ -167,7 +199,7 @@ class PublicationControllerTest {
 
         ResponseEntity<Artefact> responseEntity = publicationController.uploadPublication(
             PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE, SENSITIVITY, LANGUAGE,
-            DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, LOCATION_ID, CONTENT_DATE, TEST_STRING, PAYLOAD
+            DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, LOCATION_ID, CONTENT_DATE, USER_ID, PAYLOAD
         );
 
         verify(validationService).validateBody(eq(PAYLOAD), any(), eq(true));
@@ -180,9 +212,12 @@ class PublicationControllerTest {
     @ParameterizedTest
     @EnumSource(value = ListType.class, names = {
         "MAGISTRATES_ADULT_COURT_LIST_DAILY",
-        "MAGISTRATES_ADULT_COURT_LIST_FUTURE",
-        "MAGISTRATES_PUBLIC_ADULT_COURT_LIST_DAILY"
-    })
+        "MAGISTRATES_ADULT_COURT_LIST_FUTURE", 
+        "MAGISTRATES_PUBLIC_ADULT_COURT_LIST_DAILY",
+        "MAGISTRATES_PUBLIC_ADULT_COURT_LIST_FUTURE",
+        "CROWN_DAILY_PDDA_LIST",
+        "CROWN_FIRM_PDDA_LIST",
+        "CROWN_WARNED_PDDA_LIST"})
     void shouldNotValidateMasterSchemaForMagistratesAdultCourtLists(ListType listType) {
         when(validationService.validateHeaders(any())).thenReturn(headers);
         when(publicationCreationRunner.run(artefact, PAYLOAD, true)).thenReturn(artefactWithId);
@@ -190,7 +225,7 @@ class PublicationControllerTest {
         ResponseEntity<Artefact> responseEntity = publicationController.uploadPublication(
             PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE, SENSITIVITY, LANGUAGE,
             DISPLAY_FROM, DISPLAY_TO,
-            listType, LOCATION_ID, CONTENT_DATE, TEST_STRING, PAYLOAD
+            listType, LOCATION_ID, CONTENT_DATE, USER_ID, PAYLOAD
         );
 
         verify(validationService).validateBody(eq(PAYLOAD), any(), eq(false));
@@ -207,7 +242,7 @@ class PublicationControllerTest {
 
         ResponseEntity<Artefact> responseEntity = publicationController.uploadPublication(
             PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE, SENSITIVITY, LANGUAGE,
-            DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, LOCATION_ID, CONTENT_DATE, TEST_STRING, PAYLOAD
+            DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, LOCATION_ID, CONTENT_DATE, USER_ID, PAYLOAD
         );
 
         verify(publicationCreationService, never()).processCreatedPublication(any(Artefact.class), eq(PAYLOAD));
@@ -325,7 +360,7 @@ class PublicationControllerTest {
 
         ResponseEntity<Artefact> responseEntity = publicationController.uploadPublication(
             PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE,
-            SENSITIVITY, LANGUAGE, DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, LOCATION_ID, CONTENT_DATE, TEST_STRING, FILE
+            SENSITIVITY, LANGUAGE, DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, LOCATION_ID, CONTENT_DATE, USER_ID, FILE
         );
 
         verify(publicationCreationService).processCreatedPublication(any(Artefact.class));
@@ -350,7 +385,7 @@ class PublicationControllerTest {
 
         ResponseEntity<Artefact> responseEntity = publicationController.uploadPublication(
             PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE,
-            SENSITIVITY, LANGUAGE, DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, LOCATION_ID, CONTENT_DATE, TEST_STRING, FILE
+            SENSITIVITY, LANGUAGE, DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, LOCATION_ID, CONTENT_DATE, USER_ID, FILE
         );
 
         verify(publicationCreationService, never()).processCreatedPublication(any(Artefact.class));
@@ -370,7 +405,7 @@ class PublicationControllerTest {
 
         ResponseEntity<Artefact> responseEntity = publicationController.nonStrategicUploadPublication(
             PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE, SENSITIVITY, LANGUAGE, DISPLAY_FROM, DISPLAY_TO,
-            LIST_TYPE, LOCATION_ID, CONTENT_DATE, TEST_STRING, file
+            LIST_TYPE, LOCATION_ID, CONTENT_DATE, USER_ID, file
         );
 
         verify(publicationCreationService).processCreatedPublication(artefactWithId, PAYLOAD);
@@ -391,7 +426,7 @@ class PublicationControllerTest {
 
         ResponseEntity<Artefact> responseEntity = publicationController.nonStrategicUploadPublication(
             PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE, SENSITIVITY, LANGUAGE, DISPLAY_FROM, DISPLAY_TO,
-            LIST_TYPE, LOCATION_ID, CONTENT_DATE, TEST_STRING, file
+            LIST_TYPE, LOCATION_ID, CONTENT_DATE, USER_ID, file
         );
 
         verify(publicationCreationService, never()).processCreatedPublication(artefactWithId, PAYLOAD);
@@ -401,14 +436,57 @@ class PublicationControllerTest {
     }
 
     @Test
+    void testUploadHtmlFileToS3BucketSuccess() {
+        ReflectionTestUtils.setField(publicationController, "enableLcsu", true);
+
+        artefactWithoutId.setSearch(null);
+        artefactWithoutId.setIsFlatFile(true);
+        artefactWithoutId.setPayloadSize(0f);
+        artefactWithoutId.setType(ArtefactType.LCSU);
+
+        when(validationService.validateHeaders(any())).thenReturn(lcsuHeaders);
+        when(publicationServicesService.uploadHtmlFileToAwsS3Bucket(any())).thenReturn(any());
+
+        ResponseEntity<Artefact> responseEntity = publicationController.uploadPublication(
+            PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE_LCSU,
+            SENSITIVITY, LANGUAGE, DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, LOCATION_ID, CONTENT_DATE, USER_ID, FILE
+        );
+
+        assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode(), STATUS_CODE_MATCH);
+        assertEquals(artefactWithoutId, responseEntity.getBody(), ARTEFACT_MATCH_MESSAGE);
+    }
+
+    @Test
+    void testUploadHtmlFileToS3BucketFailWebClientException() {
+        ReflectionTestUtils.setField(publicationController, "enableLcsu", true);
+        when(validationService.validateHeaders(any())).thenReturn(lcsuHeaders);
+        WebClientResponseException webClientException =
+            new WebClientResponseException("Failed to upload file",
+                                           500, "Internal Server Error", null, null, null);
+
+        doThrow(webClientException).when(publicationServicesService).uploadHtmlFileToAwsS3Bucket(any());
+
+        try {
+            publicationController.uploadPublication(
+                PROVENANCE, SOURCE_ARTEFACT_ID, ArtefactType.LCSU,
+                SENSITIVITY, LANGUAGE, DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, LOCATION_ID, CONTENT_DATE, USER_ID, FILE
+            );
+            fail("Expected RuntimeException not thrown");
+        } catch (RuntimeException ex) {
+            assertTrue(ex.getMessage().contains("Failed to upload file"),
+                       "Exception message does not match expected message");
+        }
+    }
+
+    @Test
     void testDeleteArtefactReturnsOk() {
         doNothing().when(publicationRemovalService).deleteArtefactById(any(), any());
-        assertEquals(HttpStatus.OK, publicationController.deleteArtefact(TEST_STRING, TEST_STRING).getStatusCode(),
+        assertEquals(HttpStatus.OK, publicationController.deleteArtefact(USER_ID, TEST_STRING).getStatusCode(),
                      STATUS_CODE_MATCH
         );
         assertEquals(
             DELETED_MESSAGE + TEST_STRING,
-            publicationController.deleteArtefact(TEST_STRING, TEST_STRING).getBody(),
+            publicationController.deleteArtefact(USER_ID, TEST_STRING).getBody(),
             MESSAGES_MATCH
         );
     }
@@ -421,7 +499,7 @@ class PublicationControllerTest {
         try (LogCaptor logCaptor = LogCaptor.forClass(PublicationController.class)) {
             publicationController.uploadPublication(
                 PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE,
-                SENSITIVITY, LANGUAGE, DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, LOCATION_ID, CONTENT_DATE, TEST_STRING,
+                SENSITIVITY, LANGUAGE, DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, LOCATION_ID, CONTENT_DATE, USER_ID,
                 PAYLOAD
             );
             assertEquals(1, logCaptor.getInfoLogs().size(), "Should have logged upload");
@@ -440,7 +518,7 @@ class PublicationControllerTest {
 
     @Test
     void testArchiveArtefact() {
-        String issuerId = UUID.randomUUID().toString();
+        UUID issuerId = UUID.randomUUID();
         String artefactId = UUID.randomUUID().toString();
 
         doNothing().when(publicationRemovalService).archiveArtefactById(artefactId, issuerId, true);
@@ -451,5 +529,25 @@ class PublicationControllerTest {
         assertEquals(String.format("Artefact of ID %s has been archived", artefactId),
                      response.getBody(), "Response from archiving does not match expected message"
         );
+    }
+
+    @Test
+    void testInvalidLcsuArtefactTypeForProdEnvironmentSendsBadRequest() {
+        when(validationService.validateHeaders(any())).thenReturn(lcsuHeaders);
+
+        ReflectionTestUtils.setField(publicationController, "enableLcsu", false);
+
+        LcsuArtefactNotSupportedException exception = assertThrows(
+            LcsuArtefactNotSupportedException.class,
+            () -> publicationController.uploadPublication(
+                PROVENANCE, SOURCE_ARTEFACT_ID, ArtefactType.LCSU,
+                SENSITIVITY, LANGUAGE, DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, LOCATION_ID, CONTENT_DATE, USER_ID, FILE
+            ),
+            "Expected LcsuArtefactNotSupportedException to be thrown"
+        );
+
+        // Validate that the exception contains the correct message
+        assertEquals("LCSU artefact type is not supported.", exception.getMessage(),
+                     "Exception message does not match expected");
     }
 }
