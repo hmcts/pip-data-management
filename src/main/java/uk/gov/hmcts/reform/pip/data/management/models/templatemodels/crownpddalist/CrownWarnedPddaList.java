@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 
 import static uk.gov.hmcts.reform.pip.data.management.service.helpers.listmanipulation.CrownWarnedPddaListHelper.DATE_FORMATTER;
 
@@ -25,7 +26,7 @@ public class CrownWarnedPddaList {
         }
         try {
             return LocalDate.parse(fixedDate, DATE_FORMATTER);
-        } catch (Exception e) {
+        } catch (DateTimeParseException e) {
             return null;
         }
     }
