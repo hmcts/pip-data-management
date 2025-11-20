@@ -69,7 +69,7 @@ public class ArtefactArchived {
     private LocalDateTime archivedDate;
 
     @Column(name = "is_manually_deleted", nullable = false)
-    private Boolean isManuallyDeleted = false;
+    private Boolean isManuallyDeleted;
 
     public ArtefactArchived(Artefact artefact, boolean isManuallyDeleted) {
         this.setArtefactId(artefact.getArtefactId());
