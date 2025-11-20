@@ -6,55 +6,107 @@
     "data": {
       "job": {
         "printdate": "31/07/2025",
-        "sessions": [
-          {
-            "lja": "North Northumbria Magistrates' Court",
-            "court": "North Shields Magistrates' Court",
-            "room": 1,
-            "sstart": "09:00",
-            "blocks": [
-              {
-                "bstart": "09:00",
-                "cases": [
+        "sessions": {
+          "session": [
+            {
+              "lja": "North Northumbria Magistrates' Court",
+              "court": "North Shields Magistrates' Court",
+              "room": 1,
+              "sstart": "09:00",
+              "blocks": {
+                "block": [
                   {
-                    "caseno": "1000000000",
-                    "def_name": "Mr Test User"
+                    "bstart": "09:00",
+                    "cases": {
+                      "case": [
+                        {
+                          "caseno": "1000000000",
+                          "def_name": "Mr Test User"
+                        },
+                        {
+                          "caseno": "1000000001",
+                          "def_name": "Mrs Test User"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "lja": "North Northumbria Magistrates' Court",
+              "court": "North Shields Magistrates' Court",
+              "room": 2,
+              "sstart": "10:00",
+              "blocks": {
+                "block": [
+                  {
+                    "bstart": "10:00",
+                    "cases": {
+                      "case": [
+                        {
+                          "caseno": "1000000002",
+                          "def_name": "Mr Test User 2"
+                        }
+                      ]
+                    }
                   },
                   {
-                    "caseno": "1000000001",
-                    "def_name": "Mrs Test User"
+                    "bstart": "14:00",
+                    "cases": {
+                      "case": [
+                        {
+                          "caseno": "1000000003",
+                          "def_name": "Mr Test User 3"
+                        }
+                      ]
+                    }
                   }
                 ]
               }
-            ]
-          },
-          {
-            "lja": "North Northumbria Magistrates' Court",
-            "court": "North Shields Magistrates' Court",
-            "room": 2,
-            "sstart": "10:00",
-            "blocks": [
-              {
-                "bstart": "10:00",
-                "cases": [
+            },
+            {
+              "lja": "North Northumbria Magistrates' Court",
+              "court": "North Shields Magistrates' Court - Missing Blocks",
+              "room": 1,
+              "sstart": "09:00"
+            },
+            {
+              "lja": "North Northumbria Magistrates' Court",
+              "court": "North Shields Magistrates' Court - Missing Block",
+              "room": 1,
+              "sstart": "09:00",
+              "blocks": {}
+            },
+            {
+              "lja": "North Northumbria Magistrates' Court",
+              "court": "North Shields Magistrates' Court - Missing Cases",
+              "room": 1,
+              "sstart": "09:00",
+              "blocks": {
+                "block": [
                   {
-                    "caseno": "1000000002",
-                    "def_name": "Mr Test User 2"
-                  }
-                ]
-              },
-              {
-                "bstart": "14:00",
-                "cases": [
-                  {
-                    "caseno": "1000000003",
-                    "def_name": "Mr Test User 3"
+                    "bstart": "09:00"
                   }
                 ]
               }
-            ]
-          }
-        ]
+            },
+            {
+              "lja": "North Northumbria Magistrates' Court",
+              "court": "North Shields Magistrates' Court - Missing Case",
+              "room": 1,
+              "sstart": "09:00",
+              "blocks": {
+                "block": [
+                  {
+                    "bstart": "09:00",
+                    "cases": {}
+                  }
+                ]
+              }
+            }
+          ]
+        }
       }
     }
   }
