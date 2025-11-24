@@ -54,8 +54,6 @@ public class SjpPressListFileConverter extends ExcelAbstractList implements File
     public String convert(JsonNode jsonBody, Map<String, String> metadata, Map<String, Object> language)
         throws IOException {
         Context context = new Context();
-        List<SjpPressList> caseList = processRawJson(jsonBody);
-
         language.putAll(LanguageResourceHelper.readResourcesFromPath("common/linkToFact",
                                                                      Language.valueOf(metadata.get("language"))));
         String publishedDate = DateHelper.formatTimeStampToBst(
@@ -63,6 +61,7 @@ public class SjpPressListFileConverter extends ExcelAbstractList implements File
             false,
             true
         );
+        List<SjpPressList> caseList = processRawJson(jsonBody);
         context.setVariable("contentDate", metadata.get("contentDate"));
         context.setVariable("i18n", language);
         context.setVariable("publishedDate", publishedDate);

@@ -13,7 +13,8 @@ import java.util.Map;
 
 public class MagistratesPublicListFileConverter implements FileConverter {
     @Override
-    public String convert(JsonNode artefact, Map<String, String> metadata, Map<String, Object> language) throws IOException {
+    public String convert(JsonNode artefact, Map<String, String> metadata, Map<String, Object> language)
+        throws IOException {
         return TemplateEngine.processTemplate(
             metadata.get("listType"),
             preprocessArtefactForThymeLeafConverter(artefact, metadata, language)

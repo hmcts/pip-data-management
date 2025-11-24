@@ -13,7 +13,8 @@ import java.util.Map;
 
 public class MagistratesStandardListFileConverter implements FileConverter {
     @Override
-    public String convert(JsonNode artefact, Map<String, String> metadata, Map<String, Object> languageResources) throws IOException {
+    public String convert(JsonNode artefact, Map<String, String> metadata, Map<String, Object> languageResources)
+        throws IOException {
         Context context = new Context();
         Language language = Language.valueOf(metadata.get("language"));
         languageResources.putAll(LanguageResourceHelper.readResourcesFromPath("common/linkToFact", language));

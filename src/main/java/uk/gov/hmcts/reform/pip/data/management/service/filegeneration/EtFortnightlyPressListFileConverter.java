@@ -16,7 +16,8 @@ public class EtFortnightlyPressListFileConverter implements FileConverter {
     private static final String VENUE_CONTACT = "venueContact";
 
     @Override
-    public String convert(JsonNode artefact, Map<String, String> metadata, Map<String, Object> language) throws IOException {
+    public String convert(JsonNode artefact, Map<String, String> metadata, Map<String, Object> language)
+        throws IOException {
         return TemplateEngine.processTemplate(
             metadata.get("listType"),
             preprocessArtefactForThymeLeafConverter(artefact, metadata, language)

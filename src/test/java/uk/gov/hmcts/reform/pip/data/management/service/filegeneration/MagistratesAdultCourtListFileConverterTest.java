@@ -34,7 +34,7 @@ class MagistratesAdultCourtListFileConverterTest {
     private static final String LOCATION_NAME = "locationName";
     private static final String LANGUAGE = "language";
     private static final String LIST_TYPE = "listType";
-    private static final String FACT_LINK ="https://www.find-court-tribunal.service.gov.uk/";
+    private static final String FACT_LINK = "https://www.find-court-tribunal.service.gov.uk/";
 
     private static final String HTML_MESSAGE = "No html found";
     private static final String TITLE_MESSAGE = "Incorrect title found";

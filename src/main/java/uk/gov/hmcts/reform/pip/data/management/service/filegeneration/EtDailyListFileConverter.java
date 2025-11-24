@@ -15,7 +15,8 @@ public class EtDailyListFileConverter implements FileConverter {
     private static final String VENUE_CONTACT = "venueContact";
 
     @Override
-    public String convert(JsonNode artefact, Map<String, String> metadata, Map<String, Object> languageResources) throws IOException {
+    public String convert(JsonNode artefact, Map<String, String> metadata, Map<String, Object> languageResources)
+        throws IOException {
         Context context = new Context();
         Language language = Language.valueOf(metadata.get("language"));
         setPublicationDateTime(context, artefact.get("document").get("publicationDate").asText(), language);

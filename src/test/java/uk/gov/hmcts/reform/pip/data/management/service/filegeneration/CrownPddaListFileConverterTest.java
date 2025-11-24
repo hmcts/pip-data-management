@@ -34,7 +34,7 @@ class CrownPddaListFileConverterTest {
     private static final String HREF = "href";
 
     private static final String ADDRESS = "1 Main Road London A1 1AA";
-    private static final String FACT_LINK ="https://www.find-court-tribunal.service.gov.uk/";
+    private static final String FACT_LINK = "https://www.find-court-tribunal.service.gov.uk/";
 
     private static final String HEADING_MESSAGE = "Heading does not match";
     private static final String BODY_MESSAGE = "Body does not match";

@@ -22,7 +22,8 @@ public class CrownPddaListFileConverter implements FileConverter {
     private ListType listType;
 
     @Override
-    public String convert(JsonNode artefact, Map<String, String> metadata, Map<String, Object> languageResources) throws IOException {
+    public String convert(JsonNode artefact, Map<String, String> metadata, Map<String, Object> languageResources)
+        throws IOException {
         Context context = new Context();
         context.setVariable("metadata", metadata);
         context.setVariable("locationName", metadata.get("locationName"));
