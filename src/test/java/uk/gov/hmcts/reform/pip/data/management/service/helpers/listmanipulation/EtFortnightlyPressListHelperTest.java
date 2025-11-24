@@ -14,6 +14,7 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.Instant;
+import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -31,9 +32,11 @@ class EtFortnightlyPressListHelperTest {
     private static final String CASE = "case";
     private static final String PROVENANCE = "provenance";
 
-    Map<String, Object> languageResources = Map.of("rep", "Rep: ",
-                                          "noRep", "Rep: ",
-                                          "legalAdvisor", "Legal Advisor: ");
+    Map<String, Object> languageResources = new HashMap<>(Map.of(
+            "rep", "Rep: ",
+            "noRep", "Rep: ",
+            "legalAdvisor", "Legal Advisor: "
+    ));
 
     Map<String, String> metadataMap = Map.of("contentDate", Instant.now().toString(),
                                              PROVENANCE, PROVENANCE,
@@ -54,7 +57,7 @@ class EtFortnightlyPressListHelperTest {
     }
 
     @Test
-    void testEtFortnightlyListFormattedMethod() {
+    void testEtFortnightlyListFormattedMethod() throws IOException {
         preprocessArtefactForThymeLeafConverter(inputJson, metadataMap, languageResources);
         Language language = Language.valueOf(metadataMap.get("language"));
         EtFortnightlyPressListHelper.manipulatedListData(inputJson, language, true);
@@ -102,7 +105,7 @@ class EtFortnightlyPressListHelperTest {
     }
 
     @Test
-    void testSplitByCourtAndDateMethod() {
+    void testSplitByCourtAndDateMethod() throws IOException {
         preprocessArtefactForThymeLeafConverter(inputJson, metadataMap, languageResources);
         Language language = Language.valueOf(metadataMap.get("language"));
         EtFortnightlyPressListHelper.manipulatedListData(inputJson, language, true);
