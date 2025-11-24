@@ -36,6 +36,7 @@
 <div class="header">
   <h2 id="page-heading" class="govuk-heading-l"
       th:text="${i18n.inThe + i18n.courtOfProtection + artefact.get('regionName').asText()}"/>
+  <p class="govuk-body"> <a class="govuk-link" th:href="${i18n.factLink}" th:text="${i18n.factLinkText1}"></a><span th:text="${i18n.factLinkText2}"></span></p>
   <h2 class="govuk-heading-l" th:text="${i18n.regionalLeadJudge + artefact.get('regionalJoh').asText()}"/>
   <h2 class="govuk-heading-l" th:text="${i18n.sittingAt + locationName}"/>
   <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-1" th:text="${i18n.listFor + contentDate}"/>
