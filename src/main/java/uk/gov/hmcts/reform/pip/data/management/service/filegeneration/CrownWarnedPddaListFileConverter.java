@@ -4,10 +4,12 @@ import com.fasterxml.jackson.databind.JsonNode;
 import org.thymeleaf.context.Context;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.DateHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.GeneralHelper;
+import uk.gov.hmcts.reform.pip.data.management.service.helpers.LanguageResourceHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.listmanipulation.CrownPddaListHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.listmanipulation.CrownWarnedPddaListHelper;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 
+import java.io.IOException;
 import java.util.Map;
 
 public class CrownWarnedPddaListFileConverter implements FileConverter {
@@ -15,11 +17,12 @@ public class CrownWarnedPddaListFileConverter implements FileConverter {
     private static final String WARNED_LIST = "WarnedList";
 
     @Override
-    public String convert(JsonNode artefact, Map<String, String> metadata, Map<String, Object> languageResources) {
+    public String convert(JsonNode artefact, Map<String, String> metadata, Map<String, Object> languageResources) throws IOException {
         Context context = new Context();
         Language language = Language.valueOf(metadata.get("language"));
         context.setVariable("contentDate",
             CrownWarnedPddaListHelper.formatContentDate(metadata.get("contentDate"), language.toString()));
+        languageResources.putAll(LanguageResourceHelper.readResourcesFromPath("common/linkToFact", language));
         context.setVariable("i18n", languageResources);
         context.setVariable("locationName", metadata.get("locationName"));
         context.setVariable("provenance", metadata.get("provenance"));

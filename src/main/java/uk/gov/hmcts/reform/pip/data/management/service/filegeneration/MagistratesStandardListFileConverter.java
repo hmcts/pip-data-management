@@ -1,19 +1,23 @@
 package uk.gov.hmcts.reform.pip.data.management.service.filegeneration;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import lombok.SneakyThrows;
 import org.thymeleaf.context.Context;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.DateHelper;
+import uk.gov.hmcts.reform.pip.data.management.service.helpers.LanguageResourceHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.LocationHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.listmanipulation.MagistratesStandardListHelper;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 
+import java.io.IOException;
 import java.util.Map;
 
 public class MagistratesStandardListFileConverter implements FileConverter {
     @Override
-    public String convert(JsonNode artefact, Map<String, String> metadata, Map<String, Object> languageResources) {
+    public String convert(JsonNode artefact, Map<String, String> metadata, Map<String, Object> languageResources) throws IOException {
         Context context = new Context();
         Language language = Language.valueOf(metadata.get("language"));
+        languageResources.putAll(LanguageResourceHelper.readResourcesFromPath("common/linkToFact", language));
 
         setPublicationDateTime(context, artefact.get("document").get("publicationDate").asText(), language);
         context.setVariable("i18n", languageResources);

@@ -11,6 +11,7 @@ import org.thymeleaf.context.Context;
 import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.SjpPressList;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.DateHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.GeneralHelper;
+import uk.gov.hmcts.reform.pip.data.management.service.helpers.LanguageResourceHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.PartyRoleHelper;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
@@ -50,10 +51,13 @@ public class SjpPressListFileConverter extends ExcelAbstractList implements File
      * @return - html string of final output
      */
     @Override
-    public String convert(JsonNode jsonBody, Map<String, String> metadata, Map<String, Object> language) {
+    public String convert(JsonNode jsonBody, Map<String, String> metadata, Map<String, Object> language)
+        throws IOException {
         Context context = new Context();
         List<SjpPressList> caseList = processRawJson(jsonBody);
 
+        language.putAll(LanguageResourceHelper.readResourcesFromPath("common/linkToFact",
+                                                                     Language.valueOf(metadata.get("language"))));
         String publishedDate = DateHelper.formatTimeStampToBst(
             jsonBody.get("document").get("publicationDate").asText(), Language.valueOf(metadata.get("language")),
             false,
