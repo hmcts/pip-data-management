@@ -34,6 +34,8 @@ class CrownPddaListFileConverterTest {
     private static final String HREF = "href";
 
     private static final String ADDRESS = "1 Main Road London A1 1AA";
+    private static final String FACT_LINK ="https://www.find-court-tribunal.service.gov.uk/";
+
     private static final String HEADING_MESSAGE = "Heading does not match";
     private static final String BODY_MESSAGE = "Body does not match";
     private static final String LINK_MESSAGE = "Link does not match";
@@ -86,7 +88,7 @@ class CrownPddaListFileConverterTest {
                               .getElementsByTag("a").get(0)
                               .attr(HREF))
             .as(LINK_MESSAGE)
-            .isEqualTo("https://www.find-court-tribunal.service.gov.uk/");
+            .isEqualTo(FACT_LINK);
 
         softly.assertThat(document.getElementsByClass(BODY_CLASS).get(1).text())
             .as(BODY_MESSAGE)
@@ -159,7 +161,7 @@ class CrownPddaListFileConverterTest {
                               .getElementsByTag("a").get(0)
                               .attr(HREF))
             .as(LINK_MESSAGE)
-            .isEqualTo("https://www.find-court-tribunal.service.gov.uk/");
+            .isEqualTo(FACT_LINK);
 
         softly.assertThat(document.getElementsByClass(BODY_CLASS).get(1).text())
             .as(BODY_MESSAGE)
@@ -231,7 +233,7 @@ class CrownPddaListFileConverterTest {
                               .getElementsByTag("a").get(0)
                               .attr(HREF))
             .as(LINK_MESSAGE)
-            .isEqualTo("https://www.find-court-tribunal.service.gov.uk/");
+            .isEqualTo(FACT_LINK);
 
         softly.assertThat(document.getElementsByClass(BODY_CLASS).get(0).text())
             .as(LINK_MESSAGE)
@@ -309,7 +311,7 @@ class CrownPddaListFileConverterTest {
                               .getElementsByTag("a").get(0)
                               .attr(HREF))
             .as(LINK_MESSAGE)
-            .isEqualTo("https://www.find-court-tribunal.service.gov.uk/");
+            .isEqualTo(FACT_LINK);
 
         softly.assertThat(document.getElementsByClass(BODY_CLASS).get(0).text())
             .as(LINK_MESSAGE)

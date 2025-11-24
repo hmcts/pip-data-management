@@ -14,8 +14,8 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.Instant;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static uk.gov.hmcts.reform.pip.data.management.service.filegeneration.EtFortnightlyPressListFileConverter.preprocessArtefactForThymeLeafConverter;
@@ -32,7 +32,7 @@ class EtFortnightlyPressListHelperTest {
     private static final String CASE = "case";
     private static final String PROVENANCE = "provenance";
 
-    Map<String, Object> languageResources = new HashMap<>(Map.of(
+    Map<String, Object> languageResources = new ConcurrentHashMap<>(Map.of(
             "rep", "Rep: ",
             "noRep", "Rep: ",
             "legalAdvisor", "Legal Advisor: "

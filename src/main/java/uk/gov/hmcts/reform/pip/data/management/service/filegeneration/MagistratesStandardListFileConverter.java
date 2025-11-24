@@ -1,7 +1,6 @@
 package uk.gov.hmcts.reform.pip.data.management.service.filegeneration;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import lombok.SneakyThrows;
 import org.thymeleaf.context.Context;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.DateHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.LanguageResourceHelper;

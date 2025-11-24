@@ -34,6 +34,7 @@ class MagistratesAdultCourtListFileConverterTest {
     private static final String LOCATION_NAME = "locationName";
     private static final String LANGUAGE = "language";
     private static final String LIST_TYPE = "listType";
+    private static final String FACT_LINK ="https://www.find-court-tribunal.service.gov.uk/";
 
     private static final String HTML_MESSAGE = "No html found";
     private static final String TITLE_MESSAGE = "Incorrect title found";
@@ -145,7 +146,7 @@ class MagistratesAdultCourtListFileConverterTest {
                               .getElementsByTag("a").get(0)
                               .attr(HREF))
             .as(LINK_MESSAGE)
-            .isEqualTo("https://www.find-court-tribunal.service.gov.uk/");
+            .isEqualTo(FACT_LINK);
 
         softly.assertThat(document.getElementsByClass(BODY_CLASS).get(0).text())
             .as(LINK_MESSAGE)
@@ -192,7 +193,7 @@ class MagistratesAdultCourtListFileConverterTest {
                               .getElementsByTag("a").get(0)
                               .attr(HREF))
             .as(LINK_MESSAGE)
-            .isEqualTo("https://www.find-court-tribunal.service.gov.uk/");
+            .isEqualTo(FACT_LINK);
 
         softly.assertThat(document.getElementsByClass(BODY_CLASS).get(0).text())
             .as(LINK_MESSAGE)
@@ -239,7 +240,7 @@ class MagistratesAdultCourtListFileConverterTest {
                               .getElementsByTag("a").get(0)
                               .attr(HREF))
             .as(LINK_MESSAGE)
-            .isEqualTo("https://www.find-court-tribunal.service.gov.uk/");
+            .isEqualTo(FACT_LINK);
 
         softly.assertThat(document.getElementsByClass(BODY_CLASS).get(0).text())
             .as(LINK_MESSAGE)
@@ -286,7 +287,7 @@ class MagistratesAdultCourtListFileConverterTest {
                               .getElementsByTag("a").get(0)
                               .attr(HREF))
             .as(LINK_MESSAGE)
-            .isEqualTo("https://www.find-court-tribunal.service.gov.uk/");
+            .isEqualTo(FACT_LINK);
 
         softly.assertThat(document.getElementsByClass(BODY_CLASS).get(0).text())
             .as(LINK_MESSAGE)
