@@ -11,9 +11,9 @@ import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static com.google.common.base.CaseFormat.LOWER_CAMEL;
 import static com.google.common.base.CaseFormat.UPPER_UNDERSCORE;
@@ -56,9 +56,8 @@ public class NonStrategicListFileConverter implements FileConverter {
             );
             context.setVariable("data", formattedData);
         } catch (IllegalArgumentException e) {
-            Iterator<Map.Entry<String, JsonNode>> fields = payload.fields();
-            while (fields.hasNext()) {
-                Map.Entry<String, JsonNode> entry = fields.next();
+            Set<Map.Entry<String, JsonNode>> fields = payload.properties();
+            for (Map.Entry<String, JsonNode> entry : fields) {
                 String sheetName = entry.getKey();
                 JsonNode sheetData = entry.getValue();
                 List<Map<String, String>> sheetList = OBJECT_MAPPER.convertValue(sheetData, new TypeReference<>(){});

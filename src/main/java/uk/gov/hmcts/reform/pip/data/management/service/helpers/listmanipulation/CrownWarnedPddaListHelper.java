@@ -119,7 +119,7 @@ public final class CrownWarnedPddaListHelper {
         DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy", Locale.ENGLISH);
         LocalDate date = LocalDate.parse(contentDate, inputFormatter);
         LocalDate mondayDate = date.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
-        Locale locale = new Locale("welsh".equalsIgnoreCase(language) ? "cy" : "en", "GB");
+        Locale locale = Locale.of("welsh".equalsIgnoreCase(language) ? "cy" : "en", "GB");
         DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy", locale);
         return mondayDate.format(outputFormatter);
     }
