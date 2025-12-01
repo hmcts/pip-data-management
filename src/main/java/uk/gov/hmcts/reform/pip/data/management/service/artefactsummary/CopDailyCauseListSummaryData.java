@@ -27,7 +27,9 @@ public class CopDailyCauseListSummaryData implements ArtefactSummaryData {
                                     "Case reference",
                                     GeneralHelper.findAndReturnNodeText(hearingCase, "caseNumber"),
                                     "Case details",
-                                    GeneralHelper.findAndReturnNodeText(hearingCase, "caseSuppressionName"),
+                                    GeneralHelper.findAndReturnNodeText(hearingCase, "caseName"),
+                                    "Case type",
+                                    GeneralHelper.findAndReturnNodeText(hearingCase, "caseType"),
                                     "Hearing type",
                                     GeneralHelper.findAndReturnNodeText(hearing, "hearingType")
                                 );
