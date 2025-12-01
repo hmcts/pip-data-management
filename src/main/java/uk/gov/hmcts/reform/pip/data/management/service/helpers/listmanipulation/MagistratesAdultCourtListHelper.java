@@ -19,38 +19,56 @@ public final class MagistratesAdultCourtListHelper {
         JsonNode payload, Language language, boolean standardList) {
         List<MagistratesAdultCourtList> results = new ArrayList<>();
 
-        payload.get("document").get("data").get("job").get("sessions").forEach(sessionNode -> {
-            MagistratesAdultCourtList result = new MagistratesAdultCourtList();
-            result.setLja(sessionNode.get("lja").asText());
-            result.setCourtName(sessionNode.get("court").asText());
-            result.setCourtRoom(sessionNode.get("room").asText());
-            result.setSessionStartTime(DateHelper.convertTimeFormat(sessionNode.get("sstart").asText(),
-                                                                    "HH:mm"));
-            List<CaseInfo> cases = new ArrayList<>();
+        JsonNode sessionsNode = payload.path("document").path("data").path("job").path("sessions").path("session");
+        if (sessionsNode.isArray()) {
+            sessionsNode.forEach(sessionNode -> {
+                MagistratesAdultCourtList result = new MagistratesAdultCourtList();
+                result.setLja(sessionNode.get("lja").asText());
+                result.setCourtName(sessionNode.get("court").asText());
+                result.setCourtRoom(sessionNode.get("room").asText());
+                result.setSessionStartTime(DateHelper.convertTimeFormat(sessionNode.get("sstart").asText(),
+                                                                        "HH:mm"));
+                List<CaseInfo> cases = new ArrayList<>();
 
-            sessionNode.get("blocks").forEach(
-                blockNode -> blockNode.get("cases").forEach(caseNode -> {
-                    CaseInfo caseInfo = new CaseInfo();
-                    caseInfo.setBlockStartTime(
-                        DateHelper.convertTimeFormat(blockNode.get("bstart").asText(), "HH:mm")
-                    );
-                    caseInfo.setCaseNumber(caseNode.get("caseno").asText());
-                    caseInfo.setDefendantName(caseNode.get("def_name").asText());
+                JsonNode blocksNode = sessionNode.path("blocks").path("block");
+                if (blocksNode.isArray()) {
+                    blocksNode.forEach(blockNode -> {
+                        cases.addAll(processCases(blockNode, standardList, language));
+                    });
+                }
 
-                    if (standardList) {
-                        caseInfo.setDefendantDob(GeneralHelper.findAndReturnNodeText(caseNode, "def_dob"));
-                        caseInfo.setDefendantAge(GeneralHelper.findAndReturnNodeText(caseNode, "def_age"));
-                        caseInfo.setDefendantAddress(formatDefendantAddress(caseNode.get("def_addr")));
-                        caseInfo.setInformant(caseNode.get("inf").asText());
-                        caseInfo.setOffence(processOffences(caseNode.get("offences"), language));
-                    }
-                    cases.add(caseInfo);
-                })
-            );
-            result.setCases(cases);
-            results.add(result);
-        });
+                result.setCases(cases);
+                results.add(result);
+            });
+        }
+
         return results;
+    }
+
+    private static List<CaseInfo> processCases(JsonNode blockNode, boolean standardList, Language language) {
+        List<CaseInfo> cases = new ArrayList<>();
+        JsonNode casesNode = blockNode.path("cases").path("case");
+        if (casesNode.isArray()) {
+            casesNode.forEach(caseNode -> {
+                CaseInfo caseInfo = new CaseInfo();
+                caseInfo.setBlockStartTime(
+                    DateHelper.convertTimeFormat(blockNode.get("bstart").asText(), "HH:mm")
+                );
+                caseInfo.setCaseNumber(caseNode.get("caseno").asText());
+                caseInfo.setDefendantName(caseNode.get("def_name").asText());
+
+                if (standardList) {
+                    caseInfo.setDefendantDob(GeneralHelper.findAndReturnNodeText(caseNode, "def_dob"));
+                    caseInfo.setDefendantAge(GeneralHelper.findAndReturnNodeText(caseNode, "def_age"));
+                    caseInfo.setDefendantAddress(formatDefendantAddress(caseNode.get("def_addr")));
+                    caseInfo.setInformant(caseNode.get("inf").asText());
+                    caseInfo.setOffence(processOffences(caseNode.path("offences").path("offence"), language));
+                }
+                cases.add(caseInfo);
+            });
+        }
+
+        return cases;
     }
 
     private static String formatDefendantAddress(JsonNode addressNode) {
@@ -69,17 +87,19 @@ public final class MagistratesAdultCourtListHelper {
         List<String> offenceTitles = new ArrayList<>();
         List<String> offenceSummaries = new ArrayList<>();
 
-        offences.forEach(offenceNode -> {
-            offenceCodes.add(offenceNode.get("code").asText());
-            String offenceTitle = offenceNode.get(
-                language == Language.WELSH && offenceNode.has("cy_title") ? "cy_title" : "title"
-            ).asText();
-            offenceTitles.add(offenceTitle);
-            String offenceSummary = offenceNode.get(
-                language == Language.WELSH && offenceNode.has("cy_sum") ? "cy_sum" : "sum"
-            ).asText();
-            offenceSummaries.add(offenceSummary);
-        });
+        if (offences.isArray()) {
+            offences.forEach(offenceNode -> {
+                offenceCodes.add(offenceNode.get("code").asText());
+                String offenceTitle = offenceNode.get(
+                    language == Language.WELSH && offenceNode.has("cy_title") ? "cy_title" : "title"
+                ).asText();
+                offenceTitles.add(offenceTitle);
+                String offenceSummary = offenceNode.get(
+                    language == Language.WELSH && offenceNode.has("cy_sum") ? "cy_sum" : "sum"
+                ).asText();
+                offenceSummaries.add(offenceSummary);
+            });
+        }
 
         return new Offence(
             GeneralHelper.convertToDelimitedString(offenceCodes, ", "),
