@@ -133,18 +133,21 @@ public final class SscsListHelper {
         List<String> respondents = new ArrayList<>();
 
         if (node.has(PARTY)) {
-            for (JsonNode party : node.get(PARTY)) {
-                String partyRole = GeneralHelper.findAndReturnNodeText(party, PARTY_ROLE);
-                if (RESPONDENT_ROLE.equals(partyRole) && party.has(ORGANISATION_DETAILS)) {
-                    String respondent = GeneralHelper.findAndReturnNodeText(
-                        party.get(ORGANISATION_DETAILS), ORGANISATION_NAME
-                    );
-                    if (!respondent.isBlank()) {
-                        respondents.add(respondent);
-                    }
-                }
-            }
+            node.get(PARTY).forEach(party -> processParty(party, respondents));
         }
         return String.join(DELIMITER, respondents);
+    }
+
+    private static void processParty(JsonNode party, List<String> respondents) {
+        String partyRole = GeneralHelper.findAndReturnNodeText(party, PARTY_ROLE);
+        if (RESPONDENT_ROLE.equals(partyRole) && party.has(ORGANISATION_DETAILS)) {
+            String respondent = GeneralHelper.findAndReturnNodeText(
+                party.get(ORGANISATION_DETAILS), ORGANISATION_NAME
+            );
+            if (!respondent.isBlank()) {
+                respondents.add(respondent);
+            }
+        }
+
     }
 }

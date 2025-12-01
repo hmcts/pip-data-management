@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <style th:replace="css/template-styles :: page-govuk-classes"></style>
-  <style th:replace="css/template-styles :: accordion-classes"></style>
+  <style th:replace="~{css/template-styles :: page-govuk-classes}"></style>
+  <style th:replace="~{css/template-styles :: accordion-classes}"></style>
   <style th:inline="text">
     .site-header {
       position: relative;
@@ -85,7 +85,10 @@
                           <tr class="govuk-table__row">
                             <td class="govuk-table__cell" th:classappend="${noBorder}" th:text="${sitting.get('time').asText()}"/>
                             <td class="govuk-table__cell" th:classappend="${noBorder}" th:text="${case.get('caseNumber').asText()}"/>
-                            <td class="govuk-table__cell" th:classappend="${noBorder}" th:text="${case.get('caseSuppressionName').asText()}"/>
+                            <td class="govuk-table__cell" th:classappend="${noBorder}" th:text="${case.get('caseName').asText()}"/>
+<!--                            <td class="govuk-table__cell" th:classappend="${noBorder}" th:text="${case.get('caseType').asText()}"/>-->
+                            <td class="govuk-table__cell" th:classappend="${noBorder}" th:text="${case.get('caseType') == null || #strings.isEmpty(case.get('caseType').asText()) ? '' : case.get('caseType').asText()}"/>
+
                             <td class="govuk-table__cell" th:classappend="${noBorder}" th:text="${hearing.get('hearingType').asText()}"/>
                             <th:block th:if="${case.get('caseIndicator') != null}">
                               <td class="govuk-table__cell" th:classappend="${noBorder}"
