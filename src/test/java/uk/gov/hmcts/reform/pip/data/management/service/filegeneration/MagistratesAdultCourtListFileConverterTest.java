@@ -315,7 +315,7 @@ class MagistratesAdultCourtListFileConverterTest {
     void testStandardSessionHeadings(ListType listType) throws IOException {
         Map<String, String> metadata = createMetaDataMap(listType, Language.ENGLISH);
         String result = standardConverter.convert(standardInputJson, metadata, standardEnglishLanguageResource);
-        assertSessionHeadings(Jsoup.parse(result));
+        assertSessionHeadings(Jsoup.parse(result), 8);
     }
 
     @ParameterizedTest
@@ -324,15 +324,15 @@ class MagistratesAdultCourtListFileConverterTest {
     void testPublicSessionHeadings(ListType listType) throws IOException {
         Map<String, String> metadata = createMetaDataMap(listType, Language.ENGLISH);
         String result = publicConverter.convert(publicInputJson, metadata, publicEnglishLanguageResource);
-        assertSessionHeadings(Jsoup.parse(result));
+        assertSessionHeadings(Jsoup.parse(result), 6);
     }
 
-    private void assertSessionHeadings(Document document) {
+    private void assertSessionHeadings(Document document, int expectedSessions) {
         SoftAssertions softly = new SoftAssertions();
 
         softly.assertThat(document.getElementsByClass("site-header"))
             .as("Session heading count does not match")
-            .hasSize(2);
+            .hasSize(expectedSessions);
 
         String firstSessionHeading = document.getElementsByClass("site-header").get(0).text();
         softly.assertThat(firstSessionHeading)
