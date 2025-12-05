@@ -25,6 +25,11 @@ class CivilDailyCauseListFileConverterTest {
     private static final String OXFORD_COURT = "Oxford Combined Court Centre";
     private static final String TITLE_TEXT = "Incorrect Title Text";
     private static final String MANUAL_UPLOAD = "MANUAL_UPLOAD";
+    private static final String LINK_MESSAGE = "Link does not match";
+
+    private static final String LINK_CLASS = "govuk-link";
+    private static final String HREF = "href";
+    private static final String BODY_CLASS = "govuk-body";
 
     private static final Map<String, String> METADATA = Map.of(
         "contentDate", "20 August 2023",
@@ -57,8 +62,19 @@ class CivilDailyCauseListFileConverterTest {
             .as("incorrect document title")
             .isEqualTo("Civil Daily Cause List for");
 
+        assertThat(document.getElementsByClass(LINK_CLASS).get(0)
+                       .getElementsByTag("a").get(0)
+                       .attr(HREF))
+            .as(LINK_MESSAGE)
+            .isEqualTo("https://www.find-court-tribunal.service.gov.uk/");
+
+        assertThat(document.getElementsByClass(BODY_CLASS).get(0).text())
+            .as(LINK_MESSAGE)
+            .isEqualTo("Find contact details and other information about courts and tribunals in England "
+                           + "and Wales, and some non-devolved tribunals in Scotland.");
+
         assertThat(document.getElementsByTag("a")
-                       .get(0).attr("title"))
+                       .get(1).attr("title"))
             .as(TITLE_TEXT).contains("How to observe a court or tribunal hearing");
 
         assertFirstPageContent(document.getElementsByClass("first-page").get(0));
@@ -88,8 +104,19 @@ class CivilDailyCauseListFileConverterTest {
             .as("incorrect document title")
             .isEqualTo("Rhestr Ddyddiol o Achosion Sifil gyfer");
 
+        assertThat(document.getElementsByClass(LINK_CLASS).get(0)
+                       .getElementsByTag("a").get(0)
+                       .attr(HREF))
+            .as(LINK_MESSAGE)
+            .isEqualTo("https://www.find-court-tribunal.service.gov.uk/");
+
+        assertThat(document.getElementsByClass(BODY_CLASS).get(0).text())
+            .as(LINK_MESSAGE)
+            .isEqualTo("Find contact details and other information about courts and tribunals in England "
+                           + "and Wales, and some non-devolved tribunals in Scotland.");
+
         assertThat(document.getElementsByTag("a")
-                       .get(0).attr("title"))
+                       .get(1).attr("title"))
             .as(TITLE_TEXT).contains("Sut i arsylwi gwrandawiad llys neu dribiwnlys");
 
         assertThat(document.getElementsByClass("govuk-accordion__section-heading"))
@@ -112,7 +139,7 @@ class CivilDailyCauseListFileConverterTest {
 
         assertThat(element.getElementsByTag("p"))
             .as("Incorrect first page p elements")
-            .hasSize(8)
+            .hasSize(9)
             .extracting(Element::text)
             .contains("The venue line 1 town name AAA AAA",
                       "List for 20 August 2023",
@@ -175,7 +202,7 @@ class CivilDailyCauseListFileConverterTest {
 
     private void assertDataSource(Document document) {
         Elements elements = document.getElementsByTag("p");
-        assertThat(elements.get(10).text())
+        assertThat(elements.get(11).text())
             .as("Incorrect data source")
             .isEqualTo("Data Source: " + MANUAL_UPLOAD);
     }

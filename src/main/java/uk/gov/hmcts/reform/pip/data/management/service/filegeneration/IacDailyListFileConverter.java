@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.thymeleaf.context.Context;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.DateHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.JudiciaryHelper;
+import uk.gov.hmcts.reform.pip.data.management.service.helpers.LanguageResourceHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.PartyRoleHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.SittingHelper;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
@@ -30,6 +31,7 @@ public class IacDailyListFileConverter implements FileConverter {
         context.setVariable("locationName", metadata.get("locationName"));
         String publicationDate = artefact.get("document").get("publicationDate").asText();
         Language language = Language.valueOf(metadata.get("language"));
+        languageResources.putAll(LanguageResourceHelper.readResourcesFromPath("common/linkToFact", language));
         context.setVariable("publicationDate", DateHelper.formatTimeStampToBst(publicationDate, language,
                                                                                false, false
         ));

@@ -9,6 +9,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.thymeleaf.context.Context;
 import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.SjpPublicList;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.DateHelper;
+import uk.gov.hmcts.reform.pip.data.management.service.helpers.LanguageResourceHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.listmanipulation.SjpPublicListHelper;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
@@ -29,13 +30,16 @@ public class SjpPublicListFileConverter extends ExcelAbstractList implements Fil
      * @return the HTML representation of the SJP public cases
      */
     @Override
-    public String convert(JsonNode artefact, Map<String, String> metadata, Map<String,Object> language) {
+    public String convert(JsonNode artefact, Map<String, String> metadata, Map<String,Object> language)
+        throws IOException {
         Context context = new Context();
         String publicationDate = DateHelper.formatTimeStampToBst(
             artefact.get("document").get("publicationDate").textValue(), Language.valueOf(metadata.get("language")),
             false,
             true
         );
+        language.putAll(LanguageResourceHelper.readResourcesFromPath("common/linkToFact",
+                                                                     Language.valueOf(metadata.get("language"))));
         context.setVariable("publicationDate", publicationDate);
         context.setVariable("contentDate", metadata.get("contentDate"));
         context.setVariable("i18n", language);

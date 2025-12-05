@@ -107,6 +107,7 @@
   </div>
   <div class="mainHeaderText">
     <h1 th:text="${i18n.mainHeaderText}"/>
+    <p class="govuk-body"> <a class="govuk-link" th:href="${i18n.factLink}" th:text="${i18n.factLinkText1}"></a><span th:text="${i18n.factLinkText2}"></span></p>
     <h2 th:text="${metadata.locationName + i18n.headerSubText + metadata.contentDate}"/>
   </div>
   <div class="govuk-warning-text">

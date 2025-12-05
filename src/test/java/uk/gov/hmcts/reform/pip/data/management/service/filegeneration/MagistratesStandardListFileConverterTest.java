@@ -37,8 +37,11 @@ class MagistratesStandardListFileConverterTest {
     private static final String DEFENDANT_HEADING_MESSAGE = "Defendant heading does not match";
     private static final String CASE_INFO_MESSAGE = "Case info does not match";
     private static final String OFFENCE_MESSAGE = "Offence info does not match";
+    private static final String LINK_MESSAGE = "Link does not match";
 
     private static final String HEADING_CLASS = "govuk-heading-l";
+    private static final String LINK_CLASS = "govuk-link";
+    private static final String HREF = "href";
 
     private final MagistratesStandardListFileConverter converter = new MagistratesStandardListFileConverter();
 
@@ -89,7 +92,7 @@ class MagistratesStandardListFileConverterTest {
     }
 
     @Test
-    void testGeneralListInformationInEnglish() {
+    void testGeneralListInformationInEnglish() throws IOException {
         String outputHtml = converter.convert(inputJson, englishMetadata, englishLanguageResource);
         Document document = Jsoup.parse(outputHtml);
         SoftAssertions softly = new SoftAssertions();
@@ -106,11 +109,22 @@ class MagistratesStandardListFileConverterTest {
             .as(HEADER_MESSAGE)
             .contains("Magistrates Standard List for location");
 
-        softly.assertThat(document.getElementsByClass(BODY_CLASS).get(1).text())
+        softly.assertThat(document.getElementsByClass(LINK_CLASS).get(0)
+                              .getElementsByTag("a").get(0)
+                              .attr(HREF))
+            .as(LINK_MESSAGE)
+            .isEqualTo("https://www.find-court-tribunal.service.gov.uk/");
+
+        softly.assertThat(document.getElementsByClass(BODY_CLASS).get(0).text())
+            .as(LINK_MESSAGE)
+            .isEqualTo("Find contact details and other information about courts and tribunals in England "
+                           + "and Wales, and some non-devolved tribunals in Scotland.");
+
+        softly.assertThat(document.getElementsByClass(BODY_CLASS).get(2).text())
             .as(BODY_MESSAGE)
             .isEqualTo("Last updated: 01 December 2023 at 11:30pm");
 
-        softly.assertThat(document.getElementsByClass(BODY_CLASS).get(2).text())
+        softly.assertThat(document.getElementsByClass(BODY_CLASS).get(3).text())
             .as(BODY_MESSAGE)
             .contains("Draft: Version");
 
@@ -118,7 +132,7 @@ class MagistratesStandardListFileConverterTest {
     }
 
     @Test
-    void testGeneralListInformationInWelsh() {
+    void testGeneralListInformationInWelsh() throws IOException {
         String outputHtml = converter.convert(inputJson, welshMetadata, welshLanguageResource);
         Document document = Jsoup.parse(outputHtml);
         SoftAssertions softly = new SoftAssertions();
@@ -135,7 +149,18 @@ class MagistratesStandardListFileConverterTest {
             .as(HEADER_MESSAGE)
             .contains("Rhestr Safonol y Llys Ynadon ar gyfer location");
 
-        softly.assertThat(document.getElementsByClass(BODY_CLASS).get(2).text())
+        softly.assertThat(document.getElementsByClass(LINK_CLASS).get(0)
+                              .getElementsByTag("a").get(0)
+                              .attr(HREF))
+            .as(LINK_MESSAGE)
+            .isEqualTo("https://www.find-court-tribunal.service.gov.uk/");
+
+        softly.assertThat(document.getElementsByClass(BODY_CLASS).get(0).text())
+            .as(LINK_MESSAGE)
+            .isEqualTo("Dod o hyd i fanylion cyswllt a gwybodaeth arall am lysoedd a thribiwnlysoedd yng "
+                           + "Nghymru a Lloegr a rhai tribiwnlysoedd heb eu datganoli yn yr Alban.");
+
+        softly.assertThat(document.getElementsByClass(BODY_CLASS).get(3).text())
             .as(BODY_MESSAGE)
             .contains("Drafft: Fersiwn");
 
@@ -143,7 +168,7 @@ class MagistratesStandardListFileConverterTest {
     }
 
     @Test
-    void testCourtRoomHeadings() {
+    void testCourtRoomHeadings() throws IOException {
         String result = converter.convert(inputJson, englishMetadata, englishLanguageResource);
         Document document = Jsoup.parse(result);
         Elements heading = document.getElementsByClass(HEADING_CLASS);
@@ -165,7 +190,7 @@ class MagistratesStandardListFileConverterTest {
     }
 
     @Test
-    void testDefendantHeading() {
+    void testDefendantHeading() throws IOException {
         String result = converter.convert(inputJson, englishMetadata, englishLanguageResource);
         Document document = Jsoup.parse(result);
         Elements heading = document.getElementsByClass("govuk-heading-m");
@@ -207,49 +232,49 @@ class MagistratesStandardListFileConverterTest {
     }
 
     @Test
-    void testCaseInfoHeaders() {
+    void testCaseInfoHeaders() throws IOException {
         String result = converter.convert(inputJson, englishMetadata, englishLanguageResource);
         Document document = Jsoup.parse(result);
         Elements body = document.getElementsByClass(BODY_CLASS);
         SoftAssertions softly = new SoftAssertions();
 
-        softly.assertThat(body.get(9).text())
+        softly.assertThat(body.get(10).text())
             .as(CASE_INFO_MESSAGE)
             .contains("1. Sitting at 1:30pm for 2 hours 30 mins [2 of 3]");
 
-        softly.assertThat(body.get(10).text())
+        softly.assertThat(body.get(11).text())
             .as(CASE_INFO_MESSAGE)
             .contains("DOB and Age:");
 
-        softly.assertThat(body.get(11).text())
+        softly.assertThat(body.get(12).text())
             .as(CASE_INFO_MESSAGE)
             .contains("Defendant Address:");
 
-        softly.assertThat(body.get(12).text())
+        softly.assertThat(body.get(13).text())
             .as(CASE_INFO_MESSAGE)
             .contains("Prosecuting Authority:");
 
-        softly.assertThat(body.get(13).text())
+        softly.assertThat(body.get(14).text())
             .as(CASE_INFO_MESSAGE)
             .contains("Hearing Number:");
 
-        softly.assertThat(body.get(14).text())
+        softly.assertThat(body.get(15).text())
             .as(CASE_INFO_MESSAGE)
             .contains("Attendance Method:");
 
-        softly.assertThat(body.get(15).text())
+        softly.assertThat(body.get(16).text())
             .as(CASE_INFO_MESSAGE)
             .contains("Case Ref:");
 
-        softly.assertThat(body.get(16).text())
+        softly.assertThat(body.get(17).text())
             .as(CASE_INFO_MESSAGE)
             .contains("ASN:");
 
-        softly.assertThat(body.get(17).text())
+        softly.assertThat(body.get(18).text())
             .as(CASE_INFO_MESSAGE)
             .contains("Hearing Type:");
 
-        softly.assertThat(body.get(18).text())
+        softly.assertThat(body.get(19).text())
             .as(CASE_INFO_MESSAGE)
             .contains("Panel:");
 
@@ -257,45 +282,45 @@ class MagistratesStandardListFileConverterTest {
     }
 
     @Test
-    void testCaseInfoValue() {
+    void testCaseInfoValue() throws IOException {
         String result = converter.convert(inputJson, englishMetadata, englishLanguageResource);
         Document document = Jsoup.parse(result);
         Elements body = document.getElementsByClass(BODY_CLASS);
         SoftAssertions softly = new SoftAssertions();
 
-        softly.assertThat(body.get(10).text())
+        softly.assertThat(body.get(11).text())
             .as(CASE_INFO_MESSAGE)
             .contains("01/01/1983 Age: 39");
 
-        softly.assertThat(body.get(11).text())
+        softly.assertThat(body.get(12).text())
             .as(CASE_INFO_MESSAGE)
             .contains("Address Line 1, Address Line 2, Town A, County A, AA1 AA1");
 
-        softly.assertThat(body.get(12).text())
+        softly.assertThat(body.get(13).text())
             .as(CASE_INFO_MESSAGE)
             .contains("Test1234");
 
-        softly.assertThat(body.get(13).text())
+        softly.assertThat(body.get(14).text())
             .as(CASE_INFO_MESSAGE)
             .contains("12");
 
-        softly.assertThat(body.get(14).text())
+        softly.assertThat(body.get(15).text())
             .as(CASE_INFO_MESSAGE)
             .contains("VIDEO HEARING");
 
-        softly.assertThat(body.get(15).text())
+        softly.assertThat(body.get(16).text())
             .as(CASE_INFO_MESSAGE)
             .contains("45684548");
 
-        softly.assertThat(body.get(16).text())
+        softly.assertThat(body.get(17).text())
             .as(CASE_INFO_MESSAGE)
             .contains("Need to confirm");
 
-        softly.assertThat(body.get(17).text())
+        softly.assertThat(body.get(18).text())
             .as(CASE_INFO_MESSAGE)
             .contains("mda");
 
-        softly.assertThat(body.get(18).text())
+        softly.assertThat(body.get(19).text())
             .as(CASE_INFO_MESSAGE)
             .contains("ADULT");
 
@@ -303,7 +328,7 @@ class MagistratesStandardListFileConverterTest {
     }
 
     @Test
-    void testOffenceContents() {
+    void testOffenceContents() throws IOException {
         String result = converter.convert(inputJson, englishMetadata, englishLanguageResource);
         Document document = Jsoup.parse(result);
         SoftAssertions softly = new SoftAssertions();

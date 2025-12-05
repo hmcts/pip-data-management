@@ -23,6 +23,11 @@ class IacDailyListFileConverterTest {
     private static final IacDailyListFileConverter CONVERTER = new IacDailyListFileConverter();
 
     private static final String GOVUK_TABLE_BODY = "govuk-table__body";
+    private static final String LINK_CLASS = "govuk-link";
+    private static final String HREF = "href";
+    private static final String BODY_CLASS = "govuk-body";
+
+    private static final String LINK_MESSAGE = "Link does not match";
     private static final String TABLE_ROW_ERROR = "Incorrect table rows";
     private static final String CASE_REF = "12341234 [2 of 3]";
     private static final String RESPONDENT = "Authority Surname";
@@ -58,6 +63,17 @@ class IacDailyListFileConverterTest {
                 "Location Name Daily List" + (listType.equals(ListType.IAC_DAILY_LIST_ADDITIONAL_CASES)
                     ? " - Additional Cases" : "")
             );
+
+        softly.assertThat(doc.getElementsByClass(LINK_CLASS).get(0)
+                              .getElementsByTag("a").get(0)
+                              .attr(HREF))
+            .as(LINK_MESSAGE)
+            .isEqualTo("https://www.find-court-tribunal.service.gov.uk/");
+
+        softly.assertThat(doc.getElementsByClass(BODY_CLASS).get(0).text())
+            .as(LINK_MESSAGE)
+            .isEqualTo("Find contact details and other information about courts and tribunals in England "
+                           + "and Wales, and some non-devolved tribunals in Scotland.");
 
         softly.assertThat(doc.getElementsByClass("header").get(0).getElementsByTag("p"))
             .as("Incorrect p elements")

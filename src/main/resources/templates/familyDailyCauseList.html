@@ -39,6 +39,7 @@
 <body>
 <div class = "header">
   <h2 id="page-heading" class="govuk-heading-l" th:text="${i18n.listName + locationName}"/>
+  <p class="govuk-body"> <a class="govuk-link" th:href="${i18n.factLink}" th:text="${i18n.factLinkText1}"></a><span th:text="${i18n.factLinkText2}"></span></p>
   <p class="govuk-body">
     <span th:each="address : ${venueAddress}">
       <td th:text="${address}"/>

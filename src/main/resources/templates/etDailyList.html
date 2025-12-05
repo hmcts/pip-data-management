@@ -45,7 +45,7 @@
 <body>
 <div class="header">
   <h2 id="page-heading1" class="govuk-heading-l" th:text="${i18n.title + ': ' + region}"/>
-
+  <p class="govuk-body"> <a class="govuk-link" th:href="${i18n.factLink}" th:text="${i18n.factLinkText1}"></a><span th:text="${i18n.factLinkText2}"></span></p>
   <p id="content-date" class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-1" th:text="${i18n.listFor + contentDate}"/>
   <p id="publication-date" class="govuk-body" th:text="${i18n.lastUpdated + publicationDate + i18n.at + publicationTime}"/>
 

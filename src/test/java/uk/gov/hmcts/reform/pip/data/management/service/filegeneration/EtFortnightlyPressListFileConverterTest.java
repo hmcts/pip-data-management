@@ -26,8 +26,14 @@ class EtFortnightlyPressListFileConverterTest {
         new EtFortnightlyPressListFileConverter();
 
     private static final String HEADER_TEXT = "Incorrect header text";
+    private static final String LINK_MESSAGE = "Link does not match";
+
     private static final String PROVENANCE = "provenance";
     private static final String REGION = "regionName";
+
+    private static final String LINK_CLASS = "govuk-link";
+    private static final String HREF = "href";
+    private static final String BODY_CLASS = "govuk-body";
 
     @Test
     void testEtFortnightlyPressListTemplate() throws IOException {
@@ -64,8 +70,19 @@ class EtFortnightlyPressListFileConverterTest {
                        .get(0).text())
             .as(HEADER_TEXT).contains("Employment Tribunals Fortnightly List: " + REGION);
 
-        assertThat(document.getElementsByClass("govuk-body")
-                       .get(2).text())
+        assertThat(document.getElementsByClass(LINK_CLASS).get(0)
+                              .getElementsByTag("a").get(0)
+                              .attr(HREF))
+            .as(LINK_MESSAGE)
+            .isEqualTo("https://www.find-court-tribunal.service.gov.uk/");
+
+        assertThat(document.getElementsByClass(BODY_CLASS).get(0).text())
+            .as(LINK_MESSAGE)
+            .isEqualTo("Find contact details and other information about courts and tribunals in England "
+                           + "and Wales, and some non-devolved tribunals in Scotland.");
+
+        assertThat(document.getElementsByClass(BODY_CLASS)
+                       .get(3).text())
             .as(HEADER_TEXT).contains("5 Test Street");
 
         assertThat(document.getElementsByTag("td"))
@@ -128,8 +145,19 @@ class EtFortnightlyPressListFileConverterTest {
                        .get(0).text())
             .as(HEADER_TEXT).contains("Tribiwnlysoedd Cyflogaeth Rhestr Ddyddiol: " + REGION);
 
-        assertThat(document.getElementsByClass("govuk-body")
-                       .get(2).text())
+        assertThat(document.getElementsByClass(LINK_CLASS).get(0)
+                              .getElementsByTag("a").get(0)
+                              .attr(HREF))
+            .as(LINK_MESSAGE)
+            .isEqualTo("https://www.find-court-tribunal.service.gov.uk/");
+
+        assertThat(document.getElementsByClass(BODY_CLASS).get(0).text())
+            .as(LINK_MESSAGE)
+            .isEqualTo("Dod o hyd i fanylion cyswllt a gwybodaeth arall am lysoedd a thribiwnlysoedd yng "
+                           + "Nghymru a Lloegr a rhai tribiwnlysoedd heb eu datganoli yn yr Alban.");
+
+        assertThat(document.getElementsByClass(BODY_CLASS)
+                       .get(3).text())
             .as(HEADER_TEXT).contains("5 Test Street");
 
     }

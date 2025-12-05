@@ -26,8 +26,13 @@ class MagistratesPublicListFileConverterTest {
         = new MagistratesPublicListFileConverter();
 
     private static final String HEADER_TEXT = "Incorrect header text";
+    private static final String LINK_MESSAGE = "Link does not match";
+
     private static final String PROVENANCE = "provenance";
+
     private static final String BODY_CLASS = "govuk-body";
+    private static final String LINK_CLASS = "govuk-link";
+    private static final String HREF = "href";
 
     @Test
     void testMagistratesPublicListTemplate() throws IOException {
@@ -66,23 +71,34 @@ class MagistratesPublicListFileConverterTest {
             .as(HEADER_TEXT)
             .isEqualTo("Magistrates Public List for location");
 
-        softly.assertThat(document.getElementsByClass(BODY_CLASS)
-                              .get(1).text())
-            .as(HEADER_TEXT)
-            .isEqualTo("Last updated 14 September 2020 at 12:30am");
+        softly.assertThat(document.getElementsByClass(LINK_CLASS).get(0)
+                              .getElementsByTag("a").get(0)
+                              .attr(HREF))
+            .as(LINK_MESSAGE)
+            .isEqualTo("https://www.find-court-tribunal.service.gov.uk/");
+
+        softly.assertThat(document.getElementsByClass(BODY_CLASS).get(0).text())
+            .as(LINK_MESSAGE)
+            .isEqualTo("Find contact details and other information about courts and tribunals in England "
+                           + "and Wales, and some non-devolved tribunals in Scotland.");
 
         softly.assertThat(document.getElementsByClass(BODY_CLASS)
                               .get(2).text())
             .as(HEADER_TEXT)
+            .isEqualTo("Last updated 14 September 2020 at 12:30am");
+
+        softly.assertThat(document.getElementsByClass(BODY_CLASS)
+                              .get(3).text())
+            .as(HEADER_TEXT)
             .isEqualTo("Draft: Version");
 
         softly.assertThat(document.getElementsByClass(BODY_CLASS)
-                              .get(4).text())
+                              .get(5).text())
             .as(HEADER_TEXT)
             .isEqualTo("Telephone: 01772 844700");
 
         softly.assertThat(document.getElementsByClass(BODY_CLASS)
-                              .get(5).text())
+                              .get(6).text())
             .as(HEADER_TEXT)
             .isEqualTo("Email: court1@moj.gov.uk");
 
@@ -150,23 +166,34 @@ class MagistratesPublicListFileConverterTest {
             .as(HEADER_TEXT)
             .isEqualTo("Rhestr Gyhoeddus y Llys Ynadon ar gyfer location");
 
-        softly.assertThat(document.getElementsByClass(BODY_CLASS)
-                              .get(1).text())
-            .as(HEADER_TEXT)
-            .isEqualTo("Diweddarwyd diwethaf 14 September 2020 am 12:30am");
+        softly.assertThat(document.getElementsByClass(LINK_CLASS).get(0)
+                              .getElementsByTag("a").get(0)
+                              .attr(HREF))
+            .as(LINK_MESSAGE)
+            .isEqualTo("https://www.find-court-tribunal.service.gov.uk/");
+
+        softly.assertThat(document.getElementsByClass(BODY_CLASS).get(0).text())
+            .as(LINK_MESSAGE)
+            .isEqualTo("Dod o hyd i fanylion cyswllt a gwybodaeth arall am lysoedd a thribiwnlysoedd yng "
+                           + "Nghymru a Lloegr a rhai tribiwnlysoedd heb eu datganoli yn yr Alban.");
 
         softly.assertThat(document.getElementsByClass(BODY_CLASS)
                               .get(2).text())
             .as(HEADER_TEXT)
+            .isEqualTo("Diweddarwyd diwethaf 14 September 2020 am 12:30am");
+
+        softly.assertThat(document.getElementsByClass(BODY_CLASS)
+                              .get(3).text())
+            .as(HEADER_TEXT)
             .isEqualTo("Drafft: Fersiwn");
 
         softly.assertThat(document.getElementsByClass(BODY_CLASS)
-                              .get(4).text())
+                              .get(5).text())
             .as(HEADER_TEXT)
             .isEqualTo("Rhif ffôn: 01772 844700");
 
         softly.assertThat(document.getElementsByClass(BODY_CLASS)
-                              .get(5).text())
+                              .get(6).text())
             .as(HEADER_TEXT)
             .isEqualTo("E-bost: court1@moj.gov.uk");
 

@@ -24,6 +24,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class SjpPublicListFileConverterTest {
+    private static final String LINK_CLASS = "govuk-link";
+    private static final String HREF = "href";
+
+    private static final String LINK_MESSAGE = "Link does not match";
+
     private final SjpPublicListFileConverter converter = new SjpPublicListFileConverter();
 
     @ParameterizedTest
@@ -96,6 +101,12 @@ class SjpPublicListFileConverterTest {
             .extracting(Element::text)
             .contains(expectedTitle);
 
+        assertThat(doc.getElementsByClass(LINK_CLASS).get(0)
+                              .getElementsByTag("a").get(0)
+                              .attr(HREF))
+            .as(LINK_MESSAGE)
+            .isEqualTo("https://www.find-court-tribunal.service.gov.uk/");
+
         assertThat(doc.getElementsByTag("h3"))
             .as("Incorrect h3 element")
             .hasSize(1)
@@ -104,9 +115,11 @@ class SjpPublicListFileConverterTest {
 
         assertThat(doc.getElementsByClass("header").get(0).getElementsByTag("p"))
             .as("Incorrect p elements")
-            .hasSize(2)
+            .hasSize(3)
             .extracting(Element::text)
             .containsExactly(
+                "Find contact details and other information about courts and tribunals in England and Wales, "
+                    + "and some non-devolved tribunals in Scotland.",
                 "List for 1 July 2022",
                 "Published: 01 September 2023 at 11:00"
             );
