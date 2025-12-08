@@ -20,6 +20,11 @@ class EtDailyListFileConverterTest {
     private static final String CONTENT_DATE = "20 October 2022";
     private static final String ENGLISH = "ENGLISH";
     private static final String REGION_NAME = "Test region";
+    private static final String LINK_MESSAGE = "Link does not match";
+
+    private static final String LINK_CLASS = "govuk-link";
+    private static final String HREF = "href";
+    private static final String BODY_CLASS = "govuk-body";
 
     private final EtDailyListFileConverter converter = new EtDailyListFileConverter();
 
@@ -46,6 +51,17 @@ class EtDailyListFileConverterTest {
                 "Venue: Leicester Crown Court",
                 "Venue: Nottingham Justice Centre"
             );
+
+        softly.assertThat(doc.getElementsByClass(LINK_CLASS).get(0)
+                              .getElementsByTag("a").get(0)
+                              .attr(HREF))
+            .as(LINK_MESSAGE)
+            .isEqualTo("https://www.find-court-tribunal.service.gov.uk/");
+
+        softly.assertThat(doc.getElementsByClass(BODY_CLASS).get(0).text())
+            .as(LINK_MESSAGE)
+            .isEqualTo("Find contact details and other information about courts and tribunals in England "
+                           + "and Wales, and some non-devolved tribunals in Scotland.");
 
         softly.assertThat(doc.getElementsByTag("h3"))
             .as("Incorrect h3 element")
