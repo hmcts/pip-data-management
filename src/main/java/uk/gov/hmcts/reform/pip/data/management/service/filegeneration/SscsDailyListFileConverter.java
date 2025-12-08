@@ -24,6 +24,7 @@ public class SscsDailyListFileConverter implements FileConverter {
         Context context = new Context();
         Language language = Language.valueOf(metadata.get("language"));
         languageResources.putAll(LanguageResourceHelper.readResourcesFromPath("common/openJusticeStatement", language));
+        languageResources.putAll(LanguageResourceHelper.readResourcesFromPath("common/linkToFact", language));
 
         context.setVariable("i18n", languageResources);
         context.setVariable("metadata", metadata);
