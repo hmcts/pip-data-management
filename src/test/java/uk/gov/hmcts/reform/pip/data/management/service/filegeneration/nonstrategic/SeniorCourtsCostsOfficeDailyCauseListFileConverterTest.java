@@ -20,6 +20,7 @@ import java.nio.charset.Charset;
 import java.util.Map;
 import java.util.Objects;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.SENIOR_COURTS_COSTS_OFFICE_DAILY_CAUSE_LIST;
 
 @ActiveProfiles("test")
@@ -47,6 +48,7 @@ class SeniorCourtsCostsOfficeDailyCauseListFileConverterTest {
     private static final String SUMMARY_TEXT_CLASS = "govuk-details__text";
     private static final String LINK_CLASS = "govuk-link";
     private static final String HREF = "href";
+    private static final String BODY_CLASS = "govuk-body";
 
     private static final String TITLE_MESSAGE = "Title does not match";
     private static final String HEADER_MESSAGE = "Header does not match";
@@ -55,6 +57,7 @@ class SeniorCourtsCostsOfficeDailyCauseListFileConverterTest {
     private static final String LAST_UPDATED_DATE_MESSAGE = "Last updated date does not match";
     private static final String IMPORTANT_INFORMATION_MESSAGE = "Important information does not match";
     private static final String TABLE_HEADERS_MESSAGE = "Table headers does not match";
+    private static final String LINK_MESSAGE = "Link does not match";
 
     private final NonStrategicListFileConverter converter = new NonStrategicListFileConverter();
 
@@ -100,6 +103,17 @@ class SeniorCourtsCostsOfficeDailyCauseListFileConverterTest {
             .as(HEADER_MESSAGE)
             .isEqualTo("Senior Courts Costs Office Daily Cause List");
 
+        softly.assertThat(document.getElementsByClass(LINK_CLASS).get(0)
+                              .getElementsByTag("a").get(0)
+                              .attr(HREF))
+            .as(LINK_MESSAGE)
+            .isEqualTo("https://www.find-court-tribunal.service.gov.uk/");
+
+        assertThat(document.getElementsByClass(BODY_CLASS).get(0).text())
+            .as(LINK_MESSAGE)
+            .isEqualTo("Find contact details and other information about courts and tribunals in England "
+                           + "and Wales, and some non-devolved tribunals in Scotland.");
+
         softly.assertThat(document.getElementById(VENUE_NAME_ELEMENT).text())
             .as(VENUE_MESSAGE)
             .isEqualTo("Royal Courts of Justice");
@@ -129,7 +143,7 @@ class SeniorCourtsCostsOfficeDailyCauseListFileConverterTest {
             .contains("Hearings in the Senior Courts Costs Office will be held in person unless the notice of hearing "
                           + "has directed otherwise.");
 
-        softly.assertThat(document.getElementsByClass(LINK_CLASS).get(0)
+        softly.assertThat(document.getElementsByClass(LINK_CLASS).get(1)
                               .getElementsByTag("a").get(0)
                               .attr(HREF))
             .as(IMPORTANT_INFORMATION_MESSAGE)
@@ -183,6 +197,12 @@ class SeniorCourtsCostsOfficeDailyCauseListFileConverterTest {
             .as(HEADER_MESSAGE)
             .isEqualTo("Rhestr Achosion Dyddiol Swyddfa Costau’r Uwchlysoedd");
 
+        softly.assertThat(document.getElementsByClass(LINK_CLASS).get(0)
+                              .getElementsByTag("a").get(0)
+                              .attr(HREF))
+            .as(LINK_MESSAGE)
+            .isEqualTo("https://www.find-court-tribunal.service.gov.uk/");
+
         softly.assertThat(document.getElementById(VENUE_NAME_ELEMENT).text())
             .as(VENUE_MESSAGE)
             .isEqualTo("Llysoedd Barn Brenhinol");
@@ -212,11 +232,16 @@ class SeniorCourtsCostsOfficeDailyCauseListFileConverterTest {
             .contains("Bydd gwrandawiadau a gynhelir yn Swyddfa Costau’r Uwch Lysoedd yn cael eu cynnal yn wyneb yn "
                           + "wyneb oni bai bod yr hysbysiad o wrandawiad wedi cyfarwyddo fel arall.");
 
-        softly.assertThat(document.getElementsByClass(LINK_CLASS).get(0)
+        softly.assertThat(document.getElementsByClass(LINK_CLASS).get(1)
                               .getElementsByTag("a").get(0)
                               .attr(HREF))
             .as(IMPORTANT_INFORMATION_MESSAGE)
             .isEqualTo("https://www.gov.uk/guidance/observe-a-court-or-tribunal-hearing");
+
+        assertThat(document.getElementsByClass(BODY_CLASS).get(0).text())
+            .as(LINK_MESSAGE)
+            .isEqualTo("Dod o hyd i fanylion cyswllt a gwybodaeth arall am lysoedd a thribiwnlysoedd yng "
+                           + "Nghymru a Lloegr a rhai tribiwnlysoedd heb eu datganoli yn yr Alban.");
 
         softly.assertThat(document.getElementsByTag("th"))
             .as(TABLE_HEADERS_MESSAGE)

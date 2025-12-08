@@ -30,6 +30,7 @@
 <div class="header">
   <h2 id="page-heading" class="govuk-heading-l" th:text="${i18n.heading}"/>
   <h2 id="page-heading" class="govuk-heading-l" th:text="${locationName + i18n.dailyList}"/>
+  <p class="govuk-body"> <a class="govuk-link" th:href="${i18n.factLink}" th:text="${i18n.factLinkText1}"></a><span th:text="${i18n.factLinkText2}"></span></p>
   <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-1" th:text="${i18n.listFor + contentDate}"/>
   <p class="govuk-body" th:text="${i18n.lastUpdated + publicationDate + i18n.at + publicationTime}"/>
   <details class="govuk-details">
