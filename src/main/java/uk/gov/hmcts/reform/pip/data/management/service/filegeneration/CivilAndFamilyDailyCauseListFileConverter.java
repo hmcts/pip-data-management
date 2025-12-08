@@ -14,6 +14,7 @@ public class CivilAndFamilyDailyCauseListFileConverter implements FileConverter 
         throws IOException {
         Language language = Language.valueOf(metadata.get("language"));
         languageResources.putAll(LanguageResourceHelper.readResourcesFromPath("common/openJusticeStatement", language));
+        languageResources.putAll(LanguageResourceHelper.readResourcesFromPath("common/linkToFact", language));
 
         return TemplateEngine.processTemplate(
             metadata.get("listType"),
