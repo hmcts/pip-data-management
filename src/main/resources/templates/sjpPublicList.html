@@ -38,6 +38,7 @@
 <body>
 <div class="header">
   <h2 th:text="${i18n.listTitle}"/>
+  <p class="govuk-body"> <a class="govuk-link" th:href="${i18n.factLink}" th:text="${i18n.factLinkText1}"></a><span th:text="${i18n.factLinkText2}"></span></p>
   <p th:text="${i18n.listFor + contentDate}"/>
   <p th:text="${i18n.published + publicationDate}"/>
   <h3 th:text="${i18n.subHeader}"/>

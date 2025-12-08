@@ -4,19 +4,23 @@ import com.fasterxml.jackson.databind.JsonNode;
 import org.thymeleaf.context.Context;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.DateHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.GeneralHelper;
+import uk.gov.hmcts.reform.pip.data.management.service.helpers.LanguageResourceHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.listmanipulation.EtDailyListHelper;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 
+import java.io.IOException;
 import java.util.Map;
 
 public class EtDailyListFileConverter implements FileConverter {
     private static final String VENUE_CONTACT = "venueContact";
 
     @Override
-    public String convert(JsonNode artefact, Map<String, String> metadata, Map<String, Object> languageResources) {
+    public String convert(JsonNode artefact, Map<String, String> metadata, Map<String, Object> languageResources)
+        throws IOException {
         Context context = new Context();
         Language language = Language.valueOf(metadata.get("language"));
         setPublicationDateTime(context, artefact.get("document").get("publicationDate").asText(), language);
+        languageResources.putAll(LanguageResourceHelper.readResourcesFromPath("common/linkToFact", language));
 
         context.setVariable("contentDate", metadata.get("contentDate"));
         context.setVariable("locationName", metadata.get("locationName"));
