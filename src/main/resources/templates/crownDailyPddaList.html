@@ -170,6 +170,7 @@
 <body>
 <div>
   <h1 id="page-heading" class="govuk-heading-l site-address" th:text="${i18n.heading + locationName}"/>
+  <p class="govuk-body"> <a class="govuk-link" th:href="${i18n.factLink}" th:text="${i18n.factLinkText1}"></a><span th:text="${i18n.factLinkText2}"></span></p>
   <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-1" th:text="${i18n.listDate + startDate}"/>
   <p class="govuk-body" th:text="${i18n.listUpdated + publicationDate + i18n.at + publicationTime}"/>
   <p class="govuk-body" th:text="${i18n.versionText + version}"/>

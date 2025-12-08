@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import lombok.AllArgsConstructor;
 import org.thymeleaf.context.Context;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.DateHelper;
+import uk.gov.hmcts.reform.pip.data.management.service.helpers.LanguageResourceHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.listmanipulation.MagistratesAdultCourtListHelper;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 
@@ -39,6 +40,7 @@ public class MagistratesAdultCourtListFileConverter implements FileConverter {
         }
 
         Language language = Language.valueOf(metadata.get("language"));
+        languageResources.putAll(LanguageResourceHelper.readResourcesFromPath("common/linkToFact", language));
         context.setVariable("listData",
                             MagistratesAdultCourtListHelper.processPayload(payload, language, isStandardList));
 
