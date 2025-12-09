@@ -9,9 +9,8 @@
           "maxLength": 35
         },
         "CitizenNameForename": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 35
+          "type": "array",
+          "items": { "type": "string" }
         },
         "CitizenNameSurname": {
           "type": "string",
@@ -208,8 +207,8 @@
                             }
                           },
                           "TimeMarkingNote": { "type": "string" },
-                          "CaseNumber": { "type": "string", "pattern": "^[A-Z][0-9]{8}$" },
-                          "CaseNumberCaTH": { "type": "string", "pattern": "^[A-Z][0-9]{8}$" },
+                          "CaseNumber": { "type": "string" },
+                          "CaseNumberCaTH": { "type": "string" },
                           "Prosecution": {
                             "type": "object",
                             "properties": {
@@ -455,8 +454,8 @@
                   }
                 }
               },
-              "CaseNumber": { "type": "string", "pattern": "^[A-Z][0-9]{8}$" },
-              "CaseNumberCaTH": { "type": "string", "pattern": "^[A-Z][0-9]{8}$" },
+              "CaseNumber": { "type": "string" },
+              "CaseNumberCaTH": { "type": "string" },
               "Prosecution": {
                 "type": "object",
                 "properties": {
