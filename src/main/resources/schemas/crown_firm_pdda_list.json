@@ -454,8 +454,8 @@
                   }
                 }
               },
-              "CaseNumber": { "type": "string" },
-              "CaseNumberCaTH": { "type": "string" },
+              "CaseNumber": { "type": "string", "pattern": "^[A-Z][0-9]{8}$" },
+              "CaseNumberCaTH": { "type": "string", "pattern": "^[A-Z][0-9]{8}$" },
               "Prosecution": {
                 "type": "object",
                 "properties": {
