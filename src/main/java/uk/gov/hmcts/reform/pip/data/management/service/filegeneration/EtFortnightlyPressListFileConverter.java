@@ -3,10 +3,12 @@ package uk.gov.hmcts.reform.pip.data.management.service.filegeneration;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.thymeleaf.context.Context;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.DateHelper;
+import uk.gov.hmcts.reform.pip.data.management.service.helpers.LanguageResourceHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.LocationHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.listmanipulation.EtFortnightlyPressListHelper;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 
+import java.io.IOException;
 import java.util.Map;
 
 public class EtFortnightlyPressListFileConverter implements FileConverter {
@@ -14,7 +16,8 @@ public class EtFortnightlyPressListFileConverter implements FileConverter {
     private static final String VENUE_CONTACT = "venueContact";
 
     @Override
-    public String convert(JsonNode artefact, Map<String, String> metadata, Map<String, Object> language) {
+    public String convert(JsonNode artefact, Map<String, String> metadata, Map<String, Object> language)
+        throws IOException {
         return TemplateEngine.processTemplate(
             metadata.get("listType"),
             preprocessArtefactForThymeLeafConverter(artefact, metadata, language)
@@ -22,11 +25,12 @@ public class EtFortnightlyPressListFileConverter implements FileConverter {
     }
 
     public static Context preprocessArtefactForThymeLeafConverter(
-        JsonNode artefact, Map<String, String> metadata, Map<String, Object> languageResources) {
+        JsonNode artefact, Map<String, String> metadata, Map<String, Object> languageResources) throws IOException {
         Context context = new Context();
         LocationHelper.formatCourtAddress(artefact, "|", false);
         context.setVariable("i18n", languageResources);
         Language language = Language.valueOf(metadata.get("language"));
+        languageResources.putAll(LanguageResourceHelper.readResourcesFromPath("common/linkToFact", language));
         String publicationDate = artefact.get("document").get("publicationDate").asText();
         context.setVariable("publicationDate", DateHelper.formatTimeStampToBst(publicationDate, language,
                                                                                false, false));

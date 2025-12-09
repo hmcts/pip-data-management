@@ -20,6 +20,7 @@ import java.nio.charset.Charset;
 import java.util.Map;
 import java.util.Objects;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_AAC_DAILY_HEARING_LIST;
 
 @ActiveProfiles("test")
@@ -60,6 +61,9 @@ class UtAdministrativeAppealsChamberDailyHearingListFileConverterTest {
     private static final String MESSAGE_ELEMENT_9 = "message-9";
     private static final String MESSAGE_ELEMENT_10 = "message-10";
     private static final String SUMMARY_TEXT_CLASS = "govuk-details__summary-text";
+    private static final String LINK_CLASS = "govuk-link";
+    private static final String HREF = "href";
+    private static final String BODY_CLASS = "govuk-body";
 
     private static final String TITLE_MESSAGE = "Title does not match";
     private static final String HEADER_MESSAGE = "Header does not match";
@@ -69,6 +73,7 @@ class UtAdministrativeAppealsChamberDailyHearingListFileConverterTest {
     private static final String BODY_MESSAGE = "Body does not match";
     private static final String TABLE_HEADERS_MESSAGE = "Table headers does not match";
     private static final String TABLE_CONTENT_MESSAGE = "Table content does not match";
+    private static final String LINK_MESSAGE = "Link does not match";
 
     private final NonStrategicListFileConverter converter = new NonStrategicListFileConverter();
 
@@ -114,6 +119,17 @@ class UtAdministrativeAppealsChamberDailyHearingListFileConverterTest {
         softly.assertThat(document.getElementById(HEADER_ELEMENT).text())
             .as(HEADER_MESSAGE)
             .isEqualTo(LIST_ENGLISH_NAME);
+
+        softly.assertThat(document.getElementsByClass(LINK_CLASS).get(0)
+                              .getElementsByTag("a").get(0)
+                              .attr(HREF))
+            .as(LINK_MESSAGE)
+            .isEqualTo("https://www.find-court-tribunal.service.gov.uk/");
+
+        assertThat(document.getElementsByClass(BODY_CLASS).get(0).text())
+            .as(LINK_MESSAGE)
+            .isEqualTo("Find contact details and other information about courts and tribunals in England "
+                           + "and Wales, and some non-devolved tribunals in Scotland.");
 
         softly.assertThat(document.getElementById(LIST_DATE_ELEMENT).text())
             .as(LIST_DATE_MESSAGE)
@@ -246,6 +262,17 @@ class UtAdministrativeAppealsChamberDailyHearingListFileConverterTest {
         softly.assertThat(document.getElementById(HEADER_ELEMENT).text())
             .as(HEADER_MESSAGE)
             .isEqualTo(LIST_WELSH_NAME);
+
+        softly.assertThat(document.getElementsByClass(LINK_CLASS).get(0)
+                              .getElementsByTag("a").get(0)
+                              .attr(HREF))
+            .as(LINK_MESSAGE)
+            .isEqualTo("https://www.find-court-tribunal.service.gov.uk/");
+
+        assertThat(document.getElementsByClass(BODY_CLASS).get(0).text())
+            .as(LINK_MESSAGE)
+            .isEqualTo("Dod o hyd i fanylion cyswllt a gwybodaeth arall am lysoedd a thribiwnlysoedd yng "
+                           + "Nghymru a Lloegr a rhai tribiwnlysoedd heb eu datganoli yn yr Alban.");
 
         softly.assertThat(document.getElementById(LIST_DATE_ELEMENT).text())
             .as(LIST_DATE_MESSAGE)
