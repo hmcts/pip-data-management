@@ -210,7 +210,6 @@ public final class CrownPddaListHelper {
                 nameParts.add(forenameNode.asText())
             );
         }
-//        nameParts.add(GeneralHelper.findAndReturnNodeText(individual, "CitizenNameForename"));
         nameParts.add(GeneralHelper.findAndReturnNodeText(individual, "CitizenNameSurname"));
         nameParts.add(GeneralHelper.findAndReturnNodeText(individual, "CitizenNameSuffix"));
 
