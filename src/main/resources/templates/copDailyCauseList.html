@@ -101,7 +101,7 @@
                             <td class="govuk-table__cell" th:classappend="${noBorder}" th:text="${sitting.get('caseHearingChannel').asText()}"/>
                           </tr>
                           <tr class="govuk-table__row" th:if="${case.get('formattedReportingRestriction').asText() != ''}">
-                            <td class="govuk-table__cell" colspan="6">
+                            <td class="govuk-table__cell" colspan="7">
                               <span class="govuk-table__header" th:text="${i18n.reportingRestriction}" />
                               <span th:text="${case.get('formattedReportingRestriction').asText()}" />
                             </td>
